@@ -126,7 +126,7 @@ if(!isset($_SESSION["username"]))
               <a class="py-0 nav-link dropdown-toggle" data-toggle="dropdown" href="#"><i class='fas fa-wrench'></i> Ausführung-ÖBA</a>
               <ul class="dropdown-menu">
                   <a class="dropdown-item" href="dashboardAusfuehrung.php"><i class='fas fa-tachometer-alt'></i> Dashboard</a>
-                    <a class="dropdown-item" href="roombookAusfuehrung.php"><i class='fas fa-building'></i> Räume</a>
+                    <a class="dropdown-item" href="roombookAusfuehrung.php"><i class='fas fa-building'></i> Räume </a>
                     <a class="dropdown-item" href="roombookAusfuehrungLiefertermine.php"><i class='far fa-calendar-alt'></i> Liefertermine</a>
               </ul>
             </li>
@@ -577,7 +577,7 @@ if(!isset($_SESSION["username"]))
                                         alert("Kein Raum ausgewählt!");
                                     }
                                     else{                
-                                       window.open('/pdf_createBericht_ENT_PDF.php?roomID='+roomIDs);//there are many ways to do this
+                                       window.open('/pdf_createBericht_ENT_PDF_2.php?roomID='+roomIDs);//there are many ways to do this
                                     } 
                                 }
                             },
