@@ -130,9 +130,7 @@ foreach ($teile as $valueOfRoomID) {
         
         $next_block_size = $block_label_size + 40;
         check_4_new_page($pdf, $next_block_size);  
-  
-        $pdf->Ln(50);   
-        
+
         block_label($pdf, "Allgemein");   
           
         $pdf->MultiCell($einzugC1, 6, "Raumfläche: ", 0, 'R', 0, 0);
