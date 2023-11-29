@@ -113,19 +113,19 @@ function el_in_room_html_table($pdf, $result, $init_einzug) {
 
 function multicell_with_stk ($pdf, $NR, $einzug){
     if($NR>0){
-            $pdf->MultiCell($einzug, 6,$NR." Stk" ,0, 'C', 0, 0);
+            $pdf->MultiCell($einzug, 6,$NR." Stk" ,0, 'L', 0, 0);
         }else{
-            $pdf->MultiCell($einzug, 6, " - " ,0, 'C', 0, 0);
+            $pdf->MultiCell($einzug, 6, " - " ,0, 'L', 0, 0);
         }    
 }
 
 function multicell_with_nr($pdf, $NR, $unit, $schriftgr, $einzug){
     $originalFontSize = $pdf->getFontSizePt();
     if($NR>0){
-            $pdf->MultiCell($einzug, $schriftgr,$NR." ".$unit,0, 'C', 0, 0);
+            $pdf->MultiCell($einzug, $schriftgr,$NR." ".$unit,0, 'L', 0, 0);
     }
     else{
-        $pdf->MultiCell($einzug, $schriftgr, " - " ,0, 'C', 0, 0);     
+        $pdf->MultiCell($einzug, $schriftgr, " - " ,0, 'L', 0, 0);     
         }
     $pdf->SetFontSize($originalFontSize);    
  }
@@ -133,10 +133,10 @@ function multicell_with_nr($pdf, $NR, $unit, $schriftgr, $einzug){
 function multicell_with_str($pdf, $STR, $einzug, $Unit){
     $originalFontSize = $pdf->getFontSizePt();
     if(strlen($STR) > 0){
-        $pdf->MultiCell($einzug, 6, $STR." ".$Unit,0, 'C', 0, 0);
+        $pdf->MultiCell($einzug, 6, $STR." ".$Unit,0, 'L', 0, 0);
     }        
     else{
-        $pdf->MultiCell($einzug, 6, " - " ,0, 'C', 0, 0);
+        $pdf->MultiCell($einzug, 6, " - " ,0, 'L', 0, 0);
     }
     $pdf->SetFontSize($originalFontSize);    
 }
@@ -164,9 +164,9 @@ function strahlenanw($pdf, $param, $cellsize, $gr){
     
 }
 
-function hackerl($pdf, $hackerl_schriftgr, $param, $comp_true){
+function hackerl($pdf, $hackerl_schriftgr,$zellgr, $param, $comp_true){
     $originalFontSize = $pdf->getFontSizePt();
-    $hackerlcellgröße= 5; //same as global var
+    $hackerlcellgröße= $zellgr; //same as global var
     $pdf->SetFont('zapfdingbats', '', $hackerl_schriftgr);
     if($param==$comp_true || $param == "Ja"|| $param == "ja"|| $param ==1){     
         $pdf->SetTextColor(0, 255, 0); 
