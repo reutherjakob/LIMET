@@ -3,38 +3,51 @@
 // Für A4 
 $einzugLR=15;
 $SB = 210 - 2* $einzugLR ; // seitenbreite minus die lr einzüge
-
 $hackerl_Zellgröße=5; // set var in method below to same value!
 $hackerl_schriftgröße= 8;
-
 $einzugC1 = 40; 
 $einzugC2 = 60 - $einzugC1;
-
 $einzugE = 30;
-
 $ln_spacer1 = 5;
 
 
+function br2nl($string){
+    $return= str_replace(array("<br/>"), "\n", $string);
+    return $return;
+}
 
-function newpage_or_spacer($pdf, $next_block_size)
-{
+function format_text($string){
+    $spacer ="; "; 
+    $return= str_replace("\n", $spacer, $string);
+    return $return;
+}
+
+function clean_string ($dirty_str){
+   $clean_string = preg_replace('/[^äüö\n(\x20-\x7F)]*/u','', $dirty_str);
+   return $clean_string;
+}
+
+
+function newpage_or_spacer($pdf, $next_block_size){
     $y = $pdf->GetY();    
-    if (($y +$next_block_size) >= 260) {
+    if (($y +$next_block_size) >= 270) {
         $pdf->AddPage();
     } else {        
-        block_spacer($pdf);
+        if($y< 20){} // header size
+        else{
+            block_spacer($pdf);          
+        }
     }
 }
 
 function block_spacer($pdf) {
         //$pdf->Ln(4); 
         //$pdf->MultiCell(180, 6, " ",'B', 'L', 0, 0);
-        $pdf->Ln(); 
-    
+        $pdf->Ln(8); 
 }
 function check_4_new_page($pdf, $height){
     $y = $pdf->GetY();     // Wenn Seitenende? Überprüfen und neue Seite anfangen
-    if (($y + $height) >= 260) {
+    if (($y + $height) >= 270) {
         $pdf->AddPage();
     }
 }
@@ -42,11 +55,8 @@ function check_4_new_page($pdf, $height){
 function dashed_line($pdf, $offset){
     $pdf->SetLineStyle(array('dash' => 2, 'color' => array(0, 0, 0)));
         $y = $pdf-> GetY()+$offset ;
-        // Draw a dashed horizontal line
         $pdf->Line(25, $y, 185, $y);
-        // Set line style back to normal (solid line)
         $pdf->SetLineStyle(array('dash' => 0, 'color' => array(0, 0, 0)));
-    
 }
 
 function translateBestand($value) {
@@ -100,49 +110,32 @@ function el_in_room_html_table($pdf, $result, $init_einzug) {
     $pdf->writeHTML($html);
 }
 
-function br2nl($string){
-    $return= str_replace(array("<br/>"), "\n", $string);
-    return $return;
-}
-
-function format_text($string){
-    $spacer ="; "; 
-    $return= str_replace("\n", $spacer, $string);
-    return $return;
-}
-
-function clean_string ($dirty_str){
-   $clean_string = preg_replace('/[^äüö\n(\x20-\x7F)]*/u','', $dirty_str);
-   return $clean_string;
-}
-
 function multicell_with_stk ($pdf, $NR, $einzug){
     if($NR>0){
-            $pdf->MultiCell($einzug, 6,$NR." Stk" ,0, 'L', 0, 0);
+            $pdf->MultiCell($einzug, 6,$NR." Stk" ,0, 'C', 0, 0);
         }else{
-            $pdf->MultiCell($einzug, 6, "-" ,0, 'L', 0, 0);
+            $pdf->MultiCell($einzug, 6, " - " ,0, 'C', 0, 0);
         }    
 }
 
 function multicell_with_nr($pdf, $NR, $unit, $schriftgr, $einzug){
     $originalFontSize = $pdf->getFontSizePt();
     if($NR>0){
-            $pdf->MultiCell($einzug, $schriftgr,$NR." ".$unit,0, 'L', 0, 0);
+            $pdf->MultiCell($einzug, $schriftgr,$NR." ".$unit,0, 'C', 0, 0);
     }
     else{
-        $pdf->MultiCell($einzug, $schriftgr, "-" ,0, 'L', 0, 0);     
+        $pdf->MultiCell($einzug, $schriftgr, " - " ,0, 'C', 0, 0);     
         }
     $pdf->SetFontSize($originalFontSize);    
  }
 
-function multicell_with_str($pdf, $STR, $einzug){
+function multicell_with_str($pdf, $STR, $einzug, $Unit){
     $originalFontSize = $pdf->getFontSizePt();
-    $unit= "";
     if(strlen($STR) > 0){
-        $pdf->MultiCell($einzug, 6, $STR.$unit,0, 'L', 0, 0);
+        $pdf->MultiCell($einzug, 6, $STR." ".$Unit,0, 'C', 0, 0);
     }        
     else{
-        $pdf->MultiCell($einzug, 6, " - ".$unit ,0, 'L', 0, 0);
+        $pdf->MultiCell($einzug, 6, " - " ,0, 'C', 0, 0);
     }
     $pdf->SetFontSize($originalFontSize);    
 }
@@ -162,10 +155,12 @@ function strahlenanw($pdf, $param, $cellsize, $gr){
         else{
             $pdf->SetFont('helvetica', '', 10);$pdf->SetTextColor(0, 0, 0); 
             $pdf->MultiCell($cellsize, 6, "Quasi stationär",0, 'L', 0, 0);
+            $pdf->Ln(1);
         }
     }
     $pdf->SetTextColor(0, 0, 0); 
     $pdf->SetFont('helvetica', '', $originalFontSize);
+    
 }
 
 function hackerl($pdf, $hackerl_schriftgr, $param, $comp_true){
