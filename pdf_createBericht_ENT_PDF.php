@@ -8,15 +8,15 @@ include 'pdf_createBericht_utils.php';
 
 session_start();
 
-$hackerl_Zellgröße=5; 
-$hackerl_schriftgröße= 8;
+$hackerl_Zellgröße=15; 
+$hackerl_schriftgröße= 10;
 
 $einzugLR=15;               // standard einzug L/R
 $SB = 210 - 2* $einzugLR ;  // A4: seitenbreite minus die lr einzüge
 $einzugC1 = 40;             // C: Seite dritteln
 $einzugC2 = 60 - $einzugC1;
 $einzugE = 30;              // E: Einzug vor erster Unterkathegorie von Et
-$einzugF = $SB/6 - $hackerl_Zellgröße -3;  // F: Seite sexteln
+$einzugF = $SB/6 - $hackerl_Zellgröße  ;  // F: Seite sexteln, zb Medgas
 
 $einzug_anm  = 40;
 
@@ -180,9 +180,9 @@ foreach ($teile as $valueOfRoomID) {
         $SizeElektroSegement = 60 + $block_label_size + 9* $ln_spacer1 ; //TODO calc precisely
         newpage_or_spacer($pdf, $SizeElektroSegement, $block_spacerx);
         block_label($pdf, "Elektro");
+        $hackerl_Zellgröße=10; 
         
-        $restspace = ((180 - $einzugE - $hackerl_Zellgröße - 10) / 5) - $hackerl_Zellgröße;
-
+        $restspace = (($SB - $einzugE - $hackerl_Zellgröße) / 5) - $hackerl_Zellgröße - 1;
         $pdf->MultiCell($einzugE, 6, "ÖVE E8101:", 0, 'R', 0, 0);
         multicell_with_str($pdf, $row['Anwendungsgruppe'], $hackerl_Zellgröße, "");
 
@@ -204,8 +204,8 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->Ln($ln_spacer1);
         $pdf->SetFont('helvetica', '', 6);        
         
-        $pdf->MultiCell($einzugE + $manual_offset-2, 6, "", 0, 'R', 0, 0);
-        $pdf->MultiCell($restspace, 6, "SSD:", 0, 'R', 0, 0);
+        $manual_offset = 1;
+        $pdf->MultiCell($einzugE + $hackerl_Zellgröße + $restspace- $manual_offset, 6, "SSD:", 0, 'R', 0, 0);
         multicell_with_str($pdf, $row['EL_AV Steckdosen Stk'], $hackerl_Zellgröße, "");
 
         $pdf->MultiCell($restspace, 6, "SSD:", 0, 'R', 0, 0);
@@ -218,21 +218,23 @@ foreach ($teile as $valueOfRoomID) {
         multicell_with_str($pdf, $row['EL_USV Steckdosen Stk'], $hackerl_Zellgröße, "");
 
         $pdf->MultiCell($restspace, 6, "ED:", 0, 'R', 0, 0);
-        multicell_with_stk($pdf, $row['EL_Einzel-Datendose Stk'], $hackerl_Zellgröße);
+        multicell_with_str($pdf, $row['EL_Einzel-Datendose Stk'], $hackerl_Zellgröße, "");
         $pdf->Ln($ln_spacer1/2);
 
-        $pdf->MultiCell($einzugE + $restspace + $manual_offset-2, 6, "BD:", 0, 'R', 0, 0);
-        multicell_with_stk($pdf, $row['EL_Bodendose Stk'], $hackerl_Zellgröße);
+        $pdf->MultiCell($einzugE + $restspace + $hackerl_Zellgröße- $manual_offset, 6, "BD:", 0, 'R', 0, 0);
+        multicell_with_str($pdf, $row['EL_Bodendose Stk'], $hackerl_Zellgröße, "");
 
         $pdf->MultiCell(($restspace + $hackerl_Zellgröße) * 3, 6, " ", 0, 'L', 0, 0);
         $pdf->MultiCell($restspace, 6, "DD:", 0, 'R', 0, 0);
+        multicell_with_str($pdf, $row['EL_Doppeldatendose Stk'], $hackerl_Zellgröße, "");
         
-        multicell_with_stk($pdf, $row['EL_Doppeldatendose Stk'], $hackerl_Zellgröße);
+        
         
         $pdf->Ln($ln_spacer1);
         dashed_line($pdf,  0);
         $pdf->Ln($ln_spacer1/2);
-
+        $hackerl_Zellgröße=20; 
+        
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell($einzugE, 10, "Beleuchtung:", 0, 'R', 0, 0);
         $pdf->SetFont('helvetica', '', 8);
@@ -248,47 +250,41 @@ foreach ($teile as $valueOfRoomID) {
         multicell_with_stk($pdf, $row['EL_Notlicht RZL Stk'], $hackerl_Zellgröße);
 
         $pdf->Ln($ln_spacer1);
-
-        $pdf->MultiCell($restspace + $einzugE - (2 * $manual_offset), 6, "Sicherheitsleuchte: ", 0, 'R', 0, 0);
+        
+        $pdf->MultiCell($restspace + $einzugE - (2 * $manual_offset), 6, "Lichtfarbe: ", 0, 'R', 0, 0);
+        multicell_with_nr($pdf, $row['EL_Lichtfarbe K'], "K", 8, $hackerl_Zellgröße);
+        $pdf->MultiCell($restspace, 6, "Sicherheitsleuchte: ", 0, 'R', 0, 0);
         multicell_with_stk($pdf, $row['EL_Notlicht SL Stk'], $hackerl_Zellgröße);
         
-        $pdf->MultiCell($restspace, 6, "Lichtfarbe: ", 0, 'R', 0, 0);
-        multicell_with_nr($pdf, $row['EL_Lichtfarbe K'], "", 8, $hackerl_Zellgröße);
- 
-        $pdf->MultiCell($restspace, 6, "Leuchten: ", 0, 'R', 0, 0);
-
+        $pdf->Ln($ln_spacer1);
+        
+        $pdf->MultiCell($einzugE +$restspace - (2 * $manual_offset), 6, "Leuchten: ", 0, 'R', 0, 0);
+        
+        
+        $unsauberer_temp = ($SB - $einzugE  -$restspace - 20)/5;
         $leuchten_printout = false;
+
         if ($row['EL_Beleuchtung 1 Stk'] > 0) {
-            $pdf->MultiCell(100, 6, $row['EL_Beleuchtung 1 Stk'] . " Stk, " . $row['EL_Beleuchtung 1 Typ'], 0, 'L', 0, 0);
-            $pdf->Ln();
-            $pdf->MultiCell(75, 6, "", 0, 'R', 0, 0);
+            $pdf->MultiCell($unsauberer_temp, 6, $row['EL_Beleuchtung 1 Stk'] . " Stk, " . $row['EL_Beleuchtung 1 Typ'].".", 0, 'L', 0, 0);
             $leuchten_printout = true;
         }
         if ($row['EL_Beleuchtung 2 Stk'] > 0) {
-            $pdf->MultiCell(100, 6, $row['EL_Beleuchtung 2 Stk'] . " Stk, " . $row['EL_Beleuchtung 2 Typ'], 0, 'L', 0, 0);
-            $pdf->Ln();
-            $pdf->MultiCell(75, 6, "", 0, 'R', 0, 0);
+            $pdf->MultiCell($unsauberer_temp, 6, $row['EL_Beleuchtung 2 Stk'] . " Stk, " . $row['EL_Beleuchtung 2 Typ'].".", 0, 'L', 0, 0);
             $leuchten_printout = true;
         }
         if ($row['EL_Beleuchtung 3 Stk'] > 0) {
-            $pdf->MultiCell(100, 6, $row['EL_Beleuchtung 3 Stk'] . " Stk, " . $row['EL_Beleuchtung 3 Typ'], 0, 'L', 0, 0);
-            $pdf->Ln();
-            $pdf->MultiCell(75, 6, "", 0, 'R', 0, 0);
+            $pdf->MultiCell($unsauberer_temp, 6, $row['EL_Beleuchtung 3 Stk'] . " Stk, " . $row['EL_Beleuchtung 3 Typ'].".", 0, 'L', 0, 0);
             $leuchten_printout = true;
         }
         if ($row['EL_Beleuchtung 4 Stk'] > 0) {
-            $pdf->MultiCell(100, 6, $row['EL_Beleuchtung 4 Stk'] . " Stk, " . $row['EL_Beleuchtung 4 Typ'], 0, 'L', 0, 0);
-            $pdf->Ln();
-            $pdf->MultiCell(75, 6, "", 0, 'R', 0, 0);
+            $pdf->MultiCell($unsauberer_temp, 6, $row['EL_Beleuchtung 4 Stk'] . " Stk, " . $row['EL_Beleuchtung 4 Typ'].".", 0, 'L', 0, 0);
             $leuchten_printout = true;
         }
         if ($row['EL_Beleuchtung 5 Stk'] > 0) {
-            $pdf->MultiCell(100, 6, $row['EL_Beleuchtung 5 Stk'] . " Stk, " . $row['EL_Beleuchtung 5 Typ'], 0, 'L', 0, 0);
+            $pdf->MultiCell($unsauberer_temp, 6, $row['EL_Beleuchtung 5 Stk'] . " Stk, " . $row['EL_Beleuchtung 5 Typ'].".", 0, 'L', 0, 0);
             $leuchten_printout = true;
         }
-        if ($leuchten_printout) {
-            $pdf->Ln($ln_spacer1);
-        }
+ 
 
         //MULTIMEDIA 
         $pdf->Ln($ln_spacer1);
@@ -330,7 +326,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell($einzugE, 6, "Jalousie:",0, 'R', 0, 0);        
         $pdf->SetFont('helvetica', '', 8);
-        $pdf->MultiCell(30, 6, "Elektrisch:" ,0, 'R', 0, 0);
+        $pdf->MultiCell($restspace - (2 * $manual_offset), 6, "Elektrisch:" ,0, 'R', 0, 0);
         hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße,$row['EL_Jalousie JA/NEIN'], "JA");
  
 
@@ -397,10 +393,12 @@ foreach ($teile as $valueOfRoomID) {
         
         newpage_or_spacer($pdf, 30, $block_spacerx);
         block_label($pdf, "Med.-Gas");
-     
-        $manual_offset = 10;
         
-        $pdf->MultiCell($einzugF +$manual_offset, 6, "1 Kreis O2: ", 0, 'R', 0, 0);
+        $hackerl_Zellgröße=6; 
+        $einzugF = ($SB/6)-$hackerl_Zellgröße;
+ 
+        
+        $pdf->MultiCell($einzugF , 6, "1 Kreis O2: ", 0, 'R', 0, 0);
         hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße,$row['1 Kreis O2'], 1);
 
         $pdf->MultiCell($einzugF, 6, "2 Kreis O2: ", 0, 'R', 0, 0);
@@ -420,7 +418,7 @@ foreach ($teile as $valueOfRoomID) {
         
         $pdf->Ln($ln_spacer1);
         
-        $pdf->MultiCell($einzugF+ $manual_offset, 6, "DL10: ", 0, 'R', 0, 0);
+        $pdf->MultiCell($einzugF, 6, "DL10: ", 0, 'R', 0, 0);
         hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße,$row['DL-10'], 1); 
         
         $pdf->MultiCell($einzugF, 6, "DL-tech: ", 0, 'R', 0, 0);
@@ -435,23 +433,15 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell($einzugF, 6, "NGA: ", 0, 'R', 0, 0);
         hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße,$row['NGA'], 1); 
          
-        //TODO Check 4 next pages!!
-        // $y = $pdf->GetY();
-        //if (($y + 6) >= 270) {
-        //    $pdf->AddPage();}
-        
+ 
         if (strlen($row['Anmerkung MedGas']) > 0) {
             $pdf->Ln();
-            //$pdf->MultiCell(180, 6, "",0, 'L', 0, 0);
-            //$pdf->Ln();
-            $rowHeightComment = $pdf->getStringHeight(140, br2nl($row['Anmerkung MedGas']), false, true, '', 1);
+            $outstr    = format_text(br2nl($row['Anmerkung MedGas']));
+            $rowHeightComment = $pdf->getStringHeight($Sb -$einzug_anm, $outstr, false, true, '', 1);
             // Wenn Seitenende? Überprüfen und neue Seite anfangen
-            $y = $pdf->GetY();
-            if (($y + $rowHeightComment) >= 270) {
-                $pdf->AddPage();
-            }
+            check_4_new_page($pdf, $rowHeightComment);
             $pdf->MultiCell($einzug_anm, $rowHeightComment, "Anmerkung:", 0, 'R', 0, 0);
-            $pdf->MultiCell($Sb -$einzug_anm, $rowHeightComment, br2nl($row['Anmerkung MedGas']), 0, 'L', 0, 1);
+            $pdf->MultiCell($Sb -$einzug_anm, $rowHeightComment,$outstr, 0, 'L', 0, 1);
         }
 
         if (strlen($row['AR_Ausstattung']) > 0) {
