@@ -128,6 +128,8 @@ foreach ($teile as $valueOfRoomID) {
             //newpage_or_spacer($pdf, $next_block_size, $ln_spacer1);
         } 
         
+       // $pdf->Ln(100);
+        
         $next_block_size = $block_label_size + 40;
         check_4_new_page($pdf, $next_block_size);  
 
@@ -161,10 +163,10 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell($einzugC1, 6, "Umfang: ", 0, 'R', 0, 0);
         multicell_with_nr($pdf, $row['Umfang'], "m", $pdf-> getFontSizePt(), $einzugC2);
 
-        $pdf->MultiCell($einzugC1, 6, "Laseranwendung: ", 0, 'R', 0, 0);
+        $pdf->MultiCell($einzugC1, 6, "Laseranwendung: ", 0, 'R', 0, 0); 
         hackerl($pdf, $hackerl_schriftgröße,$hackerl_Zellgröße, $row['Laseranwendung'], "JA" );
         
-        $pdf->Ln($ln_spacer1);
+        $pdf->Ln($ln_spacer1); 
 
         $pdf->MultiCell($einzugC1-1, 6, "Raumvolumen:", 0, 'R', 0, 0);
         multicell_with_nr($pdf, $row['Volumen'], "m³", $pdf-> getFontSizePt(), $einzugC2);
