@@ -129,12 +129,12 @@ foreach ($teile as $valueOfRoomID) {
         } 
         
         $next_block_size = $block_label_size + 40;
-        check_4_new_page($pdf, $next_block_size);
+        check_4_new_page($pdf, $next_block_size);  
   
-        $pdf->Ln(50);  
+        $pdf->Ln(50);   
         
         block_label($pdf, "Allgemein");   
-        
+          
         $pdf->MultiCell($einzugC1, 6, "Raumfläche: ", 0, 'R', 0, 0);
         multicell_with_nr($pdf, $row['Nutzfläche'], "m²", 10, $einzugC2);
 
@@ -176,9 +176,6 @@ foreach ($teile as $valueOfRoomID) {
         
         $pdf->MultiCell($einzugC1 +1, 6, "Strahlenanwendung: ", 0, 'R', 0, 0);
         strahlenanw($pdf, $row['Strahlenanwendung'], $einzugC2, $hackerl_schriftgröße);
-
-        
-        
  
         $SizeElektroSegement = 60 + $block_label_size + 9* $ln_spacer1 ; //TODO calc precisely
         newpage_or_spacer($pdf, $SizeElektroSegement, $block_spacerx);
