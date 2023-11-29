@@ -45,6 +45,7 @@ function block_spacer($pdf) {
         //$pdf->MultiCell(180, 6, " ",'B', 'L', 0, 0);
         $pdf->Ln(8); 
 }
+
 function check_4_new_page($pdf, $height){
     $y = $pdf->GetY();     // Wenn Seitenende? Überprüfen und neue Seite anfangen
     if (($y + $height) >= 270) {

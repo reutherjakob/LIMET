@@ -126,8 +126,8 @@ foreach ($teile as $valueOfRoomID) {
             $pdf->SetFont('helvetica', 'I', 10);
             $pdf->MultiCell($SB, $rowHeightComment, $outstr, 0, 'L', 0, 1); 
             //newpage_or_spacer($pdf, $next_block_size, $ln_spacer1);
-        } 
-        
+        }  
+      
        // $pdf->Ln(100);
         
         $next_block_size = $block_label_size + 40;
