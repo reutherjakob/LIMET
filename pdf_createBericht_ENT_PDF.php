@@ -28,7 +28,7 @@ $abzug_ersterC_einzug= $einzugC1- $einzugE-$manual_offset; //rückt erstes eleme
 $einzug_anm  = $einzugE+$manual_offset;
 
         
-
+$bool_extra_zeile = false;
 
 // create new PDF document
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false, true);
@@ -171,12 +171,21 @@ foreach ($teile as $valueOfRoomID) {
 
         $pdf->MultiCell($einzugC1-1, 6, "Raumvolumen:", 0, 'R', 0, 0);
         multicell_with_nr($pdf, $row['Volumen'], "m³", $pdf-> getFontSizePt(), $einzugC2);
+        
+       
+
         $pdf->MultiCell($einzugC1, 6, "Fußboden: ", 0, 'R', 0, 0);   
         multicell_with_str($pdf, $row['Fussboden'], $einzugC2, "");
         
         $pdf->MultiCell($einzugC1 +1, 6, "Strahlenanwendung: ", 0, 'R', 0, 0);
+        
         strahlenanw($pdf, $row['Strahlenanwendung'], $einzugC2, $hackerl_schriftgröße);
- 
+         $y = $pdf->getStringHeight($einzugC2, $row['Fussboden'], false, true, '', 1);
+        
+        //if( y >$einzugC2){ $bool_extra_zeile = true;}
+        //if($bool_extra_zeile){$pdf->Ln();}
+        //if(strlen($row['Strahlenanwendung'])>$einzugC2){ $bool_extra_zeile = true;}
+        
         $SizeElektroSegement = 60 + $block_label_size + 9* $ln_spacer1 ; //TODO calc precisely
         newpage_or_spacer($pdf, $SizeElektroSegement, $block_spacerx);
         block_label($pdf, "Elektro");
