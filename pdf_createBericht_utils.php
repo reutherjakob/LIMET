@@ -179,10 +179,11 @@ function hackerl($pdf, $hackerl_schriftgr, $zellgr, $param, $comp_true){
     $originalFontSize = $pdf->getFontSizePt();
     $hackerlcellgröße= $zellgr; //same as global var
     $pdf->SetFont('zapfdingbats', '', $hackerl_schriftgr);
-    if($param==$comp_true || $param == "Ja"|| $param == "ja"|| $param ==1){     
+    if($param==$comp_true || $param == "Ja"|| $param == "ja"|| 1== $param|| "1"=== $param   ){     
         $pdf->SetTextColor(0, 255, 0); 
         $pdf->MultiCell($hackerlcellgröße, $hackerl_schriftgr, TCPDF_FONTS::unichr(52),0, 'L', 0, 0);
     }
+    else if(false) {}
     else{
         $pdf->SetTextColor(255, 0, 0);
         $pdf->MultiCell($hackerlcellgröße, $hackerl_schriftgr, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);

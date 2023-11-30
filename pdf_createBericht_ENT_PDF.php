@@ -180,62 +180,54 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell($einzugC1 +1, 6, "Strahlenanwendung: ", 0, 'R', 0, 0);
         
         strahlenanw($pdf, $row['Strahlenanwendung'], $einzugC2, $hackerl_schriftgröße);
-         $y = $pdf->getStringHeight($einzugC2, $row['Fussboden'], false, true, '', 1);
+       
         
-        //if( y >$einzugC2){ $bool_extra_zeile = true;}
-        //if($bool_extra_zeile){$pdf->Ln();}
-        //if(strlen($row['Strahlenanwendung'])>$einzugC2){ $bool_extra_zeile = true;}
+        if( ($pdf->getStringHeight($einzugC2, $row['Fussboden'])) >6   ||  ($pdf->getStringHeight($einzugC2, $row['Strahlenanwendung'])) >6 ){ 
+            $pdf->Ln($ln_spacer1);
+        }
         
         $SizeElektroSegement = 60 + $block_label_size + 9* $ln_spacer1 ; //TODO calc precisely
+        
         newpage_or_spacer($pdf, $SizeElektroSegement, $block_spacerx);
         block_label($pdf, "Elektro");
         $hackerl_Zellgröße=10; 
         
+        
         $restspace = (($SB - $einzugE - $hackerl_Zellgröße) / 5) - $hackerl_Zellgröße - 1;
         $pdf->MultiCell($einzugE, 6, "ÖVE E8101:", 0, 'R', 0, 0);
         multicell_with_str($pdf, $row['Anwendungsgruppe'], $hackerl_Zellgröße, "");
-
         $pdf->MultiCell($restspace, 6, "AV: ", 0, 'R', 0, 0);
         hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße, $row['AV'], "JA");   
-
         $pdf->MultiCell($restspace, 6, "SV: ", 0, 'R', 0, 0);
         hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße, $row['SV'], "JA");
-
         $pdf->MultiCell($restspace, 6, "ZSV: ", 0, 'R', 0, 0);
         hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße,$row['ZSV'], "JA");
-
         $pdf->MultiCell($restspace, 6, "USV: ", 0, 'R', 0, 0);
         hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße, $row['USV'], "JA");
-
         $pdf->MultiCell($restspace, 6, "IT: ", 0, 'R', 0, 0);
         hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße, $row['IT Anbindung'], "JA");
-
         $pdf->Ln($ln_spacer1);
         $pdf->SetFont('helvetica', '', 6);        
         
-        $manual_offset = 1;
+        
+        // 
+        $manual_offset = 2;
         $pdf->MultiCell($einzugE + $hackerl_Zellgröße + $restspace- $manual_offset, 6, "SSD:", 0, 'R', 0, 0);
         multicell_with_str($pdf, $row['EL_AV Steckdosen Stk'], $hackerl_Zellgröße, "");
-
         $pdf->MultiCell($restspace, 6, "SSD:", 0, 'R', 0, 0);
         multicell_with_str($pdf, $row['EL_SV Steckdosen Stk'], $hackerl_Zellgröße, "");
-
         $pdf->MultiCell($restspace, 6, "SSD:", 0, 'R', 0, 0);
         multicell_with_str($pdf, $row['EL_USV Steckdosen Stk'], $hackerl_Zellgröße, "");
-
         $pdf->MultiCell($restspace, 6, "SSD:", 0, 'R', 0, 0);
         multicell_with_str($pdf, $row['EL_USV Steckdosen Stk'], $hackerl_Zellgröße, "");
-
         $pdf->MultiCell($restspace, 6, "ED:", 0, 'R', 0, 0);
-        multicell_with_str($pdf, $row['EL_Einzel-Datendose Stk'], $hackerl_Zellgröße, "");
+        multicell_with_str($pdf, $row['EL_Einzel-Datendose Stk'], $hackerl_Zellgröße, "Stk.");
         $pdf->Ln($ln_spacer1/2);
-
         $pdf->MultiCell($einzugE + $restspace + $hackerl_Zellgröße- $manual_offset, 6, "BD:", 0, 'R', 0, 0);
         multicell_with_str($pdf, $row['EL_Bodendose Stk'], $hackerl_Zellgröße, "");
-
         $pdf->MultiCell(($restspace + $hackerl_Zellgröße) * 3, 6, " ", 0, 'L', 0, 0);
         $pdf->MultiCell($restspace, 6, "DD:", 0, 'R', 0, 0);
-        multicell_with_str($pdf, $row['EL_Doppeldatendose Stk'], $hackerl_Zellgröße, "");
+        multicell_with_str($pdf, $row['EL_Doppeldatendose Stk'], $hackerl_Zellgröße, "Stk.");
         
         
         
@@ -270,7 +262,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell($einzugE +$restspace - (2 * $manual_offset), 6, "Leuchten: ", 0, 'R', 0, 0);
         
         
-        $unsauberer_temp = ($SB - $einzugE  -$restspace - 20)/5;
+        $unsauberer_temp = ($SB - $einzugE  -$restspace - 25)/5;
         $leuchten_printout = false;
 
         if ($row['EL_Beleuchtung 1 Stk'] > 0) {
@@ -410,16 +402,16 @@ foreach ($teile as $valueOfRoomID) {
         hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße,$row['2 Kreis O2'], 1);
 
         $pdf->MultiCell($einzugF, 6, "1 Kreis VA: ", 0, 'R', 0, 0);
-        hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße,$row['1 Kreis Va'], 1);
+        hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße, $row['1 Kreis Va'], 1);
         
         $pdf->MultiCell($einzugF, 6, "2 Kreis VA: ", 0, 'R', 0, 0);
         hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße,$row['2 Kreis Va'], 1); 
         
         $pdf->MultiCell($einzugF, 6, "1 Kreis DL5: ", 0, 'R', 0, 0);
-        hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße,$row['1 Kreis DL5'], 1); 
+        hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße, $row['1 Kreis DL-5'], 1); 
         
         $pdf->MultiCell($einzugF , 6, "2 Kreis DL5: ", 0, 'R', 0, 0);
-        hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße, $row['2 Kreis DL5'], 1);  
+        hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße, $row['2 Kreis DL-5'], 1);  
         
         $pdf->Ln($ln_spacer1);
         
@@ -438,7 +430,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell($einzugF, 6, "NGA: ", 0, 'R', 0, 0);
         hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße,$row['NGA'], 1); 
          
-        $outstr    = format_text(br2nl($row['Anmerkung MedGas']));
+        $outstr = format_text(br2nl($row['Anmerkung MedGas']));
         
         if (strlen($outstr) > 0 && is_not_no_comment($outstr)) {
             $pdf->Ln($ln_spacer2);
