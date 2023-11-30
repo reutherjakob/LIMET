@@ -280,7 +280,7 @@ foreach ($teile as $valueOfRoomID) {
         if ($row['EL_Beleuchtung 4 Stk'] > 0) {
             $pdf->MultiCell($unsauberer_temp, 6, $row['EL_Beleuchtung 4 Stk'] . " Stk, " . $row['EL_Beleuchtung 4 Typ'].".", 0, 'L', 0, 0);
             $leuchten_printout = true;
-        }
+        } 
         if ($row['EL_Beleuchtung 5 Stk'] > 0) {
             $pdf->MultiCell($unsauberer_temp, 6, $row['EL_Beleuchtung 5 Stk'] . " Stk, " . $row['EL_Beleuchtung 5 Typ'].".", 0, 'L', 0, 0);
             $leuchten_printout = true;
@@ -295,19 +295,16 @@ foreach ($teile as $valueOfRoomID) {
 
         $pdf->MultiCell($restspace - (2 * $manual_offset +1), 6, "Kamera:", 0, 'R', 0, 0);
         multicell_with_stk($pdf, $row['EL_Kamera Stk'], $hackerl_Zellgröße);
-        
         $pdf->MultiCell($restspace, 6, "Lautsprecher:", 0, 'R', 0, 0);
         multicell_with_stk($pdf, $row['EL_Lautsprecher Stk'], $hackerl_Zellgröße);
         $pdf->MultiCell($restspace, 6, "Wanduhr:", 0, 'R', 0, 0);
         multicell_with_stk($pdf, $row['EL_Uhr - Wand Stk'], $hackerl_Zellgröße);
+        
         $pdf->Ln($ln_spacer1);
-
         $pdf->MultiCell($restspace - (2 * $manual_offset +1) + $einzugE, 6, "Deckenuhr:", 0, 'R', 0, 0);
         multicell_with_stk($pdf, $row['EL_Uhr - Decke Stk'], $hackerl_Zellgröße);
-
         $pdf->MultiCell($restspace, 6, "Lichtruf-Terminal:", 0, 'R', 0, 0);
         multicell_with_stk($pdf, $row['EL_Lichtruf - Terminal Stk'], $hackerl_Zellgröße);
-
         $pdf->MultiCell($restspace, 6, "Lichtruf-Modul:", 0, 'R', 0, 0);
         multicell_with_stk($pdf, $row['EL_Lichtruf - Steckmodul Stk'], $hackerl_Zellgröße);
 
@@ -316,9 +313,9 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell($einzugE, 6, "Brandmelder:", 0, 'R', 0, 0);
         $pdf->SetFont('helvetica', '', 8);
+        
         $pdf->MultiCell($restspace - (2 * $manual_offset), 6, "Decke: ", 0, 'R', 0, 0);
         hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße,$row['EL_Brandmelder Decke JA/NEIN'], "JA");
-
         $pdf->MultiCell($restspace, 6, "Zwischendecke: ", 0, 'R', 0, 0);
         hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße, $row['EL_Brandmelder ZwDecke JA/NEIN'], "JA");
 
@@ -331,23 +328,18 @@ foreach ($teile as $valueOfRoomID) {
         hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße,$row['EL_Jalousie JA/NEIN'], "JA");
  
 
-        
         $next_block_size = $block_label_size + 40; //manually added up //TODO account for all the space taken up beforehand
-        
         newpage_or_spacer($pdf, $next_block_size, $block_spacerx);
-        block_label($pdf, "Haustechnik");
         
+        block_label($pdf, "Haustechnik");
         $pdf->MultiCell($einzugC1 -$abzug_ersterC_einzug, 6, "Kühllast:", 0, 'R', 0, 0);
         multicell_with_nr($pdf, $row['HT_Kühllast W'], "W", 10, $einzugC2);
-        
         $pdf->MultiCell($einzugC1, 6, "Raumtemp-Winter:", 0, 'R', 0, 0);
         multicell_with_nr($pdf, $row['HT_Raumtemp Winter °C'], "°C", 10 , $einzugC2); 
-        
         $pdf->MultiCell($einzugC1, 6, "Heizlast:", 0, 'R', 0, 0);
         multicell_with_nr($pdf, $row['HT_Heizlast W'], "W", 10, $einzugC2);
 
         $pdf->Ln($ln_spacer1);
-        
         $pdf->MultiCell($einzugC1 -$abzug_ersterC_einzug, 6, "Kühlung-Lüftung:", 0, 'R', 0, 0);
         multicell_with_nr($pdf, $row['HT_Kühlung Lueftung W'], "W", 10 , $einzugC2); 
         $pdf->MultiCell($einzugC1, 6, "Raumtemp-Sommer:", 0, 'R', 0, 0);
