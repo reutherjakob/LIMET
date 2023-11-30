@@ -1,5 +1,5 @@
 <?php
-
+// V30-11-23 13:50
 // Für A4 
 $einzugLR=15;
 $SB = 210 - 2* $einzugLR ; // seitenbreite minus die lr einzüge
@@ -53,7 +53,6 @@ function newpage_or_spacer($pdf, $next_block_size){
 }
 
 function block_spacer($pdf) {
- 
         $pdf->Ln(8); 
 }
 
