@@ -11,22 +11,22 @@ session_start();
 $hackerl_Zellgröße=15; 
 $hackerl_schriftgröße= 10;
 
-$einzugLR=15;               // standard einzug L/R
-$SB = 210 - 2* $einzugLR ;  // A4: seitenbreite minus die lr einzüge
-$einzugC1 = 40;             // C: Seite dritteln
-$einzugC2 = 60 - $einzugC1;
-$einzugE = 30;              // E: Einzug vor erster Unterkathegorie von Et
-$einzugF = $SB/6 - $hackerl_Zellgröße  ;  // F: Seite sexteln, zb Medgas
-
-$einzug_anm  = 40;
+$block_label_size = 13;
 
 $ln_spacer1 = 4;
 $ln_spacer2 = 6; //bigger than 1
 
-$block_spacerx = 8;
-$block_label_size = 13;
+$einzugLR=15;               // standard einzug L/R
+$SB = 210 - 2* $einzugLR ;  // A4: seitenbreite minus die lr einzüge
+$einzugC1 = 40;             // C: Seite dritteln
+$einzugC2 = 60 - $einzugC1;
 
+$einzugE = 30;              // E: Einzug vor erster Unterkathegorie von Et
+$einzugF = $SB/6 - $hackerl_Zellgröße  ;  // F: Seite sexteln, zb Medgas
 $manual_offset = 5;
+$abzug_ersterC_einzug= $einzugC1- $einzugE-$manual_offset; //rückt erstes element je gedritteltem segment nach links
+$einzug_anm  = $einzugE+$manual_offset;
+
         
 
 
@@ -138,8 +138,9 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell($einzugC1, 6, "Raumfläche: ", 0, 'R', 0, 0);
         multicell_with_nr($pdf, $row['Nutzfläche'], "m²", 10, $einzugC2);
 
-        $pdf->MultiCell($einzugC1, 6, "Fußboden: ", 0, 'R', 0, 0);   
-        multicell_with_str($pdf, $row['Fussboden'], $einzugC2, "");
+        $pdf->MultiCell($einzugC1, 6, "H6020:", 0, 'R', 0, 0);
+        multicell_with_nr($pdf, $row['H6020'], "m", $pdf-> getFontSizePt(), $einzugC2);
+        
           
         $pdf->MultiCell($einzugC1, 6, "Abdunkelbarkeit: ", 0, 'R', 0, 0);
         hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße, $row['Abdunkelbarkeit'], "JA");
@@ -170,9 +171,8 @@ foreach ($teile as $valueOfRoomID) {
 
         $pdf->MultiCell($einzugC1-1, 6, "Raumvolumen:", 0, 'R', 0, 0);
         multicell_with_nr($pdf, $row['Volumen'], "m³", $pdf-> getFontSizePt(), $einzugC2);
-        
-        $pdf->MultiCell($einzugC1, 6, "H6020:", 0, 'R', 0, 0);
-        multicell_with_nr($pdf, $row['H6020'], "m", $pdf-> getFontSizePt(), $einzugC2);
+        $pdf->MultiCell($einzugC1, 6, "Fußboden: ", 0, 'R', 0, 0);   
+        multicell_with_str($pdf, $row['Fussboden'], $einzugC2, "");
         
         $pdf->MultiCell($einzugC1 +1, 6, "Strahlenanwendung: ", 0, 'R', 0, 0);
         strahlenanw($pdf, $row['Strahlenanwendung'], $einzugC2, $hackerl_schriftgröße);
@@ -319,7 +319,7 @@ foreach ($teile as $valueOfRoomID) {
         hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße,$row['EL_Brandmelder Decke JA/NEIN'], "JA");
 
         $pdf->MultiCell($restspace, 6, "Zwischendecke: ", 0, 'R', 0, 0);
-        hackerl($pdf, $hackerl_schriftgröße,$hackerl_Zellgröße, $row['EL_Brandmelder ZwDecke JA/NEIN'], "JA");
+        hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße, $row['EL_Brandmelder ZwDecke JA/NEIN'], "JA");
 
         //Jalousie
         $pdf->Ln($ln_spacer1);
@@ -331,11 +331,12 @@ foreach ($teile as $valueOfRoomID) {
  
 
         
-        $next_block_size = $block_label_size + 40; //manually added up
+        $next_block_size = $block_label_size + 40; //manually added up //TODO account for all the space taken up beforehand
+        
         newpage_or_spacer($pdf, $next_block_size, $block_spacerx);
         block_label($pdf, "Haustechnik");
         
-        $pdf->MultiCell($einzugC1, 6, "Kühllast:", 0, 'R', 0, 0);
+        $pdf->MultiCell($einzugC1 -$abzug_ersterC_einzug, 6, "Kühllast:", 0, 'R', 0, 0);
         multicell_with_nr($pdf, $row['HT_Kühllast W'], "W", 10, $einzugC2);
         
         $pdf->MultiCell($einzugC1, 6, "Raumtemp-Winter:", 0, 'R', 0, 0);
@@ -346,26 +347,23 @@ foreach ($teile as $valueOfRoomID) {
 
         $pdf->Ln($ln_spacer1);
         
-        $pdf->MultiCell($einzugC1, 6, "Kühlung-Lüftung:", 0, 'R', 0, 0);
+        $pdf->MultiCell($einzugC1 -$abzug_ersterC_einzug, 6, "Kühlung-Lüftung:", 0, 'R', 0, 0);
         multicell_with_nr($pdf, $row['HT_Kühlung Lueftung W'], "W", 10 , $einzugC2); 
-        
         $pdf->MultiCell($einzugC1, 6, "Raumtemp-Sommer:", 0, 'R', 0, 0);
-        multicell_with_nr($pdf, $row['HT_Raumtemp Sommer °C'], "°C", 10 , $einzugC2); 
-        
+        multicell_with_nr($pdf, $row['HT_Raumtemp Sommer °C'], "°C", 10 , $einzugC2);    
         $pdf->MultiCell($einzugC1, 6, "Luftwechsel:", 0, 'R', 0, 0);
         multicell_with_nr($pdf, $row['HT_Luftwechsel'], "1/h", 8, $einzugC2);
         
         $pdf->Ln($ln_spacer1); 
         
-        $pdf->MultiCell($einzugC1, 6, "Kühlung-FB:", 0, 'R', 0, 0);
+        $pdf->MultiCell($einzugC1 -$abzug_ersterC_einzug, 6, "Kühlung-FB:", 0, 'R', 0, 0);
         multicell_with_nr($pdf, $row['HT_Fussbodenkühlung W'], "W", 10 , $einzugC2);
-        
-        
         $pdf->MultiCell($einzugC1, 6, "Luftmenge:", 0, 'R', 0, 0);
-        multicell_with_nr($pdf, $row['HT_Luftmenge m3/h'], "m³/h", 10 , $einzugC2);
+        multicell_with_nr($pdf, $row['HT_Luftmenge m3/h'], "m³/h", 10 , $einzugC2*3);
         
         $pdf->Ln($ln_spacer1);
-        $pdf->MultiCell($einzugC1, 6, "Kühlung-Decke:", 0, 'R', 0, 0);
+        
+        $pdf->MultiCell($einzugC1 -$abzug_ersterC_einzug, 6, "Kühlung-Decke:", 0, 'R', 0, 0);
         multicell_with_nr($pdf, $row['HT_Kühldecke W'], "W", 10 , $einzugC2); 
 
         
@@ -376,19 +374,17 @@ foreach ($teile as $valueOfRoomID) {
         //multicell_with_nr($pdf, $row['HT_Fancoil W'], "W", 8, $einzugC2);
 
         $pdf->SetFont('helvetica', '', 10);
+        $outstr = format_text(clean_string(br2nl($row['Anmerkung HKLS'])));
         
-        if (strlen($row['Anmerkung HKLS']) > 0) {
-            $pdf->Ln();
-            $outstr = format_text(clean_string(br2nl($row['Anmerkung HKLS'])));
-            $rowHeightComment = $pdf->getStringHeight($SB, $outstr, false, true, '', 1);
-            // Wenn Seitenende? Überprüfen und neue Seite anfangen
-            $y = $pdf->GetY();
-            if (($y + $rowHeightComment) >= 270) {
-                $pdf->AddPage();
-            }
+        if (strlen($outstr) > 0 && is_not_no_comment($outstr)) { //Haustechnik anmerkung
+            $pdf->Ln($ln_spacer2);
+            $rowHeightComment = $pdf->getStringHeight($SB-$einzug_anm, $outstr, false, true, '', 1);
+ 
+            check_4_new_page($pdf, $rowHeightComment);
+
             $pdf->MultiCell($einzug_anm, $rowHeightComment, "Anmerkung:", 0, 'R', 0, 0);
-            $pdf->MultiCell($SB -$einzugE, $rowHeightComment, $outstr, 0, 'L', 0, 0);
-            $pdf->Ln(1);
+            $pdf->MultiCell($SB -$einzug_anm, $rowHeightComment, $outstr, 0, 'L', 0, 0);
+            $pdf->Ln($rowHeightComment);
         } 
         
         newpage_or_spacer($pdf, 30, $block_spacerx);
@@ -414,7 +410,7 @@ foreach ($teile as $valueOfRoomID) {
         hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße,$row['1 Kreis DL5'], 1); 
         
         $pdf->MultiCell($einzugF , 6, "2 Kreis DL5: ", 0, 'R', 0, 0);
-        hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße,$row['2 Kreis DL5'], 1);  
+        hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße, $row['2 Kreis DL5'], 1);  
         
         $pdf->Ln($ln_spacer1);
         
@@ -433,12 +429,11 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell($einzugF, 6, "NGA: ", 0, 'R', 0, 0);
         hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße,$row['NGA'], 1); 
          
- 
-        if (strlen($row['Anmerkung MedGas']) > 0) {
-            $pdf->Ln();
-            $outstr    = format_text(br2nl($row['Anmerkung MedGas']));
+        $outstr    = format_text(br2nl($row['Anmerkung MedGas']));
+        
+        if (strlen($outstr) > 0 && is_not_no_comment($outstr)) {
+            $pdf->Ln($ln_spacer2);
             $rowHeightComment = $pdf->getStringHeight($Sb -$einzug_anm, $outstr, false, true, '', 1);
-            // Wenn Seitenende? Überprüfen und neue Seite anfangen
             check_4_new_page($pdf, $rowHeightComment);
             $pdf->MultiCell($einzug_anm, $rowHeightComment, "Anmerkung:", 0, 'R', 0, 0);
             $pdf->MultiCell($Sb -$einzug_anm, $rowHeightComment,$outstr, 0, 'L', 0, 1);

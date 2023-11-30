@@ -10,6 +10,18 @@ $einzugC2 = 60 - $einzugC1;
 $einzugE = 30;
 $ln_spacer1 = 5;
 
+function is_not_no_comment($str) {
+  if ($str == "keine Anmerkung") {
+    return false;
+  }
+  elseif( $str == "keine Angaben"){
+    return false; 
+  }
+  else {
+    return true;
+  }
+}
+
 
 function br2nl($string){
     $return= str_replace(array("<br/>"), "\n", $string);
@@ -33,7 +45,7 @@ function newpage_or_spacer($pdf, $next_block_size){
     if (($y +$next_block_size) >= 270) {
         $pdf->AddPage();
     } else {        
-        if($y< 20){} // header size
+        if($y < 20){} // header size
         else{
             block_spacer($pdf);          
         }
@@ -41,8 +53,7 @@ function newpage_or_spacer($pdf, $next_block_size){
 }
 
 function block_spacer($pdf) {
-        //$pdf->Ln(4); 
-        //$pdf->MultiCell(180, 6, " ",'B', 'L', 0, 0);
+ 
         $pdf->Ln(8); 
 }
 
@@ -164,7 +175,7 @@ function strahlenanw($pdf, $param, $cellsize, $gr){
     
 }
 
-function hackerl($pdf, $hackerl_schriftgr,$zellgr, $param, $comp_true){
+function hackerl($pdf, $hackerl_schriftgr, $zellgr, $param, $comp_true){
     $originalFontSize = $pdf->getFontSizePt();
     $hackerlcellgröße= $zellgr; //same as global var
     $pdf->SetFont('zapfdingbats', '', $hackerl_schriftgr);
