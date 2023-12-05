@@ -508,7 +508,7 @@ if(!isset($_SESSION["username"]))
                                         alert("Kein Raum ausgewählt!");
                                     }
                                     else{                
-                                       window.open('/pdf_createBauangabenLabEinrPDF.php?roomID='+roomIDs);//there are many ways to do this
+                                       window.open('/pdf_createBauangabenLabEinrPDF_1.php?roomID='+roomIDs);//there are many ways to do this
                                     }
                                 }
                             }
