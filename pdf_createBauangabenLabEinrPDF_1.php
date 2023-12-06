@@ -32,9 +32,9 @@ class MYPDF extends TCPDF {
     public function Header() {
         //Abfrage ob Titelblatt
         if ($this->numpages > 1){ 
-            // Logo
             $this->Ln();
-            $this->Cell(0, 0, 'GENERALPLANER fasch&fuchs.architekten          LABORPLANUNG LIMET MADER', 0, false, 'L', 0, '', 0, false, 'B', 'B');
+            $this->Cell(0, 0, '', 0, false, 'L', 0, '', 0, false, 'B', 'B');
+            
             if($_SESSION["projectAusfuehrung"]==="MADER"){                                
                 $image_file = 'MADER_Logo.png';
                 $this->SetFont('helvetica', '', 8);                
@@ -46,16 +46,18 @@ class MYPDF extends TCPDF {
                     $this->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
                 }
                 else{
+                    $image_file = 'logo_ffa.png';
+                    $this->Image($image_file, 15, 5, 50, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
                     $image_file = 'LIMET_web.png';
                     $this->Image($image_file, 158, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
                     $image_file = 'MADER_Logo.png';
                     $this->Image($image_file, 180, 5, 13, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
                 }
             }
+            $this->Ln();
             // Set font
             $this->SetFont('helvetica', '', 8);
             // Title
-            $this->Ln();
             $this->cell(0,0,'','B',0,'L');
         }
         // Titelblatt        
