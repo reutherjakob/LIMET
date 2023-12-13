@@ -317,15 +317,17 @@ if(!isset($_SESSION["username"]))
                                                 . "</td>";
                                         if($row["SOLLDATE"] == "0000-00-00"){
                                             echo "<td><form class='form-inline'>"
-                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm' id='SOLLDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."'/>-"
+                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm' id='SOLLDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."'/>-"                                            
                                             . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE,".$row["idtabelle_Lose_Extern"].",".$row["tabelle_wofklowteil_idtabelle_wofklowteil"].",".$row["tabelle_workflow_idtabelle_workflow"]."' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
-                                            . "</form></td>";
+                                            . "</form>"
+                                            . "</td>";
                                         }
                                         else{
                                             echo "<td><form class='form-inline'>"
                                             . "<input type='text' name='input_solldate' class='form-control form-control-sm' id='SOLLDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."' value='".$row["SOLLDATE"]."'/>"
                                             . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE,".$row["idtabelle_Lose_Extern"].",".$row["tabelle_wofklowteil_idtabelle_wofklowteil"].",".$row["tabelle_workflow_idtabelle_workflow"]."' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
-                                            . "</form></td>";
+                                            . "</form>"
+                                            . "<span style='display:none'>".$row["SOLLDATE"]."</span></td>";
                                         }
                                         if($row["ISTDATE"] == "0000-00-00"){
                                             //echo "<td>-</td>";
@@ -338,7 +340,8 @@ if(!isset($_SESSION["username"]))
                                             echo "<td><form class='form-inline'>"
                                             . "<input type='text' name='input_istdate' class='form-control form-control-sm' id='ISTDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."' value='".$row["ISTDATE"]."'/>"
                                             . "<button type='button' name='save_istdate' id='SAVE-ISTDATE,".$row["idtabelle_Lose_Extern"].",".$row["tabelle_wofklowteil_idtabelle_wofklowteil"].",".$row["tabelle_workflow_idtabelle_workflow"]."' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
-                                            . "</form></td>";
+                                            . "</form>"
+                                            . "<span style='display:none'>".$row["ISTDATE"]."</span></td>";
 
                                             //echo "<td>".$row["ISTDATE"]."</td>";
                                         } 	                                    
@@ -361,7 +364,8 @@ if(!isset($_SESSION["username"]))
                                             echo "<td><form class='form-inline'>"
                                             . "<input type='text' name='input_solldate' class='form-control form-control-sm' id='SOLLDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."' value='".$row["SOLLDATE"]."'/>"
                                             . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE,".$row["idtabelle_Lose_Extern"].",".$row["tabelle_wofklowteil_idtabelle_wofklowteil"].",".$row["tabelle_workflow_idtabelle_workflow"]."' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
-                                            . "</form></td>";
+                                            . "</form>"
+                                            . "<span style='display:none'>".$row["SOLLDATE"]."</span></td>";
                                         }
                                         if($row["ISTDATE"] == "0000-00-00"){
                                             echo "<td><form class='form-inline'>"
@@ -373,7 +377,8 @@ if(!isset($_SESSION["username"]))
                                             echo "<td><form class='form-inline'>"
                                             . "<input type='text' name='input_istdate' class='form-control form-control-sm' id='ISTDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."' value='".$row["ISTDATE"]."'/>"
                                             . "<button type='button' name='save_istdate' id='SAVE-ISTDATE,".$row["idtabelle_Lose_Extern"].",".$row["tabelle_wofklowteil_idtabelle_wofklowteil"].",".$row["tabelle_workflow_idtabelle_workflow"]."' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
-                                            . "</form></td>";
+                                            . "</form>"
+                                            . "<span style='display:none'>".$row["ISTDATE"]."</span></td>";
                                         }  
                                     }
                                     $idLot = $row["idtabelle_Lose_Extern"];
@@ -428,7 +433,7 @@ if(!isset($_SESSION["username"]))
         });
         
         $('table.table').DataTable( {
-            "select": false,
+            "select": true,
             "searching": true,
             "paging": false,
             "lengthChange": false,
@@ -465,8 +470,8 @@ if(!isset($_SESSION["username"]))
         var table = $('table.table').DataTable();
         $('table.table tbody').on( 'click', 'tr', function () {
             if ( $(this).hasClass('info') ) {
-            }
-            else {                   
+            }	            
+            else {   
                 lotId = table.row( $(this) ).data()[0];
                 $.ajax({
                     url : "getBauphasenToLot.php",
