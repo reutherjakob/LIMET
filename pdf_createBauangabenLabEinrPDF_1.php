@@ -1,22 +1,4 @@
 <?php
-//============================================================+
-// 
-// Begin       : 2008-03-04
-// Last Update : 2018-09-03
-//
-// Description : Erstellt den Bauangaben Bericht
-//               
-//
-//============================================================+
-
-/**
- * Creates an example PDF TEST document using TCPDF
- * @package com.tecnick.tcpdf
- * @abstract TCPDF - Example: Colored Table
- * @author Nicola Asuni
- * @since 2008-03-04
- */
-
 // Include the main TCPDF library (search for installation path).
 require_once('TCPDF-master/TCPDF-master/tcpdf.php');
 
@@ -107,6 +89,7 @@ class MYPDF extends TCPDF {
             $this->Ln();
             $this->SetFont('helvetica', '', 12);
             $this->Cell(0, 0, "Stand: ".date('Y-m-d'), 0, false, 'L', 0, '', 0, false, 'T', 'M');
+            
             
             $this->SetFont('helvetica', '', 6);
             //LOGOS einfügen
@@ -298,12 +281,12 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetFont('helvetica', '', 9);
         $pdf->Ln();        
         $pdf->MultiCell(40, 5, "Raumfläche: ",0, 'R', 0, 0);
-        $pdf->MultiCell(40, 5, $row['Nutzfläche']." m2",0, 'L', 0, 0);
+        $pdf->MultiCell(40, 5, number_format((float)$row['Nutzfläche'], 2, ',', '') ." m2",0, 'L', 0, 0);
         $pdf->MultiCell(40, 5, "Raumhöhe: ",0, 'R', 0, 0);
         $pdf->MultiCell(80, 5, $row['Raumhoehe']." m",0, 'L', 0, 0);
         $pdf->Ln();
         $pdf->MultiCell(40, 5, "Volumen: ",0, 'R', 0, 0);   
-        $pdf->MultiCell(40, 5, $row['Volumen']."m3",0, 'L', 0, 0); 
+        $pdf->MultiCell(40, 5, number_format((float)$row['Volumen'], 2, ',', '') ." m3",0, 'L', 0, 0); 
         $pdf->Ln();   
         $pdf->MultiCell(40, 5, "Bodenbelag: ",0, 'R', 0, 0); 
         $pdf->MultiCell(50, 5, $row['Fussboden'],0, 'L', 0, 0); 
@@ -418,7 +401,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->Ln();
         $pdf->MultiCell(40, 5, "Belichtungsfläche: ",0, 'R', 0, 0);
-        $pdf->MultiCell(40, 5, number_format((float)$row['Belichtungsfläche'], 2, '.', '')."%",0, 'L', 0, 0);
+        $pdf->MultiCell(40, 5, number_format((float)$row['Belichtungsfläche'], 2, ',', '')."%",0, 'L', 0, 0);
         $pdf->MultiCell(80, 5, "Raum für uberwiegend geistige Tätigkeiten: ",0, 'R', 0, 0);  
         $pdf->SetFont(zapfdingbats, '', 9);
         if($row['AP_Geistige']==='0'){            
@@ -538,7 +521,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell(40, 5, $row['HT_Entlueftung'],0, 'L', 0, 0);                               
         $pdf->Ln();
         $pdf->MultiCell(40,8, "Luftmenge: ",0, 'R', 0, 0);
-        $pdf->MultiCell(40, 5, $row['HT_Luftmenge m3/h']."m3/h",0, 'L', 0, 0);                 
+        $pdf->MultiCell(40, 5, $row['HT_Luftmenge m3/h']." m3/h",0, 'L', 0, 0);                 
         $pdf->MultiCell(40,8, "Luftwechsel auf 3m: ",0, 'R', 0, 0);
         $pdf->MultiCell(80, 5, $row['HT_Luftwechsel 1/h']."/h",0, 'L', 0, 0); 
         $pdf->Ln();
@@ -555,10 +538,10 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 9);
         $pdf->MultiCell(30,8, "Kälteabgabe: ",0, 'R', 0, 0);
-        $pdf->MultiCell(50, 5, $row['HT_Kaelteabgabe_Typ'],0, 'L', 0, 0); 
-        $pdf->MultiCell(40,8, "Raumtemp Kühlung: ",0, 'R', 0, 0);
-        $pdf->MultiCell(40, 5, $row['HT_Raumtemp Sommer °C'],0, 'L', 0, 0); 
-        $pdf->Ln();
+        $pdf->MultiCell(60, 5, $row['HT_Kaelteabgabe_Typ'],0, 'L', 0, 0); 
+        $pdf->MultiCell(32, 8, "Raumtemp Kühlung: ",0, 'R', 0, 0);
+        $pdf->MultiCell(10, 5, $row['HT_Raumtemp Sommer °C'],0, 'L', 0, 0); 
+        $pdf->Ln(); 
         $pdf->MultiCell(40, 5, "Heizung: ",0, 'R', 0, 0);        
         $pdf->SetFont(zapfdingbats, '', 9);
         if($row['HT_Heizung']==='0'){            
@@ -572,9 +555,9 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 9);
         $pdf->MultiCell(30,8, "Wärmeabgabe: ",0, 'R', 0, 0);
-        $pdf->MultiCell(50, 5, $row['HT_Waermeabgabe_Typ'],0, 'L', 0, 0); 
-        $pdf->MultiCell(40,8, "Raumtemp Heizen: ",0, 'R', 0, 0);
-        $pdf->MultiCell(40, 5, $row['HT_Raumtemp Winter °C'],0, 'L', 0, 0); 
+        $pdf->MultiCell(60, 5, $row['HT_Waermeabgabe_Typ'],0, 'L', 0, 0); 
+        $pdf->MultiCell(32,8, "Raumtemp Heizen: ",0, 'R', 0, 0);
+        $pdf->MultiCell(10, 5, $row['HT_Raumtemp Winter °C'],0, 'L', 0, 0); 
         $pdf->Ln();
         $pdf->MultiCell(40,8, "Notdusche: ",0, 'R', 0, 0);
         $pdf->MultiCell(20, 6, " ".$row['HT_Notdusche']." Stk",0, 'L', 0, 0);
