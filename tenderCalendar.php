@@ -454,6 +454,8 @@ if(!isset($_SESSION["username"]))
             ],
             dom: 'Bfrtip',
             "buttons": [
+                'excel'
+                /*
                 {extend:'excel',exportOptions: {format: {
                     body: function ( data, row, column, node ) {            
                         //check if type is input using jquery
@@ -463,6 +465,7 @@ if(!isset($_SESSION["username"]))
                     }
                 }
                 }}
+                */
             ],
             stateSave: true
         } );
