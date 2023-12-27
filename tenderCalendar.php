@@ -59,138 +59,7 @@ if(!isset($_SESSION["username"]))
 ?>
 
 <div class="container-fluid" >
-	<nav class="navbar navbar-expand-lg bg-light navbar-light">	
-      <a class="py-0 navbar-brand" href="#"><img src="LIMET_logo.png" alt="LIMETLOGO" height="40"/></a>
-          <ul class="navbar-nav">
-              <?php 
-              if($_SESSION["ext"]==0){
-                  echo "<ul class='navbar-nav'>
-                        <li class='nav-item'><a class='py-0 nav-link' href='dashboard.php'><i class='fa fa-tachometer-alt'></i> Dashboard</a></li>
-                      </ul>";
-              }
-            ?>
-            <li class="py-0 nav-item dropdown">
-              <a class="py-0 nav-link dropdown-toggle" data-toggle="dropdown" href="#"><i class='fa fa-list-alt'></i> Projekte</a>              
-              <ul class="dropdown-menu">
-                  <a class="dropdown-item" href="projects.php"><i class='fa fa-list-alt'></i> Projektauswahl</a> 
-                  <?php 
-                        if($_SESSION["ext"]==0){
-                            echo "<a class='dropdown-item' href='projectParticipants.php'><i class='fa fa-users'></i> Projektbeteiligte</a>
-                                  <a class='dropdown-item' href='documentationV2.php'><i class='fa fa-comments'></i> Dokumentation</a>";
-                        }
-                    ?>
-              </ul>
-            </li>
-              <?php 
-                    if($_SESSION["ext"]==0){
-                        echo "<li class='nav-item dropdown'>
-                                <a class=' py-0 nav-link dropdown-toggle' data-toggle='dropdown' href='#'><i class='fa fa-book'></i> Raumbuch</a>              
-                                <ul class='dropdown-menu'>
-                                    <a class='dropdown-item' href='roombookSpecifications.php'>Raumbuch - Bauangaben</a>
-                                    <a class='dropdown-item' href='roombookSpecificationsLab.php'>Raumbuch - Bauangaben Labor</a>
-                                    <a class='dropdown-item' href='roombookMeeting.php'>Raumbuch - Meeting</a>
-                                    <a class='dropdown-item' href='roombookDetailed.php'>Raumbuch - Detail</a>
-                                    <a class='dropdown-item' href='roombookElements.php'>Raumbuch - Räume mit Element</a>
-                                    <a class='dropdown-item' href='roombookBO.php'>Raumbuch - Betriebsorganisation</a>
-                                    <a class='dropdown-item' href='roombookReports.php'>Raumbuch - Berichte</a>
-                                    <a class='dropdown-item' href='elementsInProject.php'>Elemente im Projekt</a>
-                                    <a class='dropdown-item' href='roombookList.php'>Raumbuch - Liste</a>
-                                </ul>
-                              </li>
-                              <li class='nav-item dropdown'>
-                                <a class='py-0 nav-link dropdown-toggle' data-toggle='dropdown' href='#'><i class='fa fa-euro-sign'></i> Kosten</a>              
-                                <ul class='dropdown-menu'>
-                                    <a class='dropdown-item ' href='costsOverall.php'>Kosten - Berichte</a> 
-                                    <a class='dropdown-item' href='costsRoomArea.php'>Kosten - Raumbereich</a>
-                                    <a class='dropdown-item' href='costChanges.php'>Kosten - Änderungen</a>
-                                    <a class='dropdown-item' href='elementBudgets.php'>Kosten - Budgets</a>
-                                </ul>
-                              </li>";
-                    }
-                ?>            	                 
-            <li class="py-0 nav-item dropdown">
-              <a class="py-0 nav-link dropdown-toggle" data-toggle="dropdown" href="#"><i class='fa fa-recycle'></i> Bestand</a>             
-              <ul class="dropdown-menu">
-                  <a class="dropdown-item" href="roombookBestand.php">Bestand - Raumbereich</a>	
-                  <a class="dropdown-item" href="roombookBestandElements.php">Bestand - Gesamt</a>
-              </ul>
-            </li>
-            <li class="py-0 nav-item dropdown">
-              <a class="py-0 nav-link dropdown-toggle" data-toggle="dropdown" href="#"><i class='fa fa-tasks'></i> Ausschreibungen</a>
-              <ul class="dropdown-menu">
-                    <a class="dropdown-item" href="tenderLots.php">Los-Verwaltung</a>
-                    <a class="dropdown-item active" href="tenderCalendar.php">Vergabekalender</a>
-                    <?php 
-                        if($_SESSION["ext"]==0){
-                            echo "<a class='dropdown-item' href='tenderCharts.php'>Vergabe-Diagramme</a>";
-                        }
-                    ?>
-                    <a class="dropdown-item" href="elementLots.php">Element-Verwaltung</a>
-              </ul>
-            </li>
-              <li class="py-0 nav-item dropdown">
-              <a class="py-0 nav-link dropdown-toggle" data-toggle="dropdown" href="#"><i class='fas fa-wrench'></i> Ausführung-ÖBA</a>
-              <ul class="dropdown-menu">
-                  <a class="dropdown-item" href="dashboardAusfuehrung.php"><i class='fas fa-tachometer-alt'></i> Dashboard</a>
-                    <a class="dropdown-item" href="roombookAusfuehrung.php"><i class='fas fa-building'></i> Räume</a>
-                    <a class="dropdown-item" href="roombookAusfuehrungLiefertermine.php"><i class='far fa-calendar-alt'></i> Liefertermine</a>
-              </ul>
-            </li>
-          
-          <?php 
-                if($_SESSION["ext"]==0){
-                    echo "<li class='py-0 nav-item dropdown'>
-                                <a class='py-0 nav-link dropdown-toggle' data-toggle='dropdown' href='#'><i class='fa fa-buromobelexperte '></i> Datenbank-Verwaltung</a>              
-                                <ul class='dropdown-menu'>
-                                    <a class='dropdown-item' href='elementAdministration.php'>Elemente-Verwaltung</a>
-                                    <a class='dropdown-item' href='elementeCAD.php'>Elemente-CAD</a>
-                                </ul>
-                           </li>    
-                        <ul class='navbar-nav'>
-                          <li class='nav-item'><a class='py-0 nav-link' href='firmenkontakte.php'><i class='fa fa-address-card'></i> Firmenkontakte</a></li>
-                        </ul>";
-                }
-            ?>
-              </ul>
-          <ul class="navbar-nav ml-auto">
-              <li class="py-0 nav-item "><a class="py-0 nav-link text-success disabled" id="projectSelected">Aktuelles Projekt: <?php  if ($_SESSION["projectName"] != ""){echo $_SESSION["projectName"];}else{echo "Kein Projekt ausgewÃ¤hlt!";}?></a></li>
-              <li><a class="py-0 nav-link" href="logout.php"><i class="fa fa-sign-out-alt"></i>Logout</a></li>
-          </ul>              
-    </nav>
-        <!--
-        <div class='row'>
-            <div class='col-sm-12'>                  
-                <div class="mt-4 card">
-                    <div class="card-header">
-                        <form class='form-inline'>                                   
-                            <select class='form-control form-control-sm' id='workflowFilter'>
-                                <option value=0 selected>Workflow auswählen:</option>
-                                <?php
-                                        $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');	
-								
-                                        /* change character set to utf8 */
-                                        if (!$mysqli->set_charset("utf8")) {
-                                            printf("Error loading character set utf8: %s\n", $mysqli->error);
-                                            exit();
-                                        }
-                                        $sql = "SELECT tabelle_lot_workflow.tabelle_workflow_idtabelle_workflow, tabelle_workflow.Name
-                                                FROM tabelle_workflow INNER JOIN (tabelle_lose_extern INNER JOIN tabelle_lot_workflow ON tabelle_lose_extern.idtabelle_Lose_Extern = tabelle_lot_workflow.tabelle_lose_extern_idtabelle_Lose_Extern) ON tabelle_workflow.idtabelle_workflow = tabelle_lot_workflow.tabelle_workflow_idtabelle_workflow
-                                                WHERE (((tabelle_lose_extern.tabelle_projekte_idTABELLE_Projekte)=".$_SESSION["projectID"]."))
-                                                GROUP BY tabelle_lot_workflow.tabelle_workflow_idtabelle_workflow, tabelle_workflow.Name;";
-                                        $result = $mysqli->query($sql);
-                                        while($row = $result->fetch_assoc()) {
-                                            echo "<option value=".$row["tabelle_workflow_idtabelle_workflow"].">".$row["Name"]."</option>";
-                                        }
-                                ?>
-                            </select> 	
-                        </form>
-                    </div>
-                    <div class="card-body" id="lotWorkflowCalendar">                        
-                    </div>
-                </div> 
-            </div>            
-        </div>  
-        -->    
+    <div id="limet-navbar"></div> <!-- Container für Navbar Aufruf über onLoad -->		
     <div class='row'>
         <div class='col-sm-12'>
             <div class="mt-4 card">
@@ -259,6 +128,7 @@ if(!isset($_SESSION["username"]))
                                 <th rowspan='2'>lotID</th>
                                 <th rowspan='2'>Nummer</th>
                                 <th rowspan='2'>Bezeichnung</th>
+                                <th rowspan='2'>Verfahren</th>
                                 <th rowspan='2'>Status</th>
                                 <th rowspan='2'></th>";
 
@@ -278,7 +148,7 @@ if(!isset($_SESSION["username"]))
                                 }  
                                 echo  "</tr></thead><tbody>";                                                               
 
-                                $sql = "SELECT tabelle_lose_extern.idtabelle_Lose_Extern, tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern, tabelle_lose_extern.Vergabe_abgeschlossen, tabelle_lot_workflow.tabelle_wofklowteil_idtabelle_wofklowteil, DATE_FORMAT(DATE(tabelle_lot_workflow.Timestamp_Ist), '%Y-%m-%d') as ISTDATE, DATE_FORMAT(DATE(tabelle_lot_workflow.Timestamp_Soll), '%Y-%m-%d') as SOLLDATE, tabelle_lot_workflow.Abgeschlossen, tabelle_workflow_has_tabelle_wofklowteil.Reihenfolgennummer, tabelle_lot_workflow.tabelle_workflow_idtabelle_workflow
+                                $sql = "SELECT tabelle_lose_extern.idtabelle_Lose_Extern, tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern, tabelle_lose_extern.Vergabe_abgeschlossen, tabelle_lose_extern.Verfahren, tabelle_lot_workflow.tabelle_wofklowteil_idtabelle_wofklowteil, DATE_FORMAT(DATE(tabelle_lot_workflow.Timestamp_Ist), '%Y-%m-%d') as ISTDATE, DATE_FORMAT(DATE(tabelle_lot_workflow.Timestamp_Soll), '%Y-%m-%d') as SOLLDATE, tabelle_lot_workflow.Abgeschlossen, tabelle_workflow_has_tabelle_wofklowteil.Reihenfolgennummer, tabelle_lot_workflow.tabelle_workflow_idtabelle_workflow
                                                 FROM tabelle_workflow_has_tabelle_wofklowteil INNER JOIN (tabelle_lose_extern INNER JOIN tabelle_lot_workflow ON tabelle_lose_extern.idtabelle_Lose_Extern = tabelle_lot_workflow.tabelle_lose_extern_idtabelle_Lose_Extern) ON (tabelle_workflow_has_tabelle_wofklowteil.tabelle_workflow_idtabelle_workflow = tabelle_lot_workflow.tabelle_workflow_idtabelle_workflow) AND (tabelle_workflow_has_tabelle_wofklowteil.tabelle_wofklowteil_idtabelle_wofklowteil = tabelle_lot_workflow.tabelle_wofklowteil_idtabelle_wofklowteil)
                                                 WHERE (((tabelle_lose_extern.tabelle_projekte_idTABELLE_Projekte)=".$_SESSION["projectID"].") AND ((tabelle_lot_workflow.tabelle_workflow_idtabelle_workflow)=".$workFlow."))
                                         ORDER BY tabelle_lose_extern.idtabelle_Lose_Extern, tabelle_lose_extern.LosNr_Extern, tabelle_workflow_has_tabelle_wofklowteil.Reihenfolgennummer;";
@@ -297,6 +167,7 @@ if(!isset($_SESSION["username"]))
                                         echo "<td>".$row["idtabelle_Lose_Extern"]."</td>";                                               
                                         echo "<td>".$row["LosNr_Extern"]."</td>";
                                         echo "<td>".$row["LosBezeichnung_Extern"]."</td>";
+                                        echo "<td>".$row["Verfahren"]."</td>";
                                         echo "<td align='center'>";
                                             switch ($row["Vergabe_abgeschlossen"]) {
                                                 case 0:
@@ -312,38 +183,35 @@ if(!isset($_SESSION["username"]))
                                                     echo "<span class='badge badge-pill badge-primary'>Wartend</span>";
                                                     break;
                                             }									
-                                        echo "</td>"; 
+                                        echo "</td>";                                         
                                         echo "<td><button type='button' id='".$row["idtabelle_Lose_Extern"]."' class='btn btn-outline-dark btn-xs float-right' value='calculateDates' data-toggle='modal' data-target='#claculateDatesModal'>Berechnen <i class='far fa-calendar-check'></i></button>"
                                                 . "</td>";
                                         if($row["SOLLDATE"] == "0000-00-00"){
                                             echo "<td><form class='form-inline'>"
-                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm' id='SOLLDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."'/>-"                                            
+                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm' size='10' id='SOLLDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."'/>-"                                            
                                             . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE,".$row["idtabelle_Lose_Extern"].",".$row["tabelle_wofklowteil_idtabelle_wofklowteil"].",".$row["tabelle_workflow_idtabelle_workflow"]."' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
                                             . "</form>"
                                             . "</td>";
                                         }
                                         else{
                                             echo "<td><form class='form-inline'>"
-                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm' id='SOLLDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."' value='".$row["SOLLDATE"]."'/>"
+                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm' size='10' id='SOLLDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."' value='".$row["SOLLDATE"]."'/>"
                                             . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE,".$row["idtabelle_Lose_Extern"].",".$row["tabelle_wofklowteil_idtabelle_wofklowteil"].",".$row["tabelle_workflow_idtabelle_workflow"]."' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
                                             . "</form>"
                                             . "<span style='display:none'>".$row["SOLLDATE"]."</span></td>";
                                         }
                                         if($row["ISTDATE"] == "0000-00-00"){
-                                            //echo "<td>-</td>";
                                             echo "<td><form class='form-inline'>"
-                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm' id='ISTDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."'/>"
+                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm' size='10' id='ISTDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."'/>"
                                             . "<button type='button' name='save_istdate' id='SAVE-ISTDATE,".$row["idtabelle_Lose_Extern"].",".$row["tabelle_wofklowteil_idtabelle_wofklowteil"].",".$row["tabelle_workflow_idtabelle_workflow"]."' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
                                             . "</form></td>";
                                         }
                                         else{
                                             echo "<td><form class='form-inline'>"
-                                            . "<input type='text' name='input_istdate' class='form-control form-control-sm' id='ISTDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."' value='".$row["ISTDATE"]."'/>"
+                                            . "<input type='text' name='input_istdate' class='form-control form-control-sm' size='10' id='ISTDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."' value='".$row["ISTDATE"]."'/>"
                                             . "<button type='button' name='save_istdate' id='SAVE-ISTDATE,".$row["idtabelle_Lose_Extern"].",".$row["tabelle_wofklowteil_idtabelle_wofklowteil"].",".$row["tabelle_workflow_idtabelle_workflow"]."' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
                                             . "</form>"
                                             . "<span style='display:none'>".$row["ISTDATE"]."</span></td>";
-
-                                            //echo "<td>".$row["ISTDATE"]."</td>";
                                         } 	                                    
                                     }
                                     else{
@@ -356,26 +224,26 @@ if(!isset($_SESSION["username"]))
                                         }
                                         if($row["SOLLDATE"] == "0000-00-00"){
                                             echo "<td><form class='form-inline'>"
-                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm' id='SOLLDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."'/>"
+                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm' size='10' id='SOLLDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."'/>"
                                             . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE,".$row["idtabelle_Lose_Extern"].",".$row["tabelle_wofklowteil_idtabelle_wofklowteil"].",".$row["tabelle_workflow_idtabelle_workflow"]."' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
                                             . "</form></td>";
                                         }
                                         else{
                                             echo "<td><form class='form-inline'>"
-                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm' id='SOLLDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."' value='".$row["SOLLDATE"]."'/>"
+                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm' size='10' id='SOLLDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."' value='".$row["SOLLDATE"]."'/>"
                                             . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE,".$row["idtabelle_Lose_Extern"].",".$row["tabelle_wofklowteil_idtabelle_wofklowteil"].",".$row["tabelle_workflow_idtabelle_workflow"]."' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
                                             . "</form>"
                                             . "<span style='display:none'>".$row["SOLLDATE"]."</span></td>";
                                         }
                                         if($row["ISTDATE"] == "0000-00-00"){
                                             echo "<td><form class='form-inline'>"
-                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm' id='ISTDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."'/>"
+                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm' size='10' id='ISTDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."'/>"
                                             . "<button type='button' name='save_istdate' id='SAVE-ISTDATE,".$row["idtabelle_Lose_Extern"].",".$row["tabelle_wofklowteil_idtabelle_wofklowteil"].",".$row["tabelle_workflow_idtabelle_workflow"]."' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
                                             . "</form></td>";
                                         }
                                         else{
                                             echo "<td><form class='form-inline'>"
-                                            . "<input type='text' name='input_istdate' class='form-control form-control-sm' id='ISTDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."' value='".$row["ISTDATE"]."'/>"
+                                            . "<input type='text' name='input_istdate' class='form-control form-control-sm' size='10' id='ISTDATE-".$row["idtabelle_Lose_Extern"]."-".$row["tabelle_wofklowteil_idtabelle_wofklowteil"]."-".$row["tabelle_workflow_idtabelle_workflow"]."' value='".$row["ISTDATE"]."'/>"
                                             . "<button type='button' name='save_istdate' id='SAVE-ISTDATE,".$row["idtabelle_Lose_Extern"].",".$row["tabelle_wofklowteil_idtabelle_wofklowteil"].",".$row["tabelle_workflow_idtabelle_workflow"]."' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
                                             . "</form>"
                                             . "<span style='display:none'>".$row["ISTDATE"]."</span></td>";
@@ -427,6 +295,15 @@ if(!isset($_SESSION["username"]))
         </div>
     </div>
 <script>   
+    //Load Navbar onLoad
+    window.onload = function(){
+        $.get("navbar.html", function(data){
+            $("#limet-navbar").html(data);
+            $('.navbar-nav').find('li:nth-child(3)')
+              .addClass('active');
+        });
+    };
+    
     $(document).ready(function () {
         $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
             $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
@@ -447,7 +324,7 @@ if(!isset($_SESSION["username"]))
                     "searchable": false
                 },
                 {
-                    "targets": [ 4 ],
+                    "targets": [ 5 ],
                     "searchable": false,
                     "sortable": false
                 }
@@ -498,25 +375,7 @@ if(!isset($_SESSION["username"]))
         });
         
 
-    });
-    
-    /*
-     // Filter-Änderung
-    $('#workflowFilter').change(function(){
-        var filterValue = this.value;	
-        if(filterValue !== 0){
-            $.ajax({
-                url : "getLotCalendar.php",
-                data:{"filterValue":filterValue},
-                type: "GET",
-                success: function(data){
-                    $("#lotWorkflowCalendar").html(data);
-                }
-            }); 
-        }
-    });
-     * 
-     */
+    });    
     
     //Soll-Daten automatisiert updaten
     $("#updateTenderWorkflowDates").click(function(){
