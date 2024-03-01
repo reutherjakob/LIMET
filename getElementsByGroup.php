@@ -189,6 +189,7 @@ if(!isset($_SESSION["username"]))
                     } );
                 }
                 else{
+                    alert(dbAdmin);
                     $('#tableElementsInDB').DataTable( {
                         "paging": false,
                         "columnDefs": [
