@@ -523,23 +523,7 @@ if(!isset($_SESSION["username"]))
                         dom: 'Blfrtip',
                         "buttons": [
                             'excel'
-                        ]/*,
-                    "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                        if ( aData[17] === "0" )
-                        {
-                            $('td', nRow).css('background-color', 'LightCoral');
-                        }
-                        else
-                        {
-                            if ( aData[17] === "1" )
-                            {
-                                $('td', nRow).css('background-color', 'LightGreen');
-                            }
-                            else{
-                                $('td', nRow).css('background-color', 'Yellow');
-                            }
-                        }
-                    }*/
+                        ]
                } );
             }
             else{
@@ -558,30 +542,15 @@ if(!isset($_SESSION["username"]))
                         "pagingType": "simple",
                         "lengthChange": false,
                         "pageLength": 20, 
-                        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}/*,                        
-                        "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-                        if ( aData[15] === "0" )
-                        {
-                            $('td', nRow).css('background-color', 'LightCoral');
-                        }
-                        else
-                        {
-                            if ( aData[15] === "1" )
-                            {
-                                $('td', nRow).css('background-color', 'LightGreen');
-                            }
-                            else{
-                                $('td', nRow).css('background-color', 'Yellow');
-                            }
-                        }
-                    }*/
+                        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
                 } );
             }
             
             // CLICK TABELLE tenderLots
 	    var table1 = $('#tableTenderLots').DataTable();                                    
             
-	    $('#tableTenderLots tbody').on( 'click', 'tr', function () {			
+	    $('#tableTenderLots tbody').on( 'click', 'tr', function () {
+                alert(lotID);
 	        if ( $(this).hasClass('info') ) {
 	            //$(this).removeClass('info');                                        
 	        }
