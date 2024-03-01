@@ -188,8 +188,7 @@ if(!isset($_SESSION["username"]))
                         "scrollCollapse": true  
                     } );
                 }
-                else{
-                    alert(dbAdmin);
+                else{                    
                     $('#tableElementsInDB').DataTable( {
                         "paging": false,
                         "columnDefs": [
@@ -247,27 +246,44 @@ if(!isset($_SESSION["username"]))
 			        success: function(data){
 			            $("#elementParametersInDB").html(data);
 			            $.ajax({
-					        url : "getElementPricesInDifferentProjects.php",
-					        data:{"elementID":elementID},
-					        type: "GET",
-					        success: function(data){
-					            $("#elementPricesInOtherProjects").html(data);
-					            $.ajax({
-							        url : "getDevicesToElement.php",
-							        data:{"elementID":elementID},
-							        type: "GET",
-							        success: function(data){
-							            $("#devicesInDB").html(data);
-							        }
-							    });
+                                        url : "getElementPricesInDifferentProjects.php",
+                                        data:{"elementID":elementID},
+                                        type: "GET",
+                                        success: function(data){
+                                            $("#elementPricesInOtherProjects").html(data);
+                                            $.ajax({
+                                                url : "getDevicesToElement.php",
+                                                data:{"elementID":elementID},
+                                                type: "GET",
+                                                success: function(data){
+                                                    $("#devicesInDB").html(data);                                                    
+                                                }
+                                            });
 
-					        }
-					    });
-
+                                        }
+                                    });
 			        }
 			    });
                         }
-                    });    
+                    }); 
+                    if(dbAdmin === 2){ //wenn Aufruf mit dbAdmin ===2 -> nachschlagen der Elemente mit und ohne Raum
+                        $.ajax({
+                            url : "getRoomsWithElement.php",
+                            data:{"elementID":elementID},
+                            type: "GET",
+                            success: function(data){
+                                $("#roomsWithElement").html(data);
+                                $.ajax({
+                                    url : "getRoomsWithoutElement.php",
+                                    data:{"elementID":elementID},
+                                    type: "GET",
+                                    success: function(data){
+                                        $("#roomsWithoutElement").html(data);
+                                    }
+                                });
+                            }
+                        });
+                    }
 	        }
 	    } );	    
 	});
