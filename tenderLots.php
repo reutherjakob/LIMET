@@ -549,8 +549,7 @@ if(!isset($_SESSION["username"]))
             // CLICK TABELLE tenderLots
 	    var table1 = $('#tableTenderLots').DataTable();                                    
             
-	    $('#tableTenderLots tbody').on( 'click', 'tr', function () {
-                alert(lotID);
+	    $('#tableTenderLots tbody').on( 'click', 'tr', function () {                
 	        if ( $(this).hasClass('info') ) {
 	            //$(this).removeClass('info');                                        
 	        }
