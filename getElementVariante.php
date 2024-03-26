@@ -133,7 +133,10 @@ return $return;
                             <div class='row'>
                             <div class='col-md-6'>                            
                                 <div class='card'>
-                                    <div class='card-header'>Variantenparameter</div>
+                                    <div class='card-header'>
+                                        Variantenparameter                                        
+                                        <button type='button' id='addVariantenParameters' class='btn btn-outline-dark btn-sm m-1' value='addVariantenParameters' data-toggle='modal' data-target='#addVariantenParameterToElementModal'><i class='fas fa-upload'></i> Variantenparameter übernehmen</button>
+                                    </div>
                                     <div class='card-body' id='variantenParameter'>";
 
                                                     $sql = "SELECT tabelle_parameter.Bezeichnung, tabelle_projekt_elementparameter.Wert, tabelle_projekt_elementparameter.Einheit, tabelle_parameter_kategorie.Kategorie, tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter
@@ -450,6 +453,26 @@ return $return;
             </div>
           </div>
         </div>
+         <!-- Variantenparameter übernehmen Modal -->
+         <div class='modal fade' id='addVariantenParameterToElementModal' role='dialog'>
+	    <div class='modal-dialog modal-sm'>	    
+	      <!-- Modal content-->
+	      <div class='modal-content'>
+	        <div class='modal-header'>	          
+	          <h4 class='modal-title'>Elemtparameter übernehm</h4>
+                  <button type='button' class='close' data-dismiss='modal'>&times;</button>
+	        </div>
+	        <div class='modal-body' id='mbody'>Wollen Sie die zentralen Elementparameter überschreiben?</div>
+	        <div class='modal-footer'>
+                    <input type='button' id='addVariantenParameterToElement' class='btn btn-success btn-sm' value='Ja' data-dismiss='modal'></input>
+                    <button type='button' class='btn btn-danger btn-sm' data-dismiss='modal'>Nein</button>
+	        </div>
+	      </div>
+	      
+	    </div>
+	  </div>
+         
+         
 	  
 <?php
 	$mysqli ->close();
@@ -668,25 +691,48 @@ return $return;
 		
     });
 	
-	// Parameter ändern bzw speichern
-	$("button[value='saveParameter']").click(function(){
-	    var id=this.id; 
-	    var wert = $("#wert"+id).val();
-    	var einheit = $("#einheit"+id).val();
-		var variantenID = $('#variante').val();
-		
-	    if(id !== ""){
-	    	$.ajax({
-		        url : "updateParameter.php",
-		        data:{"parameterID":id,"wert":wert,"einheit":einheit,"variantenID":variantenID},
-		        type: "GET",
-		        success: function(data){
-		        	alert(data);
-		        }
-		    });		    
-	    }
-	    
-	});
+    // Parameter ändern bzw speichern
+    $("button[value='saveParameter']").click(function(){
+        var id=this.id; 
+        var wert = $("#wert"+id).val();
+        var einheit = $("#einheit"+id).val();
+        var variantenID = $('#variante').val();
+
+        if(id !== ""){
+            $.ajax({
+                    url : "updateParameter.php",
+                    data:{"parameterID":id,"wert":wert,"einheit":einheit,"variantenID":variantenID},
+                    type: "GET",
+                    success: function(data){
+                            alert(data);
+                    }
+                });		    
+        }
+
+    });
+    
+    // Variantenparameter übernehmen in zentrales Element   
+    $("#addVariantenParameterToElement").click(function(){
+	const elementID = <?php echo $_SESSION["elementID"]  ?>;
+        const variantenID = <?php echo $_SESSION["variantenID"]  ?>;
+          
+        $.ajax({
+            url : "addVariantenParameterToElement.php",
+            data:{"elementID":elementID,"variantenID":variantenID},
+	    type: "GET",
+	    success: function(data){
+                alert(data);
+                $.ajax({
+                    url : "getStandardElementParameters.php",
+                    data:{"elementID":elementID},
+                    type: "GET",
+                    success: function(data){
+                        $("#elementDBParameter").html(data);
+                    }
+                });
+            }
+        });                        
+    });
 
 
 
