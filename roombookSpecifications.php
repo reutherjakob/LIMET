@@ -39,7 +39,7 @@ session_start();
 </style>
  
 </head>
-
+  
 <body style="height:100%">
 <?php
 if(!isset($_SESSION["username"]))
@@ -78,6 +78,7 @@ if(!isset($_SESSION["username"]))
                                 <a class=' py-0 nav-link dropdown-toggle' data-toggle='dropdown' href='#'><i class='fa fa-book'></i> Raumbuch</a>              
                                 <ul class='dropdown-menu'>
                                     <a class='dropdown-item active' href='roombookSpecifications.php'>Raumbuch - Bauangaben</a>
+                                    <a class='dropdown-item' href='roombookSpecifications_New.php'>Raumbuch - Bauangaben NEU</a>
                                     <a class='dropdown-item' href='roombookSpecificationsLab.php'>Raumbuch - Bauangaben Labor</a>
                                     <a class='dropdown-item' href='roombookMeeting.php'>Raumbuch - Meeting</a>
                                     <a class='dropdown-item' href='roombookDetailed.php'>Raumbuch - Detail</a>

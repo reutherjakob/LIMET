@@ -14,6 +14,7 @@ session_start();
  
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+    
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
@@ -148,6 +149,10 @@ if(!isset($_SESSION["username"]))
               <li><a class="py-0 nav-link" href="logout.php"><i class="fa fa-sign-out-alt"></i>Logout</a></li>
           </ul>              
     </nav>	
+    
+    
+    
+    
     <div class="mt-4 card">
         <div class="card-header">
             <b>Ein-/Ausblenden: </b>  
@@ -324,6 +329,8 @@ if(!isset($_SESSION["username"]))
             </div>
     </div>           
 </div>    
+    
+    
 <script>
     var table;
     var column_clicked;
