@@ -8,12 +8,11 @@ function get_roombook_specs_results(){
     return $result;
 }
 
-function check_login(){
-   if(!isset($_SESSION))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
+function check_login(){ 
+    if(!isset($_SESSION["username"])){
+        echo "Bitte erst <a href=\"index.php\">einloggen</a>";
+        exit;
+    }
 }
 
 function connect_sql(){
@@ -150,4 +149,6 @@ function print_whole_sql($result){
             }
             }
 }
- 
+
+
+?>

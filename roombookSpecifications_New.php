@@ -1,17 +1,7 @@
 <?php
 session_start();
-
-if(!isset($_SESSION))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   
-   exit;
-   }
- 
 include 'data_utils.php';
-//check_login();
-//$xxx = get_roombook_specs_results();
-//print_whole_sql($xxx);
+check_login();
 ?> 
 
 <!DOCTYPE html>
@@ -40,24 +30,78 @@ include 'data_utils.php';
           padding: 2px 5px;
           font-size: 12px;
           line-height: 1.5;
-          border-radius: 3px;text/css
+          border-radius: 3px; text/css;
         }
+        
+        .table>thead>tr>th {
+            background-color: rgba(100, 140, 25, 0.6);
+            // transform: rotate(-90deg);  https://css-tricks.com/rotated-table-column-headers/
+            // transform-origin: top left;
+          }
+
+         
     </style>
 </head>
-        
+    
+    
+
 
     
 <body style="height:100%">
-<div class="container-fluid" >
-    <div id="limet-navbar"></div> <!-- Container für Navbar -->		
+<div class="container-fluid">
+    
+    <div id="limet-navbar"></div> <!-- Container für Navbar -->	
+    <script>   
+        window.onload = function(){
+            $.get("navbar.html", function(data){
+                $("#limet-navbar").html(data);
+                $('.navbar-nav').find('li:nth-child(3)')
+                  .addClass('active');
+            });
+        };    
+    </script>   
+    
+    <div class="mt-4 card">
+        <div class="card-header">
+            <button id= "vis_btn"> "Ein-/Ausblenden" </button>  
+            <!---
+            <input type="checkbox" id="LAB_vis" name="visibility" value="LAB-yes"> 
+            <label for="LAB_vis"> <b>LAB</b> </label>    
+                 
+            <input type="checkbox" id="HKLS_vis" name="visibility" value="HKLS-yes"> 
+            <label for="HKLS_vis"> <b>HKLS</b> </label>        
+            
+            <input type="checkbox" id="ELEK_vis" name="visibility" value="ELEK-yes"> 
+            <label for="ELEK_vis"> <b>ELEKTRO</b> </label>    
+            
+            <script> 
+                const btn= document.querySelector("#vis_btn");
+                btn.addEventListener('click', (event) => {
+                   
+                    let checkboxes = document.querySelectorAll('input[name="visibility"]:checked');
+                    let values = [];
+                    checkboxes.forEach((checkbox) => {
+                        values.push(checkbox.value);
+                    });
+                   
+                    alert(values);
+                    
+                    }
+                        );    
+            </script> 
+            <button id= "vis_btn_empty_clms" onclick="checkAndToggleColumnsVisibility()"> "Leere Spalten Ein-/Ausblenden" </button>  
+             ---->
+    </div>
+    
+        
     <div class="mt-4 card">
         <div class="card-header">Räume im Projekt</div>
         <div class="card-body">
             <!--- <button onclick="fetchDataFromServer()">Klick mich!</button> --->
-            <table id="tableDataDiv" class="display" > 
+            <table class="table table-striped table-bordered" id="tableDataDiv" > 
                 <thead>
                     <tr>
-                        
+                        <!--- <th class="rotated-text"> Vertikale Überschrift </th> --->
                     </tr>
                 </thead>
             </table> 
@@ -67,19 +111,29 @@ include 'data_utils.php';
     
     
     
-<script> 
-    
-    window.onload = function(){
-        $.get("navbar.html", function(data){
-            $("#limet-navbar").html(data);
-            $('.navbar-nav').find('li:nth-child(3)')
-              .addClass('active');
-        });
-    };    
- </script>   
+
       
 <script> 
-     function updataTable(newData){
+    
+    var column_clicked;
+    var row_clicked;
+   
+    
+    function checkAndToggleColumnsVisibility() {
+        var table = $('#tableDataDiv').DataTable();
+        table.columns().every(function () {
+            var column = this;
+            var columnIndex = column.index();
+            var columnName = column.header().textContent.trim();
+            var hasNonEmptyCell = column.data().toArray().some(function (cellData) {
+                return cellData !== null && cellData !== undefined && cellData !== '' && cellData !== '-';
+            });
+            column.visible(hasNonEmptyCell);
+        });
+        table.draw();
+    }
+    
+    function updataTable_newData(newData){
         var table =  $('#tableDataDiv').DataTable(); 
         table.clear();
         table.rows.add(newData); 
@@ -95,7 +149,7 @@ include 'data_utils.php';
             success: function (response) {
                 //jsonData = response; 
                 //console.log(response);     
-                updataTable(response);
+                updataTable_newData(response);
             },
             error: function (xhr, status, error) {
                 console.error('Error fetching data:', error);
@@ -108,16 +162,18 @@ include 'data_utils.php';
         fetchDataFromServer();
         
         $('#tableDataDiv').DataTable({
-            language: {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},                                          
+           // language: {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},                                          
             columns: [
                 {title: 'Projek ID', data: 'tabelle_projekte_idTABELLE_Projekte',"visible": false,"searchable": false},
                 {title: 'Raum ID', data: 'idTABELLE_Räume',"visible": false,"searchable": false},
                 {title: 'Funktionsstellen ID', data: 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen',"visible": false,"searchable": false},
                 {title: 'Raumnr', data: 'Raumnr'},
-                {title: 'Raumbezeichnung', data: 'Raumbezeichnung'},
+                {title: 'Raumbezeichnung', data: 'Raumbezeichnung', class: 'editable-text'},
                 {title: 'Funktionelle Raum Nr', data: 'Funktionelle Raum Nr'},
                 {title: 'Raumnummer_Nutzer', data: 'Raumnummer_Nutzer'},
                 {title: 'Raumbereich Nutzer', data: 'Raumbereich Nutzer'},
+                {title: 'MT-relevant', data: 'MT-relevant'},
+                
                 {title: 'Geschoss', data: 'Geschoss'},
                 {title: 'Bauetappe', data: 'Bauetappe'},
                 {title: 'Bauabschnitt', data: 'Bauabschnitt'},
@@ -155,7 +211,7 @@ include 'data_utils.php';
                 {title: 'Anwendungsgruppe', data: 'Anwendungsgruppe'},
                 {title: 'Allgemeine Hygieneklasse', data: 'Allgemeine Hygieneklasse'},
                 {title: 'Raumhoehe', data: 'Raumhoehe'},
-                {title: 'MT-relevant', data: 'MT-relevant'},
+                
                 {title: 'Raumhoehe 2', data: 'Raumhoehe 2'},
                 {title: 'Belichtungsfläche', data: 'Belichtungsfläche'},
                 {title: 'Umfang', data: 'Umfang'},
@@ -210,13 +266,31 @@ include 'data_utils.php';
                 {title: 'O2 l/min', data: 'O2 l/min'},
                 {title: 'O2 Reinheit', data: 'O2 Reinheit'},
                 {title: 'Laserklasse', data: 'Laserklasse'}
-            ]
+            ],
+            "paging": true,
+            "pagingType": "simple",
+            "pageLength": 50,
+            
+            //"responsive"= true, 
+            
+            "order": [[ 3, "asc" ]],
+            "orderCellsTop": true,
+            "select": true,
+            
+            "lengthChange": true,
+            
+            "info": true,
+            "mark":true,
+            "stateSave": true
+            
+            //"dom": 'Bfrtip',
+            //"buttons": ['excel', 'copy', 'csv']
         }); 
-         
+        // checkAndToggleColumnsVisibility();
     });
     
 </script>
-    
+     
     
 </body>
 </html>
