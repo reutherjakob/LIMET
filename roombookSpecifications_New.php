@@ -32,14 +32,13 @@ check_login();
           line-height: 1.5;
           border-radius: 3px; text/css;
         }
-        
+        .btn-sm {
+          background-color: rgba(100, 140, 25, 0.3); 
+          color: black; 
+        }
         .table>thead>tr>th {
-            background-color: rgba(100, 140, 25, 0.6);
-            // transform: rotate(-90deg);  https://css-tricks.com/rotated-table-column-headers/
-            // transform-origin: top left;
+            background-color: rgba(100, 140, 25, 0.3);
           }
-
-         
     </style>
 </head>
     
@@ -63,34 +62,22 @@ check_login();
     
     <div class="mt-4 card">
         <div class="card-header">
-            <button id= "vis_btn"> "Ein-/Ausblenden" </button>  
-            <!---
-            <input type="checkbox" id="LAB_vis" name="visibility" value="LAB-yes"> 
+            
+            
+            <input type="checkbox" class="toggle-columns-checkbox" name="toggleColumnsCheckbox" id="Raumdetails_checkbox" data-columns="6-21" checked > 
+            <label for="Raumdetails"> <b>R DETAIL</b> </label>    
+            
+            <input type="checkbox" class="toggle-columns-checkbox" name="toggleColumnsCheckbox" id="HKLS_checkbox"  data-columns="22-27" checked > 
+            <label for="HKLS_vis"> <b>HKLS</b> </label>  
+            <input type="checkbox"  class="toggle-columns-checkbox" name="toggleColumnsCheckbox" id="ELEK_checkbox"  data-columns="28-35" checked > 
+            <label for="ELEK_vis"> <b>ELEKTRO </b> </label>    
+            <input type="checkbox" class="toggle-columns-checkbox" name="toggleColumnsCheckbox" id="MEDGAS_checkbox"  data-columns="35-49" checked > 
+            <label for="MEDGAS"> <b>MEDGAS </b> </label>    
+            <input type="checkbox" class="toggle-columns-checkbox"  name="toggleColumnsCheckbox" id="LAB_checkbox"  data-columns="50-99" checked > 
             <label for="LAB_vis"> <b>LAB</b> </label>    
                  
-            <input type="checkbox" id="HKLS_vis" name="visibility" value="HKLS-yes"> 
-            <label for="HKLS_vis"> <b>HKLS</b> </label>        
-            
-            <input type="checkbox" id="ELEK_vis" name="visibility" value="ELEK-yes"> 
-            <label for="ELEK_vis"> <b>ELEKTRO</b> </label>    
-            
-            <script> 
-                const btn= document.querySelector("#vis_btn");
-                btn.addEventListener('click', (event) => {
-                   
-                    let checkboxes = document.querySelectorAll('input[name="visibility"]:checked');
-                    let values = [];
-                    checkboxes.forEach((checkbox) => {
-                        values.push(checkbox.value);
-                    });
-                   
-                    alert(values);
-                    
-                    }
-                        );    
-            </script> 
-            <button id= "vis_btn_empty_clms" onclick="checkAndToggleColumnsVisibility()"> "Leere Spalten Ein-/Ausblenden" </button>  
-             ---->
+            <button type='button' id='addRoomButton' class='btn btn-success btn-sm mb-2' value='addRoom' data-toggle='modal' data-target='#changeRoomModal'>Raum hinzufügen <i class='far fa-plus-square'></i></button>
+            <button id= "vis_btn" class='btn btn-success btn-sm mb-2' onclick="checkAndToggleColumnsVisibility()"> Datenlose Ausblenden </button>  
     </div>
     
         
@@ -98,7 +85,7 @@ check_login();
         <div class="card-header">Räume im Projekt</div>
         <div class="card-body">
             <!--- <button onclick="fetchDataFromServer()">Klick mich!</button> --->
-            <table class="table table-striped table-bordered" id="tableDataDiv" > 
+            <table class="table table-responsive table-striped table-bordered" width ="100%" id="tableDataDiv" > 
                 <thead>
                     <tr>
                         <!--- <th class="rotated-text"> Vertikale Überschrift </th> --->
@@ -118,7 +105,20 @@ check_login();
     var column_clicked;
     var row_clicked;
    
-    
+   
+    $('.toggle-columns-checkbox').on('change', function() {
+        
+        const isVisible = $(this).prop('checked');
+
+        const range = $(this).data('columns').split('-');
+        const startColumn = parseInt(range[0]);
+        const endColumn = parseInt(range[1]);
+
+        for (let columnIndex = startColumn; columnIndex <= endColumn; columnIndex++) {
+            $('#tableDataDiv').DataTable().column(columnIndex).visible(isVisible);
+        }
+    }); 
+
     function checkAndToggleColumnsVisibility() {
         var table = $('#tableDataDiv').DataTable();
         table.columns().every(function () {
@@ -126,54 +126,47 @@ check_login();
             var columnIndex = column.index();
             var columnName = column.header().textContent.trim();
             var hasNonEmptyCell = column.data().toArray().some(function (cellData) {
-                return cellData !== null && cellData !== undefined && cellData !== '' && cellData !== '-';
+                return cellData !== null && cellData !== undefined && cellData !== '' && cellData !== '-' && cellData !== '.';
             });
-            column.visible(hasNonEmptyCell);
-        });
-        table.draw();
-    }
-    
-    function updataTable_newData(newData){
-        var table =  $('#tableDataDiv').DataTable(); 
-        table.clear();
-        table.rows.add(newData); 
-        table.draw(); 
-    }
-    
-    function fetchDataFromServer() {
-        $.ajax({
-            type: 'GET',
-            url: 'get_rb_specs_data.php',
-            //data: { get_param: 'value' }, // Optional parameters to send to the server
-            dataType: 'json', 
-            success: function (response) {
-                //jsonData = response; 
-                //console.log(response);     
-                updataTable_newData(response);
-            },
-            error: function (xhr, status, error) {
-                console.error('Error fetching data:', error);
+            
+            if(!hasNonEmptyCell){
+                console.log(columnName, " ...ausgeblendet");
+                column.visible(!column.visible);
             }
-        });
+        }); 
     }
     
+
     $(document).ready(function(){
-        
         fetchDataFromServer();
+        init_DataTable();
         
+    }); 
+    
+    function init_DataTable() {
         $('#tableDataDiv').DataTable({
-           // language: {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},                                          
+            language: {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},                                          
             columns: [
-                {title: 'Projek ID', data: 'tabelle_projekte_idTABELLE_Projekte',"visible": false,"searchable": false},
-                {title: 'Raum ID', data: 'idTABELLE_Räume',"visible": false,"searchable": false},
-                {title: 'Funktionsstellen ID', data: 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen',"visible": false,"searchable": false},
+                {title: 'Projek ID', data: 'tabelle_projekte_idTABELLE_Projekte',visible: false,searchable: false},
+                {title: 'Raum ID', data: 'idTABELLE_Räume',visible: false,searchable: false},
+                {title: 'Funktionsstellen ID', data: 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen',visible: false,searchable: false}, 
+                {title: 'MT-relevant', data: 'MT-relevant',
+                    render: function (data) {
+                        if(typeof data !== 'string')
+                        {
+                            alert("Check Console");
+                            console.log("Datentyp MT-rel", typeof data);
+                        }
+                        return data === '1' ? 'Ja' : 'Nein';
+                    }
+                },
                 {title: 'Raumnr', data: 'Raumnr'},
                 {title: 'Raumbezeichnung', data: 'Raumbezeichnung', class: 'editable-text'},
+                
+                //RAUMDETAILS
                 {title: 'Funktionelle Raum Nr', data: 'Funktionelle Raum Nr'},
                 {title: 'Raumnummer_Nutzer', data: 'Raumnummer_Nutzer'},
-                {title: 'Raumbereich Nutzer', data: 'Raumbereich Nutzer'},
-                {title: 'MT-relevant', data: 'MT-relevant'},
-                
+                {title: 'Raumbereich Nutzer', data: 'Raumbereich Nutzer'},  
                 {title: 'Geschoss', data: 'Geschoss'},
                 {title: 'Bauetappe', data: 'Bauetappe'},
                 {title: 'Bauabschnitt', data: 'Bauabschnitt'},
@@ -181,9 +174,32 @@ check_login();
                 {title: 'Abdunkelbarkeit', data: 'Abdunkelbarkeit'},
                 {title: 'Strahlenanwendung', data: 'Strahlenanwendung'},
                 {title: 'Laseranwendung', data: 'Laseranwendung'},
+                {title: 'Allgemeine Hygieneklasse', data: 'Allgemeine Hygieneklasse'},
+                {title: 'Raumhoehe', data: 'Raumhoehe'},
+                {title: 'Raumhoehe 2', data: 'Raumhoehe 2'},
+                {title: 'Belichtungsfläche', data: 'Belichtungsfläche'},
+                {title: 'Umfang', data: 'Umfang'},
+                {title: 'Volumen', data: 'Volumen'},
+                
+                //HKLS
                 {title: 'H6020', data: 'H6020'},
                 {title: 'GMP', data: 'GMP'},
                 {title: 'ISO', data: 'ISO'},
+                {title: 'HT_Waermeabgabe_W', data: 'HT_Waermeabgabe_W'},
+                {title: 'HT_Spuele_Stk', data: 'HT_Spuele_Stk'},
+                {title: 'HT_Kühlwasser', data: 'HT_Kühlwasser'},
+                
+                //ELEKTRO
+                {title: 'AV', data: 'AV'},
+                {title: 'SV', data: 'SV'},
+                {title: 'ZSV', data: 'ZSV'},
+                {title: 'USV', data: 'USV'},
+                {title: 'IT Anbindung', data: 'IT Anbindung'},
+                {title: 'Anwendungsgruppe', data: 'Anwendungsgruppe'},
+                {title: 'ET_Anschlussleistung_W', data: 'ET_Anschlussleistung_W'},
+                {title: 'ET_RJ45-Ports', data: 'ET_RJ45-Ports'},
+                
+                //MEDGASE
                 {title: '1 Kreis O2', data: '1 Kreis O2'},
                 {title: '2 Kreis O2', data: '2 Kreis O2'},
                 {title: 'O2', data: 'O2'},
@@ -195,57 +211,21 @@ check_login();
                 {title: 'DL-5', data: 'DL-5'},
                 {title: 'DL-10', data: 'DL-10'},
                 {title: 'DL-tech', data: 'DL-tech'},
-                {title: 'CO2', data: 'CO2'},
+                {title: 'CO2', data: 'CO2'}, 
+                {title: 'NGA', data: 'NGA'},
+                {title: 'N2O', data: 'N2O'},
+              
+                
+                // LAB
+                {title: 'VEXAT_Zone', data: 'VEXAT_Zone'},
+                // LAB GASE
                 {title: 'H2', data: 'H2'},
                 {title: 'He', data: 'He'},
                 {title: 'He-RF', data: 'He-RF'},
                 {title: 'Ar', data: 'Ar'},
                 {title: 'N2', data: 'N2'},
-                {title: 'NGA', data: 'NGA'},
-                {title: 'N2O', data: 'N2O'},
-                {title: 'AV', data: 'AV'},
-                {title: 'SV', data: 'SV'},
-                {title: 'ZSV', data: 'ZSV'},
-                {title: 'USV', data: 'USV'},
-                {title: 'IT Anbindung', data: 'IT Anbindung'},
-                {title: 'Anwendungsgruppe', data: 'Anwendungsgruppe'},
-                {title: 'Allgemeine Hygieneklasse', data: 'Allgemeine Hygieneklasse'},
-                {title: 'Raumhoehe', data: 'Raumhoehe'},
-                
-                {title: 'Raumhoehe 2', data: 'Raumhoehe 2'},
-                {title: 'Belichtungsfläche', data: 'Belichtungsfläche'},
-                {title: 'Umfang', data: 'Umfang'},
-                {title: 'Volumen', data: 'Volumen'},
-                {title: 'ET_Anschlussleistung_W', data: 'ET_Anschlussleistung_W'},
-                {title: 'HT_Waermeabgabe_W', data: 'HT_Waermeabgabe_W'},
-                {title: 'VEXAT_Zone', data: 'VEXAT_Zone'},
-                {title: 'HT_Abluft_Vakuumpumpe', data: 'HT_Abluft_Vakuumpumpe'},
-                {title: 'HT_Abluft_Schweissabsaugung_Stk', data: 'HT_Abluft_Schweissabsaugung_Stk'},
-                {title: 'HT_Abluft_Esse_Stk', data: 'HT_Abluft_Esse_Stk'},
-                {title: 'HT_Abluft_Rauchgasabzug_Stk', data: 'HT_Abluft_Rauchgasabzug_Stk'},
-                {title: 'HT_Abluft_Digestorium_Stk', data: 'HT_Abluft_Digestorium_Stk'},
-                {title: 'HT_Punktabsaugung_Stk', data: 'HT_Punktabsaugung_Stk'},
-                {title: 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', data: 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk'},
-                {title: 'HT_Abluft_Sicherheitsschrank_Stk', data: 'HT_Abluft_Sicherheitsschrank_Stk'},
-                {title: 'HT_Spuele_Stk', data: 'HT_Spuele_Stk'},
-                {title: 'HT_Kühlwasser', data: 'HT_Kühlwasser'},
                 {title: 'O2_Mangel', data: 'O2_Mangel'},
                 {title: 'CO2_Melder', data: 'CO2_Melder'},
-                {title: 'ET_RJ45-Ports', data: 'ET_RJ45-Ports'},
-                {title: 'ET_64A_3Phasig_Einzelanschluss', data: 'ET_64A_3Phasig_Einzelanschluss'},
-                {title: 'ET_32A_3Phasig_Einzelanschluss', data: 'ET_32A_3Phasig_Einzelanschluss'},
-                {title: 'ET_16A_3Phasig_Einzelanschluss', data: 'ET_16A_3Phasig_Einzelanschluss'},
-                {title: 'ET_Digestorium_MSR_230V_SV_Stk', data: 'ET_Digestorium_MSR_230V_SV_Stk'},
-                {title: 'ET_5x10mm2_Digestorium_Stk', data: 'ET_5x10mm2_Digestorium_Stk'},
-                {title: 'ET_5x10mm2_USV_Stk', data: 'ET_5x10mm2_USV_Stk'},
-                {title: 'ET_5x10mm2_SV_Stk', data: 'ET_5x10mm2_SV_Stk'},
-                {title: 'ET_5x10mm2_AV_Stk', data: 'ET_5x10mm2_AV_Stk'},
-                {title: 'Wasser Qual 3 l/min', data: 'Wasser Qual 3 l/min'},
-                {title: 'Wasser Qual 2 l/Tag', data: 'Wasser Qual 2 l/Tag'},
-                {title: 'Wasser Qual 1 l/Tag', data: 'Wasser Qual 1 l/Tag'},
-                {title: 'Wasser Qual 3', data: 'Wasser Qual 3'},
-                {title: 'Wasser Qual 2', data: 'Wasser Qual 2'},
-                {title: 'Wasser Qual 1', data: 'Wasser Qual 1'},
                 {title: 'LHe', data: 'LHe'},
                 {title: 'LN l/Tag', data: 'LN l/Tag'},
                 {title: 'LN', data: 'LN'},
@@ -265,29 +245,93 @@ check_login();
                 {title: 'O2 l/min', data: 'O2 l/min'},
                 {title: 'O2 l/min', data: 'O2 l/min'},
                 {title: 'O2 Reinheit', data: 'O2 Reinheit'},
-                {title: 'Laserklasse', data: 'Laserklasse'}
+                // LAB ET
+                {title: 'ET_64A_3Phasig_Einzelanschluss', data: 'ET_64A_3Phasig_Einzelanschluss'},
+                {title: 'ET_32A_3Phasig_Einzelanschluss', data: 'ET_32A_3Phasig_Einzelanschluss'},
+                {title: 'ET_16A_3Phasig_Einzelanschluss', data: 'ET_16A_3Phasig_Einzelanschluss'},
+                {title: 'ET_Digestorium_MSR_230V_SV_Stk', data: 'ET_Digestorium_MSR_230V_SV_Stk'},
+                {title: 'ET_5x10mm2_Digestorium_Stk', data: 'ET_5x10mm2_Digestorium_Stk'},
+                {title: 'ET_5x10mm2_USV_Stk', data: 'ET_5x10mm2_USV_Stk'},
+                {title: 'ET_5x10mm2_SV_Stk', data: 'ET_5x10mm2_SV_Stk'},
+                {title: 'ET_5x10mm2_AV_Stk', data: 'ET_5x10mm2_AV_Stk'},
+                {title: 'Laserklasse', data: 'Laserklasse'},
+                
+                //LAB HT
+                {title: 'HT_Abluft_Vakuumpumpe', data: 'HT_Abluft_Vakuumpumpe'},
+                {title: 'HT_Abluft_Schweissabsaugung_Stk', data: 'HT_Abluft_Schweissabsaugung_Stk'},
+                {title: 'HT_Abluft_Esse_Stk', data: 'HT_Abluft_Esse_Stk'},
+                {title: 'HT_Abluft_Rauchgasabzug_Stk', data: 'HT_Abluft_Rauchgasabzug_Stk'},
+                {title: 'HT_Abluft_Digestorium_Stk', data: 'HT_Abluft_Digestorium_Stk'},
+                {title: 'HT_Punktabsaugung_Stk', data: 'HT_Punktabsaugung_Stk'},
+                {title: 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', data: 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk'},
+                {title: 'HT_Abluft_Sicherheitsschrank_Stk', data: 'HT_Abluft_Sicherheitsschrank_Stk'},
+                
+                {title: 'Wasser Qual 3 l/min', data: 'Wasser Qual 3 l/min'},
+                {title: 'Wasser Qual 2 l/Tag', data: 'Wasser Qual 2 l/Tag'},
+                {title: 'Wasser Qual 1 l/Tag', data: 'Wasser Qual 1 l/Tag'},
+                {title: 'Wasser Qual 3', data: 'Wasser Qual 3'},
+                {title: 'Wasser Qual 2', data: 'Wasser Qual 2'},
+                {title: 'Wasser Qual 1', data: 'Wasser Qual 1'}
+                
+                
             ],
-            "paging": true,
-            "pagingType": "simple",
-            "pageLength": 50,
+//            columnDefs: [
+//                {
+//                    
+//                    //targets: 3,  // table.columns().names().indexOf('MT-relevant'), //TODO
+//                    //render: function (data) {
+//                    //    return data === 1 ? 'Ja' : 'Nein';
+//                    //}
+//                }
+//            ],
+            //"stateSave": true,
+            paging: true,
+            pagingType: "simple_numbers",
+            pageLength: 50,                 
+            order: [[ 3, "asc" ]],
+            orderCellsTop: true,
+            select: {
+                style: 'multi'
+            },
+            //lengthChange: true,         
+            //info: true,
+            mark:true,          
+            responsive: true,
             
-            //"responsive"= true, 
+            autoWidth:true,
             
-            "order": [[ 3, "asc" ]],
-            "orderCellsTop": true,
-            "select": true,
-            
-            "lengthChange": true,
-            
-            "info": true,
-            "mark":true,
-            "stateSave": true
-            
-            //"dom": 'Bfrtip',
-            //"buttons": ['excel', 'copy', 'csv']
-        }); 
-        // checkAndToggleColumnsVisibility();
-    });
+            layout: {
+            topStart: {
+                dom: 'Bfrtip',
+                buttons: ['excel', 'copy', 'csv'],
+                //buttons: ['pageLength']
+        }}
+        });
+        
+    }
+    
+    function updataTable_newData(newData){
+        var table =  $('#tableDataDiv').DataTable(); 
+        table.clear();
+        table.rows.add(newData); 
+        table.draw(); 
+    }
+    
+    function fetchDataFromServer() {
+        $.ajax({
+            type: 'GET',
+            url: 'get_rb_specs_data.php',
+            dataType: 'json', 
+            success: function (response) {
+                //jsonData = response; 
+                //console.log(response);     
+                updataTable_newData(response);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching data:', error);
+            }
+        });
+    }
     
 </script>
      
