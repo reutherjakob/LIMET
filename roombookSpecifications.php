@@ -521,6 +521,7 @@ if(!isset($_SESSION["username"]))
 	            table.$('tr.info').removeClass('info');
 	            $(this).addClass('info');
 	            raumID = table.row( $(this) ).data()[0];
+                    console.log("RaumID", raumID);
                     document.getElementById("nummer").value = table.row( $(this) ).data()[2];
                     document.getElementById("name").value = table.row( $(this) ).data()[3];
                     document.getElementById("flaeche").value = table.row( $(this) ).data()[4];
@@ -585,29 +586,29 @@ if(!isset($_SESSION["username"]))
 	});
 	
 	
-	//Bauangaben einblenden/ausblenden
-	$("#showBauangaben").click(function() {
-	  if($("#bauangaben").is(':hidden')){
-	    $(this).html("<span class='glyphicon glyphicon-menu-down'></span>");
-	    $("#bauangaben").show();
-	  }
-	  else {
-	  	$(this).html("<span class='glyphicon glyphicon-menu-right'></span>");
-	    $("#bauangaben").hide();
-	  }
-	});
-	
-	// Notizen einblenden/ausblenden
-	$("#showNotices").click(function() {
-	  if($("#notices").is(':hidden')){
-	    $(this).html("<span class='glyphicon glyphicon-menu-down'></span>");
-	    $("#notices").show();
-	  }
-	  else {
-	  	$(this).html("<span class='glyphicon glyphicon-menu-right'></span>");
-	    $("#notices").hide();
-	  }
-	});
+//	//Bauangaben einblenden/ausblenden
+//	$("#showBauangaben").click(function() {
+//	  if($("#bauangaben").is(':hidden')){
+//	    $(this).html("<span class='glyphicon glyphicon-menu-down'></span>");
+//	    $("#bauangaben").show();
+//	  }
+//	  else {
+//	  	$(this).html("<span class='glyphicon glyphicon-menu-right'></span>");
+//	    $("#bauangaben").hide();
+//	  }
+//	});
+//	
+//	// Notizen einblenden/ausblenden
+//	$("#showNotices").click(function() {
+//	  if($("#notices").is(':hidden')){
+//	    $(this).html("<span class='glyphicon glyphicon-menu-down'></span>");
+//	    $("#notices").show();
+//	  }
+//	  else {
+//	  	$(this).html("<span class='glyphicon glyphicon-menu-right'></span>");
+//	    $("#notices").hide();
+//	  }
+//	});
         
         //Raum speichern
 	$("#saveRoom").click(function(){
