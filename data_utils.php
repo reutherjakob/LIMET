@@ -1,38 +1,45 @@
 <?php
 
+function br2nl($string) {
+    $return = str_replace(array("<br/>"), "\n", $string);
+  //  $return= str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $temp);
+    return $return;
+}
 
-function get_roombook_specs_results(){
+//function nl2br($string){
+//    $return= str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $string);
+//    return $return;
+//}
+
+function get_roombook_specs_results() {
     $mysqli = connect_sql();
     $result = roombook_specs_new_query($mysqli);
     $mysqli->close();
     return $result;
 }
 
-function check_login(){ 
-    if(!isset($_SESSION["username"])){
+function check_login() {
+    if (!isset($_SESSION["username"])) {
         echo "Bitte erst <a href=\"index.php\">einloggen</a>";
         exit;
     }
 }
 
-function connect_sql(){
+function connect_sql() {
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
     $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
     if ($mysqli->connect_errno) {
-    echo "Failed to connect to MySQL: " . $mysqli->connect_error;
-    } else {
-        //echo "Connected successfully";
+        echo "Failed to connect to MySQL: " . $mysqli->connect_error;
     }
-    
     if (!$mysqli->set_charset("utf8")) {
         printf("Error loading character set utf8: %s\n", $mysqli->error);
         exit();
-    }		
+    }
     return $mysqli;
 }
 
-function roombook_specs_new_query($mysqli){
+function roombook_specs_new_query($mysqli) {
     $sql = " SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte, 
         tabelle_räume.idTABELLE_Räume, 
         tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, 
@@ -131,24 +138,22 @@ function roombook_specs_new_query($mysqli){
         tabelle_räume.`O2 Reinheit`, 
         tabelle_räume.Laserklasse
         FROM tabelle_räume
-        WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=".$_SESSION["projectID"]."))
+        WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
         ORDER BY tabelle_räume.Raumnr;";
-    
+
     if (!$mysqli->query($sql)) {
         echo "Error executing query: " . $mysqli->error;
-    }   
-    else{
+    } else {
         return $mysqli->query($sql);
     }
 }
 
-function print_whole_sql($result){
-    while ($row = $result->fetch_assoc()) { 
-               foreach ($row as $key => $value) {
-                echo "$key: $value\n";
-            }
-            }
+function print_whole_sql($result) {
+    while ($row = $result->fetch_assoc()) {
+        foreach ($row as $key => $value) {
+            echo "$key: $value\n";
+        }
+    }
 }
-
 
 ?>

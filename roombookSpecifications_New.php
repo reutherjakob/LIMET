@@ -21,40 +21,50 @@ check_login();
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/datatables.mark.js/2.0.0/datatables.mark.min.css"/>
+    
     <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
+    
+    <!--<script src="https://cdn.datatables.net/1.11.6/js/dataTables.editor.min.js"></script>-->
 
-    <style>
-        .btn-xs {
-          height: 22px;
-          padding: 2px 5px;
-          font-size: 12px;
-          line-height: 1.5;
-          border-radius: 3px; text/css;
-        }
-        .spacer {
-            background-color:#E5E5E5; 
-            z-index: -1;
-            border: transparent ;
-        }
-        .buttons_toggle_vis{
-            background-color: rgba(100, 140, 25, 0.2); 
-            color: black;
-            box-shadow: 0 1px 1px 0 rgba(0,0,0,0.2), 0 0px 0px 0 rgba(0,0,0,0.10);
-        }
-        .shadowed{
-            box-shadow: 0 10px 10px 0 rgba(0,0,0,0.2), 0 0px 0px 0 rgba(0,0,0,0.10);
-        }
-        .buttons_toggle_invis{
-            background-color: rgba(100, 0, 25, 0.2); 
-            color: black; 
-        }
-        
-        .table>thead>tr>th {
-            background-color: rgba(100, 140, 25, 0.2);
-        }
-        
-    </style>
+<style>
+    .btn-xs {
+      height: 22px;
+      padding: 2px 5px;
+      font-size: 12px;
+      line-height: 1.5;
+      border-radius: 3px; text/css;
+    }
+    .spacer {
+        background-color:#E5E5E5; 
+        z-index: -1;
+        border: transparent ;
+    }
+    .buttons_toggle_vis{
+        background-color: rgba(100, 140, 25, 0.2); 
+        color: black;
+        box-shadow: 0 1px 1px 0 rgba(0,0,0,0.2), 0 0px 0px 0 rgba(0,0,0,0.10);
+    }
+    .shadowed{
+        box-shadow: 0 10px 10px 0 rgba(0,0,0,0.2), 0 0px 0px 0 rgba(0,0,0,0.10);
+    }
+    .buttons_toggle_invis{
+        background-color: rgba(100, 0, 25, 0.2); 
+        color: black; 
+    }
+
+    .table>thead>tr>th {
+        background-color: rgba(100, 140, 25, 0.2);
+    }
+    .pull-right {
+        float: right;
+    }
+    .card-imagex {
+        height: 50px;  
+        width: auto;  
+    }
+    
+</style>
 </head>
     
     
@@ -64,16 +74,8 @@ check_login();
 <body style="height:100%">
 <div class="container-fluid ">
     <div id="limet-navbar" class='shadowed'> </div> <!-- Container für Navbar -->	
-        <script> window.onload = function(){
-                $.get("navbar.html", function(data){
-                    $("#limet-navbar").html(data);
-                    $('.navbar-nav').find('li:nth-child(3)')
-                      .addClass('active');
-                });
-            };        
-        </script>   
-    
-        
+    <script> window.onload = function(){$.get("navbar.html", function(data){$("#limet-navbar").html(data); $('.navbar-nav').find('li:nth-child(3)').addClass('active'); });};</script>   
+      
     <div class="mt-4 card">
         <div class="card-header" id='TableCardHeader'> </div>
         <div class="card-body" id = "table_container_div">
@@ -86,26 +88,21 @@ check_login();
     
     <div class='d-flex bd-highlight'>
         <div class='mt-4 mr-2 card flex-grow-1'>
-                <div class="card-header"><b>Bauangaben</b></div>
+                <div class="card-header card-imagex "><b>Bauangaben</b></div>
                 <div class="card-body" id="bauangaben"></div>
         </div>
         <div class="mt-4 card">
             <div class="card">
-                <div class="card-header"><button type="button" class="btn btn-outline-dark btn-xs" id="showRoomElements"><i class="fas fa-caret-left"></i></button></div>
-                <div class="card-body" id ="additionalInfo">
+                <div class="card-header card-imagex ">
+                    <button type="button" class="btn btn-outline-dark btn-xs" id="showRoomElements"><i class="fas fa-caret-left"></i></button> 
+                    <input type="text" class ="pull-right" id="diy_searcher" placeholder="Search...">
+                </div>
+                <div class="card-body " id ="additionalInfo">
                     <p id="roomElements">
                     <p id="elementParameters"></div>
                 </div> 
             </div>        
     </div>
-    
-<!--    <div id="raum-aendern"> </div> 
-        <script> window.onload = function(){
-                    $.get("roombookChangeRoom_modal.html", function(data){
-                        $("#raum-aendern").html(data);
-                    }}
-        </script>-->
-    
 </div>
     
     
@@ -113,131 +110,94 @@ check_login();
 
       
 <script> 
+    var column_clicked;
+    var row_clicked;
     
+    $(document).ready(function(){
+        fetchDataFromServer();
+        init_DataTable();
+        add_buttons();
+       
+         if($("#roomElements").is(':hidden')){$('#diy_searcher').hide();}
+        $('#table_rooms thead th:eq(0)').append(dropdownHtml);
+    }); 
+    
+    var dropdownHtml = 
+        '<select id="columnFilter">' +'<option value="">All</option>' +
+        '<option value="1">Ja</option>' +'<option value="0">Nein</option>' + 
+        '</select>';
+    
+    const buttonRanges = [
+                 { name: 'RAUM', start: 6, end: 22 },
+                 { name: 'HKLS', start: 23, end: 28 },
+                 { name: 'ELEK', start: 29, end: 36 },
+                 { name: 'MEDGAS', start: 37, end:  50}, 
+                 { name: 'LAB', start: 51, end: 100 },
+                 { name: 'LAB-GAS', start: 53, end: 78 },
+                 { name: 'LAB-ET', start: 79, end: 86 },
+                 { name: 'LAB-HT', start: 87, end:94 },
+                 { name: 'LAB-H2O', start: 95, end: 100 }
+             ];
     
     $("#showRoomElements").click(function() {
             if($("#roomElements").is(':hidden')){
                 $(this).html("<i class='fas fa-caret-left'></i>");
                 $("#additionalInfo").show();
+                $('#diy_searcher').show();
             }
             else {
                 $(this).html("<i class='fas fa-caret-right'></i>");
                 $("#additionalInfo").hide();
+                $('#diy_searcher').hide();
             }
 	});
     
     $('#table_rooms tbody').on( 'click', 'tr', function () {
-        console.log("clicked Table");
+    
         $('#table_rooms').DataTable().$('tr.info').removeClass('info');
-        raumID = $('#table_rooms').DataTable().row( $(this) ).data()[0];
+        raumID = $('#table_rooms').DataTable().row($(this)).data().idTABELLE_Räume;
+        
+        $('#diy_searcher').val('');
+        
         $.ajax({
             url : "setSessionVariables.php",
             data:{"roomID":raumID},
             type: "GET",
             success: function(data){
                 $("#RoomID").text(raumID);
-                                    $.ajax({
-                                            url : "getRoomSpecifications1.php",
-                                            type: "GET",
-                                            success: function(data){
-                                                $("#bauangaben").html(data);
-                                                                $.ajax({
-                                                                            url : "getRoomElementsDetailed.php",
-                                                                            type: "GET",
-                                                                            success: function(data){
-                                                                                $("#roomElements").html(data);
-
-
-                                                                            } 
-                                                                    });
-
-                                           } 
-                                    });							   
-                          
+                    $.ajax({
+                        url : "getRoomSpecifications2.php",
+                        type: "GET",
+                        success: function(data){
+                            $("#bauangaben").html(data);
+                            $.ajax({
+                                        url : "getRoomElementsDetailed2.php",
+                                        type: "GET",
+                                        success: function(data){
+                                            $("#roomElements").html(data); 
+                                            $('#diy_searcher').on('keyup', function () {
+                                                $('#tableRoomElements').DataTable().search(this.value).draw();
+                                            }); 
+                                        } 
+                                    });
+                           } 
+                    });						
             } 
+        });
     });
-    });
     
-    $(document).ready(function(){
-        fetchDataFromServer();
-        init_DataTable();
-        add_buttons();
-        button_style_init();
-        
-        $('#table_rooms thead th:eq(0)').append(dropdownHtml);
-        
-    }); 
-    
-    //MT RELEVANT FILTER
-    var dropdownHtml = '<select id="columnFilter">' +
-                     '<option value="">All</option>' +
-                     '<option value="1">Ja</option>' +
-                     '<option value="0">Nein</option>' +
-                     '</select>';
-
-    
-    $.fn.dataTable.ext.search.push(
-            function( settings, data, dataIndex ) {
-                if ( settings.nTable.id !== 'table_rooms' ) {
-                    return true;
-                }      
-                if($("#columnFilter").val()==='1'){
-                    //console.log(data[3]);
-                    if (data [3] === "Ja")
-                    {
-                        return true;
-                    }
-                    else{
-                        return false;
-                    }
+    $.fn.dataTable.ext.search.push( //change table based on MT-rel. filter
+        function( settings, data, dataIndex ) {
+            if($("#columnFilter").val()==='1'){
+                return data [3] === "Ja"; 
                 }
-                else{
-                    if($("#columnFilter").val()==='0'){
-                        if (data [3] === "Nein")
-                        {
-                            return true;
-                        }
-                        else{
-                            return false;
-                        }
-                    }
-                    else{
-                        return true;
-                    }
-                }
+            else if($("#columnFilter").val()==='0'){
+                return data [3] === "Nein";
+            } else{
+                return true;
             }
-    );     
-    
-    $('#columnFilter').change( function() {
-        console.log("Redrawing");
-        $('#table_rooms').DataTable().draw();
-
-    } );
-    
-    const buttonRanges = [
-                 { name: 'RAUM', start: 6, end: 21 },
-                 { name: 'HKLS', start: 22, end: 27 },
-                 { name: 'ELEK', start: 28, end: 35 },
-                 { name: 'MEDGAS', start: 36, end: 49 },
-                 { name: 'LAB', start: 50, end: 99 }
-             ];
-    
-    function button_style_init() {
-        const table = $('#table_rooms').DataTable();
-        const columns = table.columns().indexes();
-        buttonRanges.forEach(button => {
-            const isVisible = table.column(columns[button.start]).visible();
-            const buttonElement = $(`.buttons_toggle_vis:contains('${button.name}')`);
-            if (!isVisible) {
-                buttonElement.addClass('buttons_toggle_invis'); 
-            }
-    });
-}
-    
-    function get_matching_button(columnIndex) {
-        const matchedButton = buttonRanges.find(button => columnIndex >= button.start && columnIndex <= button.end);
-        return matchedButton ? matchedButton.name : 'Unknown Button';
-    }
+            });     
+          
     
     function add_buttons(){
         var table = $('#table_rooms').DataTable();
@@ -252,7 +212,7 @@ check_login();
                 })),
                 { text: '',className: 'spacer'}, 
                 {
-                    text: 'Datenlose \n ausblenden',
+                    text: 'w/ Data',
                     className: 'buttons_toggle_vis', 
                     action: function ( e, dt, node, config ) {
                         checkAndToggleColumnsVisibility();
@@ -260,19 +220,19 @@ check_login();
                 },
                 { text: '',className: 'spacer'},
                 'copy', 'excel', 'csv', 
-                
-                
                 { text: '',className: 'spacer'},
-                {
-                    text: '<i class="far fa-plus-square"></i> Raum Hinzufügen',
-                    action: function ( e, dt, node, config ) {  }
-                },
+//                'create',
+//                'edit',
+//                {
+//                    text: '<i class="far fa-plus-square"></i> Raum Hinzufügen',
+//                    action: function ( e, dt, node, config ) {  }
+//                },
                 { text: '',className: 'spacer'},
                 'selectAll',
                 'selectNone',
-                'selectRows',
-                'selectColumns',
-                'selectCells',
+                //'selectRows',
+                //'selectColumns',
+                //'selectCells',
                 { text: '',className: 'spacer'},
                 {
                     text: 'Reload',
@@ -281,78 +241,98 @@ check_login();
                     }
                 }
             ]}).container().appendTo($('#TableCardHeader'));
+            
+            //init style adquatly  in  case of tablestatus: saved (columns will stay invisible)
+            const columns = table.columns().indexes();
+            buttonRanges.forEach(button => {
+                const isVisible = table.column(columns[button.start]).visible();
+                const buttonElement = $(`.buttons_toggle_vis:contains('${button.name}')`);
+                if (!isVisible) {
+                    buttonElement.addClass('buttons_toggle_invis'); 
+                }
+            });
    }
-   
-   
+
     function toggleColumns(startColumn, endColumn, button_name) {
         const table = $('#table_rooms').DataTable();
         const columns = table.columns().indexes(); 
         var vis = !table.column(columns[endColumn]).visible()
-        console.log("Toggling uppon c: ", startColumn, vis);
+        console.log("Toggling uppon c: ", startColumn, vis, button_name);
         for (let i = startColumn; i <= endColumn; i++) {
             table.column(columns[i]).visible(vis);
         }
-        const buttonName = get_matching_button(startColumn); // Assuming you have a function to get the button name
-        const button = $(`.buttons_toggle_vis:contains('${buttonName}')`);
+        const button = $(`.buttons_toggle_vis:contains('${button_name}')`);
         if (vis) {
             button.removeClass('buttons_toggle_invis'); 
         } else {
-            console.log("CSS added to", buttonName)
+            console.log("CSS added to");
             button.addClass('buttons_toggle_invis');  
         }
-    }
-    
-    
+    } 
 
     function checkAndToggleColumnsVisibility() {
         var table = $('#table_rooms').DataTable();
-        table.columns().every(function () {
-            var column = this;
-            var columnIndex = column.index();
-            var columnName = column.header().textContent.trim();
-            var hasNonEmptyCell = column.data().toArray().some(function (cellData) {
-                return cellData !== null && cellData !== undefined && cellData !== '' && cellData !== '-' && cellData !== '.';
-            });
-            if(!hasNonEmptyCell){
-                console.log(columnName, " ...ausgeblendet");
+            table.columns().every(function () {
+                var column = this;
+                var columnIndex = column.index();
+                var columnName = column.header().textContent.trim();
+                var hasNonEmptyCell = column.data().toArray().some(function (cellData) {
+                    return cellData !== null && cellData !== undefined && cellData !== '' && cellData !== '-' && cellData !== ' '&& cellData !== '  ' && cellData !== '   '&& cellData !== '.';
+                });
+                if(!hasNonEmptyCell){
+                    if(column.visible){
+                        console.log(columnName, " ...wird ausgeblendet");
+                    }else {
+                        console.log(columnName, " ...wird eingeblendet");
+                    }    
                 column.visible(!column.visible);
             }
         }); 
     }
     
-
+//    const editor = new DataTable().Editor({
+//        fields:[
+//            {title: 'Raumnr Nutzer', data: 'Raumnummer_Nutzer'},
+//            {title: 'Raumbereich', data: 'Raumbereich Nutzer'}
+//        ],
+//        table: '#table_rooms'
+//    });
+//    
+//    $('#table_rooms').on('click', 'tbody td:not(:first-child)', function (e) {
+//        editor.inline(this);
+//    });
+    
     function init_DataTable() {
         $('#table_rooms').DataTable({ 
             columns: [
+//                {   title: '',
+//                    data: null,
+//                    orderable: false,
+//                    render: DataTable.render.select()
+//                },
                 {title: 'Projek ID', data: 'tabelle_projekte_idTABELLE_Projekte',visible: false,searchable: false},
                 {title: 'Raum ID', data: 'idTABELLE_Räume',visible: false,searchable: false},
                 {title: 'Funktionsstellen ID', data: 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen',visible: false,searchable: false}, 
                 {title: 'MT-rel.', data: 'MT-relevant',
-                    render: function (data) {
-                        if(typeof data !== 'string')
-                        {
-                            alert("Check Console");
-                            console.log("Datentyp MT-rel", typeof data);
-                        }
-                        return data === '1' ? 'Ja' : 'Nein';
-                    }
+                    render: function (data) {return data === '1' ? 'Ja' : 'Nein';}
                 },
                 {title: 'Raumnr', data: 'Raumnr'},
-                {title: 'Raumbezeichnung', data: 'Raumbezeichnung', class: 'editable-text'},
+                {title: 'Raumbez.', data: 'Raumbezeichnung', class: 'editable-text'},
                 //RAUMDETAILS
-                {title: 'Funktionelle Raum Nr', data: 'Funktionelle Raum Nr'},
-                {title: 'Raumnummer_Nutzer', data: 'Raumnummer_Nutzer'},
-                {title: 'Raumbereich Nutzer', data: 'Raumbereich Nutzer'},  
+                {title: 'Funkt.R.Nr', data: 'Funktionelle Raum Nr'},
+                {title: 'DIN13080', name: 'DIN13080' , data: '', defaultContent:'' },
+                {title: 'Raumnr Nutzer', data: 'Raumnummer_Nutzer'},
+                {title: 'Raumbereich', data: 'Raumbereich Nutzer'},  
                 {title: 'Geschoss', data: 'Geschoss'},
                 {title: 'Bauetappe', data: 'Bauetappe'},
                 {title: 'Bauabschnitt', data: 'Bauabschnitt'},
                 {title: 'Nutzfläche', data: 'Nutzfläche'},
-                {title: 'Abdunkelbarkeit', data: 'Abdunkelbarkeit'},
-                {title: 'Strahlenanwendung', data: 'Strahlenanwendung'},
-                {title: 'Laseranwendung', data: 'Laseranwendung'},
-                {title: 'Allgemeine Hygieneklasse', data: 'Allgemeine Hygieneklasse'},
+                {title: 'Abdunkelbar', data: 'Abdunkelbarkeit'},
+                {title: 'Strahlenanw.', data: 'Strahlenanwendung'},
+                {title: 'Laseranw.', data: 'Laseranwendung'},
+                {title: 'Allg. Hygieneklasse', data: 'Allgemeine Hygieneklasse'},
                 {title: 'Raumhoehe', data: 'Raumhoehe'},
-                {title: 'Raumhoehe 2', data: 'Raumhoehe 2'},
+                {title: 'Raumhoehe2', data: 'Raumhoehe 2'},
                 {title: 'Belichtungsfläche', data: 'Belichtungsfläche'},
                 {title: 'Umfang', data: 'Umfang'},
                 {title: 'Volumen', data: 'Volumen'},
@@ -364,12 +344,12 @@ check_login();
                 {title: 'HT_Spuele_Stk', data: 'HT_Spuele_Stk'},
                 {title: 'HT_Kühlwasser', data: 'HT_Kühlwasser'},
                 //ELEKTRO
+                {title: 'AWG', data: 'Anwendungsgruppe'},
                 {title: 'AV', data: 'AV'},
                 {title: 'SV', data: 'SV'},
                 {title: 'ZSV', data: 'ZSV'},
                 {title: 'USV', data: 'USV'},
-                {title: 'IT Anbindung', data: 'IT Anbindung'},
-                {title: 'Anwendungsgruppe', data: 'Anwendungsgruppe'},
+                {title: 'IT', data: 'IT Anbindung', render: function (data) {return data === '1' ? 'Ja' : 'Nein';}},
                 {title: 'ET_Anschlussleistung_W', data: 'ET_Anschlussleistung_W'},
                 {title: 'ET_RJ45-Ports', data: 'ET_RJ45-Ports'},
                 //MEDGASE
@@ -390,6 +370,8 @@ check_login();
                 
                 // LAB
                 {title: 'VEXAT_Zone', data: 'VEXAT_Zone'},
+                {title: 'Laserklasse', data: 'Laserklasse'},
+                
                 // LAB GASE
                 {title: 'H2', data: 'H2'},
                 {title: 'He', data: 'He'},
@@ -417,6 +399,7 @@ check_login();
                 {title: 'O2 l/min', data: 'O2 l/min'},
                 {title: 'O2 l/min', data: 'O2 l/min'},
                 {title: 'O2 Reinheit', data: 'O2 Reinheit'},
+                
                 // LAB ET
                 {title: 'ET_64A_3Phasig_Einzelanschluss', data: 'ET_64A_3Phasig_Einzelanschluss'},
                 {title: 'ET_32A_3Phasig_Einzelanschluss', data: 'ET_32A_3Phasig_Einzelanschluss'},
@@ -426,7 +409,7 @@ check_login();
                 {title: 'ET_5x10mm2_USV_Stk', data: 'ET_5x10mm2_USV_Stk'},
                 {title: 'ET_5x10mm2_SV_Stk', data: 'ET_5x10mm2_SV_Stk'},
                 {title: 'ET_5x10mm2_AV_Stk', data: 'ET_5x10mm2_AV_Stk'},
-                {title: 'Laserklasse', data: 'Laserklasse'},
+                
                 //LAB HT
                 {title: 'HT_Abluft_Vakuumpumpe', data: 'HT_Abluft_Vakuumpumpe'},
                 {title: 'HT_Abluft_Schweissabsaugung_Stk', data: 'HT_Abluft_Schweissabsaugung_Stk'},
@@ -455,26 +438,33 @@ check_login();
 //                }
 //            ],
             stateSave: true,
+            
             paging: true,
             pagingType: "simple_numbers",
             pageLength: 10,                 
+            
             order: [[ 3, "asc" ]],
             orderCellsTop: true,
-            select: {
-                style: 'true'
-            },
+            select: {style: 'os'},
             lengthChange: true,         
             info: true,
             mark:true,          
             responsive: true,
-            autoWidth:true,       
+            autoWidth:true
+            
+//                var table = $('#table_rooms').DataTable();
+//                var columnData = table.column("DIN13080:name").data(); 
+//                console.log("Data in the 'DIN' column:");
+//                console.log(columnData);
+//            }
+            
         });
         
     }
     
-    function updataTable_newData(newData){
+    function updataTable_newData(newData , clear){
         var table =  $('#table_rooms').DataTable(); 
-        table.clear();
+        if(clear){table.clear();}
         table.rows.add(newData); 
         table.draw(); 
     }
@@ -487,7 +477,7 @@ check_login();
             success: function (response) {  
                 //jsonData = response; 
                 console.log("Fetched Data. Updating Table now. ");     
-                updataTable_newData(response);
+                updataTable_newData(response, true);
             },
             error: function (xhr, status, error) {
                 console.error('Error fetching data:', error);
