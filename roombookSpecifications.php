@@ -154,7 +154,7 @@ if(!isset($_SESSION["username"]))
                 <div class="card-header">Räume im Projekt</div>
                 <div class="card-body">
                     <?php
-                            echo "<button type='button' id='addRoomButton' class='btn btn-success btn-sm mb-2' value='addRoom' data-toggle='modal' data-target='#changeRoomModal'>Raum hinzufügen <i class='far fa-plus-square'></i></button>";
+                        echo "<button type='button' id='addRoomButton' class='btn btn-success btn-sm mb-2' value='addRoom' data-toggle='modal' data-target='#changeRoomModal'>Raum hinzufügen <i class='far fa-plus-square'></i></button>";
                             
                             $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');	
                             
@@ -642,6 +642,7 @@ if(!isset($_SESSION["username"]))
         
         //Raum hinzufügen
 	$("#addRoom").click(function(){
+            console.log("Add btn click");
 		var nummer = $("#nummer").val();
 		var name = $("#name").val();
 		var flaeche  = $("#flaeche").val();
@@ -688,6 +689,7 @@ if(!isset($_SESSION["username"]))
         
         $("button[value='changeRoom']").click(function(){           
             // Buttons ein/ausblenden!               
+            console.log("button[value=changeRoom] clicked ");
             document.getElementById("addRoom").style.display = "none";
             document.getElementById("saveRoom").style.display = "inline";                
             $('#changeRoomModal').modal('show');            

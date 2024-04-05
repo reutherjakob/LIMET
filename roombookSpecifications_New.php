@@ -77,7 +77,9 @@ check_login();
     <script> window.onload = function(){$.get("navbar.html", function(data){$("#limet-navbar").html(data); $('.navbar-nav').find('li:nth-child(3)').addClass('active'); });};</script>   
       
     <div class="mt-4 card">
-        <div class="card-header" id='TableCardHeader'> </div>
+        <div class="card-header" id='TableCardHeader'> 
+            <!--<button type='button' id='addRoomButton' class='btn btn-success btn-sm mb-2' value='addRoom' data-toggle='modal' data-target='#changeRoomModal'>Raum hinzufügen <i class='far fa-plus-square'></i></button>-->
+        </div>
         <div class="card-body" id = "table_container_div">
             <table class="table table-responsive table-striped table-bordered table-sm" width ="100%" id="table_rooms" > 
                 <thead> <tr></tr> </thead>
@@ -106,12 +108,147 @@ check_login();
 </div>
     
     
+    <!-- Modal zum Ändern des Raumes -->
+    <div class='modal fade' id='changeRoomModal' role='dialog'>
+      <div class='modal-dialog modal-md'>
+
+        <!-- Modal content-->
+        <div class='modal-content'>
+          <div class='modal-header'>            
+            <h4 class='modal-title'>Raum ändern</h4>
+            <button type='button' class='close' data-dismiss='modal'>&times;</button>
+          </div>
+            <div class='modal-body' id='mbody'>
+                <form role="form">       	
+                    <div class="form-group">
+                      <label for="IDZ">ID:</label>
+                      <input type="text" class="form-control form-control-sm" id="IDZ"/>
+                    </div>
+                    <div class="form-group">
+                      <label for="nummer">Nummer:</label>
+                      <input type="text" class="form-control form-control-sm" id="nummer"/>
+                    </div>
+                    <div class="form-group">
+                      <label for="name">Name:</label>
+                      <input type="text"  class="form-control form-control-sm" id="name"/>
+                    </div>
+                    <div class="form-group">
+                      <label for="flaeche">Fläche:</label>
+                      <input type="text"  class="form-control form-control-sm" id="flaeche"/>
+                    </div>
+                    <div class="form-group">
+                      <label for="raumbereich">Raumbereich-Nutzer:</label>
+                      <input type="text"  class="form-control form-control-sm" id="raumbereich"/>
+                    </div>
+                    <div class="form-group">
+                      <label for="geschoss">Geschoss:</label>
+                      <input type="text"  class="form-control form-control-sm" id="geschoss"/>
+                    </div>
+                    <div class="form-group">
+                      <label for="bauetappe">Bauetappe:</label>
+                      <input type="text"  class="form-control form-control-sm" id="bauetappe"/>
+                    </div>
+                    <div class="form-group">
+                      <label for="bauteil">Bauteil:</label>
+                      <input type="text"  class="form-control form-control-sm" id="bauteil"/>
+                    </div>
+                    <div class='form-group'>
+                        <label for='funktionsstelle'>Funktionsstelle wählen:</label>
+                            <select class='form-control form-control-sm' id='funktionsstelle'>
+                                <option value=0 selected>Funktionsstelle wählen</option>
+                                   <?php                                              
+                                        foreach($funktionsTeilstellen as $array) {                                                                                                                            
+                                            echo "<option value=".$array['idTABELLE_Funktionsteilstellen'].">".$array['Nummer']." - ".$array['Name']."</option>";                                                             		
+                                        }
+                                    ?>
+                            </select>						
+                    </div>
+                    <div class="form-group">
+                      <label for="mt-relevant">MT-relevant:</label>
+                      <select class="form-control form-control-sm" id="mt-relevant">
+                          <option value="0">Nein</option>
+                          <option value="1">Ja</option>
+                      </select>
+                    </div>
+                </form>
+            </div>
+            <div class='modal-footer'>
+                  <input type='button' id='addRoom' class='btn btn-success btn-sm' value='Hinzufügen'></input>
+                  <input type='button' id='saveRoom' class='btn btn-warning btn-sm' value='Speichern'></input>
+                  <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Abbrechen</button>
+            </div>
+        </div>
+      </div>
+    </div>
+    
       
 
       
 <script> 
     var column_clicked;
     var row_clicked;
+
+    $("#addRoom").click(function(){ 
+        
+        var raumID = $('IDZ').val();
+        var nummer = $("#nummer").val();
+        var name = $("#name").val();
+        var flaeche  = $("#flaeche").val();
+        var raumbereich = $("#raumbereich").val();
+        var geschoss = $("#geschoss").val();
+        var bauetappe  = $("#bauetappe").val();
+        var bauteil  = $("#bauteil").val();        
+        var funktionsteilstelle  = $("#funktionsstelle").val(); 
+        var MTrelevant  = $("#mt-relevant").val();  
+        if(nummer !== "" && name !== "" && flaeche  !== "" && raumbereich !== "" && geschoss !== "" && bauetappe  !== "" && bauteil  !== "" && funktionsteilstelle !== 0 && MTrelevant  !== ""){
+            $.ajax({
+                url : "addRoom.php",
+                data:{"ID":raumID,"raumnummer":nummer,"raumbezeichnung":name,"geschoss":geschoss,"nutzflaeche":flaeche,"bauteil":bauteil,"bauetappe":bauetappe,"raumbereich":raumbereich,"funktionsteilstelle":funktionsteilstelle,"MTrelevant":MTrelevant},
+                type: "GET",	        
+                success: function(data){
+                    console.log("Success ");
+                    $('#changeRoomModal').modal('hide');
+                    alert(data);
+//                    window.location.replace("roombookSpecifications.php");
+                }
+            });			    
+        }
+        else{
+                alert("Bitte alle Felder ausfüllen!");
+        }
+    });
+
+    //Raum speichern
+    $("#saveRoom").click(function(){
+        var raumID = $('IDZ').val();
+            var nummer = $("#nummer").val();
+            var name = $("#name").val();
+            var flaeche  = $("#flaeche").val();
+            var raumbereich = $("#raumbereich").val();
+            var geschoss = $("#geschoss").val();
+            var bauetappe  = $("#bauetappe").val();
+            var bauteil  = $("#bauteil").val();        
+            var funktionsteilstelle  = $("#funktionsstelle").val(); 
+            var MTrelevant  = $("#mt-relevant").val(); 
+            
+            if(nummer !== "" && name !== "" && flaeche  !== "" && raumbereich !== "" && geschoss !== "" && bauetappe  !== "" && bauteil  !== "" && funktionsteilstelle !== 0 && MTrelevant  !== ""){
+                $.ajax({
+                    url : "saveRoomData.php",
+                    data:{"ID":raumID,"raumnummer":nummer,"raumbezeichnung":name,"geschoss":geschoss,"nutzflaeche":flaeche,"bauteil":bauteil,"bauetappe":bauetappe,"raumbereich":raumbereich,"funktionsteilstelle":funktionsteilstelle,"MTrelevant":MTrelevant},
+                    type: "GET",	        
+                    success: function(data){
+                        console.log("Success ");
+                        $('#changeRoomModal').modal('hide');
+                        alert(data);
+//                        window.location.replace("roombookSpecifications.php");
+                    }
+                });			    
+            }
+            else{
+                    alert("Bitte alle Felder ausfüllen!");
+            }    
+    });
+    
     
     $(document).ready(function(){
         fetchDataFromServer();
@@ -139,6 +276,102 @@ check_login();
                  { name: 'LAB-H2O', start: 95, end: 100 }
              ];
     
+    function add_buttons(){
+        var table = $('#table_rooms').DataTable();
+        new $.fn.dataTable.Buttons(table, {
+            buttons: [
+                buttonRanges.map(button => ({
+                    text: button.name,
+                    action: function (e, dt, node, config) {
+                        toggleColumns(button.start, button.end, button.name );
+                    },
+                    className: 'btn buttons_toggle_vis'
+                })),
+                { text: '',className: 'spacer'}, 
+                {
+                    text: 'w/ Data',
+                    className: 'buttons_toggle_vis', 
+                    action: function ( e, dt, node, config ) {
+                        checkAndToggleColumnsVisibility();
+                    }
+                },
+                { text: '',className: 'spacer'},
+                'copy', 'excel', 'csv', 
+                { text: '', className: 'spacer'},
+//                'create',
+//                'edit',
+                {
+                    text: "Raum", // '<i class="far fa-plus-square id= "addRoomButton" value="addRoom" data-toggle="modal" data-target="#changeRoomModal"></i> Raum Hinzufügen',
+                    id: 'DTaddRoom',
+                    class: "far fa-plus-square", 
+                    action: function ( e, dt, node, config ) {  
+                        $('#changeRoomModal').modal('show');
+                        console.log("+ btn pushed");
+                    }
+                },
+                { text: '',className: 'spacer'},
+                'selectAll',
+                'selectNone',
+                //'selectRows',
+                //'selectColumns',
+                //'selectCells',
+                { text: '',className: 'spacer'},
+                {
+                    text: 'Reload',
+                    action: function ( e, dt, node, config ) {
+                        fetchDataFromServer();
+                    }
+                }
+            ]}).container().appendTo($('#TableCardHeader'));
+            
+            //init style adquatly  in  case of tablestatus: saved (columns will stay invisible)
+            const columns = table.columns().indexes();
+            buttonRanges.forEach(button => {
+                const isVisible = table.column(columns[button.start]).visible();
+                const buttonElement = $(`.buttons_toggle_vis:contains('${button.name}')`);
+                if (!isVisible) {
+                    buttonElement.addClass('buttons_toggle_invis'); 
+                }
+            });
+    }
+
+    function toggleColumns(startColumn, endColumn, button_name) {
+        const table = $('#table_rooms').DataTable();
+        const columns = table.columns().indexes(); 
+        var vis = !table.column(columns[endColumn]).visible()
+        console.log("Toggling uppon c: ", startColumn, vis, button_name);
+        for (let i = startColumn; i <= endColumn; i++) {
+            table.column(columns[i]).visible(vis);
+        }
+        const button = $(`.buttons_toggle_vis:contains('${button_name}')`);
+        if (vis) {
+            button.removeClass('buttons_toggle_invis'); 
+        } else {
+            console.log("CSS added to");
+            button.addClass('buttons_toggle_invis');  
+        }
+    } 
+
+    function checkAndToggleColumnsVisibility() {
+        var table = $('#table_rooms').DataTable();
+            table.columns().every(function () {
+                var column = this;
+                var columnIndex = column.index();
+                var columnName = column.header().textContent.trim();
+                var hasNonEmptyCell = column.data().toArray().some(function (cellData) {
+                    return cellData !== null && cellData !== undefined && cellData !== '' && cellData !== '-' && cellData !== ' '&& cellData !== '  ' && cellData !== '   '&& cellData !== '.';
+                });
+                if(!hasNonEmptyCell){
+                    if(column.visible){
+                        console.log(columnName, " ...wird ausgeblendet");
+                    }else {
+                        console.log(columnName, " ...wird eingeblendet");
+                    }    
+                column.visible(!column.visible);
+            }
+        }); 
+    }
+    
     $("#showRoomElements").click(function() {
             if($("#roomElements").is(':hidden')){
                 $(this).html("<i class='fas fa-caret-left'></i>");
@@ -153,12 +386,9 @@ check_login();
 	});
     
     $('#table_rooms tbody').on( 'click', 'tr', function () {
-    
         $('#table_rooms').DataTable().$('tr.info').removeClass('info');
         raumID = $('#table_rooms').DataTable().row($(this)).data().idTABELLE_Räume;
-        
         $('#diy_searcher').val('');
-        
         $.ajax({
             url : "setSessionVariables.php",
             data:{"roomID":raumID},
@@ -197,98 +427,6 @@ check_login();
                 return true;
             }
             });     
-          
-    
-    function add_buttons(){
-        var table = $('#table_rooms').DataTable();
-        new $.fn.dataTable.Buttons(table, {
-            buttons: [
-                buttonRanges.map(button => ({
-                    text: button.name,
-                    action: function (e, dt, node, config) {
-                        toggleColumns(button.start, button.end, button.name );
-                    },
-                    className: 'btn buttons_toggle_vis'
-                })),
-                { text: '',className: 'spacer'}, 
-                {
-                    text: 'w/ Data',
-                    className: 'buttons_toggle_vis', 
-                    action: function ( e, dt, node, config ) {
-                        checkAndToggleColumnsVisibility();
-                    }
-                },
-                { text: '',className: 'spacer'},
-                'copy', 'excel', 'csv', 
-                { text: '',className: 'spacer'},
-//                'create',
-//                'edit',
-//                {
-//                    text: '<i class="far fa-plus-square"></i> Raum Hinzufügen',
-//                    action: function ( e, dt, node, config ) {  }
-//                },
-                { text: '',className: 'spacer'},
-                'selectAll',
-                'selectNone',
-                //'selectRows',
-                //'selectColumns',
-                //'selectCells',
-                { text: '',className: 'spacer'},
-                {
-                    text: 'Reload',
-                    action: function ( e, dt, node, config ) {
-                        fetchDataFromServer();
-                    }
-                }
-            ]}).container().appendTo($('#TableCardHeader'));
-            
-            //init style adquatly  in  case of tablestatus: saved (columns will stay invisible)
-            const columns = table.columns().indexes();
-            buttonRanges.forEach(button => {
-                const isVisible = table.column(columns[button.start]).visible();
-                const buttonElement = $(`.buttons_toggle_vis:contains('${button.name}')`);
-                if (!isVisible) {
-                    buttonElement.addClass('buttons_toggle_invis'); 
-                }
-            });
-   }
-
-    function toggleColumns(startColumn, endColumn, button_name) {
-        const table = $('#table_rooms').DataTable();
-        const columns = table.columns().indexes(); 
-        var vis = !table.column(columns[endColumn]).visible()
-        console.log("Toggling uppon c: ", startColumn, vis, button_name);
-        for (let i = startColumn; i <= endColumn; i++) {
-            table.column(columns[i]).visible(vis);
-        }
-        const button = $(`.buttons_toggle_vis:contains('${button_name}')`);
-        if (vis) {
-            button.removeClass('buttons_toggle_invis'); 
-        } else {
-            console.log("CSS added to");
-            button.addClass('buttons_toggle_invis');  
-        }
-    } 
-
-    function checkAndToggleColumnsVisibility() {
-        var table = $('#table_rooms').DataTable();
-            table.columns().every(function () {
-                var column = this;
-                var columnIndex = column.index();
-                var columnName = column.header().textContent.trim();
-                var hasNonEmptyCell = column.data().toArray().some(function (cellData) {
-                    return cellData !== null && cellData !== undefined && cellData !== '' && cellData !== '-' && cellData !== ' '&& cellData !== '  ' && cellData !== '   '&& cellData !== '.';
-                });
-                if(!hasNonEmptyCell){
-                    if(column.visible){
-                        console.log(columnName, " ...wird ausgeblendet");
-                    }else {
-                        console.log(columnName, " ...wird eingeblendet");
-                    }    
-                column.visible(!column.visible);
-            }
-        }); 
-    }
     
 //    const editor = new DataTable().Editor({
 //        fields:[
@@ -438,11 +576,9 @@ check_login();
 //                }
 //            ],
             stateSave: true,
-            
             paging: true,
             pagingType: "simple_numbers",
-            pageLength: 10,                 
-            
+            pageLength: 10,          
             order: [[ 3, "asc" ]],
             orderCellsTop: true,
             select: {style: 'os'},
@@ -451,7 +587,6 @@ check_login();
             mark:true,          
             responsive: true,
             autoWidth:true
-            
 //                var table = $('#table_rooms').DataTable();
 //                var columnData = table.column("DIN13080:name").data(); 
 //                console.log("Data in the 'DIN' column:");
