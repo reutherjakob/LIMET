@@ -44,7 +44,7 @@ check_login();
                 </select>
                 <input type="number" id="delayInput" placeholder="Delay (ms)">
                 <button id="delayBtn" class="btn btn-outline-primary btn-sm">Set Delay</button>
-            </label>
+            </label> 
         </div>
         <div id="resultz" class="result"></div>
     </div>

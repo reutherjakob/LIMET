@@ -93,8 +93,8 @@ check_login();
                     ],
                     paging: true,
                     pagingType: "numbers",
-                    pageLength: "25",
-                    sDom: 'tip'
+                    pageLength: "25", 
+                    sDom: "tlip"
                     //"scrollY":        '20vh',
                     //"scrollCollapse": true,
                 });

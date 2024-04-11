@@ -131,7 +131,7 @@ if(!isset($_SESSION["username"]))
                 table1.$('tr.info').removeClass('info');
                 $(this).addClass('info');
                 $.ajax({
-                    url : "getVermerkeToUntergruppe.php",
+                    url : "getVermerkeToUntergruppe_1.php",
                     data:{"vermerkUntergruppenID":table1.row( $(this) ).data()[0],"vermerkGruppenID":table1.row( $(this) ).data()[4]},
                     type: "GET",
                     success: function(data){

@@ -177,7 +177,6 @@ if(!isset($_SESSION["username"]))
                             </div>
                             <div class="form-group">
                                 <label for="vermerkText">Text:</label>
-                                
                                 <textarea class="form-control form-control-sm" rows="15" id="vermerkText" style="font-size:10pt"></textarea>
                                 
                                 
