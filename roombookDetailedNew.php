@@ -1,5 +1,7 @@
 <?php
 session_start();
+include '_utils.php';
+check_login();
 ?> 
 
 
@@ -22,109 +24,13 @@ session_start();
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.js"></script>
 
-
- <style>
-
-.btn-xs {
-  height: 22px;
-  padding: 2px 5px;
-  font-size: 12px;
-  line-height: 1.5; /* If Placeholder of the input is moved up, rem/modify this. */
-  border-radius: 3px;
-}
-
-</style>
- 
 </head>
 <body>
-<?php
-if(!isset($_SESSION["username"]))
-{
-    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-    exit;
-}
-
-?>
+ 
     
 <div class="container-fluid">
-  <nav class="navbar navbar-expand-lg bg-light navbar-light">	
-      <a class="py-0 navbar-brand" href="#"><img src="LIMET_logo.png" alt="LIMETLOGO" height="40"/></a>
-          <ul class="navbar-nav">
-            <li class="py-0 nav-item dropdown">
-              <a class="py-0 nav-link dropdown-toggle" data-toggle="dropdown" href="#"><i class='fa fa-list-alt'></i> Projekte</a>              
-              <ul class="dropdown-menu">
-                  <a class="dropdown-item" href="projects.php"><i class='fa fa-list-alt'></i> Projektauswahl</a> 
-                  <?php 
-                        if($_SESSION["ext"]==0){
-                            echo "<a class='dropdown-item' href='projectParticipants.php'><i class='fa fa-users'></i> Projektbeteiligte</a>
-                                  <a class='dropdown-item' href='documentationV2.php'><i class='fa fa-comments'></i> Dokumentation</a>";
-                        }
-                    ?>
-              </ul>
-            </li>
-              <?php 
-                    if($_SESSION["ext"]==0){
-                        echo "<li class='nav-item dropdown'>
-                                <a class=' py-0 nav-link dropdown-toggle' data-toggle='dropdown' href='#'><i class='fa fa-book'></i> Raumbuch</a>              
-                                <ul class='dropdown-menu'>
-                                    <a class='dropdown-item' href='roombookSpecifications.php'>Raumbuch - Bauangaben</a>
-                                    <a class='dropdown-item' href='roombookSimple.php'>Raumbuch - Einfach</a>
-                                    <a class='dropdown-item active' href='roombookDetailed.php'>Raumbuch - Detail</a>
-                                    <a class='dropdown-item' href='roombookBO.php'>Raumbuch - Betriebsorganisation</a>
-                                    <a class='dropdown-item' href='roombookReports.php'>Raumbuch - Berichte</a>
-                                    <a class='dropdown-item' href='elementsInProject.php'>Elemente im Projekt</a>
-                                </ul>
-                              </li>
-                              <li class='nav-item dropdown'>
-                                <a class='py-0 nav-link dropdown-toggle' data-toggle='dropdown' href='#'><i class='fa fa-euro-sign'></i> Kosten</a>              
-                                <ul class='dropdown-menu'>
-                                    <a class='dropdown-item' href='costsOverall.php'>Kosten - Berichte</a> 
-                                    <a class='dropdown-item' href='costsRoomArea.php'>Kosten - Raumbereich</a>
-                                    <a class='dropdown-item' href='costChanges.php'>Kosten - Ã„nderungen</a>
-                                </ul>
-                              </li>";
-                    }
-                ?>            	                 
-            <li class="py-0 nav-item dropdown">
-              <a class="py-0 nav-link dropdown-toggle" data-toggle="dropdown" href="#"><i class='fa fa-recycle'></i> Bestand</a>             
-              <ul class="dropdown-menu">
-                  <a class="dropdown-item" href="roombookBestand.php">Bestand - Raumbereich</a>	
-                  <a class="dropdown-item" href="roombookBestandElements.php">Bestand - Gesamt</a>
-              </ul>
-            </li>
-            <li class="py-0 nav-item dropdown">
-              <a class="py-0 nav-link dropdown-toggle" data-toggle="dropdown" href="#"><i class='fa fa-tasks'></i> Ausschreibungen</a>
-              <ul class="dropdown-menu">
-                    <a class="dropdown-item" href="tenderLots.php">Los-Verwaltung</a>
-                    <?php 
-                        if($_SESSION["ext"]==0){
-                            echo "<a class='dropdown-item' href='tenderCharts.php'>Vergabe-Diagramme</a>";
-                        }
-                    ?>
-                    <a class="dropdown-item" href="elementLots.php">Element-Verwaltung</a>
-              </ul>
-            </li>
-          
-          <?php 
-                if($_SESSION["ext"]==0){
-                    echo "<li class='py-0 nav-item dropdown'>
-                                <a class='py-0 nav-link dropdown-toggle' data-toggle='dropdown' href='#'><i class='fa fa-buromobelexperte '></i> Datenbank-Verwaltung</a>              
-                                <ul class='dropdown-menu'>
-                                    <a class='dropdown-item' href='elementAdministration.php'>Elemente-Verwaltung</a>
-                                    <a class='dropdown-item' href='elementeCAD.php'>Elemente-CAD</a>
-                                </ul>
-                           </li>    
-                        <ul class='navbar-nav'>
-                          <li class='nav-item'><a class='py-0 nav-link' href='firmenkontakte.php'><i class='fa fa-address-card'></i> Firmenkontakte</a></li>
-                        </ul>";
-                }
-            ?>
-              </ul>
-          <ul class="navbar-nav ml-auto">
-              <li class="py-0 nav-item "><a class="py-0 nav-link text-success disabled" id="projectSelected">Aktuelles Projekt: <?php  if ($_SESSION["projectName"] != ""){echo $_SESSION["projectName"];}else{echo "Kein Projekt ausgewÃ¤hlt!";}?></a></li>
-              <li><a class="py-0 nav-link" href="logout.php"><i class="fa fa-sign-out-alt"></i>Logout</a></li>
-          </ul>              
-    </nav>
+<div id="limet-navbar"></div> 
+
     <div class='mt-4 row'>    
         <div class='col-sm-7'>
             <div class="mt-4 card">
@@ -139,7 +45,7 @@ if(!isset($_SESSION["username"]))
                                         printf("Error loading character set utf8: %s\n", $mysqli->error);
                                         exit();
                                     }
-
+ 
                                     $sql = "SELECT tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.Nutzfläche, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, tabelle_räume.Bauabschnitt, 
                                                     tabelle_räume.`Anmerkung allgemein`, tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, tabelle_räume.idTABELLE_Räume
                                                     FROM tabelle_räume INNER JOIN view_Projekte ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = view_Projekte.idTABELLE_Projekte
