@@ -1,7 +1,7 @@
 <?php
 session_start();
 include '_utils.php';
-check_login();
+init_page_serversides();
 ?> 
 
 

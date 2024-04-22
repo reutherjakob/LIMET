@@ -2,7 +2,7 @@
 session_start();
 $_SESSION["dbAdmin"] = "0";
 include '_utils.php';
-check_login();
+init_page_serversides();
 ?> 
 
 
@@ -43,7 +43,7 @@ check_login();
                                             <div class="card-body">
                                                 <h4 class="card-subtitle text-muted">Vorleistungen kontrolliert</h4>
                                                 <?php
-                                                $mysqli = _utils_connect_sql(); 
+                                                $mysqli = utils_connect_sql(); 
 
                                                 $sqlVorleistungen = "SELECT Count(tabelle_lose_extern.Vorleistungspruefung) AS AnzahlvonVorleistungspruefung, tabelle_lose_extern.Vorleistungspruefung
                                                 FROM tabelle_lose_extern

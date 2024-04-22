@@ -1,7 +1,7 @@
 <?php
 session_start();
 include '_utils.php';
-check_login();
+init_page_serversides();
 ?>
 
 <!DOCTYPE html>
@@ -16,7 +16,7 @@ check_login();
  
 
 <?php
-$mysqli =  _utils_connect_sql();			
+$mysqli =  utils_connect_sql();			
         
         $sql = "SELECT tabelle_räume.`Anmerkung FunktionBO` FROM tabelle_räume WHERE (((tabelle_räume.idTABELLE_Räume)=".$_SESSION["roomID"]."));";
         

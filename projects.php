@@ -1,7 +1,7 @@
 <?php
 session_start();
 include '_utils.php';
-check_login();
+init_page_serversides();
 ?> 
 
 
@@ -38,6 +38,7 @@ check_login();
 <body>    
 <div class="container-fluid">
     <div id="limet-navbar"></div>
+    
     <div class='mt-4 row'>  
         <div class='col-md-10'>
             <div class="mt-4 card">

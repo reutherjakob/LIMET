@@ -2,7 +2,7 @@
     session_start();
     $_SESSION["dbAdmin"]="0";
     include '_utils.php';
-check_login();
+init_page_serversides();
 ?> 
 
 
@@ -52,7 +52,7 @@ check_login();
                 </div>
                 <div class="card-body">
                     <?php
-                        $mysqli = _utils_connect_sql();
+                        $mysqli = utils_connect_sql();
                         
                         $sql = "SELECT tabelle_lose_extern.idtabelle_Lose_Extern, tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern, tabelle_lieferant.Lieferant, tabelle_lose_extern.Vorleistungspruefung
                                 FROM (tabelle_lose_extern LEFT JOIN tabelle_lieferant ON tabelle_lose_extern.tabelle_lieferant_idTABELLE_Lieferant = tabelle_lieferant.idTABELLE_Lieferant)

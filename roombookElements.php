@@ -2,7 +2,7 @@
 session_start();
 $_SESSION["dbAdmin"]="2";
 include '_utils.php';
-check_login();
+init_page_serversides();
 ?> 
 
 

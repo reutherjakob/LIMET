@@ -7,14 +7,30 @@ function br2nl($string) {
 }
 
 
-function check_login() {
+function check_login(){
     if (!isset($_SESSION["username"])) {
         echo "Bitte erst <a href=\"index.php\">einloggen</a>";
         exit;
     }
 }
 
-function _utils_connect_sql() {
+function check_project(){
+    if ($_SESSION["projectName"] != "") {
+        echo '<script>';
+        echo 'var currentP = ' . json_encode( $_SESSION["projectName"]) . ';';
+        echo '</script>';
+    
+    } else {  echo '<script>';
+        echo 'var currentP = ' . json_encode( " NIX ") . ';';
+        echo '</script>';} 
+}
+
+function init_page_serversides() { //and Project. 
+    check_login();
+    check_project(); 
+}
+
+function utils_connect_sql() {
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
     $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
@@ -27,6 +43,7 @@ function _utils_connect_sql() {
     }
     return $mysqli;
 }
+
 ?>
 
 <script>	    
@@ -34,8 +51,13 @@ function _utils_connect_sql() {
     window.onload = function(){
         $.get("navbar.html", function(data){
             $("#limet-navbar").html(data);
-            $('.navbar-nav').find('li:nth-child(3)')
+            $('.navbar-nav').find('li:nth-child(3)') 
               .addClass('active');
+            $('#projectSelected').text("Projekt:"  +currentP);
+//            console.log(currentP );
         });
     };    
+    
+    
+    
 </script>  
