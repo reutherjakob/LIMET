@@ -16,7 +16,7 @@ window.dt_demo = {
 	init: function (types) {
 		if (types) {
 			dt_demo._struct = types;
-
+ 
 			dt_demo._prepLibs();
 		}
 

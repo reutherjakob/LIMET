@@ -12,7 +12,7 @@ document.addEventListener('dt-demo-run', function () {
 				$('<code class="multiline language-js"/>').text( decodeURI(
 					jQuery.param( data ).replace(/&/g, '\n').replace(/\+/g, ' ')
 				) )
-			);
+			); 
 			SyntaxHighlighter.highlight( {}, $('div.ajax-data-send code')[0] );
 		} );
 

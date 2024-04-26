@@ -1,4 +1,4 @@
-<?php
+y<?php
 session_start();
 ?> 
 
@@ -648,7 +648,7 @@ if(!isset($_SESSION["username"]))
         var column = newString[1];
         var idValue = newString[2];
         var value = $('input[id='+newString[1]+'-'+newString[2]+']').val();                
-        //alert("ID: "+idValue+" Spalte: "+column+" Wert: "+value);   
+        alert("ID: "+idValue+" Spalte: "+column+" Wert: "+value);   
         
         $.ajax({
             url : "saveRoomProperties.php",

@@ -164,7 +164,7 @@ if(!isset($_SESSION["username"]))
             <div class="mt-4 card">
                 <div class="card-header"><b>Projekte </b>
                     <label class="float-right">
-                        Nur aktive Projekte: <input type="checkbox" id="filter_ActiveProjects" checked="true"> 
+                        Nur aktive Projekte: <input type="checkbox" id="filter_ActiveProjects" checked="false">  
                     </label>
                 </div>
                 <div class="card-body">

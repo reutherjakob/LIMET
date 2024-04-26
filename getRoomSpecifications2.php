@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'data_utils.php';
+include '_utils.php';
 check_login();
 ?>
 
@@ -34,7 +34,7 @@ check_login();
 <body>
     
     <?php
-    $mysqli = connect_sql();
+    $mysqli = utils_connect_sql();
     $sql = "SELECT tabelle_räume.`Anmerkung FunktionBO`, tabelle_räume.`Anmerkung Geräte`, tabelle_räume.`Anmerkung BauStatik`, tabelle_räume.`Anmerkung Elektro`,";
     $sql .= "tabelle_räume.`Anmerkung MedGas`, tabelle_räume.`Anmerkung HKLS` FROM tabelle_räume WHERE (((tabelle_räume.idTABELLE_Räume)=" . $_SESSION["roomID"] . "));";
     $result = $mysqli->query($sql);
@@ -154,13 +154,6 @@ check_login();
                     }
                 });
             });
-
-
-
-
-
-
-
 
         </script> 
 

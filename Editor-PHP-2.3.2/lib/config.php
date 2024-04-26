@@ -1,7 +1,5 @@
 <?php
-session_start();
-// ensure DataTables.php was included
-// this file must not be included when installed using composer
+session_start(); 
 if (!defined('DATATABLES')) {
 	exit(1);
 }
@@ -27,7 +25,8 @@ $sql_details = [
 // This is included for the development and deploy environment used on the DataTables
 // server. You can delete this block - it just includes my own user/pass without making
 // them public!
-if (is_file($_SERVER['DOCUMENT_ROOT'] . '/datatables/pdo.php')) {
-	include $_SERVER['DOCUMENT_ROOT'] . '/datatables/pdo.php';
-}
+//if (is_file($_SERVER['DOCUMENT_ROOT'] . '/datatables/pdo.php')) {
+//	include $_SERVER['DOCUMENT_ROOT'] . '/datatables/pdo.php';
+//}
 // /End development include
+ 

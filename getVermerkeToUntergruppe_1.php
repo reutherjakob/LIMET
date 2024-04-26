@@ -180,17 +180,19 @@ if(!isset($_SESSION["username"]))
                                 <textarea class="form-control form-control-sm" rows="15" id="vermerkText" style="font-size:10pt"></textarea>
                             </div>
                             
-<!--                            <div class="form-group">
-                                <div  class="form-control form-control-sm " rows="15" id="speech_result"></div>
-                            </div>-->
+                            <div class="form-group">
+                                <div  class="form-control form-control-sm " rows="15" id="speech_result"> Sprach Transkript...</div>
+                            </div>
                       </form>
                 </div>
-	        <div class='modal-footer'> 
-                    
-                    <div  class="col-9" >
+                  
+	        <div class='modal-footer form-inline"'> 
+                    <div  class="col-8" >
+                        <input class="form-check-input" type="checkbox"  id="ContinousRecordCheckbox" > </input>
+                        <label for="ContinousRecordCheckbox" class="form-check-label">continous </label>
                         
-                        <!--<input type="checkbox" id="ContinousRecordCheckbox" class="btn-sm"value="irrelevant" > </input>-->
-                        <button id="recordBtn" class="btn">Start Recording</button> 
+                        
+                        <button id="recordBtn" class="btn btn-success ">Start Recording</button> 
                         <select id="languageSelect" class="form-select form-select-sm">
                             <option value="de-DE">German</option>
                             <option value="en-US">English</option> 
@@ -199,8 +201,9 @@ if(!isset($_SESSION["username"]))
                     
 
 
-<script type="application/javascript">
-var speechRecognizer;
+<script >
+var isRecording;
+var timer;
 
 $('#recordBtn').on('click', function () {
     if ($('#recordBtn').text() === 'Start Recording') {
@@ -210,41 +213,84 @@ $('#recordBtn').on('click', function () {
     }
 });
 
-function startRecording() {
-    $('#recordBtn').addClass('btn-danger').text('Recording...');
-    speechRecognizer = new webkitSpeechRecognition();
-    speechRecognizer.continuous = true;
-    speechRecognizer.interimResults = true;
-    speechRecognizer.lang = "de-DE";
-    speechRecognizer.start();
+function check_if_recording(){
+    if ((isRecording && $('#recordBtn').text() !== "Recording..."  )||($('#recordBtn').text() === "Recording..."   &&  !isRecording)){
+        console.log("Timer Stoped Record");
+        stopRecording(); //reset btn iuf it automatically stops, which it does nd is annoying
+    } else {
+        console.log("SetInterval timer ", isRecording, speechRecognizer); 
+    }
+}
 
-    var finalTranscripts = "";
-    speechRecognizer.onresult = function (event) {
-        var interimTranscripts = "";
-        for (var i = event.resultIndex; i < event.results.length; i++) {
-            var transcript = event.results[i][0].transcript;
-            transcript.replace("\n", "<br>");
-            if (event.results[i].isFinal) {
-                finalTranscripts += transcript;
-            } else {
-                interimTranscripts += transcript;
-            } 
-            $('#vermerkText').val(finalTranscripts + '\n' + interimTranscripts);
-        }
-    };
-    speechRecognizer.onerror = function (event) {};
+function startRecording() {
+    if ("webkitSpeechRecognition"  in window || 'SpeechRecognition' in window  ) {
+        speechRecognizer = new webkitSpeechRecognition() || new SpeechRecognition();
+        speechRecognizer.continuous = true;
+        speechRecognizer.interimResults = true;
+        speechRecognizer.lang = "de-DE";
+        speechRecognizer.start();     
+        //we could add some words here, weight them, whatnot; 
+        //const speechRecognitionList = new SpeechGrammarList();   
+        isRecording = true;
+        timer = setInterval(check_if_recording, 2000);
+        $('#recordBtn').addClass('btn-danger').text('Recording...');
+        
+        var finalTranscripts = "";
+        speechRecognizer.onresult = function (event) {
+            var interimTranscripts = "";
+            for (var i = event.resultIndex; i < event.results.length; i++) {
+                var transcript = event.results[i][0].transcript;
+                transcript.replace("\n", "<br>"); 
+                if (event.results[i].isFinal) {
+                    finalTranscripts += transcript;
+                    $('#vermerkText').val(function (index, currentValue) {return currentValue + finalTranscripts + '\n';});
+                    
+                    stopRecording(); 
+                    console.log(`Final Result. Confidence: ${event.results[0][0].confidence}`);   
+                    if ($('#ContinousRecordCheckbox').prop('checked')) {
+                        console.log("Re-Starting");
+                        startRecording();
+                        
+                    } else{ 
+                        stopRecording(); 
+                    }
+                } else {
+                    interimTranscripts += transcript;
+                } 
+                document.getElementById("speech_result").innerHTML = finalTranscripts + '<span style="color: #999;">' + interimTranscripts + '</span>';
+            }
+        };
+        speechRecognizer.onspeechend= function (event){ 
+//            stopRecording();
+            console.log("Speech has stopped being detected. isRecording:", isRecording);
+//            if ($('#ContinousRecordCheckbox').prop('checked')) {
+//                console.log("Re-Starting on speechend"); 
+//                startRecording();}
+        };
+        
+        speechRecognizer.onerror = function (event) {};
+        
+    } else {
+        document.getElementById("speech_result").innerHTML = "Your browser does not support that.";
+    }
 }
 
 function stopRecording() {
     $('#recordBtn').removeClass('btn-danger').text('Start Recording');
-    speechRecognizer.stop();
+    if(speechRecognizer){
+        speechRecognizer.stop();
+        speechRecognizer = null;
+    }
+    clearInterval(timer);
+    timer = false;
+    console.log("RECORDING OFF!");
 }
 </script>
                     <div>
                         <input type='button' id='addVermerk' class='btn btn-success btn-sm' value='Hinzufügen' data-dismiss='modal'></input>
                         <input type='button' id='saveVermerk' class='btn btn-warning btn-sm' value='Speichern' data-dismiss='modal'></input>
                         <input type='button' id='deleteVermerk' class='btn btn-danger btn-sm' value='Löschen' data-dismiss='modal'></input>
-                        <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Abbrechen</button>
+                        <button type='button' class='btn btn-default btn-sm' data-dismiss='modal' onclick="stopRecording()" >Abbrechen</button>
                     </div>    
 	        </div>
 	      </div>
@@ -444,6 +490,7 @@ function stopRecording() {
     });
     
     $("#addVermerk").click(function(){
+        stopRecording();
         var room = $("#room").val();
         var los = $("#los").val();        
         var vermerkStatus  = $("#vermerkStatus").val();
@@ -504,6 +551,8 @@ function stopRecording() {
     
     // Vermerk ändern/speichern
     $("#saveVermerk").click(function(){        
+        stopRecording();
+        
         var room = $("#room").val();
         var los = $("#los").val();
         var vermerkStatus  = $("#vermerkStatus").val();
@@ -544,13 +593,15 @@ function stopRecording() {
     });
     
     
-    // Vermerk löschen -> Modal öffnen
-    $("#deleteVermerk").click(function(){                
+    // Vermerk lösdeleteVermerkchen -> Modal öffnen
+    $("#deleteVermerk").click(function(){   
+        stopRecording();
         $('#deleteVermerkModal').modal('show');
     });
     
     // Vermerk löschen
-    $("#deleteVermerkExecute").click(function(){                
+    $("#deleteVermerkExecute").click(function(){       
+        stopRecording();
         var vermerkUntergruppenID = <?php echo filter_input(INPUT_GET, 'vermerkUntergruppenID') ?>;
         
         $.ajax({

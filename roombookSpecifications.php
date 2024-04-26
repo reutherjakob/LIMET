@@ -522,6 +522,7 @@ if(!isset($_SESSION["username"]))
 	            $(this).addClass('info');
 	            raumID = table.row( $(this) ).data()[0];
                     console.log("RaumID", raumID);
+                    
                     document.getElementById("nummer").value = table.row( $(this) ).data()[2];
                     document.getElementById("name").value = table.row( $(this) ).data()[3];
                     document.getElementById("flaeche").value = table.row( $(this) ).data()[4];

@@ -26,9 +26,9 @@ if (typeof(require) != 'undefined' && typeof(XRegExp) == 'undefined')
 var sh = {
     defaults : {
         /** Additional CSS class names to be added to highlighter elements. */
-        'class-name' : '',
+        'class-name' : '', 
 
-        /** First line number. */
+        /** First line number. */ 
         'first-line' : 1,
 
         /**
