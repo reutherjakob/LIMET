@@ -26,7 +26,7 @@ init_page_serversides();
                         </head>
 
                         <body style="height:100%">
-                            <div class="container-fluid" >
+                            <div class="container-fluid" > 
                                 <div id="limet-navbar"></div> <!-- Container für Navbar -->		
                                 <div class="mt-4 card">
                                     <div class="card-header">Räume im Projekt</div>

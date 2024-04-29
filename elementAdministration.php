@@ -43,6 +43,7 @@ init_page_serversides();
                                             <div class='card-header'><label>Elementgruppen</label></div>
                                             <div class='card-body' id='elementGroups'>
                                                 <?php
+                                                $mysqli = utils_connect_sql();
 										$sql = "SELECT tabelle_element_gewerke.idtabelle_element_gewerke, tabelle_element_gewerke.Nummer, tabelle_element_gewerke.Gewerk
 												FROM tabelle_element_gewerke
 												ORDER BY tabelle_element_gewerke.Nummer;";
