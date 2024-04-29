@@ -29,6 +29,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
                             <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
+                           
                             <style>
                                 .btn_vis{
                                     background-color: rgba(100, 140, 25, 0.2)!important;
@@ -46,18 +47,23 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 }
                                 .table>thead>tr>th {
                                     background-color: rgba(100, 140, 25, 0.15);
+                                    /*height: 35px !important;*/
+                                    /*font-size: 16px;*/
                                 }
-
                                 .none {
                                     background-color: #FFFFFF !important;
                                     height: 1px !important;
                                     width: 1px !important;
                                     z-index: -1;
                                 }
+
                                 .form-check-input:checked {
                                     background-color: rgba(100, 140, 25, 0.75) !important;
                                 }
-
+                                .rotated {
+                                    writing-mode: vertical-lr; /* Rotate text vertically */
+                                    /*transform: rotate(180deg);  Flip the vertical text */
+                                }
                             </style>
 
                             </head> 
@@ -96,69 +102,113 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                             <script src="roombookSpecifications_constDeclarations.js"></script> 
                                                             <script>
                                                                 var table;
-                                                                let console_output = false;
-                                                                
+                                                                let toastCounter = 0;
+
+                                                                var cellText = "";
                                                                 var currentRowInd = 0;
                                                                 var currentColInd = 0;
-                                                                var cellText = "";
-                                                                let toastCounter = 0;
                                                                 let current_edit = false; //variable keeps track if the input field to ediot the cells is open
 
                                                                 $(document).ready(function () {
                                                                     init_dt();
-
+                                                                    init_editable_checkbox();
                                                                     add_MT_rel_filter('#TableCardHeader');
                                                                     move_dt_search();
-                                                                    init_editable_checkbox();
-
                                                                     init_showRoomElements_btn();
                                                                     init_btn_4_dt();
                                                                     init_visibilities();
-
                                                                     table_click();
                                                                     event_table_keyz();
                                                                 });
-                                                                
-                                                                function format_data_input( newData , columnName) {
-                                                                    switch(columnName ) {
-                                                                        case "MT-relevant":
-                                                                            newData= one_or_zero(newData);
-                                                                            
+
+                                                                function getCase(dataIdentifier) {
+                                                                    const column = columnsDefinition.find(column => column.data === dataIdentifier);
+                                                                    if (column && column.case) {
+                                                                        return column.case;
+                                                                    } else {
+                                                                        return 'no case';
+                                                                    }
+                                                                }
+
+                                                                function format_data_input(newData, dataIdentifier) {
+                                                                    switch (getCase(dataIdentifier)) {
+                                                                        case "bit":
+                                                                            newData = one_or_zero(newData);
+                                                                        case "num":
+                                                                            newData = formatNum(newData);
                                                                     }
                                                                     return newData;
                                                                 }
-                                                                
-                                                                function one_or_zero(inp){
-                                                                    inp = inp.toLowerCase();
-                                                                    if( inp === 'yes' || inp === '1' || inp === 'ja' ){
-                                                                        return "1";}  //use numerical?? or does sql save the values as int bytes??  
-                                                                    else{
-                                                                        return "0";}
-                                                                    
+
+                                                                function formatNum(newData) {
+                                                                    newData = newData.replace(/[^0-9,.-]/g, '');// Remove non-numeric characters (except for '.' and '-')
+                                                                    newData = newData.replace(/,/g, '.');  // Replace ',' with '.' 
+                                                                    return newData;
                                                                 }
-                                                                
+
+                                                                function one_or_zero(inp) {
+                                                                    inp = inp.toLowerCase();
+                                                                    if (inp === 'yes' || inp === '1' || inp === 'ja') {
+                                                                        return "1";
+                                                                    } else {
+                                                                        return "0";
+                                                                    }
+                                                                }
+
                                                                 function event_table_keyz() {
                                                                     table.on('key-focus', function (e, datatable, cell) {
                                                                         if (document.getElementById('checkbox_EditableTable').checked && !current_edit) {
                                                                             cell.node().click();
-                                                                            if(console_output) console.log("cell.node().click() ... executed!");
                                                                         }
                                                                     });
                                                                 }
 
-                                                                function table_click() { 
+                                                                function html_2_plug_into_edit_cell(dataIdentifier) {
+                                                                    const options = {
+                                                                        "Allgemeine Hygieneklasse": [
+                                                                            "ÖAK - I - Ordination- und Behandlung",
+                                                                            "ÖAK - II - klein Invasiv",
+                                                                            "ÖAK - III - Eingriffsraum",
+                                                                            "ÖAK - IV - OP",
+                                                                            "MA 15 - LL 28 - OP",
+                                                                            "MA 15 - LL 28 - Eingriffsraum",
+                                                                            "MA 15 - LL 28 - Behandlungsraum invasiv",
+                                                                            "Gentechnikgesetz - S1",
+                                                                            "Gentechnikgesetz - S2",
+                                                                            "Gentechnikgesetz - S3",
+                                                                            "Gentechnikgesetz - S4"],
+                                                                        "H6020": ["H1a", "H1b", "H2a", "H2b", "H2c", "H3", "H4"],
+                                                                        "Anwendungsgruppe": ["-", "0", "1", "2"],
+                                                                        "Fussboden OENORM B5220": ["kA", "Klasse 1", "Klasse 2", "Klasse 3"],
+                                                                    };
+                                                                    if (options[dataIdentifier]) {
+                                                                        const dropdownOptions = options[dataIdentifier]
+                                                                                .map(option => `<option value="${option}"${cellText === option ? ' selected' : ''}>${option}</option>`)
+                                                                                .join('\n');
+                                                                        return `<select class="form-control form-control-sm" id="${dataIdentifier}_dropdowner">\n${dropdownOptions}\n</select>`;
+                                                                    } else {
+                                                                        return `<input id="CellInput" type="text" value="${cellText}">`;
+                                                                    }
+                                                                }
+
+
+                                                                function table_click() {
                                                                     $('#table_rooms tbody').on('click', 'tr', function () {
+                                                                        var RaumID = $('#table_rooms').DataTable().row($(this)).data()['idTABELLE_Räume'];
                                                                         if (document.getElementById('checkbox_EditableTable').checked) {
-                                                                            current_edit = true;
-                                                                            var RaumID = $('#table_rooms').DataTable().row($(this)).data()['idTABELLE_Räume'];
+                                                                           
+                                                                            var Raumbez = $('#table_rooms').DataTable().row($(this)).data()['Raumbezeichnung'];
                                                                             var rowIndex = $(this).closest('tr').index();
                                                                             var columnIndex = -1;
-                                                                            $(this).find('td').each(function (index) {
+                                                                            $(this).find('td').each(function (index) { //finding index like this only works for the first click, the it return -1
                                                                                 if ($(this).is(event.target)) {
                                                                                     columnIndex = index;
-                                                                                    return false; // Exit the loop once we find the clicked cell
+                                                                                    return false;
                                                                                 }
                                                                             });
+                                                                            if (columnIndex === -1) {
+                                                                                columnIndex = currentColInd; //lazy bugfix for -1 problem
+                                                                            }
                                                                             var index_accounting_4_visibility = columnIndex;
                                                                             var visibleColumns = table.columns().visible();
                                                                             for (var i = 0; i <= index_accounting_4_visibility; i++) { //also count invisible ones, if u wanna use the ccolumn definition indexing
@@ -166,45 +216,44 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                                     index_accounting_4_visibility++;
                                                                                 }
                                                                             }
-                                                                            var columnName = columnsDefinition[index_accounting_4_visibility]['data'];
+                                                                            var dataIdentifier = columnsDefinition[index_accounting_4_visibility]['data'];
                                                                             var cell = $(this).find('td').eq(columnIndex);
-                                                                            if (currentRowInd !== rowIndex || currentColInd !== index_accounting_4_visibility) {
+                                                                            if (currentRowInd !== rowIndex || currentColInd !== columnIndex) {
                                                                                 cellText = cell.text().trim();
-                                                                                if(console_output)  console.log("Clicked another cell: ", cellText);
                                                                             }
                                                                             currentRowInd = rowIndex;
-                                                                            currentColInd = index_accounting_4_visibility;
+                                                                            currentColInd = columnIndex;
+                                                                            console.log('Debug TableClick: Column index:', columnIndex, "; Acc4Vis ", index_accounting_4_visibility, '; Row index:', rowIndex, '; Column name (data identifier):', dataIdentifier, "; idTABELLE_Räume: ", RaumID, " Raumbezeichnung: ", Raumbez);
 
-                                                                            if(console_output)  console.log('Debug TableClick: Column index:', columnIndex, "; Acc4Vis ", index_accounting_4_visibility, '; Row index:', rowIndex, '; Column name (data identifier):', columnName, "; idTABELLE_Räume: ", RaumID);
-
-                                                                            if (columnName !== "Bezeichnung" && columnName !== "Nummer") {
-                                                                                cell.html('<input id="CellInput" type="text" value="' + cellText + '">');
-
-                                                                                cell.find('input').focus();
-                                                                                cell.find('input').on('keydown blur', function (event) {
-
-                                                                                    if (event.keyCode === 13) { // Enter key pressed
-                                                                                        if(console_output) console.log("Enter Keydown");
-
-                                                                                        var newData = format_data_input( $(this).val()  , columnName)  ;
+                                                                            if (getCase(dataIdentifier) !== "none-edit") {  //dataIdentifier !== "Bezeichnung" && dataIdentifier !== "Nummer") {
+                                                                                if (!current_edit) {
+                                                                                    cell.html(html_2_plug_into_edit_cell(dataIdentifier));
+                                                                                } 
+                                                                                current_edit = true;
+                                                                                cell.find('input, select').focus();
+                                                                                cell.find('input, select').on('keydown blur', function (event) {
+                                                                                    if (event.keyCode === 13 && current_edit) { // Enter key pressed
+                                                                                        //console.log("Enter Keydown: ", $(this).val());
+                                                                                        var newData = format_data_input($(this).val(), dataIdentifier);
 
                                                                                         if (newData.trim() !== "") {
+                                                                                            cellText = newData;
                                                                                             cell.html(newData);
                                                                                             current_edit = false;
-                                                                                            if(console_output)console.log("Saving:", RaumID, columnName, newData);
-                                                                                            save_changes(RaumID, columnName, newData, table.row(rowIndex).data()['Raumbezeichnung'] );
-                                                                                           
+                                                                                            //console.log("Saving:", RaumID, dataIdentifier, newData);
+                                                                                            save_changes(RaumID, dataIdentifier, newData, Raumbez);
                                                                                         }
-                                                                                    }
+                                                                                    } // else {alert("DatEmpty: Enter valid params"); }
+
                                                                                     if (event.keyCode === 27 || event.type === "blur" || (event.keyCode >= 37 && event.keyCode <= 40) || event.keyCode === 9) {
-                                                                                        if(console_output)console.log("BLUR/ ARROW/ ESC/ TAB keydown");
-                                                                                        try{ cell.html(cellText);} catch (e) {console.log(e);}
+                                                                                        cell.html(cellText);
                                                                                         current_edit = false;
                                                                                         initializeToaster("Changes NOT Saved", " - ", false);
                                                                                     }
                                                                                 });
                                                                             }
                                                                         }
+
                                                                         $.ajax({
                                                                             url: "setSessionVariables.php",
                                                                             data: {"roomID": RaumID},
@@ -222,8 +271,12 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                                             success: function (data) {
                                                                                                 $("#roomElements").html(data);
                                                                                                 $('#diy_searcher').on('keyup', function () {
-                                                                                                    try {($('#tableRoomElements').DataTable().search(this.value).draw());}
-                                                                                                    catch (e) {console.log(e); alert("!",e);}
+                                                                                                    try {
+                                                                                                        ($('#tableRoomElements').DataTable().search(this.value).draw());
+                                                                                                    } catch (e) {
+                                                                                                        console.log(e);
+                                                                                                        alert("!", e);
+                                                                                                    }
                                                                                                 });
                                                                                             }
                                                                                         });
@@ -240,17 +293,17 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                     document.getElementById("TableCardHeader").appendChild(dt_searcher);
                                                                 }
 
-                                                                function save_changes(RaumID, ColumnName, new_data, raumname) {
-                                                                    console.log("SaveFunction: ", RaumID, ColumnName, new_data);
+                                                                function save_changes(RaumID, ColumnName, newData, raumname) {
+                                                                    console.log("SaveFunction: ", raumname, ColumnName, newData);
                                                                     $.ajax({
                                                                         url: "saveRoomProperties.php",
-                                                                        data: {"roomID": RaumID, "column": ColumnName, "value": new_data},
+                                                                        data: {"roomID": RaumID, "column": ColumnName, "value": newData},
                                                                         type: "GET",
                                                                         success: function (data) {
-                                                                            if (data.trim() === "Erfolgreich aktualisiert!") {
-                                                                                initializeToaster("<b>SAVED</b>", raumname + ";  " + ColumnName + ";  " + new_data + " ", true);
+                                                                            if (data === "Erfolgreich aktualisiert!") {
+                                                                                initializeToaster("<b>SAVED</b>", raumname + ";  " + ColumnName + ";  " + newData + " ", true);
                                                                             } else {
-                                                                                initializeToaster("<b>FAILED!!</b>"," --- ask your friendly coder", false );
+                                                                                initializeToaster("<b>FAILED!!</b>" + data + "---", "", false);
                                                                             }
                                                                         }
                                                                     });
@@ -262,12 +315,13 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         name: 'EditableTable',
                                                                         id: 'checkbox_EditableTable',
                                                                         checked: false,
-                                                                        class: 'form-check-input'
+                                                                        class: 'form-check-input form-control-lg '
                                                                     }).appendTo($('#TableCardHeader'));
                                                                     var label = $('<label>', {
                                                                         htmlFor: 'checkbox_EditableTable',
-                                                                        class: ' form-check-label'
-                                                                    }).text('Edit');
+                                                                        class: ' form-check-label rotated',
+                                                                        text: "- EDIT -"});
+
                                                                     var container = $('<span>').append(checkbox).append(label);
                                                                     $('#TableCardHeader').append(container);
                                                                 }
@@ -280,6 +334,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         console.log("Table click initiated");
                                                                     }
                                                                 }
+                                                                
                                                                 function initializeToaster(headerText, subtext, success) {
                                                                     const toast = document.createElement('div');
                                                                     toast.classList.add('toast');
@@ -311,40 +366,9 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         toastCounter--;
 
                                                                         // Move up the existing toasts
-                                                                        moveUpToasts();
-                                                                    }, 2000+ toastCounter*100);
+//                                                                        moveUpToasts();
+                                                                    }, 2000 + toastCounter * 100);
                                                                 }
-
-                                                                function moveUpToasts() {
-                                                                    const toasts = document.querySelectorAll('.toast');
-                                                                    let topPosition = 10;
-
-                                                                    toasts.forEach((toast, index) => {
-                                                                        toast.style.top = `${topPosition}px`;
-                                                                        topPosition += 50;
-                                                                    });
-                                                                }
-
-//                                                                function initializeToaster(headerText, subtext, success) {
-//                                                                    const toast = document.createElement('div');
-//                                                                    toast.classList.add('toast');
-//                                                                    toast.classList.add('show');
-//                                                                    toast.setAttribute('role', 'alert');
-//                                                                    toast.style.position = 'fixed';
-//                                                                    toast.style.top = `${10 + toastCounter * 50}px`; // Stack toasts vertically
-//                                                                    toast.style.right = '10px';
-//                                                                    toast.innerHTML = `
-//                                                                    <div class="toast-header ${success ? "btn_vis" : "btn_invis"} ">
-//                                                                        <strong class="mr-auto">${headerText} ${subtext}</strong>
-//                                                                    </div> `;
-//                                                                    document.body.appendChild(toast);
-//                                                                    toast.style.display = 'block';
-//                                                                    toastCounter++;
-//                                                                    setTimeout(() => {
-//                                                                        toast.style.display = 'none';
-//                                                                        toastCounter--;
-//                                                                    }, 2500);
-//                                                                }
 
                                                                 function copySelectedRow() {
                                                                     if (confirm('Raum Kopieren??')) {
@@ -574,7 +598,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                     });
                                                                 }
 
-
                                                                 function save_new_room(nummer, name, funktionsteilstelle, MTrelevant) {
                                                                     if (nummer !== "" && name !== "" && MTrelevant !== "" && funktionsteilstelle !== "") {  //& flaeche  !== "" && geschoss !== "" && bauetappe  !== "" && bauteil  !== "" && funktionsteilstelle !== 0 
                                                                         $.ajax({
@@ -635,9 +658,9 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                 }
 
                                                                 function add_MT_rel_filter(location) {
-                                                                    var dropdownHtml = '<select class="form-control-sm" id="columnFilter">' + '<option value="">All</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
+                                                                    var dropdownHtml = '<select class="form-control-sm" id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
 //                                                                    $('#table_rooms thead th:eq(4)').append(dropdownHtml); //to be set eqquivalent to the column index 
-                                                                    console.log("Init MT Rel Dropdown");
+//                                                                    console.log("Init MT Rel Dropdown");
                                                                     $(location).append(dropdownHtml);
                                                                     $('#columnFilter').change(function () {
                                                                         var filterValue = $(this).val();
@@ -649,12 +672,12 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                     let spacer = {extend: 'spacer', style: 'bar'};
                                                                     new $.fn.dataTable.Buttons(table, {
                                                                         buttons: [
-                                                                            {extend: 'searchBuilder', label: "Search B"}, spacer,
+                                                                            spacer, {extend: 'searchBuilder', label: "Search B"}, spacer,
                                                                             buttonRanges.map(button => ({
                                                                                     text: button.name,
                                                                                     className: 'btn_vis',
                                                                                     action: function (e, dt, node, config) {
-                                                                                        toggleColumns(dt, button.start - 1, button.end - 1, button.name); // -1 cause i deleted non working first column
+                                                                                        toggleColumns(dt, button.start , button.end , button.name); // -1 cause i deleted non working first column
                                                                                     }
                                                                                 })), spacer,
                                                                             {
@@ -747,6 +770,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                     var MTrelevant = $("#mt-relevant").val();
                                                                     save_new_room(nummer, name, funktionsteilstelle, MTrelevant);
                                                                 });
+
+
                                                                 /*function init_search_bar() {
                                                                  const searchInput = $('<input>', {
                                                                  type: 'text',

@@ -1,30 +1,4 @@
 <?php
-//============================================================+
-// File name   : example_011.php
-// Begin       : 2008-03-04
-// Last Update : 2013-05-14
-//
-// Description : Example 011 for TCPDF class
-//               Colored Table (very simple table)
-//
-// Author: Nicola Asuni
-//
-// (c) Copyright:
-//               Nicola Asuni
-//               Tecnick.com LTD
-//               www.tecnick.com
-//               info@tecnick.com
-//============================================================+
-
-/**
- * Creates an example PDF TEST document using TCPDF
- * @package com.tecnick.tcpdf
- * @abstract TCPDF - Example: Colored Table
- * @author Nicola Asuni
- * @since 2008-03-04
- */
-
-// Include the main TCPDF library (search for installation path).
 require_once('TCPDF-master/TCPDF-master/tcpdf.php');
 
 // extend TCPF with custom functions
@@ -188,7 +162,9 @@ class MYPDF extends TCPDF {
                         
             $betreffText = "";
             if(strlen($row['Raumnr']) > 0){
-                $betreffText = $betreffText.'Betrifft Raum: '.$row['Raumnr']." ".$row['Raumbezeichnung']."\n";
+                if( strlen($row['Raumnummer_Nutzer']) > 0) {
+                    $betreffText = $betreffText.'Betrifft Raum: '.$row['Raumnummer_Nutzer']." ".$row['Raumbezeichnung']."\n";}
+                else{$betreffText = $betreffText.'Betrifft Raum: '." ".$row['Raumnr']." ".$row['Raumbezeichnung']."\n";}
             }
             if(strlen($row['LosNr_Extern']) > 0){
                 $betreffText = $betreffText.'Betrifft Los: '.$row['LosNr_Extern']." ".$row['LosBezeichnung_Extern']."\n";
@@ -386,7 +362,7 @@ FROM tabelle_ansprechpersonen RIGHT JOIN (tabelle_Vermerke_has_tabelle_ansprechp
 WHERE (((tabelle_Vermerkuntergruppe.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe)=".filter_input(INPUT_GET, 'gruppenID')."))
 ORDER BY tabelle_Vermerkuntergruppe.Untergruppennummer;";
 */
-$sql = "SELECT tabelle_Vermerkuntergruppe.Untergruppennummer, tabelle_Vermerkuntergruppe.Untergruppenname, tabelle_Vermerke.Faelligkeit, tabelle_Vermerke.Vermerkart, tabelle_Vermerke.Vermerktext, tabelle_Vermerke.Bearbeitungsstatus, GROUP_CONCAT(tabelle_ansprechpersonen.Name SEPARATOR ', ') AS Name, tabelle_Vermerke.idtabelle_Vermerke, tabelle_Vermerkuntergruppe.idtabelle_Vermerkuntergruppe, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern
+$sql = "SELECT tabelle_Vermerkuntergruppe.Untergruppennummer, tabelle_Vermerkuntergruppe.Untergruppenname, tabelle_Vermerke.Faelligkeit, tabelle_Vermerke.Vermerkart, tabelle_Vermerke.Vermerktext, tabelle_Vermerke.Bearbeitungsstatus, GROUP_CONCAT(tabelle_ansprechpersonen.Name SEPARATOR ', ') AS Name, tabelle_Vermerke.idtabelle_Vermerke, tabelle_Vermerkuntergruppe.idtabelle_Vermerkuntergruppe, tabelle_räume.Raumnr, tabelle_räume.Raumnummer_Nutzer, tabelle_räume.Raumbezeichnung, tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern
 FROM ((tabelle_ansprechpersonen RIGHT JOIN (tabelle_Vermerke_has_tabelle_ansprechpersonen RIGHT JOIN (tabelle_Vermerkuntergruppe INNER JOIN tabelle_Vermerke ON tabelle_Vermerkuntergruppe.idtabelle_Vermerkuntergruppe = tabelle_Vermerke.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe) ON tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_Vermerke_idtabelle_Vermerke = tabelle_Vermerke.idtabelle_Vermerke) ON tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen = tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen) LEFT JOIN tabelle_räume ON tabelle_Vermerke.tabelle_räume_idTABELLE_Räume = tabelle_räume.idTABELLE_Räume) LEFT JOIN tabelle_lose_extern ON tabelle_Vermerke.tabelle_lose_extern_idtabelle_Lose_Extern = tabelle_lose_extern.idtabelle_Lose_Extern
 WHERE (((tabelle_Vermerkuntergruppe.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe)=".filter_input(INPUT_GET, 'gruppenID')."))
 GROUP BY idtabelle_Vermerke
@@ -404,6 +380,7 @@ while ($row = $result->fetch_assoc()) {
     $dataVermerke[$row['idtabelle_Vermerke']]['Name'] = $row['Name'];
     $dataVermerke[$row['idtabelle_Vermerke']]['Faelligkeit'] = $row['Faelligkeit'];
     $dataVermerke[$row['idtabelle_Vermerke']]['Vermerkart'] = $row['Vermerkart'];
+    $dataVermerke[$row['idtabelle_Vermerke']]['Raumnummer_Nutzer'] = $row['Raumnummer_Nutzer'];
     $dataVermerke[$row['idtabelle_Vermerke']]['Raumnr'] = $row['Raumnr'];
     $dataVermerke[$row['idtabelle_Vermerke']]['Raumbezeichnung'] = $row['Raumbezeichnung'];
     $dataVermerke[$row['idtabelle_Vermerke']]['LosNr_Extern'] = $row['LosNr_Extern'];

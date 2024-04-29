@@ -9,8 +9,6 @@ check_login();
 <html>
     <head>
         <style>
-
-
             .hr-sect {
                     display: flex;
                     flex-basis: 100%;
@@ -144,8 +142,8 @@ check_login();
             //Bauangaben kopieren
             $("input[value='Bauangaben kopieren exkl BO']").click(function () {
                 var ID = this.id;
-
-                $.ajax({
+                console.log("File: getRbSpecs2.ph M:BauangabenKopieren RID: ", ID);
+                $.ajax({ 
                     url: "getRoomsToCopy.php",
                     type: "GET",
                     data: {"id": ID},

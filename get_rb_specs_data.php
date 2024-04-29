@@ -112,7 +112,9 @@
            tabelle_räume.`O2 l/min`, 
            tabelle_räume.`O2 l/min`,
            tabelle_räume.`O2 Reinheit`, 
-           tabelle_räume.Laserklasse
+           tabelle_räume.Laserklasse,
+           tabelle_räume.HT_Waermeabgabe_W,
+           tabelle_räume.`Fussboden OENORM B5220`
         FROM tabelle_räume
 	INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
         WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=".$_SESSION["projectID"]."))
