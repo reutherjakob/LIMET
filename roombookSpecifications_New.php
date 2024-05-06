@@ -253,10 +253,11 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                                 });
                                                                             }
                                                                         }
-
+console.log("RaumID", RaumID);
                                                                         $.ajax({
                                                                             url: "setSessionVariables.php",
                                                                             data: {"roomID": RaumID},
+                                                                            
                                                                             type: "GET",
                                                                             success: function (data) {
                                                                                 $("#RoomID").text(RaumID);
@@ -365,7 +366,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         toast.style.display = 'none';
                                                                         toastCounter--;
 
-                                                                        // Move up the existing toasts
+                                                                         // Move up the existing toasts
 //                                                                        moveUpToasts();
                                                                     }, 2000 + toastCounter * 100);
                                                                 }
