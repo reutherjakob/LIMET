@@ -1,6 +1,8 @@
 <?php
 session_start();
 $_SESSION["dbAdmin"]="2";
+include '_utils.php';
+init_page_serversides();
 ?> 
 
 
@@ -29,31 +31,15 @@ $_SESSION["dbAdmin"]="2";
 <script type="text/javascript" src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
 
 
- <style>
-
-.btn-xs {
-  height: 22px;
-  padding: 2px 5px;
-  font-size: 12px;
-  line-height: 1.5; /* If Placeholder of the input is moved up, rem/modify this. */
-  border-radius: 3px;
-}
-
-</style>
+ 
  
 </head>
 
 <body style="height:100%">
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-
-?>
+ 
 <div class="container-fluid" >
-    <div id="limet-navbar"></div> <!-- Container für Navbar Aufruf über onLoad -->
+    <div id="limet-navbar"></div> <!-- Container für Navbar Aufruf über onLoad --> 
+    
     <div class='row'>
         <div class='col-sm-12'> 
             <div class="mt-4 card">
