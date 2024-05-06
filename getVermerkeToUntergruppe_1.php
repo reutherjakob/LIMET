@@ -199,8 +199,6 @@ if(!isset($_SESSION["username"]))
                         </select>
                     </div> 
                     
-
-
 <script >
 var isRecording;
 var timer;

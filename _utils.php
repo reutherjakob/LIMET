@@ -2,32 +2,33 @@
 
 function br2nl($string) {
     $return = str_replace(array("<br/>"), "\n", $string);
-  //  $return= str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $temp);
+    //  $return= str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $temp);
     return $return;
 }
 
-
-function check_login(){
+function check_login() {
     if (!isset($_SESSION["username"])) {
         echo "Bitte erst <a href=\"index.php\">einloggen</a>";
         exit;
     }
 }
 
-function check_project(){
+function check_project() {
     if ($_SESSION["projectName"] != "") {
         echo '<script>';
-        echo 'var currentP = ' . json_encode( $_SESSION["projectName"]) . ';';
+        echo 'var currentP = ' . json_encode($_SESSION["projectName"]) . ';';
         echo '</script>';
-    
-    } else {  echo '<script>';
-        echo 'var currentP = ' . json_encode( " NIX ") . ';';
-        echo '</script>';} 
+    } else {
+        echo '<script>';
+        echo 'var currentP = ' . json_encode(" NIX ") . ';';
+        echo '</script>';
+    }
 }
 
 function init_page_serversides() { //and Project. 
     check_login();
-    check_project(); 
+    check_project();
+    load_nav_bar();
 }
 
 function utils_connect_sql() {
@@ -42,29 +43,17 @@ function utils_connect_sql() {
         exit();
     }
     return $mysqli;
-}
+} 
 
-function print_whole_sql($result) {
-    while ($row = $result->fetch_assoc()) {
-        foreach ($row as $key => $value) {
-            echo "$key: $value\n";
-        }
-    }
-}
+function load_nav_bar() {
+    echo '<script>';
+    echo '    window.onload = function () {';
+    echo '        $.get("navbar.html", function (data) {';
+    echo '            $("#limet-navbar").html(data);';
+    echo '            $(".navbar-nav").find("li:nth-child(3)")';
+    echo '                    .addClass("active");';
+    echo '            $("#projectSelected").text("Projekt:" + currentP);';
+    echo '        });';
+    echo '     };    </script>';
 
-?>
-
-<script>	    
-    //Load Navbar onLoad   <div id="limet-navbar"></div> 
-    window.onload = function(){
-        $.get("navbar.html", function(data){
-            $("#limet-navbar").html(data);
-            $('.navbar-nav').find('li:nth-child(3)') 
-              .addClass('active');
-            $('#projectSelected').text("Projekt:"  +currentP);
-//            console.log(currentP );
-        });
-    };    
-    
- 
-</script>  
+} 
