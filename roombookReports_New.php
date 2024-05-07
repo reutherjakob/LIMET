@@ -17,7 +17,7 @@ init_page_serversides();
 
                 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
                     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
-                        
+
                         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
                         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
                         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
@@ -29,7 +29,16 @@ init_page_serversides();
                             <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
                             </head>
 
-
+                            <style>
+                                .fix_size{
+                                    height: 30px !important;
+                                    font-size: 16px;
+                                }
+                                .rotated {
+                                    writing-mode: vertical-lr !important; /* Rotate text vertically */
+                                    /*transform: rotate(180deg);  Flip the vertical text */
+                                }
+                            </style>
                             <body style="height:100%"> 
                                 <div class="container-fluid" >
                                     <div id="limet-navbar" class=' '> </div> 
@@ -89,11 +98,49 @@ init_page_serversides();
                                 <script>
                                     var table;
                                     init_dt();
-                                    
+                                    const btns = [
+                                        {text: "Raumbuch-PDF", link: "pdf_createRoombookPDF"},
+                                        {text: "Raumbuch-0-PDF", link: "pdf_createRoombookWithout0PDF"},
+                                        {text: "Raumbuch-ohne Bestand-PDF", link: "pdf_createRoombookWithoutBestandPDF"},
+                                        {text: "Raumbuch-0-ohne Bestand-PDF", link: "pdf_createRoombookWithout0WothoutBestandPDF"},
+                                        {text: "Raumbuch-inkl Bauangaben-0-PDF", link: "pdf_createRoombookWithBauangabenWithout0PDF"},
+                                        {text: "Bauangaben-PDF V1", link: "pdf_createBauangabenPDF"},
+                                        {text: "Bauangaben-PDF V2", link: "pdf_createBauangabenV2PDF"},
+                                        {text: "Bauangaben ohne Elemente-PDF", link: "pdf_createBauangabenWithoutElementsPDF"},
+                                        {text: "Bauangaben Lab-PDF", link: "pdf_createBauangabenLabPDF"},
+                                        {text: "Bauangaben Lab-Kurz-PDF'", link: "pdf_createBauangabenLabKompaktPDF"},
+                                        {text: "Bauangaben Lab-ENT-PDF", link: "pdf_createBauangabenLabEntPDF"},
+                                        {text: "Bauangaben Lab-EIN-PDF", link: "pdf_createBauangabenLabEinrPDF_1"},
+                                        {text: "BO-PDF", link: "pdf_createBOPDF"},
+                                        {text: "BauangabenDetail-PDF", link: "pdf_createBauangabenDetailPDF"},
+                                        {text: "VE-Gesamt-PDF", link: "pdf_createBericht_VE_PDF"},
+                                        {text: "ENT-Gesamt-PDF", link: "pdf_createBericht_ENT_PDF_2"},
+                                        {text: "Nutzer Formular", link: "pdf_createUserFormPDF"}
+                                    ];
+
+                                    function send2backend() {
+                                        $.ajax({
+                                            url: 'backend.php',
+                                            type: 'post',
+                                            data: {
+                                                bool1: true,
+                                                bool2: false
+                                            },
+                                            success: function (response) {
+                                                // handle response
+                                            }
+                                        });
+
+                                    }
+
                                     $(document).ready(function () {
-                                        add_MT_rel_filter('#HeaderTabelleCard');
-                                        init_btn_4_dt('#HeaderTabelleCard');
                                         move_dt_search('#HeaderTabelleCard');
+                                        add_MT_rel_filter('#HeaderTabelleCard');
+
+                                        init_btns('#HeaderTabelleCard');
+                                        addCheckbox('#HeaderTabelleCard');
+                                        init_btns_old('#HeaderTabelleCard');
+                                        add_btn_vis_checkbox_functionality();
                                     });
 
                                     function add_MT_rel_filter(location) {
@@ -101,16 +148,16 @@ init_page_serversides();
                                         $(location).append(dropdownHtml);
                                         $('#columnFilter').change(function () {
                                             var filterValue = $(this).val();
-//                                            table.column('MT-relevant:name').search(filterValue).draw();
                                             table.column(5).search(filterValue).draw();
                                         });
                                     }
-                                    
+
                                     function move_dt_search(location) {
                                         var move = $("#dt-search-0");
-                                        $(location).append(move); 
+//                                        move.addClass("fix_size");
+                                        $(location).append(move);
                                     }
-                                    
+
                                     function init_dt() {
                                         table = $('#tableRooms').DataTable({
                                             "paging": false,
@@ -140,344 +187,100 @@ init_page_serversides();
                                         });
                                     }
 
-                                    function init_btn_4_dt(location) {
+                                    function init_btns_old(location) {
                                         let spacer = {extend: 'spacer', style: 'bar'};
                                         new $.fn.dataTable.Buttons(table, {
                                             buttons: [
-                                                spacer, {extend: 'searchBuilder', label: "Search"}, spacer,
+                                                btns.map(btn => ({
+                                                        text: btn.text,
+                                                        className: "btn-sm " + btn.link,
+                                                        action: function () {
+                                                            var count = table.rows({selected: true}).data();
+                                                            var roomIDs = [];
+                                                            for (var i = 0; i < count.length; i++) {
+                                                                roomIDs.push(count[i][0]);
+                                                            }
+                                                            if (roomIDs.length === 0) {
+                                                                alert("Kein Raum ausgewählt!");
+                                                            } else {
+                                                                send2backend();
+                                                                window.open('/' + btn.link + '.php?roomID=' + roomIDs);
+                                                            }
+                                                        }}))
+                                            ]}).container().appendTo($(location));
+                                    }
+
+                                    function init_btns(location) {
+                                        let spacer = {extend: 'spacer', style: 'bar'};
+                                        new $.fn.dataTable.Buttons(table, {
+                                            buttons: [
+                                                spacer,
+                                                {extend: 'searchBuilder', label: "Search"},
+                                                spacer,
                                                 {
-                                                    text: 'Alle',
+                                                    text: 'Select All',
                                                     action: function () {
                                                         table.rows().select();
                                                     }
                                                 },
                                                 {
-                                                    text: 'Keine',
+                                                    text: 'Select None',
                                                     action: function () {
                                                         table.rows().deselect();
+                                                    }
+                                                },
+                                                spacer,
+                                                {
+                                                    text: "NEU!",
+                                                    className: "btn-sm ",
+                                                    action: function () {
+                                                        var count = table.rows({selected: true}).data();
+                                                        var roomIDs = [];
+                                                        for (var i = 0; i < count.length; i++) {
+                                                            roomIDs.push(count[i][0]);
+                                                        }
+                                                        if (roomIDs.length === 0) {
+                                                            alert("Kein Raum ausgewählt!");
+                                                        } else {
+                                                            send2backend();
+                                                            window.open('/pdf_createBericht_NEW.php?roomID=' + roomIDs);
+                                                        }
                                                     }
                                                 }
                                             ]}).container().appendTo($(location));
                                     }
 
+                                    function addCheckbox(location) {
+                                        var checkbox = document.createElement('input');
+                                        checkbox.type = 'checkbox';
+                                        checkbox.id = 'btnVisibilityCBX';
+                                        checkbox.checked = false;
 
-//                                                {
-//                                                    text: 'Raumbuch-PDF',
-//                                                    action: function () {
-//                                                        var count = table.rows({selected: true}).data();
-//                                                        //RaumIDs zur Auswahl der Berichte
-//                                                        var roomIDs = [];
-//                                                        for (var i = 0; i < count.length; i++) {
-//                                                            roomIDs.push(count[i][0]);
-//                                                        }
-//                                                        if (roomIDs.length === 0) {
-//                                                            alert("Kein Raum ausgewählt!");
-//                                                        } else {
-//                                                            window.open('/pdf_createRoombookPDF.php?roomID=' + roomIDs);//there are many ways to do this
-//                                                        }
-//                                                    }
-//                                                },
-//                                                {
-//                                                    text: 'Raumbuch-ohne Bestand-PDF',
-//                                                    action: function () {
-//                                                        var count = table.rows({selected: true}).data();
-//                                                        //RaumIDs zur Auswahl der Berichte
-//                                                        var roomIDs = [];
-//                                                        for (var i = 0; i < count.length; i++) {
-//                                                            roomIDs.push(count[i][0]);
-//                                                        }
-//                                                        if (roomIDs.length === 0) {
-//                                                            alert("Kein Raum ausgewählt!");
-//                                                        } else {
-//                                                            window.open('/pdf_createRoombookWithoutBestandPDF.php?roomID=' + roomIDs);//there are many ways to do this
-//                                                        }
-//                                                    }
-//                                                },
-//                                                {
-//                                                    text: 'Raumbuch-0-PDF',
-//                                                    action: function () {
-//                                                        var count = table.rows({selected: true}).data();
-//                                                        //RaumIDs zur Auswahl der Berichte
-//                                                        var roomIDs = [];
-//                                                        for (var i = 0; i < count.length; i++) {
-//                                                            roomIDs.push(count[i][0]);
-//                                                        }
-//                                                        if (roomIDs.length === 0) {
-//                                                            alert("Kein Raum ausgewählt!");
-//                                                        } else {
-//                                                            window.open('/pdf_createRoombookWithout0PDF.php?roomID=' + roomIDs);//there are many ways to do this
-//                                                        }
-//                                                    }
-//                                                },
-//                                                {
-//                                                    text: 'Raumbuch-0-ohne Bestand-PDF',
-//                                                    action: function () {
-//                                                        var count = table.rows({selected: true}).data();
-//                                                        //RaumIDs zur Auswahl der Berichte
-//                                                        var roomIDs = [];
-//                                                        for (var i = 0; i < count.length; i++) {
-//                                                            roomIDs.push(count[i][0]);
-//                                                        }
-//                                                        if (roomIDs.length === 0) {
-//                                                            alert("Kein Raum ausgewählt!");
-//                                                        } else {
-//                                                            window.open('/pdf_createRoombookWithout0WothoutBestandPDF.php?roomID=' + roomIDs);//there are many ways to do this
-//                                                        }
-//                                                    }
-//                                                },
-//                                                {
-//                                                    text: 'Raumbuch-inkl Bauangaben-0-PDF',
-//                                                    action: function () {
-//                                                        var count = table.rows({selected: true}).data();
-//                                                        //RaumIDs zur Auswahl der Berichte
-//                                                        var roomIDs = [];
-//                                                        for (var i = 0; i < count.length; i++) {
-//                                                            roomIDs.push(count[i][0]);
-//                                                        }
-//                                                        if (roomIDs.length === 0) {
-//                                                            alert("Kein Raum ausgewählt!");
-//                                                        } else {
-//                                                            window.open('/pdf_createRoombookWithBauangabenWithout0PDF.php?roomID=' + roomIDs);//there are many ways to do this
-//                                                        }
-//                                                    }
-//                                                },
-//                                                {
-//                                                    text: 'Bauangaben-PDF V1',
-//                                                    action: function () {
-//                                                        var count = table.rows({selected: true}).data();
-//                                                        //RaumIDs zur Auswahl der Berichte
-//                                                        var roomIDs = [];
-//                                                        for (var i = 0; i < count.length; i++) {
-//                                                            roomIDs.push(count[i][0]);
-//                                                        }
-//                                                        if (roomIDs.length === 0) {
-//                                                            alert("Kein Raum ausgewählt!");
-//                                                        } else {
-//                                                            window.open('/pdf_createBauangabenPDF.php?roomID=' + roomIDs);//there are many ways to do this
-//                                                        }
-//                                                    }
-//                                                },
-//                                                {
-//                                                    text: 'Bauangaben-PDF V2',
-//                                                    action: function () {
-//                                                        var count = table.rows({selected: true}).data();
-//                                                        //RaumIDs zur Auswahl der Berichte
-//                                                        var roomIDs = [];
-//                                                        for (var i = 0; i < count.length; i++) {
-//                                                            roomIDs.push(count[i][0]);
-//                                                        }
-//                                                        if (roomIDs.length === 0) {
-//                                                            alert("Kein Raum ausgewählt!");
-//                                                        } else {
-//                                                            window.open('/pdf_createBauangabenV2PDF.php?roomID=' + roomIDs);//there are many ways to do this
-//                                                        }
-//                                                    }
-//                                                },
-//                                                {
-//                                                    text: 'Bauangaben ohne Elemente-PDF',
-//                                                    action: function () {
-//                                                        var count = table.rows({selected: true}).data();
-//                                                        //RaumIDs zur Auswahl der Berichte
-//                                                        var roomIDs = [];
-//                                                        for (var i = 0; i < count.length; i++) {
-//                                                            roomIDs.push(count[i][0]);
-//                                                        }
-//                                                        if (roomIDs.length === 0) {
-//                                                            alert("Kein Raum ausgewählt!");
-//                                                        } else {
-//                                                            window.open('/pdf_createBauangabenWithoutElementsPDF.php?roomID=' + roomIDs);//there are many ways to do this
-//                                                        }
-//                                                    }
-//                                                }
-//                                                ,
-//                                                {
-//                                                    text: 'Bauangaben Lab-PDF',
-//                                                    action: function () {
-//                                                        var count = table.rows({selected: true}).data();
-//                                                        //RaumIDs zur Auswahl der Berichte
-//                                                        var roomIDs = [];
-//                                                        for (var i = 0; i < count.length; i++) {
-//                                                            roomIDs.push(count[i][0]);
-//                                                        }
-//                                                        if (roomIDs.length === 0) {
-//                                                            alert("Kein Raum ausgewählt!");
-//                                                        } else {
-//                                                            window.open('/pdf_createBauangabenLabPDF.php?roomID=' + roomIDs);//there are many ways to do this
-//                                                        }
-//                                                    }
-//                                                }
-//                                                ,
-//                                                {
-//                                                    text: 'Bauangaben Lab-Kurz-PDF',
-//                                                    action: function () {
-//                                                        var count = table.rows({selected: true}).data();
-//                                                        //RaumIDs zur Auswahl der Berichte
-//                                                        var roomIDs = [];
-//                                                        for (var i = 0; i < count.length; i++) {
-//                                                            roomIDs.push(count[i][0]);
-//                                                        }
-//                                                        if (roomIDs.length === 0) {
-//                                                            alert("Kein Raum ausgewählt!");
-//                                                        } else {
-//                                                            window.open('/pdf_createBauangabenLabKompaktPDF.php?roomID=' + roomIDs);//there are many ways to do this
-//                                                        }
-//                                                    }
-//                                                }
-//                                                ,
-//                                                {
-//                                                    text: 'Bauangaben Lab-ENT-PDF',
-//                                                    action: function () {
-//                                                        var count = table.rows({selected: true}).data();
-//                                                        //RaumIDs zur Auswahl der Berichte
-//                                                        var roomIDs = [];
-//                                                        for (var i = 0; i < count.length; i++) {
-//                                                            roomIDs.push(count[i][0]);
-//                                                        }
-//                                                        if (roomIDs.length === 0) {
-//                                                            alert("Kein Raum ausgewählt!");
-//                                                        } else {
-//                                                            window.open('/pdf_createBauangabenLabEntPDF.php?roomID=' + roomIDs);//there are many ways to do this
-//                                                        }
-//                                                    }
-//                                                }
-//                                                ,
-//                                                {
-//                                                    text: 'Bauangaben Lab-EIN-PDF',
-//                                                    action: function () {
-//                                                        var count = table.rows({selected: true}).data();
-//                                                        //RaumIDs zur Auswahl der Berichte
-//                                                        var roomIDs = [];
-//                                                        for (var i = 0; i < count.length; i++) {
-//                                                            roomIDs.push(count[i][0]);
-//                                                        }
-//                                                        if (roomIDs.length === 0) {
-//                                                            alert("Kein Raum ausgewählt!");
-//                                                        } else {
-//                                                            window.open('/pdf_createBauangabenLabEinrPDF_1.php?roomID=' + roomIDs);//there are many ways to do this
-//                                                        }
-//                                                    }
-//                                                }
-//                                                ,
-//                                                {
-//                                                    text: 'BO-PDF',
-//                                                    action: function () {
-//                                                        var count = table.rows({selected: true}).data();
-//                                                        //RaumIDs zur Auswahl der Berichte
-//                                                        var roomIDs = [];
-//                                                        for (var i = 0; i < count.length; i++) {
-//                                                            roomIDs.push(count[i][0]);
-//                                                        }
-//                                                        if (roomIDs.length === 0) {
-//                                                            alert("Kein Raum ausgewählt!");
-//                                                        } else {
-//                                                            window.open('/pdf_createBOPDF.php?roomID=' + roomIDs);
-//                                                        }
-//                                                    }
-//                                                },
-//                                                {
-//                                                    text: 'BauangabenDetail-PDF',
-//                                                    action: function () {
-//                                                        var count = table.rows({selected: true}).data();
-//                                                        //RaumIDs zur Auswahl der Berichte
-//                                                        var roomIDs = [];
-//                                                        for (var i = 0; i < count.length; i++) {
-//                                                            roomIDs.push(count[i][0]);
-//                                                        }
-//                                                        if (roomIDs.length === 0) {
-//                                                            alert("Kein Raum ausgewählt!");
-//                                                        } else {
-//                                                            window.open('/pdf_createBauangabenDetailPDF.php?roomID=' + roomIDs);//there are many ways to do this
-//                                                        }
-//                                                    }
-//                                                },
-//                                                {
-//                                                    text: 'VE-Gesamt-PDF',
-//                                                    action: function () {
-//                                                        var count = table.rows({selected: true}).data();
-//                                                        //RaumIDs zur Auswahl der Berichte
-//                                                        var roomIDs = [];
-//                                                        for (var i = 0; i < count.length; i++) {
-//                                                            roomIDs.push(count[i][0]);
-//                                                        }
-//                                                        if (roomIDs.length === 0) {
-//                                                            alert("Kein Raum ausgewählt!");
-//                                                        } else {
-//                                                            window.open('/pdf_createBericht_VE_PDF.php?roomID=' + roomIDs);//there are many ways to do this
-//                                                        }
-//                                                    }
-//                                                },
-//                                                {
-//                                                    text: 'ENT-Gesamt-PDF',
-//                                                    action: function () {
-//                                                        var count = table.rows({selected: true}).data();
-//                                                        //RaumIDs zur Auswahl der Berichte
-//                                                        var roomIDs = [];
-//                                                        for (var i = 0; i < count.length; i++) {
-//                                                            roomIDs.push(count[i][0]);
-//                                                        }
-//                                                        if (roomIDs.length === 0) {
-//                                                            alert("Kein Raum ausgewählt!");
-//                                                        } else {
-//                                                            window.open('/pdf_createBericht_ENT_PDF_2.php?roomID=' + roomIDs);//there are many ways to do this
-//                                                        }
-//                                                    }
-//                                                },
-//                                                {
-//                                                    text: 'Nutzer-Formular',
-//                                                    action: function () {
-//                                                        var count = table.rows({selected: true}).data();
-//                                                        //RaumIDs zur Auswahl der Berichte
-//                                                        var roomIDs = [];
-//                                                        for (var i = 0; i < count.length; i++) {
-//                                                            roomIDs.push(count[i][0]);
-//                                                        }
-//                                                        if (roomIDs.length === 0) {
-//                                                            alert("Kein Raum ausgewählt!");
-//                                                        } else {
-//                                                            window.open('/pdf_createUserFormPDF.php?roomID=' + roomIDs);//there are many ways to do this
-//                                                        }
-//                                                    }
-//                                                }
-//                                            ]
-//                                        });
+                                        var label = document.createElement('label');
+                                        label.htmlFor = 'btnVisibility';
+                                        label.class = "rotated";
+                                        label.appendChild(document.createTextNode('OLD-PDFs'));
+                                        document.querySelector(location).appendChild(checkbox);
+                                        document.querySelector(location).appendChild(label);
+                                    }
 
-
-                                    // CLICK TABELLE RÄUME
-                                    //var table = $('#tableRooms').DataTable(); 
-                                    /*$('#tableRooms tbody').on( 'click', 'tr', function () {
-                                     if ( $(this).hasClass('info') ) {
-                                     $(this).removeClass('info');	            
-                                     for(var i = roomIDs.length - 1; i >= 0; i--) {
-                                     if(roomIDs[i] === table.row( $(this) ).data()[0]) {
-                                     roomIDs.splice(i, 1);
-                                     }
-                                     }	            
-                                     }
-                                     else {
-                                     $(this).addClass('info');
-                                     roomIDs.push(table.row( $(this) ).data()[0]);	            
-                                     }
-                                     } );
-                                     */
-//                                    });
-
-//                                    $('#createRoombookPDF').click(function () {
-//                                        if (roomIDs.length === 0) {
-//                                            alert("Kein Raum ausgewählt!");
-//                                        } else {
-//                                            window.open('/pdf_createRoombookPDF.php?roomID=' + roomIDs);//there are many ways to do this
-//                                        }
-//
-//                                    });
-//
-//                                    $('#createBauangabenPDF').click(function () {
-//                                        if (roomIDs.length === 0) {
-//                                            alert("Kein Raum ausgewählt!");
-//                                        } else {
-//                                            window.open('/pdf_createBauangabenPDF.php?roomID=' + roomIDs);//there are many ways to do this
-//                                        }
-//                                    });
-
+                                    function add_btn_vis_checkbox_functionality() {
+                                        btns.forEach(btn => {
+                                            document.querySelector('.' + btn.link).style.display = 'none';
+                                        });
+                                        console.log("BTNS hidden");
+                                        document.getElementById("btnVisibilityCBX").addEventListener('change', function () {
+                                            if (this.checked) {
+                                                btns.forEach(btn => {
+                                                    document.querySelector('.' + btn.link).style.display = 'inline-block';
+                                                });
+                                            } else {
+                                                btns.forEach(btn => {
+                                                    document.querySelector('.' + btn.link).style.display = 'none';
+                                                });
+                                            }
+                                        });
+                                    }
                                 </script>
 
                             </body>

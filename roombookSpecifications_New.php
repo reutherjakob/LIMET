@@ -47,7 +47,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 }
                                 .table>thead>tr>th {
                                     background-color: rgba(100, 140, 25, 0.15);
-                                    
+
                                 }
                                 .none {
                                     background-color: #FFFFFF !important;
@@ -322,7 +322,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         checked: false,
                                                                         class: 'form-check-input fix_size'
                                                                     }).appendTo($('#TableCardHeader'));
-                                                                    var label = $('<label>', { 
+                                                                    var label = $('<label>', {
                                                                         htmlFor: 'checkbox_EditableTable',
                                                                         class: ' form-check-label rotated inline',
                                                                         text: "- EDIT -"});
@@ -345,33 +345,22 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                     toast.classList.add('toast');
                                                                     toast.classList.add('show');
                                                                     toast.setAttribute('role', 'alert');
-                                                                    toast.style.position = 'fixed';
-
-                                                                    // Calculate the top position based on the existing toasts
+                                                                    toast.style.position = 'fixed'; 
                                                                     const topPosition = 10 + toastCounter * 50;
                                                                     toast.style.top = `${topPosition}px`;
                                                                     toast.style.right = '10px';
-
-                                                                    // Set the inner HTML of the toast
+ 
                                                                     toast.innerHTML = `
                                                                         <div class="toast-header ${success ? "btn_vis" : "btn_invis"}">
                                                                             <strong class="mr-auto">${headerText} ${subtext}</strong>
-                                                                        </div>`;
-
-                                                                    // Append the toast to the document body
+                                                                        </div>`; 
                                                                     document.body.appendChild(toast);
                                                                     toast.style.display = 'block';
-
-                                                                    // Increment the toast counter
+ 
                                                                     toastCounter++;
-
-                                                                    // Set a timeout to hide the toast after 2500 milliseconds
                                                                     setTimeout(() => {
                                                                         toast.style.display = 'none';
                                                                         toastCounter--;
-
-                                                                        // Move up the existing toasts
-//                                                                        moveUpToasts();
                                                                     }, 2000 + toastCounter * 100);
                                                                 }
 
@@ -655,7 +644,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                             ['10 rows', '20 rows', 'Show all']
                                                                         ],
                                                                         compact: true,
-                                                                        keys: true,
                                                                         initComplete: function () {
                                                                             $("#datatableit_filter").detach().appendTo('#TableCardHeader');
                                                                         }
@@ -678,13 +666,16 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                     new $.fn.dataTable.Buttons(table, {
                                                                         buttons: [
                                                                             spacer, {extend: 'searchBuilder', label: "Search B"}, spacer,
+
                                                                             buttonRanges.map(button => ({
                                                                                     text: button.name,
                                                                                     className: 'btn_vis',
                                                                                     action: function (e, dt, node, config) {
                                                                                         toggleColumns(dt, button.start, button.end, button.name); // -1 cause i deleted non working first column
                                                                                     }
-                                                                                })), spacer,
+                                                                                })),
+
+                                                                            spacer,
                                                                             {
                                                                                 text: 'w/ Data',
                                                                                 className: 'btn_vis',

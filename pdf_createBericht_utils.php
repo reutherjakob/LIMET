@@ -9,6 +9,16 @@ $einzugC1 = 40;
 $einzugC2 = 60 - $einzugC1;
 $einzugE = 30;
 $ln_spacer1 = 5;
+ 
+function receive_bools(){
+    $bool1 = $_POST['bool1']; // this will be a string "true"
+    $bool2 = $_POST['bool2']; // this will be a string "false"
+
+    $bool1 = filter_var($bool1, FILTER_VALIDATE_BOOLEAN);
+    $bool2 = filter_var($bool2, FILTER_VALIDATE_BOOLEAN);
+    return $bool1;
+}
+
 
 function is_not_no_comment($str) {
   if ($str == "keine Anmerkung") {
