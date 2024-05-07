@@ -29,7 +29,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
                             <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
-                           
+
                             <style>
                                 .btn_vis{
                                     background-color: rgba(100, 140, 25, 0.2)!important;
@@ -47,14 +47,17 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 }
                                 .table>thead>tr>th {
                                     background-color: rgba(100, 140, 25, 0.15);
-                                    /*height: 35px !important;*/
-                                    /*font-size: 16px;*/
+                                    
                                 }
                                 .none {
                                     background-color: #FFFFFF !important;
                                     height: 1px !important;
                                     width: 1px !important;
                                     z-index: -1;
+                                }
+                                .fix_size{
+                                    height: 30px !important;
+                                    font-size: 16px;
                                 }
 
                                 .form-check-input:checked {
@@ -196,7 +199,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                     $('#table_rooms tbody').on('click', 'tr', function () {
                                                                         var RaumID = $('#table_rooms').DataTable().row($(this)).data()['idTABELLE_Räume'];
                                                                         if (document.getElementById('checkbox_EditableTable').checked) {
-                                                                           
+
                                                                             var Raumbez = $('#table_rooms').DataTable().row($(this)).data()['Raumbezeichnung'];
                                                                             var rowIndex = $(this).closest('tr').index();
                                                                             var columnIndex = -1;
@@ -228,7 +231,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                             if (getCase(dataIdentifier) !== "none-edit") {  //dataIdentifier !== "Bezeichnung" && dataIdentifier !== "Nummer") {
                                                                                 if (!current_edit) {
                                                                                     cell.html(html_2_plug_into_edit_cell(dataIdentifier));
-                                                                                } 
+                                                                                }
                                                                                 current_edit = true;
                                                                                 cell.find('input, select').focus();
                                                                                 cell.find('input, select').on('keydown blur', function (event) {
@@ -253,11 +256,11 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                                 });
                                                                             }
                                                                         }
-console.log("RaumID", RaumID);
+                                                                        console.log("RaumID", RaumID);
                                                                         $.ajax({
                                                                             url: "setSessionVariables.php",
                                                                             data: {"roomID": RaumID},
-                                                                            
+
                                                                             type: "GET",
                                                                             success: function (data) {
                                                                                 $("#RoomID").text(RaumID);
@@ -292,6 +295,7 @@ console.log("RaumID", RaumID);
                                                                     var dt_searcher = document.getElementById("dt-search-0");
                                                                     dt_searcher.parentNode.removeChild(dt_searcher);
                                                                     document.getElementById("TableCardHeader").appendChild(dt_searcher);
+                                                                    dt_searcher.classList.add("fix_size");
                                                                 }
 
                                                                 function save_changes(RaumID, ColumnName, newData, raumname) {
@@ -316,14 +320,14 @@ console.log("RaumID", RaumID);
                                                                         name: 'EditableTable',
                                                                         id: 'checkbox_EditableTable',
                                                                         checked: false,
-                                                                        class: 'form-check-input form-control-lg '
+                                                                        class: 'form-check-input fix_size'
                                                                     }).appendTo($('#TableCardHeader'));
-                                                                    var label = $('<label>', {
+                                                                    var label = $('<label>', { 
                                                                         htmlFor: 'checkbox_EditableTable',
-                                                                        class: ' form-check-label rotated',
+                                                                        class: ' form-check-label rotated inline',
                                                                         text: "- EDIT -"});
 
-                                                                    var container = $('<span>').append(checkbox).append(label);
+                                                                    var container = $('<span>').append(checkbox);//.append(label);
                                                                     $('#TableCardHeader').append(container);
                                                                 }
 
@@ -335,7 +339,7 @@ console.log("RaumID", RaumID);
                                                                         console.log("Table click initiated");
                                                                     }
                                                                 }
-                                                                
+
                                                                 function initializeToaster(headerText, subtext, success) {
                                                                     const toast = document.createElement('div');
                                                                     toast.classList.add('toast');
@@ -366,7 +370,7 @@ console.log("RaumID", RaumID);
                                                                         toast.style.display = 'none';
                                                                         toastCounter--;
 
-                                                                         // Move up the existing toasts
+                                                                        // Move up the existing toasts
 //                                                                        moveUpToasts();
                                                                     }, 2000 + toastCounter * 100);
                                                                 }
@@ -659,7 +663,7 @@ console.log("RaumID", RaumID);
                                                                 }
 
                                                                 function add_MT_rel_filter(location) {
-                                                                    var dropdownHtml = '<select class="form-control-sm" id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
+                                                                    var dropdownHtml = '<select class="form-control-sm fix_size" id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
 //                                                                    $('#table_rooms thead th:eq(4)').append(dropdownHtml); //to be set eqquivalent to the column index 
 //                                                                    console.log("Init MT Rel Dropdown");
                                                                     $(location).append(dropdownHtml);
@@ -678,7 +682,7 @@ console.log("RaumID", RaumID);
                                                                                     text: button.name,
                                                                                     className: 'btn_vis',
                                                                                     action: function (e, dt, node, config) {
-                                                                                        toggleColumns(dt, button.start , button.end , button.name); // -1 cause i deleted non working first column
+                                                                                        toggleColumns(dt, button.start, button.end, button.name); // -1 cause i deleted non working first column
                                                                                     }
                                                                                 })), spacer,
                                                                             {
