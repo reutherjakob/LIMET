@@ -1,33 +1,17 @@
 <?php
 session_start();
+include '_utils.php';
+init_page_serversides();
 ?>
 
 <!DOCTYPE html>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 <html>
-<head>
-    <style>
-        
-        
-    </style>
-</head>
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+<head> </head>
+ 
 
 <?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	
-	
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    printf("Error loading character set utf8: %s\n", $mysqli->error);
-	    exit();
-	} 
+$mysqli= utils_connect_sql();
 					
         
         $sql = "SELECT tabelle_räume.Nutzfläche, tabelle_räume.Raumhoehe, tabelle_räume.`Anmerkung FunktionBO`, tabelle_räume.`Anmerkung Geräte`, tabelle_räume.`Anmerkung BauStatik`, tabelle_räume.`Anmerkung Elektro`, 
