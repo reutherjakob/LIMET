@@ -6,6 +6,13 @@ function br2nl($string) {
     return $return;
 }
 
+function check_if_project_selected_else_redirect() {
+    if ($_SESSION["projectName"] == "") {
+        header("Location: https://work.limet-rb.com/projects.php");
+        exit;
+    }
+}
+
 function check_login() {
     if (!isset($_SESSION["username"])) {
         echo "Bitte erst <a href=\"index.php\">einloggen</a>";
@@ -13,7 +20,7 @@ function check_login() {
     }
 }
 
-function check_project() {
+function get_project() {
     if ($_SESSION["projectName"] != "") {
         echo '<script>';
         echo 'var currentP = ' . json_encode($_SESSION["projectName"]) . ';';
@@ -25,10 +32,13 @@ function check_project() {
     }
 }
 
-function init_page_serversides() { //and Project. 
+function init_page_serversides($ommit_redirect = "") { //and Project. 
     check_login();
-    check_project();
+    get_project();
     load_nav_bar();
+    if ($ommit_redirect == "") {
+        check_if_project_selected_else_redirect();
+    }
 }
 
 function utils_connect_sql() {
@@ -55,6 +65,6 @@ function load_nav_bar() {
     echo '            $("#projectSelected").text("Projekt:" + currentP);';
     echo '        });';
     echo '     };    </script>';
-
 }
+
 ?>
