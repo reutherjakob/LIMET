@@ -5,11 +5,7 @@ session_start();
 <!DOCTYPE html>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 <html>
-<head>
-    <style>
-        
-        
-    </style>
+<head> 
 </head>
 <body>
 <?php
