@@ -6,7 +6,7 @@ init_page_serversides("x");
 
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
     <head>
         <title>RB-Projekte</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
@@ -52,13 +52,6 @@ init_page_serversides("x");
                                                 <div class="table-responsive">
                                                     <?php
                                                     $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-
-                                                    /* change character set to utf8 */
-                                                    if (!$mysqli->set_charset("utf8")) {
-                                                        printf("Error loading character set utf8: %s\n", $mysqli->error);
-                                                        exit();
-                                                    }
-
                                                     // Abfrage aller RÃ¤ume im Projekt
                                                     //$sql="SELECT view_Projekte.idTABELLE_Projekte, view_Projekte.Interne_Nr, view_Projekte.Projektname, view_Projekte.Aktiv, view_Projekte.Neubau, view_Projekte.Bettenanzahl, view_Projekte.BGF, view_Projekte.NF, view_Projekte.Ausfuehrung, tabelle_planungsphasen.Bezeichnung, tabelle_planungsphasen.idTABELLE_Planungsphasen FROM view_Projekte INNER JOIN tabelle_planungsphasen ON view_Projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen = tabelle_planungsphasen.idTABELLE_Planungsphasen ORDER BY view_Projekte.Interne_Nr";						
                                                     $sql = "SELECT tabelle_projekte.idTABELLE_Projekte, tabelle_projekte.Interne_Nr, tabelle_projekte.Projektname, tabelle_projekte.Aktiv, tabelle_projekte.Neubau, tabelle_projekte.Bettenanzahl, tabelle_projekte.BGF, tabelle_projekte.NF, tabelle_projekte.Ausfuehrung, tabelle_planungsphasen.Bezeichnung, tabelle_planungsphasen.idTABELLE_Planungsphasen FROM tabelle_projekte INNER JOIN tabelle_planungsphasen ON tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen = tabelle_planungsphasen.idTABELLE_Planungsphasen INNER JOIN tabelle_users_have_projects ON tabelle_projekte.idTABELLE_Projekte = tabelle_users_have_projects.tabelle_projekte_idTABELLE_Projekte WHERE tabelle_users_have_projects.User = '" . $_SESSION['username'] . "' ORDER BY tabelle_projekte.Interne_Nr;";

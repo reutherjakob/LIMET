@@ -6,6 +6,7 @@ function br2nl($string) {
     return $return;
 }
 
+
 function check_if_project_selected_else_redirect() {
     if ($_SESSION["projectName"] == "") {
         header("Location: https://work.limet-rb.com/projects.php");
@@ -39,7 +40,7 @@ function init_page_serversides($ommit_redirect = "") { //and Project.
     if ($ommit_redirect == "") {
         check_if_project_selected_else_redirect();
     }
-}
+
 
 function utils_connect_sql() {
     error_reporting(E_ALL);
@@ -65,6 +66,8 @@ function load_nav_bar() {
     echo '            $("#projectSelected").text("Projekt:" + currentP);';
     echo '        });';
     echo '     };    </script>';
+
 }
+
 
 ?>

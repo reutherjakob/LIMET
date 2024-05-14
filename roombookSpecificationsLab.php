@@ -1,4 +1,4 @@
-<?php
+y<?php
 session_start();
 include '_utils.php';
 init_page_serversides();
@@ -93,6 +93,7 @@ init_page_serversides();
                                           ORDER BY tabelle_räume.Raumnr;";
                                          */
                                         $sql = "SELECT tabelle_räume.idTABELLE_Räume, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Nutzfläche, tabelle_räume.Raumhoehe, tabelle_räume.Geschoss, 
+
                                     tabelle_räume.Abdunkelbarkeit, tabelle_räume.Strahlenanwendung, tabelle_räume.Laseranwendung,  tabelle_räume.Laserklasse,  
                                     tabelle_räume.AV, tabelle_räume.SV, tabelle_räume.ZSV, tabelle_räume.USV, tabelle_räume.`IT Anbindung`, tabelle_räume.`ET_RJ45-Ports`, tabelle_räume.`Fussboden OENORM B5220`,
                                     tabelle_räume.`MT-relevant`, tabelle_räume.`ET_5x10mm2_AV_Stk`, tabelle_räume.`ET_5x10mm2_SV_Stk`, tabelle_räume.`ET_5x10mm2_USV_Stk`, tabelle_räume.`ET_5x10mm2_Digestorium_Stk`,
@@ -160,7 +161,6 @@ init_page_serversides();
                             </tr>                               
                             </thead>
                             <tbody>";
-
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";
                                             echo "<td>" . $row["idTABELLE_Räume"] . "</td>";

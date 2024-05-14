@@ -1055,7 +1055,7 @@ return $return;
     //Bauangaben kopieren
 	$("input[value='Bauangaben kopieren exkl BO']").click(function(){
 	    var ID = this.id;
-		
+            console.log("Bauangaben ID",ID); 
 		$.ajax({
                     url : "getRoomsToCopy.php",
                     type: "GET",

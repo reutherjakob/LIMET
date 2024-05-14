@@ -1,12 +1,10 @@
-
 <?php
-
+session_start();
 require_once('TCPDF-master/TCPDF-master/tcpdf.php');
 
 class MYPDF extends TCPDF {
     
-    public function Header() {
-        //Abfrage ob Titelblatt
+    public function Header() { 
         if ($this->numpages > 1){ 
             // Logo        
             if($_SESSION["projectAusfuehrung"]==="MADER"){
@@ -41,17 +39,14 @@ class MYPDF extends TCPDF {
         }
         // Titelblatt        
         else{
-            // Verbindung herstellen
+
             $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');	            
             if (!$mysqli->set_charset("utf8")) {
                 printf("Error loading character set utf8: %s\n or Login timed out", $mysqli->error);
                 exit();
             }
-             
-            
             $roomIDs = filter_input(INPUT_GET, 'roomID');
             $teile = explode(",", $roomIDs);
-            
             $sql = "SELECT tabelle_projekte.Projektname, tabelle_planungsphasen.Bezeichnung, tabelle_räume.`Raumbereich Nutzer`
                     FROM tabelle_räume INNER JOIN (tabelle_planungsphasen INNER JOIN tabelle_projekte ON tabelle_planungsphasen.idTABELLE_Planungsphasen = tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen) ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte ";
             $i = 0;
