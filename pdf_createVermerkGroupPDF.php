@@ -135,7 +135,7 @@ class MYPDF extends TCPDF {
         $w = array(135, 18, 25);
         $num_headers = count($header);
         //$this->Cell(0, 6, 'Punkte:', 0, 0, 'L', 0);
-        $this->Ln();
+//        $this->Ln();
         /* for($i = 0; $i < $num_headers; ++$i) {
           $this->MultiCell($w[$i], 6, $header[$i], 1, 'L', 0, 0, '', '');
           //$pdf->MultiCell(0, 5,"Projekt: ".$row['Projektname']."\n"."Thema: ".$row['Gruppenname']."\nDatum: ".$row['Datum']." von ".$row['Startzeit']." bis ".$row['Endzeit']."\nOrt: ".$row['Ort'], 1, 'L', 0, 1, '', '', true);
@@ -151,11 +151,10 @@ class MYPDF extends TCPDF {
         // Data        
         $fill = 0;
         $untergruppenID = 0;
+
         foreach ($data as $row) {
             $this->SetFont('helvetica', '', '8');
-
             $betreffText = "";
-
             if ($_SESSION["projectName"] === "GCP" && strlen($row['Raumnummer_Nutzer']) > 0) {
                 $betreffText = $betreffText . 'Betrifft Raum: ' . $row['Raumnummer_Nutzer'] . " " . $row['Raumbezeichnung'] . "\n";
             } else {
@@ -167,19 +166,20 @@ class MYPDF extends TCPDF {
                 $betreffText = $betreffText . 'Betrifft Los: ' . $row['LosNr_Extern'] . " " . $row['LosBezeichnung_Extern'] . "\n";
             }
 
-            $rowHeight1 = $this->getStringHeight($w[0], $row['Vermerktext'], false, true, '', 1);
-            $rowHeight4 = $this->getStringHeight($w[0], $betreffText, false, true, '', 1);
             if ($row['Vermerkart'] === 'Bearbeitung') {
-                $text = $row['Name'] . "\n" . $row['Faelligkeit'];
+                $textNameFälligkeit = $row['Name'] . "\n" . $row['Faelligkeit'];
                 if ($row['Bearbeitungsstatus'] === 0) {
-                    $text = $text . "\n" . "Offen";
+                    $textNameFälligkeit = $textNameFälligkeit . "\n" . "Offen";
                 } else {
-                    $text = $text . "\n" . "Erledigt";
+                    $textNameFälligkeit = $textNameFälligkeit . "\n" . "Erledigt";
                 }
             } else {
-                $text = "";
+                $textNameFälligkeit = ""; 
             }
-            $rowHeight2 = $this->getStringHeight($w[2], $text, false, true, '', 1);
+
+            $rowHeight1 = $this->getStringHeight($w[0], $row['Vermerktext'], false, true, '', 1);
+            $rowHeight4 = $this->getStringHeight($w[0], $betreffText, false, true, '', 1);
+            $rowHeight2 = $this->getStringHeight($w[2], $textNameFälligkeit, false, true, '', 1);
             $rowHeight3 = $this->getStringHeight($w[0], $row['Untergruppennummer'] . " " . $row['Untergruppenname'], false, true, '', 1);
 
             if ($rowHeight1 + $rowHeight4 > $rowHeight2) {
@@ -189,24 +189,27 @@ class MYPDF extends TCPDF {
                 $rowHeight1 = $rowHeight - $rowHeight4;
             }
 
-
             if ($untergruppenID != $row['idtabelle_Vermerkuntergruppe']) {
-                $this->Ln($rowHeight3);
-                // Wenn Seitenende? Überprüfen und neue Seite anfangen   
-                $y = $this->GetY();
-                if (($y + $rowHeight3) >= 270) {
-                    $this->AddPage();
-                }
 
+                // Wenn Seitenende? Überprüfen und neue Seite anfangen    
+                $y = $this->GetY();
+                if (($y + 2 * $rowHeight3 + $rowHeight ) >= 270) {
+                    $this->AddPage();
+                } else {
+                    $this->Ln($rowHeight3);
+                }
+                
+                
+                
                 $fill = 1;
                 //$this->MultiCell($w[0], $rowHeight, $row['Untergruppennummer']." ".$row['Untergruppenname'], 1, 'L', $fill, 0, '', '');
                 $this->SetFont('', 'B', '9');
-                $this->MultiCell($w[0] + $w[1] + $w[2], $rowHeight3, $row['Untergruppennummer'] . " " . $row['Untergruppenname'], 1, 'L', $fill, 0, '', '');
+                $this->MultiCell($w[0] + $w[1] + $w[2], $rowHeight3, $row['Untergruppennummer'] . ") " . $row['Untergruppenname'], 1, 'L', $fill, 0, '', '');
                 $this->Ln();
-                $y = $this->GetY();
-                if (($y + $rowHeight3) >= 270) {
-                    $this->AddPage();
-                }
+//                $y = $this->GetY();
+//                if (($y + $rowHeight3) >= 270) {  
+//                    $this->AddPage();
+//                }
                 $this->SetFont('', 'B', '8');
                 for ($i = 0; $i < $num_headers; ++$i) {
                     $this->MultiCell($w[$i], $rowHeight3, $header[$i], 1, 'L', 0, 0, '', '');
@@ -215,34 +218,30 @@ class MYPDF extends TCPDF {
                 $untergruppenID = $row['idtabelle_Vermerkuntergruppe'];
                 $fill = 0;
             } else {
-                //$this->MultiCell($w[0], $rowHeight, '', 1, 'L', $fill, 0, '', '');   
+                //$this->MultiCell($w[0], $rowHeight, '', 1, 'L', $fill, 0, '', '');    
             }
             //$this->Ln($rowHeight4);
-            $y = $this->GetY();
-            if (($y + $rowHeight) >= 270) {
-                $this->AddPage();
-            }
+//            $y = $this->GetY();
+//            if (($y + $rowHeight) >= 270) {
+//                $this->AddPage();
+//            }
             $this->SetFont('', 'I', '7');
             $this->MultiCell($w[0], $rowHeight4, $betreffText, 'LTR', 'L', $fill, 0, '', '');
             $this->SetFont('', '', '8');
             $this->MultiCell($w[1], $rowHeight, $row['Vermerkart'], 1, 'L', $fill, 0, '', '');
             if ($row['Vermerkart'] == 'Bearbeitung') {
-                $text = $row['Name'] . "\n" . $row['Faelligkeit'];
-                if ($row['Bearbeitungsstatus'] == 0) {
-                    $text = $text . "\n" . "Offen";
-                } else {
-                    $text = $text . "\n" . "Erledigt";
-                }
-                //$this->SetFont(zapfdingbats, '', 8);
-                //$text = $text."/".TCPDF_FONTS::unichr(54);
-                $this->MultiCell($w[2], $rowHeight, $text, 1, 'L', $fill, 0, '', '');
+                $this->MultiCell($w[2], $rowHeight, $textNameFälligkeit, 1, 'L', $fill, 0, '', '');
                 //$this->SetFont('helvetica','','8');
             } else {
                 $this->MultiCell($w[2], $rowHeight, '', 1, 'L', $fill, 0, '', '');
             }
 
             $this->Ln($rowHeight4);
-            $this->MultiCell($w[0], $rowHeight1, $row['Vermerktext'], 'LRB', 'L', $fill, 1, '', '');
+            $this->MultiCell($w[0], $rowHeight1, $row['Vermerktext'], 'LRB', 'L', $fill, 1, '', ''); 
+//            $y = $this->GetY();
+//            if (($y + $rowHeight1) >= 260 ) {
+//                $this->AddPage();
+//            }
         }
     }
 }
@@ -273,7 +272,7 @@ $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
 $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
 // set auto page breaks
-$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+$pdf->SetAutoPageBreak(false, PDF_MARGIN_BOTTOM);
 
 // set image scale factor
 $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
@@ -375,27 +374,15 @@ $pdf->topicsTable($topics_table_header, $dataVermerke);
 
 // -----------------------Abschlusstext anpassen----------------------------
 $pdf->SetFont('helvetica', '', '6');
-if ($_SESSION["projectAusfuehrung"] === "MADER") {
-    $pdf->Multicell(0, 5, "Hinweis: \n
-                        Sollten Einwände gegen Inhalte dieses Protokolls bestehen, so werden die Empfänger ersucht, diese
-                        Einwände im Rahmen der nächsten Besprechung mündlich oder bis spätestens 10 Tage nach Erhalt des
-                        Protokolls schriftlich vorzubringen, andernfalls wird allgemeines Einverständnis angenommen. \n
-                        Die Verteilung erfolgt ausschließlich über Email. \n \n " . $verfasser, 0, 'L', 0, 1);
-} else {
-    if ($_SESSION["projectAusfuehrung"] === "LIMET") {
-        $pdf->Multicell(0, 5, "Hinweis: \n
-                        Sollten Einwände gegen Inhalte dieses Protokolls bestehen, so werden die Empfänger ersucht, diese
-                        Einwände im Rahmen der nächsten Besprechung mündlich oder bis spätestens 10 Tage nach Erhalt des
-                        Protokolls schriftlich vorzubringen, andernfalls wird allgemeines Einverständnis angenommen. \n
-                        Die Verteilung erfolgt ausschließlich über Email. \n \n " . $verfasser, 0, 'L', 0, 1);
-    } else {
-        $pdf->Multicell(0, 5, "Hinweis: \n
-                        Sollten Einwände gegen Inhalte dieses Protokolls bestehen, so werden die Empfänger ersucht, diese
-                        Einwände im Rahmen der nächsten Besprechung mündlich oder bis spätestens 10 Tage nach Erhalt des
-                        Protokolls schriftlich vorzubringen, andernfalls wird allgemeines Einverständnis angenommen. \n
-                        Die Verteilung erfolgt ausschließlich über Email. \n \n " . $verfasser, 0, 'L', 0, 1);
-    }
+$pdf->Ln(2); 
+$outstr = "Hinweis: Sollten Einwände gegen Inhalte dieses Protokolls bestehen, so werden die Empfänger ersucht, diese Einwände im Rahmen der nächsten Besprechung mündlich oder bis spätestens 10 Tage nach Erhalt des Protokolls schriftlich vorzubringen, andernfalls wird allgemeines Einverständnis angenommen. \nDie Verteilung erfolgt ausschließlich über Email. \n  " . $verfasser;
+$height= $pdf -> getStringHeight(180,$outstr, false, true, '', 1);
+$y = $pdf->GetY();
+if (($y + $height) >= 270 ) {
+    $pdf->AddPage();
 }
+$pdf->Multicell(180, 5, $outstr, 0, 'L', 0, 1);
+
 $pdf->Image('/var/www/vhosts/limet-rb.com/httpdocs/Dokumente_RB/Images/Image_Vermerk_2898_61e58a78cd4cf.jpeg', '', '', 40, 40, 'JPG', '', '', true, 150, '', false, false, 1, false, false, false);
 
 // close and output PDF document
@@ -405,3 +392,4 @@ $pdf->Output('Protokoll_MT.pdf', 'I');
 // END OF FILE
 //============================================================+
 
+ 

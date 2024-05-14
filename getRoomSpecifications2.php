@@ -126,15 +126,14 @@ check_login();
                 var geraete = $("#geraete").val();
                 var medgas = $("#medgas").val();
                 var baustatik = $("#baustatik").val();
-                var hkls = $("#hkls").val();
-
+                var hkls = $("#hkls").val(); 
                 $.ajax({
                     url: "saveRoomSpecifications2.php",
-                    data: {"funktionBO": funktionBO, "Elektro": Elektro, "geraete": geraete, "medgas": medgas, "baustatik": baustatik, "hkls": hkls, },
+                    data: {"funktionBO": funktionBO, "Elektro": Elektro, "geraete": geraete, "medgas": medgas, "baustatik": baustatik, "hkls": hkls },
                     type: "GET",
                     success: function (data) {
                         alert(data);
-                    }
+                    } 
                 });
 
             });

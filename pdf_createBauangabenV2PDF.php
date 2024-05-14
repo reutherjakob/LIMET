@@ -2,10 +2,11 @@
 
 require_once('TCPDF-master/TCPDF-master/tcpdf.php');
 include 'pdf_createBericht_utils.php';
+include '_utils.php';
+
+
 
 class MYPDF extends TCPDF {
-
-    //Page header
     public function Header() {
         //Abfrage ob Titelblatt
         if ($this->numpages > 1) {
@@ -30,9 +31,7 @@ class MYPDF extends TCPDF {
             if ($_SESSION["projectPlanungsphase"] == "Vorentwurf") {
                 $this->Cell(0, 0, 'Medizintechnische Vorbemessungsangaben', 0, false, 'R', 0, '', 0, false, 'B', 'B');
             } else {
-                
                 $this->Cell(0, 0, 'Medizintechnische Bauangaben', 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                
             }
             $this->Ln();
             $this->cell(0, 0, '', 'B', 0, 'L');
@@ -167,7 +166,8 @@ class MYPDF extends TCPDF {
 }
 
 session_start();
-// create new PDF document
+
+
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
 // set document information
@@ -246,6 +246,7 @@ while ($row = $result1->fetch_assoc()) {
 // RaumIDs laden über GET
 $roomIDs = filter_input(INPUT_GET, 'roomID');
 $teile = explode(",", $roomIDs);
+
 
 foreach ($teile as $valueOfRoomID) {
     $pdf->AddPage('P', 'A4');

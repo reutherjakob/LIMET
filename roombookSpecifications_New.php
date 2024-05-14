@@ -631,6 +631,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                                 stateSave: false
                                                                             }
                                                                         },
+                                                                        keys: true,
                                                                         order: [[3, 'asc']],
                                                                         stateSave: true,
                                                                         select: {

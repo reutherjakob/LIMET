@@ -30,33 +30,28 @@ init_page_serversides();
                             </head>
 
                             <style>
-                                .fix_size{
-                                    height: 30px !important;
-                                    font-size: 16px;
-                                }
-                                .rotated {
-                                    writing-mode: vertical-lr !important; /* Rotate text vertically */
-                                    /*transform: rotate(180deg);  Flip the vertical text */
-                                }
+
                             </style>
                             <body style="height:100%"> 
                                 <div class="container-fluid" >
                                     <div id="limet-navbar" class=' '> </div> 
 
                                     <div class="mt-4 card">
-                                        <div class="card-header d-inline-flex" id ="HeaderTabelleCard"></div>
+                                        <div class="card-header form-check-inline form-check-inline" id ="HeaderTabelleCard"></div> 
+                                        <div class="card-header form-check-inline form-check-inline" id ="HeaderTabelleCard2"></div> 
+                                        <div class="card-header d-inline-flex form-check form-check-inline" id ="HeaderTabelleCard3"></div>
                                         <div class="card-body">
-                                            <?php
-                                            $mysqli = utils_connect_sql();
+<?php
+$mysqli = utils_connect_sql();
 
-                                            $sql = "SELECT tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.Nutzfläche, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, tabelle_räume.Bauabschnitt, 
+$sql = "SELECT tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.Nutzfläche, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, tabelle_räume.Bauabschnitt, 
 						tabelle_räume.`Anmerkung allgemein`, tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, tabelle_räume.idTABELLE_Räume, tabelle_räume.`MT-relevant`
 								FROM tabelle_räume INNER JOIN tabelle_projekte ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
 								WHERE (((tabelle_projekte.idTABELLE_Projekte)=" . $_SESSION["projectID"] . "));";
 
-                                            $result = $mysqli->query($sql);
+$result = $mysqli->query($sql);
 
-                                            echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'  cellspacing='0' width='100%'>
+echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'  cellspacing='0' width='100%'>
 						<thead><tr>
 						<th>ID</th>
 						<th>Raumnr</th>
@@ -69,35 +64,35 @@ init_page_serversides();
                                                 <th>Bauabschnitt</th>
 						</tr></thead><tbody>";
 
-                                            while ($row = $result->fetch_assoc()) {
-                                                echo "<tr>";
-                                                echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
-                                                echo "<td>" . $row["Raumnr"] . "</td>";
-                                                echo "<td>" . $row["Raumbezeichnung"] . "</td>";
-                                                echo "<td>" . $row["Nutzfläche"] . "</td>";
-                                                echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
-                                                if ($row["MT-relevant"] == '0') {
-                                                    echo "<td>Nein</td>";
-                                                } else {
-                                                    echo "<td>Ja</td>";
-                                                }
-                                                echo "<td>" . $row["Geschoss"] . "</td>";
-                                                echo "<td>" . $row["Bauetappe"] . "</td>";
-                                                echo "<td>" . $row["Bauabschnitt"] . "</td>";
-                                                echo "</tr>";
-                                            }
-                                            echo "</tbody></table>";
-                                            //echo "<button type='button' class='btn btn-default btn-sm' id='createRoombookPDF'><span class='glyphicon glyphicon-open-file'></span> Raumbuch-PDF</button>";
-                                            //echo "<button type='button' class='btn btn-default btn-sm' id='createBauangabenPDF'><span class='glyphicon glyphicon-open-file'></span> Bauangaben-PDF</button>";			
-                                            $mysqli->close();
-                                            ?>	
+while ($row = $result->fetch_assoc()) {
+    echo "<tr>";
+    echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
+    echo "<td>" . $row["Raumnr"] . "</td>";
+    echo "<td>" . $row["Raumbezeichnung"] . "</td>";
+    echo "<td>" . $row["Nutzfläche"] . "</td>";
+    echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
+    if ($row["MT-relevant"] == '0') {
+        echo "<td>Nein</td>";
+    } else {
+        echo "<td>Ja</td>";
+    }
+    echo "<td>" . $row["Geschoss"] . "</td>";
+    echo "<td>" . $row["Bauetappe"] . "</td>";
+    echo "<td>" . $row["Bauabschnitt"] . "</td>";
+    echo "</tr>";
+}
+echo "</tbody></table>";
+//echo "<button type='button' class='btn btn-default btn-sm' id='createRoombookPDF'><span class='glyphicon glyphicon-open-file'></span> Raumbuch-PDF</button>";
+//echo "<button type='button' class='btn btn-default btn-sm' id='createBauangabenPDF'><span class='glyphicon glyphicon-open-file'></span> Bauangaben-PDF</button>";			
+$mysqli->close();
+?>	
                                         </div>
                                     </div>
                                 </div>
 
                                 <script>
                                     var table;
-                                    init_dt();
+
                                     const btns = [
                                         {text: "Raumbuch-PDF", link: "pdf_createRoombookPDF"},
                                         {text: "Raumbuch-0-PDF", link: "pdf_createRoombookWithout0PDF"},
@@ -114,34 +109,57 @@ init_page_serversides();
                                         {text: "BO-PDF", link: "pdf_createBOPDF"},
                                         {text: "BauangabenDetail-PDF", link: "pdf_createBauangabenDetailPDF"},
                                         {text: "VE-Gesamt-PDF", link: "pdf_createBericht_VE_PDF"},
-                                        {text: "ENT-Gesamt-PDF", link: "pdf_createBericht_ENT_PDF_2"},
+                                        {text: "ENT-Gesamt-PDF", link: "pdf_createBericht_ENT_PDF"},
                                         {text: "Nutzer Formular", link: "pdf_createUserFormPDF"}
                                     ];
 
-                                    function send2backend() {
-                                        $.ajax({
-                                            url: 'backend.php',
-                                            type: 'post',
-                                            data: {
-                                                bool1: true,
-                                                bool2: false
-                                            },
-                                            success: function (response) {
-                                                // handle response
-                                            }
+                                    const report_input_bool_labels = ["Bestand Räume", "Bestands MT", "BO-Beschr.", "Allgemein", "ET", "HT", "MEDGAS", "BauStatik", "MT-Liste", "LAB"];
+                                    let report_input_bools = new Array(report_input_bool_labels.length).fill(false);
+
+                                    $(document).ready(function () {
+                                        init_dt();
+                                        add_MT_rel_filter('#HeaderTabelleCard');
+                                        init_btns('#HeaderTabelleCard');
+                                        add_Berichtinput_checkboxes('#HeaderTabelleCard2');
+
+                                        addCheckbox('#HeaderTabelleCard', "Alte Berichte");
+                                        init_btns_old('#HeaderTabelleCard3');
+                                        add_btn_vis_checkbox_functionality("Alte Berichte");
+                                        setTimeout(function () {
+                                            move_dt_search('#HeaderTabelleCard');
+                                        }, 50);
+                                    });
+
+                                    function add_Berichtinput_checkboxes(location) {
+                                        for (let i = 0; i < report_input_bool_labels.length; i++) {
+                                            addCheckbox(location, report_input_bool_labels[i], "report_input");
+                                        }
+                                        const checkboxes = document.querySelectorAll('.report_input');
+                                        checkboxes.forEach((checkbox, index) => {
+                                            checkbox.addEventListener('change', () => {
+                                                report_input_bools[index] = checkbox.checked;
+                                                console.log(`Checkbox "${report_input_bool_labels[index]}" is now ${checkbox.checked}`);
+                                            });
                                         });
 
                                     }
 
-                                    $(document).ready(function () {
-                                        move_dt_search('#HeaderTabelleCard');
-                                        add_MT_rel_filter('#HeaderTabelleCard');
-
-                                        init_btns('#HeaderTabelleCard');
-                                        addCheckbox('#HeaderTabelleCard');
-                                        init_btns_old('#HeaderTabelleCard');
-                                        add_btn_vis_checkbox_functionality();
-                                    });
+                                    function addCheckbox(location, name, css = "") {
+                                        var checkbox = document.createElement('input');
+                                        checkbox.type = 'checkbox';
+                                        checkbox.id = 'CBX' + name;
+                                        checkbox.checked = false;
+                                        checkbox.classList.add("form-check-input");
+                                        if (css.trim() !== "") {
+                                            checkbox.classList.add(css);
+                                        }
+                                        var label = document.createElement('label');
+                                        label.htmlFor = 'CBX' + name;
+                                        label.classList.add("form-check-label");
+                                        label.appendChild(document.createTextNode(name));
+                                        document.querySelector(location).appendChild(checkbox);
+                                        document.querySelector(location).appendChild(label);
+                                    }
 
                                     function add_MT_rel_filter(location) {
                                         var dropdownHtml = '<select class="form-control-sm " id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
@@ -154,8 +172,8 @@ init_page_serversides();
 
                                     function move_dt_search(location) {
                                         var move = $("#dt-search-0");
-//                                        move.addClass("fix_size");
-                                        $(location).append(move);
+                                        $(location).prepend(move);
+                                        console.log("Moved Search BaSr");
                                     }
 
                                     function init_dt() {
@@ -172,7 +190,7 @@ init_page_serversides();
                                             "order": [[1, "asc"]],
                                             "scrollY": '20vh',
                                             "scrollCollapse": true,
-                                            dom: 'rtif',
+                                            dom: 'frti',
                                             select: {
                                                 style: 'multi'
                                             },
@@ -193,7 +211,7 @@ init_page_serversides();
                                             buttons: [
                                                 btns.map(btn => ({
                                                         text: btn.text,
-                                                        className: "btn-sm " + btn.link,
+                                                        className: "btn-xs " + btn.link,
                                                         action: function () {
                                                             var count = table.rows({selected: true}).data();
                                                             var roomIDs = [];
@@ -203,7 +221,6 @@ init_page_serversides();
                                                             if (roomIDs.length === 0) {
                                                                 alert("Kein Raum ausgewählt!");
                                                             } else {
-                                                                send2backend();
                                                                 window.open('/' + btn.link + '.php?roomID=' + roomIDs);
                                                             }
                                                         }}))
@@ -231,8 +248,8 @@ init_page_serversides();
                                                 },
                                                 spacer,
                                                 {
-                                                    text: "NEU!",
-                                                    className: "btn-sm ",
+                                                    text: "BERICHT",
+                                                    className: "btn-sm",
                                                     action: function () {
                                                         var count = table.rows({selected: true}).data();
                                                         var roomIDs = [];
@@ -242,34 +259,22 @@ init_page_serversides();
                                                         if (roomIDs.length === 0) {
                                                             alert("Kein Raum ausgewählt!");
                                                         } else {
-                                                            send2backend();
-                                                            window.open('/pdf_createBericht_NEW.php?roomID=' + roomIDs);
+
+                                                            const bools2int2str = report_input_bools.map((bool) => (bool ? 1 : 0)).join(',');
+                                                            window.open('/pdf_createBericht_New.php?roomID=' + roomIDs + "&PDFinputs=" + bools2int2str);
                                                         }
                                                     }
-                                                }
+                                                },
+                                                spacer
                                             ]}).container().appendTo($(location));
                                     }
 
-                                    function addCheckbox(location) {
-                                        var checkbox = document.createElement('input');
-                                        checkbox.type = 'checkbox';
-                                        checkbox.id = 'btnVisibilityCBX';
-                                        checkbox.checked = false;
-
-                                        var label = document.createElement('label');
-                                        label.htmlFor = 'btnVisibility';
-                                        label.class = "rotated";
-                                        label.appendChild(document.createTextNode('OLD-PDFs'));
-                                        document.querySelector(location).appendChild(checkbox);
-                                        document.querySelector(location).appendChild(label);
-                                    }
-
-                                    function add_btn_vis_checkbox_functionality() {
+                                    function add_btn_vis_checkbox_functionality(name) {
                                         btns.forEach(btn => {
                                             document.querySelector('.' + btn.link).style.display = 'none';
                                         });
                                         console.log("BTNS hidden");
-                                        document.getElementById("btnVisibilityCBX").addEventListener('change', function () {
+                                        document.getElementById("CBX" + name).addEventListener('change', function () {
                                             if (this.checked) {
                                                 btns.forEach(btn => {
                                                     document.querySelector('.' + btn.link).style.display = 'inline-block';
