@@ -13,7 +13,14 @@ function check_login() {
     }
 }
 
-function check_project() {
+function check_if_project_selected_else_redirect() {
+    if ($_SESSION["projectName"] == "") {
+        header("Location: https://work.limet-rb.com/projects.php");
+        exit;
+    }
+}
+
+function get_project() {
     if ($_SESSION["projectName"] != "") {
         echo '<script>';
         echo 'var currentP = ' . json_encode($_SESSION["projectName"]) . ';';
@@ -25,10 +32,13 @@ function check_project() {
     }
 }
 
-function init_page_serversides() { //and Project. 
+function init_page_serversides($ommit_redirect="") { //and Project. 
     check_login();
-    check_project();
+    get_project();
     load_nav_bar();
+    if($ommit_redirect==""){
+        check_if_project_selected_else_redirect(); 
+    }
 }
 
 function utils_connect_sql() {
@@ -43,7 +53,7 @@ function utils_connect_sql() {
         exit();
     }
     return $mysqli;
-} 
+}
 
 function load_nav_bar() {
     echo '<script>';
@@ -55,7 +65,6 @@ function load_nav_bar() {
     echo '            $("#projectSelected").text("Projekt:" + currentP);';
     echo '        });';
     echo '     };    </script>';
-
 } 
 
 function el_in_room_html_table($pdf, $result, $init_einzug) {
@@ -100,3 +109,4 @@ function el_in_room_html_table($pdf, $result, $init_einzug) {
 }
 
 ?>
+

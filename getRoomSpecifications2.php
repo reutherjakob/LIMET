@@ -1,4 +1,5 @@
 <?php
+//Reutherer & Fux. LAst Update 14.5.24 
 session_start();
 include '_utils.php';
 check_login();

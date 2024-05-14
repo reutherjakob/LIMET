@@ -1,10 +1,12 @@
 <?php
 session_start();
+
 include '_utils.php';
+check_if_project_selected_else_redirect();
 init_page_serversides();
 include 'roombookSpecifications_New_modal_addRoom.php';
 
-//$mysqli = connect_sql();  $mysqli->close();
+
 ?> 
 
 <!DOCTYPE html>
