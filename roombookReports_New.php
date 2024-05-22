@@ -1,12 +1,11 @@
-
-
-<!DOCTYPE html>
 <?php
 session_start();
 include '_utils.php';
 init_page_serversides();
 ?> 
 
+
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title>RB-Berichte</title>
@@ -27,11 +26,9 @@ init_page_serversides();
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
                             <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
+
                             </head>
 
-                            <style>
-
-                            </style>
                             <body style="height:100%"> 
                                 <div class="container-fluid" >
                                     <div id="limet-navbar" class=' '> </div> 
@@ -39,19 +36,19 @@ init_page_serversides();
                                     <div class="mt-4 card">
                                         <div class="card-header form-check-inline form-check-inline" id ="HeaderTabelleCard"></div> 
                                         <div class="card-header form-check-inline form-check-inline" id ="HeaderTabelleCard2"></div> 
-                                        <div class="card-header d-inline-flex form-check form-check-inline" id ="HeaderTabelleCard3"></div>
+                                        <!--<div class="card-header d-inline-flex form-check form-check-inline" id ="HeaderTabelleCard3"></div>-->
                                         <div class="card-body">
-<?php
-$mysqli = utils_connect_sql();
+                                            <?php
+                                            $mysqli = utils_connect_sql();
 
-$sql = "SELECT tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.Nutzfläche, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, tabelle_räume.Bauabschnitt, 
+                                            $sql = "SELECT tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.Nutzfläche, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, tabelle_räume.Bauabschnitt, 
 						tabelle_räume.`Anmerkung allgemein`, tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, tabelle_räume.idTABELLE_Räume, tabelle_räume.`MT-relevant`
 								FROM tabelle_räume INNER JOIN tabelle_projekte ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
 								WHERE (((tabelle_projekte.idTABELLE_Projekte)=" . $_SESSION["projectID"] . "));";
 
-$result = $mysqli->query($sql);
+                                            $result = $mysqli->query($sql);
 
-echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'  cellspacing='0' width='100%'>
+                                            echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'  cellspacing='0' width='100%'>
 						<thead><tr>
 						<th>ID</th>
 						<th>Raumnr</th>
@@ -64,28 +61,26 @@ echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'
                                                 <th>Bauabschnitt</th>
 						</tr></thead><tbody>";
 
-while ($row = $result->fetch_assoc()) {
-    echo "<tr>";
-    echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
-    echo "<td>" . $row["Raumnr"] . "</td>";
-    echo "<td>" . $row["Raumbezeichnung"] . "</td>";
-    echo "<td>" . $row["Nutzfläche"] . "</td>";
-    echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
-    if ($row["MT-relevant"] == '0') {
-        echo "<td>Nein</td>";
-    } else {
-        echo "<td>Ja</td>";
-    }
-    echo "<td>" . $row["Geschoss"] . "</td>";
-    echo "<td>" . $row["Bauetappe"] . "</td>";
-    echo "<td>" . $row["Bauabschnitt"] . "</td>";
-    echo "</tr>";
-}
-echo "</tbody></table>";
-//echo "<button type='button' class='btn btn-default btn-sm' id='createRoombookPDF'><span class='glyphicon glyphicon-open-file'></span> Raumbuch-PDF</button>";
-//echo "<button type='button' class='btn btn-default btn-sm' id='createBauangabenPDF'><span class='glyphicon glyphicon-open-file'></span> Bauangaben-PDF</button>";			
-$mysqli->close();
-?>	
+                                            while ($row = $result->fetch_assoc()) {
+                                                echo "<tr>";
+                                                echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
+                                                echo "<td>" . $row["Raumnr"] . "</td>";
+                                                echo "<td>" . $row["Raumbezeichnung"] . "</td>";
+                                                echo "<td>" . $row["Nutzfläche"] . "</td>";
+                                                echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
+                                                if ($row["MT-relevant"] == '0') {
+                                                    echo "<td>Nein</td>";
+                                                } else {
+                                                    echo "<td>Ja</td>";
+                                                }
+                                                echo "<td>" . $row["Geschoss"] . "</td>";
+                                                echo "<td>" . $row["Bauetappe"] . "</td>";
+                                                echo "<td>" . $row["Bauabschnitt"] . "</td>";
+                                                echo "</tr>";
+                                            }
+                                            echo "</tbody></table>";
+                                            $mysqli->close();
+                                            ?>	
                                         </div>
                                     </div>
                                 </div>
@@ -113,21 +108,24 @@ $mysqli->close();
                                         {text: "Nutzer Formular", link: "pdf_createUserFormPDF"}
                                     ];
 
-                                    const report_input_bool_labels = ["Bestand Räume", "Bestands MT", "BO-Beschr.", "Allgemein", "ET", "HT", "MEDGAS", "BauStatik", "MT-Liste", "LAB"];
-                                    let report_input_bools = new Array(report_input_bool_labels.length).fill(false);
+                                    const report_input_bool_labels = ["Bestandsäume(x)", "Bestands-MT(x)", "BO-Beschr.", "Allgemein", "ET", "HT", "MEDGAS", "BauStatik", "MT-Tabelle", "MT-Liste", "LAB(x)"];
+                                    let report_input_bools = new Array(report_input_bool_labels.length).fill(true);
 
                                     $(document).ready(function () {
                                         init_dt();
                                         add_MT_rel_filter('#HeaderTabelleCard');
-                                        init_btns('#HeaderTabelleCard');
-                                        add_Berichtinput_checkboxes('#HeaderTabelleCard2');
+                                        init_btns('#HeaderTabelleCard')
 
-                                        addCheckbox('#HeaderTabelleCard', "Alte Berichte");
-                                        init_btns_old('#HeaderTabelleCard3');
-                                        add_btn_vis_checkbox_functionality("Alte Berichte");
+                                        var textforoldreports = "Show old Reports";
+                                        addCheckbox('#HeaderTabelleCard', textforoldreports);
+//                                        add_Berichtinput_checkboxes('#HeaderTabelleCard2');
+
+                                        init_btns_old('#HeaderTabelleCard2');
+                                        add_btn_vis_checkbox_functionality(textforoldreports);
                                         setTimeout(function () {
                                             move_dt_search('#HeaderTabelleCard');
                                         }, 50);
+                                        // synchronizeCheckboxes("CBXMT-Tabelle", "CBXMT-Liste");
                                     });
 
                                     function add_Berichtinput_checkboxes(location) {
@@ -141,7 +139,23 @@ $mysqli->close();
                                                 console.log(`Checkbox "${report_input_bool_labels[index]}" is now ${checkbox.checked}`);
                                             });
                                         });
+                                    }
 
+                                    function synchronizeCheckboxes(checkbox1Id, checkbox2Id) {
+                                        const checkbox1 = document.getElementById(checkbox1Id);
+                                        const checkbox2 = document.getElementById(checkbox2Id);
+//                                        checkbox2.checked = false;
+                                        checkbox1.addEventListener('change', function () {
+                                            if (this.checked) {
+                                                checkbox2.checked = false;
+                                            }
+                                        });
+
+                                        checkbox2.addEventListener('change', function () {
+                                            if (this.checked) {
+                                                checkbox1.checked = false;
+                                            }
+                                        });
                                     }
 
                                     function addCheckbox(location, name, css = "") {
@@ -173,7 +187,6 @@ $mysqli->close();
                                     function move_dt_search(location) {
                                         var move = $("#dt-search-0");
                                         $(location).prepend(move);
-                                        console.log("Moved Search BaSr");
                                     }
 
                                     function init_dt() {
@@ -248,7 +261,7 @@ $mysqli->close();
                                                 },
                                                 spacer,
                                                 {
-                                                    text: "BERICHT",
+                                                    text: "BAUANGABEN A3",
                                                     className: "btn-sm",
                                                     action: function () {
                                                         var count = table.rows({selected: true}).data();
@@ -261,7 +274,8 @@ $mysqli->close();
                                                         } else {
 
                                                             const bools2int2str = report_input_bools.map((bool) => (bool ? 1 : 0)).join(',');
-                                                            window.open('/pdf_createBericht_New.php?roomID=' + roomIDs + "&PDFinputs=" + bools2int2str);
+                                                            window.open('/pdf_createBericht_A3Qeer.php?roomID=' + roomIDs+ "&PDFinputs=" + bools2int2str);
+//                                                            window.open('/pdf_createBericht_custom.php?roomID=' + roomIDs + "&PDFinputs=" + bools2int2str);  //custom bericht page ! 
                                                         }
                                                     }
                                                 },
@@ -273,7 +287,6 @@ $mysqli->close();
                                         btns.forEach(btn => {
                                             document.querySelector('.' + btn.link).style.display = 'none';
                                         });
-                                        console.log("BTNS hidden");
                                         document.getElementById("CBX" + name).addEventListener('change', function () {
                                             if (this.checked) {
                                                 btns.forEach(btn => {

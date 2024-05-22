@@ -462,6 +462,7 @@ if(!isset($_SESSION["username"]))
                 type: "GET",	        
                 success: function(data){
                     alert(data);
+                    console.log(vermerkStatus);
                     $.ajax({
                             url : "getVermerkeToUntergruppe.php",
                             data:{"vermerkUntergruppenID":vermerkUntergruppenID,"vermerkGruppenID":vermerkGruppenID},

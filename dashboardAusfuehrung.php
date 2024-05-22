@@ -1,8 +1,8 @@
 <?php
 session_start();
-$_SESSION["dbAdmin"] = "0";
+$_SESSION["dbAdmin"] = "0"; 
 include '_utils.php';
-init_page_serversides();
+init_page_serversides("");
 ?> 
 
 
@@ -29,12 +29,8 @@ init_page_serversides();
                         <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script>
                         <script type="text/javascript" src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
 
-
-
-
                         </head>
                         <body style="height:100%">
-
                             <div class="container-fluid" >
                                 <div id="limet-navbar"></div> <!-- Container für Navbar -->
                                 <div class='row mt-4 mb-4'>

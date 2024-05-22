@@ -24,8 +24,7 @@ class MYPDF extends TCPDF {
                     $image_file = 'MADER_Logo.png';
                     $this->Image($image_file, 75, 5, 12, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);                    
                 }
-            }
-            // Set font
+            } 
             $this->SetFont('helvetica', '', 8);
             // Title
             if($_SESSION["projectPlanungsphase"]=="Vorentwurf"){

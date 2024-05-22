@@ -3,17 +3,16 @@ session_start();
 include '_utils.php';
 init_page_serversides();
 include 'roombookSpecifications_New_modal_addRoom.php';
-
 ?> 
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-
     <head>
+
         <title>RB-Bauangaben</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
- 
+
             <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
             <link rel="icon" href="iphone_favicon.png">
                 <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">-->
@@ -25,9 +24,9 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
                         <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.css" rel="stylesheet">
 
-                        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-                        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-                        <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+                            <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
 
                             <style>
                                 .btn_vis{
@@ -46,14 +45,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 }
                                 .table>thead>tr>th {
                                     background-color: rgba(100, 140, 25, 0.15);
+                                }
 
-                                }
-                                .none {
-                                    background-color: #FFFFFF !important;
-                                    height: 1px !important;
-                                    width: 1px !important;
-                                    z-index: -1;
-                                }
                                 .fix_size{
                                     height: 30px !important;
                                     font-size: 16px;
@@ -63,13 +56,12 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     background-color: rgba(100, 140, 25, 0.75) !important;
                                 }
                                 .rotated {
-                                    writing-mode: vertical-lr; /* Rotate text vertically */
-                                    /*transform: rotate(180deg);  Flip the vertical text */
+                                    writing-mode: vertical-lr;
                                 }
                             </style>
 
                             </head> 
-                            <body style="height:100%">
+                            <body style="height:100%"> 
                                 <div class="container-fluid ">
                                     <div id="limet-navbar" class=' '> </div> 
                                     <div class="mt-4 card">    
@@ -196,7 +188,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 
                                                                 function table_click() {
                                                                     $('#table_rooms tbody').on('click', 'tr', function () {
-                                                                        var RaumID = $('#table_rooms').DataTable().row($(this)).data()['idTABELLE_Räume'];
+                                                                        var RaumID = table.row($(this)).data()['idTABELLE_Räume'];
                                                                         if (document.getElementById('checkbox_EditableTable').checked) {
 
                                                                             var Raumbez = $('#table_rooms').DataTable().row($(this)).data()['Raumbezeichnung'];
@@ -321,11 +313,10 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         checked: false,
                                                                         class: 'form-check-input fix_size'
                                                                     }).appendTo($('#TableCardHeader'));
-                                                                    var label = $('<label>', {
-                                                                        htmlFor: 'checkbox_EditableTable',
-                                                                        class: ' form-check-label rotated inline',
-                                                                        text: "- EDIT -"});
-
+//                                                                    var label = $('<label>', {
+//                                                                        htmlFor: 'checkbox_EditableTable',
+//                                                                        class: ' form-check-label inline',
+//                                                                        text: "- EDIT -"});
                                                                     var container = $('<span>').append(checkbox);//.append(label);
                                                                     $('#TableCardHeader').append(container);
                                                                 }
@@ -344,18 +335,18 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                     toast.classList.add('toast');
                                                                     toast.classList.add('show');
                                                                     toast.setAttribute('role', 'alert');
-                                                                    toast.style.position = 'fixed'; 
+                                                                    toast.style.position = 'fixed';
                                                                     const topPosition = 10 + toastCounter * 50;
                                                                     toast.style.top = `${topPosition}px`;
                                                                     toast.style.right = '10px';
- 
+
                                                                     toast.innerHTML = `
                                                                         <div class="toast-header ${success ? "btn_vis" : "btn_invis"}">
                                                                             <strong class="mr-auto">${headerText} ${subtext}</strong>
-                                                                        </div>`; 
+                                                                        </div>`;
                                                                     document.body.appendChild(toast);
                                                                     toast.style.display = 'block';
- 
+
                                                                     toastCounter++;
                                                                     setTimeout(() => {
                                                                         toast.style.display = 'none';
@@ -421,6 +412,14 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                             selectedRowData["Umfang"],
                                                                             selectedRowData["Volumen"],
                                                                             selectedRowData["ET_Anschlussleistung_W"],
+                                                                            selectedRowData['ET_Anschlussleistung_AV_W'],
+                                                                            selectedRowData['ET_Anschlussleistung_SV_W'],
+                                                                            selectedRowData['ET_Anschlussleistung_ZSV_W'],
+                                                                            selectedRowData['ET_Anschlussleistung_USV_W'],
+                                                                            selectedRowData['EL_AV Steckdosen Stk'],
+                                                                            selectedRowData['EL_SV Steckdosen Stk'],
+                                                                            selectedRowData['EL_ZSV Steckdosen Stk'],
+                                                                            selectedRowData['EL_USV Steckdosen Stk'],
                                                                             selectedRowData["HT_Waermeabgabe_W"],
                                                                             selectedRowData["VEXAT_Zone"],
                                                                             selectedRowData["HT_Abluft_Vakuumpumpe"],
@@ -476,8 +475,11 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         geschoss, bauetappe, bauabschnitt, nutzfläche, abdunkelbarkeit, strahlenanwendung, laseranwendung, h6020, gmp, iso, _1kreiso2, _2kreiso2,
                                                                         o2, _1kreisva, _2kreisva, va, _1kreisdl5, _2kreisdl5, dl5, dl10, dltech, co2, h2, he, herf, ar, n2, nga, n2o, av, sv, zsv, usv,
                                                                         itanbindung, anwendungsgruppe, allgemeinehygieneklasse, raumhoehe, raumhoehe2, belichtungsfläche, umfang, volumen, etanschlussleistungw,
+                                                                        AnschlLeistung_AV, AnschlLeistung_SV, AnschlLeistung_ZSV, AnschlLeistung_USV,
+                                                                        SSDs_AV, SSDs_SV, SSDs_ZSV, SSDs_USV,
                                                                         htwärmeabgabew, vexatzone, htabluftvakuumpumpe, htabluftschweissabsaugungstk, htabluftessestk, htabluftrauchgasabzugstk, htabluftdigestoriumstk,
-                                                                        htpunktabsaugungstk, htabluftsicherheitsschrankunterbaustk, htabluftsicherheitsschrankstk, htspuelestk, htkühlwasser, o2mangel, co2melder, etrj45ports,
+                                                                        htpunktabsaugungstk, htabluftsicherheitsschrankunterbaustk, htabluftsicherheitsschrankstk, htspuelestk, htkühlwasser, o2mangel, co2melder,
+                                                                        etrj45ports,
                                                                         et64a3phasigeinzelanschluss, et32a3phasigeinzelanschluss, et16a3phasigeinzelanschluss, etdigestoriummsr230vsvstk, et5x10mm2digestoriumstk, et5x10mm2usvstk,
                                                                         et5x10mm2svstk, et5x10mm2avstk, wasserqual3lmin, wasserqual2ltag, wasserqual1ltag, wasserqual3, wasserqual2, wasserqual1, lhe, lnltag, ln, n2reinheit, n2lmin,
                                                                         arreinheit, arlmin, hereinheit, helmin, h2reinheit, h2lmin, dliso8573, dllmin, valmin, co2lmin, co2reinheit, o2lmin, o2reinheit, laserklasse) {
@@ -534,6 +536,17 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                             "umfang": umfang,
                                                                             "volumen": volumen,
                                                                             "etanschlussleistungw": etanschlussleistungw,
+
+                                                                            "ET_Anschlussleistung_AV_W'": AnschlLeistung_AV,
+                                                                            "ET_Anschlussleistung_SV_W'": AnschlLeistung_SV,
+                                                                            "ET_Anschlussleistung_ZSV_W'": AnschlLeistung_ZSV,
+                                                                            "ET_Anschlussleistung_USV_W'": AnschlLeistung_USV,
+
+                                                                            "EL_AV Steckdosen Stk": SSDs_AV,
+                                                                            "EL_SV Steckdosen Stk": SSDs_SV,
+                                                                            "EL_ZSV Steckdosen Stk": SSDs_ZSV,
+                                                                            "EL_USV Steckdosen Stk": SSDs_USV,
+
                                                                             "htwärmeabgabew": htwärmeabgabew,
                                                                             "vexatzone": vexatzone,
                                                                             "htabluftvakuumpumpe": htabluftvakuumpumpe,
@@ -663,6 +676,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 
                                                                 function init_btn_4_dt() {
                                                                     let spacer = {extend: 'spacer', style: 'bar'};
+
                                                                     new $.fn.dataTable.Buttons(table, {
                                                                         buttons: [
                                                                             spacer, {extend: 'searchBuilder', label: "Search B"}, spacer,
@@ -671,7 +685,9 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                                     text: button.name,
                                                                                     className: 'btn_vis',
                                                                                     action: function (e, dt, node, config) {
-                                                                                        toggleColumns(dt, button.start, button.end, button.name); // -1 cause i deleted non working first column
+                                                                                        toggleColumns(dt, button.start, button.end, button.name);
+//                                                                                        if((button.name)===buttonRanges[4].name){    for(let i = 4; i< buttonRanges.length; i++){
+//                                                                                            toggleColumns(dt, button.start, button.end, buttonRanges[i].name); } }
                                                                                     }
                                                                                 })),
 

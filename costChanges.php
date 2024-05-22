@@ -28,7 +28,7 @@ init_page_serversides();
  
  
 </head>
-
+ 
 <body style="height:100%">
  
 <div class="container-fluid" >

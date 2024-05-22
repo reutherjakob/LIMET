@@ -158,7 +158,7 @@ class MYPDF extends TCPDF {
             if ($_SESSION["projectName"] === "GCP" && strlen($row['Raumnummer_Nutzer']) > 0) {
                 $betreffText = $betreffText . 'Betrifft Raum: ' . $row['Raumnummer_Nutzer'] . " " . $row['Raumbezeichnung'] . "\n";
             } else {
-                if (strlen($row['Raumnr']) > 0) {
+                if (strlen($row['Raumnr']) > 0) { 
                     $betreffText = $betreffText . 'Betrifft Raum: ' . " " . $row['Raumnr'] . " " . $row['Raumbezeichnung'] . "\n";
                 }
             }
@@ -168,7 +168,7 @@ class MYPDF extends TCPDF {
 
             if ($row['Vermerkart'] === 'Bearbeitung') {
                 $textNameFälligkeit = $row['Name'] . "\n" . $row['Faelligkeit'];
-                if ($row['Bearbeitungsstatus'] === 0) {
+                if ($row['Bearbeitungsstatus'] === "0") {
                     $textNameFälligkeit = $textNameFälligkeit . "\n" . "Offen";
                 } else {
                     $textNameFälligkeit = $textNameFälligkeit . "\n" . "Erledigt";

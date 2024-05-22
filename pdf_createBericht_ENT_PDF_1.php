@@ -422,7 +422,7 @@ foreach ($teile as $valueOfRoomID) {
         }
 
         if (strlen($row['AR_Ausstattung']) > 0) {
-            block_spacer($pdf, $block_spacerx);
+            $pdf->Ln(8); 
             block_label($pdf, "Architektur-Einrichtung");
             $pdf->SetFont('helvetica', '', 10);
             $rowHeightComment = $pdf->getStringHeight(140, br2nl($row['AR_Ausstattung']), false, true, '', 1);

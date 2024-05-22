@@ -1,6 +1,6 @@
 <?php
     session_start();
-    $_SESSION["dbAdmin"]="0";
+    $_SESSION["dbAdmin"]="0"; 
     include '_utils.php';
     init_page_serversides();
 ?> 
