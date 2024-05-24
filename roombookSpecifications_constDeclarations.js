@@ -11,15 +11,16 @@ function title2data(columnsDefinition, title) {
 }
 
 const buttonRanges = [
+    {name: 'Alle', start: 7, end: 110},
     {name: 'RAUM', start: 7, end: 23},
     {name: 'HKLS', start: 24, end: 29},
-    {name: 'ELEK', start: 30, end: 38 + 8},
-    {name: 'MEDGAS', start: 39 + 8, end: 52 + 8},
-    {name: 'LAB', start: 53 + 8, end: 101 + 8},
-    {name: 'L-GAS', start: 55 + 8, end: 79 + 8},
-    {name: 'L-ET', start: 80 + 8, end: 87 + 8},
-    {name: 'L-HT', start: 88 + 8, end: 95 + 8},
-    {name: 'L-H2O', start: 95 + 8, end: 101 + 8}
+    {name: 'ELEK', start: 30, end: 47},
+    {name: 'MEDGAS', start: 48, end: 52 + 9},
+    {name: 'LAB', start: 53 + 9, end: 101 + 9},
+    {name: 'L-GAS', start: 55 + 9, end: 79 + 9},
+    {name: 'L-ET', start: 80 + 9, end: 87 + 9},
+    {name: 'L-HT', start: 88 + 9, end: 95 + 9},
+    {name: 'L-H2O', start: 95 + 9, end: 110}
 ];
 
 // define cases for data formater switch: numerical, 1/0 aka bit, dropdowner; non-edit-> cell wont be editable
@@ -56,31 +57,31 @@ const columnsDefinition = [
     {data: 'H6020', title: 'H6020'},
     {data: 'GMP', title: 'GMP'},
     {data: 'ISO', title: 'ISO'},
-    {data: 'HT_Waermeabgabe_W', title: 'Wärmeabgabe[W]', case: "num"},
+    {data: 'HT_Waermeabgabe_W', title: 'Wärmeabgabe[W]', case: ""},
     {data: 'HT_Spuele_Stk', title: 'Spüle [Stk]', case: "num"},
     {data: 'HT_Kühlwasser', title: 'Kühlwasser', case: "bit"},
     //ET
     {data: 'Anwendungsgruppe', title: 'AWG'},
     {data: 'Fussboden OENORM B5220', title: 'B5220'},
-    {data: 'AV', title: 'AV [j/n]', case: "bit"},
-    {data: 'SV', title: 'SV [j/n]', case: "bit"},
-    {data: 'ZSV', title: 'ZSV [j/n]', case: "bit"},
-    {data: 'USV', title: 'USV [j/n]', case: "bit"},
+    {data: 'AV', title: 'AV', case: "bit"},
+    {data: 'SV', title: 'SV', case: "bit"},
+    {data: 'ZSV', title: 'ZSV', case: "bit"},
+    {data: 'USV', title: 'USV', case: "bit"},
 
     {data: 'EL_AV Steckdosen Stk', defaultContent: '-', title: 'AV #SSD', case: "num"},
     {data: 'EL_SV Steckdosen Stk', defaultContent: '-', title: 'SV #SSD', case: "num"},
-    {data: 'EL_USV Steckdosen Stk', defaultContent: '-', title: 'ZSV #SSD', case: "num"},
-    {data: 'EL_ZSV Steckdosen Stk', defaultContent: '-', title: 'USV #SSD', case: "num"},
-
-    {data: 'ET_Anschlussleistung_W', title: 'Anschlussleistung [W]', case: "num"},
+    {data: 'EL_ZSV Steckdosen Stk', defaultContent: '-', title: 'ZSV #SSD', case: "num"},
+    {data: 'EL_USV Steckdosen Stk', defaultContent: '-', title: 'USV #SSD', case: "num"},
+        
+    {data: 'EL_Roentgen 16A CEE Stk', title: 'CEE16A Anchl.Rö.', case: "num"},
 
     {data: 'ET_Anschlussleistung_AV_W', defaultContent: '-', title: 'Anschlussleistung AV[W]', case: "num"},
     {data: 'ET_Anschlussleistung_SV_W', defaultContent: '-', title: 'Anschlussleistung SV[W]', case: "num"},
-    {data: 'ET_Anschlussleistung_USV_W', defaultContent: '-', title: 'Anschlussleistung ZSV[W]', case: "num"},
-    {data: 'ET_Anschlussleistung_ZSV_W', defaultContent: '-', title: 'Anschlussleistung USV[W]', case: "num"},
+    {data: 'ET_Anschlussleistung_ZSV_W', defaultContent: '-', title: 'Anschlussleistung ZSV[W]', case: "num"},
+    {data: 'ET_Anschlussleistung_USV_W', defaultContent: '-', title: 'Anschlussleistung USV[W]', case: "num"},
 
     {data: 'IT Anbindung', title: 'IT', case: "bit"},
-    {data: 'ET_RJ45-Ports', title: 'RJ45-Ports', case: "bit"},
+    {data: 'ET_RJ45-Ports', title: 'RJ45-Ports', case: "num"},
 
     {data: '1 Kreis O2', title: '1_K O2', case: "bit"},
     {data: '2 Kreis O2', title: '2_K O2', case: "bit"},
