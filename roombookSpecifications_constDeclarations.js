@@ -34,10 +34,12 @@ const columnsDefinition = [
         }},
     //{data: 'idTABELLE_Räume', title: 'Raum ID', searchable: false}, //debugging
     {data: 'Raumbezeichnung', title: 'Raumbez.'},
-    {data: "Nummer", title: "DIN13080", case: "none-edit"},
-    {data: "Bezeichnung", title: "Funktionsstelle", case: "none-edit"}, //#7
+
     {data: 'Raumnr', title: 'Raumnr'},
-    {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'},
+    {data: "Bezeichnung", title: "Funktionsstelle", case: "none-edit"}, //#7
+    {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'}, 
+    
+    {data: "Nummer", title: "DIN13080", case: "none-edit"},
     {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer'},
     {data: 'Raumbereich Nutzer', title: 'Raumbereich'},
     {data: 'Geschoss', title: 'Geschoss'},
@@ -72,9 +74,9 @@ const columnsDefinition = [
     {data: 'EL_SV Steckdosen Stk', defaultContent: '-', title: 'SV #SSD', case: "num"},
     {data: 'EL_ZSV Steckdosen Stk', defaultContent: '-', title: 'ZSV #SSD', case: "num"},
     {data: 'EL_USV Steckdosen Stk', defaultContent: '-', title: 'USV #SSD', case: "num"},
-        
-    {data: 'EL_Roentgen 16A CEE Stk', title: 'CEE16A Anchl.Rö.', case: "num"},
 
+    {data: 'EL_Roentgen 16A CEE Stk', title: 'CEE16A Anchl.Rö.', case: "num"},
+    {data: 'ET_Anschlussleistung_W', defaultContent: '-', title: 'Anschlussleistung Summe[W]', case: "num"},
     {data: 'ET_Anschlussleistung_AV_W', defaultContent: '-', title: 'Anschlussleistung AV[W]', case: "num"},
     {data: 'ET_Anschlussleistung_SV_W', defaultContent: '-', title: 'Anschlussleistung SV[W]', case: "num"},
     {data: 'ET_Anschlussleistung_ZSV_W', defaultContent: '-', title: 'Anschlussleistung ZSV[W]', case: "num"},

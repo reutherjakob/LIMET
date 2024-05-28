@@ -190,18 +190,21 @@ init_page_serversides();
                                     }
 
                                     function init_dt() {
-                                        table = $('#tableRooms').DataTable({
+                                        table = $('#tableRooms').DataTable({ 
                                             "paging": false,
+//                                            pageLength: 20,
+//                                            lengthChange:true,
+
                                             "columnDefs": [
                                                 {
                                                     "targets": [0],
                                                     "visible": false,
                                                     "searchable": false
                                                 }
-                                            ],
+                                            ], 
                                             "orderCellsTop": true,
                                             "order": [[1, "asc"]],
-                                            "scrollY": '20vh',
+                                            "scrollY": '75vh',
                                             "scrollCollapse": true,
                                             dom: 'frti',
                                             select: {
@@ -212,9 +215,10 @@ init_page_serversides();
                                                 search: "",
                                                 searchBuilder: {
                                                     label: "Search",
-                                                    depthLimit: 2
+                                                    depthLimit: 3
                                                 }
                                             }
+                                           
                                         });
                                     }
 

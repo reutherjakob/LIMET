@@ -50,7 +50,7 @@
                     '".$filename."');";
         
         if (mysqli_query($mysqli, $sql_insert)) {
-            echo " Bild in Datenbank ergänzt!";
+            echo " Bild in Datenbank ergänzt!  \n" . $unique. " \n" . $filename;
             /*
             $id = $mysqli->insert_id; 
             

@@ -80,7 +80,7 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
         $pdf->MultiCell($SB * $qot, $ln_spacer, "Bauetappe: " . $Bauetappe, 'B', 'L', 0, 0);
         $pdf->MultiCell($SB * (1 - $qot), $ln_spacer, "Bauteil: " . $Bauabschnitt, 'B', 'L', 0, 1);
     } else {// A3 Queetr
-        if (($pdf->GetY()) >= 100) {// Unsauberes schnell schnell  #TODO
+        if (($pdf->GetY()) >= 120) {// Unsauberes schnell schnell  #TODO
             $pdf->AddPage();
         } else if (($pdf->GetY()) >= 20) {
             $pdf->Ln();
@@ -137,6 +137,15 @@ function init_pdf_attributes($pdf, $einzugLR, $marginTop, $marginBTM, $format = 
     return $pdf;
 }
 
+function not_zero_or_keineAngabe($str, $unit) {
+    $_out = "";
+    if ($str != 0 || $str != "-") {
+        $_out = "ca. " . $str . $unit;
+    } else {
+        $_out = "keine Angabe";
+    }
+}
+
 function is_not_no_comment($str) {
     if ($str == "keine Anmerkung" || $str == "keine Angaben" || $str == "") {
         return false;
@@ -158,7 +167,7 @@ function clean_string($dirty_str) {
     return $clean_string;
 }
 
-function newpage_or_spacerA3($pdf, $next_block_size, $SH , $LN = 8) {
+function newpage_or_spacerA3($pdf, $next_block_size, $SH, $LN = 8) {
     $y = $pdf->GetY();
     if (($y + $next_block_size) >= 270) {
         $pdf->AddPage();
@@ -170,6 +179,7 @@ function newpage_or_spacerA3($pdf, $next_block_size, $SH , $LN = 8) {
         }
     }
 }
+
 function newpage_or_spacer($pdf, $next_block_size, $LN = 8) {
     $y = $pdf->GetY();
     if (($y + $next_block_size) >= 270) {

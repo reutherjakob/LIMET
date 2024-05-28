@@ -1,7 +1,7 @@
 <?php
 session_start();
 include '_utils.php';
-init_page_serversides();
+init_page_serversides(); 
 include 'roombookSpecifications_New_modal_addRoom.php';
 ?> 
 
@@ -14,8 +14,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
             <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
-            <!--<link rel="icon" href="iphone_favicon.png">-->
-            <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">-->
+<!--            <link rel="icon" href="iphone_favicon.png">
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">-->
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
                 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
@@ -112,7 +112,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                 init_btn_4_dt();
                                                                 init_visibilities();
                                                                 table_click();
-                                                                event_table_keyz(); 
+                                                                event_table_keyz();
                                                             });
 
                                                             function getCase(dataIdentifier) {
@@ -155,9 +155,10 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         cell.node().click();
 //                                                                        table.keys.disable();
                                                                     } else {
-                                                                        var rowIndex = cell.index().row;table.rows().deselect();
+                                                                        var rowIndex = cell.index().row;
+                                                                        table.rows().deselect();
                                                                         if (rowIndex !== currentRowInd && !document.getElementById('checkbox_EditableTable').checked) {
-                                                                            
+
                                                                             table.row(cell.index().row).select();
                                                                             cell.node().click();
                                                                             currentRowInd = rowIndex;
@@ -259,7 +260,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                                     current_edit = false;
                                                                                     table.keys.enable();
                                                                                     table.cell(cell.index()).select();
-                                                                                    
+
                                                                                     initializeToaster("Changes NOT Saved", " - ", false);
                                                                                 }
                                                                             });
@@ -560,13 +561,12 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         "ET_Anschlussleistung_SV_W": AnschlLeistung_SV,
                                                                         "ET_Anschlussleistung_ZSV_W": AnschlLeistung_ZSV,
                                                                         "ET_Anschlussleistung_USV_W": AnschlLeistung_USV,
-                                                                        
+
                                                                         "EL_AV Steckdosen Stk": SSDs_AV,
                                                                         "EL_SV Steckdosen Stk": SSDs_SV,
                                                                         "EL_ZSV Steckdosen Stk": SSDs_ZSV,
                                                                         "EL_USV Steckdosen Stk": SSDs_USV,
-                                                                         "CEE16A": CEE16A,    
-                                                                         
+                                                                        "CEE16A Stk": CEE16A, 
                                                                         "htwärmeabgabew": htwärmeabgabew,
                                                                         "vexatzone": vexatzone,
                                                                         "htabluftvakuumpumpe": htabluftvakuumpumpe,
@@ -633,7 +633,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         success: function (data) {
                                                                             $('#addRoomModal').modal('hide');
                                                                             alert(data);
-                                                                            window.location.replace("roombookSpecifications_New.php");
+                                                                            window.location.replace("roombookSpecifications_New.php"); 
                                                                         }
                                                                     });
                                                                 } else {
@@ -695,8 +695,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                             }
 
                                                             function init_btn_4_dt() {
-                                                                let spacer = {extend: 'spacer', style: 'bar'};
-
+                                                                let spacer = {extend: 'spacer', style: 'bar'}; 
                                                                 new $.fn.dataTable.Buttons(table, {
                                                                     buttons: [
                                                                         spacer, {extend: 'searchBuilder', label: "Search B"}, spacer,
@@ -721,7 +720,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         spacer, 'copy', 'excel', 'csv', spacer, 'selectAll', 'selectNone',
                                                                         spacer, // spacer,
                                                                         {
-                                                                            text: 'Raum',
+                                                                            text: ' Raum',
                                                                             className: 'btn btn_vis far fa-plus-square',
                                                                             action: function (e, dt, node, config) {
                                                                                 //  find_current_max_roomID();
@@ -729,7 +728,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                             }
                                                                         }, spacer,
                                                                         {
-                                                                            text: "R.Kopieren",
+                                                                            text: " R.Kopieren",
                                                                             className: "btn far fa-plus-square",
                                                                             action: function (e, dt, node, config)
                                                                             {
@@ -756,6 +755,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                             function toggleColumns(table, startColumn, endColumn, button_name) {
                                                                 const columns = table.columns().indexes();
                                                                 var vis = !table.column(columns[endColumn]).visible();
+                                                                console.log("Toogle Columns Starting at: ",startColumn); 
                                                                 for (let i = startColumn; i <= endColumn; i++) {
                                                                     table.column(columns[i]).visible(vis);
                                                                 }
@@ -801,205 +801,206 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                 save_new_room(nummer, name, funktionsteilstelle, MTrelevant);
                                                             });
 
-                                                            //$('#tableRoomElemnts tbody').on("click", 'tr', function () {
-                                                            /*
-                                                             var elementID = table.row( $(this) ).data()[0];	
-                                                             var variantenID = table.row( $(this) ).data()[5];	
-                                                             var bestand = 1;
-                                                             if(table.row( $(this) ).data()[6]==="Ja"){
-                                                             bestand = 0;
-                                                             }
-                                                             $.ajax({
-                                                             url : "getRoomsWithElement1.php",
-                                                             data:{"elementID":elementID,"variantenID":variantenID,"bestand":bestand},
-                                                             type: "GET",
-                                                             success: function(data){
-                                                             $("#roomsWithAndWithoutElements").html(data);
-                                                             $.ajax({
-                                                             url : "getElementVariante.php",
-                                                             data:{"elementID":elementID,"variantenID":variantenID},
-                                                             type: "GET",
-                                                             success: function(data){
-                                                             $("#elementVarianten").html(data);
-                                                             $.ajax({
-                                                             url : "getStandardElementParameters.php",
-                                                             data:{"elementID":elementID},
-                                                             type: "GET",
-                                                             success: function(data){
-                                                             $("#elementDBParameter").html(data);
-                                                             $.ajax({
-                                                             url : "getElementPricesInDifferentProjects.php",
-                                                             data:{"elementID":elementID},
-                                                             type: "GET",
-                                                             success: function(data){
-                                                             $("#elementPricesInOtherProjects").html(data);
-                                                             $.ajax({
-                                                             url : "getDevicesToElement.php",
-                                                             data:{"elementID":elementID},
-                                                             type: "GET",
-                                                             success: function(data){
-                                                             $("#devicesToElement").html(data);
-                                                             $.ajax({
-                                                             url : "getElementGewerke.php",
-                                                             data:{"elementID":elementID},
-                                                             type: "GET",
-                                                             success: function(data){
-                                                             $("#elementGewerk").html(data);
-                                                             }
-                                                             });
-                                                             
-                                                             }
-                                                             });
-                                                             
-                                                             }
-                                                             });
-                                                             
-                                                             }
-                                                             });
-                                                             }
-                                                             });
-                                                             }
-                                                             });
-                                                             
-                                                             */
-                                                            //});
-                                                            /*function init_search_bar() {
-                                                             const searchInput = $('<input>', {
-                                                             type: 'text',
-                                                             placeholder: 'Search...',
-                                                             class: 'ml-auto p-2'
-                                                             });
-                                                             searchInput.on('keyup', function () {
-                                                             const searchTerm = $(this).val();
-                                                             table.search(searchTerm).draw();
-                                                             });
-                                                             $('#TableCardHeader').append(searchInput);
-                                                             }*/
-                                                            /*function init_table_click() {
-                                                             $('#table_rooms tbody').on('click', 'tr', function () {
-                                                             table.$('tr.info').removeClass('info');
-                                                             var raummID = $('#table_rooms').DataTable().row($(this)).data()['idTABELLE_Räume'];
-                                                             $('#diy_searcher').val('');
-                                                             $.ajax({
-                                                             url: "setSessionVariables.php",
-                                                             data: {"roomID": raummID},
-                                                             type: "GET",
-                                                             success: function (data) {
-                                                             $("#RoomID").text(raummID);
-                                                             $.ajax({
-                                                             url: "getRoomSpecifications2.php",
-                                                             type: "GET",
-                                                             success: function (data) {
-                                                             $("#bauangaben").html(data);
-                                                             $.ajax({
-                                                             url: "getRoomElementsDetailed2.php",
-                                                             type: "GET",
-                                                             success: function (data) {
-                                                             $("#roomElements").html(data);
-                                                             $('#diy_searcher').on('keyup', function () {
-                                                             $('#tableRoomElements').DataTable().search(this.value).draw();
-                                                             });
-                                                             }
-                                                             });
-                                                             }
-                                                             });
-                                                             }
-                                                             });
-                                                             });
-                                                             }*/
-                                                            /*function print_dt_data() {
-                                                             var data = table.data().toArray();
-                                                             console.log('Data from DataTables:');
-                                                             console.table(data);
-                                                             }*/
-                                                            /*    function event_table_click() {
-                                                             $('#table_rooms').on('click', 'tbody td', function () {
-                                                             var columnIndex = $(this).index();
-                                                             var rowIndex = $(this).closest('tr').index();
-                                                             var trueColumnIndex = $(this).index();
-                                                             var visibleColumns = table.columns().visible();
-                                                             for (var i = 0; i <= trueColumnIndex; i++) { //also count invisible ones, if u wanna use the ccolumn definition indexing
-                                                             if (!visibleColumns[i]) {
-                                                             trueColumnIndex++;
-                                                             }
-                                                             }
-                                                             var columnName = columnsDefinition[trueColumnIndex].data;
-                                                             //                                                                        var RaumID = table.cell({row:rowIndex, column:  2}).data();
-                                                             var RaumID = table.row(rowIndex).data()['idTABELLE_Räume'];
-                                                             //                                                                        var RaumID = table.row(rowIndex).data().idTABELLE_Räume;
-                                                             
-                                                             console.log('Debug TableClick: Column index:', columnIndex, '; Row index:', rowIndex, '; trueColumnIndex:', trueColumnIndex, '; Column name (data identifier):', columnName, "; idTABELLE_Räume: ", RaumID);
-                                                             
-                                                             if (currentRowInd !== rowIndex || currentColInd !== columnIndex) {
-                                                             cellText = $(this).text();
-                                                             }
-                                                             currentRowInd = rowIndex;
-                                                             currentColInd = columnIndex;
-                                                             
-                                                             
-                                                             if (columnName !== "Bezeichnung" && columnName !== "Nummer") {
-                                                             $(this).html('<input id="CellInput" type="text" value="' + cellText + '">');
-                                                             $(this).find('input').focus();
-                                                             $(this).find('input').on('keydown blur', function (event) {
-                                                             if (event.keyCode === 13) { // Enter key pressed
-                                                             var newData = $(this).val();
-                                                             if (newData.trim() !== "") {
-                                                             $(this).parent().html(newData);
-                                                             console.log("Saving:", RaumID, columnName, newData);
-                                                             save_changes(RaumID, columnName, newData);
-                                                             initializeToaster("Changes Saved", table.row(rowIndex).data().Raumbezeichnung + ";  " + columnName + ";  " + newData + "   ", true);
-                                                             }
-                                                             }
-                                                             if (event.keyCode === 27 || event.type === "blur") {
-                                                             $(this).parent().html(oldT);
-                                                             oldT = cellText;
-                                                             initializeToaster("Changes NOT Saved", " - ", false);
-                                                             }
-                                                             });
-                                                             }
-                                                             });
-                                                             }*/
-                                                            /*                                                                    event_table_keyz();
-                                                             table.on('keydown', function (e, cell) {
-                                                             // Check if the pressed key is Enter (key code 13)
-                                                             console.log("Doc on kd", cell);
-                                                             if (e.key === "Enter") {
-                                                             
-                                                             
-                                                             // Get the currently focused element
-                                                             var focusedElement = document.activeElement;
-                                                             console.log("KD = enter", focusedElemnt);
-                                                             // Check if the focused element is a DataTable cell
-                                                             if ($(focusedElement).hasClass('dataTables-cell')) {
-                                                             // Click on the cell
-                                                             $(focusedElement).click();
-                                                             }
-                                                             }
-                                                             }); */
-                                                            /* function make_checkbox() {
-                                                             var checkbox = $('<input>', {
-                                                             type: 'checkbox',
-                                                             name: 'EditableTable',
-                                                             id: 'save_State_cbx',
-                                                             checked: false,
-                                                             class: 'form-check-input'
-                                                             }).appendTo($('#TableCardHeader'));
-                                                             var label = $('<label>', {
-                                                             htmlFor: 'save_State_cbx',
-                                                             class: ' form-check-label'
-                                                             }).text('StateSave');
-                                                             var container = $('<span>').append(checkbox).append(label);
-                                                             $('#TableCardHeader').append(container);
-                                                             checkbox.on('change', function () {
-                                                             localStorage.setItem('save_State_cbx', this.checked);
-                                                             if (this.checked) {
-                                                             
-                                                             } else {
-                                                             
-                                                             }
-                                                             });
-                                                             }*/
-
+                                                            function hidethesecopmmentsintheHTMLcontentofthewebpage() {
+                                                                //$('#tableRoomElemnts tbody').on("click", 'tr', function () {
+                                                                /*
+                                                                 var elementID = table.row( $(this) ).data()[0];	
+                                                                 var variantenID = table.row( $(this) ).data()[5];	
+                                                                 var bestand = 1;
+                                                                 if(table.row( $(this) ).data()[6]==="Ja"){
+                                                                 bestand = 0;
+                                                                 }
+                                                                 $.ajax({
+                                                                 url : "getRoomsWithElement1.php",
+                                                                 data:{"elementID":elementID,"variantenID":variantenID,"bestand":bestand},
+                                                                 type: "GET",
+                                                                 success: function(data){
+                                                                 $("#roomsWithAndWithoutElements").html(data);
+                                                                 $.ajax({
+                                                                 url : "getElementVariante.php",
+                                                                 data:{"elementID":elementID,"variantenID":variantenID},
+                                                                 type: "GET",
+                                                                 success: function(data){
+                                                                 $("#elementVarianten").html(data);
+                                                                 $.ajax({
+                                                                 url : "getStandardElementParameters.php",
+                                                                 data:{"elementID":elementID},
+                                                                 type: "GET",
+                                                                 success: function(data){
+                                                                 $("#elementDBParameter").html(data);
+                                                                 $.ajax({
+                                                                 url : "getElementPricesInDifferentProjects.php",
+                                                                 data:{"elementID":elementID},
+                                                                 type: "GET",
+                                                                 success: function(data){
+                                                                 $("#elementPricesInOtherProjects").html(data);
+                                                                 $.ajax({
+                                                                 url : "getDevicesToElement.php",
+                                                                 data:{"elementID":elementID},
+                                                                 type: "GET",
+                                                                 success: function(data){
+                                                                 $("#devicesToElement").html(data);
+                                                                 $.ajax({
+                                                                 url : "getElementGewerke.php",
+                                                                 data:{"elementID":elementID},
+                                                                 type: "GET",
+                                                                 success: function(data){
+                                                                 $("#elementGewerk").html(data);
+                                                                 }
+                                                                 });
+                                                                 
+                                                                 }
+                                                                 });
+                                                                 
+                                                                 }
+                                                                 });
+                                                                 
+                                                                 }
+                                                                 });
+                                                                 }
+                                                                 });
+                                                                 }
+                                                                 });
+                                                                 
+                                                                 */
+                                                                //});
+                                                                /*function init_search_bar() {
+                                                                 const searchInput = $('<input>', {
+                                                                 type: 'text',
+                                                                 placeholder: 'Search...',
+                                                                 class: 'ml-auto p-2'
+                                                                 });
+                                                                 searchInput.on('keyup', function () {
+                                                                 const searchTerm = $(this).val();
+                                                                 table.search(searchTerm).draw();
+                                                                 });
+                                                                 $('#TableCardHeader').append(searchInput);
+                                                                 }*/
+                                                                /*function init_table_click() {
+                                                                 $('#table_rooms tbody').on('click', 'tr', function () {
+                                                                 table.$('tr.info').removeClass('info');
+                                                                 var raummID = $('#table_rooms').DataTable().row($(this)).data()['idTABELLE_Räume'];
+                                                                 $('#diy_searcher').val('');
+                                                                 $.ajax({
+                                                                 url: "setSessionVariables.php",
+                                                                 data: {"roomID": raummID},
+                                                                 type: "GET",
+                                                                 success: function (data) {
+                                                                 $("#RoomID").text(raummID);
+                                                                 $.ajax({
+                                                                 url: "getRoomSpecifications2.php",
+                                                                 type: "GET",
+                                                                 success: function (data) {
+                                                                 $("#bauangaben").html(data);
+                                                                 $.ajax({
+                                                                 url: "getRoomElementsDetailed2.php",
+                                                                 type: "GET",
+                                                                 success: function (data) {
+                                                                 $("#roomElements").html(data);
+                                                                 $('#diy_searcher').on('keyup', function () {
+                                                                 $('#tableRoomElements').DataTable().search(this.value).draw();
+                                                                 });
+                                                                 }
+                                                                 });
+                                                                 }
+                                                                 });
+                                                                 }
+                                                                 });
+                                                                 });
+                                                                 }*/
+                                                                /*function print_dt_data() {
+                                                                 var data = table.data().toArray();
+                                                                 console.log('Data from DataTables:');
+                                                                 console.table(data);
+                                                                 }*/
+                                                                /*    function event_table_click() {
+                                                                 $('#table_rooms').on('click', 'tbody td', function () {
+                                                                 var columnIndex = $(this).index();
+                                                                 var rowIndex = $(this).closest('tr').index();
+                                                                 var trueColumnIndex = $(this).index();
+                                                                 var visibleColumns = table.columns().visible();
+                                                                 for (var i = 0; i <= trueColumnIndex; i++) { //also count invisible ones, if u wanna use the ccolumn definition indexing
+                                                                 if (!visibleColumns[i]) {
+                                                                 trueColumnIndex++;
+                                                                 }
+                                                                 }
+                                                                 var columnName = columnsDefinition[trueColumnIndex].data;
+                                                                 //                                                                        var RaumID = table.cell({row:rowIndex, column:  2}).data();
+                                                                 var RaumID = table.row(rowIndex).data()['idTABELLE_Räume'];
+                                                                 //                                                                        var RaumID = table.row(rowIndex).data().idTABELLE_Räume;
+                                                                 
+                                                                 console.log('Debug TableClick: Column index:', columnIndex, '; Row index:', rowIndex, '; trueColumnIndex:', trueColumnIndex, '; Column name (data identifier):', columnName, "; idTABELLE_Räume: ", RaumID);
+                                                                 
+                                                                 if (currentRowInd !== rowIndex || currentColInd !== columnIndex) {
+                                                                 cellText = $(this).text();
+                                                                 }
+                                                                 currentRowInd = rowIndex;
+                                                                 currentColInd = columnIndex;
+                                                                 
+                                                                 
+                                                                 if (columnName !== "Bezeichnung" && columnName !== "Nummer") {
+                                                                 $(this).html('<input id="CellInput" type="text" value="' + cellText + '">');
+                                                                 $(this).find('input').focus();
+                                                                 $(this).find('input').on('keydown blur', function (event) {
+                                                                 if (event.keyCode === 13) { // Enter key pressed
+                                                                 var newData = $(this).val();
+                                                                 if (newData.trim() !== "") {
+                                                                 $(this).parent().html(newData);
+                                                                 console.log("Saving:", RaumID, columnName, newData);
+                                                                 save_changes(RaumID, columnName, newData);
+                                                                 initializeToaster("Changes Saved", table.row(rowIndex).data().Raumbezeichnung + ";  " + columnName + ";  " + newData + "   ", true);
+                                                                 }
+                                                                 }
+                                                                 if (event.keyCode === 27 || event.type === "blur") {
+                                                                 $(this).parent().html(oldT);
+                                                                 oldT = cellText;
+                                                                 initializeToaster("Changes NOT Saved", " - ", false);
+                                                                 }
+                                                                 });
+                                                                 }
+                                                                 });
+                                                                 }*/
+                                                                /*                                                                    event_table_keyz();
+                                                                 table.on('keydown', function (e, cell) {
+                                                                 // Check if the pressed key is Enter (key code 13)
+                                                                 console.log("Doc on kd", cell);
+                                                                 if (e.key === "Enter") {
+                                                                 
+                                                                 
+                                                                 // Get the currently focused element
+                                                                 var focusedElement = document.activeElement;
+                                                                 console.log("KD = enter", focusedElemnt);
+                                                                 // Check if the focused element is a DataTable cell
+                                                                 if ($(focusedElement).hasClass('dataTables-cell')) {
+                                                                 // Click on the cell
+                                                                 $(focusedElement).click();
+                                                                 }
+                                                                 }
+                                                                 }); */
+                                                                /* function make_checkbox() {
+                                                                 var checkbox = $('<input>', {
+                                                                 type: 'checkbox',
+                                                                 name: 'EditableTable',
+                                                                 id: 'save_State_cbx',
+                                                                 checked: false,
+                                                                 class: 'form-check-input'
+                                                                 }).appendTo($('#TableCardHeader'));
+                                                                 var label = $('<label>', {
+                                                                 htmlFor: 'save_State_cbx',
+                                                                 class: ' form-check-label'
+                                                                 }).text('StateSave');
+                                                                 var container = $('<span>').append(checkbox).append(label);
+                                                                 $('#TableCardHeader').append(container);
+                                                                 checkbox.on('change', function () {
+                                                                 localStorage.setItem('save_State_cbx', this.checked);
+                                                                 if (this.checked) {
+                                                                 
+                                                                 } else {
+                                                                 
+                                                                 }
+                                                                 });
+                                                                 }*/
+                                                            }
                                                         </script>
                                                         </body> 
                                                         </html>

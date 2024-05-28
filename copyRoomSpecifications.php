@@ -1,34 +1,8 @@
 <?php
 session_start();
-
-function br2nl($string){
-$return= str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $string);
-return $return;
-}
-
-?>
-
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
-
-<?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	if ($mysqli ->connect_error) {
-	    die("Connection failed: " . $conn->connect_error);
-	}
-	
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    echo "Error loading character set utf8: " . $mysqli->error;
-	    exit();
-	} 
-	
-	
+include '_utils.php';
+check_login(); 
+	$mysqli = utils_connect_sql();
 	// Abfrage der zugehörigen Raumdaten
 	$sql = "SELECT tabelle_räume.idTABELLE_Räume, tabelle_räume.Abdunkelbarkeit, tabelle_räume.Strahlenanwendung, tabelle_räume.Laseranwendung, tabelle_räume.H6020
 			, tabelle_räume.GMP, tabelle_räume.ISO, tabelle_räume.`1 Kreis O2`, tabelle_räume.`2 Kreis O2`, tabelle_räume.`1 Kreis Va`, 

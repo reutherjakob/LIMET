@@ -1,19 +1,20 @@
-<?php 
-    session_start();
-    
-    $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-    if ($mysqli->connect_errno) {
-        echo "Failed to connect to MySQL: " . $mysqli->connect_error;
-    } else {
-        //echo "Connected successfully";
-    }
-    
-    if (!$mysqli->set_charset("utf8")) {
-        printf("Error loading character set utf8: %s\n", $mysqli->error);
-        exit();
-    }	
-    
-    $sql = " SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte, 
+<?php
+
+session_start();
+
+$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
+if ($mysqli->connect_errno) {
+    echo "Failed to connect to MySQL: " . $mysqli->connect_error;
+} else {
+    //echo "Connected successfully";
+}
+
+if (!$mysqli->set_charset("utf8")) {
+    printf("Error loading character set utf8: %s\n", $mysqli->error);
+    exit();
+}
+
+$sql = " SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte, 
            tabelle_räume.idTABELLE_Räume, 
            tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, 
            tabelle_funktionsteilstellen.Nummer, 
@@ -50,7 +51,6 @@
            tabelle_räume.He, 
            tabelle_räume.`He-RF`, 
            tabelle_räume.Ar, 
-           
            tabelle_räume.N2, 
            tabelle_räume.NGA, 
            tabelle_räume.N2O, 
@@ -66,8 +66,9 @@
            tabelle_räume.Belichtungsfläche, 
            tabelle_räume.Umfang, 
            tabelle_räume.Volumen, 
-           tabelle_räume.ET_Anschlussleistung_W, 
-           tabelle_räume.ET_Anschlussleistung_AV_W,
+           
+            tabelle_räume.ET_Anschlussleistung_W, 
+            tabelle_räume.ET_Anschlussleistung_AV_W,
             tabelle_räume.ET_Anschlussleistung_SV_W,
             tabelle_räume.ET_Anschlussleistung_ZSV_W,
             tabelle_räume.ET_Anschlussleistung_USV_W,
@@ -75,8 +76,9 @@
             tabelle_räume.`EL_SV Steckdosen Stk`,
             tabelle_räume.`EL_ZSV Steckdosen Stk`, 
             tabelle_räume.`EL_USV Steckdosen Stk`,
-           tabelle_räume.`EL_Roentgen 16A CEE Stk`,
-            tabelle_räume.`ET_RJ45-Ports`, 
+            tabelle_räume.`EL_Roentgen 16A CEE Stk`,
+           tabelle_räume.`ET_RJ45-Ports`, 
+            
            tabelle_räume.HT_Waermeabgabe_W, 
            tabelle_räume.VEXAT_Zone, 
            tabelle_räume.HT_Abluft_Vakuumpumpe, 
@@ -128,23 +130,21 @@
            tabelle_räume.`Fussboden OENORM B5220`
         FROM tabelle_räume
 	INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
-        WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=".$_SESSION["projectID"]."))
+        WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
         ORDER BY tabelle_räume.Raumnr";
-    
-    if (!$mysqli->query($sql)) {
-        echo "Error executing query: " . $mysqli->error;
-    }   
-    else{
-       $result = $mysqli->query($sql);
-    }
-    $mysqli->close();
 
-    $data = array();
-    while ($row = $result->fetch_assoc()) {
-        $data[] = $row;
-    }
-    
-    header('Content-Type: application/json');
-    echo json_encode($data);
-    
+if (!$mysqli->query($sql)) {
+    echo "Error executing query: " . $mysqli->error;
+} else {
+    $result = $mysqli->query($sql);
+}
+$mysqli->close();
+
+$data = array();
+while ($row = $result->fetch_assoc()) {
+    $data[] = $row;
+}
+
+header('Content-Type: application/json');
+echo json_encode($data);
 ?>

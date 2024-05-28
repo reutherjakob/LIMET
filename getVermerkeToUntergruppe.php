@@ -573,20 +573,19 @@ if(!isset($_SESSION["username"]))
                     ctx.drawImage(el.target, 0, 0, elem.width, elem.height);
                     //get the base64-encoded Data URI from the resize image
                     var srcEncoded = ctx.canvas.toDataURL('image/jpeg', 1);
-                    //assign it to thumb src
-                    document.querySelector('#image').src = srcEncoded;
-
+                    //assign it to thumb src 
+                    document.querySelector('#image').src = srcEncoded; 
+                    
+                    document.querySelector('#images_cb').src = srcEncoded; 
                     /*Now you can send "srcEncoded" to the server and
                     convert it to a png o jpg. Also can send
                     "el.target.name" that is the file's name.*/
                     var resized = document.querySelector('#image').src;
-                    //var resized = document.getElementById("image").files;
-
+                    //var resized = document.getElementById("image").files; 
                     var formData = new FormData();
                     //formData.append("fileUpload", files[0]);
-                    formData.append("fileUpload", resized);
-                    formData.append("vermerkID",vermerkID);
-
+                    formData.append("fileUpload", resized);  
+                    formData.append("vermerkID",vermerkID); 
                     var xhttp = new XMLHttpRequest();
 
                     // Set POST method and ajax file path
@@ -600,15 +599,10 @@ if(!isset($_SESSION["username"]))
                     };
                     // Send request with data
                     xhttp.send(formData);                     
-                }
-            } 
+                };
+            };
         }      
     });
-        
-
-
-
 </script> 
-
 </body>
 </html>

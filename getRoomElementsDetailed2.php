@@ -9,8 +9,6 @@ check_login();
     <head>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type" /></head>
     <body>
-
-
         <?php
         $mysqli = utils_connect_sql();
         $sql = "SELECT tabelle_räume_has_tabelle_elemente.id, tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.Anzahl, tabelle_elemente.ElementID, tabelle_elemente.Kurzbeschreibung As `Elementbeschreibung`, tabelle_varianten.Variante, tabelle_elemente.Bezeichnung, tabelle_geraete.GeraeteID, tabelle_hersteller.Hersteller, tabelle_geraete.Typ, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.Standort, tabelle_räume_has_tabelle_elemente.Verwendung, tabelle_räume_has_tabelle_elemente.Kurzbeschreibung, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete
@@ -79,10 +77,10 @@ check_login();
                     }
                 });
             });
-            
+
             $(document).ready(function () {
                 $("#tableRoomElements").DataTable({
-                    searching:true, 
+                    searching: true,
                     info: true,
                     select: true,
                     order: [[1, "asc"]],
@@ -93,10 +91,10 @@ check_login();
                     ],
                     paging: true,
                     pagingType: "numbers",
-                    pageLength: "25", 
+                    pageLength: "25",
                     sDom: "tlip"
-                    //"scrollY":        '20vh',
-                    //"scrollCollapse": true,
+                            //"scrollY":        '20vh',
+                            //"scrollCollapse": true,
                 });
 
                 var table = $('#tableRoomElements').DataTable();

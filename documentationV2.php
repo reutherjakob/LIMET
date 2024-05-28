@@ -148,7 +148,7 @@ init_page_serversides();
                             <button type='button' id='addImage' class='btn btn-outline-success btn-sm' value='Bild hinzufügen' style='visibility:hidden'><i class='fas fa-plus'></i> Bild hinzufügen</button>
                         </label>
                     </div>
-                    <div class="card-body" id="images"></div>
+                    <div class="card-body" id="images"><img id="images_cb"></div>
             </div>
         </div>        
         <!-- Darstellung PDF -->
