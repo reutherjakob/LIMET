@@ -343,7 +343,7 @@ init_page_serversides();
                         "pagingType": "simple",
                         "lengthChange": false,
                         "pageLength": 10,
-			"columnDefs": [
+                        			"columnDefs": [
                             {
                                 "targets": [ 0 ],
                                 "visible": false,

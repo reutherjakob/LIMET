@@ -38,6 +38,8 @@ function make_MT_details_table($pdf, $result, $result1, $result3,  $valueOfRoomI
     $rowHeight = 5;
     $rowHeightMainLine = 7;
     $f_size = 6;
+    
+    
 
     $pdf->SetFillColor(244, 244, 244);
     $pdf->SetTextColor(0,5,0);
