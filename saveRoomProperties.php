@@ -1,16 +1,12 @@
 <?php
 session_start();
-?>
 
-<?php
 if(!isset($_SESSION["username"]))
    {
    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
    exit;
    }
-?>
 
-<?php
 	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
 	if ($mysqli ->connect_error) {
 	    die("Connection failed: " . $conn->connect_error);

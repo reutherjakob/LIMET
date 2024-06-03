@@ -317,6 +317,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell(80, 6, "Bauetappe: ".$row['Bauetappe'],'B', 'L', 0, 0);            
         $pdf->Ln();        
     }   
+    
     $lastXCoordinateHeader = $pdf->GetX();
     $lastYCoordinateHeader = $pdf->GetY();
     $lastCategory = "";

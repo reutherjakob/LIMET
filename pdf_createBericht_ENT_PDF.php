@@ -1,10 +1,9 @@
 <?php
 
 // Most Current version 29.11
-
-
 include 'pdf_createBericht_MYPDFclass.php';
 include 'pdf_createBericht_utils.php';
+include '_utils.php';
 
 session_start();
 

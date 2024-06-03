@@ -27,21 +27,36 @@ init_page_serversides();
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/datatables.mark.js/2.0.0/datatables.mark.min.css"/>
 <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
- 
+
+  
+<!--- https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css --->
+  
+ <style>
+
+.btn-xs {
+  height: 22px;
+  padding: 2px 5px;
+  font-size: 12px;
+  line-height: 1.5; /* If Placeholder of the input is moved up, rem/modify this. */
+  border-radius: 3px;
+}
+
+</style>
  
 </head>
-
+  
 <body style="height:100%">
  
 <div class="container-fluid" >
-	 
+
     
     <div id="limet-navbar"></div> <!-- Container für Navbar -->		
+
     <div class="mt-4 card">
                 <div class="card-header">Räume im Projekt</div>
                 <div class="card-body">
                     <?php
-                            echo "<button type='button' id='addRoomButton' class='btn btn-success btn-sm mb-2' value='addRoom' data-toggle='modal' data-target='#changeRoomModal'>Raum hinzufügen <i class='far fa-plus-square'></i></button>";
+                        echo "<button type='button' id='addRoomButton' class='btn btn-success btn-sm mb-2' value='addRoom' data-toggle='modal' data-target='#changeRoomModal'>Raum hinzufügen <i class='far fa-plus-square'></i></button>";
                             
                             $mysqli = utils_connect_sql();
                             $sql = "SELECT tabelle_räume.idTABELLE_Räume, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Nutzfläche, tabelle_räume.Raumhoehe, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, 
@@ -401,6 +416,8 @@ init_page_serversides();
 	            table.$('tr.info').removeClass('info');
 	            $(this).addClass('info');
 	            raumID = table.row( $(this) ).data()[0];
+                    console.log("RaumID", raumID);
+                    
                     document.getElementById("nummer").value = table.row( $(this) ).data()[2];
                     document.getElementById("name").value = table.row( $(this) ).data()[3];
                     document.getElementById("flaeche").value = table.row( $(this) ).data()[4];
@@ -465,29 +482,29 @@ init_page_serversides();
 	});
 	
 	
-	//Bauangaben einblenden/ausblenden
-	$("#showBauangaben").click(function() {
-	  if($("#bauangaben").is(':hidden')){
-	    $(this).html("<span class='glyphicon glyphicon-menu-down'></span>");
-	    $("#bauangaben").show();
-	  }
-	  else {
-	  	$(this).html("<span class='glyphicon glyphicon-menu-right'></span>");
-	    $("#bauangaben").hide();
-	  }
-	});
-	
-	// Notizen einblenden/ausblenden
-	$("#showNotices").click(function() {
-	  if($("#notices").is(':hidden')){
-	    $(this).html("<span class='glyphicon glyphicon-menu-down'></span>");
-	    $("#notices").show();
-	  }
-	  else {
-	  	$(this).html("<span class='glyphicon glyphicon-menu-right'></span>");
-	    $("#notices").hide();
-	  }
-	});
+//	//Bauangaben einblenden/ausblenden
+//	$("#showBauangaben").click(function() {
+//	  if($("#bauangaben").is(':hidden')){
+//	    $(this).html("<span class='glyphicon glyphicon-menu-down'></span>");
+//	    $("#bauangaben").show();
+//	  }
+//	  else {
+//	  	$(this).html("<span class='glyphicon glyphicon-menu-right'></span>");
+//	    $("#bauangaben").hide();
+//	  }
+//	});
+//	
+//	// Notizen einblenden/ausblenden
+//	$("#showNotices").click(function() {
+//	  if($("#notices").is(':hidden')){
+//	    $(this).html("<span class='glyphicon glyphicon-menu-down'></span>");
+//	    $("#notices").show();
+//	  }
+//	  else {
+//	  	$(this).html("<span class='glyphicon glyphicon-menu-right'></span>");
+//	    $("#notices").hide();
+//	  }
+//	});
         
         //Raum speichern
 	$("#saveRoom").click(function(){
@@ -521,6 +538,7 @@ init_page_serversides();
         
         //Raum hinzufügen
 	$("#addRoom").click(function(){
+            console.log("Add btn click");
 		var nummer = $("#nummer").val();
 		var name = $("#name").val();
 		var flaeche  = $("#flaeche").val();
@@ -567,6 +585,7 @@ init_page_serversides();
         
         $("button[value='changeRoom']").click(function(){           
             // Buttons ein/ausblenden!               
+            console.log("button[value=changeRoom] clicked ");
             document.getElementById("addRoom").style.display = "none";
             document.getElementById("saveRoom").style.display = "inline";                
             $('#changeRoomModal').modal('show');            

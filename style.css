@@ -1,4 +1,13 @@
 
+.pull-right {
+float: right !important;
+height: 20px !important;
+}
+
+#pull-left {
+float: left !important;
+}
+
 #btn-xs {
   height: 22px;
   padding: 2px 5px;
@@ -7,11 +16,11 @@
   border-radius: 3px;
 }
 
-
-﻿#body, html, .container-fluid {
+#body, html, .container-fluid {
          height: 100%;
          font-size:13px;
 }
+
 #frame {
 	border: thin #000000 solid;
 	padding: 5px 0px 5px 0px;
@@ -41,7 +50,7 @@
 	background-color: #F5F5F5;
 }
 #td {
-    padding: 5px;
+        padding: 5px;
 }
 #table {
 	border-spacing: 0px;

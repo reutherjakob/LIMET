@@ -5,11 +5,7 @@ session_start();
 <!DOCTYPE html>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 <html>
-<head>
-    <style>
-        
-        
-    </style>
+<head> 
 </head>
 <body>
 <?php
@@ -101,42 +97,41 @@ if(!isset($_SESSION["username"]))
         document.getElementById("buttonNewVermerkuntergruppe").style.visibility = "visible";
         
     	var table1 = $('#tableVermerkUnterGruppe').DataTable( {
-    		"columnDefs": [
+    		columnDefs: [
                         {
                             "targets": [ 0,4 ],
                             "visible": false,
                             "searchable": false
                         }
                 ],
-                "select": true,
-                "paging": true,
-                "pagingType": "simple",
-                "lengthChange": false,
-                "pageLength": 10,
-                "searching": true,
-                "info": true,
-                "order": [[ 1, "asc" ]],
+                paging: true,
+                pagingType: "simple",
+                pageLength: 10,
+                lengthMenu: [10, 25, 50, 100,],//  { label: 'All', value: -1 }], doesnt work, datatables version to old for this synstax 
+                searching: true,
+                info: true,
+                order: [[ 1, "asc" ]],
+                select: true,
 	        'language': {'url': '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json'}	          
 	    } );
+            
             $('#tableVermerkUnterGruppe tbody').on( 'click', 'tr', function () {
-            if ( $(this).hasClass('info') ) {
+                if ( $(this).hasClass('info') ) {            }
+                else {
+                    untergruppenID = table1.row( $(this) ).data()[0]; 
+                    document.getElementById("unterGruppenNummer").value = table1.row( $(this) ).data()[2]; 
+                    document.getElementById("unterGruppenName").value = table1.row( $(this) ).data()[3];
 
-            }
-            else {
-                untergruppenID = table1.row( $(this) ).data()[0]; 
-                document.getElementById("unterGruppenNummer").value = table1.row( $(this) ).data()[2]; 
-                document.getElementById("unterGruppenName").value = table1.row( $(this) ).data()[3];
-                
-                $("#vermerke").show();
-                table1.$('tr.info').removeClass('info');
-                $(this).addClass('info');
-                $.ajax({
-                    url : "getVermerkeToUntergruppe.php",
-                    data:{"vermerkUntergruppenID":table1.row( $(this) ).data()[0],"vermerkGruppenID":table1.row( $(this) ).data()[4]},
-                    type: "GET",
-                    success: function(data){
-                        $("#vermerke").html(data); 
-                    } 
+                    $("#vermerke").show();
+                    table1.$('tr.info').removeClass('info');
+                    $(this).addClass('info');
+                    $.ajax({
+                        url : "getVermerkeToUntergruppe.php",
+                        data:{"vermerkUntergruppenID":table1.row( $(this) ).data()[0],"vermerkGruppenID":table1.row( $(this) ).data()[4]},
+                        type: "GET",
+                        success: function(data){
+                            $("#vermerke").html(data); 
+                        } 
                 });
             }
         });

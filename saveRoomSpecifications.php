@@ -2,7 +2,7 @@
 session_start();
 
 function br2nl($string){
-$return= str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $string);
+    $return= str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $string);
 return $return;
 }
 
