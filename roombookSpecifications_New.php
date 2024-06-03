@@ -50,6 +50,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             .fix_size{
                                 height: 35px !important;
                                 font-size: 15px;
+                             
                             }
 
                             .form-check-input:checked {
@@ -82,8 +83,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     <div class="mt-4 card">
                                         <div class="card">
                                             <div class="card-header card-header_size">
-                                                <button type="button" class="btn btn-outline-dark btn-xs" id="showRoomElements"><i class="fas fa-caret-left"></i></button> 
-                                                <input type="text" class ="pull-right" id="diy_searcher" placeholder="Search...">
+                                                <button type="button" class="btn btn-outline-dark" id="showRoomElements"><i class="fas fa-caret-left"></i></button> 
+                                                <input type="text" class ="pull-right fix_size " id="diy_searcher" placeholder="Search...">
                                             </div>
                                             <div class="card-body " id ="additionalInfo">
                                                 <p id="roomElements">
@@ -729,7 +730,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         }, spacer,
                                                                         {
                                                                             text: " R.Kopieren",
-                                                                            className: "btn far fa-plus-square",
+                                                                            className: "btn far fa-window-restore",
                                                                             action: function (e, dt, node, config)
                                                                             {
                                                                                 copySelectedRow();
@@ -737,7 +738,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         }, spacer,
                                                                         {
                                                                             text: "Check ",
-                                                                            className: "btn far fa-plus-square",
+                                                                            className: "btn fa far fa-check",
                                                                             action: function ()
                                                                             {
                                                                                 check_angaben();
@@ -814,7 +815,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                             }
 
                                                             function init_showRoomElements_btn() {
-                                                                $("#showRoomElements").html("<i class='fas fa-caret-right'></i>");
+                                                                $("#showRoomElements").html("<i class='fa fa-caret-right'></i>");
                                                                 $("#showRoomElements").click(function () {
                                                                     if ($("#roomElements").is(':hidden')) {
                                                                         $(this).html("<i class='fas fa-caret-right'></i>");

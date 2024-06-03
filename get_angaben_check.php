@@ -27,7 +27,7 @@ function check_dependency_non_zero(&$messages, $raumparameter, $param1, $param2)
     foreach ($raumparameter as $roomID => $params) {
         if (isset($params[$param2]) && $params[$param2] > 0) {
             if (!isset($params[$param1]) || $params[$param1] != 1) {
-                $messages[] = "Room ID: " . $roomID. " " .$params['Raumbezeichnung']. ", Error: " . $param1 . " is  ". $params[$param1]. " while " . $param2 . " is ".$params[$param2]."\n <br>";
+                $messages[] = "Room ID: " . $roomID. " " .$params['Raumbezeichnung']. ", Error: " . $param1 . " is  ". $params[$param1]. " while " . $param2 . " is ".$params[$param2]."\n";
             } 
         }   
     }
@@ -36,7 +36,7 @@ function check_dependency_non_zero(&$messages, $raumparameter, $param1, $param2)
 function check_max_value(&$messages, $raumparameter, $param, $max_value) {
     foreach ($raumparameter as $roomID => $params) {
         if (isset($params[$param]) && $params[$param] > $max_value) {
-            $messages[] = "Room ID: " . $roomID . " " .$params['Raumbezeichnung']. ", Warning: " . $param .":" .  $params[$param]. " exceeds the trafo maximum of " . $max_value . ".\n <br>";
+            $messages[] = "Room ID: " . $roomID . " " .$params['Raumbezeichnung']. ", Warning: " . $param .":" .  $params[$param]. " exceeds the trafo maximum of " . $max_value . ".\n";
         }
     }
 }
@@ -48,11 +48,11 @@ function check_awg(&$messages, $raumparameter) {
                 continue;
             } elseif ($params['Anwendungsgruppe'] == 1) {
                 if (!isset($params['SV']) || $params['SV'] != 1 ) {
-                    $messages[] = "Room ID: " . $roomID .  " " .$params['Raumbezeichnung'].", Error: SV=0 while Anwendungsgruppe is " . $params['Anwendungsgruppe'] . ".\n <br>";
+                    $messages[] = "Room ID: " . $roomID .  " " .$params['Raumbezeichnung'].", Error: SV=0 while Anwendungsgruppe is " . $params['Anwendungsgruppe'] . ".\n";
                 }
             } elseif ($params['Anwendungsgruppe'] == 2) {
                 if (!isset($params['ZSV']) || $params['ZSV'] != 1) {
-                    $messages[] = "Room ID: " . $roomID .  " " .$params['Raumbezeichnung'].", Error: USV=0 while Anwendungsgruppe is " . $params['Anwendungsgruppe'] . ".\n <br>";
+                    $messages[] = "Room ID: " . $roomID .  " " .$params['Raumbezeichnung'].", Error: USV=0 while Anwendungsgruppe is " . $params['Anwendungsgruppe'] . ".\n";
                 }
             }
         }

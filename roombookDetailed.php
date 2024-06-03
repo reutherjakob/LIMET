@@ -60,10 +60,13 @@ init_page_serversides();
 						//$sql .= "FROM view_Raeume INNER JOIN view_Projekte ON view_Raeume.tabelle_projekte_idTABELLE_Projekte = view_Projekte.idTABELLE_Projekte ";
                                                 //$sql .= "WHERE view_Projekte.idTABELLE_Projekte= ".$_SESSION["projectID"] ;
 						
-						$sql = "SELECT tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.Nutzfläche, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, tabelle_räume.Bauabschnitt, 
-						tabelle_räume.`Anmerkung allgemein`, tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, tabelle_räume.idTABELLE_Räume, tabelle_räume.`MT-relevant`, `tabelle_räume`.`Anmerkung FunktionBO`
-								FROM tabelle_räume INNER JOIN tabelle_projekte ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
-								WHERE (((tabelle_projekte.idTABELLE_Projekte)=".$_SESSION["projectID"]."));";
+						$sql = "SELECT tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.Nutzfläche,
+                                                    tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, 
+                                                    tabelle_räume.Bauabschnitt,  tabelle_räume.Raumnummer_Nutzer,
+                                                    tabelle_räume.`Anmerkung allgemein`, tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, 
+                                                    tabelle_räume.idTABELLE_Räume, tabelle_räume.`MT-relevant`, `tabelle_räume`.`Anmerkung FunktionBO`
+                                                FROM tabelle_räume INNER JOIN tabelle_projekte ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
+                                                WHERE (((tabelle_projekte.idTABELLE_Projekte)=".$_SESSION["projectID"]."));";
 						
 						
 						$result = $mysqli->query($sql);
@@ -72,6 +75,7 @@ init_page_serversides();
 						<thead><tr>
 						<th>ID</th>
 						<th>Raumnr</th>
+                                                <th>R.NR.Nutzer</th>
 						<th>Raumbezeichnung</th>
 						<th>Nutzfläche</th>
 						<th>Raumbereich Nutzer</th>
@@ -83,7 +87,8 @@ init_page_serversides();
 						while($row = $result->fetch_assoc()) {
 						    echo "<tr>";
 						    echo "<td>".$row["idTABELLE_Räume"]."</td>";
-						    echo "<td>".$row["Raumnr"]."</td>";
+						    echo "<td>".$row["Raumnr"]."</td>"; 
+						    echo "<td>".$row["Raumnummer_Nutzer"]."</td>";
 						    echo "<td>".$row["Raumbezeichnung"]."</td>";
 						    echo "<td>".$row["Nutzfläche"]."</td>";
 						    echo "<td>".$row["Raumbereich Nutzer"]."</td>";
@@ -295,7 +300,7 @@ init_page_serversides();
                     }    
                     
                     if($("#filter_MTrelevantRooms").is(':checked')){
-                        if (data [6] === "Ja")
+                        if (data [7] === "Ja")
                         {
                             return true;
                         }
