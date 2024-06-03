@@ -111,9 +111,9 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
 function init_pdf_attributes($pdf, $einzugLR, $marginTop, $marginBTM, $format = "") {
     $pdf->SetCreator(PDF_CREATOR);
     $pdf->SetAuthor('LIMET Consulting und Planung ZT GmbH');
-    $pdf->SetTitle('Raumbuch');
-    $pdf->SetSubject('Raumbuch');
-    $pdf->SetKeywords('Raumbuch');
+    $pdf->SetTitle('Bauangaben');
+    $pdf->SetSubject('Bauangaben');
+    $pdf->SetKeywords('Bauangaben');
     $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING, array(0, 64, 255), array(0, 64, 128));
     $pdf->setFooterData(array(0, 64, 0), array(0, 64, 128));
     $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
@@ -156,9 +156,19 @@ function is_not_no_comment($str) {
 
 function format_text($string) {
     $spacer = ". ";
-    $string = preg_replace("/\s+\n/", "\n", $string); // Remove spaces before \n
-    //$string = preg_replace("..", ".", $string);
-    $return = str_replace("\n", $spacer, $string);
+//    $string = preg_replace("/\s+\n/", "\n", $string); // Remove spaces before \n
+//    $string = str_replace("\n", $spacer, $string);
+//    $return = str_replace("..", ".", $string);
+//    if (preg_match('/²/', $string)) {
+//        // Replace the superscript 2 with <sup>2</sup>
+//        $return = str_replace('²', '<sup>2</sup>', $string);
+//    } else {
+//        $return = $string;
+//    }
+
+    // Format the string for a multicell
+//     = '<p>' . $return . '</p>';
+    $return=$string; 
     return $return;
 }
 

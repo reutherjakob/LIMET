@@ -56,7 +56,7 @@ init_page_serversides("No Redirect");
                                                         $sql = "SELECT tabelle_projekte.idTABELLE_Projekte, tabelle_projekte.Interne_Nr, tabelle_projekte.Projektname, tabelle_projekte.Aktiv, tabelle_projekte.Neubau, tabelle_projekte.Bettenanzahl, tabelle_projekte.BGF, tabelle_projekte.NF, tabelle_projekte.Ausfuehrung, tabelle_planungsphasen.Bezeichnung, tabelle_planungsphasen.idTABELLE_Planungsphasen FROM tabelle_projekte INNER JOIN tabelle_planungsphasen ON tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen = tabelle_planungsphasen.idTABELLE_Planungsphasen INNER JOIN tabelle_users_have_projects ON tabelle_projekte.idTABELLE_Projekte = tabelle_users_have_projects.tabelle_projekte_idTABELLE_Projekte WHERE tabelle_users_have_projects.User = '" . $_SESSION['username'] . "' ORDER BY tabelle_projekte.Interne_Nr;";
                                                         $result = $mysqli->query($sql);
 
-                                                        echo "<table id='tableProjects' class='table table-striped table-bordered table-sm' cellspacing='0' width='100%'>
+                                                        echo "<table id='tableProjects' class='table display compact table-striped table-bordered table-sm' cellspacing='0' width='100%'>
                                                     <thead><tr>
                                                         <th>ID</th>
                                                         <th></th>
