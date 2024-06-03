@@ -1,22 +1,24 @@
 <?php
 
-function br2nl($string) {
-    $return = str_replace(array("<br/>"), "\n", $string);
-    //  $return= str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $temp);
-    return $return;
-}
-
-
-function check_if_project_selected_else_redirect() {
-    if ($_SESSION["projectName"] == "") {
-        header("Location: https://work.limet-rb.com/projects.php");
-        exit;
+function init_page_serversides($ommit_redirect = "") {
+    check_login();
+    get_project();
+    if ($ommit_redirect == "") {
+        check_if_project_selected_else_redirect();
     }
+    load_nav_bar();
 }
 
 function check_login() {
     if (!isset($_SESSION["username"])) {
         echo "Bitte erst <a href=\"index.php\">einloggen</a>";
+        exit;
+    }
+}
+
+function check_if_project_selected_else_redirect() {
+    if ($_SESSION["projectName"] == "") {
+        header("Location: https://work.limet-rb.com/projects.php");
         exit;
     }
 }
@@ -28,18 +30,17 @@ function get_project() {
         echo '</script>';
     } else {
         echo '<script>';
-        echo 'var currentP = ' . json_encode(" NIX ") . ';';
+        echo 'var currentP = ' . json_encode(" KEIN PROJEKT AUSGEWÄHLT ") . ';';
         echo '</script>';
     }
 }
 
-function init_page_serversides($ommit_redirect = "") { //and Project. 
-    check_login();
-    get_project();
-    load_nav_bar();
-    if ($ommit_redirect == "") {
-        check_if_project_selected_else_redirect();
-    }
+function br2nl($string) {
+    $return = str_replace(array("<br/>"), "\n", $string);
+    //  $return= str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $temp);
+    return $return;
+}
+
 
 
 function utils_connect_sql() {
@@ -66,8 +67,12 @@ function load_nav_bar() {
     echo '            $("#projectSelected").text("Projekt:" + currentP);';
     echo '        });';
     echo '     };    </script>';
+} 
 
-}
-
-
+//function nl2br($string) {
+//    $return = str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $string);
+//    return $return;
+//}
 ?>
+
+

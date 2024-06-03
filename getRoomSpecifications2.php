@@ -1,8 +1,9 @@
-<?php
+<?php //
+//Reutherer & Fux. LAst Update 14.5.24 
 session_start();
 include '_utils.php';
-check_login();
-?>
+//check_login();
+//?>
 
 <!DOCTYPE html>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
@@ -17,7 +18,7 @@ check_login();
                     font-size: 12px;
                     margin: 4px 0px;
             }
-            .hr-sect::before,
+            .hr-sect::before, 
             .hr-sect::after {
                     content: "";
                     flex-grow: 1;
@@ -106,7 +107,7 @@ check_login();
                 <h4 class='modal-title'>Bauangaben kopieren</h4>
                 <button type='button' class='close' data-dismiss='modal'>&times;</button>
               </div>
-              <div class='modal-body' id='mbody'>
+              <div class='modal-body' id='mbody2'>
               </div>
               <div class='modal-footer'>
                   <input type='button' id='copySpecifications' class='btn btn-success btn-sm' value='Bauangaben kopieren'></input>
@@ -139,7 +140,7 @@ check_login();
             });
 
             //Bauangaben kopieren
-            $("input[value='Bauangaben kopieren exkl BO']").click(function () {
+            $("input[value='Bauangaben kopieren exkl. BO']").click(function () {
                 var ID = this.id;
                 console.log("File: getRbSpecs2.ph M:BauangabenKopieren RID: ", ID);
                 $.ajax({ 
@@ -147,7 +148,9 @@ check_login();
                     type: "GET",
                     data: {"id": ID},
                     success: function (data) {
-                        $("#mbody").html(data);
+//                        alert(data); 
+                        console.log("Sucessfully opened getRoomsToCopy.php", data); 
+                        $("#mbody2").html(data);
                     }
                 });
             });
@@ -155,4 +158,4 @@ check_login();
         </script> 
 
     </body>
-</html>
+</html> 

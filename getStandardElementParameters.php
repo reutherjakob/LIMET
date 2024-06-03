@@ -77,7 +77,7 @@ if(!isset($_SESSION["username"]))
     
 	$(document).ready(function() {	        
 	   $("#tableStandardElementParameters").DataTable( {
-			"paging": false,
+			"paging": true,
 			"searching": false,
 			"info": false,
 	        //"pagingType": "simple_numbers",

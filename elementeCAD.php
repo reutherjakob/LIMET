@@ -38,7 +38,7 @@ init_page_serversides("x");
     <body style="height:100%">
 
         <div class="container-fluid">
-            ´<div id="limet-navbar"></div> <!-- Container für Navbar -->
+            <div id="limet-navbar"></div> <!-- Container für Navbar -->
             <div class="panel panel-default">
                 <div class="panel-heading"><label>Elemente</label></div>
                 <div class="panel-body" id="cadElements">
