@@ -342,7 +342,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             ORDER BY tabelle_elemente.ElementID, tabelle_varianten.Variante;";
         $result = $mysqli->query($sql);
         // -----------------Projekt Elementparameter/Variantenparameter laden----------------------------
-        $sql = "SELECT tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung, tabelle_parameter.idTABELLE_Parameter, tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie, tabelle_parameter.Abkuerzung
+        $sql = "SELECT tabelle_parameter_kategorie.Kategorie,tabelle_parameter.Abkuerzung, tabelle_parameter.Bezeichnung, tabelle_parameter.idTABELLE_Parameter, tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie, tabelle_parameter.Abkuerzung
             FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter) 
             ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
             WHERE (((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND tabelle_parameter.`Bauangaben relevant` = 1)
@@ -358,12 +358,12 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             ORDER BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung;";
         $result3 = $mysqli->query($sql);
         //  ----------------------- Ausgabe Abkürzungen -----------------------
-        $sql = "SELECT tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Abkuerzung, tabelle_parameter.Bezeichnung
-            FROM (tabelle_projekt_elementparameter INNER JOIN tabelle_parameter ON tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter = tabelle_parameter.idTABELLE_Parameter) INNER JOIN tabelle_parameter_kategorie ON tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie = tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie
-            WHERE (((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_parameter.`Bauangaben relevant`)=1))
-            GROUP BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Abkuerzung, tabelle_parameter.Bezeichnung
-            ORDER BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung;";
-        $result4 = $mysqli->query($sql);
+//        $sql = "SELECT tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Abkuerzung, tabelle_parameter.Bezeichnung
+//            FROM (tabelle_projekt_elementparameter INNER JOIN tabelle_parameter ON tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter = tabelle_parameter.idTABELLE_Parameter) INNER JOIN tabelle_parameter_kategorie ON tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie = tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie
+//            WHERE (((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_parameter.`Bauangaben relevant`)=1))
+//            GROUP BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Abkuerzung, tabelle_parameter.Bezeichnung
+//            ORDER BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung;";
+//        $result4 = $mysqli->query($sql);
 
         $initialMemory = memory_get_usage();
         $row = $result->fetch_assoc();
@@ -373,7 +373,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $result->data_seek(0);
         if ($finalMemory - $initialMemory > -8000) {
             block_label_queer($block_header_w, $pdf, "Med.-tech.", $block_header_height, $SB);
-            make_MT_details_table($pdf, $result, $result1, $result3, $result4, $valueOfRoomID, $block_header_height, $SB, $SH);
+            make_MT_details_table($pdf, $result, $result1, $result3, $valueOfRoomID, $block_header_height, $SB, $SH);
         } else {
 //            $pdf->Multicell(100, 10, $initialMemory . "       "  .$finalMemory - $initialMemory, 0, "R", 0, 1);
         }
@@ -383,4 +383,4 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
 $mysqli->close();
 ob_end_clean(); // brauchts irgendwie.... ? 
-$pdf->Output('Raumbuch-MT.pdf', 'I');
+$pdf->Output('BAUANGABEN-MT.pdf', 'I');

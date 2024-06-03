@@ -3,7 +3,7 @@
 session_start();
 check_login();
 
-function make_MT_details_table($pdf, $result, $result1, $result3, $result4,  $valueOfRoomID, $block_header_height, $SB, $SH) {
+function make_MT_details_table($pdf, $result, $result1, $result3,  $valueOfRoomID, $block_header_height, $SB, $SH) {
     
     // $result4 = Abkürzungen
     // -------------------------Elemente parameter ------------------------- 
@@ -38,6 +38,8 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $result4,  $va
     $rowHeight = 5;
     $rowHeightMainLine = 7;
     $f_size = 6;
+    
+    
 
     $pdf->SetFillColor(244, 244, 244);
     $pdf->SetTextColor(0,5,0);
@@ -87,7 +89,7 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $result4,  $va
         //---------------- Prüfen ob Seitenende---------------------------------------------------------
         $y = $pdf->GetY();
         if ($y >= $SH - 5) {
-            abk_vz($result4, $pdf, $f_size);
+            abk_vz($result1, $pdf, $f_size);
             $pdf->AddPage('L', 'A3');
             $lastXCoordinateHeader = $pdf->GetX();
             $lastYCoordinateHeader = $pdf->GetY();
@@ -165,8 +167,8 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $result4,  $va
         }
         $pdf->Ln();
     }
-    abk_vz($result4, $pdf, $f_size); 
-}   
+    abk_vz($result1, $pdf, $f_size); 
+}
 
 function abk_vz($result4, $pdf, $f_size) {
     $result4->data_seek(0);

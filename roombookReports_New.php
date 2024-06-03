@@ -48,7 +48,7 @@ init_page_serversides();
 
                                             $result = $mysqli->query($sql);
 
-                                            echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'  cellspacing='0' width='100%'>
+                                            echo "<table class='table display compact table-striped table-bordered table-sm' id='tableRooms'  cellspacing='0' width='100%'>
 						<thead><tr>
 						<th>ID</th>
 						<th>Raumnr</th>
@@ -190,7 +190,7 @@ init_page_serversides();
                                     }
 
                                     function init_dt() {
-                                        table = $('#tableRooms').DataTable({ 
+                                        table = $('#tableRooms').DataTable({
                                             "paging": false,
 //                                            pageLength: 20,
 //                                            lengthChange:true,
@@ -201,7 +201,7 @@ init_page_serversides();
                                                     "visible": false,
                                                     "searchable": false
                                                 }
-                                            ], 
+                                            ],
                                             "orderCellsTop": true,
                                             "order": [[1, "asc"]],
                                             "scrollY": '75vh',
@@ -218,7 +218,7 @@ init_page_serversides();
                                                     depthLimit: 3
                                                 }
                                             }
-                                           
+
                                         });
                                     }
 
@@ -248,25 +248,32 @@ init_page_serversides();
                                         let spacer = {extend: 'spacer', style: 'bar'};
                                         new $.fn.dataTable.Buttons(table, {
                                             buttons: [
-                                                spacer,
+                                                spacer, 
                                                 {extend: 'searchBuilder', label: "Search"},
-                                                spacer,
+//                                                spacer,
+//                                                {text: 'Select:', enabled:false},
+                                                {extend: 'spacer', text:"SELECT:", style: 'bar'},
                                                 {
-                                                    text: 'Select All',
+                                                    text: 'All',
                                                     action: function () {
                                                         table.rows().select();
                                                     }
+                                                },{
+                                                    text: 'Visible',
+                                                    action: function () {
+                                                        table.rows(':visible').select();
+                                                    }
                                                 },
                                                 {
-                                                    text: 'Select None',
+                                                    text: 'None',
                                                     action: function () {
                                                         table.rows().deselect();
                                                     }
                                                 },
+                                                
                                                 spacer,
                                                 {
-                                                    text: "BAUANGABEN A3",
-                                                    className: "btn-sm",
+                                                    text: "BAUANGABEN A3", 
                                                     action: function () {
                                                         var count = table.rows({selected: true}).data();
                                                         var roomIDs = [];
@@ -278,7 +285,7 @@ init_page_serversides();
                                                         } else {
 
                                                             const bools2int2str = report_input_bools.map((bool) => (bool ? 1 : 0)).join(',');
-                                                            window.open('/pdf_createBericht_A3Qeer.php?roomID=' + roomIDs+ "&PDFinputs=" + bools2int2str);
+                                                            window.open('/pdf_createBericht_A3Qeer.php?roomID=' + roomIDs + "&PDFinputs=" + bools2int2str);
 //                                                            window.open('/pdf_createBericht_custom.php?roomID=' + roomIDs + "&PDFinputs=" + bools2int2str);  //custom bericht page ! 
                                                         }
                                                     }

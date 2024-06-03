@@ -1,7 +1,7 @@
 <?php
 session_start();
 include '_utils.php';
-init_page_serversides(); 
+init_page_serversides();
 include 'roombookSpecifications_New_modal_addRoom.php';
 ?> 
 
@@ -14,8 +14,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
             <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
-<!--            <link rel="icon" href="iphone_favicon.png">
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">-->
+            <!--            <link rel="icon" href="iphone_favicon.png">
+                        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">-->
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
                 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
@@ -48,8 +48,9 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             }
 
                             .fix_size{
-                                height: 30px !important;
-                                font-size: 16px;
+                                height: 35px !important;
+                                font-size: 15px;
+                             
                             }
 
                             .form-check-input:checked {
@@ -68,7 +69,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     <div class="card-header d-inline-flex" id='TableCardHeader'>  </div>
 
                                     <div class="card-body" id = "table_container_div">
-                                        <table class="table table-responsive table-striped table-bordered table-sm sticky" width ="100%" id="table_rooms" > 
+                                        <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" width ="100%" id="table_rooms" > 
                                             <thead <tr></tr> </thead>
                                             <tbody> <td></td>  </tbody>
                                         </table> 
@@ -82,8 +83,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     <div class="mt-4 card">
                                         <div class="card">
                                             <div class="card-header card-header_size">
-                                                <button type="button" class="btn btn-outline-dark btn-xs" id="showRoomElements"><i class="fas fa-caret-left"></i></button> 
-                                                <input type="text" class ="pull-right" id="diy_searcher" placeholder="Search...">
+                                                <button type="button" class="btn btn-outline-dark" id="showRoomElements"><i class="fas fa-caret-left"></i></button> 
+                                                <input type="text" class ="pull-right fix_size " id="diy_searcher" placeholder="Search...">
                                             </div>
                                             <div class="card-body " id ="additionalInfo">
                                                 <p id="roomElements">
@@ -330,14 +331,14 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                     name: 'EditableTable',
                                                                     id: 'checkbox_EditableTable',
                                                                     checked: false,
-                                                                    class: 'form-check-input fix_size'
+                                                                    class: 'fix_size form-check-input inline-flex'
                                                                 }).appendTo($('#TableCardHeader'));
-//                                                                    var label = $('<label>', {
-//                                                                        htmlFor: 'checkbox_EditableTable',
-//                                                                        class: ' form-check-label inline',
-//                                                                        text: "- EDIT -"});
-                                                                var container = $('<span>').append(checkbox);//.append(label);
-                                                                $('#TableCardHeader').append(container);
+                                                                var label = $('<label>', {
+                                                                    htmlFor: 'checkbox_EditableTable',
+                                                                    class: 'rotated form-check-label inline',
+                                                                    text: "-EDIT-"});
+                                                                var container = $('<span>').append(checkbox);
+                                                                $('#TableCardHeader').append(container).append(label);
                                                             }
 
                                                             function init_checkbox_state() {
@@ -566,7 +567,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         "EL_SV Steckdosen Stk": SSDs_SV,
                                                                         "EL_ZSV Steckdosen Stk": SSDs_ZSV,
                                                                         "EL_USV Steckdosen Stk": SSDs_USV,
-                                                                        "CEE16A Stk": CEE16A, 
+                                                                        "CEE16A Stk": CEE16A,
                                                                         "htwärmeabgabew": htwärmeabgabew,
                                                                         "vexatzone": vexatzone,
                                                                         "htabluftvakuumpumpe": htabluftvakuumpumpe,
@@ -633,7 +634,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         success: function (data) {
                                                                             $('#addRoomModal').modal('hide');
                                                                             alert(data);
-                                                                            window.location.replace("roombookSpecifications_New.php"); 
+                                                                            window.location.replace("roombookSpecifications_New.php");
                                                                         }
                                                                     });
                                                                 } else {
@@ -695,7 +696,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                             }
 
                                                             function init_btn_4_dt() {
-                                                                let spacer = {extend: 'spacer', style: 'bar'}; 
+                                                                let spacer = {extend: 'spacer', style: 'bar'};
                                                                 new $.fn.dataTable.Buttons(table, {
                                                                     buttons: [
                                                                         spacer, {extend: 'searchBuilder', label: "Search B"}, spacer,
@@ -711,8 +712,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         spacer,
                                                                         {
                                                                             text: 'w/ Data',
-                                                                            className: 'btn_vis',
-                                                                            id: 'tgl_vis_btn',
+                                                                            className: '',
+                                                                            id: 'toggleDatalessColumnsButton',
                                                                             action: function (e, dt, node, config) {
                                                                                 checkAndToggleColumnsVisibility(dt);
                                                                             }
@@ -729,13 +730,35 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         }, spacer,
                                                                         {
                                                                             text: " R.Kopieren",
-                                                                            className: "btn far fa-plus-square",
+                                                                            className: "btn far fa-window-restore",
                                                                             action: function (e, dt, node, config)
                                                                             {
                                                                                 copySelectedRow();
                                                                             }
+                                                                        }, spacer,
+                                                                        {
+                                                                            text: "Check ",
+                                                                            className: "btn fa far fa-check",
+                                                                            action: function ()
+                                                                            {
+                                                                                check_angaben();
+                                                                            }
                                                                         }, spacer
                                                                     ]}).container().appendTo($('#TableCardHeader'));
+                                                            }
+
+                                                            function check_angaben() {
+
+                                                                $.ajax({
+                                                                    url: "get_angaben_check.php", // "ID": raumID,
+                                                                    data: {},
+                                                                    type: "GET",
+                                                                    success: function (data) {
+                                                                        alert(data);
+                                                                    }
+                                                                });
+
+
                                                             }
 
                                                             function init_visibilities() {
@@ -755,15 +778,28 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                             function toggleColumns(table, startColumn, endColumn, button_name) {
                                                                 const columns = table.columns().indexes();
                                                                 var vis = !table.column(columns[endColumn]).visible();
-                                                                console.log("Toogle Columns Starting at: ",startColumn); 
+
                                                                 for (let i = startColumn; i <= endColumn; i++) {
                                                                     table.column(columns[i]).visible(vis);
                                                                 }
-                                                                const button = $(`.btn_vis:contains('${button_name}')`);
-                                                                if (vis) {
-                                                                    button.removeClass('btn_invis');
+
+                                                                if (button_name === 'Alle') {
+                                                                    buttonRanges.forEach(button => {
+                                                                            const btn = $(`.btn_vis:contains('${button.name}')`);
+                                                                            if (vis) {
+                                                                                btn.removeClass('btn_invis');
+                                                                            } else {
+                                                                                btn.addClass('btn_invis');
+                                                                            }
+                                                                        
+                                                                    });
                                                                 } else {
-                                                                    button.addClass('btn_invis');
+                                                                    const button = $(`.btn_vis:contains('${button_name}')`);
+                                                                    if (vis) {
+                                                                        button.removeClass('btn_invis');
+                                                                    } else {
+                                                                        button.addClass('btn_invis');
+                                                                    }
                                                                 }
                                                             }
 
@@ -779,7 +815,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                             }
 
                                                             function init_showRoomElements_btn() {
-                                                                $("#showRoomElements").html("<i class='fas fa-caret-right'></i>");
+                                                                $("#showRoomElements").html("<i class='fa fa-caret-right'></i>");
                                                                 $("#showRoomElements").click(function () {
                                                                     if ($("#roomElements").is(':hidden')) {
                                                                         $(this).html("<i class='fas fa-caret-right'></i>");

@@ -28,10 +28,10 @@ class MYPDF extends TCPDF {
             $this->SetFont('helvetica', '', 8);
             // Title
             if($_SESSION["projectPlanungsphase"]=="Vorentwurf"){
-                $this->Cell(0, 0, 'Raumbuch'.$_SESSION["projectPlanungsphase"], 0, false, 'R', 0, '', 0, false, 'B', 'B');
+                $this->Cell(0, 0, 'Bauangaben'.$_SESSION["projectPlanungsphase"], 0, false, 'R', 0, '', 0, false, 'B', 'B');
             }
             else{
-                $this->Cell(0, 0, 'Raumbuch', 0, false, 'R', 0, '', 0, false, 'B', 'B');
+                $this->Cell(0, 0, 'Bauangaben', 0, false, 'R', 0, '', 0, false, 'B', 'B');
             }
             $this->Ln();
             $this->cell(0,0,'','B',0,'L');
@@ -79,7 +79,7 @@ class MYPDF extends TCPDF {
             $this->Cell(0, 0, $raumInfos[0]['Planungsphase'], 0, false, 'L', 0, '', 0, false, 'B', 'B');
             $this->Ln();
             $this->Ln();
-            $this->Cell(0, 0, 'Raumbuch', 0, false, 'L', 0, '', 0, false, 'B', 'B');            
+            $this->Cell(0, 0, 'Bauangaben', 0, false, 'L', 0, '', 0, false, 'B', 'B');            
             $this->Ln();
             $this->Ln();
             $this->Cell(0, 0, 'Funktionsstellen: ', 0, false, 'L', 0, '', 0, false, 'B', 'B');
