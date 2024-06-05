@@ -7,8 +7,9 @@
 //
 //Input DATA from frontend-page
 $roomIDs = filter_input(INPUT_GET, 'roomID');
-$PDF_input_bool = filter_input(INPUT_GET, 'PDFinputs');
 $roomIDsArray = explode(",", $roomIDs);
+
+$PDF_input_bool = filter_input(INPUT_GET, 'PDFinputs');
 $PDF_input_bools = explode(",", $PDF_input_bool); //foreach ($roomIDsArray as $l) { echo $l;echo " <br> ";}echo $roomIDsArray;
 
 include 'pdf_createBericht_MYPDFclass.php'; //require_once('TCPDF-master/TCPDF-master/tcpdf.php'); is in class file

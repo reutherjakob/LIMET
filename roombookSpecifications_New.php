@@ -50,7 +50,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             .fix_size{
                                 height: 35px !important;
                                 font-size: 15px;
-                             
+
                             }
 
                             .form-check-input:checked {
@@ -83,7 +83,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     <div class="mt-4 card">
                                         <div class="card">
                                             <div class="card-header card-header_size">
-                                                <button type="button" class="btn btn-outline-dark" id="showRoomElements"><i class="fas fa-caret-left"></i></button> 
+                                                <button type="button" class="btn btn-outline-dark" id="showRoomElements"> <i class="fas fa-caret-left"></i></button> 
                                                 <input type="text" class ="pull-right fix_size " id="diy_searcher" placeholder="Search...">
                                             </div>
                                             <div class="card-body " id ="additionalInfo">
@@ -98,7 +98,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                         <script>
                                                             var table;
                                                             let toastCounter = 0;
-
                                                             var cellText = "";
                                                             var currentRowInd = 0;
                                                             var currentColInd = 0;
@@ -115,7 +114,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                 table_click();
                                                                 event_table_keyz();
                                                             });
-
                                                             function getCase(dataIdentifier) {
                                                                 const column = columnsDefinition.find(column => column.data === dataIdentifier);
                                                                 if (column && column.case) {
@@ -136,8 +134,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                             }
 
                                                             function formatNum(newData) {
-                                                                newData = newData.replace(/[^0-9,.-]/g, '');// Remove non-numeric characters (except for '.' and '-')
-                                                                newData = newData.replace(/,/g, '.');  // Replace ',' with '.' 
+                                                                newData = newData.replace(/[^0-9,.-]/g, ''); // Remove non-numeric characters (except for '.' and '-')
+                                                                newData = newData.replace(/,/g, '.'); // Replace ',' with '.' 
                                                                 return newData;
                                                             }
 
@@ -245,7 +243,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                                 if (event.keyCode === 13 && current_edit) { // Enter key pressed
                                                                                     //console.log("Enter Keydown: ", $(this).val());
                                                                                     var newData = format_data_input($(this).val(), dataIdentifier);
-
                                                                                     if (newData.trim() !== "") {
                                                                                         cellText = newData;
                                                                                         cell.html(newData);
@@ -261,7 +258,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                                     current_edit = false;
                                                                                     table.keys.enable();
                                                                                     table.cell(cell.index()).select();
-
                                                                                     initializeToaster("Changes NOT Saved", " - ", false);
                                                                                 }
                                                                             });
@@ -271,7 +267,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                     $.ajax({
                                                                         url: "setSessionVariables.php",
                                                                         data: {"roomID": RaumID},
-
                                                                         type: "GET",
                                                                         success: function (data) {
                                                                             $("#RoomID").text(RaumID);
@@ -359,14 +354,12 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                 const topPosition = 10 + toastCounter * 50;
                                                                 toast.style.top = `${topPosition}px`;
                                                                 toast.style.right = '10px';
-
                                                                 toast.innerHTML = `
                                                                     <div class="toast-header ${success ? "btn_vis" : "btn_invis"}">
                                                                         <strong class="mr-auto">${headerText} ${subtext}</strong>
                                                                     </div>`;
                                                                 document.body.appendChild(toast);
                                                                 toast.style.display = 'block';
-
                                                                 toastCounter++;
                                                                 setTimeout(() => {
                                                                     toast.style.display = 'none';
@@ -557,12 +550,10 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         "umfang": umfang,
                                                                         "volumen": volumen,
                                                                         "etanschlussleistungw": etanschlussleistungw,
-
                                                                         "ET_Anschlussleistung_AV_W": AnschlLeistung_AV,
                                                                         "ET_Anschlussleistung_SV_W": AnschlLeistung_SV,
                                                                         "ET_Anschlussleistung_ZSV_W": AnschlLeistung_ZSV,
                                                                         "ET_Anschlussleistung_USV_W": AnschlLeistung_USV,
-
                                                                         "EL_AV Steckdosen Stk": SSDs_AV,
                                                                         "EL_SV Steckdosen Stk": SSDs_SV,
                                                                         "EL_ZSV Steckdosen Stk": SSDs_ZSV,
@@ -718,7 +709,24 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                                 checkAndToggleColumnsVisibility(dt);
                                                                             }
                                                                         },
-                                                                        spacer, 'copy', 'excel', 'csv', spacer, 'selectAll', 'selectNone',
+                                                                        spacer, 'copy', 'excel', 'csv', {extend: 'spacer', text: "SELECT:", style: 'bar'},
+                                                                        {
+                                                                            text: 'All',
+                                                                            action: function () {
+                                                                                table.rows().select();
+                                                                            }
+                                                                        }, {
+                                                                            text: 'Visible',
+                                                                            action: function () {
+                                                                                table.rows(':visible').select();
+                                                                            }
+                                                                        },
+                                                                        {
+                                                                            text: 'None',
+                                                                            action: function () {
+                                                                                table.rows().deselect();
+                                                                            }
+                                                                        },
                                                                         spacer, // spacer,
                                                                         {
                                                                             text: ' Raum',
@@ -738,7 +746,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         }, spacer,
                                                                         {
                                                                             text: "Check ",
-                                                                            className: "btn fa far fa-check",
+                                                                            className: "btn far fa-solid fa-fire-extinguisher",
                                                                             action: function ()
                                                                             {
                                                                                 check_angaben();
@@ -757,8 +765,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         alert(data);
                                                                     }
                                                                 });
-
-
                                                             }
 
                                                             function init_visibilities() {
@@ -778,21 +784,30 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                             function toggleColumns(table, startColumn, endColumn, button_name) {
                                                                 const columns = table.columns().indexes();
                                                                 var vis = !table.column(columns[endColumn]).visible();
-
                                                                 for (let i = startColumn; i <= endColumn; i++) {
                                                                     table.column(columns[i]).visible(vis);
                                                                 }
 
                                                                 if (button_name === 'Alle') {
                                                                     buttonRanges.forEach(button => {
-                                                                            const btn = $(`.btn_vis:contains('${button.name}')`);
-                                                                            if (vis) {
-                                                                                btn.removeClass('btn_invis');
-                                                                            } else {
-                                                                                btn.addClass('btn_invis');
-                                                                            }
-                                                                        
+                                                                        const btn = $(`.btn_vis:contains('${button.name}')`);
+                                                                        if (vis) {
+                                                                            btn.removeClass('btn_invis');
+                                                                        } else {
+                                                                            btn.addClass('btn_invis');
+                                                                        }
+
                                                                     });
+                                                                } else if (button_name === 'LAB') {
+                                                                    ['L-GAS', 'L-ET', 'L-HT', 'L-H2O'].forEach(name => {
+                                                                        const button = $(`.btn_vis:contains('${name}')`);
+                                                                        if (vis) {
+                                                                            button.removeClass('btn_invis');
+                                                                        } else {
+                                                                            button.addClass('btn_invis');
+                                                                        }
+                                                                    });
+
                                                                 } else {
                                                                     const button = $(`.btn_vis:contains('${button_name}')`);
                                                                     if (vis) {
@@ -836,7 +851,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                 var MTrelevant = $("#mt-relevant").val();
                                                                 save_new_room(nummer, name, funktionsteilstelle, MTrelevant);
                                                             });
-
                                                             function hidethesecopmmentsintheHTMLcontentofthewebpage() {
                                                                 //$('#tableRoomElemnts tbody').on("click", 'tr', function () {
                                                                 /*

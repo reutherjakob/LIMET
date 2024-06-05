@@ -235,6 +235,8 @@ $sql = "INSERT INTO `LIMET_RB`.`tabelle_räume`
     '" . filter_input(INPUT_GET, 'SSDs_ZSV') . "',
     '" . filter_input(INPUT_GET, 'SSDs_USV') . "',
     '" . filter_input(INPUT_GET, 'CEE16A Stk') . "')";
+
+
 if ($mysqli->query($sql) === TRUE) {
     echo "Raum erfolgreich hinzugefügt!";
 } else {
