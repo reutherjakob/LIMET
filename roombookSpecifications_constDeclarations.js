@@ -23,7 +23,27 @@ const buttonRanges = [
     {name: 'L-H2O', start: 95 + 9, end: 110}
 ];
 
-// define cases for data formater switch: numerical, 1/0 aka bit, dropdowner; non-edit-> cell wont be editable
+const columnsDefinitionShort = [
+    {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projek ID', visible: false, searchable: false},
+    {data: 'idTABELLE_Räume', title: 'Raum ID', visible: false, searchable: false},
+    {data: 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', title: 'Funktionsstellen ID', visible: false, searchable: false},
+    {data: 'MT-relevant', title: 'MT-rel.', name: 'MT-relevant', case: "bit", render: function (data) {
+            return data === '1' ? 'Ja' : 'Nein';
+        }},
+    //{data: 'idTABELLE_Räume', title: 'Raum ID', searchable: false}, //debugging
+    {data: 'Raumbezeichnung', title: 'Raumbez.'},
+    {data: 'Raumnr', title: 'Raumnr'},
+    {data: "Bezeichnung", title: "Funktionsstelle", case: "none-edit"}, //#7
+    {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'}, 
+    {data: "Nummer", title: "DIN13080", case: "none-edit"},
+    {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer'},
+    {data: 'Raumbereich Nutzer', title: 'Raumbereich'},
+    {data: 'Geschoss', title: 'Geschoss'},
+    {data: 'Bauetappe', title: 'Bauetappe'},
+    {data: 'Bauabschnitt', title: 'Bauabschnitt'}
+]; 
+
+ 
 const columnsDefinition = [
 //    { data: '', defaultContent: '', title: "Select", render:  $.fn.dataTable.render.select(), searchable: false, orderable: false }, //cool, but buggy with fix columns. 
     {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projek ID', visible: false, searchable: false},

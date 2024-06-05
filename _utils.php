@@ -1,5 +1,13 @@
 <?php
 
+function print_session_vars() {
+    $parameters = ["projectID", "roomID", "projectName", "projectAusfuehrung", "projectPlanungsphase"];
+    echo"<br>";
+    foreach ($parameters as $param) {
+        echo ucfirst($param) . ": " . $_SESSION[$param] . ";  ";
+    } echo"<br>";
+}
+
 function init_page_serversides($ommit_redirect = "") {
     check_login();
     get_project();
@@ -41,8 +49,6 @@ function br2nl($string) {
     return $return;
 }
 
-
-
 function utils_connect_sql() {
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
@@ -67,7 +73,7 @@ function load_nav_bar() {
     echo '            $("#projectSelected").text("Projekt:" + currentP);';
     echo '        });';
     echo '     };    </script>';
-} 
+}
 
 //function nl2br($string) {
 //    $return = str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $string);
