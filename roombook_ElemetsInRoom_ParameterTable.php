@@ -102,51 +102,87 @@ init_page_serversides();
 
                                 function init_xls_interface() {
                                     $('#addSheet').click(function () {
-                                        var selectedData = getSelectedData(table); // Get all selected data
+                                        var selectedData = getSelectedData(table);
                                         if (!selectedData || selectedData.length === 0) {
                                             console.log('No valid selection');
-                                            $('#logx').append('<li>No valid selection</li>');
+                                            $('#logx').append('<li>No valid Data selection</li>');
                                             return;
 
                                         }
-                                        selectedData.forEach(function (rowData) { // Iterate over each selected row
+                                        selectedData.forEach(function (rowData) {
                                             var RaumID = rowData.id;
                                             var Raumbezeichnung = rowData.Raumbezeichnung;
                                             console.log(RaumID);
-//                                            for (var i = 0; i < selectedData.length; i++) {
-//                                        var rowData = selectedData[i];
-//                                        result.push({
-//                                            id: rowData['idTABELLE_Räume'],
-//                                            Raumbezeichnung: rowData['Raumnr'] + " " + rowData['Raumbezeichnung']
-//                                        });
-//                                            
-//                                            $.ajax({
-//                                                url: "setSessionVariables.php",
-//                                                data: {"roomID": RaumID},
-//                                                type: "GET",
-//                                                success: function (data) {
                                             $.ajax({
                                                 url: 'getRoomElementsParameterData.php',
                                                 method: 'GET',
                                                 data: {"roomID": RaumID},
-//                                                        dataType: 'json',
                                                 success: function (data) {
-                                                    var ws = XLSX.utils.json_to_sheet(data);
-                                                    var sheetName = sanitizeSheetName(Raumbezeichnung); // Use the Raumbezeichnung for the sheet name
-                                                    XLSX.utils.book_append_sheet(wb, ws, sheetName);
-                                                    $('#logx').append('<li>Added ' + sheetName + '</li>');
-                                                    sheetIndex++;
+                                                    if (data && data.length > 0) {
+                                                        var ws = XLSX.utils.json_to_sheet(data);
+                                                        var sheetName = sanitizeSheetName(Raumbezeichnung);
+                                                        XLSX.utils.book_append_sheet(wb, ws, sheetName);
+                                                        $('#logx').append('<li>Added ' + sheetName + '</li>');
+                                                        sheetIndex++;
+                                                    } else {
+                                                        $('#logx').append('<li>' + Raumbezeichnung + '-> nodata = no sheet</li>');
+                                                    }
                                                 },
                                                 error: function (jqXHR, textStatus, errorThrown) {
                                                     console.log("ERR function2:  ", textStatus, errorThrown);
                                                 }
                                             });
-//                                                }, error: function (jqXHR, textStatus, errorThrown) {
-//                                                    console.log("ERR function1:  ", textStatus, errorThrown);
-//                                                }
-//                                            });
+
                                         });
                                     });
+
+                                    /*                                   $('#addSheet').click(function () {
+                                     //                                        var selectedData = getSelectedData(table); // Get all selected data
+                                     //                                        if (!selectedData || selectedData.length === 0) {
+                                     //                                            console.log('No valid selection');
+                                     //                                            $('#logx').append('<li>No valid selection</li>');
+                                     //                                            return;
+                                     //
+                                     //                                        }
+                                     //                                        selectedData.forEach(function (rowData) { // Iterate over each selected row
+                                     //                                            var RaumID = rowData.id;
+                                     //                                            var Raumbezeichnung = rowData.Raumbezeichnung;
+                                     //                                            console.log(RaumID);
+                                     ////                                            for (var i = 0; i < selectedData.length; i++) {
+                                     ////                                        var rowData = selectedData[i];
+                                     ////                                        result.push({
+                                     ////                                            id: rowData['idTABELLE_Räume'],
+                                     ////                                            Raumbezeichnung: rowData['Raumnr'] + " " + rowData['Raumbezeichnung']
+                                     ////                                        });
+                                     ////                                            
+                                     ////                                            $.ajax({
+                                     ////                                                url: "setSessionVariables.php",
+                                     ////                                                data: {"roomID": RaumID},
+                                     ////                                                type: "GET",
+                                     ////                                                success: function (data) {
+                                     //                                            $.ajax({
+                                     //                                                url: 'getRoomElementsParameterData.php',
+                                     //                                                method: 'GET',
+                                     //                                                data: {"roomID": RaumID},
+                                     ////                                                        dataType: 'json',
+                                     //                                                success: function (data) {
+                                     //                                                    
+                                     //                                                    var ws = XLSX.utils.json_to_sheet(data);
+                                     //                                                    var sheetName = sanitizeSheetName(Raumbezeichnung); // Use the Raumbezeichnung for the sheet name
+                                     //                                                    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+                                     //                                                    $('#logx').append('<li>Added ' + sheetName + '</li>');
+                                     //                                                    sheetIndex++;
+                                     //                                                },
+                                     //                                                error: function (jqXHR, textStatus, errorThrown) {
+                                     //                                                    console.log("ERR function2:  ", textStatus, errorThrown);
+                                     //                                                }
+                                     //                                            });
+                                     ////                                                }, error: function (jqXHR, textStatus, errorThrown) {
+                                     ////                                                    console.log("ERR function1:  ", textStatus, errorThrown);
+                                     ////                                                }
+                                     ////                                            });
+                                     //                                        });
+                                     //                                    }); */
 
                                     $('#download').click(function () {
                                         var wbout = XLSX.write(wb, {bookType: 'xlsx', type: 'binary'});
@@ -157,7 +193,7 @@ init_page_serversides();
                                                 view[i] = s.charCodeAt(i) & 0xFF;
                                             return buf;
                                         }
-                                        saveAs(new Blob([s2ab(wbout)], {type: "application/octet-stream"}), 'data.xlsx');
+                                        saveAs(new Blob([s2ab(wbout)], {type: "application/octet-stream"}), 'Elemetparameter' + " <?php echo $_SESSION["projectName"]; ?> " + '.xlsx');
                                     });
 
                                     $('#reset').click(function () {
@@ -246,7 +282,7 @@ init_page_serversides();
                                                  //                                                    success: function (data) {
                                                  //                                                        $("#makeXLSparagraph ").html(data);
                                                  //                                                    }
-                                                 //                                                }); */
+                                                 //                                                });    */
                                             }
                                         });
                                     });
