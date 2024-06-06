@@ -37,7 +37,7 @@ init_page_serversides();
                             $.ajax({
                                 url: 'getRoomElementsParameterTableData.php',  
                                 method: 'GET',
-                                dataType: 'json',s
+                                dataType: 'json',
                                 success: function (data) {
                                     if (!data || data.length === 0) {
 //                                        console.log('getElementsParamTable -> ajax: getRoomElementsParameterTableData -> No valid data returned');
