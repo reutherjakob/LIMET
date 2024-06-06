@@ -60,7 +60,7 @@ while ($row = $tabelle_elemente->fetch_assoc()) {
     foreach ($paramInfos as $paramInfo) {
         $values = array();
         foreach ($elementParamInfos as $elementParamInfo) {
-            if ($elementParamInfo['ParamID'] == $paramInfo['ParamID'] && $elementParamInfo['elementID'] == $row['TABELLE_Elemente_idTABELLE_Elemente']) {
+            if ($elementParamInfo['ParamID'] == $paramInfo['ParamID'] && $elementParamInfo['elementID'] == $row['TABELLE_Elemente_idTABELLE_Elemente']  && $elementParamInfo['variantenID'] == $row['tabelle_Varianten_idtabelle_Varianten']  ) {
                 $values[] = $elementParamInfo['Wert']. "" . $elementParamInfo['Einheit'];
             } 
         }
