@@ -31,11 +31,13 @@ if(!isset($_SESSION["username"]))
                 `Aktiv` = '".filter_input(INPUT_GET, 'active')."',
                 `Neubau` = '".filter_input(INPUT_GET, 'neubau')."',
                 `TABELLE_Planungsphasen_idTABELLE_Planungsphasen` = ".filter_input(INPUT_GET, 'planungsphase').",
-                `Ausfuehrung` = '".filter_input(INPUT_GET, 'bearbeitung')."'
+                `Ausfuehrung` = '".filter_input(INPUT_GET, 'bearbeitung')."',
+                `Preisbasis` = '".filter_input(INPUT_GET, 'PBdate')."'
                 WHERE `idTABELLE_Projekte` = ".$_SESSION["projectID"].";";
         
 	if ($mysqli->query($sql) === TRUE) {
             echo "Projekt aktualisiert!";
+//            echo filter_input(INPUT_GET, 'PBdate') ;
 	} 
 	else {
             echo "Error: " . $sql . "<br>" . $mysqli->error;
