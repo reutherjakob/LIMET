@@ -32,7 +32,7 @@ const columnsDefinitionShort = [
         }},
     //{data: 'idTABELLE_Räume', title: 'Raum ID', searchable: false}, //debugging
     {data: 'Raumbezeichnung', title: 'Raumbez.'},
-    {data: 'Raumnr', title: 'Raumnr'},
+    {data: 'Raumnr', title: 'Raumnr'}, 
     {data: "Bezeichnung", title: "Funktionsstelle", case: "none-edit"}, //#7
     {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'}, 
     {data: "Nummer", title: "DIN13080", case: "none-edit"},

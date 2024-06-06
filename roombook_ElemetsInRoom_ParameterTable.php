@@ -48,13 +48,28 @@ init_page_serversides();
                                     </div>
                                 </div>      
                                 <div class='mt-4 card  bd-highlight'>
-                                    <div class="card-header d-inline-flex" id ="makeXLScardHeader" > XLS COMPOSER </div>
-                                    <div class="card-body " id ="makeXLScardBody"> 
-                                        <button class="btn btn-success" id="addSheet">Add Sheet</button>
-                                        <button class="btn btn-link"id="download">Download Excel</button>
-                                        <button class="btn btn-danger" id="reset">Reset Excel</button>
-                                        <ul id="log"></ul>       </div>
-                                    <p id="makeXLSparagraph">
+                                    <div class="card-header d-inline-flex" id ="makeXLScardHeader" > XLS COMPOSER 
+
+                                        <button class="btn-sm btn-success" id="addSheet">Add Sheet</button>
+                                        <button class="btn-sm btn-link"id="download">Download Excel</button>
+                                        <button class="btn-sm btn-danger" id="reset">Reset Excel</button></div>
+
+                                    <div class="card-body">
+                                        <div class="row"> 
+                                            <div class="col">
+                                                <p id="makeXLSparagraph">Selected Data:</p> 
+                                            </div>
+
+                                            <div class="col">
+                                                <p>Log:</p>
+                                                <ul id="logx"> 
+                                                </ul>
+                                            </div> 
+
+                                        </div>
+                                    </div>
+
+
                                 </div> 
                                 <div class='mt-4 card  bd-highlight'>
                                     <div class="card-header d-inline-flex" id ="elemetsParamsTableCardHeader" >  ELEMENT PARAMETER </div>
@@ -74,33 +89,48 @@ init_page_serversides();
                                 var sheetIndex = 1;
                                 var selectedIDs = [];
 
-                                
+
 
                                 $(document).ready(function () {
                                     init_dt();
                                     table_click();
                                     add_MT_rel_filter('#TableCardHeader');
                                     move_obj_to("dt-search-0", "TableCardHeader");
-
                                     init_btns("#TableCardHeader");
 
                                     init_xls_interface();
                                 });
 
                                 function init_xls_interface() {
+
+
                                     $('#addSheet').click(function () {
-                                        $.ajax({
-                                            url: 'getRoomElementsParameterTableData.php',
-                                            method: 'GET',
-                                            dataType: 'json',
-                                            success: function (data) {
-                                                var ws = XLSX.utils.json_to_sheet(data);
-                                                XLSX.utils.book_append_sheet(wb, ws, "Sheet" + sheetIndex);
-                                                $('#log').append('<li>Added Sheet' + sheetIndex++ + '</li>');
-                                            },
-                                            error: function (jqXHR, textStatus, errorThrown) {
-                                                console.log(textStatus, errorThrown);
-                                            }
+                                        var selectedData = getSelectedData(table); // Get all selected data
+                                        selectedData.forEach(function (rowData) { // Iterate over each selected row
+                                            var RaumID = rowData.id; // Get the id from the rowData
+                                            var Raumbezeichnung = rowData.Raumbezeichnung; // Get the Raumbezeichnung from the rowData
+                                            $.ajax({
+                                                url: "setSessionVariables.php",
+                                                data: {"roomID": RaumID},
+                                                type: "GET",
+                                                success: function (data) {
+                                                    $.ajax({
+                                                        url: 'getRoomElementsParameterTableData.php',
+                                                        method: 'GET',
+                                                        dataType: 'json',
+                                                        success: function (data) {
+                                                            var ws = XLSX.utils.json_to_sheet(data);
+                                                            var sheetName = sanitizeSheetName(Raumbezeichnung); // Use the Raumbezeichnung for the sheet name
+                                                            XLSX.utils.book_append_sheet(wb, ws, sheetName);
+                                                            $('#logx').append('<li>Added ' + sheetName + '</li>');
+                                                            sheetIndex++;
+                                                        },
+                                                        error: function (jqXHR, textStatus, errorThrown) {
+                                                            console.log(textStatus, errorThrown);
+                                                        }
+                                                    });
+                                                }
+                                            });
                                         });
                                     });
 
@@ -119,25 +149,66 @@ init_page_serversides();
                                     $('#reset').click(function () {
                                         wb = XLSX.utils.book_new();
                                         sheetIndex = 1;
-                                        $('#log').empty();
+                                        $('#logx').empty();
                                     });
                                 }
-                                
-                                function get_selected_ids() {
-                                    var selectedRows = table.rows('.selected').data()['idTABELLE_Räume'];
-                                    selectedIDs = [];
-                                    for (var i = 0; i < selectedRows.length; i++) {
-                                        selectedIDs.push(selectedRows[i][1]);
-                                         
+
+                                function getRowDataByRoomID(roomID) {
+                                    var allData = table.rows().data();
+                                    var rowData;
+                                    for (var i = 0; i < allData.length; i++) {
+                                        if (allData[i]['idTABELLE_Räume'] === roomID) {
+                                            rowData = allData[i];
+                                            break;
+                                        }
                                     }
-                                    console.log(selectedIDs);
+                                    return rowData;
                                 }
-                                
+
+                                function getSelectedData(table) {
+                                    var selectedData = table.rows({selected: true}).data();
+                                    var result = [];
+                                    for (var i = 0; i < selectedData.length; i++) {
+                                        var rowData = selectedData[i];
+                                        result.push({
+                                            id: rowData['idTABELLE_Räume'],
+                                            Raumbezeichnung: rowData['Raumnr'] + " " + rowData['Raumbezeichnung']
+                                        });
+                                    }
+                                    return result;
+                                }
+
+                                function sanitizeSheetName(name) {
+                                    var invalidChars = [':', '\\', '/', '?', '*', '[', ']'];
+                                    var sanitized = name;
+                                    invalidChars.forEach(function (char) {
+                                        var regex = new RegExp('\\' + char, 'g');
+                                        sanitized = sanitized.replace(regex, '');
+                                    });
+                                    return sanitized;
+                                }
+
+                                function displaySelectedData(table) {
+                                    var selectedData = getSelectedData(table);
+                                    var ul = document.createElement('ul');
+                                    for (var i = 0; i < selectedData.length; i++) {
+                                        var li = document.createElement('li');
+                                        li.textContent = 'ID: ' + selectedData[i].id + ', Room: ' + selectedData[i].Raumbezeichnung;
+                                        ul.appendChild(li);
+                                    }
+                                    var paragraph = document.getElementById('makeXLSparagraph');
+                                    paragraph.innerHTML = ''; // Clear the paragraph
+                                    paragraph.appendChild(ul); // Append the list to the paragraph
+                                }
 
                                 function table_click() {
                                     $('#table_rooms tbody').on('click', 'tr', function () {
-                                        get_selected_ids();
+//                                        var data = getSelectedData(table);
+//                                        console.log(data);
+                                        displaySelectedData(table);
+
                                         var RaumID = table.row($(this)).data()['idTABELLE_Räume'];
+
                                         $.ajax({
                                             url: "setSessionVariables.php",
                                             data: {"roomID": RaumID},
@@ -145,6 +216,7 @@ init_page_serversides();
                                             success: function (data) {
                                                 $.ajax({
                                                     url: "getElementsParamTable.php",
+                                                    data: {"roomID": RaumID},
                                                     type: "GET",
                                                     success: function (data) {
                                                         $("#elemetsParamsTable").html(data);
@@ -163,7 +235,7 @@ init_page_serversides();
                                     });
                                 }
 
-                                function init_dt() {
+                                function init_dt() {   // $('#tableRooms').DataTable({ warum das nicht geht ist mir ein räsetl
                                     table = new DataTable('#table_rooms', {
                                         ajax: {
                                             url: 'get_rb_specs_data.php',
@@ -223,17 +295,21 @@ init_page_serversides();
                                                 text: 'All',
                                                 action: function () {
                                                     table.rows().select();
+
+                                                    displaySelectedData(table);
                                                 }
                                             }, {
                                                 text: 'Visible',
                                                 action: function () {
                                                     table.rows(':visible').select();
+                                                    displaySelectedData(table);
                                                 }
                                             },
                                             {
                                                 text: 'None',
                                                 action: function () {
                                                     table.rows().deselect();
+                                                    displaySelectedData(table);
                                                 }
                                             }]}).container().appendTo($(location));
                                 }
