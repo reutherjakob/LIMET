@@ -97,40 +97,54 @@ init_page_serversides();
                                     add_MT_rel_filter('#TableCardHeader');
                                     move_obj_to("dt-search-0", "TableCardHeader");
                                     init_btns("#TableCardHeader");
-
                                     init_xls_interface();
                                 });
 
                                 function init_xls_interface() {
-
-
                                     $('#addSheet').click(function () {
                                         var selectedData = getSelectedData(table); // Get all selected data
+                                        if (!selectedData || selectedData.length === 0) {
+                                            console.log('No valid selection');
+                                            $('#logx').append('<li>No valid selection</li>');
+                                            return;
+
+                                        }
                                         selectedData.forEach(function (rowData) { // Iterate over each selected row
-                                            var RaumID = rowData.id; // Get the id from the rowData
-                                            var Raumbezeichnung = rowData.Raumbezeichnung; // Get the Raumbezeichnung from the rowData
+                                            var RaumID = rowData.id;
+                                            var Raumbezeichnung = rowData.Raumbezeichnung;
+                                            console.log(RaumID);
+//                                            for (var i = 0; i < selectedData.length; i++) {
+//                                        var rowData = selectedData[i];
+//                                        result.push({
+//                                            id: rowData['idTABELLE_Räume'],
+//                                            Raumbezeichnung: rowData['Raumnr'] + " " + rowData['Raumbezeichnung']
+//                                        });
+//                                            
+//                                            $.ajax({
+//                                                url: "setSessionVariables.php",
+//                                                data: {"roomID": RaumID},
+//                                                type: "GET",
+//                                                success: function (data) {
                                             $.ajax({
-                                                url: "setSessionVariables.php",
+                                                url: 'getRoomElementsParameterData.php',
+                                                method: 'GET',
                                                 data: {"roomID": RaumID},
-                                                type: "GET",
+//                                                        dataType: 'json',
                                                 success: function (data) {
-                                                    $.ajax({
-                                                        url: 'getRoomElementsParameterTableData.php',
-                                                        method: 'GET',
-                                                        dataType: 'json',
-                                                        success: function (data) {
-                                                            var ws = XLSX.utils.json_to_sheet(data);
-                                                            var sheetName = sanitizeSheetName(Raumbezeichnung); // Use the Raumbezeichnung for the sheet name
-                                                            XLSX.utils.book_append_sheet(wb, ws, sheetName);
-                                                            $('#logx').append('<li>Added ' + sheetName + '</li>');
-                                                            sheetIndex++;
-                                                        },
-                                                        error: function (jqXHR, textStatus, errorThrown) {
-                                                            console.log(textStatus, errorThrown);
-                                                        }
-                                                    });
+                                                    var ws = XLSX.utils.json_to_sheet(data);
+                                                    var sheetName = sanitizeSheetName(Raumbezeichnung); // Use the Raumbezeichnung for the sheet name
+                                                    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+                                                    $('#logx').append('<li>Added ' + sheetName + '</li>');
+                                                    sheetIndex++;
+                                                },
+                                                error: function (jqXHR, textStatus, errorThrown) {
+                                                    console.log("ERR function2:  ", textStatus, errorThrown);
                                                 }
                                             });
+//                                                }, error: function (jqXHR, textStatus, errorThrown) {
+//                                                    console.log("ERR function1:  ", textStatus, errorThrown);
+//                                                }
+//                                            });
                                         });
                                     });
 
@@ -185,8 +199,12 @@ init_page_serversides();
                                         var regex = new RegExp('\\' + char, 'g');
                                         sanitized = sanitized.replace(regex, '');
                                     });
+                                    if (sanitized.length > 31) {// Ensure the sheet name is below 31 characters
+                                        sanitized = sanitized.substring(0, 31);
+                                    }
                                     return sanitized;
                                 }
+
 
                                 function displaySelectedData(table) {
                                     var selectedData = getSelectedData(table);
@@ -206,7 +224,6 @@ init_page_serversides();
 //                                        var data = getSelectedData(table);
 //                                        console.log(data);
                                         displaySelectedData(table);
-
                                         var RaumID = table.row($(this)).data()['idTABELLE_Räume'];
 
                                         $.ajax({
@@ -295,7 +312,6 @@ init_page_serversides();
                                                 text: 'All',
                                                 action: function () {
                                                     table.rows().select();
-
                                                     displaySelectedData(table);
                                                 }
                                             }, {

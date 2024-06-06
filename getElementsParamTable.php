@@ -28,17 +28,21 @@ init_page_serversides();
                     </body>
                     </html>
                     <script>
-                        var table2 ;
+                        var table2;
                         $(document).ready(function () {
                             make_table();
                         });
-                        
-                        function make_table() {
+
+                        function make_table() {                           
                             $.ajax({
-                                url: 'getRoomElementsParameterTableData.php',
+                                url: 'getRoomElementsParameterTableData.php',  
                                 method: 'GET',
-                                dataType: 'json',
+                                dataType: 'json',s
                                 success: function (data) {
+                                    if (!data || data.length === 0) {
+//                                        console.log('getElementsParamTable -> ajax: getRoomElementsParameterTableData -> No valid data returned');
+                                        return;
+                                    }
                                     var titleMapping = {
                                         'Varianate': 'Var',
                                         'SummevonAnzahl': '#',
@@ -63,8 +67,8 @@ init_page_serversides();
                                         ],
                                         scrollX: true,
                                         paging: true,
-                                        pageLength:30,
-                                        
+                                        pageLength: 30,
+
 //                                        columnDefs: [
 //                                            {targets: [5, 6], visible: false}
 //                                        ],
