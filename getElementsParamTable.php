@@ -33,20 +33,30 @@ init_page_serversides();
                             make_table();
                         });
 
-                        function make_table() {                           
+                        function make_table() {
+                            var K2Return = [1, 2, 3, 12, 17];
+<?php
+//$K2R = filter_input(INPUT_GET, 'K2Return');
+//$K2Ret = explode(",", $K2R);  //WORKS
+$K2Return = $_GET['K2Return'];
+$K2Ret = json_decode($K2Return); 
+?>
+                            let K2R = <?php echo json_encode($K2Ret); ?>;
+                            console.log(K2R);
+                            
                             $.ajax({
-                                url: 'getRoomElementsParameterTableData.php',  
+                                url: 'getRoomElementsParameterData.php',
                                 method: 'GET',
                                 dataType: 'json',
+                                data: {"roomID": <?php echo $_GET["roomID"]; ?>, "K2Return": JSON.stringify(K2R)},
                                 success: function (data) {
                                     if (!data || data.length === 0) {
-//                                        console.log('getElementsParamTable -> ajax: getRoomElementsParameterTableData -> No valid data returned');
+                                        console.log('getElementsParamTable -> ajax: getRoomElementsParameterTableData -> No valid data returned');
                                         return;
                                     }
                                     var titleMapping = {
                                         'Varianate': 'Var',
-                                        'SummevonAnzahl': '#',
-                                        'jsonParam2': 'New Title 2'
+                                        'SummevonAnzahl': '#'
                                     };
                                     var columns = Object.keys(data[0]).map(function (key) {
                                         var title = titleMapping[key] ? titleMapping[key] : key;

@@ -683,14 +683,14 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                 $('#columnFilter').change(function () {
                                                                     var filterValue = $(this).val();
                                                                     table.column('MT-relevant:name').search(filterValue).draw();
-                                                                });
+                                                                }); 
                                                             }
 
                                                             function init_btn_4_dt() {
                                                                 let spacer = {extend: 'spacer', style: 'bar'};
                                                                 new $.fn.dataTable.Buttons(table, {
                                                                     buttons: [
-                                                                        spacer, {extend: 'searchBuilder', label: "Search B"}, spacer,
+                                                                        spacer, {extend: 'searchBuilder', label: "Search"}, spacer,
                                                                         buttonRanges.map(button => ({
                                                                                 text: button.name,
                                                                                 className: 'btn_vis',

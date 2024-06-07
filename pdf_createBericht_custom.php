@@ -4,8 +4,7 @@
 // 10.5.2024 
 // Reuther & Fux
 //----------------------------- 
-//
-//Input DATA from frontend-page
+// 
 $roomIDs = filter_input(INPUT_GET, 'roomID');
 $roomIDsArray = explode(",", $roomIDs);
 

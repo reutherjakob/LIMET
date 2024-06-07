@@ -31,11 +31,12 @@ init_page_serversides();
 <!--                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  -->
 
                         <style>
+                            
                         </style>
 
                         </head> 
                         <body style="height:100%"> 
-                            <div class="container-fluid ">
+                            <div class="container-fluid "> 
                                 <div id="limet-navbar" class=' '> </div> 
 
                                 <div class="mt-4 card">    
@@ -48,11 +49,11 @@ init_page_serversides();
                                     </div>
                                 </div>      
                                 <div class='mt-4 card  bd-highlight'>
-                                    <div class="card-header d-inline-flex" id ="makeXLScardHeader" > XLS COMPOSER 
-
+                                    <div class="card-header d-inline-flex align-items-center " id ="makeXLScardHeader" > 
+                                        <label class="form-check-label" style="margin-right: 20px;">  XLS COMPOSER   </label>
                                         <button class="btn-sm btn-success" id="addSheet">Add Sheet</button>
                                         <button class="btn-sm btn-link"id="download">Download Excel</button>
-                                        <button class="btn-sm btn-danger" id="reset">Reset Excel</button></div>
+                                        <button class="btn-sm btn-danger" style="margin-right: 20px;" id="reset">Reset Excel</button>    </div>
 
                                     <div class="card-body">
                                         <div class="row"> 
@@ -72,7 +73,7 @@ init_page_serversides();
 
                                 </div> 
                                 <div class='mt-4 card  bd-highlight'>
-                                    <div class="card-header d-inline-flex" id ="elemetsParamsTableCardHeader" >  ELEMENT PARAMETER </div>
+                                    <div class="card-header d-inline-flex" id ="elemetsParamsTableCardHeader" >  ELEMENT PARAMETER VORSCHAU </div>
                                     <div class="card-body " id ="elemetsParamsTableCard">
                                         <p id="elemetsParamsTable">
                             <!--                                        <table class='table display compact table-striped table-bordered table-sm' id='roomElementsParamTable' cellspacing='0' width='100%'>
@@ -88,8 +89,15 @@ init_page_serversides();
                                 var wb = XLSX.utils.book_new();
                                 var sheetIndex = 1;
                                 var selectedIDs = [];
-
-
+                                var K2R = [];
+                                
+                                const checkboxData = [
+                                    {label: 'ELEK', value: '2'},
+                                    {label: 'GEOM', value: '1'},
+                                    {label: 'HKLS', value: '3'},
+                                    {label: 'MGAS', value: '12'},
+                                    {label: 'MSR', value: '17'}
+                                ];
 
                                 $(document).ready(function () {
                                     init_dt();
@@ -98,7 +106,41 @@ init_page_serversides();
                                     move_obj_to("dt-search-0", "TableCardHeader");
                                     init_btns("#TableCardHeader");
                                     init_xls_interface();
+                                    init_checboxes4selectingKathegories();
                                 });
+
+                                function init_checboxes4selectingKathegories() {
+                                    checkboxData.forEach((data, index) => {
+                                        let div = document.createElement('div');
+                                        div.className = 'form-check';
+                                        div.style.margin= '0 10px';
+                 
+                                        let checkbox = document.createElement('input');
+                                        checkbox.type = 'checkbox';
+                                        checkbox.id = 'checkbox' + index;
+                                        checkbox.value = data.value;
+                                        checkbox.className = 'form-check-input';  
+                                        
+                                        let label = document.createElement('label');
+                                        label.htmlFor = checkbox.id;
+                                        label.className = 'form-check-label'; 
+                                        label.appendChild(document.createTextNode(data.label));
+
+                                        div.appendChild(checkbox);
+                                        div.appendChild(label);
+                                        let location = document.querySelector('#makeXLScardHeader');
+                                        location.appendChild(div);
+
+                                        checkbox.addEventListener('change', function () {
+                                            if (this.checked) {
+                                                K2R.push(this.value);
+                                            } else {
+                                                K2R = K2R.filter(value => value !== this.value);
+                                            }
+                                            console.log("RB PAGE K2R: ",K2R); 
+                                        });
+                                    });
+                                }
 
                                 function init_xls_interface() {
                                     $('#addSheet').click(function () {
@@ -116,9 +158,17 @@ init_page_serversides();
                                             $.ajax({
                                                 url: 'getRoomElementsParameterData.php',
                                                 method: 'GET',
-                                                data: {"roomID": RaumID},
+                                                data: {"roomID": RaumID, "K2Return": JSON.stringify(K2R) },
                                                 success: function (data) {
                                                     if (data && data.length > 0) {
+//                                                        var columnsToKeep = ["ElementID", 'PN', 'NA', 'PA'];
+//                                                        var filteredData = data.map(function (row) {
+//                                                            return columnsToKeep.reduce(function (obj, column) {
+//                                                                obj[column] = row[column];
+//                                                                return obj;
+//                                                            }, {});
+//                                                        });
+//                                                        console.log(filteredData);
                                                         var ws = XLSX.utils.json_to_sheet(data);
                                                         var sheetName = sanitizeSheetName(Raumbezeichnung);
                                                         XLSX.utils.book_append_sheet(wb, ws, sheetName);
@@ -132,57 +182,9 @@ init_page_serversides();
                                                     console.log("ERR function2:  ", textStatus, errorThrown);
                                                 }
                                             });
-
                                         });
                                     });
 
-                                    /*                                   $('#addSheet').click(function () {
-                                     //                                        var selectedData = getSelectedData(table); // Get all selected data
-                                     //                                        if (!selectedData || selectedData.length === 0) {
-                                     //                                            console.log('No valid selection');
-                                     //                                            $('#logx').append('<li>No valid selection</li>');
-                                     //                                            return;
-                                     //
-                                     //                                        }
-                                     //                                        selectedData.forEach(function (rowData) { // Iterate over each selected row
-                                     //                                            var RaumID = rowData.id;
-                                     //                                            var Raumbezeichnung = rowData.Raumbezeichnung;
-                                     //                                            console.log(RaumID);
-                                     ////                                            for (var i = 0; i < selectedData.length; i++) {
-                                     ////                                        var rowData = selectedData[i];
-                                     ////                                        result.push({
-                                     ////                                            id: rowData['idTABELLE_Räume'],
-                                     ////                                            Raumbezeichnung: rowData['Raumnr'] + " " + rowData['Raumbezeichnung']
-                                     ////                                        });
-                                     ////                                            
-                                     ////                                            $.ajax({
-                                     ////                                                url: "setSessionVariables.php",
-                                     ////                                                data: {"roomID": RaumID},
-                                     ////                                                type: "GET",
-                                     ////                                                success: function (data) {
-                                     //                                            $.ajax({
-                                     //                                                url: 'getRoomElementsParameterData.php',
-                                     //                                                method: 'GET',
-                                     //                                                data: {"roomID": RaumID},
-                                     ////                                                        dataType: 'json',
-                                     //                                                success: function (data) {
-                                     //                                                    
-                                     //                                                    var ws = XLSX.utils.json_to_sheet(data);
-                                     //                                                    var sheetName = sanitizeSheetName(Raumbezeichnung); // Use the Raumbezeichnung for the sheet name
-                                     //                                                    XLSX.utils.book_append_sheet(wb, ws, sheetName);
-                                     //                                                    $('#logx').append('<li>Added ' + sheetName + '</li>');
-                                     //                                                    sheetIndex++;
-                                     //                                                },
-                                     //                                                error: function (jqXHR, textStatus, errorThrown) {
-                                     //                                                    console.log("ERR function2:  ", textStatus, errorThrown);
-                                     //                                                }
-                                     //                                            });
-                                     ////                                                }, error: function (jqXHR, textStatus, errorThrown) {
-                                     ////                                                    console.log("ERR function1:  ", textStatus, errorThrown);
-                                     ////                                                }
-                                     ////                                            });
-                                     //                                        });
-                                     //                                    }); */
 
                                     $('#download').click(function () {
                                         var wbout = XLSX.write(wb, {bookType: 'xlsx', type: 'binary'});
@@ -256,7 +258,7 @@ init_page_serversides();
                                 }
 
                                 function table_click() {
-                                    $('#table_rooms tbody').on('click', 'tr', function () {
+                                    $('#table_rooms tbody').on('click', 'tr', function () { 
 //                                        var data = getSelectedData(table);
 //                                        console.log(data);
                                         displaySelectedData(table);
@@ -265,11 +267,11 @@ init_page_serversides();
                                         $.ajax({
                                             url: "setSessionVariables.php",
                                             data: {"roomID": RaumID},
-                                            type: "GET",
+                                            type: "GET", 
                                             success: function (data) {
                                                 $.ajax({
-                                                    url: "getElementsParamTable.php",
-                                                    data: {"roomID": RaumID},
+                                                    url: "getElementsParamTable.php", 
+                                                    data: {"roomID": RaumID, "K2Return": JSON.stringify(K2R)},
                                                     type: "GET",
                                                     success: function (data) {
                                                         $("#elemetsParamsTable").html(data);

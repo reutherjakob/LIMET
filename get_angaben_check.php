@@ -22,7 +22,11 @@ while ($row = $result->fetch_assoc()) {
     $roomID = $row['idTABELLE_Räume'];
     $raumparameter[$roomID] = $row;
 }
-$messages = array();
+
+
+
+
+
 function check_dependency_non_zero(&$messages, $raumparameter, $param1, $param2) {
     foreach ($raumparameter as $roomID => $params) {
         if (isset($params[$param2]) && $params[$param2] > 0) {
@@ -59,27 +63,27 @@ function check_awg(&$messages, $raumparameter) {
     }
 }
 
+$out_messages = array();
 // AWG
 check_awg($messages, $raumparameter);
 //ET
-check_dependency_non_zero($messages, $raumparameter, 'IT Anbindung', 'ET_RJ45-Ports');
-check_max_value($messages, $raumparameter, 'ET_Anschlussleistung_W', 8000);
-check_max_value($messages, $raumparameter, 'ET_Anschlussleistung_AV_W', 8000);
-check_max_value($messages, $raumparameter, 'ET_Anschlussleistung_SV_W', 8000);
-check_max_value($messages, $raumparameter, 'ET_Anschlussleistung_ZSV_W', 8000);
-check_max_value($messages, $raumparameter, 'ET_Anschlussleistung_USV_W', 8000);
-check_dependency_non_zero($messages, $raumparameter, 'AV', 'ET_Anschlussleistung_AV_W');
-check_dependency_non_zero($messages, $raumparameter, 'AV', 'EL_AV Steckdosen Stk');
-check_dependency_non_zero($messages, $raumparameter, 'SV', 'ET_Anschlussleistung_SV_W');
-check_dependency_non_zero($messages, $raumparameter, 'SV', 'EL_SV Steckdosen Stk');
-check_dependency_non_zero($messages, $raumparameter, 'ZSV', 'ET_Anschlussleistung_ZSV_W');
-check_dependency_non_zero($messages, $raumparameter, 'ZSV', 'EL_ZSV Steckdosen Stk');
-check_dependency_non_zero($messages, $raumparameter, 'USV', 'ET_Anschlussleistung_USV_W');
-check_dependency_non_zero($messages, $raumparameter, 'USV', 'EL_USV Steckdosen Stk');
+check_dependency_non_zero($out_messages, $raumparameter, 'IT Anbindung', 'ET_RJ45-Ports');
+ 
+check_max_value($out_messages, $raumparameter, 'ET_Anschlussleistung_ZSV_W', 8000);
+check_max_value($out_messages, $raumparameter, 'ET_Anschlussleistung_USV_W', 8000);
+
+check_dependency_non_zero($out_messages, $raumparameter, 'AV', 'ET_Anschlussleistung_AV_W');
+check_dependency_non_zero($out_messages, $raumparameter, 'AV', 'EL_AV Steckdosen Stk');
+check_dependency_non_zero($out_messages, $raumparameter, 'SV', 'ET_Anschlussleistung_SV_W');
+check_dependency_non_zero($out_messages, $raumparameter, 'SV', 'EL_SV Steckdosen Stk');
+check_dependency_non_zero($out_messages, $raumparameter, 'ZSV', 'ET_Anschlussleistung_ZSV_W');
+check_dependency_non_zero($out_messages, $raumparameter, 'ZSV', 'EL_ZSV Steckdosen Stk');
+check_dependency_non_zero($out_messages, $raumparameter, 'USV', 'ET_Anschlussleistung_USV_W');
+check_dependency_non_zero($out_messages, $raumparameter, 'USV', 'EL_USV Steckdosen Stk');
 //MEDGAS
-check_dependency_non_zero($messages, $raumparameter, '1 Kreis O2', '2 Kreis O2');
-check_dependency_non_zero($messages, $raumparameter, '1 Kreis Va', '2 Kreis Va');
-check_dependency_non_zero($messages, $raumparameter, '1 Kreis DL-5', '2 Kreis DL-5');
+check_dependency_non_zero($out_messages, $raumparameter, '1 Kreis O2', '2 Kreis O2');
+check_dependency_non_zero($out_messages, $raumparameter, '1 Kreis Va', '2 Kreis Va');
+check_dependency_non_zero($out_messages, $raumparameter, '1 Kreis DL-5', '2 Kreis DL-5');
 
  
 
@@ -107,6 +111,6 @@ check_dependency_non_zero($messages, $raumparameter, '1 Kreis DL-5', '2 Kreis DL
 
 
 $mysqli->close();
-foreach ($messages as $message) {
-    echo $message;
+foreach ($out_messages as $message) {
+    echo $out_messages;
 }
