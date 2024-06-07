@@ -140,7 +140,7 @@ if (!$mysqli->set_charset("utf8")) {
     exit();
 }
 
-$sql = "SELECT tabelle_projekte.Projektname, tabelle_planungsphasen.Bezeichnung
+$sql = "SELECT tabelle_projekte.Projektname, tabelle_projekte.Preisbasis,  tabelle_planungsphasen.Bezeichnung
     FROM tabelle_projekte INNER JOIN tabelle_planungsphasen ON tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen = tabelle_planungsphasen.idTABELLE_Planungsphasen
     WHERE (((tabelle_projekte.idTABELLE_Projekte)=".$_SESSION["projectID"]."));";
 $result = $mysqli->query($sql);
@@ -150,7 +150,8 @@ $row = $result->fetch_assoc();
 $pdf->SetFont('helvetica', 'B', 10);
 $pdf->MultiCell(180, 6, "Kostenberechnung nach Gewerken und GHG", 'TLR', 'L', 0, 0);
 $pdf->Ln();
-$pdf->MultiCell(180, 6, "Projekt: ".$row['Projektname'],'RL', 'L', 0, 0);
+$pdf->MultiCell(180/2, 6, "Projekt: ".$row['Projektname'],'L', 'L', 0, 0);
+$pdf->MultiCell(180/2, 6, "Preisbasis: ".$row['Preisbasis'],'R', 'L', 0, 0);
 $pdf->Ln();
 $pdf->MultiCell(180, 6, "Projektphase: ".$row['Bezeichnung'],'BRL', 'L', 0, 0);
 $pdf->Ln();           
