@@ -82,6 +82,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             tabelle_räume.`EL_USV Steckdosen Stk`,
             tabelle_räume.`ET_RJ45-Ports`,
             tabelle_räume.`EL_Roentgen 16A CEE Stk`,
+            tabelle_räume.`EL_Laser 16A CEE Stk`,
             tabelle_räume.`EL_Einzel-Datendose Stk`, tabelle_räume.`EL_Doppeldatendose Stk`,
             tabelle_räume.`EL_Bodendose Typ`, tabelle_räume.`EL_Bodendose Stk`,
             tabelle_räume.`EL_Beleuchtung 1 Typ`, tabelle_räume.`EL_Beleuchtung 2 Typ`, tabelle_räume.`EL_Beleuchtung 3 Typ`, tabelle_räume.`EL_Beleuchtung 4 Typ`, tabelle_räume.`EL_Beleuchtung 5 Typ`, 
@@ -105,10 +106,15 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
         if (strlen($row['Anmerkung FunktionBO']) > 0) {
 
-
-            block_label_queer($block_header_w, $pdf, "BO-Beschr.", $block_header_height, $SB);
             $outstr = format_text(clean_string(br2nl($row['Anmerkung FunktionBO'])));
             $rowHeightComment = $pdf->getStringHeight($SB - $einzugPlus, $outstr, false, true, '', 1);
+            $i = 0;
+            if ($rowHeightComment > 6) {
+                $i = $horizontalSpacerLN;
+            }
+
+            block_label_queer($block_header_w, $pdf, "BO-Beschr.", $rowHeightComment + $i, $block_header_height, $SB);
+
             $pdf->SetFont('helvetica', 'I', 10);
             $pdf->MultiCell($einzugPlus, $rowHeightComment, "", 0, 'L', 0, 0);
             $pdf->MultiCell($SB - $einzugPlus, $rowHeightComment, $outstr, 0, 'L', 0, 1);
@@ -119,7 +125,9 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 //
 //   ---------- ALLGEMEIN   ----------
 //
-        block_label_queer($block_header_w, $pdf, "Allgemein", $block_header_height, $SB);
+
+
+        block_label_queer($block_header_w, $pdf, "Allgemein", $horizontalSpacerLN3 + 6, $block_header_height, $SB);
 
         $pdf->MultiCell($e_C_2_3rd, 6, "Ö NORM B5220: ", 0, 'R', 0, 0);
         multicell_with_str($pdf, $row['Fussboden OENORM B5220'], $e_C_3rd, "");
@@ -146,6 +154,8 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $pdf->MultiCell($e_C_2_3rd, 6, "Raumfläche: ", 0, 'R', 0, 0);
         multicell_with_nr($pdf, $row['Nutzfläche'], "m2", 10, 4 * $e_C_3rd);
 
+        $pdf->Ln($horizontalSpacerLN3);
+
 //        $pdf->MultiCell($e_C_2_3rd, 6, "Belichtungsfläche: ", 0, 'R', 0, 0);
 //        multicell_with_str($pdf, $row['Belichtungsfläche'], $e_C_3rd, "m2");
 //        $pdf->Ln($horizontalSpacerLN);
@@ -166,8 +176,14 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 //
 //    ---------- ELEKTRO -----------
 //
-        $pdf->Ln($horizontalSpacerLN3);
-        block_label_queer($block_header_w, $pdf, "Elektro", $block_header_height, $SB);
+        if (($row['AV'] == 1 || $row['SV'] == 1 || $row['ZSV'] == 1 || $row['USV'] == 1)) {
+            $i = 12 + $horizontalSpacerLN + $horizontalSpacerLN2;
+        } else {
+            $i = 0;
+        }
+        $Block_height = 6 +$horizontalSpacerLN+  getAnmHeight($pdf, $row['Anmerkung Elektro'], $SB) +$i;
+
+        block_label_queer($block_header_w, $pdf, "Elektro", $Block_height, $block_header_height, $SB);
 
         $pdf->MultiCell($e_C_2_3rd, 6, "ÖVE E8101:", 0, 'R', 0, 0);
         multicell_with_str($pdf, $row['Anwendungsgruppe'], $e_C_3rd, "");
@@ -183,7 +199,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         hackerl($pdf, $hackerl_schriftgröße, $e_C_3rd, $row['IT Anbindung'], "JA");
 
         if ($row['EL_Roentgen 16A CEE Stk'] != "0") {
-            $pdf->MultiCell($e_C_2_3rd, 6, "CEE 16A: ", 0, 'R', 0, 0);
+            $pdf->MultiCell($e_C_2_3rd, 6, "CEE16A Röntgen: ", 0, 'R', 0, 0);
             multicell_with_str($pdf, $row['EL_Roentgen 16A CEE Stk'], $e_C_3rd, " Stk");
         }
 
@@ -199,30 +215,30 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         }multicell_with_str($pdf, $outsr, $e_C_3rd, "");
 
         if (($row['AV'] == 1 || $row['SV'] == 1 || $row['ZSV'] == 1 || $row['USV'] == 1)) {  //&& ( ($row['ET_Anschlussleistung_AV_W'] != "0") || ($row['ET_Anschlussleistung_SV_W'] != "0") || ($row['ET_Anschlussleistung_USV_W'] != "0") || ($row['ET_Anschlussleistung_ZSV_W'] != "0") )) {
-            $pdf->MultiCell($e_C_2_3rd, 6, "AV Leistung: ", 0, 'R', 0, 0);
+            $pdf->MultiCell($e_C_2_3rd, 6, "AV Leist.: ", 0, 'R', 0, 0);
             if ($row['ET_Anschlussleistung_AV_W'] != "0") {
-                $outsr = $row['ET_Anschlussleistung_AV_W'] . "W";
+                $outsr = kify($row['ET_Anschlussleistung_AV_W']) . "W";
             } else {
                 $outsr = "-";
             }
             multicell_with_str($pdf, $outsr, $e_C_3rd, "");
-            $pdf->MultiCell($e_C_2_3rd, 6, "SV Leistung: ", 0, 'R', 0, 0);
+            $pdf->MultiCell($e_C_2_3rd, 6, "SV Leist.: ", 0, 'R', 0, 0);
             if ($row['ET_Anschlussleistung_SV_W'] != "0") {
-                $outsr = $row['ET_Anschlussleistung_SV_W'] . "W";
+                $outsr = kify($row['ET_Anschlussleistung_SV_W']) . "W";
             } else {
                 $outsr = "-";
             }
             multicell_with_str($pdf, $outsr, $e_C_3rd, "");
-            $pdf->MultiCell($e_C_2_3rd, 6, "ZSV Leistung: ", 0, 'R', 0, 0);
+            $pdf->MultiCell($e_C_2_3rd, 6, "ZSV Leist.: ", 0, 'R', 0, 0);
             if ($row['ET_Anschlussleistung_ZSV_W'] != "0") {
-                $outsr = $row['ET_Anschlussleistung_ZSV_W'] . "W";
+                $outsr = kify($row['ET_Anschlussleistung_ZSV_W']) . "W";
             } else {
                 $outsr = "-";
             }
             multicell_with_str($pdf, $outsr, $e_C_3rd, "");
-            $pdf->MultiCell($e_C_2_3rd, 6, "USV Leistung: ", 0, 'R', 0, 0);
+            $pdf->MultiCell($e_C_2_3rd, 6, "USV Leist.: ", 0, 'R', 0, 0);
             if ($row['ET_Anschlussleistung_USV_W'] != "0") {
-                $outsr = $row['ET_Anschlussleistung_USV_W'] . "W";
+                $outsr = kify($row['ET_Anschlussleistung_USV_W']) . "W";
             } else {
                 $outsr = "-";
             }
@@ -230,6 +246,9 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
             $pdf->MultiCell($e_C_2_3rd, 6, "RJ45-Ports: ", 0, 'R', 0, 0);
             multicell_with_nr($pdf, $row['ET_RJ45-Ports'], "Stk", $pdf->getFontSizePt(), $e_C_3rd);
+
+            $pdf->MultiCell($e_C_2_3rd, 6, "CEE16A Laser: ", 0, 'R', 0, 0);
+            multicell_with_nr($pdf, $row['EL_Laser 16A CEE Stk'], "Stk", $pdf->getFontSizePt(), $e_C_3rd);
 
             $pdf->Ln($horizontalSpacerLN);
             $pdf->MultiCell($block_header_w + $e_C, $block_header_height, "", 0, 'L', 0, 0);
@@ -242,25 +261,24 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             multicell_with_str($pdf, $row['EL_ZSV Steckdosen Stk'], $e_C_3rd, "Stk");
             $pdf->MultiCell($e_C_2_3rd, 6, "USV SSD: ", 0, 'R', 0, 0);
             multicell_with_str($pdf, $row['EL_USV Steckdosen Stk'], $e_C_3rd, "Stk");
-        } else {
-            
         }
 
         $pdf->Ln($horizontalSpacerLN2);
         anmA3($pdf, $row['Anmerkung Elektro'], $SB, $block_header_w);
-
+        $pdf->Ln($horizontalSpacerLN);
 // 
 //// ---------- HAUSTEK ---------
 //
-        $pdf->Ln($horizontalSpacerLN);
-        block_label_queer($block_header_w, $pdf, "Haustechnik", $block_header_height, $SB);
+        
+        $Block_height =6 + $horizontalSpacerLN2 + getAnmHeight($pdf, $row['Anmerkung HKLS'], $SB); 
+        block_label_queer($block_header_w, $pdf, "Haustechnik", $Block_height , $block_header_height, $SB);
 
         $pdf->MultiCell($e_C_2_3rd, 6, "H6020: ", 0, 'R', 0, 0);
         multicell_with_str($pdf, $row['H6020'], $e_C_3rd, "");
         $pdf->MultiCell($e_C_2_3rd, 6, "Abwärme MT: ", 0, 'R', 0, 0);
 
         $abwrem_out = "";
-        if ($row['HT_Waermeabgabe_W'] === "0"  || $row['HT_Waermeabgabe_W'] == 0 || $row['HT_Waermeabgabe_W'] == "-") {
+        if ($row['HT_Waermeabgabe_W'] === "0" || $row['HT_Waermeabgabe_W'] == 0 || $row['HT_Waermeabgabe_W'] == "-") {
             $abwrem_out = "keine Angabe";
         } else {
             $abwrem_out = "ca. " . kify($row['HT_Waermeabgabe_W']) . "W";
@@ -270,11 +288,13 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $pdf->Ln($horizontalSpacerLN2);
         anmA3($pdf, $row['Anmerkung HKLS'], $SB, $block_header_w);
 
+        $pdf->Ln($horizontalSpacerLN);
 //
 /// ----------- MEDGAS -----------
 //
-        $pdf->Ln($horizontalSpacerLN);
-        block_label_queer($block_header_w, $pdf, "Med.-Gas", $block_header_height, $SB);
+        
+        $Block_height = 12 + $horizontalSpacerLN + getAnmHeight($pdf,$row['Anmerkung MedGas'], $SB); 
+        block_label_queer($block_header_w, $pdf, "Med.-Gas",$Block_height, $block_header_height, $SB);
 
         $pdf->MultiCell($e_C_2_3rd, 6, "1 Kreis O2: ", 0, 'R', 0, 0);
         hackerl($pdf, $hackerl_schriftgröße, $e_C_3rd, $row['1 Kreis O2'], 1);
@@ -309,19 +329,12 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $pdf->Ln($horizontalSpacerLN2);
         anmA3($pdf, $row['Anmerkung MedGas'], $SB, $block_header_w);
 
-        if (strlen($row['AR_Ausstattung']) > 0) {
-            $pdf->Ln($horizontalSpacerLN3);
-            block_label_queer($block_header_w, $pdf, "Architektur-Einrichtung", $block_header_height, $SB);
-            $rowHeightComment = $pdf->getStringHeight($SB - $block_header_w, br2nl($row['AR_Ausstattung']), false, true, '', 1);
-            check_4_new_page($pdf, $rowHeightComment);
-            $pdf->MultiCell($SB - $block_header_w, $rowHeightComment, br2nl($row['AR_Ausstattung']), 0, 'L', 0, 1);
-        }
-
-
+ 
 ////     ------- BauStatik ---------
         if ("" != $row['Anmerkung BauStatik'] && $row['Anmerkung BauStatik'] != "keine Angaben MT") {
             $pdf->Ln($horizontalSpacerLN);
-            block_label_queer($block_header_w, $pdf, "Baustatik", $block_header_height, $SB);
+            $Block_height = getAnmHeight($pdf,$row['Anmerkung BauStatik'], $SB); 
+            block_label_queer($block_header_w, $pdf, "Baustatik",$Block_height, $block_header_height, $SB);
             $pdf->Ln($horizontalSpacerLN2);
             anmA3($pdf, $row['Anmerkung BauStatik'], $SB, $block_header_w);
             $pdf->Ln($horizontalSpacerLN);
@@ -372,7 +385,8 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 //        $pdf->Multicell(100, 10, $finalMemory - $initialMemory, 0, "R", 0, 1);
         $result->data_seek(0);
         if ($finalMemory - $initialMemory > -8000) {
-            block_label_queer($block_header_w, $pdf, "Med.-tech.", $block_header_height, $SB);
+
+            block_label_queer($block_header_w, $pdf, "Med.-tech.", 50,  $block_header_height, $SB);
             make_MT_details_table($pdf, $result, $result1, $result3, $valueOfRoomID, $block_header_height, $SB, $SH);
         } else {
 //            $pdf->Multicell(100, 10, $initialMemory . "       "  .$finalMemory - $initialMemory, 0, "R", 0, 1);

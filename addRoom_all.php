@@ -126,6 +126,7 @@ $sql = "INSERT INTO `LIMET_RB`.`tabelle_räume`
     `EL_SV Steckdosen Stk`,
     `EL_ZSV Steckdosen Stk`,
     `EL_USV Steckdosen Stk`,
+    `EL_Laser 16A CEE Stk`,
     `EL_Roentgen 16A CEE Stk` )
     VALUES
     ('" . filter_input(INPUT_GET, 'raumnummer') . "',
@@ -234,7 +235,8 @@ $sql = "INSERT INTO `LIMET_RB`.`tabelle_räume`
     '" . filter_input(INPUT_GET, 'SSDs_SV') . "',
     '" . filter_input(INPUT_GET, 'SSDs_ZSV') . "',
     '" . filter_input(INPUT_GET, 'SSDs_USV') . "',
-    '" . filter_input(INPUT_GET, 'CEE16A Stk') . "')";
+        '" . filter_input(INPUT_GET, 'CEE16AL') . "',
+    '" . filter_input(INPUT_GET, 'CEE16AR') . "')";
 
 
 if ($mysqli->query($sql) === TRUE) {

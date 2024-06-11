@@ -429,11 +429,15 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         selectedRowData['ET_Anschlussleistung_SV_W'],
                                                                         selectedRowData['ET_Anschlussleistung_ZSV_W'],
                                                                         selectedRowData['ET_Anschlussleistung_USV_W'],
+                                                                       
                                                                         selectedRowData['EL_AV Steckdosen Stk'],
                                                                         selectedRowData['EL_SV Steckdosen Stk'],
                                                                         selectedRowData['EL_ZSV Steckdosen Stk'],
                                                                         selectedRowData['EL_USV Steckdosen Stk'],
+                                                                        
                                                                         selectedRowData['EL_Roentgen 16A CEE Stk'],
+                                                                        selectedRowData['EL_Laser 16A CEE Stk'],
+                                                                        
                                                                         selectedRowData["HT_Waermeabgabe_W"],
                                                                         selectedRowData["VEXAT_Zone"],
                                                                         selectedRowData["HT_Abluft_Vakuumpumpe"],
@@ -490,10 +494,10 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                     o2, _1kreisva, _2kreisva, va, _1kreisdl5, _2kreisdl5, dl5, dl10, dltech, co2, h2, he, herf, ar, n2, nga, n2o, av, sv, zsv, usv,
                                                                     itanbindung, anwendungsgruppe, allgemeinehygieneklasse, raumhoehe, raumhoehe2, belichtungsfläche, umfang, volumen, etanschlussleistungw,
                                                                     AnschlLeistung_AV, AnschlLeistung_SV, AnschlLeistung_ZSV, AnschlLeistung_USV,
-                                                                    SSDs_AV, SSDs_SV, SSDs_ZSV, SSDs_USV,
+                                                                    SSDs_AV, SSDs_SV, SSDs_ZSV, SSDs_USV, CEE16AR, CEE16AL,
                                                                     htwärmeabgabew, vexatzone, htabluftvakuumpumpe, htabluftschweissabsaugungstk, htabluftessestk, htabluftrauchgasabzugstk, htabluftdigestoriumstk,
                                                                     htpunktabsaugungstk, htabluftsicherheitsschrankunterbaustk, htabluftsicherheitsschrankstk, htspuelestk, htkühlwasser, o2mangel, co2melder,
-                                                                    etrj45ports, CEE16A,
+                                                                    etrj45ports,
                                                                     et64a3phasigeinzelanschluss, et32a3phasigeinzelanschluss, et16a3phasigeinzelanschluss, etdigestoriummsr230vsvstk, et5x10mm2digestoriumstk, et5x10mm2usvstk,
                                                                     et5x10mm2svstk, et5x10mm2avstk, wasserqual3lmin, wasserqual2ltag, wasserqual1ltag, wasserqual3, wasserqual2, wasserqual1, lhe, lnltag, ln, n2reinheit, n2lmin,
                                                                     arreinheit, arlmin, hereinheit, helmin, h2reinheit, h2lmin, dliso8573, dllmin, valmin, co2lmin, co2reinheit, o2lmin, o2reinheit, laserklasse) {
@@ -558,7 +562,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         "EL_SV Steckdosen Stk": SSDs_SV,
                                                                         "EL_ZSV Steckdosen Stk": SSDs_ZSV,
                                                                         "EL_USV Steckdosen Stk": SSDs_USV,
-                                                                        "CEE16A Stk": CEE16A,
+                                                                        "CEE16AR": CEE16AR,
+                                                                        "CEE16AL": CEE16AL, 
                                                                         "htwärmeabgabew": htwärmeabgabew,
                                                                         "vexatzone": vexatzone,
                                                                         "htabluftvakuumpumpe": htabluftvakuumpumpe,

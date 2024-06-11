@@ -26,6 +26,7 @@
 
 // Include the main TCPDF library (search for installation path).
 require_once('TCPDF-master/TCPDF-master/tcpdf.php');
+include 'pdf_createBericht_utils.php';
 
 function br2nl($string){
     $return= str_replace(array("<br/>"), "\n", $string);
@@ -296,14 +297,15 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetFont('helvetica', '', 8);
         if(strlen($row['Anmerkung FunktionBO'])>0){
             $pdf->Ln();
-            $rowHeightComment = $pdf->getStringHeight(150,br2nl($row['Anmerkung FunktionBO']),false,true,'',1);
+            $outstr= format_text(br2nl($row['Anmerkung FunktionBO']));
+            $rowHeightComment = $pdf->getStringHeight(150,$outstr,false,true,'',1);
             // Wenn Seitenende? Überprüfen und neue Seite anfangen
             $y = $pdf->GetY();    
             if (($y + $rowHeightComment) >= 270) {
                 $pdf->AddPage();
             }
             $pdf->MultiCell(30, $rowHeightComment, "Funktion BO:",'B', 'L', 0, 0);
-            $pdf->MultiCell(150, $rowHeightComment, br2nl($row['Anmerkung FunktionBO']),'B', 'L', 0, 0);           
+            $pdf->MultiCell(150, $rowHeightComment,$outstr,'B', 'L', 0, 0);           
         }
     }
 

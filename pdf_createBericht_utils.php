@@ -34,6 +34,24 @@
 //            $block_header_height = 10;   //
 //            $blockSpaceNeededX = 100; //
 
+
+function block_label_queer($block_header_w, $pdf, $block_label, $upcomming_block_size, $block_height = 12, $SB = 390) {
+    newpageA3($pdf, $upcomming_block_size, 275);
+
+    $pdf->SetFont('helvetica', 'B', $block_height);
+    $pdf->MultiCell($SB, 1, "", 'T', 'L', 0, 0);
+    $pdf->Ln(1);
+    $pdf->MultiCell($block_header_w, $block_height, $block_label, 0, 'L', 0, 0);
+    $pdf->SetFont('helvetica', '', 10);
+}
+
+function newpageA3($pdf, $next_block_size, $SH) {
+    $y = $pdf->GetY();
+    if (($y + $next_block_size) >= $SH) {
+        $pdf->AddPage();
+    }
+}
+
 function kify($input) {
     // Check if the input is numeric
     if (is_numeric($input)) {
@@ -50,6 +68,17 @@ function kify($input) {
     return $input;
 }
 
+function getAnmHeight($pdf, $inp_text, $SB) {
+    if ($inp_text != "keine Angaben MT" && $inp_text != "") {
+        $outstr = "Anm.: " . format_text(clean_string(br2nl($inp_text)));
+        if (!is_not_no_comment($outstr)) {
+            $outstr = "Keine Anmerkung";
+        }
+        $rowHeightComment = $pdf->getStringHeight($SB, $outstr, false, true, '', 1);
+        return $rowHeightComment;
+    }
+}
+
 function anmA3($pdf, $inp_text, $SB, $block_header_w) {
 //    if($pdf->GetX() > 60 ) {$pdf->Ln(10);} 
     if ($inp_text != "keine Angaben MT" && $inp_text != "") {
@@ -62,11 +91,51 @@ function anmA3($pdf, $inp_text, $SB, $block_header_w) {
         $rowHeightComment = $pdf->getStringHeight($SB, $outstr, false, true, '', 1);
         $block_header_w = 10;
         $pdf->MultiCell($block_header_w, $rowHeightComment, "", 0, 'R', 0, 0);
-        $pdf->MultiCell($SB - $block_header_w, $rowHeightComment, $outstr, 0, 'L', 0, 1);
+//        if ($rowHeightComment < 25) {
+            $pdf->MultiCell($SB-$block_header_w, $rowHeightComment, $outstr, 0, 'L', 0, 1);
+//        } else {
+//            writeTwoColumns($pdf, $SB - $block_header_w, $outstr);
+//        }
     }
 }
 
-function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $RaumbereichNutzer, $Geschoss, $Bauetappe, $Bauabschnitt, $format = "") {
+function writeTwoColumns($pdf, $paperwidth_to_use, $inp_text) {
+    $columnWidth = ($paperwidth_to_use - 20) / 2;
+    $middle = floor(strlen($inp_text) / 2);
+    $middle = min(
+            strpos($inp_text, ' ', $middle),
+            strpos($inp_text, "\n", $middle),
+            strpos($inp_text, '-', $middle)
+    );
+
+    // Split the text into two parts
+    $leftText = substr($inp_text, 0, $middle);
+    $rightText = substr($inp_text, $middle);
+
+    // Save the current X and Y coordinates
+    $xBefore = $pdf->GetX();
+    $yBefore = $pdf->GetY();
+
+    // Write the left column
+    $pdf->MultiCell($columnWidth, 0, $leftText, 0, 'L', false, 1);
+
+    // Get the height of the left column
+    $leftHeight = $pdf->GetY() - $yBefore;
+
+    // Set the X and Y coordinates to the start of the right column
+    $pdf->SetXY($xBefore + $columnWidth + 20, $yBefore);
+
+    // Write the right column
+    $pdf->MultiCell($columnWidth, 0, $rightText, 0, 'L', false, 1);
+
+    // Get the height of the right column
+    $rightHeight = $pdf->GetY() - $yBefore;
+
+    // Set the Y coordinate to the new line of the lowest point of this text input
+    $pdf->SetY(max($leftHeight, $rightHeight) + $yBefore);
+}
+
+function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $RaumbereichNutzer, $Geschoss, $Bauetappe, $Bauabschnitt, $format = "", $Block_height =0) {
     if ($format == "") {
         $qot = 5 / 9;
         $pdf->SetFont('helvetica', 'B', 10);
@@ -80,11 +149,11 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
         $pdf->MultiCell($SB * $qot, $ln_spacer, "Bauetappe: " . $Bauetappe, 'B', 'L', 0, 0);
         $pdf->MultiCell($SB * (1 - $qot), $ln_spacer, "Bauteil: " . $Bauabschnitt, 'B', 'L', 0, 1);
     } else {// A3 Queetr
-        if (($pdf->GetY()) >= 120) {// Unsauberes schnell schnell  #TODO
+    if (($pdf->GetY()) >= 180 ){// || $Block_height > 275- ($pdf->GetY())) {// Unsauberes schnell schnell  #TODO
             $pdf->AddPage();
         } else if (($pdf->GetY()) >= 20) {
             $pdf->Ln();
-            $pdf->MultiCell($SB, 10, "", 'B', 'L', 0, 1);
+            $pdf->MultiCell($SB, 12, "", 'B', 'L', 0, 1);
             $pdf->MultiCell($SB, 1, "", 'B', 'L', 0.5, 1);
         }
         $pdf->SetFont('helvetica', 'B', 10);
@@ -155,39 +224,26 @@ function is_not_no_comment($str) {
 }
 
 function format_text($string) {
-    $spacer = ". ";
-//    $string = preg_replace("/\s+\n/", "\n", $string); // Remove spaces before \n
+//    $spacer = " --- ";
+    $string = preg_replace("/\s+\n/", "\n", $string); // Remove spaces before \n
+    //
+    $string = preg_replace("/\n\n\n/", "\n", $string); // Remove spaces before \n
+    $string = preg_replace("/\n\n/", "\n", $string); // Remove spaces before \n
 //    $string = str_replace("\n", $spacer, $string);
-//    $return = str_replace("..", ".", $string);
+//    $string = str_replace("..", ".", $string);
 //    if (preg_match('/²/', $string)) {
 //        // Replace the superscript 2 with <sup>2</sup>
 //        $return = str_replace('²', '<sup>2</sup>', $string);
 //    } else {
 //        $return = $string;
 //    }
-
-    // Format the string for a multicell
-//     = '<p>' . $return . '</p>';
-    $return=$string; 
+    $return = $string; // str_replace("?", " ", $string);
     return $return;
 }
 
 function clean_string($dirty_str) {
     $clean_string = preg_replace('/[^äüö\n(\x20-\x7F)]*/u', '', $dirty_str);
     return $clean_string;
-}
-
-function newpage_or_spacerA3($pdf, $next_block_size, $SH, $LN = 8) {
-    $y = $pdf->GetY();
-    if (($y + $next_block_size) >= 270) {
-        $pdf->AddPage();
-    } else {
-        if ($y < 20) {
-            
-        } else {
-            $pdf->Ln($LN);
-        }
-    }
 }
 
 function newpage_or_spacer($pdf, $next_block_size, $LN = 8) {
@@ -282,14 +338,6 @@ function hackerl($pdf, $hackerl_schriftgr, $zellgr, $param, $comp_true) {
     }
     $pdf->SetFont('helvetica', '', $originalFontSize);
     $pdf->SetTextColor(0, 0, 0);
-}
-
-function block_label_queer($block_header_w, $pdf, $block_label, $block_height = 12, $SB = 390) {
-    $pdf->SetFont('helvetica', 'B', $block_height);
-    $pdf->MultiCell($SB, 1, "", 'T', 'L', 0, 0);
-    $pdf->Ln(1);
-    $pdf->MultiCell($block_header_w, $block_height, $block_label, 0, 'L', 0, 0);
-    $pdf->SetFont('helvetica', '', 10);
 }
 
 function block_label($pdf, $block_label, $block_height = 12, $SB = 180) {

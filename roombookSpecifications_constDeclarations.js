@@ -95,7 +95,9 @@ const columnsDefinition = [
     {data: 'EL_ZSV Steckdosen Stk', defaultContent: '-', title: 'ZSV #SSD', case: "num"},
     {data: 'EL_USV Steckdosen Stk', defaultContent: '-', title: 'USV #SSD', case: "num"},
 
-    {data: 'EL_Roentgen 16A CEE Stk', title: 'CEE16A Anchl.Rö.', case: "num"},
+    {data: 'EL_Roentgen 16A CEE Stk', title: 'CEE16A Röntgen', case: "num"},
+        
+    {data: 'EL_Laser 16A CEE Stk', defaultContent: '-', title: 'CEE16A Laser', case: "num"},
     {data: 'ET_Anschlussleistung_W', defaultContent: '-', title: 'Anschlussleistung Summe[W]', case: "num"},
     {data: 'ET_Anschlussleistung_AV_W', defaultContent: '-', title: 'Anschlussleistung AV[W]', case: "num"},
     {data: 'ET_Anschlussleistung_SV_W', defaultContent: '-', title: 'Anschlussleistung SV[W]', case: "num"},
