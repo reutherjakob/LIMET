@@ -50,7 +50,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             .fix_size{
                                 height: 35px !important;
                                 font-size: 15px;
-
                             }
 
                             .form-check-input:checked {
@@ -59,6 +58,10 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             .rotated {
                                 writing-mode: vertical-lr;
                             }
+                            .spacer {
+                                width: 2px;  
+                            }
+
                         </style>
 
                         </head> 
@@ -66,7 +69,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             <div class="container-fluid ">
                                 <div id="limet-navbar" class=' '> </div> 
                                 <div class="mt-4 card">    
-                                    <div class="card-header d-inline-flex" id='TableCardHeader'>  </div>
+                                    <div class="card-header d-inline-flex" style="flex-wrap:nowrap" id='TableCardHeader'>  </div>
 
                                     <div class="card-body" id = "table_container_div">
                                         <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" width ="100%" id="table_rooms" > 
@@ -429,15 +432,12 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         selectedRowData['ET_Anschlussleistung_SV_W'],
                                                                         selectedRowData['ET_Anschlussleistung_ZSV_W'],
                                                                         selectedRowData['ET_Anschlussleistung_USV_W'],
-                                                                       
                                                                         selectedRowData['EL_AV Steckdosen Stk'],
                                                                         selectedRowData['EL_SV Steckdosen Stk'],
                                                                         selectedRowData['EL_ZSV Steckdosen Stk'],
                                                                         selectedRowData['EL_USV Steckdosen Stk'],
-                                                                        
                                                                         selectedRowData['EL_Roentgen 16A CEE Stk'],
                                                                         selectedRowData['EL_Laser 16A CEE Stk'],
-                                                                        
                                                                         selectedRowData["HT_Waermeabgabe_W"],
                                                                         selectedRowData["VEXAT_Zone"],
                                                                         selectedRowData["HT_Abluft_Vakuumpumpe"],
@@ -563,7 +563,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         "EL_ZSV Steckdosen Stk": SSDs_ZSV,
                                                                         "EL_USV Steckdosen Stk": SSDs_USV,
                                                                         "CEE16AR": CEE16AR,
-                                                                        "CEE16AL": CEE16AL, 
+                                                                        "CEE16AL": CEE16AL,
                                                                         "htwärmeabgabew": htwärmeabgabew,
                                                                         "vexatzone": vexatzone,
                                                                         "htabluftvakuumpumpe": htabluftvakuumpumpe,
@@ -688,14 +688,14 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                 $('#columnFilter').change(function () {
                                                                     var filterValue = $(this).val();
                                                                     table.column('MT-relevant:name').search(filterValue).draw();
-                                                                }); 
+                                                                });
                                                             }
 
                                                             function init_btn_4_dt() {
-                                                                let spacer = {extend: 'spacer', style: 'bar'};
+                                                                let spacer = {extend: 'spacer', style: 'bar', className: "spacer"};
                                                                 new $.fn.dataTable.Buttons(table, {
                                                                     buttons: [
-                                                                        spacer, {extend: 'searchBuilder', label: "Search"}, spacer,
+                                                                        spacer, {extend: 'searchBuilder', label: "Search", text: "S"}, spacer,
                                                                         buttonRanges.map(button => ({
                                                                                 text: button.name,
                                                                                 className: 'btn_vis',
@@ -705,16 +705,17 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 //                                                                                            toggleColumns(dt, button.start, button.end, buttonRanges[i].name); } }
                                                                                 }
                                                                             })),
-                                                                        spacer,
-                                                                        {
-                                                                            text: 'w/ Data',
-                                                                            className: '',
-                                                                            id: 'toggleDatalessColumnsButton',
-                                                                            action: function (e, dt, node, config) {
-                                                                                checkAndToggleColumnsVisibility(dt);
-                                                                            }
-                                                                        },
-                                                                        spacer, 'copy', 'excel', 'csv', {extend: 'spacer', text: "SELECT:", style: 'bar'},
+//                                                                        spacer,
+//                                                                        {
+//                                                                            text: 'w/ Data',
+//                                                                            className: '',
+//                                                                            id: 'toggleDatalessColumnsButton',
+//                                                                            action: function (e, dt, node, config) {
+//                                                                                checkAndToggleColumnsVisibility(dt);
+//                                                                            }
+//                                                                        },
+                                                                        
+                                                                        {extend: 'spacer', text: "SELECT:", style: 'bar', className: "rotated"},
                                                                         {
                                                                             text: 'All',
                                                                             action: function () {
@@ -750,13 +751,13 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                             }
                                                                         }, spacer,
                                                                         {
-                                                                            text: "Check ",
-                                                                            className: "btn far fa-solid fa-fire-extinguisher",
+                                                                            text: "Check",
+                                                                            className: "btn fas fa-coffee",//far fa-solid fa-fire-extinguisher",
                                                                             action: function ()
                                                                             {
                                                                                 check_angaben();
                                                                             }
-                                                                        }, spacer
+                                                                        }, spacer, 'copy', 'excel', 'csv'
                                                                     ]}).container().appendTo($('#TableCardHeader'));
                                                             }
 

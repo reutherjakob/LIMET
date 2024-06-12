@@ -44,7 +44,8 @@ function get_project() {
 }
 
 function br2nl($string) {
-    $return = str_replace(array("<br/>"), "\n", $string);
+    $string = str_replace(array("<br/>"), "\n", $string);
+    $return = str_replace(array("<br>"), "\n", $string);
     //  $return= str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $temp);
     return $return;
 }

@@ -11,16 +11,16 @@ function title2data(columnsDefinition, title) {
 }
 
 const buttonRanges = [
-    {name: 'Alle', start: 7, end: 110},
+    {name: 'Alle', start: 7, end: 111},
     {name: 'RAUM', start: 7, end: 23},
     {name: 'HKLS', start: 24, end: 29},
-    {name: 'ELEK', start: 30, end: 47},
-    {name: 'MEDGAS', start: 48, end: 52 + 9},
-    {name: 'LAB', start: 53 + 9, end: 101 + 9},
-    {name: 'L-GAS', start: 55 + 9, end: 79 + 9},
-    {name: 'L-ET', start: 80 + 9, end: 87 + 9},
-    {name: 'L-HT', start: 88 + 9, end: 95 + 9},
-    {name: 'L-H2O', start: 95 + 9, end: 110}
+    {name: 'ELEK', start: 30, end: 48},
+    {name: 'MEDGAS', start: 49, end: 52 +10},
+    {name: 'LAB', start: 53 +10, end: 101 +10},
+    {name: 'L-GAS', start: 55 +10, end: 79 +10},
+    {name: 'L-ET', start: 80 +10, end: 87 +10},
+    {name: 'L-HT', start: 88 +10, end: 95 +10},
+    {name: 'L-H2O', start: 95 +10, end: 111}
 ];
 
 const columnsDefinitionShort = [
@@ -110,12 +110,15 @@ const columnsDefinition = [
     {data: '1 Kreis O2', title: '1_K O2', case: "bit"},
     {data: '2 Kreis O2', title: '2_K O2', case: "bit"},
     {data: 'O2', title: 'O2', case: "bit"},
+        
     {data: '1 Kreis Va', title: '1_K Va', case: "bit"},
     {data: '2 Kreis Va', title: '2_K Va', case: "bit"},
     {data: 'VA', title: 'VA', case: "bit"},
+        
     {data: '1 Kreis DL-5', title: '1_K DL5', case: "bit"},
     {data: '2 Kreis DL-5', title: '2_K DL5', case: "bit"},
     {data: 'DL-5', title: 'DL-5', case: "bit"},
+        
     {data: 'DL-10', title: 'DL-10', case: "bit"},
     {data: 'DL-tech', title: 'DL-tech', case: "bit"},
     {data: 'CO2', title: 'CO2', case: "bit"},
