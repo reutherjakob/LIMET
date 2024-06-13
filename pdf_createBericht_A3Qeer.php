@@ -4,20 +4,26 @@
 // 10.5.2024
 // Reuther & Fux
 //----------------------------- 
-//Input DATA from frontend-page
-$roomIDs = filter_input(INPUT_GET, 'roomID');
-$PDF_input_bool = filter_input(INPUT_GET, 'PDFinputs');
-$roomIDsArray = explode(",", $roomIDs);
-$PDF_input_bools = explode(",", $PDF_input_bool); //foreach ($roomIDsArray as $l) { echo $l;echo " <br> ";}echo $roomIDsArray;
 
 include 'pdf_createBericht_MYPDFclass.php'; //require_once('TCPDF-master/TCPDF-master/tcpdf.php'); is in class file
 include 'pdf_createBericht_utils.php';
 include '_utils.php';
-//if ($PDF_input_bools[8]) {
-include 'pdf_createMTTabelle.php'; //}
 
 session_start();
 check_login();
+//if ($PDF_input_bools[8]) {
+include 'pdf_createMTTabelle.php'; //}
+
+
+//Input DATA from frontend-page
+$roomIDs = filter_input(INPUT_GET, 'roomID');
+$roomIDsArray = explode(",", $roomIDs);
+
+//$PDF_input_bool = filter_input(INPUT_GET, 'PDFinputs');
+//$PDF_input_bools = explode(",", $PDF_input_bool); //foreach ($roomIDsArray as $l) { echo $l;echo " <br> ";}echo $roomIDsArray;
+$Änderungsdatum = getValidatedDateFromURL();
+
+
 
 //     -----   FORMATTING VARIABLES    -----     
 $marginTop = 17; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/ 
@@ -181,7 +187,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         } else {
             $i = 0;
         }
-        $Block_height = 6 +$horizontalSpacerLN+  getAnmHeight($pdf, $row['Anmerkung Elektro'], $SB) +$i;
+        $Block_height = 6 + $horizontalSpacerLN + getAnmHeight($pdf, $row['Anmerkung Elektro'], $SB) + $i;
 
         block_label_queer($block_header_w, $pdf, "Elektro", $Block_height, $block_header_height, $SB);
 
@@ -269,9 +275,9 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 // 
 //// ---------- HAUSTEK ---------
 //
-        
-        $Block_height =6 + $horizontalSpacerLN2 + getAnmHeight($pdf, $row['Anmerkung HKLS'], $SB); 
-        block_label_queer($block_header_w, $pdf, "Haustechnik", $Block_height , $block_header_height, $SB);
+
+        $Block_height = 6 + $horizontalSpacerLN2 + getAnmHeight($pdf, $row['Anmerkung HKLS'], $SB);
+        block_label_queer($block_header_w, $pdf, "Haustechnik", $Block_height, $block_header_height, $SB);
 
         $pdf->MultiCell($e_C_2_3rd, 6, "H6020: ", 0, 'R', 0, 0);
         multicell_with_str($pdf, $row['H6020'], $e_C_3rd, "");
@@ -292,9 +298,9 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 //
 /// ----------- MEDGAS -----------
 //
-        
-        $Block_height = 12 + $horizontalSpacerLN + getAnmHeight($pdf,$row['Anmerkung MedGas'], $SB); 
-        block_label_queer($block_header_w, $pdf, "Med.-Gas",$Block_height, $block_header_height, $SB);
+
+        $Block_height = 12 + $horizontalSpacerLN + getAnmHeight($pdf, $row['Anmerkung MedGas'], $SB);
+        block_label_queer($block_header_w, $pdf, "Med.-Gas", $Block_height, $block_header_height, $SB);
 
         $pdf->MultiCell($e_C_2_3rd, 6, "1 Kreis O2: ", 0, 'R', 0, 0);
         hackerl($pdf, $hackerl_schriftgröße, $e_C_3rd, $row['1 Kreis O2'], 1);
@@ -329,12 +335,11 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $pdf->Ln($horizontalSpacerLN2);
         anmA3($pdf, $row['Anmerkung MedGas'], $SB, $block_header_w);
 
- 
 ////     ------- BauStatik ---------
         if ("" != $row['Anmerkung BauStatik'] && $row['Anmerkung BauStatik'] != "keine Angaben MT") {
             $pdf->Ln($horizontalSpacerLN);
-            $Block_height = getAnmHeight($pdf,$row['Anmerkung BauStatik'], $SB); 
-            block_label_queer($block_header_w, $pdf, "Baustatik",$Block_height, $block_header_height, $SB);
+            $Block_height = getAnmHeight($pdf, $row['Anmerkung BauStatik'], $SB);
+            block_label_queer($block_header_w, $pdf, "Baustatik", $Block_height, $block_header_height, $SB);
             $pdf->Ln($horizontalSpacerLN2);
             anmA3($pdf, $row['Anmerkung BauStatik'], $SB, $block_header_w);
             $pdf->Ln($horizontalSpacerLN);
@@ -370,6 +375,22 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             WHERE (((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND tabelle_parameter.`Bauangaben relevant` = 1)
             ORDER BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung;";
         $result3 = $mysqli->query($sql);
+
+//        $formattedDate = f(); 
+        $sql = "SELECT tabelle_projekt_elementparameter_aenderungen.idtabelle_projekt_elementparameter_aenderungen, tabelle_projekt_elementparameter_aenderungen.projekt, tabelle_projekt_elementparameter_aenderungen.element, tabelle_projekt_elementparameter_aenderungen.parameter, tabelle_projekt_elementparameter_aenderungen.variante, tabelle_projekt_elementparameter_aenderungen.wert_alt, tabelle_projekt_elementparameter_aenderungen.wert_neu, tabelle_projekt_elementparameter_aenderungen.einheit_alt, tabelle_projekt_elementparameter_aenderungen.einheit_neu, tabelle_projekt_elementparameter_aenderungen.timestamp, tabelle_projekt_elementparameter_aenderungen.user
+            FROM tabelle_projekt_elementparameter_aenderungen
+            WHERE (((tabelle_projekt_elementparameter_aenderungen.projekt)=" . $_SESSION["projectID"] . "))
+            AND tabelle_projekt_elementparameter_aenderungen.timestamp > '$Änderungsdatum'
+            ORDER BY tabelle_projekt_elementparameter_aenderungen.timestamp DESC;";
+        $changes = $mysqli->query($sql);
+        $dataChanges = array();
+        while ($row = $changes->fetch_assoc()) {
+            $dataChanges[] = $row;
+        }
+
+        $dataChanges = filter_old_equal_new($dataChanges);
+        
+        
         //  ----------------------- Ausgabe Abkürzungen -----------------------
 //        $sql = "SELECT tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Abkuerzung, tabelle_parameter.Bezeichnung
 //            FROM (tabelle_projekt_elementparameter INNER JOIN tabelle_parameter ON tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter = tabelle_parameter.idTABELLE_Parameter) INNER JOIN tabelle_parameter_kategorie ON tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie = tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie
@@ -385,9 +406,8 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 //        $pdf->Multicell(100, 10, $finalMemory - $initialMemory, 0, "R", 0, 1);
         $result->data_seek(0);
         if ($finalMemory - $initialMemory > -8000) {
-
-            block_label_queer($block_header_w, $pdf, "Med.-tech.", 50,  $block_header_height, $SB);
-            make_MT_details_table($pdf, $result, $result1, $result3, $valueOfRoomID, $block_header_height, $SB, $SH);
+            block_label_queer($block_header_w, $pdf, "Med.-tech.", 50, $block_header_height, $SB);
+            make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dataChanges);
         } else {
 //            $pdf->Multicell(100, 10, $initialMemory . "       "  .$finalMemory - $initialMemory, 0, "R", 0, 1);
         }

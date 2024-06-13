@@ -135,8 +135,9 @@ $sql = " SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte,
 if (!$mysqli->query($sql)) {
     echo "Error executing query: " . $mysqli->error;
 } else {
-    $result = $mysqli->query($sql);
-}
+    $result = $mysqli->query($sql); 
+} 
+
 $mysqli->close();
 
 $data = array();
@@ -146,4 +147,4 @@ while ($row = $result->fetch_assoc()) {
 
 header('Content-Type: application/json');
 echo json_encode($data);
-?>
+

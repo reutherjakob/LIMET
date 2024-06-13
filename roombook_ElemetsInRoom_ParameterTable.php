@@ -31,7 +31,7 @@ init_page_serversides();
 <!--                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  -->
 
                         <style>
-                            
+
                         </style>
 
                         </head> 
@@ -90,7 +90,7 @@ init_page_serversides();
                                 var sheetIndex = 1;
                                 var selectedIDs = [];
                                 var K2R = [];
-                                
+
                                 const checkboxData = [
                                     {label: 'ELEK', value: '2'},
                                     {label: 'GEOM', value: '1'},
@@ -108,22 +108,23 @@ init_page_serversides();
                                     init_xls_interface();
                                     init_checboxes4selectingKathegories();
                                 });
+                                
 
                                 function init_checboxes4selectingKathegories() {
                                     checkboxData.forEach((data, index) => {
                                         let div = document.createElement('div');
                                         div.className = 'form-check';
-                                        div.style.margin= '0 10px';
-                 
+                                        div.style.margin = '0 10px';
+
                                         let checkbox = document.createElement('input');
                                         checkbox.type = 'checkbox';
                                         checkbox.id = 'checkbox' + index;
                                         checkbox.value = data.value;
-                                        checkbox.className = 'form-check-input';  
-                                        
+                                        checkbox.className = 'form-check-input';
+
                                         let label = document.createElement('label');
                                         label.htmlFor = checkbox.id;
-                                        label.className = 'form-check-label'; 
+                                        label.className = 'form-check-label';
                                         label.appendChild(document.createTextNode(data.label));
 
                                         div.appendChild(checkbox);
@@ -137,7 +138,7 @@ init_page_serversides();
                                             } else {
                                                 K2R = K2R.filter(value => value !== this.value);
                                             }
-                                            console.log("RB PAGE K2R: ",K2R); 
+                                            console.log("RB PAGE K2R: ", K2R);
                                         });
                                     });
                                 }
@@ -158,7 +159,7 @@ init_page_serversides();
                                             $.ajax({
                                                 url: 'getRoomElementsParameterData.php',
                                                 method: 'GET',
-                                                data: {"roomID": RaumID, "K2Return": JSON.stringify(K2R) },
+                                                data: {"roomID": RaumID, "K2Return": JSON.stringify(K2R)},
                                                 success: function (data) {
                                                     if (data && data.length > 0) {
 //                                                        var columnsToKeep = ["ElementID", 'PN', 'NA', 'PA'];
@@ -258,7 +259,7 @@ init_page_serversides();
                                 }
 
                                 function table_click() {
-                                    $('#table_rooms tbody').on('click', 'tr', function () { 
+                                    $('#table_rooms tbody ').on('click ', 'tr', function () {
 //                                        var data = getSelectedData(table);
 //                                        console.log(data);
                                         displaySelectedData(table);
@@ -267,16 +268,17 @@ init_page_serversides();
                                         $.ajax({
                                             url: "setSessionVariables.php",
                                             data: {"roomID": RaumID},
-                                            type: "GET", 
+                                            type: "GET",
                                             success: function (data) {
                                                 $.ajax({
-                                                    url: "getElementsParamTable.php", 
+                                                    url: "getElementsParamTable.php",
                                                     data: {"roomID": RaumID, "K2Return": JSON.stringify(K2R)},
                                                     type: "GET",
                                                     success: function (data) {
                                                         $("#elemetsParamsTable").html(data);
                                                     }
                                                 });
+
                                                 /*
                                                  //                                                $.ajax({    //somehow broken
                                                  //                                                    url: "exportXLS.php",
@@ -288,6 +290,7 @@ init_page_serversides();
                                             }
                                         });
                                     });
+                                     
                                 }
 
                                 function init_dt() {   // $('#tableRooms').DataTable({ warum das nicht geht ist mir ein räsetl
@@ -310,6 +313,9 @@ init_page_serversides();
                                             [10, 20, -1],
                                             ['10 rows', '20 rows', 'Show all']
                                         ],
+                                        scrollY: true,
+                                        scrollX: true,
+                                        scrollCollapse: true,
                                         language: {
                                             "search": "",
                                             searchBuilder: {

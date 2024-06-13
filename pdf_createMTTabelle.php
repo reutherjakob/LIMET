@@ -3,8 +3,28 @@
 session_start();
 check_login();
 
-function make_MT_details_table($pdf, $result, $result1, $result3,  $valueOfRoomID, $block_header_height, $SB, $SH) {
-    
+function checkEntry($jsonArray, $elementId, $parameterId) {
+    foreach ($jsonArray as $entry) {
+        if ($entry['element'] == $elementId && $entry['parameter'] == $parameterId) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function checkAndManipulateString($input) {
+    // Check if the string contains '/min'
+    if (strpos($input, '/min') !== false) {
+        // Add a space in front of the string
+        $input = ' ' . $input;
+    }
+    return $input;
+}
+
+function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dataChanges) {
+
+
+
     // $result4 = Abkürzungen
     // -------------------------Elemente parameter ------------------------- 
     $elementParamInfos = array();
@@ -29,20 +49,17 @@ function make_MT_details_table($pdf, $result, $result1, $result3,  $valueOfRoomI
         $paramInfos[$row['idTABELLE_Parameter']]['Kategorie'] = $row['Kategorie'];
         $paramInfosCounter = $paramInfosCounter + 1;
     }
-    
 
-    /// ---------- SIZE/FORMAT VARIABLES ----- -----
+    /// ---------- SIZE/FORMAT VARIABLES -----------
 
     $table_column_sizes = array(15, 42, 7, 7, 11);
     $text_width = ($SB - array_sum($table_column_sizes)) / $paramInfosCounter;
     $rowHeight = 5;
     $rowHeightMainLine = 7;
     $f_size = 6;
-    
-    
 
     $pdf->SetFillColor(244, 244, 244);
-    $pdf->SetTextColor(0,5,0);
+    $pdf->SetTextColor(0, 5, 0);
     $pdf->SetFont('courier', 'B', $f_size);
     $lastXCoordinateHeader = $pdf->GetX();
     $lastYCoordinateHeader = $pdf->GetY();
@@ -81,9 +98,9 @@ function make_MT_details_table($pdf, $result, $result1, $result3,  $valueOfRoomI
     $pdf->SetXY($lastXCoordinate, $lastYCoordinate);
     $pdf->Ln($rowHeight);
 //    $pdf->SetFont('courier', '', $f_size);
-    
+
     $is_even_row = 0;
-    
+
     $result->data_seek(0);
     while ($row = $result->fetch_assoc()) {
         //---------------- Prüfen ob Seitenende---------------------------------------------------------
@@ -105,8 +122,8 @@ function make_MT_details_table($pdf, $result, $result1, $result3,  $valueOfRoomI
             $pdf->MultiCell($table_column_sizes[4], $rowHeight, "Bestand", 1, 'C', 0, 0);
 
             // Kopfzeile der Tabelle ausgeben
-            foreach ($paramInfos as $array) { 
-                if ($lastCategory != $array['Kategorie']){
+            foreach ($paramInfos as $array) {
+                if ($lastCategory != $array['Kategorie']) {
                     $lastXCoordinate = $pdf->GetX();
                     $lastYCoordinate = $pdf->GetY();
                     $pdf->SetXY($lastXCoordinateHeader, $lastYCoordinateHeader);
@@ -127,37 +144,62 @@ function make_MT_details_table($pdf, $result, $result1, $result3,  $valueOfRoomI
 //            $pdf->SetFont('courier', '', $f_size);
             $pdf->Ln($rowHeight + 0.2);
         }
-        
+
 //      --------------------------------------------------------------------------------
         $is_even_row = ($is_even_row + 1) % 2;
-        $fill = $is_even_row/2;
- 
-        $pdf->MultiCell($table_column_sizes[0], $rowHeightMainLine, $row['ElementID'], 1, 'C', $fill, 0);
-        $pdf->MultiCell($table_column_sizes[1], $rowHeightMainLine, $row['Bezeichnung'], 1, 'C', $fill, 0);
-        $pdf->MultiCell($table_column_sizes[2], $rowHeightMainLine, $row['Variante'], 1, 'C', $fill, 0);
-        $pdf->MultiCell($table_column_sizes[3], $rowHeightMainLine, $row['SummevonAnzahl'], 1, 'C', $fill, 0);
-        if ($row['Neu/Bestand'] == 1) {
-            $pdf->MultiCell($table_column_sizes[4], $rowHeightMainLine, "Nein", 1, 'C', $fill, 0);
+        if (($is_even_row % 2) === 0) {
+            $pdf->SetFillColor(200,200, 200); // RGB for grey            
         } else {
-            $pdf->MultiCell($table_column_sizes[4], $rowHeightMainLine, "Ja", 1, 'C', $fill, 0);
+            $pdf->SetFillColor(255, 255, 255);
+        }
+//        $fill = $is_even_row / 2;
+
+        if ($pdf->getStringHeight($table_column_sizes[1], $row['Bezeichnung'], false, true, '', 1) > $rowHeightMainLine) {
+            while ($pdf->getStringHeight($table_column_sizes[1], $row['Bezeichnung'], false, true, '', 1) > $rowHeightMainLine) {
+                $rowHeightMainLine = 1 + $rowHeightMainLine;
+            }
+        } else {
+            $rowHeightMainLine = 7;
         }
 
-        // Parameter ausgeben
+        $pdf->MultiCell($table_column_sizes[0], $rowHeightMainLine, $row['ElementID'], 1, 'C', true, 0);
+        $pdf->MultiCell($table_column_sizes[1], $rowHeightMainLine, $row['Bezeichnung'], 1, 'C', true, 0);
+        $pdf->MultiCell($table_column_sizes[2], $rowHeightMainLine, $row['Variante'], 1, 'C', true, 0);
+        $pdf->MultiCell($table_column_sizes[3], $rowHeightMainLine, $row['SummevonAnzahl'], 1, 'C', true, 0);
+        if ($row['Neu/Bestand'] == 1) {
+            $pdf->MultiCell($table_column_sizes[4], $rowHeightMainLine, "Nein", 1, 'C', true, 0);
+        } else {
+            $pdf->MultiCell($table_column_sizes[4], $rowHeightMainLine, "Ja", 1, 'C', true, 0);
+        }
+
+        // Parameter ausgeben  
         $temp_extracellspace_causeTextToBig = 0;
         foreach ($paramInfos as $array) {
             $tmp_txt = $array['Bezeichnung'];
             $tmp_parameterID = $array['ParamID'];
             $temp_width = $text_width;
             $outputValue = "";
+
             foreach ($elementParamInfos as $array1) {
                 if ($array1['ParamID'] == $tmp_parameterID && $array1['elementID'] == $row['TABELLE_Elemente_idTABELLE_Elemente'] && $array1['variantenID'] == $row['tabelle_Varianten_idtabelle_Varianten']) {
-                    $outputValue = $array1['Wert'] . "" . $array1['Einheit'];
+                    if (checkEntry($dataChanges, $array1['elementID'], $array1['ParamID'])) {
+                        $pdf->SetFillColor(128, 255, 0);
+                    }
+
+                    $outputValue = $array1['Wert'] . checkAndManipulateString( $array1['Einheit']);
                     while ($pdf->getStringHeight($text_width + $temp_extracellspace_causeTextToBig, $outputValue, false, false, '', 1) > $rowHeightMainLine) {
                         $temp_extracellspace_causeTextToBig += 1;
                     }
                 }
             }
-            $pdf->MultiCell($text_width + $temp_extracellspace_causeTextToBig, $rowHeightMainLine, $outputValue, 1, 'C', $fill, 0);
+
+
+            $pdf->MultiCell($text_width + $temp_extracellspace_causeTextToBig, $rowHeightMainLine, $outputValue, 1, 'C', true, 0);
+           if (($is_even_row % 2) === 0) {
+            $pdf->SetFillColor(200,200, 200); // RGB for grey            
+        } else {
+            $pdf->SetFillColor(255, 255, 255);
+        }
             $text_width = $temp_width;
             if ($temp_extracellspace_causeTextToBig > 0) {
                 $temp_extracellspace_causeTextToBig = $temp_extracellspace_causeTextToBig * (-1);
@@ -167,7 +209,7 @@ function make_MT_details_table($pdf, $result, $result1, $result3,  $valueOfRoomI
         }
         $pdf->Ln();
     }
-    abk_vz($result1, $pdf, $f_size); 
+    abk_vz($result1, $pdf, $f_size);
 }
 
 function abk_vz($result4, $pdf, $f_size) {
@@ -186,7 +228,5 @@ function abk_vz($result4, $pdf, $f_size) {
         }
         $pdf->SetFont('courier', '', $f_size);
         $pdf->MultiCell($text_width + 3, $f_size, $row1['Bezeichnung'] . ";", 0, 'L', 0, 0, '', '', true, 0, false, false, 0);
-       
     } $pdf->SetFont('courier', 'B', $f_size);
 }
-

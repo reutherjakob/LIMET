@@ -66,7 +66,7 @@ while ($row = $result->fetch_assoc()) {
 $messages = array();
 
 foreach ($raumparameter as $roomID => $params) {
-    if (false) { //START ROOM param CHECK  //if for forensics
+    if (true) { //START ROOM param CHECK  //if for forensics
 //////// AWG
         check_awg($messages, $params);
 ////////ET 

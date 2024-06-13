@@ -59,7 +59,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 writing-mode: vertical-lr;
                             }
                             .spacer {
-                                width: 2px;  
+                                width: 2px;
                             }
 
                         </style>
@@ -116,7 +116,17 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                 init_visibilities();
                                                                 table_click();
                                                                 event_table_keyz();
+//                                                                
                                                             });
+
+                                                            function change_search_b_btn_txt() {
+                                                                $('.dt-button').each(function () {
+                                                                    if ($(this).text() === 'Search Builder') {
+                                                                        $(this).text('S');
+                                                                    }
+                                                                });
+                                                            }
+
                                                             function getCase(dataIdentifier) {
                                                                 const column = columnsDefinition.find(column => column.data === dataIdentifier);
                                                                 if (column && column.case) {
@@ -155,12 +165,11 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                 table.on('key-focus', function (e, datatable, cell) {
                                                                     if (document.getElementById('checkbox_EditableTable').checked && !current_edit) {
                                                                         cell.node().click();
-//                                                                        table.keys.disable();
+//                                                                        table.keys.disable(); 
                                                                     } else {
                                                                         var rowIndex = cell.index().row;
                                                                         table.rows().deselect();
                                                                         if (rowIndex !== currentRowInd && !document.getElementById('checkbox_EditableTable').checked) {
-
                                                                             table.row(cell.index().row).select();
                                                                             cell.node().click();
                                                                             currentRowInd = rowIndex;
@@ -243,6 +252,20 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                             cell.find('input, select').focus();
                                                                             table.keys.disable();
                                                                             cell.find('input, select').on('keydown blur', function (event) {
+//                                                                                table.on('keydown keyup', function (event) {
+//                                                                                    var ctrlPressed = event.ctrlKey; // Check if ctrl is pressed
+//
+//                                                                                    if (ctrlPressed && event.type === 'keydown') {
+//                                                                                        console.log("CTRL on");
+////                                                                                        cell.html(cellText);
+////                                                                                        current_edit = false;
+////                                                                                        table.keys.enable(); 
+//                                                                                    } else if (!ctrlPressed && event.type === 'keyup') {
+//                                                                                        console.log("CTRL off");
+//                                                                                        table.keys.disable();
+//                                                                                    }
+//                                                                                });
+
                                                                                 if (event.keyCode === 13 && current_edit) { // Enter key pressed
                                                                                     //console.log("Enter Keydown: ", $(this).val());
                                                                                     var newData = format_data_input($(this).val(), dataIdentifier);
@@ -253,6 +276,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                                         table.keys.enable();
                                                                                         //console.log("Saving:", RaumID, dataIdentifier, newData);
                                                                                         save_changes(RaumID, dataIdentifier, newData, Raumbez);
+                                                                                        table.cell(cell.index()).select();
                                                                                     }
                                                                                 } // else {alert("DatEmpty: Enter valid params"); }
 
@@ -370,6 +394,246 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                 }, 2000 + toastCounter * 100);
                                                             }
 
+
+
+
+                                                            function save_new_room(nummer, name, funktionsteilstelle, MTrelevant) {
+                                                                if (nummer !== "" && name !== "" && MTrelevant !== "" && funktionsteilstelle !== "") {  //& flaeche  !== "" && geschoss !== "" && bauetappe  !== "" && bauteil  !== "" && funktionsteilstelle !== 0 
+                                                                    $.ajax({
+                                                                        url: "addRoom_1.php", // "ID": raumID,
+                                                                        data: {"raumnummer": nummer, "raumbezeichnung": name, "funktionsteilstelle": funktionsteilstelle, "MTrelevant": MTrelevant},
+                                                                        type: "GET",
+                                                                        success: function (data) {
+                                                                            $('#addRoomModal').modal('hide');
+                                                                            alert(data);
+                                                                            window.location.replace("roombookSpecifications_New.php");
+                                                                        }
+                                                                    });
+                                                                } else {
+                                                                    alert("Bitte alle Felder ausfüllen!");
+                                                                }
+                                                            }
+
+                                                            function init_dt() {
+                                                                table = new DataTable('#table_rooms', {
+                                                                    ajax: {
+                                                                        url: 'get_rb_specs_data.php',
+                                                                        dataSrc: ''
+                                                                    },
+                                                                    columns: columnsDefinition,
+                                                                    dom: '  <"TableCardHeader"f>t<"btm.d-flex justify-content-between"lip>   ',
+//                                                                    layout: { // https://datatables.net/reference/option/layout
+//                                                                        topStart: '',
+//                                                                        bottomStart: 'pageLength',
+//                                                                        bottomEnd: 'paging', 
+//                                                                        bottom:  'info'
+//                                                                    },
+                                                                    scrollY: true,
+                                                                    scrollX: true,
+                                                                    scrollCollapse: true,
+                                                                    fixedColumns: {
+                                                                        start: 2
+                                                                    },
+                                                                    language: {
+//                                                                        "search": "",
+                                                                        searchBuilder: {
+                                                                            title: null,
+                                                                            depthLimit: 2,
+                                                                            stateSave: false
+                                                                        }
+                                                                    },
+                                                                    keys: true,
+                                                                    order: [[3, 'asc']],
+                                                                    stateSave: false,
+                                                                    info: true,
+                                                                    select: {
+                                                                        style: 'os'
+                                                                    },
+                                                                    paging: true,
+                                                                    pagingType: "simple_numbers",
+                                                                    pageLength: 10,
+                                                                    lengthMenu: [
+                                                                        [10, 20, -1],
+                                                                        ['10 rows', '20 rows', 'Show all']
+                                                                    ],
+                                                                    compact: true,
+//                                                                    initComplete: function () {
+////                                                                        $("#datatableit_filter").detach().appendTo('#TableCardHeader');
+//                                                                  } 
+                                                                });
+                                                            }
+
+                                                            function add_MT_rel_filter(location) {
+                                                                var dropdownHtml = '<select class="form-control-sm fix_size" id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
+                                                                $(location).append(dropdownHtml);
+                                                                $('#columnFilter').change(function () {
+                                                                    var filterValue = $(this).val();
+                                                                    table.column('MT-relevant:name').search(filterValue).draw();
+                                                                });
+                                                            }
+
+                                                            function init_btn_4_dt() {
+                                                                let spacer = {extend: 'spacer', style: 'bar', className: "spacer"};
+                                                                new $.fn.dataTable.Buttons(table, {
+                                                                    buttons: [
+                                                                        spacer, {extend: 'searchBuilder'}, spacer,
+                                                                        buttonRanges.map(button => ({
+                                                                                text: button.name,
+                                                                                className: 'btn_vis',
+                                                                                action: function (e, dt, node, config) {
+                                                                                    toggleColumns(dt, button.start, button.end, button.name);
+                                                                                }
+                                                                            })),
+                                                                        spacer,
+                                                                        {
+                                                                            text: 'w/ Data',
+                                                                            className: '',
+                                                                            id: 'toggleDatalessColumnsButton',
+                                                                            action: function (e, dt, node, config) {
+                                                                                checkAndToggleColumnsVisibility(dt);
+                                                                            }
+                                                                        },
+                                                                        {extend: 'spacer', text: "SELECT:", style: 'bar', className: "rotated"},
+                                                                        {
+                                                                            text: 'All',
+                                                                            action: function () {
+                                                                                table.rows().select();
+                                                                            }
+                                                                        }, {
+                                                                            text: 'Visible',
+                                                                            action: function () {
+                                                                                table.rows(':visible').select();
+                                                                            }
+                                                                        },
+                                                                        {
+                                                                            text: 'None',
+                                                                            action: function () {
+                                                                                table.rows().deselect();
+                                                                            }
+                                                                        },
+                                                                        spacer, // spacer,
+                                                                        {
+                                                                            text: ' Raum',
+                                                                            className: 'btn btn_vis far fa-plus-square',
+                                                                            action: function (e, dt, node, config) {
+                                                                                //  find_current_max_roomID();
+                                                                                $('#addRoomModal').modal('show'); //imported from rbSpecifications_New_modal_addRoom
+                                                                            }
+                                                                        }, spacer,
+                                                                        {
+                                                                            text: " R.Kopieren",
+                                                                            className: "btn far fa-window-restore",
+                                                                            action: function (e, dt, node, config)
+                                                                            {
+                                                                                copySelectedRow();
+                                                                            }
+                                                                        }, spacer,
+                                                                        {
+                                                                            text: "Check",
+                                                                            className: "btn fas fa-coffee", //far fa-solid fa-fire-extinguisher",
+                                                                            action: function ()
+                                                                            {
+                                                                                check_angaben();
+                                                                            }
+                                                                        }, spacer, 'copy', 'excel', 'csv'
+                                                                    ]}).container().appendTo($('#TableCardHeader'));
+                                                            }
+
+                                                            function check_angaben() {
+
+                                                                $.ajax({
+                                                                    url: "get_angaben_check.php", // "ID": raumID,
+                                                                    data: {},
+                                                                    type: "GET",
+                                                                    success: function (data) {
+                                                                        alert(data);
+                                                                    }
+                                                                });
+                                                            }
+
+                                                            function init_visibilities() {
+                                                                if ($("#roomElements").is(':hidden')) {
+                                                                    $('#diy_searcher').hide();
+                                                                }
+                                                                const columns = table.columns().indexes();
+                                                                buttonRanges.forEach(button => {
+                                                                    const isVisible = table.column(columns[button.start]).visible();
+                                                                    const buttonElement = $(`.btn_vis:contains('${button.name}')`);
+                                                                    if (!isVisible) {
+                                                                        buttonElement.addClass('btn_invis');
+                                                                    }
+                                                                });
+                                                            }
+
+                                                            function toggleColumns(table, startColumn, endColumn, button_name) {
+                                                                const columns = table.columns().indexes();
+                                                                var vis = !table.column(columns[endColumn]).visible();
+                                                                for (let i = startColumn; i <= endColumn; i++) {
+                                                                    table.column(columns[i]).visible(vis);
+                                                                }
+
+                                                                if (button_name === 'Alle') {
+                                                                    buttonRanges.forEach(button => {
+                                                                        const btn = $(`.btn_vis:contains('${button.name}')`);
+                                                                        if (vis) {
+                                                                            btn.removeClass('btn_invis');
+                                                                        } else {
+                                                                            btn.addClass('btn_invis');
+                                                                        }
+
+                                                                    });
+                                                                } else if (button_name === 'LAB') {
+                                                                    ['L-GAS', 'L-ET', 'L-HT', 'L-H2O'].forEach(name => {
+                                                                        const button = $(`.btn_vis:contains('${name}')`);
+                                                                        if (vis) {
+                                                                            button.removeClass('btn_invis');
+                                                                        } else {
+                                                                            button.addClass('btn_invis');
+                                                                        }
+                                                                    });
+                                                                } else {
+                                                                    const button = $(`.btn_vis:contains('${button_name}')`);
+                                                                    if (vis) {
+                                                                        button.removeClass('btn_invis');
+                                                                    } else {
+                                                                        button.addClass('btn_invis');
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            function checkAndToggleColumnsVisibility() {
+                                                                table.columns().every(function () {
+                                                                    var hasNonEmptyCell = this.data().toArray().some(function (cellData) {
+                                                                        return cellData !== null && cellData !== undefined && cellData !== '' && cellData !== '-' && cellData !== ' ' && cellData !== '  ' && cellData !== '   ' && cellData !== '.';
+                                                                    });
+                                                                    if (!hasNonEmptyCell) {
+                                                                        this.visible(!this.visible());
+                                                                    }
+                                                                });
+                                                            }
+
+                                                            function init_showRoomElements_btn() {
+                                                                $("#showRoomElements").html("<i class='fa fa-caret-right'></i>");
+                                                                $("#showRoomElements").click(function () {
+                                                                    if ($("#roomElements").is(':hidden')) {
+                                                                        $(this).html("<i class='fas fa-caret-right'></i>");
+                                                                        $("#additionalInfo").show();
+                                                                        $('#diy_searcher').show();
+                                                                    } else {
+                                                                        $(this).html("<i class='fas fa-caret-left'></i>");
+                                                                        $("#additionalInfo").hide();
+                                                                        $('#diy_searcher').hide();
+                                                                    }
+                                                                });
+                                                            }
+
+                                                            $("#saveNewRoom").click(function () {
+                                                                var nummer = $("#nummer").val();
+                                                                var name = $("#name").val(); // var raumbereich = $("#raumbereich").val();
+                                                                var funktionsteilstelle = $("#funktionsstelle").val();
+                                                                var MTrelevant = $("#mt-relevant").val();
+                                                                save_new_room(nummer, name, funktionsteilstelle, MTrelevant);
+                                                            });
                                                             function copySelectedRow() {
                                                                 if (confirm('Raum Kopieren??')) {
                                                                 } else {
@@ -621,442 +885,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                 });
                                                             }
 
-                                                            function save_new_room(nummer, name, funktionsteilstelle, MTrelevant) {
-                                                                if (nummer !== "" && name !== "" && MTrelevant !== "" && funktionsteilstelle !== "") {  //& flaeche  !== "" && geschoss !== "" && bauetappe  !== "" && bauteil  !== "" && funktionsteilstelle !== 0 
-                                                                    $.ajax({
-                                                                        url: "addRoom_1.php", // "ID": raumID,
-                                                                        data: {"raumnummer": nummer, "raumbezeichnung": name, "funktionsteilstelle": funktionsteilstelle, "MTrelevant": MTrelevant},
-                                                                        type: "GET",
-                                                                        success: function (data) {
-                                                                            $('#addRoomModal').modal('hide');
-                                                                            alert(data);
-                                                                            window.location.replace("roombookSpecifications_New.php");
-                                                                        }
-                                                                    });
-                                                                } else {
-                                                                    alert("Bitte alle Felder ausfüllen!");
-                                                                }
-                                                            }
 
-                                                            function init_dt() {
-                                                                table = new DataTable('#table_rooms', {
-                                                                    ajax: {
-                                                                        url: 'get_rb_specs_data.php',
-                                                                        dataSrc: ''
-                                                                    },
-                                                                    columns: columnsDefinition,
-                                                                    dom: '<"TableCardHeader"f>t<"btm.d-flex justify-content-between"lip>   ',
-                                                                    scrollY: true,
-                                                                    scrollX: true,
-                                                                    scrollCollapse: true,
-                                                                    fixedColumns: {
-                                                                        start: 2
-                                                                    },
-                                                                    language: {
-                                                                        "search": "",
-                                                                        searchBuilder: {
-                                                                            title: null,
-                                                                            depthLimit: 2,
-                                                                            stateSave: false
-                                                                        }
-                                                                    },
-                                                                    keys: true,
-                                                                    order: [[3, 'asc']],
-                                                                    stateSave: true,
-                                                                    select: {
-                                                                        style: 'os'
-                                                                    },
-                                                                    paging: true,
-                                                                    pagingType: "simple_numbers",
-                                                                    pageLength: 10,
-                                                                    lengthMenu: [
-                                                                        [10, 20, -1],
-                                                                        ['10 rows', '20 rows', 'Show all']
-                                                                    ],
-                                                                    compact: true,
-                                                                    initComplete: function () {
-                                                                        $("#datatableit_filter").detach().appendTo('#TableCardHeader');
-                                                                    }
-                                                                });
-                                                            }
 
-                                                            function add_MT_rel_filter(location) {
-                                                                var dropdownHtml = '<select class="form-control-sm fix_size" id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
-//                                                                    $('#table_rooms thead th:eq(4)').append(dropdownHtml); //to be set eqquivalent to the column index 
-//                                                                    console.log("Init MT Rel Dropdown");
-                                                                $(location).append(dropdownHtml);
-                                                                $('#columnFilter').change(function () {
-                                                                    var filterValue = $(this).val();
-                                                                    table.column('MT-relevant:name').search(filterValue).draw();
-                                                                });
-                                                            }
-
-                                                            function init_btn_4_dt() {
-                                                                let spacer = {extend: 'spacer', style: 'bar', className: "spacer"};
-                                                                new $.fn.dataTable.Buttons(table, {
-                                                                    buttons: [
-                                                                        spacer, {extend: 'searchBuilder', label: "Search", text: "S"}, spacer,
-                                                                        buttonRanges.map(button => ({
-                                                                                text: button.name,
-                                                                                className: 'btn_vis',
-                                                                                action: function (e, dt, node, config) {
-                                                                                    toggleColumns(dt, button.start, button.end, button.name);
-//                                                                                        if((button.name)===buttonRanges[4].name){    for(let i = 4; i< buttonRanges.length; i++){
-//                                                                                            toggleColumns(dt, button.start, button.end, buttonRanges[i].name); } }
-                                                                                }
-                                                                            })),
-//                                                                        spacer,
-//                                                                        {
-//                                                                            text: 'w/ Data',
-//                                                                            className: '',
-//                                                                            id: 'toggleDatalessColumnsButton',
-//                                                                            action: function (e, dt, node, config) {
-//                                                                                checkAndToggleColumnsVisibility(dt);
-//                                                                            }
-//                                                                        },
-                                                                        
-                                                                        {extend: 'spacer', text: "SELECT:", style: 'bar', className: "rotated"},
-                                                                        {
-                                                                            text: 'All',
-                                                                            action: function () {
-                                                                                table.rows().select();
-                                                                            }
-                                                                        }, {
-                                                                            text: 'Visible',
-                                                                            action: function () {
-                                                                                table.rows(':visible').select();
-                                                                            }
-                                                                        },
-                                                                        {
-                                                                            text: 'None',
-                                                                            action: function () {
-                                                                                table.rows().deselect();
-                                                                            }
-                                                                        },
-                                                                        spacer, // spacer,
-                                                                        {
-                                                                            text: ' Raum',
-                                                                            className: 'btn btn_vis far fa-plus-square',
-                                                                            action: function (e, dt, node, config) {
-                                                                                //  find_current_max_roomID();
-                                                                                $('#addRoomModal').modal('show'); //imported from rbSpecifications_New_modal_addRoom
-                                                                            }
-                                                                        }, spacer,
-                                                                        {
-                                                                            text: " R.Kopieren",
-                                                                            className: "btn far fa-window-restore",
-                                                                            action: function (e, dt, node, config)
-                                                                            {
-                                                                                copySelectedRow();
-                                                                            }
-                                                                        }, spacer,
-                                                                        {
-                                                                            text: "Check",
-                                                                            className: "btn fas fa-coffee",//far fa-solid fa-fire-extinguisher",
-                                                                            action: function ()
-                                                                            {
-                                                                                check_angaben();
-                                                                            }
-                                                                        }, spacer, 'copy', 'excel', 'csv'
-                                                                    ]}).container().appendTo($('#TableCardHeader'));
-                                                            }
-
-                                                            function check_angaben() {
-
-                                                                $.ajax({
-                                                                    url: "get_angaben_check.php", // "ID": raumID,
-                                                                    data: {},
-                                                                    type: "GET",
-                                                                    success: function (data) {
-                                                                        alert(data);
-                                                                    }
-                                                                });
-                                                            }
-
-                                                            function init_visibilities() {
-                                                                if ($("#roomElements").is(':hidden')) {
-                                                                    $('#diy_searcher').hide();
-                                                                }
-                                                                const columns = table.columns().indexes();
-                                                                buttonRanges.forEach(button => {
-                                                                    const isVisible = table.column(columns[button.start]).visible();
-                                                                    const buttonElement = $(`.btn_vis:contains('${button.name}')`);
-                                                                    if (!isVisible) {
-                                                                        buttonElement.addClass('btn_invis');
-                                                                    }
-                                                                });
-                                                            }
-
-                                                            function toggleColumns(table, startColumn, endColumn, button_name) {
-                                                                const columns = table.columns().indexes();
-                                                                var vis = !table.column(columns[endColumn]).visible();
-                                                                for (let i = startColumn; i <= endColumn; i++) {
-                                                                    table.column(columns[i]).visible(vis);
-                                                                }
-
-                                                                if (button_name === 'Alle') {
-                                                                    buttonRanges.forEach(button => {
-                                                                        const btn = $(`.btn_vis:contains('${button.name}')`);
-                                                                        if (vis) {
-                                                                            btn.removeClass('btn_invis');
-                                                                        } else {
-                                                                            btn.addClass('btn_invis');
-                                                                        }
-
-                                                                    });
-                                                                } else if (button_name === 'LAB') {
-                                                                    ['L-GAS', 'L-ET', 'L-HT', 'L-H2O'].forEach(name => {
-                                                                        const button = $(`.btn_vis:contains('${name}')`);
-                                                                        if (vis) {
-                                                                            button.removeClass('btn_invis');
-                                                                        } else {
-                                                                            button.addClass('btn_invis');
-                                                                        }
-                                                                    });
-
-                                                                } else {
-                                                                    const button = $(`.btn_vis:contains('${button_name}')`);
-                                                                    if (vis) {
-                                                                        button.removeClass('btn_invis');
-                                                                    } else {
-                                                                        button.addClass('btn_invis');
-                                                                    }
-                                                                }
-                                                            }
-
-                                                            function checkAndToggleColumnsVisibility() {
-                                                                table.columns().every(function () {
-                                                                    var hasNonEmptyCell = this.data().toArray().some(function (cellData) {
-                                                                        return cellData !== null && cellData !== undefined && cellData !== '' && cellData !== '-' && cellData !== ' ' && cellData !== '  ' && cellData !== '   ' && cellData !== '.';
-                                                                    });
-                                                                    if (!hasNonEmptyCell) {
-                                                                        this.visible(!this.visible());
-                                                                    }
-                                                                });
-                                                            }
-
-                                                            function init_showRoomElements_btn() {
-                                                                $("#showRoomElements").html("<i class='fa fa-caret-right'></i>");
-                                                                $("#showRoomElements").click(function () {
-                                                                    if ($("#roomElements").is(':hidden')) {
-                                                                        $(this).html("<i class='fas fa-caret-right'></i>");
-                                                                        $("#additionalInfo").show();
-                                                                        $('#diy_searcher').show();
-                                                                    } else {
-                                                                        $(this).html("<i class='fas fa-caret-left'></i>");
-                                                                        $("#additionalInfo").hide();
-                                                                        $('#diy_searcher').hide();
-                                                                    }
-                                                                });
-                                                            }
-
-                                                            $("#saveNewRoom").click(function () {
-                                                                var nummer = $("#nummer").val();
-                                                                var name = $("#name").val(); // var raumbereich = $("#raumbereich").val();
-                                                                var funktionsteilstelle = $("#funktionsstelle").val();
-                                                                var MTrelevant = $("#mt-relevant").val();
-                                                                save_new_room(nummer, name, funktionsteilstelle, MTrelevant);
-                                                            });
-                                                            function hidethesecopmmentsintheHTMLcontentofthewebpage() {
-                                                                //$('#tableRoomElemnts tbody').on("click", 'tr', function () {
-                                                                /*
-                                                                 var elementID = table.row( $(this) ).data()[0];	
-                                                                 var variantenID = table.row( $(this) ).data()[5];	
-                                                                 var bestand = 1;
-                                                                 if(table.row( $(this) ).data()[6]==="Ja"){
-                                                                 bestand = 0;
-                                                                 }
-                                                                 $.ajax({
-                                                                 url : "getRoomsWithElement1.php",
-                                                                 data:{"elementID":elementID,"variantenID":variantenID,"bestand":bestand},
-                                                                 type: "GET",
-                                                                 success: function(data){
-                                                                 $("#roomsWithAndWithoutElements").html(data);
-                                                                 $.ajax({
-                                                                 url : "getElementVariante.php",
-                                                                 data:{"elementID":elementID,"variantenID":variantenID},
-                                                                 type: "GET",
-                                                                 success: function(data){
-                                                                 $("#elementVarianten").html(data);
-                                                                 $.ajax({
-                                                                 url : "getStandardElementParameters.php",
-                                                                 data:{"elementID":elementID},
-                                                                 type: "GET",
-                                                                 success: function(data){
-                                                                 $("#elementDBParameter").html(data);
-                                                                 $.ajax({
-                                                                 url : "getElementPricesInDifferentProjects.php",
-                                                                 data:{"elementID":elementID},
-                                                                 type: "GET",
-                                                                 success: function(data){
-                                                                 $("#elementPricesInOtherProjects").html(data);
-                                                                 $.ajax({
-                                                                 url : "getDevicesToElement.php",
-                                                                 data:{"elementID":elementID},
-                                                                 type: "GET",
-                                                                 success: function(data){
-                                                                 $("#devicesToElement").html(data);
-                                                                 $.ajax({
-                                                                 url : "getElementGewerke.php",
-                                                                 data:{"elementID":elementID},
-                                                                 type: "GET",
-                                                                 success: function(data){
-                                                                 $("#elementGewerk").html(data);
-                                                                 }
-                                                                 });
-                                                                 
-                                                                 }
-                                                                 });
-                                                                 
-                                                                 }
-                                                                 });
-                                                                 
-                                                                 }
-                                                                 });
-                                                                 }
-                                                                 });
-                                                                 }
-                                                                 });
-                                                                 
-                                                                 */
-                                                                //});
-                                                                /*function init_search_bar() {
-                                                                 const searchInput = $('<input>', {
-                                                                 type: 'text',
-                                                                 placeholder: 'Search...',
-                                                                 class: 'ml-auto p-2'
-                                                                 });
-                                                                 searchInput.on('keyup', function () {
-                                                                 const searchTerm = $(this).val();
-                                                                 table.search(searchTerm).draw();
-                                                                 });
-                                                                 $('#TableCardHeader').append(searchInput);
-                                                                 }*/
-                                                                /*function init_table_click() {
-                                                                 $('#table_rooms tbody').on('click', 'tr', function () {
-                                                                 table.$('tr.info').removeClass('info');
-                                                                 var raummID = $('#table_rooms').DataTable().row($(this)).data()['idTABELLE_Räume'];
-                                                                 $('#diy_searcher').val('');
-                                                                 $.ajax({
-                                                                 url: "setSessionVariables.php",
-                                                                 data: {"roomID": raummID},
-                                                                 type: "GET",
-                                                                 success: function (data) {
-                                                                 $("#RoomID").text(raummID);
-                                                                 $.ajax({
-                                                                 url: "getRoomSpecifications2.php",
-                                                                 type: "GET",
-                                                                 success: function (data) {
-                                                                 $("#bauangaben").html(data);
-                                                                 $.ajax({
-                                                                 url: "getRoomElementsDetailed2.php",
-                                                                 type: "GET",
-                                                                 success: function (data) {
-                                                                 $("#roomElements").html(data);
-                                                                 $('#diy_searcher').on('keyup', function () {
-                                                                 $('#tableRoomElements').DataTable().search(this.value).draw();
-                                                                 });
-                                                                 }
-                                                                 });
-                                                                 }
-                                                                 });
-                                                                 }
-                                                                 });
-                                                                 });
-                                                                 }*/
-                                                                /*function print_dt_data() {
-                                                                 var data = table.data().toArray();
-                                                                 console.log('Data from DataTables:');
-                                                                 console.table(data);
-                                                                 }*/
-                                                                /*    function event_table_click() {
-                                                                 $('#table_rooms').on('click', 'tbody td', function () {
-                                                                 var columnIndex = $(this).index();
-                                                                 var rowIndex = $(this).closest('tr').index();
-                                                                 var trueColumnIndex = $(this).index();
-                                                                 var visibleColumns = table.columns().visible();
-                                                                 for (var i = 0; i <= trueColumnIndex; i++) { //also count invisible ones, if u wanna use the ccolumn definition indexing
-                                                                 if (!visibleColumns[i]) {
-                                                                 trueColumnIndex++;
-                                                                 }
-                                                                 }
-                                                                 var columnName = columnsDefinition[trueColumnIndex].data;
-                                                                 //                                                                        var RaumID = table.cell({row:rowIndex, column:  2}).data();
-                                                                 var RaumID = table.row(rowIndex).data()['idTABELLE_Räume'];
-                                                                 //                                                                        var RaumID = table.row(rowIndex).data().idTABELLE_Räume;
-                                                                 
-                                                                 console.log('Debug TableClick: Column index:', columnIndex, '; Row index:', rowIndex, '; trueColumnIndex:', trueColumnIndex, '; Column name (data identifier):', columnName, "; idTABELLE_Räume: ", RaumID);
-                                                                 
-                                                                 if (currentRowInd !== rowIndex || currentColInd !== columnIndex) {
-                                                                 cellText = $(this).text();
-                                                                 }
-                                                                 currentRowInd = rowIndex;
-                                                                 currentColInd = columnIndex;
-                                                                 
-                                                                 
-                                                                 if (columnName !== "Bezeichnung" && columnName !== "Nummer") {
-                                                                 $(this).html('<input id="CellInput" type="text" value="' + cellText + '">');
-                                                                 $(this).find('input').focus();
-                                                                 $(this).find('input').on('keydown blur', function (event) {
-                                                                 if (event.keyCode === 13) { // Enter key pressed
-                                                                 var newData = $(this).val();
-                                                                 if (newData.trim() !== "") {
-                                                                 $(this).parent().html(newData);
-                                                                 console.log("Saving:", RaumID, columnName, newData);
-                                                                 save_changes(RaumID, columnName, newData);
-                                                                 initializeToaster("Changes Saved", table.row(rowIndex).data().Raumbezeichnung + ";  " + columnName + ";  " + newData + "   ", true);
-                                                                 }
-                                                                 }
-                                                                 if (event.keyCode === 27 || event.type === "blur") {
-                                                                 $(this).parent().html(oldT);
-                                                                 oldT = cellText;
-                                                                 initializeToaster("Changes NOT Saved", " - ", false);
-                                                                 }
-                                                                 });
-                                                                 }
-                                                                 });
-                                                                 }*/
-                                                                /*                                                                    event_table_keyz();
-                                                                 table.on('keydown', function (e, cell) {
-                                                                 // Check if the pressed key is Enter (key code 13)
-                                                                 console.log("Doc on kd", cell);
-                                                                 if (e.key === "Enter") {
-                                                                 
-                                                                 
-                                                                 // Get the currently focused element
-                                                                 var focusedElement = document.activeElement;
-                                                                 console.log("KD = enter", focusedElemnt);
-                                                                 // Check if the focused element is a DataTable cell
-                                                                 if ($(focusedElement).hasClass('dataTables-cell')) {
-                                                                 // Click on the cell
-                                                                 $(focusedElement).click();
-                                                                 }
-                                                                 }
-                                                                 }); */
-                                                                /* function make_checkbox() {
-                                                                 var checkbox = $('<input>', {
-                                                                 type: 'checkbox',
-                                                                 name: 'EditableTable',
-                                                                 id: 'save_State_cbx',
-                                                                 checked: false,
-                                                                 class: 'form-check-input'
-                                                                 }).appendTo($('#TableCardHeader'));
-                                                                 var label = $('<label>', {
-                                                                 htmlFor: 'save_State_cbx',
-                                                                 class: ' form-check-label'
-                                                                 }).text('StateSave');
-                                                                 var container = $('<span>').append(checkbox).append(label);
-                                                                 $('#TableCardHeader').append(container);
-                                                                 checkbox.on('change', function () {
-                                                                 localStorage.setItem('save_State_cbx', this.checked);
-                                                                 if (this.checked) {
-                                                                 
-                                                                 } else {
-                                                                 
-                                                                 }
-                                                                 });
-                                                                 }*/
-                                                            }
                                                         </script>
                                                         </body> 
                                                         </html>

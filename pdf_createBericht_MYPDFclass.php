@@ -2,6 +2,8 @@
 session_start();
 require_once('TCPDF-master/TCPDF-master/tcpdf.php');
 
+//include 'pdf_createBericht_utils.php';
+
 class MYPDF extends TCPDF {
     
     public function Header() { 
@@ -101,6 +103,10 @@ class MYPDF extends TCPDF {
             $this->Ln();
             $this->SetFont('helvetica', '', 10);
             $this->Cell(0, 0, "Stand: ".date('Y-m-d'), 0, false, 'L', 0, '', 0, false, 'T', 'M');
+            
+            
+            $this->Ln();
+            $this->Cell(0, 0, "Änderungsverlauf bis: ".getValidatedDateFromURL() , 0, false, 'L', 0, '', 0, false, 'T', 'M');
             
             $this->SetFont('helvetica', '', 6);
             //LOGOS einfügen

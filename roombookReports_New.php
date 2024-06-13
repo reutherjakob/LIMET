@@ -34,8 +34,15 @@ init_page_serversides();
                                     <div id="limet-navbar" class=' '> </div> 
 
                                     <div class="mt-4 card">
-                                        <div class="card-header form-check-inline form-check-inline" id ="HeaderTabelleCard"></div> 
-                                        <div class="card-header form-check-inline form-check-inline" id ="HeaderTabelleCard2"></div> 
+                                        <div class="card-header form-check-inline form-check-inline" id ="HeaderTabelleCard">
+
+                                        </div> 
+                                        <div class="card-header form-check-inline form-check-inline" id ="HeaderTabelleCard2">
+                                            <div class="form-group"> 
+                                                <label for="dateSelect"> Änderugen bis:</label>
+                                                <input type="date" id="dateSelect" name="dateSelect">
+                                            </div>
+                                        </div> 
                                         <!--<div class="card-header d-inline-flex form-check form-check-inline" id ="HeaderTabelleCard3"></div>-->
                                         <div class="card-body">
                                             <?php
@@ -83,6 +90,12 @@ init_page_serversides();
                                             ?>	
                                         </div>
                                     </div>
+                                    <div class="mt-4 card">
+                                        <div class="card-header form-check-inline form-check-inline" id ="Card2">
+                                             
+                                        </div> 
+                                        <!--<div class="card-header d-inline-flex form-check form-check-inline" id ="HeaderTabelleCard3"></div>-->
+                                        <div class="card-body" id ="CB2"></div></div>
                                 </div>
 
                                 <script>
@@ -127,6 +140,25 @@ init_page_serversides();
                                         }, 50);
                                         // synchronizeCheckboxes("CBXMT-Tabelle", "CBXMT-Liste");
                                     });
+
+                                    function getDate() {
+                                        var dateInput = $("#dateSelect").val();
+                                        var date = dateInput ? new Date(dateInput) : new Date();
+//                                    console.log("Date: ", date);
+                                        var day = date.getDate();
+//                                    console.log("Day: ", day);
+                                        var month = date.getMonth() + 1; // Months are zero based
+//                                    console.log("Month: ", month);
+                                        var year = date.getFullYear();
+//                                    console.log("Year: ", year);
+                                        day = ('0' + day).slice(-2);
+//                                    console.log("Formatted Day: ", day);
+                                        month = ('0' + month).slice(-2);
+//                                    console.log("Formatted Month: ", month);
+                                        var formattedDate = day + '-' + month + '-' + year;
+                                        console.log("Formatted Date: ", formattedDate);
+                                        return formattedDate;
+                                    }
 
                                     function add_Berichtinput_checkboxes(location) {
                                         for (let i = 0; i < report_input_bool_labels.length; i++) {
@@ -217,9 +249,16 @@ init_page_serversides();
                                                     label: "Search",
                                                     depthLimit: 3
                                                 }
-                                            }
-
+                                            },
+                                            keys: true
+                                            
                                         });
+                                        table.on('key', function (e, datatable, key, cell, originalEvent) {
+                                            if ([37, 38, 39, 40].includes(key)) {
+                                                $(cell.node()).click();
+                                            }
+                                        });
+
                                     }
 
                                     function init_btns_old(location) {
@@ -248,17 +287,17 @@ init_page_serversides();
                                         let spacer = {extend: 'spacer', style: 'bar'};
                                         new $.fn.dataTable.Buttons(table, {
                                             buttons: [
-                                                spacer, 
+                                                spacer,
                                                 {extend: 'searchBuilder', label: "Search"},
 //                                                spacer,
 //                                                {text: 'Select:', enabled:false},
-                                                {extend: 'spacer', text:"SELECT:", style: 'bar'},
+                                                {extend: 'spacer', text: "SELECT:", style: 'bar'},
                                                 {
                                                     text: 'All',
                                                     action: function () {
                                                         table.rows().select();
                                                     }
-                                                },{
+                                                }, {
                                                     text: 'Visible',
                                                     action: function () {
                                                         table.rows(':visible').select();
@@ -270,10 +309,10 @@ init_page_serversides();
                                                         table.rows().deselect();
                                                     }
                                                 },
-                                                
+
                                                 spacer,
                                                 {
-                                                    text: "BAUANGABEN A3", 
+                                                    text: "BAUANGABEN A3",
                                                     action: function () {
                                                         var count = table.rows({selected: true}).data();
                                                         var roomIDs = [];
@@ -283,9 +322,9 @@ init_page_serversides();
                                                         if (roomIDs.length === 0) {
                                                             alert("Kein Raum ausgewählt!");
                                                         } else {
-
+                                                            let date = getDate();
                                                             const bools2int2str = report_input_bools.map((bool) => (bool ? 1 : 0)).join(',');
-                                                            window.open('/pdf_createBericht_A3Qeer.php?roomID=' + roomIDs + "&PDFinputs=" + bools2int2str);
+                                                            window.open('/pdf_createBericht_A3Qeer.php?roomID=' + roomIDs+ "&date=" + date);// + "&PDFinputs=" + bools2int2str 
 //                                                            window.open('/pdf_createBericht_custom.php?roomID=' + roomIDs + "&PDFinputs=" + bools2int2str);  //custom bericht page ! 
                                                         }
                                                     }
