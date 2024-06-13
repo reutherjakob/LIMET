@@ -134,7 +134,7 @@ init_page_serversides("No Redirect");
                                                 <div class='card'>
                                                         <div class='card-header' id='vermerkPanelHead'>
                                                             <form class='form-inline'>
-                                                            <label class='m-1' for='vermerkeFilter'>Vermerke im Projekt</label>                                          
+                                                            <label class='m-1 comapct' for='vermerkeFilter'>Vermerke im Projekt</label>                                          
                                                                 <select class='form-control form-control-sm' id='vermerkeFilter'";
                                         if ($_SESSION["projectName"] == "") {
                                             echo " style='display:none'";
@@ -143,9 +143,10 @@ init_page_serversides("No Redirect");
                                                                     <option value=0 selected>Alle Vermerke</option>   
                                                                     <option value=1>Bearbeitung offen</option>  
                                                                     <!--<option value=2>Eigene Vermerke</option>  -->
-                                                                </select>	
-                                                            </form>                                 
-                                                        </div>
+                                                                </select>
+                                                                <div id='newSearchLocation' style='float: right;'>    </div>	
+                                                            </form>   
+                                                        </div> 
                                                         <div class='card-body'  id='vermerke'>
                                                             <div class='row' id='projectVermerke'></div>
                                                         </div>
@@ -274,8 +275,9 @@ init_page_serversides("No Redirect");
                                             }
                                         }
                                 );
-                                function move_dt_search(location) {
-                                    var move = $('#dt-search-0');
+                        
+                                function move_dt_search(inp, location) {
+                                    var move = $(inp);
                                     $(location).prepend(move);
                                 }
                                 // Tabelle formatieren
@@ -548,9 +550,10 @@ init_page_serversides("No Redirect");
                                     });
 
                                     setTimeout(function () {
-                                        move_dt_search('#STH');
+                                        move_dt_search('#dt-search-0', '#STH');
+                                        move_dt_search('#dt-search-1', '#newSearchLocation');
                                         console.log("´MOVE SEARCH BAR ");
-                                    }, 100);
+                                    }, 200);
 
                                     /*
                                      //------------------CHART BEFÜLLEN--------------------------------
