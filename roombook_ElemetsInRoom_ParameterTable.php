@@ -108,7 +108,7 @@ init_page_serversides();
                                     init_xls_interface();
                                     init_checboxes4selectingKathegories();
                                 });
-                                
+
 
                                 function init_checboxes4selectingKathegories() {
                                     checkboxData.forEach((data, index) => {
@@ -162,6 +162,12 @@ init_page_serversides();
                                                 data: {"roomID": RaumID, "K2Return": JSON.stringify(K2R)},
                                                 success: function (data) {
                                                     if (data && data.length > 0) {
+                                                        var keysToRemove = ['tabelle_Varianten_idtabelle_Varianten', 'TABELLE_Elemente_idTABELLE_Elemente'];
+                                                        data.forEach(function (item) {
+                                                            keysToRemove.forEach(function (key) {
+                                                                delete item[key];
+                                                            });
+                                                        });
 //                                                        var columnsToKeep = ["ElementID", 'PN', 'NA', 'PA'];
 //                                                        var filteredData = data.map(function (row) {
 //                                                            return columnsToKeep.reduce(function (obj, column) {
@@ -170,6 +176,7 @@ init_page_serversides();
 //                                                            }, {});
 //                                                        });
 //                                                        console.log(filteredData);
+
                                                         var ws = XLSX.utils.json_to_sheet(data);
                                                         var sheetName = sanitizeSheetName(Raumbezeichnung);
                                                         XLSX.utils.book_append_sheet(wb, ws, sheetName);
@@ -290,7 +297,7 @@ init_page_serversides();
                                             }
                                         });
                                     });
-                                     
+
                                 }
 
                                 function init_dt() {   // $('#tableRooms').DataTable({ warum das nicht geht ist mir ein räsetl
