@@ -37,12 +37,13 @@ init_page_serversides();
                                         <div class="card-header form-check-inline form-check-inline" id ="HeaderTabelleCard">
 
                                         </div> 
-                                        <div class="card-header form-check-inline form-check-inline" id ="HeaderTabelleCard2">
+                                        <div class="card-header form-check-inline form-check-inline justify-content align-items-start" style="flex-wrap:nowrap" id ="HeaderTabelleCard2">
                                             <div class="form-group"> 
                                                 <label for="dateSelect"> Änderugen bis:</label>
                                                 <input type="date" id="dateSelect" name="dateSelect">
                                             </div>
-                                        </div> 
+                                        </div>
+
                                         <!--<div class="card-header d-inline-flex form-check form-check-inline" id ="HeaderTabelleCard3"></div>-->
                                         <div class="card-body">
                                             <?php
@@ -90,12 +91,12 @@ init_page_serversides();
                                             ?>	
                                         </div>
                                     </div>
-                                    <div class="mt-4 card">
-                                        <div class="card-header form-check-inline form-check-inline" id ="Card2">
-                                             
-                                        </div> 
-                                        <!--<div class="card-header d-inline-flex form-check form-check-inline" id ="HeaderTabelleCard3"></div>-->
-                                        <div class="card-body" id ="CB2"></div></div>
+                                    <!--                                    <div class="mt-4 card">
+                                                                            <div class="card-header form-check-inline form-check-inline" id ="Card2">
+                                                                                 
+                                                                            </div> 
+                                                                            <div class="card-header d-inline-flex form-check form-check-inline" id ="HeaderTabelleCard3"></div>
+                                                                            <div class="card-body" id ="CB2"></div></div>-->
                                 </div>
 
                                 <script>
@@ -127,10 +128,10 @@ init_page_serversides();
                                     $(document).ready(function () {
                                         init_dt();
                                         add_MT_rel_filter('#HeaderTabelleCard');
-                                        init_btns('#HeaderTabelleCard')
+                                        init_btns('#HeaderTabelleCard');
 
                                         var textforoldreports = "Show old Reports";
-                                        addCheckbox('#HeaderTabelleCard', textforoldreports);
+                                        addCheckbox('#HeaderTabelleCard2', textforoldreports);
 //                                        add_Berichtinput_checkboxes('#HeaderTabelleCard2');
 
                                         init_btns_old('#HeaderTabelleCard2');
@@ -251,7 +252,7 @@ init_page_serversides();
                                                 }
                                             },
                                             keys: true
-                                            
+
                                         });
                                         table.on('key', function (e, datatable, key, cell, originalEvent) {
                                             if ([37, 38, 39, 40].includes(key)) {
@@ -324,7 +325,7 @@ init_page_serversides();
                                                         } else {
                                                             let date = getDate();
                                                             const bools2int2str = report_input_bools.map((bool) => (bool ? 1 : 0)).join(',');
-                                                            window.open('/pdf_createBericht_A3Qeer.php?roomID=' + roomIDs+ "&date=" + date);// + "&PDFinputs=" + bools2int2str 
+                                                            window.open('/pdf_createBericht_A3Qeer.php?roomID=' + roomIDs + "&date=" + date);// + "&PDFinputs=" + bools2int2str 
 //                                                            window.open('/pdf_createBericht_custom.php?roomID=' + roomIDs + "&PDFinputs=" + bools2int2str);  //custom bericht page ! 
                                                         }
                                                     }

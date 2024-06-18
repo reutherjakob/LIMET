@@ -48,11 +48,11 @@ function filter_old_equal_new($data) {
 function getValidatedDateFromURL() {
     if (isset($_GET['date'])) {
         $date = $_GET['date'];
-         
-        $date = filter_var($date, FILTER_SANITIZE_STRING); 
+
+        $date = filter_var($date, FILTER_SANITIZE_STRING);
         $format = 'd-m-Y';
         $d = DateTime::createFromFormat($format, $date);
-         
+
         if ($d && $d->format($format) == $date) {
             return $d->format('Y-m-d');
         } else {
@@ -62,7 +62,6 @@ function getValidatedDateFromURL() {
         return null;
     }
 }
-
 
 function block_label_queer($block_header_w, $pdf, $block_label, $upcomming_block_size, $block_height = 12, $SB = 390) {
     newpageA3($pdf, $upcomming_block_size, 275);
@@ -82,18 +81,13 @@ function newpageA3($pdf, $next_block_size, $SH) {
 }
 
 function kify($input) {
-    // Check if the input is numeric
     if (is_numeric($input)) {
-        // If the input is greater than or equal to 1000, convert it to 'k' representation
         if ($input >= 1000) {
             $input = $input / 1000;
-            // Format the number and remove unnecessary zeros after the decimal point
             $input = rtrim(number_format($input, 3, ',', ''), '0');
-            // Remove the decimal point if it's the last character
             $input = rtrim($input, ',') . 'k';
         }
     }
-    // Return the original input if it's not numeric or less than 1000
     return $input;
 }
 
@@ -120,26 +114,58 @@ function anmA3($pdf, $inp_text, $SB, $block_header_w) {
         $rowHeightComment = $pdf->getStringHeight($SB, $outstr, false, true, '', 1);
         $block_header_w = 10;
         $pdf->MultiCell($block_header_w, $rowHeightComment, "", 0, 'R', 0, 0);
-//        if ($rowHeightComment < 25) {
-        $pdf->MultiCell($SB - $block_header_w, $rowHeightComment, $outstr, 0, 'L', 0, 1);
-//        } else {
-//            writeTwoColumns($pdf, $SB - $block_header_w, $outstr);
-//        }
+        if ($rowHeightComment < 25) {
+            $pdf->MultiCell($SB - $block_header_w, $rowHeightComment, $outstr, 0, 'L', 0, 1);
+        } else {
+            $columnWidth = ($SB - $block_header_w - 10) / 2;
+            list($leftText, $rightText) = splitText($pdf, $outstr, $columnWidth);
+            writeTwoColumns($pdf, $columnWidth, $leftText, $rightText);
+        }
     }
 }
-
-function writeTwoColumns($pdf, $paperwidth_to_use, $inp_text) {
-    $columnWidth = ($paperwidth_to_use - 20) / 2;
-    $middle = floor(strlen($inp_text) / 2);
-    $middle = min(
-            strpos($inp_text, ' ', $middle),
-            strpos($inp_text, "\n", $middle),
-            strpos($inp_text, '-', $middle)
-    );
+//
+//function splitText($pdf, $inp_text, $columnWidth) {
+//    $middle = floor(strlen($inp_text) / 2);
+//    $lastNewlineBeforeMiddle = strrpos(substr($inp_text, 0, $middle), "\n");
+//    
+//    if ($lastNewlineBeforeMiddle !== false) {
+//        $middle = $lastNewlineBeforeMiddle;
+//    } else {
+//        $middle = min(
+//            strpos($inp_text, ' ', $middle),
+//            strpos($inp_text, '-', $middle)
+//        );
+//    }
+//
+//    // Split the text into two parts
+//    $leftText = substr($inp_text, 0, $middle);
+//    $rightText = substr($inp_text, $middle);
+//
+//    return array($leftText, $rightText);
+//}
+function splitText($pdf, $inp_text, $columnWidth) {
+    $lines = explode("\n", $inp_text);
+    $middle = floor(count($lines) / 2);
 
     // Split the text into two parts
-    $leftText = substr($inp_text, 0, $middle);
-    $rightText = substr($inp_text, $middle);
+    $leftLines = array_slice($lines, 0, $middle);
+    $rightLines = array_slice($lines, $middle);
+
+    // Check the heights of the two columns and balance them
+    while (abs(count($leftLines) - count($rightLines)) > 1) {
+        if (count($leftLines) > count($rightLines)) {
+            array_unshift($rightLines, array_pop($leftLines));
+        } else {
+            array_push($leftLines, array_shift($rightLines));
+        }
+    }
+
+    return array(implode("\n", $leftLines), implode("\n", $rightLines));
+}
+
+
+function writeTwoColumns($pdf, $columnWidth, $leftText, $rightText) {
+
 
     // Save the current X and Y coordinates
     $xBefore = $pdf->GetX();
@@ -152,7 +178,7 @@ function writeTwoColumns($pdf, $paperwidth_to_use, $inp_text) {
     $leftHeight = $pdf->GetY() - $yBefore;
 
     // Set the X and Y coordinates to the start of the right column
-    $pdf->SetXY($xBefore + $columnWidth + 20, $yBefore);
+    $pdf->SetXY($xBefore + $columnWidth + 10, $yBefore);
 
     // Write the right column
     $pdf->MultiCell($columnWidth, 0, $rightText, 0, 'L', false, 1);

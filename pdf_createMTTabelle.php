@@ -21,6 +21,25 @@ function checkAndManipulateString($input) {
     return $input;
 }
 
+function abk_vz($result4, $pdf, $f_size) {
+    $result4->data_seek(0);
+    while ($row1 = $result4->fetch_assoc()) {
+        $text_width = $pdf->GetStringWidth($row1['Abkuerzung'] . "-", 'courier', 'B', $f_size);
+        if (($pdf->GetX() + $text_width) >= 400) {
+            $pdf->Ln($f_size / 2);
+        }
+        $pdf->SetFont('courier', 'B', $f_size);
+        $pdf->MultiCell($text_width + 3, $f_size, $row1['Abkuerzung'] . "-", 0, 'R', 0, 0, '', '', true, 0, false, false, 0);
+
+        $text_width = $pdf->GetStringWidth($row1['Bezeichnung'] . ";", 'courier', '', $f_size);
+        if (( $pdf->GetX() + $text_width) >= 400) {
+            $pdf->Ln($f_size / 2);
+        }
+        $pdf->SetFont('courier', '', $f_size);
+        $pdf->MultiCell($text_width + 3, $f_size, $row1['Bezeichnung'] . ";", 0, 'L', 0, 0, '', '', true, 0, false, false, 0);
+    } $pdf->SetFont('courier', 'B', $f_size);
+}
+
 function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dataChanges) {
 
 
@@ -148,7 +167,7 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dat
 //      --------------------------------------------------------------------------------
         $is_even_row = ($is_even_row + 1) % 2;
         if (($is_even_row % 2) === 0) {
-            $pdf->SetFillColor(200,200, 200); // RGB for grey            
+            $pdf->SetFillColor(240, 240, 235); // RGB for grey            
         } else {
             $pdf->SetFillColor(255, 255, 255);
         }
@@ -183,23 +202,21 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dat
             foreach ($elementParamInfos as $array1) {
                 if ($array1['ParamID'] == $tmp_parameterID && $array1['elementID'] == $row['TABELLE_Elemente_idTABELLE_Elemente'] && $array1['variantenID'] == $row['tabelle_Varianten_idtabelle_Varianten']) {
                     if (checkEntry($dataChanges, $array1['elementID'], $array1['ParamID'])) {
-                        $pdf->SetFillColor(128, 255, 0);
+                        $pdf->SetFillColor(220, 235, 190);
                     }
-
-                    $outputValue = $array1['Wert'] . checkAndManipulateString( $array1['Einheit']);
+                    $outputValue = $array1['Wert'] . checkAndManipulateString($array1['Einheit']);
                     while ($pdf->getStringHeight($text_width + $temp_extracellspace_causeTextToBig, $outputValue, false, false, '', 1) > $rowHeightMainLine) {
                         $temp_extracellspace_causeTextToBig += 1;
                     }
                 }
             }
 
-
             $pdf->MultiCell($text_width + $temp_extracellspace_causeTextToBig, $rowHeightMainLine, $outputValue, 1, 'C', true, 0);
-           if (($is_even_row % 2) === 0) {
-            $pdf->SetFillColor(200,200, 200); // RGB for grey            
-        } else {
-            $pdf->SetFillColor(255, 255, 255);
-        }
+            if (($is_even_row % 2) === 0) {
+                $pdf->SetFillColor(240, 240, 235); // RGB for grey            
+            } else {
+                $pdf->SetFillColor(255, 255, 255);
+            }
             $text_width = $temp_width;
             if ($temp_extracellspace_causeTextToBig > 0) {
                 $temp_extracellspace_causeTextToBig = $temp_extracellspace_causeTextToBig * (-1);
@@ -210,23 +227,4 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dat
         $pdf->Ln();
     }
     abk_vz($result1, $pdf, $f_size);
-}
-
-function abk_vz($result4, $pdf, $f_size) {
-    $result4->data_seek(0);
-    while ($row1 = $result4->fetch_assoc()) {
-        $text_width = $pdf->GetStringWidth($row1['Abkuerzung'] . "-", 'courier', 'B', $f_size);
-        if (($pdf->GetX() + $text_width) >= 400) {
-            $pdf->Ln($f_size / 2);
-        }
-        $pdf->SetFont('courier', 'B', $f_size);
-        $pdf->MultiCell($text_width + 3, $f_size, $row1['Abkuerzung'] . "-", 0, 'R', 0, 0, '', '', true, 0, false, false, 0);
-
-        $text_width = $pdf->GetStringWidth($row1['Bezeichnung'] . ";", 'courier', '', $f_size);
-        if (( $pdf->GetX() + $text_width) >= 400) {
-            $pdf->Ln($f_size / 2);
-        }
-        $pdf->SetFont('courier', '', $f_size);
-        $pdf->MultiCell($text_width + 3, $f_size, $row1['Bezeichnung'] . ";", 0, 'L', 0, 0, '', '', true, 0, false, false, 0);
-    } $pdf->SetFont('courier', 'B', $f_size);
 }
