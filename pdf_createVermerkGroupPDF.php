@@ -124,8 +124,7 @@ class MYPDF extends TCPDF {
     }
 
     // Topics table 
-    public function topicsTable($header, $data) {
-        // Colors, line width and bold font
+    public function topicsTable($header, $data) { 
         $this->SetFillColor(255, 0, 0);
         $this->SetTextColor(0);
         $this->SetDrawColor(0, 0, 0);
@@ -191,16 +190,13 @@ class MYPDF extends TCPDF {
 
             if ($untergruppenID != $row['idtabelle_Vermerkuntergruppe']) {
 
-                // Wenn Seitenende? Überprüfen und neue Seite anfangen    
                 $y = $this->GetY();
                 if (($y + 2 * $rowHeight3 + $rowHeight ) >= 270) {
                     $this->AddPage();
                 } else {
                     $this->Ln($rowHeight3);
                 }
-                
-                
-                
+              
                 $fill = 1;
                 //$this->MultiCell($w[0], $rowHeight, $row['Untergruppennummer']." ".$row['Untergruppenname'], 1, 'L', $fill, 0, '', '');
                 $this->SetFont('', 'B', '9');
@@ -238,10 +234,10 @@ class MYPDF extends TCPDF {
 
             $this->Ln($rowHeight4);
             $this->MultiCell($w[0], $rowHeight1, $row['Vermerktext'], 'LRB', 'L', $fill, 1, '', ''); 
-//            $y = $this->GetY();
-//            if (($y + $rowHeight1) >= 260 ) {
-//                $this->AddPage();
-//            }
+            $y = $this->GetY();
+            if (($y + $rowHeight1) >= 270 ) {
+                $this->AddPage();
+            }
         }
     }
 }
