@@ -2,7 +2,7 @@
 
 require_once('TCPDF-master/TCPDF-master/tcpdf.php');
 
-// extend TCPF with custom functions
+// extend TCPF with custom functions 
 class MYPDF extends TCPDF {
 
     //Page header
@@ -124,7 +124,8 @@ class MYPDF extends TCPDF {
     }
 
     // Topics table 
-    public function topicsTable($header, $data) { 
+    public function topicsTable($header, $data) {
+        // Colors, line width and bold font
         $this->SetFillColor(255, 0, 0);
         $this->SetTextColor(0);
         $this->SetDrawColor(0, 0, 0);
@@ -190,13 +191,16 @@ class MYPDF extends TCPDF {
 
             if ($untergruppenID != $row['idtabelle_Vermerkuntergruppe']) {
 
+                // Wenn Seitenende? Überprüfen und neue Seite anfangen    
                 $y = $this->GetY();
                 if (($y + 2 * $rowHeight3 + $rowHeight ) >= 270) {
                     $this->AddPage();
                 } else {
                     $this->Ln($rowHeight3);
                 }
-              
+                
+                
+                
                 $fill = 1;
                 //$this->MultiCell($w[0], $rowHeight, $row['Untergruppennummer']." ".$row['Untergruppenname'], 1, 'L', $fill, 0, '', '');
                 $this->SetFont('', 'B', '9');
@@ -221,6 +225,10 @@ class MYPDF extends TCPDF {
 //            if (($y + $rowHeight) >= 270) {
 //                $this->AddPage();
 //            }
+            $y = $this->GetY();
+            if (($y + $rowHeight1) >= 260) {
+                $this->AddPage();
+            }
             $this->SetFont('', 'I', '7');
             $this->MultiCell($w[0], $rowHeight4, $betreffText, 'LTR', 'L', $fill, 0, '', '');
             $this->SetFont('', '', '8');
@@ -231,13 +239,10 @@ class MYPDF extends TCPDF {
             } else {
                 $this->MultiCell($w[2], $rowHeight, '', 1, 'L', $fill, 0, '', '');
             }
-
+            
             $this->Ln($rowHeight4);
             $this->MultiCell($w[0], $rowHeight1, $row['Vermerktext'], 'LRB', 'L', $fill, 1, '', ''); 
-            $y = $this->GetY();
-            if (($y + $rowHeight1) >= 270 ) {
-                $this->AddPage();
-            }
+            
         }
     }
 }
@@ -374,7 +379,7 @@ $pdf->Ln(2);
 $outstr = "Hinweis: Sollten Einwände gegen Inhalte dieses Protokolls bestehen, so werden die Empfänger ersucht, diese Einwände im Rahmen der nächsten Besprechung mündlich oder bis spätestens 10 Tage nach Erhalt des Protokolls schriftlich vorzubringen, andernfalls wird allgemeines Einverständnis angenommen. \nDie Verteilung erfolgt ausschließlich über Email. \n  " . $verfasser;
 $height= $pdf -> getStringHeight(180,$outstr, false, true, '', 1);
 $y = $pdf->GetY();
-if (($y + $height) >= 270 ) {
+if (($y + $height) >= 275 ) {
     $pdf->AddPage();
 }
 $pdf->Multicell(180, 5, $outstr, 0, 'L', 0, 1);
