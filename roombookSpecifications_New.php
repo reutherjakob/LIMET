@@ -121,7 +121,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                             });
 
                                                             function check_angaben() {
-                                                                    window.open('/BauangabenCheck.php');
+                                                                    window.open('/roombookBauangabenCheck.php');
 //                                                                $.ajax({
 //                                                                    url: "get_angaben_check.php", // "ID": raumID,
 //                                                                    data: {},

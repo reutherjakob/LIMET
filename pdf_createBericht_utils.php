@@ -1,39 +1,4 @@
 <?php
-
-// V30-11-23 13:50 // Für A4 
-// TODO: QuasiStationär bei strahlenanw. 
-//require_once('TCPDF-master/TCPDF-master/tcpdf.php'); //called within TCPDF class 
-//            $marginTop = 17; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/ 
-//            $SB = 210 - 2 * PDF_MARGIN_LEFT;  // A4: seitenbreite minus die lr einzüge = 180
-//            $SH = 297-$marginTop-PDF_MARGIN_FOOTER;
-//            $horizontalSpacerLN = 4;
-//            $horizontalSpacerLN2 = 5;
-//            $horizontalSpacerLN3 = 8;
-//
-//            // A: Seite Halbieren; B: Seite dritteln; C:Seite/4; E=1/5; F = 1/6
-//            $e_A = $SB / 2;
-//            $e_A_3rd = $e_A / 3;
-//            $e_A_2_3rd = $e_A - $e_A_3rd;
-//            $e_B = $SB / 3;
-//            $e_B_3rd = $e_B / 3;
-//            $e_B_2_3rd = $e_B - $e_B_3rd;
-//            $e_C = $SB / 4;
-//            $e_C_3rd = $e_C / 3;
-//            $e_C_2_3rd = $e_C - $e_C_3rd;
-//            $e_D = $SB / 5;
-//            $e_D_3rd = $e_D / 3;
-//            $e_D_2_3rd = $e_D - $e_D_3rd;
-// 
-//            $e_E = $SB / 6; //=30
-//            $e_E_3rd = $e_E / 3;// = 10 
-//            $e_E_2_3rd = $e_E - $e_E_3rd; //= 20
-//
-//            $hackerl_Zellgröße = $e_E_3rd; //=10
-//            $hackerl_schriftgröße = $e_E_3rd;
-//
-//            $block_header_height = 10;   //
-//            $blockSpaceNeededX = 100; //
-
 function filter_old_equal_new($data) {
     $filteredData = array_filter($data, function ($item) {
         return $item['wert_neu'] != $item['wert_alt'];
