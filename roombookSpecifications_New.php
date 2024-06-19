@@ -72,6 +72,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     <div class="card-header d-inline-flex" style="flex-wrap:nowrap" id='TableCardHeader'>  </div>
 
                                     <div class="card-body" id = "table_container_div">
+                                        <ul id = "CheckBtn"> </ul>
                                         <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" width ="100%" id="table_rooms" > 
                                             <thead <tr></tr> </thead>
                                             <tbody> <td></td>  </tbody>
@@ -118,6 +119,25 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                 event_table_keyz();
 //                                                                
                                                             });
+
+                                                            function check_angaben() {
+                                                                    window.open('/BauangabenCheck.php');
+//                                                                $.ajax({
+//                                                                    url: "get_angaben_check.php", // "ID": raumID,
+//                                                                    data: {},
+//                                                                    type: "GET",
+//                                                                    success: function (data) {
+////                                                                        alert(translateBrToNewline(data));
+////                                                                        document.getElementById('CheckBtn').textContent = translateBrToNewline(data);
+////                                                                        window.open('/get_angaben_check.php');
+//                                                                    }
+//                                                                });
+                                                            }
+                                                            
+                                                            function translateBrToNewline(inputString) {
+                                                                const outputString = inputString.replace(/<br>/g, '\n').replace(/<\/br>/g, '\n');
+                                                                return outputString;
+                                                            }
 
                                                             function change_search_b_btn_txt() {
                                                                 $('.dt-button').each(function () {
@@ -431,11 +451,12 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                     scrollY: true,
                                                                     scrollX: true,
                                                                     scrollCollapse: true,
+                                                                    select: "multi",
                                                                     fixedColumns: {
                                                                         start: 2
                                                                     },
                                                                     language: {
-//                                                                        "search": "",
+                                                                        "search": "",
                                                                         searchBuilder: {
                                                                             title: null,
                                                                             depthLimit: 2,
@@ -446,9 +467,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                     order: [[3, 'asc']],
                                                                     stateSave: false,
                                                                     info: true,
-                                                                    select: {
-                                                                        style: 'os'
-                                                                    },
                                                                     paging: true,
                                                                     pagingType: "simple_numbers",
                                                                     pageLength: 10,
@@ -456,7 +474,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         [10, 20, -1],
                                                                         ['10 rows', '20 rows', 'Show all']
                                                                     ],
-                                                                    compact: true,
+                                                                    compact: true
 //                                                                    initComplete: function () {
 ////                                                                        $("#datatableit_filter").detach().appendTo('#TableCardHeader');
 //                                                                  } 
@@ -539,17 +557,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                     ]}).container().appendTo($('#TableCardHeader'));
                                                             }
 
-                                                            function check_angaben() {
-
-                                                                $.ajax({
-                                                                    url: "get_angaben_check.php", // "ID": raumID,
-                                                                    data: {},
-                                                                    type: "GET",
-                                                                    success: function (data) {
-                                                                        alert(data);
-                                                                    }
-                                                                });
-                                                            }
 
                                                             function init_visibilities() {
                                                                 if ($("#roomElements").is(':hidden')) {

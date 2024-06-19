@@ -113,7 +113,7 @@ const columnsDefinition = [
         
     {data: '1 Kreis Va', title: '1_K Va', case: "bit"},
     {data: '2 Kreis Va', title: '2_K Va', case: "bit"},
-    {data: 'VA', title: 'VA', case: "bit"},
+    {data: 'VA', title: 'VA', case: "bit"}, 
         
     {data: '1 Kreis DL-5', title: '1_K DL5', case: "bit"},
     {data: '2 Kreis DL-5', title: '2_K DL5', case: "bit"},
