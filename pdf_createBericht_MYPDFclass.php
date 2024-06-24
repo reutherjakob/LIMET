@@ -81,7 +81,7 @@ class MYPDF extends TCPDF {
             $this->Cell(0, 0, $raumInfos[0]['Planungsphase'], 0, false, 'L', 0, '', 0, false, 'B', 'B');
             $this->Ln();
             $this->Ln();
-           if($_SESSION["projectPlanungsphase"]=="Vorentwurf"){
+           if($_SESSION["projectPlanungsphase"]==="Vorentwurf"){
                 $this->Cell(0, 0, 'Medizintechnische Vorbemessungsangaben', 0, false, 'L', 0, '', 0, false, 'B', 'B');
             }
             else{
