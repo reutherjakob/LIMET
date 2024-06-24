@@ -188,7 +188,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 //                                                                        table.keys.disable(); 
                                                                     } else {
                                                                         var rowIndex = cell.index().row;
-                                                                        table.rows().deselect();
+//                                                                        table.rows().deselect();
                                                                         if (rowIndex !== currentRowInd && !document.getElementById('checkbox_EditableTable').checked) {
                                                                             table.row(cell.index().row).select();
                                                                             cell.node().click();

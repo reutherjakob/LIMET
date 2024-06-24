@@ -105,8 +105,9 @@ class MYPDF extends TCPDF {
             $this->Cell(0, 0, "Stand: ".date('Y-m-d'), 0, false, 'L', 0, '', 0, false, 'T', 'M');
             
             
-            $this->Ln();
-            $this->Cell(0, 0, "Änderungsverlauf bis: ".getValidatedDateFromURL() , 0, false, 'L', 0, '', 0, false, 'T', 'M');
+            $this->Ln(); 
+            if(getValidatedDateFromURL() === date('Y-m-d')){} else {
+            $this->Cell(0, 0, "Änderungsverlauf bis: ".getValidatedDateFromURL() , 0, false, 'L', 0, '', 0, false, 'T', 'M');}
             
             $this->SetFont('helvetica', '', 6);
             //LOGOS einfügen

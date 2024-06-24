@@ -1,17 +1,10 @@
 <?php
-
+ 
 // CONST DEFINITIONS !!!!
 $strahlenIDs = array(60, 167, 168, 170, 171, 175, 189, 259, 260, 282, 313, 317, 484, 489, 579, 580, 707, 1182, 1388, 1390, 1461, 1462, 1660, 1680);
-$CEE_IDs = array(60, 167);
+$CEE_IDs = array(60, 167); 
 
-//
 //UTILITY METHODS
-function echorow($row) {
-    echo '<pre>';
-    print_r($row);
-    echo '- </pre>';
-}
-
 function abcTo123($char) {
     $char = strtolower($char);
     return ord($char) - ord('a') + 1;
@@ -186,16 +179,13 @@ check_login();
 $mysqli = utils_connect_sql();
 
 //// GET ROOMS in projekt and their params 
-// Prepare SQL statement
 $stmt = $mysqli->prepare("SELECT * FROM tabelle_räume
                 INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
                 WHERE tabelle_räume.tabelle_projekte_idTABELLE_Projekte = ?
                 ORDER BY tabelle_räume.tabelle_projekte_idTABELLE_Projekte"); // (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
-// Bind parameters
 $stmt->bind_param("i", $_SESSION["projectID"]);
 $stmt->execute();
 $result = $stmt->get_result();
-
 $raumparameter = array();
 while ($row = $result->fetch_assoc()) {
     $roomID = $row['idTABELLE_Räume'];
@@ -231,8 +221,8 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 $elementParamInfos = array();
-$paramInfosCounter = 0;
-//echo "ELEMENTS PARAMETERS Raumübergreifend";
+$paramInfosCounter = 0; 
+
 while ($row = $result->fetch_assoc()) {
 //    $elID = $row['tabelle_elemente_idTABELLE_Elemente']; 
     $elementParamInfos[$paramInfosCounter] = $row;
@@ -257,18 +247,14 @@ foreach ($raumparameter as $roomID => $roomParams) {
     check_dependency_non_zero($messages, $roomParams, 'USV', 'ET_Anschlussleistung_USV_W');
     check_dependency_non_zero($messages, $roomParams, 'USV', 'EL_USV Steckdosen Stk');
     //////MEDGAS
-//    check_dependency_non_zero($messages, $roomParams, '1 Kreis O2', 'O2');
-//    check_dependency_non_zero($messages, $roomParams, '1 Kreis Va', 'VA');
-//    check_dependency_non_zero($messages, $roomParams, '1 Kreis DL-5', 'DL-5');
-//    check_dependency_non_zero($messages, $roomParams, 'O2', '1 Kreis O2');
-//    check_dependency_non_zero($messages, $roomParams, 'VA', '1 Kreis Va');
-//    check_dependency_non_zero($messages, $roomParams, 'DL-5', '1 Kreis DL-5');
     check_dependency_non_zero($messages, $roomParams, '1 Kreis O2', '2 Kreis O2');
     check_dependency_non_zero($messages, $roomParams, '1 Kreis Va', '2 Kreis Va');
     check_dependency_non_zero($messages, $roomParams, '1 Kreis DL-5', '2 Kreis DL-5');
     //STOP ROOM param CHECK  
 ///// ------ LOAD ELEMENTS IN ROOM ----        
-    $stmt = $mysqli->prepare("SELECT tabelle_elemente.ElementID,  tabelle_elemente.idTABELLE_Elemente, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl
+    $stmt = $mysqli->prepare("SELECT tabelle_elemente.ElementID,
+            tabelle_elemente.idTABELLE_Elemente, tabelle_elemente.Bezeichnung, 
+            tabelle_varianten.Variante, Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl
             FROM tabelle_varianten 
             INNER JOIN (tabelle_räume_has_tabelle_elemente 
             INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) 
@@ -278,11 +264,13 @@ foreach ($raumparameter as $roomID => $roomParams) {
             tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
             HAVING tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = ? AND SummevonAnzahl > 0
             ORDER BY tabelle_elemente.ElementID, tabelle_varianten.Variante");   //ELEMENTS IN THE ROOM 
-
+ 
     $stmt->bind_param("i", $roomID);
     $stmt->execute();
     $result = $stmt->get_result();
-
+   
+    
+    
     $elements_in_room = array();
     $NetzArtenImRaum = array();
     $LeistungImRaum = array(0, 0, 0, 0, 0); // ALLGEMEIN / AV/SV/ZSV/USV
@@ -359,15 +347,13 @@ foreach ($raumparameter as $roomID => $roomParams) {
     check_room_for_na($messages, $roomParams, $NetzArtenImRaum);
     check_room_Leistungssumme($messages, $roomParams, $LeistungImRaum);
 }  //   eingefügt um ausgabe zum Codenn zu unterbinden 
+ $mysqli->close();
 
 
 
-$mysqli->close();
 foreach ($messages as $messages_out) {
     echo br2nl($messages_out);
 //    echo $messages_out;
 }                 
 
 
-//TODO GLZ WIEDERHERSTELLEN; DEBUG CODE RAUS;  
-// TODO REMOIVE THE ROOMID IF

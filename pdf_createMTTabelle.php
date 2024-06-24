@@ -42,8 +42,6 @@ function abk_vz($result4, $pdf, $f_size) {
 
 function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dataChanges) {
 
-
-
     // $result4 = Abkürzungen
     // -------------------------Elemente parameter ------------------------- 
     $elementParamInfos = array();
@@ -212,10 +210,10 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dat
             }
 
             $pdf->MultiCell($text_width + $temp_extracellspace_causeTextToBig, $rowHeightMainLine, $outputValue, 1, 'C', true, 0);
-            if (($is_even_row % 2) === 0) {
-                $pdf->SetFillColor(240, 240, 235); // RGB for grey            
-            } else {
-                $pdf->SetFillColor(255, 255, 255);
+                if (($is_even_row % 2) === 0) {
+                    $pdf->SetFillColor(240, 240, 235);       
+                } else {
+                    $pdf->SetFillColor(255, 255, 255);
             }
             $text_width = $temp_width;
             if ($temp_extracellspace_causeTextToBig > 0) {

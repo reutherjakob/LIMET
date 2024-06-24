@@ -15,12 +15,12 @@ const buttonRanges = [
     {name: 'RAUM', start: 7, end: 23},
     {name: 'HKLS', start: 24, end: 29},
     {name: 'ELEK', start: 30, end: 48},
-    {name: 'MEDGAS', start: 49, end: 52 +7},
-    {name: 'LAB', start: 53 +7, end: 101 +10},
-    {name: 'L-GAS', start: 55 +10, end: 79 +10},
-    {name: 'L-ET', start: 80 +10, end: 87 +10},
-    {name: 'L-HT', start: 88 +10, end: 95 +10},
-    {name: 'L-H2O', start: 95 +10, end: 111}
+    {name: 'MEDGAS', start: 49, end: 52 + 7},
+    {name: 'LAB', start: 53 + 7, end: 101 + 10},
+    {name: 'L-GAS', start: 55 + 10, end: 79 + 10},
+    {name: 'L-ET', start: 80 + 10, end: 87 + 10},
+    {name: 'L-HT', start: 88 + 10, end: 95 + 10},
+    {name: 'L-H2O', start: 95 + 10, end: 111}
 ];
 
 const columnsDefinitionShort = [
@@ -32,18 +32,18 @@ const columnsDefinitionShort = [
         }},
     //{data: 'idTABELLE_Räume', title: 'Raum ID', searchable: false}, //debugging
     {data: 'Raumbezeichnung', title: 'Raumbez.'},
-    {data: 'Raumnr', title: 'Raumnr'}, 
+    {data: 'Raumnr', title: 'Raumnr'},
     {data: "Bezeichnung", title: "Funktionsstelle", case: "none-edit"}, //#7
-    {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'}, 
+    {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'},
     {data: "Nummer", title: "DIN13080", case: "none-edit"},
     {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer'},
     {data: 'Raumbereich Nutzer', title: 'Raumbereich'},
     {data: 'Geschoss', title: 'Geschoss'},
     {data: 'Bauetappe', title: 'Bauetappe'},
     {data: 'Bauabschnitt', title: 'Bauabschnitt'}
-]; 
+];
 
- 
+
 const columnsDefinition = [
 //    { data: '', defaultContent: '', title: "Select", render:  $.fn.dataTable.render.select(), searchable: false, orderable: false }, //cool, but buggy with fix columns. 
     {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projek ID', visible: false, searchable: false},
@@ -57,8 +57,8 @@ const columnsDefinition = [
 
     {data: 'Raumnr', title: 'Raumnr'},
     {data: "Bezeichnung", title: "Funktionsstelle", case: "none-edit"}, //#7
-    {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'}, 
-    
+    {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'},
+
     {data: "Nummer", title: "DIN13080", case: "none-edit"},
     {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer'},
     {data: 'Raumbereich Nutzer', title: 'Raumbereich'},
@@ -96,7 +96,7 @@ const columnsDefinition = [
     {data: 'EL_USV Steckdosen Stk', defaultContent: '-', title: 'USV #SSD', case: "num"},
 
     {data: 'EL_Roentgen 16A CEE Stk', title: 'CEE16A Röntgen', case: "num"},
-        
+
     {data: 'EL_Laser 16A CEE Stk', defaultContent: '-', title: 'CEE16A Laser', case: "num"},
     {data: 'ET_Anschlussleistung_W', defaultContent: '-', title: 'Anschlussleistung Summe[W]', case: "num"},
     {data: 'ET_Anschlussleistung_AV_W', defaultContent: '-', title: 'Anschlussleistung AV[W]', case: "num"},
@@ -109,14 +109,13 @@ const columnsDefinition = [
 
     {data: '1 Kreis O2', title: '1_K O2', case: "bit"},
     {data: '2 Kreis O2', title: '2_K O2', case: "bit"},
-    
+
     {data: '1 Kreis Va', title: '1_K Va', case: "bit"},
     {data: '2 Kreis Va', title: '2_K Va', case: "bit"},
-    
+
     {data: '1 Kreis DL-5', title: '1_K DL5', case: "bit"},
     {data: '2 Kreis DL-5', title: '2_K DL5', case: "bit"},
-    
-        
+
     {data: 'DL-10', title: 'DL-10', case: "bit"},
     {data: 'DL-tech', title: 'DL-tech', case: "bit"},
     {data: 'CO2', title: 'CO2', case: "bit"},
@@ -126,9 +125,9 @@ const columnsDefinition = [
     {data: 'VEXAT_Zone', title: 'VEXAT_Zone', case: "bit"},
     {data: 'Laserklasse', title: 'Laserklasse'},
 
-{data: 'O2', title: 'O2', case: "bit"},
-        {data: 'VA', title: 'VA', case: "bit"}, 
-        {data: 'DL-5', title: 'DL-5', case: "bit"},
+    {data: 'O2', title: 'O2', case: "bit"},
+    {data: 'VA', title: 'VA', case: "bit"},
+    {data: 'DL-5', title: 'DL-5', case: "bit"},
     {data: 'H2', title: 'H2', case: "bit"},
     {data: 'He', title: 'He', case: "bit"},
     {data: 'He-RF', title: 'He-RF', case: "bit"},

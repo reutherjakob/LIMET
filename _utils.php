@@ -1,4 +1,12 @@
-<?php
+<?php 
+
+
+
+function echorow($row) {
+    echo '<pre>';
+    print_r($row);
+    echo '- </pre>';
+}
 
 function print_session_vars() {
     $parameters = ["projectID", "roomID", "projectName", "projectAusfuehrung", "projectPlanungsphase"];
@@ -80,6 +88,4 @@ function load_nav_bar() {
 //    $return = str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $string);
 //    return $return;
 //}
-?>
-
 

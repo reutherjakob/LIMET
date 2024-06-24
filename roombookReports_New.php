@@ -26,6 +26,8 @@ init_page_serversides();
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
                             <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
+                            <style>
+                            </style>
 
                             </head>
 
@@ -34,17 +36,15 @@ init_page_serversides();
                                     <div id="limet-navbar" class=' '> </div> 
 
                                     <div class="mt-4 card">
-                                        <div class="card-header form-check-inline form-check-inline" id ="HeaderTabelleCard">
+                                        <div class="card-header form-check-inline d-flex align-items-center" id ="HeaderTabelleCard">
 
                                         </div> 
-                                        <div class="card-header form-check-inline form-check-inline justify-content align-items-start" style="flex-wrap:nowrap" id ="HeaderTabelleCard2">
-                                            <div class="form-group"> 
-                                                <label for="dateSelect"> Änderugen bis:</label>
-                                                <input type="date" id="dateSelect" name="dateSelect">
-                                            </div>
+                                        <div class="card-header form-check-inline form-check-inline justify-content " style="flex-wrap:nowrap" id ="HeaderTabelleCard2">
+                                            <!--                                            <div class="form-group"> 
+                                                                                            <label for="dateSelect"> Änderugen bis:</label>
+                                                                                            <input type="date" id="dateSelect" name="dateSelect">
+                                                                                        </div>-->
                                         </div>
-
-                                        <!--<div class="card-header d-inline-flex form-check form-check-inline" id ="HeaderTabelleCard3"></div>-->
                                         <div class="card-body">
                                             <?php
                                             $mysqli = utils_connect_sql();
@@ -101,7 +101,6 @@ init_page_serversides();
 
                                 <script>
                                     var table;
-
                                     const btns = [
                                         {text: "Raumbuch-PDF", link: "pdf_createRoombookPDF"},
                                         {text: "Raumbuch-0-PDF", link: "pdf_createRoombookWithout0PDF"},
@@ -121,7 +120,6 @@ init_page_serversides();
                                         {text: "ENT-Gesamt-PDF", link: "pdf_createBericht_ENT_PDF"},
                                         {text: "Nutzer Formular", link: "pdf_createUserFormPDF"}
                                     ];
-
                                     const report_input_bool_labels = ["Bestandsäume(x)", "Bestands-MT(x)", "BO-Beschr.", "Allgemein", "ET", "HT", "MEDGAS", "BauStatik", "MT-Tabelle", "MT-Liste", "LAB(x)"];
                                     let report_input_bools = new Array(report_input_bool_labels.length).fill(true);
 
@@ -129,11 +127,10 @@ init_page_serversides();
                                         init_dt();
                                         add_MT_rel_filter('#HeaderTabelleCard');
                                         init_btns('#HeaderTabelleCard');
-
+                                        add_date_select();
                                         var textforoldreports = "Show old Reports";
-                                        addCheckbox('#HeaderTabelleCard2', textforoldreports);
+                                        addCheckbox('#HeaderTabelleCard', textforoldreports);
 //                                        add_Berichtinput_checkboxes('#HeaderTabelleCard2');
-
                                         init_btns_old('#HeaderTabelleCard2');
                                         add_btn_vis_checkbox_functionality(textforoldreports);
                                         setTimeout(function () {
@@ -142,13 +139,21 @@ init_page_serversides();
                                         // synchronizeCheckboxes("CBXMT-Tabelle", "CBXMT-Liste");
                                     });
 
+                                    function add_date_select() {
+                                        var cardHeader = document.getElementById('HeaderTabelleCard');
+                                        var newElement = document.createElement('div');
+                                        newElement.className = 'form-check-inline';
+                                        newElement.innerHTML = '<div class="form-check-inline"><label for="dateSelect"> </label> <input type="date" id="dateSelect" name="dateSelect"><div class="spacer"></div></div>';
+                                        cardHeader.appendChild(newElement);
+                                    }
+ 
                                     function getDate() {
                                         var dateInput = $("#dateSelect").val();
                                         var date = dateInput ? new Date(dateInput) : new Date();
 //                                    console.log("Date: ", date);
                                         var day = date.getDate();
 //                                    console.log("Day: ", day);
-                                        var month = date.getMonth() + 1; // Months are zero based
+                                        var month = date.getMonth() + 1; // Months are zero based 
 //                                    console.log("Month: ", month);
                                         var year = date.getFullYear();
 //                                    console.log("Year: ", year);

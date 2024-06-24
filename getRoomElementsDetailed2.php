@@ -79,7 +79,7 @@ check_login();
             });
 
             $(document).ready(function () {
-                $("#tableRoomElements").DataTable({
+                var table = $("#tableRoomElements").DataTable({
                     searching: true,
                     info: true,
                     select: true,
@@ -97,7 +97,8 @@ check_login();
                             //"scrollCollapse": true,
                 });
 
-                var table = $('#tableRoomElements').DataTable();
+//                $('#tableRoomElements').DataTable();
+                
                 $('#tableRoomElements tbody').on('click', 'tr', function () {
                     if ($(this).hasClass('info')) {
                     } else {

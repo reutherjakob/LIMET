@@ -1,11 +1,46 @@
 <?php
+
+function get_change_data($Änderungsdatum, $valueOfRoomID) {   //DOES NOT WORK 
+    $url = "https://work.limet-rb.com/get_raumparameterchanges.php?date=$Änderungsdatum&id=$valueOfRoomID";
+    $response = file_get_contents($url);
+    $parameters_t_räume = json_decode($response, true);
+    echo "test";
+    print_r($parameters_t_räume);
+}
+
+//function filter_old_equal_new($data) {
+//    $filteredData = array_filter($data, function ($item) {
+//        return $item['wert_neu'] != $item['wert_alt'];
+//    });
+//    $out = array_values($filteredData);
+//    return $out;
+//}
+
 function filter_old_equal_new($data) {
-    $filteredData = array_filter($data, function ($item) {
-        return $item['wert_neu'] != $item['wert_alt'];
+    // Group data by parameter
+    $groupedData = [];
+    foreach ($data as $item) {
+        $parameter = $item['parameter'];
+        if (!isset($groupedData[$parameter])) {
+            $groupedData[$parameter] = [];
+        }
+        $groupedData[$parameter][] = $item;
+    }
+
+    // Filter out groups where the first and last entry have the same value
+    $filteredData = array_filter($groupedData, function ($group) {
+        $firstEntry = reset($group);
+        $lastEntry = end($group);
+        return $firstEntry['wert_neu'] != $lastEntry['wert_alt'];
     });
 
-    // Re-index the array keys
-    $out = array_values($filteredData);
+    // Flatten the array
+    $out = [];
+    foreach ($filteredData as $group) {
+        foreach ($group as $item) {
+            $out[] = $item;
+        }
+    }
 
     return $out;
 }
@@ -77,17 +112,17 @@ function anmA3($pdf, $inp_text, $SB, $block_header_w) {
             $outstr = "Keine Anmerkung";
         }
         $rowHeightComment = $pdf->getStringHeight($SB, $outstr, false, true, '', 1);
-        $block_header_w = 10;
         $pdf->MultiCell($block_header_w, $rowHeightComment, "", 0, 'R', 0, 0);
-        if ($rowHeightComment < 25) {
-            $pdf->MultiCell($SB - $block_header_w, $rowHeightComment, $outstr, 0, 'L', 0, 1);
-        } else {
-            $columnWidth = ($SB - $block_header_w - 10) / 2;
-            list($leftText, $rightText) = splitText($pdf, $outstr, $columnWidth);
-            writeTwoColumns($pdf, $columnWidth, $leftText, $rightText);
-        }
+//        if ($rowHeightComment < 25) {  //Cool, but wonky
+        $pdf->MultiCell($SB - $block_header_w, $rowHeightComment, $outstr, 0, 'L', 0, 1);
+//        } else {
+//            $columnWidth = ($SB - $block_header_w - 10) / 2;
+//            list($leftText, $rightText) = splitText($pdf, $outstr, $columnWidth);
+//            writeTwoColumns($pdf, $columnWidth, $leftText, $rightText);
+//        }
     }
 }
+
 //
 //function splitText($pdf, $inp_text, $columnWidth) {
 //    $middle = floor(strlen($inp_text) / 2);
@@ -108,6 +143,7 @@ function anmA3($pdf, $inp_text, $SB, $block_header_w) {
 //
 //    return array($leftText, $rightText);
 //}
+
 function splitText($pdf, $inp_text, $columnWidth) {
     $lines = explode("\n", $inp_text);
     $middle = floor(count($lines) / 2);
@@ -127,7 +163,6 @@ function splitText($pdf, $inp_text, $columnWidth) {
 
     return array(implode("\n", $leftLines), implode("\n", $rightLines));
 }
-
 
 function writeTwoColumns($pdf, $columnWidth, $leftText, $rightText) {
 
@@ -155,7 +190,7 @@ function writeTwoColumns($pdf, $columnWidth, $leftText, $rightText) {
     $pdf->SetY(max($leftHeight, $rightHeight) + $yBefore);
 }
 
-function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $RaumbereichNutzer, $Geschoss, $Bauetappe, $Bauabschnitt, $format = "", $Block_height = 0) {
+function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $RaumbereichNutzer, $Geschoss, $Bauetappe, $Bauabschnitt, $format = "", $parameter_changes_t_räume = 0) {
     if ($format == "") {
         $qot = 5 / 9;
         $pdf->SetFont('helvetica', 'B', 10);
@@ -180,7 +215,6 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
         $extra_space_underneath_header = 2;
         $pdf->Ln($extra_space_underneath_header);
         $ln_spacer = $ln_spacer - $extra_space_underneath_header;
-
         $qot = 1 / 6;
         $incr = 0;
         $Height = $pdf->getStringHeight($SB * $qot, "Raum: " . $Raumbezeichnung, false, true, '', 1);
@@ -188,7 +222,7 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
             $incr += 5; //           
             $Height = $pdf->getStringHeight($SB * $qot + $incr, "Raum: " . $Raumbezeichnung, false, true, '', 1);
         }
-        $pdf->MultiCell($SB * $qot + $incr, $ln_spacer, "Raum: " . $Raumbezeichnung, 'B', 'L', 0, 0);
+        multicell_text_hightlight($pdf, $SB * $qot + $incr, $ln_spacer, "Raumbezeichnung", "Raum: " . $Raumbezeichnung, $parameter_changes_t_räume, "L");
 
         $incr2 = 0;
         $Height = $pdf->getStringHeight($SB * $qot, "Nummer: " . $Raumnr, false, true, '', 1);
@@ -196,14 +230,15 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
             $incr2 += 5; //           
             $Height = $pdf->getStringHeight($SB * $qot + $incr2, "Nummer: " . $Raumnr, false, true, '', 1);
         }
-        $pdf->MultiCell($SB * ($qot) + $incr2, $ln_spacer, "Nummer: " . $Raumnr, 'B', 'L', 0, 0);
+        multicell_text_hightlight($pdf, $SB * ($qot) + $incr2, $ln_spacer, "Raumnr", "Nummer: " . $Raumnr, $parameter_changes_t_räume, "L");
 
         $decrement = ($incr + $incr2) / 4;
 
-        $pdf->MultiCell($SB * $qot - $decrement, $ln_spacer, "Bereich: " . $RaumbereichNutzer, 'B', 'L', 0, 0);
-        $pdf->MultiCell($SB * ($qot) - $decrement, $ln_spacer, "Geschoss: " . $Geschoss, 'B', 'L', 0, 0);
-        $pdf->MultiCell($SB * $qot - $decrement, $ln_spacer, "Bauetappe: " . $Bauetappe, 'B', 'L', 0, 0);
-        $pdf->MultiCell($SB * ($qot) - $decrement, $ln_spacer, "Bauteil: " . $Bauabschnitt, 'B', 'L', 0, 1);
+        multicell_text_hightlight($pdf, $SB * ($qot) - $decrement, $ln_spacer, "Raumbereich Nutzer", "Bereich: " . $RaumbereichNutzer, $parameter_changes_t_räume, "L");
+        multicell_text_hightlight($pdf, $SB * ($qot) - $decrement, $ln_spacer, "Geschoss", "Geschoss: " . $Geschoss, $parameter_changes_t_räume, "L");
+        multicell_text_hightlight($pdf, $SB * ($qot) - $decrement, $ln_spacer, "Bauetappe", "Bauetappe: " . $Bauetappe, $parameter_changes_t_räume, "L");
+        multicell_text_hightlight($pdf, $SB * ($qot) - $decrement, $ln_spacer, "Bauabschnitt", "Bauteil: " . $Bauabschnitt, $parameter_changes_t_räume, "L");
+        $pdf->Ln($ln_spacer);
         $pdf->SetFont('helvetica', '', 10);
     }
 }
@@ -308,67 +343,93 @@ function translateBestand($value) {
     return ($value == 0) ? 'Ja' : 'Nein';
 }
 
+function multicell_text_hightlight($pdf, $breite, $font_size, $parameter_sql_name, $pdf_text, $parameter_changes_t_räume, $side = "L") {
+    if (in_array($parameter_sql_name, $parameter_changes_t_räume)) {
+        $pdf->SetFillColor(220, 235, 190);
+    } else {
+        $pdf->SetFillColor(255, 255, 255);
+    }
+    $pdf->MultiCell($breite, $font_size, $pdf_text, 0, $side, 1, 0);
+//    $pdf->SetFillColor(255, 255, 255);
+}
+
 function multicell_with_stk($pdf, $NR, $einzug) {
     if ($NR > 0) {
-        $pdf->MultiCell($einzug, 6, $NR . " Stk", 0, 'L', 0, 0);
+        $pdf->MultiCell($einzug, 6, $NR . " Stk", 0, 'L', 1, 0);
     } else {
-        $pdf->MultiCell($einzug, 6, " - ", 0, 'L', 0, 0);
-    }
+        $pdf->MultiCell($einzug, 6, " - ", 0, 'L', 1, 0);
+    } $pdf->SetFillColor(255, 255, 255);
 }
 
 function multicell_with_nr($pdf, $NR, $unit, $schriftgr, $einzug) {
     $originalFontSize = $pdf->getFontSizePt();
     if ($NR > 0) {
-        $pdf->MultiCell($einzug, $schriftgr, $NR . $unit, 0, 'L', 0, 0);
+        $pdf->MultiCell($einzug, $schriftgr, $NR . $unit, 0, 'L', 1, 0);
     } else {
-        $pdf->MultiCell($einzug, $schriftgr, " - ", 0, 'L', 0, 0);
+        $pdf->MultiCell($einzug, $schriftgr, " - ", 0, 'L', 1, 0);
     }
     $pdf->SetFontSize($originalFontSize);
+    $pdf->SetFillColor(255, 255, 255);
 }
 
 function multicell_with_str($pdf, $STR, $einzug, $Unit, $schriftgr = 6) {
     $originalFontSize = $pdf->getFontSizePt();
     if (strlen($STR) > 0) {
-        $pdf->MultiCell($einzug, $schriftgr, $STR . " " . $Unit, 0, 'L', 0, 0);
+        $pdf->MultiCell($einzug, $schriftgr, $STR . " " . $Unit, 0, 'L', 1, 0);
     } else {
-        $pdf->MultiCell($einzug, $schriftgr, " - ", 0, 'L', 0, 0);
+        $pdf->MultiCell($einzug, $schriftgr, " - ", 0, 'L', 1, 0);
     }
     $pdf->SetFontSize($originalFontSize);
+    $pdf->SetFillColor(255, 255, 255);
+}
+
+function hackerlA3($pdf, $hackerl_schriftgr, $hackerlcellgröße, $param, $comp_true) {
+    $originalFontSize = $pdf->getFontSizePt();
+    $pdf->SetFont('zapfdingbats', '', 10);
+    if ($param == $comp_true || $param == "Ja" || $param == "ja" || 1 == $param || "1" === $param) {
+        $pdf->MultiCell($hackerlcellgröße, $hackerl_schriftgr, TCPDF_FONTS::unichr(52), 0, 'L', 1, 0);
+    } else {
+        $pdf->MultiCell($hackerlcellgröße, $hackerl_schriftgr, TCPDF_FONTS::unichr(54), 0, 'L', 1, 0);
+    }
+    $pdf->SetFont('helvetica', '', $originalFontSize);
+
+    $pdf->SetFillColor(255, 255, 255);
+}
+
+function hackerl($pdf, $hackerl_schriftgr, $hackerlcellgröße, $param, $comp_true) {
+    $originalFontSize = $pdf->getFontSizePt();
+    $pdf->SetFont('zapfdingbats', '', $hackerl_schriftgr);
+    if ($param == $comp_true || $param == "Ja" || $param == "ja" || 1 == $param || "1" === $param) {
+        $pdf->SetTextColor(0, 255, 0);
+        $pdf->MultiCell($hackerlcellgröße, $hackerl_schriftgr, TCPDF_FONTS::unichr(52), 0, 'L', 1, 0);
+    } else {
+        $pdf->SetTextColor(255, 0, 0);
+        $pdf->MultiCell($hackerlcellgröße, $hackerl_schriftgr, TCPDF_FONTS::unichr(54), 0, 'L', 1, 0);
+    }
+    $pdf->SetFont('helvetica', '', $originalFontSize);
+    $pdf->SetTextColor(0, 0, 0);
+    $pdf->SetFillColor(255, 255, 255);
 }
 
 function strahlenanw($pdf, $param, $cellsize, $gr) {
     $originalFontSize = $pdf->getFontSizePt();
-    $pdf->SetFont('zapfdingbats', '', $gr);
+    $pdf->SetFont('zapfdingbats', '', 10);
     if ($param === '0') {
-        $pdf->SetTextColor(255, 0, 0);
-        $pdf->MultiCell($cellsize, 6, TCPDF_FONTS::unichr(54), 0, 'L', 0, 0);
+//        $pdf->SetTextColor(255, 0, 0);
+        $pdf->MultiCell($cellsize, $gr, TCPDF_FONTS::unichr(54), 0, 'L', 1, 0);
     } else {
         if ($param === '1') {
-            $pdf->SetTextColor(0, 255, 0);
-            $pdf->MultiCell($cellsize, 6, TCPDF_FONTS::unichr(52), 0, 'L', 0, 0);
+//            $pdf->SetTextColor(0, 255, 0);
+            $pdf->MultiCell($cellsize, $gr, TCPDF_FONTS::unichr(52), 0, 'L', 1, 0);
         } else {
             $pdf->SetFont('helvetica', '', 10);
-            $pdf->SetTextColor(0, 0, 0);
-            $pdf->MultiCell($cellsize, 6, "Quasi stationär", 0, 'L', 0, 0);
+//            $pdf->SetTextColor(0, 0, 0);
+            $pdf->MultiCell($cellsize, $gr, "Quasi stationär", 0, 'L', 1, 0);
         }
     }
     $pdf->SetTextColor(0, 0, 0);
     $pdf->SetFont('helvetica', '', $originalFontSize);
-}
-
-function hackerl($pdf, $hackerl_schriftgr, $zellgr, $param, $comp_true) {
-    $originalFontSize = $pdf->getFontSizePt();
-    $hackerlcellgröße = $zellgr; //same as global var
-    $pdf->SetFont('zapfdingbats', '', $hackerl_schriftgr);
-    if ($param == $comp_true || $param == "Ja" || $param == "ja" || 1 == $param || "1" === $param) {
-        $pdf->SetTextColor(0, 255, 0);
-        $pdf->MultiCell($hackerlcellgröße, $hackerl_schriftgr, TCPDF_FONTS::unichr(52), 0, 'L', 0, 0);
-    } else {
-        $pdf->SetTextColor(255, 0, 0);
-        $pdf->MultiCell($hackerlcellgröße, $hackerl_schriftgr, TCPDF_FONTS::unichr(54), 0, 'L', 0, 0);
-    }
-    $pdf->SetFont('helvetica', '', $originalFontSize);
-    $pdf->SetTextColor(0, 0, 0);
+    $pdf->SetFillColor(255, 255, 255);
 }
 
 function block_label($pdf, $block_label, $block_height = 12, $SB = 180) {
