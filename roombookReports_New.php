@@ -330,7 +330,7 @@ init_page_serversides();
                                                         } else {
                                                             let date = getDate();
                                                             const bools2int2str = report_input_bools.map((bool) => (bool ? 1 : 0)).join(',');
-                                                            window.open('/pdf_createBericht_A3Qeer.php?roomID=' + roomIDs + "&date=" + date);// + "&PDFinputs=" + bools2int2str 
+                                                            window.open('/pdf_createBauangabenBericht_A3Qeer.php?roomID=' + roomIDs + "&date=" + date);// + "&PDFinputs=" + bools2int2str 
 //                                                            window.open('/pdf_createBericht_custom.php?roomID=' + roomIDs + "&PDFinputs=" + bools2int2str);  //custom bericht page ! 
                                                         }
                                                     }

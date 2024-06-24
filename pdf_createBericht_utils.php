@@ -208,8 +208,10 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
             $pdf->AddPage();
         } else if (($pdf->GetY()) >= 20) {
             $pdf->Ln();
-            $pdf->MultiCell($SB, 12, "", 'B', 'L', 0, 1);
+            $pdf->SetFillColor(200, 200, 200);
+            $pdf->MultiCell($SB, 5, "", 'B', 'L', 0, 1);
             $pdf->MultiCell($SB, 1, "", 'B', 'L', 0.5, 1);
+            $pdf->SetFillColor(255, 255, 255);
         }
         $pdf->SetFont('helvetica', 'B', 10);
         $extra_space_underneath_header = 2;
