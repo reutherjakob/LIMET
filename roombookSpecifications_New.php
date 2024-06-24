@@ -72,7 +72,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     <div class="card-header d-inline-flex" style="flex-wrap:nowrap" id='TableCardHeader'>  </div>
 
                                     <div class="card-body" id = "table_container_div">
-                                        <ul id = "CheckBtn"> </ul>
                                         <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" width ="100%" id="table_rooms" > 
                                             <thead <tr></tr> </thead>
                                             <tbody> <td></td>  </tbody>
@@ -122,16 +121,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 
                                                             function check_angaben() {
                                                                     window.open('/roombookBauangabenCheck.php');
-//                                                                $.ajax({
-//                                                                    url: "get_angaben_check.php", // "ID": raumID,
-//                                                                    data: {},
-//                                                                    type: "GET",
-//                                                                    success: function (data) {
-////                                                                        alert(translateBrToNewline(data));
-////                                                                        document.getElementById('CheckBtn').textContent = translateBrToNewline(data);
-////                                                                        window.open('/get_angaben_check.php');
-//                                                                    }
-//                                                                });
                                                             }
                                                             
                                                             function translateBrToNewline(inputString) {
@@ -180,22 +169,25 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                     return "0";
                                                                 }
                                                             }
-
+ 
                                                             function event_table_keyz() {
                                                                 table.on('key-focus', function (e, datatable, cell) {
                                                                     if (document.getElementById('checkbox_EditableTable').checked && !current_edit) {
                                                                         cell.node().click();
-//                                                                        table.keys.disable(); 
+                                                                        table.keys.disable(); 
                                                                     } else {
                                                                         var rowIndex = cell.index().row;
 //                                                                        table.rows().deselect();
                                                                         if (rowIndex !== currentRowInd && !document.getElementById('checkbox_EditableTable').checked) {
-                                                                            table.row(cell.index().row).select();
-                                                                            cell.node().click();
+//                                                                            table.row(cell.index().row).select();
                                                                             currentRowInd = rowIndex;
                                                                         }
                                                                     }
                                                                 });
+//                                                                table.on('key-blur', function (e, datatable, cell) {
+//                                                                    table.cell(cell.index()).deselect();
+//                                                                    cell.node().click();
+//                                                                });
                                                             }
 
                                                             function html_2_plug_into_edit_cell(dataIdentifier) {
@@ -451,7 +443,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                     scrollY: true,
                                                                     scrollX: true,
                                                                     scrollCollapse: true,
-                                                                    select: "multi",
+                                                                    select: "os",
                                                                     fixedColumns: {
                                                                         start: 2
                                                                     },
