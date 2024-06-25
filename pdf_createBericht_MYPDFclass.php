@@ -29,7 +29,7 @@ class MYPDF extends TCPDF {
             } 
             $this->SetFont('helvetica', '', 8);
             // Title
-            if($_SESSION["projectPlanungsphase"]=="Vorentwurf"){
+            if($_SESSION["projectPlanungsphase"]==="Vorentwurf"){
                 $this->Cell(0, 0, 'Medizintechnische Vorbemessungsangaben', 0, false, 'R', 0, '', 0, false, 'B', 'B');
             }
             else{
