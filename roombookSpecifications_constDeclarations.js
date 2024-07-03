@@ -11,16 +11,17 @@ function title2data(columnsDefinition, title) {
 }
 
 const buttonRanges = [
-    {name: 'Alle', start: 7, end: 111},
+    {name: 'Alle', start: 7, end: 113},
     {name: 'RAUM', start: 7, end: 23},
     {name: 'HKLS', start: 24, end: 29},
     {name: 'ELEK', start: 30, end: 48},
-    {name: 'MEDGAS', start: 49, end: 52 + 7},
-    {name: 'LAB', start: 53 + 7, end: 101 + 10},
-    {name: 'L-GAS', start: 55 + 10, end: 79 + 10},
-    {name: 'L-ET', start: 80 + 10, end: 87 + 10},
-    {name: 'L-HT', start: 88 + 10, end: 95 + 10},
-    {name: 'L-H2O', start: 95 + 10, end: 111}
+    {name: 'AR', start: 49, end: 50},
+    {name: 'MEDGAS', start: 42 + 9, end: 52 + 9},
+    {name: 'LAB', start: 53 + 9, end: 101 + 12},
+    {name: 'L-GAS', start: 55 + 12, end: 79 + 12},
+    {name: 'L-ET', start: 80 + 12, end: 87 + 12},
+    {name: 'L-HT', start: 88 + 12, end: 95 + 12},
+    {name: 'L-H2O', start: 95 + 12, end: 101 + 12}
 ];
 
 const columnsDefinitionShort = [
@@ -106,7 +107,15 @@ const columnsDefinition = [
 
     {data: 'IT Anbindung', title: 'IT', case: "bit"},
     {data: 'ET_RJ45-Ports', title: 'RJ45-Ports', case: "num"},
+//AR 
+    {data: 'AR_AP_permanent', title: 'AR AP permanent', name: 'AR AP permanent ', case: "bit", render: function (data) {
+            return data === '1' ? 'permanenter AP' : 'kein permanenter AP';
+        }},
+    {data: 'AR_Statik_relevant', title: 'AR Statik relevant', name: 'AR Statik relevant', case: "bit", render: function (data) {
+            return data === '1' ? 'relevant' : 'nicht rel.';
+        }},
 
+//MEDGASE
     {data: '1 Kreis O2', title: '1_K O2', case: "bit"},
     {data: '2 Kreis O2', title: '2_K O2', case: "bit"},
 

@@ -273,7 +273,7 @@ $changeSqlResult = array();
 while ($row = $result->fetch_assoc()) {
     $changeSqlResult[] = $row;
 }
-
+echorow($changeSqlResult); 
 
 $changedData = array();
 $parameters_t_räume = array();

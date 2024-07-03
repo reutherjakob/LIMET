@@ -3,6 +3,7 @@ session_start();
 include '_utils.php';
 init_page_serversides();
 include 'roombookSpecifications_New_modal_addRoom.php';
+include 'roombookSpecifications_New_modal_change_column_visibilities.php';
 ?> 
 
 <!DOCTYPE html>
@@ -70,7 +71,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 <div id="limet-navbar" class=' '> </div> 
                                 <div class="mt-4 card">    
                                     <div class="card-header d-inline-flex" style="flex-wrap:nowrap" id='TableCardHeader'>  </div>
-
+                                    <div class="card-header d-inline-flex" style="flex-wrap:nowrap" id='TableCardHeader2'>  </div>
                                     <div class="card-body" id = "table_container_div">
                                         <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" width ="100%" id="table_rooms" > 
                                             <thead <tr></tr> </thead>
@@ -106,6 +107,37 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                             var currentColInd = 0;
                                                             let current_edit = false; //variable keeps track if the input field to ediot the cells is open
 
+                                                            /*
+                                                             function populateModal() {
+                                                             $('#VisModal .modal-dialog').empty();
+                                                             var toggleDiv = $('<div>');
+                                                             columnsDefinition.forEach(function (column, index) {
+                                                             if (column.visible !== false) {
+                                                             var columnTitle = $('<a>').text(column.title).attr({
+                                                             'class': 'toggle-vis',
+                                                             'data-column': index,
+                                                             'href': '#'
+                                                             });
+                                                             toggleDiv.append(columnTitle);
+                                                             toggleDiv.append(' - ');
+                                                             }
+                                                             });
+                                                             $('#VisModal .modal-dialog').append(toggleDiv);
+                                                             }
+                                                             
+                                                             document.querySelectorAll('a.toggle-vis').forEach((el) => {
+                                                             el.addEventListener('click', function (e) {
+                                                             e.preventDefault();
+                                                             
+                                                             let columnIdx = e.target.getAttribute('data-column');
+                                                             let column = table.column(columnIdx);
+                                                             
+                                                             // Toggle the visibility
+                                                             column.visible(!column.visible());
+                                                             });
+                                                             });
+                                                             */
+
                                                             $(document).ready(function () {
                                                                 init_dt();
                                                                 init_editable_checkbox();
@@ -116,13 +148,76 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                 init_visibilities();
                                                                 table_click();
                                                                 event_table_keyz();
-//                                                                
+
+
+//                                                                populateTableCardHeader2();
+//                                                                document.querySelectorAll('a.toggle-vis').forEach((el) => {
+//                                                                    el.addEventListener('click', function (e) {
+//                                                                        e.preventDefault();
+//
+//                                                                        let columnName = e.target.getAttribute('data-column');
+//                                                                        console.log("Column Name: " + columnName);
+//
+//                                                                        let column = table.column(columnName + ':name');
+//                                                                        console.log("Selected Column: ", column);
+//
+//                                                                        if (column.length) {
+//                                                                            console.log("Current visibility: " + column.visible());
+//                                                                            column.visible(!column.visible());
+//                                                                            console.log("Updated visibility: " + column.visible());
+//                                                                        } else {
+//                                                                            console.log("No column found with the name: " + columnName);
+//                                                                        }
+//                                                                    });
+//                                                                });
+
                                                             });
 
-                                                            function check_angaben() {
-                                                                    window.open('/roombookBauangabenCheck.php');
+                                                            function populateTableCardHeader2() {
+                                                                $('#TableCardHeader2').empty();
+                                                                var toggleDiv = $('<div>');
+                                                                columnsDefinition.forEach(function (column, index) {
+                                                                    if (column.visible !== false) {
+                                                                        var columnTitle = $('<a>').text(column.title).attr({
+                                                                            'class': 'toggle-vis',
+                                                                            'data-column': column.data,
+                                                                            'href': '#'
+                                                                        });
+                                                                        toggleDiv.append(columnTitle);
+                                                                        toggleDiv.append(' - ');
+                                                                    }
+                                                                });
+                                                                $('#TableCardHeader2').append(toggleDiv);
                                                             }
-                                                            
+
+                                                            function checkAndToggleColumnsVisibility() {
+                                                                table.columns().every(function () {
+                                                                    var hasNonEmptyCell = this.data().toArray().some(function (cellData) {
+                                                                        return cellData !== null && cellData !== undefined && cellData !== '' && cellData !== '-' && cellData !== ' ' && cellData !== '  ' && cellData !== '   ' && cellData !== '.';
+                                                                    });
+                                                                    if (!hasNonEmptyCell) {
+                                                                        this.visible(!this.visible());
+                                                                    }
+                                                                });
+                                                            }
+
+
+                                                            function check_angaben() {
+                                                                var selectedRows = table.rows({selected: true}).data();
+                                                                console.log(selectedRows);
+                                                                var roomIDs = [];
+                                                                for (var i = 0; i < selectedRows.length; i++) {
+                                                                    roomIDs.push(selectedRows[i]['idTABELLE_Räume']);
+                                                                }
+                                                                console.log(roomIDs);
+                                                                if (roomIDs.length === 0) {
+                                                                    alert("Kein Raum ausgewählt!");
+                                                                } else {
+                                                                    window.open('/roombookBauangabenCheck.php?roomID=' + roomIDs);
+                                                                }
+                                                            }
+
+
                                                             function translateBrToNewline(inputString) {
                                                                 const outputString = inputString.replace(/<br>/g, '\n').replace(/<\/br>/g, '\n');
                                                                 return outputString;
@@ -169,12 +264,12 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                     return "0";
                                                                 }
                                                             }
- 
+
                                                             function event_table_keyz() {
                                                                 table.on('key-focus', function (e, datatable, cell) {
                                                                     if (document.getElementById('checkbox_EditableTable').checked && !current_edit) {
                                                                         cell.node().click();
-                                                                        table.keys.disable(); 
+                                                                        table.keys.disable();
                                                                     } else {
                                                                         var rowIndex = cell.index().row;
 //                                                                        table.rows().deselect();
@@ -503,6 +598,15 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                                 checkAndToggleColumnsVisibility(dt);
                                                                             }
                                                                         },
+                                                                        {
+                                                                            text: 'Ausblenden',
+                                                                            className: '',
+                                                                            id: 'btn_spalten_ausblenden',
+                                                                            action: function (e, dt, node, config) {
+                                                                                populateModal();
+                                                                                $('#VisModal').modal('show');
+                                                                            }
+                                                                        },
                                                                         {extend: 'spacer', text: "SELECT:", style: 'bar', className: "rotated"},
                                                                         {
                                                                             text: 'All',
@@ -600,16 +704,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                 }
                                                             }
 
-                                                            function checkAndToggleColumnsVisibility() {
-                                                                table.columns().every(function () {
-                                                                    var hasNonEmptyCell = this.data().toArray().some(function (cellData) {
-                                                                        return cellData !== null && cellData !== undefined && cellData !== '' && cellData !== '-' && cellData !== ' ' && cellData !== '  ' && cellData !== '   ' && cellData !== '.';
-                                                                    });
-                                                                    if (!hasNonEmptyCell) {
-                                                                        this.visible(!this.visible());
-                                                                    }
-                                                                });
-                                                            }
+
 
                                                             function init_showRoomElements_btn() {
                                                                 $("#showRoomElements").html("<i class='fa fa-caret-right'></i>");
@@ -633,6 +728,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                 var MTrelevant = $("#mt-relevant").val();
                                                                 save_new_room(nummer, name, funktionsteilstelle, MTrelevant);
                                                             });
+
                                                             function copySelectedRow() {
                                                                 if (confirm('Raum Kopieren??')) {
                                                                 } else {
@@ -748,7 +844,9 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         selectedRowData["CO2 Reinheit"],
                                                                         selectedRowData["O2 l/min"],
                                                                         selectedRowData["O2 Reinheit"],
-                                                                        selectedRowData["Laserklasse"]
+                                                                        selectedRowData["Laserklasse"],
+                                                                        selectedRowData["AR_Statik_relevant"],
+                                                                        selectedRowData["AR_AP_permanent"]
                                                                         );
                                                             }
 
@@ -757,13 +855,11 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                     o2, _1kreisva, _2kreisva, va, _1kreisdl5, _2kreisdl5, dl5, dl10, dltech, co2, h2, he, herf, ar, n2, nga, n2o, av, sv, zsv, usv,
                                                                     itanbindung, anwendungsgruppe, allgemeinehygieneklasse, raumhoehe, raumhoehe2, belichtungsfläche, umfang, volumen, etanschlussleistungw,
                                                                     AnschlLeistung_AV, AnschlLeistung_SV, AnschlLeistung_ZSV, AnschlLeistung_USV,
-                                                                    SSDs_AV, SSDs_SV, SSDs_ZSV, SSDs_USV, CEE16AR, CEE16AL,
-                                                                    htwärmeabgabew, vexatzone, htabluftvakuumpumpe, htabluftschweissabsaugungstk, htabluftessestk, htabluftrauchgasabzugstk, htabluftdigestoriumstk,
+                                                                    SSDs_AV, SSDs_SV, SSDs_ZSV, SSDs_USV, CEE16AR, CEE16AL, htwärmeabgabew, vexatzone, htabluftvakuumpumpe, htabluftschweissabsaugungstk, htabluftessestk, htabluftrauchgasabzugstk, htabluftdigestoriumstk,
                                                                     htpunktabsaugungstk, htabluftsicherheitsschrankunterbaustk, htabluftsicherheitsschrankstk, htspuelestk, htkühlwasser, o2mangel, co2melder,
-                                                                    etrj45ports,
-                                                                    et64a3phasigeinzelanschluss, et32a3phasigeinzelanschluss, et16a3phasigeinzelanschluss, etdigestoriummsr230vsvstk, et5x10mm2digestoriumstk, et5x10mm2usvstk,
+                                                                    etrj45ports, et64a3phasigeinzelanschluss, et32a3phasigeinzelanschluss, et16a3phasigeinzelanschluss, etdigestoriummsr230vsvstk, et5x10mm2digestoriumstk, et5x10mm2usvstk,
                                                                     et5x10mm2svstk, et5x10mm2avstk, wasserqual3lmin, wasserqual2ltag, wasserqual1ltag, wasserqual3, wasserqual2, wasserqual1, lhe, lnltag, ln, n2reinheit, n2lmin,
-                                                                    arreinheit, arlmin, hereinheit, helmin, h2reinheit, h2lmin, dliso8573, dllmin, valmin, co2lmin, co2reinheit, o2lmin, o2reinheit, laserklasse) {
+                                                                    arreinheit, arlmin, hereinheit, helmin, h2reinheit, h2lmin, dliso8573, dllmin, valmin, co2lmin, co2reinheit, o2lmin, o2reinheit, laserklasse, AR_Statik, AR_AP) {
 
                                                                 $.ajax({
                                                                     url: "addRoom_all.php",
@@ -874,7 +970,9 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         "co2reinheit": co2reinheit,
                                                                         "o2lmin": o2lmin,
                                                                         "o2reinheit": o2reinheit,
-                                                                        "laserklasse": laserklasse
+                                                                        "laserklasse": laserklasse,
+                                                                        "AR_Statik": AR_Statik,
+                                                                        "AR_AP": AR_AP
                                                                     },
                                                                     type: "GET",
                                                                     success: function (data) {
