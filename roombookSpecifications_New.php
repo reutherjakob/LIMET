@@ -3,7 +3,6 @@ session_start();
 include '_utils.php';
 init_page_serversides();
 include 'roombookSpecifications_New_modal_addRoom.php';
-include 'roombookSpecifications_New_modal_change_column_visibilities.php';
 ?> 
 
 <!DOCTYPE html>
@@ -60,7 +59,12 @@ include 'roombookSpecifications_New_modal_change_column_visibilities.php';
                                 writing-mode: vertical-lr;
                             }
                             .spacer {
-                                width: 2px;
+                                width: 2px; 
+                            }
+                            .modal-dialog {
+                                margin: 0 auto;
+                                display: flex;
+                                justify-content: center;
                             }
 
                         </style>
@@ -71,7 +75,7 @@ include 'roombookSpecifications_New_modal_change_column_visibilities.php';
                                 <div id="limet-navbar" class=' '> </div> 
                                 <div class="mt-4 card">    
                                     <div class="card-header d-inline-flex" style="flex-wrap:nowrap" id='TableCardHeader'>  </div>
-                                    <div class="card-header d-inline-flex" style="flex-wrap:nowrap" id='TableCardHeader2'>  </div>
+                                    <!--<div class="card-header d-inline-flex" style="flex-wrap:nowrap" id='TableCardHeader2'>  </div>-->
                                     <div class="card-body" id = "table_container_div">
                                         <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" width ="100%" id="table_rooms" > 
                                             <thead <tr></tr> </thead>
@@ -97,6 +101,27 @@ include 'roombookSpecifications_New_modal_change_column_visibilities.php';
                                                         </div>         
                                                         </div> 
                                                         </div>
+
+
+                                                        <!--MODAL Visiblities-->
+                                                        <div class='modal fade modal-lg' id='VisModal' role='dialog' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+                                                            <div class='modal-dialog modal-lg modal-dialog-centered' role='document'>
+                                                                <div class='modal-content'>
+                                                                    <div class='modal-header'>            
+                                                                        <h4 class='modal-title'>Spalte aus-/einblenden</h4>
+                                                                        <button type='button' class='close' data-dismiss='modal'>×</button>
+                                                                    </div>
+                                                                    <div class='modal-body' id='mbody'>
+                                                                        <form role="form">       		
+                                                                            <div class="form-group" id ="CBXs"> 
+                                                                                <!-- populate MOdal Dynamically here-->
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
 
                                                         <script src="roombookSpecifications_constDeclarations.js"></script> 
                                                         <script>
@@ -149,46 +174,45 @@ include 'roombookSpecifications_New_modal_change_column_visibilities.php';
                                                                 table_click();
                                                                 event_table_keyz();
 
+                                                                populate_modal();
+                                                                init_vis_modal_functionality();
 
-//                                                                populateTableCardHeader2();
-//                                                                document.querySelectorAll('a.toggle-vis').forEach((el) => {
-//                                                                    el.addEventListener('click', function (e) {
-//                                                                        e.preventDefault();
-//
-//                                                                        let columnName = e.target.getAttribute('data-column');
-//                                                                        console.log("Column Name: " + columnName);
-//
-//                                                                        let column = table.column(columnName + ':name');
-//                                                                        console.log("Selected Column: ", column);
-//
-//                                                                        if (column.length) {
-//                                                                            console.log("Current visibility: " + column.visible());
-//                                                                            column.visible(!column.visible());
-//                                                                            console.log("Updated visibility: " + column.visible());
-//                                                                        } else {
-//                                                                            console.log("No column found with the name: " + columnName);
-//                                                                        }
-//                                                                    });
-//                                                                });
 
                                                             });
 
-                                                            function populateTableCardHeader2() {
-                                                                $('#TableCardHeader2').empty();
-                                                                var toggleDiv = $('<div>');
-                                                                columnsDefinition.forEach(function (column, index) {
-                                                                    if (column.visible !== false) {
-                                                                        var columnTitle = $('<a>').text(column.title).attr({
-                                                                            'class': 'toggle-vis',
-                                                                            'data-column': column.data,
-                                                                            'href': '#'
-                                                                        });
-                                                                        toggleDiv.append(columnTitle);
-                                                                        toggleDiv.append(' - ');
+                                                            function populate_modal() {
+                                                                var columnsPerRow = 4;
+                                                                var rows = Math.ceil(columnsDefinition.length - 5 / columnsPerRow);
+                                                                for (var i = 0; i < rows; i++) {
+                                                                    var row = $('<div class="row"></div>');
+                                                                    for (var j = 0; j < columnsPerRow; j++) {
+                                                                        var index = i * columnsPerRow + j + 5;
+                                                                        if (index < columnsDefinition.length) {
+                                                                            var columnDiv = $('<div class="col-sm-3"><div class="checkbox"><label><input type="checkbox" value="' + index + '" checked>' + columnsDefinition[index].title + '</label></div></div>');
+                                                                            row.append(columnDiv);
+                                                                        }
                                                                     }
-                                                                });
-                                                                $('#TableCardHeader2').append(toggleDiv);
+                                                                    $('#mbody .form-group').append(row);
+                                                                }
                                                             }
+
+                                                            function init_vis_modal_functionality() {
+                                                                $('#VisModal').on('show.bs.modal', function () {
+                                                                    console.log('Modal is being shown');
+                                                                    $('#CBXs input:checkbox').each(function () {
+                                                                        var column = table.column($(this).val());
+                                                                        console.log('Checkbox value: ' + $(this).val() + ', column visibility: ' + column.visible());
+                                                                        $(this).prop('checked', column.visible());
+                                                                    });
+                                                                });
+                                                                $('#CBXs').on('click', 'input:checkbox', function () {
+                                                                    console.log('Checkbox clicked. Value: ' + $(this).val() + ', checked: ' + $(this).prop('checked'));
+                                                                    var column = table.column($(this).val());
+                                                                    column.visible(!column.visible());
+                                                                });
+                                                            }
+
+
 
                                                             function checkAndToggleColumnsVisibility() {
                                                                 table.columns().every(function () {
@@ -200,7 +224,6 @@ include 'roombookSpecifications_New_modal_change_column_visibilities.php';
                                                                     }
                                                                 });
                                                             }
-
 
                                                             function check_angaben() {
                                                                 var selectedRows = table.rows({selected: true}).data();
@@ -352,7 +375,7 @@ include 'roombookSpecifications_New_modal_change_column_visibilities.php';
                                                                                 cell.html(html_2_plug_into_edit_cell(dataIdentifier));
                                                                                 table.keys.disable();
                                                                                 console.log(" Table keys should be off");
-                                                                            }      
+                                                                            }
                                                                             current_edit = true;
                                                                             cell.find('input, select').focus();
                                                                             table.keys.disable();
@@ -548,7 +571,7 @@ include 'roombookSpecifications_New_modal_change_column_visibilities.php';
                                                                     },
                                                                     keys: true,
                                                                     order: [[3, 'asc']],
-                                                                    stateSave: false,
+                                                                    stateSave: true,
                                                                     info: true,
                                                                     paging: true,
                                                                     pagingType: "simple_numbers",
@@ -599,7 +622,6 @@ include 'roombookSpecifications_New_modal_change_column_visibilities.php';
                                                                             className: '',
                                                                             id: 'btn_spalten_ausblenden',
                                                                             action: function (e, dt, node, config) {
-                                                                                populateModal();
                                                                                 $('#VisModal').modal('show');
                                                                             }
                                                                         },
@@ -621,9 +643,9 @@ include 'roombookSpecifications_New_modal_change_column_visibilities.php';
                                                                                 table.rows().deselect();
                                                                             }
                                                                         },
-                                                                        spacer, // spacer,
+
                                                                         {
-                                                                            text: ' Raum',
+                                                                            text: 'Add',
                                                                             className: 'btn btn_vis far fa-plus-square',
                                                                             action: function (e, dt, node, config) {
                                                                                 //  find_current_max_roomID();
@@ -631,7 +653,7 @@ include 'roombookSpecifications_New_modal_change_column_visibilities.php';
                                                                             }
                                                                         }, spacer,
                                                                         {
-                                                                            text: " R.Kopieren",
+                                                                            text: "Cpy",
                                                                             className: "btn far fa-window-restore",
                                                                             action: function (e, dt, node, config)
                                                                             {
@@ -639,8 +661,8 @@ include 'roombookSpecifications_New_modal_change_column_visibilities.php';
                                                                             }
                                                                         }, spacer,
                                                                         {
-                                                                            text: "Check",
-                                                                            className: "btn fas fa-coffee", //far fa-solid fa-fire-extinguisher",
+                                                                            text: "",
+                                                                            className: "btn fas fa-check", //far fa-solid fa-fire-extinguisher",
                                                                             action: function ()
                                                                             {
                                                                                 check_angaben();
