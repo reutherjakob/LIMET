@@ -16,9 +16,9 @@ check_login();
 			WHERE (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=" . $_SESSION["roomID"] . "))
 			ORDER BY tabelle_elemente.ElementID;";
         $result = $mysqli->query($sql);
-        $mysqli->close();
+        $mysqli->close(); 
 
-        echo"<table class='table table-striped table-bordered table-sm' id='tableRoomElements' cellspacing='0' width='100%'>
+        echo"<table class='table table-responsive table-striped table-bordered table-sm' id='tableRoomElements' cellspacing='0' width='100%'>
 	<thead><tr>
 	<th>ID</th>
 	<th class='cols-md-1'>Stück</th>
@@ -82,6 +82,7 @@ check_login();
                 var table = $("#tableRoomElements").DataTable({
                     searching: true,
                     info: true,
+                    responsive:true,
                     select: true,
                     order: [[1, "asc"]],
                     lengthChange: false,

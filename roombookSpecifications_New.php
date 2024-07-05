@@ -85,7 +85,7 @@ include 'roombookSpecifications_New_modal_change_column_visibilities.php';
                                         <div class="card-body" id="bauangaben"></div>
                                     </div>      
                                     <div class="mt-4 card">
-                                        <div class="card">
+                                        <div class="card  d-inline-flex">
                                             <div class="card-header card-header_size">
                                                 <button type="button" class="btn btn-outline-dark" id="showRoomElements"> <i class="fas fa-caret-left"></i></button> 
                                                 <input type="text" class ="pull-right fix_size " id="diy_searcher" placeholder="Search...">
@@ -347,14 +347,12 @@ include 'roombookSpecifications_New_modal_change_column_visibilities.php';
                                                                         currentRowInd = rowIndex;
                                                                         currentColInd = columnIndex;
                                                                         //console.log('Debug TableClick: Column index:', columnIndex, "; Acc4Vis ", index_accounting_4_visibility, '; Row index:', rowIndex, '; Column name (data identifier):', dataIdentifier, "; idTABELLE_Räume: ", RaumID, " Raumbezeichnung: ", Raumbez);
-
                                                                         if (getCase(dataIdentifier) !== "none-edit") {  //dataIdentifier !== "Bezeichnung" && dataIdentifier !== "Nummer") {
                                                                             if (!current_edit) {
                                                                                 cell.html(html_2_plug_into_edit_cell(dataIdentifier));
                                                                                 table.keys.disable();
                                                                                 console.log(" Table keys should be off");
-                                                                            }
-//                                                                                
+                                                                            }      
                                                                             current_edit = true;
                                                                             cell.find('input, select').focus();
                                                                             table.keys.disable();
@@ -372,7 +370,6 @@ include 'roombookSpecifications_New_modal_change_column_visibilities.php';
 //                                                                                        table.keys.disable();
 //                                                                                    }
 //                                                                                });
-
                                                                                 if (event.keyCode === 13 && current_edit) { // Enter key pressed
                                                                                     //console.log("Enter Keydown: ", $(this).val());
                                                                                     var newData = format_data_input($(this).val(), dataIdentifier);
@@ -386,7 +383,6 @@ include 'roombookSpecifications_New_modal_change_column_visibilities.php';
                                                                                         table.cell(cell.index()).select();
                                                                                     }
                                                                                 } // else {alert("DatEmpty: Enter valid params"); }
-
                                                                                 if (event.keyCode === 27 || event.type === "blur" || event.keyCode === 9) {// (event.keyCode >= 37 && event.keyCode <= 40) ||
                                                                                     cell.html(cellText);
                                                                                     current_edit = false;
@@ -591,7 +587,7 @@ include 'roombookSpecifications_New_modal_change_column_visibilities.php';
                                                                             })),
                                                                         spacer,
                                                                         {
-                                                                            text: 'w/ Data',
+                                                                            text: 'w/Data',
                                                                             className: '',
                                                                             id: 'toggleDatalessColumnsButton',
                                                                             action: function (e, dt, node, config) {
@@ -599,7 +595,7 @@ include 'roombookSpecifications_New_modal_change_column_visibilities.php';
                                                                             }
                                                                         },
                                                                         {
-                                                                            text: 'Ausblenden',
+                                                                            text: 'VIS',
                                                                             className: '',
                                                                             id: 'btn_spalten_ausblenden',
                                                                             action: function (e, dt, node, config) {
