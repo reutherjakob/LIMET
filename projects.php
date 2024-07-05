@@ -78,7 +78,7 @@ init_page_serversides("No Redirect");
                                                     </tr></thead>
                                                     <tbody>";
 
-                                                        while ($row = $result->fetch_assoc()) {
+                                                        while ($row = $result->fetch_assoc()) { 
                                                             echo "<tr>";
                                                             echo "<td>" . $row["idTABELLE_Projekte"] . "</td>";
                                                             echo "<td><button type='button' id='" . $row["idTABELLE_Projekte"] . "' class='btn btn-outline-dark btn-xs' value='changeProject' data-toggle='modal' data-target='#changeProjectModal'><i class='fas fa-pencil-alt'></i></button></td>";
