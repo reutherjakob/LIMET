@@ -1,4 +1,5 @@
-<?php //
+<?php
+//
 //include '_utils.php';
 ?>
 
@@ -81,3 +82,57 @@
         </div>
     </div>
 </div>
+
+
+
+
+<!-- MODAL Visiblities--><!--
+<div class='modal fade modal-lg' id='VisModal' role='dialog' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+    <div class='modal-dialog modal-lg modal-dialog-centered' role='document'>
+        <div class='modal-content'>
+            <div class='modal-header'>            
+                <h4 class='modal-title'>Spalte aus-/einblenden</h4>
+                <button type='button' class='close' data-dismiss='modal'>×</button>
+            </div>
+            <div class='modal-body' id='mbodyy'>
+                <form role="form">       		
+                    <div class="form-group" id ="CBXs"> 
+                         populate MOdal Dynamically here
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>-->
+<script>/*function populate_modal() {
+var columnsPerRow = 4;
+var rows = Math.ceil(columnsDefinition.length - 5 / columnsPerRow);
+for (var i = 0; i < rows; i++) {
+var row = $('<div class="row"></div>');
+for (var j = 0; j < columnsPerRow; j++) {
+var index = i * columnsPerRow + j + 5;
+if (index < columnsDefinition.length) {
+var columnDiv = $('<div class="col-sm-3"><div class="checkbox"><label><input type="checkbox" value="' + index + '" checked>' + columnsDefinition[index].title + '</label></div></div>');
+row.append(columnDiv);
+}
+}
+$('#mbodyy .form-group').append(row);
+}
+}
+
+function init_vis_modal_functionality() {
+$('#VisModal').on('show.bs.modal', function () {
+console.log('Modal is being shown');
+$('#CBXs input:checkbox').each(function () {
+var column = table.column($(this).val());
+console.log('Checkbox value: ' + $(this).val() + ', column visibility: ' + column.visible());
+$(this).prop('checked', column.visible());
+});
+});
+$('#CBXs').on('click', 'input:checkbox', function () {
+console.log('Checkbox clicked. Value: ' + $(this).val() + ', checked: ' + $(this).prop('checked'));
+var column = table.column($(this).val());
+column.visible(!column.visible());
+});
+} */</script>
+

@@ -58,13 +58,23 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             .rotated {
                                 writing-mode: vertical-lr;
                             }
-                            .spacer {
-                                width: 2px; 
+                            /*                            .spacer {
+                                                            width: 1px;   }  */
+
+                            /*                            .modal-dialog {
+                                                            margin: 0 auto;
+                                                            display: flex;
+                                                            justify-content: center;
+                                                        }*/
+
+                            .myColVisButton .dt-button-collection {
+                                width: 450px !important;
                             }
-                            .modal-dialog {
-                                margin: 0 auto;
-                                display: flex;
-                                justify-content: center;
+
+                            .myColVisButton .dt-button-collection .dt-button {
+                                width: 30%;
+                                float: left;
+                                margin: 5px;
                             }
 
                         </style>
@@ -103,26 +113,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                         </div>
 
 
-                                                        <!--MODAL Visiblities-->
-                                                        <div class='modal fade modal-lg' id='VisModal' role='dialog' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-                                                            <div class='modal-dialog modal-lg modal-dialog-centered' role='document'>
-                                                                <div class='modal-content'>
-                                                                    <div class='modal-header'>            
-                                                                        <h4 class='modal-title'>Spalte aus-/einblenden</h4>
-                                                                        <button type='button' class='close' data-dismiss='modal'>×</button>
-                                                                    </div>
-                                                                    <div class='modal-body' id='mbodyy'>
-                                                                        <form role="form">       		
-                                                                            <div class="form-group" id ="CBXs"> 
-                                                                                <!-- populate MOdal Dynamically here-->
-                                                                            </div>
-                                                                        </form>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-
                                                         <script src="roombookSpecifications_constDeclarations.js"></script> 
                                                         <script>
                                                             var table;
@@ -132,36 +122,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                             var currentColInd = 0;
                                                             let current_edit = false; //variable keeps track if the input field to ediot the cells is open
 
-                                                            /*
-                                                             function populateModal() {
-                                                             $('#VisModal .modal-dialog').empty();
-                                                             var toggleDiv = $('<div>');
-                                                             columnsDefinition.forEach(function (column, index) {
-                                                             if (column.visible !== false) {
-                                                             var columnTitle = $('<a>').text(column.title).attr({
-                                                             'class': 'toggle-vis',
-                                                             'data-column': index,
-                                                             'href': '#'
-                                                             });
-                                                             toggleDiv.append(columnTitle);
-                                                             toggleDiv.append(' - ');
-                                                             }
-                                                             });
-                                                             $('#VisModal .modal-dialog').append(toggleDiv);
-                                                             }
-                                                             
-                                                             document.querySelectorAll('a.toggle-vis').forEach((el) => {
-                                                             el.addEventListener('click', function (e) {
-                                                             e.preventDefault();
-                                                             
-                                                             let columnIdx = e.target.getAttribute('data-column');
-                                                             let column = table.column(columnIdx);
-                                                             
-                                                             // Toggle the visibility
-                                                             column.visible(!column.visible());
-                                                             });
-                                                             });
-                                                             */
 
                                                             $(document).ready(function () {
                                                                 init_dt();
@@ -173,46 +133,9 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                 init_visibilities();
                                                                 table_click();
                                                                 event_table_keyz();
-
-                                                                populate_modal();
-                                                                init_vis_modal_functionality();
-
-
+//                                                                populate_modal();
+//                                                                init_vis_modal_functionality();
                                                             });
-
-                                                            function populate_modal() {
-                                                                var columnsPerRow = 4;
-                                                                var rows = Math.ceil(columnsDefinition.length - 5 / columnsPerRow);
-                                                                for (var i = 0; i < rows; i++) {
-                                                                    var row = $('<div class="row"></div>');
-                                                                    for (var j = 0; j < columnsPerRow; j++) {
-                                                                        var index = i * columnsPerRow + j + 5;
-                                                                        if (index < columnsDefinition.length) {
-                                                                            var columnDiv = $('<div class="col-sm-3"><div class="checkbox"><label><input type="checkbox" value="' + index + '" checked>' + columnsDefinition[index].title + '</label></div></div>');
-                                                                            row.append(columnDiv);
-                                                                        }
-                                                                    }
-                                                                    $('#mbodyy .form-group').append(row);
-                                                                }
-                                                            }
-
-                                                            function init_vis_modal_functionality() {
-                                                                $('#VisModal').on('show.bs.modal', function () {
-                                                                    console.log('Modal is being shown');
-                                                                    $('#CBXs input:checkbox').each(function () {
-                                                                        var column = table.column($(this).val());
-                                                                        console.log('Checkbox value: ' + $(this).val() + ', column visibility: ' + column.visible());
-                                                                        $(this).prop('checked', column.visible());
-                                                                    });
-                                                                });
-                                                                $('#CBXs').on('click', 'input:checkbox', function () {
-                                                                    console.log('Checkbox clicked. Value: ' + $(this).val() + ', checked: ' + $(this).prop('checked'));
-                                                                    var column = table.column($(this).val());
-                                                                    column.visible(!column.visible());
-                                                                });
-                                                            }
-
-
 
                                                             function checkAndToggleColumnsVisibility() {
                                                                 table.columns().every(function () {
@@ -618,13 +541,19 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                             }
                                                                         },
                                                                         {
+                                                                            extend: 'colvis',
                                                                             text: 'VIS',
-                                                                            className: '',
-                                                                            id: 'btn_spalten_ausblenden',
-                                                                            action: function (e, dt, node, config) {
-                                                                                $('#VisModal').modal('show');
-                                                                            }
+                                                                            columns: ':gt(6)', // This will exclude the first 7 columns (0-6)
+                                                                            collectionLayout: 'fixed columns'
                                                                         },
+//                                                                        {
+//                                                                            text: 'VIS',
+//                                                                            className: '',
+//                                                                            id: 'btn_spalten_ausblenden',
+//                                                                            action: function (e, dt, node, config) {
+//                                                                                $('#VisModal').modal('show');
+//                                                                            }
+//                                                                        },
                                                                         {extend: 'spacer', text: "SELECT:", style: 'bar', className: "rotated"},
                                                                         {
                                                                             text: 'All',
@@ -643,7 +572,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                                 table.rows().deselect();
                                                                             }
                                                                         },
-
                                                                         {
                                                                             text: 'Add',
                                                                             className: 'btn btn_vis far fa-plus-square',
@@ -667,7 +595,13 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                             {
                                                                                 check_angaben();
                                                                             }
-                                                                        }, spacer, 'copy', 'excel', 'csv'
+                                                                        }, spacer, 'copy', 'csv',
+                                                                        {
+                                                                            extend: 'excelHtml5',
+                                                                            exportOptions: {
+                                                                                columns: ':visible'
+                                                                            }
+                                                                        }
                                                                     ]}).container().appendTo($('#TableCardHeader'));
                                                             }
 
@@ -746,7 +680,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                 var MTrelevant = $("#mt-relevant").val();
                                                                 save_new_room(nummer, name, funktionsteilstelle, MTrelevant);
                                                             });
-
                                                             function copySelectedRow() {
                                                                 if (confirm('Raum Kopieren??')) {
                                                                 } else {

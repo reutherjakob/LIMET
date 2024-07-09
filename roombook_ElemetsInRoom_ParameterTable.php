@@ -50,7 +50,7 @@ init_page_serversides();
                                 </div>      
                                 <div class='mt-4 card  bd-highlight'>
                                     <div class="card-header d-inline-flex align-items-center " id ="makeXLScardHeader" > 
-                                        <label class="form-check-label" style="margin-right: 20px;">  XLS COMPOSER   </label>
+                                        <label class="form-check-label" style="margin-right: 20px;">  XLS COMPOSER (Elements in Room Parameters) </label>
                                         <button class="btn-sm btn-success" id="addSheet">Add Sheet</button>
                                         <button class="btn-sm btn-link"id="download">Download Excel</button>
                                         <button class="btn-sm btn-danger" style="margin-right: 20px;" id="reset">Reset Excel</button>    </div>
