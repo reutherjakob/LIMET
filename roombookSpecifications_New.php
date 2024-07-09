@@ -111,7 +111,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         <h4 class='modal-title'>Spalte aus-/einblenden</h4>
                                                                         <button type='button' class='close' data-dismiss='modal'>×</button>
                                                                     </div>
-                                                                    <div class='modal-body' id='mbody'>
+                                                                    <div class='modal-body' id='mbodyy'>
                                                                         <form role="form">       		
                                                                             <div class="form-group" id ="CBXs"> 
                                                                                 <!-- populate MOdal Dynamically here-->
@@ -192,7 +192,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                             row.append(columnDiv);
                                                                         }
                                                                     }
-                                                                    $('#mbody .form-group').append(row);
+                                                                    $('#mbodyy .form-group').append(row);
                                                                 }
                                                             }
 

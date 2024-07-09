@@ -8,15 +8,13 @@
 include 'pdf_createBericht_MYPDFclass.php'; //require_once('TCPDF-master/TCPDF-master/tcpdf.php'); is in class file
 include 'pdf_createBericht_utils.php';
 include '_utils.php';
+include 'pdf_createMTTabelle.php';
 
 session_start();
 check_login();
-//if ($PDF_input_bools[8]) {
-include 'pdf_createMTTabelle.php'; //}
-//Input DATA from frontend-page
+
 $roomIDs = filter_input(INPUT_GET, 'roomID');
 $roomIDsArray = explode(",", $roomIDs);
-
 $mapping = array("raum_nr_alt" => "raum_nr_neu",
     "raumbezeichnung_alt" => "raumbezeichnung_neu",
     "funktionelle_raum_nr_alt" => "funktionelle_raum_nr_neu",
@@ -103,7 +101,6 @@ $mapping = array("raum_nr_alt" => "raum_nr_neu",
     "ET_Anschlussleistung_SV_W_alt" => "ET_Anschlussleistung_SV_W_neu",
     "ET_Anschlussleistung_ZSV_W_alt" => "ET_Anschlussleistung_ZSV_W_neu",
     "ET_Anschlussleistung_USV_W_alt" => "ET_Anschlussleistung_USV_W_neu",
-    
     "HT_Summe Kühlung W alt" => "HT_Summe Kühlung W neu",
     "HT_Luftmenge m3/h alt" => "HT_Luftmenge m3/h neu",
     "HT_Luftwechsel 1/h alt" => "HT_Luftwechsel 1/h neu",
@@ -140,7 +137,6 @@ $mapping = array("raum_nr_alt" => "raum_nr_neu",
     "AR_AnwesendePers alt" => "AR_AnwesendePers neu",
     "RaumnrBestand alt" => "RaumnrBestand neu",
     "GebaeudeBestand alt" => "GebaeudeBestand neu");
-
 $mp2 = array(//tabelle änderunge => tabelle_räume
     "funktionelle_raum_nr_neu" => "Funktionelle Raum Nr",
     "funktionsteilstelle_neu" => "Bezeichnung",
@@ -276,15 +272,12 @@ $SH = 297 - $marginTop - $marginBTM; // PDF_MARGIN_FOOTER;
 $horizontalSpacerLN = 4;
 $horizontalSpacerLN2 = 5;
 $horizontalSpacerLN3 = 8;
-
 $e_B = $SB / 6;
 $e_B_3rd = $e_B / 3;
 $e_B_2_3rd = $e_B - $e_B_3rd;
-
 $e_C = $SB / 8;
 $e_C_3rd = $e_C / 3;
 $e_C_2_3rd = $e_C - $e_C_3rd;
-
 $font_size = 6;
 
 $block_header_height = 10;
@@ -296,9 +289,11 @@ $pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A3");
 $pdf->AddPage('L', 'A3');
 $pdf->SetFillColor(0, 0, 0, 0); //$pdf->SetFillColor(244, 244, 244); 
 $pdf->SetFont('helvetica', '', $font_size);
+
 $mysqli = utils_connect_sql();
 
 foreach ($roomIDsArray as $valueOfRoomID) {
+
     $stmt = $mysqli->prepare("SELECT * FROM `tabelle_raeume_aenderungen` WHERE `raum_id`= ?  AND `Timestamp` > ?"); // (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
     $stmt->bind_param("is", $valueOfRoomID, $Änderungsdatum);
     $stmt->execute();
@@ -307,7 +302,6 @@ foreach ($roomIDsArray as $valueOfRoomID) {
     while ($row = $result->fetch_assoc()) {
         $changeSqlResult[] = $row;
     }
-
     $parameter_changes_t_räume = array();
     foreach ($mapping as $oldK => $newK) {
         $entries = array();
@@ -329,34 +323,27 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             }
         }
     }
-    $sql = "SELECT tabelle_räume.idTABELLE_Räume, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, tabelle_räume.`Fussboden OENORM B5220`, tabelle_räume.`Allgemeine Hygieneklasse`, tabelle_räume.Bauabschnitt, tabelle_räume.Nutzfläche, tabelle_räume.Abdunkelbarkeit, tabelle_räume.Strahlenanwendung, tabelle_räume.Laseranwendung, tabelle_räume.H6020, tabelle_räume.GMP, tabelle_räume.ISO, tabelle_räume.`1 Kreis O2`, tabelle_räume.`2 Kreis O2`, tabelle_räume.`1 Kreis Va`, tabelle_räume.`2 Kreis Va`, tabelle_räume.`1 Kreis DL-5`, tabelle_räume.`2 Kreis DL-5`, tabelle_räume.`DL-10`, tabelle_räume.`DL-tech`, tabelle_räume.CO2, tabelle_räume.NGA, tabelle_räume.N2O, tabelle_räume.AV, tabelle_räume.SV, tabelle_räume.ZSV, tabelle_räume.USV, tabelle_räume.Anwendungsgruppe, tabelle_räume.`Anmerkung MedGas`, tabelle_räume.`Anmerkung Elektro`, tabelle_räume.`Anmerkung HKLS`, tabelle_räume.`Anmerkung Geräte`, tabelle_räume.`Anmerkung FunktionBO`, tabelle_räume.`Anmerkung BauStatik`, tabelle_räume.HT_Waermeabgabe_W, tabelle_räume.`IT Anbindung`, tabelle_räume.`Fussboden OENORM B5220`, tabelle_räume.`Fussboden`, ROUND(tabelle_räume.`Umfang`,2) AS Umfang, ROUND(tabelle_räume.`Volumen`,2) AS Volumen, tabelle_räume.`Raumhoehe`, tabelle_räume.`Raumhoehe 2`, tabelle_räume.`Belichtungsfläche`, tabelle_projekte.Projektname, tabelle_planungsphasen.Bezeichnung, tabelle_räume.ET_Anschlussleistung_W, tabelle_räume.ET_Anschlussleistung_AV_W, tabelle_räume.ET_Anschlussleistung_SV_W, tabelle_räume.ET_Anschlussleistung_ZSV_W, tabelle_räume.ET_Anschlussleistung_USV_W, tabelle_räume.`EL_AV Steckdosen Stk`, tabelle_räume.`EL_SV Steckdosen Stk`, tabelle_räume.`EL_ZSV Steckdosen Stk`, tabelle_räume.`EL_USV Steckdosen Stk`, tabelle_räume.`ET_RJ45-Ports`, "
-            . "tabelle_räume.`EL_Roentgen 16A CEE Stk`, tabelle_räume.`EL_Laser 16A CEE Stk`, tabelle_räume.`EL_Einzel-Datendose Stk`, tabelle_räume.`EL_Doppeldatendose Stk`, tabelle_räume.`EL_Bodendose Typ`, tabelle_räume.`EL_Bodendose Stk`, tabelle_räume.`EL_Beleuchtung 1 Typ`, tabelle_räume.`EL_Beleuchtung 2 Typ`, tabelle_räume.`EL_Beleuchtung 3 Typ`, tabelle_räume.`EL_Beleuchtung 4 Typ`, tabelle_räume.`EL_Beleuchtung 5 Typ`, tabelle_räume.`EL_Beleuchtung 1 Stk`, tabelle_räume.`EL_Beleuchtung 2 Stk`, tabelle_räume.`EL_Beleuchtung 3 Stk`, tabelle_räume.`EL_Beleuchtung 4 Stk`, tabelle_räume.`EL_Beleuchtung 5 Stk`, tabelle_räume.`EL_Lichtschaltung BWM JA/NEIN`, tabelle_räume.`EL_Beleuchtung dimmbar JA/NEIN`, tabelle_räume.`EL_Brandmelder Decke JA/NEIN`, tabelle_räume.`EL_Brandmelder ZwDecke JA/NEIN`, tabelle_räume.`EL_Kamera Stk`, tabelle_räume.`EL_Lautsprecher Stk`, tabelle_räume.`EL_Uhr - Wand Stk`, tabelle_räume.`EL_Uhr - Decke Stk`, tabelle_räume.`EL_Lichtruf - Terminal Stk`, tabelle_räume.`EL_Lichtruf - Steckmodul Stk`, tabelle_räume.`EL_Lichtfarbe K`, tabelle_räume.`EL_Notlicht RZL Stk`, tabelle_räume.`EL_Notlicht SL Stk`, tabelle_räume.`EL_Jalousie JA/NEIN`, tabelle_räume.`HT_Luftmenge m3/h`, CAST(REPLACE(tabelle_räume.`HT_Luftwechsel 1/h`,',','.') as decimal(10,2)) AS `HT_Luftwechsel`, tabelle_räume.`HT_Kühlung Lueftung W`, tabelle_räume.`HT_Heizlast W`, tabelle_räume.`HT_Kühllast W`, tabelle_räume.`HT_Fussbodenkühlung W`, tabelle_räume.`HT_Kühldecke W`, tabelle_räume.`HT_Fancoil W`, tabelle_räume.`HT_Summe Kühlung W`, tabelle_räume.`HT_Raumtemp Sommer °C`, tabelle_räume.`HT_Raumtemp Winter °C`, tabelle_räume.`AR_Ausstattung`, tabelle_räume.`Aufenthaltsraum` "
-            . "FROM tabelle_planungsphasen INNER JOIN (tabelle_projekte INNER JOIN tabelle_räume ON tabelle_projekte.idTABELLE_Projekte = tabelle_räume.tabelle_projekte_idTABELLE_Projekte) ON tabelle_planungsphasen.idTABELLE_Planungsphasen = tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen WHERE (((tabelle_räume.idTABELLE_Räume)=" . $valueOfRoomID . "))";
 
+    $sql = "SELECT tabelle_räume.idTABELLE_Räume, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, tabelle_räume.`Fussboden OENORM B5220`, tabelle_räume.`Allgemeine Hygieneklasse`, tabelle_räume.Bauabschnitt, tabelle_räume.Nutzfläche, tabelle_räume.Abdunkelbarkeit, tabelle_räume.Strahlenanwendung, tabelle_räume.Laseranwendung, tabelle_räume.H6020, tabelle_räume.GMP, tabelle_räume.ISO, tabelle_räume.`1 Kreis O2`, tabelle_räume.`2 Kreis O2`, tabelle_räume.`1 Kreis Va`, tabelle_räume.`2 Kreis Va`, tabelle_räume.`1 Kreis DL-5`, tabelle_räume.`2 Kreis DL-5`, tabelle_räume.`DL-10`, tabelle_räume.`DL-tech`, tabelle_räume.CO2, tabelle_räume.NGA, tabelle_räume.N2O, tabelle_räume.AV, tabelle_räume.SV, tabelle_räume.ZSV, tabelle_räume.USV, tabelle_räume.Anwendungsgruppe, tabelle_räume.`Anmerkung MedGas`, tabelle_räume.`Anmerkung Elektro`, tabelle_räume.`Anmerkung HKLS`, tabelle_räume.`Anmerkung Geräte`, tabelle_räume.`Anmerkung FunktionBO`, tabelle_räume.`Anmerkung BauStatik`, tabelle_räume.HT_Waermeabgabe_W, tabelle_räume.`IT Anbindung`, tabelle_räume.`Fussboden OENORM B5220`, tabelle_räume.`Fussboden`, ROUND(tabelle_räume.`Umfang`,2) AS Umfang, ROUND(tabelle_räume.`Volumen`,2) AS Volumen, tabelle_räume.`Raumhoehe`, tabelle_räume.`Raumhoehe 2`, tabelle_räume.`Belichtungsfläche`, tabelle_projekte.Projektname, tabelle_planungsphasen.Bezeichnung, tabelle_räume.ET_Anschlussleistung_W, tabelle_räume.ET_Anschlussleistung_AV_W, tabelle_räume.ET_Anschlussleistung_SV_W, tabelle_räume.ET_Anschlussleistung_ZSV_W, tabelle_räume.ET_Anschlussleistung_USV_W, tabelle_räume.`EL_AV Steckdosen Stk`, tabelle_räume.`EL_SV Steckdosen Stk`, tabelle_räume.`EL_ZSV Steckdosen Stk`, tabelle_räume.`EL_USV Steckdosen Stk`, tabelle_räume.`ET_RJ45-Ports`, "
+            . "tabelle_räume.`EL_Roentgen 16A CEE Stk`,tabelle_räume.GMP, tabelle_räume.HT_Abluft_Digestorium_Stk, "
+            . "tabelle_räume.HT_Punktabsaugung_Stk, tabelle_räume.HT_Abluft_Sicherheitsschrank_Unterbau_Stk , tabelle_räume.HT_Abluft_Sicherheitsschrank_Stk, "
+            . " tabelle_räume.`EL_Laser 16A CEE Stk`, tabelle_räume.`EL_Einzel-Datendose Stk`, tabelle_räume.`EL_Doppeldatendose Stk`, tabelle_räume.`EL_Bodendose Typ`, tabelle_räume.`EL_Bodendose Stk`, tabelle_räume.`EL_Beleuchtung 1 Typ`, tabelle_räume.`EL_Beleuchtung 2 Typ`, tabelle_räume.`EL_Beleuchtung 3 Typ`, tabelle_räume.`EL_Beleuchtung 4 Typ`, tabelle_räume.`EL_Beleuchtung 5 Typ`, tabelle_räume.`EL_Beleuchtung 1 Stk`, tabelle_räume.`EL_Beleuchtung 2 Stk`, tabelle_räume.`EL_Beleuchtung 3 Stk`, tabelle_räume.`EL_Beleuchtung 4 Stk`, tabelle_räume.`EL_Beleuchtung 5 Stk`, tabelle_räume.`EL_Lichtschaltung BWM JA/NEIN`, tabelle_räume.`EL_Beleuchtung dimmbar JA/NEIN`, tabelle_räume.`EL_Brandmelder Decke JA/NEIN`, tabelle_räume.`EL_Brandmelder ZwDecke JA/NEIN`, tabelle_räume.`EL_Kamera Stk`, tabelle_räume.`EL_Lautsprecher Stk`, tabelle_räume.`EL_Uhr - Wand Stk`, tabelle_räume.`EL_Uhr - Decke Stk`, tabelle_räume.`EL_Lichtruf - Terminal Stk`, tabelle_räume.`EL_Lichtruf - Steckmodul Stk`, tabelle_räume.`EL_Lichtfarbe K`, tabelle_räume.`EL_Notlicht RZL Stk`, tabelle_räume.`EL_Notlicht SL Stk`, tabelle_räume.`EL_Jalousie JA/NEIN`, tabelle_räume.`HT_Luftmenge m3/h`, CAST(REPLACE(tabelle_räume.`HT_Luftwechsel 1/h`,',','.') as decimal(10,2)) AS `HT_Luftwechsel`, tabelle_räume.`HT_Kühlung Lueftung W`, tabelle_räume.`HT_Heizlast W`, tabelle_räume.`HT_Kühllast W`, tabelle_räume.`HT_Fussbodenkühlung W`, tabelle_räume.`HT_Kühldecke W`, tabelle_räume.`HT_Fancoil W`, tabelle_räume.`HT_Summe Kühlung W`, tabelle_räume.`HT_Raumtemp Sommer °C`, tabelle_räume.`HT_Raumtemp Winter °C`, tabelle_räume.`AR_Ausstattung`, tabelle_räume.`Aufenthaltsraum` "
+            . "FROM tabelle_planungsphasen INNER JOIN (tabelle_projekte INNER JOIN tabelle_räume ON tabelle_projekte.idTABELLE_Projekte = tabelle_räume.tabelle_projekte_idTABELLE_Projekte) ON tabelle_planungsphasen.idTABELLE_Planungsphasen = tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen WHERE (((tabelle_räume.idTABELLE_Räume)=" . $valueOfRoomID . "))";
     $result_rooms = $mysqli->query($sql);
     while ($row = $result_rooms->fetch_assoc()) {
         $pdf->SetFillColor(255, 255, 255);
         raum_header($pdf, $horizontalSpacerLN3, $SB, $row['Raumbezeichnung'], $row['Raumnr'], $row['Raumbereich Nutzer'], $row['Geschoss'], $row['Bauetappe'], $row['Bauabschnitt'], "A3", $parameter_changes_t_räume); //utils function 
-        //        foreach ($parameter_changes_t_räume as $item) { //FORENSICS
-        //            $pdf->MultiCell($e_C, 6, $item, 0, 'R', 0, 1);
-        //        }
-        //        $pdf->Ln($horizontalSpacerLN3);
-
         if (strlen($row['Anmerkung FunktionBO']) > 0) {
             $outstr = format_text(clean_string(br2nl($row['Anmerkung FunktionBO'])));
             $rowHeightComment = $pdf->getStringHeight($SB - $einzugPlus, $outstr, false, true, '', 1);
-            $i = 0;
-            if ($rowHeightComment > 6) {
-                $i = $horizontalSpacerLN;
-            }
+            $i = ($rowHeightComment > 6) ? $horizontalSpacerLN : 0;
 
             block_label_queer($block_header_w, $pdf, "BO-Beschr.", $rowHeightComment + $i, $block_header_height, $SB);
             $pdf->SetFont('helvetica', 'I', 10);
             $pdf->MultiCell($einzugPlus, $rowHeightComment, "", 0, 'L', 0, 0);
             $pdf->MultiCell($SB - $einzugPlus, $rowHeightComment, $outstr, 0, 'L', 0, 1);
-            if ($rowHeightComment > 6) {
+            if ($rowHeightComment > 6)
                 $pdf->Ln($horizontalSpacerLN);
-            }
         }
 
 //   ---------- ALLGEMEIN   ----------
@@ -468,27 +455,29 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                 $outsr = "-";
             }
             multicell_with_str($pdf, $outsr, $e_C_3rd, "");
-
-            multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'ET_RJ45-Ports', "RJ45-Ports: ", $parameter_changes_t_räume);
-            multicell_with_nr($pdf, $row['ET_RJ45-Ports'], "Stk", $pdf->getFontSizePt(), $e_C_3rd);
-
+            if ($_SESSION["projectPlanungsphase"] !== "Vorentwurf") {
+                multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'ET_RJ45-Ports', "RJ45-Ports: ", $parameter_changes_t_räume);
+                multicell_with_nr($pdf, $row['ET_RJ45-Ports'], "Stk", $pdf->getFontSizePt(), $e_C_3rd);
+            }
             multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'EL_Laser 16A CEE Stk', "CEE16A Laser: ", $parameter_changes_t_räume);
             multicell_with_nr($pdf, $row['EL_Laser 16A CEE Stk'], "Stk", $pdf->getFontSizePt(), $e_C_3rd);
 
-            $pdf->Ln($horizontalSpacerLN);
-            $pdf->MultiCell($block_header_w + $e_C, $block_header_height, "", 0, 'L', 0, 0);
+            if ($_SESSION["projectPlanungsphase"] !== "Vorentwurf") {
+                $pdf->Ln($horizontalSpacerLN);
+                $pdf->MultiCell($block_header_w + $e_C, $block_header_height, "", 0, 'L', 0, 0);
 
-            multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'EL_AV Steckdosen Stk', "AV SSD: ", $parameter_changes_t_räume);
-            multicell_with_str($pdf, $row['EL_AV Steckdosen Stk'], $e_C_3rd, "Stk");
+                multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'EL_AV Steckdosen Stk', "AV SSD: ", $parameter_changes_t_räume);
+                multicell_with_str($pdf, $row['EL_AV Steckdosen Stk'], $e_C_3rd, "Stk");
 
-            multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'EL_SV Steckdosen Stk', "SV SSD: ", $parameter_changes_t_räume);
-            multicell_with_str($pdf, $row['EL_SV Steckdosen Stk'], $e_C_3rd, "Stk");
+                multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'EL_SV Steckdosen Stk', "SV SSD: ", $parameter_changes_t_räume);
+                multicell_with_str($pdf, $row['EL_SV Steckdosen Stk'], $e_C_3rd, "Stk");
 
-            multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'EL_ZSV Steckdosen Stk', "ZSV SSD: ", $parameter_changes_t_räume);
-            multicell_with_str($pdf, $row['EL_ZSV Steckdosen Stk'], $e_C_3rd, "Stk");
+                multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'EL_ZSV Steckdosen Stk', "ZSV SSD: ", $parameter_changes_t_räume);
+                multicell_with_str($pdf, $row['EL_ZSV Steckdosen Stk'], $e_C_3rd, "Stk");
 
-            multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'EL_USV Steckdosen Stk', "USV SSD: ", $parameter_changes_t_räume);
-            multicell_with_str($pdf, $row['EL_USV Steckdosen Stk'], $e_C_3rd, "Stk");
+                multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'EL_USV Steckdosen Stk', "USV SSD: ", $parameter_changes_t_räume);
+                multicell_with_str($pdf, $row['EL_USV Steckdosen Stk'], $e_C_3rd, "Stk");
+            }
         }
 
         $pdf->Ln($horizontalSpacerLN2);
@@ -512,6 +501,24 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             $abwrem_out = "ca. " . kify($row['HT_Waermeabgabe_W']) . "W";
         }
         multicell_with_str($pdf, $abwrem_out, 4 * $e_C_3rd, "");
+
+        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "GMP", "GMP: ", $parameter_changes_t_räume);
+        multicell_with_str($pdf, $row['GMP'], $e_C_3rd, "");
+
+        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "HT_Punktabsaugung_Stk", "Punktabsaugung:", $parameter_changes_t_räume);
+        multicell_with_str($pdf, $row['HT_Punktabsaugung_Stk'], $e_C_3rd, "Stk");
+
+        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "HT_Abluft_Digestorium_Stk", "Abluft Digestorium:", $parameter_changes_t_räume);
+        multicell_with_str($pdf, $row['HT_Abluft_Digestorium_Stk'], $e_C_3rd, "Stk");
+
+        $pdf->Ln($horizontalSpacerLN2);
+        $pdf->Multicell($block_header_w, 1, "", 0, 0, 0, 0);
+
+        multicell_text_hightlight($pdf, $e_C_2_3rd + $e_C, $font_size, "HT_Abluft_Sicherheitsschrank_Stk", "Abluft Sicherheitsschrank:", $parameter_changes_t_räume);
+        multicell_with_str($pdf, $row['HT_Abluft_Sicherheitsschrank_Stk'], $e_C_3rd, "Stk");
+
+        multicell_text_hightlight($pdf, $e_C_2_3rd + $e_C, $font_size, "HT_Abluft_Sicherheitsschrank_Unterbau_Stk", "Abluft Sicherheitsschrank Unterbau:", $parameter_changes_t_räume);
+        multicell_with_str($pdf, $row['HT_Abluft_Sicherheitsschrank_Unterbau_Stk'], $e_C_3rd, "Stk");
 
         $pdf->Ln($horizontalSpacerLN2);
         anmA3($pdf, $row['Anmerkung HKLS'], $SB, $block_header_w);
@@ -574,10 +581,8 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 //
 ////     ------- MT Tabelle  ---------
 //
-        if ($_SESSION["projectPlanungsphase"] !== "Vorentwurf") {
-
-            // -------------------------Elemente im Raum laden-------------------------- 
-            $sql = "SELECT tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
+        // -------------------------Elemente im Raum laden-------------------------- 
+        $sql = "SELECT tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
             tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
             FROM tabelle_varianten INNER JOIN (tabelle_räume_has_tabelle_elemente INNER JOIN tabelle_elemente ON 
             tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON
@@ -587,51 +592,56 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
             HAVING (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=" . $valueOfRoomID . ") AND SummevonAnzahl > 0)
             ORDER BY tabelle_elemente.ElementID, tabelle_varianten.Variante;";
-            $result = $mysqli->query($sql);
+        $resultX = $mysqli->query($sql);
+        $rowcounter = 0;
+        while ($row2 = $resultX->fetch_assoc()) {
+            $rowcounter++;
+        }
+//        $row2 = $resultX->fetch_assoc();
+        $resultX->data_seek(0);
+
+        if (($_SESSION["projectPlanungsphase"] !== "Vorentwurf") && $rowcounter > 0) {
             // -----------------Projekt Elementparameter/Variantenparameter laden----------------------------
             $sql = "SELECT tabelle_parameter_kategorie.Kategorie,tabelle_parameter.Abkuerzung, tabelle_parameter.Bezeichnung, tabelle_parameter.idTABELLE_Parameter, tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie, tabelle_parameter.Abkuerzung
-            FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter) 
-            ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
-            WHERE (((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND tabelle_parameter.`Bauangaben relevant` = 1)
-            GROUP BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung
-            ORDER BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung;";
+                FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter) 
+                ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
+                WHERE (((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND tabelle_parameter.`Bauangaben relevant` = 1)
+                GROUP BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung
+                ORDER BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung;";
             $result1 = $mysqli->query($sql);
             // -------------------------Elemente parameter ------------------------- 
             $sql = "SELECT tabelle_projekt_elementparameter.Wert, tabelle_projekt_elementparameter.Einheit, tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten, 
-            tabelle_projekt_elementparameter.tabelle_elemente_idTABELLE_Elemente, tabelle_parameter.Bezeichnung, tabelle_parameter_kategorie.Kategorie, tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie, tabelle_parameter.idTABELLE_Parameter 
-            FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter) 
-            ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
-            WHERE (((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND tabelle_parameter.`Bauangaben relevant` = 1)
-            ORDER BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung;";
+                tabelle_projekt_elementparameter.tabelle_elemente_idTABELLE_Elemente, tabelle_parameter.Bezeichnung, tabelle_parameter_kategorie.Kategorie, tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie, tabelle_parameter.idTABELLE_Parameter 
+                FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter) 
+                ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
+                WHERE (((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND tabelle_parameter.`Bauangaben relevant` = 1)
+                ORDER BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung;";
             $result3 = $mysqli->query($sql);
 
-//        $formattedDate = f(); 
             $sql = "SELECT tabelle_projekt_elementparameter_aenderungen.idtabelle_projekt_elementparameter_aenderungen, tabelle_projekt_elementparameter_aenderungen.projekt, tabelle_projekt_elementparameter_aenderungen.element, tabelle_projekt_elementparameter_aenderungen.parameter, tabelle_projekt_elementparameter_aenderungen.variante, tabelle_projekt_elementparameter_aenderungen.wert_alt, tabelle_projekt_elementparameter_aenderungen.wert_neu, tabelle_projekt_elementparameter_aenderungen.einheit_alt, tabelle_projekt_elementparameter_aenderungen.einheit_neu, tabelle_projekt_elementparameter_aenderungen.timestamp, tabelle_projekt_elementparameter_aenderungen.user
-            FROM tabelle_projekt_elementparameter_aenderungen
-            WHERE (((tabelle_projekt_elementparameter_aenderungen.projekt)=" . $_SESSION["projectID"] . "))
-            AND tabelle_projekt_elementparameter_aenderungen.timestamp > '$Änderungsdatum'
-            ORDER BY tabelle_projekt_elementparameter_aenderungen.timestamp DESC;";
+                FROM tabelle_projekt_elementparameter_aenderungen
+                WHERE (((tabelle_projekt_elementparameter_aenderungen.projekt)=" . $_SESSION["projectID"] . "))
+                AND tabelle_projekt_elementparameter_aenderungen.timestamp > '$Änderungsdatum'
+                ORDER BY tabelle_projekt_elementparameter_aenderungen.timestamp DESC;";
             $changes = $mysqli->query($sql);
             $dataChanges = array();
-            while ($row = $changes->fetch_assoc()) {
-                $dataChanges[] = $row;
+            while ($row3 = $changes->fetch_assoc()) {
+                $dataChanges[] = $row3;
             }
             $dataChanges = filter_old_equal_new($dataChanges);
 
-            $initialMemory = memory_get_usage();
-            $row = $result->fetch_assoc();
-            $finalMemory = memory_get_usage();
-            $result->data_seek(0);
-            if ($finalMemory - $initialMemory > -8000) {
-                block_label_queer($block_header_w, $pdf, "Med.-tech.", 50, $block_header_height, $SB);
-                make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dataChanges);
-            }
+            block_label_queer($block_header_w, $pdf, "Med.-tech.", 50, $block_header_height, $SB);
+            make_MT_details_table($pdf, $resultX, $result1, $result3, $SB, $SH, $dataChanges);
+        } else if ($rowcounter > 0) {
+            $upcmn_blck_size = 10 + $rowcounter / 2 * 5;
+
+            block_label_queer($block_header_w, $pdf, "Med.-tech.", $upcmn_blck_size, $block_header_height, $SB); //el_in_room_html_table($pdf, $resultX, 1, "A3", $SB-$block_header_w);
+            make_MT_list($pdf, $SB, $block_header_w, ($rowcounter > 1), $resultX);
         }
     } //sql:fetch-assoc
 }// for every room 
 
-
 $mysqli->close();
 ob_end_clean(); // brauchts irgendwie.... ? 
 $pdf->Output('BAUANGABEN-MT.pdf', 'I');
- 
+
