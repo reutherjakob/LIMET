@@ -521,90 +521,89 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 
                                                             function init_btn_4_dt() {
                                                                 let spacer = {extend: 'spacer', style: 'bar', className: "spacer"};
-                                                                new $.fn.dataTable.Buttons(table, {
-                                                                    buttons: [
-                                                                        spacer, {extend: 'searchBuilder'}, spacer,
+                                                                let buttons = [
+                                                                    spacer,
+                                                                    {extend: 'searchBuilder'},
+                                                                    spacer
+                                                                ].concat(
                                                                         buttonRanges.map(button => ({
                                                                                 text: button.name,
                                                                                 className: 'btn_vis',
                                                                                 action: function (e, dt, node, config) {
                                                                                     toggleColumns(dt, button.start, button.end, button.name);
+                                                                                    updateButtonClass(node, dt, button.start, button.end);
                                                                                 }
-                                                                            })),
-                                                                        spacer,
-                                                                        {
-                                                                            text: 'w/Data',
-                                                                            className: '',
-                                                                            id: 'toggleDatalessColumnsButton',
-                                                                            action: function (e, dt, node, config) {
-                                                                                checkAndToggleColumnsVisibility(dt);
-                                                                            }
-                                                                        },
-                                                                        {
-                                                                            extend: 'colvis',
-                                                                            text: 'VIS',
-                                                                            columns: ':gt(6)', // This will exclude the first 7 columns (0-6)
-                                                                            collectionLayout: 'fixed columns'
-                                                                        },
-//                                                                        {
-//                                                                            text: 'VIS',
-//                                                                            className: '',
-//                                                                            id: 'btn_spalten_ausblenden',
-//                                                                            action: function (e, dt, node, config) {
-//                                                                                $('#VisModal').modal('show');
-//                                                                            }
-//                                                                        },
-                                                                        {extend: 'spacer', text: "SELECT:", style: 'bar', className: "rotated"},
-                                                                        {
-                                                                            text: 'All',
-                                                                            action: function () {
-                                                                                table.rows().select();
-                                                                            }
-                                                                        }, {
-                                                                            text: 'Visible',
-                                                                            action: function () {
-                                                                                table.rows(':visible').select();
-                                                                            }
-                                                                        },
-                                                                        {
-                                                                            text: 'None',
-                                                                            action: function () {
-                                                                                table.rows().deselect();
-                                                                            }
-                                                                        },
-                                                                        {
-                                                                            text: 'Add',
-                                                                            className: 'btn btn_vis far fa-plus-square',
-                                                                            action: function (e, dt, node, config) {
-                                                                                //  find_current_max_roomID();
-                                                                                $('#addRoomModal').modal('show'); //imported from rbSpecifications_New_modal_addRoom
-                                                                            }
-                                                                        }, spacer,
-                                                                        {
-                                                                            text: "Cpy",
-                                                                            className: "btn far fa-window-restore",
-                                                                            action: function (e, dt, node, config)
-                                                                            {
-                                                                                copySelectedRow();
-                                                                            }
-                                                                        }, spacer,
-                                                                        {
-                                                                            text: "",
-                                                                            className: "btn fas fa-check", //far fa-solid fa-fire-extinguisher",
-                                                                            action: function ()
-                                                                            {
-                                                                                check_angaben();
-                                                                            }
-                                                                        }, spacer, 'copy', 'csv',
-                                                                        {
-                                                                            extend: 'excelHtml5',
-                                                                            exportOptions: {
-                                                                                columns: ':visible'
-                                                                            }
+                                                                            }))
+                                                                        ).concat([
+                                                                    spacer,
+                                                                    {
+                                                                        text: 'w/Data',
+                                                                        className: '',
+                                                                        id: 'toggleDatalessColumnsButton',
+                                                                        action: function (e, dt, node, config) {
+                                                                            checkAndToggleColumnsVisibility(dt);
                                                                         }
-                                                                    ]}).container().appendTo($('#TableCardHeader'));
+                                                                    },
+                                                                    {
+                                                                        extend: 'colvis',
+                                                                        text: 'VIS',
+                                                                        columns: ':gt(6)',
+                                                                        collectionLayout: 'fixed columns'
+                                                                    },
+                                                                    {extend: 'spacer', text: "SELECT:", style: 'bar', className: "rotated"},
+                                                                    {
+                                                                        text: 'All',
+                                                                        action: function () {
+                                                                            table.rows().select();
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        text: 'Visible',
+                                                                        action: function () {
+                                                                            table.rows(':visible').select();
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        text: 'None',
+                                                                        action: function () {
+                                                                            table.rows().deselect();
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        text: 'Add',
+                                                                        className: 'btn btn_vis far fa-plus-square',
+                                                                        action: function (e, dt, node, config) {
+                                                                            $('#addRoomModal').modal('show');
+                                                                        }
+                                                                    },
+                                                                    spacer,
+                                                                    {
+                                                                        text: "Cpy",
+                                                                        className: "btn far fa-window-restore",
+                                                                        action: function (e, dt, node, config) {
+                                                                            copySelectedRow();
+                                                                        }
+                                                                    },
+                                                                    spacer,
+                                                                    {
+                                                                        text: "",
+                                                                        className: "btn fas fa-check",
+                                                                        action: function () {
+                                                                            check_angaben();
+                                                                        }
+                                                                    },
+                                                                    spacer,
+                                                                    'copy',
+                                                                    'csv',
+                                                                    {
+                                                                        extend: 'excelHtml5',
+                                                                        exportOptions: {
+                                                                            columns: ':visible'
+                                                                        }
+                                                                    }
+                                                                ]);
+                                                                new $.fn.dataTable.Buttons(table, {buttons: buttons}).container().appendTo($('#TableCardHeader'));
                                                             }
-
 
                                                             function init_visibilities() {
                                                                 if ($("#roomElements").is(':hidden')) {
@@ -620,29 +619,43 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                 });
                                                             }
 
+                                                            function updateButtonClass(button, table, startColumn, endColumn) {
+                                                                const columns = table.columns().indexes();
+                                                                var vis = table.column(columns[endColumn]).visible();
+                                                                if (vis) {
+                                                                    $(button).removeClass('btn_invis');
+                                                                    $(button).addClass('btn_vis');
+                                                                } else {
+                                                                    $(button).removeClass('btn_vis');
+                                                                    $(button).addClass('btn_invis');
+                                                                }
+                                                            }
+
                                                             function toggleColumns(table, startColumn, endColumn, button_name) {
                                                                 const columns = table.columns().indexes();
                                                                 var vis = !table.column(columns[endColumn]).visible();
                                                                 for (let i = startColumn; i <= endColumn; i++) {
                                                                     table.column(columns[i]).visible(vis);
                                                                 }
-
                                                                 if (button_name === 'Alle') {
                                                                     buttonRanges.forEach(button => {
                                                                         const btn = $(`.btn_vis:contains('${button.name}')`);
                                                                         if (vis) {
                                                                             btn.removeClass('btn_invis');
+                                                                            btn.addClass('btn_vis');
                                                                         } else {
+                                                                            btn.removeClass('btn_vis');
                                                                             btn.addClass('btn_invis');
                                                                         }
-
                                                                     });
                                                                 } else if (button_name === 'LAB') {
                                                                     ['L-GAS', 'L-ET', 'L-HT', 'L-H2O'].forEach(name => {
                                                                         const button = $(`.btn_vis:contains('${name}')`);
                                                                         if (vis) {
                                                                             button.removeClass('btn_invis');
+                                                                            button.addClass('btn_vis');
                                                                         } else {
+                                                                            button.removeClass('btn_vis');
                                                                             button.addClass('btn_invis');
                                                                         }
                                                                     });
@@ -650,11 +663,14 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                     const button = $(`.btn_vis:contains('${button_name}')`);
                                                                     if (vis) {
                                                                         button.removeClass('btn_invis');
+                                                                        button.addClass('btn_vis');
                                                                     } else {
+                                                                        button.removeClass('btn_vis');
                                                                         button.addClass('btn_invis');
                                                                     }
                                                                 }
                                                             }
+
 
 
 
@@ -680,6 +696,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                 var MTrelevant = $("#mt-relevant").val();
                                                                 save_new_room(nummer, name, funktionsteilstelle, MTrelevant);
                                                             });
+
                                                             function copySelectedRow() {
                                                                 if (confirm('Raum Kopieren??')) {
                                                                 } else {
