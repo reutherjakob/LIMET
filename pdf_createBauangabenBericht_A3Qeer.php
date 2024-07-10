@@ -146,7 +146,7 @@ $mp2 = array(//tabelle änderunge => tabelle_räume
     "AR_Akustik neu" => "",
     "NF_Soll neu" => "",
     "EL_Leistungsbedarf W/m2 neu" => "",
-    "HT_Notdusche neu" => "",
+    "HT_Notdusche neu" => "HT_Notdusche",
     "AR_Ausstattung neu" => "",
     "AR_APs neu" => "",
     "Raumtyp BH neu" => "",
@@ -415,7 +415,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $pdf->MultiCell($block_header_w, $block_header_height, "", 0, 'L', 0, 0);
 
         $outsr = "";
-        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'ET_Anschlussleistung_W', "Summe Leistung: ", $parameter_changes_t_räume);
+        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'ET_Anschlussleistung_W', "Summe Leistung:", $parameter_changes_t_räume);
 
         if ($row['ET_Anschlussleistung_W'] != "0") {
             $outsr = kify($row['ET_Anschlussleistung_W']) . "W";
@@ -492,7 +492,22 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         block_label_queer($block_header_w, $pdf, "Haustechnik", $Block_height, $block_header_height, $SB);
 
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "H6020", "H6020: ", $parameter_changes_t_räume);
-        multicell_with_str($pdf, $row['H6020'], $e_C_3rd, "");
+        multicell_with_str($pdf, $row['H6020'], $e_C_3rd+$e_C_3rd, "");
+
+        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "GMP", "GMP: ", $parameter_changes_t_räume);
+        multicell_with_str($pdf, $row['GMP'], $e_C_3rd, "");
+
+        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "HT_Abluft_Digestorium_Stk", "Abluft Digestorium:", $parameter_changes_t_räume);
+        multicell_with_str($pdf, $row['HT_Abluft_Digestorium_Stk'], $e_C_3rd, "Stk");
+
+        multicell_text_hightlight($pdf, $e_C_2_3rd + $e_C, $font_size, "HT_Abluft_Sicherheitsschrank_Stk", "Abluft Sicherheitsschrank:", $parameter_changes_t_räume);
+        multicell_with_str($pdf, $row['HT_Abluft_Sicherheitsschrank_Stk'], $e_C_3rd, "Stk");
+
+//        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "HT_Abluft_Digestorium_Stk", "Abluft Digestorium:", $parameter_changes_t_räume);
+//        multicell_with_str($pdf, $row['HT_Abluft_Digestorium_Stk'], $e_C_3rd, "Stk");
+
+        $pdf->Ln($horizontalSpacerLN2);
+        $pdf->Multicell($block_header_w, 1, "", 0, 0, 0, 0);
 
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "HT_Waermeabgabe_W", "Abwärme MT: ", $parameter_changes_t_räume);
         $abwrem_out = "";
@@ -501,23 +516,14 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         } else {
             $abwrem_out = "ca. " . kify($row['HT_Waermeabgabe_W']) . "W";
         }
-        multicell_with_str($pdf, $abwrem_out, 4 * $e_C_3rd, "");
-
-        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "GMP", "GMP: ", $parameter_changes_t_räume);
-        multicell_with_str($pdf, $row['GMP'], $e_C_3rd, "");
-
+        multicell_with_str($pdf, $abwrem_out, $e_C_3rd + $e_C_3rd, "");
+        
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "HT_Punktabsaugung_Stk", "Punktabsaugung:", $parameter_changes_t_räume);
         multicell_with_str($pdf, $row['HT_Punktabsaugung_Stk'], $e_C_3rd, "Stk");
 
-        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "HT_Abluft_Digestorium_Stk", "Abluft Digestorium:", $parameter_changes_t_räume);
-        multicell_with_str($pdf, $row['HT_Abluft_Digestorium_Stk'], $e_C_3rd, "Stk");
-
-        $pdf->Ln($horizontalSpacerLN2);
-        $pdf->Multicell($block_header_w, 1, "", 0, 0, 0, 0);
-
-        multicell_text_hightlight($pdf, $e_C_2_3rd + $e_C, $font_size, "HT_Abluft_Sicherheitsschrank_Stk", "Abluft Sicherheitsschrank:", $parameter_changes_t_räume);
-        multicell_with_str($pdf, $row['HT_Abluft_Sicherheitsschrank_Stk'], $e_C_3rd, "Stk");
-
+        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "HT_Notdusche", "Notdusche:", $parameter_changes_t_räume);
+        multicell_with_str($pdf, $row['HT_Notdusche'], $e_C_3rd, "");
+        
         multicell_text_hightlight($pdf, $e_C_2_3rd + $e_C, $font_size, "HT_Abluft_Sicherheitsschrank_Unterbau_Stk", "Abluft Sicherheitsschrank Unterbau:", $parameter_changes_t_räume);
         multicell_with_str($pdf, $row['HT_Abluft_Sicherheitsschrank_Unterbau_Stk'], $e_C_3rd, "Stk");
 
@@ -636,7 +642,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         } else {//if ($rowcounter > 0) {
             $upcmn_blck_size = 10 + $rowcounter / 2 * 5;
             block_label_queer($block_header_w, $pdf, "Med.-tech.", $upcmn_blck_size, $block_header_height, $SB); //el_in_room_html_table($pdf, $resultX, 1, "A3", $SB-$block_header_w);
-            $pdf->Line(15+$block_header_w, $pdf->GetY(), $SB + 15, $pdf->GetY(), array('width' => 0.2, 'cap' => 'round', 'join' => 'round', 'dash' => 4, 'color' => array(110, 150, 80)));
+            $pdf->Line(15 + $block_header_w, $pdf->GetY(), $SB + 15, $pdf->GetY(), array('width' => 0.2, 'cap' => 'round', 'join' => 'round', 'dash' => 4, 'color' => array(110, 150, 80)));
             make_MT_list($pdf, $SB, $block_header_w, ($rowcounter > 1), $resultX);
         }
     } //sql:fetch-assoc

@@ -29,6 +29,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                         <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
 
                         <style>
+
                             .btn_vis{
                                 background-color: rgba(100, 140, 25, 0.2)!important;
                                 color: black;
@@ -39,6 +40,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 color: black;
                                 box-shadow: 0 1px 1px 0 rgba(0,0,0,0.2), 0 0px 0px 0 rgba(0,0,0,0.10);
                             }
+                            
                             .card-header_size {
                                 height: 50px;
                                 width: auto;
@@ -57,25 +59,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             }
                             .rotated {
                                 writing-mode: vertical-lr;
-                            }
-                            /*                            .spacer {
-                                                            width: 1px;   }  */
-
-                            /*                            .modal-dialog {
-                                                            margin: 0 auto;
-                                                            display: flex;
-                                                            justify-content: center;
-                                                        }*/
-
-                            .myColVisButton .dt-button-collection {
-                                width: 450px !important;
-                            }
-
-                            .myColVisButton .dt-button-collection .dt-button {
-                                width: 30%;
-                                float: left;
-                                margin: 5px;
-                            }
+                            } 
 
                         </style>
 
@@ -536,21 +520,21 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                             }))
                                                                         ).concat([
                                                                     spacer,
-                                                                    {
-                                                                        text: 'w/Data',
-                                                                        className: '',
-                                                                        id: 'toggleDatalessColumnsButton',
-                                                                        action: function (e, dt, node, config) {
-                                                                            checkAndToggleColumnsVisibility(dt);
-                                                                        }
-                                                                    },
+//                                                                    {
+//                                                                        text: 'w/Data',
+//                                                                        className: '',
+//                                                                        id: 'toggleDatalessColumnsButton',
+//                                                                        action: function (e, dt, node, config) {
+//                                                                            checkAndToggleColumnsVisibility(dt);
+//                                                                        }
+//                                                                    },
                                                                     {
                                                                         extend: 'colvis',
                                                                         text: 'VIS',
                                                                         columns: ':gt(6)',
                                                                         collectionLayout: 'fixed columns'
                                                                     },
-                                                                    {extend: 'spacer', text: "SELECT:", style: 'bar', className: "rotated"},
+                                                                    {extend: 'spacer', text: "SELECT:", style: 'bar'},
                                                                     {
                                                                         text: 'All',
                                                                         action: function () {
@@ -568,15 +552,14 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         action: function () {
                                                                             table.rows().deselect();
                                                                         }
-                                                                    },
+                                                                    },spacer,
                                                                     {
                                                                         text: 'Add',
                                                                         className: 'btn btn_vis far fa-plus-square',
                                                                         action: function (e, dt, node, config) {
                                                                             $('#addRoomModal').modal('show');
                                                                         }
-                                                                    },
-                                                                    spacer,
+                                                                    }, 
                                                                     {
                                                                         text: "Cpy",
                                                                         className: "btn far fa-window-restore",
@@ -814,7 +797,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         selectedRowData["O2 Reinheit"],
                                                                         selectedRowData["Laserklasse"],
                                                                         selectedRowData["AR_Statik_relevant"],
-                                                                        selectedRowData["AR_AP_permanent"]
+                                                                        selectedRowData["AR_AP_permanent"],
+                                                                        selectedRowData["HT_Notdusche"]
                                                                         );
                                                             }
 
@@ -827,7 +811,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                     htpunktabsaugungstk, htabluftsicherheitsschrankunterbaustk, htabluftsicherheitsschrankstk, htspuelestk, htkühlwasser, o2mangel, co2melder,
                                                                     etrj45ports, et64a3phasigeinzelanschluss, et32a3phasigeinzelanschluss, et16a3phasigeinzelanschluss, etdigestoriummsr230vsvstk, et5x10mm2digestoriumstk, et5x10mm2usvstk,
                                                                     et5x10mm2svstk, et5x10mm2avstk, wasserqual3lmin, wasserqual2ltag, wasserqual1ltag, wasserqual3, wasserqual2, wasserqual1, lhe, lnltag, ln, n2reinheit, n2lmin,
-                                                                    arreinheit, arlmin, hereinheit, helmin, h2reinheit, h2lmin, dliso8573, dllmin, valmin, co2lmin, co2reinheit, o2lmin, o2reinheit, laserklasse, AR_Statik, AR_AP) {
+                                                                    arreinheit, arlmin, hereinheit, helmin, h2reinheit, h2lmin, dliso8573, dllmin, valmin, co2lmin, co2reinheit, o2lmin, o2reinheit, laserklasse, AR_Statik, AR_AP, Notdusche) {
 
                                                                 $.ajax({
                                                                     url: "addRoom_all.php",
@@ -940,7 +924,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         "o2reinheit": o2reinheit,
                                                                         "laserklasse": laserklasse,
                                                                         "AR_Statik": AR_Statik,
-                                                                        "AR_AP": AR_AP
+                                                                        "AR_AP": AR_AP,
+                                                                        "Notdusche": Notdusche
                                                                     },
                                                                     type: "GET",
                                                                     success: function (data) {
