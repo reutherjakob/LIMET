@@ -110,9 +110,13 @@ function newpage_or_spacer($pdf, $next_block_size, $LN = 8) {
     }
 }
 
-function check_4_new_page($pdf, $height) {
+function check_4_new_page($pdf, $height, $format = "") {
     $y = $pdf->GetY();     // Wenn Seitenende? Überprüfen und neue Seite anfangen
-    if (($y + $height) >= 270) {
+    $pagelength = 270;
+    if ($format === "A3") {
+        $pagelength = 290;
+    }
+    if (($y + $height) >= $pagelength) {
         $pdf->AddPage();
     }
 }
@@ -390,6 +394,7 @@ function strahlenanw($pdf, $param, $cellsize, $gr) {
 }
 
 function make_MT_list($pdf, $SB, $block_header_w, $booooool, $resultX) {
+    $pdf->SetLineStyle(array('width' => 0.1, 'cap' => 'round', 'join' => 'round', 'dash' => 6, 'color' => array(110, 150, 80)));
     $proportions = array(0.1, 0.1, 0.1, 0.1, 0.60);
     $spaces = array();
     foreach ($proportions as $prop) {
@@ -399,7 +404,7 @@ function make_MT_list($pdf, $SB, $block_header_w, $booooool, $resultX) {
     $fill = 0;
     $pdf->SetFillColor(244, 244, 244);
     $rowHeightFirstLine = $pdf->getStringHeight(50, "ID", false, true, '', 1);
-    $pdf->MultiCell($spaces[0], $rowHeightFirstLine, "ID", 'B', 'C', 0, 0);
+    $pdf->MultiCell($spaces[0], $rowHeightFirstLine, "ID", 'LB', 'C', 0, 0);
     $pdf->MultiCell($spaces[1], $rowHeightFirstLine, "Var", 'B', 'C', 0, 0);
     $pdf->MultiCell($spaces[2], $rowHeightFirstLine, "Stk", 'B', 'C', 0, 0);
     $pdf->MultiCell($spaces[3], $rowHeightFirstLine, "Bestand", 'B', 'C', 0, 0);
@@ -409,7 +414,7 @@ function make_MT_list($pdf, $SB, $block_header_w, $booooool, $resultX) {
         $pdf->MultiCell($spaces[1], $rowHeightFirstLine, "Var", 'B', 'C', 0, 0);
         $pdf->MultiCell($spaces[2], $rowHeightFirstLine, "Stk", 'B', 'C', 0, 0);
         $pdf->MultiCell($spaces[3], $rowHeightFirstLine, "Bestand", 'B', 'C', 0, 0);
-        $pdf->MultiCell($spaces[4], $rowHeightFirstLine, "Element", 'B', 'L', 0, 0);
+        $pdf->MultiCell($spaces[4], $rowHeightFirstLine, "Element", 'BR', 'L', 0, 0);
     }
     $pdf->Ln();
     $c_even = 0;
@@ -417,28 +422,31 @@ function make_MT_list($pdf, $SB, $block_header_w, $booooool, $resultX) {
         $borders = 'T';
         $pdf->SetFont('helvetica', '', 8);
         $rowHeightMainLine = $pdf->getStringHeight(50, $row['Bezeichnung'], false, true, '', 1);
-        check_4_new_page($pdf, $rowHeightMainLine);
+        check_4_new_page($pdf, $rowHeightMainLine, "A3");
         if (!$booooool || ($booooool && $c_even % 2 == 0)) {
-            $pdf->MultiCell($block_header_w, $rowHeightMainLine, "", $borders, 'R', $fill, 0);
+            $pdf->MultiCell($block_header_w, $rowHeightMainLine, "", "", 'R', "", 0);
         }
         $c_even++;
-        if ($booooool && ($c_even % 2 == 0)) {
+//        if ($booooool && ($c_even % 2 == 0)) {
             $borders = 'LT';
-        }
+//        }
         $pdf->MultiCell($spaces[0], $rowHeightMainLine, $row['ElementID'], $borders, 'C', $fill, 0);
         $borders = 'T';
         $pdf->MultiCell($spaces[1], $rowHeightMainLine, $row['Variante'], $borders, 'C', $fill, 0);
         $pdf->MultiCell($spaces[2], $rowHeightMainLine, $row['SummevonAnzahl'], $borders, 'C', $fill, 0);
         $pdf->MultiCell($spaces[3], $rowHeightMainLine, translateBestand($row['Neu/Bestand']), $borders, 'C', $fill, 0);
-        if ($booooool && ($c_even % 2 == 1)) {
+//        if ($booooool && ($c_even % 2 == 1)) {
             $borders = 'RT';
-        }
+//        }
         $pdf->MultiCell($spaces[4], $rowHeightMainLine, $row['Bezeichnung'], $borders, 'L', $fill, 0);
         if ($booooool && ($c_even % 2 == 0) || !$booooool) {
             $pdf->Ln();
             $fill = !$fill;
         }
-    }
+    }$pdf->Ln();
+    $pdf->Line(15+ $block_header_w, $pdf->GetY(), $SB + 15 , $pdf->GetY(), array('width' => 0.2, 'cap' => 'round', 'join' => 'round', 'dash' => 4, 'color' => array(110, 150, 80)));
+    $pdf->Line(15+ $block_header_w, $pdf->GetY() + 1, $SB + 15, $pdf->GetY() + 1, array('width' => 0.2, 'cap' => 'round', 'join' => 'round', 'dash' => 4, 'color' => array(110, 150, 80)));
+    $pdf->SetLineStyle(array('width' => 0.3, 'cap' => 'round', 'join' => 'round', 'dash' => 0, 'color' => array(0, 0, 0)));
 }
 
 function el_in_room_html_table($pdf, $result, $init_einzug, $format = "", $SB = 0) {

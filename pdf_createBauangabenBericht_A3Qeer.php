@@ -289,6 +289,7 @@ $pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A3");
 $pdf->AddPage('L', 'A3');
 $pdf->SetFillColor(0, 0, 0, 0); //$pdf->SetFillColor(244, 244, 244); 
 $pdf->SetFont('helvetica', '', $font_size);
+$pdf->SetLineStyle(array('width' => 0.3, 'cap' => 'round', 'join' => 'round', 'dash' => 0, 'color' => array(0, 20, 0)));
 
 $mysqli = utils_connect_sql();
 
@@ -632,10 +633,10 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
             block_label_queer($block_header_w, $pdf, "Med.-tech.", 50, $block_header_height, $SB);
             make_MT_details_table($pdf, $resultX, $result1, $result3, $SB, $SH, $dataChanges);
-        } else if ($rowcounter > 0) {
+        } else {//if ($rowcounter > 0) {
             $upcmn_blck_size = 10 + $rowcounter / 2 * 5;
-
             block_label_queer($block_header_w, $pdf, "Med.-tech.", $upcmn_blck_size, $block_header_height, $SB); //el_in_room_html_table($pdf, $resultX, 1, "A3", $SB-$block_header_w);
+            $pdf->Line(15+$block_header_w, $pdf->GetY(), $SB + 15, $pdf->GetY(), array('width' => 0.2, 'cap' => 'round', 'join' => 'round', 'dash' => 4, 'color' => array(110, 150, 80)));
             make_MT_list($pdf, $SB, $block_header_w, ($rowcounter > 1), $resultX);
         }
     } //sql:fetch-assoc
