@@ -78,7 +78,7 @@ init_page_serversides("No Redirect");
                                                     </tr></thead>
                                                     <tbody>";
 
-                                                        while ($row = $result->fetch_assoc()) { 
+                                                        while ($row = $result->fetch_assoc()) {
                                                             echo "<tr>";
                                                             echo "<td>" . $row["idTABELLE_Projekte"] . "</td>";
                                                             echo "<td><button type='button' id='" . $row["idTABELLE_Projekte"] . "' class='btn btn-outline-dark btn-xs' value='changeProject' data-toggle='modal' data-target='#changeProjectModal'><i class='fas fa-pencil-alt'></i></button></td>";
@@ -359,7 +359,7 @@ init_page_serversides("No Redirect");
                                             document.getElementById("bearbeitung").value = table.row($(this)).data()[9];
                                             document.getElementById("planungsphase").value = table.row($(this)).data()[11];
                                             document.getElementById("dateSelect").value = table.row($(this)).data()[12];
-                                             
+
                                             if (ext === '0') {
                                                 document.getElementById("vermerkeFilter").value = 0;
                                             }
@@ -561,7 +561,7 @@ init_page_serversides("No Redirect");
                                     });
 
                                     setTimeout(function () {
-                                        move_dt_search('#STH'); 
+                                        move_dt_search('#STH');
                                     }, 100);
 
                                     /*
@@ -695,17 +695,17 @@ init_page_serversides("No Redirect");
 //                                    console.log("Formatted Month: ", month);
                                     var formattedDate = day + '-' + month + '-' + year;
                                     console.log("Formatted Date: ", formattedDate);
-                                    return formattedDate; 
+                                    return formattedDate;
 
                                 }
 
                                 // ProjektÃ¤nderungen aus Modal speichern
                                 $("#saveProject").click(function () {
                                     var date = new Date($("#dateSelect").val());
-                                    var year = date.getFullYear(); 
-                                    var PBdate =  year + '-' + (date.getMonth() + 1) + '-' + date.getDate(); //Preisbasis
+                                    var year = date.getFullYear();
+                                    var PBdate = year + '-' + (date.getMonth() + 1) + '-' + date.getDate(); //Preisbasis
                                     console.log(PBdate);
-                                    
+
                                     var betten = $("#betten").val();
                                     var bgf = $("#bgf").val();
                                     var nf = $("#nf").val();
@@ -714,15 +714,17 @@ init_page_serversides("No Redirect");
                                     var active = $("#active").val();
                                     var neubau = $("#neubau").val();
 
-                                    if (active !== "" && neubau !== "" && bearbeitung !== "" && planungsphase !== "" && !isNaN(betten) && !isNaN(bgf) && !isNaN(nf) && !isNaN(year)) {
+                                    if (active !== "" && neubau !== "" && bearbeitung !== "" && planungsphase !== "" && !isNaN(betten) && !isNaN(bgf) && !isNaN(nf) ) {
                                         $('#changeProjectModal').modal('hide');
-
+                                        if (isNaN(year)) {
+                                            PBdate = "0000-00-00";
+                                        }  
                                         $.ajax({
                                             url: "saveProject.php",
-                                            data: {"active": active, "neubau": neubau, "bearbeitung": bearbeitung, "planungsphase": planungsphase, "betten": betten, "bgf": bgf, "nf": nf, "PBdate":PBdate},
+                                            data: {"active": active, "neubau": neubau, "bearbeitung": bearbeitung, "planungsphase": planungsphase, "betten": betten, "bgf": bgf, "nf": nf, "PBdate": PBdate},
                                             type: "GET",
                                             success: function (data) {
-                                                alert(data); 
+                                                alert(data);
                                                 location.reload();
                                             }
                                         });
