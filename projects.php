@@ -714,9 +714,9 @@ init_page_serversides("No Redirect");
                                     var active = $("#active").val();
                                     var neubau = $("#neubau").val();
 
-                                    if (active !== "" && neubau !== "" && bearbeitung !== "" && planungsphase !== "" && !isNaN(betten) && !isNaN(bgf) && !isNaN(nf) && !isNaN(year)) {
+                                    if (active !== "" && neubau !== "" && bearbeitung !== "" && planungsphase !== "" && !isNaN(betten) && !isNaN(bgf) && !isNaN(nf) ) {
                                         $('#changeProjectModal').modal('hide');
-
+                                        if(isNaN(year)){PBdate = "0000-00-00"; }
                                         $.ajax({
                                             url: "saveProject.php",
                                             data: {"active": active, "neubau": neubau, "bearbeitung": bearbeitung, "planungsphase": planungsphase, "betten": betten, "bgf": bgf, "nf": nf, "PBdate":PBdate},
