@@ -279,17 +279,21 @@ $e_C = $SB / 8;
 $e_C_3rd = $e_C / 3;
 $e_C_2_3rd = $e_C - $e_C_3rd;
 $font_size = 6;
-
 $block_header_height = 10;
 $block_header_w = 25;
 $einzugPlus = 10; //um den text auf die Höhe der Anderen Angaben zu shiften bei ANM BO
+
+$colour_line= array(110, 150, 80);
+$style_dashed = array('width' => 0.1, 'cap' => 'round', 'join' => 'round', 'dash' => 4, 'color' => $colour_line); //$pdf->SetLineStyle(array('width' => 0.1, 'cap' => 'round', 'join' => 'round', 'dash' => 6, 'color' => array(110, 150, 80)));
+$style_normal = array('width' => 0.3, 'cap' => 'round', 'join' => 'round', 'dash' => 0, 'color' => $colour_line);
+//$color_highlight = 0;
 
 $pdf = new MYPDF('L', PDF_UNIT, "A3", true, 'UTF-8', false, true);
 $pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A3");
 $pdf->AddPage('L', 'A3');
 $pdf->SetFillColor(0, 0, 0, 0); //$pdf->SetFillColor(244, 244, 244); 
 $pdf->SetFont('helvetica', '', $font_size);
-$pdf->SetLineStyle(array('width' => 0.3, 'cap' => 'round', 'join' => 'round', 'dash' => 0, 'color' => array(0, 20, 0)));
+$pdf->SetLineStyle($style_normal);
 
 $mysqli = utils_connect_sql();
 
@@ -492,7 +496,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         block_label_queer($block_header_w, $pdf, "Haustechnik", $Block_height, $block_header_height, $SB);
 
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "H6020", "H6020: ", $parameter_changes_t_räume);
-        multicell_with_str($pdf, $row['H6020'], $e_C_3rd+$e_C_3rd, "");
+        multicell_with_str($pdf, $row['H6020'], $e_C_3rd + $e_C_3rd, "");
 
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "GMP", "GMP: ", $parameter_changes_t_räume);
         multicell_with_str($pdf, $row['GMP'], $e_C_3rd, "");
@@ -517,13 +521,13 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             $abwrem_out = "ca. " . kify($row['HT_Waermeabgabe_W']) . "W";
         }
         multicell_with_str($pdf, $abwrem_out, $e_C_3rd + $e_C_3rd, "");
-        
+
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "HT_Punktabsaugung_Stk", "Punktabsaugung:", $parameter_changes_t_räume);
         multicell_with_str($pdf, $row['HT_Punktabsaugung_Stk'], $e_C_3rd, "Stk");
 
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "HT_Notdusche", "Notdusche:", $parameter_changes_t_räume);
         multicell_with_str($pdf, $row['HT_Notdusche'], $e_C_3rd, "");
-        
+
         multicell_text_hightlight($pdf, $e_C_2_3rd + $e_C, $font_size, "HT_Abluft_Sicherheitsschrank_Unterbau_Stk", "Abluft Sicherheitsschrank Unterbau:", $parameter_changes_t_räume);
         multicell_with_str($pdf, $row['HT_Abluft_Sicherheitsschrank_Unterbau_Stk'], $e_C_3rd, "Stk");
 
@@ -639,11 +643,14 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
             block_label_queer($block_header_w, $pdf, "Med.-tech.", 50, $block_header_height, $SB);
             make_MT_details_table($pdf, $resultX, $result1, $result3, $SB, $SH, $dataChanges);
-        } else {//if ($rowcounter > 0) {
+        } else if ($rowcounter > 0) {
             $upcmn_blck_size = 10 + $rowcounter / 2 * 5;
             block_label_queer($block_header_w, $pdf, "Med.-tech.", $upcmn_blck_size, $block_header_height, $SB); //el_in_room_html_table($pdf, $resultX, 1, "A3", $SB-$block_header_w);
-            $pdf->Line(15 + $block_header_w, $pdf->GetY(), $SB + 15, $pdf->GetY(), array('width' => 0.2, 'cap' => 'round', 'join' => 'round', 'dash' => 4, 'color' => array(110, 150, 80)));
-            make_MT_list($pdf, $SB, $block_header_w, ($rowcounter > 1), $resultX);
+            $pdf->Line(15 + $block_header_w, $pdf->GetY(), $SB + 15, $pdf->GetY(), $style_dashed);
+            make_MT_list($pdf, $SB, $block_header_w, ($rowcounter > 1), $resultX, $style_normal, $style_dashed);
+        } else {
+            $pdf->Line(15, $pdf->GetY(), $SB + 15, $pdf->GetY(), $style_normal);
+            $pdf->Ln();
         }
     } //sql:fetch-assoc
 }// for every room 

@@ -393,8 +393,8 @@ function strahlenanw($pdf, $param, $cellsize, $gr) {
     $pdf->SetFont('helvetica', '', $originalFontSize);
 }
 
-function make_MT_list($pdf, $SB, $block_header_w, $booooool, $resultX) {
-    $pdf->SetLineStyle(array('width' => 0.1, 'cap' => 'round', 'join' => 'round', 'dash' => 6, 'color' => array(110, 150, 80)));
+function make_MT_list($pdf, $SB, $block_header_w, $booooool, $resultX, $style_normal, $style_dashed) {
+    $pdf->SetLineStyle($style_dashed);
     $proportions = array(0.1, 0.1, 0.1, 0.1, 0.60);
     $spaces = array();
     foreach ($proportions as $prop) {
@@ -444,10 +444,13 @@ function make_MT_list($pdf, $SB, $block_header_w, $booooool, $resultX) {
             $fill = !$fill;
         }
     }$pdf->Ln();
-    $pdf->Line(15+ $block_header_w, $pdf->GetY(), $SB + 15 , $pdf->GetY(), array('width' => 0.2, 'cap' => 'round', 'join' => 'round', 'dash' => 4, 'color' => array(110, 150, 80)));
-    $pdf->Line(15+ $block_header_w, $pdf->GetY() + 1, $SB + 15, $pdf->GetY() + 1, array('width' => 0.2, 'cap' => 'round', 'join' => 'round', 'dash' => 4, 'color' => array(110, 150, 80)));
-    $pdf->SetLineStyle(array('width' => 0.3, 'cap' => 'round', 'join' => 'round', 'dash' => 0, 'color' => array(0, 0, 0)));
+    $pdf->Line(15+ $block_header_w, $pdf->GetY(), $SB + 15 , $pdf->GetY(),$style_dashed);
+    
+    $pdf->SetLineStyle($style_normal);
+    $pdf->Line(15, $pdf->GetY() + 1, $SB + 15, $pdf->GetY() + 1, $style_normal);
 }
+
+
 
 function el_in_room_html_table($pdf, $result, $init_einzug, $format = "", $SB = 0) {
     $pdf->MultiCell($init_einzug, 10, "", 0, "C", 0, 0);
