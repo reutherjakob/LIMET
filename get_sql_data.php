@@ -22,7 +22,7 @@ while ($row = $result->fetch_assoc()) {
 }
 
 echorow($data); 
-$mysqli ->close();
+$mysqli ->close(); 
 
 
 

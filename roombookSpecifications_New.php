@@ -94,7 +94,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                         </div> 
                                                         </div>         
                                                         </div> 
-                                                        </div>
+                                                        </div> 
 
 
                                                         <script src="roombookSpecifications_constDeclarations.js"></script> 
@@ -670,7 +670,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         $('#diy_searcher').hide();
                                                                     }
                                                                 });
-                                                            }
+                                                            } 
 
                                                             $("#saveNewRoom").click(function () {
                                                                 var nummer = $("#nummer").val();
