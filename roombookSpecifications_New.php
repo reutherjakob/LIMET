@@ -804,7 +804,7 @@ include '_scrollUpBtn.php';
                                                                         "bauabschnitt": bauabschnitt,
                                                                         "nutzfläche": nutzfläche,
                                                                         "abdunkelbarkeit": abdunkelbarkeit,
-                                                                        "strahlenanwendung": strahlenanwendung,
+                                                                        "strahlenanwendung": strahlenanwendung, 
                                                                         "laseranwendung": laseranwendung,
                                                                         "h6020": h6020,
                                                                         "gmp": gmp,
