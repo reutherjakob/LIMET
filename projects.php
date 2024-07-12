@@ -1,10 +1,8 @@
 <?php
 session_start();
-include '_utils.php';ne
+include '_utils.php';
 init_page_serversides("No Redirect");
 ?> 
-
-
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"> 
@@ -14,7 +12,6 @@ init_page_serversides("No Redirect");
         <meta name="viewport" content="width=device-width, initial-scale=1">
             <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
             <link rel="icon" href="iphone_favicon.png">
-
                 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
                     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
                         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
