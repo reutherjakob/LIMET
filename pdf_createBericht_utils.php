@@ -1,5 +1,6 @@
 <?php
 
+
 ///------------------  DATA FUNCTIONS  ------------------
 function filter_old_equal_new($data) {
     $groupedData = [];
@@ -42,6 +43,7 @@ function getValidatedDateFromURL() {
     }
 }
 
+>>>>>>> UpdateBauangabenSeite
 function kify($input) {
     if (is_numeric($input)) {
         if ($input >= 1000) {
@@ -166,7 +168,6 @@ function getAnmHeight($pdf, $inp_text, $SB) {
 }
 
 function anmA3($pdf, $inp_text, $SB, $block_header_w) {
-//    if($pdf->GetX() > 60 ) {$pdf->Ln(10);} 
     if ($inp_text != "keine Angaben MT" && $inp_text != "") {
         $outstr = "Anm.: " . format_text(clean_string(br2nl($inp_text)));
         if (strlen($outstr) > 0 && is_not_no_comment($outstr)) {
@@ -316,6 +317,73 @@ function multicell_text_hightlight($pdf, $breite, $font_size, $parameter_sql_nam
         $pdf->SetFillColor(255, 255, 255);
     }
     $pdf->MultiCell($breite, $font_size, $pdf_text, 0, $side, 1, 0);
+}
+
+function format_text($string) {
+    $spacer = ". ";
+//    $string = preg_replace("/\s+\n/", "\n", $string); // Remove spaces before \n
+//    $string = str_replace("\n", $spacer, $string);
+//    $return = str_replace("..", ".", $string);
+//    if (preg_match('/²/', $string)) {
+//        // Replace the superscript 2 with <sup>2</sup>
+//        $return = str_replace('²', '<sup>2</sup>', $string);
+//    } else {
+//        $return = $string;
+//    }
+
+    // Format the string for a multicell
+//     = '<p>' . $return . '</p>';
+    $return=$string; 
+    return $return;
+}
+
+function clean_string($dirty_str) {
+    $clean_string = preg_replace('/[^äüö\n(\x20-\x7F)]*/u', '', $dirty_str);
+    return $clean_string;
+}
+
+function newpage_or_spacerA3($pdf, $next_block_size, $SH, $LN = 8) {
+    $y = $pdf->GetY();
+    if (($y + $next_block_size) >= 270) {
+        $pdf->AddPage();
+    } else {
+        if ($y < 20) {
+            
+        } else {
+            $pdf->Ln($LN);
+        }
+    }
+}
+
+function newpage_or_spacer($pdf, $next_block_size, $LN = 8) {
+    $y = $pdf->GetY();
+    if (($y + $next_block_size) >= 270) {
+        $pdf->AddPage();
+    } else {
+        if ($y < 20) {
+            
+        } else {
+            $pdf->Ln($LN);
+        }
+    }
+}
+
+function check_4_new_page($pdf, $height=0) {
+    $y = $pdf->GetY();     // Wenn Seitenende? Überprüfen und neue Seite anfangen
+    if (($y + $height) >= 270) {
+        $pdf->AddPage();
+    }
+}
+
+function dashed_line($pdf, $offset) {
+    $pdf->SetLineStyle(array('dash' => 2, 'color' => array(0, 0, 0)));
+    $y = $pdf->GetY() + $offset;
+    $pdf->Line(25, $y, 185, $y);
+    $pdf->SetLineStyle(array('dash' => 0, 'color' => array(0, 0, 0)));
+}
+
+function translateBestand($value) {
+    return ($value == 0) ? 'Ja' : 'Nein';
 }
 
 function multicell_with_stk($pdf, $NR, $einzug) {

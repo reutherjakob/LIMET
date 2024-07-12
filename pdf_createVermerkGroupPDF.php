@@ -2,7 +2,7 @@
 
 require_once('TCPDF-master/TCPDF-master/tcpdf.php');
 
-// extend TCPF with custom functions
+// extend TCPF with custom functions 
 class MYPDF extends TCPDF {
 
     //Page header
