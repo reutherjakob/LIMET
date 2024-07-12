@@ -1,31 +1,47 @@
 <?php
 session_start();
 include '_utils.php';
+if (isset($_GET["key"])) {
+    $key = filter_var($_GET["key"], FILTER_SANITIZE_STRING);
+} else {
+    $key = "TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen ";
+}
+if (isset($_GET["value"])) {
+    $value = filter_var($_GET["value"], FILTER_SANITIZE_STRING);
+} else {
+    $value = "0";
+}
+if ($key === "TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen") {
+    $key = "idTABELLE_Funktionsteilstellen";
+}
+
+//echo "Key: ". $key. " Value: ". $value. "<br>"; 
 
 $mysqli = utils_connect_sql();
-$stmt = $mysqli->prepare("
-    SELECT*
+$stmt = " SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte,tabelle_räume.idTABELLE_Räume, 
+           tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, 
+           tabelle_funktionsteilstellen.Nummer,tabelle_funktionsteilstellen.Bezeichnung,
+           tabelle_räume.`MT-relevant`,tabelle_räume.Raumnr,tabelle_räume.Raumbezeichnung, 
+           tabelle_räume.`Funktionelle Raum Nr`,tabelle_räume.Raumnummer_Nutzer, 
+           tabelle_räume.`Raumbereich Nutzer`,tabelle_räume.Strahlenanwendung, 
+           tabelle_räume.Laseranwendung,tabelle_räume.H6020,tabelle_räume.Anwendungsgruppe
     FROM tabelle_räume
     INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
-    WHERE (tabelle_funktionsteilstellen.Nummer= ?)
-    ORDER BY tabelle_räume.Raumnr
-                ");  
+    WHERE (tabelle_funktionsteilstellen." . $key . " =" . $value . " AND `MT-relevant` =1)
+    ORDER BY tabelle_räume.Raumnr";
 
-$passParam= '1.09.00' ; 
-$stmt->bind_param("s", $passParam);
-$stmt->execute();
-$result = $stmt->get_result();
-
+$result = $mysqli->query($stmt);
+$mysqli->close();
+ 
 $data = array();
 while ($row = $result->fetch_assoc()) {
     $data[] = $row;
 }
-
-echorow($data); 
-$mysqli ->close(); 
-
-
-
+ 
+//echorow($data); 
+header('Content-Type: application/json');
+echo json_encode($data);
+ 
 /* 
 Aufruf von Bauangaben von Vergleichsräume:
 Dazu kannst du die Abfrage der Bauangaben-Neu verwenden und TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen nach dem Wert des aktuellen Raumes suchen

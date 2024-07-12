@@ -3,6 +3,7 @@ session_start();
 include '_utils.php';
 init_page_serversides();
 include 'roombookSpecifications_New_modal_addRoom.php';
+include '_scrollUpBtn.php'; 
 ?> 
 
 <!DOCTYPE html>
@@ -23,11 +24,9 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
                     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
                     <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.css" rel="stylesheet">
-
                         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
                         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
                         <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
-
                         <style>
 
                             .btn_vis{
@@ -62,9 +61,9 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             } 
 
                         </style>
-
                         </head> 
                         <body style="height:100%"> 
+                            
                             <div class="container-fluid ">
                                 <div id="limet-navbar" class=' '> </div> 
                                 <div class="mt-4 card">    
@@ -94,8 +93,28 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                         </div> 
                                                         </div>         
                                                         </div> 
-                                                        </div> 
+                                                        </div>
 
+
+
+                                                        <!--MODAL Visiblities
+                                                        <div class='modal fade modal-lg' id='VisModal' role='dialog' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+                                                            <div class='modal-dialog modal-lg modal-dialog-centered' role='document'>
+                                                                <div class='modal-content'>
+                                                                    <div class='modal-header'>            
+                                                                        <h4 class='modal-title'>Spalte aus-/einblenden</h4>
+                                                                        <button type='button' class='close' data-dismiss='modal'>×</button>
+                                                                    </div>
+                                                                    <div class='modal-body' id='mbody'>
+                                                                        <form role="form">       		
+                                                                            <div class="form-group" id ="CBXs"> 
+                                                                              
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div> -->
 
                                                         <script src="roombookSpecifications_constDeclarations.js"></script> 
                                                         <script>
@@ -487,10 +506,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         [10, 20, -1],
                                                                         ['10 rows', '20 rows', 'Show all']
                                                                     ],
-                                                                    compact: true
-//                                                                    initComplete: function () {
-////                                                                        $("#datatableit_filter").detach().appendTo('#TableCardHeader');
-//                                                                  } 
+                                                                    compact: true 
                                                                 });
                                                             }
 
@@ -520,14 +536,14 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                             }))
                                                                         ).concat([
                                                                     spacer,
-//                                                                    {
-//                                                                        text: 'w/Data',
-//                                                                        className: '',
-//                                                                        id: 'toggleDatalessColumnsButton',
-//                                                                        action: function (e, dt, node, config) {
-//                                                                            checkAndToggleColumnsVisibility(dt);
-//                                                                        }
-//                                                                    },
+                                                                    {
+                                                                        text: 'w/Data',
+                                                                        className: '',
+                                                                        id: 'toggleDatalessColumnsButton',
+                                                                        action: function (e, dt, node, config) {
+                                                                            checkAndToggleColumnsVisibility(dt);
+                                                                        }
+                                                                    },
                                                                     {
                                                                         extend: 'colvis',
                                                                         text: 'VIS',
@@ -670,7 +686,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         $('#diy_searcher').hide();
                                                                     }
                                                                 });
-                                                            } 
+                                                            }
 
                                                             $("#saveNewRoom").click(function () {
                                                                 var nummer = $("#nummer").val();

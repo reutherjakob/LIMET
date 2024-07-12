@@ -252,7 +252,6 @@ $mp2 = array(//tabelle änderunge => tabelle_räume
     "N2 neu" => "N2");
 
 //// FETCH  DATA 
-
 $selectedDate = '2024-01-01'; //load data only up to selcetd Date
 $rID = $_SESSION["roomID"];
 if (isset($_GET['date']) && !empty($_GET['date'])) {
@@ -261,8 +260,6 @@ if (isset($_GET['date']) && !empty($_GET['date'])) {
 if (isset($_GET['id']) && !empty($_GET['id'])) {
     $rID = $_GET['id'];
 }
-//echo $selectedDate. " ";
-//echo $rID. " ";  
 
 $mysqli = utils_connect_sql();
 $stmt = $mysqli->prepare("SELECT * FROM `tabelle_raeume_aenderungen` WHERE `raum_id`= ?  AND `Timestamp` > ?"); // (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
@@ -300,8 +297,12 @@ foreach ($mapping as $oldK => $newK) {
         }
     }
 }
+$mysqli->close();
+header('Content-Type: application/json');
+echo json_encode($parameters_t_räume);
 
-//$Änderungsdatum = "2024-06-01"  ;// "23-06-2024";
+
+/*$Änderungsdatum = "2024-06-01"  ;// "23-06-2024";
 //$sql = "SELECT tabelle_projekt_elementparameter_aenderungen.idtabelle_projekt_elementparameter_aenderungen, tabelle_projekt_elementparameter_aenderungen.projekt, tabelle_projekt_elementparameter_aenderungen.element, tabelle_projekt_elementparameter_aenderungen.parameter, tabelle_projekt_elementparameter_aenderungen.variante, tabelle_projekt_elementparameter_aenderungen.wert_alt, tabelle_projekt_elementparameter_aenderungen.wert_neu, tabelle_projekt_elementparameter_aenderungen.einheit_alt, tabelle_projekt_elementparameter_aenderungen.einheit_neu, tabelle_projekt_elementparameter_aenderungen.timestamp, tabelle_projekt_elementparameter_aenderungen.user
 //            FROM tabelle_projekt_elementparameter_aenderungen
 //            WHERE (((tabelle_projekt_elementparameter_aenderungen.projekt)=" . $_SESSION["projectID"] . "))
@@ -313,14 +314,9 @@ foreach ($mapping as $oldK => $newK) {
 //    $dataChanges[] = $row;
 //}
 //include 'pdf_createBericht_utils.php';
-//$dataChanges = filter_old_equal_new($dataChanges);
+//$dataChanges = filter_old_equal_new($dataChanges); */
 
-//  if (in_array("Anwendungsgruppe", $parameters_t_räume)){ echo "JOP <br>";    }
-$mysqli->close();
-header('Content-Type: application/json');
-echo json_encode($parameters_t_räume);//$dataChanges);
-
-///*  $queryParts = array();
+/*  $queryParts = array();
 //  //foreach ($mapping as $old => $new) {
 //  //    $queryParts[] = "`$old` <> `$new`";
 //  //}
@@ -335,7 +331,6 @@ echo json_encode($parameters_t_räume);//$dataChanges);
 //  //    $changeSqlResult[] = $row;
 //  //}
 //  //echorow($changeSqlResult); */
-
 
 /* $changedData = array();
   //foreach ($mapping as $oldK => $newK) {

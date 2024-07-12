@@ -1,3 +1,24 @@
+
+#scrollBtn {
+    display:none;
+    position: fixed;
+    bottom: 20px;
+    right: 50%; /* Center horizontally */
+    transform: translateX(50%);
+    z-index: 99;
+    font-size: 24px;
+    background-color: #5cb85c; /* Green color */
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    padding: 10px;
+    cursor: pointer;
+}
+
+#scrollBtn:hover {
+    background-color: #0056b3;
+}
+
 #th {
     background-color: rgba(100, 140, 25, 0.15);
 }
