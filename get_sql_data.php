@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 include '_utils.php';
 if (isset($_GET["key"])) {
@@ -33,14 +32,16 @@ $stmt = " SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte,tabelle_räu
 
 $result = $mysqli->query($stmt);
 $mysqli->close();
+ 
 $data = array();
 while ($row = $result->fetch_assoc()) {
     $data[] = $row;
 }
+ 
 //echorow($data); 
 header('Content-Type: application/json');
 echo json_encode($data);
-
+ 
 /* 
 Aufruf von Bauangaben von Vergleichsräume:
 Dazu kannst du die Abfrage der Bauangaben-Neu verwenden und TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen nach dem Wert des aktuellen Raumes suchen

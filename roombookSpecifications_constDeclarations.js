@@ -11,17 +11,17 @@ function title2data(columnsDefinition, title) {
 }
 
 const buttonRanges = [
-    {name: 'Alle', start: 7, end: 113},
+    {name: 'Alle', start: 7, end: 114},
     {name: 'RAUM', start: 7, end: 23},
-    {name: 'HKLS', start: 24, end: 29},
-    {name: 'ELEK', start: 30, end: 48},
-    {name: 'AR', start: 49, end: 50},
-    {name: 'MEDGAS', start: 42 + 9, end: 52 + 9},
-    {name: 'LAB', start: 53 + 9, end: 101 + 12},
-    {name: 'L-GAS', start: 55 + 12, end: 79 + 12},
-    {name: 'L-ET', start: 80 + 12, end: 87 + 12},
-    {name: 'L-HT', start: 88 + 12, end: 95 + 12},
-    {name: 'L-H2O', start: 95 + 12, end: 101 + 12}
+    {name: 'HKLS', start: 25, end: 30},
+    {name: 'ELEK', start: 31, end: 49},
+    {name: 'AR', start: 50, end: 51},
+    {name: 'MEDGAS', start: 52, end: 62},
+    {name: 'LAB', start: 63, end: 114},
+    {name: 'L-GAS', start: 55 + 13, end: 79 + 13},
+    {name: 'L-ET', start: 80 + 13, end: 87 + 13},
+    {name: 'L-HT', start: 88 + 13, end: 95 + 13},
+    {name: 'L-H2O', start: 95 + 13, end: 101 + 13}
 ];
 
 const columnsDefinitionShort = [
@@ -37,14 +37,14 @@ const columnsDefinitionShort = [
     {data: "Bezeichnung", title: "Funktionsstelle", case: "none-edit"}, //#7
     {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'},
     {data: "Nummer", title: "DIN13080", case: "none-edit"},
-    {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer'},
+//    {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer'},
     {data: 'Raumbereich Nutzer', title: 'Raumbereich'},
     {data: 'Geschoss', title: 'Geschoss'},
     {data: 'Bauetappe', title: 'Bauetappe'},
-    {data: 'Bauabschnitt', title: 'Bauabschnitt'}
+    {data: 'Bauabschnitt', title: 'Bauabschnitt'} 
 ];
 
-
+// NEW FIEL? - ADD Here, In get_rb_specs_data.php and the CPY/save methods
 const columnsDefinition = [
 //    { data: '', defaultContent: '', title: "Select", render:  $.fn.dataTable.render.select(), searchable: false, orderable: false }, //cool, but buggy with fix columns. 
     {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projek ID', visible: false, searchable: false},
@@ -83,6 +83,7 @@ const columnsDefinition = [
     {data: 'HT_Waermeabgabe_W', title: 'Wärmeabgabe[W]', case: ""},
     {data: 'HT_Spuele_Stk', title: 'Spüle [Stk]', case: "num"},
     {data: 'HT_Kühlwasser', title: 'Kühlwasser', case: "bit"},
+    {data: 'HT_Notdusche', title: 'Notdusche', case: "bit"},        
     //ET
     {data: 'Anwendungsgruppe', title: 'AWG'},
     {data: 'Fussboden OENORM B5220', title: 'B5220'},

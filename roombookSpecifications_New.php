@@ -28,6 +28,7 @@ include '_scrollUpBtn.php';
                         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
                         <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
                         <style>
+
                             .btn_vis{
                                 background-color: rgba(100, 140, 25, 0.2)!important;
                                 color: black;
@@ -38,6 +39,7 @@ include '_scrollUpBtn.php';
                                 color: black;
                                 box-shadow: 0 1px 1px 0 rgba(0,0,0,0.2), 0 0px 0px 0 rgba(0,0,0,0.10);
                             }
+                            
                             .card-header_size {
                                 height: 50px;
                                 width: auto;
@@ -56,15 +58,7 @@ include '_scrollUpBtn.php';
                             }
                             .rotated {
                                 writing-mode: vertical-lr;
-                            }
-                            .spacer {
-                                width: 2px; 
-                            }
-                            .modal-dialog {
-                                margin: 0 auto;
-                                display: flex;
-                                justify-content: center;
-                            }
+                            } 
 
                         </style>
                         </head> 
@@ -102,7 +96,8 @@ include '_scrollUpBtn.php';
                                                         </div>
 
 
-                                                        <!--MODAL Visiblities-->
+
+                                                        <!--MODAL Visiblities
                                                         <div class='modal fade modal-lg' id='VisModal' role='dialog' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
                                                             <div class='modal-dialog modal-lg modal-dialog-centered' role='document'>
                                                                 <div class='modal-content'>
@@ -119,9 +114,8 @@ include '_scrollUpBtn.php';
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </div> -->
 
-                                                        <?php ?>
                                                         <script src="roombookSpecifications_constDeclarations.js"></script> 
                                                         <script>
                                                             var table;
@@ -131,36 +125,6 @@ include '_scrollUpBtn.php';
                                                             var currentColInd = 0;
                                                             let current_edit = false; //variable keeps track if the input field to ediot the cells is open
 
-                                                            /*
-                                                             function populateModal() {
-                                                             $('#VisModal .modal-dialog').empty();
-                                                             var toggleDiv = $('<div>');
-                                                             columnsDefinition.forEach(function (column, index) {
-                                                             if (column.visible !== false) {
-                                                             var columnTitle = $('<a>').text(column.title).attr({
-                                                             'class': 'toggle-vis',
-                                                             'data-column': index,
-                                                             'href': '#'
-                                                             });
-                                                             toggleDiv.append(columnTitle);
-                                                             toggleDiv.append(' - ');
-                                                             }
-                                                             });
-                                                             $('#VisModal .modal-dialog').append(toggleDiv);
-                                                             }
-                                                             
-                                                             document.querySelectorAll('a.toggle-vis').forEach((el) => {
-                                                             el.addEventListener('click', function (e) {
-                                                             e.preventDefault();
-                                                             
-                                                             let columnIdx = e.target.getAttribute('data-column');
-                                                             let column = table.column(columnIdx);
-                                                             
-                                                             // Toggle the visibility
-                                                             column.visible(!column.visible());
-                                                             });
-                                                             });
-                                                             */
 
                                                             $(document).ready(function () {
                                                                 init_dt();
@@ -172,46 +136,9 @@ include '_scrollUpBtn.php';
                                                                 init_visibilities();
                                                                 table_click();
                                                                 event_table_keyz();
-
-                                                                populate_modal();
-                                                                init_vis_modal_functionality();
-
-
+//                                                                populate_modal();
+//                                                                init_vis_modal_functionality();
                                                             });
-
-                                                            function populate_modal() {
-                                                                var columnsPerRow = 4;
-                                                                var rows = Math.ceil(columnsDefinition.length - 5 / columnsPerRow);
-                                                                for (var i = 0; i < rows; i++) {
-                                                                    var row = $('<div class="row"></div>');
-                                                                    for (var j = 0; j < columnsPerRow; j++) {
-                                                                        var index = i * columnsPerRow + j + 5;
-                                                                        if (index < columnsDefinition.length) {
-                                                                            var columnDiv = $('<div class="col-sm-3"><div class="checkbox"><label><input type="checkbox" value="' + index + '" checked>' + columnsDefinition[index].title + '</label></div></div>');
-                                                                            row.append(columnDiv);
-                                                                        }
-                                                                    }
-                                                                    $('#mbody .form-group').append(row);
-                                                                }
-                                                            }
-
-                                                            function init_vis_modal_functionality() {
-                                                                $('#VisModal').on('show.bs.modal', function () {
-                                                                    console.log('Modal is being shown');
-                                                                    $('#CBXs input:checkbox').each(function () {
-                                                                        var column = table.column($(this).val());
-                                                                        console.log('Checkbox value: ' + $(this).val() + ', column visibility: ' + column.visible());
-                                                                        $(this).prop('checked', column.visible());
-                                                                    });
-                                                                });
-                                                                $('#CBXs').on('click', 'input:checkbox', function () {
-                                                                    console.log('Checkbox clicked. Value: ' + $(this).val() + ', checked: ' + $(this).prop('checked'));
-                                                                    var column = table.column($(this).val());
-                                                                    column.visible(!column.visible());
-                                                                });
-                                                            }
-
-
 
                                                             function checkAndToggleColumnsVisibility() {
                                                                 table.columns().every(function () {
@@ -597,79 +524,88 @@ include '_scrollUpBtn.php';
 
                                                             function init_btn_4_dt() {
                                                                 let spacer = {extend: 'spacer', style: 'bar', className: "spacer"};
-                                                                new $.fn.dataTable.Buttons(table, {
-                                                                    buttons: [
-                                                                        spacer, {extend: 'searchBuilder'}, spacer,
+                                                                let buttons = [
+                                                                    spacer,
+                                                                    {extend: 'searchBuilder'},
+                                                                    spacer
+                                                                ].concat(
                                                                         buttonRanges.map(button => ({
                                                                                 text: button.name,
                                                                                 className: 'btn_vis',
                                                                                 action: function (e, dt, node, config) {
                                                                                     toggleColumns(dt, button.start, button.end, button.name);
+                                                                                    updateButtonClass(node, dt, button.start, button.end);
                                                                                 }
-                                                                            })),
-                                                                        spacer,
-                                                                        {
-                                                                            text: 'w/Data',
-                                                                            className: '',
-                                                                            id: 'toggleDatalessColumnsButton',
-                                                                            action: function (e, dt, node, config) {
-                                                                                checkAndToggleColumnsVisibility(dt);
-                                                                            }
-                                                                        },
-                                                                        {
-                                                                            text: 'VIS',
-                                                                            className: '',
-                                                                            id: 'btn_spalten_ausblenden',
-                                                                            action: function (e, dt, node, config) {
-                                                                                $('#VisModal').modal('show');
-                                                                            }
-                                                                        },
-                                                                        {extend: 'spacer', text: "SELECT:", style: 'bar', className: "rotated"},
-                                                                        {
-                                                                            text: 'All',
-                                                                            action: function () {
-                                                                                table.rows().select();
-                                                                            }
-                                                                        }, {
-                                                                            text: 'Visible',
-                                                                            action: function () {
-                                                                                table.rows(':visible').select();
-                                                                            }
-                                                                        },
-                                                                        {
-                                                                            text: 'None',
-                                                                            action: function () {
-                                                                                table.rows().deselect();
-                                                                            }
-                                                                        },
-
-                                                                        {
-                                                                            text: 'Add',
-                                                                            className: 'btn btn_vis far fa-plus-square',
-                                                                            action: function (e, dt, node, config) {
-                                                                                //  find_current_max_roomID();
-                                                                                $('#addRoomModal').modal('show'); //imported from rbSpecifications_New_modal_addRoom
-                                                                            }
-                                                                        }, spacer,
-                                                                        {
-                                                                            text: "Cpy",
-                                                                            className: "btn far fa-window-restore",
-                                                                            action: function (e, dt, node, config)
-                                                                            {
-                                                                                copySelectedRow();
-                                                                            }
-                                                                        }, spacer,
-                                                                        {
-                                                                            text: "",
-                                                                            className: "btn fas fa-check", //far fa-solid fa-fire-extinguisher",
-                                                                            action: function ()
-                                                                            {
-                                                                                check_angaben();
-                                                                            }
-                                                                        }, spacer, 'copy', 'excel', 'csv'
-                                                                    ]}).container().appendTo($('#TableCardHeader'));
+                                                                            }))
+                                                                        ).concat([
+                                                                    spacer,
+//                                                                    {
+//                                                                        text: 'w/Data',
+//                                                                        className: '',
+//                                                                        id: 'toggleDatalessColumnsButton',
+//                                                                        action: function (e, dt, node, config) {
+//                                                                            checkAndToggleColumnsVisibility(dt);
+//                                                                        }
+//                                                                    },
+                                                                    {
+                                                                        extend: 'colvis',
+                                                                        text: 'VIS',
+                                                                        columns: ':gt(6)',
+                                                                        collectionLayout: 'fixed columns'
+                                                                    },
+                                                                    {extend: 'spacer', text: "SELECT:", style: 'bar'},
+                                                                    {
+                                                                        text: 'All',
+                                                                        action: function () {
+                                                                            table.rows().select();
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        text: 'Visible',
+                                                                        action: function () {
+                                                                            table.rows(':visible').select();
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        text: 'None',
+                                                                        action: function () {
+                                                                            table.rows().deselect();
+                                                                        }
+                                                                    },spacer,
+                                                                    {
+                                                                        text: 'Add',
+                                                                        className: 'btn btn_vis far fa-plus-square',
+                                                                        action: function (e, dt, node, config) {
+                                                                            $('#addRoomModal').modal('show');
+                                                                        }
+                                                                    }, 
+                                                                    {
+                                                                        text: "Cpy",
+                                                                        className: "btn far fa-window-restore",
+                                                                        action: function (e, dt, node, config) {
+                                                                            copySelectedRow();
+                                                                        }
+                                                                    },
+                                                                    spacer,
+                                                                    {
+                                                                        text: "",
+                                                                        className: "btn fas fa-check",
+                                                                        action: function () {
+                                                                            check_angaben();
+                                                                        }
+                                                                    },
+                                                                    spacer,
+                                                                    'copy',
+                                                                    'csv',
+                                                                    {
+                                                                        extend: 'excelHtml5',
+                                                                        exportOptions: {
+                                                                            columns: ':visible'
+                                                                        }
+                                                                    }
+                                                                ]);
+                                                                new $.fn.dataTable.Buttons(table, {buttons: buttons}).container().appendTo($('#TableCardHeader'));
                                                             }
-
 
                                                             function init_visibilities() {
                                                                 if ($("#roomElements").is(':hidden')) {
@@ -685,29 +621,43 @@ include '_scrollUpBtn.php';
                                                                 });
                                                             }
 
+                                                            function updateButtonClass(button, table, startColumn, endColumn) {
+                                                                const columns = table.columns().indexes();
+                                                                var vis = table.column(columns[endColumn]).visible();
+                                                                if (vis) {
+                                                                    $(button).removeClass('btn_invis');
+                                                                    $(button).addClass('btn_vis');
+                                                                } else {
+                                                                    $(button).removeClass('btn_vis');
+                                                                    $(button).addClass('btn_invis');
+                                                                }
+                                                            }
+
                                                             function toggleColumns(table, startColumn, endColumn, button_name) {
                                                                 const columns = table.columns().indexes();
                                                                 var vis = !table.column(columns[endColumn]).visible();
                                                                 for (let i = startColumn; i <= endColumn; i++) {
                                                                     table.column(columns[i]).visible(vis);
                                                                 }
-
                                                                 if (button_name === 'Alle') {
                                                                     buttonRanges.forEach(button => {
                                                                         const btn = $(`.btn_vis:contains('${button.name}')`);
                                                                         if (vis) {
                                                                             btn.removeClass('btn_invis');
+                                                                            btn.addClass('btn_vis');
                                                                         } else {
+                                                                            btn.removeClass('btn_vis');
                                                                             btn.addClass('btn_invis');
                                                                         }
-
                                                                     });
                                                                 } else if (button_name === 'LAB') {
                                                                     ['L-GAS', 'L-ET', 'L-HT', 'L-H2O'].forEach(name => {
                                                                         const button = $(`.btn_vis:contains('${name}')`);
                                                                         if (vis) {
                                                                             button.removeClass('btn_invis');
+                                                                            button.addClass('btn_vis');
                                                                         } else {
+                                                                            button.removeClass('btn_vis');
                                                                             button.addClass('btn_invis');
                                                                         }
                                                                     });
@@ -715,11 +665,14 @@ include '_scrollUpBtn.php';
                                                                     const button = $(`.btn_vis:contains('${button_name}')`);
                                                                     if (vis) {
                                                                         button.removeClass('btn_invis');
+                                                                        button.addClass('btn_vis');
                                                                     } else {
+                                                                        button.removeClass('btn_vis');
                                                                         button.addClass('btn_invis');
                                                                     }
                                                                 }
                                                             }
+
 
 
 
@@ -863,7 +816,8 @@ include '_scrollUpBtn.php';
                                                                         selectedRowData["O2 Reinheit"],
                                                                         selectedRowData["Laserklasse"],
                                                                         selectedRowData["AR_Statik_relevant"],
-                                                                        selectedRowData["AR_AP_permanent"]
+                                                                        selectedRowData["AR_AP_permanent"],
+                                                                        selectedRowData["HT_Notdusche"]
                                                                         );
                                                             }
 
@@ -876,7 +830,7 @@ include '_scrollUpBtn.php';
                                                                     htpunktabsaugungstk, htabluftsicherheitsschrankunterbaustk, htabluftsicherheitsschrankstk, htspuelestk, htkühlwasser, o2mangel, co2melder,
                                                                     etrj45ports, et64a3phasigeinzelanschluss, et32a3phasigeinzelanschluss, et16a3phasigeinzelanschluss, etdigestoriummsr230vsvstk, et5x10mm2digestoriumstk, et5x10mm2usvstk,
                                                                     et5x10mm2svstk, et5x10mm2avstk, wasserqual3lmin, wasserqual2ltag, wasserqual1ltag, wasserqual3, wasserqual2, wasserqual1, lhe, lnltag, ln, n2reinheit, n2lmin,
-                                                                    arreinheit, arlmin, hereinheit, helmin, h2reinheit, h2lmin, dliso8573, dllmin, valmin, co2lmin, co2reinheit, o2lmin, o2reinheit, laserklasse, AR_Statik, AR_AP) {
+                                                                    arreinheit, arlmin, hereinheit, helmin, h2reinheit, h2lmin, dliso8573, dllmin, valmin, co2lmin, co2reinheit, o2lmin, o2reinheit, laserklasse, AR_Statik, AR_AP, Notdusche) {
 
                                                                 $.ajax({
                                                                     url: "addRoom_all.php",
@@ -989,7 +943,8 @@ include '_scrollUpBtn.php';
                                                                         "o2reinheit": o2reinheit,
                                                                         "laserklasse": laserklasse,
                                                                         "AR_Statik": AR_Statik,
-                                                                        "AR_AP": AR_AP
+                                                                        "AR_AP": AR_AP,
+                                                                        "Notdusche": Notdusche
                                                                     },
                                                                     type: "GET",
                                                                     success: function (data) {

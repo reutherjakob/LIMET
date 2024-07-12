@@ -97,7 +97,13 @@ function check_room_for_na(&$messages, $roomParams, $NAimRaum) {
 
 function check_4_room_param(&$messages, $roomParams, $theonetobechecked4, $row) { // Strahlenanwendung
     if (!isset($roomParams[$theonetobechecked4]) || $roomParams[$theonetobechecked4] < 1) {
-        $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Raumparameter->" . $theonetobechecked4 . " Element " . $row['Bezeichnung'] . " präsent, aber Raumparameter=0! <br>";
+        $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Raumparameter-> Element " . $row['Bezeichnung'] . " präsent, aber Raumparam " . $theonetobechecked4 . "= " . $roomParams[$theonetobechecked4] . "! <br>";
+    }
+}
+
+function check_4_room_paramz(&$messages, $roomParams, $theonetobechecked4, $the2ndtobechecked4, $row) { // Strahlenanwendung
+    if ((!isset($roomParams[$theonetobechecked4]) || $roomParams[$theonetobechecked4] < 1) && (!isset($roomParams[$the2ndtobechecked4]) || $roomParams[$the2ndtobechecked4] < 1)) {
+        $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Raumparameter-> Element " . $row['Bezeichnung'] . " präsent, aber Raumparam ". $theonetobechecked4 . "/".$the2ndtobechecked4."= " . $roomParams[$theonetobechecked4] . "! <br>";
     }
 }
 
@@ -111,7 +117,7 @@ function check4vorabsperr(&$messages, $roomParams, $elements_in_room, $stativ_pr
             }
         }
         if (!$found) {
-            $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::ElementPort-> Gasanschluss Vorabsperrkasten! <br>";
+            $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::ElementPort-> Gasanschluss am Stativ, braucht Vorabsperrkasten! <br>";
         }
     }
 }
@@ -181,16 +187,17 @@ check_login();
 $messages = array();
 
 $roomIDsArray = array();
+
 function getQueryParam($param) {
-    return isset($_GET[$param]) ? $_GET[$param] : null; 
+    return isset($_GET[$param]) ? $_GET[$param] : null;
 }
 
 // Usage
 $roomID = getQueryParam('roomID');
 if ($roomID !== null) {
-    $roomIDsArray = explode(',', $roomID); 
+    $roomIDsArray = explode(',', $roomID);
 }
- 
+
 //echorow($roomIDsArray);
 
 
@@ -209,8 +216,7 @@ $raumparameter = array();
 while ($row = $result->fetch_assoc()) {
     $roomID = $row['idTABELLE_Räume'];
     $raumparameter[$roomID] = $row;
-   
-} 
+}
 //echorow($raumparameter);
 //    echorow($stmt); 
 $stmt = $mysqli->prepare("SELECT 
@@ -310,14 +316,25 @@ foreach ($raumparameter as $roomID => $roomParams) {
 //            echo abcTo123($elements_in_room[$roomID]['Variante']) . "</br> ";  
 //            echorow($row);  //for FORENSICS  
 //            echorow($elementParamInfos);  
+        
         if (in_array($row['idTABELLE_Elemente'], $strahlenIDs)) {
             check_4_room_param($messages, $roomParams, "Strahlenanwendung", $row);
             if (in_array($row['idTABELLE_Elemente'], $CEE_IDs)) {
                 check_4_room_param($messages, $roomParams, "EL_Roentgen 16A CEE Stk", $row);
             }
         }
+ 
         if (strpos($row['ElementID'], "2.34.19") === 0 || strpos($row['ElementID'], "2.56.16") === 0) { //Lasercheck 
             check_4_room_param($messages, $roomParams, "Laseranwendung", $row);
+        }
+
+ 
+
+        if (stripos($row['Bezeichnung'], "digestori") !== false) {
+            check_4_room_param($messages, $roomParams, "HT_Abluft_Digestorium_Stk", $row);
+        }
+        if (stripos($row['Bezeichnung'], "sicherheitsschrank") !== false) {
+            check_4_room_paramz($messages, $roomParams, "HT_Abluft_Sicherheitsschrank_Stk", "HT_Abluft_Sicherheitsschrank_Unterbau_Stk", $row);
         }
 
         $temp_LeistungElement = 0;
@@ -328,6 +345,7 @@ foreach ($raumparameter as $roomID => $roomParams) {
 
         foreach ($elementParamInfos as $parameterInfo) {
             if ($parameterInfo["tabelle_Varianten_idtabelle_Varianten"] === abcTo123($row['Variante']) && $row['idTABELLE_Elemente'] === $parameterInfo["tabelle_elemente_idTABELLE_Elemente"]) {
+
                 if ($parameterInfo['idTABELLE_Parameter_Kategorie'] === 2) { //ElektroTechnik                    
                     if ($parameterInfo['idTABELLE_Parameter'] === 127) {  //ELEMENT MIT RJ PORTS
                         check_room_for_parameters_cause_elementParamKathegorie($messages, $roomParams, $parameterInfo['idTABELLE_Parameter'], $row); //check for if room got that plug. 
