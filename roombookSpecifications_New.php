@@ -3,7 +3,7 @@ session_start();
 include '_utils.php';
 init_page_serversides();
 include 'roombookSpecifications_New_modal_addRoom.php';
-include '_scrollUpBtn.php'; 
+include '_scrollUpBtn.php';
 ?> 
 
 <!DOCTYPE html>
@@ -39,7 +39,7 @@ include '_scrollUpBtn.php';
                                 color: black;
                                 box-shadow: 0 1px 1px 0 rgba(0,0,0,0.2), 0 0px 0px 0 rgba(0,0,0,0.10);
                             }
-                            
+
                             .card-header_size {
                                 height: 50px;
                                 width: auto;
@@ -58,12 +58,12 @@ include '_scrollUpBtn.php';
                             }
                             .rotated {
                                 writing-mode: vertical-lr;
-                            } 
+                            }
 
                         </style>
                         </head> 
                         <body style="height:100%"> 
-                            
+
                             <div class="container-fluid ">
                                 <div id="limet-navbar" class=' '> </div> 
                                 <div class="mt-4 card">    
@@ -95,27 +95,6 @@ include '_scrollUpBtn.php';
                                                         </div> 
                                                         </div>
 
-
-
-                                                        <!--MODAL Visiblities
-                                                        <div class='modal fade modal-lg' id='VisModal' role='dialog' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-                                                            <div class='modal-dialog modal-lg modal-dialog-centered' role='document'>
-                                                                <div class='modal-content'>
-                                                                    <div class='modal-header'>            
-                                                                        <h4 class='modal-title'>Spalte aus-/einblenden</h4>
-                                                                        <button type='button' class='close' data-dismiss='modal'>×</button>
-                                                                    </div>
-                                                                    <div class='modal-body' id='mbody'>
-                                                                        <form role="form">       		
-                                                                            <div class="form-group" id ="CBXs"> 
-                                                                              
-                                                                            </div>
-                                                                        </form>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div> -->
-
                                                         <script src="roombookSpecifications_constDeclarations.js"></script> 
                                                         <script>
                                                             var table;
@@ -136,8 +115,6 @@ include '_scrollUpBtn.php';
                                                                 init_visibilities();
                                                                 table_click();
                                                                 event_table_keyz();
-//                                                                populate_modal();
-//                                                                init_vis_modal_functionality();
                                                             });
 
                                                             function checkAndToggleColumnsVisibility() {
@@ -165,7 +142,6 @@ include '_scrollUpBtn.php';
                                                                     window.open('/roombookBauangabenCheck.php?roomID=' + roomIDs);
                                                                 }
                                                             }
-
 
                                                             function translateBrToNewline(inputString) {
                                                                 const outputString = inputString.replace(/<br>/g, '\n').replace(/<\/br>/g, '\n');
@@ -220,10 +196,9 @@ include '_scrollUpBtn.php';
                                                                         cell.node().click();
                                                                         table.keys.disable();
                                                                     } else {
-                                                                        var rowIndex = cell.index().row;
-//                                                                        table.rows().deselect();
+                                                                        var rowIndex = cell.index().row;// table.rows().deselect();
                                                                         if (rowIndex !== currentRowInd && !document.getElementById('checkbox_EditableTable').checked) {
-//                                                                            table.row(cell.index().row).select();
+                                                                            // table.row(cell.index().row).select();
                                                                             currentRowInd = rowIndex;
                                                                         }
                                                                     }
@@ -506,7 +481,7 @@ include '_scrollUpBtn.php';
                                                                         [10, 20, -1],
                                                                         ['10 rows', '20 rows', 'Show all']
                                                                     ],
-                                                                    compact: true 
+                                                                    compact: true
                                                                 });
                                                             }
 
@@ -568,16 +543,16 @@ include '_scrollUpBtn.php';
                                                                         action: function () {
                                                                             table.rows().deselect();
                                                                         }
-                                                                    },spacer,
+                                                                    }, spacer,
                                                                     {
-                                                                        text: 'Add',
+                                                                        text: ' Add',
                                                                         className: 'btn btn_vis far fa-plus-square',
                                                                         action: function (e, dt, node, config) {
                                                                             $('#addRoomModal').modal('show');
                                                                         }
-                                                                    }, 
+                                                                    },
                                                                     {
-                                                                        text: "Cpy",
+                                                                        text: " Cpy",
                                                                         className: "btn far fa-window-restore",
                                                                         action: function (e, dt, node, config) {
                                                                             copySelectedRow();
@@ -591,9 +566,7 @@ include '_scrollUpBtn.php';
                                                                             check_angaben();
                                                                         }
                                                                     },
-                                                                    spacer,
-                                                                    'copy',
-                                                                    'csv',
+                                                                    spacer, //'copy', 'csv',
                                                                     {
                                                                         extend: 'excelHtml5',
                                                                         exportOptions: {
