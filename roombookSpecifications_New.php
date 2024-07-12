@@ -520,7 +520,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                         "bauabschnitt": bauabschnitt,
                                                                         "nutzfläche": nutzfläche,
                                                                         "abdunkelbarkeit": abdunkelbarkeit,
-                                                                        "strahlenanwendung": strahlenanwendung,
+                                                                        "strahlenanwendung": strahlenanwendung, 
                                                                         "laseranwendung": laseranwendung,
                                                                         "h6020": h6020,
                                                                         "gmp": gmp,
