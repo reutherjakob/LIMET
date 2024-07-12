@@ -18,14 +18,14 @@ check_login();
         $result = $mysqli->query($sql);
         $mysqli->close(); 
 
-        echo"<table class='table table-responsive table-striped table-bordered table-sm' id='tableRoomElements' cellspacing='0' width='100%'>
+        echo"<table class='table table-responsive table-striped table-bordered table-sm' id='tableRoomElements' cellspacing='0' >
 	<thead><tr>
 	<th>ID</th>
 	<th class='cols-md-1'>Stück</th>
 	<th>Element</th>
 	<th>Var.</th>
 	<th>Best.</th>
-	<th>Standort</th> 
+	<th>Ort</th> 
 	<th>Verw.</th> 
 	<th>Kommentar</th>
 	</tr></thead>
@@ -79,7 +79,7 @@ check_login();
             });
 
             $(document).ready(function () {
-                var table = $("#tableRoomElements").DataTable({
+                var tablel = $("#tableRoomElements").DataTable({
                     searching: true,
                     info: true,
                     responsive:true,
@@ -88,24 +88,20 @@ check_login();
                     lengthChange: false,
                     language: {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
                     columnDefs: [
-                        {"targets": [0], "visible": false, "searchable": false}
+                        {"targets": [0,7 ], "visible": false, "searchable": false}
                     ],
-                    paging: true,
-                    pagingType: "numbers",
-                    pageLength: "25",
-                    sDom: "tlip"
-                            //"scrollY":        '20vh',
-                            //"scrollCollapse": true,
+                    paging: false, 
+                    pageLength: -1,
+                    sDom: "ti" 
                 });
 
-//                $('#tableRoomElements').DataTable();
-                
+ 
                 $('#tableRoomElements tbody').on('click', 'tr', function () {
                     if ($(this).hasClass('info')) {
                     } else {
-                        table.$('tr.info').removeClass('info');
+                        tablel.$('tr.info').removeClass('info');
                         $(this).addClass('info');
-                        var raumbuchID = table.row($(this)).data()[0];
+                        var raumbuchID = tablel.row($(this)).data()[0];
                         $.ajax({
                             url: "getElementParameters.php",
                             data: {"id": raumbuchID},

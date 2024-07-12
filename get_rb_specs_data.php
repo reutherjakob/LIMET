@@ -35,6 +35,8 @@ $sql = " SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte,
            tabelle_räume.H6020, 
            tabelle_räume.GMP, 
            tabelle_räume.ISO, 
+           tabelle_räume.AR_Statik_relevant, 
+           tabelle_räume.AR_AP_permanent, 
            tabelle_räume.`1 Kreis O2`, 
            tabelle_räume.`2 Kreis O2`, 
            tabelle_räume.O2, 
@@ -76,6 +78,7 @@ $sql = " SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte,
             tabelle_räume.`EL_ZSV Steckdosen Stk`, 
             tabelle_räume.`EL_USV Steckdosen Stk`,
             tabelle_räume.`EL_Roentgen 16A CEE Stk`,
+            tabelle_räume.`EL_Laser 16A CEE Stk`, 
            tabelle_räume.`ET_RJ45-Ports`, 
            tabelle_räume.HT_Waermeabgabe_W, 
            tabelle_räume.VEXAT_Zone, 
@@ -125,7 +128,8 @@ $sql = " SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte,
            tabelle_räume.`O2 Reinheit`, 
            tabelle_räume.Laserklasse,
            tabelle_räume.HT_Waermeabgabe_W,
-           tabelle_räume.`Fussboden OENORM B5220`
+           tabelle_räume.`Fussboden OENORM B5220`,
+           tabelle_räume.HT_Notdusche
         FROM tabelle_räume
 	INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
         WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
@@ -134,8 +138,9 @@ $sql = " SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte,
 if (!$mysqli->query($sql)) {
     echo "Error executing query: " . $mysqli->error;
 } else {
-    $result = $mysqli->query($sql);
-}
+    $result = $mysqli->query($sql); 
+} 
+
 $mysqli->close();
 
 $data = array();
@@ -145,4 +150,4 @@ while ($row = $result->fetch_assoc()) {
 
 header('Content-Type: application/json');
 echo json_encode($data);
-?>
+

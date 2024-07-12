@@ -1,4 +1,18 @@
-<?php
+<?php 
+
+function echorow($row) {
+    echo '<pre>';
+    print_r($row);
+    echo '- </pre>';
+}
+
+function print_session_vars() {
+    $parameters = ["projectID", "roomID", "projectName", "projectAusfuehrung", "projectPlanungsphase"];
+    echo"<br>";
+    foreach ($parameters as $param) {
+        echo ucfirst($param) . ": " . $_SESSION[$param] . ";  ";
+    } echo"<br>";
+}
 
 function init_page_serversides($ommit_redirect = "") {
     check_login();
@@ -36,12 +50,11 @@ function get_project() {
 }
 
 function br2nl($string) {
-    $return = str_replace(array("<br/>"), "\n", $string);
+    $string = str_replace(array("<br/>"), "\n", $string);
+    $return = str_replace(array("<br>"), "\n", $string);
     //  $return= str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $temp);
     return $return;
 }
-
-
 
 function utils_connect_sql() {
     error_reporting(E_ALL);
@@ -64,15 +77,13 @@ function load_nav_bar() {
     echo '            $("#limet-navbar").html(data);';
     echo '            $(".navbar-nav").find("li:nth-child(3)")';
     echo '                    .addClass("active");';
-    echo '            $("#projectSelected").text("Projekt:" + currentP);';
+    echo '            $("#projectSelected").text(currentP);';
     echo '        });';
     echo '     };    </script>';
-} 
+}
 
 //function nl2br($string) {
 //    $return = str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $string);
 //    return $return;
 //}
-?>
-
 

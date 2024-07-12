@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '_utils.php';
+include '_utils.php';ne
 init_page_serversides("No Redirect");
 ?> 
 
@@ -41,10 +41,11 @@ init_page_serversides("No Redirect");
                                     <div class='mt-4 row'>  
                                         <div class='col-md-10'>
                                             <div class="mt-4 card">
-                                                <div class="card-header form-check-inline" id="PRCardHeader" > <b>Projekte </b>
+                                                <div class="card-header  d-inline-flex" id="PRCardHeader" > <b>Projekte </b>
                                                     <div class="col " id ="STH"> </div>
                                                     <label class="float-right">
-                                                        Nur aktive Projekte: <input type="checkbox" id="filter_ActiveProjects" checked="true"> 
+                                                        
+                                                        Nur aktive Projekte: <input type="checkbox" id="filter_ActiveProjects" <?php if($_SESSION["username"] === "fuchs"){echo ' checked="false"';}else {echo 'checked="true"';} ?> > 
                                                     </label>
                                                 </div>
                                                 <div class="card-body">
@@ -140,7 +141,7 @@ init_page_serversides("No Redirect");
                                                 <div class='card'>
                                                         <div class='card-header' id='vermerkPanelHead'>
                                                             <form class='form-inline'>
-                                                            <label class='m-1' for='vermerkeFilter'>Vermerke im Projekt</label>                                          
+                                                            <label class='m-1 comapct' for='vermerkeFilter'>Vermerke im Projekt</label>                                          
                                                                 <select class='form-control form-control-sm' id='vermerkeFilter'";
                                         if ($_SESSION["projectName"] == "") {
                                             echo " style='display:none'";
@@ -149,9 +150,10 @@ init_page_serversides("No Redirect");
                                                                     <option value=0 selected>Alle Vermerke</option>   
                                                                     <option value=1>Bearbeitung offen</option>  
                                                                     <!--<option value=2>Eigene Vermerke</option>  -->
-                                                                </select>	
-                                                            </form>                                 
-                                                        </div>
+                                                                </select>
+                                                                <div id='newSearchLocation' style='float: right;'>    </div>	
+                                                            </form>   
+                                                        </div> 
                                                         <div class='card-body'  id='vermerke'>
                                                             <div class='row' id='projectVermerke'></div>
                                                         </div>
@@ -285,10 +287,12 @@ init_page_serversides("No Redirect");
                                             }
                                         }
                                 );
-                                function move_dt_search(location) {
-                                    var move = $('#dt-search-0');
+                        
+                                function move_dt_search(inp, location) {
+                                    var move = $(inp);
                                     $(location).prepend(move);
                                 }
+                              
                                 // Tabelle formatieren
                                 $(document).ready(function () {
                                     let doooooooom = 'ft';
@@ -561,8 +565,10 @@ init_page_serversides("No Redirect");
                                     });
 
                                     setTimeout(function () {
-                                        move_dt_search('#STH');
-                                    }, 100);
+                                        move_dt_search('#dt-search-0', '#STH');
+                                        move_dt_search('#dt-search-1', '#newSearchLocation');
+                                        console.log("´MOVE SEARCH BAR ");
+                                    }, 200);
 
                                     /*
                                      //------------------CHART BEFÜLLEN--------------------------------
