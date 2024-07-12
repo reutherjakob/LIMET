@@ -11,19 +11,40 @@ function title2data(columnsDefinition, title) {
 }
 
 const buttonRanges = [
-    {name: 'Alle', start: 7, end: 110},
+    {name: 'Alle', start: 7, end: 114},
     {name: 'RAUM', start: 7, end: 23},
-    {name: 'HKLS', start: 24, end: 29},
-    {name: 'ELEK', start: 30, end: 47},
-    {name: 'MEDGAS', start: 48, end: 52 + 9},
-    {name: 'LAB', start: 53 + 9, end: 101 + 9},
-    {name: 'L-GAS', start: 55 + 9, end: 79 + 9},
-    {name: 'L-ET', start: 80 + 9, end: 87 + 9},
-    {name: 'L-HT', start: 88 + 9, end: 95 + 9},
-    {name: 'L-H2O', start: 95 + 9, end: 110}
+    {name: 'HKLS', start: 25, end: 30},
+    {name: 'ELEK', start: 31, end: 49},
+    {name: 'AR', start: 50, end: 51},
+    {name: 'MEDGAS', start: 52, end: 62},
+    {name: 'LAB', start: 63, end: 114},
+    {name: 'L-GAS', start: 55 + 13, end: 79 + 13},
+    {name: 'L-ET', start: 80 + 13, end: 87 + 13},
+    {name: 'L-HT', start: 88 + 13, end: 95 + 13},
+    {name: 'L-H2O', start: 95 + 13, end: 101 + 13}
 ];
 
-// define cases for data formater switch: numerical, 1/0 aka bit, dropdowner; non-edit-> cell wont be editable
+const columnsDefinitionShort = [
+    {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projek ID', visible: false, searchable: false},
+    {data: 'idTABELLE_Räume', title: 'Raum ID', visible: false, searchable: false},
+    {data: 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', title: 'Funktionsstellen ID', visible: false, searchable: false},
+    {data: 'MT-relevant', title: 'MT-rel.', name: 'MT-relevant', case: "bit", render: function (data) {
+            return data === '1' ? 'Ja' : 'Nein';
+        }},
+    //{data: 'idTABELLE_Räume', title: 'Raum ID', searchable: false}, //debugging
+    {data: 'Raumbezeichnung', title: 'Raumbez.'},
+    {data: 'Raumnr', title: 'Raumnr'},
+    {data: "Bezeichnung", title: "Funktionsstelle", case: "none-edit"}, //#7
+    {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'},
+    {data: "Nummer", title: "DIN13080", case: "none-edit"},
+//    {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer'},
+    {data: 'Raumbereich Nutzer', title: 'Raumbereich'},
+    {data: 'Geschoss', title: 'Geschoss'},
+    {data: 'Bauetappe', title: 'Bauetappe'},
+    {data: 'Bauabschnitt', title: 'Bauabschnitt'} 
+];
+
+// NEW FIEL? - ADD Here, In get_rb_specs_data.php and the CPY/save methods
 const columnsDefinition = [
 //    { data: '', defaultContent: '', title: "Select", render:  $.fn.dataTable.render.select(), searchable: false, orderable: false }, //cool, but buggy with fix columns. 
     {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projek ID', visible: false, searchable: false},
@@ -37,8 +58,8 @@ const columnsDefinition = [
 
     {data: 'Raumnr', title: 'Raumnr'},
     {data: "Bezeichnung", title: "Funktionsstelle", case: "none-edit"}, //#7
-    {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'}, 
-    
+    {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'},
+
     {data: "Nummer", title: "DIN13080", case: "none-edit"},
     {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer'},
     {data: 'Raumbereich Nutzer', title: 'Raumbereich'},
@@ -62,6 +83,7 @@ const columnsDefinition = [
     {data: 'HT_Waermeabgabe_W', title: 'Wärmeabgabe[W]', case: ""},
     {data: 'HT_Spuele_Stk', title: 'Spüle [Stk]', case: "num"},
     {data: 'HT_Kühlwasser', title: 'Kühlwasser', case: "bit"},
+    {data: 'HT_Notdusche', title: 'Notdusche', case: "bit"},        
     //ET
     {data: 'Anwendungsgruppe', title: 'AWG'},
     {data: 'Fussboden OENORM B5220', title: 'B5220'},
@@ -75,7 +97,9 @@ const columnsDefinition = [
     {data: 'EL_ZSV Steckdosen Stk', defaultContent: '-', title: 'ZSV #SSD', case: "num"},
     {data: 'EL_USV Steckdosen Stk', defaultContent: '-', title: 'USV #SSD', case: "num"},
 
-    {data: 'EL_Roentgen 16A CEE Stk', title: 'CEE16A Anchl.Rö.', case: "num"},
+    {data: 'EL_Roentgen 16A CEE Stk', title: 'CEE16A Röntgen', case: "num"},
+
+    {data: 'EL_Laser 16A CEE Stk', defaultContent: '-', title: 'CEE16A Laser', case: "num"},
     {data: 'ET_Anschlussleistung_W', defaultContent: '-', title: 'Anschlussleistung Summe[W]', case: "num"},
     {data: 'ET_Anschlussleistung_AV_W', defaultContent: '-', title: 'Anschlussleistung AV[W]', case: "num"},
     {data: 'ET_Anschlussleistung_SV_W', defaultContent: '-', title: 'Anschlussleistung SV[W]', case: "num"},
@@ -84,16 +108,24 @@ const columnsDefinition = [
 
     {data: 'IT Anbindung', title: 'IT', case: "bit"},
     {data: 'ET_RJ45-Ports', title: 'RJ45-Ports', case: "num"},
+//AR 
+    {data: 'AR_AP_permanent', title: 'AR AP permanent', name: 'AR AP permanent ', case: "bit", render: function (data) {
+            return data === '1' ? 'permanenter AP' : 'kein permanenter AP';
+        }},
+    {data: 'AR_Statik_relevant', title: 'AR Statik relevant', name: 'AR Statik relevant', case: "bit", render: function (data) {
+            return data === '1' ? 'relevant' : 'nicht rel.';
+        }},
 
+//MEDGASE
     {data: '1 Kreis O2', title: '1_K O2', case: "bit"},
     {data: '2 Kreis O2', title: '2_K O2', case: "bit"},
-    {data: 'O2', title: 'O2', case: "bit"},
+
     {data: '1 Kreis Va', title: '1_K Va', case: "bit"},
     {data: '2 Kreis Va', title: '2_K Va', case: "bit"},
-    {data: 'VA', title: 'VA', case: "bit"},
+
     {data: '1 Kreis DL-5', title: '1_K DL5', case: "bit"},
     {data: '2 Kreis DL-5', title: '2_K DL5', case: "bit"},
-    {data: 'DL-5', title: 'DL-5', case: "bit"},
+
     {data: 'DL-10', title: 'DL-10', case: "bit"},
     {data: 'DL-tech', title: 'DL-tech', case: "bit"},
     {data: 'CO2', title: 'CO2', case: "bit"},
@@ -103,6 +135,9 @@ const columnsDefinition = [
     {data: 'VEXAT_Zone', title: 'VEXAT_Zone', case: "bit"},
     {data: 'Laserklasse', title: 'Laserklasse'},
 
+    {data: 'O2', title: 'O2', case: "bit"},
+    {data: 'VA', title: 'VA', case: "bit"},
+    {data: 'DL-5', title: 'DL-5', case: "bit"},
     {data: 'H2', title: 'H2', case: "bit"},
     {data: 'He', title: 'He', case: "bit"},
     {data: 'He-RF', title: 'He-RF', case: "bit"},
@@ -131,7 +166,7 @@ const columnsDefinition = [
 
     {data: 'ET_64A_3Phasig_Einzelanschluss', title: '64A 3Ph Einzelanschls', case: "bit"},
     {data: 'ET_32A_3Phasig_Einzelanschluss', title: '32A 3Ph Einzelanschluss', case: "bit"},
-    {data: 'ET_16A_3Phasig_Einzelanschluss', title: '16A 3Ph Einzelanschluss', case: "bit", visible: false},
+    {data: 'ET_16A_3Phasig_Einzelanschluss', title: '16A 3Ph Einzelanschluss', case: "bit"},
     {data: 'ET_Digestorium_MSR_230V_SV_Stk', title: 'Digestorium_MSR 230V_SV_Stk', case: "num"},
     {data: 'ET_5x10mm2_Digestorium_Stk', title: '5x10mm2 Digestorium_Stk', case: "num"},
     {data: 'ET_5x10mm2_USV_Stk', title: '5x10mm2 USV_Stk', case: "num"},

@@ -1,26 +1,41 @@
-th {
+
+#scrollBtn {
+    display:none;
+    position: fixed;
+    bottom: 20px;
+    right: 50%; /* Center horizontally */
+    transform: translateX(50%);
+    z-index: 99;
+    font-size: 24px;
+    background-color: #5cb85c; /* Green color */
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    padding: 10px;
+    cursor: pointer;
+}
+
+#scrollBtn:hover {
+    background-color: #0056b3;
+}
+
+#th {
     background-color: rgba(100, 140, 25, 0.15);
 }
+
 #pull-right {
     float: right !important;
     height: 20px !important;
 }
 
-#pull-left {
-    float: left !important;
-}
-
-#btn-xs {
-    height: 22px;
-    padding: 2px 5px;
-    font-size: 12px;
-    line-height: 1.5; /* If Placeholder of the input is moved up, rem/modify this. */
-    border-radius: 3px;
-}
-
+ 
 #body, html, .container-fluid {
     height: 100%;
     font-size:13px;
+    
+    color: #222;
+    background: #fff;
+    font: 100% system-ui;
 }
 
 #frame {

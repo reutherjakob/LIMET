@@ -112,7 +112,7 @@ if(!isset($_SESSION["username"]))
                 "searching": true,
                 "info": true,
                 "order": [[ 4, "desc" ]],
-	        'language': {'url': '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json'},
+	        'language': {'url': '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',"search": ""},
 	    	"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
                     if ( aData[5] === "Bearbeitung" )
                     {

@@ -142,7 +142,7 @@ if (!$mysqli->set_charset("utf8")) {
 
 
 // TITELZEILE MIT PROJEKTINFOS--------------------------------------------------
-$sql = "SELECT tabelle_projekte.Projektname, tabelle_planungsphasen.Bezeichnung
+$sql = "SELECT tabelle_projekte.Projektname, tabelle_projekte.Preisbasis,  tabelle_planungsphasen.Bezeichnung
     FROM tabelle_projekte INNER JOIN tabelle_planungsphasen ON tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen = tabelle_planungsphasen.idTABELLE_Planungsphasen
     WHERE (((tabelle_projekte.idTABELLE_Projekte)=".$_SESSION["projectID"]."));";
 $result = $mysqli->query($sql);
@@ -157,6 +157,7 @@ $yPosition = $pdf->getY();
 $pdf->Ln();
 $pdf->MultiCell(150, 6, "Projektphase: ".$row['Bezeichnung'],'', 'L', 0, 0);
 $pdf->Ln();           
+$pdf->MultiCell(150, 6, "Preisbasis: ".$row['Preisbasis'],'', 'L', 0, 0);
 $pdf->Ln();        
 
 $sql = "SELECT tabelle_projekte.idTABELLE_Projekte, tabelle_auftraggeber_gewerke.Gewerke_Nr, tabelle_auftraggeber_gewerke.Bezeichnung
