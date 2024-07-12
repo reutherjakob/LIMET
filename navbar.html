@@ -1,8 +1,9 @@
-<nav class="navbar navbar-expand-lg bg-light navbar-light">	
+<!--<div class="container " style="width: 100vw !important">--> 
+<nav class="navbar navbar-expand-lg bg-light navbar-light responsive d-inline-flex" style="width: 85vw !important">	
     <a class="py-0 navbar-brand" href="#"><img src="LIMET_logo.png" alt="LIMETLOGO" height="40"/></a>
     <ul class="navbar-nav">
         <ul class='navbar-nav'>
-            <li class='nav-item'><a class='py-0 nav-link' href='dashboard.php'><i class='fa fa-tachometer-alt'></i> Dashboard</a></li>
+            <a class='py-0 nav-item nav-link' href='dashboard.php'><i class='fa fa-tachometer-alt'></i> Dashboard</a>
         </ul>  
         <li class='py-0 nav-item dropdown'>
             <a class='py-0 nav-link dropdown-toggle' data-toggle="dropdown" href="#"><i class='fa fa-list-alt'></i> Projekte</a>              
@@ -15,7 +16,7 @@
         <li class='nav-item dropdown  justify-content-between'>
             <a class=' py-0 nav-link dropdown-toggle' data-toggle='dropdown' href='#'><i class='fa fa-book'></i> Raumbuch</a>              
             <ul class='dropdown-menu'>
-                <a class='dropdown-item' href='roombookSpecifications.php'>Raumbuch - Bauangaben</a>
+                <a class='dropdown-item' href='roombookSpecifications.php'>Raumbuch - Bauangaben</a> 
                 <a class='dropdown-item' href='roombookSpecifications_New.php'>Raumbuch - Bauangaben NEU</a>
                 <a class='dropdown-item' href='roombook_ElemetsInRoom_ParameterTable.php'>Raumbuch - Elementparam. XLS</a>
                 <a class='dropdown-item' href='roombookSpecificationsLab.php'>Raumbuch - Bauangaben Labor</a>
@@ -28,7 +29,7 @@
                 <a class='dropdown-item' href='roombookList.php'>Raumbuch - Liste</a>
             </ul>
         </li>
-        <li class='nav-item dropdown  justify-content-between'>
+        <li class='nav-item dropdown  justify-content-between' >
             <a class='py-0 nav-link dropdown-toggle' data-toggle='dropdown' href='#'><i class='fa fa-euro-sign'></i> Kosten</a>              
             <ul class='dropdown-menu'>
                 <a class='dropdown-item' href='costsOverall.php'>Kosten - Berichte</a> 
@@ -50,7 +51,7 @@
                 <a class="dropdown-item" href="tenderLots.php">Los-Verwaltung</a>
                 <a class="dropdown-item" href="tenderCalendar.php">Vergabekalender</a>
                 <a class='dropdown-item' href='tenderCharts.php'>Vergabe-Diagramme</a>
-                <a class="dropdown-item" href="elementLots.php">Element-Verwaltung</a>
+                <a class="dropdown-item" href="elementLots.php">Element-Verwaltung</a> 
             </ul>
         </li>
         <li class="py-0 nav-item dropdown justify-content-between">
@@ -79,16 +80,17 @@
                 <a class="dropdown-item active" href="roombook_Besprechungsansicht.php"><i class='fas fa-tachometer-alt'></i> Besprechungasansicht </a>
                 <a class="dropdown-item active" href="roombook_IFC_viewer.php"><i class='fas fa-tachometer-alt'></i> IFC viewer </a>
                 <a class="dropdown-item active" href="get_sql_data.php"><i class='fas fa-tachometer-alt'></i> SQL DATA </a>
-                <a class="dropdown-item active" href="roombook_vglAnsicht.php"><i class='fas fa-coffee'></i> RAUM VGL </a>
+                <a class="dropdown-item active" href="roombook_vglAnsicht.php"><i class='fas fa-coffee'></i> RAUM VGL </
                 <a class="dropdown-item active" href="x.php"><i class='fas fa-coffee'></i> BEFU </a>
-                <a class="dropdown-item active" href="x.php"><i class='fas fa-coffee'></i> RAUM VGL </a>
-
+     
             </ul>
         </li> 
     </ul>
     <ul class="navbar-nav ml-auto"> 
-        <li class="py-0 nav-item "><a class="py-0 nav-link text-success disabled" id="projectSelected"> Kein Projekttitel geladen</a></li>
+        <li class="py-0 nav-item "><a class="py-0 nav-link text-success disabled" id="projectSelected" style="font-site:15px!important"> Kein Projekttitel geladen</a></li>
         <li><a class="py-0 nav-link" href="logout.php"><i class="fa fa-sign-out-alt"></i>Logout</a></li>
-    </ul>              
-</nav>	
+    </ul>  
+    <!--</div>-->
+</nav>	  
+<!--</div>-->
 

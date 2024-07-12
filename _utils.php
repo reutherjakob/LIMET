@@ -1,7 +1,5 @@
 <?php 
 
-
-
 function echorow($row) {
     echo '<pre>';
     print_r($row);
@@ -79,7 +77,7 @@ function load_nav_bar() {
     echo '            $("#limet-navbar").html(data);';
     echo '            $(".navbar-nav").find("li:nth-child(3)")';
     echo '                    .addClass("active");';
-    echo '            $("#projectSelected").text("Projekt:" + currentP);';
+    echo '            $("#projectSelected").text(currentP);';
     echo '        });';
     echo '     };    </script>';
 }
