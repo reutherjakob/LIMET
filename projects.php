@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '_utils.php';
+include '_utils.php';ne
 init_page_serversides("No Redirect");
 ?> 
 
@@ -54,7 +54,11 @@ init_page_serversides("No Redirect");
                                                         $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
                                                         // Abfrage aller RÃ¤ume im Projekt
                                                         //$sql="SELECT view_Projekte.idTABELLE_Projekte, view_Projekte.Interne_Nr, view_Projekte.Projektname, view_Projekte.Aktiv, view_Projekte.Neubau, view_Projekte.Bettenanzahl, view_Projekte.BGF, view_Projekte.NF, view_Projekte.Ausfuehrung, tabelle_planungsphasen.Bezeichnung, tabelle_planungsphasen.idTABELLE_Planungsphasen FROM view_Projekte INNER JOIN tabelle_planungsphasen ON view_Projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen = tabelle_planungsphasen.idTABELLE_Planungsphasen ORDER BY view_Projekte.Interne_Nr";						
-                                                        $sql = "SELECT tabelle_projekte.idTABELLE_Projekte, tabelle_projekte.Interne_Nr, tabelle_projekte.Projektname, tabelle_projekte.Aktiv, tabelle_projekte.Neubau, tabelle_projekte.Bettenanzahl, tabelle_projekte.BGF, tabelle_projekte.NF, tabelle_projekte.Ausfuehrung, tabelle_planungsphasen.Bezeichnung, tabelle_planungsphasen.idTABELLE_Planungsphasen FROM tabelle_projekte INNER JOIN tabelle_planungsphasen ON tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen = tabelle_planungsphasen.idTABELLE_Planungsphasen INNER JOIN tabelle_users_have_projects ON tabelle_projekte.idTABELLE_Projekte = tabelle_users_have_projects.tabelle_projekte_idTABELLE_Projekte WHERE tabelle_users_have_projects.User = '" . $_SESSION['username'] . "' ORDER BY tabelle_projekte.Interne_Nr;";
+                                                        $sql = "SELECT tabelle_projekte.idTABELLE_Projekte, tabelle_projekte.Interne_Nr, tabelle_projekte.Projektname,"
+                                                                . " tabelle_projekte.Aktiv, tabelle_projekte.Neubau, tabelle_projekte.Bettenanzahl,"
+                                                                . " tabelle_projekte.BGF, tabelle_projekte.NF, tabelle_projekte.Ausfuehrung,tabelle_projekte.Preisbasis,"
+                                                                . " tabelle_planungsphasen.Bezeichnung, tabelle_planungsphasen.idTABELLE_Planungsphasen"
+                                                                . " FROM tabelle_projekte INNER JOIN tabelle_planungsphasen ON tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen = tabelle_planungsphasen.idTABELLE_Planungsphasen INNER JOIN tabelle_users_have_projects ON tabelle_projekte.idTABELLE_Projekte = tabelle_users_have_projects.tabelle_projekte_idTABELLE_Projekte WHERE tabelle_users_have_projects.User = '" . $_SESSION['username'] . "' ORDER BY tabelle_projekte.Interne_Nr;";
                                                         $result = $mysqli->query($sql);
 
                                                         echo "<table id='tableProjects' class='table display compact table-striped table-bordered table-sm' cellspacing='0' width='100%'>
@@ -71,6 +75,7 @@ init_page_serversides("No Redirect");
                                                         <th>Bearbeitung</th>
                                                         <th>Planungsphase</th>
                                                         <th>PlanungsphasenID</th>
+                                                        <th>Preisbasis</th>
                                                     </tr></thead>
                                                     <tbody>";
 
@@ -100,6 +105,7 @@ init_page_serversides("No Redirect");
                                                             echo "<td>" . $row["Ausfuehrung"] . "</td>";
                                                             echo "<td>" . $row["Bezeichnung"] . "</td>";
                                                             echo "<td>" . $row["idTABELLE_Planungsphasen"] . "</td>";
+                                                            echo "<td>" . $row["Preisbasis"] . "</td>";
                                                             echo "</tr>";
                                                         }
                                                         echo "</tbody></table>";
@@ -177,14 +183,14 @@ init_page_serversides("No Redirect");
 
 
 
-                                    <!-- Modal zum Ã„ndern des Projekts -->
+                                    <!-- Modal zum Ändern des Projekts -->
                                     <div class='modal fade' id='changeProjectModal' role='dialog'>
                                         <div class='modal-dialog modal-md'>
 
                                             <!-- Modal content-->
                                             <div class='modal-content'>
                                                 <div class='modal-header'>            
-                                                    <h4 class='modal-title'>Projekt Ã¤ndern</h4>
+                                                    <h4 class='modal-title'>Projekt Ãndern</h4>
                                                     <button type='button' class='close' data-dismiss='modal'>&times;</button>
                                                 </div>
                                                 <div class='modal-body' id='mbody'>
@@ -232,6 +238,11 @@ init_page_serversides("No Redirect");
                                                                 <option value="3">AusfÃ¼hrungsplanung</option> 
                                                             </select>	
                                                         </div>
+                                                        <div class="form-group"> 
+                                                            <label for="dateSelect">Preisbasis:</label>
+                                                            <input type="date" id="dateSelect" name="dateSelect">
+                                                        </div>
+
                                                     </form>
                                                 </div>
                                                 <div class='modal-footer'>
@@ -281,6 +292,7 @@ init_page_serversides("No Redirect");
                                     var move = $(inp);
                                     $(location).prepend(move);
                                 }
+                              
                                 // Tabelle formatieren
                                 $(document).ready(function () {
                                     let doooooooom = 'ft';
@@ -350,6 +362,8 @@ init_page_serversides("No Redirect");
                                             document.getElementById("nf").value = table.row($(this)).data()[8];
                                             document.getElementById("bearbeitung").value = table.row($(this)).data()[9];
                                             document.getElementById("planungsphase").value = table.row($(this)).data()[11];
+                                            document.getElementById("dateSelect").value = table.row($(this)).data()[12];
+
                                             if (ext === '0') {
                                                 document.getElementById("vermerkeFilter").value = 0;
                                             }
@@ -671,8 +685,33 @@ init_page_serversides("No Redirect");
                                      */
                                 });
 
+
+                                function getDate() {
+                                    var date = new Date($("#dateSelect").val());
+//                                    console.log("Date: ", date);
+                                    var day = date.getDate();
+//                                    console.log("Day: ", day);
+                                    var month = date.getMonth() + 1; // Months are zero based
+//                                    console.log("Month: ", month);
+                                    var year = date.getFullYear();
+//                                    console.log("Year: ", year);
+                                    day = ('0' + day).slice(-2);
+//                                    console.log("Formatted Day: ", day);
+                                    month = ('0' + month).slice(-2);
+//                                    console.log("Formatted Month: ", month);
+                                    var formattedDate = day + '-' + month + '-' + year;
+                                    console.log("Formatted Date: ", formattedDate);
+                                    return formattedDate;
+
+                                }
+
                                 // ProjektÃ¤nderungen aus Modal speichern
                                 $("#saveProject").click(function () {
+                                    var date = new Date($("#dateSelect").val());
+                                    var year = date.getFullYear();
+                                    var PBdate = year + '-' + (date.getMonth() + 1) + '-' + date.getDate(); //Preisbasis
+                                    console.log(PBdate);
+
                                     var betten = $("#betten").val();
                                     var bgf = $("#bgf").val();
                                     var nf = $("#nf").val();
@@ -681,16 +720,17 @@ init_page_serversides("No Redirect");
                                     var active = $("#active").val();
                                     var neubau = $("#neubau").val();
 
-                                    if (active !== "" && neubau !== "" && bearbeitung !== "" && planungsphase !== "" && !isNaN(betten) && !isNaN(bgf) && !isNaN(nf)) {
+                                    if (active !== "" && neubau !== "" && bearbeitung !== "" && planungsphase !== "" && !isNaN(betten) && !isNaN(bgf) && !isNaN(nf) ) {
                                         $('#changeProjectModal').modal('hide');
-
+                                         if (isNaN(year)) {
+                                            PBdate = "0000-00-00";
+                                        }  
                                         $.ajax({
                                             url: "saveProject.php",
-                                            data: {"active": active, "neubau": neubau, "bearbeitung": bearbeitung, "planungsphase": planungsphase, "betten": betten, "bgf": bgf, "nf": nf},
+                                            data: {"active": active, "neubau": neubau, "bearbeitung": bearbeitung, "planungsphase": planungsphase, "betten": betten, "bgf": bgf, "nf": nf, "PBdate": PBdate},
                                             type: "GET",
                                             success: function (data) {
                                                 alert(data);
-                                                // Neu Laden der Projektseite
                                                 location.reload();
                                             }
                                         });

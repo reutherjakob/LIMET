@@ -13,12 +13,8 @@ include '_scrollUpBtn.php';
         <title>RB-Bauangaben</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
-            <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
-            <!--            <link rel="icon" href="iphone_favicon.png">
-                        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">-->
+            <link rel="stylesheet" href="style.css" type="text/css" media="screen" /> 
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
                 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
                     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
@@ -68,7 +64,6 @@ include '_scrollUpBtn.php';
                                 <div id="limet-navbar" class=' '> </div> 
                                 <div class="mt-4 card">    
                                     <div class="card-header d-inline-flex" style="flex-wrap:nowrap" id='TableCardHeader'>  </div>
-                                    <!--<div class="card-header d-inline-flex" style="flex-wrap:nowrap" id='TableCardHeader2'>  </div>-->
                                     <div class="card-body" id = "table_container_div">
                                         <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" width ="100%" id="table_rooms" > 
                                             <thead <tr></tr> </thead>
@@ -103,7 +98,6 @@ include '_scrollUpBtn.php';
                                                             var currentRowInd = 0;
                                                             var currentColInd = 0;
                                                             let current_edit = false; //variable keeps track if the input field to ediot the cells is open
-
 
                                                             $(document).ready(function () {
                                                                 init_dt();
@@ -237,7 +231,6 @@ include '_scrollUpBtn.php';
                                                                     return `<input id="CellInput" onclick="this.select()" type="text" value="${cellText}">`;
                                                                 }
                                                             }
-
 
                                                             function table_click() {
                                                                 $('#table_rooms tbody').on('click', 'tr', function () {
@@ -420,9 +413,6 @@ include '_scrollUpBtn.php';
                                                                     toastCounter--;
                                                                 }, 2000 + toastCounter * 100);
                                                             }
-
-
-
 
                                                             function save_new_room(nummer, name, funktionsteilstelle, MTrelevant) {
                                                                 if (nummer !== "" && name !== "" && MTrelevant !== "" && funktionsteilstelle !== "") {  //& flaeche  !== "" && geschoss !== "" && bauetappe  !== "" && bauteil  !== "" && funktionsteilstelle !== 0 
@@ -642,9 +632,6 @@ include '_scrollUpBtn.php';
                                                                     }
                                                                 }
                                                             }
-
-
-
 
                                                             function init_showRoomElements_btn() {
                                                                 $("#showRoomElements").html("<i class='fa fa-caret-right'></i>");
@@ -885,7 +872,7 @@ include '_scrollUpBtn.php';
                                                                         "etdigestoriummsr230vsvstk": etdigestoriummsr230vsvstk,
                                                                         "et5x10mm2digestoriumstk": et5x10mm2digestoriumstk,
                                                                         "et5x10mm2usvstk": et5x10mm2usvstk,
-                                                                        "et5x10mm2svstk": et5x10mm2svstk,
+                                                                         "et5x10mm2svstk": et5x10mm2svstk,
                                                                         "et5x10mm2avstk": et5x10mm2avstk,
                                                                         "wasserqual3lmin": wasserqual3lmin,
                                                                         "wasserqual2ltag": wasserqual2ltag,
@@ -923,10 +910,6 @@ include '_scrollUpBtn.php';
                                                                     }
                                                                 });
                                                             }
-
-
-
                                                         </script>
                                                         </body> 
                                                         </html>
-
