@@ -41,10 +41,11 @@ init_page_serversides("No Redirect");
                                     <div class='mt-4 row'>  
                                         <div class='col-md-10'>
                                             <div class="mt-4 card">
-                                                <div class="card-header form-check-inline" id="PRCardHeader" > <b>Projekte </b>
+                                                <div class="card-header  d-inline-flex" id="PRCardHeader" > <b>Projekte </b>
                                                     <div class="col " id ="STH"> </div>
                                                     <label class="float-right">
-                                                        Nur aktive Projekte: <input type="checkbox" id="filter_ActiveProjects" checked="true"> 
+                                                        
+                                                        Nur aktive Projekte: <input type="checkbox" id="filter_ActiveProjects" <?php if($_SESSION["username"] === "fuchs"){echo ' checked="false"';}else {echo 'checked="true"';} ?> > 
                                                     </label>
                                                 </div>
                                                 <div class="card-body">
