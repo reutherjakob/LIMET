@@ -82,6 +82,7 @@ $sql = "INSERT INTO `LIMET_RB`.`tabelle_räume`
     `HT_Abluft_Sicherheitsschrank_Stk`,
     `HT_Spuele_Stk`,
     `HT_Kühlwasser`,
+    `HT_Notdusche`,
     `O2_Mangel`,
     `CO2_Melder`,
     `ET_RJ45-Ports`,
@@ -126,7 +127,10 @@ $sql = "INSERT INTO `LIMET_RB`.`tabelle_räume`
     `EL_SV Steckdosen Stk`,
     `EL_ZSV Steckdosen Stk`,
     `EL_USV Steckdosen Stk`,
-    `EL_Roentgen 16A CEE Stk` )
+    `EL_Laser 16A CEE Stk`,
+    `EL_Roentgen 16A CEE Stk`,
+    AR_Statik_relevant,
+    AR_AP_permanent )
     VALUES
     ('" . filter_input(INPUT_GET, 'raumnummer') . "',
     '" . filter_input(INPUT_GET, 'raumbezeichnung') . "',
@@ -190,6 +194,7 @@ $sql = "INSERT INTO `LIMET_RB`.`tabelle_räume`
     '" . filter_input(INPUT_GET, 'htabluftsicherheitsschrankstk') . "',
     '" . filter_input(INPUT_GET, 'htspuelestk') . "',
     '" . filter_input(INPUT_GET, 'htkühlwasser') . "',
+    '" . filter_input(INPUT_GET, 'Notdusche') . "',
     '" . filter_input(INPUT_GET, 'o2mangel') . "',
     '" . filter_input(INPUT_GET, 'co2melder') . "',
     '" . filter_input(INPUT_GET, 'etrj45ports') . "',
@@ -234,7 +239,11 @@ $sql = "INSERT INTO `LIMET_RB`.`tabelle_räume`
     '" . filter_input(INPUT_GET, 'SSDs_SV') . "',
     '" . filter_input(INPUT_GET, 'SSDs_ZSV') . "',
     '" . filter_input(INPUT_GET, 'SSDs_USV') . "',
-    '" . filter_input(INPUT_GET, 'CEE16A Stk') . "')";
+    '" . filter_input(INPUT_GET, 'CEE16AL') . "',
+    '" . filter_input(INPUT_GET, 'CEE16AR') . "',
+    '" . filter_input(INPUT_GET, 'AR_Statik') . "',
+    '" . filter_input(INPUT_GET, 'AR_AP') . "')";
+
 if ($mysqli->query($sql) === TRUE) {
     echo "Raum erfolgreich hinzugefügt!";
 } else {
@@ -242,5 +251,4 @@ if ($mysqli->query($sql) === TRUE) {
 }
 
 $mysqli->close();
-
 ?>
