@@ -21,6 +21,7 @@ function init_page_serversides($ommit_redirect = "") {
         check_if_project_selected_else_redirect();
     }
     load_nav_bar();
+    include '_scrollUpBtn.php';
 }
 
 function check_login() {

@@ -2,17 +2,17 @@
 #scrollBtn {
     display:none;
     position: fixed;
-    bottom: 20px;
+    bottom: 10px;
     right: 50%; /* Center horizontally */
     transform: translateX(50%);
     z-index: 99;
     font-size: 24px;
-    background-color: #5cb85c; /* Green color */
+    background-color:rgba(100, 140, 25, 0.15);  
     color: #fff;
     border: none;
-    border-radius: 50%;
+    border-radius: 50% / 30%;
     padding: 10px;
-    cursor: pointer;
+    cursor: pointer; 
 }
 
 #scrollBtn:hover {
@@ -31,8 +31,7 @@
  
 #body, html, .container-fluid {
     height: 100%;
-    font-size:13px;
-    
+    font-size:13px; 
     color: #222;
     background: #fff;
     font: 100% system-ui;

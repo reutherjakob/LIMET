@@ -1,6 +1,5 @@
 <?php
 
-
 ///------------------  DATA FUNCTIONS  ------------------
 function filter_old_equal_new($data) {
     $groupedData = [];
@@ -43,7 +42,6 @@ function getValidatedDateFromURL() {
     }
 }
 
->>>>>>> UpdateBauangabenSeite
 function kify($input) {
     if (is_numeric($input)) {
         if ($input >= 1000) {
@@ -78,40 +76,6 @@ function is_not_no_comment($str) {
     }
 }
 
-function format_text($string) {
-    $string = preg_replace("/\s+\n/", "\n", $string); // Remove spaces before \n
-    $string = preg_replace("/\n\n\n/", "\n", $string); // Remove spaces before \n
-    $string = preg_replace("/\n\n/", "\n", $string); // Remove spaces before \n
-//    $string = str_replace("\n", $spacer, $string);
-//    $string = str_replace("..", ".", $string);
-//    if (preg_match('/²/', $string)) {
-//        // Replace the superscript 2 with <sup>2</sup>
-//        $return = str_replace('²', '<sup>2</sup>', $string);
-//    } else {
-//        $return = $string;
-//    }
-    $return = $string; // str_replace("?", " ", $string);
-    return $return;
-}
-
-function clean_string($dirty_str) {
-    $clean_string = preg_replace('/[^äüö\n(\x20-\x7F)]*/u', '', $dirty_str);
-    return $clean_string;
-}
-
-function newpage_or_spacer($pdf, $next_block_size, $LN = 8) {
-    $y = $pdf->GetY();
-    if (($y + $next_block_size) >= 270) {
-        $pdf->AddPage();
-    } else {
-        if ($y < 20) {
-            
-        } else {
-            $pdf->Ln($LN);
-        }
-    }
-}
-
 function check_4_new_page($pdf, $height, $format = "") {
     $y = $pdf->GetY();     // Wenn Seitenende? Überprüfen und neue Seite anfangen
     $pagelength = 270;
@@ -123,15 +87,11 @@ function check_4_new_page($pdf, $height, $format = "") {
     }
 }
 
-function dashed_line($pdf, $offset) {
-    $pdf->SetLineStyle(array('dash' => 2, 'color' => array(0, 0, 0)));
-    $y = $pdf->GetY() + $offset;
-    $pdf->Line(25, $y, 185, $y);
-    $pdf->SetLineStyle(array('dash' => 0, 'color' => array(0, 0, 0)));
-}
-
 function translateBestand($value) {
     return ($value == 0) ? 'Ja' : 'Nein';
+}
+function translate_1_to_yes($value) {
+    return ($value == 1) ? 'Ja' : 'Nein';
 }
 
 function block_label_queer($block_header_w, $pdf, $block_label, $upcomming_block_size, $block_height = 12, $SB = 390) {
@@ -183,26 +143,25 @@ function anmA3($pdf, $inp_text, $SB, $block_header_w) {
     }
 }
 
-/* function splitText($pdf, $inp_text, $columnWidth) {
-  //    $middle = floor(strlen($inp_text) / 2);
-  //    $lastNewlineBeforeMiddle = strrpos(substr($inp_text, 0, $middle), "\n");
-  //
-  //    if ($lastNewlineBeforeMiddle !== false) {
-  //        $middle = $lastNewlineBeforeMiddle;
-  //    } else {
-  //        $middle = min(
-  //            strpos($inp_text, ' ', $middle),
-  //            strpos($inp_text, '-', $middle)
-  //        );
-  //    }
-  //
-  //    // Split the text into two parts
-  //    $leftText = substr($inp_text, 0, $middle);
-  //    $rightText = substr($inp_text, $middle);
-  //
-  //    return array($leftText, $rightText);
-  //} */
-
+/*function splitText($pdf, $inp_text, $columnWidth) {
+      $middle = floor(strlen($inp_text) / 2);
+      $lastNewlineBeforeMiddle = strrpos(substr($inp_text, 0, $middle), "\n");
+  
+      if ($lastNewlineBeforeMiddle !== false) {
+          $middle = $lastNewlineBeforeMiddle;
+      } else {
+          $middle = min(
+              strpos($inp_text, ' ', $middle),
+              strpos($inp_text, '-', $middle)
+          );
+      }
+  
+      // Split the text into two parts
+      $leftText = substr($inp_text, 0, $middle);
+      $rightText = substr($inp_text, $middle);
+  
+      return array($leftText, $rightText);
+  } 
 function splitText($pdf, $inp_text, $columnWidth) {
     $lines = explode("\n", $inp_text);
     $middle = floor(count($lines) / 2);
@@ -227,7 +186,7 @@ function writeTwoColumns($pdf, $columnWidth, $leftText, $rightText) {
     $pdf->MultiCell($columnWidth, 0, $rightText, 0, 'L', false, 1);
     $rightHeight = $pdf->GetY() - $yBefore;
     $pdf->SetY(max($leftHeight, $rightHeight) + $yBefore);
-}
+}*/
 
 function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $RaumbereichNutzer, $Geschoss, $Bauetappe, $Bauabschnitt, $format = "", $parameter_changes_t_räume = 0) {
     if ($format == "") {
@@ -320,20 +279,14 @@ function multicell_text_hightlight($pdf, $breite, $font_size, $parameter_sql_nam
 }
 
 function format_text($string) {
-    $spacer = ". ";
-//    $string = preg_replace("/\s+\n/", "\n", $string); // Remove spaces before \n
+//    $spacer = ". ";
+    $return = preg_replace("/\s+\n/", "\n", $string); // Remove spaces before \n
 //    $string = str_replace("\n", $spacer, $string);
 //    $return = str_replace("..", ".", $string);
 //    if (preg_match('/²/', $string)) {
 //        // Replace the superscript 2 with <sup>2</sup>
 //        $return = str_replace('²', '<sup>2</sup>', $string);
-//    } else {
-//        $return = $string;
-//    }
-
-    // Format the string for a multicell
-//     = '<p>' . $return . '</p>';
-    $return=$string; 
+//    }    
     return $return;
 }
 
@@ -368,22 +321,11 @@ function newpage_or_spacer($pdf, $next_block_size, $LN = 8) {
     }
 }
 
-function check_4_new_page($pdf, $height=0) {
-    $y = $pdf->GetY();     // Wenn Seitenende? Überprüfen und neue Seite anfangen
-    if (($y + $height) >= 270) {
-        $pdf->AddPage();
-    }
-}
-
 function dashed_line($pdf, $offset) {
     $pdf->SetLineStyle(array('dash' => 2, 'color' => array(0, 0, 0)));
     $y = $pdf->GetY() + $offset;
     $pdf->Line(25, $y, 185, $y);
     $pdf->SetLineStyle(array('dash' => 0, 'color' => array(0, 0, 0)));
-}
-
-function translateBestand($value) {
-    return ($value == 0) ? 'Ja' : 'Nein';
 }
 
 function multicell_with_stk($pdf, $NR, $einzug) {
@@ -496,7 +438,7 @@ function make_MT_list($pdf, $SB, $block_header_w, $booooool, $resultX, $style_no
         }
         $c_even++;
 //        if ($booooool && ($c_even % 2 == 0)) {
-            $borders = 'LT';
+        $borders = 'LT';
 //        }
         $pdf->MultiCell($spaces[0], $rowHeightMainLine, $row['ElementID'], $borders, 'C', $fill, 0);
         $borders = 'T';
@@ -504,7 +446,7 @@ function make_MT_list($pdf, $SB, $block_header_w, $booooool, $resultX, $style_no
         $pdf->MultiCell($spaces[2], $rowHeightMainLine, $row['SummevonAnzahl'], $borders, 'C', $fill, 0);
         $pdf->MultiCell($spaces[3], $rowHeightMainLine, translateBestand($row['Neu/Bestand']), $borders, 'C', $fill, 0);
 //        if ($booooool && ($c_even % 2 == 1)) {
-            $borders = 'RT';
+        $borders = 'RT';
 //        }
         $pdf->MultiCell($spaces[4], $rowHeightMainLine, $row['Bezeichnung'], $borders, 'L', $fill, 0);
         if ($booooool && ($c_even % 2 == 0) || !$booooool) {
@@ -512,13 +454,11 @@ function make_MT_list($pdf, $SB, $block_header_w, $booooool, $resultX, $style_no
             $fill = !$fill;
         }
     }$pdf->Ln();
-    $pdf->Line(15+ $block_header_w, $pdf->GetY(), $SB + 15 , $pdf->GetY(),$style_dashed);
-    
+    $pdf->Line(15 + $block_header_w, $pdf->GetY(), $SB + 15, $pdf->GetY(), $style_dashed);
+
     $pdf->SetLineStyle($style_normal);
     $pdf->Line(15, $pdf->GetY() + 1, $SB + 15, $pdf->GetY() + 1, $style_normal);
 }
-
-
 
 function el_in_room_html_table($pdf, $result, $init_einzug, $format = "", $SB = 0) {
     $pdf->MultiCell($init_einzug, 10, "", 0, "C", 0, 0);
@@ -572,51 +512,3 @@ function el_in_room_html_table($pdf, $result, $init_einzug, $format = "", $SB = 
     $pdf->writeHTML($html);
 }
 
-/*
-
-function el_in_room_html_table($pdf, $result, $init_einzug, $format = "", $SB = 0) {
-    $pdf->MultiCell($init_einzug, 10, "", 0, "C", 0, 0);
-    $columnWidthPercentages = array(10, 10, 10, 10, 60);
-    $headers = array('ElementID', 'Variante', 'Anzahl', 'Neu/Bestand', 'Bezeichnung');
-    $pdf->SetFont('helvetica', 'B', 12);
-    $html = '<table border="0">';
-    $html .= '<tr>';
-
-    foreach ($columnWidthPercentages as $index => $widthPercentage) {
-        $alignStyle = ($headers[$index] == 'Neu/Bestand' || $headers[$index] == 'Variante' || $headers[$index] == 'Anzahl') ? 'text-align: center;' : '';
-        $tablelabel = $headers[$index] == 'Neu/Bestand' ? 'Bestand' : ($headers[$index] == 'Variante' ? 'Var' : $headers[$index]);
-        $html .= '<th width="' . $widthPercentage . '%" style="' . $alignStyle . '">' . $tablelabel . '</th>';
-    }
-    $html .= '</tr>';
-    $pdf->SetFont('helvetica', '', 10);
-
-    $rowCount = 0;
-    $splitTable = $format === "A3" && count($result) > 5;
-
-    while ($row = $result->fetch_assoc()) {
-        if ($splitTable && $rowCount == ceil(count($result) / 2)) {
-            $html .= '</table><table border="0">';
-        }
-        $html .= '<tr>';
-        foreach ($columnWidthPercentages as $index => $widthPercentage) {
-            $columnName = $headers[$index] === "Anzahl" && $format === "A3" ? "SummevonAnzahl" : $headers[$index];
-            $cellValue = $row[$columnName] ?? '';
-            if ($columnName == 'Neu/Bestand') {
-                $cellValue = translateBestand($cellValue);
-            }
-            $alignStyle = ($columnName === 'Neu/Bestand' || $columnName === 'Variante' || $columnName === 'Anzahl' ||  $columnName === "SummevonAnzahl" ) ? 'text-align: center;' : '';
-            $html .= '<td width="' . $widthPercentage . '%" style="' . $alignStyle . '">' . $cellValue . '</td>';
-        }
-        $html .= '</tr>';
-        $rowCount++;
-    }
-    $html .= '</table>';
-
-    $pdf->writeHTML($html);
-}
-
-
-
-function make_mt_list() {
-    
-}

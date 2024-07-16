@@ -11,17 +11,17 @@ function title2data(columnsDefinition, title) {
 }
 
 const buttonRanges = [
-    {name: 'Alle', start: 7, end: 114},
+    {name: 'Alle', start: 7, end: 114+1},
     {name: 'RAUM', start: 7, end: 23},
-    {name: 'HKLS', start: 25, end: 30},
-    {name: 'ELEK', start: 31, end: 49},
-    {name: 'AR', start: 50, end: 51},
-    {name: 'MEDGAS', start: 52, end: 62},
-    {name: 'LAB', start: 63, end: 114},
-    {name: 'L-GAS', start: 55 + 13, end: 79 + 13},
-    {name: 'L-ET', start: 80 + 13, end: 87 + 13},
-    {name: 'L-HT', start: 88 + 13, end: 95 + 13},
-    {name: 'L-H2O', start: 95 + 13, end: 101 + 13}
+    {name: 'HKLS', start: 25 +1, end: 30+1},
+    {name: 'ELEK', start: 31+1, end: 49+1},
+    {name: 'AR', start: 50+1, end: 51+1},
+    {name: 'MEDGAS', start: 52+1, end: 62+1},
+    {name: 'LAB', start: 63+1, end: 114+1},
+    {name: 'L-GAS', start: 55 + 14, end: 79 + 14},
+    {name: 'L-ET', start: 80 + 14, end: 87 + 14},
+    {name: 'L-HT', start: 88 + 14, end: 95 + 14},
+    {name: 'L-H2O', start: 95 + 14, end: 101 + 14}
 ];
 
 const columnsDefinitionShort = [
@@ -84,6 +84,8 @@ const columnsDefinition = [
     {data: 'HT_Spuele_Stk', title: 'Spüle [Stk]', case: "num"},
     {data: 'HT_Kühlwasser', title: 'Kühlwasser', case: "bit"},
     {data: 'HT_Notdusche', title: 'Notdusche', case: "bit"},        
+    {data: 'VE_Wasser', title: 'VE_Wasser', case: "bit"},        
+
     //ET
     {data: 'Anwendungsgruppe', title: 'AWG'},
     {data: 'Fussboden OENORM B5220', title: 'B5220'},
@@ -109,8 +111,8 @@ const columnsDefinition = [
     {data: 'IT Anbindung', title: 'IT', case: "bit"},
     {data: 'ET_RJ45-Ports', title: 'RJ45-Ports', case: "num"},
 //AR 
-    {data: 'AR_AP_permanent', title: 'AR AP permanent', name: 'AR AP permanent ', case: "bit", render: function (data) {
-            return data === '1' ? 'permanenter AP' : 'kein permanenter AP';
+    {data: 'AR_AP_permanent', title: 'permanenter AP', name: 'AR AP permanent ', case: "bit", render: function (data) {
+            return data === '1' ? 'ja' : 'nein';
         }},
     {data: 'AR_Statik_relevant', title: 'AR Statik relevant', name: 'AR Statik relevant', case: "bit", render: function (data) {
             return data === '1' ? 'relevant' : 'nicht rel.';

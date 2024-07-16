@@ -130,7 +130,8 @@ $sql = "INSERT INTO `LIMET_RB`.`tabelle_räume`
     `EL_Laser 16A CEE Stk`,
     `EL_Roentgen 16A CEE Stk`,
     AR_Statik_relevant,
-    AR_AP_permanent )
+    AR_AP_permanent, 
+    VE_Wasser)
     VALUES
     ('" . filter_input(INPUT_GET, 'raumnummer') . "',
     '" . filter_input(INPUT_GET, 'raumbezeichnung') . "',
@@ -242,7 +243,8 @@ $sql = "INSERT INTO `LIMET_RB`.`tabelle_räume`
     '" . filter_input(INPUT_GET, 'CEE16AL') . "',
     '" . filter_input(INPUT_GET, 'CEE16AR') . "',
     '" . filter_input(INPUT_GET, 'AR_Statik') . "',
-    '" . filter_input(INPUT_GET, 'AR_AP') . "')";
+    '" . filter_input(INPUT_GET, 'AR_AP') . "',
+    '" . filter_input(INPUT_GET, 'VE_Wasser') . "')";
 
 if ($mysqli->query($sql) === TRUE) {
     echo "Raum erfolgreich hinzugefügt!";
