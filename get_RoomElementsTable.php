@@ -23,8 +23,10 @@ check_login();
         echo"<table class='table table-responsive table-striped table-bordered table-sm' id='tableRoomElements" . $_SESSION["roomID"] . "' cellspacing='0' >
 	<thead><tr>
 
-	<th class='cols-md-1'>Stück</th>
-	<th>Element</th>
+	
+	<th style='width:50%; '>Element</th>
+        <th class='customIDCell'>ID</th>
+        <th>Stück</th>
 	<th>Var.</th>
 	<th>Best.</th>
 	<th>Ort</th> 
@@ -36,8 +38,10 @@ check_login();
         while ($row = $result->fetch_assoc()) {
             echo "<tr>";
 //            echo "<td>" . $row["id"] . "</td>";
+            echo "<td>" . $row["Bezeichnung"] . "</td>";
+            echo "<td>" . $row["ElementID"] . "</td>";           
+      
             echo "<td>" . $row["Anzahl"] . "</td>";
-            echo "<td>" . $row["ElementID"] . " " . $row["Bezeichnung"] . "</td>";
             echo "<td>" . $row["Variante"] . "</td>";
             echo "<td>";
             if ($row["Neu/Bestand"] == 1) {
@@ -66,59 +70,25 @@ check_login();
         echo "</tbody></table>";
         ?>
         <script>
-
-            // Element speichern
-            $("input[value='Element auswählen']").click(function () {
-                var id = this.id;
-                $.ajax({
-                    url: "getElementParameters.php",
-                    data: {"id": id},
-                    type: "GET",
-                    success: function (data) {
-                        $("#elementParameters").html(data);
-                    }
-                });
-            });
+ 
 
             $(document).ready(function () {
                 var tablel = $("#tableRoomElements").DataTable({
                     searching: true,
                     info: true,
                     responsive:true,
-                    select: true,
+                    select: true, 
+                    compact:true,
                     order: [[1, "asc"]],
                     lengthChange: false,
-                    language: {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
                     columnDefs: [
-                        {"targets": [0,7 ], "visible": false, "searchable": false}
+                        {"targets": [0,8 ], "visible": false, "searchable": false}
                     ],
                     paging: false, 
                     pageLength: -1,
                     sDom: "ti" 
-                });
-
- 
-                $('#tableRoomElements tbody').on('click', 'tr', function () {
-                    if ($(this).hasClass('info')) {
-                    } else {
-                        tablel.$('tr.info').removeClass('info');
-                        $(this).addClass('info');
-                        var raumbuchID = tablel.row($(this)).data()[0];
-                        $.ajax({
-                            url: "getElementParameters.php",
-                            data: {"id": raumbuchID},
-                            type: "GET",
-                            success: function (data) {
-                                $("#elementParameters").html(data);
-                            }
-                        });
-
-                    }
-                });
+                }); 
             });
-
-
         </script>
-
     </body>
 </html>

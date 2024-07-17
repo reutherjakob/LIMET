@@ -23,24 +23,21 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
                         <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
                         <style>
-
                             .btn_vis{
                                 background-color: rgba(100, 140, 25, 0.2)!important;
                                 color: black;
                                 font-weight: 500;
                                 box-shadow: 0 2px 2px 0 rgba(100, 140, 25, 0.2), 0 2px 2px 0 rgba(100, 140, 25, 0.2);
-
                             }
                             .btn_invis{
                                 background-color: rgba(100, 0, 25, 0.2)!important;
                                 color: black;
                                 font-weight: 400;
                                 box-shadow: 0 2px 2px 0 rgba(100, 0, 25, 0.2), 0 2px 2px 0 rgba(100, 0, 25, 0.2);
-                                /*                                padding-left: 5px  !important;
-                                                                padding-right: 5px  !important;
-                                                                margin-right: 1px !important ;
-                                                                margin-left: 1px !important ;*/
-
+                                /* padding-left: 5px  !important;
+                                padding-right: 5px  !important;
+                                margin-right: 1px !important ;
+                                margin-left: 1px !important ;*/
                             }
                             .btn {
                                 font-size: 0.6vw !important;
@@ -68,7 +65,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             .rotated {
                                 writing-mode: vertical-lr;
                             }
-
                         </style> 
                         </head> 
                         <body style="height:100%"> 
@@ -85,13 +81,13 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                         </table> 
                                     </div>
                                 </div>      
-                                
+
                                 <div class='d-flex bd-highlight'>
                                     <div class='mt-4 mr-2 card flex-grow-1'>
                                         <div class="card-header card_header_size"><b>Bauangaben</b></div>
                                         <div class="card-body" id="bauangaben"></div>
                                     </div>      
-                                    
+
                                     <div class="mt-4 card">
                                         <div class="card d-inline-flex">
                                             <div class="card-header card_header_size">
@@ -104,7 +100,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                             </div>
                                         </div> 
                                     </div>  
-                                    
+
                                 </div>
                             </div>   
                         </body> 

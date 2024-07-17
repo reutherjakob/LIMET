@@ -28,68 +28,84 @@ init_page_serversides();
                         <!-- js xls imports -->
                         <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
                         <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
-<!--                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  -->
-
                         <style>
+                            .card{
+                                padding: 3px;
+                            }
+                            .card-header{
+                                height: 50px;
+                                background-color: rgba(100, 140, 25, 0.05);
+                            }
+                            .centeriiiiino{
+                                justify-content: center; /* Horizontally center the content */
+                                align-items: center; /* Vertically center the content */
+                            }
+                            .form-check-input{
+                                height: 20px;
+                                width: 20px;
+                                padding: 15px;
+                            }
+                            .form-check-input:checked {
+                                background-color: rgba(100, 140, 25, 0.5) !important;
+                            }
+                            .form-check-label{
+                                padding-left:  3px;
+                                padding-right:  15px;
+                                font-weight: bold;
+                            }
+                            .fix_size{
+                                height: 35px !important;
+                            }
 
                         </style>
-
                         </head> 
                         <body style="height:100%"> 
-                            <div class="container-fluid "> 
+                            <div class="container-fluid">  
                                 <div id="limet-navbar" class=' '> </div> 
 
-                                <div class="mt-4 card">    
-                                    <div class="card-header d-inline-flex" id='TableCardHeader'>  </div>
-
-                                    <div class="card-body" id = "table_container_div">
-                                        <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" width ="100%" id="table_rooms" > 
-                                            <thead   </thead> <tbody>  </tbody>
-                                        </table> 
+                                <div class="  d-flex">
+                                    <div class="mt-2 card  border-secondary  col-8">    
+                                        <div class="card-header d-inline-flex align-items-center"  id='TableCardHeader' > 
+                                            <label class="form-check-label"  > <u>Räume</u>  </label> </div>  
+                                        <div class="card-body" id = "table_container_div">
+                                            <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" width ="100%" id="table_rooms" > 
+                                                <thead   </thead> <tbody>  </tbody>
+                                            </table> 
+                                        </div>    
                                     </div>
-                                </div>      
-                                <div class='mt-4 card  bd-highlight'>
-                                    <div class="card-header d-inline-flex align-items-center " id ="makeXLScardHeader" > 
-                                        <label class="form-check-label" style="margin-right: 20px;">  XLS COMPOSER (Elements in Room Parameters) </label>
-                                        <button class="btn-sm btn-success" id="addSheet">Add Sheet</button>
-                                        <button class="btn-sm btn-link"id="download">Download Excel</button>
-                                        <button class="btn-sm btn-danger" style="margin-right: 20px;" id="reset">Reset Excel</button>    </div>
 
-                                    <div class="card-body">
-                                        <div class="row"> 
-                                            <div class="col">
-                                                <p id="makeXLSparagraph">Selected Data:</p> 
-                                            </div>
-
-                                            <div class="col">
-                                                <p>Log:</p>
-                                                <ul id="logx"> 
-                                                </ul>
-                                            </div> 
-
+                                    <div class=' mt-2 card  border-secondary  col-4'>
+                                        <div class="card-header d-flex align-items-center centeriiiiino" id ="makeXLScardHeader"  > 
+                                            <label class="form-check-label"  > <u> XLS Composer</u>  </label>
+                                            <button class="btn btn-success" id="addSheet">Add Sheet</button>
+                                            <button class="btn btn-link"id="download">Download Excel</button>
+                                            <button class="btn btn-danger" style="margin-right: 20px;" id="reset">Reset Excel</button>    </div> 
+                                        <div class="card-body">
+                                            <p style="text-align-last: center;"> <u> Log </u> </p>
+                                            <ul  style="text-align-last: center;" id="logx"> </ul>
                                         </div>
+                                    </div> 
+                                </div>
+
+                                <div class=' mt-2 card  border-secondary  col-12'>
+                                    <div class="card-header d-inline-flex" id ="elemetsParamsTableCardHeader">    
+                                        <label class="form-check-label"  > <u>  Vorschau - Element Parameter </u>  </label>
                                     </div>
-
-
-                                </div> 
-                                <div class='mt-4 card  bd-highlight'>
-                                    <div class="card-header d-inline-flex" id ="elemetsParamsTableCardHeader" >  ELEMENT PARAMETER VORSCHAU </div>
                                     <div class="card-body " id ="elemetsParamsTableCard">
                                         <p id="elemetsParamsTable">
-                            <!--                                        <table class='table display compact table-striped table-bordered table-sm' id='roomElementsParamTable' cellspacing='0' width='100%'>
-                                            <thead   </thead> <tbody>  </tbody>
-                                        </table> -->
                                     </div>
                                 </div> 
                             </div>
 
+
                             <script src="roombookSpecifications_constDeclarations.js"></script> 
                             <script>
                                 var table;  //for roomas table // var table2; // for elements table  //in el table code defined
+                                let RaumID;
                                 var wb = XLSX.utils.book_new();
                                 var sheetIndex = 1;
                                 var selectedIDs = [];
-                                var K2R = [];
+                                var K2R = ["1", "2", "3", "12", "17"];
 
                                 const checkboxData = [
                                     {label: 'ELEK', value: '2'},
@@ -112,25 +128,21 @@ init_page_serversides();
 
                                 function init_checboxes4selectingKathegories() {
                                     checkboxData.forEach((data, index) => {
-                                        let div = document.createElement('div');
-                                        div.className = 'form-check';
-                                        div.style.margin = '0 10px';
-
                                         let checkbox = document.createElement('input');
                                         checkbox.type = 'checkbox';
                                         checkbox.id = 'checkbox' + index;
                                         checkbox.value = data.value;
                                         checkbox.className = 'form-check-input';
+                                        checkbox.checked = true;
 
                                         let label = document.createElement('label');
                                         label.htmlFor = checkbox.id;
                                         label.className = 'form-check-label';
                                         label.appendChild(document.createTextNode(data.label));
 
+                                        let div = document.querySelector('#elemetsParamsTableCardHeader');
                                         div.appendChild(checkbox);
                                         div.appendChild(label);
-                                        let location = document.querySelector('#makeXLScardHeader');
-                                        location.appendChild(div);
 
                                         checkbox.addEventListener('change', function () {
                                             if (this.checked) {
@@ -138,7 +150,8 @@ init_page_serversides();
                                             } else {
                                                 K2R = K2R.filter(value => value !== this.value);
                                             }
-                                            console.log("RB PAGE K2R: ", K2R);
+
+                                            getElementsParamTable(RaumID);
                                         });
                                     });
                                 }
@@ -150,7 +163,6 @@ init_page_serversides();
                                             console.log('No valid selection');
                                             $('#logx').append('<li>No valid Data selection</li>');
                                             return;
-
                                         }
                                         selectedData.forEach(function (rowData) {
                                             var RaumID = rowData.id;
@@ -168,22 +180,22 @@ init_page_serversides();
                                                                 delete item[key];
                                                             });
                                                         });
-//                                                        var columnsToKeep = ["ElementID", 'PN', 'NA', 'PA'];
-//                                                        var filteredData = data.map(function (row) {
-//                                                            return columnsToKeep.reduce(function (obj, column) {
-//                                                                obj[column] = row[column];
-//                                                                return obj;
-//                                                            }, {});
-//                                                        });
-//                                                        console.log(filteredData);
+                                                        /*                                                       var columnsToKeep = ["ElementID", 'PN', 'NA', 'PA'];
+                                                         //                                                        var filteredData = data.map(function (row) {
+                                                         //                                                            return columnsToKeep.reduce(function (obj, column) {
+                                                         //                                                                obj[column] = row[column];
+                                                         //                                                                return obj;
+                                                         //                                                            }, {});
+                                                         //                                                        });
+                                                         //                                                        console.log(filteredData); */
 
                                                         var ws = XLSX.utils.json_to_sheet(data);
                                                         var sheetName = sanitizeSheetName(Raumbezeichnung);
                                                         XLSX.utils.book_append_sheet(wb, ws, sheetName);
-                                                        $('#logx').append('<li>Added ' + sheetName + '</li>');
+                                                        $('#logx').append('Added ' + sheetName + '</br>');
                                                         sheetIndex++;
                                                     } else {
-                                                        $('#logx').append('<li>' + Raumbezeichnung + '-> nodata = no sheet</li>');
+                                                        $('#logx').append('' + Raumbezeichnung + '-> nodata = no sheet </br>');
                                                     }
                                                 },
                                                 error: function (jqXHR, textStatus, errorThrown) {
@@ -251,55 +263,31 @@ init_page_serversides();
                                     return sanitized;
                                 }
 
-
-                                function displaySelectedData(table) {
-                                    var selectedData = getSelectedData(table);
-                                    var ul = document.createElement('ul');
-                                    for (var i = 0; i < selectedData.length; i++) {
-                                        var li = document.createElement('li');
-                                        li.textContent = 'ID: ' + selectedData[i].id + ', Room: ' + selectedData[i].Raumbezeichnung;
-                                        ul.appendChild(li);
-                                    }
-                                    var paragraph = document.getElementById('makeXLSparagraph');
-                                    paragraph.innerHTML = ''; // Clear the paragraph
-                                    paragraph.appendChild(ul); // Append the list to the paragraph
+                                function getElementsParamTable(RaumID) {
+                                    $.ajax({
+                                        url: "setSessionVariables.php",
+                                        data: {"roomID": RaumID},
+                                        type: "GET",
+                                        success: function (data) {
+                                            $.ajax({
+                                                url: "getElementsParamTable.php",
+                                                data: {"roomID": RaumID, "K2Return": JSON.stringify(K2R)},
+                                                type: "GET",
+                                                success: function (data) {
+                                                    $("#elemetsParamsTable").html(data);
+                                                }
+                                            });
+                                        }}
+                                    );
                                 }
 
                                 function table_click() {
                                     $('#table_rooms tbody ').on('click ', 'tr', function () {
-//                                        var data = getSelectedData(table);
-//                                        console.log(data);
-                                        displaySelectedData(table);
-                                        var RaumID = table.row($(this)).data()['idTABELLE_Räume'];
-
-                                        $.ajax({
-                                            url: "setSessionVariables.php",
-                                            data: {"roomID": RaumID},
-                                            type: "GET",
-                                            success: function (data) {
-                                                $.ajax({
-                                                    url: "getElementsParamTable.php",
-                                                    data: {"roomID": RaumID, "K2Return": JSON.stringify(K2R)},
-                                                    type: "GET",
-                                                    success: function (data) {
-                                                        $("#elemetsParamsTable").html(data);
-                                                    }
-                                                });
-
-                                                /*
-                                                 //                                                $.ajax({    //somehow broken
-                                                 //                                                    url: "exportXLS.php",
-                                                 //                                                    type: "GET",
-                                                 //                                                    success: function (data) {
-                                                 //                                                        $("#makeXLSparagraph ").html(data);
-                                                 //                                                    }
-                                                 //                                                });    */
-                                            }
-                                        });
+                                        RaumID = table.row($(this)).data()['idTABELLE_Räume'];
+                                        getElementsParamTable(RaumID);
                                     });
 
                                 }
-
                                 function init_dt() {   // $('#tableRooms').DataTable({ warum das nicht geht ist mir ein räsetl
                                     table = new DataTable('#table_rooms', {
                                         ajax: {
@@ -311,14 +299,14 @@ init_page_serversides();
                                         keys: true,
                                         order: [[3, 'asc']],
                                         select: {
-                                            style: 'os' //,blurable: false
+                                            style: 'multi' //,blurable: false
                                         },
                                         paging: true,
                                         pagingType: "simple_numbers",
-                                        pageLength: 20,
+                                        pageLength: 5,
                                         lengthMenu: [
-                                            [10, 20, -1],
-                                            ['10 rows', '20 rows', 'Show all']
+                                            [5, 15, 30, -1],
+                                            [5, '15 rows', '30 rows', 'Show all']
                                         ],
                                         scrollY: true,
                                         scrollX: true,
@@ -334,7 +322,6 @@ init_page_serversides();
                                         compact: true
                                     });
                                 }
-
 
                                 function add_MT_rel_filter(location) {
                                     var dropdownHtml = '<select class="form-control-sm fix_size" id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
@@ -357,28 +344,34 @@ init_page_serversides();
                                     new $.fn.dataTable.Buttons(table, {
                                         buttons: [
                                             spacer,
-                                            {extend: 'searchBuilder', label: "Search"},
-                                            {extend: 'spacer', text: "SELECT:", style: 'bar'},
+                                            {extend: 'searchBuilder', label: "Search",
+                                                className: "bg-white"},
+                                            {extend: 'spacer', text: "Select:", style: 'bar'},
                                             {
                                                 text: 'All',
                                                 action: function () {
                                                     table.rows().select();
                                                     displaySelectedData(table);
-                                                }
+                                                },
+                                                className: "bg-white"
                                             }, {
-                                                text: 'Visible',
+                                                text: 'Vis',
                                                 action: function () {
                                                     table.rows(':visible').select();
                                                     displaySelectedData(table);
-                                                }
+                                                },
+                                                className: "bg-white"
                                             },
                                             {
                                                 text: 'None',
                                                 action: function () {
                                                     table.rows().deselect();
                                                     displaySelectedData(table);
-                                                }
-                                            }]}).container().appendTo($(location));
+                                                },
+                                                className: "bg-white"
+                                            }
+
+                                        ]}).container().appendTo($(location));
                                 }
 
                             </script>
