@@ -28,12 +28,12 @@ include '_scrollUpBtn.php';
                             .btn_vis{
                                 background-color: rgba(100, 140, 25, 0.2)!important;
                                 color: black;
-                                box-shadow: 0 1px 1px 0 rgba(0,0,0,0.2), 0 0px 0px 0 rgba(0,0,0,0.10);
+                                box-shadow: 0 3px 3px 0 rgba(0,0,0,0.2), 0 0px 0px 0 rgba(0,0,0,0.10);
                             }
                             .btn_invis{
                                 background-color: rgba(100, 0, 25, 0.2)!important;
                                 color: black;
-                                box-shadow: 0 1px 1px 0 rgba(0,0,0,0.2), 0 0px 0px 0 rgba(0,0,0,0.10);
+                                box-shadow: 0 3px 3px 0 rgba(0,0,0,0.2), 0 0px 0px 0 rgba(0,0,0,0.10);
                             }
 
                             .card-header_size {
@@ -104,6 +104,7 @@ include '_scrollUpBtn.php';
                                                                 init_editable_checkbox();
                                                                 add_MT_rel_filter('#TableCardHeader');
                                                                 move_dt_search();
+                                                                
                                                                 init_showRoomElements_btn();
                                                                 init_btn_4_dt();
                                                                 init_visibilities();
