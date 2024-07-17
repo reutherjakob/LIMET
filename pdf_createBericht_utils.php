@@ -90,6 +90,7 @@ function check_4_new_page($pdf, $height, $format = "") {
 function translateBestand($value) {
     return ($value == 0) ? 'Ja' : 'Nein';
 }
+
 function translate_1_to_yes($value) {
     return ($value == 1) ? 'Ja' : 'Nein';
 }
@@ -143,50 +144,50 @@ function anmA3($pdf, $inp_text, $SB, $block_header_w) {
     }
 }
 
-/*function splitText($pdf, $inp_text, $columnWidth) {
-      $middle = floor(strlen($inp_text) / 2);
-      $lastNewlineBeforeMiddle = strrpos(substr($inp_text, 0, $middle), "\n");
-  
-      if ($lastNewlineBeforeMiddle !== false) {
-          $middle = $lastNewlineBeforeMiddle;
-      } else {
-          $middle = min(
-              strpos($inp_text, ' ', $middle),
-              strpos($inp_text, '-', $middle)
-          );
-      }
-  
-      // Split the text into two parts
-      $leftText = substr($inp_text, 0, $middle);
-      $rightText = substr($inp_text, $middle);
-  
-      return array($leftText, $rightText);
-  } 
-function splitText($pdf, $inp_text, $columnWidth) {
-    $lines = explode("\n", $inp_text);
-    $middle = floor(count($lines) / 2);
-    $leftLines = array_slice($lines, 0, $middle);
-    $rightLines = array_slice($lines, $middle);
-    while (abs(count($leftLines) - count($rightLines)) > 1) {
-        if (count($leftLines) > count($rightLines)) {
-            array_unshift($rightLines, array_pop($leftLines));
-        } else {
-            array_push($leftLines, array_shift($rightLines));
-        }
-    }
-    return array(implode("\n", $leftLines), implode("\n", $rightLines));
-}
+/* function splitText($pdf, $inp_text, $columnWidth) {
+  $middle = floor(strlen($inp_text) / 2);
+  $lastNewlineBeforeMiddle = strrpos(substr($inp_text, 0, $middle), "\n");
 
-function writeTwoColumns($pdf, $columnWidth, $leftText, $rightText) {
-    $xBefore = $pdf->GetX();
-    $yBefore = $pdf->GetY();
-    $pdf->MultiCell($columnWidth, 0, $leftText, 0, 'L', false, 1);
-    $leftHeight = $pdf->GetY() - $yBefore;
-    $pdf->SetXY($xBefore + $columnWidth + 10, $yBefore);
-    $pdf->MultiCell($columnWidth, 0, $rightText, 0, 'L', false, 1);
-    $rightHeight = $pdf->GetY() - $yBefore;
-    $pdf->SetY(max($leftHeight, $rightHeight) + $yBefore);
-}*/
+  if ($lastNewlineBeforeMiddle !== false) {
+  $middle = $lastNewlineBeforeMiddle;
+  } else {
+  $middle = min(
+  strpos($inp_text, ' ', $middle),
+  strpos($inp_text, '-', $middle)
+  );
+  }
+
+  // Split the text into two parts
+  $leftText = substr($inp_text, 0, $middle);
+  $rightText = substr($inp_text, $middle);
+
+  return array($leftText, $rightText);
+  }
+  function splitText($pdf, $inp_text, $columnWidth) {
+  $lines = explode("\n", $inp_text);
+  $middle = floor(count($lines) / 2);
+  $leftLines = array_slice($lines, 0, $middle);
+  $rightLines = array_slice($lines, $middle);
+  while (abs(count($leftLines) - count($rightLines)) > 1) {
+  if (count($leftLines) > count($rightLines)) {
+  array_unshift($rightLines, array_pop($leftLines));
+  } else {
+  array_push($leftLines, array_shift($rightLines));
+  }
+  }
+  return array(implode("\n", $leftLines), implode("\n", $rightLines));
+  }
+
+  function writeTwoColumns($pdf, $columnWidth, $leftText, $rightText) {
+  $xBefore = $pdf->GetX();
+  $yBefore = $pdf->GetY();
+  $pdf->MultiCell($columnWidth, 0, $leftText, 0, 'L', false, 1);
+  $leftHeight = $pdf->GetY() - $yBefore;
+  $pdf->SetXY($xBefore + $columnWidth + 10, $yBefore);
+  $pdf->MultiCell($columnWidth, 0, $rightText, 0, 'L', false, 1);
+  $rightHeight = $pdf->GetY() - $yBefore;
+  $pdf->SetY(max($leftHeight, $rightHeight) + $yBefore);
+  } */
 
 function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $RaumbereichNutzer, $Geschoss, $Bauetappe, $Bauabschnitt, $format = "", $parameter_changes_t_räume = 0) {
     if ($format == "") {
@@ -279,14 +280,7 @@ function multicell_text_hightlight($pdf, $breite, $font_size, $parameter_sql_nam
 }
 
 function format_text($string) {
-//    $spacer = ". ";
     $return = preg_replace("/\s+\n/", "\n", $string); // Remove spaces before \n
-//    $string = str_replace("\n", $spacer, $string);
-//    $return = str_replace("..", ".", $string);
-//    if (preg_match('/²/', $string)) {
-//        // Replace the superscript 2 with <sup>2</sup>
-//        $return = str_replace('²', '<sup>2</sup>', $string);
-//    }    
     return $return;
 }
 
@@ -511,4 +505,3 @@ function el_in_room_html_table($pdf, $result, $init_einzug, $format = "", $SB = 
 
     $pdf->writeHTML($html);
 }
-

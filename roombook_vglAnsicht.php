@@ -27,19 +27,40 @@ init_page_serversides();
                         <style>
                             .card {
                                 transition: transform 0.5s ease;
+                                /*flex: 1;  Initial equal width for all cards */
+                                border: 1px solid #ccc;
+                                padding: 10px;
                             }
                             .flex-grow-1.visible {
                                 display: block;
                                 width: 24vw;
+                                overflow: hidden;
                             }
                             .flex-grow-1.hidden {
                                 display: none;
                                 transform: translateX(-100%);
-                                max-width: 1vw;
+                                /*max-width: 1vw;*/
                                 transition: transform 0.3s ease, max-width 0.3s ease;
-                            } 
+                            }
                             .card-header{
-                                height: 50px;
+                                height: 60px;
+                            }
+                            .resize-border {
+                                width: 5px; /* Width of the border area */
+                                cursor: col-resize; /* Cursor style for resizing */
+                            }
+                            .container {
+                                display: flex;
+                                overflow: hidden;
+                            }
+                            table {
+                                table-layout: fixed; /* This enforces the "col" widths. */
+                                width: 100%;
+                            }
+
+                            table th, table td {
+                                overflow: hidden;
+                                white-space: nowrap;
                             }
 
                         </style>
@@ -47,12 +68,13 @@ init_page_serversides();
                         <body style="height:100%">  
                             <div class ="container-fluid ">
                                 <div id="limet-navbar" class=' '> </div> 
-                                <div class="card responsive border-success">   
-                                    <div class="card-header border-success d-inline-flex align-items-sm-baseline" id="TableCardHeader">
+
+                                <div class="card responsive border-dark">   
+                                    <div class="card-header border-success d-inline-flex align-items-sm-start " id="TableCardHeader">
                                         <div class="col-sm-3 border-dark align-items-start justify-content-start"> 
                                             <button id="SelectRoomBtn" class="btn btn-success"> Select room </button>   
                                         </div>
-<!--                                            <select class="fix_size" id="data-key-select">
+                            <!--                                            <select class="fix_size" id="data-key-select">
                                             <option value="TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen">Funktionsstelle</option>
                                                                                                                                                         <option value="Raumbezeichnung">Raumbezeichnung</option>
                                                                                                                                                         <option value="Raumnr">Raumnummer</option>
@@ -69,39 +91,36 @@ init_page_serversides();
                                         <div class="col-sm-3 align-items-end" id=""> 
                                         </div>
                                         <div class="col-sm-3  align-items-end justify-content-end" id="">    
-                                            <button id="SelectVglRoomBtn" class="btn btn-success" style="float: right;">Select Vgl room </button>   
+                                            <button id="SelectVglRoomBtn" class="btn btn-info" style="float: right;">Select Vgl room </button>   
                                         </div>
                                     </div>
 
-                                    <div class="d-inline-flex" id = "table_room_cb">     
+                                    <div class=" d-inline-flex"   id="table_room_cb">     
 
-                                        <div class="card border-darkflex-grow-1"  style="width: 40vw !important;" id="card_SelectRoom4Comparison">
-                                            <div class="card-header d-inline-flex justify-content-center" id="SelectRoom4Comparison" >  </div> 
+                                        <div class="card border-success flex-grow-1" style="width: 23vw" id="">    
+                                            <div class="card-header d-inline-flex justify-content-center"  id="" style=" background-color: rgba(25, 135, 84, 0.5)" >ROOM ELEMENTs</div> 
+                                            <div class="card-body"  id="RoomElements">
+                                                <!--<p id="" class ="responsive"></p>--> 
+                                            </div>
+                                        </div>
+
+                                        <div class="resize-border"></div>
+
+                                        <div class="card border-success flex-grow-1"  style="width: 43vw;" id="card_SelectRoom4Comparison">
+                                            <div class="card-header d-inline-flex justify-content-center" id="SelectRoom4Comparison" style=" background-color: rgba(25, 135, 84, 0.5)" >  </div> 
                                             <div class="card-body responsive" id="cardbody_SelectRoom4Comparison" >  
 
-                                                <table class="table display compact table-responsive table-striped table-lg" id="table_rooms"> 
+                                                <table class="table display compact table-responsive table-striped table-lg" width ="100%"  id="table_rooms"> 
                                                     <thead><tr></tr></thead>
                                                     <tbody><td></td></tbody> 
                                                 </table> 
                                             </div> 
                                         </div> 
 
-                                        <div class="card border-dark flex-grow-1" id="">    
-                                            <div class="card-header d-inline-flex justify-content-center"  id="" >ROOM ELEMENTs</div> 
-                                            <div class="card-body"  id="">
-                                                <p id="RoomElements" class ="responsive"></p>
-                                            </div>
-                                        </div>
+                                        <div class="resize-border"></div>
 
-                                        <div class="card border-dark flex-grow-1" id="">    
-                                            <div class="card-header d-inline-flex justify-content-center"> VGL ROOM ELEMENTs </div> 
-                                            <div class="card-body" id ="">  
-                                                <p id="ElememntsVglRoom" class ="responsive"> </p>   
-                                            </div>
-                                        </div> 
-
-                                        <div class="card border-dark flex-grow-1"  id="card_vgl_room">    
-                                            <div class="card-header d-inline-flex justify-content-center" id="card_header_vgl_room">  VGL ROOMs</div> 
+                                        <div class="card border-info flex-grow-1"  style="width: 23vw" id="card_vgl_room">    
+                                            <div class="card-header d-inline-flex justify-content-center" id="card_header_vgl_room"  style=" background-color: rgba(13, 202, 240, 0.5)">  VGL ROOMs</div> 
                                             <div class="card-body" id ="card_body_vgl_room"> 
                                                 <table class="table display compact table-responsive table-striped table-lg"  width ="100%"  id="table_vgl_rooms" > 
                                                     <thead><tr></tr></thead>
@@ -110,16 +129,61 @@ init_page_serversides();
                                             </div>
                                         </div>    
 
+                                        <div class="resize-border"></div>
+
+                                        <div class="card border-info flex-grow-1" style="width: 10vw" id="">    
+                                            <div class="card-header d-inline-flex justify-content-center" style=" background-color: rgba(13, 202, 240, 0.5)"> VGL ROOM ELEMENTs </div> 
+                                            <div class="card-body responsive" id ="">  
+                                                <p id="ElememntsVglRoom" > </p>   
+                                            </div>
+                                        </div> 
 
                                     </div>   
                                 </div>
                             </div>
 
                             <script>
+                                const container = document.querySelector('.container');
+                                const cards = document.querySelectorAll('.card');
+                                const resizeBorders = document.querySelectorAll('.resize-border');
+                                let isResizing = false;
+                                let startX, startWidth;
+
+                                function startResize(e) {
+                                    isResizing = true;
+                                    startX = e.clientX;
+                                    startWidth = parseFloat(getComputedStyle(cards[1]).width);
+                                }
+
+                                function resize(e) {
+                                    if (!isResizing)
+                                        return;
+                                    const deltaX = e.clientX - startX;
+                                    const newWidth = startWidth + deltaX;
+
+                                    // Update the current card (index 1)
+                                    cards[1].style.width = `${newWidth}px`;
+
+                                    // Calculate new widths for adjacent cards (index 0 and index 2)
+                                    const adjacentWidth = (container.clientWidth - newWidth) / 2;
+                                    cards[0].style.width = `${adjacentWidth}px`;
+                                    cards[2].style.width = `${adjacentWidth}px`;
+                                }
+
+                                function stopResize() {
+                                    isResizing = false;
+                                }
+
+                                resizeBorders.forEach(border => {
+                                    border.addEventListener('mousedown', startResize);
+                                });
+
+                                window.addEventListener('mousemove', resize);
+                                window.addEventListener('mouseup', stopResize);
                                 var table_rooms;
                                 var table_vgl_rooms;
                                 let selectedDataKey = 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen';
-//                                const dataKeySelect = 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen';// document.getElementById('data-key-select');
+                                //                                const dataKeySelect = 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen';// document.getElementById('data-key-select');
                                 var newText = "";
                                 var selectedRowData = 0;
                                 var filter_added = false;
@@ -146,10 +210,10 @@ init_page_serversides();
                                             return data === '1' ? 'Ja' : 'Nein';
                                         }},
                                 ];
-//                                dataKeySelect.addEventListener('change', function () {
-//                                    selectedDataKey = dataKeySelect.value;
-//                                    console.log('Selected Data Key:', selectedDataKey);
-//                                });
+                                //                                dataKeySelect.addEventListener('change', function () {
+                                //                                    selectedDataKey = dataKeySelect.value;
+                                //                                    console.log('Selected Data Key:', selectedDataKey);
+                                //                                }); 
 
                                 $(document).ready(function () {
                                     init_rooms_current_project_table();
@@ -159,9 +223,9 @@ init_page_serversides();
                                     table_click("table_rooms", "RoomElements");
                                     table_click("table_vgl_rooms", "ElememntsVglRoom");
                                 });
+
                                 function table_click(table_id, target_id_4_elelemt_table) {
                                     $("#" + table_id).on('click', "tr", function () {
-
                                         if (table_id === "table_rooms") {
                                             var selectedRowData = table_rooms.row('.selected').data();
                                             if (selectedRowData) {
@@ -233,7 +297,7 @@ init_page_serversides();
                                                 url: "get_RoomElementsTable.php",
                                                 type: "GET",
                                                 success: function (data) {
-//                                                    $("#" + targetDiv).html();
+                                                    //                                                    $("#" + targetDiv).html();
                                                     $("#" + targetDiv).html(data);
                                                 }
                                             });
@@ -242,18 +306,23 @@ init_page_serversides();
                                 }
 
                                 function  init_vgl_rooms_table(key, value) {
+                                    let dom_var = "ti";
                                     if (table_vgl_rooms) {
                                         table_vgl_rooms.destroy();
                                         console.log("Existing Table Dstroyed.... ");
                                     }
+                                    if (!filter_added) {
+                                        dom_var = "fti ";
+                                    }
                                     table_vgl_rooms = new DataTable('#table_vgl_rooms', {
                                         ajax: {
-                                            url: 'get_sql_data.php',
+                                            url: 'get_rooms_with_param.php',
                                             data: {"key": key, "value": value},
                                             dataSrc: ''
                                         },
                                         columns: columnsDefinitionShort2,
-                                        dom: 'fti',
+
+                                        dom: dom_var,
                                         language: {
                                             "search": ""},
                                         scrollY: true,
