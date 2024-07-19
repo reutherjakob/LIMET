@@ -1,6 +1,6 @@
 <?php
 session_start();
-$_SESSION["dbAdmin"]="2";
+//$_SESSION["dbAdmin"]="2";
 include '_utils.php';
 init_page_serversides();
 ?> 
@@ -38,7 +38,7 @@ init_page_serversides();
 <body style="height:100%">
  
 <div class="container-fluid" >
-    <div id="limet-navbar"></div> <!-- Container für Navbar Aufruf über onLoad --> 
+    <div id="limet-navbar" style="width: 90vw !important; "></div> <!-- Container für Navbar Aufruf über onLoad --> 
     
     <div class='row'>
         <div class='col-sm-12'> 

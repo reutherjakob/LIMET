@@ -41,12 +41,15 @@ init_page_serversides();
                                 align-items: center; /* Vertically center the content */
                             }
                             .form-check-input{
-                                height: 20px;
-                                width: 20px;
+                                height: 10px !important;
+                                width: 10px !important;
                                 padding: 15px;
                             }
                             .form-check-input:checked {
                                 background-color: rgba(100, 140, 25, 0.5) !important;
+                                height: 10px !important;
+                                width: 10px !important;
+
                             }
                             .form-check-label{
                                 padding-left:  3px;
@@ -54,8 +57,9 @@ init_page_serversides();
                                 font-weight: bold;
                             }
                             .fix_size{
-                                height: 35px !important;
+                                height: 30px !important;
                             }
+
 
                         </style>
                         </head> 
@@ -65,7 +69,7 @@ init_page_serversides();
 
                                 <div class="  d-flex">
                                     <div class="mt-2 card  border-secondary  col-8">    
-                                        <div class="card-header d-inline-flex align-items-center"  id='TableCardHeader' > 
+                                        <div  style="height: 50px"  class="card-header d-flex align-items-center"  id='TableCardHeader' > 
                                             <label class="form-check-label"  > <u>Räume</u>  </label> </div>  
                                         <div class="card-body" id = "table_container_div">
                                             <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" width ="100%" id="table_rooms" > 
@@ -75,20 +79,22 @@ init_page_serversides();
                                     </div>
 
                                     <div class=' mt-2 card  border-secondary  col-4'>
-                                        <div class="card-header d-flex align-items-center centeriiiiino" id ="makeXLScardHeader"  > 
-                                            <label class="form-check-label"  > <u> XLS Composer</u>  </label>
+                                        <div style="height: 50px"  class="card-header d-flex align-items-center centeriiiiino" id ="makeXLScardHeader"> 
                                             <button class="btn btn-success" id="addSheet">Add Sheet</button>
                                             <button class="btn btn-link"id="download">Download Excel</button>
-                                            <button class="btn btn-danger" style="margin-right: 20px;" id="reset">Reset Excel</button>    </div> 
+                                            <button class="btn btn-danger" style="margin-right: 20px;" id="reset">Reset Excel</button>   
+                                        </div> 
                                         <div class="card-body">
-                                            <p style="text-align-last: center;"> <u> Log </u> </p>
+                                            <p style="text-align-last: center;">
+                                                <label class="form-check-label"  > <u> XLS Composer > LOG </u>  </label>
+                                            </p>
                                             <ul  style="text-align-last: center;" id="logx"> </ul>
                                         </div>
                                     </div> 
                                 </div>
 
                                 <div class=' mt-2 card  border-secondary  col-12'>
-                                    <div class="card-header d-inline-flex" id ="elemetsParamsTableCardHeader">    
+                                    <div style="height: 50px"  class="card-header d-inline-flex  align-content-start" id ="elemetsParamsTableCardHeader">    
                                         <label class="form-check-label"  > <u>  Vorschau - Element Parameter </u>  </label>
                                     </div>
                                     <div class="card-body " id ="elemetsParamsTableCard">
@@ -98,8 +104,13 @@ init_page_serversides();
                             </div>
 
 
-                            <script src="roombookSpecifications_constDeclarations.js"></script> 
+                            <script src="roombookSpecifications_constDeclarations.js">
+
+                            </script> 
                             <script>
+                                let columnsDefinitionShort = columnsDefinition.filter(column =>
+                                    ['tabelle_projekte_idTABELLE_Projekte', "idTABELLE_Räume", 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', 'MT-relevant', 'Raumbezeichnung', 'Raumnr', "Bezeichnung", 'Funktionelle Raum Nr', 'Nummer', 'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt'].includes(column.data)
+                                );
                                 var table;  //for roomas table // var table2; // for elements table  //in el table code defined
                                 let RaumID;
                                 var wb = XLSX.utils.book_new();

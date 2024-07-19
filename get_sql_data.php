@@ -36,14 +36,16 @@ $mysqli = utils_connect_sql();
 //FROM INFORMATION_SCHEMA.COLUMNS
 //WHERE TABLE_SCHEMA = 'LIMET_RB'"; 
 //
-////INFOS ABOUT A TABLE 
+//////INFOS ABOUT A TABLE 
 $stmt = " SELECT COLUMN_NAME AS ColumnName, DATA_TYPE AS DataType, CHARACTER_MAXIMUM_LENGTH AS CharacterLength
 FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'tabelle_räume'"; 
+WHERE TABLE_NAME = 'view_Raeume_has_Elemente'"; 
+// view_Raeume_has_Elemente
 
+//$stmt = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'LIMET_RB'"; 
 
 $result = $mysqli->query($stmt);
-$mysqli->close();
+$mysqli->close(); 
  
 
 echorow($result); 

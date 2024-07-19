@@ -1,7 +1,8 @@
 <?php
+// propably delete this file ... 
+
 
 session_start();
-
 $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
 if ($mysqli->connect_errno) {
     echo "Failed to connect to MySQL: " . $mysqli->connect_error;

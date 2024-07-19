@@ -1,17 +1,18 @@
-#scrollBtn {
-    display:none;
+#scrollBtn {   height: 10px; 
+    display: none;
     position: fixed;
-    bottom: 10px;
+    bottom: 0px;
     right: 50%; /* Center horizontally */
     transform: translateX(50%);
     z-index: 99;
     font-size: 24px;
-    background-color:rgba(100, 140, 25, 0.15);  
+    background-color:rgba(100, 140, 25, 0.2);  
     color: #fff;
-    border: none;
-    border-radius: 50% / 30%;
+    border: none; 
     padding: 10px;
-    cursor: pointer; 
+    cursor: pointer;
+    width: 1500px;
+    height: 20px; 
 }
 
 #scrollBtn:hover {
@@ -23,11 +24,9 @@
 }
 
 #pull-right {
-    float: right !important;
-    height: 20px !important;
+    float: right !important; 
 }
 
- 
 #body, html, .container-fluid {
     height: 100%;
     font-size:13px; 

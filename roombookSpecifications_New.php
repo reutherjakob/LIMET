@@ -454,14 +454,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                         dataSrc: ''
                                     },
                                     columns: columnsDefinition,
-                                    dom: '  <"TableCardHeader"f>t<"btm.d-flex justify-content-between"lip>   ',
-//                                                                    layout: { // https://datatables.net/reference/option/layout
-//                                                                        topStart: '',
-//                                                                        bottomStart: 'pageLength',
-//                                                                        bottomEnd: 'paging', 
-//                                                                        bottom:  'info'
-//                                                                    },
-                                    scrollY: true,
+                                    dom: '  <"TableCardHeader"f>t<"btm.d-flex justify-content-between"lip>   ', 
                                     scrollX: true,
                                     scrollCollapse: true,
                                     select: "os",

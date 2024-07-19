@@ -18,6 +18,6 @@ echo '</script>';
 
 // HTML code for the scroll button
 echo '<button onclick="scrollToTop()" id="scrollBtn" class="scrollBtn" title="Scroll to Top">';
-echo '    <i class="fas fa-caret-up"></i>';
+echo '    <i class="fas fa-caret-up" style="float:top !important; "></i>';
 echo '</button>';
 ?>
