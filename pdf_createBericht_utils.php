@@ -1,5 +1,4 @@
-<?php
-
+<?php  
 
 ///------------------  DATA FUNCTIONS  ------------------
 function filter_old_equal_new($data) {
@@ -42,8 +41,7 @@ function getValidatedDateFromURL() {
         return null;
     }
 }
-
->>>>>>> UpdateBauangabenSeite
+ 
 function kify($input) {
     if (is_numeric($input)) {
         if ($input >= 1000) {
@@ -54,6 +52,8 @@ function kify($input) {
     }
     return $input;
 }
+
+
 
 //  ------------------  PDF FUNCTIONS ------------------
 function text_black_bg_white($pdf) {
@@ -77,28 +77,7 @@ function is_not_no_comment($str) {
         return true;
     }
 }
-
-function format_text($string) {
-    $string = preg_replace("/\s+\n/", "\n", $string); // Remove spaces before \n
-    $string = preg_replace("/\n\n\n/", "\n", $string); // Remove spaces before \n
-    $string = preg_replace("/\n\n/", "\n", $string); // Remove spaces before \n
-//    $string = str_replace("\n", $spacer, $string);
-//    $string = str_replace("..", ".", $string);
-//    if (preg_match('/²/', $string)) {
-//        // Replace the superscript 2 with <sup>2</sup>
-//        $return = str_replace('²', '<sup>2</sup>', $string);
-//    } else {
-//        $return = $string;
-//    }
-    $return = $string; // str_replace("?", " ", $string);
-    return $return;
-}
-
-function clean_string($dirty_str) {
-    $clean_string = preg_replace('/[^äüö\n(\x20-\x7F)]*/u', '', $dirty_str);
-    return $clean_string;
-}
-
+ 
 function newpage_or_spacer($pdf, $next_block_size, $LN = 8) {
     $y = $pdf->GetY();
     if (($y + $next_block_size) >= 270) {
@@ -124,7 +103,7 @@ function check_4_new_page($pdf, $height, $format = "") {
 }
 
 function dashed_line($pdf, $offset) {
-    $pdf->SetLineStyle(array('dash' => 2, 'color' => array(0, 0, 0)));
+    $pdf->SetLineStyle(array('dash' => 2, 'color' => array(0, 0, 0))); 
     $y = $pdf->GetY() + $offset;
     $pdf->Line(25, $y, 185, $y);
     $pdf->SetLineStyle(array('dash' => 0, 'color' => array(0, 0, 0)));
@@ -135,7 +114,7 @@ function translateBestand($value) {
 }
 
 function block_label_queer($block_header_w, $pdf, $block_label, $upcomming_block_size, $block_height = 12, $SB = 390) {
-    newpageA3($pdf, $upcomming_block_size, 275);
+    newpageA3($pdf, $upcomming_block_size, 275); 
     $pdf->SetFont('helvetica', 'B', $block_height);
     $pdf->MultiCell($SB, 1, "", 'T', 'L', 0, 0);
     $pdf->Ln(1);
@@ -149,7 +128,7 @@ function newpageA3($pdf, $next_block_size, $SH) {
         $pdf->AddPage();
     }
 }
-
+ 
 function block_label($pdf, $block_label, $block_height = 12, $SB = 180) {
     $pdf->SetFont('helvetica', 'B', $block_height);
     $pdf->MultiCell($SB, $block_height, $block_label, "T", 'C', 0, 1);
@@ -320,21 +299,15 @@ function multicell_text_hightlight($pdf, $breite, $font_size, $parameter_sql_nam
 }
 
 function format_text($string) {
-    $spacer = ". ";
-//    $string = preg_replace("/\s+\n/", "\n", $string); // Remove spaces before \n
-//    $string = str_replace("\n", $spacer, $string);
+    return  preg_replace("/\s+\n/", "\n", $string); // Remove spaces before \n
+/*       $spacer = ". "; $string = str_replace("\n", $spacer, $string);
 //    $return = str_replace("..", ".", $string);
 //    if (preg_match('/²/', $string)) {
 //        // Replace the superscript 2 with <sup>2</sup>
 //        $return = str_replace('²', '<sup>2</sup>', $string);
 //    } else {
 //        $return = $string;
-//    }
-
-    // Format the string for a multicell
-//     = '<p>' . $return . '</p>';
-    $return=$string; 
-    return $return;
+//    } */   
 }
 
 function clean_string($dirty_str) {
@@ -353,37 +326,6 @@ function newpage_or_spacerA3($pdf, $next_block_size, $SH, $LN = 8) {
             $pdf->Ln($LN);
         }
     }
-}
-
-function newpage_or_spacer($pdf, $next_block_size, $LN = 8) {
-    $y = $pdf->GetY();
-    if (($y + $next_block_size) >= 270) {
-        $pdf->AddPage();
-    } else {
-        if ($y < 20) {
-            
-        } else {
-            $pdf->Ln($LN);
-        }
-    }
-}
-
-function check_4_new_page($pdf, $height=0) {
-    $y = $pdf->GetY();     // Wenn Seitenende? Überprüfen und neue Seite anfangen
-    if (($y + $height) >= 270) {
-        $pdf->AddPage();
-    }
-}
-
-function dashed_line($pdf, $offset) {
-    $pdf->SetLineStyle(array('dash' => 2, 'color' => array(0, 0, 0)));
-    $y = $pdf->GetY() + $offset;
-    $pdf->Line(25, $y, 185, $y);
-    $pdf->SetLineStyle(array('dash' => 0, 'color' => array(0, 0, 0)));
-}
-
-function translateBestand($value) {
-    return ($value == 0) ? 'Ja' : 'Nein';
 }
 
 function multicell_with_stk($pdf, $NR, $einzug) {
@@ -425,7 +367,6 @@ function hackerlA3($pdf, $hackerl_schriftgr, $hackerlcellgröße, $param, $comp_
         $pdf->MultiCell($hackerlcellgröße, $hackerl_schriftgr, TCPDF_FONTS::unichr(54), 0, 'L', 1, 0);
     }
     $pdf->SetFont('helvetica', '', $originalFontSize);
-
     $pdf->SetFillColor(255, 255, 255);
 }
 
@@ -468,7 +409,6 @@ function make_MT_list($pdf, $SB, $block_header_w, $booooool, $resultX, $style_no
     foreach ($proportions as $prop) {
         $spaces[] = ($SB - $block_header_w ) * 0.5 * $prop;
     }
-
     $fill = 0;
     $pdf->SetFillColor(244, 244, 244);
     $rowHeightFirstLine = $pdf->getStringHeight(50, "ID", false, true, '', 1);
@@ -507,7 +447,7 @@ function make_MT_list($pdf, $SB, $block_header_w, $booooool, $resultX, $style_no
             $borders = 'RT';
 //        }
         $pdf->MultiCell($spaces[4], $rowHeightMainLine, $row['Bezeichnung'], $borders, 'L', $fill, 0);
-        if ($booooool && ($c_even % 2 == 0) || !$booooool) {
+        if ($booooool && ($c_even % 2 == 0) || !$booooool) { 
             $pdf->Ln();
             $fill = !$fill;
         }
@@ -528,7 +468,7 @@ function el_in_room_html_table($pdf, $result, $init_einzug, $format = "", $SB = 
     if ($format === "A3" && $SB > 0) {
         $columnWidthPercentages = array_map(function ($x) {
             return $x / 2;
-        }, $columnWidthPercentages);
+        }, $columnWidthPercentages); 
     }
     $headers = array('ElementID', 'Variante', 'Anzahl', 'Neu/Bestand', 'Bezeichnung'); // 'Standort', 'Verwendung',
     $pdf->SetFont('helvetica', 'B', 12);
@@ -551,14 +491,13 @@ function el_in_room_html_table($pdf, $result, $init_einzug, $format = "", $SB = 
 
     while ($row = $result->fetch_assoc()) {
         $html .= '<tr>';
-        foreach ($columnWidthPercentages as $index => $widthPercentage) {
+        foreach ($columnWidthPercentages as $index => $widthPercentage) {  
             $columnName = $headers[$index];
             if ($columnName === "Anzahl" && $format === "A3") {
                 $columnName = "SummevonAnzahl";
             }
             $cellValue = $row[$columnName] ?? '';
 
-            // Translate 'Neu/Bestand' values
             if ($columnName == 'Neu/Bestand') {
                 $cellValue = translateBestand($cellValue);
             }
@@ -569,54 +508,7 @@ function el_in_room_html_table($pdf, $result, $init_einzug, $format = "", $SB = 
     }
     $html .= '</table>';
 
-    $pdf->writeHTML($html);
+    $pdf->writeHTML($html); 
 }
 
-/*
-
-function el_in_room_html_table($pdf, $result, $init_einzug, $format = "", $SB = 0) {
-    $pdf->MultiCell($init_einzug, 10, "", 0, "C", 0, 0);
-    $columnWidthPercentages = array(10, 10, 10, 10, 60);
-    $headers = array('ElementID', 'Variante', 'Anzahl', 'Neu/Bestand', 'Bezeichnung');
-    $pdf->SetFont('helvetica', 'B', 12);
-    $html = '<table border="0">';
-    $html .= '<tr>';
-
-    foreach ($columnWidthPercentages as $index => $widthPercentage) {
-        $alignStyle = ($headers[$index] == 'Neu/Bestand' || $headers[$index] == 'Variante' || $headers[$index] == 'Anzahl') ? 'text-align: center;' : '';
-        $tablelabel = $headers[$index] == 'Neu/Bestand' ? 'Bestand' : ($headers[$index] == 'Variante' ? 'Var' : $headers[$index]);
-        $html .= '<th width="' . $widthPercentage . '%" style="' . $alignStyle . '">' . $tablelabel . '</th>';
-    }
-    $html .= '</tr>';
-    $pdf->SetFont('helvetica', '', 10);
-
-    $rowCount = 0;
-    $splitTable = $format === "A3" && count($result) > 5;
-
-    while ($row = $result->fetch_assoc()) {
-        if ($splitTable && $rowCount == ceil(count($result) / 2)) {
-            $html .= '</table><table border="0">';
-        }
-        $html .= '<tr>';
-        foreach ($columnWidthPercentages as $index => $widthPercentage) {
-            $columnName = $headers[$index] === "Anzahl" && $format === "A3" ? "SummevonAnzahl" : $headers[$index];
-            $cellValue = $row[$columnName] ?? '';
-            if ($columnName == 'Neu/Bestand') {
-                $cellValue = translateBestand($cellValue);
-            }
-            $alignStyle = ($columnName === 'Neu/Bestand' || $columnName === 'Variante' || $columnName === 'Anzahl' ||  $columnName === "SummevonAnzahl" ) ? 'text-align: center;' : '';
-            $html .= '<td width="' . $widthPercentage . '%" style="' . $alignStyle . '">' . $cellValue . '</td>';
-        }
-        $html .= '</tr>';
-        $rowCount++;
-    }
-    $html .= '</table>';
-
-    $pdf->writeHTML($html);
-}
-
-
-
-function make_mt_list() {
-    
-}
+ 

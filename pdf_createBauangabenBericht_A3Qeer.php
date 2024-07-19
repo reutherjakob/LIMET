@@ -277,7 +277,7 @@ $e_B_3rd = $e_B / 3;
 $e_B_2_3rd = $e_B - $e_B_3rd;
 $e_C = $SB / 8;
 $e_C_3rd = $e_C / 3;
-$e_C_2_3rd = $e_C - $e_C_3rd;
+$e_C_2_3rd = $e_C - $e_C_3rd; 
 $font_size = 6;
 $block_header_height = 10;
 $block_header_w = 25;
@@ -334,6 +334,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             . "tabelle_räume.HT_Punktabsaugung_Stk, tabelle_räume.HT_Abluft_Sicherheitsschrank_Unterbau_Stk , tabelle_räume.HT_Abluft_Sicherheitsschrank_Stk, "
             . " tabelle_räume.`EL_Laser 16A CEE Stk`, tabelle_räume.`EL_Einzel-Datendose Stk`, tabelle_räume.`EL_Doppeldatendose Stk`, tabelle_räume.`EL_Bodendose Typ`, tabelle_räume.`EL_Bodendose Stk`, tabelle_räume.`EL_Beleuchtung 1 Typ`, tabelle_räume.`EL_Beleuchtung 2 Typ`, tabelle_räume.`EL_Beleuchtung 3 Typ`, tabelle_räume.`EL_Beleuchtung 4 Typ`, tabelle_räume.`EL_Beleuchtung 5 Typ`, tabelle_räume.`EL_Beleuchtung 1 Stk`, tabelle_räume.`EL_Beleuchtung 2 Stk`, tabelle_räume.`EL_Beleuchtung 3 Stk`, tabelle_räume.`EL_Beleuchtung 4 Stk`, tabelle_räume.`EL_Beleuchtung 5 Stk`, tabelle_räume.`EL_Lichtschaltung BWM JA/NEIN`, tabelle_räume.`EL_Beleuchtung dimmbar JA/NEIN`, tabelle_räume.`EL_Brandmelder Decke JA/NEIN`, tabelle_räume.`EL_Brandmelder ZwDecke JA/NEIN`, tabelle_räume.`EL_Kamera Stk`, tabelle_räume.`EL_Lautsprecher Stk`, tabelle_räume.`EL_Uhr - Wand Stk`, tabelle_räume.`EL_Uhr - Decke Stk`, tabelle_räume.`EL_Lichtruf - Terminal Stk`, tabelle_räume.`EL_Lichtruf - Steckmodul Stk`, tabelle_räume.`EL_Lichtfarbe K`, tabelle_räume.`EL_Notlicht RZL Stk`, tabelle_räume.`EL_Notlicht SL Stk`, tabelle_räume.`EL_Jalousie JA/NEIN`, tabelle_räume.`HT_Luftmenge m3/h`, CAST(REPLACE(tabelle_räume.`HT_Luftwechsel 1/h`,',','.') as decimal(10,2)) AS `HT_Luftwechsel`, tabelle_räume.`HT_Kühlung Lueftung W`, tabelle_räume.`HT_Heizlast W`, tabelle_räume.`HT_Kühllast W`, tabelle_räume.`HT_Fussbodenkühlung W`, tabelle_räume.`HT_Kühldecke W`, tabelle_räume.`HT_Fancoil W`, tabelle_räume.`HT_Summe Kühlung W`, tabelle_räume.`HT_Raumtemp Sommer °C`, tabelle_räume.`HT_Raumtemp Winter °C`, tabelle_räume.`AR_Ausstattung`, tabelle_räume.`Aufenthaltsraum` "
             . "FROM tabelle_planungsphasen INNER JOIN (tabelle_projekte INNER JOIN tabelle_räume ON tabelle_projekte.idTABELLE_Projekte = tabelle_räume.tabelle_projekte_idTABELLE_Projekte) ON tabelle_planungsphasen.idTABELLE_Planungsphasen = tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen WHERE (((tabelle_räume.idTABELLE_Räume)=" . $valueOfRoomID . "))";
+    
     $result_rooms = $mysqli->query($sql);
     while ($row = $result_rooms->fetch_assoc()) {
         $pdf->SetFillColor(255, 255, 255);
@@ -353,7 +354,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
 //   ---------- ALLGEMEIN   ----------
 //
-        block_label_queer($block_header_w, $pdf, "Allgemein", $horizontalSpacerLN3 + 6, $block_header_height, $SB);
+        block_label_queer($block_header_w, $pdf, "Allgemein". $_SESSION["projectPlanungsphase"] , $horizontalSpacerLN3 + 6, $block_header_height, $SB);
 
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'Fussboden OENORM B5220', "Ö NORM B5220: ", $parameter_changes_t_räume);
         multicell_with_str($pdf, $row['Fussboden OENORM B5220'], $e_C_3rd, "");
@@ -383,7 +384,6 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $pdf->Ln($horizontalSpacerLN3);
 
 //       ---------- ELEKTRO -----------
-//
         $i = 0;
         if (($row['AV'] == 1 || $row['SV'] == 1 || $row['ZSV'] == 1 || $row['USV'] == 1)) {
             $i = 12 + $horizontalSpacerLN + $horizontalSpacerLN2;
@@ -435,7 +435,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             } else {
                 $outsr = "-";
             }
-            multicell_with_str($pdf, $outsr, $e_C_3rd, "");
+            multicell_with_str($pdf, $outsr, $e_C_3rd, ""); 
 
             multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'ET_Anschlussleistung_SV_W', "SV Leist.: ", $parameter_changes_t_räume);
             if ($row['ET_Anschlussleistung_SV_W'] != "0") {
@@ -640,9 +640,12 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                 $dataChanges[] = $row3;
             }
             $dataChanges = filter_old_equal_new($dataChanges);
-
-            block_label_queer($block_header_w, $pdf, "Med.-tech.", 50, $block_header_height, $SB);
+            
+            $upcmn_blck_size = 10 + $rowcounter   * 5;
+            block_label_queer($block_header_w, $pdf, "Med.-tech.", $upcmn_blck_size, $block_header_height, $SB); 
             make_MT_details_table($pdf, $resultX, $result1, $result3, $SB, $SH, $dataChanges);
+            
+            
         } else if ($rowcounter > 0) {
             $upcmn_blck_size = 10 + $rowcounter / 2 * 5;
             block_label_queer($block_header_w, $pdf, "Med.-tech.", $upcmn_blck_size, $block_header_height, $SB); //el_in_room_html_table($pdf, $resultX, 1, "A3", $SB-$block_header_w);
@@ -656,6 +659,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 }// for every room 
 
 $mysqli->close();
+//echo "test"; 
 ob_end_clean(); // brauchts irgendwie.... ? 
 $pdf->Output('BAUANGABEN-MT.pdf', 'I');
 
