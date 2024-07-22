@@ -35,15 +35,15 @@ init_page_serversides();
 
                         function make_table() {
                             var K2Return = [1, 2, 3, 12, 17];
-<?php
-//$K2R = filter_input(INPUT_GET, 'K2Return');
-//$K2Ret = explode(",", $K2R);  //WORKS
-$K2Return = $_GET['K2Return'];
-$K2Ret = json_decode($K2Return); 
-?>
+                            <?php
+                            //$K2R = filter_input(INPUT_GET, 'K2Return');
+                            //$K2Ret = explode(",", $K2R);  //WORKS
+                            $K2Return = $_GET['K2Return'];
+                            $K2Ret = json_decode($K2Return);
+                            ?>
                             let K2R = <?php echo json_encode($K2Ret); ?>;
                             console.log(K2R);
-                            
+
                             $.ajax({
                                 url: 'getRoomElementsParameterData.php',
                                 method: 'GET',
@@ -71,23 +71,11 @@ $K2Ret = json_decode($K2Return);
                                     table2 = new DataTable('#roomElementsParamTable', {
                                         data: data,
                                         columns: columns,
-                                        dom: 'tip',
-                                        buttons: [
-                                            'excel'
-                                        ],
+                                        dom: 'ti',
                                         scrollX: true,
-                                        paging: true,
-                                        pageLength: 30,
-
-//                                        columnDefs: [
-//                                            {targets: [5, 6], visible: false}
-//                                        ],
-                                        language: {
-                                            search: "_INPUT_",
-                                            searchPlaceholder: "Search..."
-                                        }
-                                    });
-                                    // table.button('.buttons-excel').trigger();
+                                        paging: false,
+                                        pageLength: -1
+                                    }); 
                                 },
                                 error: function (jqXHR, textStatus, errorThrown) {
                                     console.log(textStatus, errorThrown);

@@ -8,7 +8,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-
         <title>RB-Bauangaben</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,58 +25,56 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             .btn_vis{
                                 background-color: rgba(100, 140, 25, 0.2)!important;
                                 color: black;
-                                font-weight: 500;
+                                font-weight: 600;
                                 box-shadow: 0 2px 2px 0 rgba(100, 140, 25, 0.2), 0 2px 2px 0 rgba(100, 140, 25, 0.2);
                             }
                             .btn_invis{
                                 background-color: rgba(100, 0, 25, 0.2)!important;
                                 color: black;
-                                font-weight: 400;
+                                font-weight: 500;
                                 box-shadow: 0 2px 2px 0 rgba(100, 0, 25, 0.2), 0 2px 2px 0 rgba(100, 0, 25, 0.2);
-                                /* padding-left: 5px  !important;
-                                padding-right: 5px  !important;
-                                margin-right: 1px !important ;
-                                margin-left: 1px !important ;*/
                             }
                             .btn {
-                                font-size: 0.6vw !important;
+                                /*font-size: 0.6vw !important;*/
                                 padding-left: 0.3vw  !important;
                                 padding-right:  0.3vw   !important;
-                                padding-top:  0.1vw   !important;
-                                padding-bottom:  0.5vw   !important;
-                                margin-right:  0.1vw  !important ;
+                                padding-top:  0.2vw   !important;
+                                padding-bottom:  0.2vw   !important;
+                                margin-right:  0.1vw  !important ; 
                                 margin-left:  0.1vw  !important ;
-                                height: 1.5vw !important;
+                                height: 38px !important; 
                             }
-                            .card_header_size {
-                                height:  2vw ;
-                            }
+                            .fix_size{
+                                height: 38px;
+                            } 
                             .table>thead>tr>th {
                                 background-color: rgba(100, 140, 25, 0.15);
                             }
-                            .fix_size{
-                                height: 1.5vw !important;
-                                font-size: 15px;
+
+                            .form-check-input{
+                                width: 1.5vw !important;
                             }
                             .form-check-input:checked {
                                 background-color: rgba(100, 140, 25, 0.75) !important;
                             }
                             .rotated {
-                                writing-mode: vertical-lr;
+                                writing-mode: vertical-rl;
+                                font-size: 1vh;
                             }
                         </style> 
                         </head> 
-                        <body style="height:100%"> 
+                        <body style="height:100%">  
 
                             <div class="container-fluid ">
 
                                 <div id="limet-navbar"  > </div> 
-                                <div class="mt-4 card">    
-                                    <div class="card-header d-flex align-items-center" style="height: 2.5vw;" id='TableCardHeader'>  </div>
+                                <div class="mt-1 card">    
+                                    <div class="card-header d-flex align-items-center"  id='TableCardHeader'>  </div>
+                                    <!--style="height: 2.8vw; overflow: hidden; "-->
                                     <div class="card-body" id = "table_container_div">
                                         <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" width ="100%" id="table_rooms" > 
                                             <thead <tr></tr> </thead>
-                                            <tbody> <td></td>  </tbody>
+                                            <tbody> <td></td>  </tbody> 
                                         </table> 
                                     </div>
                                 </div>      
@@ -393,8 +390,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 }).appendTo($('#TableCardHeader'));
                                 var label = $('<label>', {
                                     htmlFor: 'checkbox_EditableTable',
-                                    class: 'fix_size rotated form-check-label inline',
-                                    text: "EDIT"});
+                                    class: 'rotated form-check-label inline',
+                                    text: "-EDIT-"});
                                 var container = $('<span>').append(checkbox);
                                 $('#TableCardHeader').append(container).append(label);
                             }
@@ -454,7 +451,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                         dataSrc: ''
                                     },
                                     columns: columnsDefinition,
-                                    dom: '  <"TableCardHeader"f>t<"btm.d-flex justify-content-between"lip>   ', 
+                                    dom: '  <"TableCardHeader"f>t<"btm.d-flex justify-content-between"lip>   ',
                                     scrollX: true,
                                     scrollCollapse: true,
                                     select: "os",

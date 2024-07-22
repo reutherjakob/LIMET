@@ -30,10 +30,11 @@ init_page_serversides();
                         <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
                         <style>
                             .card{
-                                padding: 3px;
+                                padding: 1px;
                             }
                             .card-header{
                                 height: 50px;
+                                 overflow: hidden; 
                                 background-color: rgba(100, 140, 25, 0.05);
                             }
                             .centeriiiiino{
@@ -58,8 +59,7 @@ init_page_serversides();
                             }
                             .fix_size{
                                 height: 30px !important;
-                            }
-
+                            } 
 
                         </style>
                         </head> 
@@ -68,34 +68,35 @@ init_page_serversides();
                                 <div id="limet-navbar" class=' '> </div> 
 
                                 <div class="  d-flex">
-                                    <div class="mt-2 card  border-secondary  col-8">    
-                                        <div  style="height: 50px"  class="card-header d-flex align-items-center"  id='TableCardHeader' > 
-                                            <label class="form-check-label"  > <u>Räume</u>  </label> </div>  
+                                    <div class="mt-2 card  border-success  col-9">    
+                                        <div  style="height: 60px"  class="card-header d-flex align-items-center"  id='TableCardHeader' > 
+                                            <label class="form-check-label"  > <u>RÄUME</u>  </label> </div>  
                                         <div class="card-body" id = "table_container_div">
-                                            <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" width ="100%" id="table_rooms" > 
+                                            <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" style= "width:100%" id="table_rooms" > 
                                                 <thead   </thead> <tbody>  </tbody>
                                             </table> 
                                         </div>    
                                     </div>
 
-                                    <div class=' mt-2 card  border-secondary  col-4'>
-                                        <div style="height: 50px"  class="card-header d-flex align-items-center centeriiiiino" id ="makeXLScardHeader"> 
-                                            <button class="btn btn-success" id="addSheet">Add Sheet</button>
+                                    <div class=' mt-2 card  border-secondary  col-3'>
+                                        <div style="height: 60px"  class="card-header d-flex align-items-center centeriiiiino" id ="makeXLScardHeader"> 
+                                            <button class="btn btn-success responsive" id="addSheet">Add Sheet</button>
                                             <button class="btn btn-link"id="download">Download Excel</button>
                                             <button class="btn btn-danger" style="margin-right: 20px;" id="reset">Reset Excel</button>   
                                         </div> 
+                                        
                                         <div class="card-body">
                                             <p style="text-align-last: center;">
                                                 <label class="form-check-label"  > <u> XLS Composer > LOG </u>  </label>
-                                            </p>
+                                             </p>
                                             <ul  style="text-align-last: center;" id="logx"> </ul>
                                         </div>
                                     </div> 
                                 </div>
 
-                                <div class=' mt-2 card  border-secondary  col-12'>
+                                <div class=' mt-1 card  border-secondary  col-12'>
                                     <div style="height: 50px"  class="card-header d-inline-flex  align-content-start" id ="elemetsParamsTableCardHeader">    
-                                        <label class="form-check-label"  > <u>  Vorschau - Element Parameter </u>  </label>
+                                        <label class="form-check-label"  > <u>  VORSCHAU [El.Param.Table] </u>  </label>
                                     </div>
                                     <div class="card-body " id ="elemetsParamsTableCard">
                                         <p id="elemetsParamsTable">
