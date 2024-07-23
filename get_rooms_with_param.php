@@ -3,32 +3,16 @@
 session_start();
 include '_utils.php';
 
-if (isset($_GET["key"])) {
-    $key = filter_var($_GET["key"], FILTER_SANITIZE_STRING);
-} 
 if (isset($_GET["value"])) {
     $value = filter_var($_GET["value"], FILTER_SANITIZE_STRING);
-} 
-
-$stmt = "";
-
-if ($key === "TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen") {
-    $key = "idTABELLE_Funktionsteilstellen";
-    $stmt = " SELECT *
-    FROM tabelle_räume
-    INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
-    WHERE (tabelle_funktionsteilstellen." . $key . " =" . $value . ")
-        
-    ORDER BY tabelle_räume.Raumnr";
-    
-}else{
-       $stmt = " SELECT *
-    FROM tabelle_räume
-    WHERE (tabelle_räume." . $key . " = ` " . $value . "`)
-    ORDER BY tabelle_räume.Raumnr";
-    
 }
 
+
+$stmt = " SELECT *
+    FROM tabelle_räume
+    INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
+    WHERE (tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen =" . $value . ")
+    ORDER BY tabelle_räume.Raumnr";
 
 $mysqli = utils_connect_sql();
 

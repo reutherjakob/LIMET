@@ -36,8 +36,8 @@ init_page_serversides();
                                 height: 50px;
                             }
                             .resize-border {
-                                width: 5px; /* Width of the border area */
-                                cursor: col-resize; /* Cursor style for resizing */
+                                width: 2px; /* Width of the border area */
+                                /*cursor: col-resize;  Cursor style for resizing */
                                 z-index: 20;
                                 color:white;
                                 background-color:white;
@@ -67,6 +67,7 @@ init_page_serversides();
                             .fix_size{
                                 height: 30px;
                             }
+
                             /*                            .table {
                                                             display: table;
                                                             table-layout: fixed;
@@ -90,9 +91,9 @@ init_page_serversides();
 
                                 <div class="row justify-content-center mt-1">
                                     <div class="col-md-12">
-                                        <div class="card">   <button id="SelectRoomBtn" class="btn"  style=" background-color:  rgba(100, 140, 25, 0.1);"> Select room </button> 
-                                            <div class="card-header text-white">
+                                        <div class="card">           
 
+                                            <div class="card-header text-white"> 
                                                 <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
                                                     <li class="nav-item">
                                                         <a class="nav-link active" id="tab1-tab" data-bs-toggle="tab" href="#tab1" role="tab" aria-controls="tab1" aria-selected="true">Elements in Rooms</a>
@@ -104,26 +105,19 @@ init_page_serversides();
                                                         <a class="nav-link" id="tab3-tab" data-bs-toggle="tab" href="#tab3" role="tab" aria-controls="tab3" aria-selected="false"> :) </a>
                                                     </li>
                                                 </ul>
-
-
                                             </div>
+
+
                                             <div class="card-body">
                                                 <div class="tab-content" id="myTabContent">
                                                     <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
-
                                                         <div class="card responsive"> 
-                                                            <div class="card-header border-dark d-inline-flex justify-content-center" id="TableCardHeader"> 
-                                                                <div class="col-sm-3 align-items-end" >  
-                                                                    <label for="data-key-select"> Key:</label>
-                                                                    <select id="data-key-select">   </select>
-                                                                </div>
-                                                                <div class="col-sm-3 d-inline-flex align-items-end justify-content-end"> 
-
-                                                                </div>
-                                                                <div class="col-sm-6 d-inline-flex  align-items-end justify-content-start" >  
-                                                                    <button id="SelectVglRoomBtn" class="btn" style=" background-color: rgba(13, 202, 240, 0.1); float: right;">Select Vgl room </button> 
-                                                                </div>  
-                                                            </div>
+                                                            <div class="card-header row">
+                                                                <div class="col-sm-1"> </div>   
+                                                                <div class="col-sm-5">  <button id="SelectRoomBtn" class="btn"  style=" background-color:  rgba(100, 140, 25, 0.1);float:right;"> <i class="fa fa-caret-up">Select a Room  </i></button> </div>
+                                                                <div class="col-sm-5">  <button id="SelectVglRoomBtn" class="btn " style=" background-color: rgba(13, 202, 240, 0.1);"> <i class="fa fa-caret-up">Select Vgl room </i> </button> </div>
+                                                                <div class="col-sm-1"> </div>  
+                                                            </div> 
 
                                                             <div class=" d-inline-flex" id="table_room_cb">   
                                                                 <div class="card  cardx border-success flex-grow-1" style="width: 10vw" >  
@@ -186,7 +180,7 @@ init_page_serversides();
 
                                                     </div>
                                                     <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
-                                                        <p>This is the content for :) people </p>
+                                                        <p> This is the content for :) people </p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -202,39 +196,26 @@ init_page_serversides();
                                 var RID1;
                                 var table_vgl_rooms;
                                 var RID2;
-                                let both_hidden = false;
 
+                                let both_hidden = false;
 
                                 var newText = "";
                                 var selectedRowData = 0;
+
                                 var filter_added = false;
                                 var filter_added2 = false;
 
                                 let columnsDefinitionShort = columnsDefinition.filter(column =>
-                                    ['tabelle_projekte_idTABELLE_Projekte', "idTABELLE_Räume", 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', 'MT-relevant', 'Raumbezeichnung', 'Raumnr', "Bezeichnung", 'Funktionelle Raum Nr', 'Nummer', 'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt'].includes(column.data)
-                                );
-                                let columnsDefinitionShort2 = columnsDefinitionShort.filter(column =>
-                                    ['TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', 'Raumbezeichnung', 'Raumnr', 'Nummer', 'Funktionelle Raum Nr', 'Raumbereich Nutzer'].includes(column.data)
+                                    ["idTABELLE_Räume", 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', 'MT-relevant', 'Raumbezeichnung', 'Raumnr', "Bezeichnung", 'Nummer', 'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt'].includes(column.data)
                                 );
 
-                                let selectedDataKey = 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen';
-                                const dataKeySelect = document.getElementById('data-key-select');
-
-                                columnsDefinitionShort2.forEach(column => {
-                                    const option = document.createElement('option');
-                                    option.value = column.data;
-                                    option.textContent = column.title;
-                                    dataKeySelect.appendChild(option);
-                                });
-
-                                dataKeySelect.addEventListener('change', function () {
-                                    selectedDataKey = dataKeySelect.value;
-                                    console.log('Selected Data Key:', selectedDataKey);
-                                });
+                                let columnsDefinitionShort_vgl = columnsDefinition.filter(column =>
+                                    ['tabelle_projekte_idTABELLE_Projekte', "idTABELLE_Räume", 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', 'MT-relevant', 'Raumbezeichnung', 'Raumnr', "Bezeichnung", 'Nummer', 'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt'].includes(column.data)
+                                );
 
                                 $(document).ready(function () {
                                     init_rooms_current_project_table();
-                                    add_MT_rel_filter('#SelectRoom4Comparison');
+                                    add_MT_rel_filter('#SelectRoom4Comparison', table_rooms);
                                     move_dt_search("dt-search-0", 'SelectRoom4Comparison');
                                     selectRoomBtn(); //showRoomElementsBtn(); selectVglRoomBtn();
                                     table_click("table_rooms", "RoomElements");
@@ -242,22 +223,21 @@ init_page_serversides();
 
                                 });
 
-                                function init_dt_BAUANGABEN(key, value) {
+                                function init_dt_BAUANGABEN( value) {
                                     dom_var = "tlip";
                                     if (!filter_added2) {
                                         dom_var = "ftlip ";
                                     }
-
                                     if (table_bauangaben) {
                                         table_bauangaben.destroy();
                                     }
                                     table_bauangaben = new DataTable('#table_rooms_bauangaben', {
                                         ajax: {
                                             url: 'get_rooms_with_param.php',
-                                            data: {"key": key, "value": value},
+                                            data: {  "value": value},
                                             dataSrc: ''
                                         },
-                                        columns: columnsDefinitionShort,
+                                        columns: columnsDefinition,
                                         dom: dom_var,
                                         scrollX: true,
                                         scrollCollapse: true,
@@ -284,21 +264,26 @@ init_page_serversides();
                                             [10, 20, -1],
                                             ['10 rows', '20 rows', 'Show all']
                                         ],
-                                        compact: true
+                                        compact: true,
+                                        initComplete: function () {
+                                            if (!filter_added2) {
+                                                add_MT_rel_filter("#TableCardHeaderBauangaben", table_bauangaben);
+                                                move_dt_search("dt-search-2", 'TableCardHeaderBauangaben');
+                                                filter_added2 = true;
+                                            }
+                                            table_bauangaben.column(0).visible(true);
+                                            console.log("T Bauang init ");
+                                        }
                                     });
-                                   
 
-                                    if (!filter_added2) {
-                                        add_MT_rel_filter3("#card_header_vgl_room");
-                                        move_dt_search("dt-search-2", 'TableCardHeaderBauangaben');
-                                        filter_added2 = true;
-                                    }
-    table_bauangaben.column(0).visible(true);
-                                    console.log("T Bauang init ");
+
+
+
                                 }
 
                                 function table_click(table_id, target_id_4_elelemt_table) {
                                     $("#" + table_id).on('click', "tr", function () {
+
                                         if (table_id === "table_rooms") {
                                             var selectedRowData = table_rooms.row('.selected').data();
                                             if (selectedRowData) {
@@ -307,24 +292,21 @@ init_page_serversides();
                                                 $('#SelectRoomBtn').html(newText);
                                             }
                                         }
+
                                         if (table_id === "table_vgl_rooms") {
                                             selectedRowData = table_vgl_rooms.row('.selected').data();
-
+                                            console.log(selectedRowData);
                                             if (selectedRowData) {
                                                 RID2 = selectedRowData["idTABELLE_Räume"];
                                                 newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"] + ' <i class="fa fa-caret-up"> </i>';
                                                 $('#SelectVglRoomBtn').html(newText);
-
                                             }
-
                                         }
                                         if (selectedRowData) {
                                             get_el_in_room_table(selectedRowData['idTABELLE_Räume'], target_id_4_elelemt_table);
                                             if (table_id === "table_rooms") {
-                                                value = selectedRowData[selectedDataKey];
-                                                console.log('Selected Data Key n value:', selectedDataKey, "  ", value);
-                                                init_vgl_rooms_table(selectedDataKey, value);
-                                                // init_dt_BAUANGABEN(selectedDataKey, value);
+                                                value = selectedRowData["TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen"]; 
+                                                init_vgl_rooms_table(value);
                                             }
                                         }
                                     });
@@ -334,9 +316,8 @@ init_page_serversides();
                                     $('#SelectRoomBtn').on('click', function () {
                                         var selectedRowData = table_rooms.row('.selected').data();
                                         if (selectedRowData) {
-                                            console.log("PRE");
-                                            value = selectedRowData[selectedDataKey];
-                                            init_dt_BAUANGABEN(selectedDataKey, value);
+                                            console.log("PRE"); 
+                                            init_dt_BAUANGABEN(selectedRowData['TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen']);
                                             if ($("#cardbody_SelectRoom4Comparison").is(":visible")) {
                                                 $('#cardbody_SelectRoom4Comparison').hide();
                                                 $('#SelectRoom4Comparison').hide();
@@ -412,7 +393,7 @@ init_page_serversides();
                                     });
                                 }
 
-                                function  init_vgl_rooms_table(key, value) {
+                                function  init_vgl_rooms_table(value) {
                                     let dom_var = "tlip";
                                     if (table_vgl_rooms) {
                                         table_vgl_rooms.destroy();
@@ -424,10 +405,10 @@ init_page_serversides();
                                     table_vgl_rooms = new DataTable('#table_vgl_rooms', {
                                         ajax: {
                                             url: 'get_rooms_with_param.php',
-                                            data: {"key": key, "value": value},
+                                            data: {"value": value},
                                             dataSrc: ''
                                         },
-                                        columns: columnsDefinitionShort,
+                                        columns: columnsDefinitionShort_vgl,
                                         dom: dom_var,
                                         language: {
                                             "search": ""},
@@ -439,21 +420,23 @@ init_page_serversides();
                                         info: true,
                                         paging: false,
                                         pageLength: -1,
-                                        compact: true
+                                        compact: true,
+                                        initComplete: function () {
+                                            if (!filter_added) {
+                                                add_MT_rel_filter("#card_header_vgl_room", table_vgl_rooms);
+                                                move_dt_search("dt-search-1", "card_header_vgl_room");
+                                                filter_added = true;
+                                            }
+                                            console.log("T Vgl initiated");
+                                            table_vgl_rooms.column(0).visible(true);
+                                        }
                                     });
-//                                    console.log(" -> VGL Räume TABLE LOADED! ");
-
-                                    if (!filter_added) {
-                                        add_MT_rel_filter2("#card_header_vgl_room");
-                                        move_dt_search("dt-search-1", "card_header_vgl_room");
-                                        filter_added = true;
-                                    }
                                 }
 
                                 function init_rooms_current_project_table() {
                                     table_rooms = new DataTable('#table_rooms', {
                                         ajax: {
-                                            url: 'get_rb_specs_data.php',
+                                            url: 'get_rb_specs_data.php',//TODO
                                             dataSrc: ''
                                         },
                                         columns: columnsDefinitionShort,
@@ -471,7 +454,7 @@ init_page_serversides();
                                         compact: true
                                     });
                                 }
-                                
+
                                 function add_MT_rel_filter3(location) {
                                     var dropdownHtml = '<select class="form-control-sm fix_size" id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
                                     $(location).append(dropdownHtml);
@@ -480,7 +463,7 @@ init_page_serversides();
                                         table_bauangaben.column('MT-relevant:name').search(filterValue).draw();
                                     });
                                 }
-                                
+
                                 function add_MT_rel_filter2(location) {
                                     var dropdownHtml = '<select class="form-control-sm fix_size" id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
                                     $(location).append(dropdownHtml);
@@ -490,12 +473,12 @@ init_page_serversides();
                                     });
                                 }
 
-                                function add_MT_rel_filter(location) {
+                                function add_MT_rel_filter(location, table) {
                                     var dropdownHtml = '<select class="form-control-sm fix_size" id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
                                     $(location).append(dropdownHtml);
                                     $('#columnFilter').change(function () {
                                         var filterValue = $(this).val();
-                                        table_rooms.column('MT-relevant:name').search(filterValue).draw();
+                                        table.column('MT-relevant:name').search(filterValue).draw();
                                     });
                                 }
 
@@ -506,39 +489,41 @@ init_page_serversides();
                                     dt_searcher.classList.add("fix_size");
                                 }
 
-                                const container = document.querySelector('#KONTÄNER');
-                                const cards = document.querySelectorAll('.cardx');
-                                const resizeBorders = document.querySelectorAll('.resize-border');
-                                let isResizing = false;
-                                let startX, startWidth;
-                                function startResize(e) {
-                                    isResizing = true;
-                                    startX = e.clientX;
-                                    startWidth = parseFloat(getComputedStyle(cards[1]).width);
-                                }
 
-                                function resize(e) {
-                                    if (!isResizing)
-                                        return;
-                                    const deltaX = e.clientX - startX;
-                                    const newWidth = startWidth + deltaX;
 
-                                    cards[1].style.width = `${newWidth}px`;
-                                    const adjacentWidth = (container.clientWidth - newWidth) / 3;
-                                    cards[0].style.width = `${adjacentWidth}px`;
-                                    cards[2].style.width = `${adjacentWidth}px`;
-                                    cards[3].style.width = `${adjacentWidth}px`;
-                                }
-
-                                function stopResize() {
-                                    isResizing = false;
-                                }
-
-                                resizeBorders.forEach(border => {
-                                    border.addEventListener('mousedown', startResize);
-                                });
-                                window.addEventListener('mousemove', resize);
-                                window.addEventListener('mouseup', stopResize);
+//                                const container = document.querySelector('#KONTÄNER');
+//                                const cards = document.querySelectorAll('.cardx');
+//                                const resizeBorders = document.querySelectorAll('.resize-border');
+//                                let isResizing = false;
+//                                let startX, startWidth;
+//                                function startResize(e) {
+//                                    isResizing = true;
+//                                    startX = e.clientX;
+//                                    startWidth = parseFloat(getComputedStyle(cards[1]).width);
+//                                }
+//
+//                                function resize(e) {
+//                                    if (!isResizing)
+//                                        return;
+//                                    const deltaX = e.clientX - startX;
+//                                    const newWidth = startWidth + deltaX;
+//
+//                                    cards[1].style.width = `${newWidth}px`;
+//                                    const adjacentWidth = (container.clientWidth - newWidth) / 3;
+//                                    cards[0].style.width = `${adjacentWidth}px`;
+//                                    cards[2].style.width = `${adjacentWidth}px`;
+//                                    cards[3].style.width = `${adjacentWidth}px`;
+//                                }
+//
+//                                function stopResize() {
+//                                    isResizing = false;
+//                                }
+//
+//                                resizeBorders.forEach(border => {
+//                                    border.addEventListener('mousedown', startResize);
+//                                });
+//                                window.addEventListener('mousemove', resize);
+//                                window.addEventListener('mouseup', stopResize);
 
                             </script>
                         </body> 

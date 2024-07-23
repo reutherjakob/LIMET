@@ -60,8 +60,8 @@ const columnsDefinition = [
     {data: 'Raumnr', title: 'Raumnr'},
     {data: "Bezeichnung", title: "Funktionsstelle", case: "none-edit"}, //#7
     {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'},
-
     {data: "Nummer", title: "DIN13080", case: "none-edit"},
+        
     {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer'},
     {data: 'Raumbereich Nutzer', title: 'Raumbereich'},
     {data: 'Geschoss', title: 'Geschoss'},
