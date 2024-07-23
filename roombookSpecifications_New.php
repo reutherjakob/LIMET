@@ -35,7 +35,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 box-shadow: 0 2px 2px 0 rgba(100, 0, 25, 0.2), 0 2px 2px 0 rgba(100, 0, 25, 0.2);
                             }
                             .btn {
-                                /*font-size: 0.6vw !important;*/
                                 padding-left: 0.3vw  !important;
                                 padding-right:  0.3vw   !important;
                                 padding-top:  0.2vw   !important;
@@ -56,7 +55,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             .table>thead>tr>th {
                                 background-color: rgba(100, 140, 25, 0.15);
                             }
-
                             .form-check-input{
                                 width: 1.5vw !important;
                             }
@@ -67,16 +65,15 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 writing-mode: vertical-rl;
                                 font-size: 1vh;
                             }
+
                         </style> 
                         </head> 
                         <body style="height:100%">  
-
                             <div class="container-fluid ">
+                                <div id="limet-navbar"> </div>
 
-                                <div id="limet-navbar"  > </div> 
                                 <div class="mt-1 card">    
                                     <div class="card-header d-flex align-items-center"  id='TableCardHeader'>  </div>
-                                    <!--style="height: 2.8vw; overflow: hidden; "-->
                                     <div class="card-body" id = "table_container_div">
                                         <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" width ="100%" id="table_rooms" > 
                                             <thead <tr></tr> </thead>
@@ -132,7 +129,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 
                             function checkAndToggleColumnsVisibility() {  // method only used for w/data btns
                                 let singleButton = document.querySelector('.toggleDatalessColumnsButton');
-                                
                                 console.log("w/ tbn click", singleButton);
                                 if (singleButton.classList.contains('btn_vis')) {
                                     singleButton.classList.add('btn_invis');
@@ -149,8 +145,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     if (!hasNonEmptyCell) {
                                         this.visible(!this.visible());
                                     }
-
-
                                 });
                             }
 
@@ -446,22 +440,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 }, 2000 + toastCounter * 100);
                             }
 
-                            function save_new_room(nummer, name, funktionsteilstelle, MTrelevant) {
-                                if (nummer !== "" && name !== "" && MTrelevant !== "" && funktionsteilstelle !== "") {  //& flaeche  !== "" && geschoss !== "" && bauetappe  !== "" && bauteil  !== "" && funktionsteilstelle !== 0 
-                                    $.ajax({
-                                        url: "addRoom_1.php", // "ID": raumID,
-                                        data: {"raumnummer": nummer, "raumbezeichnung": name, "funktionsteilstelle": funktionsteilstelle, "MTrelevant": MTrelevant},
-                                        type: "GET",
-                                        success: function (data) {
-                                            $('#addRoomModal').modal('hide');
-                                            alert(data);
-                                            window.location.replace("roombookSpecifications_New.php");
-                                        }
-                                    });
-                                } else {
-                                    alert("Bitte alle Felder ausfüllen!");
-                                }
-                            }
+
 
                             function init_dt() {
                                 table = new DataTable('#table_rooms', {
@@ -573,6 +552,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                         text: " Cpy",
                                         className: "btn far fa-window-restore",
                                         action: function (e, dt, node, config) {
+//                                            copySelectedRow();
                                             copySelectedRow();
                                         }
                                     },
@@ -682,257 +662,31 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 var name = $("#name").val(); // var raumbereich = $("#raumbereich").val();
                                 var funktionsteilstelle = $("#funktionsstelle").val();
                                 var MTrelevant = $("#mt-relevant").val();
+                                console.log(funktionsteilstelle);
                                 save_new_room(nummer, name, funktionsteilstelle, MTrelevant);
                             });
 
-                            function copySelectedRow() {
-                                if (confirm('Raum Kopieren??')) {
+                            function save_new_room(nummer, name, funktionsteilstelle, MTrelevant) {
+                                if (nummer !== "" && name !== "" && MTrelevant !== "" && funktionsteilstelle !== "") {  //& flaeche  !== "" && geschoss !== "" && bauetappe  !== "" && bauteil  !== "" && funktionsteilstelle !== 0 
+                                    $.ajax({
+                                        url: "addRoom_all.php", // "ID": raumID,
+                                        data: {"tabelle_projekte_idTABELLE_Projekte": <?php echo $_SESSION["projectID"]; ?>, "Raumnr": nummer, "Raumbezeichnung": name, "TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen": funktionsteilstelle, "MT-relevant": MTrelevant},
+                                        type: "GET",
+                                        success: function (data) {
+                                            $('#addRoomModal').modal('hide');
+                                            alert(data);
+                                            window.location.replace("roombookSpecifications_New.php");
+                                        }
+                                    });
                                 } else {
-                                    return 0;
+                                    alert("Bitte alle Felder ausfüllen!");
                                 }
-                                let selectedRowData = table.row('.selected').data();
-                                table.row.add(selectedRowData).draw();
-                                console.log("SelectedData: ", selectedRowData["Raumnr"], selectedRowData["Raumbezeichnung"], selectedRowData["TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen"], selectedRowData["MT-relevant"]);
-                                save_new_room_all(
-                                        selectedRowData["Raumnr"],
-                                        selectedRowData["Raumbezeichnung"],
-                                        selectedRowData["TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen"],
-                                        selectedRowData["MT-relevant"],
-                                        selectedRowData["Funktionelle Raum Nr"],
-                                        selectedRowData["Raumnummer_Nutzer"],
-                                        selectedRowData["Raumbereich Nutzer"],
-                                        selectedRowData["Geschoss"],
-                                        selectedRowData["Bauetappe"],
-                                        selectedRowData["Bauabschnitt"],
-                                        selectedRowData["Nutzfläche"],
-                                        selectedRowData["Abdunkelbarkeit"],
-                                        selectedRowData["Strahlenanwendung"],
-                                        selectedRowData["Laseranwendung"],
-                                        selectedRowData["H6020"],
-                                        selectedRowData["GMP"],
-                                        selectedRowData["ISO"],
-                                        selectedRowData["1 Kreis O2"],
-                                        selectedRowData["2 Kreis O2"],
-                                        selectedRowData["O2"],
-                                        selectedRowData["1 Kreis Va"],
-                                        selectedRowData["2 Kreis Va"],
-                                        selectedRowData["VA"],
-                                        selectedRowData["1 Kreis DL-5"],
-                                        selectedRowData["2 Kreis DL-5"],
-                                        selectedRowData["DL-5"],
-                                        selectedRowData["DL-10"],
-                                        selectedRowData["DL-tech"],
-                                        selectedRowData["CO2"],
-                                        selectedRowData["H2"],
-                                        selectedRowData["He"],
-                                        selectedRowData["He-RF"],
-                                        selectedRowData["Ar"],
-                                        selectedRowData["N2"],
-                                        selectedRowData["NGA"],
-                                        selectedRowData["N2O"],
-                                        selectedRowData["AV"],
-                                        selectedRowData["SV"],
-                                        selectedRowData["ZSV"],
-                                        selectedRowData["USV"],
-                                        selectedRowData["IT Anbindung"],
-                                        selectedRowData["Anwendungsgruppe"],
-                                        selectedRowData["Allgemeine Hygieneklasse"],
-                                        selectedRowData["Raumhoehe"],
-                                        selectedRowData["Raumhoehe 2"],
-                                        selectedRowData["Belichtungsfläche"],
-                                        selectedRowData["Umfang"],
-                                        selectedRowData["Volumen"],
-                                        selectedRowData["ET_Anschlussleistung_W"],
-                                        selectedRowData['ET_Anschlussleistung_AV_W'],
-                                        selectedRowData['ET_Anschlussleistung_SV_W'],
-                                        selectedRowData['ET_Anschlussleistung_ZSV_W'],
-                                        selectedRowData['ET_Anschlussleistung_USV_W'],
-                                        selectedRowData['EL_AV Steckdosen Stk'],
-                                        selectedRowData['EL_SV Steckdosen Stk'],
-                                        selectedRowData['EL_ZSV Steckdosen Stk'],
-                                        selectedRowData['EL_USV Steckdosen Stk'],
-                                        selectedRowData['EL_Roentgen 16A CEE Stk'],
-                                        selectedRowData['EL_Laser 16A CEE Stk'],
-                                        selectedRowData["HT_Waermeabgabe_W"],
-                                        selectedRowData["VEXAT_Zone"],
-                                        selectedRowData["HT_Abluft_Vakuumpumpe"],
-                                        selectedRowData["HT_Abluft_Schweissabsaugung_Stk"],
-                                        selectedRowData["HT_Abluft_Esse_Stk"],
-                                        selectedRowData["HT_Abluft_Rauchgasabzug_Stk"],
-                                        selectedRowData["HT_Abluft_Digestorium_Stk"],
-                                        selectedRowData["HT_Punktabsaugung_Stk"],
-                                        selectedRowData["HT_Abluft_Sicherheitsschrank_Unterbau_Stk"],
-                                        selectedRowData["HT_Abluft_Sicherheitsschrank_Stk"],
-                                        selectedRowData["HT_Spuele_Stk"],
-                                        selectedRowData["HT_Kühlwasser"],
-                                        selectedRowData["O2_Mangel"],
-                                        selectedRowData["CO2_Melder"],
-                                        selectedRowData["ET_RJ45-Ports"],
-                                        selectedRowData["ET_64A_3Phasig_Einzelanschluss"],
-                                        selectedRowData["ET_32A_3Phasig_Einzelanschluss"],
-                                        selectedRowData["ET_16A_3Phasig_Einzelanschluss"],
-                                        selectedRowData["ET_Digestorium_MSR_230V_SV_Stk"],
-                                        selectedRowData["ET_5x10mm2_Digestorium_Stk"],
-                                        selectedRowData["ET_5x10mm2_USV_Stk"],
-                                        selectedRowData["ET_5x10mm2_SV_Stk"],
-                                        selectedRowData["ET_5x10mm2_AV_Stk"],
-                                        selectedRowData["Wasser Qual 3 l/min"],
-                                        selectedRowData["Wasser Qual 2 l/Tag"],
-                                        selectedRowData["Wasser Qual 1 l/Tag"],
-                                        selectedRowData["Wasser Qual 3"],
-                                        selectedRowData["Wasser Qual 2"],
-                                        selectedRowData["Wasser Qual 1"],
-                                        selectedRowData["LHe"],
-                                        selectedRowData["LN l/Tag"],
-                                        selectedRowData["LN"],
-                                        selectedRowData["N2 Reinheit"],
-                                        selectedRowData["N2 l/min"],
-                                        selectedRowData["Ar Reinheit"],
-                                        selectedRowData["Ar l/min"],
-                                        selectedRowData["He Reinheit"],
-                                        selectedRowData["He l/min"],
-                                        selectedRowData["H2 Reinheit"],
-                                        selectedRowData["H2 l/min"],
-                                        selectedRowData["DL ISO 8573"],
-                                        selectedRowData["DL l/min"],
-                                        selectedRowData["VA l/min"],
-                                        selectedRowData["CO2 l/min"],
-                                        selectedRowData["CO2 Reinheit"],
-                                        selectedRowData["O2 l/min"],
-                                        selectedRowData["O2 Reinheit"],
-                                        selectedRowData["Laserklasse"],
-                                        selectedRowData["AR_Statik_relevant"],
-                                        selectedRowData["AR_AP_permanent"],
-                                        selectedRowData["HT_Notdusche"]
-                                        );
                             }
 
-                            function save_new_room_all(nummer, rbez, funktionsteilstelle, MTrelevant, funktionelleraumnr, raumnummernutzer, raumbereichnutzer,
-                                    geschoss, bauetappe, bauabschnitt, nutzfläche, abdunkelbarkeit, strahlenanwendung, laseranwendung, h6020, gmp, iso, _1kreiso2, _2kreiso2,
-                                    o2, _1kreisva, _2kreisva, va, _1kreisdl5, _2kreisdl5, dl5, dl10, dltech, co2, h2, he, herf, ar, n2, nga, n2o, av, sv, zsv, usv,
-                                    itanbindung, anwendungsgruppe, allgemeinehygieneklasse, raumhoehe, raumhoehe2, belichtungsfläche, umfang, volumen, etanschlussleistungw,
-                                    AnschlLeistung_AV, AnschlLeistung_SV, AnschlLeistung_ZSV, AnschlLeistung_USV,
-                                    SSDs_AV, SSDs_SV, SSDs_ZSV, SSDs_USV, CEE16AR, CEE16AL, htwärmeabgabew, vexatzone, htabluftvakuumpumpe, htabluftschweissabsaugungstk, htabluftessestk, htabluftrauchgasabzugstk, htabluftdigestoriumstk,
-                                    htpunktabsaugungstk, htabluftsicherheitsschrankunterbaustk, htabluftsicherheitsschrankstk, htspuelestk, htkühlwasser, o2mangel, co2melder,
-                                    etrj45ports, et64a3phasigeinzelanschluss, et32a3phasigeinzelanschluss, et16a3phasigeinzelanschluss, etdigestoriummsr230vsvstk, et5x10mm2digestoriumstk, et5x10mm2usvstk,
-                                    et5x10mm2svstk, et5x10mm2avstk, wasserqual3lmin, wasserqual2ltag, wasserqual1ltag, wasserqual3, wasserqual2, wasserqual1, lhe, lnltag, ln, n2reinheit, n2lmin,
-                                    arreinheit, arlmin, hereinheit, helmin, h2reinheit, h2lmin, dliso8573, dllmin, valmin, co2lmin, co2reinheit, o2lmin, o2reinheit, laserklasse, AR_Statik, AR_AP, Notdusche, VE_Wasser) {
-
+                            function numsave_new_room_all(dataObject) {
                                 $.ajax({
                                     url: "addRoom_all.php",
-                                    data: {
-                                        "raumnummer": nummer,
-                                        "raumbezeichnung": rbez,
-                                        "funktionsteilstelle": funktionsteilstelle,
-                                        "MTrelevant": MTrelevant,
-                                        "funktionelleraumnr": funktionelleraumnr,
-                                        "raumnummernutzer": raumnummernutzer,
-                                        "raumbereichnutzer": raumbereichnutzer,
-                                        "geschoss": geschoss,
-                                        "bauetappe": bauetappe,
-                                        "bauabschnitt": bauabschnitt,
-                                        "nutzfläche": nutzfläche,
-                                        "abdunkelbarkeit": abdunkelbarkeit,
-                                        "strahlenanwendung": strahlenanwendung,
-                                        "laseranwendung": laseranwendung,
-                                        "h6020": h6020,
-                                        "gmp": gmp,
-                                        "iso": iso,
-                                        "_1kreiso2": _1kreiso2,
-                                        "_2kreiso2": _2kreiso2,
-                                        "o2": o2,
-                                        "_1kreisva": _1kreisva,
-                                        "_2kreisva": _2kreisva,
-                                        "va": va,
-                                        "_1kreisdl5": _1kreisdl5,
-                                        "_2kreisdl5": _2kreisdl5,
-                                        "dl5": dl5,
-                                        "dl10": dl10,
-                                        "dltech": dltech,
-                                        "co2": co2,
-                                        "h2": h2,
-                                        "he": he,
-                                        "herf": herf,
-                                        "ar": ar,
-                                        "n2": n2,
-                                        "nga": nga,
-                                        "n2o": n2o,
-                                        "av": av,
-                                        "sv": sv,
-                                        "zsv": zsv,
-                                        "usv": usv,
-                                        "itanbindung": itanbindung,
-                                        "anwendungsgruppe": anwendungsgruppe,
-                                        "allgemeinehygieneklasse": allgemeinehygieneklasse,
-                                        "raumhoehe": raumhoehe,
-                                        "raumhoehe2": raumhoehe2,
-                                        "belichtungsfläche": belichtungsfläche,
-                                        "umfang": umfang,
-                                        "volumen": volumen,
-                                        "etanschlussleistungw": etanschlussleistungw,
-                                        "ET_Anschlussleistung_AV_W": AnschlLeistung_AV,
-                                        "ET_Anschlussleistung_SV_W": AnschlLeistung_SV,
-                                        "ET_Anschlussleistung_ZSV_W": AnschlLeistung_ZSV,
-                                        "ET_Anschlussleistung_USV_W": AnschlLeistung_USV,
-                                        "EL_AV Steckdosen Stk": SSDs_AV,
-                                        "EL_SV Steckdosen Stk": SSDs_SV,
-                                        "EL_ZSV Steckdosen Stk": SSDs_ZSV,
-                                        "EL_USV Steckdosen Stk": SSDs_USV,
-                                        "CEE16AR": CEE16AR,
-                                        "CEE16AL": CEE16AL,
-                                        "htwärmeabgabew": htwärmeabgabew,
-                                        "vexatzone": vexatzone,
-                                        "htabluftvakuumpumpe": htabluftvakuumpumpe,
-                                        "htabluftschweissabsaugungstk": htabluftschweissabsaugungstk,
-                                        "htabluftessestk": htabluftessestk,
-                                        "htabluftrauchgasabzugstk": htabluftrauchgasabzugstk,
-                                        "htabluftdigestoriumstk": htabluftdigestoriumstk,
-                                        "htpunktabsaugungstk": htpunktabsaugungstk,
-                                        "htabluftsicherheitsschrankunterbaustk": htabluftsicherheitsschrankunterbaustk,
-                                        "htabluftsicherheitsschrankstk": htabluftsicherheitsschrankstk,
-                                        "htspuelestk": htspuelestk,
-                                        "htkühlwasser": htkühlwasser,
-                                        "o2mangel": o2mangel,
-                                        "co2melder": co2melder,
-                                        "etrj45ports": etrj45ports,
-                                        "et64a3phasigeinzelanschluss": et64a3phasigeinzelanschluss,
-                                        "et32a3phasigeinzelanschluss": et32a3phasigeinzelanschluss,
-                                        "et16a3phasigeinzelanschluss": et16a3phasigeinzelanschluss,
-                                        "etdigestoriummsr230vsvstk": etdigestoriummsr230vsvstk,
-                                        "et5x10mm2digestoriumstk": et5x10mm2digestoriumstk,
-                                        "et5x10mm2usvstk": et5x10mm2usvstk,
-                                        "et5x10mm2svstk": et5x10mm2svstk,
-                                        "et5x10mm2avstk": et5x10mm2avstk,
-                                        "wasserqual3lmin": wasserqual3lmin,
-                                        "wasserqual2ltag": wasserqual2ltag,
-                                        "wasserqual1ltag": wasserqual1ltag,
-                                        "wasserqual3": wasserqual3,
-                                        "wasserqual2": wasserqual2,
-                                        "wasserqual1": wasserqual1,
-                                        "lhe": lhe,
-                                        "lnltag": lnltag,
-                                        "ln": ln,
-                                        "n2reinheit": n2reinheit,
-                                        "n2lmin": n2lmin,
-                                        "arreinheit": arreinheit,
-                                        "arlmin": arlmin,
-                                        "hereinheit": hereinheit,
-                                        "helmin": helmin,
-                                        "h2reinheit": h2reinheit,
-                                        "h2lmin": h2lmin,
-                                        "dliso8573": dliso8573,
-                                        "dllmin": dllmin,
-                                        "valmin": valmin,
-                                        "co2lmin": co2lmin,
-                                        "co2reinheit": co2reinheit,
-                                        "o2lmin": o2lmin,
-                                        "o2reinheit": o2reinheit,
-                                        "laserklasse": laserklasse,
-                                        "AR_Statik": AR_Statik,
-                                        "AR_AP": AR_AP,
-                                        "Notdusche": Notdusche,
-                                        "VE_Wasser": VE_Wasser
-                                    },
+                                    data: dataObject,
                                     type: "GET",
                                     success: function (data) {
                                         alert(data);
@@ -940,6 +694,24 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     }
                                 });
                             }
+
+                            function copySelectedRow() {
+                                if (!confirm('Raum Kopieren??')) {
+                                    return 0;
+                                }
+                                let selectedRowData = table.row('.selected').data();
+                                table.row.add(selectedRowData).draw();
+                                let requestData = {};
+                                columnsDefinition.forEach(column => {
+                                    let field = column.data;
+                                    let dbFieldName = field.replace(/[ ]/g, '+'); // Replace dots and spaces with underscores to match the field names in the PHP file
+                                    requestData[dbFieldName] = selectedRowData[field];
+                                });
+                                delete requestData.idTABELLE_Räume;
+                                console.log("copySelectedRow:", requestData);
+                                numsave_new_room_all(requestData);
+                            }
+
                         </script>
 
                         </html>

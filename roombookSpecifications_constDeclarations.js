@@ -11,57 +11,31 @@ function title2data(columnsDefinition, title) {
 }
 
 const buttonRanges = [
-    {name: 'Alle', start: 7, end: 114 + 1},
+    {name: 'Alle', start: 7, end: 131},
     {name: 'RAUM', start: 7, end: 23},
-    {name: 'HKLS', start: 25 + 1, end: 30 + 1},
-    {name: 'ELEK', start: 31 + 1, end: 49 + 1},
-    {name: 'AR', start: 50 + 1, end: 51 + 1},
-    {name: 'MEDGAS', start: 52 + 1, end: 62 + 1},
-    {name: 'LAB', start: 63 + 1, end: 114 + 1},
-    {name: 'L-GAS', start: 55 + 14, end: 79 + 14},
-    {name: 'L-ET', start: 80 + 14, end: 87 + 14},
-    {name: 'L-HT', start: 88 + 14, end: 95 + 14},
-    {name: 'L-H2O', start: 95 + 14, end: 101 + 14}
+    {name: 'HKLS', start: 24, end: 30},
+    {name: 'ELEK', start: 31, end: 50},
+    {name: 'AR', start: 51, end: 52},
+    {name: 'MEDGAS', start: 53, end: 64},
+    {name: 'LAB', start: 65, end: 131},
+    {name: 'L-GAS', start: 65, end: 65+41},
+    {name: 'L-ET', start: 65+42, end: 65+41+10},
+    {name: 'L-HT', start: 117, end:  124},
+    {name: 'L-H2O', start: 125, end: 131}
 ];
 
-//const columnsDefinitionShort = [
-//    {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projek ID', visible: false, searchable: false},
-//    {data: 'idTABELLE_Räume', title: 'Raum ID', visible: false, searchable: false},
-//    {data: 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', title: 'Funktionsstellen ID', visible: false, searchable: false},
-//    {data: 'MT-relevant', title: 'MT-rel.', name: 'MT-relevant', case: "bit", render: function (data) {
-//            return data === '1' ? 'Ja' : 'Nein';
-//        }},
-//    //{data: 'idTABELLE_Räume', title: 'Raum ID', searchable: false}, //debugging
-//    {data: 'Raumbezeichnung', title: 'Raumbez.'},
-//    {data: 'Raumnr', title: 'Raumnr'},
-//    {data: "Bezeichnung", title: "Funktionsstelle", case: "none-edit"}, //#7
-//    {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'},
-//    {data: "Nummer", title: "DIN13080", case: "none-edit"},
-////    {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer'},
-//    {data: 'Raumbereich Nutzer', title: 'Raumbereich'},
-//    {data: 'Geschoss', title: 'Geschoss'},
-//    {data: 'Bauetappe', title: 'Bauetappe'},
-//    {data: 'Bauabschnitt', title: 'Bauabschnitt'} 
-//];   
-
-
-// NEW FIEL? - ADD Here, In get_rb_specs_data.php and the CPY/save methods
-const columnsDefinition = [
-//    { data: '', defaultContent: '', title: "Select", render:  $.fn.dataTable.render.select(), searchable: false, orderable: false }, //cool, but buggy with fix columns. 
+const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and the CPY/save methods
     {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projek ID', visible: false, searchable: false},
     {data: 'idTABELLE_Räume', title: 'Raum ID', visible: false, searchable: false},
     {data: 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', title: 'Funktionsstellen ID', visible: false, searchable: false},
     {data: 'MT-relevant', title: 'MT-rel.', name: 'MT-relevant', case: "bit", render: function (data) {
             return data === '1' ? 'Ja' : 'Nein';
         }},
-    //{data: 'idTABELLE_Räume', title: 'Raum ID', searchable: false}, //debugging
     {data: 'Raumbezeichnung', title: 'Raumbez.'},
-
     {data: 'Raumnr', title: 'Raumnr'},
     {data: "Bezeichnung", title: "Funktionsstelle", case: "none-edit"}, //#7
     {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'},
     {data: "Nummer", title: "DIN13080", case: "none-edit"},
-        
     {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer'},
     {data: 'Raumbereich Nutzer', title: 'Raumbereich'},
     {data: 'Geschoss', title: 'Geschoss'},
@@ -85,8 +59,6 @@ const columnsDefinition = [
     {data: 'HT_Spuele_Stk', title: 'Spüle [Stk]', case: "num"},
     {data: 'HT_Kühlwasser', title: 'Kühlwasser', case: "bit"},
     {data: 'HT_Notdusche', title: 'Notdusche', case: "bit"},
-    {data: 'VE_Wasser', title: 'VE_Wasser', case: "bit"},
-
     //ET
     {data: 'Anwendungsgruppe', title: 'AWG'},
     {data: 'Fussboden OENORM B5220', title: 'B5220'},
@@ -94,87 +66,107 @@ const columnsDefinition = [
     {data: 'SV', title: 'SV', case: "bit"},
     {data: 'ZSV', title: 'ZSV', case: "bit"},
     {data: 'USV', title: 'USV', case: "bit"},
-
     {data: 'EL_AV Steckdosen Stk', defaultContent: '-', title: 'AV #SSD', case: "num"},
     {data: 'EL_SV Steckdosen Stk', defaultContent: '-', title: 'SV #SSD', case: "num"},
     {data: 'EL_ZSV Steckdosen Stk', defaultContent: '-', title: 'ZSV #SSD', case: "num"},
     {data: 'EL_USV Steckdosen Stk', defaultContent: '-', title: 'USV #SSD', case: "num"},
-
     {data: 'EL_Roentgen 16A CEE Stk', title: 'CEE16A Röntgen', case: "num"},
-
     {data: 'EL_Laser 16A CEE Stk', defaultContent: '-', title: 'CEE16A Laser', case: "num"},
     {data: 'ET_Anschlussleistung_W', defaultContent: '-', title: 'Anschlussleistung Summe[W]', case: "num"},
     {data: 'ET_Anschlussleistung_AV_W', defaultContent: '-', title: 'Anschlussleistung AV[W]', case: "num"},
     {data: 'ET_Anschlussleistung_SV_W', defaultContent: '-', title: 'Anschlussleistung SV[W]', case: "num"},
     {data: 'ET_Anschlussleistung_ZSV_W', defaultContent: '-', title: 'Anschlussleistung ZSV[W]', case: "num"},
     {data: 'ET_Anschlussleistung_USV_W', defaultContent: '-', title: 'Anschlussleistung USV[W]', case: "num"},
-
     {data: 'IT Anbindung', title: 'IT', case: "bit"},
     {data: 'ET_RJ45-Ports', title: 'RJ45-Ports', case: "num"},
-//AR 
-    {data: 'AR_AP_permanent', title: 'permanenter AP', name: 'AR AP permanent ', case: "bit", render: function (data) {
-            return data === '1' ? 'ja' : 'nein';
+    {data: 'Laserklasse', title: 'Laserklasse'},
+
+    //AR 
+    {data: 'AR_AP_permanent', title: 'AR AP permanent', name: 'AR AP permanent ', case: "bit", render: function (data) {
+            return data === '1' ? 'permanenter AP' : 'kein permanenter AP';
         }},
     {data: 'AR_Statik_relevant', title: 'AR Statik relevant', name: 'AR Statik relevant', case: "bit", render: function (data) {
             return data === '1' ? 'relevant' : 'nicht rel.';
         }},
 
-//MEDGASE
+    //MEDGASE
     {data: '1 Kreis O2', title: '1_K O2', case: "bit"},
     {data: '2 Kreis O2', title: '2_K O2', case: "bit"},
-
+    {data: 'CO2', title: 'CO2', case: "bit"},
     {data: '1 Kreis Va', title: '1_K Va', case: "bit"},
     {data: '2 Kreis Va', title: '2_K Va', case: "bit"},
-
     {data: '1 Kreis DL-5', title: '1_K DL5', case: "bit"},
     {data: '2 Kreis DL-5', title: '2_K DL5', case: "bit"},
-
     {data: 'DL-10', title: 'DL-10', case: "bit"},
     {data: 'DL-tech', title: 'DL-tech', case: "bit"},
-    {data: 'CO2', title: 'CO2', case: "bit"},
     {data: 'NGA', title: 'NGA', case: "bit"},
     {data: 'N2O', title: 'N2O', case: "bit"},
+    {data: 'VEXAT_Zone', title: 'VEXAT Zone', case: "bit"},
 
-    {data: 'VEXAT_Zone', title: 'VEXAT_Zone', case: "bit"},
-    {data: 'Laserklasse', title: 'Laserklasse'},
-
+    //LABORZ
     {data: 'O2', title: 'O2', case: "bit"},
+    {data: 'O2 l/min', title: 'O2_l/min', case: "num"},
+    {data: 'O2 Reinheit', title: 'O2 Reinheit', case: ""},
+
+    {data: 'CO2 l/min', title: 'CO2_l/min'},
+    {data: 'CO2 Reinheit', title: 'CO2 Reinheit', case: ""},
+
     {data: 'VA', title: 'VA', case: "bit"},
-    {data: 'DL-5', title: 'DL-5', case: "bit"},
+    {data: 'VA l/min', title: 'VA_l/min', case: "num"},
+
     {data: 'H2', title: 'H2', case: "bit"},
-    {data: 'He', title: 'He', case: "bit"},
-    {data: 'He-RF', title: 'He-RF', case: "bit"},
-    {data: 'Ar', title: 'Ar', case: "bit"},
-    {data: 'N2', title: 'N2', case: "bit"},
-    {data: 'O2_Mangel', title: 'O2_Mangel', case: "bit"},
-    {data: 'CO2_Melder', title: 'CO2_Melder', case: "bit"},
-    {data: 'LHe', title: 'LHe', case: "bit"},
-    {data: 'LN l/Tag', title: 'LN_l/Tag', case: "num"},
-    {data: 'LN', title: 'LN', case: "bit"},
-    {data: 'N2 Reinheit', title: 'N2 Reinheit', case: "bit"},
-    {data: 'N2 l/min', title: 'N2_l/min', case: "num"},
-    {data: 'Ar Reinheit', title: 'Ar Reinheit', case: "bit"},
-    {data: 'Ar l/min', title: 'Ar_l/min', case: "num"},
-    {data: 'He Reinheit', title: 'He Reinheit', case: "bit"},
-    {data: 'He l/min', title: 'He_l/min', case: "num"},
-    {data: 'H2 Reinheit', title: 'H2 Reinheit', case: "bit"},
+    {data: 'H2 Reinheit', title: 'H2 Reinheit', case: ""},
     {data: 'H2 l/min', title: 'H2_l/min', case: "num"},
+
+    {data: 'He', title: 'He', case: "bit"},
+    {data: 'He Reinheit', title: 'He Reinheit', case: ""},
+    {data: 'He l/min', title: 'He_l/min', case: "num"},
+    {data: 'He-RF', title: 'He-RF', case: "bit"},
+    {data: 'LHe', title: 'LHe', case: "bit"},
+        
+    {data: 'Ar', title: 'Ar', case: "bit"},
+    {data: 'Ar Reinheit', title: 'Ar Reinheit', case: ""},
+    {data: 'Ar l/min', title: 'Ar_l/min', case: "num"},
+   
+    {data: 'LN', title: 'LN', case: "bit"},
+    {data: 'LN l/Tag', title: 'LN l/Tag', case: "num"},
+
+    {data: 'N2', title: 'N2', case: "bit"},
+    {data: 'N2 Reinheit', title: 'N2 Reinheit', case: ""},
+    {data: 'N2 l/min', title: 'N2_l/min', case: "num"},
+
+    {data: 'DL-5', title: 'DL-5', case: "bit"},
     {data: 'DL ISO 8573', title: 'DL_ISO 8573', case: "bit"},
     {data: 'DL l/min', title: 'DL_l/min', case: "num"},
-    {data: 'VA l/min', title: 'VA_l/min', case: "num"},
-    {data: 'CO2 l/min', title: 'CO2_l/min'},
-    {data: 'CO2 Reinheit', title: 'CO2 Reinheit', case: "bit"},
-    {data: 'O2 l/min', title: 'O2_l/min', case: "num"},
-    {data: 'O2 Reinheit', title: 'O2 Reinheit', case: "bit"},
 
-    {data: 'ET_64A_3Phasig_Einzelanschluss', title: '64A 3Ph Einzelanschls', case: "bit"},
-    {data: 'ET_32A_3Phasig_Einzelanschluss', title: '32A 3Ph Einzelanschluss', case: "bit"},
+    {data: 'Kr', title: 'Kr', case: 'bit'},
+    {data: 'Ne', title: 'Ne', case: 'bit'},
+    {data: 'NH3', title: 'NH3', case: 'bit'},
+    {data: 'C2H2', title: 'C2H2', case: 'bit'},
+    {data: 'Propan_Butan', title: 'Propan_Butan', case: 'num'},
+    {data: 'N2H2', title: 'N2H2', case: 'num'},
+    {data: 'Inertgas', title: 'Inertgas', case: 'num'},
+    {data: 'AR_CO2_Mix', title: 'AR_CO2_Mix', case: 'num'},
+    {data: 'ArCal15', title: 'ArCal15', case: 'num'},
+
+    {data: 'O2_Mangel', title: 'O2_Mangel', case: 'num'},
+    {data: 'CO2_Melder', title: 'CO2_Melder', case: 'num'},
+    {data: 'NH3_Sensor', title: 'NH3_Sensor', case: 'num'},
+    {data: 'H2_Sensor', title: 'H2_Sensor', case: 'num'},
+    {data: 'Blitzleuchte', title: 'Blitzleuchte', case: 'num'},
+    {data: 'O2_Sensor', title: 'O2_Sensor', case: 'num'},
+    {data: 'Acetylen_Melder', title: 'Acetylen_Melder', case: 'num'},
+
     {data: 'ET_16A_3Phasig_Einzelanschluss', title: '16A 3Ph Einzelanschluss', case: "bit"},
+    {data: 'ET_32A_3Phasig_Einzelanschluss', title: '32A 3Ph Einzelanschluss', case: "bit"},
+    {data: 'ET_64A_3Phasig_Einzelanschluss', title: '64A 3Ph Einzelanschls', case: "bit"},
     {data: 'ET_Digestorium_MSR_230V_SV_Stk', title: 'Digestorium_MSR 230V_SV_Stk', case: "num"},
     {data: 'ET_5x10mm2_Digestorium_Stk', title: '5x10mm2 Digestorium_Stk', case: "num"},
     {data: 'ET_5x10mm2_USV_Stk', title: '5x10mm2 USV_Stk', case: "num"},
     {data: 'ET_5x10mm2_SV_Stk', title: '5x10mm2 SV_Stk', case: "num"},
-    {data: 'ET_5x10mm2_AV_Stk', title: '5x10mm2 AV_Stk', case: "num"},
+    {data: 'ET_5x10mm2_AV_Stk', title: '5x10mm2 AV_Stk', case: "num"}, 
+    {data: 'EL_Not_Aus_Funktion', title: 'Not Aus Funktion', case: ""},
+    {data: 'EL_Not_Aus', title: 'Not Aus Stk', case: 'num'},
 
     {data: 'HT_Abluft_Vakuumpumpe', title: 'HT_Abluft Vakuumpumpe', case: "bit"},
     {data: 'HT_Abluft_Schweissabsaugung_Stk', title: 'HT_Abluft Schweissabsaugung_Stk', case: "num"},
@@ -184,10 +176,12 @@ const columnsDefinition = [
     {data: 'HT_Punktabsaugung_Stk', title: 'HT Punktabsaugung_Stk', case: "num"},
     {data: 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', title: 'HT_Abluft Sicherheitsschrank_Unterbau_Stk', case: "num"},
     {data: 'HT_Abluft_Sicherheitsschrank_Stk', title: 'HT_Abluft Sicherheitsschrank_Stk', case: "num"},
-    {data: 'Wasser Qual 3 l/min', title: 'H2O_Q3 l/min', case: "num"},
-    {data: 'Wasser Qual 2 l/Tag', title: 'H20_Q2 l/Tag', case: "num"},
+
     {data: 'Wasser Qual 1 l/Tag', title: 'H20_Q1 l/Tag', case: "num"},
+    {data: 'Wasser Qual 2 l/Tag', title: 'H20_Q2 l/Tag', case: "num"},
+    {data: 'Wasser Qual 3 l/min', title: 'H2O_Q3 l/min', case: "num"},
     {data: 'Wasser Qual 3', title: 'H20 Q3', case: "bit"},
     {data: 'Wasser Qual 2', title: 'H20 Q2', case: "bit"},
-    {data: 'Wasser Qual 1', title: 'H20 Q1', case: "bit"}
+    {data: 'Wasser Qual 1', title: 'H20 Q1', case: "bit"},
+    {data: 'VE_Wasser', title: 'VE_Wasser', case: 'bit'}
 ];

@@ -86,13 +86,14 @@ init_page_serversides();
                         </style>
                         </head>            
                         <body style="height:100%">
-                            <div id="limet-navbar" class=' '> </div>  
+
+                            <div id="limet-navbar" class='bla'> </div>  
+
                             <div class ="container-fluid" id="KONTÄNER">
 
-                                <div class="row justify-content-center mt-1">
+                                <div class="row justify-content-center">
                                     <div class="col-md-12">
                                         <div class="card">           
-
                                             <div class="card-header text-white"> 
                                                 <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
                                                     <li class="nav-item">
@@ -162,6 +163,7 @@ init_page_serversides();
                                                                     <div class="card-body responsive" id ="">  
                                                                         <p id="ElememntsVglRoom" > </p> 
                                                                     </div>
+                                                                    <a href="../../../AppData/Local/Temp/Projekte.url"></a>
                                                                 </div> 
                                                             </div> 
                                                         </div>
@@ -196,9 +198,7 @@ init_page_serversides();
                                 var RID1;
                                 var table_vgl_rooms;
                                 var RID2;
-
                                 let both_hidden = false;
-
                                 var newText = "";
                                 var selectedRowData = 0;
 
@@ -210,7 +210,7 @@ init_page_serversides();
                                 );
 
                                 let columnsDefinitionShort_vgl = columnsDefinition.filter(column =>
-                                    ['tabelle_projekte_idTABELLE_Projekte', "idTABELLE_Räume", 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', 'MT-relevant', 'Raumbezeichnung', 'Raumnr', "Bezeichnung", 'Nummer', 'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt'].includes(column.data)
+                                    ['tabelle_projekte_idTABELLE_Projekte', "idTABELLE_Räume", 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', 'MT-relevant', 'Raumbezeichnung', 'Raumnr', 'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt'].includes(column.data)
                                 );
 
                                 $(document).ready(function () {
@@ -220,10 +220,9 @@ init_page_serversides();
                                     selectRoomBtn(); //showRoomElementsBtn(); selectVglRoomBtn();
                                     table_click("table_rooms", "RoomElements");
                                     table_click("table_vgl_rooms", "ElememntsVglRoom");
-
                                 });
 
-                                function init_dt_BAUANGABEN( value) {
+                                function init_dt_BAUANGABEN(value) {
                                     dom_var = "tlip";
                                     if (!filter_added2) {
                                         dom_var = "ftlip ";
@@ -234,7 +233,7 @@ init_page_serversides();
                                     table_bauangaben = new DataTable('#table_rooms_bauangaben', {
                                         ajax: {
                                             url: 'get_rooms_with_param.php',
-                                            data: {  "value": value},
+                                            data: {"value": value},
                                             dataSrc: ''
                                         },
                                         columns: columnsDefinition,
@@ -259,31 +258,28 @@ init_page_serversides();
                                         info: true,
                                         paging: true,
                                         pagingType: "simple_numbers",
-                                        pageLength: 10,
+                                        pageLength: 10, 
                                         lengthMenu: [
                                             [10, 20, -1],
                                             ['10 rows', '20 rows', 'Show all']
                                         ],
                                         compact: true,
                                         initComplete: function () {
+                                            
                                             if (!filter_added2) {
                                                 add_MT_rel_filter("#TableCardHeaderBauangaben", table_bauangaben);
                                                 move_dt_search("dt-search-2", 'TableCardHeaderBauangaben');
                                                 filter_added2 = true;
+                                                console.log("T Bauang init only 1nce");
                                             }
                                             table_bauangaben.column(0).visible(true);
                                             console.log("T Bauang init ");
                                         }
                                     });
-
-
-
-
                                 }
 
                                 function table_click(table_id, target_id_4_elelemt_table) {
                                     $("#" + table_id).on('click', "tr", function () {
-
                                         if (table_id === "table_rooms") {
                                             var selectedRowData = table_rooms.row('.selected').data();
                                             if (selectedRowData) {
@@ -292,7 +288,6 @@ init_page_serversides();
                                                 $('#SelectRoomBtn').html(newText);
                                             }
                                         }
-
                                         if (table_id === "table_vgl_rooms") {
                                             selectedRowData = table_vgl_rooms.row('.selected').data();
                                             console.log(selectedRowData);
@@ -305,90 +300,9 @@ init_page_serversides();
                                         if (selectedRowData) {
                                             get_el_in_room_table(selectedRowData['idTABELLE_Räume'], target_id_4_elelemt_table);
                                             if (table_id === "table_rooms") {
-                                                value = selectedRowData["TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen"]; 
+                                                value = selectedRowData["TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen"];
                                                 init_vgl_rooms_table(value);
                                             }
-                                        }
-                                    });
-                                }
-
-                                function selectRoomBtn() {
-                                    $('#SelectRoomBtn').on('click', function () {
-                                        var selectedRowData = table_rooms.row('.selected').data();
-                                        if (selectedRowData) {
-                                            console.log("PRE"); 
-                                            init_dt_BAUANGABEN(selectedRowData['TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen']);
-                                            if ($("#cardbody_SelectRoom4Comparison").is(":visible")) {
-                                                $('#cardbody_SelectRoom4Comparison').hide();
-                                                $('#SelectRoom4Comparison').hide();
-                                                $('#card_SelectRoom4Comparison').hide();
-                                                newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"] + ' <i class="fa fa-caret-down"> </i>';
-                                                $('#SelectRoomBtn').html(newText);
-                                                if (!$("#card_body_vgl_room").is(":visible")) {
-                                                    console.log("both hidden, RID1: " + RID1);
-                                                    both_hidden = true;
-
-                                                    $('#tableRoomElements' + RID1 + ' tr').each(function () {
-                                                        var customerId = $(this).find('.customIDCell').html();
-                                                        console.log(customerId);
-                                                    });
-
-                                                }
-                                            } else {
-                                                both_hidden = false;
-                                                $('#cardbody_SelectRoom4Comparison').show();
-                                                $('#SelectRoom4Comparison').show();
-                                                $('#card_SelectRoom4Comparison').show();
-                                                newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"] + ' <i class="fa fa-caret-up"> </i>';
-                                                $('#SelectRoomBtn').html(newText);
-                                            }
-                                        }
-                                    });
-
-                                    $('#SelectVglRoomBtn').on('click', function () {
-                                        var selectedRowData = table_vgl_rooms.row('.selected').data();
-
-                                        if ($("#card_body_vgl_room").is(":visible")) {
-                                            if (selectedRowData) {
-                                                $('#card_body_vgl_room').hide();
-                                                $('#card_header_vgl_room').hide();
-                                                $('#card_vgl_room').hide();
-
-                                                newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"] + ' <i class="fa fa-caret-down"> </i>';
-                                                $('#SelectVglRoomBtn').html(newText);
-
-                                                console.log("both hidden, RID2: " + RID2);
-                                                both_hidden = true;
-                                            }
-                                        } else {
-                                            both_hidden = false;
-                                            $('#card_body_vgl_room').show();
-                                            $('#card_header_vgl_room').show();
-                                            $('#card_vgl_room').show();
-
-                                            if (selectedRowData) {
-                                                newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"] + ' <i class="fa fa-caret-up"> </i>';
-                                                $('#SelectVglRoomBtn').html(newText);
-                                            }
-                                        }
-
-                                    });
-                                }
-
-                                function get_el_in_room_table(RaumID, targetDiv) {
-                                    $.ajax({
-                                        url: "setSessionVariables.php",
-                                        data: {"roomID": RaumID},
-                                        type: "GET",
-                                        success: function (data) {
-                                            $.ajax({
-                                                url: "get_RoomElementsTable.php",
-                                                type: "GET",
-                                                success: function (data) {
-                                                    //    $("#" + targetDiv).html();
-                                                    $("#" + targetDiv).html(data);
-                                                }
-                                            });
                                         }
                                     });
                                 }
@@ -436,7 +350,7 @@ init_page_serversides();
                                 function init_rooms_current_project_table() {
                                     table_rooms = new DataTable('#table_rooms', {
                                         ajax: {
-                                            url: 'get_rb_specs_data.php',//TODO
+                                            url: 'get_rb_specs_data.php', //TODO
                                             dataSrc: ''
                                         },
                                         columns: columnsDefinitionShort,
@@ -455,21 +369,80 @@ init_page_serversides();
                                     });
                                 }
 
-                                function add_MT_rel_filter3(location) {
-                                    var dropdownHtml = '<select class="form-control-sm fix_size" id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
-                                    $(location).append(dropdownHtml);
-                                    $('#columnFilter').change(function () {
-                                        var filterValue = $(this).val();
-                                        table_bauangaben.column('MT-relevant:name').search(filterValue).draw();
+                                function selectRoomBtn() {
+                                    $('#SelectRoomBtn').on('click', function () {
+                                        var selectedRowData = table_rooms.row('.selected').data();
+                                        if (selectedRowData) {
+                                            console.log("PRE");
+                                            init_dt_BAUANGABEN(selectedRowData['TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen']);
+                                            if ($("#cardbody_SelectRoom4Comparison").is(":visible")) {
+                                                $('#cardbody_SelectRoom4Comparison').hide();
+                                                $('#SelectRoom4Comparison').hide();
+                                                $('#card_SelectRoom4Comparison').hide();
+                                                newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"] + ' <i class="fa fa-caret-down"> </i>';
+                                                $('#SelectRoomBtn').html(newText);
+                                                if (!$("#card_body_vgl_room").is(":visible")) {
+                                                    console.log("both hidden, RID1: " + RID1);
+                                                    both_hidden = true;
+
+                                                    $('#tableRoomElements' + RID1 + ' tr').each(function () {
+                                                        var customerId = $(this).find('.customIDCell').html();
+                                                        console.log(customerId);
+                                                    });
+                                                }
+                                            } else {
+                                                both_hidden = false;
+                                                $('#cardbody_SelectRoom4Comparison').show();
+                                                $('#SelectRoom4Comparison').show();
+                                                $('#card_SelectRoom4Comparison').show();
+                                                newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"] + ' <i class="fa fa-caret-up"> </i>';
+                                                $('#SelectRoomBtn').html(newText);
+                                            }
+                                        }
+                                    });
+
+                                    $('#SelectVglRoomBtn').on('click', function () {
+                                        var selectedRowData = table_vgl_rooms.row('.selected').data();
+
+                                        if ($("#card_body_vgl_room").is(":visible")) {
+                                            if (selectedRowData) {
+                                                $('#card_body_vgl_room').hide();
+                                                $('#card_header_vgl_room').hide();
+                                                $('#card_vgl_room').hide();
+                                                newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"] + ' <i class="fa fa-caret-down"> </i>';
+                                                $('#SelectVglRoomBtn').html(newText);
+                                                console.log("both hidden, RID2: " + RID2);
+                                                both_hidden = true;
+                                            }
+                                        } else {
+                                            both_hidden = false;
+                                            $('#card_body_vgl_room').show();
+                                            $('#card_header_vgl_room').show();
+                                            $('#card_vgl_room').show();
+                                            if (selectedRowData) {
+                                                newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"] + ' <i class="fa fa-caret-up"> </i>';
+                                                $('#SelectVglRoomBtn').html(newText);
+                                            }
+                                        }
+
                                     });
                                 }
 
-                                function add_MT_rel_filter2(location) {
-                                    var dropdownHtml = '<select class="form-control-sm fix_size" id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
-                                    $(location).append(dropdownHtml);
-                                    $('#columnFilter').change(function () {
-                                        var filterValue = $(this).val();
-                                        table_vgl_rooms.column('MT-relevant:name').search(filterValue).draw();
+                                function get_el_in_room_table(RaumID, targetDiv) {
+                                    $.ajax({
+                                        url: "setSessionVariables.php",
+                                        data: {"roomID": RaumID},
+                                        type: "GET",
+                                        success: function (data) {
+                                            $.ajax({
+                                                url: "get_RoomElementsTable.php",
+                                                type: "GET",
+                                                success: function (data) {
+                                                    //    $("#" + targetDiv).html();
+                                                    $("#" + targetDiv).html(data);
+                                                }
+                                            });
+                                        }
                                     });
                                 }
 

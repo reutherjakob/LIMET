@@ -1,21 +1,6 @@
 <?php
 session_start();
 include '_utils.php';
-if (isset($_GET["key"])) {
-    $key = filter_var($_GET["key"], FILTER_SANITIZE_STRING);
-} else {
-    $key = "TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen ";
-}
-if (isset($_GET["value"])) {
-    $value = filter_var($_GET["value"], FILTER_SANITIZE_STRING);
-} else {
-    $value = "0";
-}
-if ($key === "TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen") {
-    $key = "idTABELLE_Funktionsteilstellen";
-}
-
-//echo "Key: ". $key. " Value: ". $value. "<br>"; 
 
 $mysqli = utils_connect_sql();
 //$stmt = " SELECT *
@@ -39,7 +24,7 @@ $mysqli = utils_connect_sql();
 //////INFOS ABOUT A TABLE 
 $stmt = " SELECT COLUMN_NAME AS ColumnName, DATA_TYPE AS DataType, CHARACTER_MAXIMUM_LENGTH AS CharacterLength
 FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'view_Raeume_has_Elemente'"; 
+WHERE TABLE_NAME = 'tabelle_räume'"; 
 // view_Raeume_has_Elemente
 
 //$stmt = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'LIMET_RB'"; 

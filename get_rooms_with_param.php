@@ -8,11 +8,16 @@ if (isset($_GET["value"])) {
 }
 
 
-$stmt = " SELECT *
-    FROM tabelle_räume
-    INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
-    WHERE (tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen =" . $value . ")
-    ORDER BY tabelle_räume.Raumnr";
+//$stmt = " SELECT *
+//    FROM tabelle_räume
+//    INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
+//    WHERE (tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen =" . $value . ")
+//    ORDER BY tabelle_räume.Raumnr";
+ 
+
+$stmt= "SELECT tabelle_projekte.Projektname, tabelle_räume.*, tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, tabelle_funktionsteilstellen.Nummer, tabelle_funktionsteilstellen.Bezeichnung
+FROM tabelle_funktionsteilstellen INNER JOIN (tabelle_räume INNER JOIN tabelle_projekte ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte) ON tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen = tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen
+WHERE (((tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen)=" . $value . "))"; 
 
 $mysqli = utils_connect_sql();
 

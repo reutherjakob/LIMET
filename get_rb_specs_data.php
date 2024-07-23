@@ -147,13 +147,15 @@ tabelle_räume.`NH3_Sensor`,
 tabelle_räume.`H2_Sensor`,
 tabelle_räume.Blitzleuchte,
 tabelle_räume.`O2_Sensor`,
-tabelle_räume.`Acetylen_Melder`
+tabelle_räume.`Acetylen_Melder`,
+
+tabelle_räume.EL_Not_Aus_Funktion,
+tabelle_räume.EL_Not_Aus
 
 FROM tabelle_räume
 INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
 WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
 ORDER BY tabelle_räume.Raumnr";
-
 
 if (!$mysqli->query($sql)) {
     echo "Error executing query: " . $mysqli->error;
