@@ -146,7 +146,7 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'Propan_Butan', title: 'Propan_Butan', case: 'num'},
     {data: 'N2H2', title: 'N2H2', case: 'num'},
     {data: 'Inertgas', title: 'Inertgas', case: 'num'},
-    {data: 'AR_CO2_Mix', title: 'AR_CO2_Mix', case: 'num'},
+    {data: 'Ar_CO2_Mix', title: 'AR_CO2 Mix', case: 'num'},
     {data: 'ArCal15', title: 'ArCal15', case: 'num'},
 
     {data: 'O2_Mangel', title: 'O2_Mangel', case: 'num'},

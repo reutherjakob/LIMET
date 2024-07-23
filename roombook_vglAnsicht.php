@@ -1,10 +1,12 @@
+
+
+<!DOCTYPE html>
 <?php
 session_start();
 include '_utils.php';
 init_page_serversides();
 ?> 
 
-<!DOCTYPE html>
 <html data-bs-theme="dark" xmlns="http://www.w3.org/1999/xhtml" >
     <head>
         <title>RB-Raumvergleich</title>
@@ -28,9 +30,16 @@ init_page_serversides();
                         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
                         <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
                         <style>
+                            .highlighted-row {
+                                background-color: yellow; /* Change to your desired highlight color */
+                                font-weight: bold; /* Optional: Make the text bold */
+                            }
+
+
                             .card {
                                 transition: transform 0.5s ease;
                                 border: 1px solid #ccc;
+                                overflow: hidden;
                             }
                             .card-header{
                                 height: 50px;
@@ -80,7 +89,6 @@ init_page_serversides();
                                                         }        */
                             .table-container {
                                 position: sticky !important;
-                                /*max-height: 80vh;*/
                                 overflow-y: auto;
                             }
                         </style>
@@ -97,7 +105,7 @@ init_page_serversides();
                                             <div class="card-header text-white"> 
                                                 <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
                                                     <li class="nav-item">
-                                                        <a class="nav-link active" id="tab1-tab" data-bs-toggle="tab" href="#tab1" role="tab" aria-controls="tab1" aria-selected="true">Elements in Rooms</a>
+                                                        <a class="nav-link active" id="tab1-tab" data-bs-toggle="tab" href="#tab1" role="tab" aria-controls="tab1" aria-selected="true">Elemente im Raum</a>
                                                     </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link" id="tab2-tab" data-bs-toggle="tab" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">Bauangaben</a>
@@ -115,8 +123,8 @@ init_page_serversides();
                                                         <div class="card responsive"> 
                                                             <div class="card-header row">
                                                                 <div class="col-sm-1"> </div>   
-                                                                <div class="col-sm-5">  <button id="SelectRoomBtn" class="btn"  style=" background-color:  rgba(100, 140, 25, 0.1);float:right;"> <i class="fa fa-caret-up">Select a Room  </i></button> </div>
-                                                                <div class="col-sm-5">  <button id="SelectVglRoomBtn" class="btn " style=" background-color: rgba(13, 202, 240, 0.1);"> <i class="fa fa-caret-up">Select Vgl room </i> </button> </div>
+                                                                <div class="col-sm-5">  <button id="SelectRoomBtn" class="btn"  style=" background-color:  rgba(100, 140, 25, 0.1);float:right;"> <i class="fa fa-caret-up"> </i>Select a Room </button> </div>
+                                                                <div class="col-sm-5">  <button id="SelectVglRoomBtn" class="btn " style=" background-color: rgba(13, 202, 240, 0.1);"> <i class="fa fa-caret-up"> </i>Select Vgl room </button> </div>
                                                                 <div class="col-sm-1"> </div>  
                                                             </div> 
 
@@ -144,7 +152,7 @@ init_page_serversides();
                                                                 <div class="resize-border"></div>
 
                                                                 <div class="card cardx border-info flex-grow-1"  style="width: 40vw" id="card_vgl_room">  
-                                                                    <div class="card-header d-inline-flex justify-content-center" id="card_header_vgl_room"  style=" background-color: rgba(13, 202, 240, 0.1)">  VGL ROOMs</div> 
+                                                                    <div class="card-header d-inline-flex justify-content-center" id="card_header_vgl_room"  style=" background-color: rgba(13, 202, 240, 0.1)"> </div> 
                                                                     <div class="card-body " id ="card_body_vgl_room">
                                                                         <div class="table-container">
                                                                             <table class="table  compact table-responsive table-striped table-lg" id="table_vgl_rooms" > 
@@ -163,7 +171,7 @@ init_page_serversides();
                                                                     <div class="card-body responsive" id ="">  
                                                                         <p id="ElememntsVglRoom" > </p> 
                                                                     </div>
-                                                                    <a href="../../../AppData/Local/Temp/Projekte.url"></a>
+
                                                                 </div> 
                                                             </div> 
                                                         </div>
@@ -171,18 +179,23 @@ init_page_serversides();
                                                     </div>
                                                     <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
                                                         <div class="card">    
-                                                            <div class="card-header d-flex align-items-center" style="height: 2.5vw;" id='TableCardHeaderBauangaben'>    SELECT A ROOM  </div>
+                                                            <div class="card-header d-flex align-items-center" style="height: 2.5vw;" id='TableCardHeaderBauangaben'></div>
+
+<!--                                                                <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" style= "width :100%" id="table_vgl_room_bauangaben" > 
+         <thead <tr></tr> </thead>                                                                    <tbody> <td></td>  </tbody>                                                                       
+     </table> -->
                                                             <div class="card-body" id = "table_container_div">
                                                                 <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" style= "width :100%" id="table_rooms_bauangaben" > 
-<!--                                                                    <thead <tr></tr> </thead>
-                                                                    <tbody> <td></td>  </tbody>-->                                                                       
+                                                                    <thead <tr></tr> </thead>                                                                    <tbody> <td></td>  </tbody>                                                                       
                                                                 </table> 
                                                             </div>
                                                         </div>      
-
                                                     </div>
                                                     <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
-                                                        <p> This is the content for :) people </p>
+                                                        <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" style= "width :100%" id="table_el_frequency" >
+                                                            <thead <tr></tr> </thead>                                                            
+                                                            <tbody> <td></td>  </tbody>                
+                                                        </table> 
                                                     </div>
                                                 </div>
                                             </div>
@@ -192,12 +205,15 @@ init_page_serversides();
                             </div>
 
                             <script src="roombookSpecifications_constDeclarations.js"></script> 
+
                             <script>
                                 var table_rooms;
                                 var table_bauangaben;
                                 var RID1;
                                 var table_vgl_rooms;
                                 var RID2;
+                                var tabelle_anzahl;
+
                                 let both_hidden = false;
                                 var newText = "";
                                 var selectedRowData = 0;
@@ -205,13 +221,25 @@ init_page_serversides();
                                 var filter_added = false;
                                 var filter_added2 = false;
 
+                                const newEntry = {
+                                    data: 'Projektname',
+                                    title: 'Projektname'
+                                };
+                                columnsDefinition.shift();
+                                var X = columnsDefinition.shift();
+                                columnsDefinition.unshift(newEntry);
+                                columnsDefinition.unshift(X);
+
                                 let columnsDefinitionShort = columnsDefinition.filter(column =>
                                     ["idTABELLE_Räume", 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', 'MT-relevant', 'Raumbezeichnung', 'Raumnr', "Bezeichnung", 'Nummer', 'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt'].includes(column.data)
                                 );
 
                                 let columnsDefinitionShort_vgl = columnsDefinition.filter(column =>
-                                    ['tabelle_projekte_idTABELLE_Projekte', "idTABELLE_Räume", 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', 'MT-relevant', 'Raumbezeichnung', 'Raumnr', 'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt'].includes(column.data)
-                                );
+                                    ['Projektname', "idTABELLE_Räume", 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', 'MT-relevant',
+                                        'Raumbezeichnung', 'Raumnr', "Bezeichnung", 'Raumbereich Nutzer'].includes(column.data)
+                                );//, 'Geschoss', 'Bauetappe', 'Bauabschnitt'
+
+
 
                                 $(document).ready(function () {
                                     init_rooms_current_project_table();
@@ -221,11 +249,33 @@ init_page_serversides();
                                     table_click("table_rooms", "RoomElements");
                                     table_click("table_vgl_rooms", "ElememntsVglRoom");
                                 });
+                                
+                                const columnsAnzahl = [
+                                    {data:"AnzahlvonAnzahl"},
+                                    {data:"SummevonAnzahl"},
+                                    {data:"ElementID"},
+                                    {data:"Bezeichnung"},
+                                    {data:"Projektname"},
+                                    {data:"TABELLE_Elemente_idTABELLE_Elemente", visible:false} ];
+                                
+                                function init_dt_anzahl(value) {
+                                    if (tabelle_anzahl) {
+                                        tabelle_anzahl.destroy();
+                                    }
+                                    tabelle_anzahl = new DataTable('#table_el_frequency', {
+                                        ajax: {
+                                            url: 'get_anzahl_elmente_per_funktionsstelle.php',
+                                            data: {"value": value},
+                                            dataSrc: ''
+                                        },
+                                        columns : columnsAnzahl
+                                    });
+                                }
 
                                 function init_dt_BAUANGABEN(value) {
-                                    dom_var = "tlip";
+                                    dom_var = "tli";
                                     if (!filter_added2) {
-                                        dom_var = "ftlip ";
+                                        dom_var = "ftli ";
                                     }
                                     if (table_bauangaben) {
                                         table_bauangaben.destroy();
@@ -241,9 +291,6 @@ init_page_serversides();
                                         scrollX: true,
                                         scrollCollapse: true,
                                         select: "os",
-                                        fixedColumns: {
-                                            start: 2
-                                        },
                                         language: {
                                             "search": "",
                                             searchBuilder: {
@@ -253,38 +300,64 @@ init_page_serversides();
                                             }
                                         },
                                         keys: true,
-                                        order: [[3, 'asc']],
                                         stateSave: true,
                                         info: true,
                                         paging: true,
                                         pagingType: "simple_numbers",
-                                        pageLength: 10, 
+                                        pageLength: 10,
                                         lengthMenu: [
                                             [10, 20, -1],
                                             ['10 rows', '20 rows', 'Show all']
                                         ],
                                         compact: true,
+                                        fnRowCallback: function (nRow, aData, iDisplayIndex) {
+                                            console.log("RowCallback", RID1, aData[0]);
+                                            if (aData[0] === RID1)
+                                            {
+                                                $('td', nRow).css('background-color', 'Red');
+                                            }
+                                        },
                                         initComplete: function () {
-                                            
                                             if (!filter_added2) {
+                                                filter_added2 = true;
                                                 add_MT_rel_filter("#TableCardHeaderBauangaben", table_bauangaben);
                                                 move_dt_search("dt-search-2", 'TableCardHeaderBauangaben');
-                                                filter_added2 = true;
                                                 console.log("T Bauang init only 1nce");
                                             }
-                                            table_bauangaben.column(0).visible(true);
                                             console.log("T Bauang init ");
                                         }
                                     });
                                 }
 
                                 function table_click(table_id, target_id_4_elelemt_table) {
+//                                    $("#" + table_id).on('click', "tr", function () {
+//                                        var selectedRowData = table_rooms.row('.selected').data();
+//                                        if (!selectedRowData)
+//                                            return;
+//
+//                                        if (table_id === "table_rooms") {
+//                                            newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"] + ' <i class="fa fa-caret-up"> </i>';
+//                                            RID1 = selectedRowData["idTABELLE_Räume"];
+//                                            console.log("Currently saved RID1", RID1);
+//                                            $('#SelectRoomBtn').html(newText);
+//                                            value = selectedRowData["TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen"];
+//                                            init_vgl_rooms_table(value);
+//                                        } else if (table_id === "table_vgl_rooms") {
+//                                            RID2 = selectedRowData["idTABELLE_Räume"];
+//                                            console.log("Currently saved RID2", RID2);
+//                                            newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"] + ' <i class="fa fa-caret-up"> </i>';
+//                                            $('#SelectVglRoomBtn').html(newText);
+//                                        }
+//
+//                                        get_el_in_room_table(selectedRowData['idTABELLE_Räume'], target_id_4_elelemt_table);
+//                                    });
                                     $("#" + table_id).on('click', "tr", function () {
                                         if (table_id === "table_rooms") {
                                             var selectedRowData = table_rooms.row('.selected').data();
                                             if (selectedRowData) {
-                                                newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"] + ' <i class="fa fa-caret-up"> </i>';
+                                                newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"]+ ": " + selectedRowData["TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen"] + ' <i class="fa fa-caret-up"> </i>';
                                                 RID1 = selectedRowData["idTABELLE_Räume"];
+                                                console.log("Currently save RID1", RID1);
                                                 $('#SelectRoomBtn').html(newText);
                                             }
                                         }
@@ -293,19 +366,23 @@ init_page_serversides();
                                             console.log(selectedRowData);
                                             if (selectedRowData) {
                                                 RID2 = selectedRowData["idTABELLE_Räume"];
-                                                newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"] + ' <i class="fa fa-caret-up"> </i>';
+                                                console.log("Currently save RID2", RID2);
+                                                newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"] + ": " + selectedRowData["TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen"] + ' <i class="fa fa-caret-up"> </i>';
                                                 $('#SelectVglRoomBtn').html(newText);
                                             }
                                         }
                                         if (selectedRowData) {
-                                            get_el_in_room_table(selectedRowData['idTABELLE_Räume'], target_id_4_elelemt_table);
                                             if (table_id === "table_rooms") {
                                                 value = selectedRowData["TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen"];
                                                 init_vgl_rooms_table(value);
                                             }
+
+                                            get_el_in_room_table(selectedRowData['idTABELLE_Räume'], target_id_4_elelemt_table);
+
                                         }
                                     });
                                 }
+
 
                                 function  init_vgl_rooms_table(value) {
                                     let dom_var = "tlip";
@@ -335,6 +412,7 @@ init_page_serversides();
                                         paging: false,
                                         pageLength: -1,
                                         compact: true,
+
                                         initComplete: function () {
                                             if (!filter_added) {
                                                 add_MT_rel_filter("#card_header_vgl_room", table_vgl_rooms);
@@ -342,15 +420,17 @@ init_page_serversides();
                                                 filter_added = true;
                                             }
                                             console.log("T Vgl initiated");
-                                            table_vgl_rooms.column(0).visible(true);
+
                                         }
                                     });
                                 }
 
+
+
                                 function init_rooms_current_project_table() {
                                     table_rooms = new DataTable('#table_rooms', {
                                         ajax: {
-                                            url: 'get_rb_specs_data.php', //TODO
+                                            url: 'get_rb_specs_data.php', //TODO: ABSPECKN? alle data imports auf min reduzieren 
                                             dataSrc: ''
                                         },
                                         columns: columnsDefinitionShort,
@@ -373,23 +453,24 @@ init_page_serversides();
                                     $('#SelectRoomBtn').on('click', function () {
                                         var selectedRowData = table_rooms.row('.selected').data();
                                         if (selectedRowData) {
-                                            console.log("PRE");
-                                            init_dt_BAUANGABEN(selectedRowData['TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen']);
+                                            let v = selectedRowData['TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen'];
+                                            console.log("SelectRoomBtn KICK", v);
+                                            init_dt_BAUANGABEN(v);
+                                            init_dt_anzahl(v);
                                             if ($("#cardbody_SelectRoom4Comparison").is(":visible")) {
                                                 $('#cardbody_SelectRoom4Comparison').hide();
                                                 $('#SelectRoom4Comparison').hide();
                                                 $('#card_SelectRoom4Comparison').hide();
                                                 newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"] + ' <i class="fa fa-caret-down"> </i>';
                                                 $('#SelectRoomBtn').html(newText);
+
+
+
                                                 if (!$("#card_body_vgl_room").is(":visible")) {
                                                     console.log("both hidden, RID1: " + RID1);
                                                     both_hidden = true;
-
-                                                    $('#tableRoomElements' + RID1 + ' tr').each(function () {
-                                                        var customerId = $(this).find('.customIDCell').html();
-                                                        console.log(customerId);
-                                                    });
                                                 }
+
                                             } else {
                                                 both_hidden = false;
                                                 $('#cardbody_SelectRoom4Comparison').show();
@@ -429,6 +510,7 @@ init_page_serversides();
                                 }
 
                                 function get_el_in_room_table(RaumID, targetDiv) {
+                                    console.log("Get Elements in Roo  Table");
                                     $.ajax({
                                         url: "setSessionVariables.php",
                                         data: {"roomID": RaumID},
@@ -440,6 +522,7 @@ init_page_serversides();
                                                 success: function (data) {
                                                     //    $("#" + targetDiv).html();
                                                     $("#" + targetDiv).html(data);
+
                                                 }
                                             });
                                         }
@@ -461,7 +544,6 @@ init_page_serversides();
                                     document.getElementById(where2move_id).appendChild(dt_searcher);
                                     dt_searcher.classList.add("fix_size");
                                 }
-
 
 
 //                                const container = document.querySelector('#KONTÄNER');
