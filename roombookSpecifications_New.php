@@ -40,13 +40,19 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 padding-right:  0.3vw   !important;
                                 padding-top:  0.2vw   !important;
                                 padding-bottom:  0.2vw   !important;
-                                margin-right:  0.1vw  !important ; 
+                                margin-right:  0.1vw  !important ;
                                 margin-left:  0.1vw  !important ;
-                                height: 38px !important; 
+                                height: 38px !important;
                             }
                             .fix_size{
+                                padding-left: 0.3vw  !important;
+                                padding-right:  0.3vw   !important;
+                                padding-top:  0.2vw   !important;
+                                padding-bottom:  0.2vw   !important;
+                                margin-right:  0.1vw  !important ;
+                                margin-left:  0.1vw  !important ;
                                 height: 38px;
-                            } 
+                            }
                             .table>thead>tr>th {
                                 background-color: rgba(100, 140, 25, 0.15);
                             }
@@ -124,7 +130,18 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 event_table_keyz();
                             });
 
-                            function checkAndToggleColumnsVisibility() {
+                            function checkAndToggleColumnsVisibility() {  // method only used for w/data btns
+                                let singleButton = document.querySelector('.toggleDatalessColumnsButton');
+                                
+                                console.log("w/ tbn click", singleButton);
+                                if (singleButton.classList.contains('btn_vis')) {
+                                    singleButton.classList.add('btn_invis');
+                                    singleButton.classList.remove('btn_vis');
+                                } else {
+                                    singleButton.classList.add('btn_vis');
+                                    singleButton.classList.remove('btn_invis');
+                                }
+
                                 table.columns().every(function () {
                                     var hasNonEmptyCell = this.data().toArray().some(function (cellData) {
                                         return cellData !== null && cellData !== undefined && cellData !== '' && cellData !== '-' && cellData !== ' ' && cellData !== '  ' && cellData !== '   ' && cellData !== '.';
@@ -132,6 +149,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     if (!hasNonEmptyCell) {
                                         this.visible(!this.visible());
                                     }
+
+
                                 });
                             }
 
@@ -508,8 +527,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 
                                     {
                                         text: 'w/Data',
-                                        className: 'btn',
-                                        id: 'toggleDatalessColumnsButton',
+                                        className: 'btn btn_vis toggleDatalessColumnsButton',
                                         action: function (e, dt, node, config) {
                                             checkAndToggleColumnsVisibility(dt);
                                         }

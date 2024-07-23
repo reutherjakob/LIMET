@@ -30,9 +30,7 @@ init_page_serversides();
                         <style>
                             .card {
                                 transition: transform 0.5s ease;
-                                /*flex: 1;  Initial equal width for all cards */
                                 border: 1px solid #ccc;
-                                /*padding: 10px;*/
                             }
                             .card-header{
                                 height: 50px;
@@ -48,23 +46,19 @@ init_page_serversides();
                                 display: flex;
                                 overflow: hidden;
                             }
-
                             .flex-grow-1.visible {
                                 display: block;
-                                /*width: 24vw;*/
                                 overflow: hidden;
                             }
                             .flex-grow-1.hidden {
                                 display: none;
                                 transform: translateX(-100%);
-                                /*max-width: 1vw;*/
                                 transition: transform 0.3s ease, max-width 0.3s ease;
                             }
                             .btn {
                                 border: 1px grey;
                                 padding-right: 3px;
                                 padding-left: 3px;
-                                /* Other button styles (background color, padding, etc.) */
                             }
                             .btn:hover {
                                 margin-top: 0;
@@ -73,14 +67,19 @@ init_page_serversides();
                             .fix_size{
                                 height: 30px;
                             }
-                            .table {
-                                border: 1px solid grey ;
-                                width: 100% !important;
-                            }
+                            /*                            .table {
+                                                            display: table;
+                                                            table-layout: fixed;
+                                                            border-collapse: collapse;
+                                                            border: 1px solid grey ;
+                                                            width: 100% !important;
+                                                        }
+                                                        .table thead {
+                                                            height: 40px !important;
+                                                        }        */
                             .table-container {
-                                position: sticky;
-                                top: 0;
-                                max-height: 80vh;
+                                position: sticky !important;
+                                /*max-height: 80vh;*/
                                 overflow-y: auto;
                             }
                         </style>
@@ -89,11 +88,11 @@ init_page_serversides();
                             <div id="limet-navbar" class=' '> </div>  
                             <div class ="container-fluid" id="KONTÄNER">
 
-
                                 <div class="row justify-content-center mt-1">
                                     <div class="col-md-12">
-                                        <div class="card">
+                                        <div class="card">   <button id="SelectRoomBtn" class="btn"  style=" background-color:  rgba(100, 140, 25, 0.1);"> Select room </button> 
                                             <div class="card-header text-white">
+
                                                 <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
                                                     <li class="nav-item">
                                                         <a class="nav-link active" id="tab1-tab" data-bs-toggle="tab" href="#tab1" role="tab" aria-controls="tab1" aria-selected="true">Elements in Rooms</a>
@@ -105,38 +104,25 @@ init_page_serversides();
                                                         <a class="nav-link" id="tab3-tab" data-bs-toggle="tab" href="#tab3" role="tab" aria-controls="tab3" aria-selected="false"> :) </a>
                                                     </li>
                                                 </ul>
+
+
                                             </div>
                                             <div class="card-body">
                                                 <div class="tab-content" id="myTabContent">
                                                     <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
 
                                                         <div class="card responsive"> 
-                                                            <div class="card-header border-success d-inline-flex" id="TableCardHeader"> 
-                                                                <div class="col-sm-1 align-items-end" >  
+                                                            <div class="card-header border-dark d-inline-flex justify-content-center" id="TableCardHeader"> 
+                                                                <div class="col-sm-3 align-items-end" >  
+                                                                    <label for="data-key-select"> Key:</label>
+                                                                    <select id="data-key-select">   </select>
                                                                 </div>
-                                                                <div class="col-sm-4 d-inline-flex align-items-end justify-content-end"> 
-                                                                    <button id="SelectRoomBtn" class="btn"  style=" background-color:  rgba(100, 140, 25, 0.1);"> Select room </button> 
-                                                                </div>
+                                                                <div class="col-sm-3 d-inline-flex align-items-end justify-content-end"> 
 
-<!--   <select class="fix_size" id="data-key-select">
-<option value="TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen">Funktionsstelle</option>
-     <option value="Raumbezeichnung">Raumbezeichnung</option>
-     <option value="Raumnr">Raumnummer</option>
-<option value="Nummer">DIN13080s</option> 
-</select>
-<select class ="fix_size" id="table2-select">
-<option value="TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen"> Vergleichs Räume</option>
-  <option value="Raumbezeichnung">Raumbezeichnung</option>
-  <option value="Raumnr">Raumnummer</option>
-  <option value="Nummer">DIN13080</option> 
-</select></div>  -->
-                                                                <div class="col-sm-2 align-items-end" > 
                                                                 </div>
-                                                                <div class="col-sm-4 d-inline-flex  align-items-end justify-content-start" >  
+                                                                <div class="col-sm-6 d-inline-flex  align-items-end justify-content-start" >  
                                                                     <button id="SelectVglRoomBtn" class="btn" style=" background-color: rgba(13, 202, 240, 0.1); float: right;">Select Vgl room </button> 
                                                                 </div>  
-                                                                <div class="col-sm-1 align-items-end" > 
-                                                                </div>
                                                             </div>
 
                                                             <div class=" d-inline-flex" id="table_room_cb">   
@@ -150,12 +136,15 @@ init_page_serversides();
                                                                 <div class="card cardx border-success flex-grow-1"  style="width: 40vw;" id="card_SelectRoom4Comparison">
                                                                     <div class="card-header d-inline-flex justify-content-center" id="SelectRoom4Comparison" style=" background-color:  rgba(100, 140, 25, 0.1);" >  </div> 
                                                                     <div class="card-body " id="cardbody_SelectRoom4Comparison">   
-                                                                        <table class="table  compact table-responsive table-striped table-lg" id="table_rooms"> 
-                                                                            <thead><tr></tr></thead>
-                                                                            <tbody><td></td></tbody> 
-                                                                        </table>  
-                                                                    </div> 
+                                                                        <div class="table-container">
+                                                                            <table class="table  compact table-responsive table-striped table-lg" id="table_rooms"> 
+                                                                                <thead ><tr></tr></thead>
+                                                                                <tbody><td></td></tbody> 
+                                                                            </table>  
+                                                                        </div> 
+                                                                    </div>                                                               
                                                                 </div> 
+
 
                                                                 <div class="resize-border"></div>
 
@@ -164,7 +153,7 @@ init_page_serversides();
                                                                     <div class="card-body " id ="card_body_vgl_room">
                                                                         <div class="table-container">
                                                                             <table class="table  compact table-responsive table-striped table-lg" id="table_vgl_rooms" > 
-                                                                                <thead><tr></tr></thead>
+                                                                                <thead ><tr></tr></thead>
                                                                                 <tbody><td></td></tbody>
                                                                             </table>  
                                                                         </div>   
@@ -186,11 +175,11 @@ init_page_serversides();
                                                     </div>
                                                     <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
                                                         <div class="card">    
-                                                            <div class="card-header d-flex align-items-center" style="height: 2.5vw;" id='TableCardHeaderBauangaben'>  </div>
+                                                            <div class="card-header d-flex align-items-center" style="height: 2.5vw;" id='TableCardHeaderBauangaben'>    SELECT A ROOM  </div>
                                                             <div class="card-body" id = "table_container_div">
                                                                 <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" style= "width :100%" id="table_rooms_bauangaben" > 
 <!--                                                                    <thead <tr></tr> </thead>
-                                                                    <tbody> <td></td>  </tbody>-->
+                                                                    <tbody> <td></td>  </tbody>-->                                                                       
                                                                 </table> 
                                                             </div>
                                                         </div>      
@@ -214,22 +203,34 @@ init_page_serversides();
                                 var table_vgl_rooms;
                                 var RID2;
                                 let both_hidden = false;
-                                let selectedDataKey = 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen';
-                                //   dataKeySelect.addEventListener('change', function () {
-                                //  selectedDataKey = dataKeySelect.value;
-                                //  console.log('Selected Data Key:', selectedDataKey);
-                                //   }); 
-                                //   const dataKeySelect = 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen';// document.getElementById('data-key-select');
+
+
                                 var newText = "";
                                 var selectedRowData = 0;
                                 var filter_added = false;
+                                var filter_added2 = false;
 
                                 let columnsDefinitionShort = columnsDefinition.filter(column =>
                                     ['tabelle_projekte_idTABELLE_Projekte', "idTABELLE_Räume", 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', 'MT-relevant', 'Raumbezeichnung', 'Raumnr', "Bezeichnung", 'Funktionelle Raum Nr', 'Nummer', 'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt'].includes(column.data)
                                 );
                                 let columnsDefinitionShort2 = columnsDefinitionShort.filter(column =>
-                                    ['Raumbezeichnung', 'Raumnr', 'Nummer', 'MT-relevant'].includes(column.data)
+                                    ['TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', 'Raumbezeichnung', 'Raumnr', 'Nummer', 'Funktionelle Raum Nr', 'Raumbereich Nutzer'].includes(column.data)
                                 );
+
+                                let selectedDataKey = 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen';
+                                const dataKeySelect = document.getElementById('data-key-select');
+
+                                columnsDefinitionShort2.forEach(column => {
+                                    const option = document.createElement('option');
+                                    option.value = column.data;
+                                    option.textContent = column.title;
+                                    dataKeySelect.appendChild(option);
+                                });
+
+                                dataKeySelect.addEventListener('change', function () {
+                                    selectedDataKey = dataKeySelect.value;
+                                    console.log('Selected Data Key:', selectedDataKey);
+                                });
 
                                 $(document).ready(function () {
                                     init_rooms_current_project_table();
@@ -239,18 +240,25 @@ init_page_serversides();
                                     table_click("table_rooms", "RoomElements");
                                     table_click("table_vgl_rooms", "ElememntsVglRoom");
 
-                                    init_dt_BAUANGABEN();
-                                    move_dt_search("dt-search-1", "TableCardHeaderBauangaben");
                                 });
 
-                                function init_dt_BAUANGABEN() {
+                                function init_dt_BAUANGABEN(key, value) {
+                                    dom_var = "tlip";
+                                    if (!filter_added2) {
+                                        dom_var = "ftlip ";
+                                    }
+
+                                    if (table_bauangaben) {
+                                        table_bauangaben.destroy();
+                                    }
                                     table_bauangaben = new DataTable('#table_rooms_bauangaben', {
                                         ajax: {
-                                            url: 'get_rb_specs_data.php',
+                                            url: 'get_rooms_with_param.php',
+                                            data: {"key": key, "value": value},
                                             dataSrc: ''
                                         },
-                                        columns: columnsDefinition,
-                                        dom: 'ftlip',
+                                        columns: columnsDefinitionShort,
+                                        dom: dom_var,
                                         scrollX: true,
                                         scrollCollapse: true,
                                         select: "os",
@@ -278,6 +286,15 @@ init_page_serversides();
                                         ],
                                         compact: true
                                     });
+                                   
+
+                                    if (!filter_added2) {
+                                        add_MT_rel_filter3("#card_header_vgl_room");
+                                        move_dt_search("dt-search-2", 'TableCardHeaderBauangaben');
+                                        filter_added2 = true;
+                                    }
+    table_bauangaben.column(0).visible(true);
+                                    console.log("T Bauang init ");
                                 }
 
                                 function table_click(table_id, target_id_4_elelemt_table) {
@@ -305,7 +322,9 @@ init_page_serversides();
                                             get_el_in_room_table(selectedRowData['idTABELLE_Räume'], target_id_4_elelemt_table);
                                             if (table_id === "table_rooms") {
                                                 value = selectedRowData[selectedDataKey];
+                                                console.log('Selected Data Key n value:', selectedDataKey, "  ", value);
                                                 init_vgl_rooms_table(selectedDataKey, value);
+                                                // init_dt_BAUANGABEN(selectedDataKey, value);
                                             }
                                         }
                                     });
@@ -315,6 +334,9 @@ init_page_serversides();
                                     $('#SelectRoomBtn').on('click', function () {
                                         var selectedRowData = table_rooms.row('.selected').data();
                                         if (selectedRowData) {
+                                            console.log("PRE");
+                                            value = selectedRowData[selectedDataKey];
+                                            init_dt_BAUANGABEN(selectedDataKey, value);
                                             if ($("#cardbody_SelectRoom4Comparison").is(":visible")) {
                                                 $('#cardbody_SelectRoom4Comparison').hide();
                                                 $('#SelectRoom4Comparison').hide();
@@ -329,6 +351,7 @@ init_page_serversides();
                                                         var customerId = $(this).find('.customIDCell').html();
                                                         console.log(customerId);
                                                     });
+
                                                 }
                                             } else {
                                                 both_hidden = false;
@@ -404,7 +427,7 @@ init_page_serversides();
                                             data: {"key": key, "value": value},
                                             dataSrc: ''
                                         },
-                                        columns: columnsDefinitionShort2,
+                                        columns: columnsDefinitionShort,
                                         dom: dom_var,
                                         language: {
                                             "search": ""},
@@ -419,6 +442,7 @@ init_page_serversides();
                                         compact: true
                                     });
 //                                    console.log(" -> VGL Räume TABLE LOADED! ");
+
                                     if (!filter_added) {
                                         add_MT_rel_filter2("#card_header_vgl_room");
                                         move_dt_search("dt-search-1", "card_header_vgl_room");
@@ -447,7 +471,16 @@ init_page_serversides();
                                         compact: true
                                     });
                                 }
-
+                                
+                                function add_MT_rel_filter3(location) {
+                                    var dropdownHtml = '<select class="form-control-sm fix_size" id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
+                                    $(location).append(dropdownHtml);
+                                    $('#columnFilter').change(function () {
+                                        var filterValue = $(this).val();
+                                        table_bauangaben.column('MT-relevant:name').search(filterValue).draw();
+                                    });
+                                }
+                                
                                 function add_MT_rel_filter2(location) {
                                     var dropdownHtml = '<select class="form-control-sm fix_size" id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
                                     $(location).append(dropdownHtml);

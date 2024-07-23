@@ -33,7 +33,9 @@ init_page_serversides();
                                 <div id="limet-navbar" class=' '> </div> 
 
                                 <div class="mt-4 card responsive">
-                                    <div class="card-header" id="CH1">BAUANGABEN CHECK</div> 
+                                    <div class="card-header" id="CH1">BAUANGABEN CHECK 
+                                        <button id="deleteButton">Delete Storage</button>
+                                    </div> 
                                     <div id="CB_C1"   class="table-responsive"  >
                                         <table class="table display compact table-striped table-bordered table-sm" id="table1ID" style="z-index: 1; "> 
                                             <thead>
@@ -50,7 +52,7 @@ init_page_serversides();
                                     </div>
                                 </div>
                         </body>
-    
+
                         <script>
                             function getRoomIdsFromCurrentUrl() {
                                 var urlObj = new URL(window.location.href);
@@ -164,7 +166,16 @@ init_page_serversides();
                                     dt_searcher.style.float = "right";
                                     document.getElementById("CH1").appendChild(dt_searcher);
                                 }, 200);
+
+
+                                // Attach the function to the button click event
+                                const deleteButton = document.getElementById('deleteButton');
+                                deleteButton.addEventListener('click', deleteLocalStorageItem);
                             });
+                            function deleteLocalStorageItem() {
+                                localStorage.clear();
+                                console.log('Local storage cleared.');
+                            }
 
 
                         </script> 

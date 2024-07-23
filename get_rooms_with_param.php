@@ -1,47 +1,49 @@
-<?php 
-session_start();
-include '_utils.php'; 
+<?php
 
- 
+session_start();
+include '_utils.php';
+
 if (isset($_GET["key"])) {
     $key = filter_var($_GET["key"], FILTER_SANITIZE_STRING);
-} else {
-    $key = "TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen";
-}
+} 
 if (isset($_GET["value"])) {
     $value = filter_var($_GET["value"], FILTER_SANITIZE_STRING);
-} else {
-    $value = "34";
-}
+} 
+
+$stmt = "";
 
 if ($key === "TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen") {
     $key = "idTABELLE_Funktionsteilstellen";
+    $stmt = " SELECT *
+    FROM tabelle_räume
+    INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
+    WHERE (tabelle_funktionsteilstellen." . $key . " =" . $value . ")
+        
+    ORDER BY tabelle_räume.Raumnr";
+    
+}else{
+       $stmt = " SELECT *
+    FROM tabelle_räume
+    WHERE (tabelle_räume." . $key . " = ` " . $value . "`)
+    ORDER BY tabelle_räume.Raumnr";
+    
 }
 
-//echo "Key: ". $key. " Value: ". $value. "<br>"; 
 
 $mysqli = utils_connect_sql();
 
-$stmt = " SELECT *
-    FROM tabelle_räume
-    INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
-    WHERE (tabelle_funktionsteilstellen.".$key." =" . $value . " AND `MT-relevant` =1)
-    ORDER BY tabelle_räume.Raumnr";
-
-//echo $stmt;
-
 $result = $mysqli->query($stmt);
 $mysqli->close();
- 
+
 $data = array();
 while ($row = $result->fetch_assoc()) {
     $data[] = $row;
 }
- 
+
 //echorow($data); 
 header('Content-Type: application/json');
 echo json_encode($data);
- 
+
 /* 
 Aufruf von Bauangaben von VergleichsrÃ¤ume:
 Dazu kannst du die Abfrage der Bauangaben-Neu verwenden und TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen nach dem Wert des aktuellen Raumes suchen
