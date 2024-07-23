@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 function echorow($row) {
     echo '<pre>';
@@ -14,13 +14,16 @@ function print_session_vars() {
     } echo"<br>";
 }
 
-function init_page_serversides($ommit_redirect = "") {
+function init_page_serversides($ommit_redirect = "", $noscroll = "") {
     check_login();
     get_project();
     if ($ommit_redirect == "") {
         check_if_project_selected_else_redirect();
     }
     load_nav_bar();
+    if ($noscroll == "") {
+        include '_scrollUpBtn.php';
+    }
 }
 
 function check_login() {
@@ -52,7 +55,6 @@ function get_project() {
 function br2nl($string) {
     $string = str_replace(array("<br/>"), "\n", $string);
     $return = str_replace(array("<br>"), "\n", $string);
-    //  $return= str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $temp);
     return $return;
 }
 
@@ -81,9 +83,3 @@ function load_nav_bar() {
     echo '        });';
     echo '     };    </script>';
 }
-
-//function nl2br($string) {
-//    $return = str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $string);
-//    return $return;
-//}
-

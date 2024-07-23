@@ -139,11 +139,16 @@ function check_room_Leistungssumme(&$messages, $roomParams, $P) {
 //            } 
         }
         $summe += $P_jeNA;
-//        echo "Aufsummieren :" . $summe;
+        if ($P_jeNA == 0 && $index > 0) {
+            if($roomParams[$mapping[$index]] == 1 ) { 
+                $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Leistung-> P[" . $mapping[$index] . "]=0, aber Raumparameter=1? <br>";
+            }
+        }
+    
     }
 //    $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- ".$roomParams['idTABELLE_Räume'] . ":::LEISTUNG∑-> RAUM ∑P=" . $summe . "!<br>";
     if ($summe > $roomParams['ET_Anschlussleistung_W']) {
-        $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Leistung ∑->  ∑P=" . $summe . " > RaumAnschlussleistung= " . $roomParams['ET_Anschlussleistung_W'] . "<br>";
+        $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Leistung ∑->  ∑P(alle NA) =" . $summe . " > Raum Anschlussleistung= " . $roomParams['ET_Anschlussleistung_W'] . "<br>";
     }
 }
 
@@ -400,3 +405,4 @@ foreach ($messages as $messages_out) {
 }                 
 
 
+ 
