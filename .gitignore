@@ -2,3 +2,9 @@
 _fx_save.php
 _datatable.js
 _fx_snipplets.txt 
+.php-version
+DataTables/datatables.css
+DataTables/datatables.js
+DataTables/datatables.min.css
+DataTables/datatables.min.js
+/.well-known
