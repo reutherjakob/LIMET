@@ -2,10 +2,10 @@
 _fx_save.php
 _datatable.js
 _fx_snipplets.txt 
-DataTables/datatables.min.js
+.php-version
 DataTables/datatables.css
 DataTables/datatables.js
 DataTables/datatables.min.css
-.php-ini
-.php-version
-.well-known/acme-challenge/.htaccess
+DataTables/datatables.min.js
+/.well-known
+

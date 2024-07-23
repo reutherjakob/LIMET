@@ -27,6 +27,14 @@ init_page_serversides();
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
                             <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
                             <style>
+                                .table>thead>tr>th {
+                                    background-color: rgba(100, 140, 25, 0.15);
+                                }
+                                .fix_size{
+                                height: 35px !important; 
+                                font-size: 15px;
+                                }
+                                
                             </style>
 
                             </head>
@@ -34,16 +42,10 @@ init_page_serversides();
                             <body style="height:100%"> 
                                 <div class="container-fluid" >
                                     <div id="limet-navbar" class=' '> </div> 
-
                                     <div class="mt-4 card">
-                                        <div class="card-header form-check-inline d-flex align-items-center" id ="HeaderTabelleCard">
-
+                                        <div class="card-header  d-inline-flex align-items-top form-check-inline" id ="HeaderTabelleCard">                                       
                                         </div> 
-                                        <div class="card-header form-check-inline form-check-inline justify-content " style="flex-wrap:nowrap" id ="HeaderTabelleCard2">
-                                            <!--                                            <div class="form-group"> 
-                                                                                            <label for="dateSelect"> Änderugen bis:</label>
-                                                                                            <input type="date" id="dateSelect" name="dateSelect">
-                                                                                        </div>-->
+                                        <div class="card-header form-check-inline justify-content" style="flex-wrap:nowrap; display:none;" id ="HeaderTabelleCard2">                                            
                                         </div>
                                         <div class="card-body">
                                             <?php
@@ -126,16 +128,16 @@ init_page_serversides();
                                     $(document).ready(function () {
                                         init_dt();
                                         add_MT_rel_filter('#HeaderTabelleCard');
-                                        init_btns('#HeaderTabelleCard');
-                                        add_date_select();
-                                        var textforoldreports = "Show old Reports";
-                                        addCheckbox('#HeaderTabelleCard', textforoldreports);
-//                                        add_Berichtinput_checkboxes('#HeaderTabelleCard2');
-                                        init_btns_old('#HeaderTabelleCard2');
-                                        add_btn_vis_checkbox_functionality(textforoldreports);
+
                                         setTimeout(function () {
-                                            move_dt_search('#HeaderTabelleCard');
+                                            move_dt_search('HeaderTabelleCard');
+                                            init_btns('#HeaderTabelleCard');
+                                            add_date_select();
+                                            addCheckbox('#HeaderTabelleCard', "Show-old-Reports");
+                                            add_btn_vis_checkbox_functionality("Show-old-Reports");
+                                            init_btns_old('#HeaderTabelleCard2');
                                         }, 50);
+//                                        add_Berichtinput_checkboxes('#HeaderTabelleCard2');
                                         // synchronizeCheckboxes("CBXMT-Tabelle", "CBXMT-Liste");
                                     });
 
@@ -146,21 +148,15 @@ init_page_serversides();
                                         newElement.innerHTML = '<div class="form-check-inline"><label for="dateSelect"> </label> <input type="date" id="dateSelect" name="dateSelect"><div class="spacer"></div></div>';
                                         cardHeader.appendChild(newElement);
                                     }
- 
+
                                     function getDate() {
                                         var dateInput = $("#dateSelect").val();
-                                        var date = dateInput ? new Date(dateInput) : new Date();
-//                                    console.log("Date: ", date);
-                                        var day = date.getDate();
-//                                    console.log("Day: ", day);
-                                        var month = date.getMonth() + 1; // Months are zero based 
-//                                    console.log("Month: ", month);
-                                        var year = date.getFullYear();
-//                                    console.log("Year: ", year);
-                                        day = ('0' + day).slice(-2);
-//                                    console.log("Formatted Day: ", day);
-                                        month = ('0' + month).slice(-2);
-//                                    console.log("Formatted Month: ", month);
+                                        var date = dateInput ? new Date(dateInput) : new Date();//                                    console.log("Date: ", date);
+                                        var day = date.getDate();//                                    console.log("Day: ", day);
+                                        var month = date.getMonth() + 1; // Months are zero based //                                    console.log("Month: ", month);
+                                        var year = date.getFullYear();//                                    console.log("Year: ", year);
+                                        day = ('0' + day).slice(-2);//                                    console.log("Formatted Day: ", day);
+                                        month = ('0' + month).slice(-2);//                                    console.log("Formatted Month: ", month);
                                         var formattedDate = day + '-' + month + '-' + year;
                                         console.log("Formatted Date: ", formattedDate);
                                         return formattedDate;
@@ -214,7 +210,7 @@ init_page_serversides();
                                     }
 
                                     function add_MT_rel_filter(location) {
-                                        var dropdownHtml = '<select class="form-control-sm " id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
+                                        var dropdownHtml = '<select class="form-control-sm fix_size" id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
                                         $(location).append(dropdownHtml);
                                         $('#columnFilter').change(function () {
                                             var filterValue = $(this).val();
@@ -223,8 +219,12 @@ init_page_serversides();
                                     }
 
                                     function move_dt_search(location) {
-                                        var move = $("#dt-search-0");
-                                        $(location).prepend(move);
+                                        var dt_searcher = document.getElementById("dt-search-0");
+                                        dt_searcher.parentNode.removeChild(dt_searcher);
+                                        document.getElementById(location).appendChild(dt_searcher);
+                                        dt_searcher.classList.add("fix_size");
+//                                        var move = $("#dt-search-0");
+//                                        $(location).append(move);
                                     }
 
                                     function init_dt() {
@@ -273,7 +273,7 @@ init_page_serversides();
                                             buttons: [
                                                 btns.map(btn => ({
                                                         text: btn.text,
-                                                        className: "btn-xs " + btn.link,
+                                                        className: "btn-xs " + btn.link + " fix_size",
                                                         action: function () {
                                                             var count = table.rows({selected: true}).data();
                                                             var roomIDs = [];
@@ -293,10 +293,7 @@ init_page_serversides();
                                         let spacer = {extend: 'spacer', style: 'bar'};
                                         new $.fn.dataTable.Buttons(table, {
                                             buttons: [
-                                                spacer,
                                                 {extend: 'searchBuilder', label: "Search"},
-//                                                spacer,
-//                                                {text: 'Select:', enabled:false},
                                                 {extend: 'spacer', text: "SELECT:", style: 'bar'},
                                                 {
                                                     text: 'All',
@@ -340,19 +337,9 @@ init_page_serversides();
                                     }
 
                                     function add_btn_vis_checkbox_functionality(name) {
-                                        btns.forEach(btn => {
-                                            document.querySelector('.' + btn.link).style.display = 'none';
-                                        });
                                         document.getElementById("CBX" + name).addEventListener('change', function () {
-                                            if (this.checked) {
-                                                btns.forEach(btn => {
-                                                    document.querySelector('.' + btn.link).style.display = 'inline-block';
-                                                });
-                                            } else {
-                                                btns.forEach(btn => {
-                                                    document.querySelector('.' + btn.link).style.display = 'none';
-                                                });
-                                            }
+                                            $('#HeaderTabelleCard2').slideToggle();
+
                                         });
                                     }
                                 </script>
