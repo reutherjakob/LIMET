@@ -83,3 +83,5 @@ function load_nav_bar() {
     echo '        });';
     echo '     };    </script>';
 }
+
+ 

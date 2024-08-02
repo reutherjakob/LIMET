@@ -419,24 +419,36 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             }
 
                             function initializeToaster(headerText, subtext, success) {
+                                // Check if the maximum number of toasts is reached
+                                if (toastCounter >= 10) {
+                                    const oldestToast = document.querySelector('.toast');
+                                    if (oldestToast) {
+                                        oldestToast.remove();
+                                        toastCounter--;
+                                    }
+                                }
+
                                 const toast = document.createElement('div');
-                                toast.classList.add('toast');
-                                toast.classList.add('show');
+                                toast.classList.add('toast', 'fade', 'show');
                                 toast.setAttribute('role', 'alert');
                                 toast.style.position = 'fixed';
                                 const topPosition = 10 + toastCounter * 50;
                                 toast.style.top = `${topPosition}px`;
                                 toast.style.right = '10px';
+                                headerText = headerText.replace(/\n/g, '<br>'); // Replace \n with <br>
+                                subtext = subtext.replace(/\n/g, '<br>'); // Replace \n with <br>
                                 toast.innerHTML = `
-                                    <div class="toast-header ${success ? "btn_vis" : "btn_invis"}">
-                                        <strong class="mr-auto">${headerText} ${subtext}</strong>
-                                    </div>`;
+    <div class="toast-header ${success ? "btn_vis" : "btn_invis"}">
+        <strong class="mr-auto">${headerText} ${subtext}</strong>
+    </div>`;
                                 document.body.appendChild(toast);
-                                toast.style.display = 'block';
                                 toastCounter++;
                                 setTimeout(() => {
-                                    toast.style.display = 'none';
-                                    toastCounter--;
+                                    toast.classList.remove('show');
+                                    setTimeout(() => {
+                                        toast.remove();
+                                        toastCounter--;
+                                    }, 500); // Match this duration with the fadeOut animation duration
                                 }, 2000 + toastCounter * 100);
                             }
 

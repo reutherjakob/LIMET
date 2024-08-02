@@ -1,18 +1,18 @@
-#scrollBtn {   height: 10px; 
+ #scrollBtn {
+    height: 10px;
     display: none;
     position: fixed;
     bottom: 0px;
     right: 50%; /* Center horizontally */
-    transform: translateX(50%);
+    /*transform: translateX(50%);*/
     z-index: 99;
     font-size: 24px;
-    background-color:rgba(100, 140, 25, 0.1);  
+    background-color:rgba(100, 140, 25, 0.1);
     color: #fff;
-    border: none; 
+    border: none;
     padding: 10px;
     cursor: pointer;
-    width: 1500px;
-    height: 35px; 
+    width: 1500px; 
 }
 
 #scrollBtn:hover {
@@ -20,7 +20,7 @@
 }
 
 #btn{
-     box-shadow: 0 3px 3px 0 rgba(1,0,1,0.2), 0 5px 5px 0 rgba(1,1,0,0.10);
+    box-shadow: 0 3px 3px 0 rgba(1,0,1,0.2), 0 5px 5px 0 rgba(1,1,0,0.10);
 }
 
 #th {
@@ -28,12 +28,12 @@
 }
 
 #pull-right {
-    float: right !important; 
+    float: right !important;
 }
 
 #body, html, .container-fluid {
     height: 100%;
-    font-size:13px; 
+    font-size:13px;
     color: #222;
     background: #fff;
     font: 100% system-ui;

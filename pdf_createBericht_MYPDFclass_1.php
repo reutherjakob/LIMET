@@ -12,12 +12,11 @@ class MYPDF extends TCPDF {
             $image_file = 'LIMET_web.png';
             $this->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
             $this->SetFont('helvetica', '', 8);
- 
 
             // Title
-            $this->Cell(0, 0, 'Großgeräte Parameter Einbringung', 0, false, 'R', 0, '', 0, false, 'B', 'B'); 
+            $this->Cell(0, 0, 'Großgeräte Parameter Einbringung', 0, false, 'R', 0, '', 0, false, 'B', 'B');
             $this->Ln();
-            $this->cell(0, 0, '', 'B', 0, 'L'); 
+            $this->cell(0, 0, '', 'B', 0, 'L');
         } else { // Titelblatt
 //            $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
 //            if (!$mysqli->set_charset("utf8")) {
@@ -52,17 +51,20 @@ class MYPDF extends TCPDF {
             $this->SetFont('helvetica', 'B', 15);
             $this->SetY(50);
             $this->Cell(0, 0, "KHI", 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            $this->Ln();
-            $this->Cell(0, 0, "Vorentwurf", 0, false, 'L', 0, '', 0, false, 'B', 'B');
+//            $this->Ln();
             $this->Ln(30);
- 
-            $this->Cell(0, 0, 'Einbringwege'. "" , 0, false, 'L', 0, '', 0, false, 'B', 'B');
+
+            $this->Cell(0, 0, "Planung ", 0, false, 'L', 0, '', 0, false, 'B', 'B');
             $this->Ln();
-            $this->Cell(0, 0, "Großgeräte" , 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            $this->Ln(30); 
+            $this->Cell(0, 0, "Vorentwurf ", 0, false, 'L', 0, '', 0, false, 'B', 'B');
+            $this->Ln(30);
+
+            $this->Cell(0, 0, 'Einbringwege' . "", 0, false, 'L', 0, '', 0, false, 'B', 'B');
+            $this->Ln();
+            $this->Cell(0, 0, "Großgeräte", 0, false, 'L', 0, '', 0, false, 'B', 'B');
+            $this->Ln(30);
 //            $this->Cell(0, 0, 'Funktionsstellen: ', 0, false, 'L', 0, '', 0, false, 'B', 'B');
 //            $this->Ln();
-
 //            $raumInfosCounter = 0;
 //            $funktionsStellen = "";
 //            foreach ($raumInfos as $valueOfRaumInfos) {
