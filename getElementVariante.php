@@ -169,7 +169,7 @@ session_start();
                             </div>
                             <div class='col-md-6'>
                                 <div class='card'>
-                                    <div class='card-header'>Mögliche Parameter</div>
+                                    <div class='card-header d-flex justify-content-between' id='mglParameterCardHeader'>Mögliche Parameter</div>
                                     <div class='card-body' id='possibleVariantenParameter'>";
 
         $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung, tabelle_parameter_kategorie.Kategorie 
@@ -481,11 +481,11 @@ session_start();
                         }
                     ],
                     "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
-                        "scrollX": true}
+                        "scrollX": true,
+                    "search":""}
                 });
 
-                $('#tablePossibleElementParameters').DataTable({
-                    //"paging": true,
+                $('#tablePossibleElementParameters').DataTable({                     
                     "select": true,
                     "searching": true,
                     "info": true,
@@ -499,7 +499,7 @@ session_start();
                         }
                     ],
                     "scrollX": true,
-                    "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+                    "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json", "search":""}
                 });
 
                 $('#tableVariantenCostsOverTime').DataTable({

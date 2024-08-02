@@ -280,6 +280,7 @@ init_page_serversides();
                                                                                         type: "GET",
                                                                                         success: function (data) {
                                                                                             $("#elementGewerk").html(data);
+//                                                                                            movefilter(); 
                                                                                         }
                                                                                     });
 
@@ -298,7 +299,12 @@ init_page_serversides();
                                         }
                                     });
                                 });
-
+//                                function movefilter() {
+//                                    var dt_searcher = document.getElementById("tablePossibleElementParameters_filter");
+//                                          dt_searcher.classList.add("pull-right");
+//                                    dt_searcher.parentNode.removeChild(dt_searcher);
+//                                    document.getElementById("mglParameterCardHeader").appendChild(dt_searcher);
+//                                }
 
                                 // ElementVariantenPanel einblenden
                                 $("#showElementVariante").click(function () {

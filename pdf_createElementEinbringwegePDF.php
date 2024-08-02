@@ -66,7 +66,7 @@ while ($row = $result_Einbring_elemente->fetch_assoc()) {
 
 // MAKE BERICHT  
 $fill = false;
-$pdf->SetFillColor(199, 215, 169); //96, 135, 24); 
+$pdf->SetFillColor(199 +10, 215+10, 169+10); //96, 135, 24); 
 $proportions = array(0.2, 0.3, 0.2, 0.3);
 $spaces = array();
 foreach ($proportions as $prop) {
@@ -88,11 +88,11 @@ foreach ($rooms as $roomnr) {
 
     foreach ($data_array as $key => $entry) {
         // https://tcpdf.org/examples/example_005/
-        if ($entry['Raumnr'] === $roomnr) {
+        if ($entry['Raumnr'] === $roomnr && $roomnr != "1.1.1") {
             if ($entry['Wert']) {
-                check_4_new_page($pdf, $rowHeight);
+                check_4_new_page($pdf, 0);
                 if ($first_data_entry) {
-                    $pdf->MultiCell($spaces[0], $rowHeight, $entry['Raumnr'] . " " . $entry['Raumbezeichnung'], 0, 'L', $fill, 0);
+                    $pdf->MultiCell($spaces[0], $rowHeight, $entry['Raumnr'] . "  " . $entry['Raumbezeichnung'], 0, 'L', $fill, 0);
                     $pdf->MultiCell($spaces[1], $rowHeight, $entry['el_Bez'], 'L', 'L', $fill, 0); // $entry['ElementID'] . " " .
                 } else {
                     $pdf->MultiCell($spaces[0], $rowHeight, "", 0, 'L', $fill, 0);
