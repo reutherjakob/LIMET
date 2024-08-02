@@ -15,6 +15,11 @@ check_login();
 
 $roomIDs = filter_input(INPUT_GET, 'roomID');
 $roomIDsArray = explode(",", $roomIDs);
+
+//$PDF_input_bool = filter_input(INPUT_GET, 'PDFinputs');
+//$PDF_input_bools = explode(",", $PDF_input_bool); //foreach ($roomIDsArray as $l) { echo $l;echo " <br> ";}echo $roomIDsArray;
+$Änderungsdatum = getValidatedDateFromURL();
+
 $mapping = array("raum_nr_alt" => "raum_nr_neu",
     "raumbezeichnung_alt" => "raumbezeichnung_neu",
     "funktionelle_raum_nr_alt" => "funktionelle_raum_nr_neu",
@@ -260,9 +265,6 @@ $mp2 = array(//tabelle änderunge => tabelle_räume
     "Ar neu" => "Ar",
     "N2 neu" => "N2");
 
-//$PDF_input_bool = filter_input(INPUT_GET, 'PDFinputs');
-//$PDF_input_bools = explode(",", $PDF_input_bool); //foreach ($roomIDsArray as $l) { echo $l;echo " <br> ";}echo $roomIDsArray;
-$Änderungsdatum = getValidatedDateFromURL();
 
 //     -----   FORMATTING VARIABLES    -----     
 $marginTop = 17; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/ 
@@ -289,7 +291,7 @@ $style_normal = array('width' => 0.3, 'cap' => 'round', 'join' => 'round', 'dash
 //$color_highlight = 0;
 
 $pdf = new MYPDF('L', PDF_UNIT, "A3", true, 'UTF-8', false, true);
-$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A3");
+$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A3", "Bauangaben");
 $pdf->AddPage('L', 'A3');
 $pdf->SetFillColor(0, 0, 0, 0); //$pdf->SetFillColor(244, 244, 244); 
 $pdf->SetFont('helvetica', '', $font_size);
