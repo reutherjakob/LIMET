@@ -31,10 +31,10 @@ init_page_serversides();
                                     background-color: rgba(100, 140, 25, 0.15);
                                 }
                                 .fix_size{
-                                height: 35px !important; 
-                                font-size: 15px;
+                                    height: 35px !important;
+                                    font-size: 15px;
                                 }
-                                
+
                             </style>
 
                             </head>
@@ -51,7 +51,7 @@ init_page_serversides();
                                             <?php
                                             $mysqli = utils_connect_sql();
 
-                                            $sql = "SELECT tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.Nutzfläche, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, tabelle_räume.Bauabschnitt, 
+                                            $sql = "SELECT tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.Raumnummer_Nutzer,  tabelle_räume.Nutzfläche, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, tabelle_räume.Bauabschnitt, 
 						tabelle_räume.`Anmerkung allgemein`, tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, tabelle_räume.idTABELLE_Räume, tabelle_räume.`MT-relevant`
 								FROM tabelle_räume INNER JOIN tabelle_projekte ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
 								WHERE (((tabelle_projekte.idTABELLE_Projekte)=" . $_SESSION["projectID"] . "));";
@@ -69,6 +69,7 @@ init_page_serversides();
                                                 <th>Ebene</th>
                                                 <th>Bauetappe</th>
                                                 <th>Bauabschnitt</th>
+                                                <th>Raumnummer_Nutzer</th>
 						</tr></thead><tbody>";
 
                                             while ($row = $result->fetch_assoc()) {
@@ -85,7 +86,8 @@ init_page_serversides();
                                                 }
                                                 echo "<td>" . $row["Geschoss"] . "</td>";
                                                 echo "<td>" . $row["Bauetappe"] . "</td>";
-                                                echo "<td>" . $row["Bauabschnitt"] . "</td>";
+                                                echo "<td>" . $row["Bauabschnitt"] . "</td>";    //Raumnummer_Nutzer
+                                                echo "<td>" . $row["Raumnummer_Nutzer"] . "</td>";
                                                 echo "</tr>";
                                             }
                                             echo "</tbody></table>";
@@ -328,6 +330,24 @@ init_page_serversides();
                                                             let date = getDate();
                                                             const bools2int2str = report_input_bools.map((bool) => (bool ? 1 : 0)).join(',');
                                                             window.open('/pdf_createBauangabenBericht_A3Qeer.php?roomID=' + roomIDs + "&date=" + date);// + "&PDFinputs=" + bools2int2str 
+//                                                            window.open('/pdf_createBericht_custom.php?roomID=' + roomIDs + "&PDFinputs=" + bools2int2str);  //custom bericht page ! 
+                                                        } 
+                                                    }
+                                                }, spacer,
+                                                {
+                                                    text: "Bauang. Text",
+                                                    action: function () {
+                                                        var count = table.rows({selected: true}).data();
+                                                        var roomIDs = [];
+                                                        for (var i = 0; i < count.length; i++) {
+                                                            roomIDs.push(count[i][0]);
+                                                        }
+                                                        if (roomIDs.length === 0) {
+                                                            alert("Kein Raum ausgewählt!");
+                                                        } else {
+                                                            let date = getDate();
+                                                            const bools2int2str = report_input_bools.map((bool) => (bool ? 1 : 0)).join(',');
+                                                            window.open('/pdf_createVBM_Bericht.php?date=' +  date + "&roomID=" + roomIDs);// + "&PDFinputs=" + bools2int2str 
 //                                                            window.open('/pdf_createBericht_custom.php?roomID=' + roomIDs + "&PDFinputs=" + bools2int2str);  //custom bericht page ! 
                                                         }
                                                     }

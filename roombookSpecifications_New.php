@@ -484,11 +484,11 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     pagingType: "simple_numbers",
                                     pageLength: 10,
                                     lengthMenu: [
-                                        [10, 20, -1],
-                                        ['10 rows', '20 rows', 'Show all']
+                                        [10, 20, 50],
+                                        ['10 rows', '20 rows', '50 rows']
                                     ],
                                     compact: true
-                                });
+                                });   
                             }
 
                             function add_MT_rel_filter(location) {

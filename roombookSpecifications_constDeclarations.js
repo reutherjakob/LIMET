@@ -11,17 +11,17 @@ function title2data(columnsDefinition, title) {
 }
 
 const buttonRanges = [
-    {name: 'Alle', start: 7, end: 131},
+    {name: 'Alle', start: 7, end: 131 + 3},
     {name: 'RAUM', start: 7, end: 23},
-    {name: 'HKLS', start: 24, end: 30},
-    {name: 'ELEK', start: 31, end: 50},
-    {name: 'AR', start: 51, end: 52},
-    {name: 'MEDGAS', start: 53, end: 64},
-    {name: 'LAB', start: 65, end: 131},
-    {name: 'L-GAS', start: 65, end: 65+41},
-    {name: 'L-ET', start: 65+42, end: 65+41+10},
-    {name: 'L-HT', start: 117, end:  124},
-    {name: 'L-H2O', start: 125, end: 131}
+    {name: 'HKLS', start: 24, end: 30 + 2},
+    {name: 'ELEK', start: 31 + 2, end: 50 + 2},
+    {name: 'AR', start: 51 + 2, end: 52 + 2},
+    {name: 'MEDGAS', start: 53 + 2, end: 64 + 2},
+    {name: 'LAB', start: 65 + 2, end: 131},
+    {name: 'L-GAS', start: 65 + 2, end: 65 + 41},
+    {name: 'L-ET', start: 65 + 44, end: 65 + 41 + 12},
+    {name: 'L-HT', start: 117 + 2, end: 124 + 2},
+    {name: 'L-H2O', start: 125 + 3, end: 131 + 3}
 ];
 
 const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and the CPY/save methods
@@ -56,6 +56,8 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'GMP', title: 'GMP'},
     {data: 'ISO', title: 'ISO'},
     {data: 'HT_Waermeabgabe_W', title: 'Wärmeabgabe[W]', case: ""},
+    {data: 'HT_Raumtemp Sommer °C', title: 'Raumtemp Sommer °C', case: "num"},
+    {data: 'HT_Raumtemp Winter °C', title: 'Raumtemp Winter °C', case: "num"},
     {data: 'HT_Spuele_Stk', title: 'Spüle [Stk]', case: "num"},
     {data: 'HT_Kühlwasser', title: 'Kühlwasser', case: "bit"},
     {data: 'HT_Notdusche', title: 'Notdusche', case: "bit"},
@@ -123,11 +125,11 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'He l/min', title: 'He_l/min', case: "num"},
     {data: 'He-RF', title: 'He-RF', case: "bit"},
     {data: 'LHe', title: 'LHe', case: "bit"},
-        
+
     {data: 'Ar', title: 'Ar', case: "bit"},
     {data: 'Ar Reinheit', title: 'Ar Reinheit', case: ""},
     {data: 'Ar l/min', title: 'Ar_l/min', case: "num"},
-   
+
     {data: 'LN', title: 'LN', case: "bit"},
     {data: 'LN l/Tag', title: 'LN l/Tag', case: "num"},
 
@@ -157,25 +159,25 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'O2_Sensor', title: 'O2_Sensor', case: 'num'},
     {data: 'Acetylen_Melder', title: 'Acetylen_Melder', case: 'num'},
 
-    {data: 'ET_16A_3Phasig_Einzelanschluss', title: '16A 3Ph Einzelanschluss', case: "bit"},
-    {data: 'ET_32A_3Phasig_Einzelanschluss', title: '32A 3Ph Einzelanschluss', case: "bit"},
-    {data: 'ET_64A_3Phasig_Einzelanschluss', title: '64A 3Ph Einzelanschls', case: "bit"},
+    {data: 'ET_16A_3Phasig_Einzelanschluss', title: '16A 3Ph Einzelanschluss', case: "num"},
+    {data: 'ET_32A_3Phasig_Einzelanschluss', title: '32A 3Ph Einzelanschluss', case: "num"},
+    {data: 'ET_64A_3Phasig_Einzelanschluss', title: '64A 3Ph Einzelanschls', case: "num"},
     {data: 'ET_Digestorium_MSR_230V_SV_Stk', title: 'Digestorium_MSR 230V_SV_Stk', case: "num"},
     {data: 'ET_5x10mm2_Digestorium_Stk', title: '5x10mm2 Digestorium_Stk', case: "num"},
     {data: 'ET_5x10mm2_USV_Stk', title: '5x10mm2 USV_Stk', case: "num"},
     {data: 'ET_5x10mm2_SV_Stk', title: '5x10mm2 SV_Stk', case: "num"},
-    {data: 'ET_5x10mm2_AV_Stk', title: '5x10mm2 AV_Stk', case: "num"}, 
+    {data: 'ET_5x10mm2_AV_Stk', title: '5x10mm2 AV_Stk', case: "num"},
     {data: 'EL_Not_Aus_Funktion', title: 'Not Aus Funktion', case: ""},
     {data: 'EL_Not_Aus', title: 'Not Aus Stk', case: 'num'},
 
-    {data: 'HT_Abluft_Vakuumpumpe', title: 'HT_Abluft Vakuumpumpe', case: "bit"},
-    {data: 'HT_Abluft_Schweissabsaugung_Stk', title: 'HT_Abluft Schweissabsaugung_Stk', case: "num"},
-    {data: 'HT_Abluft_Esse_Stk', title: 'HT_Abluft Esse_Stk', case: "num"},
-    {data: 'HT_Abluft_Rauchgasabzug_Stk', title: 'HT_Abluft Rauchgasabzug_Stk', case: "num"},
-    {data: 'HT_Abluft_Digestorium_Stk', title: 'HT_Abluft Digestorium_Stk', case: "num"},
-    {data: 'HT_Punktabsaugung_Stk', title: 'HT Punktabsaugung_Stk', case: "num"},
-    {data: 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', title: 'HT_Abluft Sicherheitsschrank_Unterbau_Stk', case: "num"},
-    {data: 'HT_Abluft_Sicherheitsschrank_Stk', title: 'HT_Abluft Sicherheitsschrank_Stk', case: "num"},
+    {data: 'HT_Luftwechsel 1/h', title: 'Luftwechsel l/h', case: "num"},
+    {data: 'HT_Abluft_Vakuumpumpe', title: 'Abluft Vakuumpumpe', case: "num"},
+    {data: 'HT_Abluft_Schweissabsaugung_Stk', title: 'Abluft Schweissabsaugung_Stk', case: "num"},
+    {data: 'HT_Abluft_Esse_Stk', title: 'Abluft Esse_Stk', case: "num"},
+    {data: 'HT_Abluft_Rauchgasabzug_Stk', title: 'Abluft Rauchgasabzug_Stk', case: "num"},
+    {data: 'HT_Abluft_Digestorium_Stk', title: 'Abluft Digestorium_Stk', case: "num"},
+    {data: 'HT_Punktabsaugung_Stk', title: 'Punktabsaugung_Stk', case: "num"},
+    {data: 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', title: 'Abluft Sicherheitsschrank_Unterbau_Stk', case: "num"},
 
     {data: 'Wasser Qual 1 l/Tag', title: 'H20_Q1 l/Tag', case: "num"},
     {data: 'Wasser Qual 2 l/Tag', title: 'H20_Q2 l/Tag', case: "num"},

@@ -2,9 +2,6 @@
 
 session_start();
 require_once('TCPDF-master/TCPDF-master/tcpdf.php');
-
-//include 'pdf_createBericht_utils.php';
-
 class MYPDF extends TCPDF {
 
     public function Header() {
