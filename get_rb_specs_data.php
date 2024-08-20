@@ -152,7 +152,9 @@ tabelle_räume.`HT_Luftwechsel 1/h`,
 tabelle_räume.EL_Not_Aus_Funktion,
 tabelle_räume.EL_Not_Aus,
 tabelle_räume.`HT_Raumtemp Sommer °C`,
-tabelle_räume.`HT_Raumtemp Winter °C` 
+tabelle_räume.`HT_Raumtemp Winter °C`,
+tabelle_räume.ET_PA_Stk,
+tabelle_räume.HT_Kaltwasser
 FROM tabelle_räume
 INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
 WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))

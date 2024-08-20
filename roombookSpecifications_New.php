@@ -150,12 +150,12 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 
                             function check_angaben() {
                                 var selectedRows = table.rows({selected: true}).data();
-                                console.log(selectedRows);
+//                                console.log(selectedRows);
                                 var roomIDs = [];
                                 for (var i = 0; i < selectedRows.length; i++) {
                                     roomIDs.push(selectedRows[i]['idTABELLE_Räume']);
                                 }
-                                console.log(roomIDs);
+//                                console.log(roomIDs);
                                 if (roomIDs.length === 0) {
                                     alert("Kein Raum ausgewählt!");
                                 } else {
@@ -258,10 +258,81 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 }
                             }
 
+                            function logColumnValues() {
+                                var data = table.rows().data();
+                                console.log("logging coulumns");
+                                data.each(function (row) {
+                                    console.log(row["Raumnr"]);
+                                });
+                            }
+
+                            function logDuplicateColumnValues() {
+                                var data = table.rows().data();
+                                console.log("Logging duplicate columns");
+
+                                var valueCounts = {};
+                                data.each(function (row) {
+                                    var value = row["Raumnr"];
+                                    if (valueCounts[value]) {
+                                        valueCounts[value]++;
+                                    } else {
+                                        valueCounts[value] = 1;
+                                    }
+                                });
+
+                                data.each(function (row) {
+                                    var value = row["Raumnr"];
+                                    if (valueCounts[value] > 1) {
+                                        console.log(value);
+                                    }
+                                });
+                            }
+
+                            function logAndSaveDuplicateColumnValues() {
+                                var data = table.rows().data();
+                                console.log("Logging duplicate columns");
+
+                                var valueCounts = {};
+                                data.each(function (row) {
+                                    var value = row["Raumnr"];
+                                    if (valueCounts[value]) {
+                                        valueCounts[value]++;
+                                    } else {
+                                        valueCounts[value] = 1;
+                                    }
+                                });
+
+                                var duplicates = [];
+                                data.each(function (row) {
+                                    var value = row["Raumnr"];
+                                    if (valueCounts[value] > 1) {
+                                        console.log(value);
+                                        duplicates.push(value);
+                                    }
+                                });
+
+                                // Save duplicates to a CSV file
+                                var csvContent = "data:text/csv;charset=utf-8,Raumnr\n";
+                                duplicates.forEach(function (duplicate) {
+                                    csvContent += duplicate + "\n";
+                                });
+
+                                var encodedUri = encodeURI(csvContent);
+                                var link = document.createElement("a");
+                                link.setAttribute("href", encodedUri);
+                                link.setAttribute("download", "duplicates.csv");
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                            }
+
+
                             function table_click() {
                                 $('#table_rooms tbody').on('click', 'tr', function () {
+//                                    logAndSaveDuplicateColumnValues();
                                     var RaumID = table.row($(this)).data()['idTABELLE_Räume'];
                                     if (document.getElementById('checkbox_EditableTable').checked) {
+
 
                                         var Raumbez = $('#table_rooms').DataTable().row($(this)).data()['Raumbezeichnung'];
                                         var rowIndex = $(this).closest('tr').index();
@@ -484,11 +555,11 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     pagingType: "simple_numbers",
                                     pageLength: 10,
                                     lengthMenu: [
-                                        [10, 20, 50],
-                                        ['10 rows', '20 rows', '50 rows']
+                                        [5, 10, 20, 50],
+                                        ['5 rows', '10 rows', '20 rows', '50 rows']
                                     ],
                                     compact: true
-                                });   
+                                });
                             }
 
                             function add_MT_rel_filter(location) {

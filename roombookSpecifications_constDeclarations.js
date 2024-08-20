@@ -59,7 +59,7 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'HT_Raumtemp Sommer °C', title: 'Raumtemp Sommer °C', case: "num"},
     {data: 'HT_Raumtemp Winter °C', title: 'Raumtemp Winter °C', case: "num"},
     {data: 'HT_Spuele_Stk', title: 'Spüle [Stk]', case: "num"},
-    {data: 'HT_Kühlwasser', title: 'Kühlwasser', case: "bit"},
+    {data: 'HT_Kühlwasser', title: 'Kühlwasser', case: "num"},
     {data: 'HT_Notdusche', title: 'Notdusche', case: "bit"},
     //ET
     {data: 'Anwendungsgruppe', title: 'AWG'},
@@ -85,7 +85,7 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
 
     //AR 
     {data: 'AR_AP_permanent', title: 'AR AP permanent', name: 'AR AP permanent ', case: "bit", render: function (data) {
-            return data === '1' ? 'permanenter AP' : 'kein permanenter AP';
+            return data === '1' ? 'permanenter AP' : 'kein perma AP';
         }},
     {data: 'AR_Statik_relevant', title: 'AR Statik relevant', name: 'AR Statik relevant', case: "bit", render: function (data) {
             return data === '1' ? 'relevant' : 'nicht rel.';
@@ -158,7 +158,9 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'Blitzleuchte', title: 'Blitzleuchte', case: 'num'},
     {data: 'O2_Sensor', title: 'O2_Sensor', case: 'num'},
     {data: 'Acetylen_Melder', title: 'Acetylen_Melder', case: 'num'},
-
+        
+        
+    {data: 'ET_PA_Stk', title: 'ET PA Stk', case: "num"},
     {data: 'ET_16A_3Phasig_Einzelanschluss', title: '16A 3Ph Einzelanschluss', case: "num"},
     {data: 'ET_32A_3Phasig_Einzelanschluss', title: '32A 3Ph Einzelanschluss', case: "num"},
     {data: 'ET_64A_3Phasig_Einzelanschluss', title: '64A 3Ph Einzelanschls', case: "num"},
@@ -169,7 +171,8 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'ET_5x10mm2_AV_Stk', title: '5x10mm2 AV_Stk', case: "num"},
     {data: 'EL_Not_Aus_Funktion', title: 'Not Aus Funktion', case: ""},
     {data: 'EL_Not_Aus', title: 'Not Aus Stk', case: 'num'},
-
+        
+    {data: 'HT_Kaltwasser', title: 'Kaltwasser', case: "num"},
     {data: 'HT_Luftwechsel 1/h', title: 'Luftwechsel l/h', case: "num"},
     {data: 'HT_Abluft_Vakuumpumpe', title: 'Abluft Vakuumpumpe', case: "num"},
     {data: 'HT_Abluft_Schweissabsaugung_Stk', title: 'Abluft Schweissabsaugung_Stk', case: "num"},

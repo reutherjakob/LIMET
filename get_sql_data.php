@@ -22,16 +22,16 @@ $mysqli = utils_connect_sql();
 //WHERE TABLE_SCHEMA = 'LIMET_RB'"; 
 //
 //////INFOS ABOUT A TABLE 
-//$stmt = " SELECT COLUMN_NAME AS ColumnName, DATA_TYPE AS DataType, CHARACTER_MAXIMUM_LENGTH AS CharacterLength
-//FROM INFORMATION_SCHEMA.COLUMNS
-//WHERE TABLE_NAME = 'tabelle_räume'"; 
+$stmt = " SELECT COLUMN_NAME AS ColumnName, DATA_TYPE AS DataType, CHARACTER_MAXIMUM_LENGTH AS CharacterLength
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'tabelle_räume'"; 
 
 // view_Raeume_has_Elemente
 //$stmt = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'LIMET_RB'"; 
 
-$stmt= "SELECT tabelle_projekte.Projektname, tabelle_räume.*, tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, tabelle_funktionsteilstellen.Nummer, tabelle_funktionsteilstellen.Bezeichnung
-FROM tabelle_funktionsteilstellen INNER JOIN (tabelle_räume INNER JOIN tabelle_projekte ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte) ON tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen = tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen
-WHERE (tabelle_räume.Raumbezeichnung) LIKE '%CT%' "; 
+//$stmt= "SELECT tabelle_projekte.Projektname, tabelle_räume.*, tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, tabelle_funktionsteilstellen.Nummer, tabelle_funktionsteilstellen.Bezeichnung
+//FROM tabelle_funktionsteilstellen INNER JOIN (tabelle_räume INNER JOIN tabelle_projekte ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte) ON tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen = tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen
+//WHERE (tabelle_räume.Raumbezeichnung) LIKE '%CT%' "; 
 
  
 //$stmt = "SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte, tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie, tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte, tabelle_räume.Raumnr, 

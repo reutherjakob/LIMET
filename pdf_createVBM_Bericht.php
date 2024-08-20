@@ -17,7 +17,7 @@ class MYPDF extends TCPDF {
             $this->Ln();
             $this->cell(0, 0, '', 'B', 0, 'L');
         } else { // Titelblatt
-            $Disclaimer_txt = "Angaben beziehen sich exklusiv auf die gelisteten Geräte. Angaben beinhalten die weitere im Raum verortete MT NICHT. Technisch notwendige Mindestangaben liegen meist weit unter empfohlenen Angaben. Auflistung ist in Arbeit und erhebt aktuell keinen Anspruch auf Vollständigkeit. ";
+            $Disclaimer_txt = "Alle Angaben beziehen sich exklusiv auf die gelisteten Geräte. Die Angaben beinhalten KEINE weitere im Raum verortete MT. Technisch notwendige Mindestangaben liegen meist weit unter empfohlenen Angaben. Auflistung ist in Arbeit und erhebt keinen Anspruch auf Vollständigkeit. ";
 
             $Einzug = 10;
             $this->SetFont('helvetica', 'B', 15);

@@ -31,7 +31,7 @@ init_page_serversides();
                                     background-color: rgba(100, 140, 25, 0.15);
                                 }
                                 .fix_size{
-                                    height: 35px !important;
+                                    height: 40px !important;
                                     font-size: 15px;
                                 }
 
@@ -138,7 +138,7 @@ init_page_serversides();
                                             addCheckbox('#HeaderTabelleCard', "Show-old-Reports");
                                             add_btn_vis_checkbox_functionality("Show-old-Reports");
                                             init_btns_old('#HeaderTabelleCard2');
-                                        }, 50);
+                                        }, 100);
 //                                        add_Berichtinput_checkboxes('#HeaderTabelleCard2');
                                         // synchronizeCheckboxes("CBXMT-Tabelle", "CBXMT-Liste");
                                     });
