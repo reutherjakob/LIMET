@@ -603,7 +603,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             $pdf->Ln($horizontalSpacerLN);
             $Block_height = getAnmHeight($pdf, $row['Anmerkung BauStatik'], $SB);
             block_label_queer($block_header_w, $pdf, "Baustatik", $Block_height, $block_header_height, $SB);
-            $pdf->Ln($horizontalSpacerLN2);
+            $pdf->Ln(1);
             anmA3($pdf, $row['Anmerkung BauStatik'], $SB, $block_header_w);
             $pdf->Ln($horizontalSpacerLN);
         }

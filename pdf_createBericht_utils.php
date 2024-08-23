@@ -149,8 +149,8 @@ function dashed_line($pdf, $offset) {
 }
 
 function balken($pdf, $horizontalSpacerLN, $SB) {
-    $pdf->SetFillColor(200, 200, 200);
-    $pdf->MultiCell($SB, 2, "", "BT", 'L', 1, 1);
+    $pdf->SetFillColor(200, 210, 200);
+    $pdf->MultiCell($SB, 1, "", "BT", 'L', 1, 1);
     $pdf->Ln($horizontalSpacerLN);
     $pdf->SetFillColor(00, 00, 00);
 }
@@ -158,7 +158,9 @@ function balken($pdf, $horizontalSpacerLN, $SB) {
 // BAUSTEINE
 
 function block_label_queer($block_header_w, $pdf, $block_label, $upcomming_block_size, $block_height = 12, $SB = 390) {
-    newpageA3($pdf, $upcomming_block_size, 275);
+    if( $block_label != "Med.-tech.") {newpageA3($pdf, $upcomming_block_size, 275);}
+    if( $block_label === "Med.-tech." && $upcomming_block_size < 275 ) { 
+        newpageA3($pdf, $upcomming_block_size, 275);}
     $pdf->SetFont('helvetica', 'B', $block_height);
     $pdf->MultiCell($SB, 1, "", 'T', 'L', 0, 0);
     $pdf->Ln(1);
@@ -269,13 +271,15 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
         $pdf->MultiCell($SB * $qot, $ln_spacer, "Bauetappe: " . $Bauetappe, 'B', 'L', 0, 0);
         $pdf->Ln();
     } else if ($format == "A3") {
+
         if (($pdf->GetY()) >= 180) {
             $pdf->AddPage();
-        } else if (($pdf->GetY()) >= 20) {
+        }
+        if (($pdf->GetY()) >= 18) {
             balken($pdf, 1, $SB);
         } else {
-            $pdf->Ln(2);
-        }
+            $pdf->Ln(1); 
+        } 
         $output_pairs = [
             ["Raumbezeichnung", "Raum: " . $Raumbezeichnung],
             ["Raumnr", "Nummer: " . $Raumnr],
@@ -293,7 +297,7 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
                 $incr += 5;
                 $Height = $pdf->getStringHeight($SB * $qot + $incr, $pair[1], false, true, '', 1);
             }
-            multicell_text_hightlight($pdf, $SB * $qot + $incr, $ln_spacer, $pair[0], $pair[1]." - ", $parameter_changes_t_räume, "L");
+            multicell_text_hightlight($pdf, $SB * $qot + $incr, $ln_spacer, $pair[0], $pair[1]."  -  ", $parameter_changes_t_räume, "L");
         }
         $pdf->Ln($ln_spacer);
     }

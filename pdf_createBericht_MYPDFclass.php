@@ -2,6 +2,7 @@
 
 session_start();
 require_once('TCPDF-master/TCPDF-master/tcpdf.php');
+
 class MYPDF extends TCPDF {
 
     public function Header() {
@@ -31,7 +32,8 @@ class MYPDF extends TCPDF {
                 $this->Cell(0, 0, 'Medizintechnische Bauangaben', 0, false, 'R', 0, '', 0, false, 'B', 'B');
             }
             $this->Ln();
-            $this->cell(0, 0, '', 'B', 0, 'L');
+            $this->cell(0, 0, '', 'B', 1, 'L');
+//            $this->Ln();
         }
         // Titelblatt        
         else {
@@ -107,7 +109,8 @@ class MYPDF extends TCPDF {
             $currentDate = date('Y-m-d');
             $futureDate = new DateTime($dateFromURL) > new DateTime($currentDate);
 
-            if ($dateFromURL === $currentDate || $futureDate) { 
+            if ($dateFromURL === $currentDate || $futureDate) {
+                
             } else {
                 $this->Cell(0, 0, "Änderungsverlauf bis: " . $dateFromURL, 0, false, 'L', 0, '', 0, false, 'T', 'M');
             }

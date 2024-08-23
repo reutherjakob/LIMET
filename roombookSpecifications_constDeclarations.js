@@ -16,12 +16,12 @@ const buttonRanges = [
     {name: 'HKLS', start: 24, end: 30 + 2},
     {name: 'ELEK', start: 31 + 2, end: 50 + 2},
     {name: 'AR', start: 51 + 2, end: 52 + 2},
-    {name: 'MEDGAS', start: 53 + 2, end: 64 + 2},
+    {name: 'MEDGAS', start: 53 + 2, end: 64 + 2},  
     {name: 'LAB', start: 65 + 2, end: 131},
     {name: 'L-GAS', start: 65 + 2, end: 65 + 41},
     {name: 'L-ET', start: 65 + 44, end: 65 + 41 + 12},
-    {name: 'L-HT', start: 117 + 2, end: 124 + 4},
-    {name: 'L-H2O', start: 125 + 5, end: 131 + 5}
+    {name: 'L-HT', start: 117, end: 124 + 2},
+    {name: 'L-H2O', start: 125 + 3, end: 131 + 5}
 ];
 
 const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and the CPY/save methods
@@ -36,11 +36,11 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: "Bezeichnung", title: "Funktionsstelle", visible: false, case: "none-edit"}, //#7
     {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'},
     {data: "Nummer", title: "DIN13080", visible: false, case: "none-edit"},
-    {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer'},
-    {data: 'Raumbereich Nutzer', title: 'Raumbereich'},
-    {data: 'Geschoss', title: 'Geschoss'},
-    {data: 'Bauetappe', title: 'Bauetappe'},
-    {data: 'Bauabschnitt', title: 'Bauabschnitt'},
+    {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer', visible: false},
+    {data: 'Raumbereich Nutzer', title: 'Raumbereich', visible: false},
+    {data: 'Geschoss', title: 'Geschoss', visible: false},
+    {data: 'Bauetappe', title: 'Bauetappe', visible: false},
+    {data: 'Bauabschnitt', title: 'Bauabschnitt', visible: false},
     {data: 'Nutzfläche', title: 'Nutzfläche', visible: false, case: "num"},
     {data: 'Abdunkelbarkeit', title: 'Abdunkelbar', visible: false, case: "bit"},
     {data: 'Strahlenanwendung', title: 'Strahlenanw.', visible: false, case: "bit"},
@@ -48,19 +48,19 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'Allgemeine Hygieneklasse', title: 'Allg. Hygieneklasse', visible: false},
     {data: 'Raumhoehe', title: 'Raumhoehe', visible: false, case: "num"},
     {data: 'Raumhoehe 2', title: 'Raumhoehe2', visible: false, case: "num"},
-    {data: 'Belichtungsfläche', title: 'Belichtungsfläche', visible: false, case: "num"},
+    {data: 'Belichtungsfläche', title: 'Belichtungsfläche', visible: false, case: "num"}, 
     {data: 'Umfang', title: 'Umfang', visible: false, case: "num"},
     {data: 'Volumen', title: 'Volumen', visible: false, case: "num"},
     //HKLS
-    {data: 'H6020', title: 'H6020',visible: false},
-    {data: 'GMP', title: 'GMP',visible: false},
-    {data: 'ISO', title: 'ISO',visible: false},
+    {data: 'H6020', title: 'H6020', visible: false},
+    {data: 'GMP', title: 'GMP', visible: false},
+    {data: 'ISO', title: 'ISO', visible: false},
     {data: 'HT_Waermeabgabe_W', title: 'Wärmeabgabe[W]', visible: false, case: ""},
     {data: 'HT_Raumtemp Sommer °C', title: 'Raumtemp Sommer °C', visible: false, case: "num"},
     {data: 'HT_Raumtemp Winter °C', title: 'Raumtemp Winter °C', visible: false, case: "num"},
     {data: 'HT_Spuele_Stk', title: 'Spüle [Stk]', visible: false, case: "num"},
     {data: 'HT_Kühlwasser', title: 'Kühlwasser', visible: false, case: "num"},
-    {data: 'HT_Notdusche', title: 'Notdusche', visible: false, case: "bit"},
+    {data: 'HT_Notdusche', title: 'Notdusche', visible: false, case: "num"},
     //ET
     {data: 'Anwendungsgruppe', title: 'AWG', visible: false},
     {data: 'Fussboden OENORM B5220', title: 'B5220', visible: false},
@@ -170,11 +170,10 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'ET_5x10mm2_AV_Stk', title: '5x10mm2 AV_Stk', visible: false, case: "num"},
     {data: 'EL_Not_Aus_Funktion', title: 'Not Aus Funktion', visible: false, case: ""},
     {data: 'EL_Not_Aus', title: 'Not Aus Stk', visible: false, case: 'num'},
-        
-    {data: 'HT_Warmwasser', title: 'Warmwasser', visible: false, case: "num"},
-    {data: 'HT_Kaltwasser', title: 'Kaltwasser', visible: false, case: "num"},
+
     {data: 'HT_Luftwechsel 1/h', title: 'Luftwechsel l/h', visible: false, case: "num"},
     {data: 'HT_Abluft_Vakuumpumpe', title: 'Abluft Vakuumpumpe', visible: false, case: "num"},
+    {data: 'HT_Abluft_Sicherheitsschrank_Stk', title: 'Abluft Sicherheitsschrank Stk', visible: false, case: "num"},
     {data: 'HT_Abluft_Schweissabsaugung_Stk', title: 'Abluft Schweissabsaugung_Stk', visible: false, case: "num"},
     {data: 'HT_Abluft_Esse_Stk', title: 'Abluft Esse_Stk', visible: false, case: "num"},
     {data: 'HT_Abluft_Rauchgasabzug_Stk', title: 'Abluft Rauchgasabzug_Stk', visible: false, case: "num"},
@@ -182,11 +181,14 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'HT_Punktabsaugung_Stk', title: 'Punktabsaugung_Stk', visible: false, case: "num"},
     {data: 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', title: 'Abluft Sicherheitsschrank_Unterbau_Stk', visible: false, case: "num"},
 
+    {data: 'VE_Wasser', title: 'VE_Wasser', visible: false, case: 'num'},
+    {data: 'HT_Warmwasser', title: 'Warmwasser', visible: false, case: "num"},
+    {data: 'HT_Kaltwasser', title: 'Kaltwasser', visible: false, case: "num"},
     {data: 'Wasser Qual 1 l/Tag', title: 'H20_Q1 l/Tag', visible: false, case: "num"},
     {data: 'Wasser Qual 2 l/Tag', title: 'H20_Q2 l/Tag', visible: false, case: "num"},
     {data: 'Wasser Qual 3 l/min', title: 'H2O_Q3 l/min', visible: false, case: "num"},
     {data: 'Wasser Qual 3', title: 'H20 Q3', visible: false, case: "bit"},
     {data: 'Wasser Qual 2', title: 'H20 Q2', visible: false, case: "bit"},
-    {data: 'Wasser Qual 1', title: 'H20 Q1', visible: false, case: "bit"},
-    {data: 'VE_Wasser', title: 'VE_Wasser', visible: false, case: 'bit'}
+    {data: 'Wasser Qual 1', title: 'H20 Q1', visible: false, case: "bit"}
+
 ];
