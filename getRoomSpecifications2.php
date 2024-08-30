@@ -56,12 +56,12 @@ include '_utils.php';
         $GroßgeräteVorlagen = [
             "FunktionBO" => " ",
             "Geräte" => " ",
-            "BauStatik" => "Technisch notwendige mindest Raum Maße (um Raumnutzung zu gewährleisten) \n Länge:   cm - Breite: cm - Höhe: cm. \n Gewicht im Raum: kg. \n\nBoden: \n maximale Punktlast statisch: kN. (Während des Transports bzw.
+            "BauStatik" => "Gewicht im Raum: kg. \n\nBoden: \n maximale Punktlast statisch: kN. (Während des Transports bzw.
                 während der Aufstellungsphase kann es zu Erhöhungen kommen (2 oder 3- Punktstand). Max. Punktlast dynamisch: ca. +/-  kN. \n vibrationsfreie Installation im Beereich der Bildgebenden Systeme. "
             . " Betonfundamentqualität: ; Alternativ: Sylodamp \n Bodenmontierter Tisch:. \n Schwingungstoleranz:  \n\nDecke: \n Deckenmontiertes Stativ: Maximum Zugkraft = ca.kN. Moment: kNm.  ",
             "Elektro" => " Leistung: \n Spitzenwert: kW \n Anschlusswert: kW \n Spannung:  \n maximaler Netzinnenwiederstand: mOhm. \n Anschlussklemmen: ; \n Fußboden leitfähig im Anlagenbereich",
-            "HKLS" => " Variante Luftkühlung: Wärmeabgabe an Raum ca. 15kW
-                Variante Wasserkühlung: Wärmeabgabe an Raum ca. 2kW + bis zu 21kW an Kühlwasserkreislauf.
+            "HKLS" => " Variante Luftkühlung: Wärmeabgabe an Raum ca. kW
+                Variante Wasserkühlung: Wärmeabgabe an Raum ca. kW + bis zu kW an Kühlwasserkreislauf.
                 Wassertemp: . Durchfluss abhängig von
                 T(H20):  l/h. Temperaturgradient(H2O): max.  K/min.: \n",
             "MedGas" => " "

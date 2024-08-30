@@ -11,17 +11,17 @@ function title2data(columnsDefinition, title) {
 }
 
 const buttonRanges = [
-    {name: 'Alle', start: 7, end: 131 + 5},
+    {name: 'Alle', start: 7, end: 144},
     {name: 'RAUM', start: 7, end: 23},
-    {name: 'HKLS', start: 24, end: 30 + 2},
-    {name: 'ELEK', start: 31 + 2, end: 50 + 2},
-    {name: 'AR', start: 51 + 2, end: 52 + 2},
-    {name: 'MEDGAS', start: 53 + 2, end: 64 + 2},  
-    {name: 'LAB', start: 65 + 2, end: 131},
-    {name: 'L-GAS', start: 65 + 2, end: 65 + 41},
-    {name: 'L-ET', start: 65 + 44, end: 65 + 41 + 12},
-    {name: 'L-HT', start: 117, end: 124 + 2},
-    {name: 'L-H2O', start: 125 + 3, end: 131 + 5}
+    {name: 'HKLS', start: 24, end: 30 + 3},
+    {name: 'ELEK', start: 31 + 3, end: 50 + 3},
+    {name: 'AR', start: 51 + 3, end: 52 + 7},
+    {name: 'MEDGAS', start: 53 + 7, end: 64 + 7},
+    {name: 'LAB', start: 62, end: 144},
+    {name: 'L-GAS', start: 72, end: 113},
+    {name: 'L-ET', start: 114, end: 124},
+    {name: 'L-HT', start: 125, end: 134},
+    {name: 'L-H2O', start: 135, end: 144}
 ];
 
 const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and the CPY/save methods
@@ -48,7 +48,7 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'Allgemeine Hygieneklasse', title: 'Allg. Hygieneklasse', visible: false},
     {data: 'Raumhoehe', title: 'Raumhoehe', visible: false, case: "num"},
     {data: 'Raumhoehe 2', title: 'Raumhoehe2', visible: false, case: "num"},
-    {data: 'Belichtungsfläche', title: 'Belichtungsfläche', visible: false, case: "num"}, 
+    {data: 'Belichtungsfläche', title: 'Belichtungsfläche', visible: false, case: "num"},
     {data: 'Umfang', title: 'Umfang', visible: false, case: "num"},
     {data: 'Volumen', title: 'Volumen', visible: false, case: "num"},
     //HKLS
@@ -61,8 +61,10 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'HT_Spuele_Stk', title: 'Spüle [Stk]', visible: false, case: "num"},
     {data: 'HT_Kühlwasser', title: 'Kühlwasser', visible: false, case: "num"},
     {data: 'HT_Notdusche', title: 'Notdusche', visible: false, case: "num"},
+    {data: 'HT_Tempgradient_Ch', title: 'Tempgradient C/h', visible: false, case: "num"},
+
     //ET
-    {data: 'Anwendungsgruppe', title: 'AWG', visible: false},
+    {data: 'Anwendungsgruppe', title: 'RG', visible: false},
     {data: 'Fussboden OENORM B5220', title: 'B5220', visible: false},
     {data: 'AV', title: 'AV', visible: false, case: "bit"},
     {data: 'SV', title: 'SV', visible: false, case: "bit"},
@@ -91,6 +93,12 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
             return data === '1' ? 'relevant' : 'nicht rel.';
         }},
 
+    {data: 'AR_Empf_Breite_cm', defaultContent: '-', title: 'Empf. Breite [cm]', visible: false, case: "num"},
+    {data: 'AR_Empf_Tiefe_cm', defaultContent: '-', title: 'Empf. Tiefe [cm]', visible: false, case: "num"},
+    {data: 'AR_Empf_Hoehe_cm', defaultContent: '-', title: 'Empf. Höhe [cm]', visible: false, case: "num"},
+    {data: 'AR_Flaechenlast_kgcm2', defaultContent: '-', title: 'Flaechenlast [kg/cm2]', visible: false, case: "num"},
+
+ 
     //MEDGASE
     {data: '1 Kreis O2', title: '1_K O2', visible: false, case: "bit"},
     {data: '2 Kreis O2', title: '2_K O2', visible: false, case: "bit"},
@@ -155,10 +163,12 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'CO2_Melder', title: 'CO2_Melder', visible: false, case: 'num'},
     {data: 'NH3_Sensor', title: 'NH3_Sensor', visible: false, case: 'num'},
     {data: 'H2_Sensor', title: 'H2_Sensor', visible: false, case: 'num'},
-    {data: 'Blitzleuchte', title: 'Blitzleuchte', visible: false, case: 'num'},
+
     {data: 'O2_Sensor', title: 'O2_Sensor', visible: false, case: 'num'},
     {data: 'Acetylen_Melder', title: 'Acetylen_Melder', visible: false, case: 'num'},
-
+        
+        {data: 'Blitzleuchte', title: 'Blitzleuchte', visible: false, case: 'num'},
+            
     {data: 'ET_PA_Stk', title: 'ET PA Stk', visible: false, case: "num"},
     {data: 'ET_16A_3Phasig_Einzelanschluss', title: '16A 3Ph Einzelanschluss', visible: false, case: "num"},
     {data: 'ET_32A_3Phasig_Einzelanschluss', title: '32A 3Ph Einzelanschluss', visible: false, case: "num"},
@@ -170,8 +180,9 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'ET_5x10mm2_AV_Stk', title: '5x10mm2 AV_Stk', visible: false, case: "num"},
     {data: 'EL_Not_Aus_Funktion', title: 'Not Aus Funktion', visible: false, case: ""},
     {data: 'EL_Not_Aus', title: 'Not Aus Stk', visible: false, case: 'num'},
-
+        
     {data: 'HT_Luftwechsel 1/h', title: 'Luftwechsel l/h', visible: false, case: "num"},
+
     {data: 'HT_Abluft_Vakuumpumpe', title: 'Abluft Vakuumpumpe', visible: false, case: "num"},
     {data: 'HT_Abluft_Sicherheitsschrank_Stk', title: 'Abluft Sicherheitsschrank Stk', visible: false, case: "num"},
     {data: 'HT_Abluft_Schweissabsaugung_Stk', title: 'Abluft Schweissabsaugung_Stk', visible: false, case: "num"},
@@ -180,6 +191,10 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'HT_Abluft_Digestorium_Stk', title: 'Abluft Digestorium_Stk', visible: false, case: "num"},
     {data: 'HT_Punktabsaugung_Stk', title: 'Punktabsaugung_Stk', visible: false, case: "num"},
     {data: 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', title: 'Abluft Sicherheitsschrank_Unterbau_Stk', visible: false, case: "num"},
+
+    {data: 'HT_Abwasser_Stk', title: 'Abwasser Stk', visible: false, case: "num"},
+        
+    {data: 'HT_Abluft_Geraete', title: 'Abluft Geräte', visible: false, case: "num"},
 
     {data: 'VE_Wasser', title: 'VE_Wasser', visible: false, case: 'num'},
     {data: 'HT_Warmwasser', title: 'Warmwasser', visible: false, case: "num"},
@@ -192,3 +207,6 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'Wasser Qual 1', title: 'H20 Q1', visible: false, case: "bit"}
 
 ];
+
+
+

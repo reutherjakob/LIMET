@@ -1,6 +1,6 @@
 #scrollBtn {
-    height: 30px; /* Adjust height for ellipse shape */
-    width: 35px; /* Adjust width for ellipse shape */
+    height: 45px; /* Adjust height for ellipse shape */
+    width: 45px; /* Adjust width for ellipse shape */
     display: block; /* Ensure the button is displayed */
     position: fixed;
     bottom: 20px; /* Position it slightly above the bottom */

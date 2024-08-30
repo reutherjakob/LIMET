@@ -154,7 +154,15 @@ tabelle_räume.`HT_Raumtemp Sommer °C`,
 tabelle_räume.`HT_Raumtemp Winter °C`,
 tabelle_räume.ET_PA_Stk,
 tabelle_räume.HT_Kaltwasser,
-tabelle_räume.HT_Warmwasser
+tabelle_räume.HT_Warmwasser,
+
+tabelle_räume.HT_Abwasser_Stk,
+tabelle_räume.AR_Empf_Breite_cm,
+tabelle_räume.AR_Empf_Tiefe_cm,
+tabelle_räume.AR_Empf_Hoehe_cm,
+tabelle_räume.AR_Flaechenlast_kgcm2,
+tabelle_räume.HT_Tempgradient_Ch,
+tabelle_räume.HT_Abluft_Geraete
 FROM tabelle_räume
 INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
 WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))

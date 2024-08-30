@@ -138,9 +138,7 @@ init_page_serversides();
                                             addCheckbox('#HeaderTabelleCard', "Show-old-Reports");
                                             add_btn_vis_checkbox_functionality("Show-old-Reports");
                                             init_btns_old('#HeaderTabelleCard2');
-                                        }, 100);
-//                                        add_Berichtinput_checkboxes('#HeaderTabelleCard2');
-                                        // synchronizeCheckboxes("CBXMT-Tabelle", "CBXMT-Liste");
+                                        }, 100); 
                                     });
 
                                     function add_date_select() {
@@ -177,22 +175,7 @@ init_page_serversides();
                                         });
                                     }
 
-                                    function synchronizeCheckboxes(checkbox1Id, checkbox2Id) {
-                                        const checkbox1 = document.getElementById(checkbox1Id);
-                                        const checkbox2 = document.getElementById(checkbox2Id);
-//                                        checkbox2.checked = false;
-                                        checkbox1.addEventListener('change', function () {
-                                            if (this.checked) {
-                                                checkbox2.checked = false;
-                                            }
-                                        });
-
-                                        checkbox2.addEventListener('change', function () {
-                                            if (this.checked) {
-                                                checkbox1.checked = false;
-                                            }
-                                        });
-                                    }
+     
 
                                     function addCheckbox(location, name, css = "") {
                                         var checkbox = document.createElement('input');

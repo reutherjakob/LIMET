@@ -233,8 +233,8 @@ $mp2 = array(//tabelle änderunge => tabelle_räume
     "ET_Anschlussleistung_W_neu" => "ET_Anschlussleistung_W",
     "ET_Anschlussleistung_AV_W_neu" => "ET_Anschlussleistung_AV_W",
     "ET_Anschlussleistung_SV_W_neu" => "ET_Anschlussleistung_SV_W",
-    "ET_Anschlussleistung_ZSV_W_neu" => "ET_Anschlussleistung_USV_W",
-    "ET_Anschlussleistung_USV_W_neu" => "ET_Anschlussleistung_ZSV_W",
+    "ET_Anschlussleistung_ZSV_W_neu" => "ET_Anschlussleistung_ZSV_W",
+    "ET_Anschlussleistung_USV_W_neu" => "ET_Anschlussleistung_USV_W",
     "EL_Doppeldatendose Stk neu" => "EL_Doppeldatendose Stk",
     "EL_Einzel-Datendose Stk neu" => "EL_Einzel-Datendose Stk",
     "EL_Bodendose Typ neu" => "EL_Bodendose Typ",
@@ -342,7 +342,8 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         
         $pdf->SetFillColor(255, 255, 255);
         
-        raum_header($pdf, $horizontalSpacerLN3, $SB, $row['Raumbezeichnung'], $row['Raumnr'], $row['Raumbereich Nutzer'], $row['Geschoss'], $row['Bauetappe'], $row['Bauabschnitt'], "A3", $parameter_changes_t_räume); //utils function 
+        raum_header($pdf, $horizontalSpacerLN3, $SB, $row['Raumbezeichnung'], $row['Raumnr'], $row['Raumbereich Nutzer'], $row['Geschoss'], $row['Bauetappe'], $row['Bauabschnitt'], "A3", $parameter_changes_t_räume); //utils function   
+        
         if (strlen($row['Anmerkung FunktionBO']) > 0) {
             $outstr = format_text(clean_string(br2nl($row['Anmerkung FunktionBO'])));
             $rowHeightComment = $pdf->getStringHeight($SB - $einzugPlus, $outstr, false, true, '', 1);
@@ -352,8 +353,9 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             $pdf->SetFont('helvetica', 'I', 10);
             $pdf->MultiCell($einzugPlus, $rowHeightComment, "", 0, 'L', 0, 0);
             $pdf->MultiCell($SB - $einzugPlus, $rowHeightComment, $outstr, 0, 'L', 0, 1);
-            if ($rowHeightComment > 6)
-                $pdf->Ln($horizontalSpacerLN);
+            if ($rowHeightComment > 6) {
+            $pdf->Ln($horizontalSpacerLN);}
+            else {$pdf->Ln(1);}
         }
 
 //   ---------- ALLGEMEIN   ----------
@@ -657,7 +659,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             while ($row3 = $changes->fetch_assoc()) {
                 $dataChanges[] = $row3;
             }
-            $dataChanges = filter_old_equal_new($dataChanges);
+            $dataChanges = filter_old_equal_new($dataChanges); 
 
             $upcmn_blck_size = 10 + $rowcounter * 5;
             block_label_queer($block_header_w, $pdf, "Med.-tech.", $upcmn_blck_size, $block_header_height, $SB);

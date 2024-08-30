@@ -149,10 +149,13 @@ function dashed_line($pdf, $offset) {
 }
 
 function balken($pdf, $horizontalSpacerLN, $SB) {
-    $pdf->SetFillColor(200, 210, 200);
-    $pdf->MultiCell($SB, 1, "", "BT", 'L', 1, 1);
+    $pdf->SetFillColor(200, 210, 200); 
+        $pdf->SetFont('helvetica', '', 1);
+
+    $pdf->MultiCell($SB, 2, "", "BT", 'L', 1, 1);
     $pdf->Ln($horizontalSpacerLN);
-    $pdf->SetFillColor(00, 00, 00);
+    $pdf->SetFillColor(00, 00, 00);   $pdf->SetFont('helvetica', '', 10);
+    
 }
 
 // BAUSTEINE
@@ -267,7 +270,7 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
         $pdf->MultiCell($SB * $qot, $ln_spacer, "Raum: " . $Raumbezeichnung, 0, 'L', 0, 0);
         $pdf->MultiCell($SB * $qot, $ln_spacer, "Nummer: " . $Raumnr, 0, 'L', 0, 0);
         $pdf->Ln($ln_spacer);
-        $pdf->MultiCell($SB * $qot, $ln_spacer, "Bereich: " . $RaumbereichNutzer, 0, 'L', 0, 0);
+        $pdf->MultiCell($SB * $qot, $ln_spacer, "Bereich: " . $RaumbereichNutzer, "B", 'L', 0, 0);
         $pdf->MultiCell($SB * $qot, $ln_spacer, "Bauetappe: " . $Bauetappe, 'B', 'L', 0, 0);
         $pdf->Ln();
     } else if ($format == "A3") {
@@ -280,13 +283,14 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
         } else {
             $pdf->Ln(1); 
         } 
+        $spacer = "  -";
         $output_pairs = [
-            ["Raumbezeichnung", "Raum: " . $Raumbezeichnung],
-            ["Raumnr", "Nummer: " . $Raumnr],
-            ["Raumbereich Nutzer", "Bereich: " . $RaumbereichNutzer],
-            ["Geschoss", "Geschoss: " . $Geschoss],
-            ["Bauetappe", "Bauetappe: " . $Bauetappe],
-            ["Bauabschnitt", "Bauteil: " . $Bauabschnitt]
+            ["Raumbezeichnung", "Raum: " . $Raumbezeichnung.$spacer],
+            ["Raumnr", "Nummer: " . $Raumnr.$spacer],
+            ["Raumbereich Nutzer", "Bereich: " . $RaumbereichNutzer.$spacer],
+            ["Geschoss", "Geschoss: " . $Geschoss.$spacer],
+            ["Bauetappe", "Bauetappe: " . $Bauetappe.$spacer],
+            ["Bauabschnitt", "Bauteil: " . $Bauabschnitt.$spacer]
         ];
         $qot = 1 / 7;
         
@@ -297,9 +301,9 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
                 $incr += 5;
                 $Height = $pdf->getStringHeight($SB * $qot + $incr, $pair[1], false, true, '', 1);
             }
-            multicell_text_hightlight($pdf, $SB * $qot + $incr, $ln_spacer, $pair[0], $pair[1]."  -  ", $parameter_changes_t_räume, "L");
+            multicell_text_hightlight($pdf, $SB * $qot + $incr, $ln_spacer, $pair[0], $pair[1], $parameter_changes_t_räume, "L");
         }
-        $pdf->Ln($ln_spacer);
+        $pdf->Ln(7);
     }
     $pdf->SetFont('helvetica', '', 10);
 }
@@ -350,12 +354,12 @@ function multicell_with_stk($pdf, $NR, $einzug) {
     } $pdf->SetFillColor(255, 255, 255);
 }
 
-function multicell_with_nr($pdf, $NR, $unit, $schriftgr, $einzug) {
+function multicell_with_nr($pdf, $NR, $unit, $schriftgr, $einzug, $Ausrichtung="L") {
     $originalFontSize = $pdf->getFontSizePt();
     if ($NR > 0) {
-        $pdf->MultiCell($einzug, $schriftgr, $NR . $unit, 0, 'L', 1, 0);
+        $pdf->MultiCell($einzug, $schriftgr, $NR . $unit, 0, $Ausrichtung, 1, 0);
     } else {
-        $pdf->MultiCell($einzug, $schriftgr, " - ", 0, 'L', 1, 0);
+        $pdf->MultiCell($einzug, $schriftgr, " - ", 0, $Ausrichtung, 1, 0);
     }
     $pdf->SetFontSize($originalFontSize);
     $pdf->SetFillColor(255, 255, 255);
@@ -426,6 +430,9 @@ function make_MT_list2($pdf, $SB, $resultX) {
             $pdf->Ln();
         }
     }
+        if ($fill % 2 === 1) {
+            $pdf->Ln();
+        }
 }
 
 function make_MT_list($pdf, $SB, $block_header_w, $booooool, $resultX, $style_normal, $style_dashed) {

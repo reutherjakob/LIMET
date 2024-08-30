@@ -1,6 +1,17 @@
 <?php
+
 session_start();
 include '_utils.php';
+
+function echoLastWord($string) {
+    // Trim any whitespace from the end of the string
+    $string = trim($string);
+    // Split the string into an array of words
+    $words = explode(' ', $string);
+    // Get the last word from the array
+    $lastWord = end($words);
+    echo $lastWord;
+}
 
 $mysqli = utils_connect_sql();
 //$stmt = " SELECT *
@@ -8,32 +19,27 @@ $mysqli = utils_connect_sql();
 //    INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
 //    WHERE  `MT-relevant` =1
 //    ORDER BY tabelle_räume.Raumnr";
-
 //$stmt = "SELECT tabelle_räume.*, tabelle_funktionsteilstellen.*
 //    FROM tabelle_räume
 //    INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
 //    WHERE `MT-relevant` = 1
 //    ORDER BY tabelle_räume.Raumnr" ;
-
-    
 // ALL TABLES and their fields
 //$stmt  = "SELECT TABLE_NAME, COLUMN_NAME
 //FROM INFORMATION_SCHEMA.COLUMNS
 //WHERE TABLE_SCHEMA = 'LIMET_RB'"; 
 //
 //////INFOS ABOUT A TABLE 
-//$stmt = " SELECT COLUMN_NAME AS ColumnName, DATA_TYPE AS DataType, CHARACTER_MAXIMUM_LENGTH AS CharacterLength
-//FROM INFORMATION_SCHEMA.COLUMNS
-//WHERE TABLE_NAME = 'tabelle_räume'"; 
-
+$stmt = " SELECT COLUMN_NAME AS ColumnName, DATA_TYPE AS DataType, CHARACTER_MAXIMUM_LENGTH AS CharacterLength
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'tabelle_lose_extern'"; 
+//
+//
 // view_Raeume_has_Elemente
 //$stmt = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'LIMET_RB'"; 
-
-$stmt= "SELECT tabelle_projekte.Projektname, tabelle_räume.*, tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, tabelle_funktionsteilstellen.Nummer, tabelle_funktionsteilstellen.Bezeichnung
-FROM tabelle_funktionsteilstellen INNER JOIN (tabelle_räume INNER JOIN tabelle_projekte ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte) ON tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen = tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen
-WHERE (tabelle_räume.Raumbezeichnung) LIKE '%Angio%' "; 
-
- 
+//$stmt= "SELECT tabelle_projekte.Projektname, tabelle_räume.*, tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, tabelle_funktionsteilstellen.Nummer, tabelle_funktionsteilstellen.Bezeichnung
+//FROM tabelle_funktionsteilstellen INNER JOIN (tabelle_räume INNER JOIN tabelle_projekte ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte) ON tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen = tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen
+//WHERE (tabelle_räume.Raumbezeichnung) LIKE '%OP-23%' "; 
 //$stmt = "SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte, tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie, tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte, tabelle_räume.Raumnr, 
 //    tabelle_räume.Raumbezeichnung, tabelle_elemente.ElementID, tabelle_varianten.Variante,
 //    tabelle_elemente.Bezeichnung as el_Bez, tabelle_parameter.Bezeichnung, tabelle_projekt_elementparameter.Wert, tabelle_projekt_elementparameter.Einheit
@@ -41,25 +47,43 @@ WHERE (tabelle_räume.Raumbezeichnung) LIKE '%Angio%' ";
 //WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND "
 //        . "((tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie)=18) AND "
 //        . "((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))";
- 
 // tabelle_raeume_aenderungen
 
-//$stmt = " SELECT * FROM `tabelle_raeume_aenderungen` WHERE `raum_id`= 12037 ";// AND `Timestamp` > ?";  Raumid 12037
-        
-$result = $mysqli->query($stmt);
-$mysqli->close(); 
- 
 
-echorow($result); 
+// BESTAND TABEÖLLE OG 
+//$stmt = "SELECT Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
+//                                   
+//                                    FROM tabelle_elemente 
+//                                    INNER JOIN (tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente 
+//                                    ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) 
+//                                    ON tabelle_elemente.idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
+//                                    
+//                                    GROUP BY tabelle_räume.tabelle_projekte_idTABELLE_Projekte, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
+//                                    HAVING (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume_has_tabelle_elemente.`Neu/Bestand`)=0))
+//                                    ORDER BY tabelle_elemente.ElementID;";
+
+
+
+//BEstand inkl kosten?? 
+//$stmt =   "SELECT tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, tabelle_räume.Bauabschnitt, tabelle_bauphasen.bauphase, tabelle_bauphasen.datum_fertigstellung, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_lose_extern.LosNr_Extern, tabelle_räume_has_tabelle_elemente.Anzahl, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.Lieferdatum, tabelle_räume_has_tabelle_elemente.id
+//                                                        FROM ((((tabelle_räume LEFT JOIN tabelle_bauphasen ON tabelle_räume.tabelle_bauphasen_idtabelle_bauphasen = tabelle_bauphasen.idtabelle_bauphasen) INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) INNER JOIN tabelle_varianten ON tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten = tabelle_varianten.idtabelle_Varianten) LEFT JOIN tabelle_lose_extern ON tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern = tabelle_lose_extern.idtabelle_Lose_Extern
+//                                                        WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=".$_SESSION["projectID"].") AND ((tabelle_räume_has_tabelle_elemente.Standort)=1) AND tabelle_räume_has_tabelle_elemente.Anzahl > 0);";
+//                                                
+
+
+
+
+$result = $mysqli->query($stmt);
+$mysqli->close();
+echoLastWord($stmt);
+echorow($result);
 $data = array();
 while ($row = $result->fetch_assoc()) {
     $data[] = $row;
 }
- 
-echorow($data); 
-//header('Content-Type: application/json');
-//echo json_encode($data);
- 
+
+echorow($data);
+
 /* 
 Aufruf von Bauangaben von Vergleichsräume:
 Dazu kannst du die Abfrage der Bauangaben-Neu verwenden und TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen nach dem Wert des aktuellen Raumes suchen
