@@ -50,7 +50,7 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'Raumhoehe 2', title: 'Raumhoehe2', visible: false, case: "num"},
     {data: 'Belichtungsfläche', title: 'Belichtungsfläche', visible: false, case: "num"},
     {data: 'Umfang', title: 'Umfang', visible: false, case: "num"},
-    {data: 'Volumen', title: 'Volumen', visible: false, case: "num"},
+    {data: 'Volumen', title: 'Volumen', visible: false, case: "num"}, 
     //HKLS
     {data: 'H6020', title: 'H6020', visible: false},
     {data: 'GMP', title: 'GMP', visible: false},

@@ -543,7 +543,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $pdf->Multicell($block_header_w, 1, "", 0, 0, 0, 0);
 
         multicell_text_hightlight($pdf,  $e_C_2_3rd, $font_size,  'HT_Luftwechsel', "Luftwechsel:", $parameter_changes_t_räume);
-        multicell_with_str($pdf, $row['HT_Luftwechsel'], $e_C_3rd+ $e_C_3rd, "l/h");
+        multicell_with_str($pdf, $row['HT_Luftwechsel'], $e_C_3rd+ $e_C_3rd, "/h");
 
         multicell_text_hightlight($pdf,  $e_C_2_3rd, $font_size, "HT_Raumtemp Sommer °C", "Temp. Sommer :", $parameter_changes_t_räume);
         multicell_with_str($pdf, $row['HT_Raumtemp Sommer °C'], $e_C_3rd, "°C");
