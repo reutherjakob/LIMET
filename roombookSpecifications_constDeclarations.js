@@ -11,17 +11,17 @@ function title2data(columnsDefinition, title) {
 }
 
 const buttonRanges = [
-    {name: 'Alle', start: 7, end: 144},
-    {name: 'RAUM', start: 7, end: 23},
-    {name: 'HKLS', start: 24, end: 30 + 3},
-    {name: 'ELEK', start: 31 + 3, end: 50 + 3},
-    {name: 'AR', start: 51 + 3, end: 52 + 7},
-    {name: 'MEDGAS', start: 53 + 7, end: 64 + 7},
-    {name: 'LAB', start: 62, end: 144},
-    {name: 'L-GAS', start: 72, end: 113},
-    {name: 'L-ET', start: 114, end: 124},
-    {name: 'L-HT', start: 125, end: 134},
-    {name: 'L-H2O', start: 135, end: 144}
+    {name: 'All', start: 7, end: 144, longName: 'Alle Spalten'},
+    {name: 'Raum', start: 7, end: 23, longName: 'Raum'},
+    {name: 'HKLS', start: 24, end: 33, longName: 'HKLS'},
+    {name: 'ET', start: 34, end: 53, longName: 'Elektro'},
+    {name: 'AR', start: 54, end: 59, longName: 'Architektur'},
+    {name: 'MG', start: 60, end: 71, longName: 'Medgas'},
+    {name: 'LAB', start: 62, end: 144, longName: 'Labor'},
+    {name: '-GAS', start: 72, end: 113, longName: 'L-GAS'},
+    {name: '-ET', start: 114, end: 124, longName: 'L-ET'},
+    {name: '-HT', start: 125, end: 134, longName: 'L-HT'},
+    {name: '-H2O', start: 135, end: 144, longName: 'L-H2O'}
 ];
 
 const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and the CPY/save methods

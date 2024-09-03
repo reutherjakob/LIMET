@@ -21,8 +21,9 @@ include 'roombookSpecifications_New_modal_addRoom.php';
             <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.css" rel="stylesheet"/>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-
             <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
+
+
 
             <style>
                 .btn_vis{
@@ -67,32 +68,18 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                     background-color: rgba(100, 140, 25, 0.1);
                 }
                 .form-check-inputz{
-                    width: 30px  !important;
-                    height: 30px  !important;
+                    width: 2vw  !important;
+                    height: 2.5vh  !important;
                     float: top !important;
                 }
                 .form-check-input:checked {
                     background-color: rgba(100, 140, 25, 0.75) !important;
                 }
-                .rotated {
-                    writing-mode: vertical-rl;
-                    font-size: 1vh;
-                }
+                /*                .rotated {
+                                    writing-mode: vertical-rl;
+                                    font-size: 1vh;
+                                }*/
 
-                /*                            .dt-button-collection {  
-                                                background-color: #f8f9fa;  Light background 
-                                                border: 3px solid #f8f9fa;  Border color 
-                                                border-radius: 5px;  Rounded corners 
-                                                padding: 10px;  Padding inside the modal 
-                                            }
-                
-                                            .dt-button-collection .dt-button {
-                                                margin: 5px;  Space between buttons 
-                                                color: #495057;  Button text color 
-                                                background-color: #e9ecef;  Button background color 
-                                                border: 1px solid #ced4da;  Button border color 
-                                                border-radius: 3px;  Button rounded corners 
-                                            }*/
             </style> 
     </head> 
     <body style="height:100%">  
@@ -100,12 +87,12 @@ include 'roombookSpecifications_New_modal_addRoom.php';
             <div id="limet-navbar"> </div>  
 
             <div class="mt-1 card">    
-                <div class="card-header d-flex border-light" style="height: 1vh !important; font-size: 1vh;">  
+        <div id="btnLabelz" class="card-header d-flex border-light" style="display: none;  height: 1vh !important; font-size: 1vh; "> 
                     <div class="col-md-3" ><strong> Edit & Filter</strong>  </div> 
                     <div class="col-md-1" ><strong> Auswahl</strong>  </div> 
-                    <div class="col-md-6" ><strong> Sichtbarkeit</strong></div>
+                    <div class="col-md-6" ><strong> Sichtbarkeit</strong></div> 
                     <div class="col-md-1" ><strong> Neu & Output</strong> </div>
-                    <div class="col-md-1" > <strong style="float: right; ">Check & Settings</strong> </div>
+                    <div class="col-md-1" > <strong style="float: right; ">Check&Settings</strong> </div>
                 </div>
                 <div class="card-header container-fluid d-flex align-items-start border-dark"  >  
                     <div class="col-md-3 d-flex align-items-left" id='TableCardHeader'> </div>  
@@ -178,7 +165,18 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     Initiate Editable
                                 </label>
                         </div>
-
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="settings_show_btn_texts_all">
+                                <label class="form-check-label" for="settings_show_btn_texts_all">
+                                    Show Button Texts 
+                                </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="settings_show_btn_grp_labels" >
+                                <label class="form-check-label" for="settings_show_btn_grp_labels" >
+                                    Show Labels above Button 
+                                </label>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-warning" onclick="restoreDefaults()">Restore Default</button>
@@ -192,6 +190,138 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 
     <script src="roombookSpecifications_constDeclarations.js"></script> 
     <script>
+                            let buttons_group_selct = [
+                                {
+                                    text: '',
+                                    className: 'btn fas fa-check',
+                                    titleAttr: "Select All",
+                                    action: function () {
+                                        table.rows().select();
+                                    }
+                                }, {
+                                    text: '',
+                                    className: 'btn fas fa-eye',
+                                    titleAttr: "Select Visible",
+                                    action: function () {
+                                        table.rows(':visible').select();
+                                    }
+                                }, {
+                                    text: '',
+                                    titleAttr: "Deselect All Rows",
+                                    action: function () {
+                                        table.rows().deselect();
+                                    },
+                                    className: 'btn fas fa-times'
+                                }
+                            ];
+
+                            let btn_grp_new_out = [
+                                {
+                                    text: '',
+                                    className: 'btn fas fa-plus-square',
+                                    titleAttr: "Add Room",
+                                    action: function () {
+                                        $('#addRoomModal').modal('show');
+                                    }
+                                }, {
+                                    text: '',
+                                    className: "btn fas fa-window-restore",
+                                    titleAttr: "Copy Selected Row",
+                                    action: function () {
+                                        copySelectedRow();
+                                    }
+                                }, {
+                                    extend: 'excelHtml5',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    },
+                                    className: 'btn fa fa-download',
+                                    text: "",
+                                    titleAttr: "Download as Excel"
+                                }
+                            ];
+
+                            let btn_grp_settings = [{
+                                    text: "",
+                                    className: 'btn btn-right fas fa-cogs',
+                                    titleAttr: "Open Settings",
+                                    action: function () {
+                                        open_einstellung_modal();
+                                    }
+                                }, {
+                                    text: "",
+                                    titleAttr: "Bauangaben Check",
+                                    className: "btn btn-right fas fa-check",
+                                    action: function () {
+                                        check_angaben();
+                                    }
+                                }
+                            ];
+
+                            let buttonsGroupcolumnVisbilities = [{
+                                    extend: 'colvis',
+                                    text: 'Vis',
+                                    columns: ':gt(6)',
+                                    collectionLayout: 'fixed columns',
+                                    className: 'btn'
+                                }].concat(buttonRanges.map(button => ({
+                                    text: button.name,
+                                    className: 'btn btnx btn_vis',
+//                                    longName: button.longName,
+                                    action: function (e, dt, node, config) {
+                                        toggleColumns(dt, button.start, button.end, button.name);
+                                        updateButtonClass(node, dt, button.start, button.end);
+                                    }
+                                })));
+
+                            let searchbuilder = [{
+                                    extend: 'searchBuilder',
+                                    className: "btn fas fa-search",
+                                    text: " ",
+                                    titleAttr: "Suche konfigurieren"
+                                }];
+
+                            function init_btn_4_dt() {
+                                new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#TableCardHeader'));
+                                new $.fn.dataTable.Buttons(table, {buttons: buttons_group_selct}).container().appendTo($('#TableCardHeaderX'));
+                                new $.fn.dataTable.Buttons(table, {buttons: buttonsGroupcolumnVisbilities}).container().appendTo($('#TableCardHeader2'));
+                                new $.fn.dataTable.Buttons(table, {buttons: btn_grp_new_out}).container().appendTo($('#TableCardHeader3'));
+                                new $.fn.dataTable.Buttons(table, {buttons: btn_grp_settings}).container().appendTo($('#TableCardHeader4'));
+                            }
+
+                            function toggleButtonTexts() {
+                                const buttonGroups = [
+                                    buttons_group_selct,
+                                    btn_grp_new_out,
+                                    btn_grp_settings
+                                ];
+                                buttonGroups.forEach(group => {
+                                    group.forEach(button => {
+                                        const buttonElement = document.querySelector(`button[title="${button.titleAttr}"]`);
+                                        if (buttonElement && !buttonElement.classList.contains('btnx')) {
+                                            if (buttonElement.textContent) {
+                                                buttonElement.textContent = '';
+                                            } else {
+                                                buttonElement.textContent = button.longText || button.titleAttr;
+                                            }
+                                        }
+                                    });
+                                });
+                            }
+
+                            function handleCheckboxToggle() {
+                                const checkbox = document.getElementById('settings_show_btn_texts_all');
+                                checkbox.addEventListener('change', function () {
+                                    toggleButtonTexts();
+                                });
+                            }
+
+
+                            document.addEventListener('DOMContentLoaded', function () {
+                                handleCheckboxToggle();
+                            });
+
+
                             var projectID = <?php echo json_encode($_SESSION["projectID"]); ?>;
                             var table;
                             let toastCounter = 0;
@@ -211,7 +341,16 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 init_visibilities();
                                 table_click();
                                 event_table_keyz();
+
+                                $('#settings_show_btn_grp_labels').change(function () {
+                                    if ($(this).is(':checked')) {
+                                        $('#btnLabelz').show();
+                                    } else {
+                                        $('#btnLabelz').hide();
+                                    }
+                                });
                             });
+
                             function restoreDefaults() {
                                 localStorage.clear();
                                 table.state.clear();
@@ -219,21 +358,30 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             }
 
                             function loadSettings() {
+                                let show_grp_labels = JSON.parse(localStorage.getItem('settings_show_btn_grp_labels')) || false;
+                                document.getElementById('settings_show_btn_grp_labels').checked = show_grp_labels;
+                                if (show_grp_labels) {
+                                    $('#btnLabelz').show();
+                                } else {
+                                    $('#btnLabelz').hide();
+                                }
+
+//                              document.getElementById('settings_show_btn_texts_all').checked = JSON.parse(localStorage.getItem('settings_show_btn_texts_all')) || false;
                                 document.getElementById('settings_save_state_4all_projects').checked = JSON.parse(localStorage.getItem('settings_save_state_4all_projects')) || false;
                                 document.getElementById('settings_save_state').checked = JSON.parse(localStorage.getItem('settings_save_state' + projectID)) || false;
                                 document.getElementById('settings_save_edit_cbx').checked = JSON.parse(localStorage.getItem('settings_save_edit_cbx')) || false;
-//                                                    document.getElementById('settings_save_search').checked = JSON.parse(localStorage.getItem('settings_save_search')) || false;
+                                // document.getElementById('settings_save_search').checked = JSON.parse(localStorage.getItem('settings_save_search')) || false;
                             }
 
                             function saveSettings() {
-
+                                localStorage.setItem('settings_show_btn_grp_labels', document.getElementById('settings_show_btn_grp_labels').checked);
+//                              localStorage.setItem('settings_show_btn_texts_all', document.getElementById('settings_show_btn_texts_all').checked);
                                 localStorage.setItem('settings_save_state_4all_projects', document.getElementById('settings_save_state_4all_projects').checked);
                                 localStorage.setItem('settings_save_state' + projectID, document.getElementById('settings_save_state').checked);
                                 localStorage.setItem('settings_save_edit_cbx', document.getElementById('settings_save_edit_cbx').checked);
-//                                                    localStorage.setItem('settings_save_search', document.getElementById('settings_save_search').checked);
+                                // localStorage.setItem('settings_save_search', document.getElementById('settings_save_search').checked);
                                 $('#einstellungModal').modal('hide');
                             }
-
 
                             function open_einstellung_modal() {
                                 $('#einstellungModal').modal('show');
@@ -252,18 +400,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 }
                             }
 
-                            function translateBrToNewline(inputString) {
-                                const outputString = inputString.replace(/<br>/g, '\n').replace(/<\/br>/g, '\n');
-                                return outputString;
-                            }
-
-                            function change_search_b_btn_txt() {
-                                $('.dt-button').each(function () {
-                                    if ($(this).text() === 'Search Builder') {
-                                        $(this).text('S');
-                                    }
-                                });
-                            }
 
                             function getCase(dataIdentifier) {
                                 const column = columnsDefinition.find(column => column.data === dataIdentifier);
@@ -311,10 +447,10 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                         }
                                     }
                                 });
-//                                                                table.on('key-blur', function (e, datatable, cell) {
-//                                                                    table.cell(cell.index()).deselect();
-//                                                                    cell.node().click();
-//                                                                });
+                                //                                                                table.on('key-blur', function (e, datatable, cell) {
+                                //                                                                    table.cell(cell.index()).deselect();
+                                //                                                                    cell.node().click();
+                                //                                                                });
                             }
 
                             function html_2_plug_into_edit_cell(dataIdentifier) {
@@ -389,19 +525,19 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                             cell.find('input, select').focus();
                                             table.keys.disable();
                                             cell.find('input, select').on('keydown blur', function (event) {
-//                                                                                table.on('keydown keyup', function (event) {
-//                                                                                    var ctrlPressed = event.ctrlKey; // Check if ctrl is pressed
-//
-//                                                                                    if (ctrlPressed && event.type === 'keydown') {
-//                                                                                        console.log("CTRL on");
-////                                                                                        cell.html(cellText);
-////                                                                                        current_edit = false;
-////                                                                                        table.keys.enable(); 
-//                                                                                    } else if (!ctrlPressed && event.type === 'keyup') {
-//                                                                                        console.log("CTRL off");
-//                                                                                        table.keys.disable();
-//                                                                                    }
-//                                                                                });
+                                                //                                                                                table.on('keydown keyup', function (event) {
+                                                //                                                                                    var ctrlPressed = event.ctrlKey; // Check if ctrl is pressed
+                                                //
+                                                //                                                                                    if (ctrlPressed && event.type === 'keydown') {
+                                                //                                                                                        console.log("CTRL on");
+                                                ////                                                                                        cell.html(cellText);
+                                                ////                                                                                        current_edit = false;
+                                                ////                                                                                        table.keys.enable(); 
+                                                //                                                                                    } else if (!ctrlPressed && event.type === 'keyup') {
+                                                //                                                                                        console.log("CTRL off");
+                                                //                                                                                        table.keys.disable();
+                                                //                                                                                    }
+                                                //                                                                                });
                                                 if (event.keyCode === 13 && current_edit) { // Enter key pressed
                                                     //console.log("Enter Keydown: ", $(this).val());
                                                     var newData = format_data_input($(this).val(), dataIdentifier);
@@ -444,7 +580,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                             console.log("Success loading MT table");
                                                             var tableX = $('#myTable').DataTable();
                                                             tableX.destroy();
-                                                            
                                                             if (!data || data.trim() === "") {
                                                                 // If data is empty, clear the old content
                                                                 $("#roomElements").empty();
@@ -453,8 +588,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                 $('#myTable').DataTable();
                                                             }
                                                             $('#elementParameters').empty();
-                                                            
-                                                            
                                                             $('#diy_searcher').on('keyup', function () {
                                                                 try {
                                                                     ($('#tableRoomElements').DataTable().search(this.value).draw());
@@ -467,7 +600,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                         }, error: function (jqXHR, textStatus, errorThrown) {
                                                             console.error("AJAX call failed: " + textStatus + ", " + errorThrown);
                                                         }
-                                                       
+
                                                     });
                                                 }
                                             });
@@ -491,12 +624,12 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     checked: document.getElementById('settings_save_edit_cbx').checked,
                                     class: 'form-check-inputz  form-check-input fix_size'
                                 }).appendTo($('#TableCardHeader'));
-//                                                    var label = $('<label>', {
-//                                                        htmlFor: 'checkbox_EditableTable',
-//                                                        class: 'rotated form-check-label inline',
-//                                                        text: "-EDIT-"});
-//                                                    var container = $('<span>').append(checkbox);
-//                                                    $('#TableCardHeader').append(container).append(label);
+                                //                                                    var label = $('<label>', {
+                                //                                                        htmlFor: 'checkbox_EditableTable',
+                                //                                                        class: 'rotated form-check-label inline',
+                                //                                                        text: "-EDIT-"});
+                                //                                                    var container = $('<span>').append(checkbox);
+                                //                                                    $('#TableCardHeader').append(container).append(label);
                             }
 
                             function init_dt() {
@@ -545,105 +678,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 });
                             }
 
-                            function init_btn_4_dt() {
-//                                                    let spacer = {extend: 'spacer', style: 'bar', className: "btn"};
-                                let searchbuilder = [{extend: 'searchBuilder', className: "btn", text: "SUCHE", titleAttr: "Suche knofigurieren"}]; //{extend: 'spacer', text: "SELECT", style: 'bar', className: "btn"},
-                                let buttonsGroupcolumnVisbilities = [{
-                                        extend: 'colvis',
-                                        text: 'Vis',
-                                        columns: ':gt(6)',
-                                        collectionLayout: 'fixed columns',
-                                        className: 'btn'
-                                    }].concat([buttonRanges.map(button => ({
-                                            text: button.name,
-                                            className: 'btn btn_vis',
-                                            titleAttr: `Toggle columns ${button.start} to ${button.end}`,
-                                            action: function (e, dt, node, config) {
-                                                toggleColumns(dt, button.start, button.end, button.name);
-                                                updateButtonClass(node, dt, button.start, button.end);
-                                            }
-                                        }))]);
-                                let buttons_group_selct = [
-                                    {
-                                        text: 'All',
-                                        className: 'btn',
-                                        titleAttr: "Select All Rows",
-                                        action: function () {
-                                            table.rows().select();
-                                        }
-                                    }, {
-                                        text: 'Vis',
-                                        className: 'btn',
-                                        titleAttr: "Select Visible Rows",
-                                        action: function () {
-                                            table.rows(':visible').select();
-                                        }
-                                    }, {
-                                        text: '',
-                                        titleAttr: "DEelect all Rows",
-                                        action: function () {
-                                            table.rows().deselect();
-                                        },
-                                        className: 'btn fas fa-times'
-                                    }];
-//                                                        {
-//                                                            text: 'w/Data',
-//                                                            className: 'btn btn_vis toggleDatalessColumnsButton',
-//                                                            action: function (e, dt, node, config) {
-//                                                                checkAndToggleColumnsVisibility(dt);
-//                                                            }
-//                                                        } 
 
-                                let btn_grp_2 = [
-                                    {
-                                        text: ' ',
-                                        className: 'btn far fa-plus-square',
-                                        titleAttr: "Add Room",
-                                        action: function () {
-                                            $('#addRoomModal').modal('show');
-                                        }
-                                    }, {
-                                        text: ' ',
-                                        className: "btn far fa-window-restore",
-                                        titleAttr: "Copy Selected Row",
-                                        action: function () {
-                                            copySelectedRow();
-                                        }
-                                    }, {
-                                        extend: 'excelHtml5',
-                                        exportOptions: {
-                                            columns: ':visible'
-                                        },
-                                        className: 'btn fa fa-download',
-                                        text: "",
-                                        titleAttr: "Download as Excel"
-                                    }
-                                ];
-
-                                let btn_grp_settings = [{
-                                        text: "",
-                                        className: 'btn btn-right fas fa-cogs',
-                                        titleAttr: "Open Settings",
-                                        action: function () {
-                                            open_einstellung_modal();
-                                        }
-                                    }, {
-                                        text: "",
-                                        titleAttr: "Bauangaben Check",
-                                        className: "btn btn-right fas fa-check",
-                                        action: function () {
-                                            check_angaben();
-                                        }
-                                    }
-                                ];
-
-                                new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#TableCardHeader'));
-                                new $.fn.dataTable.Buttons(table, {buttons: buttons_group_selct}).container().appendTo($('#TableCardHeaderX'));
-                                new $.fn.dataTable.Buttons(table, {buttons: buttonsGroupcolumnVisbilities}).container().appendTo($('#TableCardHeader2'));
-                                new $.fn.dataTable.Buttons(table, {buttons: btn_grp_2}).container().appendTo($('#TableCardHeader3'));
-                                new $.fn.dataTable.Buttons(table, {buttons: btn_grp_settings}).container().appendTo($('#TableCardHeader4'));
-                            }
-
+                            //                           
 
                             //VISIBILITY 
                             function init_visibilities() {
@@ -667,7 +703,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     singleButton.classList.add('btn_invis');
                                     singleButton.classList.remove('btn_vis');
                                 } else {
-                                    singleButton.classList.add('btn_vis');                                   
+                                    singleButton.classList.add('btn_vis');
                                     singleButton.classList.remove('btn_invis');
                                 }
 
@@ -769,9 +805,9 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 headerText = headerText.replace(/\n/g, '<br>'); // Replace \n with <br>
                                 subtext = subtext.replace(/\n/g, '<br>'); // Replace \n with <br>
                                 toast.innerHTML = `
-                                    <div class="toast-header ${success ? "btn_vis" : "btn_invis"}">
-                                        <strong class="mr-auto">${headerText} ${subtext}</strong>
-                                    </div>`;
+                                        <div class="toast-header ${success ? "btn_vis" : "btn_invis"}">
+                                            <strong class="mr-auto">${headerText} ${subtext}</strong>
+                                        </div>`;
                                 document.body.appendChild(toast);
                                 toastCounter++;
                                 setTimeout(() => {
@@ -915,6 +951,9 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 link.click();
                                 document.body.removeChild(link);
                             }
+
     </script>
 
 </html>
+
+
