@@ -34,7 +34,6 @@ init_page_serversides();
                     <label for="fieldSelect">Select Field:</label>
                     <select id="fieldSelect" class="form-select"> 
                     </select>
-
                     <label for="searchInput"> Search String:</label>
                     <input type="text" id="searchInput" class="form-control">
 
@@ -59,7 +58,6 @@ init_page_serversides();
             const fields = [
                 {value: 'Raumbezeichnung', text: 'Raumbezeichnung'}
             ];
-
             const fieldSelect = document.getElementById('fieldSelect');
             fields.forEach(field => {
                 const option = document.createElement('option');
@@ -104,7 +102,7 @@ init_page_serversides();
                     compact: true
                 });
             }
-
+            
             document.getElementById('searchButton').addEventListener('click', function () {
                 const selectedField = document.getElementById('fieldSelect').value;
                 const searchString = document.getElementById('searchInput').value;

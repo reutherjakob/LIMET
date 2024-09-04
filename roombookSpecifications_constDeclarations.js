@@ -12,7 +12,7 @@ function title2data(columnsDefinition, title) {
 
 const buttonRanges = [
     {name: 'All', start: 7, end: 144, longName: 'Alle Spalten'},
-    {name: 'Raum', start: 7, end: 23, longName: 'Raum'},
+    {name: 'R', start: 7, end: 23, longName: 'Raum'},
     {name: 'HKLS', start: 24, end: 33, longName: 'HKLS'},
     {name: 'ET', start: 34, end: 53, longName: 'Elektro'},
     {name: 'AR', start: 54, end: 59, longName: 'Architektur'},
@@ -33,7 +33,8 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
         }},
     {data: 'Raumbezeichnung', title: 'Raumbez.'},
     {data: 'Raumnr', title: 'Raumnr'},
-    {data: "Bezeichnung", title: "Funktionsstelle", visible: false, case: "none-edit"}, //#7
+
+    {data: "Bezeichnung", title: "Funktionsstelle", visible: true, case: "none-edit"}, //#7
     {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'},
     {data: "Nummer", title: "DIN13080", visible: false, case: "none-edit"},
     {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer', visible: false},
@@ -50,7 +51,7 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'Raumhoehe 2', title: 'Raumhoehe2', visible: false, case: "num"},
     {data: 'Belichtungsfläche', title: 'Belichtungsfläche', visible: false, case: "num"},
     {data: 'Umfang', title: 'Umfang', visible: false, case: "num"},
-    {data: 'Volumen', title: 'Volumen', visible: false, case: "num"}, 
+    {data: 'Volumen', title: 'Volumen', visible: false, case: "num"},
     //HKLS
     {data: 'H6020', title: 'H6020', visible: false},
     {data: 'GMP', title: 'GMP', visible: false},
@@ -98,7 +99,6 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'AR_Empf_Hoehe_cm', defaultContent: '-', title: 'Empf. Höhe [cm]', visible: false, case: "num"},
     {data: 'AR_Flaechenlast_kgcm2', defaultContent: '-', title: 'Flaechenlast [kg/cm2]', visible: false, case: "num"},
 
- 
     //MEDGASE
     {data: '1 Kreis O2', title: '1_K O2', visible: false, case: "bit"},
     {data: '2 Kreis O2', title: '2_K O2', visible: false, case: "bit"},
@@ -166,9 +166,9 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
 
     {data: 'O2_Sensor', title: 'O2_Sensor', visible: false, case: 'num'},
     {data: 'Acetylen_Melder', title: 'Acetylen_Melder', visible: false, case: 'num'},
-        
-        {data: 'Blitzleuchte', title: 'Blitzleuchte', visible: false, case: 'num'},
-            
+
+    {data: 'Blitzleuchte', title: 'Blitzleuchte', visible: false, case: 'num'},
+
     {data: 'ET_PA_Stk', title: 'ET PA Stk', visible: false, case: "num"},
     {data: 'ET_16A_3Phasig_Einzelanschluss', title: '16A 3Ph Einzelanschluss', visible: false, case: "num"},
     {data: 'ET_32A_3Phasig_Einzelanschluss', title: '32A 3Ph Einzelanschluss', visible: false, case: "num"},
@@ -180,7 +180,7 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'ET_5x10mm2_AV_Stk', title: '5x10mm2 AV_Stk', visible: false, case: "num"},
     {data: 'EL_Not_Aus_Funktion', title: 'Not Aus Funktion', visible: false, case: ""},
     {data: 'EL_Not_Aus', title: 'Not Aus Stk', visible: false, case: 'num'},
-        
+
     {data: 'HT_Luftwechsel 1/h', title: 'Luftwechsel l/h', visible: false, case: "num"},
 
     {data: 'HT_Abluft_Vakuumpumpe', title: 'Abluft Vakuumpumpe', visible: false, case: "num"},
@@ -193,7 +193,7 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', title: 'Abluft Sicherheitsschrank_Unterbau_Stk', visible: false, case: "num"},
 
     {data: 'HT_Abwasser_Stk', title: 'Abwasser Stk', visible: false, case: "num"},
-        
+
     {data: 'HT_Abluft_Geraete', title: 'Abluft Geräte', visible: false, case: "num"},
 
     {data: 'VE_Wasser', title: 'VE_Wasser', visible: false, case: 'num'},

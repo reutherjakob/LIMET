@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg bg-light navbar-light responsive" id="LimetNavBar">	
-    <div class="container-fluid" style="width: 1920px;" >
+    <div class="container-fluid justify-content-center d-inline-flex" style="width: 100vw;" >
         <a class="py-0 navbar-brand" href="#"><img src="LIMET_logo.png" alt="LIMETLOGO" height="40"/></a>
         <ul class="navbar-nav">
             <ul class='navbar-item'>
@@ -78,16 +78,19 @@
                 <a class='py-0 nav-link'  href='firmenkontakte.php'> <i class='fa fa-address-card'></i> Firmen Kontakte</a>       
             </li>    
 
-                    <li class="py-0 nav-item dropdown justify-content-between">
-                        <a class="py-0 nav-link dropdown-toggle" data-toggle="dropdown" href="#"  role="button" data-bs-toggle="dropdown"><i class='fas fa-code'></i> Dev</a>
-                        <ul class="dropdown-menu">
-<!--                            <a class="dropdown-item active" href="roombook_Besprechungsansicht.php"><i class='fas fa-tachometer-alt'></i> Besprechungasansicht </a>
-                            <a class="dropdown-item active" href="roombook_IFC_viewer.php"><i class='fas fa-tachometer-alt'></i> IFC viewer </a>-->
-                            <a class="dropdown-item active" href="get_sql_data.php"><i class='fas fa-tachometer-alt'></i> SQL DATA </a>
-                            <a class="dropdown-item active" href="roombook_vglAnsicht.php"><i class='fas fa-coffee'></i>  RAUM VGL </a> 
-                            <!--<a class="dropdown-item active" href="x.php"><i class='fas fa-coffee'></i> BEFU </a>-->
-                        </ul>
-                    </li> 
+            <li class="py-0 nav-item dropdown justify-content-between">
+                <a class="py-0 nav-link dropdown-toggle" data-toggle="dropdown" href="#"  role="button" data-bs-toggle="dropdown"><i class='fas fa-code'></i> Dev</a>
+                <ul class="dropdown-menu">
+                    <!--                            <a class="dropdown-item active" href="roombook_Besprechungsansicht.php"><i class='fas fa-tachometer-alt'></i> Besprechungasansicht </a>
+                                                <a class="dropdown-item active" href="roombook_IFC_viewer.php"><i class='fas fa-tachometer-alt'></i> IFC viewer </a>-->
+                    <a class="dropdown-item active" href="get_sql_data.php"><i class='fas fa-tachometer-alt'></i> SQL DATA </a>
+                    <a class="dropdown-item active" href="roombook_vglAnsicht.php"><i class='fas fa-coffee'></i>  RAUM VGL </a> 
+                    <a class="dropdown-item active" href="roombook_vgl_rooms.php"><i class='fas fa-coffee'></i> RAUM VGL </a>
+                                        <a class="dropdown-item active" href="roombook_search_rooms_with_string.php"><i class='fas fa-coffee'></i> Search Room </a>
+
+                </ul>
+                <!---->
+            </li> 
         </ul>
         <ul class="navbar-nav ml-auto"> 
             <li class="py-0 nav-item "><a class="py-0 nav-link text-success disabled" id="projectSelected" style="font-size:15px!important"> Kein Projekttitel geladen</a></li>

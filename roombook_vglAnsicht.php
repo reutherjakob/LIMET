@@ -77,7 +77,7 @@ init_page_serversides();
     </head>            
     <body style="height:100%">
 
-        <div id="limet-navbar" class='bla'> </div>  
+        <div id="limet-navbar" class=''> </div>  
 
         <div class ="container-fluid" id="KONTÄNER">
 

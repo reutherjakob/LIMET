@@ -70,25 +70,23 @@ check_login();
         echo "</tbody></table>";
         ?>
         <script>
- 
-
-            $(document).ready(function () {
-                var tablel = $("#tableRoomElements").DataTable({
-                    searching: true,
-                    info: true,
-                    responsive:true,
-                    select: true, 
-                    compact:true,
-                    order: [[1, "asc"]],
-                    lengthChange: false,
-                    columnDefs: [
-                        {"targets": [0,8 ], "visible": false, "searchable": false}
-                    ],
-                    paging: false, 
-                    pageLength: -1,
-                    sDom: "ti" 
-                }); 
-            });
+//            $(document).ready(function () {
+//                var tablel = $("#tableRoomElements", $_SESSION["roomID"] ).DataTable({
+//                    searching: true,
+//                    info: true,
+//                    responsive:true,
+//                    select: true, 
+//                    compact:true,
+//                    order: [[1, "asc"]],
+//                    lengthChange: false,
+//                    columnDefs: [
+//                        {"targets": [0,8 ], "visible": false, "searchable": false}
+//                    ],
+//                    paging: false, 
+//                    pageLength: -1,
+//                    sDom: "ti" 
+//                }); 
+//            });
         </script>
     </body>
 </html>

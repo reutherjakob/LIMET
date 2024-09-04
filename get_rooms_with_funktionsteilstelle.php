@@ -20,7 +20,17 @@ while ($row = $result->fetch_assoc()) {
     $data[] = $row;
 }
 
-//echorow($data); 
-header('Content-Type: application/json');
-echo json_encode($data);
+// Remove duplicates
+$unique_data = [];
+$seen = [];
 
+foreach ($data as $item) {
+    $key = $item['TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen'] . '|' . $item['Raumbezeichnung'];
+    if (!isset($seen[$key])) {
+        $seen[$key] = true;
+        $unique_data[] = $item;
+    }
+}
+
+header('Content-Type: application/json');
+echo json_encode($unique_data);

@@ -86,6 +86,7 @@ if(!isset($_SESSION["username"]))
 ?>
 <script>
     //RaumIDs zum kopieren speichern
+    var table;
     var roomIDs = [];
     var elementID = <?php echo $elementID; ?>;
     $(document).ready(function() {
@@ -106,7 +107,7 @@ if(!isset($_SESSION["username"]))
                 "style": "multi"
             }
         } );
-        var table = $('#tableRoomsWithoutElement').DataTable();
+        table = $('#tableRoomsWithoutElement').DataTable();
         
         $('#tableRoomsWithoutElement tbody').on( 'click', 'tr', function () {
             $(this).toggleClass('selected');

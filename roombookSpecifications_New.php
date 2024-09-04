@@ -62,24 +62,21 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                 .fix_size_search{
                     height: 35px;
                     width: 105px;
-
                 }
                 .table>thead>tr>th {
                     background-color: rgba(100, 140, 25, 0.1);
                 }
                 .form-check-inputz{
-                    width: 2vw  !important;
-                    height: 2.5vh  !important;
+                    width: 20px  !important;
+                    height: 32px  !important;
                     float: top !important;
                 }
                 .form-check-input:checked {
                     background-color: rgba(100, 140, 25, 0.75) !important;
                 }
-                /*                .rotated {
-                                    writing-mode: vertical-rl;
-                                    font-size: 1vh;
-                                }*/
-
+                .card-body{
+                    padding: 5px;
+                }
             </style> 
     </head> 
     <body style="height:100%">  
@@ -87,7 +84,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
             <div id="limet-navbar"> </div>  
 
             <div class="mt-1 card">    
-        <div id="btnLabelz" class="card-header d-flex border-light" style="display: none;  height: 1vh !important; font-size: 1vh; "> 
+                <div class="card-header d-flex border-light" style="height: 1vh; font-size: 1vh;" id="btnLabelz" > 
                     <div class="col-md-3" ><strong> Edit & Filter</strong>  </div> 
                     <div class="col-md-1" ><strong> Auswahl</strong>  </div> 
                     <div class="col-md-6" ><strong> Sichtbarkeit</strong></div> 
@@ -165,17 +162,22 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     Initiate Editable
                                 </label>
                         </div>
+                        <!--                        <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="settings_show_btn_texts_all">
+                                                        <label class="form-check-label" for="settings_show_btn_texts_all">
+                                                            Show Button Texts 
+                                                        </label>
+                                                </div>-->
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="settings_show_btn_texts_all">
-                                <label class="form-check-label" for="settings_show_btn_texts_all">
-                                    Show Button Texts 
+                            <input class="form-check-input" type="checkbox" id="settings_show_btn_grp_labels">
+                                <label class="form-check-label" for="settings_show_btn_grp_labels">
+                                    Show Labels above Button 
                                 </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="settings_show_btn_grp_labels" >
-                                <label class="form-check-label" for="settings_show_btn_grp_labels" >
-                                    Show Labels above Button 
-                                </label>
+                            <button class="form-check-button" id="settings_toggle_btn_texts">
+                                Show Button Texts
+                            </button>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -190,6 +192,41 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 
     <script src="roombookSpecifications_constDeclarations.js"></script> 
     <script>
+
+                            var projectID = <?php echo json_encode($_SESSION["projectID"]); ?>;
+                            var table;
+                            let toastCounter = 0;
+                            var cellText = "";
+                            var currentRowInd = 0;
+                            var currentColInd = 0;
+                            let current_edit = false; //variable keeps track if the input field to ediot the cells is open
+
+                            $(document).ready(function () {
+                                loadSettings();
+                                init_dt();
+                                init_editable_checkbox();
+                                add_MT_rel_filter('#TableCardHeader');
+                                move_dt_search();
+                                init_showRoomElements_btn();
+                                init_btn_4_dt();
+                                init_visibilities();
+                                table_click();
+                                event_table_keyz();
+
+                                $('#settings_show_btn_grp_labels').change(function () {
+                                    change_top_label_visibility($(this).is(':checked'));
+                                });
+                            });
+
+                            function change_top_label_visibility(x) {
+                                if (x) {
+                                    $('#btnLabelz').attr("style", "font-size: 1vh !important; height: 1vh !important; display: flex !important; ");
+
+                                } else {
+                                    $('#btnLabelz').attr("style", "display: none !important");
+                                }
+                            }
+
                             let buttons_group_selct = [
                                 {
                                     text: '',
@@ -261,7 +298,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             let buttonsGroupcolumnVisbilities = [{
                                     extend: 'colvis',
                                     text: 'Vis',
-                                    columns: ':gt(6)',
+                                    columns: ':gt(5)',
                                     collectionLayout: 'fixed columns',
                                     className: 'btn'
                                 }].concat(buttonRanges.map(button => ({
@@ -309,77 +346,44 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 });
                             }
 
-                            function handleCheckboxToggle() {
-                                const checkbox = document.getElementById('settings_show_btn_texts_all');
-                                checkbox.addEventListener('change', function () {
+                            function handleButtonClick() {
+                                const button = document.getElementById('settings_toggle_btn_texts');
+                                button.addEventListener('click', function () {
                                     toggleButtonTexts();
                                 });
                             }
 
-
                             document.addEventListener('DOMContentLoaded', function () {
-                                handleCheckboxToggle();
+                                handleButtonClick();
                             });
 
-
-                            var projectID = <?php echo json_encode($_SESSION["projectID"]); ?>;
-                            var table;
-                            let toastCounter = 0;
-                            var cellText = "";
-                            var currentRowInd = 0;
-                            var currentColInd = 0;
-                            let current_edit = false; //variable keeps track if the input field to ediot the cells is open
-
-                            $(document).ready(function () {
-                                loadSettings();
-                                init_dt();
-                                init_editable_checkbox();
-                                add_MT_rel_filter('#TableCardHeader');
-                                move_dt_search();
-                                init_showRoomElements_btn();
-                                init_btn_4_dt();
-                                init_visibilities();
-                                table_click();
-                                event_table_keyz();
-
-                                $('#settings_show_btn_grp_labels').change(function () {
-                                    if ($(this).is(':checked')) {
-                                        $('#btnLabelz').show();
-                                    } else {
-                                        $('#btnLabelz').hide();
-                                    }
-                                });
-                            });
-
+                            //SETTINGS SECTION                             
                             function restoreDefaults() {
                                 localStorage.clear();
                                 table.state.clear();
                                 location.reload();
+                                localStorage.setItem('settings_show_btn_grp_labels', true);
                             }
 
                             function loadSettings() {
-                                let show_grp_labels = JSON.parse(localStorage.getItem('settings_show_btn_grp_labels')) || false;
-                                document.getElementById('settings_show_btn_grp_labels').checked = show_grp_labels;
-                                if (show_grp_labels) {
-                                    $('#btnLabelz').show();
-                                } else {
-                                    $('#btnLabelz').hide();
-                                }
-
-//                              document.getElementById('settings_show_btn_texts_all').checked = JSON.parse(localStorage.getItem('settings_show_btn_texts_all')) || false;
+                                document.getElementById('settings_show_btn_grp_labels').checked = JSON.parse(localStorage.getItem('settings_show_btn_grp_labels')) || true;
+                                change_top_label_visibility(JSON.parse(localStorage.getItem('settings_show_btn_grp_labels')) || true);
                                 document.getElementById('settings_save_state_4all_projects').checked = JSON.parse(localStorage.getItem('settings_save_state_4all_projects')) || false;
                                 document.getElementById('settings_save_state').checked = JSON.parse(localStorage.getItem('settings_save_state' + projectID)) || false;
                                 document.getElementById('settings_save_edit_cbx').checked = JSON.parse(localStorage.getItem('settings_save_edit_cbx')) || false;
                                 // document.getElementById('settings_save_search').checked = JSON.parse(localStorage.getItem('settings_save_search')) || false;
+                                // document.getElementById('settings_show_btn_texts_all').checked = JSON.parse(localStorage.getItem('settings_show_btn_texts_all')) || false;
+
                             }
 
                             function saveSettings() {
                                 localStorage.setItem('settings_show_btn_grp_labels', document.getElementById('settings_show_btn_grp_labels').checked);
-//                              localStorage.setItem('settings_show_btn_texts_all', document.getElementById('settings_show_btn_texts_all').checked);
                                 localStorage.setItem('settings_save_state_4all_projects', document.getElementById('settings_save_state_4all_projects').checked);
                                 localStorage.setItem('settings_save_state' + projectID, document.getElementById('settings_save_state').checked);
                                 localStorage.setItem('settings_save_edit_cbx', document.getElementById('settings_save_edit_cbx').checked);
                                 // localStorage.setItem('settings_save_search', document.getElementById('settings_save_search').checked);
+                                // localStorage.setItem('settings_show_btn_texts_all', document.getElementById('settings_show_btn_texts_all').checked);
+
                                 $('#einstellungModal').modal('hide');
                             }
 
@@ -596,7 +600,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                                                     alert("!", e);
                                                                 }
                                                             });
-                                                            console.log("Success Function done");
                                                         }, error: function (jqXHR, textStatus, errorThrown) {
                                                             console.error("AJAX call failed: " + textStatus + ", " + errorThrown);
                                                         }
@@ -735,7 +738,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 for (let i = startColumn; i <= endColumn; i++) {
                                     table.column(columns[i]).visible(vis);
                                 }
-                                if (button_name === 'Alle') {
+                                if (button_name === 'All') {
                                     buttonRanges.forEach(button => {
                                         const btn = $(`.btn_vis:contains('${button.name}')`);
                                         if (vis) {
@@ -747,7 +750,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                         }
                                     });
                                 } else if (button_name === 'LAB') {
-                                    ['L-GAS', 'L-ET', 'L-HT', 'L-H2O'].forEach(name => {
+                                    ['-GAS', '-ET', '-HT', '-H2O'].forEach(name => {
                                         const button = $(`.btn_vis:contains('${name}')`);
                                         if (vis) {
                                             button.removeClass('btn_invis');
