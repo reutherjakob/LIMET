@@ -27,341 +27,429 @@ init_page_serversides();
                 background-color: rgba(100, 140, 25, 0.15);
             }
 
-            .fix_size{
-                padding-left: 0.3vw  !important;
-                padding-right:  0.3vw   !important;
-                padding-top:  0.2vw   !important;
-                padding-bottom:  0.2vw   !important;
-                margin-right: 0.05vw !important ;
-                margin-left:  0.05vw !important ;
+            .fix_size {
+                padding: 0.2vw 0.3vw;
+                margin: 0.05vw;
                 height: 30px;
                 font-size: 15px;
             }
-            .btn {
-                padding-left: 0.2vw  !important;
-                padding-right:  0.2vw   !important;
-                padding-top:  0.1vw   !important;
-                padding-bottom:  0.1vw   !important;
-                margin-right:  1px  !important ;
-                margin-left: 1px !important ;
-                height: 30px !important;
+
+            .btn, .dt-button {
+                padding: 0.1vw 0.2vw;
+                margin: 1px;
+                height: 30px;
             }
-            .dt-button {
-                padding-left: 0.2vw  !important;
-                padding-right:  0.2vw   !important;
-                padding-top:  0.1vw   !important;
-                padding-bottom:  0.1vw   !important;
-                margin-right:  1px  !important ;
-                margin-left: 1px !important ;
-                height: 30px !important;
-            }
-            /*            .card-body {
-                            padding: 0;
-            
-                        }*/
         </style>
-
     </head>
-
-    <body style="height:100%"> 
-        <div class="container-fluid" >
-            <div id="limet-navbar" class=' '> </div> 
+    <body style="height:100%">
+        <div class="container-fluid">
+            <div id="limet-navbar"></div>
             <div class="mt-1 card">
-                <div class="card-header d-flex border-light align-items-center" style="height:4px !important; font-size: 10px;"> 
-
-                    <div class="col-md-4 align-items-top"> Räume im Projekt</div>
-                    <div class="col-md-4 align-items-top">Select</div>
-                    <div class="col-md-4 align-items-center  "></div>
-
+                <div class="card-header d-flex border-light align-items-center" style="height:4px; font-size: 10px;">
+                    <div class="col-md-3">Räume im Projekt</div>
+                    <div class="col-md-2">Select</div>
+                    <div class="col-md-3">Berichte PDFs</div>
+                    <div class="col-md-4"></div>
                 </div>
-                <div class="card-header d-inline-flex justify-content-start align-items-bottom form-check-inline"  style="height: 33px;" id ="HeaderTabelleCard">                                       
-                    <div class="col-md-3 align-items-top justify-content-start form-check-inline" id = "sub1"></div>
-                    <div class="col-md-6  align-items-top justify-content-start form-check-inline" id = "sub2"></div>
-                    <div class="col-md-3 align-items-top justify-content-end form-check-inline" id = "sub3"></div>
+                <div class="card-header d-inline-flex justify-content-start align-items-bottom form-check-inline" style="height: 33px;" id="HeaderTabelleCard">
+                    <div class="col-md-3 form-check-inline" id="sub1"></div>
+                    <div class="col-md-6 form-check-inline" id="sub2"></div>
+                    <div class="col-md-3 form-check-inline justify-content-end" id="sub3"></div>
                 </div>
-                <div class="card-header form-check-inline justify-content" style="flex-wrap:nowrap; display:none;" id ="HeaderTabelleCard2">                                            
-                </div>
+                <div class="card-header form-check-inline justify-content" style="flex-wrap:nowrap; display:none;" id="HeaderTabelleCard2"></div>
                 <div class="card-body px-0">
                     <?php
                     $mysqli = utils_connect_sql();
-
-                    $sql = "SELECT tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.Raumnummer_Nutzer,  tabelle_räume.Nutzfläche, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, tabelle_räume.Bauabschnitt, 
-						tabelle_räume.`Anmerkung allgemein`, tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, tabelle_räume.idTABELLE_Räume, tabelle_räume.`MT-relevant`
-								FROM tabelle_räume INNER JOIN tabelle_projekte ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
-								WHERE (((tabelle_projekte.idTABELLE_Projekte)=" . $_SESSION["projectID"] . "));";
-
+                    $sql = "SELECT tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.Raumnummer_Nutzer, tabelle_räume.Nutzfläche, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, tabelle_räume.Bauabschnitt, tabelle_räume.`Anmerkung allgemein`, tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, tabelle_räume.idTABELLE_Räume, tabelle_räume.`MT-relevant` FROM tabelle_räume INNER JOIN tabelle_projekte ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte WHERE tabelle_projekte.idTABELLE_Projekte=" . $_SESSION["projectID"];
                     $result = $mysqli->query($sql);
-
-                    echo "<table class='table display compact table-striped table-bordered table-sm' id='tableRooms'  cellspacing='0' width='100%'>
-						<thead><tr>
-						<th>ID</th>
-						<th>Raumnr</th>
-						<th>Raumbezeichnung</th>
-						<th>Nutzfläche</th>
-						<th>Raumbereich Nutzer</th>
-                                                <th>MT-relevant</th>
-                                                <th>Ebene</th>
-                                                <th>Bauetappe</th>
-                                                <th>Bauabschnitt</th>
-                                                <th>Raumnummer_Nutzer</th>
-						</tr></thead><tbody>";
-
+                    echo "<table class='table display compact table-striped table-bordered table-sm' id='tableRooms' cellspacing='0' width='100%'>
+                        <thead><tr>
+                        <th>ID</th>
+                        <th>Raumnr</th>
+                        <th>Raumbezeichnung</th>
+                        <th>Nutzfläche</th>
+                        <th>Raumbereich Nutzer</th>
+                        <th>MT-relevant</th>
+                        <th>Ebene</th>
+                        <th>Bauetappe</th>
+                        <th>Bauabschnitt</th>
+                        </tr></thead><tbody>";
                     while ($row = $result->fetch_assoc()) {
-                        echo "<tr>";
-                        echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
-                        echo "<td>" . $row["Raumnr"] . "</td>";
-                        echo "<td>" . $row["Raumbezeichnung"] . "</td>";
-                        echo "<td>" . $row["Nutzfläche"] . "</td>";
-                        echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
-                        if ($row["MT-relevant"] == '0') {
-                            echo "<td>Nein</td>";
-                        } else {
-                            echo "<td>Ja</td>";
-                        }
-                        echo "<td>" . $row["Geschoss"] . "</td>";
-                        echo "<td>" . $row["Bauetappe"] . "</td>";
-                        echo "<td>" . $row["Bauabschnitt"] . "</td>";    //Raumnummer_Nutzer
-                        echo "<td>" . $row["Raumnummer_Nutzer"] . "</td>";
-                        echo "</tr>";
+                        echo "<tr>
+                            <td>{$row['idTABELLE_Räume']}</td>
+                            <td>{$row['Raumnr']}</td>
+                            <td>{$row['Raumbezeichnung']}</td>
+                            <td>{$row['Nutzfläche']}</td>
+                            <td>{$row['Raumbereich Nutzer']}</td>
+                            <td>" . ($row['MT-relevant'] == '0' ? 'Nein' : 'Ja') . "</td>
+                            <td>{$row['Geschoss']}</td>
+                            <td>{$row['Bauetappe']}</td>
+                            <td>{$row['Bauabschnitt']}</td>
+                          </tr>";
                     }
                     echo "</tbody></table>";
                     $mysqli->close();
-                    ?>	
+                    ?>
                 </div>
             </div>
-
         </div>
 
         <script>
-            var table;
-            const btns = [
-                {text: "Raumbuch-PDF", link: "pdf_createRoombookPDF"},
-                {text: "Raumbuch-0-PDF", link: "pdf_createRoombookWithout0PDF"},
-                {text: "Raumbuch-ohne Bestand-PDF", link: "pdf_createRoombookWithoutBestandPDF"},
-                {text: "Raumbuch-0-ohne Bestand-PDF", link: "pdf_createRoombookWithout0WothoutBestandPDF"},
-                {text: "Raumbuch-inkl Bauangaben-0-PDF", link: "pdf_createRoombookWithBauangabenWithout0PDF"},
-                {text: "Bauangaben-PDF V1", link: "pdf_createBauangabenPDF"},
-                {text: "Bauangaben-PDF V2", link: "pdf_createBauangabenV2PDF"},
-                {text: "Bauangaben ohne Elemente-PDF", link: "pdf_createBauangabenWithoutElementsPDF"},
-                {text: "Bauangaben Lab-PDF", link: "pdf_createBauangabenLabPDF"},
-                {text: "Bauangaben Lab-Kurz-PDF'", link: "pdf_createBauangabenLabKompaktPDF"},
-                {text: "Bauangaben Lab-ENT-PDF", link: "pdf_createBauangabenLabEntPDF"},
-                {text: "Bauangaben Lab-EIN-PDF", link: "pdf_createBauangabenLabEinrPDF_1"},
-                {text: "BO-PDF", link: "pdf_createBOPDF"},
-                {text: "BauangabenDetail-PDF", link: "pdf_createBauangabenDetailPDF"},
-                {text: "VE-Gesamt-PDF", link: "pdf_createBericht_VE_PDF"},
-                {text: "ENT-Gesamt-PDF", link: "pdf_createBericht_ENT_PDF"},
-                {text: "Nutzer Formular", link: "pdf_createUserFormPDF"}
-            ];
-
             $(document).ready(function () {
-                init_dt();
-                add_MT_rel_filter('#sub1');
-                add_date_select();
-                init_btns_old('#HeaderTabelleCard2');
-                setTimeout(function () {
-                    move_dt_search('sub1');
-                    addCheckbox('#sub3', "Show-old-Reports");
-                    add_btn_vis_checkbox_functionality("Show-old-Reports");
+                initDataTable();
+                addMTFilter('#sub1');
+                addDateSelect('#sub3');
+                initButtons('#sub2', '#HeaderTabelleCard2');
+                setTimeout(() => {
+                    moveSearchBox('sub1');
+                    addCheckbox('#sub3', "Show-old-Reports", toggleOldReports);
                 }, 500);
-                init_btns('#sub2');
             });
 
-            function add_date_select() {
-                var cardHeader = document.getElementById('sub3');
-                var newElement = document.createElement('div');
-                newElement.className = 'form-check-inline';
-                newElement.innerHTML = '<div class="form-check-inline"><label for="dateSelect"> </label> <input type="date" id="dateSelect" name="dateSelect"><div class="spacer"></div></div>';
-                cardHeader.appendChild(newElement);
+            function initDataTable() {
+                table = $('#tableRooms').DataTable({
+                    paging: false,
+                    columnDefs: [{targets: [0], visible: false, searchable: false}],
+                    orderCellsTop: true,
+                    order: [[1, "asc"]],
+                    scrollY: '75vh',
+                    scrollCollapse: true,
+                    dom: 'frti',
+                    select: {style: 'multi'},
+                    language: {
+                        url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
+                        search: "",
+                        searchBuilder: {label: "Search", depthLimit: 3}
+                    },
+                    keys: true
+                }).on('key', function (e, datatable, key, cell) {
+                    if ([37, 38, 39, 40].includes(key))
+                        $(cell.node()).click();
+                });
+            }
+
+            function addMTFilter(location) {
+                $(location).append('<select class="form-control-sm fix_size" id="columnFilter"><option value="">MT</option><option value="Ja">Ja</option><option value="Nein">Nein</option></select>');
+                $('#columnFilter').change(function () {
+                    table.column(5).search($(this).val()).draw();
+                });
+            }
+
+            function addDateSelect(location) {
+                $(location).append('<div class="form-check-inline"><label for="dateSelect"> </label><input type="date" id="dateSelect" name="dateSelect"><div class="spacer"></div></div>');
             }
 
             function getDate() {
-                var dateInput = $("#dateSelect").val();
-                var date = dateInput ? new Date(dateInput) : new Date();//                                    console.log("Date: ", date);
-                var day = date.getDate();//                                    console.log("Day: ", day);
-                var month = date.getMonth() + 1; // Months are zero based //                                    console.log("Month: ", month);
-                var year = date.getFullYear();//                                    console.log("Year: ", year);
-                day = ('0' + day).slice(-2);//                                    console.log("Formatted Day: ", day);
-                month = ('0' + month).slice(-2);//                                    console.log("Formatted Month: ", month);
-                var formattedDate = day + '-' + month + '-' + year;
-                console.log("Formatted Date: ", formattedDate);
-                return formattedDate;
+                let date = new Date($("#dateSelect").val() || Date.now());
+                return `${('0' + date.getDate()).slice(-2)}-${('0' + (date.getMonth() + 1)).slice(-2)}-${date.getFullYear()}`;
             }
 
-            function addCheckbox(location, name, css = "") {
-                var checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.id = 'CBX' + name;
-                checkbox.checked = false;
-                checkbox.classList.add("form-check-input");
-                if (css.trim() !== "") {
-                    checkbox.classList.add(css);
+            function addCheckbox(location, name, callback) {
+                $(location).append(`<input type="checkbox" id="CBX${name}" class="form-check-input"><label for="CBX${name}" class="form-check-label">${name}</label>`);
+                $(`#CBX${name}`).change(callback);
+            }
+
+            function moveSearchBox(location) {
+                $('#dt-search-0').appendTo(`#${location}`).addClass("fix_size");
+            }
+
+            function initButtons(location, oldReportsLocation) {
+                const buttons = [
+                    {text: 'All', action: () => table.rows().select()},
+                    {text: 'Visible', action: () => table.rows(':visible').select()},
+                    {text: 'None', action: () => table.rows().deselect()},
+                    {extend: 'spacer', style: 'bar'},
+                    {text: "BAUANGABEN A3", action: generateReport}
+                ];
+
+                new $.fn.dataTable.Buttons(table, {buttons}).container().appendTo($(location));
+                initOldButtons(oldReportsLocation);
+            }
+
+            function initOldButtons(location) {
+                const oldButtons = [
+                    {text: "Raumbuch-PDF", link: "pdf_createRoombookPDF"},
+                    {text: "Raumbuch-0-PDF", link: "pdf_createRoombookWithout0PDF"},
+                    {text: "Raumbuch-ohne Bestand-PDF", link: "pdf_createRoombookWithoutBestandPDF"},
+                    {text: "Raumbuch-0-ohne Bestand-PDF", link: "pdf_createRoombookWithout0WothoutBestandPDF"},
+                    {text: "Raumbuch-inkl Bauangaben-0-PDF", link: "pdf_createRoombookWithBauangabenWithout0PDF"},
+                    {text: "Bauangaben-PDF V1", link: "pdf_createBauangabenPDF"},
+                    {text: "Bauangaben-PDF V2", link: "pdf_createBauangabenV2PDF"},
+                    {text: "Bauangaben ohne Elemente-PDF", link: "pdf_createBauangabenWithoutElementsPDF"},
+                    {text: "Bauangaben Lab-PDF", link: "pdf_createBauangabenLabPDF"},
+                    {text: "Bauangaben Lab-Kurz-PDF'", link: "pdf_createBauangabenLabKompaktPDF"},
+                    {text: "Bauangaben Lab-ENT-PDF", link: "pdf_createBauangabenLabEntPDF"},
+                    {text: "Bauangaben Lab-EIN-PDF", link: "pdf_createBauangabenLabEinrPDF_1"},
+                    {text: "BO-PDF", link: "pdf_createBOPDF"},
+                    {text: "BauangabenDetail-PDF", link: "pdf_createBauangabenDetailPDF"},
+                    {text: "VE-Gesamt-PDF", link: "pdf_createBericht_VE_PDF"},
+                    {text: "ENT-Gesamt-PDF", link: "pdf_createBericht_ENT_PDF"},
+                    {text: "Nutzer Formular", link: "pdf_createUserFormPDF"}
+                ];
+
+                new $.fn.dataTable.Buttons(table, {
+                    buttons: oldButtons.map(btn => ({
+                            text: btn.text,
+                            className: "btn-xs " + btn.link + " fix_size",
+                            action: () => generateOldReport(btn.link)
+                        }))
+                }).container().appendTo($(location));
+            }
+
+            function generateReport() {
+                const roomIDs = table.rows({selected: true}).data().toArray().map(row => row[0]);
+                if (roomIDs.length === 0) {
+                    alert("Kein Raum ausgewählt!");
+                } else {
+                    window.open(`/pdf_createBauangabenBericht_A3Qeer.php?roomID=${roomIDs.join(',')}&date=${getDate()}`);
                 }
-                var label = document.createElement('label');
-                label.htmlFor = 'CBX' + name;
-                label.classList.add("form-check-label");
-                label.appendChild(document.createTextNode(name));
-                document.querySelector(location).appendChild(checkbox);
-                document.querySelector(location).appendChild(label);
             }
 
-            function add_MT_rel_filter(location) {
-                var dropdownHtml = '<select class="form-control-sm fix_size" id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
-                $(location).append(dropdownHtml);
-                $('#columnFilter').change(function () {
-                    var filterValue = $(this).val();
-                    table.column(5).search(filterValue).draw();
-                });
+            function generateOldReport(link) {
+                const roomIDs = table.rows({selected: true}).data().toArray().map(row => row[0]);
+                if (roomIDs.length === 0) {
+                    alert("Kein Raum ausgewählt!");
+                } else {
+                    window.open(`/${link}.php?roomID=${roomIDs.join(',')}`);
+                }
             }
 
-            function move_dt_search(location) {
-                var dt_searcher = document.getElementById("dt-search-0");
-                dt_searcher.parentNode.removeChild(dt_searcher);
-                document.getElementById(location).appendChild(dt_searcher);
-                dt_searcher.classList.add("fix_size");
+            function toggleOldReports() {
+                $('#HeaderTabelleCard2').slideToggle();
             }
 
-            function init_dt() {
-                table = $('#tableRooms').DataTable({
-                    "paging": false,
-                    "columnDefs": [
-                        {
-                            "targets": [0],
-                            "visible": false,
-                            "searchable": false
-                        }
-                    ],
-                    "orderCellsTop": true,
-                    "order": [[1, "asc"]],
-                    "scrollY": '75vh',
-                    "scrollCollapse": true,
-                    dom: 'frti',
-                    select: {
-                        style: 'multi'
-                    },
-                    language: {
-                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
-                        search: "",
-                        searchBuilder: {
-                            label: "Search",
-                            depthLimit: 3
-                        }
-                    },
-                    keys: true
-                });
-                table.on('key', function (e, datatable, key, cell, originalEvent) {
-                    if ([37, 38, 39, 40].includes(key)) {
-                        $(cell.node()).click();
-                    }
-                });
-            }
-
-            function init_btns_old(location) {
-                let spacer = {extend: 'spacer', style: 'bar'};
-                new $.fn.dataTable.Buttons(table, {
-                    buttons: [
-                        btns.map(btn => ({
-                                text: btn.text,
-                                className: "btn-xs " + btn.link + " fix_size",
-                                action: function () {
-                                    var count = table.rows({selected: true}).data();
-                                    var roomIDs = [];
-                                    for (var i = 0; i < count.length; i++) {
-                                        roomIDs.push(count[i][0]);
-                                    }
-                                    if (roomIDs.length === 0) {
-                                        alert("Kein Raum ausgewählt!");
-                                    } else {
-                                        window.open('/' + btn.link + '.php?roomID=' + roomIDs);
-                                    }
-                                }}))
-                    ]}).container().appendTo($(location));
-            }
-
-            function init_btns(location) {
-                let spacer = {extend: 'spacer', style: 'bar'};
-                new $.fn.dataTable.Buttons(table, {
-                    buttons: [
-                        {extend: 'searchBuilder', label: "Search"},
-                        spacer,
-                        {
-                            text: 'All',
-                            action: function () {
-                                table.rows().select();
-                            }
-                        }, {
-                            text: 'Visible',
-                            action: function () {
-                                table.rows(':visible').select();
-                            }
-                        },
-                        {
-                            text: 'None',
-                            action: function () {
-                                table.rows().deselect();
-                            }
-                        },
-
-                        spacer,
-                        {
-                            text: "BAUANGABEN A3",
-                            action: function () {
-                                var count = table.rows({selected: true}).data();
-                                var roomIDs = [];
-                                for (var i = 0; i < count.length; i++) {
-                                    roomIDs.push(count[i][0]);
-                                }
-                                if (roomIDs.length === 0) {
-                                    alert("Kein Raum ausgewählt!");
-                                } else {
-                                    let date = getDate();
-//                                    const bools2int2str = report_input_bools.map((bool) => (bool ? 1 : 0)).join(',');
-                                    window.open('/pdf_createBauangabenBericht_A3Qeer.php?roomID=' + roomIDs + "&date=" + date);// + "&PDFinputs=" + bools2int2str 
-//                                                            window.open('/pdf_createBericht_custom.php?roomID=' + roomIDs + "&PDFinputs=" + bools2int2str);  //custom bericht page ! 
-                                }
-                            }
-                        }, spacer
-                                //,{
-//                            text: "Bauang. Text",
-//                            action: function () {
-//                                var count = table.rows({selected: true}).data();
-//                                var roomIDs = [];
-//                                for (var i = 0; i < count.length; i++) {
-//                                    roomIDs.push(count[i][0]);
-//                                }
-//                                if (roomIDs.length === 0) {
-//                                    alert("Kein Raum ausgewählt!");
-//                                } else {
-//                                    let date = getDate();
-//                                    const bools2int2str = report_input_bools.map((bool) => (bool ? 1 : 0)).join(',');
-//                                    window.open('/pdf_createVBM_Bericht.php?date=' + date + "&roomID=" + roomIDs);// + "&PDFinputs=" + bools2int2str 
-////                                                            window.open('/pdf_createBericht_custom.php?roomID=' + roomIDs + "&PDFinputs=" + bools2int2str);  //custom bericht page ! 
-//                                }
-//                            }
-//                        },
-//                        spacer
-                    ]}).container().appendTo($(location));
-            }
-
-            function add_btn_vis_checkbox_functionality(name) {
-                document.getElementById("CBX" + name).addEventListener('change', function () {
-                    $('#HeaderTabelleCard2').slideToggle();
-                });
-            }
-//            const report_input_bool_labels = ["Bestandsäume(x)", "Bestands-MT(x)", "BO-Beschr.", "Allgemein", "ET", "HT", "MEDGAS", "BauStatik", "MT-Tabelle", "MT-Liste", "LAB(x)"];
-//            let report_input_bools = new Array(report_input_bool_labels.length).fill(true);
-//            function add_Berichtinput_checkboxes(location) {
-//                for (let i = 0; i < report_input_bool_labels.length; i++) {
-//                    addCheckbox(location, report_input_bool_labels[i], "report_input");
-//                }
-//                const checkboxes = document.querySelectorAll('.report_input');
-//                checkboxes.forEach((checkbox, index) => {
-//                    checkbox.addEventListener('change', () => {
-//                        report_input_bools[index] = checkbox.checked;
-//                        console.log(`Checkbox "${report_input_bool_labels[index]}" is now ${checkbox.checked}`);
-//                    });
-//                });
-//            }
+            /* 
+             
+             var table;
+             const btns = [
+             {text: "Raumbuch-PDF", link: "pdf_createRoombookPDF"},
+             {text: "Raumbuch-0-PDF", link: "pdf_createRoombookWithout0PDF"},
+             {text: "Raumbuch-ohne Bestand-PDF", link: "pdf_createRoombookWithoutBestandPDF"},
+             {text: "Raumbuch-0-ohne Bestand-PDF", link: "pdf_createRoombookWithout0WothoutBestandPDF"},
+             {text: "Raumbuch-inkl Bauangaben-0-PDF", link: "pdf_createRoombookWithBauangabenWithout0PDF"},
+             {text: "Bauangaben-PDF V1", link: "pdf_createBauangabenPDF"},
+             {text: "Bauangaben-PDF V2", link: "pdf_createBauangabenV2PDF"},
+             {text: "Bauangaben ohne Elemente-PDF", link: "pdf_createBauangabenWithoutElementsPDF"},
+             {text: "Bauangaben Lab-PDF", link: "pdf_createBauangabenLabPDF"},
+             {text: "Bauangaben Lab-Kurz-PDF'", link: "pdf_createBauangabenLabKompaktPDF"},
+             {text: "Bauangaben Lab-ENT-PDF", link: "pdf_createBauangabenLabEntPDF"},
+             {text: "Bauangaben Lab-EIN-PDF", link: "pdf_createBauangabenLabEinrPDF_1"},
+             {text: "BO-PDF", link: "pdf_createBOPDF"},
+             {text: "BauangabenDetail-PDF", link: "pdf_createBauangabenDetailPDF"},
+             {text: "VE-Gesamt-PDF", link: "pdf_createBericht_VE_PDF"},
+             {text: "ENT-Gesamt-PDF", link: "pdf_createBericht_ENT_PDF"},
+             {text: "Nutzer Formular", link: "pdf_createUserFormPDF"}
+             ];
+             
+             $(document).ready(function () {
+             init_dt();
+             add_MT_rel_filter('#sub1');
+             add_date_select();
+             init_btns_old('#HeaderTabelleCard2');
+             setTimeout(function () {
+             move_dt_search('sub1');
+             addCheckbox('#sub3', "Old Reports");
+             add_btn_vis_checkbox_functionality("Show-old-Reports");
+             }, 500);
+             init_btns('#sub2');
+             });
+             
+             function add_date_select() {
+             var cardHeader = document.getElementById('sub3');
+             var newElement = document.createElement('div');
+             newElement.className = 'form-check-inline';
+             newElement.innerHTML = '<div class="form-check-inline"><label for="dateSelect"> </label> <input type="date" id="dateSelect" name="dateSelect"><div class="spacer"></div></div>';
+             cardHeader.appendChild(newElement);
+             }
+             
+             function getDate() {
+             var dateInput = $("#dateSelect").val();
+             var date = dateInput ? new Date(dateInput) : new Date();//                                    console.log("Date: ", date);
+             var day = date.getDate();//                                    console.log("Day: ", day);
+             var month = date.getMonth() + 1; // Months are zero based //                                    console.log("Month: ", month);
+             var year = date.getFullYear();//                                    console.log("Year: ", year);
+             day = ('0' + day).slice(-2);//                                    console.log("Formatted Day: ", day);
+             month = ('0' + month).slice(-2);//                                    console.log("Formatted Month: ", month);
+             var formattedDate = day + '-' + month + '-' + year;
+             console.log("Formatted Date: ", formattedDate);
+             return formattedDate;
+             }
+             
+             function addCheckbox(location, name, css = "") {
+             var checkbox = document.createElement('input');
+             checkbox.type = 'checkbox';
+             checkbox.id = 'CBX' + name;
+             checkbox.checked = false;
+             checkbox.classList.add("form-check-input");
+             if (css.trim() !== "") {
+             checkbox.classList.add(css);
+             }
+             var label = document.createElement('label');
+             label.htmlFor = 'CBX' + name;
+             label.classList.add("form-check-label");
+             label.appendChild(document.createTextNode(name));
+             document.querySelector(location).appendChild(checkbox);
+             document.querySelector(location).appendChild(label);
+             }
+             
+             function add_MT_rel_filter(location) {
+             var dropdownHtml = '<select class="form-control-sm fix_size" id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
+             $(location).append(dropdownHtml);
+             $('#columnFilter').change(function () {
+             var filterValue = $(this).val();
+             table.column(5).search(filterValue).draw();
+             });
+             }
+             
+             function move_dt_search(location) {
+             var dt_searcher = document.getElementById("dt-search-0");
+             dt_searcher.parentNode.removeChild(dt_searcher);
+             document.getElementById(location).appendChild(dt_searcher);
+             dt_searcher.classList.add("fix_size");
+             }
+             
+             function init_dt() {
+             table = $('#tableRooms').DataTable({
+             "paging": false,
+             "columnDefs": [
+             {
+             "targets": [0],
+             "visible": false,
+             "searchable": false
+             }
+             ],
+             "orderCellsTop": true,
+             "order": [[1, "asc"]],
+             "scrollY": '75vh',
+             "scrollCollapse": true,
+             dom: 'frti',
+             select: {
+             style: 'multi'
+             },
+             language: {
+             "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
+             search: "",
+             searchBuilder: {
+             label: "Search",
+             depthLimit: 3
+             }
+             },
+             keys: true
+             });
+             table.on('key', function (e, datatable, key, cell, originalEvent) {
+             if ([37, 38, 39, 40].includes(key)) {
+             $(cell.node()).click();
+             }
+             });
+             }
+             
+             function init_btns_old(location) {
+             let spacer = {extend: 'spacer', style: 'bar'};
+             new $.fn.dataTable.Buttons(table, {
+             buttons: [
+             btns.map(btn => ({
+             text: btn.text,
+             className: "btn-xs " + btn.link + " fix_size",
+             action: function () {
+             var count = table.rows({selected: true}).data();
+             var roomIDs = [];
+             for (var i = 0; i < count.length; i++) {
+             roomIDs.push(count[i][0]);
+             }
+             if (roomIDs.length === 0) {
+             alert("Kein Raum ausgewählt!");
+             } else {
+             window.open('/' + btn.link + '.php?roomID=' + roomIDs);
+             }
+             }}))
+             ]}).container().appendTo($(location));
+             }
+             
+             function init_btns(location) {
+             let spacer = {extend: 'spacer', style: 'bar'};
+             new $.fn.dataTable.Buttons(table, {
+             buttons: [
+             {extend: 'searchBuilder', label: "Search"},
+             spacer,
+             {
+             text: 'All',
+             action: function () {
+             table.rows().select();
+             }
+             }, {
+             text: 'Visible',
+             action: function () {
+             table.rows(':visible').select();
+             }
+             },
+             {
+             text: 'None',
+             action: function () {
+             table.rows().deselect();
+             }
+             },
+             
+             spacer,
+             {
+             text: "BAUANGABEN A3",
+             action: function () {
+             var count = table.rows({selected: true}).data();
+             var roomIDs = [];
+             for (var i = 0; i < count.length; i++) {
+             roomIDs.push(count[i][0]);
+             }
+             if (roomIDs.length === 0) {
+             alert("Kein Raum ausgewählt!");
+             } else {
+             let date = getDate();
+             //                                    const bools2int2str = report_input_bools.map((bool) => (bool ? 1 : 0)).join(',');
+             window.open('/pdf_createBauangabenBericht_A3Qeer.php?roomID=' + roomIDs + "&date=" + date);// + "&PDFinputs=" + bools2int2str 
+             //                                                            window.open('/pdf_createBericht_custom.php?roomID=' + roomIDs + "&PDFinputs=" + bools2int2str);  //custom bericht page ! 
+             }
+             }
+             }, spacer
+             //,{
+             //                            text: "Bauang. Text",
+             //                            action: function () {
+             //                                var count = table.rows({selected: true}).data();
+             //                                var roomIDs = [];
+             //                                for (var i = 0; i < count.length; i++) {
+             //                                    roomIDs.push(count[i][0]);
+             //                                }
+             //                                if (roomIDs.length === 0) {
+             //                                    alert("Kein Raum ausgewählt!");
+             //                                } else {
+             //                                    let date = getDate();
+             //                                    const bools2int2str = report_input_bools.map((bool) => (bool ? 1 : 0)).join(',');
+             //                                    window.open('/pdf_createVBM_Bericht.php?date=' + date + "&roomID=" + roomIDs);// + "&PDFinputs=" + bools2int2str 
+             ////                                                            window.open('/pdf_createBericht_custom.php?roomID=' + roomIDs + "&PDFinputs=" + bools2int2str);  //custom bericht page ! 
+             //                                }
+             //                            }
+             //                        },
+             //                        spacer
+             ]}).container().appendTo($(location));
+             }
+             
+             function add_btn_vis_checkbox_functionality(name) {
+             document.getElementById("CBX" + name).addEventListener('change', function () {
+             $('#HeaderTabelleCard2').slideToggle();
+             });
+             }
+             //            const report_input_bool_labels = ["Bestandsäume(x)", "Bestands-MT(x)", "BO-Beschr.", "Allgemein", "ET", "HT", "MEDGAS", "BauStatik", "MT-Tabelle", "MT-Liste", "LAB(x)"];
+             //            let report_input_bools = new Array(report_input_bool_labels.length).fill(true);
+             //            function add_Berichtinput_checkboxes(location) {
+             //                for (let i = 0; i < report_input_bool_labels.length; i++) {
+             //                    addCheckbox(location, report_input_bool_labels[i], "report_input");
+             //                }
+             //                const checkboxes = document.querySelectorAll('.report_input');
+             //                checkboxes.forEach((checkbox, index) => {
+             //                    checkbox.addEventListener('change', () => {
+             //                        report_input_bools[index] = checkbox.checked;
+             //                        console.log(`Checkbox "${report_input_bool_labels[index]}" is now ${checkbox.checked}`);
+             //                    });
+             //                });
+             //            }
+             */
         </script>
     </body>
 </html>
