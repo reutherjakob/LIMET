@@ -26,10 +26,7 @@ init_page_serversides();
             .table>thead>tr>th {
                 background-color: rgba(100, 140, 25, 0.15);
             }
-            .fix_size{
-                height: 40px !important;
-                font-size: 15px;
-            }
+
             .fix_size{
                 padding-left: 0.3vw  !important;
                 padding-right:  0.3vw   !important;
@@ -37,7 +34,8 @@ init_page_serversides();
                 padding-bottom:  0.2vw   !important;
                 margin-right: 0.05vw !important ;
                 margin-left:  0.05vw !important ;
-                height: 35px;
+                height: 30px;
+                font-size: 15px;
             }
             .btn {
                 padding-left: 0.2vw  !important;
@@ -46,12 +44,21 @@ init_page_serversides();
                 padding-bottom:  0.1vw   !important;
                 margin-right:  1px  !important ;
                 margin-left: 1px !important ;
-                height: 35px !important;
+                height: 30px !important;
             }
-/*            .card-body {
-                padding: 0;
-
-            }*/
+            .dt-button {
+                padding-left: 0.2vw  !important;
+                padding-right:  0.2vw   !important;
+                padding-top:  0.1vw   !important;
+                padding-bottom:  0.1vw   !important;
+                margin-right:  1px  !important ;
+                margin-left: 1px !important ;
+                height: 30px !important;
+            }
+            /*            .card-body {
+                            padding: 0;
+            
+                        }*/
         </style>
 
     </head>
@@ -60,8 +67,18 @@ init_page_serversides();
         <div class="container-fluid" >
             <div id="limet-navbar" class=' '> </div> 
             <div class="mt-1 card">
-                <div class="card-header  d-inline-flex align-items-top form-check-inline" id ="HeaderTabelleCard">                                       
-                </div> 
+                <div class="card-header d-flex border-light align-items-center" style="height:4px !important; font-size: 10px;"> 
+
+                    <div class="col-md-4 align-items-top"> Räume im Projekt</div>
+                    <div class="col-md-4 align-items-top">Select</div>
+                    <div class="col-md-4 align-items-center  "></div>
+
+                </div>
+                <div class="card-header d-inline-flex justify-content-start align-items-bottom form-check-inline"  style="height: 33px;" id ="HeaderTabelleCard">                                       
+                    <div class="col-md-3 align-items-top justify-content-start form-check-inline" id = "sub1"></div>
+                    <div class="col-md-6  align-items-top justify-content-start form-check-inline" id = "sub2"></div>
+                    <div class="col-md-3 align-items-top justify-content-end form-check-inline" id = "sub3"></div>
+                </div>
                 <div class="card-header form-check-inline justify-content" style="flex-wrap:nowrap; display:none;" id ="HeaderTabelleCard2">                                            
                 </div>
                 <div class="card-body px-0">
@@ -136,25 +153,22 @@ init_page_serversides();
                 {text: "ENT-Gesamt-PDF", link: "pdf_createBericht_ENT_PDF"},
                 {text: "Nutzer Formular", link: "pdf_createUserFormPDF"}
             ];
-            const report_input_bool_labels = ["Bestandsäume(x)", "Bestands-MT(x)", "BO-Beschr.", "Allgemein", "ET", "HT", "MEDGAS", "BauStatik", "MT-Tabelle", "MT-Liste", "LAB(x)"];
-            let report_input_bools = new Array(report_input_bool_labels.length).fill(true);
 
             $(document).ready(function () {
                 init_dt();
-                add_MT_rel_filter('#HeaderTabelleCard');
-
+                add_MT_rel_filter('#sub1');
+                add_date_select();
+                init_btns_old('#HeaderTabelleCard2');
                 setTimeout(function () {
-                    move_dt_search('HeaderTabelleCard');
-                    init_btns('#HeaderTabelleCard');
-                    add_date_select();
-                    addCheckbox('#HeaderTabelleCard', "Show-old-Reports");
+                    move_dt_search('sub1');
+                    addCheckbox('#sub3', "Show-old-Reports");
                     add_btn_vis_checkbox_functionality("Show-old-Reports");
-                    init_btns_old('#HeaderTabelleCard2');
-                }, 200);
+                }, 500);
+                init_btns('#sub2');
             });
 
             function add_date_select() {
-                var cardHeader = document.getElementById('HeaderTabelleCard');
+                var cardHeader = document.getElementById('sub3');
                 var newElement = document.createElement('div');
                 newElement.className = 'form-check-inline';
                 newElement.innerHTML = '<div class="form-check-inline"><label for="dateSelect"> </label> <input type="date" id="dateSelect" name="dateSelect"><div class="spacer"></div></div>';
@@ -173,21 +187,6 @@ init_page_serversides();
                 console.log("Formatted Date: ", formattedDate);
                 return formattedDate;
             }
-
-            function add_Berichtinput_checkboxes(location) {
-                for (let i = 0; i < report_input_bool_labels.length; i++) {
-                    addCheckbox(location, report_input_bool_labels[i], "report_input");
-                }
-                const checkboxes = document.querySelectorAll('.report_input');
-                checkboxes.forEach((checkbox, index) => {
-                    checkbox.addEventListener('change', () => {
-                        report_input_bools[index] = checkbox.checked;
-                        console.log(`Checkbox "${report_input_bool_labels[index]}" is now ${checkbox.checked}`);
-                    });
-                });
-            }
-
-
 
             function addCheckbox(location, name, css = "") {
                 var checkbox = document.createElement('input');
@@ -220,16 +219,11 @@ init_page_serversides();
                 dt_searcher.parentNode.removeChild(dt_searcher);
                 document.getElementById(location).appendChild(dt_searcher);
                 dt_searcher.classList.add("fix_size");
-//                                        var move = $("#dt-search-0");
-//                                        $(location).append(move);
             }
 
             function init_dt() {
                 table = $('#tableRooms').DataTable({
                     "paging": false,
-//                                            pageLength: 20,
-//                                            lengthChange:true,
-
                     "columnDefs": [
                         {
                             "targets": [0],
@@ -254,14 +248,12 @@ init_page_serversides();
                         }
                     },
                     keys: true
-
                 });
                 table.on('key', function (e, datatable, key, cell, originalEvent) {
                     if ([37, 38, 39, 40].includes(key)) {
                         $(cell.node()).click();
                     }
                 });
-
             }
 
             function init_btns_old(location) {
@@ -291,7 +283,7 @@ init_page_serversides();
                 new $.fn.dataTable.Buttons(table, {
                     buttons: [
                         {extend: 'searchBuilder', label: "Search"},
-                        {extend: 'spacer', text: "SELECT:", style: 'bar'},
+                        spacer,
                         {
                             text: 'All',
                             action: function () {
@@ -323,42 +315,53 @@ init_page_serversides();
                                     alert("Kein Raum ausgewählt!");
                                 } else {
                                     let date = getDate();
-                                    const bools2int2str = report_input_bools.map((bool) => (bool ? 1 : 0)).join(',');
+//                                    const bools2int2str = report_input_bools.map((bool) => (bool ? 1 : 0)).join(',');
                                     window.open('/pdf_createBauangabenBericht_A3Qeer.php?roomID=' + roomIDs + "&date=" + date);// + "&PDFinputs=" + bools2int2str 
 //                                                            window.open('/pdf_createBericht_custom.php?roomID=' + roomIDs + "&PDFinputs=" + bools2int2str);  //custom bericht page ! 
                                 }
                             }
-                        }, spacer,
-                        {
-                            text: "Bauang. Text",
-                            action: function () {
-                                var count = table.rows({selected: true}).data();
-                                var roomIDs = [];
-                                for (var i = 0; i < count.length; i++) {
-                                    roomIDs.push(count[i][0]);
-                                }
-                                if (roomIDs.length === 0) {
-                                    alert("Kein Raum ausgewählt!");
-                                } else {
-                                    let date = getDate();
-                                    const bools2int2str = report_input_bools.map((bool) => (bool ? 1 : 0)).join(',');
-                                    window.open('/pdf_createVBM_Bericht.php?date=' + date + "&roomID=" + roomIDs);// + "&PDFinputs=" + bools2int2str 
-//                                                            window.open('/pdf_createBericht_custom.php?roomID=' + roomIDs + "&PDFinputs=" + bools2int2str);  //custom bericht page ! 
-                                }
-                            }
-                        },
-                        spacer
+                        }, spacer
+                                //,{
+//                            text: "Bauang. Text",
+//                            action: function () {
+//                                var count = table.rows({selected: true}).data();
+//                                var roomIDs = [];
+//                                for (var i = 0; i < count.length; i++) {
+//                                    roomIDs.push(count[i][0]);
+//                                }
+//                                if (roomIDs.length === 0) {
+//                                    alert("Kein Raum ausgewählt!");
+//                                } else {
+//                                    let date = getDate();
+//                                    const bools2int2str = report_input_bools.map((bool) => (bool ? 1 : 0)).join(',');
+//                                    window.open('/pdf_createVBM_Bericht.php?date=' + date + "&roomID=" + roomIDs);// + "&PDFinputs=" + bools2int2str 
+////                                                            window.open('/pdf_createBericht_custom.php?roomID=' + roomIDs + "&PDFinputs=" + bools2int2str);  //custom bericht page ! 
+//                                }
+//                            }
+//                        },
+//                        spacer
                     ]}).container().appendTo($(location));
             }
 
             function add_btn_vis_checkbox_functionality(name) {
                 document.getElementById("CBX" + name).addEventListener('change', function () {
                     $('#HeaderTabelleCard2').slideToggle();
-
                 });
             }
+//            const report_input_bool_labels = ["Bestandsäume(x)", "Bestands-MT(x)", "BO-Beschr.", "Allgemein", "ET", "HT", "MEDGAS", "BauStatik", "MT-Tabelle", "MT-Liste", "LAB(x)"];
+//            let report_input_bools = new Array(report_input_bool_labels.length).fill(true);
+//            function add_Berichtinput_checkboxes(location) {
+//                for (let i = 0; i < report_input_bool_labels.length; i++) {
+//                    addCheckbox(location, report_input_bool_labels[i], "report_input");
+//                }
+//                const checkboxes = document.querySelectorAll('.report_input');
+//                checkboxes.forEach((checkbox, index) => {
+//                    checkbox.addEventListener('change', () => {
+//                        report_input_bools[index] = checkbox.checked;
+//                        console.log(`Checkbox "${report_input_bool_labels[index]}" is now ${checkbox.checked}`);
+//                    });
+//                });
+//            }
         </script>
-
     </body>
-
 </html>

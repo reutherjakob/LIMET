@@ -22,6 +22,10 @@ $e_C = $SB / 3;
 $e_C_3rd = $e_C / 3;
 $e_C_2_3rd = $e_C - $e_C_3rd;
 
+$e_D = $SB / 6;
+$e_D_3rd = $e_C / 3;
+$e_D_2_3rd = $e_D - $e_D_3rd;
+
 $einzug_anm = 5;
 $font_size = 6;
 $block_header_height = 5;
@@ -38,7 +42,7 @@ class MYPDF extends TCPDF {
             $this->Ln();
             $this->cell(0, 0, '', 'B', 0, 'L');
         } else { // Titelblatt
-            $Disclaimer_txt = "Alle Angaben beziehen sich exklusiv auf die gelisteten Räume, Geräte und Anlagen. Die folgenden Angaben beinhalten KEINE weitere im Raum verortete Medizin Technik. ";
+            $Disclaimer_txt = "Alle Angaben beziehen sich exklusiv auf die im jeweiligen Raume angeführten Geräte und Anlagen. Die folgenden Angaben beinhalten KEINE weitere im Raum verortete Medizin Technik. ";
             $Einzug = 10;
             $this->SetFont('helvetica', 'B', 15);
             $this->SetY(60);
@@ -115,7 +119,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         if ($rowcounter > 0) {
             $pdf->Ln(1);
             check_4_new_page($pdf, $rowcounter / 4 * $font_size);
-            block_label($pdf, "Med.-tech.", $block_header_height, $SB);
+            block_label($pdf, "Medizintechnische Einrichtung", $block_header_height, $SB);
             make_MT_list2($pdf, $SB, $resultat_parametsersltX);
         }
 //        $roomName = $row['Raumbezeichnung']; // Replace with actual room name variable
@@ -161,7 +165,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 //      
         if (($row["AR_Empf_Breite_cm"] > 0 || $row["AR_Empf_Tiefe_cm"] > 0 || $row["AR_Empf_Hoehe_cm"] > 0) || ($row['Laseranwendung'] || $row['Strahlenanwendung'])) {
             $anm = "Technisch notwendige Raumbemessungsangaben sind mindestens notwendig, um die Nutzung zu gewährleisten. Es ist empfohlen, mehr Fläche zu planen.";
-            check_4_new_page($pdf, getAnmHeight($pdf, $anm, $SB) + $font_size * 1);
+            check_4_new_page($pdf, getAnmHeight($pdf, $anm, $SB) + $font_size * 2);
 
             block_label($pdf, "Allgemein", $block_header_height, $SB);
 
@@ -177,7 +181,11 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
                 multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "Laseranwendung", "Laseranw.: ", array());
                 hackerlA3($pdf, $font_size, $e_C_3rd, $row['Laseranwendung'], "JA");
-                $pdf->Ln($horizontalSpacerLN);
+                $pdf->Ln($horizontalSpacerLN2);
+                if ($row['Strahlenanwendung']) {
+                    anm_txt($pdf,"Baulicher Strahlenschutz und Strahlenwarnleuchte außen vorgesehen."  ,$SB, $einzug_anm);
+                    $pdf->Ln($horizontalSpacerLN);
+                }
             }
             if ($row["AR_Empf_Breite_cm"] > 0 || $row["AR_Empf_Tiefe_cm"] > 0 || $row["AR_Empf_Hoehe_cm"] > 0) {
                 multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "AR_Empf_Breite_cm", "Mind. Raumbreite: ", array());
@@ -186,7 +194,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                 multicell_with_nr($pdf, $row["AR_Empf_Tiefe_cm"], "cm", $font_size, $e_C_3rd);
                 multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "AR_Empf_Hoehe_cm", "Mind. Raumhöhe: ", array());
                 multicell_with_nr($pdf, $row["AR_Empf_Hoehe_cm"], "cm", $font_size, $e_C_3rd);
-                $pdf->Ln($horizontalSpacerLN);
+                $pdf->Ln($horizontalSpacerLN2);
                 anm_txt($pdf, $anm, $SB, $einzug_anm);
             }
             $pdf->Ln(1);
@@ -194,7 +202,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
 ////// ---------- ELEKTRO ---------
         check_4_new_page($pdf, getAnmHeight($pdf, $row['Anmerkung Elektro'], $SB) + $font_size * 3);
-        block_label($pdf, "Elektro", $block_header_height, $SB);
+        block_label($pdf, "Elektrotechnik", $block_header_height, $SB);
 
         multicell_text_hightlight($pdf, $e_C_3rd, $font_size, "Anwendungsgruppe", "ÖVE8101:", array());
         multicell_with_str($pdf, $row['Anwendungsgruppe'], $e_C_3rd, "");
@@ -208,17 +216,35 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         }
         multicell_with_str($pdf, $outsr, $e_C_3rd, "");
 //
-//        $pdf->Ln($horizontalSpacerLN);
-        multicell_text_hightlight($pdf, 2 * $e_C_2_3rd, $font_size, " ", "Max. Zuleitung Innenwiderstand Gerät: ", array());
+//        $pdf->Ln($horizontalSpacerLN2);
+        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, " ", "Netzinnenwiederstand: ", array());
         multicell_with_nr($pdf, $parameterarray[$valueOfRoomID], " mOhm", $font_size, $e_C_3rd);
-        $pdf->Ln($horizontalSpacerLN);
+
+        $pdf->Ln($horizontalSpacerLN2);
+
+        multicell_text_hightlight($pdf, $e_D_2_3rd, $font_size, "AV", "AV: ", array());
+        hackerlA3($pdf, $font_size, $e_D_3rd, $row['AV'], "JA");
+
+        multicell_text_hightlight($pdf, $e_D_2_3rd, $font_size, "SV", "SV: ", array());
+        hackerlA3($pdf, $font_size, $e_D_3rd, $row['SV'], "JA");
+
+        multicell_text_hightlight($pdf, $e_D_2_3rd, $font_size, "ZSV", "ZSV: ", array());
+        hackerlA3($pdf, $font_size, $e_D_3rd, $row['ZSV'], "JA");
+
+        multicell_text_hightlight($pdf, $e_D_2_3rd, $font_size, "USV", "USV: ", array());
+        hackerlA3($pdf, $font_size, $e_D_3rd, $row['USV'], "JA");
+
+        multicell_text_hightlight($pdf, 3 * $e_D_2_3rd, $font_size, "IT Anbindung", "IT Anschl.: ", array());
+        hackerlA3($pdf, $font_size, $e_D_3rd, $row['IT Anbindung'], "JA");
+        $pdf->Ln($horizontalSpacerLN2);
+
         anm_txt($pdf, $row['Anmerkung Elektro'], $SB, $einzug_anm);
         $pdf->Ln(1);
 
 //// ---------- HAUSTEK ---------
         $rowHeightComment = $pdf->getStringHeight($SB, $row['Anmerkung HKLS'], false, true, '', 1);
         check_4_new_page($pdf, $rowHeightComment + 10);
-        block_label($pdf, "Haustech.", $block_header_height, $SB);
+        block_label($pdf, "Haustechnik", $block_header_height, $SB);
 
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "H6020", "H6020: ", array());
         multicell_with_str($pdf, $row['H6020'], $e_C_3rd, "");
@@ -233,7 +259,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "HT_Raumtemp Sommer °C", "max. Raumtemp.:", array());
         multicell_with_str($pdf, $row['HT_Raumtemp Sommer °C'], $e_C_3rd, "°C");
 
-        $pdf->Ln($horizontalSpacerLN);
+        $pdf->Ln($horizontalSpacerLN2);
 
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, " ", "Kühlwasser: ", array());
         hackerlA3($pdf, $font_size, $e_C_3rd, $row['HT_Kühlwasser'], "JA");
@@ -241,11 +267,14 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, " ", "Max Temp. Gradient: ", array());
         multicell_with_nr($pdf, $row['HT_Tempgradient_Ch'], " °C/h", $font_size, $e_C_3rd);
 
-        $pdf->Ln($horizontalSpacerLN);
+        $pdf->Ln($horizontalSpacerLN2);
         anm_txt($pdf, $row['Anmerkung HKLS'], $SB, $einzug_anm);
         if (( "" != $row['Anmerkung BauStatik'] && $row['Anmerkung BauStatik'] != "keine Angaben MT") || ($row["AR_Flaechenlast_kgcm2"] !== 0 || $row["AR_Flaechenlast_kgcm2"] !== "-")) {
             if (!check_4_new_page($pdf, getAnmHeight($pdf, $row['Anmerkung BauStatik'], $SB))) {
-                $pdf->Ln($horizontalSpacerLN);
+                if( $row['Anmerkung HKLS']!=="" ){
+                $pdf->Ln($horizontalSpacerLN);}
+                else{    $pdf->Ln(2);}
+                
             } else {
                 $pdf->Ln(2);
                 balken($pdf, $horizontalSpacerLN, $SB);
@@ -255,18 +284,19 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 ////  ------- BauStatik ---------
 
 
-        if (( "" != $row['Anmerkung BauStatik'] && $row['Anmerkung BauStatik'] != "keine Angaben MT") || ($row["AR_Flaechenlast_kgcm2"] !== 0 || $row["AR_Flaechenlast_kgcm2"] !== "-")) {
+        if (( "" != $row['Anmerkung BauStatik'] && $row['Anmerkung BauStatik'] != "keine Angaben MT") || ($row["AR_Flaechenlast_kgcm2"] !== 0 || $row["AR_Flaechenlast_kgcm2"] !== "-" || $row['Fussboden OENORM B5220'] !== "kA" )) {
             check_4_new_page($pdf, 10 + $block_header_height + getAnmHeight($pdf, $row['Anmerkung BauStatik'], $SB));
-            block_label($pdf, "Baustatik", $block_header_height, $SB);
+            block_label($pdf, "Bau/Statik/Schwingungsklasse", $block_header_height, $SB);
 
-//         multicell_text_hightlight($pdf, 2*  $e_C_2_3rd, $font_size, " ", "Maximaler Zuleitung Innenwiderstand: ", array());
-//        multicell_with_nr($pdf, $parameterarray[$valueOfRoomID], " mOhm", $font_size, $e_C_3rd);
+            multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, " ", "Boden B5220: ", array());
+            multicell_with_nr($pdf, $row['Fussboden OENORM B5220'], "", $font_size, $e_C_3rd);
+
             multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, " ", "Maximale Flächenlast: ", array());
             multicell_with_nr($pdf, $row["AR_Flaechenlast_kgcm2"], " kg/cm2", $font_size, $e_C_3rd);
 
-            $pdf->Ln($horizontalSpacerLN);
+            $pdf->Ln($horizontalSpacerLN2);
             anm_txt($pdf, $row['Anmerkung BauStatik'], $SB, $einzug_anm);
-            $pdf->Ln($horizontalSpacerLN);
+            $pdf->Ln($horizontalSpacerLN2);
 
             if (!check_4_new_page($pdf, 30 + $block_header_height + getAnmHeight($pdf, $row['Anmerkung BauStatik'], $SB))) {
                 balken($pdf, 2, $SB);

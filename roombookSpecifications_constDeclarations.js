@@ -20,8 +20,8 @@ const buttonRanges = [
     {name: 'LAB', start: 62, end: 144, longName: 'Labor'},
     {name: '-GAS', start: 72, end: 113, longName: 'L-GAS'},
     {name: '-ET', start: 114, end: 124, longName: 'L-ET'},
-    {name: '-HT', start: 125, end: 134, longName: 'L-HT'},
-    {name: '-H2O', start: 135, end: 144, longName: 'L-H2O'}
+    {name: '-HT', start: 125, end: 135, longName: 'L-HT'},
+    {name: '-H2O', start: 136, end: 144, longName: 'L-H2O'}
 ];
 
 const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and the CPY/save methods

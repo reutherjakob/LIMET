@@ -636,6 +636,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             }
 
                             function init_dt() {
+                                let savestate=  document.getElementById('settings_save_state').checked||  document.getElementById('settings_save_state_4all_projects').checked;
+                                console.log(savestate);
                                 table = new DataTable('#table_rooms', {
                                     ajax: {
                                         url: 'get_rb_specs_data.php',
@@ -654,12 +656,12 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                         searchBuilder: {
                                             title: null,
                                             depthLimit: 2,
-                                            stateSave: document.getElementById('settings_save_state').checked
+                                            stateSave:savestate
                                         }
                                     },
                                     keys: true,
                                     order: [[3, 'asc']],
-                                    stateSave: document.getElementById('settings_save_state').checked,
+                                    stateSave: savestate,
                                     info: true,
                                     paging: true,
                                     pagingType: "simple_numbers",
