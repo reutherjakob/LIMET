@@ -91,12 +91,13 @@ if(!isset($_SESSION["username"]))
     var elementID = <?php echo $elementID; ?>;
     $(document).ready(function() {
         $('#tableRoomsWithoutElement').DataTable( {
+            
             "columnDefs": [
                 {
                     "targets": [ 0 ],
                     "visible": false,
                     "searchable": false
-                }],
+                }], 
             "paging": true,
             "searching": true,
             "info": false,
@@ -111,8 +112,8 @@ if(!isset($_SESSION["username"]))
         
         $('#tableRoomsWithoutElement tbody').on( 'click', 'tr', function () {
             $(this).toggleClass('selected');
-            if ( $(this).hasClass('info') ) {                    
-                $(this).removeClass('info');	            
+            if ( $(this).hasClass('info') ) {                     
+               $(this).removeClass('info');	            
                 for(var i = roomIDs.length - 1; i >= 0; i--) {
                     if(roomIDs[i] === table.row( $(this) ).data()[0]) {
                        roomIDs.splice(i, 1);

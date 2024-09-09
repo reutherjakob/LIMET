@@ -1,5 +1,7 @@
 <?php
 session_start();
+include '_utils.php';
+check_login();
 ?>
 
 <!DOCTYPE html>
@@ -8,22 +10,8 @@ session_start();
     <head>
     </head>
     <body>
-        <?php
-        if (!isset($_SESSION["username"])) {
-            echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-            exit;
-        }
-
-        function br2nl($string) {
-            $return = str_replace(array("<br/>"), "\n", $string);
-            return $return;
-        }
-        ?>
 
         <?php
-        //$_SESSION["elementID"]=$_GET["elementID"];
-        //$_SESSION["variantenID"]=$_GET["variantenID"];
-
         if (filter_input(INPUT_GET, 'elementID') != "") {
             $_SESSION["elementID"] = filter_input(INPUT_GET, 'elementID');
         }
@@ -482,10 +470,10 @@ session_start();
                     ],
                     "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
                         "scrollX": true,
-                    "search":""}
+                        "search": ""}
                 });
 
-                $('#tablePossibleElementParameters').DataTable({                     
+                $('#tablePossibleElementParameters').DataTable({
                     "select": true,
                     "searching": true,
                     "info": true,
@@ -499,7 +487,7 @@ session_start();
                         }
                     ],
                     "scrollX": true,
-                    "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json", "search":""}
+                    "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json", "search": ""}
                 });
 
                 $('#tableVariantenCostsOverTime').DataTable({

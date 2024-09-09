@@ -28,16 +28,15 @@ init_page_serversides();
             }
 
             .fix_size {
-                padding: 0.2vw 0.3vw;
-                margin: 0.05vw;
+                padding:0;
+                margin: 1px;
                 height: 30px;
                 font-size: 15px;
             }
-
             .btn, .dt-button {
-                padding: 0.1vw 0.2vw;
+                padding: 0;
                 margin: 1px;
-                height: 30px;
+                height: 35px;
             }
         </style>
     </head>
@@ -48,7 +47,7 @@ init_page_serversides();
                 <div class="card-header d-flex border-light align-items-center" style="height:4px; font-size: 10px;">
                     <div class="col-md-3">Räume im Projekt</div>
                     <div class="col-md-2">Select</div>
-                    <div class="col-md-3">Berichte PDFs</div>
+                    <div class="col-md-1">Berichte PDFs</div>
                     <div class="col-md-4"></div>
                 </div>
                 <div class="card-header d-inline-flex justify-content-start align-items-bottom form-check-inline" style="height: 33px;" id="HeaderTabelleCard">
@@ -56,7 +55,7 @@ init_page_serversides();
                     <div class="col-md-6 form-check-inline" id="sub2"></div>
                     <div class="col-md-3 form-check-inline justify-content-end" id="sub3"></div>
                 </div>
-                <div class="card-header form-check-inline justify-content" style="flex-wrap:nowrap; display:none;" id="HeaderTabelleCard2"></div>
+                <div class="card-header form-check-inline justify-content" style="flex-wrap:nowrap; display:none; padding:5px; " id="HeaderTabelleCard2"></div>
                 <div class="card-body px-0">
                     <?php
                     $mysqli = utils_connect_sql();
@@ -103,7 +102,15 @@ init_page_serversides();
                 setTimeout(() => {
                     moveSearchBox('sub1');
                     addCheckbox('#sub3', "Show-old-Reports", toggleOldReports);
+                     let searchbuilder = [{
+                        extend: 'searchBuilder',
+                        className: "btn fas fa-search",
+                        text: "",
+                        titleAttr: "Suche konfigurieren"
+                    }];
+                new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#sub1'));
                 }, 500);
+               
             });
 
             function initDataTable() {
@@ -114,19 +121,21 @@ init_page_serversides();
                     order: [[1, "asc"]],
                     scrollY: '75vh',
                     scrollCollapse: true,
-                    dom: 'frti',
+                    dom: 'frtip', // Added 'Q' for SearchBuilder button
                     select: {style: 'multi'},
                     language: {
-                        url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
+//                        url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
                         search: "",
-                        searchBuilder: {label: "Search", depthLimit: 3}
+                        searchBuilder: {label: "", depthLimit: 3}
                     },
                     keys: true
                 }).on('key', function (e, datatable, key, cell) {
                     if ([37, 38, 39, 40].includes(key))
                         $(cell.node()).click();
                 });
+
             }
+
 
             function addMTFilter(location) {
                 $(location).append('<select class="form-control-sm fix_size" id="columnFilter"><option value="">MT</option><option value="Ja">Ja</option><option value="Nein">Nein</option></select>');

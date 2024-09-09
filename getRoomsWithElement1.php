@@ -257,7 +257,7 @@ if(!isset($_SESSION["username"]))
                     "order": [[ 1, "asc" ]],
                     "lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
                     "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},               
-                    dom: 'Blfrtip',
+                    dom: '<"top"Blf>rt<"bottom"><"clear">',
                     "buttons": [
                         {
                             extend: 'excel',
@@ -332,8 +332,9 @@ if(!isset($_SESSION["username"]))
                     data:{"comment":comment,"id":id,"amount":amount,"variantenID":variantenID ,"bestand":bestand,"standort":standort,"verwendung":verwendung },
                     type: "GET",
                     success: function(data){
-                            alert(data);
-                            location.reload(); 
+//                            alert(data);
+//                            location.reload(); 
+                                makeToaster(data, true);
                     } 
                 });                
             }
@@ -341,6 +342,6 @@ if(!isset($_SESSION["username"]))
         });
 			
 </script>
-
+ 
 </body>
 </html>

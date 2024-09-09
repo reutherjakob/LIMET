@@ -54,7 +54,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
         .table>thead>tr>th {
             background-color: rgba(100, 140, 25, 0.1);
         }
-        .form-check-inputz, .form-check-input:checked {
+        .form-check-inputz, .form-check-inputz:checked {
             width: 20px !important;
             height: 32px !important;
         }
@@ -187,98 +187,99 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             }
                         }
 
-                        let buttons_group_selct = [
-                            {
-                                text: '',
-                                className: 'btn fas fa-check',
-                                titleAttr: "Select All",
-                                action: function () {
-                                    table.rows().select();
-                                }
-                            }, {
-                                text: '',
-                                className: 'btn fas fa-eye',
-                                titleAttr: "Select Visible",
-                                action: function () {
-                                    table.rows(':visible').select();
-                                }
-                            }, {
-                                text: '',
-                                titleAttr: "Deselect All Rows",
-                                action: function () {
-                                    table.rows().deselect();
-                                },
-                                className: 'btn fas fa-times'
-                            }
-                        ];
 
-                        let btn_grp_new_out = [
-                            {
-                                text: '',
-                                className: 'btn fas fa-plus-square',
-                                titleAttr: "Add Room",
-                                action: function () {
-                                    $('#addRoomModal').modal('show');
-                                }
-                            }, {
-                                text: '',
-                                className: "btn fas fa-window-restore",
-                                titleAttr: "Copy Selected Row",
-                                action: function () {
-                                    copySelectedRow();
-                                }
-                            }, {
-                                extend: 'excelHtml5',
-                                exportOptions: {
-                                    columns: ':visible'
-                                },
-                                className: 'btn fa fa-download',
-                                text: "",
-                                titleAttr: "Download as Excel"
-                            }
-                        ];
-
-                        let btn_grp_settings = [{
-                                text: "",
-                                className: 'btn btn-right fas fa-cogs',
-                                titleAttr: "Open Settings",
-                                action: function () {
-                                    open_einstellung_modal();
-                                }
-                            }, {
-                                text: "",
-                                titleAttr: "Bauangaben Check",
-                                className: "btn btn-right fas fa-check",
-                                action: function () {
-                                    check_angaben();
-                                }
-                            }
-                        ];
-
-                        let buttonsGroupcolumnVisbilities = [{
-                                extend: 'colvis',
-                                text: 'Vis',
-                                columns: ':gt(5)',
-                                collectionLayout: 'fixed columns',
-                                className: 'btn'
-                            }].concat(buttonRanges.map(button => ({
-                                text: button.name,
-                                className: 'btn btnx btn_vis',
-//                                    longName: button.longName,
-                                action: function (e, dt, node, config) {
-                                    toggleColumns(dt, button.start, button.end, button.name);
-                                    updateButtonClass(node, dt, button.start, button.end);
-                                }
-                            })));
-
-                        let searchbuilder = [{
-                                extend: 'searchBuilder',
-                                className: "btn fas fa-search",
-                                text: " ",
-                                titleAttr: "Suche konfigurieren"
-                            }];
 
                         function init_btn_4_dt() {
+                            let buttons_group_selct = [
+                                {
+                                    text: '',
+                                    className: 'btn fas fa-check',
+                                    titleAttr: "Select All",
+                                    action: function () {
+                                        table.rows().select();
+                                    }
+                                }, {
+                                    text: '',
+                                    className: 'btn fas fa-eye',
+                                    titleAttr: "Select Visible",
+                                    action: function () {
+                                        table.rows(':visible').select();
+                                    }
+                                }, {
+                                    text: '',
+                                    titleAttr: "Deselect All Rows",
+                                    action: function () {
+                                        table.rows().deselect();
+                                    },
+                                    className: 'btn fas fa-times'
+                                }
+                            ];
+
+                            let btn_grp_new_out = [
+                                {
+                                    text: '',
+                                    className: 'btn fas fa-plus-square',
+                                    titleAttr: "Add Room",
+                                    action: function () {
+                                        $('#addRoomModal').modal('show');
+                                    }
+                                }, {
+                                    text: '',
+                                    className: "btn fas fa-window-restore",
+                                    titleAttr: "Copy Selected Row",
+                                    action: function () {
+                                        copySelectedRow();
+                                    }
+                                }, {
+                                    extend: 'excelHtml5',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    },
+                                    className: 'btn fa fa-download',
+                                    text: "",
+                                    titleAttr: "Download as Excel"
+                                }
+                            ];
+
+                            let btn_grp_settings = [{
+                                    text: "",
+                                    className: 'btn btn-right fas fa-cogs',
+                                    titleAttr: "Open Settings",
+                                    action: function () {
+                                        open_einstellung_modal();
+                                    }
+                                }, {
+                                    text: "",
+                                    titleAttr: "Bauangaben Check",
+                                    className: "btn btn-right fas fa-check",
+                                    action: function () {
+                                        check_angaben();
+                                    }
+                                }
+                            ];
+
+                            let buttonsGroupcolumnVisbilities = [{
+                                    extend: 'colvis',
+                                    text: 'Vis',
+                                    columns: ':gt(5)',
+                                    collectionLayout: 'fixed columns',
+                                    className: 'btn'
+                                }].concat(buttonRanges.map(button => ({
+                                    text: button.name,
+                                    className: 'btn btnx btn_vis',
+//                                    longName: button.longName,
+                                    action: function (e, dt, node, config) {
+                                        toggleColumns(dt, button.start, button.end, button.name);
+                                        updateButtonClass(node, dt, button.start, button.end);
+                                    }
+                                })));
+
+                            let searchbuilder = [{
+                                    extend: 'searchBuilder',
+                                    className: "btn fas fa-search",
+                                    text: "",
+                                    titleAttr: "Suche konfigurieren"
+                                }];
                             new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#TableCardHeader'));
                             new $.fn.dataTable.Buttons(table, {buttons: buttons_group_selct}).container().appendTo($('#TableCardHeaderX'));
                             new $.fn.dataTable.Buttons(table, {buttons: buttonsGroupcolumnVisbilities}).container().appendTo($('#TableCardHeader2'));
@@ -287,6 +288,10 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                         }
 
                         function toggleButtonTexts() {
+                            let buttons_group_selct = [{titleAttr: "Select All"}, {titleAttr: "Select Visible"}, {titleAttr: "Deselect All Rows"}];
+                            let btn_grp_new_out = [{titleAttr: "Add Room"}, {titleAttr: "Copy Selected Row"}, {titleAttr: "Download as Excel"}];
+                            let btn_grp_settings = [{titleAttr: "Open Settings"}, {titleAttr: "Bauangaben Check"}];
+
                             const buttonGroups = [
                                 buttons_group_selct,
                                 btn_grp_new_out,
@@ -411,10 +416,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     }
                                 }
                             });
-                            //                                                                table.on('key-blur', function (e, datatable, cell) {
-                            //                                                                    table.cell(cell.index()).deselect();
-                            //                                                                    cell.node().click();
-                            //                                                                });
+                            //  table.on('key-blur', function (e, datatable, cell) { table.cell(cell.index()).deselect();  cell.node().click(); });
                         }
 
                         function html_2_plug_into_edit_cell(dataIdentifier) {
@@ -539,8 +541,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             /* $('#table_rooms tbody').on('click', 'tr', function () {
                              var RaumID = table.row($(this)).data()['idTABELLE_Räume'];
                              if (document.getElementById('checkbox_EditableTable').checked) {
-                                 
-                                 
+                             
+                             
                              var Raumbez = $('#table_rooms').DataTable().row($(this)).data()['Raumbezeichnung'];
                              var rowIndex = $(this).closest('tr').index();
                              var columnIndex = -1;
@@ -656,7 +658,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                              }, error: function (jqXHR, textStatus, errorThrown) {
                              console.error("AJAX call failed: " + textStatus + ", " + errorThrown);
                              }
-                                 
+                             
                              });
                              }
                              });
@@ -680,14 +682,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 checked: document.getElementById('settings_save_edit_cbx').checked,
                                 class: 'form-check-inputz  form-check-input fix_size'
                             }).appendTo($('#TableCardHeader'));
-                            //                                                    var label = $('<label>', {
-                            //                                                        htmlFor: 'checkbox_EditableTable',
-                            //                                                        class: 'rotated form-check-label inline',
-                            //                                                        text: "-EDIT-"});
-                            //                                                    var container = $('<span>').append(checkbox);
-                            //                                                    $('#TableCardHeader').append(container).append(label);
                         }
-
+                        
                         function init_dt() {
                             let savestate = document.getElementById('settings_save_state').checked || document.getElementById('settings_save_state_4all_projects').checked;
                             console.log(savestate);
@@ -697,7 +693,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     dataSrc: ''
                                 },
                                 columns: columnsDefinition,
-                                dom: '  <"TableCardHeader"f>t<"btm.d-flex justify-content-between"lip>   ',
+                                dom: '  <"TableCardHeader"f>t<"btm.d-flex justify-content-between"lip>',
                                 scrollX: true,
                                 scrollCollapse: true,
                                 select: "os",
@@ -735,9 +731,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 table.column('MT-relevant:name').search(filterValue).draw();
                             });
                         }
-
-
-//                           
+ 
 
 //VISIBILITY 
                         function init_visibilities() {
