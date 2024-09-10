@@ -255,7 +255,7 @@ if(!isset($_SESSION["username"]))
                     "searching": true,
                     "info": false,
                     "order": [[ 1, "asc" ]],
-                    "lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
+                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
                     "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},               
                     dom: '<"top"Blf>rt<"bottom"><"clear">',
                     "buttons": [

@@ -72,6 +72,7 @@ init_page_serversides();
                         <th>Ebene</th>
                         <th>Bauetappe</th>
                         <th>Bauabschnitt</th>
+                        <th>RNR Nutzer</th>
                         </tr></thead><tbody>";
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr>
@@ -84,6 +85,7 @@ init_page_serversides();
                             <td>{$row['Geschoss']}</td>
                             <td>{$row['Bauetappe']}</td>
                             <td>{$row['Bauabschnitt']}</td>
+                            <td>{$row['Raumnummer_Nutzer']}</td>
                           </tr>";
                     }
                     echo "</tbody></table>";
@@ -102,15 +104,15 @@ init_page_serversides();
                 setTimeout(() => {
                     moveSearchBox('sub1');
                     addCheckbox('#sub3', "Show-old-Reports", toggleOldReports);
-                     let searchbuilder = [{
-                        extend: 'searchBuilder',
-                        className: "btn fas fa-search",
-                        text: "",
-                        titleAttr: "Suche konfigurieren"
-                    }];
-                new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#sub1'));
+                    let searchbuilder = [{
+                            extend: 'searchBuilder',
+                            className: "btn fas fa-search",
+                            text: "",
+                            titleAttr: "Suche konfigurieren"
+                        }];
+                    new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#sub1'));
                 }, 500);
-               
+
             });
 
             function initDataTable() {

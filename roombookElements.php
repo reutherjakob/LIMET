@@ -31,7 +31,7 @@ init_page_serversides();
         <style>
             .card-body{
 
-                padding: 5px;
+                padding: 10px;
             }
 
         </style>
@@ -53,13 +53,7 @@ init_page_serversides();
                                         <div class="card-header">Elementgruppen</div>
                                         <div class="card-body" id="elementGroups">
                                             <?php
-                                            $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-
-                                            /* change character set to utf8 */
-                                            if (!$mysqli->set_charset("utf8")) {
-                                                printf("Error loading character set utf8: %s\n", $mysqli->error);
-                                                exit();
-                                            }
+                                            $mysqli = utils_connect_sql();
 
                                             $sql = "SELECT tabelle_element_gewerke.idtabelle_element_gewerke, tabelle_element_gewerke.Nummer, tabelle_element_gewerke.Gewerk
                                                                 FROM tabelle_element_gewerke
@@ -150,7 +144,7 @@ init_page_serversides();
             <div class='row'>
                 <div class='col-sm-6'> 
                     <div class="mt-1 card">
-                        <div class="card-header">Räume mit Element</div>
+                        <div class="card-header">Räume mit Element  </div>
                         <div class="card-body" id="roomsWithElement"></div>
                     </div>
                 </div>
@@ -158,6 +152,7 @@ init_page_serversides();
                     <div class="mt-1 card">
                         <div class="card-header" id="RäumeOhneElCardHeader ">
                             Räume ohne Element
+                            <button type='button' class='btn btn-outline-success btn-xs mb-2' id='addElements' data-toggle='modal' data-target='#addElementsToRoomModal'><i class='fas fa-plus'></i></button>
                             <button id="selectAllRows" class="btn btn-primary btn-sm float-right">Sichtbare auswählen</button>
                         </div>
                         <div class="card-body" id="roomsWithoutElement"></div>
@@ -172,7 +167,6 @@ init_page_serversides();
                 targetDiv.style.overflowY = 'scroll';
 
                 $(document).ready(function () {
-
 
                     $('#tableElementsInDB').DataTable({
                         "paging": true,
@@ -231,7 +225,7 @@ init_page_serversides();
                                                                 success: function (data) {
 //                                                                    button.remove();
                                                                     $("#roomsWithoutElement").html(data);
-                                                         
+
                                                                 }
                                                             });
                                                         }
@@ -269,6 +263,8 @@ init_page_serversides();
 
                         });
                     });
+
+
                 });
             </script>
 

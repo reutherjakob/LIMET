@@ -19,7 +19,10 @@ include 'roombookSpecifications_New_modal_addRoom.php';
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
 
     <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.css" rel="stylesheet"/>
+
+    <!--bracuhst den ?--> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
     <style>
@@ -172,16 +175,13 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             init_visibilities();
                             table_click();
                             event_table_keyz();
-
                             $('#settings_show_btn_grp_labels').change(function () {
                                 change_top_label_visibility($(this).is(':checked'));
                             });
                         });
-
                         function change_top_label_visibility(x) {
                             if (x) {
                                 $('#btnLabelz').attr("style", "font-size: 1vh !important; height: 1vh !important; display: flex !important; ");
-
                             } else {
                                 $('#btnLabelz').attr("style", "display: none !important");
                             }
@@ -214,7 +214,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     className: 'btn fas fa-times'
                                 }
                             ];
-
                             let btn_grp_new_out = [
                                 {
                                     text: '',
@@ -240,7 +239,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     titleAttr: "Download as Excel"
                                 }
                             ];
-
                             let btn_grp_settings = [{
                                     text: "",
                                     className: 'btn btn-right fas fa-cogs',
@@ -257,14 +255,14 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     }
                                 }
                             ];
-
                             let buttonsGroupcolumnVisbilities = [{
                                     extend: 'colvis',
                                     text: 'Vis',
                                     columns: ':gt(5)',
                                     collectionLayout: 'fixed columns',
                                     className: 'btn'
-                                }].concat(buttonRanges.map(button => ({
+                                }
+                            ].concat(buttonRanges.map(button => ({
                                     text: button.name,
                                     className: 'btn btnx btn_vis',
 //                                    longName: button.longName,
@@ -273,7 +271,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                         updateButtonClass(node, dt, button.start, button.end);
                                     }
                                 })));
-
                             let searchbuilder = [{
                                     extend: 'searchBuilder',
                                     className: "btn fas fa-search",
@@ -291,7 +288,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             let buttons_group_selct = [{titleAttr: "Select All"}, {titleAttr: "Select Visible"}, {titleAttr: "Deselect All Rows"}];
                             let btn_grp_new_out = [{titleAttr: "Add Room"}, {titleAttr: "Copy Selected Row"}, {titleAttr: "Download as Excel"}];
                             let btn_grp_settings = [{titleAttr: "Open Settings"}, {titleAttr: "Bauangaben Check"}];
-
                             const buttonGroups = [
                                 buttons_group_selct,
                                 btn_grp_new_out,
@@ -321,7 +317,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                         document.addEventListener('DOMContentLoaded', function () {
                             handleButtonClick();
                         });
-
 //SETTINGS SECTION                             
                         function restoreDefaults() {
                             localStorage.clear();
@@ -536,8 +531,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     }
                                 });
                             });
-
-
                             /* $('#table_rooms tbody').on('click', 'tr', function () {
                              var RaumID = table.row($(this)).data()['idTABELLE_Räume'];
                              if (document.getElementById('checkbox_EditableTable').checked) {
@@ -683,7 +676,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 class: 'form-check-inputz  form-check-input fix_size'
                             }).appendTo($('#TableCardHeader'));
                         }
-                        
+
                         function init_dt() {
                             let savestate = document.getElementById('settings_save_state').checked || document.getElementById('settings_save_state_4all_projects').checked;
                             console.log(savestate);
@@ -731,7 +724,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 table.column('MT-relevant:name').search(filterValue).draw();
                             });
                         }
- 
+
 
 //VISIBILITY 
                         function init_visibilities() {
@@ -938,7 +931,25 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             numsave_new_room_all(requestData);
                         }
 
-                        //UTILITIES
+                        //UTILITIES And lost code.
+//                        function checkAndToggleColumnsVisibility() {
+//                        table.columns().every(function () {
+//                        var hasNonEmptyCell = this.data().toArray().some(function (cellData) {
+//                        return cellData !== null && cellData !== undefined && cellData !== '' && cellData !== '-' && cellData !== ' ' && cellData !== '  ' && cellData !== '   ' && cellData !== '.';
+//                        });
+//                        if (!hasNonEmptyCell) {
+//                        this.visible(!this.visible());
+//                        }
+//                        });
+//                        }
+//                        {
+//                        text: 'w/Data',
+//                                className: '',
+//                                id: 'toggleDatalessColumnsButton',
+//                                action: function (e, dt, node, config) {
+//                                checkAndToggleColumnsVisibility(dt);
+//                                }
+//                        }
 //                    function logColumnValues() {
 //                        var data = table.rows().data();
 //                        console.log("logging coulumns");
