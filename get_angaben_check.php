@@ -125,6 +125,7 @@ function check4vorabsperr(&$messages, $roomParams, $elements_in_room, $stativ_pr
 function check_room_Leistungssumme(&$messages, $roomParams, $P) {
     $mapping = array("NoNA", "AV", "SV", "ZSV", "USV");  //Structure i chose for the array of power within room
     $summe = 0;
+//    echorow($P);
     foreach ($P as $index => $P_jeNA) {
         if ($index > 0 && $index < 5) {
             if ($P_jeNA > $roomParams['ET_Anschlussleistung_' . $mapping[$index] . '_W']) {
@@ -139,9 +140,9 @@ function check_room_Leistungssumme(&$messages, $roomParams, $P) {
 //            } 
         }
         $summe += $P_jeNA;
-        if ($P_jeNA == 0 && $index > 0) {
-            if ($roomParams[$mapping[$index]] == 1) {
-                $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Leistung-> P[" . $mapping[$index] . "]=0, aber Raumparameter=1? <br>";
+        if ($P_jeNA === 0 && $index > 0) {
+            if ($roomParams[$mapping[$index]] === 1) {
+                $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Leistung der Elemente im Raum -> P[Elemente][" . $mapping[$index] . "]=0, aber Raumparameter=1? Element parametrisieren oder NA aus Raum hinterfragen. <br>";
             }
         }
     }
@@ -354,7 +355,7 @@ foreach ($raumparameter as $roomID => $roomParams) {
                     }
                     if ($parameterInfo['idTABELLE_Parameter'] === 18) { // element im raum hat Leistung 
                         $temp_LeistungElement = floatval(str_replace(",", ".", preg_replace("/[^0-9.,]/", "", $parameterInfo['Wert']))) * unitMultiplier($parameterInfo["Einheit"]);
-                    }
+                    } 
                     if ($parameterInfo['idTABELLE_Parameter'] === 133) {//GLeichzeitigkeit ,1
                         $temp_GLZ = floatval(str_replace(",", ".", preg_replace("/[^0-9,.]/", "", $parameterInfo['Wert'])));
                     }
@@ -389,13 +390,16 @@ foreach ($raumparameter as $roomID => $roomParams) {
 
     check4vorabsperr($messages, $roomParams, $elements_in_room, $check4Vorabsperrkasten);
     check_max_value_rev($messages, $roomParams, "HT_Waermeabgabe_W", $Abwärme);
+//    echorow($NetzArtenImRaum);
     check_room_for_na($messages, $roomParams, $NetzArtenImRaum);
     check_room_Leistungssumme($messages, $roomParams, $LeistungImRaum);
 }   //end of foreach Rooom 
 $mysqli->close();
 
 foreach ($messages as $messages_out) {
+//     echo "\n;";
     echo br2nl($messages_out);
+   
 }                 
 
 
