@@ -170,7 +170,8 @@ init_page_serversides();
                     {text: 'Visible', action: () => table.rows(':visible').select()},
                     {text: 'None', action: () => table.rows().deselect()},
                     {extend: 'spacer', style: 'bar'},
-                    {text: "BAUANGABEN A3", action: generateReport}
+                    {text: "BAUANGABEN A3", action: generateReport},
+                    {text: "Elem./Raum (w/Bestand)", action : generateReport2}
                 ];
 
                 new $.fn.dataTable.Buttons(table, {buttons}).container().appendTo($(location));
@@ -213,6 +214,14 @@ init_page_serversides();
                     alert("Kein Raum ausgewählt!");
                 } else {
                     window.open(`/pdf_createBauangabenBericht_A3Qeer.php?roomID=${roomIDs.join(',')}&date=${getDate()}`);
+                }
+            }
+                  function generateReport2() {
+                const roomIDs = table.rows({selected: true}).data().toArray().map(row => row[0]);
+                if (roomIDs.length === 0) {
+                    alert("Kein Raum ausgewählt!");
+                } else {
+                    window.open(`/pdf_createRoombookElWithoutBestand.php?roomID=${roomIDs.join(',')}&date=${getDate()}`);
                 }
             }
 

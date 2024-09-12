@@ -70,8 +70,9 @@ include 'roombookSpecifications_New_modal_addRoom.php';
     </style> 
 </head> 
 <body style="height:100%">  
-    <div id="limet-navbar"></div>
+
     <main class="container-fluid">
+        <div id="limet-navbar"></div>
         <section class="mt-1 card">
             <header class="card-header d-flex border-light" style="height: 1vh; font-size: 1vh;" id="btnLabelz">
                 <div class="col-md-3"><strong>Edit & Filter</strong></div>
@@ -326,8 +327,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                         }
 
                         function loadSettings() {
-                            document.getElementById('settings_show_btn_grp_labels').checked = JSON.parse(localStorage.getItem('settings_show_btn_grp_labels')) || true;
-                            change_top_label_visibility(JSON.parse(localStorage.getItem('settings_show_btn_grp_labels')) || true);
+                            document.getElementById('settings_show_btn_grp_labels').checked = JSON.parse(localStorage.getItem('settings_show_btn_grp_labels'));
+                            change_top_label_visibility(JSON.parse(localStorage.getItem('settings_show_btn_grp_labels')));
                             document.getElementById('settings_save_state_4all_projects').checked = JSON.parse(localStorage.getItem('settings_save_state_4all_projects')) || false;
                             document.getElementById('settings_save_state').checked = JSON.parse(localStorage.getItem('settings_save_state' + projectID)) || false;
                             document.getElementById('settings_save_edit_cbx').checked = JSON.parse(localStorage.getItem('settings_save_edit_cbx')) || false;
@@ -531,133 +532,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     }
                                 });
                             });
-                            /* $('#table_rooms tbody').on('click', 'tr', function () {
-                             var RaumID = table.row($(this)).data()['idTABELLE_Räume'];
-                             if (document.getElementById('checkbox_EditableTable').checked) {
-                             
-                             
-                             var Raumbez = $('#table_rooms').DataTable().row($(this)).data()['Raumbezeichnung'];
-                             var rowIndex = $(this).closest('tr').index();
-                             var columnIndex = -1;
-                             $(this).find('td').each(function (index) { //finding index like this only works for the first click, the it return -1
-                             if ($(this).is(event.target)) {
-                             columnIndex = index;
-                             return false;
-                             }
-                             });
-                             if (columnIndex === -1) {
-                             columnIndex = currentColInd; //lazy bugfix for -1 problem
-                             }
-                             var index_accounting_4_visibility = columnIndex;
-                             var visibleColumns = table.columns().visible();
-                             for (var i = 0; i <= index_accounting_4_visibility; i++) { //also count invisible ones, if u wanna use the ccolumn definition indexing
-                             if (!visibleColumns[i]) {
-                             index_accounting_4_visibility++;
-                             }
-                             }
-                             var dataIdentifier = columnsDefinition[index_accounting_4_visibility]['data'];
-                             var cell = $(this).find('td').eq(columnIndex);
-                             if (currentRowInd !== rowIndex || currentColInd !== columnIndex) {
-                             cellText = cell.text().trim();
-                             }
-                             currentRowInd = rowIndex;
-                             currentColInd = columnIndex;
-                             //console.log('Debug TableClick: Column index:', columnIndex, "; Acc4Vis ", index_accounting_4_visibility, '; Row index:', rowIndex, '; Column name (data identifier):', dataIdentifier, "; idTABELLE_Räume: ", RaumID, " Raumbezeichnung: ", Raumbez);
-                             if (getCase(dataIdentifier) !== "none-edit") {  //dataIdentifier !== "Bezeichnung" && dataIdentifier !== "Nummer") {
-                             if (!current_edit) {
-                             cell.html(html_2_plug_into_edit_cell(dataIdentifier));
-                             table.keys.disable();
-                             console.log(" Table keys should be off");
-                             }
-                             current_edit = true;
-                             cell.find('input, select').focus();
-                             table.keys.disable();
-                             cell.find('input, select').on('keydown blur', function (event) {
-                             //                                                                                table.on('keydown keyup', function (event) {
-                             //                                                                                    var ctrlPressed = event.ctrlKey; // Check if ctrl is pressed
-                             //
-                             //                                                                                    if (ctrlPressed && event.type === 'keydown') {
-                             //                                                                                        console.log("CTRL on");
-                             ////                                                                                        cell.html(cellText);
-                             ////                                                                                        current_edit = false;
-                             ////                                                                                        table.keys.enable(); 
-                             //                                                                                    } else if (!ctrlPressed && event.type === 'keyup') {
-                             //                                                                                        console.log("CTRL off");
-                             //                                                                                        table.keys.disable();
-                             //                                                                                    }
-                             //                                                                                });
-                             if (event.keyCode === 13 && current_edit) { // Enter key pressed
-                             //console.log("Enter Keydown: ", $(this).val());
-                             var newData = format_data_input($(this).val(), dataIdentifier);
-                             if (newData.trim() !== "") {
-                             cellText = newData;
-                             cell.html(newData);
-                             current_edit = false;
-                             table.keys.enable();
-                             //console.log("Saving:", RaumID, dataIdentifier, newData);
-                             save_changes(RaumID, dataIdentifier, newData, Raumbez);
-                             table.cell(cell.index()).select();
-                             }
-                             } // else {alert("DatEmpty: Enter valid params"); }
-                             if (event.keyCode === 27 || event.type === "blur" || event.keyCode === 9) {// (event.keyCode >= 37 && event.keyCode <= 40) ||
-                             cell.html(cellText);
-                             current_edit = false;
-                             table.keys.enable();
-                             table.cell(cell.index()).select();
-                             initializeToaster("Changes NOT Saved", " - ", false);
-                             }
-                             });
-                             }
-                             }
-                             console.log("RaumID", RaumID);
-                             $.ajax({
-                             url: "setSessionVariables.php",
-                             data: {"roomID": RaumID},
-                             type: "GET",
-                             success: function (data) {
-                             $("#RoomID").text(RaumID);
-                             $.ajax({
-                             url: "getRoomSpecifications2.php",
-                             type: "GET",
-                             success: function (data) {
-                             $("#bauangaben").html(data);
-                             $.ajax({
-                             url: "getRoomElementsDetailed2.php",
-                             type: "GET",
-                             success: function (data) {
-                             console.log("Success loading MT table");
-                             var tableX = $('#myTable').DataTable();
-                             tableX.destroy();
-                             if (!data || data.trim() === "") {
-                             // If data is empty, clear the old content
-                             $("#roomElements").empty();
-                             } else {
-                             $("#roomElements").html(data);
-                             $('#myTable').DataTable();
-                             }
-                             $('#elementParameters').empty();
-                             let debounceTimer;
-                             $('#diy_searcher').on('keyup', function () {
-                             clearTimeout(debounceTimer);
-                             debounceTimer = setTimeout(() => {
-                             try {
-                             $('#tableRoomElements').DataTable().search(this.value).draw();
-                             } catch (e) {
-                             console.log(e);
-                             alert("!", e);
-                             }
-                             }, 300); // Adjust the delay as needed
-                             });
-                             }, error: function (jqXHR, textStatus, errorThrown) {
-                             console.error("AJAX call failed: " + textStatus + ", " + errorThrown);
-                             }
-                             
-                             });
-                             }
-                             });
-                             }
-                             });
-                             }); */
                         }
 
                         function move_dt_search() {

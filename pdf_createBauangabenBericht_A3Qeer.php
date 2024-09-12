@@ -16,8 +16,6 @@ check_login();
 $roomIDs = filter_input(INPUT_GET, 'roomID');
 $roomIDsArray = explode(",", $roomIDs);
 
-//$PDF_input_bool = filter_input(INPUT_GET, 'PDFinputs');
-//$PDF_input_bools = explode(",", $PDF_input_bool); //foreach ($roomIDsArray as $l) { echo $l;echo " <br> ";}echo $roomIDsArray;
 $Änderungsdatum = getValidatedDateFromURL();
 
 $mapping = array("raum_nr_alt" => "raum_nr_neu",
@@ -249,7 +247,7 @@ $mp2 = array(//tabelle änderunge => tabelle_räume
     "EL_Lichtruf-Steckmodul Stk neu" => "EL_Lichtruf - Steckmodul Stk",
     "EL_Lichtfarbe K neu" => "EL_Lichtfarbe K",
     "HT_Summe Kühlung W neu" => "HT_Summe Kühlung W",
-    "HT_Luftmenge m3/h neu" => "HT_Luftmenge m3/h", 
+    "HT_Luftmenge m3/h neu" => "HT_Luftmenge m3/h",
     "HT_Kühlung Lüftung W neu" => "HT_Kühlung Lueftung W",
     "HT_Heizlast W neu" => "HT_Heizlast W",
     "HT_Kühllast W neu" => "HT_Kühllast W",
@@ -288,7 +286,6 @@ $einzugPlus = 10; //um den text auf die Höhe der Anderen Angaben zu shiften bei
 $colour_line = array(110, 150, 80);
 $style_dashed = array('width' => 0.1, 'cap' => 'round', 'join' => 'round', 'dash' => 4, 'color' => $colour_line); //$pdf->SetLineStyle(array('width' => 0.1, 'cap' => 'round', 'join' => 'round', 'dash' => 6, 'color' => array(110, 150, 80)));
 $style_normal = array('width' => 0.3, 'cap' => 'round', 'join' => 'round', 'dash' => 0, 'color' => $colour_line);
-//$color_highlight = 0;
 
 $pdf = new MYPDF('L', PDF_UNIT, "A3", true, 'UTF-8', false, true);
 $pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A3", "Bauangaben");
@@ -339,9 +336,8 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
     $result_rooms = $mysqli->query($sql);
     while ($row = $result_rooms->fetch_assoc()) {
-        
+
         $pdf->SetFillColor(255, 255, 255);
-        
         raum_header($pdf, $horizontalSpacerLN3, $SB, $row['Raumbezeichnung'], $row['Raumnr'], $row['Raumbereich Nutzer'], $row['Geschoss'], $row['Bauetappe'], $row['Bauabschnitt'], "A3", $parameter_changes_t_räume); //utils function   
         
         if (strlen($row['Anmerkung FunktionBO']) > 0) {
@@ -354,8 +350,10 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             $pdf->MultiCell($einzugPlus, $rowHeightComment, "", 0, 'L', 0, 0);
             $pdf->MultiCell($SB - $einzugPlus, $rowHeightComment, $outstr, 0, 'L', 0, 1);
             if ($rowHeightComment > 6) {
-            $pdf->Ln($horizontalSpacerLN);}
-            else {$pdf->Ln(1);}
+                $pdf->Ln($horizontalSpacerLN);
+            } else {
+                $pdf->Ln(1);
+            }
         }
 
 //   ---------- ALLGEMEIN   ----------
@@ -542,10 +540,10 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $pdf->Ln($horizontalSpacerLN2);
         $pdf->Multicell($block_header_w, 1, "", 0, 0, 0, 0);
 
-        multicell_text_hightlight($pdf,  $e_C_2_3rd, $font_size,  'HT_Luftwechsel', "Luftwechsel:", $parameter_changes_t_räume);
-        multicell_with_str($pdf, $row['HT_Luftwechsel'], $e_C_3rd+ $e_C_3rd, "/h");
+        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'HT_Luftwechsel', "Luftwechsel:", $parameter_changes_t_räume);
+        multicell_with_str($pdf, $row['HT_Luftwechsel'], $e_C_3rd + $e_C_3rd, "/h");
 
-        multicell_text_hightlight($pdf,  $e_C_2_3rd, $font_size, "HT_Raumtemp Sommer °C", "Temp. Sommer :", $parameter_changes_t_räume);
+        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "HT_Raumtemp Sommer °C", "Temp. Sommer :", $parameter_changes_t_räume);
         multicell_with_str($pdf, $row['HT_Raumtemp Sommer °C'], $e_C_3rd, "°C");
 
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "HT_Raumtemp Winter °C", "Temp. Winter:", $parameter_changes_t_räume);
@@ -628,7 +626,6 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         while ($row2 = $resultX->fetch_assoc()) {
             $rowcounter++;
         }
-//        $row2 = $resultX->fetch_assoc();
         $resultX->data_seek(0);
 
         if (($_SESSION["projectPlanungsphase"] !== "Vorentwurf") && $rowcounter > 0) {
@@ -659,7 +656,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             while ($row3 = $changes->fetch_assoc()) {
                 $dataChanges[] = $row3;
             }
-            $dataChanges = filter_old_equal_new($dataChanges); 
+            $dataChanges = filter_old_equal_new($dataChanges);
 
             $upcmn_blck_size = 10 + $rowcounter * 5;
             block_label_queer($block_header_w, $pdf, "Med.-tech.", $upcmn_blck_size, $block_header_height, $SB);
@@ -668,16 +665,17 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             $upcmn_blck_size = 10 + $rowcounter / 2 * 5;
             block_label_queer($block_header_w, $pdf, "Med.-tech.", $upcmn_blck_size, $block_header_height, $SB); //el_in_room_html_table($pdf, $resultX, 1, "A3", $SB-$block_header_w);
             $pdf->Line(15 + $block_header_w, $pdf->GetY(), $SB + 15, $pdf->GetY(), $style_dashed);
-            make_MT_list($pdf, $SB, $block_header_w, ($rowcounter > 1), $resultX, $style_normal, $style_dashed);
+            make_MT_list($pdf, $SB, $block_header_w, $rowcounter, $resultX, $style_normal, $style_dashed);
         } else {
             $pdf->Line(15, $pdf->GetY(), $SB + 15, $pdf->GetY(), $style_normal);
+            block_label_queer($block_header_w, $pdf, "Med.-tech.", $upcmn_blck_size, $block_header_height, $SB); //el_in_room_html_table($pdf, $resultX, 1, "A3", $SB-$block_header_w);
+            $pdf->Multicell(0, 0, "Keine Medizintechnische Ausstattung.", "", "L", 0, 0);
             $pdf->Ln();
         }
     } //sql:fetch-assoc
 }// for every room 
 
 $mysqli->close();
-//echo "test"; 
-ob_end_clean(); // brauchts irgendwie.... ? 
+ob_end_clean();
 $pdf->Output('BAUANGABEN-MT.pdf', 'I');
 

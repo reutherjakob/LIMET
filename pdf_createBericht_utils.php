@@ -149,21 +149,24 @@ function dashed_line($pdf, $offset) {
 }
 
 function balken($pdf, $horizontalSpacerLN, $SB) {
-    $pdf->SetFillColor(200, 210, 200); 
-        $pdf->SetFont('helvetica', '', 1);
+    $pdf->SetFillColor(200, 210, 200);
+    $pdf->SetFont('helvetica', '', 1);
 
     $pdf->MultiCell($SB, 2, "", "BT", 'L', 1, 1);
     $pdf->Ln($horizontalSpacerLN);
-    $pdf->SetFillColor(00, 00, 00);   $pdf->SetFont('helvetica', '', 10);
-    
+    $pdf->SetFillColor(00, 00, 00);
+    $pdf->SetFont('helvetica', '', 10);
 }
 
 // BAUSTEINE
 
 function block_label_queer($block_header_w, $pdf, $block_label, $upcomming_block_size, $block_height = 12, $SB = 390) {
-    if( $block_label != "Med.-tech.") {newpageA3($pdf, $upcomming_block_size, 275);}
-    if( $block_label === "Med.-tech." && $upcomming_block_size < 275 ) { 
-        newpageA3($pdf, $upcomming_block_size, 275);}
+    if ($block_label != "Med.-tech.") {
+        newpageA3($pdf, $upcomming_block_size, 275);
+    }
+    if ($block_label === "Med.-tech." && $upcomming_block_size < 275) {
+        newpageA3($pdf, $upcomming_block_size, 275);
+    }
     $pdf->SetFont('helvetica', 'B', $block_height);
     $pdf->MultiCell($SB, 1, "", 'T', 'L', 0, 0);
     $pdf->Ln(1);
@@ -274,26 +277,28 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
         $pdf->MultiCell($SB * $qot, $ln_spacer, "Bauetappe: " . $Bauetappe, 'B', 'L', 0, 0);
         $pdf->Ln();
     } else if ($format == "A3") {
-
+        $pdf->SetFont('helvetica', 'B', 10);
         if (($pdf->GetY()) >= 180) {
             $pdf->AddPage();
         }
         if (($pdf->GetY()) >= 18) {
             balken($pdf, 1, $SB);
         } else {
-            $pdf->Ln(1); 
-        } 
+            $pdf->Ln(1);
+        }
+        $pdf->SetFont('helvetica', 'B', 10);
+
         $spacer = "  -";
         $output_pairs = [
-            ["Raumbezeichnung", "Raum: " . $Raumbezeichnung.$spacer],
-            ["Raumnr", "Nummer: " . $Raumnr.$spacer],
-            ["Raumbereich Nutzer", "Bereich: " . $RaumbereichNutzer.$spacer],
-            ["Geschoss", "Geschoss: " . $Geschoss.$spacer],
-            ["Bauetappe", "Bauetappe: " . $Bauetappe.$spacer],
-            ["Bauabschnitt", "Bauteil: " . $Bauabschnitt.$spacer]
+            ["Raumbezeichnung", "Raum: " . $Raumbezeichnung . $spacer],
+            ["Raumnr", "Nummer: " . $Raumnr . $spacer],
+            ["Raumbereich Nutzer", "Bereich: " . $RaumbereichNutzer . $spacer],
+            ["Geschoss", "Geschoss: " . $Geschoss . $spacer],
+            ["Bauetappe", "Bauetappe: " . $Bauetappe . $spacer],
+            ["Bauabschnitt", "Bauteil: " . $Bauabschnitt . $spacer]
         ];
         $qot = 1 / 7;
-        
+
         foreach ($output_pairs as $pair) {
             $incr = 0;
             $Height = $pdf->getStringHeight($SB * $qot, $pair[1], false, true, '', 1);
@@ -354,7 +359,7 @@ function multicell_with_stk($pdf, $NR, $einzug) {
     } $pdf->SetFillColor(255, 255, 255);
 }
 
-function multicell_with_nr($pdf, $NR, $unit, $schriftgr, $einzug, $Ausrichtung="L") {
+function multicell_with_nr($pdf, $NR, $unit, $schriftgr, $einzug, $Ausrichtung = "L") {
     $originalFontSize = $pdf->getFontSizePt();
     if ($NR > 0) {
         $pdf->MultiCell($einzug, $schriftgr, $NR . $unit, 0, $Ausrichtung, 1, 0);
@@ -430,12 +435,13 @@ function make_MT_list2($pdf, $SB, $resultX) {
             $pdf->Ln();
         }
     }
-        if ($fill % 2 === 1) {
-            $pdf->Ln();
-        }
+    if ($fill % 2 === 1) {
+        $pdf->Ln();
+    }
 }
 
-function make_MT_list($pdf, $SB, $block_header_w, $booooool, $resultX, $style_normal, $style_dashed) {
+function make_MT_list($pdf, $SB, $block_header_w, $rowcounter, $resultX, $style_normal, $style_dashed) {
+    $more_than_one_row = ($rowcounter > 1);
     $pdf->SetLineStyle($style_dashed);
     $proportions = array(0.1, 0.1, 0.1, 0.1, 0.60);
     $spaces = array();
@@ -450,7 +456,7 @@ function make_MT_list($pdf, $SB, $block_header_w, $booooool, $resultX, $style_no
     $pdf->MultiCell($spaces[2], $rowHeightFirstLine, "Stk", 'B', 'C', 0, 0);
     $pdf->MultiCell($spaces[3], $rowHeightFirstLine, "Bestand", 'B', 'C', 0, 0);
     $pdf->MultiCell($spaces[4], $rowHeightFirstLine, "Element", 'B', 'L', 0, 0);
-    if ($booooool) {
+    if ($more_than_one_row) {
         $pdf->MultiCell($spaces[0], $rowHeightFirstLine, "ID", 'LB', 'C', 0, 0);
         $pdf->MultiCell($spaces[1], $rowHeightFirstLine, "Var", 'B', 'C', 0, 0);
         $pdf->MultiCell($spaces[2], $rowHeightFirstLine, "Stk", 'B', 'C', 0, 0);
@@ -462,12 +468,13 @@ function make_MT_list($pdf, $SB, $block_header_w, $booooool, $resultX, $style_no
     while ($row = $resultX->fetch_assoc()) {
         $borders = 'T';
         $pdf->SetFont('helvetica', '', 8);
-        $rowHeightMainLine = $pdf->getStringHeight(50, $row['Bezeichnung'], false, true, '', 1);
+        $rowHeightMainLine = $pdf->getStringHeight($spaces[4], $row['Bezeichnung'], false, true, '', 1) + 1;
         check_4_new_page($pdf, $rowHeightMainLine, "A3");
-        if (!$booooool || ($booooool && $c_even % 2 == 0)) {
+        if (!$more_than_one_row || ($more_than_one_row && $c_even % 2 == 0)) {
             $pdf->MultiCell($block_header_w, $rowHeightMainLine, "", "", 'R', "", 0);
         }
         $c_even++;
+
         $borders = 'LT';
         $pdf->MultiCell($spaces[0], $rowHeightMainLine, $row['ElementID'], $borders, 'C', $fill, 0);
         $borders = 'T';
@@ -476,15 +483,20 @@ function make_MT_list($pdf, $SB, $block_header_w, $booooool, $resultX, $style_no
         $pdf->MultiCell($spaces[3], $rowHeightMainLine, translateBestand($row['Neu/Bestand']), $borders, 'C', $fill, 0);
         $borders = 'RT';
         $pdf->MultiCell($spaces[4], $rowHeightMainLine, $row['Bezeichnung'], $borders, 'L', $fill, 0);
-        if ($booooool && ($c_even % 2 == 0) || !$booooool) {
+
+        if (($more_than_one_row && ($c_even % 2 == 0)) || (!$more_than_one_row && ($c_even % 2 == 1))) {
             $pdf->Ln();
             $fill = !$fill;
         }
     }
-    $pdf->Ln();
+    if ($c_even % 2 === 1 && $more_than_one_row) {
+        $pdf->Ln();
+    }
     $pdf->Line(15 + $block_header_w, $pdf->GetY(), $SB + 15, $pdf->GetY(), $style_dashed);
     $pdf->SetLineStyle($style_normal);
+    $pdf->Ln(2);
     $pdf->Line(15, $pdf->GetY() + 1, $SB + 15, $pdf->GetY() + 1, $style_normal);
+    $pdf->Ln(2);
 }
 
 function el_in_room_html_table($pdf, $result, $init_einzug, $format = "", $SB = 0) {

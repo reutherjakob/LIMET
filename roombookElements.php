@@ -14,39 +14,36 @@ init_page_serversides();
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
         <link rel="icon" href="iphone_favicon.png"/>
-
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"/>
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous"/>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-
-
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
         <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.js"></script>
-
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/datatables.mark.js/2.0.0/datatables.mark.min.css"/>
         <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script>
         <script type="text/javascript" src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
         <style>
             .card-body{
-
                 padding: 10px;
             }
-
+            .top {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
         </style>
     </head>
 
     <body style="height:100%">
-        <div id="limet-navbar"></div> <!-- Container für Navbar Aufruf über onLoad --> 
-
-        <div class="container-fluid" >
-
+        <div class="container-fluid">
+            <div id="limet-navbar"></div> <!-- Container für Navbar Aufruf über onLoad --> 
             <div class='row'>
                 <div class='col-sm-12'> 
                     <div class="mt-1 card">
                         <div class="card-header">Elemente</div>
-                        <div class="card-body" id="DBElementData">                         
+                        <div class="card-body" id="DBElementData" style="padding-top: 0px;">                         
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="mt-1 card">
@@ -162,13 +159,14 @@ init_page_serversides();
 
             <script>
                 var targetDiv = document.getElementById('elementPricesInOtherProjects');
-                targetDiv.style.height = '777px';
+                targetDiv.style.height = '650px';
                 targetDiv.style.overflow = 'hidden';
                 targetDiv.style.overflowY = 'scroll';
 
                 $(document).ready(function () {
 
                     $('#tableElementsInDB').DataTable({
+
                         "paging": true,
                         "pagingType": "simple",
                         "lengthChange": false,
@@ -182,7 +180,8 @@ init_page_serversides();
                         ],
                         "info": false,
                         "order": [[1, "asc"]],
-                        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+                        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+                        "dom": '<"top"pf>rt<"bottom"><"clear">'
                     });
 
                     var table1 = $('#tableElementsInDB').DataTable();

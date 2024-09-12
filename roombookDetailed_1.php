@@ -97,7 +97,7 @@ $mysqli->close();
                             Nur MT-relevante Räume: <input type="checkbox" id="filter_MTrelevantRooms" checked="true"> 
                         </label>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body"  style="overflow: auto; ">
                         <?php
 $mysqli = utils_connect_sql(); 
 $sql = "SELECT tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.Nutzfläche,

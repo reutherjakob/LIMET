@@ -90,10 +90,10 @@ check_login();
                     columnDefs: [
                         {"targets": [0], "visible": false, "searchable": false}
                     ],
-                    paging: true,
-                    pagingType: "numbers",
-                    pageLength: "25",
-                    sDom: "tlip"
+                    paging: false,
+//                    pagingType: "numbers",
+//                    pageLength: "25",
+                    sDom: "tli"//p
                             //"scrollY":        '20vh',
                             //"scrollCollapse": true,
                 });
