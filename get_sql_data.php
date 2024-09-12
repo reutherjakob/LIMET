@@ -1,47 +1,127 @@
 <?php
+
 session_start();
 include '_utils.php';
-if (isset($_GET["key"])) {
-    $key = filter_var($_GET["key"], FILTER_SANITIZE_STRING);
-} else {
-    $key = "TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen ";
-}
-if (isset($_GET["value"])) {
-    $value = filter_var($_GET["value"], FILTER_SANITIZE_STRING);
-} else {
-    $value = "0";
-}
-if ($key === "TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen") {
-    $key = "idTABELLE_Funktionsteilstellen";
+
+function searchDatabase($dbName, $tableName, $fieldNames, $searchString) {
+    $conn = new mysqli('localhost', 'username', 'password', $dbName);
+    if ($conn->connect_error)
+        die("Connection failed: " . $conn->connect_error);
+    $fields = $fieldNames ? implode(", ", $fieldNames) : '*';
+    $sql = "SELECT $fields FROM $tableName WHERE ";
+    $conditions = [];
+    foreach ($fieldNames as $field)
+        $conditions[] = "$field LIKE '%$searchString%'";
+    $sql .= implode(" OR ", $conditions);
+    $result = $conn->query($sql);
+    $data = [];
+    if ($result->num_rows > 0)
+        while ($row = $result->fetch_assoc())
+            $data[] = $row;
+    $conn->close();
+    return $data;
 }
 
-//echo "Key: ". $key. " Value: ". $value. "<br>"; 
+function echoLastWord($string) {
+    $words = explode(' ', trim($string));
+    echo end($words);
+}
 
 $mysqli = utils_connect_sql();
-$stmt = " SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte,tabelle_räume.idTABELLE_Räume, 
-           tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, 
-           tabelle_funktionsteilstellen.Nummer,tabelle_funktionsteilstellen.Bezeichnung,
-           tabelle_räume.`MT-relevant`,tabelle_räume.Raumnr,tabelle_räume.Raumbezeichnung, 
-           tabelle_räume.`Funktionelle Raum Nr`,tabelle_räume.Raumnummer_Nutzer, 
-           tabelle_räume.`Raumbereich Nutzer`,tabelle_räume.Strahlenanwendung, 
-           tabelle_räume.Laseranwendung,tabelle_räume.H6020,tabelle_räume.Anwendungsgruppe
-    FROM tabelle_räume
-    INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
-    WHERE (tabelle_funktionsteilstellen." . $key . " =" . $value . " AND `MT-relevant` =1)
-    ORDER BY tabelle_räume.Raumnr";
+
+//////// -+- ALL TABLES -+-
+//$stmt  = "SELECT TABLE_NAME, COLUMN_NAME
+//FROM INFORMATION_SCHEMA.COLUMNS
+//WHERE TABLE_SCHEMA = 'LIMET_RB'"; 
+//
+
+///////  -+- INFOS ABOUT A TABLE -+-
+//$stmt = " SELECT COLUMN_NAME AS ColumnName, DATA_TYPE AS DataType, CHARACTER_MAXIMUM_LENGTH AS CharacterLength
+//FROM INFORMATION_SCHEMA.COLUMNS
+//WHERE TABLE_NAME = 'tabelle_parameter'";
+
+$stmt = "SELECT * FROM tabelle_parameter"; //WHERE name LIKE '%searchstring%';
+
+//$stmt = "SELECT Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl, 
+//                                    tabelle_elemente.ElementID, 
+//                                    tabelle_elemente.Bezeichnung, 
+//                                    tabelle_räume.`Raumbereich Nutzer`, 
+//                                    tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
+//                                    tabelle_projekt_varianten_kosten.Kosten
+//                             FROM (tabelle_elemente 
+//                                   INNER JOIN (tabelle_räume 
+//                                               INNER JOIN tabelle_räume_has_tabelle_elemente 
+//                                               ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) 
+//                                   ON tabelle_elemente.idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) 
+//                             INNER JOIN tabelle_projekt_varianten_kosten 
+//                             ON (tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten = tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten) 
+//                             AND (tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente)
+//                             WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["projectID"] . ") 
+//                             AND ((tabelle_räume_has_tabelle_elemente.`Neu/Bestand`) = 0) 
+//                             AND ((tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["projectID"] . "))
+//                             GROUP BY tabelle_elemente.ElementID, 
+//                                      tabelle_elemente.Bezeichnung, 
+//                                      tabelle_räume.`Raumbereich Nutzer`, 
+//                                      tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
+//                                      tabelle_projekt_varianten_kosten.Kosten
+//                             ORDER BY tabelle_elemente.ElementID;"; 
+
+//$stmt = "
+//    SELECT 
+//        Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl, 
+//        tabelle_elemente.ElementID, 
+//        tabelle_elemente.Bezeichnung, 
+//        tabelle_räume.`Raumbereich Nutzer`, 
+//        tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
+//        tabelle_projekt_varianten_kosten.Kosten, 
+//        tabelle_varianten.Variante
+//    FROM 
+//        tabelle_varianten 
+//    INNER JOIN 
+//        (
+//            (tabelle_elemente 
+//            INNER JOIN 
+//                (tabelle_räume 
+//                INNER JOIN tabelle_räume_has_tabelle_elemente 
+//                ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) 
+//            ON tabelle_elemente.idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) 
+//        INNER JOIN tabelle_projekt_varianten_kosten 
+//        ON 
+//            (tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente) 
+//            AND 
+//            (tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten = tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)) 
+//    ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
+//    WHERE 
+//        ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte = " . $_SESSION["projectID"] . ") 
+//            AND (tabelle_räume_has_tabelle_elemente.`Neu/Bestand` = 0) 
+//            AND (tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte =" . $_SESSION["projectID"] . " )
+//        )
+//    GROUP BY 
+//        tabelle_elemente.ElementID, 
+//        tabelle_elemente.Bezeichnung, 
+//        tabelle_räume.`Raumbereich Nutzer`, 
+//        tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
+//        tabelle_projekt_varianten_kosten.Kosten, 
+//        tabelle_varianten.Variante
+//    ORDER BY 
+//        tabelle_elemente.ElementID;";
+
 
 $result = $mysqli->query($stmt);
-$mysqli->close();
- 
+
+echoLastWord($stmt);
+echorow($result);
 $data = array();
 while ($row = $result->fetch_assoc()) {
+    
     $data[] = $row;
 }
- 
-//echorow($data); 
-header('Content-Type: application/json');
-echo json_encode($data);
- 
+echorow($data);
+$mysqli->close();
+
+
+
+
 /* 
 Aufruf von Bauangaben von Vergleichsräume:
 Dazu kannst du die Abfrage der Bauangaben-Neu verwenden und TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen nach dem Wert des aktuellen Raumes suchen
@@ -80,4 +160,4 @@ GROUP BY tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
 Evtl. mit Ampelsystem:
 Grün - Elemente sind aktuell berücksichtigt
 Gelb - Fehlen im aktuellen Projekt
-  */
+  */ 

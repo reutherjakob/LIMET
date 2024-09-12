@@ -18,24 +18,30 @@ check_login();
         $result = $mysqli->query($sql);
         $mysqli->close(); 
 
-        echo"<table class='table table-responsive table-striped table-bordered table-sm' id='tableRoomElements' cellspacing='0' >
+//	<th>ID</th>
+//	<th>Kommentar</th>
+        echo"<table class='table table-responsive table-striped table-bordered table-sm' id='tableRoomElements" . $_SESSION["roomID"] . "' cellspacing='0' >
 	<thead><tr>
-	<th>ID</th>
-	<th class='cols-md-1'>Stück</th>
-	<th>Element</th>
+
+	
+	<th style='width:50%; '>Element</th>
+        <th class='customIDCell'>ID</th>
+        <th>Stück</th>
 	<th>Var.</th>
 	<th>Best.</th>
 	<th>Ort</th> 
 	<th>Verw.</th> 
-	<th>Kommentar</th>
+
 	</tr></thead>
 	<tbody>";
 //<!--	<th>Geräte ID</th>-->
         while ($row = $result->fetch_assoc()) {
             echo "<tr>";
-            echo "<td>" . $row["id"] . "</td>";
+//            echo "<td>" . $row["id"] . "</td>";
+            echo "<td>" . $row["Bezeichnung"] . "</td>";
+            echo "<td>" . $row["ElementID"] . "</td>";           
+      
             echo "<td>" . $row["Anzahl"] . "</td>";
-            echo "<td>" . $row["ElementID"] . " " . $row["Bezeichnung"] . "</td>";
             echo "<td>" . $row["Variante"] . "</td>";
             echo "<td>";
             if ($row["Neu/Bestand"] == 1) {
@@ -58,65 +64,29 @@ check_login();
                 echo "Nein";
             }
             echo "</td>";
-            echo "<td class='cols-md-2'><textarea id='comment" . $row["id"] . "' rows='1' style='width: 100%;'>" . $row["Kurzbeschreibung"] . "</textarea></td>";
+//            echo "<td class='cols-md-2'><textarea id='comment" . $row["id"] . "' rows='1' style='width: 100%;'>" . $row["Kurzbeschreibung"] . "</textarea></td>";
             echo "</tr>";
         }
         echo "</tbody></table>";
         ?>
         <script>
-
-            // Element speichern
-            $("input[value='Element auswählen']").click(function () {
-                var id = this.id;
-                $.ajax({
-                    url: "getElementParameters.php",
-                    data: {"id": id},
-                    type: "GET",
-                    success: function (data) {
-                        $("#elementParameters").html(data);
-                    }
-                });
-            });
-
-            $(document).ready(function () {
-                var tablel = $("#tableRoomElements").DataTable({
-                    searching: true,
-                    info: true,
-                    responsive:true,
-                    select: true,
-                    order: [[1, "asc"]],
-                    lengthChange: false,
-                    language: {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
-                    columnDefs: [
-                        {"targets": [0,7 ], "visible": false, "searchable": false}
-                    ],
-                    paging: false, 
-                    pageLength: -1,
-                    sDom: "ti" 
-                });
-
- 
-                $('#tableRoomElements tbody').on('click', 'tr', function () {
-                    if ($(this).hasClass('info')) {
-                    } else {
-                        tablel.$('tr.info').removeClass('info');
-                        $(this).addClass('info');
-                        var raumbuchID = tablel.row($(this)).data()[0];
-                        $.ajax({
-                            url: "getElementParameters.php",
-                            data: {"id": raumbuchID},
-                            type: "GET",
-                            success: function (data) {
-                                $("#elementParameters").html(data);
-                            }
-                        });
-
-                    }
-                });
-            });
-
-
+//            $(document).ready(function () {
+//                var tablel = $("#tableRoomElements", $_SESSION["roomID"] ).DataTable({
+//                    searching: true,
+//                    info: true,
+//                    responsive:true,
+//                    select: true, 
+//                    compact:true,
+//                    order: [[1, "asc"]],
+//                    lengthChange: false,
+//                    columnDefs: [
+//                        {"targets": [0,8 ], "visible": false, "searchable": false}
+//                    ],
+//                    paging: false, 
+//                    pageLength: -1,
+//                    sDom: "ti" 
+//                }); 
+//            });
         </script>
-
     </body>
 </html>

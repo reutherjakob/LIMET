@@ -1,18 +1,18 @@
-
 #scrollBtn {
-    display:none;
+    height: 45px; /* Adjust height for ellipse shape */
+    width: 45px; /* Adjust width for ellipse shape */
+    display: block; /* Ensure the button is displayed */
     position: fixed;
-    bottom: 20px;
-    right: 50%; /* Center horizontally */
-    transform: translateX(50%);
+    bottom: 20px; /* Position it slightly above the bottom */
+    right: 20px; /* Position it slightly away from the right edge */
     z-index: 99;
-    font-size: 24px;
-    background-color: #5cb85c; /* Green color */
+    font-size: 20px;
+    background-color: rgba(100, 140, 25, 0.1);
     color: #fff;
     border: none;
-    border-radius: 50%;
     padding: 10px;
     cursor: pointer;
+    border-radius: 50px; /* Make the button an ellipse */
 }
 
 #scrollBtn:hover {
@@ -20,7 +20,7 @@
 }
 
 #btn{
-     box-shadow: 0 3px 3px 0 rgba(1,0,1,0.2), 0 5px 5px 0 rgba(1,1,0,0.10);
+    box-shadow: 0 3px 3px 0 rgba(1,0,1,0.2), 0 5px 5px 0 rgba(1,1,0,0.10);
 }
 
 #th {
@@ -29,14 +29,11 @@
 
 #pull-right {
     float: right !important;
-    height: 20px !important;
 }
 
- 
 #body, html, .container-fluid {
     height: 100%;
     font-size:13px;
-    
     color: #222;
     background: #fff;
     font: 100% system-ui;

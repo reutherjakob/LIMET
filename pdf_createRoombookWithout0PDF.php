@@ -124,7 +124,7 @@ class MYPDF extends TCPDF {
                 
                 $raumInfosCounter = $raumInfosCounter + 1;
             }
-            $this->Cell(0, 0, $funktionsStellen, 0, false, 'L', 0, '', 0, false, 'B', 'B');
+               $this->MultiCell(180, 0, $funktionsStellen,0, 'L', 0, 0);
             $this->Ln();
             $this->SetFont('helvetica', '', 12);
             $this->Cell(0, 0, "Stand: ".date('Y-m-d'), 0, false, 'L', 0, '', 0, false, 'T', 'M');            

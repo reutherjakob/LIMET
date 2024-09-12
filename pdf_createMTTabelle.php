@@ -40,7 +40,6 @@ function abk_vz($result4, $pdf, $f_size) {
     } $pdf->SetFont('courier', 'B', $f_size);
 }
 
-
 function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dataChanges) {
 
     // $result4 = Abkürzungen
@@ -226,4 +225,6 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dat
         $pdf->Ln();
     }
     abk_vz($result1, $pdf, $f_size);
+    $pdf->Ln();
 }
+ 
