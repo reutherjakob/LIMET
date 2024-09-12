@@ -103,7 +103,7 @@ function check_4_room_param(&$messages, $roomParams, $theonetobechecked4, $row) 
 
 function check_4_room_paramz(&$messages, $roomParams, $theonetobechecked4, $the2ndtobechecked4, $row) { // Strahlenanwendung
     if ((!isset($roomParams[$theonetobechecked4]) || $roomParams[$theonetobechecked4] < 1) && (!isset($roomParams[$the2ndtobechecked4]) || $roomParams[$the2ndtobechecked4] < 1)) {
-        $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Raumparameter-> Element " . $row['Bezeichnung'] . " präsent, aber Raumparam ". $theonetobechecked4 . "/".$the2ndtobechecked4."= " . $roomParams[$theonetobechecked4] . "! <br>";
+        $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Raumparameter-> Element " . $row['Bezeichnung'] . " präsent, aber Raumparam " . $theonetobechecked4 . "/" . $the2ndtobechecked4 . "= " . $roomParams[$theonetobechecked4] . "! <br>";
     }
 }
 
@@ -140,11 +140,10 @@ function check_room_Leistungssumme(&$messages, $roomParams, $P) {
         }
         $summe += $P_jeNA;
         if ($P_jeNA == 0 && $index > 0) {
-            if($roomParams[$mapping[$index]] == 1 ) { 
+            if ($roomParams[$mapping[$index]] == 1) {
                 $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Leistung-> P[" . $mapping[$index] . "]=0, aber Raumparameter=1? <br>";
             }
         }
-    
     }
 //    $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- ".$roomParams['idTABELLE_Räume'] . ":::LEISTUNG∑-> RAUM ∑P=" . $summe . "!<br>";
     if ($summe > $roomParams['ET_Anschlussleistung_W']) {
@@ -184,8 +183,6 @@ function unitMultiplier($text) {
 }
 
 //   -------------  MAIN  ---------------  
-
-
 session_start();
 include '_utils.php';
 check_login();
@@ -321,20 +318,16 @@ foreach ($raumparameter as $roomID => $roomParams) {
 //            echo abcTo123($elements_in_room[$roomID]['Variante']) . "</br> ";  
 //            echorow($row);  //for FORENSICS  
 //            echorow($elementParamInfos);  
-        
+
         if (in_array($row['idTABELLE_Elemente'], $strahlenIDs)) {
             check_4_room_param($messages, $roomParams, "Strahlenanwendung", $row);
             if (in_array($row['idTABELLE_Elemente'], $CEE_IDs)) {
                 check_4_room_param($messages, $roomParams, "EL_Roentgen 16A CEE Stk", $row);
             }
         }
- 
         if (strpos($row['ElementID'], "2.34.19") === 0 || strpos($row['ElementID'], "2.56.16") === 0) { //Lasercheck 
             check_4_room_param($messages, $roomParams, "Laseranwendung", $row);
         }
-
- 
-
         if (stripos($row['Bezeichnung'], "digestori") !== false) {
             check_4_room_param($messages, $roomParams, "HT_Abluft_Digestorium_Stk", $row);
         }
@@ -366,8 +359,10 @@ foreach ($raumparameter as $roomID => $roomParams) {
                         $temp_GLZ = floatval(str_replace(",", ".", preg_replace("/[^0-9,.]/", "", $parameterInfo['Wert'])));
                     }
                 }
-                if ($parameterInfo['idTABELLE_Parameter_Kategorie'] === 3) {
-                    $Abwärme_el = floatval(str_replace(",", ".", preg_replace("/[^0-9.,]/", "", $parameterInfo['Wert']))) * unitMultiplier($parameterInfo["Einheit"]);
+                if ($parameterInfo['idTABELLE_Parameter_Kategorie'] === 3) { //HKLS
+                    if ($parameterInfo["idTABELLE_Parameter"] === 9) {//ABWÄRME
+                        $Abwärme_el = floatval(str_replace(",", ".", preg_replace("/[^0-9.,]/", "", $parameterInfo['Wert']))) * unitMultiplier($parameterInfo["Einheit"]);
+                    }
                 }
                 if ($parameterInfo['idTABELLE_Parameter_Kategorie'] === 12) {  //MEDGAS
                     check_room_for_parameters_cause_elementParamKathegorie($messages, $roomParams, $parameterInfo['idTABELLE_Parameter'], $row);   //check for if room got that plug.  
@@ -378,6 +373,7 @@ foreach ($raumparameter as $roomID => $roomParams) {
             }
         }// END OF PARAM PER ELEMENT LOOP 
         $Abwärme += $Abwärme_el * $temp_GLZ * $AnzahlElImRaum; //  
+
         $LeistungInklGLZ = $temp_LeistungElement * $temp_GLZ * $AnzahlElImRaum;
         $LeistungImRaum = distribute($LeistungInklGLZ, $LeistungImRaum, $tempNA_perElement); // LEISTUNg wird je nach Element Netzart aufgeteilt
 
@@ -385,9 +381,9 @@ foreach ($raumparameter as $roomID => $roomParams) {
             if (empty($tempNA_perElement)) {
                 $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Netzarten->  " . $row['Bezeichnung'] . " hat Leistung aber keine Netzart!<br>";
             }
-//                echo "ELEMENTS in ROOM: " . $roomID . " " . $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- ".$roomParams['idTABELLE_Räume'] . "\t\t\t<br>";
-//                echorow($LeistungImRaum);
-//                echo "El: " . $row['Bezeichnung'] . "- GLZ: " . $temp_GLZ . "- Leistung: " . $temp_LeistungElement . "- Anzahl: " . $AnzahlElImRaum . "<br> "; //"<br> Abw El" . $Abwärme_el . 
+//            echo "ELEMENTS in ROOM: " . $roomID . " " . $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . "\t\t\t<br>";
+//            echorow($LeistungImRaum);
+//            echo "El: " . $row['Bezeichnung'] . "- GLZ: " . $temp_GLZ . "- Leistung: " . $temp_LeistungElement . "- Anzahl: " . $AnzahlElImRaum . "<br> "; //"<br> Abw El" . $Abwärme_el . 
         }
     }// END OF ELEMENTS LOOP
 
@@ -395,13 +391,11 @@ foreach ($raumparameter as $roomID => $roomParams) {
     check_max_value_rev($messages, $roomParams, "HT_Waermeabgabe_W", $Abwärme);
     check_room_for_na($messages, $roomParams, $NetzArtenImRaum);
     check_room_Leistungssumme($messages, $roomParams, $LeistungImRaum);
-}  //   eingefügt um ausgabe zum Codenn zu unterbinden 
-//} //end of foreach Rooom
+}   //end of foreach Rooom 
 $mysqli->close();
 
 foreach ($messages as $messages_out) {
     echo br2nl($messages_out);
-//    echo $messages_out;
 }                 
 
 
