@@ -1,4 +1,4 @@
-<?php
+<?php 
 session_start();
 include '_utils.php';
 init_page_serversides();
@@ -804,87 +804,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             console.log("copySelectedRow:", requestData);
                             numsave_new_room_all(requestData);
                         }
-
-                        //UTILITIES And lost code.
-//                        function checkAndToggleColumnsVisibility() {
-//                        table.columns().every(function () {
-//                        var hasNonEmptyCell = this.data().toArray().some(function (cellData) {
-//                        return cellData !== null && cellData !== undefined && cellData !== '' && cellData !== '-' && cellData !== ' ' && cellData !== '  ' && cellData !== '   ' && cellData !== '.';
-//                        });
-//                        if (!hasNonEmptyCell) {
-//                        this.visible(!this.visible());
-//                        }
-//                        });
-//                        }
-//                        {
-//                        text: 'w/Data',
-//                                className: '',
-//                                id: 'toggleDatalessColumnsButton',
-//                                action: function (e, dt, node, config) {
-//                                checkAndToggleColumnsVisibility(dt);
-//                                }
-//                        }
-//                    function logColumnValues() {
-//                        var data = table.rows().data();
-//                        console.log("logging coulumns");
-//                        data.each(function (row) {
-//                            console.log(row["Raumnr"]);
-//                        });
-//                    }
-//
-//                    function logDuplicateColumnValues() {
-//                        var data = table.rows().data();
-//                        console.log("Logging duplicate columns");
-//                        var valueCounts = {};
-//                        data.each(function (row) {
-//                            var value = row["Raumnr"];
-//                            if (valueCounts[value]) {
-//                                valueCounts[value]++;
-//                            } else {
-//                                valueCounts[value] = 1;
-//                            }
-//                        });
-//                        data.each(function (row) {
-//                            var value = row["Raumnr"];
-//                            if (valueCounts[value] > 1) {
-//                                console.log(value);
-//                            }
-//                        });
-//                    }
-
-//                    function logAndSaveDuplicateColumnValues() {
-//                        var data = table.rows().data();
-//                        console.log("Logging duplicate columns");
-//                        var valueCounts = {};
-//                        data.each(function (row) {
-//                            var value = row["Raumnr"];
-//                            if (valueCounts[value]) {
-//                                valueCounts[value]++;
-//                            } else {
-//                                valueCounts[value] = 1;
-//                            }
-//                        });
-//                        var duplicates = [];
-//                        data.each(function (row) {
-//                            var value = row["Raumnr"];
-//                            if (valueCounts[value] > 1) {
-//                                console.log(value);
-//                                duplicates.push(value);
-//                            }
-//                        });
-//                        // Save duplicates to a CSV file
-//                        var csvContent = "data:text/csv;charset=utf-8,Raumnr\n";
-//                        duplicates.forEach(function (duplicate) {
-//                            csvContent += duplicate + "\n";
-//                        });
-//                        var encodedUri = encodeURI(csvContent);
-//                        var link = document.createElement("a");
-//                        link.setAttribute("href", encodedUri);
-//                        link.setAttribute("download", "duplicates.csv");
-//                        document.body.appendChild(link);
-//                        link.click();
-//                        document.body.removeChild(link);
-//                    }
 
 </script>
 

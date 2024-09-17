@@ -11,7 +11,7 @@ function title2data(columnsDefinition, title) {
 }
 
 const buttonRanges = [
-    {name: 'All', start: 7, end: 144, longName: 'Alle Spalten'},
+    {name: 'All', start: 6, end: 144, longName: 'Alle Spalten'},
     {name: 'R', start: 7, end: 23, longName: 'Raum'},
     {name: 'HKLS', start: 24, end: 33, longName: 'HKLS'},
     {name: 'ET', start: 34, end: 53, longName: 'Elektro'},
