@@ -58,34 +58,33 @@ $mysqli->close();
     <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
     <link rel="icon" href="iphone_favicon.png"/>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"/>
+
+
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"/>
+
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
+
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/datatables.mark.js/2.0.0/datatables.mark.min.css"/>
+
     <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
-    <!--             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous"/>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-    
-        <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.css" rel="stylesheet"/>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-        <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>-->
+
 
     <style>
-        .card-body{
-            padding: 5px;
-        }
-        .card-header{
-               background-color: rgba(100, 140, 25, 0.05);
-        }
+        /*        .card-body{
+                    padding: 5px;
+                }
+                .card-header{
+                       background-color: rgba(100, 140, 25, 0.05);
+                }*/
 
     </style>
 </head>
@@ -198,32 +197,24 @@ $mysqli->close();
 
                                 $result = $mysqli->query($sql);
                                 echo "<div class='form-group row'>
-<label class='control-label col-md-2' for='elementGewerk'>Gewerk</label>
-<div class='col-md-10'>
-        <select class='form-control form-control-sm' id='elementGewerk' name='elementGewerk'>";
+                                    <label class='control-label col-md-2' for='elementGewerk'>Gewerk</label>
+                                    <div class='col-md-10'>
+                                            <select class='form-control form-control-sm' id='elementGewerk' name='elementGewerk'>";
                                 while ($row = $result->fetch_assoc()) {
                                     echo "<option value=" . $row["idtabelle_element_gewerke"] . ">" . $row["Nummer"] . " - " . $row["Gewerk"] . "</option>";
                                 }
-                                echo "</select>	
-</div>
-</div>";
+                                echo "</select></div></div>";
                                 echo "<div class='form-group row'>
-<label class='control-label col-md-2' for='elementHauptgruppe'>Hauptgruppe</label>
-<div class='col-md-10'>
-        <select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>
-                <option selected>Gewerk auswählen</option>
-        </select>	
-</div>
-</div>";
+                                            <label class='control-label col-md-2' for='elementHauptgruppe'>Hauptgruppe</label>
+                                            <div class='col-md-10'>
+                                                    <select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>
+                                                            <option selected>Gewerk auswählen</option></select> </div> </div>";
 
                                 echo "<div class='form-group row'>
-<label class='control-label col-md-2' for='elementGruppe'>Gruppe</label>
-<div class='col-md-10'>
-        <select class='form-control form-control-sm' id='elementGruppe' name='elementGruppe'>
-                <option selected>Gewerk auswählen</option>
-        </select>	
-</div>
-</div>";
+                                            <label class='control-label col-md-2' for='elementGruppe'>Gruppe</label>
+                                            <div class='col-md-10'>
+                                                    <select class='form-control form-control-sm' id='elementGruppe' name='elementGruppe'>
+                                                            <option selected>Gewerk auswählen</option></select> </div> </div>";
                                 ?>
                             </div>
                         </div>
@@ -318,17 +309,7 @@ $mysqli->close();
                 function (settings, data, dataIndex) {
                     if (settings.nTable.id !== 'tableRooms') {
                         return true;
-                    }
-                    if ($("#filter_MTrelevantRooms").is(':checked')) {
-                        if (data [7] === "Ja")
-                        {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    } else {
-                        return true;
-                    }
+                       
                 }
         );
 

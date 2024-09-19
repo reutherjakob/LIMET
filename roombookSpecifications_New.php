@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 include '_utils.php';
 init_page_serversides();
@@ -17,14 +17,12 @@ include 'roombookSpecifications_New_modal_addRoom.php';
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-
     <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.css" rel="stylesheet"/>
-
-    <!--bracuhst den ?--> 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
     <style>
         .btn_vis, .btn_invis {
             color: black;
@@ -43,9 +41,10 @@ include 'roombookSpecifications_New_modal_addRoom.php';
         }
         .btn, .fix_size {
             padding: 0.1vw 0.2vw !important;
-            margin: 0 1px !important;
+            margin: 0 -1px !important;
             height: 35px !important;
         }
+
         .fix_size {
             padding: 0.2vw 0.3vw !important;
             margin: 0 0.05vw !important;
@@ -75,18 +74,19 @@ include 'roombookSpecifications_New_modal_addRoom.php';
         <div id="limet-navbar"></div>
         <section class="mt-1 card">
             <header class="card-header d-flex border-light" style="height: 1vh; font-size: 1vh;" id="btnLabelz">
-                <div class="col-md-3"><strong>Edit & Filter</strong></div>
-                <div class="col-md-1"><strong>Auswahl</strong></div>
-                <div class="col-md-6"><strong>Sichtbarkeit</strong></div>
-                <div class="col-md-1"><strong>Neu & Output</strong></div>
-                <div class="col-md-1"><strong style="float: right;">Check&Settings</strong></div>
+                <div class="col-md-4"><strong>Edit & Filter</strong></div>
+                <div class="col-md-1 d-flex justify-content-end "><strong>Auswahl</strong></div>
+                <div class="col-md-2"></div>
+                <div class="col-md-3"><strong>Sichtbarkeit</strong></div>
+                <div class="col-md-1 d-flex justify-content-end align-items-right "><strong>Neu & Output</strong></div>
+                <div class="col-md-1 d-flex justify-content-end align-items-right"><strong style="float: right;">Check&Settings</strong></div>
             </header>
             <div class="card-header container-fluid d-flex align-items-start border-dark">
-                <div class="col-md-3 d-flex align-items-left" id='TableCardHeader'></div>
-                <div class="col-md-1 d-flex align-items-center" id="TableCardHeaderX"></div>
-                <div class="col-md-6 d-flex align-items-center" id="TableCardHeader2"></div>
-                <div class="col-md-1 d-flex align-items-right" id='TableCardHeader3'></div>
-                <div class="col-md-1 align-items-right" id='TableCardHeader4'></div>
+                <div class="col-md-4 d-flex justify-content-left align-items-left" id='TableCardHeader'></div>
+                <div class="col-md-1 d-flex justify-content-end align-items-center" id="TableCardHeaderX"></div>
+                <div class="col-md-5 d-flex justify-content-center align-items-center" id="TableCardHeader2"></div>
+                <div class="col-md-1 d-flex justify-content-end align-items-right" id='TableCardHeader3'></div>
+                <div class="col-md-1  d-flex justify-content-end align-items-right" id='TableCardHeader4'></div>
             </div>
             <div class="card-body" id="table_container_div">
                 <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" width="100%" id="table_rooms">
@@ -137,7 +137,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             <label class="form-check-label" for="settings_save_edit_cbx">Initiate Editable</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="settings_show_btn_grp_labels">
+                        <input class="form-check-input" type="checkbox" id="settings_show_btn_grp_labels" >
                             <label class="form-check-label" for="settings_show_btn_grp_labels">Show Labels above Button</label>
                     </div>
                     <div class="form-check">
@@ -156,7 +156,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 
 <script src="roombookSpecifications_constDeclarations.js"></script> 
 <script>
-
                         var projectID = <?php echo json_encode($_SESSION["projectID"]); ?>;
                         var table;
                         let toastCounter = 0;
@@ -187,8 +186,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 $('#btnLabelz').attr("style", "display: none !important");
                             }
                         }
-
-
 
                         function init_btn_4_dt() {
                             let buttons_group_selct = [
@@ -278,11 +275,11 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     text: "",
                                     titleAttr: "Suche konfigurieren"
                                 }];
-                            new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#TableCardHeader'));
-                            new $.fn.dataTable.Buttons(table, {buttons: buttons_group_selct}).container().appendTo($('#TableCardHeaderX'));
-                            new $.fn.dataTable.Buttons(table, {buttons: buttonsGroupcolumnVisbilities}).container().appendTo($('#TableCardHeader2'));
-                            new $.fn.dataTable.Buttons(table, {buttons: btn_grp_new_out}).container().appendTo($('#TableCardHeader3'));
-                            new $.fn.dataTable.Buttons(table, {buttons: btn_grp_settings}).container().appendTo($('#TableCardHeader4'));
+                            new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('<div class="btn-group"></div>').appendTo($('#TableCardHeader')));
+                            new $.fn.dataTable.Buttons(table, {buttons: buttons_group_selct}).container().appendTo($('<div class="btn-group"></div>').appendTo($('#TableCardHeaderX')));
+                            new $.fn.dataTable.Buttons(table, {buttons: buttonsGroupcolumnVisbilities}).container().appendTo($('<div class="btn-group" role="group"></div>').appendTo($('#TableCardHeader2')));
+                            new $.fn.dataTable.Buttons(table, {buttons: btn_grp_new_out}).container().appendTo($('<div class="btn-group"></div>').appendTo($('#TableCardHeader3')));
+                            new $.fn.dataTable.Buttons(table, {buttons: btn_grp_settings}).container().appendTo($('<div class="btn-group"></div>').appendTo($('#TableCardHeader4')));
                         }
 
                         function toggleButtonTexts() {
@@ -327,14 +324,11 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                         }
 
                         function loadSettings() {
-                            document.getElementById('settings_show_btn_grp_labels').checked = JSON.parse(localStorage.getItem('settings_show_btn_grp_labels'));
-                            change_top_label_visibility(JSON.parse(localStorage.getItem('settings_show_btn_grp_labels')));
+                            document.getElementById('settings_show_btn_grp_labels').checked = JSON.parse(localStorage.getItem('settings_show_btn_grp_labels')) || true;
+                            change_top_label_visibility(JSON.parse(localStorage.getItem('settings_show_btn_grp_labels')) || true);
                             document.getElementById('settings_save_state_4all_projects').checked = JSON.parse(localStorage.getItem('settings_save_state_4all_projects')) || false;
                             document.getElementById('settings_save_state').checked = JSON.parse(localStorage.getItem('settings_save_state' + projectID)) || false;
                             document.getElementById('settings_save_edit_cbx').checked = JSON.parse(localStorage.getItem('settings_save_edit_cbx')) || false;
-                            // document.getElementById('settings_save_search').checked = JSON.parse(localStorage.getItem('settings_save_search')) || false;
-                            // document.getElementById('settings_show_btn_texts_all').checked = JSON.parse(localStorage.getItem('settings_show_btn_texts_all')) || false;
-
                         }
 
                         function saveSettings() {
@@ -342,9 +336,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             localStorage.setItem('settings_save_state_4all_projects', document.getElementById('settings_save_state_4all_projects').checked);
                             localStorage.setItem('settings_save_state' + projectID, document.getElementById('settings_save_state').checked);
                             localStorage.setItem('settings_save_edit_cbx', document.getElementById('settings_save_edit_cbx').checked);
-                            // localStorage.setItem('settings_save_search', document.getElementById('settings_save_search').checked);
-                            // localStorage.setItem('settings_show_btn_texts_all', document.getElementById('settings_show_btn_texts_all').checked);
-
                             $('#einstellungModal').modal('hide');
                         }
 
@@ -365,7 +356,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             }
                         }
 
-
                         function getCase(dataIdentifier) {
                             const column = columnsDefinition.find(column => column.data === dataIdentifier);
                             if (column && column.case) {
@@ -377,8 +367,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 
                         function format_data_input(newData, dataIdentifier) {
                             switch (getCase(dataIdentifier)) {
-                                case "bit":
-                                    newData = one_or_zero(newData);
                                 case "num":
                                     newData = formatNum(newData);
                             }
@@ -390,16 +378,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             newData = newData.replace(/,/g, '.'); // Replace ',' with '.' 
                             return newData;
                         }
-
-                        function one_or_zero(inp) {
-                            inp = inp.toLowerCase();
-                            if (inp === 'yes' || inp === '1' || inp === 'ja') {
-                                return "1";
-                            } else {
-                                return "0";
-                            }
-                        }
-
                         function event_table_keyz() {
                             table.on('key-focus', function (e, datatable, cell) {
                                 if (document.getElementById('checkbox_EditableTable').checked && !current_edit) {
@@ -439,6 +417,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                         .map(option => `<option value="${option}"${cellText === option ? ' selected' : ''}>${option}</option>`)
                                         .join('\n');
                                 return `<select class="form-control form-control-sm" id="${dataIdentifier}_dropdowner">\n${dropdownOptions}\n</select>`;
+                            } else if (getCase(dataIdentifier) === "bit" ) {
+                                   return `<select class="form-control form-control-sm" id="${dataIdentifier}_dropdowner"><option value="0">Nein</option> <option value="1">Ja</option></select>`;
                             } else {
                                 return `<input id="CellInput" onclick="this.select()" type="text" value="${cellText}">`;
                             }
@@ -553,7 +533,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 
                         function init_dt() {
                             let savestate = document.getElementById('settings_save_state').checked || document.getElementById('settings_save_state_4all_projects').checked;
-                            console.log(savestate);
+                            //console.log(savestate);
                             table = new DataTable('#table_rooms', {
                                 ajax: {
                                     url: 'get_rb_specs_data.php',
