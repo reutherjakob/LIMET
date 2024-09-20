@@ -563,8 +563,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 pagingType: "simple_numbers",
                                 pageLength: 10,
                                 lengthMenu: [
-                                    [5, 10, 20, 50],
-                                    ['5 rows', '10 rows', '20 rows', '50 rows']
+                                    [5, 10, 20, 50, -1 ],
+                                    ['5 rows', '10 rows', '20 rows', '50 rows', 'All']
                                 ],
                                 compact: true
                             });
