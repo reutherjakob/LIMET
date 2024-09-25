@@ -35,18 +35,28 @@ init_page_serversides();
 
                             <div class="container-fluid" >
                                 <div id="limet-navbar"></div>  
-                                <div class='row'>
+                                <div class='row' >
                                     <div class='col-sm-8'>  
-                                        <div class="mt-4 card">
-                                            <div class="card-header">Räume im Projekt
-                                                <label class="float-right">
-                                                    Nur MT-relevante Räume: <input type="checkbox" id="filter_MTrelevantRooms" checked="true"> 
-                                                </label>
+                                        <div class="mt-2 card">
+                                            <div class="card-header">
+                                                <div class="row">
+                                                    <div class="col-md-3">Räume im Projekt </div>
+                                                    <div class="col-md-4"> </div>
+                                                    <div class="col-md-3"> 
+                                                        <label class="float-right">
+                                                            MT-relevante Räume: <input type="checkbox" id="filter_MTrelevantRooms" checked="true"> 
+                                                        </label>
+                                                    </div>
+                                                    <div id ="CardHeaderRaume" class="col-md-2"> </div>
+
+                                                </div>
+
                                             </div>
+
                                             <div class="card-body" style="overflow: auto; ">
                                                 <?php
-                                                $mysqli = utils_connect_sql(); 
- 
+                                                $mysqli = utils_connect_sql();
+
                                                 $sql = "SELECT tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.Nutzfläche,
                                                     tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, 
                                                     tabelle_räume.Bauabschnitt,  tabelle_räume.Raumnummer_Nutzer,
@@ -99,7 +109,7 @@ init_page_serversides();
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
-                                        <div class="mt-4 card">
+                                        <div class="mt-2 card">
                                             <div class="card-header">Vermerke zu Raum</div>
                                             <div class="card-body" id="roomVermerke"></div>                    
                                         </div>
@@ -139,24 +149,24 @@ init_page_serversides();
                                                 <div class="mt-4 card">
                                                     <div class="card-header">Elementgruppen</div>
                                                     <div class="card-body" id="elementGroups">
-<?php
-$sql = "SELECT tabelle_element_gewerke.idtabelle_element_gewerke, tabelle_element_gewerke.Nummer, tabelle_element_gewerke.Gewerk
+                                                        <?php
+                                                        $sql = "SELECT tabelle_element_gewerke.idtabelle_element_gewerke, tabelle_element_gewerke.Nummer, tabelle_element_gewerke.Gewerk
 												FROM tabelle_element_gewerke
 												ORDER BY tabelle_element_gewerke.Nummer;";
 
-$result = $mysqli->query($sql);
-echo "<div class='form-group row'>
+                                                        $result = $mysqli->query($sql);
+                                                        echo "<div class='form-group row'>
 									 			<label class='control-label col-md-2' for='elementGewerk'>Gewerk</label>
 												<div class='col-md-10'>
 													<select class='form-control form-control-sm' id='elementGewerk' name='elementGewerk'>";
-while ($row = $result->fetch_assoc()) {
-    echo "<option value=" . $row["idtabelle_element_gewerke"] . ">" . $row["Nummer"] . " - " . $row["Gewerk"] . "</option>";
-}
-echo "</select>	
+                                                        while ($row = $result->fetch_assoc()) {
+                                                            echo "<option value=" . $row["idtabelle_element_gewerke"] . ">" . $row["Nummer"] . " - " . $row["Gewerk"] . "</option>";
+                                                        }
+                                                        echo "</select>	
 												</div>
 										</div>";
 
-echo "<div class='form-group row'>
+                                                        echo "<div class='form-group row'>
 									 			<label class='control-label col-md-2' for='elementHauptgruppe'>Hauptgruppe</label>
 												<div class='col-md-10'>
 													<select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>
@@ -165,7 +175,7 @@ echo "<div class='form-group row'>
 												</div>
 										</div>";
 
-echo "<div class='form-group row'>
+                                                        echo "<div class='form-group row'>
 									 			<label class='control-label col-md-2' for='elementGruppe'>Gruppe</label>
 												<div class='col-md-10'>
 													<select class='form-control form-control-sm' id='elementGruppe' name='elementGruppe'>
@@ -173,7 +183,7 @@ echo "<div class='form-group row'>
 													</select>	
 												</div>
 										</div>";
-?>
+                                                        ?>
                                                     </div>
                                                 </div>
                                                 <div class="mt-4 card">
@@ -269,12 +279,13 @@ echo "<div class='form-group row'>
                             </div>
 
                             <script>
+
+                                let toastCounter3 = 0;
                                 $.fn.dataTable.ext.search.push(
                                         function (settings, data, dataIndex) {
                                             if (settings.nTable.id !== 'tableRooms') {
                                                 return true;
                                             }
-
                                             if ($("#filter_MTrelevantRooms").is(':checked')) {
                                                 if (data [7] === "Ja")
                                                 {
@@ -287,14 +298,14 @@ echo "<div class='form-group row'>
                                             }
                                         }
                                 );
+                                var table;
 
-                                // Tabellen formatieren
                                 $(document).ready(function () {
                                     $("#elementParameters").hide();
                                     $("#elementBestand").hide();
                                     $("#elementVerwendung").hide();
 
-                                    $('#tableRooms').DataTable({
+                                    table = $('#tableRooms').DataTable({
                                         "select": true,
                                         "paging": true,
                                         "pagingType": "simple",
@@ -308,7 +319,7 @@ echo "<div class='form-group row'>
                                             }
                                         ],
                                         "order": [[1, "asc"]],
-                                        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+                                        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json", "search": ""},
                                         "mark": true
                                     });
 
@@ -329,16 +340,9 @@ echo "<div class='form-group row'>
                                         "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
                                     });
 
-
-                                    // CLICK TABELLE RÄUME
-                                    var table = $('#tableRooms').DataTable();
-
                                     $('#tableRooms tbody').on('click', 'tr', function () {
-
                                         if ($(this).hasClass('info')) {
-                                            //$(this).removeClass('info');
                                         } else {
-                                            // Ausblenden der Info/Bearbeitungsfelder um Fehlinteraktion zu verhindern
                                             $("#elementParameters").hide();
                                             $("#elementBestand").hide();
                                             $("#elementVerwendung").hide();
@@ -352,11 +356,6 @@ echo "<div class='form-group row'>
                                                 type: "GET",
                                                 success: function (data) {
                                                     $("#RoomID").text(id);
-                                                    //$.ajax({
-                                                    //url : "getNoticeDataField.php",
-                                                    //type: "GET",
-                                                    //success: function(data){
-                                                    //$("#addNotice1").html(data);
                                                     $.ajax({
                                                         url: "getRoomVermerke.php",
                                                         type: "GET",
@@ -371,11 +370,8 @@ echo "<div class='form-group row'>
                                                             });
                                                         }
                                                     });
-                                                    //}
-                                                    //});	
                                                 }
                                             });
-
                                         }
                                     });
 
@@ -420,10 +416,21 @@ echo "<div class='form-group row'>
                                         }
                                     });
 
-                                    // Event listener to the filter MT-relevant Rooms
                                     $('#filter_MTrelevantRooms').change(function () {
                                         table.draw();
                                     });
+
+                                    setTimeout(() => {
+                                        var dt_searcher = $("#tableRooms_filter");
+                                        dt_searcher.detach();
+                                        $("#CardHeaderRaume").append(dt_searcher);
+                                        $('#tableRooms_filter label').contents().filter(function () {
+                                            return this.nodeType === 3; // Node.TEXT_NODE
+                                        }).remove();
+                                    }
+                                    , 100);
+
+
                                 });
 
                                 // DB Elemente einblenden
@@ -455,18 +462,6 @@ echo "<div class='form-group row'>
 
                                 $("button[id='buttonBO']").click(function () {
                                     $("#boModalBody").html(this.value);
-                                    /*
-                                     var ID = this.id;            
-                                     $.ajax({
-                                     url : "getLotWorkflow.php",
-                                     type: "GET",
-                                     data:{"lotID":ID},
-                                     success: function(data){
-                                     $("#workflowModalBody").html(data);	            			 			
-                                     } 
-                                     });
-                                     */
-
                                 });
 
 

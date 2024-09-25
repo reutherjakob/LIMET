@@ -56,7 +56,7 @@ check_login();
                 FROM tabelle_räume_has_tabelle_elemente INNER JOIN tabelle_projekt_varianten_kosten ON (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) AND (tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten = tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)
                 WHERE (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=" . $_SESSION["roomID"] . ") AND ((tabelle_räume_has_tabelle_elemente.Standort)=1) AND ((tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume_has_tabelle_elemente.`Neu/Bestand`)=1));";
         $result = $mysqli->query($sql);
-        $row = $result->fetch_assoc(); 
+        $row = $result->fetch_assoc();
         $number = $row["Summe_Neu"];
         $formatter = new NumberFormatter('de_DE', NumberFormatter::CURRENCY);
         $formattedNumber = $formatter->formatCurrency($number, 'EUR');
@@ -117,7 +117,7 @@ check_login();
         while ($row = $result->fetch_assoc()) {
             echo "<tr>";
             echo "<td>" . $row["id"] . "</td>";
-            echo "<td>" . $row["ElementID"] . " " . $row["Bezeichnung"] . "</td>";
+            echo "<td> <span id='ElementName" . $row["id"] . "'>" . $row["ElementID"] . " " . $row["Bezeichnung"] . " </span> </td>";
             echo "<td>
 	    	<select class='form-control form-control-sm' id='variante" . $row["id"] . "'>";
             switch ($row["tabelle_Varianten_idtabelle_Varianten"]) {
@@ -294,6 +294,38 @@ check_login();
             </div>
         </div>
         <script>
+            function initializeToaster(headerText, subtext, success) {
+                // Check if the maximum number of toasts is reached
+                if (toastCounter3 >= 10) {
+                    const oldestToast = document.querySelector('.toast');
+                    if (oldestToast) {
+                        oldestToast.remove();
+                        toastCounter3--;
+                    }
+                }
+                const toast = document.createElement('div');
+                toast.classList.add('toast', 'fade', 'show');
+                toast.setAttribute('role', 'alert');
+                toast.style.position = 'fixed';
+                const topPosition = 10 + toastCounter3 * 50;
+                toast.style.top = `${topPosition}px`;
+                toast.style.right = '10px';
+                headerText = headerText.replace(/\n/g, '<br>'); // Replace \n with <br>
+                subtext = subtext.replace(/\n/g, '<br>'); // Replace \n with <br>
+                toast.innerHTML = `
+                    <div class="toast-header ${success ? "btn-success" : "btn-danger"}">
+                    <strong class="mr-auto">${headerText} ${subtext}</strong>
+                    </div>`;
+                document.body.appendChild(toast);
+                toastCounter3++;
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        toast.remove();
+                        toastCounter3--;
+                    }, 500); // Match this duration with the fadeOut animation duration
+                }, 2000 + toastCounter3 * 100);
+            }
 
             // Element speichern
             $("button[value='saveElement']").click(function () {
@@ -304,7 +336,8 @@ check_login();
                 var bestand = $("#bestand" + id).val();
                 var standort = $("#Standort" + id).val();
                 var verwendung = $("#Verwendung" + id).val();
-
+                var ElementName = $("#ElementName" + id).text(); 
+                
                 if (standort === '0' && verwendung === '0') {
                     alert("Standort und Verwendung kann nicht Nein sein!");
                 } else {
@@ -313,9 +346,8 @@ check_login();
                         data: {"comment": comment, "id": id, "amount": amount, "variantenID": variantenID, "bestand": bestand, "standort": standort, "verwendung": verwendung},
                         type: "GET",
                         success: function (data) {
-                            //alert(data);
-                            $("#infoBody").html(data);
-                            $('#infoModal').modal('show');
+                            //alert(data);     $("#infoBody").html(data);  $('#infoModal').modal('show'); 
+                            initializeToaster(data,ElementName, true);            
                         }
                     });
                 }
@@ -347,16 +379,9 @@ check_login();
                     "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
                 });
 
-
                 var table = $('#tableRoomElements').DataTable();
 
                 $('#tableRoomElements tbody').on('click', 'tr', function () {
-                    // if ( $(this).hasClass('info') ) {
-
-                    //}
-                    //else {
-                    //  table.$('tr.info').removeClass('info');
-                    //  $(this).addClass('info');
                     var id = table.row($(this)).data()[0];
                     var stk = $("#amount" + id).val();
                     var standort = $("#Standort" + id).val();
@@ -412,7 +437,8 @@ check_login();
                             });
                         }
                     });
-                    //}
+             
+                    
                 });
 
 
