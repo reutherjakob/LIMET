@@ -3,8 +3,7 @@
 //Reutherer & Fux. LAst Update 14.5.24 
 session_start();
 include '_utils.php';
-//check_login();
-//
+check_login();
 ?>
 
 <!DOCTYPE html>
@@ -51,47 +50,16 @@ include '_utils.php';
             "HKLS" => "HKLS",
             "MedGas" => "MedGas"
         ];
-        
-        $Grosgerateraum = (strpos($row["Anmerkung FunktionBO"], "Großgerät") !== false || strpos($row["Anmerkung Geräte"], "Großgerät") !== false);
-        $GroßgeräteVorlagen = [
-            "FunktionBO" => " ",
-            "Geräte" => " ",
-            "BauStatik" => "Gewicht im Raum: kg. \n\nBoden: \n maximale Punktlast statisch: kN. (Während des Transports bzw.
-                während der Aufstellungsphase kann es zu Erhöhungen kommen (2 oder 3- Punktstand). Max. Punktlast dynamisch: ca. +/-  kN. \n vibrationsfreie Installation im Beereich der Bildgebenden Systeme. "
-            . " Betonfundamentqualität: ; Alternativ: Sylodamp \n Bodenmontierter Tisch:. \n Schwingungstoleranz:  \n\nDecke: \n Deckenmontiertes Stativ: Maximum Zugkraft = ca.kN. Moment: kNm.  ",
-            "Elektro" => " Leistung: \n Spitzenwert: kW \n Anschlusswert: kW \n Spannung:  \n maximaler Netzinnenwiederstand: mOhm. \n Anschlussklemmen: ; \n Fußboden leitfähig im Anlagenbereich",
-            "HKLS" => " Variante Luftkühlung: Wärmeabgabe an Raum ca. kW
-                Variante Wasserkühlung: Wärmeabgabe an Raum ca. kW + bis zu kW an Kühlwasserkreislauf.
-                Wassertemp: . Durchfluss abhängig von
-                T(H20):  l/h. Temperaturgradient(H2O): max.  K/min.: \n",
-            "MedGas" => " "
-        ];
 
         echo "<form class='form-horizontal'>";
         foreach ($anmerkungen as $key => $label) {
-            if (!$Grosgerateraum) {
-                echo "
-                <div class='form-group row'>
+            echo" <div class='form-group row'>
                     <label class='control-label col-md-12' for='$key'></label>
                     <div class='col-md-12 hr-sect'><b> $label </b></div>
                     <div class='col-md-12'>
                         <textarea class='form-control form-control-sm' rows='5' id='$key'>" . br2nl($row["Anmerkung " . ucfirst($key)]) . "</textarea>
                     </div>
                 </div>";
-            } else {
-                echo "
-                <div class='form-group row'>
-                    <label class='control-label col-md-12' for='$key'></label> 
-                    <div class='col-md-12 hr-sect'><b> $label </b></div>
-                        
-                    <div class='col-md-2'>
-                        <textarea readonly class='form-control form-control-sm' rows='5' id='$key'>" . $GroßgeräteVorlagen[ucfirst($key)] . "</textarea>
-                    </div>
-                    <div class='col-md-10'>
-                        <textarea class='form-control form-control-sm' rows='5' id='$key'>" . br2nl($row["Anmerkung " . ucfirst($key)]) . "</textarea>
-                    </div>
-                </div>";
-            }
         }
         echo "
             <div class='well well-sm'>
@@ -117,6 +85,7 @@ include '_utils.php';
             </div>
           </div>
         </div>";
+        
         ?>
 
         <script>
@@ -149,9 +118,9 @@ include '_utils.php';
                     type: "GET",
                     data: {"id": ID},
                     success: function (data) {
-//                        alert(data); 
-                        console.log("Sucessfully opened getRoomsToCopy.php", data);
+                        console.log("Sucessfully opened getRoomsToCopy.php");
                         $("#mbody2").html(data);
+                        $('#myModal').modal('show');
                     }
                 });
             });

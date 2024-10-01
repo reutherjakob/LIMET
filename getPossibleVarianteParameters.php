@@ -55,9 +55,8 @@ session_start();
 
         $mysqli->close();
         ?>
-
+        <script src="_utils.js"></script> 
         <script>
-
             $(document).ready(function () {
                 $('#tablePossibleVarianteParameters').DataTable({
                     "paging": false,
@@ -89,8 +88,8 @@ session_start();
                         data: {"parameterID": id, "variantenID": variantenID},
                         type: "GET",
                         success: function (data) {
-        //		        	alert(data);
-                            makeToaster(data, true);
+                            //		        	alert(data);
+                            makeToaster(data.trim()), true);
                             $.ajax({
                                 url: "getVarianteParameters.php",
                                 data: {"variantenID": variantenID},

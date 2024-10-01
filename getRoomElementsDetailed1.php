@@ -293,39 +293,9 @@ check_login();
 
             </div>
         </div>
+
+        <script src="_utils.js"></script> 
         <script>
-            function initializeToaster(headerText, subtext, success) {
-                // Check if the maximum number of toasts is reached
-                if (toastCounter3 >= 10) {
-                    const oldestToast = document.querySelector('.toast');
-                    if (oldestToast) {
-                        oldestToast.remove();
-                        toastCounter3--;
-                    }
-                }
-                const toast = document.createElement('div');
-                toast.classList.add('toast', 'fade', 'show');
-                toast.setAttribute('role', 'alert');
-                toast.style.position = 'fixed';
-                const topPosition = 10 + toastCounter3 * 50;
-                toast.style.top = `${topPosition}px`;
-                toast.style.right = '10px';
-                headerText = headerText.replace(/\n/g, '<br>'); // Replace \n with <br>
-                subtext = subtext.replace(/\n/g, '<br>'); // Replace \n with <br>
-                toast.innerHTML = `
-                    <div class="toast-header ${success ? "btn-success" : "btn-danger"}">
-                    <strong class="mr-auto">${headerText} ${subtext}</strong>
-                    </div>`;
-                document.body.appendChild(toast);
-                toastCounter3++;
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                    setTimeout(() => {
-                        toast.remove();
-                        toastCounter3--;
-                    }, 500); // Match this duration with the fadeOut animation duration
-                }, 2000 + toastCounter3 * 100);
-            }
 
             // Element speichern
             $("button[value='saveElement']").click(function () {
@@ -336,8 +306,8 @@ check_login();
                 var bestand = $("#bestand" + id).val();
                 var standort = $("#Standort" + id).val();
                 var verwendung = $("#Verwendung" + id).val();
-                var ElementName = $("#ElementName" + id).text(); 
-                
+                var ElementName = $("#ElementName" + id).text();
+
                 if (standort === '0' && verwendung === '0') {
                     alert("Standort und Verwendung kann nicht Nein sein!");
                 } else {
@@ -346,8 +316,8 @@ check_login();
                         data: {"comment": comment, "id": id, "amount": amount, "variantenID": variantenID, "bestand": bestand, "standort": standort, "verwendung": verwendung},
                         type: "GET",
                         success: function (data) {
-                            //alert(data);     $("#infoBody").html(data);  $('#infoModal').modal('show'); 
-                            initializeToaster(data,ElementName, true);            
+                            //alert(data);    data + $("#infoBody").html(data);  $('#infoModal').modal('show'); 
+                            makeToaster(data.trim(), true);
                         }
                     });
                 }
@@ -437,8 +407,8 @@ check_login();
                             });
                         }
                     });
-             
-                    
+
+
                 });
 
 

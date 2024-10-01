@@ -24,6 +24,9 @@ const buttonRanges = [
     {name: '-H2O', start: 136, end: 144, longName: 'L-H2O'}
 ];
 
+
+
+
 const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and the CPY/save methods
     {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projek ID', visible: false, searchable: false},
     {data: 'idTABELLE_Räume', title: 'Raum ID', visible: false, searchable: false},
@@ -205,7 +208,7 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'Wasser Qual 3', title: 'H20 Q3', visible: false, case: "bit"},
     {data: 'Wasser Qual 2', title: 'H20 Q2', visible: false, case: "bit"},
     {data: 'Wasser Qual 1', title: 'H20 Q1', visible: false, case: "bit"}
-
+        
 ];
 
 

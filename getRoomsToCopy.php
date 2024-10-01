@@ -63,9 +63,7 @@ include '_utils.php';
 
 
         <script>
-            //RaumIDs zum kopieren speichern
             var roomIDs = [];
-
             $(document).ready(function () {
                 console.log("getRooms2Copy.php Document Ready function");
                 var table2 = $("#tableRoomsToCopy").DataTable({
@@ -93,34 +91,34 @@ include '_utils.php';
                     if ($(this).hasClass('selected')) {
                         roomIDs.push(id);
                     } else {
-                        roomIDs = roomIDs.filter(function(value) {
+                        roomIDs = roomIDs.filter(function (value) {
                             return value !== id;
                         });
                     }
                     console.log("Tbody Click ", roomIDs);
                 });
 
-                $("#selectAllRows").click(function() {
+                $("#selectAllRows").click(function () {
                     table2.rows().select();
-                    roomIDs = table2.rows().data().toArray().map(function(row) {
+                    roomIDs = table2.rows().data().toArray().map(function (row) {
                         return row[0];
                     });
                     console.log("Select All Rows ", roomIDs);
                 });
 
-                $("#selectVisibleRows").click(function() {
-                    table2.rows({ search: 'applied' }).select();
-                    roomIDs = table2.rows({ search: 'applied' }).data().toArray().map(function(row) {
+                $("#selectVisibleRows").click(function () {
+                    table2.rows({search: 'applied'}).select();
+                    roomIDs = table2.rows({search: 'applied'}).data().toArray().map(function (row) {
                         return row[0];
                     });
                     console.log("Select Visible Rows ", roomIDs);
                 });
-                    $("#DeselectRows").click(function() {
+                $("#DeselectRows").click(function () {
                     table2.rows().deselect();
                     roomIDs = [];
                     console.log("Deselect All Rows ", roomIDs);
                 });
-                
+
             });
 
             //Bauangaben kopieren
@@ -129,37 +127,19 @@ include '_utils.php';
                 if (roomIDs.length === 0) {
                     alert("Kein Raum ausgewählt!");
                 } else {
-
                     $.ajax({
-                        //$('#myLoadingModal').modal('show');
-                        url: "copyRoomSpecifications.php",
-                        type: "GET",
-                        data: {"rooms": roomIDs},
+                        url: "copyRoomSpecifications_1.php",
+                        type: "POST",
+                        data: {
+                            rooms: JSON.stringify(roomIDs),
+                            columns: JSON.stringify(columnsDefinition)
+                        },
                         success: function (data) {
-                            //$('#myLoadingModal').modal('hide');
+                            console.log(data);
                             alert(data);
+                            location.reload(true); // if(confirm("Raum erfolgreich Aktualisiert! :) \nUm Änderungen anzuzeigen, muss Seite Neu laden. Jetzt neu laden? \n",data)) { location.reload(true);}               
                         }
                     });
-                }
-            });
-
-            //Bauangaben kopieren
-            $("input[value='BO-Angaben kopieren']").click(function () {
-                if (roomIDs.length === 0) {
-                    alert("Kein Raum ausgewählt!");
-                } else {
-                    //$.ajax({
-                    //$('#myLoadingModal').modal('show');
-                    /*
-                     url : "copyRoomBOs.php",
-                     type: "GET",
-                     data:{"rooms":roomIDs},
-                     success: function(data){
-                     //$('#myLoadingModal').modal('hide');
-                     alert(data);	            			 			
-                     } 
-                     */
-                    //});	
                 }
             });
 

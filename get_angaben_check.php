@@ -35,8 +35,15 @@ function check_awg(&$messages, $roomParams) {
     if (isset($roomParams['Anwendungsgruppe'])) {
         if ($roomParams['Anwendungsgruppe'] >= 1 && (!isset($roomParams['SV']) || $roomParams['SV'] != 1)) {
             $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::AWG-> SV=" . $roomParams['SV'] . ",aber AWG=" . $roomParams['Anwendungsgruppe'] . ".<br>";
-        } elseif ($roomParams['Anwendungsgruppe'] == 2 && (!isset($roomParams['ZSV']) || $roomParams['ZSV'] != 1)) {
+        }
+        if ($roomParams['Anwendungsgruppe'] == 2 && (!isset($roomParams['ZSV']) || $roomParams['ZSV'] != 1)) {
             $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::AWG-> ZSV=" . $roomParams['ZSV'] . ",aber AWG=" . $roomParams['Anwendungsgruppe'] . ".<br>";
+        }
+        if ($roomParams['Anwendungsgruppe'] == 2 && ( !isset($roomParams['Fussboden OENORM B5220']) || $roomParams['Fussboden OENORM B5220']!="Klasse 1")  ) {
+                $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::AWG=2. Fußboden muss Klasse 1 sein, ist aber" . $roomParams['Fussboden OENORM B5220']  . ".<br>";
+        }
+        if ($roomParams['Anwendungsgruppe'] != 2 &&   $roomParams['Fussboden OENORM B5220']==="Klasse 1") {
+                $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::AWG is nicht 2. Muss der Fussboden OENORM B5220 hier Klasse 1 sein? " . $roomParams['Fussboden OENORM B5220']  . ".<br>";
         }
     }
 }
@@ -355,7 +362,7 @@ foreach ($raumparameter as $roomID => $roomParams) {
                     }
                     if ($parameterInfo['idTABELLE_Parameter'] === 18) { // element im raum hat Leistung 
                         $temp_LeistungElement = floatval(str_replace(",", ".", preg_replace("/[^0-9.,]/", "", $parameterInfo['Wert']))) * unitMultiplier($parameterInfo["Einheit"]);
-                    } 
+                    }
                     if ($parameterInfo['idTABELLE_Parameter'] === 133) {//GLeichzeitigkeit ,1
                         $temp_GLZ = floatval(str_replace(",", ".", preg_replace("/[^0-9,.]/", "", $parameterInfo['Wert'])));
                     }
@@ -399,7 +406,6 @@ $mysqli->close();
 foreach ($messages as $messages_out) {
 //     echo "\n;";
     echo br2nl($messages_out);
-   
 }                 
 
 
