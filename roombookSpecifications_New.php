@@ -35,19 +35,14 @@ include 'roombookSpecifications_New_modal_addRoom.php';
             background-color: rgba(100, 0, 25, 0.1) !important;
             font-weight: 400;
         }
-
-
         .btn, .fix_size, .btn-group .btn{
-            padding: 0.1vw 0.2vw !important;
+            padding: 0.2vw 0.2vw !important;
             margin: 0 -1px !important;
-            height: 35px !important;
+            height: 30px !important;
         }
-        .fix_size {
-            padding: 0.2vw 0.3vw !important;
-            margin: 0 0.05vw !important;
-        }
+
         .fix_size_search{
-            height: 35px;
+            height: 30px;
             width: 105px;
         }
         .table>thead>tr>th {
@@ -55,7 +50,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
         }
         .form-check-inputz, .form-check-inputz:checked {
             width: 20px !important;
-            height: 32px !important;
+            height: 30px !important;
         }
         .form-check-input:checked {
             background-color: rgba(100, 140, 25, 0.75) !important;
@@ -94,13 +89,13 @@ include 'roombookSpecifications_New_modal_addRoom.php';
         </section>
         <section class='d-flex bd-highlight'>
             <div class='mt-4 mr-2 card flex-grow-1'>
-                <header class="card-header card_header_size"><b>Bauangaben</b></header>
+                <header class="card-header fix_size"><b>Bauangaben</b></header>
                 <div class="card-body" id="bauangaben"></div>
             </div>
             <div class="mt-4 card">
-                <div class="card d-inline-flex">
-                    <header class="card-header card_header_size">
-                        <button type="button" class="btn btn-outline-dark" id="showRoomElements"><i class="fas fa-caret-left"></i></button>
+                <div class="card">
+                    <header class="card-header ">
+                        <button type="button" class="btn btn-outline-dark fix_size" id="showRoomElements"><i class="fas fa-caret-left"></i></button>
                         <input type="text" class="pull-right fix_size" id="diy_searcher" placeholder="Search...">
                     </header>
                     <div class="card-body" id="additionalInfo">

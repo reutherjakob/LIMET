@@ -11,21 +11,18 @@ function title2data(columnsDefinition, title) {
 }
 
 const buttonRanges = [
-    {name: 'All', start: 6, end: 144, longName: 'Alle Spalten'},
-    {name: 'R', start: 7, end: 23, longName: 'Raum'},
-    {name: 'HKLS', start: 24, end: 33, longName: 'HKLS'},
-    {name: 'ET', start: 34, end: 53, longName: 'Elektro'},
-    {name: 'AR', start: 54, end: 59, longName: 'Architektur'},
-    {name: 'MG', start: 60, end: 71, longName: 'Medgas'},
-    {name: 'LAB', start: 62, end: 144, longName: 'Labor'},
-    {name: '-GAS', start: 72, end: 113, longName: 'L-GAS'},
-    {name: '-ET', start: 114, end: 124, longName: 'L-ET'},
-    {name: '-HT', start: 125, end: 135, longName: 'L-HT'},
-    {name: '-H2O', start: 136, end: 144, longName: 'L-H2O'}
+    {name: 'All', start: 6, end: 146, longName: 'Alle Spalten'},
+    {name: 'R', start: 7, end: 24, longName: 'Raum'},
+    {name: 'HKLS', start: 25, end: 34, longName: 'HKLS'},
+    {name: 'ET', start: 35, end: 55, longName: 'Elektro'},
+    {name: 'AR', start: 56, end: 61, longName: 'Architektur'},
+    {name: 'MG', start: 62, end: 73, longName: 'Medgas'},
+    {name: 'LAB', start: 64, end: 146, longName: 'Labor'},
+    {name: '-GAS', start: 74, end: 115, longName: 'Labor-GAS'},
+    {name: '-ET', start: 116, end: 126, longName: 'Labor-ET'},
+    {name: '-HT', start: 127, end: 137, longName: 'Labor-HT'},
+    {name: '-H2O', start: 138, end: 146, longName: 'Labor-H2O'}
 ];
-
-
-
 
 const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and the CPY/save methods
     {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projek ID', visible: false, searchable: false},
@@ -40,6 +37,9 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: "Bezeichnung", title: "Funktionsstelle", visible: true, case: "none-edit"}, //#7
     {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'},
     {data: "Nummer", title: "DIN13080", visible: false, case: "none-edit"},
+
+    {data: "Entfallen", title: "Entfallen", visible: false, case: "bit", default: "0"},
+
     {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer', visible: false},
     {data: 'Raumbereich Nutzer', title: 'Raumbereich', visible: false},
     {data: 'Geschoss', title: 'Geschoss', visible: false},
@@ -71,9 +71,9 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'Anwendungsgruppe', title: 'RG', visible: false},
     {data: 'Fussboden OENORM B5220', title: 'B5220', visible: false},
     {data: 'AV', title: 'AV', visible: false, defaultContent: '-', case: "bit"},
-    {data: 'SV', title: 'SV', visible: false,  defaultContent: '-',case: "bit"},
-    {data: 'ZSV', title: 'ZSV', visible: false,  defaultContent: '-',case: "bit"},
-    {data: 'USV', title: 'USV', visible: false,  defaultContent: '-',case: "bit"},
+    {data: 'SV', title: 'SV', visible: false, defaultContent: '-', case: "bit"},
+    {data: 'ZSV', title: 'ZSV', visible: false, defaultContent: '-', case: "bit"},
+    {data: 'USV', title: 'USV', visible: false, defaultContent: '-', case: "bit"},
     {data: 'EL_AV Steckdosen Stk', defaultContent: '-', title: 'AV #SSD', visible: false, case: "num"},
     {data: 'EL_SV Steckdosen Stk', defaultContent: '-', title: 'SV #SSD', visible: false, case: "num"},
     {data: 'EL_ZSV Steckdosen Stk', defaultContent: '-', title: 'ZSV #SSD', visible: false, case: "num"},
@@ -88,6 +88,7 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'IT Anbindung', title: 'IT', visible: false, case: "bit"},
     {data: 'ET_RJ45-Ports', title: 'RJ45-Ports', visible: false, case: "num"},
     {data: 'Laserklasse', title: 'Laserklasse', visible: false},
+    {data: 'ET_EMV_ja-nein', title: 'ET EMV', visible: false, case: "bit"},
 
     //AR 
     {data: 'AR_AP_permanent', title: 'AR AP permanent', name: 'AR AP permanent ', visible: false, case: "bit", render: function (data) {
@@ -208,7 +209,7 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'Wasser Qual 3', title: 'H20 Q3', visible: false, case: "bit"},
     {data: 'Wasser Qual 2', title: 'H20 Q2', visible: false, case: "bit"},
     {data: 'Wasser Qual 1', title: 'H20 Q1', visible: false, case: "bit"}
-        
+
 ];
 
 

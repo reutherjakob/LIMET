@@ -162,7 +162,11 @@ tabelle_räume.AR_Empf_Tiefe_cm,
 tabelle_räume.AR_Empf_Hoehe_cm,
 tabelle_räume.AR_Flaechenlast_kgcm2,
 tabelle_räume.HT_Tempgradient_Ch,
-tabelle_räume.HT_Abluft_Geraete
+tabelle_räume.HT_Abluft_Geraete,
+tabelle_räume.`ET_EMV_ja-nein`,
+tabelle_räume.`Entfallen`
+
+
 FROM tabelle_räume
 INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
 WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
