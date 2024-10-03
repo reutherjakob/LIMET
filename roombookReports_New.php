@@ -26,42 +26,39 @@ init_page_serversides("", "x");
             .table>thead>tr>th {
                 background-color: rgba(100, 140, 25, 0.15);
             }
-            .search_buiilder_btn{
-                font-size: 10px;
-                height: 30px;
+            .dt-input,.dt-button,.dt-buttons,.btn{
+                height: 35px !important; 
+            }
+            .card-header{
+                padding: 2px;
             }
         </style>
     </head>
     <body style="height:100%">
         <div class="container-fluid"> 
             <div id="limet-navbar"></div>
-            <div class="card">
-                <div class="card-header d-flex border-light align-items-center" style="height:1px; font-size: 10px;">
-                    <div class="col-md-3">Räume im Projekt</div>
-                    <div class="col-md-3">Select</div>
-                    <div class="col-md-3">Berichte PDFs</div>
-                    <div class="col-md-3"></div>
-                </div>
-                <div class="card-header d-inline-flex justify-content-start align-items-top " style="height: 30px;" id="HeaderTabelleCard">
-                    <div class="col-md-3 form-check-inline justify-content-start" id="sub1"></div>
-                    <div class="col-md-3 form-check-inline" id="sub12"></div>
-                    <div class="col-md-3 form-check-inline" id="sub2"></div>
-                    <div class="col-md-3 form-check-inline  justify-content-end" id="sub3">
-                        <div class="form-check-inline"><label for="dateSelect"> </label><input type="date" id="dateSelect" name="dateSelect"><div class="spacer"></div></div>
-                    </div>
-                </div>
-                <div class="card-header  form-check-inline  " style="flex-wrap:nowrap; display:none; padding:2px; " id="HeaderTabelleCard2"> </div>
-                <div class="card-header  form-check-inline " style="flex-wrap:nowrap; display:none; padding:2px; " id="HeaderTabelleCard3">  </div>
-                <!--<div class="card-header  form-check-inline  justify-content-center align-items-center" style="flex-wrap:nowrap; display:none; padding:2px; " id="HeaderTabelleCard4"> </div>-->
+            <div class="card mt-2 "> 
+                <div class="card-header border-light  d-inline-flex" id="HeaderTabelleCard" style="height: 40px;">
+                    <div class="col-md-3 d-flex  align-items-center" id="sub1"> </div>
+                    <div class="col-md-3 d-flex  align-items-center" id="sub12">  </div>
+                    <div class="col-md-3 d-flex  align-items-center" id="sub2">  </div>
+                    <div class="col-md-3 d-flex form-check-inline  justify-content-end align-items-center" id="sub3">
+                        <div class="form-check-inline"> <label for="dateSelect"> </label><input type="date" id="dateSelect" name="dateSelect"><div class="spacer"></div></div>
+                    </div> 
+                </div>         
+                <div class="card-header border-light  d-flex align-items-center"  id="HeaderTabelleCard2"> </div> 
+                <div class="card-header border-light  d-flex align-items-center"  id="HeaderTabelleCard3"> </div> 
 
-                <div class="card-body px-0 py-0">
+
+
+
+                <div class="card-body border-dark px-2 py-2">
                     <?php
                     $mysqli = utils_connect_sql();
                     $columns = [
-                        'idTABELLE_Räume', 'Raumnr', 'Raumbezeichnung', 'Raumnummer_Nutzer', 'Nutzfläche',
-                        'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt',
-                        'Anmerkung allgemein',
-                        'MT-relevant'
+                        'idTABELLE_Räume', 'MT-relevant', 'Raumbezeichnung', 'Raumnr', 'Raumnummer_Nutzer',
+                        'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt', 'Nutzfläche',
+                        'Anmerkung allgemein'
                     ];
 
                     $sql = "SELECT " . implode(", ", array_map(function ($col) {
@@ -112,10 +109,10 @@ init_page_serversides("", "x");
                 initButtons();
                 setTimeout(() => {
                     moveSearchBox('sub1');
-                    addCheckbox('#sub3', "Show-old-Reports", toggleOldReports);
+                    addCheckbox('#sub3', "Alte_Berichte", toggleOldReports);
                     let searchbuilder = [{
                             extend: 'searchBuilder',
-                            className: "btn search_buiilder_btn fas fa-search",
+                            className: "btn fas fa-search",
                             text: " ",
                             titleAttr: "Suche konfigurieren"
                         }];
@@ -140,8 +137,8 @@ init_page_serversides("", "x");
                     {text: "Raumbuch-0-PDF", link: "pdf_createRoombookWithout0PDF"},
                     {text: "Raumbuch-ohne Bestand-PDF", link: "pdf_createRoombookWithoutBestandPDF"},
                     {text: "Raumbuch-0-ohne Bestand-PDF", link: "pdf_createRoombookWithout0WothoutBestandPDF"},
-                    {text: "Raumbuch-inkl Bauangaben-0-PDF", link: "pdf_createRoombookWithBauangabenWithout0PDF"}, 
-                ]; 
+                    {text: "Raumbuch-inkl Bauangaben-0-PDF", link: "pdf_createRoombookWithBauangabenWithout0PDF"},
+                ];
 
                 const ButtonsBauangaben = [{text: "Bauangaben-PDF V1", link: "pdf_createBauangabenPDF"},
                     {text: "Bauangaben-PDF V2", link: "pdf_createBauangabenV2PDF"},
@@ -169,11 +166,11 @@ init_page_serversides("", "x");
                     return buttonGroup;
                 };
 
-                $('#sub12').append(createButtonGroup(buttons, 'btn-success'));
-                $('#sub2').append(createButtonGroup(buttonNewReports, 'btn-secondary'));
-                $('#HeaderTabelleCard2').append(createButtonGroup(oldButtons, 'btn-secondary'));
-                $('#HeaderTabelleCard3').append(createButtonGroup(ButtonsBauangaben, 'btn-secondary'));
-                $('#HeaderTabelleCard2').append(createButtonGroup(oldButtons2, 'btn-secondary'));
+                $('#sub12').append(createButtonGroup(buttons, 'btn-outline-success'));
+                $('#sub2').append(createButtonGroup(buttonNewReports, 'btn-outline-dark'));
+                $('#HeaderTabelleCard2').append(createButtonGroup(oldButtons, 'btn-outline-dark'));
+                $('#HeaderTabelleCard3').append(createButtonGroup(ButtonsBauangaben, 'btn-outline-dark'));
+                $('#HeaderTabelleCard2').append(createButtonGroup(oldButtons2, 'btn-outline-dark'));
             }
 
 
@@ -201,7 +198,7 @@ init_page_serversides("", "x");
             function addMTFilter(location) {
                 $(location).append('<select class="form-control-sm" id="columnFilter"><option value="">MT</option><option value="Ja">Ja</option><option value="Nein">Nein</option></select>');
                 $('#columnFilter').change(function () {
-                    table.column(5).search($(this).val()).draw();
+                    table.column(1).search($(this).val()).draw();
                 });
             }
 
@@ -216,7 +213,7 @@ init_page_serversides("", "x");
             }
 
             function moveSearchBox(location) {
-                $('#dt-search-0').appendTo(`#${location}`).addClass("fix_size");
+                $('#dt-search-0').appendTo(`#${location}`);
             }
 
 
@@ -250,8 +247,8 @@ init_page_serversides("", "x");
 
             function toggleOldReports() {
                 $('#HeaderTabelleCard2').slideToggle();
-                $('#HeaderTabelleCard4').slideToggle();
                 $('#HeaderTabelleCard3').slideToggle();
+
             }
 
         </script>
