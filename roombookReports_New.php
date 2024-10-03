@@ -30,14 +30,14 @@ init_page_serversides("", "x");
                 height: 35px !important; 
             }
             .card-header{
-                padding: 2px;
+                padding: 5px;
             }
         </style>
     </head>
     <body style="height:100%">
         <div class="container-fluid"> 
             <div id="limet-navbar"></div>
-            <div class="card mt-2 "> 
+            <div class="card mt-2 border-success"> 
                 <div class="card-header border-light  d-inline-flex" id="HeaderTabelleCard" style="height: 40px;">
                     <div class="col-md-3 d-flex  align-items-center" id="sub1"> </div>
                     <div class="col-md-3 d-flex  align-items-center" id="sub12">  </div>
@@ -46,8 +46,8 @@ init_page_serversides("", "x");
                         <div class="form-check-inline"> <label for="dateSelect"> </label><input type="date" id="dateSelect" name="dateSelect"><div class="spacer"></div></div>
                     </div> 
                 </div>         
-                <div class="card-header border-light  d-flex align-items-center"  id="HeaderTabelleCard2"> </div> 
-                <div class="card-header border-light  d-flex align-items-center"  id="HeaderTabelleCard3"> </div> 
+                <div class="card-header border-light d-flex align-items-center"  id="HeaderTabelleCard2"> </div> 
+                <div class="card-header border-light d-flex align-items-center"  id="HeaderTabelleCard3"> </div> 
 
 
 
