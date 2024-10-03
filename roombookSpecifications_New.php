@@ -1,10 +1,3 @@
-<?php
-session_start();
-include '_utils.php';
-init_page_serversides();
-include 'roombookSpecifications_New_modal_addRoom.php';
-?> 
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"/>
 <head>
@@ -16,11 +9,14 @@ include 'roombookSpecifications_New_modal_addRoom.php';
     <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous"/>-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css" integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.css" rel="stylesheet"/>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script> 
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 
     <style>
         .btn_vis, .btn_invis {
@@ -60,6 +56,15 @@ include 'roombookSpecifications_New_modal_addRoom.php';
         }
     </style> 
 </head> 
+
+<?php
+session_start();
+include '_utils.php';
+init_page_serversides();
+include 'roombookSpecifications_New_modal_addRoom.php';
+?> 
+
+
 <body style="height:100%">  
 
     <main class="container-fluid">
@@ -185,7 +190,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                         }
                                     }
                                 }
-                            }, 100);
+                            }, 50);
                         }
 
                         function change_top_label_visibility(x) {
@@ -197,6 +202,9 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                         }
 
                         function init_btn_4_dt() {
+                            const now = new Date();
+                            let filename = "<?php echo $_SESSION['projectName'] . '_' . $_SESSION['projectPlanungsphase']; ?>" + "_MT_Raumbuch_" + now.toISOString().split('T')[0];
+                            //console.log(filename);
                             const buttons_group_selct = [
                                 {text: '', className: 'btn fas fa-check', titleAttr: "Select All", action: () => table.rows().select()},
                                 {text: '', className: 'btn fas fa-eye', titleAttr: "Select Visible", action: () => table.rows(':visible').select()},
@@ -205,7 +213,22 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             const btn_grp_new_out = [
                                 {text: '', className: 'btn btn-light fas fa-plus-square', titleAttr: "Add Room", action: () => $('#addRoomModal').modal('show')},
                                 {text: '', className: "btn btn-light fas fa-window-restore", titleAttr: "Copy Selected Row", action: copySelectedRow},
-                                {extend: 'excelHtml5', exportOptions: {columns: ':visible'}, className: 'btn fa fa-download', text: "", titleAttr: "Download as Excel"}
+                                {
+                                    extend: 'excelHtml5',
+                                    exportOptions: {columns: ':visible'},
+                                    className: 'btn fa fa-download',
+                                    text: "",
+                                    titleAttr: "Download as Excel",
+                                    filename: filename // Set your default filename here
+                                },
+                                {
+                                    extend: 'pdfHtml5',
+                                    exportOptions: {columns: ':visible'},
+                                    className: 'btn fa fa-file-pdf',
+                                    text: "",
+                                    titleAttr: "Download as PDF",
+                                    filename: filename // Set your default filename here
+                                }
                             ];
                             const btn_grp_settings = [
                                 {text: "", className: "btn btn-light fas fa-vote-yea", titleAttr: "Bauangaben Check", action: check_angaben},
@@ -316,11 +339,10 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             const prevSaveState4AllProjects = localStorage.getItem('settings_save_state_4all_projects') === 'true';
                             const prevSaveState = localStorage.getItem('settings_save_state' + projectID) === 'true';
 
-
-                            localStorage.setItem('settings_show_btn_grp_labels', showBtnGrpLabels);
-                            localStorage.setItem('settings_save_state_4all_projects', saveState4AllProjects);
-                            localStorage.setItem('settings_save_state' + projectID, saveState);
-                            localStorage.setItem('settings_save_edit_cbx', saveEditCbx);
+                            localStorage.setItem('settings_show_btn_grp_labels', JSON.stringify(showBtnGrpLabels));
+                            localStorage.setItem('settings_save_state_4all_projects', JSON.stringify(saveState4AllProjects));
+                            localStorage.setItem('settings_save_state' + projectID, JSON.stringify(saveState));
+                            localStorage.setItem('settings_save_edit_cbx', JSON.stringify(saveEditCbx));
 
                             if (saveState4AllProjects !== prevSaveState4AllProjects || saveState !== prevSaveState) {
                                 if (confirm("Um die geänderten Einstellungen wirksam zu machen, muss diese Seite neu geladen werden. Neu Laden?")) {
@@ -433,6 +455,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 
                         function table_click() {
                             $(document).on('click', '#table_rooms tbody tr', function () {
+                                // console.log("Table Click");
                                 var RaumID = table.row($(this)).data()['idTABELLE_Räume'];
                                 if ($('#checkbox_EditableTable').is(':checked')) {
                                     var Raumbez = table.row($(this)).data()['Raumbezeichnung'];
@@ -487,12 +510,12 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                         });
                                     }
                                 }
+                                //console.log("Table Click AJAX");
                                 $.ajax({
                                     url: "setSessionVariables.php",
                                     data: {"roomID": RaumID},
                                     type: "GET",
                                     success: function (data) {
-                                        //$("#RoomID").text(RaumID);
                                         $.ajax({
                                             url: "getRoomSpecifications2.php",
                                             type: "GET",
@@ -672,7 +695,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                     if (data === "Erfolgreich aktualisiert!") {
                                         makeToaster("SAVED! " + raumname + ";  " + ColumnName + ";  " + newData + " ", true);
                                     } else {
-                                        makeToaster("FAILED! "  + data + "---", false);
+                                        makeToaster("FAILED! " + data + "---", false);
                                     }
                                 }
                             });
