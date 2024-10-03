@@ -52,13 +52,7 @@ init_page_serversides();
                     <div class="card-body">                                        
                                         <?php
 
-                                                $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');	
-
-                                                /* change character set to utf8 */
-                                                if (!$mysqli->set_charset("utf8")) {
-                                                    printf("Error loading character set utf8: %s\n", $mysqli->error);
-                                                    exit();
-                                                }						
+                                                $mysqli = utils_connect_sql();				
 
                                                 $sql = "SELECT tabelle_Vermerkgruppe.Gruppenname, tabelle_Vermerkgruppe.Gruppenart, tabelle_Vermerkgruppe.Ort, date_format(tabelle_Vermerkgruppe.Startzeit, '%h:%i') Startzeit, date_format(tabelle_Vermerkgruppe.Endzeit, '%h:%i') Endzeit, tabelle_Vermerkgruppe.Datum, tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe, tabelle_Vermerkgruppe.Verfasser
                                                         FROM tabelle_Vermerkgruppe

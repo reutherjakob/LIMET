@@ -1,9 +1,8 @@
 <?php
-
 function echorow($row) {
     echo '<pre>';
     print_r($row);
-    echo '- </pre>';
+    echo '</pre>';
 }
 
 function print_session_vars() {

@@ -1,6 +1,4 @@
 <?php
-
-// Most Current version 29.11
 include 'pdf_createBericht_MYPDFclass.php';
 include 'pdf_createBericht_utils.php';
 include '_utils.php'; //this one contains br2nl nowadays...
@@ -8,12 +6,9 @@ session_start();
 
 $hackerl_Zellgröße=15; 
 $hackerl_schriftgröße= 10;
-
 $block_label_size = 13;
-
 $ln_spacer1 = 4;
 $ln_spacer2 = 6; //bigger than 1
-
 $einzugLR=15;               // standard einzug L/R
 $SB = 210 - 2* $einzugLR ;  // A4: seitenbreite minus die lr einzüge
 $einzugC1 = 40;             // C: Seite dritteln

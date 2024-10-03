@@ -12,6 +12,11 @@ include '_utils.php';
     </head>
     <body>
 
+        <button id="selectAllRows">Select All Rows</button>
+        <button id="selectVisibleRows">Select Visible Rows</button>
+        <button id="DeselectRows">Deselect Rows</button>
+
+
         <?php
         $mysqli = utils_connect_sql();
         //Elemente im Raum abfragen
@@ -38,7 +43,7 @@ include '_utils.php';
 	<th>Geschoss</th>
 	<th>Bauetappe</th>
 	<th>Bauteil</th>
-	</tr></thead>
+	</tr></thead> 
 	<tbody>";
 
         while ($row = $result->fetch_assoc()) {
@@ -58,12 +63,10 @@ include '_utils.php';
 
 
         <script>
-            //RaumIDs zum kopieren speichern
             var roomIDs = [];
-
             $(document).ready(function () {
                 console.log("getRooms2Copy.php Document Ready function");
-                $("#tableRoomsToCopy").DataTable({
+                var table2 = $("#tableRoomsToCopy").DataTable({
                     "select": {
                         "style": "multi"
                     },
@@ -78,75 +81,65 @@ include '_utils.php';
                     "searching": true,
                     "info": false,
                     "order": [[1, "asc"]],
-                    //"pagingType": "simple_numbers",
-                    //"lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
-//                    "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
                     "scrollY": '50vh',
                     "scrollCollapse": true
                 });
 
-                var table2 = $('#tableRoomsToCopy').DataTable();
                 $('#tableRoomsToCopy tbody').on('click', 'tr', function () {
                     $(this).toggleClass('selected');
-                });
-
-                $('#tableRoomsToCopy tbody').on('click', 'tr', function () {
-                    $(this).toggleClass('selected');
-                    if ($(this).hasClass('info')) {
-                        $(this).removeClass('info');
-                        for (var i = roomIDs.length - 1; i >= 0; i--) {
-                            if (roomIDs[i] === table2.row($(this)).data()[0]) {
-                                roomIDs.splice(i, 1);
-                            }
-                        }
+                    var id = table2.row($(this)).data()[0];
+                    if ($(this).hasClass('selected')) {
+                        roomIDs.push(id);
                     } else {
-                        //table.$('tr.info').removeClass('info');
-
-                        $(this).addClass('info');
-                        roomIDs.push(table2.row($(this)).data()[0]);
-                        console.log("Tbody Click ", roomIDs);
-                        ;
+                        roomIDs = roomIDs.filter(function (value) {
+                            return value !== id;
+                        });
                     }
+                    console.log("Tbody Click ", roomIDs);
                 });
+
+                $("#selectAllRows").click(function () {
+                    table2.rows().select();
+                    roomIDs = table2.rows().data().toArray().map(function (row) {
+                        return row[0];
+                    });
+                    console.log("Select All Rows ", roomIDs);
+                });
+
+                $("#selectVisibleRows").click(function () {
+                    table2.rows({search: 'applied'}).select();
+                    roomIDs = table2.rows({search: 'applied'}).data().toArray().map(function (row) {
+                        return row[0];
+                    });
+                    console.log("Select Visible Rows ", roomIDs);
+                });
+                $("#DeselectRows").click(function () {
+                    table2.rows().deselect();
+                    roomIDs = [];
+                    console.log("Deselect All Rows ", roomIDs);
+                });
+
             });
- 
+
             //Bauangaben kopieren
             $("input[value='Bauangaben kopieren']").click(function () {
                 console.log("getRoomsToCopy.php -> Bauang. Kopieren Btn. IDS:", roomIDs);
                 if (roomIDs.length === 0) {
                     alert("Kein Raum ausgewählt!");
                 } else {
-
                     $.ajax({
-                        //$('#myLoadingModal').modal('show');
-                        url: "copyRoomSpecifications.php",
-                        type: "GET",
-                        data: {"rooms": roomIDs},
+                        url: "copyRoomSpecifications_1.php",
+                        type: "POST",
+                        data: {
+                            rooms: JSON.stringify(roomIDs),
+                            columns: JSON.stringify(columnsDefinition)
+                        },
                         success: function (data) {
-                            //$('#myLoadingModal').modal('hide');
+                            console.log(data);
                             alert(data);
+                            location.reload(true); // if(confirm("Raum erfolgreich Aktualisiert! :) \nUm Änderungen anzuzeigen, muss Seite Neu laden. Jetzt neu laden? \n",data)) { location.reload(true);}               
                         }
                     });
-                }
-            });
-
-            //Bauangaben kopieren
-            $("input[value='BO-Angaben kopieren']").click(function () {
-                if (roomIDs.length === 0) {
-                    alert("Kein Raum ausgewählt!");
-                } else {
-                    //$.ajax({
-                    //$('#myLoadingModal').modal('show');
-                    /*
-                     url : "copyRoomBOs.php",
-                     type: "GET",
-                     data:{"rooms":roomIDs},
-                     success: function(data){
-                     //$('#myLoadingModal').modal('hide');
-                     alert(data);	            			 			
-                     } 
-                     */
-                    //});	
                 }
             });
 

@@ -57,7 +57,7 @@ session_start();
 
         $mysqli->close();
         ?>
-
+        <script src="_utils.js"></script> 
         <script>
 
             $(document).ready(function () {
@@ -91,7 +91,7 @@ session_start();
                         type: "GET",
                         success: function (data) {
                             //  alert(data);
-                            makeToaster(data, true);
+                            makeToaster(data.trim(), true);
                             $.ajax({
                                 url: "getVarianteParameters.php",
                                 data: {"variantenID": variantenID},
@@ -126,8 +126,8 @@ session_start();
                         data: {"parameterID": id, "wert": wert, "einheit": einheit, "variantenID": variantenID},
                         type: "GET",
                         success: function (data) {
-        //		        	alert(data);
-                            makeToaster(data, true);
+                            //		        	alert(data);
+                            makeToaster(data.trim(), true);
                         }
                     });
                 }

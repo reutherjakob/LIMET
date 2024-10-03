@@ -88,6 +88,7 @@ session_start();
         echo "</tbody></table>";
         $mysqli->close();
         ?>
+        <script src="_utils.js"></script>
         <script>
             $(document).ready(function () {
                 $('#tableRoomsWithElements').DataTable({
@@ -162,9 +163,8 @@ session_start();
                             data: {"comment": comment, "id": id, "amount": amount},
                             type: "GET",
                             success: function (data) {
-                                    alert(data);
-//                                    location.reload(); 
-//                                makeToaster(data,true);
+                                // alert(data);  //location.reload(); 
+                                makeToaster(data.trim(), true);
                             }
                         });
                     }

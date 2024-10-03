@@ -180,50 +180,9 @@ init_page_serversides();
                 </div>
                 <div class="card-body" id="roomsWithAndWithoutElements" style="display:none"></div>
             </div>
-
-
         </div>
-
-
+        <script src="_utils.js"></script> 
         <script>
-            let toastCounter = 0;
-            const maxToasts = 10;
-
-            function makeToaster(headerText, success) {
-                // Check if the maximum number of toasts is reached
-                if (toastCounter >= maxToasts) {
-                    const oldestToast = document.querySelector('.toast');
-                    if (oldestToast) {
-                        oldestToast.remove();
-                        toastCounter--;
-                    }
-                }
-                const toast = document.createElement('div');
-                toast.classList.add('toast', 'fade', 'show');
-                toast.setAttribute('role', 'alert');
-                toast.style.position = 'fixed';
-                const topPosition = 10 + toastCounter * 50;
-                toast.style.top = `${topPosition}px`;
-                toast.style.right = '20px';
-                toast.style.width = '300px';
-                toast.style.height = '100px';
-                headerText = headerText.replace(/\n/g, '<br>'); // Replace \n with <br>
-                toast.innerHTML = `
-                <div class="toast-header ${success ? "bg-success " : "bg-danger"}">
-                    <strong class="mr-auto">${headerText}</strong>
-                </div>`;
-                document.body.appendChild(toast);
-                toastCounter++;
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                    setTimeout(() => {
-                        toast.remove();
-                        toastCounter--;
-                    }, 500); // Match this duration with the fadeOut animation duration
-                }, 5000 + toastCounter * 100);
-            }
-
-
             $(document).ready(function () {
                 $('#tableElementsInProject').DataTable({
                     "paging": true,
@@ -304,7 +263,7 @@ init_page_serversides();
                                                                     type: "GET",
                                                                     success: function (data) {
                                                                         $("#elementGewerk").html(data);
-                                                                            s//resetAnzahlBtn();
+                                                                        //resetAnzahlBtn();
                                                                     }
                                                                 });
 
@@ -324,7 +283,7 @@ init_page_serversides();
                 });
             });
 
- 
+
 
             // ElementVariantenPanel einblenden
             $("#showElementVariante").click(function () {

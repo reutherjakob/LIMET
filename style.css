@@ -1,3 +1,10 @@
+.grün {
+    background-color: rgba(100, 140, 25, 0.1) !important;
+}
+.rot {
+    background-color: rgba(100, 0, 25, 0.1) !important;
+}
+
 #scrollBtn {
     height: 45px; /* Adjust height for ellipse shape */
     width: 45px; /* Adjust width for ellipse shape */
@@ -15,6 +22,8 @@
     border-radius: 50px; /* Make the button an ellipse */
 }
 
+
+
 #scrollBtn:hover {
     background-color: #0056b3;
 }
@@ -25,6 +34,11 @@
 
 #th {
     background-color: rgba(100, 140, 25, 0.15);
+}
+
+
+.form-check-input:checked {
+    background-color: rgba(100, 140, 25, 0.75) !important;
 }
 
 #pull-right {

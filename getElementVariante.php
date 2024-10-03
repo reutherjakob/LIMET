@@ -19,21 +19,14 @@ check_login();
             $_SESSION["variantenID"] = filter_input(INPUT_GET, 'variantenID');
         }
 
-        $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-
-        if (!$mysqli->set_charset("utf8")) {
-            printf("Error loading character set utf8: %s\n", $mysqli->error);
-            exit();
-        }
+        $mysqli = utils_connect_sql();
         $sql = "SELECT tabelle_projekt_varianten_kosten.Kosten
 			FROM tabelle_projekt_varianten_kosten
 			WHERE (((tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)=" . $_SESSION["variantenID"] . ") AND ((tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente)=" . $_SESSION["elementID"] . ") AND ((tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "));";
-
         $result = $mysqli->query($sql);
 
         $row = $result->fetch_assoc();
         setlocale(LC_MONETARY, "de_DE");
-
         echo "
             <div class='col-md-12'>
                 <div class='card'>
@@ -106,20 +99,20 @@ check_login();
                 break;
         }
         echo "</select>
-				  <label class='m-1' for='kosten'>Kosten</label>
-				  <input type='text' class='form-control form-control-sm' id='kosten' value=" . $row["Kosten"] . "></input>				  	
-				  <button type='button' id='saveVariantePrice' class='btn btn-outline-dark btn-sm m-1' value='saveVariantePrice'><i class='far fa-save'></i> Kosten speichern</button>
-				  <button type='button' id='getElementPriceHistory' class='btn btn-outline-dark btn-sm m-1' value='getElementPriceHistory'  data-toggle='modal' data-target='#getElementPriceHistoryModal'><i class='far fa-clock'></i> Kosten Änderungsverlauf</button>				
-                            </form> </div>
-                        <div class='card-body'>
-                            <div class='row'>
-                            <div class='col-md-6'>                            
-                                <div class='card'>
-                                    <div class='card-header'>
-                                        Variantenparameter                                        
-                                        <button type='button' id='addVariantenParameters' class='btn btn-outline-dark btn-sm m-1' value='addVariantenParameters' data-toggle='modal' data-target='#addVariantenParameterToElementModal'><i class='fas fa-upload'></i> Variantenparameter übernehmen</button>
-                                    </div>
-                                    <div class='card-body' id='variantenParameter'>";
+                <label class='m-1' for='kosten'>Kosten</label>
+                <input type='text' class='form-control form-control-sm' id='kosten' value=" . $row["Kosten"] . "></input>				  	
+                <button type='button' id='saveVariantePrice' class='btn btn-outline-dark btn-sm m-1' value='saveVariantePrice'><i class='far fa-save'></i> Kosten speichern</button>
+                <button type='button' id='getElementPriceHistory' class='btn btn-outline-dark btn-sm m-1' value='getElementPriceHistory'  data-toggle='modal' data-target='#getElementPriceHistoryModal'><i class='far fa-clock'></i> Kosten Änderungsverlauf</button>				
+          </form> </div>
+        <div class='card-body'>
+          <div class='row'>
+          <div class='col-md-6'>                            
+              <div class='card'>
+                  <div class='card-header'>
+                      Variantenparameter                                        
+                      <button type='button' id='addVariantenParameters' class='btn btn-outline-dark btn-sm m-1' value='addVariantenParameters' data-toggle='modal' data-target='#addVariantenParameterToElementModal'><i class='fas fa-upload'></i> Variantenparameter übernehmen</button>
+                  </div>
+                  <div class='card-body' id='variantenParameter'>";
 
         $sql = "SELECT tabelle_parameter.Bezeichnung, tabelle_projekt_elementparameter.Wert, tabelle_projekt_elementparameter.Einheit, tabelle_parameter_kategorie.Kategorie, tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter
                                                                     FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter) ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
@@ -127,7 +120,6 @@ check_login();
                                                                     ORDER BY tabelle_parameter_kategorie.Kategorie ASC, tabelle_parameter.Bezeichnung ASC;";
 
         $result = $mysqli->query($sql);
-
         echo "<table class='table table-striped table-sm' id='tableElementParameters' cellspacing='0' width='100%'>
                                                     <thead><tr>
                                                     <th></th>
@@ -149,7 +141,6 @@ check_login();
             echo "<td><button type='button' id='" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' class='btn btn-warning btn-sm' value='saveParameter'><i class='far fa-save'></i></button></td>";
             echo "</tr>";
         }
-
         echo "</tbody></table>
 
                                     </div>
@@ -159,7 +150,6 @@ check_login();
                                 <div class='card'>
                                     <div class='card-header d-flex justify-content-between' id='mglParameterCardHeader'>Mögliche Parameter</div>
                                     <div class='card-body' id='possibleVariantenParameter'>";
-
         $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung, tabelle_parameter_kategorie.Kategorie 
                                                                     FROM tabelle_parameter, tabelle_parameter_kategorie 
                                                                     WHERE tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie 
@@ -170,7 +160,6 @@ check_login();
                                                                     ORDER BY tabelle_parameter_kategorie.Kategorie ASC, tabelle_parameter.Bezeichnung ASC;";
 
         $result = $mysqli->query($sql);
-
         echo "<table class='table table-striped table-sm' id='tablePossibleElementParameters' cellspacing='0' width='100%'>
                                                     <thead><tr>
                                                     <th></th>
@@ -178,7 +167,6 @@ check_login();
                                                     <th>Parameter</th>
                                                     </tr></thead>
                                                     <tbody>";
-
         while ($row = $result->fetch_assoc()) {
             echo "<tr>";
             echo "<td><button type='button' id='" . $row["idTABELLE_Parameter"] . "' class='btn btn-outline-success btn-xs' value='addParameter'><i class='fas fa-plus'></i></button></td>";
@@ -186,177 +174,14 @@ check_login();
             echo "<td>" . $row["Bezeichnung"] . "</td>";
             echo "</tr>";
         }
-
         echo "</tbody></table>
                                     </div>
                                 </div>	
                             </div>
                         </div>	
-</div>                        
+                    </div>                        
                 </div>
              </div>";
-
-        echo "<!--<div class='mt-4 card'>
-                    <div class='card-body'>
-                    
-                <form class='form-inline'>
-                    <label class='m-4' for='variante'>Variante</label>
-                            <select class='form-control form-control-sm' id='variante'>";
-        switch ($_SESSION["variantenID"]) {
-            case "1":
-                echo "<option value='1' selected>A</option>
-                                                                      <option value='2'>B</option>
-                                                                      <option value='3'>C</option>
-                                                                      <option value='4'>D</option>
-                                                                      <option value='5'>E</option>
-                                                                      <option value='6'>F</option>
-                                                                      <option value='7'>G</option>";
-                break;
-            case "2":
-                echo "<option value='1'>A</option>
-                                                                      <option value='2' selected>B</option>
-                                                                      <option value='3'>C</option>
-                                                                      <option value='4'>D</option>
-                                                                      <option value='5'>E</option>
-                                                                      <option value='6'>F</option>
-                                                                      <option value='7'>G</option>";
-                break;
-            case "3":
-                echo "<option value='1'>A</option>
-                                                                      <option value='2'>B</option>
-                                                                      <option value='3' selected>C</option>
-                                                                      <option value='4'>D</option>
-                                                                      <option value='5'>E</option>
-                                                                      <option value='6'>F</option>
-                                                                      <option value='7'>G</option>";
-                break;
-            case "4":
-                echo "<option value='1'>A</option>
-                                                                      <option value='2'>B</option>
-                                                                      <option value='3'>C</option>
-                                                                      <option value='4' selected>D</option>
-                                                                      <option value='5'>E</option>
-                                                                      <option value='6'>F</option>
-                                                                      <option value='7'>G</option>";
-                break;
-            case "5":
-                echo "<option value='1'>A</option>
-                                                                      <option value='2'>B</option>
-                                                                      <option value='3'>C</option>
-                                                                      <option value='4'>D</option>
-                                                                      <option value='5' selected>E</option>
-                                                                      <option value='6'>F</option>
-                                                                      <option value='7'>G</option>";
-                break;
-            case "6":
-                echo "<option value='1'>A</option>
-                                                                      <option value='2'>B</option>
-                                                                      <option value='3'>C</option>
-                                                                      <option value='4'>D</option>
-                                                                      <option value='5'>E</option>
-                                                                      <option value='6' selected>F</option>
-                                                                      <option value='7'>G</option>";
-                break;
-            case "7":
-                echo "<option value='1'>A</option>
-                                                                      <option value='2'>B</option>
-                                                                      <option value='3'>C</option>
-                                                                      <option value='4'>D</option>
-                                                                      <option value='5'>E</option>
-                                                                      <option value='6'>F</option>
-                                                                      <option value='7' selected>G</option>";
-                break;
-        }
-        echo "</select>
-				  <label class='m-4' for='kosten'>Kosten</label>
-				  <input type='text' class='form-control form-control-sm' id='kosten' value=" . $row["Kosten"] . "></input>				  	
-				  <button type='button' id='saveVariantePrice' class='btn btn-outline-dark btn-sm m-1' value='saveVariantePrice'><i class='far fa-save'></i> Kosten speichern</button>
-				  <button type='button' id='getElementPriceHistory' class='btn btn-outline-dark btn-sm m-1' value='getElementPriceHistory'  data-toggle='modal' data-target='#getElementPriceHistoryModal'><i class='far fa-clock'></i> Kosten Änderungsverlauf</button>				
-                    </form> 
-                    </div>
-                </div>
-                
-		<div class='mt-4 card'>
-                    <div class='card-body'>
-                  
-			<div class='col-md-6'>
-                            <div class='mt-4 card'>
-                                <div class='card-header'>Variantenparameter</div>
-                                <div class='card-body' id='variantenParameter'>";
-
-        $sql = "SELECT tabelle_parameter.Bezeichnung, tabelle_projekt_elementparameter.Wert, tabelle_projekt_elementparameter.Einheit, tabelle_parameter_kategorie.Kategorie, tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter
-								FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter) ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
-								WHERE (((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_projekt_elementparameter.tabelle_elemente_idTABELLE_Elemente)=" . $_SESSION["elementID"] . ") AND ((tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten)=" . $_SESSION["variantenID"] . "))
-								ORDER BY tabelle_parameter_kategorie.Kategorie;";
-
-        $result = $mysqli->query($sql);
-
-        echo "<table class='table table-striped table-sm' id='tableElementParameters' cellspacing='0' width='100%'>
-						<thead><tr>
-						<th></th>
-						<th>Kategorie</th>
-						<th>Parameter</th>
-						<th>Wert</th>
-						<th>Einheit</th>
-						<th></th>
-						</tr></thead>
-						<tbody>";
-
-        while ($row = $result->fetch_assoc()) {
-            echo "<tr>";
-            echo "<td><button type='button' id='" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' class='btn btn-danger btn-xs' value='deleteParameter'><span class='glyphicon glyphicon-minus'></span></button></td>";
-            echo "<td>" . $row["Kategorie"] . "</td>";
-            echo "<td>" . $row["Bezeichnung"] . "</td>";
-            echo "<td><input type='text' id='wert" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' value='" . $row["Wert"] . "' size='20'></input></td>";
-            echo "<td><input type='text' id='einheit" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' value='" . $row["Einheit"] . "' size='45'></input></td>";
-            echo "<td><button type='button' id='" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' class='btn btn-default btn-sm' value='saveParameter'><span class='glyphicon glyphicon-floppy-disk'></span></button></td>";
-            echo "</tr>";
-        }
-
-        echo "</tbody></table>
-						
-                                </div>
-                            </div>	
-			</div>
-			<div class='col-md-6'>
-                            <div class='mt-4 card'>
-                                <div class='card-header'>Mögliche Parameter</div>
-                                <div class='card-body' id='possibleVariantenParameter'>";
-
-        $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung, tabelle_parameter_kategorie.Kategorie 
-			  					FROM tabelle_parameter, tabelle_parameter_kategorie 
-			  					WHERE tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie 
-								AND tabelle_parameter.idTABELLE_Parameter NOT IN 
-								(SELECT tabelle_parameter.idTABELLE_Parameter 
-								FROM tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.TABELLE_Parameter_idTABELLE_Parameter 
-								WHERE tabelle_projekt_elementparameter.TABELLE_Elemente_idTABELLE_Elemente = " . $_SESSION["elementID"] . " AND tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte = " . $_SESSION["projectID"] . " AND tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten = " . $_SESSION["variantenID"] . ") 
-								ORDER BY tabelle_parameter_kategorie.Kategorie;";
-
-        $result = $mysqli->query($sql);
-
-        echo "<table class='table table-striped table-sm' id='tablePossibleElementParameters' cellspacing='0' width='100%'>
-						<thead><tr>
-						<th></th>
-						<th>Kategorie</th>
-						<th>Parameter</th>
-						</tr></thead>
-						<tbody>";
-
-        while ($row = $result->fetch_assoc()) {
-            echo "<tr>";
-            echo "<td><button type='button' id='" . $row["idTABELLE_Parameter"] . "' class='btn btn-success btn-xs' value='addParameter'><span class='glyphicon glyphicon-plus'></span></button></td>";
-            echo "<td>" . $row["Kategorie"] . "</td>";
-            echo "<td>" . $row["Bezeichnung"] . "</td>";
-            echo "</tr>";
-        }
-
-        echo "</tbody></table>
-                                </div>
-                            </div>	
-			</div>
-                        
-                    </div>
-		</div>-->";
         ?>
         <!-- Modal zum Zeigen der Kostenänderungen -->
         <div class='modal fade' id='getElementPriceHistoryModal' role='dialog'>
@@ -398,6 +223,7 @@ check_login();
                         }
 
                         echo "</tbody></table>";
+                        $mysqli->close();
                         ?>
                     </div>
                     <div class='modal-footer'>
@@ -424,6 +250,7 @@ check_login();
                 </div>
             </div>
         </div>
+
         <!-- Variantenparameter übernehmen Modal -->
         <div class='modal fade' id='addVariantenParameterToElementModal' role='dialog'>
             <div class='modal-dialog modal-sm'>	    
@@ -443,14 +270,7 @@ check_login();
             </div>
         </div>
 
-
-
-        <?php
-        $mysqli->close();
-        ?>
-
-
-
+        <script src="_utils.js"></script> 
         <script>
 
             $(document).ready(function () {
@@ -599,7 +419,7 @@ check_login();
                         data: {"parameterID": id, "variantenID": variantenID},
                         type: "GET",
                         success: function (data) {
-                            makeToaster(data, true);
+                            makeToaster(data.trim()), true);
                             $.ajax({
                                 url: "getVarianteParameters.php",
                                 data: {"variantenID": variantenID},
@@ -636,7 +456,7 @@ check_login();
                         type: "GET",
                         success: function (data) {
                             //		        	alert(data);
-                            makeToaster(data, false);
+                            makeToaster(data.trim(), false);
                             $.ajax({
                                 url: "getVarianteParameters.php",
                                 data: {"variantenID": variantenID},
@@ -675,7 +495,7 @@ check_login();
                         type: "GET",
                         success: function (data) {
                             //alert(data);   
-                            makeToaster(data, true);
+                            makeToaster(data.trim(), true);
                         }
                     });
                 }
@@ -693,7 +513,7 @@ check_login();
                     type: "GET",
                     success: function (data) {
                         //alert(data);
-                        makeToaster(data, true);
+                        makeToaster(data.trim(), true);
                         $.ajax({
                             url: "getStandardElementParameters.php",
                             data: {"elementID": elementID},

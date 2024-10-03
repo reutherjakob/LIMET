@@ -40,20 +40,14 @@ init_page_serversides("No Redirect");
     <body>    
         <div class="container-fluid">
             <div id="limet-navbar"></div>
-
+ 
             <div class='mt-1 row'>  
                 <div class='col-md-10'>
                     <div class="mt-1 card">
                         <div class="card-header  d-inline-flex" id="PRCardHeader" > <b>Projekte </b>
                             <div class="col " id ="STH"> </div>
                             <label class="float-right">
-                                Nur aktive Projekte: <input type="checkbox" id="filter_ActiveProjects" <?php
-                                if ($_SESSION["username"] === "fuchs") {
-                                    echo ' checked="false"';
-                                } else {
-                                    echo 'checked="true"';
-                                }
-                                ?> > 
+                                Nur aktive Projekte: <input type="checkbox" id="filter_ActiveProjects" ></input>
                             </label>
                         </div>
                         <div class="card-body">
