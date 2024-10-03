@@ -1,7 +1,7 @@
 <?php
-
 session_start();
 include '_utils.php';
+check_login();
 
 if (isset($_GET["value"])) {
     $value = filter_var($_GET["value"], FILTER_SANITIZE_STRING);
@@ -20,17 +20,18 @@ while ($row = $result->fetch_assoc()) {
     $data[] = $row;
 }
 
-// Remove duplicates
-$unique_data = [];
-$seen = [];
-
-foreach ($data as $item) {
-    $key = $item['TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen'] . '|' . $item['Raumbezeichnung'];
-    if (!isset($seen[$key])) {
-        $seen[$key] = true;
-        $unique_data[] = $item;
-    }
-}
+//// Remove duplicates
+//$unique_data = [];
+//$seen = [];
+//
+//foreach ($data as $item) {
+//    $key = $item['TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen'] . '|' . $item['Raumbezeichnung'];
+//    if (!isset($seen[$key])) {
+//        $seen[$key] = true;
+//        $unique_data[] = $item;
+//    }
+//}
 
 header('Content-Type: application/json');
-echo json_encode($unique_data);
+//echo json_encode($unique_data);
+echo json_encode($data);

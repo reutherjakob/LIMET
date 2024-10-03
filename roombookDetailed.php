@@ -19,10 +19,8 @@ init_page_serversides();
                         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
                         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
 
-
                         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
                         <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.js"></script>
-
 
                         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/datatables.mark.js/2.0.0/datatables.mark.min.css"/>
                         <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script>
@@ -141,12 +139,12 @@ init_page_serversides();
                                     </div>
                                 </div>
                                 <hr></hr>   
-                                <div class="mt-4 card">
+                                <div class="mt-1 card">
                                     <div class="card-header"><button type="button" class="btn btn-outline-dark btn-xs" id="showDBElementData"><i class="fas fa-caret-right"></i></button></button>Datenbank-Elemente</div>
                                     <div class="card-body" style="display:none" id="DBElementData">                         
-                                        <div class="row mt-4">
+                                        <div class="row mt-1">
                                             <div class="col-sm-6">
-                                                <div class="mt-4 card">
+                                                <div class="mt-1 card">
                                                     <div class="card-header">Elementgruppen</div>
                                                     <div class="card-body" id="elementGroups">
                                                         <?php
@@ -186,7 +184,7 @@ init_page_serversides();
                                                         ?>
                                                     </div>
                                                 </div>
-                                                <div class="mt-4 card">
+                                                <div class="mt-1 card">
                                                     <div class="card-header">Elemente in DB</div>
                                                     <div class="card-body" id="elementsInDB">
                                                         <?php
@@ -221,34 +219,34 @@ init_page_serversides();
                                                 </div>
                                             </div>
                                             <div class="col-md-3 col-sm-3">
-                                                <div class="mt-4 card">
+                                                <div class="mt-1 card">
                                                     <div class="card-header">Elementparameter</div>
                                                     <div class="card-body" id="elementParametersInDB"></div>
                                                 </div>
                                             </div>
                                             <div class="col-md-3 col-sm-3">
-                                                <div class="mt-4 card">
+                                                <div class="mt-1 card">
                                                     <div class="card-header">Elementkosten in anderen Projekten</div>
                                                     <div class="card-body" id="elementPricesInOtherProjects"></div>
                                                 </div>
                                             </div>
                                         </div>
                                         <hr></hr>
-                                        <div class="row mt-4">
+                                        <div class="row mt-1">
                                             <div class="col-md-6 col-sm-6">
-                                                <div class="mt-4 card">
+                                                <div class="mt-1 card">
                                                     <div class="card-header">Geräte</div>
                                                     <div class="card-body" id="devicesInDB"></div>
                                                 </div>					
                                             </div>
                                             <div class="col-md-3 col-sm-3">
-                                                <div class="mt-4 card">
+                                                <div class="mt-1 card">
                                                     <div class="card-header">Geräteparameter</div>
                                                     <div class="card-body" id="deviceParametersInDB"></div>
                                                 </div>	
                                             </div>
                                             <div class="col-md-3 col-sm-3">
-                                                <div class="mt-4 card">
+                                                <div class="mt-1 card">
                                                     <div class="card-header">Gerätepreise</div>
                                                     <div class="card-body" id="devicePrices"></div>
                                                 </div>	
@@ -378,9 +376,7 @@ init_page_serversides();
 
                                     // CLICK TABELLE ELEMENTE IN DB
                                     var table1 = $('#tableElementsInDB').DataTable();
-
                                     $('#tableElementsInDB tbody').on('click', 'tr', function () {
-
                                         if ($(this).hasClass('info')) {
                                             //$(this).removeClass('info');
                                         } else {
@@ -429,8 +425,6 @@ init_page_serversides();
                                         }).remove();
                                     }
                                     , 100);
-
-
                                 });
 
                                 // DB Elemente einblenden
@@ -448,7 +442,6 @@ init_page_serversides();
                                 // Element Gewerk Änderung
                                 $('#elementGewerk').change(function () {
                                     var gewerkID = this.value;
-
                                     $.ajax({
                                         url: "getElementGroupsByGewerk.php",
                                         data: {"gewerkID": gewerkID},
@@ -459,7 +452,7 @@ init_page_serversides();
                                     });
 
                                 });
-
+                                
                                 $("button[id='buttonBO']").click(function () {
                                     $("#boModalBody").html(this.value);
                                 });

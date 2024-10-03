@@ -332,9 +332,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 $('#einstellungModal').modal('hide');
                             }
                         }
-
-
-
                         function open_einstellung_modal() {
                             $('#einstellungModal').modal('show');
                         }
@@ -673,9 +670,9 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 type: "GET",
                                 success: function (data) {
                                     if (data === "Erfolgreich aktualisiert!") {
-                                        makeToaster("SAVED</b>" + raumname + ";  " + ColumnName + ";  " + newData + " ", true);
+                                        makeToaster("SAVED! " + raumname + ";  " + ColumnName + ";  " + newData + " ", true);
                                     } else {
-                                        makeToaster("FAILED!!</b>" + data + "---", false);
+                                        makeToaster("FAILED! "  + data + "---", false);
                                     }
                                 }
                             });

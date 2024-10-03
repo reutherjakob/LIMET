@@ -1,3 +1,5 @@
+
+    <link rel="stylesheet" href="style.css" type="text/css" media="screen" />  
 function makeToaster(headerText, success) {
     const existingToasts = Array.from(document.querySelectorAll('.toast'));
     const visibleToasts = existingToasts.filter(toast => toast.classList.contains('show'));

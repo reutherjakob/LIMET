@@ -21,21 +21,15 @@ init_page_serversides();
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
         <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
         <style>
-
             .highlighted-row {
                 background-color: yellow; /* Change to your desired highlight color */
                 font-weight: bold; /* Optional: Make the text bold */
             }
-
             .card {
                 transition: transform 0.5s ease;
                 border: 1px solid #ccc;
                 overflow: hidden;
             }
-            .card-header{
-                height: 3.5vh;
-            }
-
             .resize-border {
                 width: 2px; /* Width of the border area */
                 /*cursor: col-resize;  Cursor style for resizing */
@@ -122,11 +116,11 @@ init_page_serversides();
                                         </div> 
 
                                         <div class=" d-inline-flex" id="table_room_cb">   
-                                            <div class="card  cardx border-success flex-grow-1" style="width: 10vw" >  
+                                            <div class="card   border-success flex-grow-1" style="width: 10vw" >  
                                                 <div class="card-header d-inline-flex justify-content-center" style=" background-color:  rgba(100, 140, 25, 0.1);" >Room-Elements</div> 
                                                 <div class="card-body"  id="RoomElements"> </div>
                                             </div>                                            <!--<div class="resize-border"></div>-->
-                                            <div class="card cardx border-success flex-grow-1"  style="width: 40vw;" id="card_SelectRoom4Comparison">
+                                            <div class="card  border-success flex-grow-1"  style="width: 40vw;" id="card_SelectRoom4Comparison">
                                                 <div class="card-header d-inline-flex justify-content-center" id="SelectRoom4Comparison" style=" background-color:  rgba(100, 140, 25, 0.1);" >  </div> 
                                                 <div class="card-body " id="cardbody_SelectRoom4Comparison">   
                                                     <div class="table-container">
@@ -135,7 +129,7 @@ init_page_serversides();
                                                     </div> 
                                                 </div>                                                               
                                             </div> <!--                                            <div class="resize-border"></div>-->
-                                            <div class="card cardx border-info flex-grow-1"  style="width: 40vw" id="card_vgl_room">  
+                                            <div class="card  border-info flex-grow-1"  style="width: 40vw" id="card_vgl_room">  
                                                 <div class="card-header d-inline-flex justify-content-center" id="card_header_vgl_room"  style=" background-color: rgba(13, 202, 240, 0.1)"> </div> 
                                                 <div class="card-body " id ="card_body_vgl_room">
                                                     <div class="table-container">
@@ -146,7 +140,7 @@ init_page_serversides();
                                                     </div>   
                                                 </div>
                                             </div>  <!--   <div class="resize-border"></div>-->
-                                            <div class="card cardx border-info flex-grow-1" style="width: 10vw" >  
+                                            <div class="card  border-info flex-grow-1" style="width: 10vw" >  
                                                 <div class="card-header d-inline-flex justify-content-center" style=" background-color: rgba(13, 202, 240, 0.1)"> Vgl-Room-Elements </div> 
                                                 <div class="card-body responsive" id ="">  
                                                     <p id="ElememntsVglRoom" > </p> 
@@ -500,41 +494,7 @@ init_page_serversides();
                 document.getElementById(where2move_id).appendChild(dt_searcher);
                 dt_searcher.classList.add("fix_size");
             }
-
-//            const container = document.querySelector('#KONTÄNER');
-//            const cards = document.querySelectorAll('.cardx');
-//            const resizeBorders = document.querySelectorAll('.resize-border');
-//            let isResizing = false;
-//            let startX, startWidth;
-//            function startResize(e) {
-//                isResizing = true;
-//                startX = e.clientX;
-//                startWidth = parseFloat(getComputedStyle(cards[1]).width);
-//            }
-//
-//            function resize(e) {
-//                if (!isResizing)
-//                    return;
-//                const deltaX = e.clientX - startX;
-//                const newWidth = startWidth + deltaX;
-//
-//                cards[1].style.width = `${newWidth}px`;
-//                const adjacentWidth = (container.clientWidth - newWidth) / 3;
-//                cards[0].style.width = `${adjacentWidth}px`;
-//                cards[2].style.width = `${adjacentWidth}px`;
-//                cards[3].style.width = `${adjacentWidth}px`;
-//            }
-//
-//            function stopResize() {
-//                isResizing = false;
-//            }
-//
-//            resizeBorders.forEach(border => {
-//                border.addEventListener('mousedown', startResize);
-//            });
-//            window.addEventListener('mousemove', resize);s
-//            window.addEventListener('mouseup', stopResize);
-
+ 
         </script>
     </body> 
 </html>

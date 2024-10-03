@@ -1,5 +1,8 @@
 <?php
 session_start();
+include '_utils.php';
+check_login();
+
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -9,22 +12,7 @@ session_start();
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" /></head>
 <body>
 <?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
-
-<?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	
-	
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    printf("Error loading character set utf8: %s\n", $mysqli->error);
-	    exit();
-	} 
+	$mysqli = utils_connect_sql();
 	
 	$sql = "SELECT tabelle_element_gewerke.idtabelle_element_gewerke, tabelle_element_gewerke.Nummer, tabelle_element_gewerke.Gewerk
 												FROM tabelle_element_gewerke
