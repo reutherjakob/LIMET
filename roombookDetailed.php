@@ -268,7 +268,7 @@ init_page_serversides('X');
                         <button type='button' class='close' data-dismiss='modal'>&times;</button>	          
                     </div>
                     <div class='modal-body' id='boModalBody'>
-
+ 
                     </div>
                     <div class='modal-footer'>
                         <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>OK</button>

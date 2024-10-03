@@ -89,7 +89,7 @@ session_start();
                         type: "GET",
                         success: function (data) {
                             //		        	alert(data);
-                            makeToaster(data.trim()), true);
+                            makeToaster(data.trim(), true);
                             $.ajax({
                                 url: "getVarianteParameters.php",
                                 data: {"variantenID": variantenID},
