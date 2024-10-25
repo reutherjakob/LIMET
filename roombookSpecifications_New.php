@@ -130,7 +130,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                         <input class="form-check-input" type="checkbox" id="settings_show_btn_grp_labels" >
                             <label class="form-check-label" for="settings_show_btn_grp_labels">Show Labels above Button</label>
                     </div>
-                    <div  >
+                    <div>
                         <button type="button" class="btn btn-secondary" id="settings_toggle_btn_texts">Show Button Texts</button>
                     </div>
                 </div>
@@ -159,15 +159,14 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             init_dt();
                             init_editable_checkbox();
                             add_MT_rel_filter('#TableCardHeader');
+                            add_entfallen_filter('#TableCardHeader'); 
                             move_dt_search();
                             init_showRoomElements_btn();
                             init_btn_4_dt();
                             init_visibilities();
                             table_click();
                             event_table_keyz();
-
                             init_MT_rel_filter();
-
                         });
 
                         $('#settings_show_btn_grp_labels').change(function () {
@@ -243,6 +242,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 language: {search: ""},
                                 select: "os",
                                 fixedColumns: {start: 2},
+                                fixedHeader: true,
                                 keys: true,
                                 order: [{name: 'Raumbezeichnung',
                                         dir: 'asc'}, {name: 'Nummer', dir: 'asc'}],
@@ -532,7 +532,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             document.getElementById("TableCardHeader").appendChild(dt_searcher);
                             dt_searcher.classList.add("fix_size_search");
                         }
-
+ 
                         function init_editable_checkbox() {
                             var checkbox = $('<input>', {
                                 type: 'checkbox',
@@ -557,6 +557,15 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             $('#columnFilter').change(function () {
                                 var filterValue = $(this).val();
                                 table.column('MT-relevant:name').search(filterValue).draw();
+                            });
+                        }
+                        function add_entfallen_filter(location) {
+                            var dropdownHtml2 = '<select class="fix_size" id="EntfallenFilter">' + '<option value="">Entf</option><option value="1">1</option>' + '<option selected ="true" value="0">0</option></select>';
+                            $(location).append(dropdownHtml2);
+                            $('#EntfallenFilter').change(function () {
+                                var filterValue = $(this).val();
+                                console.log(" ENTF FIlt");
+                                table.column('Entfallen:name').search(filterValue).draw();
                             });
                         }
 

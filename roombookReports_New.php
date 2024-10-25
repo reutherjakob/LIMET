@@ -4,15 +4,15 @@ include '_utils.php';
 init_page_serversides("", "x");
 ?> 
 
-
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
     <head>
         <title>RB-Berichte</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
         <link rel="icon" href="iphone_favicon.png"/>
+
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"/>
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous"/>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -26,42 +26,30 @@ init_page_serversides("", "x");
             .table>thead>tr>th {
                 background-color: rgba(100, 140, 25, 0.15);
             }
-            .search_buiilder_btn{
-                font-size: 10px;
-                height: 30px;
-            }
         </style>
     </head>
-    <body style="height:100%">
+    <body>
         <div class="container-fluid"> 
             <div id="limet-navbar"></div>
             <div class="card">
-                <div class="card-header d-flex border-light align-items-center" style="height:1px; font-size: 10px;">
-                    <div class="col-md-3">Räume im Projekt</div>
-                    <div class="col-md-3">Select</div>
-                    <div class="col-md-3">Berichte PDFs</div>
-                    <div class="col-md-3"></div>
-                </div>
-                <div class="card-header d-inline-flex justify-content-start align-items-top " style="height: 30px;" id="HeaderTabelleCard">
-                    <div class="col-md-3 form-check-inline justify-content-start" id="sub1"></div>
-                    <div class="col-md-3 form-check-inline" id="sub12"></div>
-                    <div class="col-md-3 form-check-inline" id="sub2"></div>
-                    <div class="col-md-3 form-check-inline  justify-content-end" id="sub3">
-                        <div class="form-check-inline"><label for="dateSelect"> </label><input type="date" id="dateSelect" name="dateSelect"><div class="spacer"></div></div>
-                    </div>
-                </div>
-                <div class="card-header  form-check-inline  " style="flex-wrap:nowrap; display:none; padding:2px; " id="HeaderTabelleCard2"> </div>
-                <div class="card-header  form-check-inline " style="flex-wrap:nowrap; display:none; padding:2px; " id="HeaderTabelleCard3">  </div>
-                <!--<div class="card-header  form-check-inline  justify-content-center align-items-center" style="flex-wrap:nowrap; display:none; padding:2px; " id="HeaderTabelleCard4"> </div>-->
+                <div class="card-header-l px-2 py-2  d-inline-flex align-items-baseline justify-content-start border-light" id="HeaderTabelleCard">
+                    <div class="col-md-2 d-inline-flex justify-content-start align-items-baseline" id="sub1"></div>           
+                    <div class="col-md-3 d-inline-flex align-items-baseline" id="sub12">Select</div>
+                    <div class="col-md-5 d-inline-flex align-items-baseline" id="sub2"></div>
 
-                <div class="card-body px-0 py-0">
+                    <div class="form-check-inline  align-items-baseline"><label for="dateSelect"> </label><input type="date" id="dateSelect" name="dateSelect"><div class="spacer"></div></div>     
+                    <div class="col-md-1 form-check-inline justify-content-end  align-items-baseline" id="sub3"></div>
+                </div>
+
+                <div class="card-header-s  px-2 py-2 border-light form-check-inline  flex-nowrap" id="HeaderTabelleCard2"> </div>
+                <div class="card-header-s  px-2 py-2 border-light form-check-inline  flex-nowrap" id="HeaderTabelleCard3">  </div> 
+                <div class="card-body px-2 py-2">
                     <?php
                     $mysqli = utils_connect_sql();
                     $columns = [
-                        'idTABELLE_Räume', 'Raumnr', 'Raumbezeichnung', 'Raumnummer_Nutzer', 'Nutzfläche',
+                        'idTABELLE_Räume', 'MT-relevant', 'Raumnr', 'Raumbezeichnung', 'Raumnummer_Nutzer', 'Nutzfläche',
                         'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt',
-                        'Anmerkung allgemein',
-                        'MT-relevant'
+                        'Anmerkung allgemein'
                     ];
 
                     $sql = "SELECT " . implode(", ", array_map(function ($col) {
@@ -73,18 +61,15 @@ init_page_serversides("", "x");
                                 WHERE p.idTABELLE_Projekte=" . $_SESSION["projectID"];
 
                     $result = $mysqli->query($sql);
-
                     if (!$result) {
                         die("Query failed: " . $mysqli->error);
                     }
-
                     echo "<table class='table display compact table-striped table-bordered table-sm' id='tableRooms' cellspacing='0' width='100%'>
                         <thead><tr>";
                     foreach ($columns as $col) {
                         echo "<th>" . str_replace('_', ' ', $col) . "</th>";
                     }
                     echo "</tr></thead><tbody>";
-
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr>";
                         foreach ($columns as $col) {
@@ -97,10 +82,8 @@ init_page_serversides("", "x");
                         echo "</tr>";
                     }
                     echo "</tbody></table>";
-
                     $mysqli->close();
                     ?>
-
                 </div>
             </div>
         </div>
@@ -108,20 +91,61 @@ init_page_serversides("", "x");
         <script charset="utf-8">
             $(document).ready(function () {
                 initDataTable();
-                addMTFilter('#sub1');
+                $('#HeaderTabelleCard2').slideToggle();
+                $('#HeaderTabelleCard3').slideToggle();
                 initButtons();
                 setTimeout(() => {
                     moveSearchBox('sub1');
-                    addCheckbox('#sub3', "Show-old-Reports", toggleOldReports);
+//                    addCheckbox('#sub3', "Show-old-Reports", toggleOldReports);
                     let searchbuilder = [{
                             extend: 'searchBuilder',
-                            className: "btn search_buiilder_btn fas fa-search",
+                            className: "btn fas fa-search",
                             text: " ",
                             titleAttr: "Suche konfigurieren"
                         }];
                     new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#sub1'));
                 }, 300);
+                addMTFilter('#sub1');
+
+
+                const toggleOldReportsButton = $('<button type="button" class="btn btn-light border-dark" id="toggleOldReports">Show Old Reports</button>');
+                toggleOldReportsButton.on('click', toggleOldReports);
+                $('#sub3').append(toggleOldReportsButton);
+
             });
+
+            function toggleOldReports() {
+                $('#HeaderTabelleCard2').slideToggle(() => {
+                    $('#HeaderTabelleCard3').slideToggle(() => {
+                        const button = $('#toggleOldReports');
+                        if ($('#HeaderTabelleCard2').is(':visible') || $('#HeaderTabelleCard3').is(':visible')) {
+                            button.text('Hide Old Reports');
+                        } else {
+                            button.text('Show Old Reports');
+                        }
+                    });
+                });
+            }
+
+            function generateNewReports(reportType, date) {
+                const roomIDs = table.rows({selected: true}).data().toArray().map(row => row[0]);
+                if (roomIDs.length === 0) {
+                    alert("Kein Raum ausgewählt!");
+                } else {
+                    const formattedDate = date || getDate();
+                    const reportURLs = {
+                        "BAUANGABEN A3": "/pdf_createBauangabenBericht_A3Qeer.php",
+                        "BAUANGABEN A3 2": "/pdf_createBauangabenBericht_A3Qeer_1.php",
+                        "Elem./Raum (w/Bestand)": "/pdf_createRoombookElWithoutBestand.php"
+                    };
+
+                    if (reportURLs[reportType]) {
+                        window.open(`${reportURLs[reportType]}?roomID=${roomIDs.join(',')}&date=${formattedDate}`);
+                    } else {
+                        alert("Unbekannter Berichtstyp!");
+                    }
+                }
+            }
 
             function initButtons() {
                 const buttons = [
@@ -131,8 +155,9 @@ init_page_serversides("", "x");
                 ];
 
                 const buttonNewReports = [
-                    {text: "BAUANGABEN A3", action: generateReport},
-                    {text: "Elem./Raum (w/Bestand)", action: generateReport2}
+                    {text: "BAU A3", action: () => generateNewReports("BAUANGABEN A3", $("#dateSelect").val())},
+                    {text: "BAU A3 no date", action: () => generateNewReports("BAUANGABEN A3 2", $("#dateSelect").val())},
+                    {text: "Elem./Raum (w/Bestand)", action: () => generateNewReports("Elem./Raum (w/Bestand)", $("#dateSelect").val())}
                 ];
 
                 const oldButtons = [
@@ -140,17 +165,19 @@ init_page_serversides("", "x");
                     {text: "Raumbuch-0-PDF", link: "pdf_createRoombookWithout0PDF"},
                     {text: "Raumbuch-ohne Bestand-PDF", link: "pdf_createRoombookWithoutBestandPDF"},
                     {text: "Raumbuch-0-ohne Bestand-PDF", link: "pdf_createRoombookWithout0WothoutBestandPDF"},
-                    {text: "Raumbuch-inkl Bauangaben-0-PDF", link: "pdf_createRoombookWithBauangabenWithout0PDF"}, 
-                ]; 
+                    {text: "Raumbuch-inkl Bauangaben-0-PDF", link: "pdf_createRoombookWithBauangabenWithout0PDF"}
+                ];
 
-                const ButtonsBauangaben = [{text: "Bauangaben-PDF V1", link: "pdf_createBauangabenPDF"},
+                const ButtonsBauangaben = [
+                    {text: "Bauangaben-PDF V1", link: "pdf_createBauangabenPDF"},
                     {text: "Bauangaben-PDF V2", link: "pdf_createBauangabenV2PDF"},
                     {text: "Bauangaben ohne Elemente-PDF", link: "pdf_createBauangabenWithoutElementsPDF"},
                     {text: "BauangabenDetail-PDF", link: "pdf_createBauangabenDetailPDF"},
                     {text: "Bauangaben Lab-PDF", link: "pdf_createBauangabenLabPDF"},
                     {text: "Bauangaben Lab-Kurz-PDF'", link: "pdf_createBauangabenLabKompaktPDF"},
                     {text: "Bauangaben Lab-ENT-PDF", link: "pdf_createBauangabenLabEntPDF"},
-                    {text: "Bauangaben Lab-EIN-PDF", link: "pdf_createBauangabenLabEinrPDF_1"}];
+                    {text: "Bauangaben Lab-EIN-PDF", link: "pdf_createBauangabenLabEinrPDF_1"}
+                ];
 
                 const oldButtons2 = [
                     {text: "BO-PDF", link: "pdf_createBOPDF"},
@@ -162,20 +189,19 @@ init_page_serversides("", "x");
                 const createButtonGroup = (buttons, buttonClass) => {
                     const buttonGroup = $('<div class="btn-group" role="group"></div>');
                     buttons.forEach(btn => {
-                        const button = $('<button type="button" class="btn btn-sm  ' + buttonClass + '"></button>').text(btn.text);
+                        const button = $('<button type="button" class="btn btn-sm ' + buttonClass + '"></button>').text(btn.text);
                         button.on('click', btn.action || (() => generateOldReport(btn.link)));
                         buttonGroup.append(button);
                     });
                     return buttonGroup;
                 };
 
-                $('#sub12').append(createButtonGroup(buttons, 'btn-success'));
-                $('#sub2').append(createButtonGroup(buttonNewReports, 'btn-secondary'));
-                $('#HeaderTabelleCard2').append(createButtonGroup(oldButtons, 'btn-secondary'));
-                $('#HeaderTabelleCard3').append(createButtonGroup(ButtonsBauangaben, 'btn-secondary'));
-                $('#HeaderTabelleCard2').append(createButtonGroup(oldButtons2, 'btn-secondary'));
+                $('#sub12').append(createButtonGroup(buttons, 'btn-success btn-sm'));
+                $('#sub2').append(createButtonGroup(buttonNewReports, 'btn-light border-dark btn-sm'));
+                $('#HeaderTabelleCard2').append(createButtonGroup(oldButtons, 'btn-light  border-dark'));
+                $('#HeaderTabelleCard3').append(createButtonGroup(ButtonsBauangaben, 'btn-light  border-dark'));
+                $('#HeaderTabelleCard2').append(createButtonGroup(oldButtons2, 'btn-light  border-dark'));
             }
-
 
             function initDataTable() {
                 table = $('#tableRooms').DataTable({
@@ -192,16 +218,13 @@ init_page_serversides("", "x");
                         searchBuilder: {label: "", depthLimit: 3}
                     },
                     keys: true
-                }).on('key', function (e, datatable, key, cell) {
-                    if ([37, 38, 39, 40].includes(key))
-                        $(cell.node()).click();
                 });
             }
 
             function addMTFilter(location) {
                 $(location).append('<select class="form-control-sm" id="columnFilter"><option value="">MT</option><option value="Ja">Ja</option><option value="Nein">Nein</option></select>');
                 $('#columnFilter').change(function () {
-                    table.column(5).search($(this).val()).draw();
+                    table.column(1).search($(this).val()).draw();
                 });
             }
 
@@ -211,32 +234,12 @@ init_page_serversides("", "x");
             }
 
             function addCheckbox(location, name, callback) {
-                $(location).append(`<input type="checkbox" checked="true" id="CBX${name}" class="form-check-input"><label for="CBX${name}" class="form-check-label">${name}</label>`);
+                $(location).append(`<input type="checkbox" id="CBX${name}" class="form-check-input" checked="false"><label for="CBX${name}" class="form-check-label">${name}</label>`);
                 $(`#CBX${name}`).change(callback);
             }
 
             function moveSearchBox(location) {
-                $('#dt-search-0').appendTo(`#${location}`).addClass("fix_size");
-            }
-
-
-
-            function generateReport() {
-                const roomIDs = table.rows({selected: true}).data().toArray().map(row => row[0]);
-                if (roomIDs.length === 0) {
-                    alert("Kein Raum ausgewählt!");
-                } else {
-                    window.open(`/pdf_createBauangabenBericht_A3Qeer.php?roomID=${roomIDs.join(',')}&date=${getDate()}`);
-                }
-            }
-
-            function generateReport2() {
-                const roomIDs = table.rows({selected: true}).data().toArray().map(row => row[0]);
-                if (roomIDs.length === 0) {
-                    alert("Kein Raum ausgewählt!");
-                } else {
-                    window.open(`/pdf_createRoombookElWithoutBestand.php?roomID=${roomIDs.join(',')}&date=${getDate()}`);
-                }
+                $('#dt-search-0').appendTo(`#${location}`).addClass("btn-sm");
             }
 
             function generateOldReport(link) {
@@ -248,11 +251,10 @@ init_page_serversides("", "x");
                 }
             }
 
-            function toggleOldReports() {
-                $('#HeaderTabelleCard2').slideToggle();
-                $('#HeaderTabelleCard4').slideToggle();
-                $('#HeaderTabelleCard3').slideToggle();
-            }
+//            function toggleOldReports() {
+//                $('#HeaderTabelleCard2').slideToggle();
+//                $('#HeaderTabelleCard3').slideToggle();
+//            }
 
         </script>
     </body>

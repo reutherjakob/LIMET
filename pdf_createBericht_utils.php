@@ -154,22 +154,20 @@ function balken($pdf, $horizontalSpacerLN, $SB) {
 
     $pdf->MultiCell($SB, 2, "", "BT", 'L', 1, 1);
     $pdf->Ln($horizontalSpacerLN);
-    $pdf->SetFillColor(00, 00, 00);
+    $pdf->SetFillColor(255, 255, 255);
     $pdf->SetFont('helvetica', '', 10);
 }
 
 // BAUSTEINE
 
-function block_label_queer($block_header_w, $pdf, $block_label, $upcomming_block_size, $block_height = 12, $SB = 390) {
-    if ($block_label != "Med.-tech.") {
-        newpageA3($pdf, $upcomming_block_size, 275);
-    }
-    if ($block_label === "Med.-tech." && $upcomming_block_size < 275) {
-        newpageA3($pdf, $upcomming_block_size, 275);
+function block_label_queer($block_header_w, $pdf, $block_label, $upcoming_block_size, $block_height = 12, $SB = 390) {
+    $requires_newpage = $block_label != "Med.-tech." || ($block_label === "Med.-tech." && $upcoming_block_size < 275);
+    if ($requires_newpage) {
+        newpageA3($pdf, $upcoming_block_size, 275);
     }
     $pdf->SetFont('helvetica', 'B', $block_height);
-    $pdf->MultiCell($SB, 1, "", 'T', 'L', 0, 0);
-    $pdf->Ln(1);
+    $pdf->MultiCell($SB, 1, "", 'T', 'L', 0, 0);  // Empty line with top border
+    $pdf->Ln(1);  // Line break
     $pdf->MultiCell($block_header_w, $block_height, $block_label, 0, 'L', 0, 0);
     $pdf->SetFont('helvetica', '', 10);
 }
@@ -306,7 +304,8 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
                 $incr += 5;
                 $Height = $pdf->getStringHeight($SB * $qot + $incr, $pair[1], false, true, '', 1);
             }
-            multicell_text_hightlight($pdf, $SB * $qot + $incr, $ln_spacer, $pair[0], $pair[1], $parameter_changes_t_räume, "L");
+
+            $pdf->MultiCell($SB * $qot + $incr, $ln_spacer, $pair[1], 0, "L", 1, 0);
         }
         $pdf->Ln(7);
     }
@@ -343,10 +342,12 @@ function init_pdf_attributes($pdf, $einzugLR, $marginTop, $marginBTM, $format = 
 }
 
 function multicell_text_hightlight($pdf, $breite, $font_size, $parameter_sql_name, $pdf_text, $parameter_changes_t_räume, $side = "L") {
-    if (in_array($parameter_sql_name, $parameter_changes_t_räume)) {
-        $pdf->SetFillColor(220, 235, 190);
-    } else {
-        $pdf->SetFillColor(255, 255, 255);
+    if (sizeof($parameter_changes_t_räume) > 0) {
+        if (in_array($parameter_sql_name, $parameter_changes_t_räume)) {
+            $pdf->SetFillColor(220, 235, 190);
+        } else {
+            $pdf->SetFillColor(255, 255, 255);
+        }
     }
     $pdf->MultiCell($breite, $font_size, $pdf_text, 0, $side, 1, 0);
 }

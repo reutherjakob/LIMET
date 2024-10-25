@@ -8,15 +8,15 @@ session_start();
 		$passwort = md5($passwort);
 		
 		$mysqli = new mysqli('localhost', $username, $passwort, 'LIMET_RB');	
-		if ($mysqli ->connect_error) {
-		    die("Login fehler: " . $mysqli->connect_error);
+		if ($mysqli ->connect_error) { 
+                    header("Location: index.php"); 
 		}
 		else{
 			$_SESSION["username"] = $username;
 			$_SESSION["password"] = $passwort;
                         
                         $sql="SELECT permission
-                                FROM tabelle_user_permission
+                                FROM tabelle_user_permission 
                                 WHERE user='".$_SESSION["username"]."';";						
 			$result = $mysqli->query($sql);
                         $row = $result->fetch_assoc();

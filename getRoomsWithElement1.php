@@ -228,7 +228,7 @@ session_start();
                   </div>
                 </div>";
         ?>
-        <<script src="_utils.js"></script>
+        <script src="_utils.js"></script>
         <script>
 
             $(document).ready(function () {
