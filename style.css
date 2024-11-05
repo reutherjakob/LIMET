@@ -23,7 +23,6 @@
 }
 
 
-
 #scrollBtn:hover {
     background-color: #0056b3;
 }
@@ -35,7 +34,6 @@
 #th {
     background-color: rgba(100, 140, 25, 0.15);
 }
-
 
 .form-check-input:checked {
     background-color: rgba(100, 140, 25, 0.75) !important;

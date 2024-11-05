@@ -201,7 +201,7 @@ function anm_txt($pdf, $inp_text, $SB, $block_header_w) {
 }
 
 function anmA3($pdf, $inp_text, $SB, $block_header_w) {
-    if ($inp_text != "keine Angaben MT" && $inp_text != "") {
+    if ($inp_text != "keine Angaben MT" && trim($inp_text) != "") {
         $outstr = "Anm.: " . format_text(clean_string(br2nl($inp_text)));
         if (strlen($outstr) > 0 && is_not_no_comment($outstr)) {
             
@@ -286,7 +286,7 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
         }
         $pdf->SetFont('helvetica', 'B', 10);
 
-        $spacer = "  -";
+        $spacer = " ";
         $output_pairs = [
             ["Raumbezeichnung", "Raum: " . $Raumbezeichnung . $spacer],
             ["Raumnr", "Nummer: " . $Raumnr . $spacer],
@@ -295,18 +295,14 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
             ["Bauetappe", "Bauetappe: " . $Bauetappe . $spacer],
             ["Bauabschnitt", "Bauteil: " . $Bauabschnitt . $spacer]
         ];
-        $qot = 1 / 7;
-
+        $qot = 1 / 6;
+        $extraZeile =false; 
         foreach ($output_pairs as $pair) {
-            $incr = 0;
             $Height = $pdf->getStringHeight($SB * $qot, $pair[1], false, true, '', 1);
-            while ($Height > $ln_spacer) {
-                $incr += 5;
-                $Height = $pdf->getStringHeight($SB * $qot + $incr, $pair[1], false, true, '', 1);
-            }
-
-            $pdf->MultiCell($SB * $qot + $incr, $ln_spacer, $pair[1], 0, "L", 1, 0);
+            if ($Height > $ln_spacer ) {$extraZeile=true; }
+            $pdf->MultiCell($SB * $qot, $ln_spacer, $pair[1], 0, "L", 1, 0);
         }
+        if($extraZeile){$pdf->Ln($ln_spacer/2);}
         $pdf->Ln(7);
     }
     $pdf->SetFont('helvetica', '', 10);

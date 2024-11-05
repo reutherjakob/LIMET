@@ -33,23 +33,28 @@ init_page_serversides("", "x");
             <div id="limet-navbar"></div>
             <div class="card">
                 <div class="card-header-l px-2 py-2  d-inline-flex align-items-baseline justify-content-start border-light" id="HeaderTabelleCard">
-                    <div class="col-md-2 d-inline-flex justify-content-start align-items-baseline" id="sub1"></div>           
-                    <div class="col-md-3 d-inline-flex align-items-baseline" id="sub12">Select</div>
-                    <div class="col-md-5 d-inline-flex align-items-baseline" id="sub2"></div>
+                    <div class="col-md-3 d-inline-flex justify-content-start align-items-baseline" id="sub1"></div>           
+                    <div class="form-check-inline  align-items-baseline"><label for="dateSelect"> </label><input type="date" id="dateSelect" name="dateSelect"><div class="spacer"></div></div>    
+                    <div class="col-md-3 d-inline-flex align-items-baseline" id="sub12"> </div>
+                    <div class="col-md-3 d-inline-flex align-items-baseline" id="sub2"></div>
 
-                    <div class="form-check-inline  align-items-baseline"><label for="dateSelect"> </label><input type="date" id="dateSelect" name="dateSelect"><div class="spacer"></div></div>     
-                    <div class="col-md-1 form-check-inline justify-content-end  align-items-baseline" id="sub3"></div>
+                    <div class="col-md-2 form-check-inline justify-content-end  align-items-baseline" id="sub3"></div>
                 </div>
 
-                <div class="card-header-s  px-2 py-2 border-light form-check-inline  flex-nowrap" id="HeaderTabelleCard2"> </div>
-                <div class="card-header-s  px-2 py-2 border-light form-check-inline  flex-nowrap" id="HeaderTabelleCard3">  </div> 
+                <div class="card-header-s ml-4 px-2 py-2 border-light form-check-inline  flex-nowrap" id="HeaderTabelleCard2">  
+                    <div class="row">
+                        <div class="col-6 d-inline-flex" id="sub21">Raumbuch </div>
+                        <div class="col-6 d-inline-flex justify-content-center" id="sub22"> - </div>
+                    </div>
+                </div>
+                <div class="card-header-s ml-4 px-2 py-2 border-light form-check-inline  flex-nowrap" id="HeaderTabelleCard3">Bauangaben -</div> 
                 <div class="card-body px-2 py-2">
                     <?php
                     $mysqli = utils_connect_sql();
                     $columns = [
                         'idTABELLE_Räume', 'MT-relevant', 'Raumnr', 'Raumbezeichnung', 'Raumnummer_Nutzer', 'Nutzfläche',
                         'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt',
-                        'Anmerkung allgemein'
+                        'Anmerkung allgemein', 'Entfallen'
                     ];
 
                     $sql = "SELECT " . implode(", ", array_map(function ($col) {
@@ -90,6 +95,10 @@ init_page_serversides("", "x");
 
         <script charset="utf-8">
             $(document).ready(function () {
+                const dateInput = document.getElementById('dateSelect');
+                const today = new Date().toISOString().split('T')[0];
+                dateInput.value = today;
+
                 initDataTable();
                 $('#HeaderTabelleCard2').slideToggle();
                 $('#HeaderTabelleCard3').slideToggle();
@@ -106,9 +115,10 @@ init_page_serversides("", "x");
                     new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#sub1'));
                 }, 300);
                 addMTFilter('#sub1');
+                add_entfallen_filter('#sub1');
 
 
-                const toggleOldReportsButton = $('<button type="button" class="btn btn-light border-dark" id="toggleOldReports">Show Old Reports</button>');
+                const toggleOldReportsButton = $('<button type="button" class="btn btn-sm btn-light border-dark" id="toggleOldReports">Show Old Reports</button>');
                 toggleOldReportsButton.on('click', toggleOldReports);
                 $('#sub3').append(toggleOldReportsButton);
 
@@ -156,30 +166,31 @@ init_page_serversides("", "x");
 
                 const buttonNewReports = [
                     {text: "BAU A3", action: () => generateNewReports("BAUANGABEN A3", $("#dateSelect").val())},
-                    {text: "BAU A3 no date", action: () => generateNewReports("BAUANGABEN A3 2", $("#dateSelect").val())},
+                    {text: "ohne Datum", action: () => generateNewReports("BAUANGABEN A3 2", $("#dateSelect").val())},
                     {text: "Elem./Raum (w/Bestand)", action: () => generateNewReports("Elem./Raum (w/Bestand)", $("#dateSelect").val())}
                 ];
 
                 const oldButtons = [
-                    {text: "Raumbuch-PDF", link: "pdf_createRoombookPDF"},
-                    {text: "Raumbuch-0-PDF", link: "pdf_createRoombookWithout0PDF"},
-                    {text: "Raumbuch-ohne Bestand-PDF", link: "pdf_createRoombookWithoutBestandPDF"},
-                    {text: "Raumbuch-0-ohne Bestand-PDF", link: "pdf_createRoombookWithout0WothoutBestandPDF"},
-                    {text: "Raumbuch-inkl Bauangaben-0-PDF", link: "pdf_createRoombookWithBauangabenWithout0PDF"}
+                    {text: "PDF", link: "pdf_createRoombookPDF"},
+                    {text: "0-PDF", link: "pdf_createRoombookWithout0PDF"},
+                    {text: "ohne Bestand-PDF", link: "pdf_createRoombookWithoutBestandPDF"},
+                    {text: "0-ohne Bestand-PDF", link: "pdf_createRoombookWithout0WothoutBestandPDF"},
+                    {text: "inkl Bauangaben-0-PDF", link: "pdf_createRoombookWithBauangabenWithout0PDF"}
                 ];
 
                 const ButtonsBauangaben = [
-                    {text: "Bauangaben-PDF V1", link: "pdf_createBauangabenPDF"},
-                    {text: "Bauangaben-PDF V2", link: "pdf_createBauangabenV2PDF"},
-                    {text: "Bauangaben ohne Elemente-PDF", link: "pdf_createBauangabenWithoutElementsPDF"},
-                    {text: "BauangabenDetail-PDF", link: "pdf_createBauangabenDetailPDF"},
-                    {text: "Bauangaben Lab-PDF", link: "pdf_createBauangabenLabPDF"},
-                    {text: "Bauangaben Lab-Kurz-PDF'", link: "pdf_createBauangabenLabKompaktPDF"},
-                    {text: "Bauangaben Lab-ENT-PDF", link: "pdf_createBauangabenLabEntPDF"},
-                    {text: "Bauangaben Lab-EIN-PDF", link: "pdf_createBauangabenLabEinrPDF_1"}
+                    {text: "PDF V1", link: "pdf_createBauangabenPDF"},
+                    {text: "PDF V2", link: "pdf_createBauangabenV2PDF"},
+                    {text: "ohne Elemente-PDF", link: "pdf_createBauangabenWithoutElementsPDF"},
+                    {text: "Detail-PDF", link: "pdf_createBauangabenDetailPDF"},
+                    {text: "Lab-PDF", link: "pdf_createBauangabenLabPDF"},
+                    {text: "Lab-Kurz-PDF'", link: "pdf_createBauangabenLabKompaktPDF"},
+                    {text: "Lab-ENT-PDF", link: "pdf_createBauangabenLabEntPDF"},
+                    {text: "Lab-EIN-PDF", link: "pdf_createBauangabenLabEinrPDF_1"}
                 ];
 
                 const oldButtons2 = [
+                    {text: " - ", link: "pdf"},
                     {text: "BO-PDF", link: "pdf_createBOPDF"},
                     {text: "VE-Gesamt-PDF", link: "pdf_createBericht_VE_PDF"},
                     {text: "ENT-Gesamt-PDF", link: "pdf_createBericht_ENT_PDF"},
@@ -198,9 +209,10 @@ init_page_serversides("", "x");
 
                 $('#sub12').append(createButtonGroup(buttons, 'btn-success btn-sm'));
                 $('#sub2').append(createButtonGroup(buttonNewReports, 'btn-light border-dark btn-sm'));
-                $('#HeaderTabelleCard2').append(createButtonGroup(oldButtons, 'btn-light  border-dark'));
+                $('#sub21').append(createButtonGroup(oldButtons, 'btn-light  border-dark'));
+                $('#sub22').append(createButtonGroup(oldButtons2, 'btn-light  border-dark'));
                 $('#HeaderTabelleCard3').append(createButtonGroup(ButtonsBauangaben, 'btn-light  border-dark'));
-                $('#HeaderTabelleCard2').append(createButtonGroup(oldButtons2, 'btn-light  border-dark'));
+
             }
 
             function initDataTable() {
@@ -222,11 +234,24 @@ init_page_serversides("", "x");
             }
 
             function addMTFilter(location) {
-                $(location).append('<select class="form-control-sm" id="columnFilter"><option value="">MT</option><option value="Ja">Ja</option><option value="Nein">Nein</option></select>');
+                $(location).append('<select class="form-control-sm" id="columnFilter"><option value="">MT</option><option selected="true"  value="Ja">Ja</option><option value="Nein">Nein</option></select>');
                 $('#columnFilter').change(function () {
                     table.column(1).search($(this).val()).draw();
                 });
+                table.column(1).search("Ja").draw();
             }
+
+            function add_entfallen_filter(location) {
+                var dropdownHtml2 = '<select class="form-control-sm" id="EntfallenFilter">' + '<option value="">Entf</option><option value="1">1</option>' + '<option selected ="true" value="0">0</option></select>';
+                $(location).append(dropdownHtml2);
+
+                $('#EntfallenFilter').change(function () {
+                    var filterValue = $(this).val();
+                    table.column(11).search(filterValue).draw();
+                });
+                table.column(11).search(0).draw();
+            }
+
 
             function getDate() {
                 let date = new Date($("#dateSelect").val() || Date.now());
@@ -250,11 +275,6 @@ init_page_serversides("", "x");
                     window.open(`/${link}.php?roomID=${roomIDs.join(',')}`);
                 }
             }
-
-//            function toggleOldReports() {
-//                $('#HeaderTabelleCard2').slideToggle();
-//                $('#HeaderTabelleCard3').slideToggle();
-//            }
 
         </script>
     </body>

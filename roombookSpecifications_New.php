@@ -43,7 +43,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 
         .fix_size_search{
             height: 30px;
-            width: 105px;
+            width: 150px;
         }
         .table>thead>tr>th {
             background-color: rgba(100, 140, 25, 0.1);
@@ -91,7 +91,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
             <div class='mt-4 mr-2 card flex-grow-1'>
                 <header class="card-header fix_size"><b>Bauangaben</b></header>
                 <div class="card-body" id="bauangaben"></div>
-            </div>
+            </div> 
             <div class="mt-4 card">
                 <div class="card">
                     <header class="card-header ">
@@ -559,14 +559,15 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 table.column('MT-relevant:name').search(filterValue).draw();
                             });
                         }
+                        
                         function add_entfallen_filter(location) {
                             var dropdownHtml2 = '<select class="fix_size" id="EntfallenFilter">' + '<option value="">Entf</option><option value="1">1</option>' + '<option selected ="true" value="0">0</option></select>';
                             $(location).append(dropdownHtml2);
                             $('#EntfallenFilter').change(function () {
-                                var filterValue = $(this).val();
-                                console.log(" ENTF FIlt");
+                                var filterValue = $(this).val(); 
                                 table.column('Entfallen:name').search(filterValue).draw();
                             });
+                               table.column('Entfallen:name').search(0).draw();
                         }
 
 //VISIBILITY 

@@ -9,12 +9,12 @@ $mysqli = utils_connect_sql();
 //                              WHERE tabelle_projekte_idTABELLE_Projekte = ? 
 //                              AND (Bauabschnitt LIKE '%Haus F%' OR Bauabschnitt IN ('O', 'M', 'N', 'W'))");
 
-$stmt = $mysqli->prepare("UPDATE tabelle_räume SET Geschoss = 'OG1' 
-                              WHERE tabelle_projekte_idTABELLE_Projekte = ? 
-                              AND `Raumbereich Nutzer` LIKE 'Chirurgische Tagesklinik'");
+$stmt = $mysqli->prepare("UPDATE tabelle_projekt_element_gewerk SET tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke = '35' 
+                              WHERE ((tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke = 1)
+                              AND (tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte= ?))");
 $BBE = 80; 
-$KHI = 75; 
-$stmt->bind_param('i', $KHI);
+//$KHI = 75; 
+$stmt->bind_param('i', $BBE); 
 $stmt->execute();
 
 if ($stmt->affected_rows > 0) {
@@ -128,5 +128,5 @@ $mysqli->close();
 */
 
 ?>
-
+ 
 

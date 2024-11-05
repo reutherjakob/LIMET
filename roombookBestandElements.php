@@ -74,13 +74,7 @@ init_page_serversides();
                                     <div class="card-header">Elemente im Bestand</div>
                                     <div class="card-body">
                                         <?php
-                                        $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-
-                                        /* change character set to utf8 */
-                                        if (!$mysqli->set_charset("utf8")) {
-                                            printf("Error loading character set utf8: %s\n", $mysqli->error);
-                                            exit();
-                                        }
+                                        $mysqli = utils_connect_sql();
 
                                         // Abfrage der Bestandselemente                                                      
                                         $sql = "SELECT tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_räume_has_tabelle_elemente.id, tabelle_räume_has_tabelle_elemente.Kurzbeschreibung, tabelle_bestandsdaten.Inventarnummer, tabelle_bestandsdaten.Seriennummer, tabelle_bestandsdaten.Anschaffungsjahr, tabelle_bestandsdaten.`Aktueller Ort`, tabelle_geraete.Typ, tabelle_hersteller.Hersteller, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung

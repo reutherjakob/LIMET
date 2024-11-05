@@ -70,23 +70,23 @@ if ($result && $result->num_rows > 0) {
         'Seriennummer',
         'Anschaffungsjahr',
         'Aktueller Ort'
-    ]);
+    ], ';');
 
     // Loop through the result set
     while ($row = $result->fetch_assoc()) {
         // Write the data to CSV
         fputcsv($output, [
-            $row['Raumbereich Nutzer']."; ",
-            $row['Raumnr']."; ",
-            $row['Raumbezeichnung']."; ",
-            $row['ElementID']."; ",
-            $row['Bezeichnung']."; ",
-            $row['Hersteller'] . ' - ' . $row['Typ']."; ",
-            $row['Inventarnummer']."; ",
-            $row['Seriennummer']."; ",
-            $row['Anschaffungsjahr']."; ",
-            $row['Aktueller Ort']."; "
-        ]);
+            $row['Raumbereich Nutzer'],
+            $row['Raumnr'],
+            $row['Raumbezeichnung'],
+            $row['ElementID'],
+            $row['Bezeichnung'],
+            $row['Hersteller'] . ' - ' . $row['Typ'],
+            $row['Inventarnummer'],
+            $row['Seriennummer'],
+            $row['Anschaffungsjahr'],
+            $row['Aktueller Ort']
+        ], ';');
     }
 
     // Flush output to ensure all data is sent
