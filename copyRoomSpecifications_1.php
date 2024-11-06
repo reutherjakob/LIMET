@@ -33,7 +33,7 @@ $excludeColumns = [// Define columns to exclude
 ];
 $excludedTitles = array_map(function ($column) use ($columnsDefinition) {
     foreach ($columnsDefinition as $colDef) {
-        if ($colDef['data'] === $column) {
+        if ($colDef['data'] === $column) { 
             return $colDef['title'];
         }
     }

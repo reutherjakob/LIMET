@@ -74,13 +74,7 @@ init_page_serversides();
                                     <div class="card-header">Elemente im Bestand</div>
                                     <div class="card-body">
                                         <?php
-                                        $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-
-                                        /* change character set to utf8 */
-                                        if (!$mysqli->set_charset("utf8")) {
-                                            printf("Error loading character set utf8: %s\n", $mysqli->error);
-                                            exit();
-                                        }
+                                        $mysqli = utils_connect_sql();
 
                                         // Abfrage der Bestandselemente                                                      
                                         $sql = "SELECT tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_räume_has_tabelle_elemente.id, tabelle_räume_has_tabelle_elemente.Kurzbeschreibung, tabelle_bestandsdaten.Inventarnummer, tabelle_bestandsdaten.Seriennummer, tabelle_bestandsdaten.Anschaffungsjahr, tabelle_bestandsdaten.`Aktueller Ort`, tabelle_geraete.Typ, tabelle_hersteller.Hersteller, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung
@@ -91,23 +85,24 @@ init_page_serversides();
 
                                         if ($result->num_rows > 0) {
                                             echo "<button type='button' class='ml-4 btn btn-outline-dark btn-xs' value='createBestandsPDF'><i class='far fa-file-pdf'></i> Bestands-PDF</button>";
+                                            echo "<button  class='ml-4 btn btn-outline-dark btn-xs' onclick=\"window.location.href='out_bestands_csv.php'\">Download CSV</button>";
                                         }
 
                                         echo "<table class='table table-striped table-bordered table-sm' id='tableBestandsElemente'  cellspacing='0' width='100%'>
-                        <thead><tr>
-                        <th>ID</th>
-                        <th>ElementID</th>
-                        <th>Element</th>
-                        <th>Inventarnr</th>
-                        <th>Seriennr</th>
-                        <th>Anschaffungsjahr</th>
-                        <th>Gerät</th>
-                        <th>Raumnr</th>
-                        <th>Raum</th>
-                        <th>Kommentar</th>
-                        <th>Standort aktuell</th>
-                        </tr></thead>
-                        <tbody>";
+                                                    <thead><tr>
+                                                    <th>ID</th>
+                                                    <th>ElementID</th>
+                                                    <th>Element</th>
+                                                    <th>Inventarnr</th>
+                                                    <th>Seriennr</th>
+                                                    <th>Anschaffungsjahr</th>
+                                                    <th>Gerät</th>
+                                                    <th>Raumnr</th>
+                                                    <th>Raum</th>
+                                                    <th>Kommentar</th>
+                                                    <th>Standort aktuell</th>
+                                                    </tr></thead>
+                                                    <tbody>";
 
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";

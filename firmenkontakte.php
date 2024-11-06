@@ -33,8 +33,6 @@ init_page_serversides("x");
 
                         </head>
                         <body style="height:100%">
-
-
                             <div class="container-fluid">
                                 <div id="limet-navbar">  </div> <!-- Container für Navbar -->
                                 <div class="mt-4 card">
@@ -105,21 +103,21 @@ init_page_serversides("x");
                                         <div class="mt-4 card">
                                             <div class="card-header">Lieferanten <label class="float-right"><button type='button' id='addLieferantButton' class='btn btn-outline-dark btn-sm' value='addLieferant' data-toggle='modal' data-target='#changeLieferantModal'>Lieferant hinzufügen <i class='far fa-plus-square'></i></button></label></div>
                                             <div class="card-body">
-<?php
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
+                                                <?php
+                                                $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
 
-/* change character set to utf8 */
-if (!$mysqli->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $mysqli->error);
-    exit();
-}
+                                                /* change character set to utf8 */
+                                                if (!$mysqli->set_charset("utf8")) {
+                                                    printf("Error loading character set utf8: %s\n", $mysqli->error);
+                                                    exit();
+                                                }
 
 // Abfrage der Lieferanten-                                   
-$sql = "SELECT tabelle_lieferant.idTABELLE_Lieferant, tabelle_lieferant.Lieferant, tabelle_lieferant.Tel, tabelle_lieferant.Anschrift, tabelle_lieferant.PLZ, tabelle_lieferant.Ort, tabelle_lieferant.Land
+                                                $sql = "SELECT tabelle_lieferant.idTABELLE_Lieferant, tabelle_lieferant.Lieferant, tabelle_lieferant.Tel, tabelle_lieferant.Anschrift, tabelle_lieferant.PLZ, tabelle_lieferant.Ort, tabelle_lieferant.Land
                                 FROM tabelle_lieferant;";
-$result = $mysqli->query($sql);
+                                                $result = $mysqli->query($sql);
 
-echo "<table class='table table-striped table-bordered nowrap table-sm' id='tableLieferantenUnternehmen'  cellspacing='0' width='100%'>
+                                                echo "<table class='table table-striped table-bordered nowrap table-sm' id='tableLieferantenUnternehmen'  cellspacing='0' width='100%'>
                         <thead><tr>
                         <th>ID</th>
                         <th></th>
@@ -131,20 +129,20 @@ echo "<table class='table table-striped table-bordered nowrap table-sm' id='tabl
                         <th>Land</th>                                   
                         </tr></thead><tbody>";
 
-while ($row = $result->fetch_assoc()) {
-    echo "<tr>";
-    echo "<td>" . $row["idTABELLE_Lieferant"] . "</td>";
-    echo "<td></td>";
-    echo "<td>" . $row["Lieferant"] . "</td>";
-    echo "<td>" . $row["Tel"] . "</td>";
-    echo "<td>" . $row["Anschrift"] . "</td>";
-    echo "<td>" . $row["PLZ"] . "</td>";
-    echo "<td>" . $row["Ort"] . "</td>";
-    echo "<td>" . $row["Land"] . "</td>";
-    echo "</tr>";
-}
-echo "</tbody></table>";
-?>	                                
+                                                while ($row = $result->fetch_assoc()) {
+                                                    echo "<tr>";
+                                                    echo "<td>" . $row["idTABELLE_Lieferant"] . "</td>";
+                                                    echo "<td></td>";
+                                                    echo "<td>" . $row["Lieferant"] . "</td>";
+                                                    echo "<td>" . $row["Tel"] . "</td>";
+                                                    echo "<td>" . $row["Anschrift"] . "</td>";
+                                                    echo "<td>" . $row["PLZ"] . "</td>";
+                                                    echo "<td>" . $row["Ort"] . "</td>";
+                                                    echo "<td>" . $row["Land"] . "</td>";
+                                                    echo "</tr>";
+                                                }
+                                                echo "</tbody></table>";
+                                                ?>	                                
                                             </div>
                                         </div>
                                     </div>
@@ -227,36 +225,36 @@ echo "</tbody></table>";
                                                                                                         <label class='control-label' for='lieferantenEmail'>Email</label>
                                                                                                         <input type='text' class='form-control form-control-sm' id='lieferantenEmail'></input>
                                                                                                     </div>
-<?php
-$sql = "SELECT `tabelle_lieferant`.`idTABELLE_Lieferant`,
+                                                                                                    <?php
+                                                                                                    $sql = "SELECT `tabelle_lieferant`.`idTABELLE_Lieferant`,
                                            `tabelle_lieferant`.`Lieferant`
                                        FROM `LIMET_RB`.`tabelle_lieferant` ORDER BY Lieferant;";
-$result = $mysqli->query($sql);
+                                                                                                    $result = $mysqli->query($sql);
 
-echo "<div class='form-group'>
+                                                                                                    echo "<div class='form-group'>
                                               <label class='control-label' for='lieferant'>Lieferant</label>
                                                       <select class='form-control form-control-sm' id='lieferant'>";
-while ($row = $result->fetch_assoc()) {
-    echo "<option value=" . $row["idTABELLE_Lieferant"] . ">" . $row["Lieferant"] . "</option>";
-}
-echo "</select>	
+                                                                                                    while ($row = $result->fetch_assoc()) {
+                                                                                                        echo "<option value=" . $row["idTABELLE_Lieferant"] . ">" . $row["Lieferant"] . "</option>";
+                                                                                                    }
+                                                                                                    echo "</select>	
                               </div>";
 
-$sql = "SELECT `tabelle_abteilung`.`idtabelle_abteilung`,
+                                                                                                    $sql = "SELECT `tabelle_abteilung`.`idtabelle_abteilung`,
                                        `tabelle_abteilung`.`Abteilung`
                                    FROM `LIMET_RB`.`tabelle_abteilung` ORDER BY Abteilung;";
-$result = $mysqli->query($sql);
+                                                                                                    $result = $mysqli->query($sql);
 
-echo "<div class='form-group'>
+                                                                                                    echo "<div class='form-group'>
                               <label class='control-label' for='abteilung'>Abteilung</label>
                                       <select class='form-control form-control-sm' id='abteilung'>";
-while ($row = $result->fetch_assoc()) {
-    echo "<option value=" . $row["idtabelle_abteilung"] . ">" . $row["Abteilung"] . "</option>";
-}
-echo "</select>
+                                                                                                    while ($row = $result->fetch_assoc()) {
+                                                                                                        echo "<option value=" . $row["idtabelle_abteilung"] . ">" . $row["Abteilung"] . "</option>";
+                                                                                                    }
+                                                                                                    echo "</select>
                                   </div>";
-$mysqli->close();
-?>
+                                                                                                    $mysqli->close();
+                                                                                                    ?>
                                                                                                     <div class='form-group'>
                                                                                                         <label class='control-label' for='lieferantenGebiet'>Gebiet</label>
                                                                                                         <input type='text' class='form-control form-control-sm' id='lieferantenGebiet'></input>

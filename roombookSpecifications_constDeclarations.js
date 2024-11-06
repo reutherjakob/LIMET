@@ -38,7 +38,7 @@ const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and
     {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'},
     {data: "Nummer", title: "DIN13080", visible: false, case: "none-edit"},
 
-    {data: "Entfallen", title: "Entfallen", visible: false, case: "bit", default: "0"},
+    {data: "Entfallen", title: "Entfallen", name: "Entfallen", visible: false, case: "bit"},
 
     {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer', visible: false},
     {data: 'Raumbereich Nutzer', title: 'Raumbereich', visible: false},
