@@ -975,7 +975,7 @@ session_start();
                 var raumTypBH = $("#raumTypBH").val();
                 var gereateAbluftHT = $("#gereateAbluftHT").val();
                 var kuehlwasserLeistungHT = $("#kuehlwasserLeistungHT").val();
-
+                console.log("getRSpec1: speichern ");
 
                 $.ajax({
                     url: "saveRoomSpecifications.php",
@@ -1002,14 +1002,6 @@ session_start();
                     }
                 });
             });
-
-
-
-
-
-
-
-
         </script> 
 
     </body>

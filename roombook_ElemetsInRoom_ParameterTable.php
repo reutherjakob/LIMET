@@ -105,11 +105,9 @@ init_page_serversides();
                             </div>
 
 
-                            <script src="roombookSpecifications_constDeclarations.js">
-
-                            </script> 
+                            <script src="roombookSpecifications_constDeclarations.js"></script>
                             <script>
-                                let columnsDefinitionShort = columnsDefinition.filter(column =>
+                                var columnsDefinitionShort  = columnsDefinition.filter(column =>
                                     ['tabelle_projekte_idTABELLE_Projekte', "idTABELLE_Räume", 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', 'MT-relevant', 'Raumbezeichnung', 'Raumnr', "Bezeichnung", 'Funktionelle Raum Nr', 'Nummer', 'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt'].includes(column.data)
                                 );
                                 var table;  //for roomas table // var table2; // for elements table  //in el table code defined

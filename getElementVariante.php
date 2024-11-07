@@ -257,10 +257,10 @@ check_login();
                 <!-- Modal content-->
                 <div class='modal-content'>
                     <div class='modal-header'>	          
-                        <h4 class='modal-title'>Elemtparameter übernehm</h4>
+                        <h4 class='modal-title'>Elemtparameter übernehmen</h4>
                         <button type='button' class='close' data-dismiss='modal'>&times;</button>
                     </div>
-                    <div class='modal-body' id='mbody'>Wollen Sie die zentralen Elementparameter überschreiben?</div>
+                    <div class='modal-body' id='mbody'>Wollen Sie die Elementparameter wirklich überschreiben?</div>
                     <div class='modal-footer'>
                         <input type='button' id='addVariantenParameterToElement' class='btn btn-success btn-sm' value='Ja' data-dismiss='modal'></input>
                         <button type='button' class='btn btn-danger btn-sm' data-dismiss='modal'>Nein</button>
@@ -380,7 +380,7 @@ check_login();
                         data: {"kosten": $('#kosten').val()},
                         type: "GET",
                         success: function (data) {
-                            alert(data);
+                            makeToaster(data.trim(), true);
                             $("#possibleVariantenParameter").show();
                             $("#variantenParameter").show();
                             var variantenID = $("#variante").val();

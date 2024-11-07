@@ -71,18 +71,14 @@ class MYPDF extends TCPDF {
             $this->Cell(0, 0, 'Funktionsstellen: ', 0, false, 'L', 0, '', 0, false, 'B', 'B');
             $this->Ln();
             $raumInfosCounter = 0;
-            $funktionsStellen = "";
-            foreach ($raumInfos as $valueOfRaumInfos) {
-                if ($raumInfosCounter > 0) {
-                    $funktionsStellen = $funktionsStellen . ', ';
-                }
-                $funktionsStellen = $funktionsStellen . $raumInfos[$raumInfosCounter]['Raumbereich'];
 
-                $raumInfosCounter = $raumInfosCounter + 1;
+                        $this->SetFont('helvetica', 'B', 12);
+
+            foreach ($raumInfos as $valueOfRaumInfos) {
+                $this->Cell(0, 0, $raumInfos[$raumInfosCounter]['Raumbereich'], 0, false, 'L', 0, '', 0, false, 'B', 'B');
+                $this->Ln();$raumInfosCounter++; 
             }
-            $this->Cell(0, 0, $funktionsStellen, 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            $this->Ln();
-            $this->SetFont('helvetica', '', 12);
+
             $this->Cell(0, 0, "Stand: " . date('Y-m-d'), 0, false, 'L', 0, '', 0, false, 'T', 'M');
             $this->SetFont('helvetica', '', 6);
             if ($_SESSION["projectAusfuehrung"] === "MADER") {
@@ -213,17 +209,16 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetFont('helvetica', 'B', 10);
         $pdf->MultiCell(100, 6, "Raum: " . $row['Raumbezeichnung'], 0, 'L', 0, 0);
         $pdf->MultiCell(80, 6, "Nummer: " . $row['Raumnr'], 0, 'L', 0, 0);
-        $pdf->Ln( $LN);
+        $pdf->Ln($LN);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(100, 6, "Bereich: " . $row['Raumbereich Nutzer'], 0, 'L', 0, 0);
         $pdf->MultiCell(80, 6, "Geschoss: " . $row['Geschoss'], 0, 'L', 0, 0);
-        $pdf->Ln( $LN);
+        $pdf->Ln($LN);
         $pdf->MultiCell(100, 6, "Raumfläche: " . $row['Nutzfläche'] . " m2", 0, 'L', 0, 0);
         $pdf->MultiCell(100, 6, "Projektstatus: " . $row['Bezeichnung'], '', 'L', 0, 0);
-        $pdf->Ln( $LN);
+        $pdf->Ln($LN);
         $pdf->MultiCell(100, 6, "Projekt: " . $row['Projektname'], "B", 'L', 0, 0);
         $pdf->MultiCell(80, 6, "Bauteil: " . $row['Bauabschnitt'], "B", 'L', 0, 0);
-  
 
         $pdf->SetFont('helvetica', '', 8);
         if (strlen($row['Anmerkung FunktionBO']) > 0) {
@@ -240,9 +235,10 @@ foreach ($teile as $valueOfRoomID) {
     $pdf->MultiCell($widths[0], $rowHeightFirstLine, "Gewerk", 'B', 'C', 0, 0);
     $pdf->MultiCell($widths[1], $rowHeightFirstLine, "GHG", 'B', 'C', 0, 0);
     $pdf->MultiCell($widths[2], $rowHeightFirstLine, "ElementID", 'B', 'C', 0, 0);
-    $pdf->MultiCell($widths[3], $rowHeightFirstLine, "Var", 'B', 'C', 0, 0); $pdf->MultiCell($widths[5], $rowHeightFirstLine, "Stk", 'B', 'C', 0, 0);
+    $pdf->MultiCell($widths[3], $rowHeightFirstLine, "Var", 'B', 'C', 0, 0);
+    $pdf->MultiCell($widths[5], $rowHeightFirstLine, "Stk", 'B', 'C', 0, 0);
     $pdf->MultiCell($widths[4], $rowHeightFirstLine, "Element", 'B', 'L', 0, 0);
-   
+
     $pdf->MultiCell($widths[6], $rowHeightFirstLine, "", 'B', 'C', 0, 1);
     $result = $mysqli->query($sql3);
     $fill = 0;
@@ -259,7 +255,8 @@ foreach ($teile as $valueOfRoomID) {
             $pdf->MultiCell($widths[0], $rowHeightMainLine, $row['Gewerke_Nr'], 0, 'C', $fill, 0);
             $pdf->MultiCell($widths[1], $rowHeightMainLine, $row['GHG'], 0, 'C', $fill, 0);
             $pdf->MultiCell($widths[2], $rowHeightMainLine, $row['ElementID'], 0, 'C', $fill, 0);
-            $pdf->MultiCell($widths[3], $rowHeightMainLine, $row['Variante'], 0, 'C', $fill, 0);            $pdf->MultiCell($widths[5], $rowHeightMainLine, $row['Anzahl'], 0, 'C', $fill, 0);
+            $pdf->MultiCell($widths[3], $rowHeightMainLine, $row['Variante'], 0, 'C', $fill, 0);
+            $pdf->MultiCell($widths[5], $rowHeightMainLine, $row['Anzahl'], 0, 'C', $fill, 0);
             $pdf->MultiCell($widths[4], $rowHeightMainLine, $row['Bezeichnung'], 0, 'L', $fill, 0);
 
             if ($row['Neu/Bestand'] == 1) {
@@ -277,9 +274,10 @@ foreach ($teile as $valueOfRoomID) {
             $pdf->MultiCell($widths[0], $rowHeight, "", 0, 'C', $fill, 0);
             $pdf->MultiCell($widths[1], $rowHeight, "", 0, 'C', $fill, 0);
             $pdf->MultiCell($widths[2], $rowHeight, "", 0, 'C', $fill, 0);
-            $pdf->MultiCell($widths[3], $rowHeight, "", 0, 'C', $fill, 0);      $pdf->MultiCell($widths[5], $rowHeight, "", 0, 'C', $fill, 0);
+            $pdf->MultiCell($widths[3], $rowHeight, "", 0, 'C', $fill, 0);
+            $pdf->MultiCell($widths[5], $rowHeight, "", 0, 'C', $fill, 0);
             $pdf->MultiCell($widths[4], $rowHeight, $additionalRoombookExtraData, 0, 'L', $fill, 0);
-      
+
             $pdf->MultiCell($widths[6], $rowHeight, "", 0, 'C', $fill, 0);
             $bestandsCounter++;
         }

@@ -66,6 +66,14 @@ include '_utils.php';
             var roomIDs = [];
             $(document).ready(function () {
                 console.log("getRooms2Copy.php Document Ready function");
+
+                if (typeof columnsDefinition === 'undefined') { // TO GUArantee function of old Bauanagaben page
+                    const script = document.createElement('script');
+                    script.src = 'roombookSpecifications_constDeclarations.js';
+                    script.onload = () => console.log('columnsDefinition loaded');
+                    document.head.appendChild(script);
+                }  
+
                 var table2 = $("#tableRoomsToCopy").DataTable({
                     "select": {
                         "style": "multi"

@@ -15,7 +15,7 @@ check_login();
 
 $roomIDs = filter_input(INPUT_GET, 'roomID');
 $roomIDsArray = explode(",", $roomIDs);
-
+//echorow($roomIDsArray);
 $Änderungsdatum = getValidatedDateFromURL();
 
 $mapping = array("raum_nr_alt" => "raum_nr_neu",
