@@ -1,28 +1,15 @@
 <?php
 session_start();
+include '_utils.php';
+check_login();
 ?>
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-
     <head>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type" /></head>
     <body>
         <?php
-        if (!isset($_SESSION["username"])) {
-            echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-            exit;
-        }
-        ?>
-
-        <?php
-        $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-
-        /* change character set to utf8 */
-        if (!$mysqli->set_charset("utf8")) {
-            printf("Error loading character set utf8: %s\n", $mysqli->error);
-            exit();
-        }
+        $mysqli = utils_connect_sql();
 
         $sql = "SELECT tabelle_elemente.idTABELLE_Elemente, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_elemente.Kurzbeschreibung
 											FROM tabelle_elemente
@@ -44,7 +31,7 @@ session_start();
         while ($row = $result->fetch_assoc()) {
             echo "<tr>";
             echo "<td>" . $row["idTABELLE_Elemente"] . "</td>";
-            echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-success btn-xs' value='addElement' data-toggle='modal' data-target='#addRoomElementModal'><i class='fas fa-plus'></i></button></td>";
+            echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-success btn-xs' value='addElement' data-toggle='modal' data-target='#addRoomElementModal'><i class='fa fa-plus'></i></button></td>";
             echo "<td>" . $row["ElementID"] . "</td>";
             echo "<td>" . $row["Bezeichnung"] . "</td>";
             echo "<td>" . $row["Kurzbeschreibung"] . "</td>";
@@ -124,106 +111,42 @@ session_start();
                         <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>OK</button>
                     </div>
                 </div>
-
             </div>
         </div>
 
         <script>
-
-            var dbAdmin = <?php echo $_SESSION["dbAdmin"] ?>
-
-
-            // Tabellen formatieren
             $(document).ready(function () {
-                if (dbAdmin === 1) {
-                    $('#tableElementsInDB').DataTable({
-                        "paging": true,
-                        "select": true,
-                        "columnDefs": [
-                            {
-                                "targets": [0, 1],
-                                "visible": false,
-                                "searchable": false,
-                                "sortable": false
-                            },
-                            {
-                                "targets": [5],
-                                "searchable": false,
-                                "sortable": false
-                            }
-                        ],
-                        "info": false,
-                        "pagingType": "simple",
-                        "lengthChange": false,
-                        "pageLength": 10,
-                        "order": [[2, "asc"]],
-                        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
-                    });
-                } else {
-                    if (dbAdmin === 0) {
-                        $('#tableElementsInDB').DataTable({
-                            "paging": false,
-                            "columnDefs": [
-                                {
-                                    "targets": [0],
-                                    "visible": false,
-                                    "searchable": false,
-                                    "sortable": false
-                                },
-                                {
-                                    "targets": [1, 5],
-                                    "searchable": false,
-                                    "sortable": false
-                                }
-                            ],
-                            "info": false,
-                            "order": [[2, "asc"]],
-                            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
-                            "scrollY": '20vh',
-                            "scrollCollapse": true
-                        });
-                    } else {
-                        $('#tableElementsInDB').DataTable({
-                            "paging": false,
-                            "columnDefs": [
-                                {
-                                    "targets": [0],
-                                    "visible": false,
-                                    "searchable": false,
-                                    "sortable": false
-                                },
-                                {
-                                    "targets": [1, 5],
-                                    "visible": false,
-                                    "searchable": false,
-                                    "sortable": false
-                                }
-                            ],
-                            "info": false,
-                            "order": [[2, "asc"]],
-                            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
-                            "scrollY": '20vh',
-                            "scrollCollapse": true
-                        });
-                    }
-                }
+                $('#tableElementsInDB').DataTable({
+                    "paging": true,
+                    "select": true,
+                    "columnDefs": [
+                        {
+                            "targets": [0, 5],
+                            "visible": false,
+                            "searchable": false,
+                            "sortable": false
+                        }
+                    ],
+                    "info": false,
+                    "pagingType": "simple",
+                    "lengthChange": false,
+                    "pageLength": 10,
+                    "order": [[2, "asc"]],
+                    "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+                });
 
+                
 
-
-                // CLICK TABELLE ELEMENTE IN DB
                 var table1 = $('#tableElementsInDB').DataTable();
-
+                
                 $('#tableElementsInDB tbody').on('click', 'tr', function () {
-
                     if ($(this).hasClass('info')) {
-                        //$(this).removeClass('info');
                     } else {
                         $("#deviceParametersInDB").hide();
                         $("#devicePrices").hide();
                         $("#deviceLieferanten").hide();
                         document.getElementById("bezeichnung").value = table1.row($(this)).data()[3];
                         document.getElementById("kurzbeschreibungModal").value = table1.row($(this)).data()[4];
-
                         table1.$('tr.info').removeClass('info');
                         $(this).addClass('info');
                         var elementID = table1.row($(this)).data()[0];
@@ -259,24 +182,23 @@ session_start();
                                 });
                             }
                         });
-                        if (dbAdmin === 2) { //wenn Aufruf mit dbAdmin ===2 -> nachschlagen der Elemente mit und ohne Raum
-                            $.ajax({
-                                url: "getRoomsWithElement.php",
-                                data: {"elementID": elementID},
-                                type: "GET",
-                                success: function (data) {
-                                    $("#roomsWithElement").html(data);
-                                    $.ajax({
-                                        url: "getRoomsWithoutElement.php",
-                                        data: {"elementID": elementID},
-                                        type: "GET",
-                                        success: function (data) {
-                                            $("#roomsWithoutElement").html(data);
-                                        }
-                                    });
-                                }
-                            });
-                        }
+
+                        $.ajax({
+                            url: "getRoomsWithElement.php",
+                            data: {"elementID": elementID},
+                            type: "GET",
+                            success: function (data) {
+                                $("#roomsWithElement").html(data);
+                                $.ajax({
+                                    url: "getRoomsWithoutElement.php",
+                                    data: {"elementID": elementID},
+                                    type: "GET",
+                                    success: function (data) {
+                                        $("#roomsWithoutElement").html(data);
+                                    }
+                                });
+                            }
+                        });
                     }
                 });
             });
@@ -284,7 +206,6 @@ session_start();
             //Element in Raum stellen= Dialog
             $("button[value='addElement']").click(function () {
                 var elementID = this.id;
-
                 if (elementID !== "") {
                     $.ajax({
                         url: "getElementToElementID.php",
@@ -313,7 +234,6 @@ session_start();
                                 $("#roomElements").html(data);
                             }
                         });
-
                     }
                 });
             });
@@ -323,9 +243,7 @@ session_start();
                 var bezeichnung = $("#bezeichnung").val();
                 var kurzbeschreibung = $("#kurzbeschreibungModal").val();
 
-
                 if (bezeichnung !== "" && kurzbeschreibung !== "") {
-
                     $.ajax({
                         url: "saveElement.php",
                         data: {"bezeichnung": bezeichnung, "kurzbeschreibung": kurzbeschreibung},
@@ -346,9 +264,6 @@ session_start();
                     alert("Bitte alle Felder ausfüllen!");
                 }
             });
-
-
         </script>
-
     </body>
 </html>

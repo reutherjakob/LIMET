@@ -419,7 +419,7 @@ check_login();
                         data: {"parameterID": id, "variantenID": variantenID},
                         type: "GET",
                         success: function (data) {
-                            makeToaster(data.trim()), true);
+                            makeToaster(data.trim(), true);
                             $.ajax({
                                 url: "getVarianteParameters.php",
                                 data: {"variantenID": variantenID},
