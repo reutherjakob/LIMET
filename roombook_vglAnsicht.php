@@ -325,70 +325,91 @@ init_page_serversides();
 
     }
 
-    function init_vgl_rooms_table(value) {
-        if (t_rooms_vgl) {
-            t_rooms_vgl.destroy();
-            t_rooms_vgl.buttons('.buttons-colvis').remove();
-            $('#dt-search-' + (filter_init_counter - 1).toString()).remove(); // Remove the old search element
-        }
-        console.log("CBX1: " + $("#checkbox1").prop('checked'));
-        let cbxState =  $('#checkbox1').prop('checked');
-        t_rooms_vgl = new DataTable('#t_rooms_vgl', {
-            ajax: {
-                url: 'get_rooms_with_funktionsteilstelle.php',
-                data: {"value": value, "RaumID": RID1, "Unique":cbxState},
-                dataSrc: ''
-            },
-            columns: cDef,
-            layout: {
-                topStart: null,
-                topEnd: null,
-                bottomStart: ["info", "pageLength", 'search'],
-                bottomEnd: {
-                    paging: {
-                        buttons: 3
-                    }
-                }
-            },
-            language: {
-                "search": "",
-                "info": "_TOTAL_ Zeilen",
-
-            },
-            pageLength: 10,
-            lengthMenu: [
-                [5, 10, 50],
-                ['5 rows', '10 rows', '50 rows']
-            ],
-            select: {
-                style: "single",
-                info: false
-            },
-            responsive: true,
-            scrollCollapse: true,
-            compact: true,
-
-            initComplete: function () {
-                const searchbuilder = [
-                    {
-                        extend: 'searchBuilder',
-                        text: null,
-                        className: "btn fas fa-search",
-                        titleAttr: "Suche konfigurieren",
-                    }
-                ];
-                new $.fn.dataTable.Buttons(t_rooms_vgl, {buttons: searchbuilder}).container().appendTo($('#CardHeaderVglRooms'));
-
-                const buttonColumnVisbilities = [
-                    {extend: 'colvis', text: 'Vis', columns: ':gt(5)', collectionLayout: 'fixed columns', className: 'btn'}];
-                new $.fn.dataTable.Buttons(t_rooms_vgl, {buttons: buttonColumnVisbilities}).container().appendTo($('#CardHeaderVglRooms'));
-
-                move_item("dt-search-" + filter_init_counter.toString(), "CardHeaderVglRooms");
-                //console.log("dt-search-" + filter_init_counter.toString() + " moved");
-                filter_init_counter++;
-                table_click("t_rooms_vgl", "CB4");
+    function getVisibleColumns() {
+        var visibleColumns = [];
+        t_rooms_vgl.columns().every(function () {
+            if (this.visible()) {
+                visibleColumns.push(this.index());
             }
         });
+        return visibleColumns;
+    }
+
+    function init_vgl_rooms_table(value) {
+        if (t_rooms_vgl) {
+            let visibleColumns = getVisibleColumns();
+            cDef.forEach(function (columnDef, index) {
+                columnDef.visible = !!visibleColumns.includes(index);
+            });
+            console.log(cDef);
+            t_rooms_vgl.buttons('.buttons-colvis').remove();
+            $('.dt-buttons').remove();
+            $('#dt-search-' + (filter_init_counter - 1).toString()).remove(); // Remove the old search element
+            t_rooms_vgl.destroy();
+        }
+        setTimeout(function () {
+
+            t_rooms_vgl = new DataTable('#t_rooms_vgl', {
+                ajax: {
+                    url: 'get_rooms_with_funktionsteilstelle.php',
+                    data: {"value": value, "RaumID": RID1, "Unique": $('#checkbox1').prop('checked')},
+                    dataSrc: ''
+                },
+                columns: cDef,
+                layout: {
+                    topStart: null,
+                    topEnd: null,
+                    bottomStart: ["info", "pageLength", 'search'],
+                    bottomEnd: {
+                        paging: {
+                            buttons: 3
+                        }
+                    }
+                },
+                language: {
+                    "search": "",
+                    "info": "_TOTAL_ Zeilen",
+
+                },
+                pageLength: 10,
+                lengthMenu: [
+                    [5, 10, 50],
+                    ['5 rows', '10 rows', '50 rows']
+                ],
+                select: {
+                    style: "single",
+                    info: false
+                },
+                responsive: true,
+                scrollCollapse: true,
+                compact: true,
+
+                initComplete: function () {
+                    const searchbuilder = [
+                        {
+                            extend: 'searchBuilder',
+                            text: null,
+                            className: "btn fas fa-search",
+                            titleAttr: "Suche konfigurieren",
+                        }
+                    ];
+                    new $.fn.dataTable.Buttons(t_rooms_vgl, {buttons: searchbuilder}).container().appendTo($('#CardHeaderVglRooms'));
+
+                    const buttonColumnVisbilities = [
+                        {
+                            extend: 'colvis',
+                            text: 'Vis',
+                            columns: ':gt(5)',
+                            collectionLayout: 'fixed columns',
+                            className: 'btn'
+                        }];
+                    new $.fn.dataTable.Buttons(t_rooms_vgl, {buttons: buttonColumnVisbilities}).container().appendTo($('#CardHeaderVglRooms'));
+                    move_item("dt-search-" + filter_init_counter.toString(), "CardHeaderVglRooms");
+                    filter_init_counter++;
+                    table_click("t_rooms_vgl", "CB4");
+                }
+            });
+        }, 20);
     }
 
 
@@ -396,10 +417,17 @@ init_page_serversides();
         const columnsDefinitionShort = [// NEW FIELD? - ADD Here, In get_rb_specs_data.php and the CPY/save methods
             {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projek ID', visible: false, searchable: false},
             {data: 'idTABELLE_Räume', title: 'Raum ID', visible: false, searchable: false},
-            {data: 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', title: 'Funktionsstellen ID', visible: false, searchable: false},
-            {data: 'MT-relevant', title: 'MT-rel.', name: 'MT-relevant', case: "bit", render: function (data) {
+            {
+                data: 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen',
+                title: 'Funktionsstellen ID',
+                visible: false,
+                searchable: false
+            },
+            {
+                data: 'MT-relevant', title: 'MT-rel.', name: 'MT-relevant', case: "bit", render: function (data) {
                     return data === '1' ? 'Ja' : 'Nein';
-                }},
+                }
+            },
             {data: 'Raumbezeichnung', title: 'Raumbez.'},
             {data: 'Raumnr', title: 'Raumnr'},
 
@@ -410,7 +438,7 @@ init_page_serversides();
             {data: "Entfallen", title: "Entfallen", name: "Entfallen", visible: false, case: "bit"},
 
             {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer', visible: false},
-            {data: 'Raumbereich Nutzer', title: 'Raumbereich', visible: false}] ;
+            {data: 'Raumbereich Nutzer', title: 'Raumbereich', visible: false}];
 
         t_rooms = new DataTable('#t_rooms', {
             ajax: {
@@ -510,8 +538,10 @@ init_page_serversides();
 
     function move_item(item2move_id, where2move_id) {
         let item = document.getElementById(item2move_id);
-        item.parentNode.removeChild(item);
-        document.getElementById(where2move_id).appendChild(item);
+        if (item) {
+            item.parentNode.removeChild(item);
+            document.getElementById(where2move_id).appendChild(item);
+        }
     }
 
     //    function addToggleButton(cardId) {

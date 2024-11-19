@@ -25,8 +25,17 @@
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 </head>
 <style>
-    .card-body{
+    .card-body {
         overflow: scroll;
+    }
+ 
+    .btn-xs {
+        width: 90%;
+        height: 10px;
+        vertical-align: middle;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
 </style>
@@ -140,7 +149,7 @@ init_page_serversides("");
                                     echo "<td>" . $row["LosNr_Extern"] . "</td>";
                                     echo "<td>" . $row["LosBezeichnung_Extern"] . "</td>";
                                     echo "<td>" . $row["Verfahren"] . "</td>";
-                                    echo "<td align='center'>";
+                                    echo "<td>";
                                     switch ($row["Vergabe_abgeschlossen"]) {
                                         case 0:
                                             //echo "<b><font color='red'>&#10007;</font></b>";
@@ -156,7 +165,7 @@ init_page_serversides("");
                                             break;
                                     }
                                     echo "</td>";
-                                    echo "<td><button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn btn-outline-dark btn-xs float-right' value='calculateDates' data-toggle='modal' data-target='#claculateDatesModal'>Berechnen <i class='far fa-calendar-check'></i></button>"
+                                    echo "<td><button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn btn-outline-dark btn-s float-right' value='calculateDates' data-toggle='modal' data-target='#claculateDatesModal'>Berechnen <i class='far fa-calendar-check'></i></button>"
                                         . "</td>";
                                     if ($row["SOLLDATE"] == "0000-00-00") {
                                         echo "<td><form class='form-inline'>"
@@ -165,7 +174,7 @@ init_page_serversides("");
                                             . "</form>"
                                             . "</td>";
                                     } else {
-                                        echo "<td><form class='form-inline'>"
+                                        echo "<td><form class='form-inline form-check-inline'>"
                                             . "<input type='text' name='input_solldate' class='form-control form-control-sm' size='10' id='SOLLDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "' value='" . $row["SOLLDATE"] . "'/>"
                                             . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
                                             . "</form>"
@@ -231,8 +240,6 @@ init_page_serversides("");
             </div>
         </div>
     </div>
-
-
 
 
     <div class='row'>
