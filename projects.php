@@ -1,11 +1,10 @@
 <?php
-session_start();
 include '_utils.php';
 init_page_serversides("No Redirect");
-?> 
+?>
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"> 
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
     <head>
         <title>RB-Projekte</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
@@ -18,17 +17,8 @@ init_page_serversides("No Redirect");
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-        <!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
-         <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.js"></script>-->
         <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.css" rel="stylesheet"/>
         <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
-        <!--  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/datatables.mark.js/2.0.0/datatables.mark.min.css"/>
-        <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script>
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4-4.0.0/jq-3.2.1/dt-1.10.16/datatables.min.css"/>
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
-        <script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.0.0/jq-3.2.1/dt-1.10.16/datatables.min.js"></script>
-        -->
 
         <style>
             .dt-input{
@@ -36,18 +26,16 @@ init_page_serversides("No Redirect");
             }
         </style>
     </head>
-
-    <body>    
+    <body>
         <div class="container-fluid">
             <div id="limet-navbar"></div>
- 
-            <div class='mt-1 row'>  
+            <div class='mt-1 row'>
                 <div class='col-md-10'>
                     <div class="mt-1 card">
                         <div class="card-header  d-inline-flex" id="PRCardHeader" > <b>Projekte </b>
                             <div class="col " id ="STH"> </div>
                             <label class="float-right">
-                                Nur aktive Projekte: <input type="checkbox" id="filter_ActiveProjects" ></input>
+                                Nur aktive Projekte: <input type="checkbox" id="filter_ActiveProjects">
                             </label>
                         </div>
                         <div class="card-body">
@@ -63,7 +51,7 @@ init_page_serversides("No Redirect");
                                         . " FROM tabelle_projekte INNER JOIN tabelle_planungsphasen ON tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen = tabelle_planungsphasen.idTABELLE_Planungsphasen INNER JOIN tabelle_users_have_projects ON tabelle_projekte.idTABELLE_Projekte = tabelle_users_have_projects.tabelle_projekte_idTABELLE_Projekte WHERE tabelle_users_have_projects.User = '" . $_SESSION['username'] . "' ORDER BY tabelle_projekte.Interne_Nr;";
                                 $result = $mysqli->query($sql);
 
-                                echo "<table id='tableProjects' class='table display compact table-striped table-bordered table-sm' cellspacing='0' width='100%'>
+                                echo "<table id='tableProjects' class='table display compact table-striped table-bordered table-sm'>
                                                     <thead><tr>
                                                         <th>ID</th>
                                                         <th></th>
@@ -252,7 +240,7 @@ init_page_serversides("No Redirect");
                                 </form>
                             </div>
                             <div class='modal-footer'>
-                                <input type='button' id='saveProject' class='btn btn-warning btn-sm' value='Speichern'></input>
+                                <input type='button' id='saveProject' class='btn btn-warning btn-sm' value='Speichern'>
                                 <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Abbrechen</button>
                             </div>
                         </div>
@@ -263,11 +251,11 @@ init_page_serversides("No Redirect");
             </div>
     </body>
     <script>
-        var ext = "<?php echo $_SESSION["ext"] ?>";
+        const ext = "<?php echo $_SESSION["ext"] ?>";
         //var table;
 
         $.fn.dataTable.ext.search.push(
-                function (settings, data, dataIndex) {
+                function (settings, data) {
                     /*var min = parseInt( $('#min').val(), 10 );
                      var max = parseInt( $('#max').val(), 10 );
                      var age = parseFloat( data[6] ) || 0; // use data for the age column
@@ -282,12 +270,7 @@ init_page_serversides("No Redirect");
                     }
 
                     if ($("#filter_ActiveProjects").is(':checked')) {
-                        if (data [4] === "Ja")
-                        {
-                            return true;
-                        } else {
-                            return false;
-                        }
+                        return data [4] === "Ja";
                     } else {
                         return true;
                     }
@@ -295,7 +278,7 @@ init_page_serversides("No Redirect");
         );
 
         function move_dt_search(inp, location) {
-            var move = $(inp);
+            const move = $(inp);
             $(location).prepend(move);
         }
 
@@ -304,7 +287,7 @@ init_page_serversides("No Redirect");
             let oldSearch = `#dt-search-${searchCounter}`;
             let newSearch = `#dt-search-${searchCounter + 1}`; 
             $(oldSearch).remove();
-            var move = $(newSearch);
+            const move = $(newSearch);
             $(location).prepend(move);
             searchCounter++;
         }
@@ -360,7 +343,7 @@ init_page_serversides("No Redirect");
                 });
             }
 
-            var table = $('#tableProjects').DataTable();
+            var table = $("#tableProjects").DataTable();
             $('#tableProjects tbody').on('click', 'tr', function () {
                 if ($(this).hasClass('info')) {
 
@@ -398,7 +381,7 @@ init_page_serversides("No Redirect");
                         url: "setSessionVariables.php",
                         data: {"projectID": id, "projectName": projectName, "projectAusfuehrung": projectAusfuehrung, "projectPlanungsphase": projectPlanungsphase},
                         type: "GET",
-                        success: function (data) {
+                        success: function () {
                             $("#projectSelected").text("Aktuelles Projekt: " + projectName);
                             $.ajax({
                                 url: "getPersonsOfProject.php",
@@ -421,7 +404,7 @@ init_page_serversides("No Redirect");
                                                         success: function (data) {
                                                             $("#projectVermerke").html(data);
                                                             setTimeout(function () {
-                                                                ;
+
                                                                 replace_dt_searcher('#newSearchLocation');
                                                             }, 200); //#newSearchLocation
                                                             $("#vermerkeFilter").show();
@@ -430,118 +413,7 @@ init_page_serversides("No Redirect");
                                                                 type: "GET",
                                                                 success: function (data) {
                                                                     $("#quickCheckDashboard").html(data);
-                                                                    /*
-                                                                     //------------------CHART BEFÜLLEN--------------------------------
-                                                                     $.ajax({
-                                                                     url: "getChartPrognoseSum.php",
-                                                                     method: "GET",
-                                                                     success: function(data) {
-                                                                     console.log(data);
-                                                                     
-                                                                     var deltaAbgeschlossen = 0;
-                                                                     var budgetOffen = 0;
-                                                                     var budgetAbgeschlossen = 0;
-                                                                     
-                                                                     for(var i in data) {
-                                                                     if(data[i].Vergabe_abgeschlossen === '1'){
-                                                                     deltaAbgeschlossen = deltaAbgeschlossen + data[i].Delta;
-                                                                     budgetAbgeschlossen = budgetAbgeschlossen + data[i].SummevonBudget;
-                                                                     }
-                                                                     else{                                
-                                                                     budgetOffen = budgetOffen + parseFloat(data[i].SummevonBudget);
-                                                                     }
-                                                                     }
-                                                                     
-                                                                     // Relativwert von deltaAbgeschlossen berechnen
-                                                                     var deltaAbgeschlossenRelativ = parseFloat(deltaAbgeschlossen/budgetAbgeschlossen) * 100;
-                                                                     
-                                                                     //Prognose Absolut berechnen
-                                                                     var deltaPrognoseAbsolut = parseFloat(budgetOffen * deltaAbgeschlossenRelativ) + parseFloat(deltaAbgeschlossen);
-                                                                     
-                                                                     var chartdata = {
-                                                                     labels: ['Aktuell', 'Prognose'],
-                                                                     datasets : [
-                                                                     {
-                                                                     label: "Absolut Abweichung",
-                                                                     backgroundColor: [
-                                                                     'rgba(71, 202, 255, 1)',
-                                                                     'rgba(71, 202, 255, 1)'
-                                                                     ],
-                                                                     borderColor: 'rgba(75, 192, 192, 1)',
-                                                                     hoverBackgroundColor: 'rgba(200, 200, 200, 1)',
-                                                                     hoverBorderColor: 'rgba(200, 200, 200, 1)',
-                                                                     data: [
-                                                                     deltaAbgeschlossen,
-                                                                     deltaPrognoseAbsolut                                                
-                                                                     ],
-                                                                     yAxisID: 'y-axis-1',
-                                                                     borderWidth: 2                                                
-                                                                     },
-                                                                     {
-                                                                     label: "Relativ / %",
-                                                                     backgroundColor: [
-                                                                     'rgba(251, 255, 30, 1)',
-                                                                     'rgba(251, 255, 30, 1)'
-                                                                     ],
-                                                                     borderColor: 'rgba(75, 192, 192, 1)',
-                                                                     hoverBackgroundColor: 'rgba(200, 200, 200, 1)',
-                                                                     hoverBorderColor: 'rgba(200, 200, 200, 1)',
-                                                                     data: [
-                                                                     deltaAbgeschlossenRelativ,
-                                                                     deltaAbgeschlossenRelativ
-                                                                     ],
-                                                                     yAxisID: 'y-axis-2',
-                                                                     borderWidth: 2                                                
-                                                                     }
-                                                                     ]
-                                                                     };
-                                                                     
-                                                                     var ctx = document.getElementById("chartCanvas").getContext('2d');
-                                                                     var myChart = new Chart(ctx, {
-                                                                     type: 'bar',
-                                                                     data: chartdata,                                
-                                                                     options: {
-                                                                     responsive: true,                                
-                                                                     scales: {
-                                                                     yAxes: [
-                                                                     {
-                                                                     type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-                                                                     display: true,
-                                                                     position: 'left',
-                                                                     id: 'y-axis-1',
-                                                                     labelString: 'Absolut',
-                                                                     ticks: {
-                                                                     beginAtZero: true,
-                                                                     suggestedMin: 50,
-                                                                     suggestedMax: 100
-                                                                     }
-                                                                     }, 
-                                                                     {
-                                                                     type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-                                                                     display: true,
-                                                                     position: 'right',
-                                                                     id: 'y-axis-2',                                            
-                                                                     labelString: 'Relativ',
-                                                                     gridLines: {
-                                                                     drawOnChartArea: false
-                                                                     },                                           
-                                                                     ticks: {
-                                                                     beginAtZero: true,
-                                                                     suggestedMin: 0,
-                                                                     suggestedMax: 100
-                                                                     }
-                                                                     }
-                                                                     ]
-                                                                     }
-                                                                     }
-                                                                     });
-                                                                     
-                                                                     },
-                                                                     error: function(data) {
-                                                                     console.log(data);
-                                                                     }
-                                                                     });
-                                                                     */
+
                                                                 }
                                                             });
                                                         }
@@ -588,134 +460,14 @@ init_page_serversides("No Redirect");
                 move_dt_search('#dt-search-1', '#newSearchLocation');
 
             }, 200);
-
-            /*
-             //------------------CHART BEFÜLLEN--------------------------------
-             $.ajax({
-             url: "getChartPrognoseSum.php",
-             method: "GET",
-             success: function(data) {
-             console.log(data);
-             
-             var deltaAbgeschlossen = 0;
-             var budgetOffen = 0;
-             var budgetAbgeschlossen = 0;
-             
-             for(var i in data) {
-             if(data[i].Vergabe_abgeschlossen === '1'){
-             deltaAbgeschlossen = deltaAbgeschlossen + data[i].Delta;
-             budgetAbgeschlossen = budgetAbgeschlossen + data[i].SummevonBudget;
-             }
-             else{                                
-             budgetOffen = budgetOffen + parseFloat(data[i].SummevonBudget);
-             }
-             }
-             
-             // Relativwert von deltaAbgeschlossen berechnen
-             var deltaAbgeschlossenRelativ = parseFloat(deltaAbgeschlossen/budgetAbgeschlossen) * 100;
-             
-             //Prognose Absolut berechnen
-             var deltaPrognoseAbsolut = parseFloat(budgetOffen * deltaAbgeschlossenRelativ) + parseFloat(deltaAbgeschlossen);
-             
-             var chartdata = {
-             labels: ['Aktuell', 'Prognose'],
-             datasets : [
-             {
-             label: "Absolut Abweichung",
-             backgroundColor: [
-             'rgba(71, 202, 255, 1)',
-             'rgba(71, 202, 255, 1)'
-             ],
-             borderColor: 'rgba(75, 192, 192, 1)',
-             hoverBackgroundColor: 'rgba(200, 200, 200, 1)',
-             hoverBorderColor: 'rgba(200, 200, 200, 1)',
-             data: [
-             deltaAbgeschlossen,
-             deltaPrognoseAbsolut                                                
-             ],
-             yAxisID: 'y-axis-1',
-             borderWidth: 2                                                
-             },
-             {
-             label: "Relativ / %",
-             backgroundColor: [
-             'rgba(251, 255, 30, 1)',
-             'rgba(251, 255, 30, 1)'
-             ],
-             borderColor: 'rgba(75, 192, 192, 1)',
-             hoverBackgroundColor: 'rgba(200, 200, 200, 1)',
-             hoverBorderColor: 'rgba(200, 200, 200, 1)',
-             data: [
-             deltaAbgeschlossenRelativ,
-             deltaAbgeschlossenRelativ
-             ],
-             yAxisID: 'y-axis-2',
-             borderWidth: 2                                                
-             }
-             ]
-             };
-             
-             var ctx = document.getElementById("chartCanvas").getContext('2d');
-             var myChart = new Chart(ctx, {
-             type: 'bar',
-             data: chartdata,                                
-             options: {
-             responsive: true,                                
-             scales: {
-             yAxes: [
-             {
-             type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-             display: true,
-             position: 'left',
-             id: 'y-axis-1',
-             labelString: 'Absolut',
-             ticks: {
-             beginAtZero: true,
-             suggestedMin: 50,
-             suggestedMax: 100
-             }
-             }, 
-             {
-             type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-             display: true,
-             position: 'right',
-             id: 'y-axis-2',                                            
-             labelString: 'Relativ',
-             gridLines: {
-             drawOnChartArea: false
-             },                                           
-             ticks: {
-             beginAtZero: true,
-             suggestedMin: 0,
-             suggestedMax: 100
-             }
-             }
-             ]
-             }
-             }
-             });
-             
-             
-             },
-             error: function(data) {
-             console.log(data);
-             }
-             });
-             */
         });
         function getDate() {
-            var date = new Date($("#dateSelect").val());
-//                                    console.log("Date: ", date);
-            var day = date.getDate();
-//                                    console.log("Day: ", day);
-            var month = date.getMonth() + 1; // Months are zero based
-//                                    console.log("Month: ", month);
-            var year = date.getFullYear();
-//                                    console.log("Year: ", year);
-            day = ('0' + day).slice(-2);
-//                                    console.log("Formatted Day: ", day);
-            month = ('0' + month).slice(-2);
-//                                    console.log("Formatted Month: ", month);
+            var date = new Date($("#dateSelect").val());//                                    console.log("Date: ", date);
+            var day = date.getDate();//                                    console.log("Day: ", day);
+            var month = date.getMonth() + 1; // Months are zero based//                                    console.log("Month: ", month);
+            var year = date.getFullYear();//                                    console.log("Year: ", year);
+            day = ('0' + day).slice(-2);//                                    console.log(" Formatted Day: ", day);
+            month = ('0' + month).slice(-2);//                                    console.log(" Formatted Month: ", month);
             var formattedDate = day + '-' + month + '-' + year;
             console.log("Formatted Date: ", formattedDate);
             return formattedDate;

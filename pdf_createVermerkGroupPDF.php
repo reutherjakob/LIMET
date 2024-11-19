@@ -6,7 +6,6 @@ require_once('TCPDF-master/TCPDF-master/tcpdf.php');
 
 
 class MYPDF extends TCPDF {
-
     public function Header() {
         // Logo        
         if ($_SESSION["projectAusfuehrung"] === "MADER") {
@@ -24,13 +23,9 @@ class MYPDF extends TCPDF {
                 $this->Image($image_file1, 38, 5, 40, 10, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
             }
         }
-        // Set font
+
         $this->SetFont('helvetica', '', 10);
-
-        // Title                
         $mysqli = utils_connect_sql();
-
-        // Daten für Vermerkgruppenkopf laden
         $sql = "SELECT tabelle_Vermerkgruppe.Gruppenname, tabelle_Vermerkgruppe.Gruppenart, tabelle_Vermerkgruppe.Ort, tabelle_Vermerkgruppe.Verfasser, tabelle_Vermerkgruppe.Startzeit, tabelle_Vermerkgruppe.Endzeit, tabelle_Vermerkgruppe.Datum, tabelle_projekte.Projektname
                     FROM tabelle_Vermerkgruppe INNER JOIN tabelle_projekte ON tabelle_Vermerkgruppe.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
                     WHERE (((tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe)=" . filter_input(INPUT_GET, 'gruppenID') . "));";
@@ -49,8 +44,8 @@ class MYPDF extends TCPDF {
 
     // Page footer
     public function Footer() {
-        // Position at 15 mm from bottom
         $this->SetY(-15);
+        // Position at 15 mm from bottom
         // Set font
         $this->SetFont('helvetica', 'I', 8);
         $this->cell(0, 0, '', 'T', 0, 'L');
@@ -247,7 +242,7 @@ while ($row = $result->fetch_assoc()) {
 
     $title = "Projekt: " . $row['Projektname'] . "\n" . "Thema: " . $row['Gruppenname'] . "\nDatum: " . $row['Datum'] . " von " . $row['Startzeit'] . " bis " . $row['Endzeit'] . "\nOrt: " . $row['Ort'];
     $verfasser = $row['Verfasser'];
-    $document_out_title_components = $document_out_title_components."".$row['Gruppenart']."_". $row['Gruppenname']."_";
+    $document_out_title_components = $document_out_title_components."".$row['Gruppenart']."_". $row['Datum']."_". $row['Gruppenname']."_";
     $rowHeight1 = $pdf->getStringHeight(180, $title, false, true, '', 1);
     $pdf->MultiCell(0, $rowHeight1, $title, 1, 'L', 0, 0, '', '', true);
 }
@@ -323,7 +318,7 @@ $pdf->Multicell(180, 5, $outstr, 0, 'L', 0, 1);
 
 
 
-$document_out_title_components = $document_out_title_components. date('Y-m-d_H-i')."pdf";
+$document_out_title_components = $document_out_title_components. date('Y-m-d').".pdf";
 
 $pdf->Output($document_out_title_components, 'I');
 

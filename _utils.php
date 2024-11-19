@@ -1,10 +1,15 @@
 <?php
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
 function echorow($row) {
     echo '<pre>';
     print_r($row);
     echo '</pre>';
 }
-
+/**
 function print_session_vars() {
     $parameters = ["projectID", "roomID", "projectName", "projectAusfuehrung", "projectPlanungsphase"];
     echo"<br>";
@@ -12,6 +17,7 @@ function print_session_vars() {
         echo ucfirst($param) . ": " . $_SESSION[$param] . ";  ";
     } echo"<br>";
 }
+**/
 
 function init_page_serversides($ommit_redirect = "", $noscroll = "") {
     check_login();
