@@ -1,4 +1,3 @@
-
 function makeToaster(headerText, success) {
     const existingToasts = Array.from(document.querySelectorAll('.toast'));
     const visibleToasts = existingToasts.filter(toast => toast.classList.contains('show'));

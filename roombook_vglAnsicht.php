@@ -1,527 +1,540 @@
-<!DOCTYPE html>
-<html data-bs-theme="" xmlns="http://www.w3.org/1999/xhtml" lang="de">
-<head>
-    <title>RB-Raumvergleich</title>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="iphone_favicon.png"/>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-            crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-          integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
-          crossorigin="anonymous" referrerpolicy="no-referrer"/>
-
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-            crossorigin="anonymous"></script>
-    <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.css"
-          rel="stylesheet"/>
-    <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
-
-
-    <style>
-        .dt-input {
-            width: 100px;
-        }
-
-        table {
-            border: #75ff2e 1px solid;
-        }
-
-        .card-body {
-            padding: 1px;
-        }
-
-        .btn {
-            margin: 1px;
-            padding: 5px;
-        }
-
-
-    </style>
-</head>
-
 <?php
-include '_utils.php'; // CHECKS SESSION AND LOGIN
+session_start();
+include '_utils.php';
 init_page_serversides();
-?>
+?> 
 
-<body style="height:100%">
-<div id="limet-navbar"></div>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-2">
-            <div class="card">
-                <div class="card-header border-success-subtle"> RAUM</div>
-            </div>
-        </div>
-        <div class="col-8">
-            <div class="card">
-                <div class="card-header d-inline-flex justify-content-lg-evenly ">
-                    <div class="form-check">
-                        <input class="form-check-input track-checkbox" type="checkbox" id="checkbox1">
-                        <label class="form-check-label" for="checkbox1">Weniger Vergleichsräume laden</label>
+<html data-bs-theme="dark" xmlns="http://www.w3.org/1999/xhtml" >
+    <head>
+        <title>RB-Raumvergleich</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+        <link rel="icon" href="iphone_favicon.png"/> 
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> 
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+        <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.css" rel="stylesheet"/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+        <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
+        <style>
+
+            .highlighted-row {
+                background-color: yellow; /* Change to your desired highlight color */
+                font-weight: bold; /* Optional: Make the text bold */
+            }
+
+            .card {
+                transition: transform 0.5s ease;
+                border: 1px solid #ccc;
+                overflow: hidden;
+            }
+            .card-header{
+                height: 3.5vh;
+            }
+
+            .resize-border {
+                width: 2px; /* Width of the border area */
+                /*cursor: col-resize;  Cursor style for resizing */
+                z-index: 20;
+                color:white;
+                background-color:white;
+            }
+            .container {
+                display: flex;
+                overflow: hidden;
+            }
+            .flex-grow-1.visible {
+                display: block;
+                overflow: hidden;
+            }
+            .flex-grow-1.hidden {
+                display: none;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease, max-width 0.3s ease;
+            }
+            .btn {
+                border: 1px grey;
+                padding-right: 3px;
+                padding-left: 3px;
+            }
+            .btn:hover {
+                margin-top: 0;
+                box-shadow: 0 0 4px 1px grey; /* Add a small drop shadow on hover */
+            }
+            .fix_size{
+                height: 30px;
+            }
+
+            .table-container {
+                position: sticky !important;
+                overflow-y: scroll;
+            }
+        </style>
+    </head>            
+    <body style="height:100%">
+
+        <div id="limet-navbar" class=''> </div>  
+
+        <div class ="container-fluid" id="KONTÄNER">
+
+            <div class="row justify-content-center">
+                <div class="col-md-12">
+                    <div class="card">           
+                        <div class="card-header text-white"> 
+                            <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+<!--                                <li class="nav-item">
+                                    <a class="nav-link" id="tab0-tab" data-bs-toggle="tab" href="#tab0" role="tab" aria-controls="tab0" aria-selected="false">DB Raumsuche </a>
+                                </li>-->
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="tab1-tab" data-bs-toggle="tab" href="#tab1" role="tab" aria-controls="tab1" aria-selected="true">Raumwahl & Elemente </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link disabled" id="tab2-tab" data-bs-toggle="tab" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">Bauangaben </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link disabled" id="tab3-tab" data-bs-toggle="tab" href="#tab3" role="tab" aria-controls="tab3" aria-selected="false">Anzahl Elemente </a>
+                                </li>
+
+                            </ul>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="tab-content" id="myTabContent">
+<!--                                <div class="tab-pane fade" id="tab0" role="tabpane0" aria-labelledby="tab0-tab">
+                                    <div class="card">    
+                                        <div class="card-header d-flex align-items-center"id='searchDbCardHeader'> ok ok ok </div>
+                                        <div class="card-body" id = "searchDbCardBody"> 
+                                        </div>
+                                    </div>      
+                                </div>-->
+ 
+                                <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+                                    <div class="card responsive" style="width: 100%;"> 
+                                        <div class="card-header row">
+                                            <div class="col-sm-1"> </div>   
+                                            <div class="col-sm-5">  <button id="SelectRoomBtn" class="btn"  style=" background-color:  rgba(100, 140, 25, 0.1);float:right;"> <i class="fa fa-caret-up"> </i>Select a Room </button> </div>
+                                            <div class="col-sm-5">  <button id="SelectVglRoomBtn" class="btn" style=" background-color: rgba(13, 202, 240, 0.1);"> <i class="fa fa-caret-up"> </i>Select Vgl room </button> </div>
+                                            <div class="col-sm-1"> </div>  
+                                        </div> 
+
+                                        <div class=" d-inline-flex" id="table_room_cb">   
+                                            <div class="card  cardx border-success flex-grow-1" style="width: 10vw" >  
+                                                <div class="card-header d-inline-flex justify-content-center" style=" background-color:  rgba(100, 140, 25, 0.1);" >Room-Elements</div> 
+                                                <div class="card-body"  id="RoomElements"> </div>
+                                            </div>                                            <!--<div class="resize-border"></div>-->
+                                            <div class="card cardx border-success flex-grow-1"  style="width: 40vw;" id="card_SelectRoom4Comparison">
+                                                <div class="card-header d-inline-flex justify-content-center" id="SelectRoom4Comparison" style=" background-color:  rgba(100, 140, 25, 0.1);" >  </div> 
+                                                <div class="card-body " id="cardbody_SelectRoom4Comparison">   
+                                                    <div class="table-container">
+                                                        <table class="table  compact table-responsive table-striped table-lg" id="table_rooms"> <!-- <thead ><tr></tr></thead><tbody><td></td></tbody> -->
+                                                        </table>  
+                                                    </div> 
+                                                </div>                                                               
+                                            </div> <!--                                            <div class="resize-border"></div>-->
+                                            <div class="card cardx border-info flex-grow-1"  style="width: 40vw" id="card_vgl_room">  
+                                                <div class="card-header d-inline-flex justify-content-center" id="card_header_vgl_room"  style=" background-color: rgba(13, 202, 240, 0.1)"> </div> 
+                                                <div class="card-body " id ="card_body_vgl_room">
+                                                    <div class="table-container">
+                                                        <table class="table  compact table-responsive table-striped table-lg" id="table_vgl_rooms" > 
+                                                            <thead ><tr></tr></thead>
+                                                            <tbody><td></td></tbody>
+                                                        </table>  
+                                                    </div>   
+                                                </div>
+                                            </div>  <!--   <div class="resize-border"></div>-->
+                                            <div class="card cardx border-info flex-grow-1" style="width: 10vw" >  
+                                                <div class="card-header d-inline-flex justify-content-center" style=" background-color: rgba(13, 202, 240, 0.1)"> Vgl-Room-Elements </div> 
+                                                <div class="card-body responsive" id ="">  
+                                                    <p id="ElememntsVglRoom" > </p> 
+                                                </div>
+
+                                            </div> 
+                                        </div> 
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+                                    <div class="card">    
+                                        <div class="card-header d-flex align-items-center" style="height: 2.5vw;" id='TableCardHeaderBauangaben'></div>
+                                        <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" style= "width :100%" id="table_vgl_room_bauangaben" > 
+                                            <thead <tr></tr> </thead>                                                                    <tbody> <td></td>  </tbody>                                                                       
+                                        </table> 
+                                        <div class="card-body" id = "table_container_div">
+                                            <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" style= "width :100%" id="table_rooms_bauangaben" > 
+                                                <thead <tr></tr> </thead>                                                                    <tbody> <td></td>  </tbody>                                                                       
+                                            </table> 
+                                        </div>
+                                    </div>      
+                                </div>
+
+                                <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
+                                    <table class="table display compact table-responsive table-striped table-bordered table-sm sticky" style= "width :100%" id="table_el_frequency" >
+                                        <thead <tr></tr> </thead>                                                            
+                                        <tbody> <td></td>  </tbody>                
+                                    </table> 
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
-                    <!--  <div class="form-check">
-                         <input class="form-check-input track-checkbox" type="checkbox" id="checkbox2">
-                         <label class="form-check-label" for="checkbox2">Checkbox 2</label>
-                     </div>
-                     <div class="form-check">
-                         <input class="form-check-input track-checkbox" type="checkbox" id="checkbox3">
-                         <label class="form-check-label" for="checkbox3">Checkbox 3</label>
-                     </div>
-                     <div class="form-check">
-                         <input class="form-check-input track-checkbox" type="checkbox" id="checkbox4">
-                         <label class="form-check-label" for="checkbox4">Checkbox 4</label>
-                     </div>
-                     <div class="form-check">
-                         <input class="form-check-input track-checkbox" type="checkbox" id="checkbox5">
-                         <label class="form-check-label" for="checkbox5">Checkbox 5</label>
-                     </div>  -->
                 </div>
-            </div>
+            </div>  
         </div>
-        <div class="col-2">
-            <div class="card">
-                <div class="card-header"> VERGLEICH</div>
-            </div>
-        </div>
-    </div>
 
+        <script src="roombookSpecifications_constDeclarations.js"></script> 
 
-    <div class="row">
-        <div class="col-12" id="col1">
-            <div class="card border-success-subtle" id="card1">
-                <div class="card-header" id="CardHeaderRooms">
-                    <button class="btn float-end grün " onclick="toggleCard('col1', 'col2', this)">
-                        <i class="fa fa-arrow-right"> </i></button>
+        <script>
+            var table_rooms;
+            var table_bauangaben;
+            var RID1; // Holds id of room 2 compare 2 
 
-                    <button class="btn toggle-btn float-end grün ">
-                        <i class="fa fa-arrow-up"></i></button>
+            var table_vgl_rooms;
+            var RID2;// Holds id of rooms 4 comparing them to roomID1 
 
-                    <button class="btn float-end grün " onclick="toggleCard('col1', 'col2', this)"
-                            id="Hide1"><i class="fa fa-arrow-left"></i></button>
-                </div>
-                <div class="card-body">
-                    <table class="table table-compact table-responsive table-striped table-lg" id="t_rooms"
-                           style="width: 100%"></table>
-                </div>
-            </div>
-        </div>
-        <div class="col-12" id="col2">
-            <div class="card" id="card2">
-                <div class="card-header justify-content-end d-inline-flex" id="CardHeaderVglRooms">
-                    <button class="btn float-end toggle-btn grün "><i
-                                class="fa fa-arrow-up"></i>
-                    </button>
-                </div>
-                <div class="card-body">
-                    <table class="table table-compact table-responsive table-striped table-lg" id="t_rooms_vgl"
-                           style="width: 100%"></table>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row mt-1">
-        <div class="col-6" id="col3">
-            <div class="card border-success-subtle" id="card3">
-                <div class="card-header">
-                    Elemente im Raum
-                    <button class="btn float-end grün 0"
-                            onclick="toggleCard('col3', 'col4', this)">
-                        <i class="fa fa-arrow-right"></i></button>
-                    <button class="btn float-end toggle-btn grün ">
-                        <i class="fa fa-arrow-up"></i>
-                    </button>
-                    <button class="btn float-end grün " id="Hide2"
-                            onclick="toggleCard('col3', 'col4', this)">
-                        <i class="fa fa-arrow-left"></i>
-                    </button>
-                </div>
-                <div class="card-body">
-                    <p class="card-text" id="CB3"></p>
-                </div>
-            </div>
-        </div>
-        <div class="col-6" id="col4">
-            <div class="card" id="card4">
-                <div class="card-header">
-                    Elemente im Vergleichsraum
-                    <button class="btn float-end toggle-btn grün "><i
-                                class="fa fa-arrow-up"></i>
-                    </button>
-                </div>
-                <div class="card-body">
-                    <p class="card-text" id="CB4"></p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<script src="roombookSpecifications_constDeclarations.js"></script>
-<script>
+            var tabelle_anzahl;
+            let both_hidden = false;
+            var newText = "";
 
-    $(document).ready(function () {
-        addToggleFunctionality();
-        init_t_rooms();
-        table_click("t_rooms", "CB3");
-    });
+            var filter_added = false;
+            var filter_added2 = false;
 
-    let filter_init_counter = 1;
-    let t_rooms;
-    let t_rooms_vgl;
+            const newEntry = {
+                data: 'Projektname',
+                title: 'Projektname'
+            };
+            columnsDefinition.shift();
+            var X = columnsDefinition.shift();
+            columnsDefinition.unshift(newEntry);
+            columnsDefinition.unshift(X);
 
-    let RID1;
-    let RID2;
-    const newEntry = {data: 'Projektname', title: 'Projekt', visible: true, searchable: true};
-    let cDef = [...columnsDefinition];
-    cDef.unshift(newEntry);
-
-    function table_click(table_id, taget_id_4_new_content) {
-        $(document).on('click', "#" + table_id + " tr", function () {
-            let selectedRowData;
-            let RID1change = false;
-            if (table_id === "t_rooms") {
-                selectedRowData = t_rooms.row('.selected').data();
-                if (selectedRowData) {
-                    if (RID1 !== selectedRowData[`idTABELLE_Räume`]) {
-                        RID1 = selectedRowData[`idTABELLE_Räume`];
-                        RID1change = true;
-                    }
-
+            let columnsDefinitionShort = columnsDefinition.filter(column =>
+                ["idTABELLE_Räume", 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', 'MT-relevant', 'Raumbezeichnung', 'Raumnr', "Bezeichnung", 'Nummer', 'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt'].includes(column.data)
+            ).map(column => {
+                if (!["idTABELLE_Räume", 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', 'tabelle_projekte_idTABELLE_Projekte'].includes(column.data)) {
+                    column.visible = true;
                 }
-            }
-            if (table_id === "t_rooms_vgl") {
-                selectedRowData = t_rooms_vgl.row('.selected').data();
-                if (selectedRowData) {
-                    if (RID2 !== selectedRowData["idTABELLE_Räume"]) {
-                        RID2 = selectedRowData["idTABELLE_Räume"];
-                    }
-                }
-            }
-            if (selectedRowData) {
-                value = selectedRowData["TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen"]
-                if (RID1change) {
-                    init_vgl_rooms_table(value);
-                    $('#CB4').empty();
-                }
-                get_el_in_room_table(selectedRowData['idTABELLE_Räume'], taget_id_4_new_content);
-            }
-        });
-    }
-
-    function compareElementTables() {
-        let elementIdsTable1 = $(`#tableRoomElements${RID1}`).DataTable().column(1).data().toArray();
-        let elementIdsTable2 = $(`#tableVglRoomElements${RID2}`).DataTable().column(1).data().toArray();
-
-        let idsSet1 = new Set(elementIdsTable1);
-        let idsSet2 = new Set(elementIdsTable2);
-
-        $(`#tableRoomElements${RID1}`).DataTable().rows().every(function () {
-            let row = this.node();
-            let rowData = this.data();
-            let rowId = rowData.ElementID;
-
-            $(this.node()).find('td').each(function (index) {
-                if (index === 1) {
-                    if (idsSet2.has(rowId)) {
-                        $(this).addClass('grün');
-                    } else {
-                        $(this).addClass('rot');
-                    }
-                }
+                return column;
             });
-        });
 
-        $(`#tableVglRoomElements${RID2}`).DataTable().rows().every(function () {
-            let row = this.node();
-            let rowData = this.data();
-            let rowId = rowData.ElementID;
+            let columnsDefinitionShort_vgl = columnsDefinition.filter(column =>
+                ['Projektname', "idTABELLE_Räume", 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', 'MT-relevant',
+                    'Raumbezeichnung', 'Raumnr', "Bezeichnung", 'Raumbereich Nutzer'].includes(column.data)
+            );//, 'Geschoss', 'Bauetappe', 'Bauabschnitt'
 
-            $(this.node()).find('td').each(function (index) {
-                if (index === 1) {
-                    if (idsSet1.has(rowId)) {
-                        $(this).addClass('grün');
-                    } else {
-                        $(this).addClass('rot');
-                    }
-                }
+            const columnsAnzahl = [
+                {data: "AnzahlvonAnzahl"},
+                {data: "SummevonAnzahl"},
+                {data: "ElementID"},
+                {data: "Bezeichnung"},
+                {data: "Projektname"},
+                {data: "TABELLE_Elemente_idTABELLE_Elemente", visible: false}];
+
+            $(document).ready(function () {
+                init_rooms_current_project_table();
+                add_MT_rel_filter('#SelectRoom4Comparison', table_rooms);
+                move_dt_search("dt-search-0", 'SelectRoom4Comparison');
+                selectRoomBtn(); //showRoomElementsBtn(); selectVglRoomBtn();
+                table_click("table_rooms", "RoomElements");
+                table_click("table_vgl_rooms", "ElememntsVglRoom");
             });
-        });
-    }
 
 
-    function get_el_in_room_table(RaumID, targetDiv) {
-        $.ajax({
-            url: "get_RoomElementsData.php",
-            data: {"roomID": RaumID},
-            type: "GET",
-            dataType: "json",
-            success: function (data) {
-                let tableId = 'tableRoomElements' + RaumID;
-                if (targetDiv === "CB4") {
-                    tableId = 'tableVglRoomElements' + RaumID;
+            function init_dt_anzahl(value) {
+                if (tabelle_anzahl) {
+                    tabelle_anzahl.destroy();
                 }
-                // console.log("Initiating dt 4 elements: " + tableId);
-                let tableHtml = "<table id='" + tableId + "' class='table table-responsive table-striped table-bordered table-sm' style='width: 100%'></table>";
-                $("#" + targetDiv).html(tableHtml);
-                $('#' + tableId).DataTable({
-                    data: data,
-                    columns: [
-                        {data: 'Bezeichnung', title: 'Element'},
-                        {data: 'ElementID', title: 'ID'},
-                        {data: 'Anzahl', title: 'Stück'},
-                        {data: 'Variante', title: 'Var.'},
-                        {
-                            data: 'Neu/Bestand', title: 'Best.', render: function (data) {
-                                return data === 1 ? "Nein" : "Ja";
-                            }
-                        },
-                        {
-                            data: 'Standort', title: 'Ort', render: function (data) {
-                                return data === 1 ? "Ja" : "Nein";
-                            }
-                        },
-                        {
-                            data: 'Verwendung', title: 'Verw.', render: function (data) {
-                                return data === 1 ? "Ja" : "Nein";
-                            }
-                        }
-                    ],
-                    layout: {
-                        topStart: null,
-                        topEnd: null,
-                        bottomStart: ['info'],
-                        bottomEnd: null
+                tabelle_anzahl = new DataTable('#table_el_frequency', {
+                    ajax: {
+                        url: 'get_anzahl_elmente_per_funktionsstelle.php',
+                        data: {"value": value},
+                        dataSrc: ''
                     },
-                    responsive: true,
-                    language: {
-                        info: "_TOTAL_ Zeilen"
+                    columns: columnsAnzahl
+                });
+            }
+
+            function init_dt_BAUANGABEN(value) {
+                dom_var = "tli";
+                if (!filter_added2) {
+                    dom_var = "ftli ";
+                }
+                if (table_bauangaben) {
+                    table_bauangaben.destroy();
+                }
+                table_bauangaben = new DataTable('#table_rooms_bauangaben', {
+                    ajax: {
+                        url: 'get_rooms_with_funktionsteilstelle.php',
+                        data: {"value": value},
+                        dataSrc: ''
                     },
+                    columns: columnsDefinition,
+                    dom: dom_var,
+                    scrollX: true,
                     scrollCollapse: true,
-                    select: {
-                        style: "single",
-                        info: false
+                    select: "os",
+                    language: {
+                        "search": "",
+                        searchBuilder: {
+                            title: null,
+                            depthLimit: 2,
+                            stateSave: false
+                        }
                     },
+                    keys: true,
+                    stateSave: true,
                     info: true,
+                    paging: true,
+                    pagingType: "simple_numbers",
+                    pageLength: 10,
+                    lengthMenu: [
+                        [10, 20, -1],
+                        ['10 rows', '20 rows', 'Show all']
+                    ],
                     compact: true,
+                    fnRowCallback: function (nRow, aData, iDisplayIndex) {
+                        console.log("RowCallback", RID1, aData[0]);
+                        if (aData[0] === RID1)
+                        {
+                            $('td', nRow).css('background-color', 'Red');
+                        }
+                    },
                     initComplete: function () {
-                        if (targetDiv === "CB4") {
-                            compareElementTables();
+                        if (!filter_added2) {
+                            filter_added2 = true;
+                            add_MT_rel_filter("#TableCardHeaderBauangaben", table_bauangaben);
+                            move_dt_search("dt-search-2", 'TableCardHeaderBauangaben');
+                            console.log("T Bauang init only 1nce");
+                        }
+                        console.log("T Bauang init ");
+                    }
+                });
+            }
+
+            function table_click(table_id, target_id_4_elelemt_table) {
+                $("#" + table_id).on('click', "tr", function () {
+                    var selectedRowData;
+                    if (table_id === "table_rooms") {
+                        selectedRowData = table_rooms.row('.selected').data();
+                        if (selectedRowData) {
+                            newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"] + ": " + selectedRowData["TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen"] + ' <i class="fa fa-caret-up"> </i>';
+                            RID1 = selectedRowData["idTABELLE_Räume"];
+                            console.log("Currently save RID1", RID1);
+                            $('#SelectRoomBtn').html(newText);
+                        }
+                    }
+                    if (table_id === "table_vgl_rooms") {
+                        selectedRowData = table_vgl_rooms.row('.selected').data();
+                        console.log(selectedRowData);
+                        if (selectedRowData) {
+                            RID2 = selectedRowData["idTABELLE_Räume"];
+                            console.log("Currently save RID2", RID2);
+                            newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"] + ": " + selectedRowData["TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen"] + ' <i class="fa fa-caret-up"> </i>';
+                            $('#SelectVglRoomBtn').html(newText);
+                        }
+                    }
+                    if (selectedRowData) {
+                        if (table_id === "table_rooms") {
+                            value = selectedRowData["TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen"];
+                            init_vgl_rooms_table(value);
+                        }
+                        get_el_in_room_table(selectedRowData['idTABELLE_Räume'], target_id_4_elelemt_table);
+                    }
+                });
+            }
+
+
+            function  init_vgl_rooms_table(value) {
+                let dom_var = "tlip";
+                if (table_vgl_rooms) {
+                    table_vgl_rooms.destroy();
+//                                        console.log("Existing Table Dstroyed.... ");
+                }
+                if (!filter_added) {
+                    dom_var = "ftlip ";
+                }
+                table_vgl_rooms = new DataTable('#table_vgl_rooms', {
+                    ajax: {
+                        url: 'get_rooms_with_funktionsteilstelle.php',
+                        data: {"value": value},
+                        dataSrc: ''
+                    },
+                    columns: columnsDefinitionShort_vgl,
+                    dom: dom_var,
+                    language: {
+                        "search": ""},
+                    scrollY: true,
+                    scrollX: true,
+                    scrollCollapse: true,
+                    select: "single",
+                    keys: true,
+                    info: true,
+                    paging: false,
+                    pageLength: -1,
+                    compact: true,
+
+                    initComplete: function () {
+                        if (!filter_added) {
+                            add_MT_rel_filter("#card_header_vgl_room", table_vgl_rooms);
+                            move_dt_search("dt-search-1", "card_header_vgl_room");
+                            filter_added = true;
+                        }
+                        console.log("T Vgl initiated");
+
+                    }
+                });
+            }
+
+            function init_rooms_current_project_table() {
+                table_rooms = new DataTable('#table_rooms', {
+                    ajax: {
+                        url: 'get_rb_specs_data.php', 
+                        dataSrc: ''
+                    },
+                    columns: columnsDefinitionShort,
+                    dom: 'ftlip',
+                    language: {
+                        "search": ""},
+                    scrollY: true,
+                    scrollX: true,
+                    scrollCollapse: true,
+                    select: "single",
+                    keys: true,
+                    info: true,
+                    paging: false,
+                    pageLength: -1,
+                    compact: true
+                });
+            }
+
+            function selectRoomBtn() {
+                $('#SelectRoomBtn').on('click', function () {
+                    var selectedRowData = table_rooms.row('.selected').data();
+                    if (selectedRowData) {
+                        let v = selectedRowData['TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen'];
+                        console.log("SelectRoomBtn KICK", v);
+                        init_dt_BAUANGABEN(v);
+                        init_dt_anzahl(v);
+                        if ($("#cardbody_SelectRoom4Comparison").is(":visible")) {
+                            $('#cardbody_SelectRoom4Comparison').hide();
+                            $('#SelectRoom4Comparison').hide();
+                            $('#card_SelectRoom4Comparison').hide();
+                            newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"] + ' <i class="fa fa-caret-down"> </i>';
+                            $('#SelectRoomBtn').html(newText);
+                            $('#tab2-tab').removeClass('disabled');
+                            $('#tab3-tab').removeClass('disabled');
+
+                            if (!$("#card_body_vgl_room").is(":visible")) {
+                                console.log("both hidden, RID1: " + RID1);
+                                both_hidden = true;
+                            }
+                        } else {
+                            both_hidden = false;
+                            $('#cardbody_SelectRoom4Comparison').show();
+                            $('#SelectRoom4Comparison').show();
+                            $('#card_SelectRoom4Comparison').show();
+                            newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"] + ' <i class="fa fa-caret-up"> </i>';
+                            $('#SelectRoomBtn').html(newText);
+                        }
+                    }
+                });
+
+                $('#SelectVglRoomBtn').on('click', function () {
+                    var selectedRowData = table_vgl_rooms.row('.selected').data();
+                    if ($("#card_body_vgl_room").is(":visible")) {
+                        if (selectedRowData) {
+                            $('#card_body_vgl_room').hide();
+                            $('#card_header_vgl_room').hide();
+                            $('#card_vgl_room').hide();
+                            newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"] + ' <i class="fa fa-caret-down"> </i>';
+                            $('#SelectVglRoomBtn').html(newText);
+                            console.log("both hidden, RID2: " + RID2);
+                            both_hidden = true;
+                        }
+                    } else {
+                        both_hidden = false;
+                        $('#card_body_vgl_room').show();
+                        $('#card_header_vgl_room').show();
+                        $('#card_vgl_room').show();
+                        if (selectedRowData) {
+                            newText = selectedRowData["Raumbezeichnung"] + ": " + selectedRowData["Bezeichnung"] + ' <i class="fa fa-caret-up"> </i>';
+                            $('#SelectVglRoomBtn').html(newText);
                         }
                     }
                 });
             }
-        });
 
-    }
-
-    function init_vgl_rooms_table(value) {
-        if (t_rooms_vgl) {
-            t_rooms_vgl.destroy();
-            t_rooms_vgl.buttons('.buttons-colvis').remove();
-            $('#dt-search-' + (filter_init_counter - 1).toString()).remove(); // Remove the old search element
-        }
-        console.log("CBX1: " + $("#checkbox1").prop('checked'));
-        let cbxState =  $('#checkbox1').prop('checked');
-        t_rooms_vgl = new DataTable('#t_rooms_vgl', {
-            ajax: {
-                url: 'get_rooms_with_funktionsteilstelle.php',
-                data: {"value": value, "RaumID": RID1, "Unique":cbxState},
-                dataSrc: ''
-            },
-            columns: cDef,
-            layout: {
-                topStart: null,
-                topEnd: null,
-                bottomStart: ["info", "pageLength", 'search'],
-                bottomEnd: {
-                    paging: {
-                        buttons: 3
+            function get_el_in_room_table(RaumID, targetDiv) {
+//                console.log("Get Elements in Room Table");
+                $.ajax({
+                    url: "setSessionVariables.php",
+                    data: {"roomID": RaumID},
+                    type: "GET",
+                    success: function (data) {
+                        $.ajax({
+                            url: "get_RoomElementsTable.php",
+                            type: "GET",
+                            success: function (data) {
+                                $("#" + targetDiv).html(data);
+                            }
+                        });
                     }
-                }
-            },
-            language: {
-                "search": "",
-                "info": "_TOTAL_ Zeilen",
-
-            },
-            pageLength: 10,
-            lengthMenu: [
-                [5, 10, 50],
-                ['5 rows', '10 rows', '50 rows']
-            ],
-            select: {
-                style: "single",
-                info: false
-            },
-            responsive: true,
-            scrollCollapse: true,
-            compact: true,
-
-            initComplete: function () {
-                const searchbuilder = [
-                    {
-                        extend: 'searchBuilder',
-                        text: null,
-                        className: "btn fas fa-search",
-                        titleAttr: "Suche konfigurieren",
-                    }
-                ];
-                new $.fn.dataTable.Buttons(t_rooms_vgl, {buttons: searchbuilder}).container().appendTo($('#CardHeaderVglRooms'));
-
-                const buttonColumnVisbilities = [
-                    {extend: 'colvis', text: 'Vis', columns: ':gt(5)', collectionLayout: 'fixed columns', className: 'btn'}];
-                new $.fn.dataTable.Buttons(t_rooms_vgl, {buttons: buttonColumnVisbilities}).container().appendTo($('#CardHeaderVglRooms'));
-
-                move_item("dt-search-" + filter_init_counter.toString(), "CardHeaderVglRooms");
-                //console.log("dt-search-" + filter_init_counter.toString() + " moved");
-                filter_init_counter++;
-                table_click("t_rooms_vgl", "CB4");
+                });
             }
-        });
-    }
 
-
-    function init_t_rooms() {
-        const columnsDefinitionShort = [// NEW FIELD? - ADD Here, In get_rb_specs_data.php and the CPY/save methods
-            {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projek ID', visible: false, searchable: false},
-            {data: 'idTABELLE_Räume', title: 'Raum ID', visible: false, searchable: false},
-            {data: 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', title: 'Funktionsstellen ID', visible: false, searchable: false},
-            {data: 'MT-relevant', title: 'MT-rel.', name: 'MT-relevant', case: "bit", render: function (data) {
-                    return data === '1' ? 'Ja' : 'Nein';
-                }},
-            {data: 'Raumbezeichnung', title: 'Raumbez.'},
-            {data: 'Raumnr', title: 'Raumnr'},
-
-            {data: "Bezeichnung", title: "Funktionsstelle", visible: true, case: "none-edit"}, //#7
-            {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'},
-            {data: "Nummer", title: "DIN13080", visible: false, case: "none-edit"},
-
-            {data: "Entfallen", title: "Entfallen", name: "Entfallen", visible: false, case: "bit"},
-
-            {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer', visible: false},
-            {data: 'Raumbereich Nutzer', title: 'Raumbereich', visible: false}] ;
-
-        t_rooms = new DataTable('#t_rooms', {
-            ajax: {
-                url: 'get_mt_relevant_room_specs.php',
-                dataSrc: ''
-            },
-            columns: columnsDefinitionShort,
-            layout: {
-                topStart: null,
-                topEnd: null,
-                bottomStart: ["info", "pageLength", 'search',],
-                bottomEnd: {
-                    paging: {
-                        buttons: 3
-                    }
-                }
-            },
-            language: {
-                "search": "",
-                "info": "_TOTAL_ Zeilen",
-
-            },
-            pageLength: 10,
-            lengthMenu: [
-                [5, 10, 50],
-                ['5 rows', '10 rows', '50 rows']
-            ],
-            select: {
-                style: "single",
-                info: false
-            },
-            responsive: true,
-            scrollCollapse: true,
-            compact: true,
-            initComplete: function () {
-                move_item("dt-search-0", "CardHeaderRooms");
+            function add_MT_rel_filter(location, table) {
+                var dropdownHtml = '<select class="form-control-sm fix_size" id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
+                $(location).append(dropdownHtml);
+                $('#columnFilter').change(function () {
+                    var filterValue = $(this).val();
+                    table.column('MT-relevant:name').search(filterValue).draw();
+                });
             }
-        });
-    }
 
-    function addToggleFunctionality() {
-        $('.toggle-btn').click(function () {
-            $(this).closest('.card').find('.card-body').toggle();
-            $(this).find('i').toggleClass('fa-arrow-up fa-arrow-down');
-        });
-    }
-
-    function toggleCard(colId1, colId2, button) {
-        //console.log(button);
-        const col1 = document.getElementById(colId1);
-        const col2 = document.getElementById(colId2);
-        if (button.id.startsWith("Hide")) {
-            if (col1.classList.contains('col-6')) {
-                col1.classList.remove('col-6');
-                col1.classList.add('col-2');
-                col2.classList.remove('col-6');
-                col2.classList.add('col-10');
-            } else if (col1.classList.contains('col-12')) {
-                col1.classList.remove('col-12');
-                col1.classList.add('col-6');
-                col2.classList.remove('col-12');
-                col2.classList.add('col-6');
+            function move_dt_search(item2move_id, where2move_id) {
+                var dt_searcher = document.getElementById(item2move_id);
+                dt_searcher.parentNode.removeChild(dt_searcher);
+                document.getElementById(where2move_id).appendChild(dt_searcher);
+                dt_searcher.classList.add("fix_size");
             }
-        } else {
-            if (col1.classList.contains('col-6') && col2.classList.contains('col-6')) {
-                col1.classList.remove('col-6');
-                col1.classList.add('col-12');
-                col2.classList.remove('col-6');
-                col2.classList.add('col-12');
-            } else if (col1.classList.contains('col-2')) {
-                col1.classList.remove('col-2');
-                col1.classList.add('col-6');
-                col2.classList.remove('col-10');
-                col2.classList.add('col-6');
-            }
-        }
-        tableRedraw();
-    }
 
-    function tableRedraw() {
-        if ($.fn.DataTable.isDataTable('#t_rooms')) {
-            $('#t_rooms').DataTable().columns.adjust().draw();
-        }
-        if ($.fn.DataTable.isDataTable('#t_rooms_vgl')) {
-            $('#t_rooms_vgl').DataTable().columns.adjust().draw();
-        }
+//            const container = document.querySelector('#KONTÄNER');
+//            const cards = document.querySelectorAll('.cardx');
+//            const resizeBorders = document.querySelectorAll('.resize-border');
+//            let isResizing = false;
+//            let startX, startWidth;
+//            function startResize(e) {
+//                isResizing = true;
+//                startX = e.clientX;
+//                startWidth = parseFloat(getComputedStyle(cards[1]).width);
+//            }
+//
+//            function resize(e) {
+//                if (!isResizing)
+//                    return;
+//                const deltaX = e.clientX - startX;
+//                const newWidth = startWidth + deltaX;
+//
+//                cards[1].style.width = `${newWidth}px`;
+//                const adjacentWidth = (container.clientWidth - newWidth) / 3;
+//                cards[0].style.width = `${adjacentWidth}px`;
+//                cards[2].style.width = `${adjacentWidth}px`;
+//                cards[3].style.width = `${adjacentWidth}px`;
+//            }
+//
+//            function stopResize() {
+//                isResizing = false;
+//            }
+//
+//            resizeBorders.forEach(border => {
+//                border.addEventListener('mousedown', startResize);
+//            });
+//            window.addEventListener('mousemove', resize);s
+//            window.addEventListener('mouseup', stopResize);
 
-        let tableid = 'tableRoomElements' + RID1.toString();
-        if ($.fn.DataTable.isDataTable('#' + tableid)) {
-            $('#' + tableid).DataTable().columns.adjust().draw();
-        }
-        tableid = 'tableRoomElements' + RID2.toString();
-        if ($.fn.DataTable.isDataTable('#' + tableid)) {
-            $('#' + tableid).DataTable().columns.adjust().draw();
-        }
-    }
-
-    function move_item(item2move_id, where2move_id) {
-        let item = document.getElementById(item2move_id);
-        item.parentNode.removeChild(item);
-        document.getElementById(where2move_id).appendChild(item);
-    }
-
-    //    function addToggleButton(cardId) {
-    //                    const card = document.getElementById(cardId);
-    //                    const cardHeader = card.querySelector('.card-header');
-    //                    const cardBody = card.querySelector('.card-body');
-    //                    $(cardHeader).click(function () {
-    //                        $(cardBody).toggle();
-    //                    });
-    //                }
-
-</script>
-</body>
+        </script>
+    </body> 
 </html>
