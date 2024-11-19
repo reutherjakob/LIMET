@@ -24,14 +24,9 @@
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 </head>
-<style>.form-inline {
-        display: inline-block !important;
-        align-items: center;
-    }
-
-    .form-control-sm {
-        width: auto; /* Make sure the input doesn't stretch */
-        margin-right: 5px; /* Add some spacing between input and button */
+<style>
+    .card-body{
+        overflow: scroll;
     }
 
 </style>
@@ -236,6 +231,10 @@ init_page_serversides("");
             </div>
         </div>
     </div>
+
+
+
+
     <div class='row'>
         <div class='col-sm-6'>
             <div class="mt-4 card">
@@ -301,7 +300,7 @@ init_page_serversides("");
             ],
             dom: '<"d-flex justify-content-between"< B > < f >>ti',
             "buttons": [
-                'excel',
+                'excel'
             ],
             stateSave: true
         });

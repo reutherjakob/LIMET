@@ -302,6 +302,7 @@ init_page_serversides();
                         bottomStart: ['info'],
                         bottomEnd: null
                     },
+                    paging: false,
                     responsive: true,
                     language: {
                         info: "_TOTAL_ Zeilen"
