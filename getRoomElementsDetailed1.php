@@ -84,7 +84,15 @@ echo "
            </form>";
 
 //Elemente im Raum abfragen
-$sql = "SELECT tabelle_räume_has_tabelle_elemente.id, tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.Anzahl, tabelle_elemente.ElementID, tabelle_elemente.Kurzbeschreibung As `Elementbeschreibung`, tabelle_varianten.Variante, tabelle_elemente.Bezeichnung, tabelle_geraete.GeraeteID, tabelle_hersteller.Hersteller, tabelle_geraete.Typ, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.Standort, tabelle_räume_has_tabelle_elemente.Verwendung, tabelle_räume_has_tabelle_elemente.Kurzbeschreibung, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete
+$sql = "SELECT tabelle_räume_has_tabelle_elemente.id, tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete,
+       tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
+       tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.Anzahl, 
+       tabelle_elemente.ElementID, tabelle_elemente.Kurzbeschreibung As `Elementbeschreibung`, tabelle_varianten.Variante, 
+       tabelle_elemente.Bezeichnung, tabelle_geraete.GeraeteID, tabelle_hersteller.Hersteller, tabelle_geraete.Typ, 
+       tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.Standort, 
+       tabelle_räume_has_tabelle_elemente.Verwendung, tabelle_räume_has_tabelle_elemente.Kurzbeschreibung, 
+       tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
+       tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete
 			FROM tabelle_varianten INNER JOIN (tabelle_hersteller RIGHT JOIN ((tabelle_räume_has_tabelle_elemente LEFT JOIN tabelle_geraete ON tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete = tabelle_geraete.idTABELLE_Geraete) INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON tabelle_hersteller.idtabelle_hersteller = tabelle_geraete.tabelle_hersteller_idtabelle_hersteller) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
 			WHERE (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=" . $_SESSION["roomID"] . "))
 			ORDER BY tabelle_elemente.ElementID;";
@@ -119,71 +127,23 @@ while ($row = $result->fetch_assoc()) {
     echo "<td> <span id='ElementName" . $row["id"] . "'>" . $row["ElementID"] . " " . $row["Bezeichnung"] . " </span> </td>";
     echo "<td>
 	    	<select class='form-control form-control-sm' id='variante" . $row["id"] . "'>";
-    switch ($row["tabelle_Varianten_idtabelle_Varianten"]) {
-        case "1":
-            echo "<option value='1' selected>A</option>
-                                                        <option value='2'>B</option>
-                                                        <option value='3'>C</option>
-                                                        <option value='4'>D</option>
-                                                        <option value='5'>E</option>
-                                                        <option value='6'>F</option>
-                                                        <option value='7'>G</option>";
-            break;
-        case "2":
-            echo "<option value='1'>A</option>
-                                                        <option value='2' selected>B</option>
-                                                        <option value='3'>C</option>
-                                                        <option value='4'>D</option>
-                                                        <option value='5'>E</option>
-                                                        <option value='6'>F</option>
-                                                        <option value='7'>G</option>";
-            break;
-        case "3":
-            echo "<option value='1'>A</option>
-                                                        <option value='2'>B</option>
-                                                        <option value='3' selected>C</option>
-                                                        <option value='4'>D</option>
-                                                        <option value='5'>E</option>
-                                                        <option value='6'>F</option>
-                                                        <option value='7'>G</option>";
-            break;
-        case "4":
-            echo "<option value='1'>A</option>
-                                                        <option value='2'>B</option>
-                                                        <option value='3'>C</option>
-                                                        <option value='4' selected>D</option>
-                                                        <option value='5'>E</option>
-                                                        <option value='6'>F</option>
-                                                        <option value='7'>G</option>";
-            break;
-        case "5":
-            echo "<option value='1'>A</option>
-                                                        <option value='2'>B</option>
-                                                        <option value='3'>C</option>
-                                                        <option value='4'>D</option>
-                                                        <option value='5' selected>E</option>
-                                                        <option value='6'>F</option>
-                                                        <option value='7'>G</option>";
-            break;
-        case "6":
-            echo "<option value='1'>A</option>
-                                                        <option value='2'>B</option>
-                                                        <option value='3'>C</option>
-                                                        <option value='4'>D</option>
-                                                        <option value='5'>E</option>
-                                                        <option value='6' selected>F</option>
-                                                        <option value='7'>G</option>";
-            break;
-        case "7":
-            echo "<option value='1'>A</option>
-                                                        <option value='2'>B</option>
-                                                        <option value='3'>C</option>
-                                                        <option value='4'>D</option>
-                                                        <option value='5'>E</option>
-                                                        <option value='6'>F</option>
-                                                        <option value='7' selected>G</option>";
-            break;
+
+    $selectedOption = $row["tabelle_Varianten_idtabelle_Varianten"];
+    $options = [
+        1 => 'A',
+        2 => 'B',
+        3 => 'C',
+        4 => 'D',
+        5 => 'E',
+        6 => 'F',
+        7 => 'G'
+    ];
+
+    foreach ($options as $value => $label) {
+        $selected = ($selectedOption == $value) ? "selected" : "";
+        echo "<option value='$value' $selected>$label</option>";
     }
+
     echo "</select></td>";
     echo "<td><input class='form-control form-control-sm' type='text' id='amount" . $row["id"] . "' value='" . $row["Anzahl"] . "' size='2'></input></td>";
     echo "<td>
@@ -217,8 +177,6 @@ while ($row = $result->fetch_assoc()) {
     }
     echo "</select></td>";
 
-    //echo "<td><textarea id='comment".$row["id"]."' rows='1' style='width: 100%;'>".$row["Kurzbeschreibung"]."</textarea></td>";
-    //echo "<td><textarea id='comment".$row["id"]."' style='width: 100%;'>".$row["Kurzbeschreibung"]."</textarea></td>";
     if (strlen($row["Kurzbeschreibung"]) > 0) {
         echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment'></i></button></td>";
     } else {
@@ -342,7 +300,7 @@ $mysqli->close();
             "info": true,
             "columnDefs": [
                 {
-                    "targets": [0],
+                    "targets": [0,10],
                     "visible": false,
                     "searchable": false,
                     "sortable": false
@@ -350,7 +308,7 @@ $mysqli->close();
                 {
                     "targets": [3, 4, 5, 6, 7, 8, 9],
                     "searchable": false,
-                    "sortable": false
+
                 }
             ],
             "order": [[1, "asc"]],
@@ -443,7 +401,6 @@ $mysqli->close();
                 $(this).parents(".popover").popover('hide');
             });
         });
-
     });
 
     $("input[value='Rauminhalt kopieren']").click(function () {

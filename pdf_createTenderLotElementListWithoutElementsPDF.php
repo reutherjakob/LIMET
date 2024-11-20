@@ -229,9 +229,9 @@ while ($row = $result3->fetch_assoc()) {
         $pdf->MultiCell(40, $rowHeight, $row['LosBezeichnung_Extern'],0, 'L', $fill, 0);
         $pdf->MultiCell(30, $rowHeight, $row['Verfahren'],0, 'L', $fill, 0);
         $pdf->MultiCell(30, $rowHeight, $row['Bearbeiter'],0, 'L', $fill, 0);
-        $pdf->MultiCell(35, $rowHeight, money_format("%i", $row['schaetzsumme']),0, 'R', $fill, 0);
-        $pdf->MultiCell(40, $rowHeight, money_format("%i", $row['SummeBestand']),0, 'R', $fill, 0);
-        $pdf->MultiCell(30, $rowHeight, money_format("%i", $row['Vergabesumme']),0, 'R', $fill, 0);
+        $pdf->MultiCell(35, $rowHeight, sprintf('%01.2f', $row['schaetzsumme']),0, 'R', $fill, 0);
+        $pdf->MultiCell(40, $rowHeight, sprintf('%01.2f', $row['SummeBestand']),0, 'R', $fill, 0);
+        $pdf->MultiCell(30, $rowHeight, sprintf('%01.2f', $row['Vergabesumme']),0, 'R', $fill, 0);
         $pdf->MultiCell(40, $rowHeight, $row['Lieferant'],0, 'R', $fill, 0);
         $summe = $summe + $row['schaetzsumme'];
         $summebestand = $summebestand + $row['SummeBestand'];
@@ -246,9 +246,9 @@ $pdf->MultiCell(20, $rowHeight, "",'T', 'L', $fill, 0);
 $pdf->MultiCell(40, $rowHeight, "",'T', 'L', $fill, 0);
 $pdf->MultiCell(30, $rowHeight, "",'T', 'L', $fill, 0);
 $pdf->MultiCell(30, $rowHeight, "",'T', 'L', $fill, 0);
-$pdf->MultiCell(35, $rowHeight, money_format("%i", $summe),'T', 'R', $fill, 0);
-$pdf->MultiCell(40, $rowHeight, money_format("%i", $summebestand),'T', 'R', $fill, 0);
-$pdf->MultiCell(30, $rowHeight, money_format("%i", $summeVergeben),'T', 'R', $fill, 0);
+$pdf->MultiCell(35, $rowHeight, sprintf('%01.2f', $summe),'T', 'R', $fill, 0);
+$pdf->MultiCell(40, $rowHeight, sprintf('%01.2f', $summebestand),'T', 'R', $fill, 0);
+$pdf->MultiCell(30, $rowHeight, sprintf('%01.2f', $summeVergeben),'T', 'R', $fill, 0);
 $pdf->MultiCell(40, $rowHeight, "",'T', 'R', $fill, 0);
 
 

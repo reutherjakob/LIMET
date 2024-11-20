@@ -1,11 +1,10 @@
 <?php
-session_start();
 include '_utils.php';
 init_page_serversides("x");
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 
     <head>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
@@ -21,24 +20,12 @@ init_page_serversides("x");
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-    <!--        <style>
-            .navbar-brand {
-                padding: 0px;
-            }
-            .navbar-brand>img {
-                height: 100%;
-                width: auto;
-            }
-
-        </style>-->
-
-
     </head>
 
     <body style="height:100%">
-
+    <div id="limet-navbar"></div> <!-- Container für Navbar -->
         <div class="container-fluid">
-            <div id="limet-navbar"></div> <!-- Container für Navbar -->
+
             <div class="panel panel-default">
                 <div class="panel-heading"><label>Elemente</label></div>
                 <div class="panel-body" id="cadElements">

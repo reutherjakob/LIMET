@@ -1,12 +1,12 @@
 <?php
-session_start();
+
 include '_utils.php';
 init_page_serversides();
 include 'roombookSpecifications_New_modal_addRoom.php';
 ?> 
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"/>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de"></html>
 <head>
     <title>RB-Bauangaben</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
@@ -60,10 +60,10 @@ include 'roombookSpecifications_New_modal_addRoom.php';
         }
     </style> 
 </head> 
-<body style="height:100%">  
-
+<body style="height:100%">
+<div id="limet-navbar"></div>
     <main class="container-fluid">
-        <div id="limet-navbar"></div>
+
         <section class="mt-1 card">
             <header class="card-header d-flex border-light" style="height: 1vh; font-size: 1vh;" id="btnLabelz">
                 <div class="col-md-3"><strong>Edit & Filter</strong></div>

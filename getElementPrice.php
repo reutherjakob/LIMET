@@ -38,7 +38,7 @@ if(!isset($_SESSION["username"]))
 		 <div class='form-group row'>
                     <label class='ml-4 col-sm-5 col-form-label col-form-label-sm' for='price'>Kosten</label>
                     <div class='col-sm-6'>
-                        <input type='text' class='form-control form-control-sm' id='price' value=".money_format("%i", $row["Kosten"])." disabled='disabled'></input>
+                        <input type='text' class='form-control form-control-sm' id='price' value=".sprintf('%01.2f', $row["Kosten"])." disabled='disabled'></input>
                     </div>						  			 											 						 			
 	 	</div>	
             </form>";

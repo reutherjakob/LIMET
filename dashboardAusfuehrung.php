@@ -31,8 +31,8 @@ init_page_serversides("");
 
                         </head>
                         <body style="height:100%">
+                        <div id="limet-navbar"></div> <!-- Container für Navbar -->
                             <div class="container-fluid" >
-                                <div id="limet-navbar"></div> <!-- Container für Navbar -->
                                 <div class='row mt-4 mb-4'>
                                     <div class='col-sm-3'>
                                         <div class="card border-info">

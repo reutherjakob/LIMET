@@ -3,10 +3,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title>RoomElementsDetailed2</title>
+    <title>RoomElementsDetailed2 </title>
 </head>
-<body>
 
+
+<body>
 <?php
 include '_utils.php';
 init_page_serversides("x", "x");

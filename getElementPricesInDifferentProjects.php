@@ -48,7 +48,7 @@ if(!isset($_SESSION["username"]))
 	    echo "<td>".$row["Projektname"]."</td>";
 	    echo "<td>".$row["Interne_Nr"]."</td>";
 	    echo "<td>".$row["Variante"]."</td>";
-		echo "<td>".money_format("%i", $row["Kosten"])."</td>";
+		echo "<td>".sprintf('%01.2f',$row["Kosten"])."</td>";
 	    echo "</tr>";
 	}
 	

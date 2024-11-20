@@ -55,7 +55,7 @@ if(!isset($_SESSION["username"]))
 	while($row = $result->fetch_assoc()) {
 	    echo "<tr>";
 	    echo "<td>".$row["idtabelle_umsaetze"]."</td>";
-            echo "<td>".money_format("%i", $row["umsatz"])."</td>";
+            echo "<td>".sprintf('%01.2f', $row["umsatz"])."</td>";
             echo "<td>".$row["geschaeftsbereich"]."</td>";
             echo "<td>".$row["jahr"]."</td>";
 	    echo "</tr>";

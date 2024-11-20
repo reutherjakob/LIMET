@@ -90,8 +90,8 @@ if(!isset($_SESSION["username"]))
 			echo "<td>Nein</td>";
 		}
 	    echo "<td>".$row["SummevonAnzahl"]."</td>";
-	    echo "<td>".money_format("%i", $row["Kosten"])."</td>";
-	    echo "<td>".money_format("%i", $row["Ausdr1"])."</td>";
+	    echo "<td>". sprintf('%01.2f', $row["Kosten"])."</td>";
+	    echo "<td>". sprintf('%01.2f', $row["Ausdr1"])."</td>";
 	    echo "<td>".$row["Gewerke_Nr"]."</td>";
 	    echo "<td>".$row["GHG"]."</td>";
 	    echo "<td>".$row["GUG"]."</td>";

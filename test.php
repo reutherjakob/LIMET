@@ -222,8 +222,8 @@ if(!isset($_SESSION["username"]))
                                                                     echo"<td>Ja</td>";
                                                             }
                                                             $test = "Budget wählen";
-                                                            echo "<td>".money_format("%i", $row["Kosten"])."</td>";	
-                                                            echo "<td>".money_format("%i", $row["PP"])."</td>";	
+                                                            echo "<td>".sprintf('%01.2f', $row["Kosten"])."</td>";
+                                                            echo "<td>".sprintf('%01.2f', $row["PP"])."</td>";
                                                             echo "<td>".$row["Gewerke_Nr"]."</td>";	
                                                             echo "<td>";
                                                                 echo "<select class='form-control form-control-sm' id='".$row["id"]."'>";

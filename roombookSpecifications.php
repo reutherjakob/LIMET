@@ -1,9 +1,7 @@
 <?php
-session_start();
 include '_utils.php';
 init_page_serversides("");
 ?>
-
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -34,8 +32,6 @@ init_page_serversides("");
     <script type="text/javascript" src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
 
 
-    <!--- https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css --->
-
     <style>
 
         .btn-xs {
@@ -51,11 +47,8 @@ init_page_serversides("");
 </head>
 
 <body style="height:100%">
-
+<div id="limet-navbar"></div> <!-- Container für Navbar -->
 <div class="container-fluid">
-
-
-    <div id="limet-navbar"></div> <!-- Container für Navbar -->
 
     <div class="mt-4 card">
         <div class="card-header">Räume im Projekt</div>

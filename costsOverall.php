@@ -34,8 +34,8 @@ init_page_serversides("");
 
 <body style="height:100%">
 
+<div id="limet-navbar"></div> <!-- Container für Navbar -->
 <div class="container-fluid">
-    <div id="limet-navbar"></div> <!-- Container für Navbar -->		
 
     <div class="mt-4 card">
         <div class="card-header">Gesamtprojekt</div>

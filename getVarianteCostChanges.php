@@ -46,8 +46,8 @@ if(!isset($_SESSION["username"]))
 	while($row = $result->fetch_assoc()) {
 	    echo "<tr>";
 	    echo "<td>".$row["Variante"]."</td>";
-	    echo "<td>".money_format("%i", $row["kosten_alt"])."</td>";
-	    echo "<td>".money_format("%i", $row["kosten_neu"])."</td>";
+	    echo "<td>". sprintf('%01.2f',$row["kosten_alt"])."</td>";
+	    echo "<td>". sprintf('%01.2f', $row["kosten_neu"])."</td>";
 	    echo "<td>".$row["user"]."</td>";
 	    echo "<td>".$row["timestamp"]."</td>";
 	    echo "</tr>";
