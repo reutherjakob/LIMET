@@ -1,4 +1,4 @@
-<?php
+?php
 session_start();
 include '_utils.php';
 init_page_serversides();

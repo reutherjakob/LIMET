@@ -7,11 +7,16 @@
     <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
     <link rel="icon" href="iphone_favicon.png"/>
 
+    <!--<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+            crossorigin="anonymous"></script> -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
           integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
@@ -19,9 +24,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-            crossorigin="anonymous"></script>
+
     <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.css"
           rel="stylesheet"/>
     <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
@@ -32,8 +35,12 @@
             width: 100px;
         }
 
-        table {
+        .table {
             border: #75ff2e 1px solid;
+        }
+
+        .card-header {
+            height: 50px;
         }
 
         .card-body {
@@ -65,7 +72,7 @@ init_page_serversides();
         </div>
         <div class="col-8">
             <div class="card">
-                <div class="card-header d-inline-flex justify-content-lg-evenly ">
+                <div class="card-header d-inline-flex justify-content-lg-left ">
                     <div class="form-check">
                         <input class="form-check-input track-checkbox" type="checkbox" id="checkbox1">
                         <label class="form-check-label" for="checkbox1">Weniger Vergleichsräume laden</label>
@@ -90,8 +97,12 @@ init_page_serversides();
             </div>
         </div>
         <div class="col-2">
-            <div class="card">
-                <div class="card-header"> VERGLEICH</div>
+            <div class="card border-primary-subtle">
+                <div class="card-header "> VERGLEICH
+                    <button type="button" class="btn btn-xs" onclick="show_modal('helpModal')">
+                        <i class="fa fa-circle-info"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -101,7 +112,7 @@ init_page_serversides();
         <div class="col-12" id="col1">
             <div class="card border-success-subtle" id="card1">
                 <div class="card-header" id="CardHeaderRooms">
-                    <button class="btn float-end grün " onclick="toggleCard('col1', 'col2', this)">
+                    <button class="btn float-end grün" onclick="toggleCard('col1', 'col2', this)">
                         <i class="fa fa-arrow-right"> </i></button>
 
                     <button class="btn toggle-btn float-end grün ">
@@ -117,7 +128,7 @@ init_page_serversides();
             </div>
         </div>
         <div class="col-12" id="col2">
-            <div class="card" id="card2">
+            <div class="card border-primary-subtle" id="card2">
                 <div class="card-header justify-content-end d-inline-flex" id="CardHeaderVglRooms">
                     <button class="btn float-end toggle-btn grün "><i
                                 class="fa fa-arrow-up"></i>
@@ -152,7 +163,7 @@ init_page_serversides();
             </div>
         </div>
         <div class="col-6" id="col4">
-            <div class="card" id="card4">
+            <div class="card border-primary-subtle" id="card4">
                 <div class="card-header">
                     Elemente im Vergleichsraum
                     <button class="btn float-end toggle-btn grün "><i
@@ -166,7 +177,39 @@ init_page_serversides();
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header ">
+                <h5 class="modal-title" id="helpModalLabel">Hilfe - Raumvergleich</h5>
+            </div>
+            <div class="modal-body">
+                <p>Vergleichen Sie Räume, deren Bauangaben und ihre Ausstattung. Wählen Sie einen Referenzraum und einen Vergleichsraum (selbe Funktionsstelle,
+                    um Unterschiede und Ähnlichkeiten zu erkennen.</p>
+                <h4>Nutzung</h4>
+                <ol>
+                    <li><strong>Raum auswählen:</strong> Wählen Sie links/oben einen Referenzraum.</li>
+                    <li><strong>Vergleichsraum wählen:</strong> Wählen Sie rechts/darunter den Raum zum Vergleichen. Hier können ebenso detaillierte Bauangaben eingeblendet und verglichen werden.
+                    </li>
+                    <li><strong>Checkbox-Filter:</strong> Funktion weniger Laden: Selektiert gleichartige Vergleichs Räume bereits vorher aus und zeigt jeweils nur einen an.</li>
+                    <li><strong>Ausstattungsvergleich:</strong> Grün markierte Elemente sind in beiden Räumen vorhanden,
+                        rot hervorgehobene nur im aktuell ausgewähltem Raum.
+                    </li>
+                </ol>
+                <h4>Feedback</h4>
+                <p>Bei Problemen, Unstimmigkeiten und Wünschen wenden Sie sich bitte an das Support-Team.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script src="roombookSpecifications_constDeclarations.js"></script>
+<script src="_utils.js"></script>
 <script>
 
     $(document).ready(function () {
@@ -536,13 +579,6 @@ init_page_serversides();
         }
     }
 
-    function move_item(item2move_id, where2move_id) {
-        let item = document.getElementById(item2move_id);
-        if (item) {
-            item.parentNode.removeChild(item);
-            document.getElementById(where2move_id).appendChild(item);
-        }
-    }
 
     //    function addToggleButton(cardId) {
     //                    const card = document.getElementById(cardId);

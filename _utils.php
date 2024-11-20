@@ -20,6 +20,7 @@ function print_session_vars() {
 **/
 
 function init_page_serversides($ommit_redirect = "", $noscroll = "") {
+    session_start();
     check_login();
     get_project();
     if ($ommit_redirect == "") {
