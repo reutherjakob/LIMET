@@ -22,7 +22,6 @@ init_page_serversides('X');
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
         <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.js"></script>
 
-
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/datatables.mark.js/2.0.0/datatables.mark.min.css"/>
         <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script>
         <script type="text/javascript" src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
@@ -78,7 +77,6 @@ init_page_serversides('X');
                                                 <th>MT-relevant</th>
                                                 <th>BO</th>
 						</tr></thead><tbody>";
-
                             while ($row = $result->fetch_assoc()) {
                                 echo "<tr>";
                                 echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
@@ -182,6 +180,7 @@ init_page_serversides('X');
 													</select>	
 												</div>
 										</div>";
+ 
                                     ?>
                                 </div>
                             </div>
@@ -215,7 +214,6 @@ init_page_serversides('X');
 
                                     $mysqli->close();
                                     ?>	
-
                                 </div>
                             </div>
                         </div>
@@ -257,7 +255,7 @@ init_page_serversides('X');
             </div>        
 
         </div>
-        <!--MODAL FÜR BO -->
+
 
         <div class='modal fade' id='boModal' role='dialog'>
             <div class='modal-dialog modal-md'>	    
@@ -375,9 +373,7 @@ init_page_serversides('X');
                 });
 
 
-                // CLICK TABELLE ELEMENTE IN DB
                 var table1 = $('#tableElementsInDB').DataTable();
-
                 $('#tableElementsInDB tbody').on('click', 'tr', function () {
 
                     if ($(this).hasClass('info')) {

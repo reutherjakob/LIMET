@@ -37,7 +37,6 @@ init_page_serversides("", "x");
                     <div class="form-check-inline  align-items-baseline"><label for="dateSelect"> </label><input type="date" id="dateSelect" name="dateSelect"><div class="spacer"></div></div>    
                     <div class="col-md-3 d-inline-flex align-items-baseline" id="sub12"> </div>
                     <div class="col-md-3 d-inline-flex align-items-baseline" id="sub2"></div>
-
                     <div class="col-md-2 form-check-inline justify-content-end  align-items-baseline" id="sub3"></div>
                 </div>
 
@@ -105,7 +104,6 @@ init_page_serversides("", "x");
                 initButtons();
                 setTimeout(() => {
                     moveSearchBox('sub1');
-//                    addCheckbox('#sub3', "Show-old-Reports", toggleOldReports);
                     let searchbuilder = [{
                             extend: 'searchBuilder',
                             className: "btn fas fa-search",
@@ -116,8 +114,7 @@ init_page_serversides("", "x");
                 }, 300);
                 addMTFilter('#sub1');
                 add_entfallen_filter('#sub1');
-
-
+//                    addCheckbox('#sub3', "Show-old-Reports", toggleOldReports);
                 const toggleOldReportsButton = $('<button type="button" class="btn btn-sm btn-light border-dark" id="toggleOldReports">Show Old Reports</button>');
                 toggleOldReportsButton.on('click', toggleOldReports);
                 $('#sub3').append(toggleOldReportsButton);

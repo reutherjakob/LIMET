@@ -159,8 +159,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             init_dt();
                             init_editable_checkbox();
                             add_MT_rel_filter('#TableCardHeader');
-                            add_entfallen_filter('#TableCardHeader'); 
-                            move_dt_search();
+                            add_entfallen_filter('#TableCardHeader');
+                            move_item("dt-search-0", "TableCardHeader");
                             init_showRoomElements_btn();
                             init_btn_4_dt();
                             init_visibilities();
@@ -334,10 +334,10 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                         }
 
 
-
                         function open_einstellung_modal() {
                             $('#einstellungModal').modal('show');
                         }
+
 
                         function check_angaben() {
                             var selectedRows = table.rows({selected: true}).data();
@@ -526,22 +526,15 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                             });
                         }
 
-                        function move_dt_search() {
-                            var dt_searcher = document.getElementById("dt-search-0");
-                            dt_searcher.parentNode.removeChild(dt_searcher);
-                            document.getElementById("TableCardHeader").appendChild(dt_searcher);
-                            dt_searcher.classList.add("fix_size_search");
-                        }
- 
                         function init_editable_checkbox() {
-                            var checkbox = $('<input>', {
+                            let checkbox = $('<input>', {
                                 type: 'checkbox',
                                 name: 'EditableTable',
                                 id: 'checkbox_EditableTable',
                                 checked: document.getElementById('settings_save_edit_cbx').checked,
                                 class: 'form-check-inputz  form-check-input fix_size'
-                            }).appendTo($('#TableCardHeader'));
-                            var label = $('<label>', {
+                            }).appendTo($(`#TableCardHeader`));
+                            let label = $('<label>', {
                                 id: 'edit_cbx',
                                 text: 'Edit Table',
                                 class: 'form-check-label ',

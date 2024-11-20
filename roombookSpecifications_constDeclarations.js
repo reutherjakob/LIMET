@@ -24,7 +24,7 @@ const buttonRanges = [
     {name: '-H2O', start: 138, end: 146, longName: 'Labor-H2O'}
 ];
 
-const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and the CPY/save methods
+const columnsDefinition = [// NEW FIELD? - ADD Here, In get_rb_specs_data.php and the CPY/save methods
     {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projek ID', visible: false, searchable: false},
     {data: 'idTABELLE_Räume', title: 'Raum ID', visible: false, searchable: false},
     {data: 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', title: 'Funktionsstellen ID', visible: false, searchable: false},

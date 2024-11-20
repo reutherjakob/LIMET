@@ -1,4 +1,4 @@
-<?php
+?php
 session_start();
 include '_utils.php';
 init_page_serversides();
@@ -43,7 +43,7 @@ $mysqli->close();
 ?>
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"/>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de"></html>
 <head>
     <title>RB-Detail</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />

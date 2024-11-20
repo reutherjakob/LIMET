@@ -35,3 +35,15 @@ function updateToastPositions() {
         topPosition += toast.offsetHeight + 10;
     });
 }
+
+function move_item(item2move_id, where2move_id) {
+    let item = document.getElementById(item2move_id);
+    if (item) {
+        item.parentNode.removeChild(item);
+        document.getElementById(where2move_id).appendChild(item);
+    }
+}
+
+function show_modal(modal_id){
+    $('#'+ modal_id).modal('show');
+}
