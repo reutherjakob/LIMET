@@ -316,7 +316,6 @@ $_SESSION["dbAdmin"] = "1";
         // Element Gewerk Änderung
         $('#elementGewerk').change(function () {
             let gewerkID = this.value;
-
             $.ajax({
                 url: "getElementGroupsByGewerk.php",
                 data: {"gewerkID": gewerkID},
@@ -355,7 +354,6 @@ $_SESSION["dbAdmin"] = "1";
             } else {
                 alert("Bitte alle Felder ausfüllen!");
             }
-
         });
 
 

@@ -24,7 +24,7 @@ if(!isset($_SESSION["username"]))
 	} 
         
         if(filter_input(INPUT_GET, 'lotMKFOf')==0){        
-            if(strlen($_GET["lotSum"])	> 0){
+            if(null !=  ($_GET["lotSum"]) ){
                 if(filter_input(INPUT_GET, 'lotAuftragnehmer')==0){
                     $sql= "INSERT INTO `LIMET_RB`.`tabelle_lose_extern`
                                     (`LosNr_Extern`,
@@ -168,7 +168,7 @@ if(!isset($_SESSION["username"]))
                     $mkfLosBezeichnung = $row["LosBezeichnung_Extern"];
             }
             
-            if(strlen($_GET["lotSum"])	> 0){
+            if( null != ($_GET["lotSum"])	>){
                 if(filter_input(INPUT_GET, 'lotAuftragnehmer')==0){
                     $sql= "INSERT INTO `LIMET_RB`.`tabelle_lose_extern`
                                     (`LosNr_Extern`,

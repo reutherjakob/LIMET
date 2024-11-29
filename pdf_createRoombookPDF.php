@@ -10,7 +10,7 @@
 //============================================================+
 
 // Include the main TCPDF library (search for installation path).
-require_once('TCPDF-master/TCPDF-master/tcpdf.php');
+require_once('TCPDF-main/TCPDF-main/tcpdf.php');
 
 function br2nl($string){
     $return= str_replace(array("<br/>"), "\n", $string);
@@ -280,7 +280,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell(80, 6, "Bauetappe: ".$row['Bauetappe'],'B', 'L', 0, 0);
         
         $pdf->SetFont('helvetica', '', 8);
-        if(strlen($row['Anmerkung FunktionBO'])>0){
+        if(null !=($row['Anmerkung FunktionBO'])){
             $pdf->Ln();
             $rowHeightComment = $pdf->getStringHeight(150,br2nl($row['Anmerkung FunktionBO']),false,true,'',1);
             // Wenn Seitenende? Überprüfen und neue Seite anfangen
@@ -370,23 +370,23 @@ foreach ($teile as $valueOfRoomID) {
             else{
                 $additionalRoombookData = $additionalRoombookData."\nVerwendung: Nein";
             }
-            if(strlen($row['Kurzbeschreibung'])>0){
+            if(null !=($row['Kurzbeschreibung'])){
                 $additionalRoombookData = $additionalRoombookData."\nKommentar: ".$row['Kurzbeschreibung'];
             }
-            if(strlen($row['Inventarnummer'])>0){
+            if(null !=($row['Inventarnummer'])){
                 $additionalRoombookData = $additionalRoombookData."\nBestandsgerät ".$bestandsCounter.":\n     Inventarnummer: ".$row['Inventarnummer'];
             }
-            if(strlen($row['Seriennummer'])>0){
+            if(null !=($row['Seriennummer'])){
                 $additionalRoombookData = $additionalRoombookData."\n     Seriennummer: ".$row['Seriennummer'];
             }
-            if(strlen($row['Anschaffungsjahr'])>0){
+            if(null !=($row['Anschaffungsjahr'])){
                 $additionalRoombookData = $additionalRoombookData."\n     Anschaffungsjahr: ".$row['Anschaffungsjahr'];
             }
-            if(strlen($row['Hersteller'])>0){
+            if(null !=($row['Hersteller'])){
                 $additionalRoombookData = $additionalRoombookData."\n     Gerät: ".$row['Hersteller']." ".$row['Typ'];
             }            
 
-            if(strlen($additionalRoombookData)>0){
+            if(null !=($additionalRoombookData)){
                 $pdf->Ln();
 
                 $pdf->SetFont('helvetica', 'I', 6);
@@ -412,16 +412,16 @@ foreach ($teile as $valueOfRoomID) {
             $pdf->SetFont('helvetica', 'I', 6);
 
             $additionalRoombookExtraData = "";
-            if(strlen($row['Inventarnummer'])>0){
+            if(null !=($row['Inventarnummer'])){
                 $additionalRoombookExtraData = $additionalRoombookExtraData."Bestandsgerät ".$bestandsCounter.":\n     Inventarnummer: ".$row['Inventarnummer'];
             }
-            if(strlen($row['Seriennummer'])>0){
+            if(null !=($row['Seriennummer'])){
                 $additionalRoombookExtraData = $additionalRoombookExtraData."\n     Seriennummer: ".$row['Seriennummer'];
             }
-            if(strlen($row['Anschaffungsjahr'])>0){
+            if(null !=($row['Anschaffungsjahr'])){
                 $additionalRoombookExtraData = $additionalRoombookExtraData."\n     Anschaffungsjahr: ".$row['Anschaffungsjahr'];
             }
-            if(strlen($row['Hersteller'])>0){
+            if(null !=($row['Hersteller'])){
                 $additionalRoombookExtraData = $additionalRoombookExtraData."\n     Gerät: ".$row['Hersteller']." ".$row['Typ'];
             }
             $rowHeight = $pdf->getStringHeight(50,$additionalRoombookExtraData,false,true,'',1);

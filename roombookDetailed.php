@@ -36,7 +36,6 @@ init_page_serversides();
 <body style="height:100%">
 <div id="limet-navbar"></div>
 <div class="container-fluid">
-
     <div class='row'>
         <div class='col-sm-8'>
             <div class="mt-2 card">
@@ -50,11 +49,8 @@ init_page_serversides();
                             </label>
                         </div>
                         <div id="CardHeaderRaume" class="col-md-2"></div>
-
                     </div>
-
                 </div>
-
                 <div class="card-body" style="overflow: auto; ">
                     <?php
                     $mysqli = utils_connect_sql();
@@ -98,7 +94,7 @@ init_page_serversides();
                         }
                         echo "</td>";
                         echo "<td>";
-                        if (strlen($row["Anmerkung FunktionBO"]) > 0) {
+                        if ($row["Anmerkung FunktionBO"] != null) {
                             echo "<button type='button' class='btn btn-xs btn-outline-dark' id='buttonBO' value='" . $row["Anmerkung FunktionBO"] . "' data-toggle='modal' data-target='#boModal'><i class='fa fa-comment'></i></button>";
                         }
                         echo "</td>";
@@ -146,7 +142,7 @@ init_page_serversides();
         <div class="card-header">
             <button type="button" class="btn btn-outline-dark btn-xs" id="showDBElementData"><i
                         class="fas fa-caret-right"></i></button>
-            </button>Datenbank-Elemente
+            Datenbank-Elemente
         </div>
         <div class="card-body" style="display:none" id="DBElementData">
             <div class="row mt-4">
@@ -167,18 +163,15 @@ init_page_serversides();
                             while ($row = $result->fetch_assoc()) {
                                 echo "<option value=" . $row["idtabelle_element_gewerke"] . ">" . $row["Nummer"] . " - " . $row["Gewerk"] . "</option>";
                             }
-                            echo "</select>	
-												</div>
-										</div>";
-
-                            echo "<div class='form-group row'>
-									 			<label class='control-label col-md-2' for='elementHauptgruppe'>Hauptgruppe</label>
-												<div class='col-md-10'>
-													<select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>
-														<option selected>Gewerk auswählen</option>
-													</select>	
-												</div>
-										</div>";
+                            echo "</select></div></div>
+                                    <div class='form-group row'>
+                                            <label class='control-label col-md-2' for='elementHauptgruppe'>Hauptgruppe</label>
+                                            <div class='col-md-10'>
+                                                <select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>
+                                                    <option selected>Gewerk auswählen</option>
+                                                </select>	
+                                            </div>
+                                    </div>";
 
                             echo "<div class='form-group row'>
 									 			<label class='control-label col-md-2' for='elementGruppe'>Gruppe</label>
@@ -384,11 +377,12 @@ init_page_serversides();
         $('#tableElementsInDB tbody').on('click', 'tr', function () {
 
             if ($(this).hasClass('info')) {
-                //$(this).removeClass('info');
+
             } else {
                 table1.$('tr.info').removeClass('info');
                 $(this).addClass('info');
                 var elementID = table1.row($(this)).data()[0];
+                //console.log(elementID);
                 $.ajax({
                     url: "getStandardElementParameters.php",
                     data: {"elementID": elementID},

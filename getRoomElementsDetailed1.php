@@ -1,6 +1,7 @@
 <?php
-session_start();
+// V2.0: 2024-11-29, Reuther & Fux
 include '_utils.php';
+include "_format.php";
 check_login();
 ?>
 
@@ -44,8 +45,6 @@ check_login();
         }
 
     </style>
-
-
 </head>
 <body>
 
@@ -56,10 +55,11 @@ $sql = "SELECT Sum(`tabelle_räume_has_tabelle_elemente`.`Anzahl`*`tabelle_proje
                 FROM tabelle_räume_has_tabelle_elemente INNER JOIN tabelle_projekt_varianten_kosten ON (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) AND (tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten = tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)
                 WHERE (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=" . $_SESSION["roomID"] . ") AND ((tabelle_räume_has_tabelle_elemente.Standort)=1) AND ((tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume_has_tabelle_elemente.`Neu/Bestand`)=1));";
 $result = $mysqli->query($sql);
+
 $row = $result->fetch_assoc();
-$number = $row["Summe_Neu"];
-$formatter = new NumberFormatter('de_DE', NumberFormatter::CURRENCY);
-$formattedNumber = $formatter->formatCurrency($number, 'EUR');
+
+$formattedNumber = format_money_report($row["Summe_Neu"]);
+
 echo "<form class='form-inline'>
             <div class='form-group'>
                 <label for='kosten_neu'>Raumkosten-Neu: </label>
@@ -72,9 +72,7 @@ $sql = "SELECT Sum(`tabelle_räume_has_tabelle_elemente`.`Anzahl`*`tabelle_proje
                 WHERE (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=" . $_SESSION["roomID"] . ") AND ((tabelle_räume_has_tabelle_elemente.Standort)=1) AND ((tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume_has_tabelle_elemente.`Neu/Bestand`)=0));";
 $result = $mysqli->query($sql);
 $row = $result->fetch_assoc();
-$number = $row["Summe_Bestand"];
-$formatter = new NumberFormatter('de_DE', NumberFormatter::CURRENCY);
-$formattedNumber = $formatter->formatCurrency($number, 'EUR');
+$formattedNumber = format_money_report(  $row["Summe_Bestand"]);
 echo "
                 <div class='form-group'>
                     <label for='kosten_neu'>Raumkosten-Bestand: </label>
@@ -177,7 +175,7 @@ while ($row = $result->fetch_assoc()) {
     }
     echo "</select></td>";
 
-    if (strlen($row["Kurzbeschreibung"]) > 0) {
+    if ( null != ($row["Kurzbeschreibung"])  ) {
         echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment'></i></button></td>";
     } else {
         echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment-slash'></i></button></td>";

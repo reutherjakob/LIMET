@@ -109,7 +109,6 @@ init_page_serversides();
         </div>
     </div>
 
-
     <script>
 
         // Tabellen formatieren
@@ -130,25 +129,9 @@ init_page_serversides();
             });
         });
 
-        //Variantenkostenänderungen anzeigen
-        /*
-	$("input[value='showVarianteCostChanges']").click(function(){
-	    var ID = this.id;
-
-		$.ajax({
-                        url : "getVarianteCostChanges.php",
-                        type: "GET",
-                        data:{"elementID":ID},
-                        success: function(data){
-                            $("#mbody").html(data);	            			 			
-                        } 
-                });        
-        });
-        */
 
         $("button[value='showVarianteCostChanges']").click(function () {
             var ID = this.id;
-
             $.ajax({
                 url: "getVarianteCostChanges.php",
                 type: "GET",
@@ -158,7 +141,6 @@ init_page_serversides();
                 }
             });
         });
-
     </script>
 
 </body>

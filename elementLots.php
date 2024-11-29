@@ -52,13 +52,7 @@ init_page_serversides();
         <div class="card-body" id="elementLots">
 
             <?php
-            $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-
-            /* change character set to utf8 */
-            if (!$mysqli->set_charset("utf8")) {
-                printf("Error loading character set utf8: %s\n", $mysqli->error);
-                exit();
-            }
+            $mysqli = utils_connect_sql();
             /*
             $sql = "SELECT Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_projekt_varianten_kosten.Kosten, tabelle_projekt_varianten_kosten.Kosten*Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS PP, tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern, tabelle_lose_extern.Ausführungsbeginn, tabelle_lose_extern.idtabelle_Lose_Extern, tabelle_varianten.idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
                     FROM tabelle_projekt_varianten_kosten INNER JOIN (tabelle_varianten INNER JOIN (tabelle_lose_extern RIGHT JOIN ((tabelle_räume_has_tabelle_elemente INNER JOIN tabelle_räume ON tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = tabelle_räume.idTABELLE_Räume) INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON tabelle_lose_extern.idtabelle_Lose_Extern = tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) ON (tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte = tabelle_räume.tabelle_projekte_idTABELLE_Projekte) AND (tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) AND (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente)
@@ -229,7 +223,6 @@ init_page_serversides();
                 return true;
             }
 
-
             if ($("#filter_bestand").val() === '1') {
                 if ($("#filter_count").is(':checked')) {
                     if ($("#filter_lot").is(':checked')) {
@@ -371,10 +364,7 @@ init_page_serversides();
                 "pageLength": 10,
                 "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
                 "mark": true,
-                dom: 'Bfrtip',
-                buttons: [
-                    'copy'
-                ]
+                dom: 'frtip'
                 //"scrollY":        '20vh',
                 /*"scrollCollapse": true,
                 "footerCallback": function ( row, data, start, end, display ) {

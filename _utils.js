@@ -44,6 +44,15 @@ function move_item(item2move_id, where2move_id) {
     }
 }
 
+function move_item_by_class(sourceClass, targetId) {
+    let sourceElements = document.getElementsByClassName(sourceClass);
+    let targetElement = document.getElementById(targetId);
+    Array.from(sourceElements).forEach(function (element) {
+        targetElement.appendChild(element);
+    });
+}
+
 function show_modal(modal_id){
     $('#'+ modal_id).modal('show');
 }
+

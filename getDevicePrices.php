@@ -1,39 +1,29 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-
-
-    <!--DATEPICKER -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker3.min.css">
     <script type='text/javascript'
             src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
     <title></title>
-
 </head>
 <body>
 <?php
 include "_utils.php";
+include "_format.php";
 check_login();
 
 $mysqli = utils_connect_sql();
-
 if ($_GET["deviceID"] != "") {
     $_SESSION["deviceID"] = $_GET["deviceID"];
 }
-
-
 $sql = "SELECT tabelle_preise.Datum, tabelle_preise.Quelle, tabelle_preise.Menge, tabelle_preise.Preis, tabelle_preise.Nebenkosten, tabelle_projekte.Interne_Nr, tabelle_projekte.Projektname, tabelle_lieferant.Lieferant
                     FROM tabelle_lieferant RIGHT JOIN (tabelle_preise LEFT JOIN tabelle_projekte ON tabelle_preise.TABELLE_Projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte) ON tabelle_lieferant.idTABELLE_Lieferant = tabelle_preise.tabelle_lieferant_idTABELLE_Lieferant
                     WHERE (((tabelle_preise.TABELLE_Geraete_idTABELLE_Geraete)=" . $_SESSION["deviceID"] . "));";
 
 $result = $mysqli->query($sql);
-setlocale(LC_MONETARY, "de_DE");
-
-echo "<table class='table table-striped table-sm' id='tableDevicePrices' cellspacing='0'>
+echo "<table class='table table-striped table-sm' id='tableDevicePrices'>
 	<thead><tr>";
 echo "<th>Datum</th>
 		<th>Info</th>
@@ -43,34 +33,24 @@ echo "<th>Datum</th>
                 <th>Projekt</th>
                 <th>Lieferant</th>
 	</tr></thead><tbody>";
-
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
     $date = date_create($row["Datum"]);
     echo "<td>" . date_format($date, 'Y-m-d') . "</td>";
     echo "<td>" . $row["Quelle"] . "</td>";
     echo "<td>" . $row["Menge"] . "</td>";
-    echo "<td>" . sprintf('%01.2f', $row["Preis"]) . "</td>";
-    echo "<td>" . sprintf('%01.2f', $row["Nebenkosten"]) . "</td>";
+    echo "<td>" . format_money($row["Preis"]) . "</td>";
+    echo "<td>" . format_money($row["Nebenkosten"]) . "</td>";
     echo "<td>" . $row["Projektname"] . "</td>";
     echo "<td>" . $row["Lieferant"] . "</td>";
     echo "</tr>";
 }
-
 echo "</tbody></table>";
-
-if ($_SESSION["dbAdmin"] == "1") {
-    echo "<input type='button' id='addPriceModal' class='btn btn-success btn-sm' value='Preis hinzufügen' data-toggle='modal' data-target='#addPriceToElementModal'></input>";
-}
-
-
+echo "<input type='button' id='addPriceModal' class='btn btn-success btn-sm' value='Preis hinzufügen' data-toggle='modal' data-target='#addPriceToElementModal'></input>";
 ?>
 
-<!-- Modal zum Anlegen eines Preises -->
 <div class='modal fade' id='addPriceToElementModal' role='dialog'>
     <div class='modal-dialog modal-md'>
-
-        <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Preis hinzufügen</h4>
@@ -100,8 +80,6 @@ if ($_SESSION["dbAdmin"] == "1") {
                     </div>
 
                     <?php
-                    //$sql = "SELECT view_Projekte.idTABELLE_Projekte, view_Projekte.Interne_Nr, view_Projekte.Projektname"
-                    //        . " FROM view_Projekte ORDER BY view_Projekte.Interne_Nr";
 
                     $sql = "SELECT tabelle_projekte.idTABELLE_Projekte, tabelle_projekte.Interne_Nr, tabelle_projekte.Projektname"
                         . " FROM tabelle_projekte ORDER BY tabelle_projekte.Interne_Nr;";
@@ -168,21 +146,32 @@ if ($_SESSION["dbAdmin"] == "1") {
         "order": [[0, "desc"]],
         //"pagingType": "simple_numbers",
         //"lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
-        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json", "decimal": ",", "thousands":"."},
         "scrollY": '20vh',
         "scrollCollapse": true
     });
 
 
     //Preis zu Geraet hinzufügen
-    $("#addPrice").click(function () {
+    $("#addPrice").click(function () {  // TODO test preis hinzufügen...
         var date = $("#date").val();
         var quelle = $("#quelle").val();
         var menge = $("#menge").val();
-        var ep = $("#ep").val();
+
         var nk = $("#nk").val();
+        if (nk.toLowerCase().endsWith('k')) {
+            nk= nk.slice(0, -1) + '000';
+        }
+        nk.replace(/,/g, '.').replace(/[^0-9.]/g, '');
+
         var project = $("#project").val();
         var lieferant = $("#lieferant").val();
+
+        let ep = $("#ep").val();
+        if (ep.toLowerCase().endsWith('k')) {
+            ep= ep.slice(0, -1) + '000';
+        }
+        ep.replace(/,/g, '.').replace(/[^0-9.]/g, '');
 
         if (date !== "" && quelle !== "" && menge !== "" && ep !== "" && nk !== "" && lieferant > 0) {
             $.ajax({

@@ -98,7 +98,7 @@ init_page_serversides();
                         }
                         echo "</td>";
                         echo "<td>";
-                        if (strlen($row["Anmerkung FunktionBO"]) > 0) {
+                        if ( null != ($row["Anmerkung FunktionBO"]) ) {
                             echo "<button type='button' class='btn btn-xs btn-outline-dark' id='buttonBO' value='" . $row["Anmerkung FunktionBO"] . "' data-toggle='modal' data-target='#boModal'><i class='fa fa-comment'></i></button>";
                         }
                         echo "</td>";

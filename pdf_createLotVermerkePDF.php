@@ -25,7 +25,7 @@
  */
 
 // Include the main TCPDF library (search for installation path).
-require_once('TCPDF-master/TCPDF-master/tcpdf.php');
+require_once('TCPDF-main/TCPDF-main/tcpdf.php');
 
 // extend TCPF with custom functions
 class MYPDF extends TCPDF {
@@ -113,7 +113,7 @@ class MYPDF extends TCPDF {
             $this->SetFont('helvetica','','8');
                         
             $betreffText = "";
-            if(strlen($row['Raumnr']) > 0){
+            if(null !=  ($row['Raumnr']) ){
                 $betreffText = $betreffText.'Betrifft Raum: '.$row['Raumnr']." ".$row['Raumbezeichnung']."\n";
             }
             

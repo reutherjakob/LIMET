@@ -1,8 +1,9 @@
 <?php
+// V2.0: 2024-11-29, Reuther & Fux
 include '_utils.php';
+include "_format.php";
 init_page_serversides();
 ?>
-
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
@@ -26,23 +27,24 @@ init_page_serversides();
           href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
     <script type="text/javascript"
             src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.js"></script>
-
-
     <!--DATEPICKER -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker3.min.css">
     <script type='text/javascript'
             src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
-
     <!--Bootstrap Toggle -->
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
-    <style>.top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }</style>
+    <style>
+        .btn-sm, .buttons-excel {
+            margin: 5px;
+            height: 30px;
+            padding: 1px 20px; /* Adjust padding to fit content */
+        }
+
+
+    </style>
 </head>
 
 <body style="height:100%" id="bodyTenderLots">
@@ -52,27 +54,30 @@ init_page_serversides();
     <div class='row'>
         <div class='col-sm-8'>
             <div class="mt-4 card">
-                <div class="card-header">Lose im Projekt</div>
-                <div class="card-body" id="projectLots">
-                    <div class="table-responsive">
-                        <button type='button' class='btn btn-default btn-sm' id='createTenderListPDF'><i
+                <div class="card-header d-inline-flex justify-content-between align-items-center">
+                    <div class="d-inline-flex align-items-center">
+                        <span> <strong>Lose im Projekt</strong>  </span>
+                        <input type='button' id='addTenderLotModalButton' class='btn btn-success btn-sm'
+                               value='Los hinzufügen' data-toggle='modal' data-target='#addTenderLotModal'>
+                    </div>
+                    <div class="d-inline-flex align-items-center" id="LoseCardHeaderSub">
+                        <button type='button' class='btn btn-secondary btn-sm' id='createTenderListPDF'><i
                                     class='far fa-file-pdf'></i> Losliste mit Elementen-PDF
                         </button>
-                        <button type='button' class='btn btn-default btn-sm' id='createTenderListWithoutElementsPDF'><i
+                        <button type='button' class='btn btn-secondary btn-sm' id='createTenderListWithoutElementsPDF'>
+                            <i
                                     class='far fa-file-pdf'></i> Losliste-PDF
                         </button>
-                        <button type='button' class='btn btn-default btn-sm' id='createTenderWorkflowPDF'><i
+                        <button type='button' class='btn btn-secondary btn-sm' id='createTenderWorkflowPDF'><i
                                     class='far fa-file-pdf'></i> Workflow-PDF
                         </button>
+                    </div>
+                </div>
+
+                <div class="card-body" id="projectLots">
+                    <div class="table-responsive">
                         <?php
-                        $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-
-                        /* change character set to utf8 */
-                        if (!$mysqli->set_charset("utf8")) {
-                            printf("Error loading character set utf8: %s\n", $mysqli->error);
-                            exit();
-                        }
-
+                        $mysqli = utils_connect_sql();
                         // Abfrage der möglichen Lieferanten
                         $sql = "SELECT `tabelle_lieferant`.`idTABELLE_Lieferant`,
                                                                             `tabelle_lieferant`.`Lieferant`
@@ -122,48 +127,43 @@ init_page_serversides();
                         echo "<table  id='tableTenderLots' class='table table-striped table-bordered table-sm' cellspacing='0' width='100%'>
 								<thead><tr>
 								<th>ID</th>
-                                                                <th></th>
-								<th>Nummer</th>
-								<th>Bezeichnung</th>
-                                                                <th></th>                                                                
-                                                                <th>Versand</th>
-								<th>Liefertermin</th>
-                                                                <th>Verfahren</th>
-                                                                <th>Bearbeiter</th>
-								<th>Status</th>
-                                                                <th>Schätzung-Neu</th>
-                                                                <th>Schätzung-Bestand</th>
-                                                                <th>Kostenanschlag</th>
-                                                                <th>Budget (val)</th>
-								<th>Vergabesumme</th>
-                                                                <th>Auftragnehmer</th>                                                                
-                                                                <th>IDLieferant</th>
-                                                                <th>Vergabe abgeschlossen</th>                                                                  
-                                                                <th>MKF-von_Los</th>   
-                                                                <th>Notiztext</th> 
-                                                                <th></th>
-                                                                <th>KA</th>
-                                                                <th>BUD</th>
-                                                                <th>VS</th>
+								
+                                        <th></th>
+                                        <th>Nummer</th>
+                                        <th>Bezeichnung</th>                                       
+                                        <th>Versand</th>
+								        <th>Liefertermin</th>
+                                        <th>Verfahren</th>
+                                        <th>Bearbeiter</th>
+								        <th>Status</th>
+                                        <th>Schätzung-Neu</th>
+                                        <th>Schätzung-Bestand</th>
+                                        <th>Kostenanschlag</th>
+                                        <th>Budget (val)</th>
+                                        <th>Vergabesumme</th>
+                                            <th>Schätzung-Neu</th>
+                                            <th>Schätzung-Bestand</th>
+                                            <th>Kostenanschlag</th>
+                                            <th>Budget (val)</th>
+                                            <th>Vergabesumme</th>
+                                        <th>Auftragnehmer</th>      
+                                        <th></th>          
+                                        <th>Notiztext</th>                                         
+                                            <th>IDLieferant</th>
+                                            <th>Vergabe abgeschlossen</th>                                                                  
+                                            <th>MKF-von_Los</th>   
+                 
 								</tr></thead>";
                         echo "<tbody>";
-
-                        setlocale(LC_MONETARY, "de_DE");
-
-                        //Array zum speichern der Losnummer
                         $hauptLose = array();
-
                         while ($row = $result->fetch_assoc()) {
                             echo "<tr>";
                             echo "<td>" . $row["idtabelle_Lose_Extern"] . "</td>";
-                            echo "<td><button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn btn-outline-dark btn-xs' value='changeTenderLot'><i class='fas fa-pencil-alt'></i></button></td>";
+
+                            echo "<td> <button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn btn-outline-dark btn-xs' value='changeTenderLot'><i class='fas fa-pencil-alt'></i></button></td>";
                             echo "<td>" . $row["LosNr_Extern"] . "</td>";
                             echo "<td>" . $row["LosBezeichnung_Extern"] . "</td>";
-                            echo "<td>";
-                            if (strlen($row["Notiz"]) > 0) {
-                                echo "<span class='glyphicon glyphicon-list-alt' data-toggle='tooltip' data-placement='auto right' title='" . $row["Notiz"] . "'>";
-                            }
-                            echo "</td>";
+
                             echo "<td>" . $row["Versand_LV"] . "</td>";
                             echo "<td>" . $row["Ausführungsbeginn"] . "</td>";
                             echo "<td>" . $row["Verfahren"] . "</td>";
@@ -184,20 +184,38 @@ init_page_serversides();
                                     break;
                             }
                             echo "</td>";
-                            echo "<td align='right'>" . money_format("€ %!n", $row["Summe"]) . "</td>";
-                            echo "<td align='right'>" . money_format("€ %!n", $row["SummeBestand"]) . "</td>";
-                            echo "<td align='right'>" . money_format("€ %!n", $row["Kostenanschlag"]) . "</td>";
-                            echo "<td align='right'>" . money_format("€ %!n", $row["Budget"]) . "</td>";
-                            echo "<td align='right'>" . money_format("€ %!n", $row["Vergabesumme"]) . "</td>";
-                            echo "<td>" . $row["Lieferant"] . "</td>";
-                            echo "<td>" . $row["idTABELLE_Lieferant"] . "</td>";
-                            echo "<td>" . $row["Vergabe_abgeschlossen"] . "</td>";
-                            echo "<td>" . $row["mkf_von_los"] . "</td>";
-                            echo "<td>" . $row["Notiz"] . "</td>";
-                            echo "<td><button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn btn-outline-dark btn-xs' value='LotWorkflow' data-toggle='modal' data-target='#workflowDataModal'><i class='fas fa-history'></i></button></td>";
+                            echo "<td align='right'>" . format_money($row["Summe"]) . "</td>";
+                            echo "<td align='right'>" . format_money($row["SummeBestand"]) . "</td>";
+                            echo "<td align='right'>" . format_money($row["Kostenanschlag"]) . "</td>";
+                            echo "<td align='right'>" . format_money($row["Budget"]) . "</td>";
+                            echo "<td align='right'>" . format_money($row["Vergabesumme"]) . "</td>";
+
+                            $out = "0";
+                            if ($row["Summe"] == null) {
+                                $out = "0.00";
+                            } else {
+                                $out = $row["Summe"];
+                            }
+                            echo "<td>" . $out . "</td>";
+                            if ($row["SummeBestand"] == null) {
+                                $out = "0.00";
+                            } else {
+                                $out = $row["SummeBestand"];
+                            }
+                            echo "<td>" . $out . "</td>";
                             echo "<td>" . $row["Kostenanschlag"] . "</td>";
                             echo "<td>" . $row["Budget"] . "</td>";
                             echo "<td>" . $row["Vergabesumme"] . "</td>";
+
+                            echo "<td>" . $row["Lieferant"] . "</td>";
+
+                            echo "<td><button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn btn-outline-dark btn-xs' value='LotWorkflow' data-toggle='modal' data-target='#workflowDataModal'><i class='fas fa-history'></i></button></td>";
+                            echo "<td>" . $row["Notiz"] . "</td>";
+
+                            echo "<td>" . $row["idTABELLE_Lieferant"] . "</td>";
+                            echo "<td>" . $row["Vergabe_abgeschlossen"] . "</td>";
+                            echo "<td>" . $row["mkf_von_los"] . "</td>";
+
                             echo "</tr>";
                             $hauptLose[$row['idtabelle_Lose_Extern']]['idtabelle_Lose_Extern'] = $row['idtabelle_Lose_Extern'];
                             $hauptLose[$row['idtabelle_Lose_Extern']]['LosNr_Extern'] = $row['LosNr_Extern'];
@@ -205,9 +223,7 @@ init_page_serversides();
                         }
                         echo "</tbody></table>";
 
-                        if ($_SESSION["ext"] == 0) {
-                            echo "<input type='button' id='addTenderLotModalButton' class='btn btn-success btn-sm' value='Los hinzufügen' data-toggle='modal' data-target='#addTenderLotModal'></input>";
-                        }
+
                         $mysqli->close();
                         ?>
                     </div>
@@ -230,7 +246,9 @@ init_page_serversides();
     <div class="row">
         <div class="col-sm-8">
             <div class="mt-4 card">
-                <div class="card-header">Elemente im Los</div>
+                <div class="card-header d-inline-flex justify-content-between align-items-center"
+                     id="elementsInLotCardHeader">Elemente im Los
+                </div>
                 <div class="card-body" id="elementsInLot"></div>
             </div>
         </div>
@@ -389,67 +407,70 @@ init_page_serversides();
     </div>
 </div>
 </body>
-<script>
 
+<script src="_utils.js"></script>
+<script>
     var ext = '<?php echo $_SESSION["ext"] ?>';
-    var searchV = '<?php echo $_GET["searchValue"]; ?>';
     var lotID;
     var lotVerfahren;
-    // Tabelle formatieren
     $(document).ready(function () {
-        if (ext === '0') {
-            $('#tableTenderLots').DataTable({
-                "columnDefs": [
-                    {
-                        "targets": [0, 16, 17, 18, 19, 21, 22, 23],
-                        "visible": false,
-                        "searchable": false
-                    },
-                    {
-                        "targets": [4, 1],
-                        "sortable": false,
-                        "searchable": false
-                    }
-                ],
-                "select": true,
-                "search": {search: searchV},
-                "paging": true,
-                "searching": true,
-                "info": true,
-                "order": [[2, "asc"]],
-                "pagingType": "simple",
-                "lengthChange": false,
-                "pageLength": 10,
-                "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
-                dom: 'Blfrtip',
-                "buttons": [
-                    'excel'
-                ]
-            });
-        } else {
-            $('#tableTenderLots').DataTable({
-                "columnDefs": [
-                    {
-                        "targets": [0, 4, 10, 11, 15, 16, 17, 18, 19, 21, 22, 23],
-                        "visible": false,
-                        "searchable": false
-                    }
-                ],
-                "paging": true,
-                "searching": true,
-                "info": true,
-                "order": [[1, "asc"]],
-                "pagingType": "simple",
-                "lengthChange": false,
-                "pageLength": 20,
-                "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
-            });
-        }
 
-        // CLICK TABELLE tenderLots
+        $('#tableTenderLots').DataTable({
+            "columnDefs": [
+                {
+                    "targets": [0, 14, 15, 16, 17, 18, 22, 23, 24],
+                    "visible": false,
+                    "searchable": false
+                }
+
+            ],
+            "select": true,
+            "search": {search: ""},
+            "paging": true,
+            "searching": true,
+            "info": true,
+            "order": [[2, "asc"]],
+            "pagingType": "simple",
+            "lengthChange": false,
+            "pageLength": 10,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
+                "decimal": ",",
+                "thousands": ".",
+                "searchPlaceholder": "Suche.."
+            },
+            "dom": 'Blfrtip',
+            "buttons":
+                [{
+                    extend: 'excel',
+                    exportOptions: {
+                        columns: function (idx) {
+                            return idx !== 0 && idx !== 1 && idx !== 9 && idx !== 10 && idx !== 11 && idx !== 12 && idx !== 13 && idx !== 20 && idx !== 22 && idx !== 23 && idx !== 24;
+                        }
+                    }
+                }],
+            "initComplete":
+                function (settings, json) {
+                    move_item_by_class("dt-buttons", "LoseCardHeaderSub");
+                    let button = document.querySelector(".dt-buttons");
+                    if (button) {
+                        button.classList.remove("dt-buttons");
+                    }
+                    move_item("tableTenderLots_filter", "LoseCardHeaderSub");
+                    $('#tableTenderLots_filter label').contents().filter(function () {
+                        return this.nodeType === 3; // Node.TEXT_NODE
+                    }).remove();
+
+                }
+        });
+
+
         var table1 = $('#tableTenderLots').DataTable();
-
         $('#tableTenderLots tbody').on('click', 'tr', function () {
+            if ($.fn.DataTable.isDataTable('#tableLotElements1')) {
+                $('#tableLotElements1').DataTable().buttons().remove(); // Remove buttons
+                $('#tableLotElements1').DataTable().destroy();
+            }
             if ($(this).hasClass('info')) {
                 //$(this).removeClass('info');
             } else {

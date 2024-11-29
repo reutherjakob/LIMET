@@ -117,7 +117,7 @@ init_page_serversides();
                 echo "<td>" . $row["Raumnr"] . "</td>";
                 echo "<td>" . $row["Raumbezeichnung"] . "</td>";
 
-                if (strlen($row["Kurzbeschreibung"]) > 0) {
+                if ( null != ($row["Kurzbeschreibung"]) ) {
                     echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment'></i></button></td>";
                 } else {
                     echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment-slash'></i></button></td>";

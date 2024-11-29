@@ -1,5 +1,6 @@
 <?php
 include '_utils.php';
+include "_format.php";
 init_page_serversides();
 ?>
 
@@ -19,13 +20,6 @@ init_page_serversides();
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-
-    <!--
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
-    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.js"></script>
-    -->
-
-
     <link rel="stylesheet" type="text/css"
           href="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
     <script type="text/javascript"
@@ -116,8 +110,8 @@ init_page_serversides();
                     echo "<td>Ja</td>";
                 }
 
-                echo "<td>" . sprintf('%01.2f', $row["Kosten"]) . "</td>";
-                echo "<td>" . sprintf('%01.2f', $row["PP"]) . "</td>";
+                echo "<td>" . format_money($row["Kosten"]) . "</td>";
+                echo "<td>" . format_money($row["PP"]) . "</td>";
                 echo "<td>";
                 echo "<select class='form-control form-control-sm' id='" . $row["id"] . "'>";
                 if ($row["idtabelle_projektbudgets"] != "") {
@@ -180,7 +174,11 @@ init_page_serversides();
             "pagingType": "simple",
             "lengthChange": false,
             "pageLength": 10,
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
+                "decimal": ",",
+                "thousands": "."
+            },
             "mark": true
         });
 

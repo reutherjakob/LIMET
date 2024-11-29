@@ -1,6 +1,7 @@
 <?php
 include '_utils.php';
 init_page_serversides();
+include "_format.php";
 ?>
 
 
@@ -101,7 +102,8 @@ init_page_serversides();
 										<th>Element</th>
 										<th>Variante</th>
 										<th>VariantenID</th>
-										<th>Bestand</th>
+										<th>Bestand</th>										
+										<th>Kosten </th> <!-- unformatiert -->
 										<th>Kosten</th>
 										<th>Gewerk</th>
 										<th>GHG</th>
@@ -122,7 +124,8 @@ init_page_serversides();
                 } else {
                     echo "<td>Ja</td>";
                 }
-                echo "<td>" . sprintf('%01.2f', $row["Kosten"]) . "</td>";
+                echo "<td>" . (float)$row["Kosten"] . "</td>";
+                echo "<td>" . format_money($row["Kosten"]) . "</td>";
                 echo "<td>" . $row["Gewerke_Nr"] . "</td>";
                 echo "<td>" . $row["GHG"] . "</td>";
                 echo "<td>" . $row["GUG"] . "</td>";
@@ -216,21 +219,27 @@ init_page_serversides();
             "order": [[2, "asc"]],
             "columnDefs": [
                 {
-                    "targets": [0],
-                    "visible": false,
-                    "searchable": false
-                },
-                {
-                    "targets": [5],
+                    "targets": [0, 5, 7],
                     "visible": false,
                     "searchable": false
                 }
             ],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
+                "decimal": ",",
+                "thousands": "."
+            },
             "stateSave": true,
             "dom": '<"top"Blf>rt<"bottom"ip><"clear">',
             "buttons": [
-                'excel'
+                {
+                    extend: 'excel',
+                    exportOptions: {
+                        columns: function(idx) {
+                            return idx !== 5 && idx !== 8;
+                        }
+                    }
+                }
             ],
             "mark": true
         });
@@ -356,10 +365,6 @@ init_page_serversides();
         window.open('/pdf_createElementEinbringwegePDF.php');
     });
 
-
 </script>
-
-
 </body>
-
 </html>

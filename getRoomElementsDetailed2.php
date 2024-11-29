@@ -3,14 +3,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title>RoomElementsDetailed2 </title>
+    <title>RoomElementsDetailed2</title>
 </head>
-
 
 <body>
 <?php
+// V2.0; 2024-11-29; Authorz: JR & WF
 include '_utils.php';
-init_page_serversides("x", "x");
+include "_format.php";
+check_login();
 $mysqli = utils_connect_sql();
 
 $sql = "SELECT Sum(`tabelle_räume_has_tabelle_elemente`.`Anzahl`*`tabelle_projekt_varianten_kosten`.`Kosten`) AS Summe_Neu
@@ -25,8 +26,7 @@ $sql = "SELECT Sum(`tabelle_räume_has_tabelle_elemente`.`Anzahl`*`tabelle_proje
 $result = $mysqli->query($sql);
 $row = $result->fetch_assoc();
 $number = $row["Summe_Neu"];
-$formatter = new NumberFormatter('de_DE', NumberFormatter::CURRENCY);
-$formattedNumber = $formatter->formatCurrency($number, 'EUR');
+$formattedNumber = format_money_report($number);
 ?>
 
 <div class="d-inline-flex mw-100">
@@ -46,7 +46,7 @@ $formattedNumber = $formatter->formatCurrency($number, 'EUR');
     $result = $mysqli->query($sql);
     $row = $result->fetch_assoc();
     $number = $row["Summe_Bestand"];
-    $formattedNumber = $formatter->formatCurrency($number, 'EUR');
+    $formattedNumber = format_money_report($number);
     ?>
     <label class="" for="kosten_bestand">Raumkosten-Bestand: </label>
     <input type="text" class="ml-2 form-control input-xs" id="kosten_bestand"
@@ -94,65 +94,39 @@ echo "
     <tbody>";
 //<!--	<th>Geräte ID</th>-->
 while ($row = $result->fetch_assoc()) {
-    echo "
-    <tr>";
-    echo "
-        <td>" . $row["id"] . "</td>
-        ";
-    echo "
-        <td>" . $row["Anzahl"] . "</td>
-        ";
-    echo "
-        <td>" . $row["ElementID"] . " " . $row["Bezeichnung"] . "</td>
-        ";
-    echo "
-        <td>" . $row["Variante"] . "</td>
-        ";
-    echo "
-        <td>";
+    echo "    <tr>";
+    echo "        <td>" . $row["id"] . "</td>        ";
+    echo "        <td>" . $row["Anzahl"] . "</td>        ";
+    echo "        <td>" . $row["ElementID"] . " " . $row["Bezeichnung"] . "</td>        ";
+    echo "        <td>" . $row["Variante"] . "</td>        ";
+    echo "        <td>";
     if ($row["Neu/Bestand"] == 1) {
         echo "Nein";
     } else {
         echo "Ja";
     }
-    echo "
-        </td>
-        ";
-    echo "
-        <td>";
+    echo "</td>";
+    echo "<td>";
     if ($row["Standort"] == 1) {
         echo "Ja";
     } else {
         echo "Nein";
     }
-    echo "
-        </td>
-        ";
-    echo "
-        <td>";
+    echo "</td>";
+    echo "<td>";
     if ($row["Verwendung"] == 1) {
         echo "Ja";
     } else {
         echo "Nein";
     }
-    echo "
-        </td>
-        ";
-    echo "
-        <td class='cols-md-2'><textarea id='comment" . $row["id"] . "' rows='1' style='width: 100%;'>" . $row["Kurzbeschreibung"] . "</textarea>
-        </td>
-        ";
-    echo "
-    </tr>
-    ";
+    echo "        </td>        ";
+    echo "        <td class='cols-md-2'><textarea id='comment" . $row["id"] . "' rows='1' style='width: 100%;'>" . $row["Kurzbeschreibung"] . "</textarea>
+        </td>        ";
+    echo "    </tr>";
 }
-echo "
-    </tbody>
-</table>
-";
+echo "</tbody></table>";
 ?>
 <script>
-
     $("input[value='Element auswählen']").click(function () {
         let id = this.id;
         $.ajax({
@@ -164,7 +138,6 @@ echo "
             }
         });
     });
-
     $(document).ready(function () {
         let table = $("#tableRoomElements").DataTable({
             searching: true,
@@ -180,7 +153,6 @@ echo "
             paging: false,
             sDom: "tli"//
         });
-
         $('#tableRoomElements tbody').on('click', 'tr', function () {
             if ($(this).hasClass('info')) {
             } else {
@@ -199,7 +171,6 @@ echo "
             }
         });
     });
-
 </script>
 </body>
 </html>

@@ -1,50 +1,34 @@
 <?php
-session_start();
+// V2.0
+include "_utils.php";
+check_login();
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-
-
-    <!--DATEPICKER -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker3.min.css">
     <script type='text/javascript'
             src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
     <title></title>
-
 </head>
 <body>
-<?php
-if (!isset($_SESSION["username"])) {
-    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-    exit;
-}
-?>
 
 <?php
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-
-
-/* change character set to utf8 */
-if (!$mysqli->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $mysqli->error);
-    exit();
-}
+$mysqli = utils_connect_sql();
+$deviceID="";
 if ($_GET["deviceID"] != "") {
-    $_SESSION["deviceID"] = $_GET["deviceID"];
+    $deviceID = $_GET["deviceID"];
 }
 
 $sql = "SELECT tabelle_wartungspreise.Datum, tabelle_wartungspreise.Info, tabelle_wartungspreise.Menge, tabelle_wartungspreise.Wartungsart, tabelle_wartungspreise.WartungspreisProJahr, tabelle_projekte.Projektname, tabelle_lieferant.Lieferant, tabelle_wartungspreise.idtabelle_wartungspreise
                 FROM (tabelle_wartungspreise LEFT JOIN tabelle_lieferant ON tabelle_wartungspreise.tabelle_lieferant_idTABELLE_Lieferant = tabelle_lieferant.idTABELLE_Lieferant) LEFT JOIN tabelle_projekte ON tabelle_wartungspreise.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
-                 WHERE (((tabelle_wartungspreise.tabelle_geraete_idTABELLE_Geraete)=" . $_SESSION["deviceID"] . "));";
+                 WHERE (((tabelle_wartungspreise.tabelle_geraete_idTABELLE_Geraete)=" .$deviceID. "));";
 
 
 $result = $mysqli->query($sql);
-setlocale(LC_MONETARY, "de_DE");
 
 echo "<table class='table table-striped table-sm' id='tableDeviceServicePrices' cellspacing='0'>
 	<thead><tr>";
@@ -73,14 +57,8 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . $row["Lieferant"] . "</td>";
     echo "</tr>";
 }
-
 echo "</tbody></table>";
-
-if ($_SESSION["dbAdmin"] == "1") {
-    echo "<input type='button' id='addServicePriceModalButton' class='btn btn-success btn-sm' value='Wartungspreis hinzufügen' data-toggle='modal' data-target='#addServicePriceModal'></input>";
-}
-
-
+echo "<input type='button' id='addServicePriceModalButton' class='btn btn-success btn-sm' value='Wartungspreis hinzufügen' data-toggle='modal' data-target='#addServicePriceModal'></input>";
 ?>
 
 <!-- Modal zum Anlegen eines Preises -->
@@ -137,7 +115,7 @@ if ($_SESSION["dbAdmin"] == "1") {
 
                     $sql = "SELECT tabelle_lieferant.Lieferant, tabelle_lieferant.idTABELLE_Lieferant
                                                         FROM tabelle_lieferant INNER JOIN tabelle_geraete_has_tabelle_lieferant ON tabelle_lieferant.idTABELLE_Lieferant = tabelle_geraete_has_tabelle_lieferant.tabelle_lieferant_idTABELLE_Lieferant
-                                                        WHERE (((tabelle_geraete_has_tabelle_lieferant.tabelle_geraete_idTABELLE_Geraete)=" . $_SESSION["deviceID"] . "));";
+                                                        WHERE (((tabelle_geraete_has_tabelle_lieferant.tabelle_geraete_idTABELLE_Geraete)=" . $deviceID . "));";
 
                     $result1 = $mysqli->query($sql);
 
@@ -164,7 +142,6 @@ if ($_SESSION["dbAdmin"] == "1") {
     </div>
 </div>
 
-
 <script>
     $(document).ready(function () {
         $('#dateService').datepicker({
@@ -176,7 +153,6 @@ if ($_SESSION["dbAdmin"] == "1") {
         });
     });
 
-
     $("#tableDeviceServicePrices").DataTable({
         "paging": true,
         "pagingType": "simple",
@@ -184,12 +160,15 @@ if ($_SESSION["dbAdmin"] == "1") {
         "searching": false,
         "info": false,
         "order": [[0, "desc"]],
-        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
+            "decimal": ",",
+            "thousands": 0
+        },
     });
 
 
-    //Wartungspreis zu Geraet hinzufügen
-    $("#addServicePrice").click(function () {
+    $("#addServicePrice").click(function () {//Wartungspreis zu Geraet hinzufügen
         var date = $("#dateService").val();
         var info = $("#infoService").val();
         var menge = $("#mengeService").val();
