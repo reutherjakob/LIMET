@@ -258,8 +258,8 @@ init_page_serversides();
                 <div class="card-body" id="elementsvariantenParameterInLot"></div>
             </div>
             <div class="mt-4 card">
-                <div class="card-header">Bestandsdaten</div>
-                <div class="card-body" id="elementelementBestandsInLot"></div>
+                <div class="card-header">Bestandsdaten <button type='button' id='addBestandsElement' class='btn ml-4 mt-2 btn-outline-success btn-xs float-right' value='Hinzufügen' data-toggle='modal' data-target='#addBestandModal'><i class='fas fa-plus'></i></button> </div>
+                <div class="card-body" id="elementBestand"></div>
             </div>
         </div>
     </div>
@@ -516,7 +516,7 @@ init_page_serversides();
                             type: "GET",
                             success: function (data) {
                                 $("#elementsInLot").html(data);
-                                $("#elementelementBestandsInLot").hide();
+                                $("#elementBestand").hide();
                                 $("#elementsvariantenParameterInLot").hide();
                             }
                         });

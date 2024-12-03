@@ -226,86 +226,42 @@ init_page_serversides();
             if ($("#filter_bestand").val() === '1') {
                 if ($("#filter_count").is(':checked')) {
                     if ($("#filter_lot").is(':checked')) {
-                        if (data [10] === "Ja" && Number(data [5]) > 0 && data[13].length > 0) {
-                            return true;
-                        } else {
-                            return false;
-                        }
+                        return data [10] === "Ja" && Number(data [5]) > 0 && data[13].length > 0;
                     } else {
-                        if (data [10] === "Ja" && Number(data [5]) > 0) {
-                            return true;
-                        } else {
-                            return false;
-                        }
+                        return data [10] === "Ja" && Number(data [5]) > 0;
                     }
                 } else {
                     if ($("#filter_lot").is(':checked')) {
-                        if (data [10] === "Ja" && data[13].length > 0) {
-                            return true;
-                        } else {
-                            return false;
-                        }
+                        return data [10] === "Ja" && data[13].length > 0;
                     } else {
-                        if (data [10] === "Ja" && Number(data [5]) > 0) {
-                            return true;
-                        } else {
-                            return false;
-                        }
+                        return data [10] === "Ja" && Number(data [5]) > 0;
                     }
                 }
             } else {
                 if ($("#filter_bestand").val() === '0') {
                     if ($("#filter_count").is(':checked')) {
                         if ($("#filter_lot").is(':checked')) {
-                            if (data [10] === "Nein" && Number(data [5]) > 0 && data[13].length > 0) {
-                                return true;
-                            } else {
-                                return false;
-                            }
+                            return data [10] === "Nein" && Number(data [5]) > 0 && data[13].length > 0;
                         } else {
-                            if (data [10] === "Nein" && Number(data [5]) > 0) {
-                                return true;
-                            } else {
-                                return false;
-                            }
+                            return data [10] === "Nein" && Number(data [5]) > 0;
                         }
                     } else {
                         if ($("#filter_lot").is(':checked')) {
-                            if (data [10] === "Nein" && data[13].length > 0) {
-                                return true;
-                            } else {
-                                return false;
-                            }
+                            return data [10] === "Nein" && data[13].length > 0;
                         } else {
-                            if (data [10] === "Nein" && Number(data [5]) > 0) {
-                                return true;
-                            } else {
-                                return false;
-                            }
+                            return data [10] === "Nein" && Number(data [5]) > 0;
                         }
                     }
                 } else {
                     if ($("#filter_count").is(':checked')) {
                         if ($("#filter_lot").is(':checked')) {
-                            if (Number(data [5]) > 0 && data[13].length > 0) {
-                                return true;
-                            } else {
-                                return false;
-                            }
+                            return Number(data [5]) > 0 && data[13].length > 0;
                         } else {
-                            if (Number(data [5]) > 0) {
-                                return true;
-                            } else {
-                                return false;
-                            }
+                            return Number(data [5]) > 0;
                         }
                     } else {
                         if ($("#filter_lot").is(':checked')) {
-                            if (data[13].length > 0) {
-                                return true;
-                            } else {
-                                return false;
-                            }
+                            return data[13].length > 0;
                         } else {
                             return true;
                         }
@@ -365,41 +321,7 @@ init_page_serversides();
                 "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
                 "mark": true,
                 dom: 'frtip'
-                //"scrollY":        '20vh',
-                /*"scrollCollapse": true,
-                "footerCallback": function ( row, data, start, end, display ) {
-                        var api = this.api(), data;
 
-                        // Remove the formatting to get integer data for summation
-                        var intVal = function ( i ) {
-                            return typeof i === 'string' ?
-                                i.replace(/[\$,]/g, '')*1 :
-                                typeof i === 'number' ?
-                                    i : 0;
-                        };
-
-                        // Total over all pages
-                        total = api
-                            .column( 12 )
-                            .data()
-                            .reduce( function (a, b) {
-                                return intVal(a) + intVal(b);
-                            }, 0 );
-
-                        // Total over this page
-                        pageTotal = api
-                            .column( 12, { page: 'current'} )
-                            .data()
-                            .reduce( function (a, b) {
-                                return intVal(a) + intVal(b);
-                            }, 0 );
-
-                        // Update footer
-                        $( api.column( 12 ).footer() ).html(
-                            '€ '+pageTotal +' ( € '+ total +' total)'
-                        );
-
-                    }*/
             });
         } else {
             $('#tableElementsInProject').DataTable({

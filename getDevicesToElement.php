@@ -16,12 +16,33 @@ include "_utils.php";
 check_login();
 
 $mysqli = utils_connect_sql();
-$sql = "SELECT tabelle_geraete.idTABELLE_Geraete, tabelle_geraete.GeraeteID, tabelle_hersteller.Hersteller, tabelle_geraete.Typ, tabelle_geraete.Kurzbeschreibung, tabelle_hersteller.idtabelle_hersteller
-			FROM tabelle_geraete INNER JOIN tabelle_hersteller ON tabelle_geraete.tabelle_hersteller_idtabelle_hersteller = tabelle_hersteller.idtabelle_hersteller
-			WHERE (((tabelle_geraete.TABELLE_Elemente_idTABELLE_Elemente)=".$_GET["elementID"]."))
-			ORDER BY tabelle_geraete.GeraeteID;";
 
-$result = $mysqli->query($sql);
+$elementID = "0";
+
+if (!empty($_GET["elementID"])) {
+    $elementID = $_GET["elementID"];
+} elseif (!empty($_SESSION["elementID"])) {
+    $elementID = $_SESSION["elementID"];
+}
+
+$sql = "SELECT tabelle_geraete.idTABELLE_Geraete, tabelle_geraete.GeraeteID, tabelle_hersteller.Hersteller, tabelle_geraete.Typ, tabelle_geraete.Kurzbeschreibung, tabelle_hersteller.idtabelle_hersteller
+        FROM tabelle_geraete
+        INNER JOIN tabelle_hersteller ON tabelle_geraete.tabelle_hersteller_idtabelle_hersteller = tabelle_hersteller.idtabelle_hersteller
+        WHERE tabelle_geraete.TABELLE_Elemente_idTABELLE_Elemente = ?
+        ORDER BY tabelle_geraete.GeraeteID DESC";
+
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param('i', $elementID); // 'i' specifies the type as integer
+$stmt->execute();
+$result = $stmt->get_result() ;
+$stmt->close();
+
+
+//$sql = "SELECT tabelle_geraete.idTABELLE_Geraete, tabelle_geraete.GeraeteID, tabelle_hersteller.Hersteller, tabelle_geraete.Typ, tabelle_geraete.Kurzbeschreibung, tabelle_hersteller.idtabelle_hersteller
+//			FROM tabelle_geraete INNER JOIN tabelle_hersteller ON tabelle_geraete.tabelle_hersteller_idtabelle_hersteller = tabelle_hersteller.idtabelle_hersteller
+//			WHERE (((tabelle_geraete.TABELLE_Elemente_idTABELLE_Elemente)=".$_GET["elementID"]."))
+//			ORDER BY tabelle_geraete.GeraeteID DESC";
+//$result = $mysqli->query($sql);
 
 echo "<table class='table table-striped table-sm' id='tableDevicesToElement' cellspacing='0' width='100%'>
 	<thead><tr>
@@ -49,7 +70,7 @@ while ($row = $result->fetch_assoc()) {
 
 echo "</tbody></table>";
 echo "<input type='button' id='addDeviceModalButton' class='btn btn-success btn-sm' value='Gerät hinzufügen' data-toggle='modal' data-target='#addDeviceModal'></input>";
-echo "<input type='button' id='" . $_GET["elementID"] . "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-toggle='modal' data-target='#deviceComparisonModal'></input>";
+echo "<input type='button' id='" .$elementID . "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-toggle='modal' data-target='#deviceComparisonModal'></input>";
 ?>
 
 <!-- Modal zum Anlegen eines Gerätes -->

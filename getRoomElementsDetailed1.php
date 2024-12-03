@@ -314,7 +314,6 @@ $mysqli->close();
         });
 
         var table = $('#tableRoomElements').DataTable();
-
         $('#tableRoomElements tbody').on('click', 'tr', function () {
             var id = table.row($(this)).data()[0];
             var stk = $("#amount" + id).val();

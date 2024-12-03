@@ -190,8 +190,8 @@ $mysqli->close();
                             data: {"id": id, "stk": stk},
                             type: "GET",
                             success: function (data) {
-                                $("#elementelementBestandsInLot").html(data);
-                                $("#elementelementBestandsInLot").show();
+                                $("#elementBestand").html(data);
+                                $("#elementBestand").show();
                             }
                         });
                     }

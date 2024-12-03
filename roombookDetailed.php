@@ -1,10 +1,13 @@
 <?php
 include '_utils.php';
 init_page_serversides();
+//TODO
+// - PDFs
+// - Detailed Seite
 ?>
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <title>RB-Detail</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
@@ -29,7 +32,13 @@ init_page_serversides();
     <script type="text/javascript"
             src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
-
+<style >
+    .DIYbtn {
+        margin: 5px;
+        height: 19px;
+        padding: 1px 18px; /* Adjust padding to fit content */
+    }
+</style>
 
 </head>
 
@@ -45,7 +54,7 @@ init_page_serversides();
                         <div class="col-md-4"></div>
                         <div class="col-md-3">
                             <label class="float-right">
-                                MT-relevante Räume: <input type="checkbox" id="filter_MTrelevantRooms" checked="true">
+                                MT-relevante Räume: <input type="checkbox" id="filter_MTrelevantRooms" checked="checked">
                             </label>
                         </div>
                         <div id="CardHeaderRaume" class="col-md-2"></div>
@@ -65,6 +74,7 @@ init_page_serversides();
 
                     $result = $mysqli->query($sql);
 
+                    /** @noinspection HtmlDeprecatedAttribute */
                     echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'  cellspacing='0' width='100%'>
 						<thead><tr>
 						<th>ID</th>
@@ -95,7 +105,7 @@ init_page_serversides();
                         echo "</td>";
                         echo "<td>";
                         if ($row["Anmerkung FunktionBO"] != null) {
-                            echo "<button type='button' class='btn btn-xs btn-outline-dark' id='buttonBO' value='" . $row["Anmerkung FunktionBO"] . "' data-toggle='modal' data-target='#boModal'><i class='fa fa-comment'></i></button>";
+                            echo "<button type='button' class='btn btn-xs btn-outline-dark DIYbtn' id='buttonBO' value='" . $row["Anmerkung FunktionBO"] . "' data-toggle='modal' data-target='#boModal'><i class='fa fa-comment'></i></button>";
                         }
                         echo "</td>";
                         echo "</tr>";
@@ -128,7 +138,7 @@ init_page_serversides();
                 </div>
             </div>
             <div class="mt-4 card">
-                <div class="card-header">Bestandsdaten</div>
+                <div class="card-header" id="BestandsdatenCardHeader">Bestandsdaten <button type='button' id='addBestandsElement' class='btn ml-4 mt-2 btn-outline-success btn-xs float-right' value='Hinzufügen' data-toggle='modal' data-target='#addBestandModal'><i class='fas fa-plus'></i></button> </div>
                 <div class="card-body" id="elementBestand"></div>
             </div>
             <div class="mt-4 card">
@@ -137,7 +147,7 @@ init_page_serversides();
             </div>
         </div>
     </div>
-    <hr></hr>
+    <hr>
     <div class="mt-4 card">
         <div class="card-header">
             <button type="button" class="btn btn-outline-dark btn-xs" id="showDBElementData"><i
@@ -195,6 +205,7 @@ init_page_serversides();
 
                             $result = $mysqli->query($sql);
 
+                            /** @noinspection HtmlDeprecatedAttribute */
                             echo "<table class='table table-striped table-bordered table-sm' id='tableElementsInDB'  cellspacing='0' width='100%'>
 									<thead><tr>
 									<th>ID</th>
@@ -231,7 +242,7 @@ init_page_serversides();
                     </div>
                 </div>
             </div>
-            <hr></hr>
+            <hr>
             <div class="row mt-4">
                 <div class="col-md-6 col-sm-6">
                     <div class="mt-4 card">
@@ -280,22 +291,18 @@ init_page_serversides();
 
     let toastCounter3 = 0;
     $.fn.dataTable.ext.search.push(
-        function (settings, data, dataIndex) {
+        function (settings, data) {
             if (settings.nTable.id !== 'tableRooms') {
                 return true;
             }
             if ($("#filter_MTrelevantRooms").is(':checked')) {
-                if (data [7] === "Ja") {
-                    return true;
-                } else {
-                    return false;
-                }
+                return data [7] === "Ja";
             } else {
                 return true;
             }
         }
     );
-    var table;
+    let table;
 
     $(document).ready(function () {
         $("#elementParameters").hide();
@@ -346,12 +353,12 @@ init_page_serversides();
 
                 table.$('tr.info').removeClass('info');
                 $(this).addClass('info');
-                var id = table.row($(this)).data()[0];
+                const id = table.row($(this)).data()[0];
                 $.ajax({
                     url: "setSessionVariables.php",
                     data: {"roomID": id},
                     type: "GET",
-                    success: function (data) {
+                    success: function () {
                         $("#RoomID").text(id);
                         $.ajax({
                             url: "getRoomVermerke.php",
@@ -373,7 +380,7 @@ init_page_serversides();
         });
 
 
-        var table1 = $('#tableElementsInDB').DataTable();
+        const table1 = $('#tableElementsInDB').DataTable();
         $('#tableElementsInDB tbody').on('click', 'tr', function () {
 
             if ($(this).hasClass('info')) {
@@ -381,7 +388,7 @@ init_page_serversides();
             } else {
                 table1.$('tr.info').removeClass('info');
                 $(this).addClass('info');
-                var elementID = table1.row($(this)).data()[0];
+                const elementID = table1.row($(this)).data()[0];
                 //console.log(elementID);
                 $.ajax({
                     url: "getStandardElementParameters.php",
@@ -417,7 +424,7 @@ init_page_serversides();
         });
 
         setTimeout(() => {
-                var dt_searcher = $("#tableRooms_filter");
+                let dt_searcher = $("#tableRooms_filter");
                 dt_searcher.detach();
                 $("#CardHeaderRaume").append(dt_searcher);
                 $('#tableRooms_filter label').contents().filter(function () {
@@ -443,7 +450,7 @@ init_page_serversides();
 
     // Element Gewerk Änderung
     $('#elementGewerk').change(function () {
-        var gewerkID = this.value;
+        let gewerkID = this.value;
 
         $.ajax({
             url: "getElementGroupsByGewerk.php",
