@@ -1,7 +1,11 @@
 <?php
 include "_utils.php";
+require 'vendor/autoload.php'; // Include PhpSpreadsheet autoloader (make sure this path is correct)
 
-$mysqli =  utils_connect_sql();
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
+$mysqli = utils_connect_sql();
 
 $sql = "SELECT 
             tabelle_elemente.ElementID, 
@@ -49,55 +53,55 @@ $result = $mysqli->query($sql);
 
 // Check if the query returned any results
 if ($result && $result->num_rows > 0) {
-    // Set headers for the CSV file
-    header('Content-Type: text/csv; charset=utf-8');
-    header('Content-Disposition: attachment; filename=data_export.csv');
+    // Create a new spreadsheet object
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
 
-    // Open output stream for writing
-    $output = fopen('php://output', 'w');
+    // Set the header row
+    $sheet->setCellValue('A1', 'Raumbereich Nutzer');
+    $sheet->setCellValue('B1', 'Raumnr');
+    $sheet->setCellValue('C1', 'Raumbezeichnung');
+    $sheet->setCellValue('D1', 'Element-ID');
+    $sheet->setCellValue('E1', 'Bezeichnung');
+    $sheet->setCellValue('F1', 'Gerät');
+    $sheet->setCellValue('G1', 'Inventarnummer');
+    $sheet->setCellValue('H1', 'Seriennummer');
+    $sheet->setCellValue('I1', 'Anschaffungsjahr');
+    $sheet->setCellValue('J1', 'Aktueller Ort');
+    $sheet->setCellValue('K1', 'Kosten');
 
-    // Output the column headings
-    fputcsv($output, [
-        'Raumbereich Nutzer',
-        'Raumnr',
-        'Raumbezeichnung',
-        'Element-ID',
-        'Bezeichnung',
-        'Gerät',
-        'Inventarnummer',
-        'Seriennummer',
-        'Anschaffungsjahr',
-        'Aktueller Ort',
-        'Kosten'
-    ], ';');
+    // Set the row counter
+    $rowCounter = 2;
 
     // Loop through the result set
     while ($row = $result->fetch_assoc()) {
-        // Write the data to CSV
-        fputcsv($output, [
-            $row['Raumbereich Nutzer'],
-            $row['Raumnr'],
-            $row['Raumbezeichnung'],
-            $row['ElementID'],
-            $row['Bezeichnung'],
-            $row['Hersteller'] . ' - ' . $row['Typ'],
-            $row['Inventarnummer'],
-            $row['Seriennummer'],
-            $row['Anschaffungsjahr'],
-            $row['Aktueller Ort'],
-            $row['Kosten']
-        ], ';');
+        $sheet->setCellValue("A$rowCounter", $row['Raumbereich Nutzer']);
+        $sheet->setCellValue("B$rowCounter", $row['Raumnr']);
+        $sheet->setCellValue("C$rowCounter", $row['Raumbezeichnung']);
+        $sheet->setCellValue("D$rowCounter", $row['ElementID']);
+        $sheet->setCellValue("E$rowCounter", $row['Bezeichnung']);
+        $sheet->setCellValue("F$rowCounter", $row['Hersteller'] . ' - ' . $row['Typ']);
+        $sheet->setCellValue("G$rowCounter", $row['Inventarnummer']);
+        $sheet->setCellValue("H$rowCounter", $row['Seriennummer']);
+        $sheet->setCellValue("I$rowCounter", $row['Anschaffungsjahr']);
+        $sheet->setCellValue("J$rowCounter", $row['Aktueller Ort']);
+        $sheet->setCellValue("K$rowCounter", $row['Kosten']);
+        $rowCounter++;
     }
 
-    // Flush output to ensure all data is sent
-    fflush($output);
+    // Set the response headers to output the file as Excel
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: attachment;filename="data_export.xlsx"');
+    header('Cache-Control: max-age=0');
 
-    // Close output stream
-    fclose($output);
+    // Create Excel file and write it to the output
+    $writer = new Xlsx($spreadsheet);
+    $writer->save('php://output');
 } else {
     echo "No data found.";
 }
 
-// Close the database connection
 $mysqli->close();
-?>
+
+
+

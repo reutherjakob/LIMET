@@ -4,7 +4,7 @@ init_page_serversides();
 ?>
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <title>RB-Detail</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
@@ -302,7 +302,7 @@ init_page_serversides();
             }
         }
     );
-    var table;
+    let table;
 
     $(document).ready(function () {
         $("#elementParameters").hide();
@@ -353,7 +353,7 @@ init_page_serversides();
 
                 table.$('tr.info').removeClass('info');
                 $(this).addClass('info');
-                var id = table.row($(this)).data()[0];
+                const id = table.row($(this)).data()[0];
                 $.ajax({
                     url: "setSessionVariables.php",
                     data: {"roomID": id},
@@ -380,7 +380,7 @@ init_page_serversides();
         });
 
 
-        var table1 = $('#tableElementsInDB').DataTable();
+        const table1 = $('#tableElementsInDB').DataTable();
         $('#tableElementsInDB tbody').on('click', 'tr', function () {
 
             if ($(this).hasClass('info')) {
@@ -388,7 +388,7 @@ init_page_serversides();
             } else {
                 table1.$('tr.info').removeClass('info');
                 $(this).addClass('info');
-                var elementID = table1.row($(this)).data()[0];
+                const elementID = table1.row($(this)).data()[0];
                 $.ajax({
                     url: "getStandardElementParameters.php",
                     data: {"elementID": elementID},
@@ -423,7 +423,7 @@ init_page_serversides();
         });
 
         setTimeout(() => {
-                var dt_searcher = $("#tableRooms_filter");
+                const dt_searcher = $("#tableRooms_filter");
                 dt_searcher.detach();
                 $("#CardHeaderRaume").append(dt_searcher);
                 $('#tableRooms_filter label').contents().filter(function () {
@@ -449,7 +449,7 @@ init_page_serversides();
 
     // Element Gewerk Änderung
     $('#elementGewerk').change(function () {
-        var gewerkID = this.value;
+        const gewerkID = this.value;
 
         $.ajax({
             url: "getElementGroupsByGewerk.php",

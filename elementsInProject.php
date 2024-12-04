@@ -21,6 +21,7 @@ include "_format.php";
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
 
+
     <link rel="stylesheet" type="text/css"
           href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
     <script type="text/javascript"
@@ -61,7 +62,6 @@ include "_format.php";
 <body style="height:100%">
 <div id="limet-navbar"></div>
 <div class="container-fluid">
-
     <div class="mt-4 card">
         <div class="card-header container-fluid d-flex">
             <div class="col-md-4"><strong> Elemente im Projekt </strong>
@@ -69,17 +69,16 @@ include "_format.php";
             <div class="col-md-2  d-flex justify-content-end" id="target_div"><strong> </strong>
             </div>
             <div class="col-md-6 d-flex justify-content-end">
-                <button type='button' class='btn btn-outline-dark btn-sm' id='createElementListPDF'><i
-                            class='far fa-file-pdf'></i> Elementliste-PDF
+                <button type='button' class='btn btn-outline-dark btn-sm' id='createElementListPDF'>
+                    <i class='far fa-file-pdf'></i> Elementliste-PDF
                 </button>
-                <button type='button' class='btn btn-outline-dark btn-sm' id='createElementListWithPricePDF'><i
-                            class='far fa-file-pdf'></i> Elementliste inkl. Preis - PDF
+                <button type='button' class='btn btn-outline-dark btn-sm' id='createElementListWithPricePDF'>
+                    <i class='far fa-file-pdf'></i> Elementliste inkl. Preis - PDF
                 </button>
-                <button type='button' class='btn btn-outline-dark btn-sm' id='createElementEinbringwegePDF'><i
-                            class='far fa-file-pdf'></i> Einbringwege - PDF
+                <button type='button' class='btn btn-outline-dark btn-sm' id='createElementEinbringwegePDF'>
+                    <i class='far fa-file-pdf'></i> Einbringwege - PDF
                 </button>
             </div>
-
         </div>
         <div class="card-body">
             <?php
@@ -92,7 +91,6 @@ include "_format.php";
 										WHERE (((tabelle_räume_has_tabelle_elemente.Standort)=1) AND ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
 										GROUP BY tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_varianten.idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_projekt_varianten_kosten.Kosten, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke, tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG, tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
 										ORDER BY tabelle_elemente.ElementID;";
-
             $result = $mysqli->query($sql);
             echo "<table class='table table-striped table-bordered table-sm' id='tableElementsInProject'  cellspacing='0' width='100%'>
 									<thead><tr>
@@ -235,16 +233,15 @@ include "_format.php";
                 {
                     extend: 'excel',
                     exportOptions: {
-                        columns: function(idx) {
+                        columns: function (idx) {
                             return idx !== 5 && idx !== 8;
                         }
                     }
                 }
-            ],
-            "mark": true
+            ]
         });
-        var table = $('#tableElementsInProject').DataTable();
 
+        let table = $('#tableElementsInProject').DataTable();
 
         $('#tableElementsInProject tbody').on('click', 'tr', function () {
             if ($(this).hasClass('info')) {
