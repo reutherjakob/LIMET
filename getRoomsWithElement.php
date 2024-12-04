@@ -77,7 +77,7 @@ session_start();
                 echo "Nein";
             }
             echo "</td>";
-            if (strlen($row["Kurzbeschreibung"]) > 0) {
+            if ( null != ($row["Kurzbeschreibung"]) ) {
                 echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment'></i></button></td>";
             } else {
                 echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment-slash'></i></button></td>";
@@ -125,7 +125,7 @@ session_start();
                     placement: 'top',
                     html: true,
                     container: 'body',
-                    content: "<textarea class='popover-textarea'></textarea>",
+                    content: '<textarea class="popover-textarea"></textarea>',
                     template: "<div class='popover'>" +
                             "<h4 class='popover-header'></h4><div class='popover-body'>" +
                             "</div><div class='popover-footer'><button type='button' class='btn btn-xs btn-outline-dark popover-submit'><i class='fas fa-check'></i>" +

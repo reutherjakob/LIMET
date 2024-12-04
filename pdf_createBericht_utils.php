@@ -192,7 +192,7 @@ function getAnmHeight($pdf, $inp_text, $SB) {
 
 function anm_txt($pdf, $inp_text, $SB, $block_header_w) {
     $outstr = (clean_string(br2nl($inp_text)));
-    if (strlen($outstr) > 0 && is_not_no_comment($outstr)) {
+    if ( null != ($outstr)  && is_not_no_comment($outstr)) {
         $outstr = str_replace('*', '', $outstr);
         $rowHeightComment = $pdf->getStringHeight($SB, $outstr, false, true, '', 1);
         $pdf->MultiCell($block_header_w, $rowHeightComment, "", 0, 'R', 0, 0); //        if ($rowHeightComment < 25) {  //Cool, but wonky
@@ -203,7 +203,7 @@ function anm_txt($pdf, $inp_text, $SB, $block_header_w) {
 function anmA3($pdf, $inp_text, $SB, $block_header_w) {
     if ($inp_text != "keine Angaben MT" && trim($inp_text) != "") {
         $outstr = "Anm.: " . format_text(clean_string(br2nl($inp_text)));
-        if (strlen($outstr) > 0 && is_not_no_comment($outstr)) {
+        if ( null != ($outstr)  && is_not_no_comment($outstr)) {
             
         } else {
             $outstr = "Keine Anmerkung";
@@ -369,7 +369,7 @@ function multicell_with_nr($pdf, $NR, $unit, $schriftgr, $einzug, $Ausrichtung =
 
 function multicell_with_str($pdf, $STR, $einzug, $Unit, $schriftgr = 6) {
     $originalFontSize = $pdf->getFontSizePt();
-    if (strlen($STR) > 0) {
+    if ( null != ($STR) ) {
         $pdf->MultiCell($einzug, $schriftgr, $STR . " " . $Unit, 0, 'L', 1, 0);
     } else {
         $pdf->MultiCell($einzug, $schriftgr, " - ", 0, 'L', 1, 0);

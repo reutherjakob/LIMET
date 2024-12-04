@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-require_once('TCPDF-master/TCPDF-master/tcpdf.php');
+require_once('TCPDF-main/TCPDF-main/tcpdf.php');
 include 'pdf_createBericht_utils.php';
 include '_utils.php';
 check_login();

@@ -1,6 +1,6 @@
 <?php
 // Include the main TCPDF library (search for installation path).
-require_once('TCPDF-master/TCPDF-master/tcpdf.php');
+require_once('TCPDF-main/TCPDF-main/tcpdf.php');
 
 
 function br2nl($string){

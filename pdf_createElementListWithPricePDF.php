@@ -13,7 +13,7 @@
 
 
 // Include the main TCPDF library (search for installation path).
-require_once('TCPDF-master/TCPDF-master/tcpdf.php');
+require_once('TCPDF-main/TCPDF-main/tcpdf.php');
 
 // extend TCPF with custom functions
 class MYPDF extends TCPDF {
@@ -257,7 +257,7 @@ while ($row = $result3->fetch_assoc()) {
             if($array1['elementID']===$row['TABELLE_Elemente_idTABELLE_Elemente']){                 
                 if($array1['variantenID']===$row['idtabelle_Varianten']){                     
                     $pdf->MultiCell(15, $rowHeightFinal, $array1['Gewerke_Nr'],0, 'C', $fill, 0);
-                    $pdf->MultiCell(17, $rowHeightFinal, money_format("%i", $array1['Kosten']),0, 'R', $fill, 0);
+                    $pdf->MultiCell(17, $rowHeightFinal, sprintf('%01.2f',$array1['Kosten']),0, 'R', $fill, 0);
                 }               
             }
         }

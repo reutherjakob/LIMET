@@ -33,7 +33,7 @@ if(!isset($_SESSION["username"]))
         $roomIDs = $_GET["rooms"];
 
         
-	if(strlen($row["Kosten"]) == 0){
+	if( ($row["Kosten"]) === null){
             $sql = "INSERT INTO `LIMET_RB`.`tabelle_projekt_varianten_kosten`
 				(`tabelle_projekte_idTABELLE_Projekte`,
 				`tabelle_elemente_idTABELLE_Elemente`,

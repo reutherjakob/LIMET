@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<html xmlns="http://www.w3.org/1999/html" lang="de">
 <head>
     <title>RB-Ausschreibungskalender</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
@@ -43,12 +43,14 @@
 <body style="height:100%" id="bodyTenderLots">
 
 <?php
+
 include '_utils.php';
 init_page_serversides("");
 ?>
 
+<div id="limet-navbar"></div> <!-- Container für Navbar Aufruf über onLoad -->
+
 <div class="container-fluid">
-    <div id="limet-navbar"></div> <!-- Container für Navbar Aufruf über onLoad -->
 
     <div class='row'>
         <div class='col-sm-12'>

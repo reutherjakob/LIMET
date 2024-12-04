@@ -1,38 +1,19 @@
 <?php
-//============================================================+
-// File name   : example_011.php
-// Begin       : 2008-03-04
-// Last Update : 2013-05-14
-//
-// Description : Example 011 for TCPDF class
-//               Colored Table (very simple table)
-//
-// Author: Nicola Asuni
-//
-// (c) Copyright:
-//               Nicola Asuni
-//               Tecnick.com LTD
-//               www.tecnick.com
-//               info@tecnick.com
-//============================================================+
 
-/**
- * Creates an example PDF TEST document using TCPDF
- * @package com.tecnick.tcpdf
- * @abstract TCPDF - Example: Colored Table
- * @author Nicola Asuni
- * @since 2008-03-04
- */
+
+
 
 // Include the main TCPDF library (search for installation path).
-require_once('TCPDF-master/TCPDF-master/tcpdf.php');
+require_once('TCPDF-main/TCPDF-main/tcpdf.php');
 
 // extend TCPF with custom functions
 class MYPDF extends TCPDF {
-    
+
+
     //Page header
     public function Header() {
         // Logo
+
         if($_SESSION["projectAusfuehrung"]==="MADER"){
             $image_file = 'Mader_Logo_neu.jpg';
             $this->Image($image_file, 15, 5, 40, 10, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
@@ -83,7 +64,8 @@ class MYPDF extends TCPDF {
 }
 
 session_start();
-// create new PDF document
+
+
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
 // set document information
@@ -237,12 +219,12 @@ foreach($raumbereicheInProject as $rowData) {
         
         $result = $mysqli->query($sql);
         $row = $result->fetch_assoc();
-        if (strlen($row['PP']) > 0 ){            
+        if ( null != ($row['PP'])  ){
             $pdf->MultiCell(25, 4, money_format('€ %!n', $row["PP"]), 0, 'R', $fill, 0);
             $sumRaumbereich = $sumRaumbereich + $row['PP'];
         }
         else{
-            $pdf->MultiCell(25, 4, money_format("€ %!n", 0), 0, 'R', $fill, 0);
+            $pdf->MultiCell(25, 4,  sprintf('%01.2f', 0), 0, 'R', $fill, 0);
         }  
         $gewerkeInProject[$key]['GewerkeSummeGesamt'] = $gewerkeInProject[$key]['GewerkeSummeGesamt'] + $row['PP'];
     }
@@ -259,12 +241,12 @@ foreach($raumbereicheInProject as $rowData) {
                 WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=".$_SESSION["projectID"].") AND ((tabelle_räume.`Bauabschnitt`)='".$rowData['Bauabschnitt']."') AND ((tabelle_auftraggeber_gewerke.Gewerke_Nr)='".$rowDataGewerkeInProject['Gewerke_Nr']."') AND ((tabelle_räume_has_tabelle_elemente.Standort)=1) AND tabelle_räume_has_tabelle_elemente.`Neu/Bestand`=1);";
         $result1 = $mysqli->query($sql1);
         $row1 = $result1->fetch_assoc();
-        if (strlen($row['PP']) >0 ){            
+        if ( null != ($row['PP']) ){
             $pdf->MultiCell(25, 4, money_format('€ %!n', $row1["PP_Neu"]), 0, 'R', $fill, 0);
             $sumRaumbereichNeu = $sumRaumbereichNeu + $row1['PP_Neu'];
         }
         else{
-            $pdf->MultiCell(25, 4, money_format("€ %!n", 0), 0, 'R', $fill, 0);
+            $pdf->MultiCell(25, 4,  sprintf('%01.2f', 0), 0, 'R', $fill, 0);
         }
         $gewerkeInProject[$key]['GewerkeSummeGesamtNeu'] = $gewerkeInProject[$key]['GewerkeSummeGesamtNeu'] + $row1['PP_Neu'];        
     }
@@ -280,12 +262,12 @@ foreach($raumbereicheInProject as $rowData) {
                 WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=".$_SESSION["projectID"].") AND ((tabelle_räume.`Bauabschnitt`)='".$rowData['Bauabschnitt']."') AND ((tabelle_räume.Geschoss)='".$rowData['Geschoss']."') AND ((tabelle_auftraggeber_gewerke.Gewerke_Nr)='".$rowDataGewerkeInProject['Gewerke_Nr']."') AND ((tabelle_räume_has_tabelle_elemente.Standort)=1) AND tabelle_räume_has_tabelle_elemente.`Neu/Bestand`=0);";
         $result = $mysqli->query($sql);
         $row = $result->fetch_assoc();
-        if (strlen($row['PP']) >0 ){            
+        if ( null != ($row['PP'])   ){
             $pdf->MultiCell(25, 4, money_format('€ %!n', $row["PP"]), 0, 'R', $fill, 0);
             $sumRaumbereichBestand = $sumRaumbereichBestand + $row['PP'];
         }
         else{
-            $pdf->MultiCell(25, 4, money_format("€ %!n", 0), 0, 'R', $fill, 0);
+            $pdf->MultiCell(25, 4,  sprintf('%01.2f', 0), 0, 'R', $fill, 0);
         }
         $gewerkeInProject[$key]['GewerkeSummeGesamtBestand'] = $gewerkeInProject[$key]['GewerkeSummeGesamtBestand'] + $row['PP'];        
     }
@@ -310,10 +292,10 @@ $pdf->MultiCell(50, 4, 'Gesamt', 'T', 'L', 0, 0);
 $pdf->MultiCell(20, 4, '', 'T', 'R', 0, 0);
 $sumGesamt = 0;
 foreach($gewerkeInProject as $rowDataGewerkeInProject) {    
-    $pdf->MultiCell(25, 4, money_format("€ %!n", $rowDataGewerkeInProject['GewerkeSummeGesamt']), 'T', 'R', 0, 0);
+    $pdf->MultiCell(25, 4,  sprintf('%01.2f', $rowDataGewerkeInProject['GewerkeSummeGesamt']), 'T', 'R', 0, 0);
     $sumGesamt = $sumGesamt + $rowDataGewerkeInProject['GewerkeSummeGesamt'];
 }
-$pdf->MultiCell(25, 4, money_format("€ %!n", $sumGesamt), 'T', 'R', 0, 0);
+$pdf->MultiCell(25, 4,  sprintf('%01.2f', $sumGesamt), 'T', 'R', 0, 0);
 
 // Neusumme----------------------------------------------------
 $pdf->Ln();
@@ -322,10 +304,10 @@ $pdf->MultiCell(50, 4, 'davon Neu', 0, 'R', 0, 0);
 $pdf->MultiCell(20, 4, '', 0, 'L', 0, 0);
 $sumGesamtNeu = 0;
 foreach($gewerkeInProject as $rowDataGewerkeInProject) {    
-    $pdf->MultiCell(25, 4, money_format("€ %!n", $rowDataGewerkeInProject['GewerkeSummeGesamtNeu']), 0, 'R', 0, 0);
+    $pdf->MultiCell(25, 4,  sprintf('%01.2f', $rowDataGewerkeInProject['GewerkeSummeGesamtNeu']), 0, 'R', 0, 0);
     $sumGesamtNeu = $sumGesamtNeu + $rowDataGewerkeInProject['GewerkeSummeGesamtNeu'];
 }
-$pdf->MultiCell(25, 4, money_format("€ %!n", $sumGesamtNeu), 0, 'R', 0, 0);
+$pdf->MultiCell(25, 4,  sprintf('%01.2f', $sumGesamtNeu), 0, 'R', 0, 0);
 
 // Bestand von gesamtSumme-------------------------------------
 $pdf->Ln();
@@ -334,10 +316,10 @@ $pdf->MultiCell(50, 4, 'davon Bestand', 0, 'R', 0, 0);
 $pdf->MultiCell(20, 4, '', 0, 'L', 0, 0);
 $sumGesamtBestand = 0;
 foreach($gewerkeInProject as $rowDataGewerkeInProject) {    
-    $pdf->MultiCell(25, 4, money_format("€ %!n", $rowDataGewerkeInProject['GewerkeSummeGesamtBestand']), 0, 'R', 0, 0);
+    $pdf->MultiCell(25, 4,  sprintf('%01.2f', $rowDataGewerkeInProject['GewerkeSummeGesamtBestand']), 0, 'R', 0, 0);
     $sumGesamtBestand = $sumGesamtBestand + $rowDataGewerkeInProject['GewerkeSummeGesamtBestand'];
 }
-$pdf->MultiCell(25, 4, money_format("€ %!n", $sumGesamtBestand), 0, 'R', 0, 0);
+$pdf->MultiCell(25, 4,  sprintf('%01.2f', $sumGesamtBestand), 0, 'R', 0, 0);
 
 // close and output PDF document
 $pdf->Output('xxx.pdf', 'I');

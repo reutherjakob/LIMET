@@ -1,11 +1,6 @@
 <?php
 
-//----------------------------- 
-// 10.5.2024
-// Reuther & Fux
-//----------------------------- 
-
-include 'pdf_createBericht_MYPDFclass.php'; //require_once('TCPDF-master/TCPDF-master/tcpdf.php'); is in class file
+include 'pdf_createBericht_MYPDFclass.php'; //require_once('TCPDF-main/TCPDF-main/tcpdf.php'); is in class file
 include 'pdf_createBericht_utils.php';
 include '_utils.php';
 include 'pdf_createMTTabelle.php';
@@ -340,7 +335,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $pdf->SetFillColor(255, 255, 255);
         raum_header($pdf, $horizontalSpacerLN3, $SB, $row['Raumbezeichnung'], $row['Raumnr'], $row['Raumbereich Nutzer'], $row['Geschoss'], $row['Bauetappe'], $row['Bauabschnitt'], "A3", $parameter_changes_t_räume); //utils function   
         
-        if (strlen($row['Anmerkung FunktionBO']) > 0) {
+        if ( null != ($row['Anmerkung FunktionBO']) ) {
             $outstr = format_text(clean_string(br2nl($row['Anmerkung FunktionBO'])));
             $rowHeightComment = $pdf->getStringHeight($SB - $einzugPlus, $outstr, false, true, '', 1);
             $i = ($rowHeightComment > 6) ? $horizontalSpacerLN : 0;

@@ -1,6 +1,6 @@
 <?php
 
-require_once('TCPDF-master/TCPDF-master/tcpdf.php');
+require_once('TCPDF-main/TCPDF-main/tcpdf.php');
 session_start();
 include '_utils.php';
 check_login();
@@ -221,7 +221,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell(80, 6, "Bauteil: " . $row['Bauabschnitt'], "B", 'L', 0, 0);
 
         $pdf->SetFont('helvetica', '', 8);
-        if (strlen($row['Anmerkung FunktionBO']) > 0) {
+        if ( null != ($row['Anmerkung FunktionBO']) ) {
             $pdf->Ln();
             $rowHeightComment = $pdf->getStringHeight(150, br2nl($row['Anmerkung FunktionBO']), false, true, '', 1);
             $pdf->MultiCell(30, $rowHeightComment, "Funktion BO:", 'B', 'L', 0, 0);

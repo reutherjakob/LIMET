@@ -37,8 +37,9 @@ init_page_serversides();
     </head>
 
     <body style="height:100%">
-        <div class="container-fluid">
-            <div id="limet-navbar"></div> <!-- Container für Navbar Aufruf über onLoad --> 
+    <div id="limet-navbar"></div> <!-- Container für Navbar Aufruf über onLoad -->
+    <div class="container-fluid">
+
             <div class='row'>
                 <div class='col-sm-12'> 
                     <div class="mt-1 card">

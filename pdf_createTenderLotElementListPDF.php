@@ -12,7 +12,7 @@
 
 
 // Include the main TCPDF library (search for installation path).
-require_once('TCPDF-master/TCPDF-master/tcpdf.php');
+require_once('TCPDF-main/TCPDF-main/tcpdf.php');
 
 // extend TCPF with custom functions
 class MYPDF extends TCPDF {
@@ -200,8 +200,8 @@ while ($row = $result3->fetch_assoc()) {
         $pdf->MultiCell(40, $rowHeightFirstLine, $row['LosBezeichnung_Extern'],0, 'C', $fill, 0);
         $pdf->MultiCell(40, $rowHeightFirstLine, $row['Verfahren'],0, 'C', $fill, 0);
         $pdf->MultiCell(40, $rowHeightFirstLine, $row['Bearbeiter'],0, 'L', $fill, 0);
-        $pdf->MultiCell(40, $rowHeightFirstLine, money_format("%i", $row['schaetzsumme']),0, 'R', $fill, 0);
-        $pdf->MultiCell(40, $rowHeightFirstLine, money_format("%i", $row['Vergabesumme']),0, 'R', $fill, 0);
+        $pdf->MultiCell(40, $rowHeightFirstLine, sprintf('%01.2f', $row['schaetzsumme']),0, 'R', $fill, 0);
+        $pdf->MultiCell(40, $rowHeightFirstLine, sprintf('%01.2f', $row['Vergabesumme']),0, 'R', $fill, 0);
         $pdf->MultiCell(40, $rowHeightFirstLine, $row['Lieferant'],0, 'R', $fill, 0);
                     
         $pdf->Ln();  
