@@ -1,6 +1,7 @@
 <?php
 include '_utils.php';
 init_page_serversides();
+include "_format.php";
 ?>
 
 <!DOCTYPE html>
@@ -159,8 +160,8 @@ init_page_serversides();
                     echo "<td>Ja</td>";
                 }
 
-                echo "<td>" . sprintf('%01.2f', $row["Kosten"]) . "</td>";
-                echo "<td>" . sprintf('%01.2f', $row["PP"]) . "</td>";
+                echo "<td>" . format_money($row["Kosten"]) . "</td>";
+                echo "<td>" . format_money($row["PP"]) . "</td>";
                 echo "<td>" . $row["LosNr_Extern"] . "</td>";
                 echo "<td>" . $row["LosBezeichnung_Extern"] . "</td>";
                 echo "<td>" . $row["Ausführungsbeginn"] . "</td>";
@@ -282,67 +283,31 @@ init_page_serversides();
     });
 
     $(document).ready(function () {
-        // Setup - add a text input to each footer cell
-        /*
-        $('#tableElementsInProject thead tr').clone(true).appendTo( '#tableElementsInProject thead' );
-        $('#tableElementsInProject thead tr:eq(1) th').each( function (i) {
-            var title = $(this).text();
-            $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
-            /*
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( table.column(i).search() !== this.value ) {
-                    table
-                        .column(i)
-                        .search( this.value )
-                        .draw();
+        $('#tableElementsInProject').DataTable({
+            "paging": true,
+            "select": true,
+            "order": [[6, "asc"]],
+            "columnDefs": [
+                {
+                    "targets": [0, 1, 2, 3, 4, 15],
+                    "visible": false,
+                    "searchable": false
                 }
-            } );
 
-        } );
-        */
+            ],
+            "orderCellsTop": true,
+            "pagingType": "simple",
+            "lengthChange": false,
+            "pageLength": 10,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
+                "decimal": ",",
+                "thousands": "."
+            },
+            "mark": true,
+            "dom": 'frtip'
+        });
 
-        if (ext === '0') {
-            $('#tableElementsInProject').DataTable({
-                "paging": true,
-                "select": true,
-                "order": [[6, "asc"]],
-                "columnDefs": [
-                    {
-                        "targets": [0, 1, 2, 3, 4, 15],
-                        "visible": false,
-                        "searchable": false
-                    }
-
-                ],
-                "orderCellsTop": true,
-                "pagingType": "simple",
-                "lengthChange": false,
-                "pageLength": 10,
-                "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
-                "mark": true,
-                dom: 'frtip'
-
-            });
-        } else {
-            $('#tableElementsInProject').DataTable({
-                "paging": true,
-                "select": true,
-                "order": [[6, "asc"]],
-                "columnDefs": [
-                    {
-                        "targets": [0, 1, 2, 3, 4, 11, 12, 15],
-                        "visible": false,
-                        "searchable": false
-                    }
-                ],
-                "pagingType": "simple",
-                "lengthChange": false,
-                "pageLength": 10,
-                "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
-                //"scrollY":        '20vh',
-                //"scrollCollapse": true
-            });
-        }
 
         table = $('#tableElementsInProject').DataTable();
 

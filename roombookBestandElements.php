@@ -1,8 +1,8 @@
 <?php
 include '_utils.php';
+include "_format.php";
 init_page_serversides();
 ?>
-
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -16,17 +16,20 @@ init_page_serversides();
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
           integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
 
-
     <link rel="stylesheet" type="text/css"
-          href="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
+          href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
     <script type="text/javascript"
-            src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.js"></script>
-
-
+            src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.js"></script>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.jsdelivr.net/datatables.mark.js/2.0.0/datatables.mark.min.css"/>
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
     <style>
 
         .popover-content {
@@ -61,75 +64,121 @@ init_page_serversides();
             line-height: 1.5; /* If Placeholder of the input is moved up, rem/modify this. */
             border-radius: 3px;
         }
+        .bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
     </style>
-
 </head>
 
 <body style="height:100%">
 <div id="limet-navbar"></div>
 <div class="container-fluid">
-
-
     <div class="mt-4 card">
-        <div class="card-header">Elemente im Bestand</div>
-        <div class="card-body">
-            <?php
-            $mysqli = utils_connect_sql();
+        <?php
+        $mysqli = utils_connect_sql();
+        $sql = "SELECT 
+            tabelle_elemente.ElementID, 
+            tabelle_elemente.Bezeichnung, 
+            tabelle_räume_has_tabelle_elemente.id, 
+            tabelle_räume_has_tabelle_elemente.Kurzbeschreibung, 
+            tabelle_bestandsdaten.Inventarnummer, 
+            tabelle_bestandsdaten.Seriennummer, 
+            tabelle_bestandsdaten.Anschaffungsjahr, 
+            tabelle_bestandsdaten.`Aktueller Ort`, 
+            tabelle_geraete.Typ, 
+            tabelle_hersteller.Hersteller, 
+            tabelle_räume.Raumnr, 
+            tabelle_räume.Raumbezeichnung, 
+            tabelle_räume.`Raumbereich Nutzer`,
+            costs.Kosten
+        FROM tabelle_hersteller 
+        RIGHT JOIN (tabelle_geraete 
+        RIGHT JOIN (tabelle_bestandsdaten 
+        INNER JOIN (tabelle_elemente 
+        INNER JOIN (tabelle_räume 
+        INNER JOIN tabelle_räume_has_tabelle_elemente 
+        ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) 
+        ON tabelle_elemente.idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) 
+        ON tabelle_bestandsdaten.tabelle_räume_has_tabelle_elemente_id = tabelle_räume_has_tabelle_elemente.id) 
+        ON tabelle_geraete.idTABELLE_Geraete = tabelle_bestandsdaten.tabelle_geraete_idTABELLE_Geraete) 
+        ON tabelle_hersteller.idtabelle_hersteller = tabelle_geraete.tabelle_hersteller_idtabelle_hersteller
+        LEFT JOIN (
+            SELECT 
+                tabelle_projekt_varianten_kosten.Kosten,
+                tabelle_räume_has_tabelle_elemente.id AS element_id
+            FROM tabelle_projekt_varianten_kosten
+            INNER JOIN tabelle_räume_has_tabelle_elemente
+            ON tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
+            AND tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
+            WHERE tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte =  " . $_SESSION["projectID"] . "
+        ) AS costs
+        ON tabelle_räume_has_tabelle_elemente.id = costs.element_id
+        WHERE tabelle_räume.tabelle_projekte_idTABELLE_Projekte = " . $_SESSION["projectID"] . "
+        AND tabelle_räume_has_tabelle_elemente.`Neu/Bestand` = 0 
+        AND tabelle_räume_has_tabelle_elemente.Standort = 1
+        ORDER BY tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Raumnr;";
 
-            // Abfrage der Bestandselemente
-            $sql = "SELECT tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_räume_has_tabelle_elemente.id, tabelle_räume_has_tabelle_elemente.Kurzbeschreibung, tabelle_bestandsdaten.Inventarnummer, tabelle_bestandsdaten.Seriennummer, tabelle_bestandsdaten.Anschaffungsjahr, tabelle_bestandsdaten.`Aktueller Ort`, tabelle_geraete.Typ, tabelle_hersteller.Hersteller, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung
-                                    FROM tabelle_hersteller RIGHT JOIN (tabelle_geraete RIGHT JOIN (tabelle_bestandsdaten INNER JOIN (tabelle_elemente INNER JOIN (tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) ON tabelle_elemente.idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) ON tabelle_bestandsdaten.tabelle_räume_has_tabelle_elemente_id = tabelle_räume_has_tabelle_elemente.id) ON tabelle_geraete.idTABELLE_Geraete = tabelle_bestandsdaten.tabelle_geraete_idTABELLE_Geraete) ON tabelle_hersteller.idtabelle_hersteller = tabelle_geraete.tabelle_hersteller_idtabelle_hersteller
-                                    WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume_has_tabelle_elemente.`Neu/Bestand`)=0) AND ((tabelle_räume_has_tabelle_elemente.Standort)=1));";
+        $result = $mysqli->query($sql);
 
-            $result = $mysqli->query($sql);
+        echo "  <div class='card-header'>Elemente im Bestand";
+        if ($result->num_rows > 0) {
+            echo "<button type='button' class='ml-4 btn btn-outline-dark btn-xs' value='createBestandsPDF'><i class='far fa-file-pdf'></i> Bestands-PDF</button>";
+            echo "<button  class='ml-4 btn btn-outline-dark btn-xs' onclick=\"window.location.href='out_bestands_csv.php'\">Download CSV</button>";
+        }
+        echo "</div> <div class='card-body'>";
+        echo "<table class='table table-striped table-bordered table-sm' id='tableBestandsElemente'  cellspacing='0' width='100%'>
+            <thead><tr>
+            <th>ID</th>
+            <th>ElementID</th>
+            <th>Element</th>
+            <th>Inventarnr</th>
+            <th>Seriennr</th>
+            <th>Anschaffungsjahr</th>
+            <th>Gerät</th>
+            <th>Raumnr</th>
+            <th>Raum</th>
+            <th>Standort aktuell</th>
+            <th>Kosten</th>
+            <th>Kosten</th><!-- unformatiert -->
+            <th>Kommentar</th>                                                    
+            </tr></thead>
+            <tbody>";
 
-            if ($result->num_rows > 0) {
-                echo "<button type='button' class='ml-4 btn btn-outline-dark btn-xs' value='createBestandsPDF'><i class='far fa-file-pdf'></i> Bestands-PDF</button>";
-                echo "<button  class='ml-4 btn btn-outline-dark btn-xs' onclick=\"window.location.href='out_bestands_csv.php'\">Download CSV</button>";
+        while ($row = $result->fetch_assoc()) {
+            echo "<tr>";
+            echo "<td>" . $row["id"] . "</td>";
+            echo "<td>" . $row["ElementID"] . "</td>";
+            echo "<td>" . $row["Bezeichnung"] . "</td>";
+            echo "<td>" . $row["Inventarnummer"] . "</td>";
+            echo "<td>" . $row["Seriennummer"] . "</td>";
+            echo "<td>" . $row["Anschaffungsjahr"] . "</td>";
+            echo "<td>" . $row["Hersteller"] . "-" . $row["Typ"] . "</td>";
+            echo "<td>" . $row["Raumnr"] . "</td>";
+            echo "<td>" . $row["Raumbezeichnung"] . "</td>";
+            echo "<td>" . $row["Aktueller Ort"] . "</td>";
+            echo "<td>" . format_money($row["Kosten"]) . "</td>";
+            echo "<td>" . (float)$row["Kosten"] . "</td>";
+            if (null != ($row["Kurzbeschreibung"])) {
+                echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment'></i></button></td>";
+            } else {
+                echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment-slash'></i></button></td>";
             }
 
-            echo "<table class='table table-striped table-bordered table-sm' id='tableBestandsElemente'  cellspacing='0' width='100%'>
-                                                    <thead><tr>
-                                                    <th>ID</th>
-                                                    <th>ElementID</th>
-                                                    <th>Element</th>
-                                                    <th>Inventarnr</th>
-                                                    <th>Seriennr</th>
-                                                    <th>Anschaffungsjahr</th>
-                                                    <th>Gerät</th>
-                                                    <th>Raumnr</th>
-                                                    <th>Raum</th>
-                                                    <th>Kommentar</th>
-                                                    <th>Standort aktuell</th>
-                                                    </tr></thead>
-                                                    <tbody>";
 
-            while ($row = $result->fetch_assoc()) {
-                echo "<tr>";
-                echo "<td>" . $row["id"] . "</td>";
-                echo "<td>" . $row["ElementID"] . "</td>";
-                echo "<td>" . $row["Bezeichnung"] . "</td>";
-                echo "<td>" . $row["Inventarnummer"] . "</td>";
-                echo "<td>" . $row["Seriennummer"] . "</td>";
-                echo "<td>" . $row["Anschaffungsjahr"] . "</td>";
-                echo "<td>" . $row["Hersteller"] . "-" . $row["Typ"] . "</td>";
-                echo "<td>" . $row["Raumnr"] . "</td>";
-                echo "<td>" . $row["Raumbezeichnung"] . "</td>";
-
-                if ( null != ($row["Kurzbeschreibung"]) ) {
-                    echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment'></i></button></td>";
-                } else {
-                    echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment-slash'></i></button></td>";
-                }
-
-                echo "<td>" . $row["Aktueller Ort"] . "</td>";
-                echo "</tr>";
-            }
-            echo "</tbody></table>";
-            ?>
-        </div>
+            echo "</tr>";
+        }
+        echo "</tbody></table>";
+        ?>
     </div>
+</div>
 </body>
 <script>
 
@@ -150,7 +199,23 @@ init_page_serversides();
             "pagingType": "simple",
             "lengthChange": false,
             "pageLength": 10,
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+            'language': {
+                'url': '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
+                "decimal": ",",
+                "thousands": "."
+            },
+            "dom": '<"top"Blf>rt<"bottom"ip><"clear">',
+            "buttons": [
+                {
+                    extend: 'excel',
+                    exportOptions: {
+                        columns: function (idx) {
+                            return idx !== 0 && idx!==10 ;
+                        }
+                    }
+                }
+            ],
+            "mark": true
         });
 
 
@@ -158,17 +223,13 @@ init_page_serversides();
         var table1 = $('#tableBestandsElemente').DataTable();
 
         $('#tableBestandsElemente tbody').on('click', 'tr', function () {
-
             if ($(this).hasClass('info')) {
-                //$(this).removeClass('info');
             } else {
                 table1.$('tr.info').removeClass('info');
                 $(this).addClass('info');
-
             }
         });
 
-        // Popover for Comment
         $("button[name='showComment']").popover({
             trigger: 'click',
             placement: 'right',

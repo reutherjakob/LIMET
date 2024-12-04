@@ -258,7 +258,16 @@ init_page_serversides();
                 <div class="card-body" id="elementsvariantenParameterInLot"></div>
             </div>
             <div class="mt-4 card">
-                <div class="card-header">Bestandsdaten <button type='button' id='addBestandsElement' class='btn ml-4 mt-2 btn-outline-success btn-xs float-right' value='Hinzufügen' data-toggle='modal' data-target='#addBestandModal'><i class='fas fa-plus'></i></button> </div>
+                <div class="card-header">Bestandsdaten
+                    <button type='button' id='addBestandsElement'
+                            class='btn ml-4 mt-2 btn-outline-success btn-xs float-right' value='Hinzufügen'
+                            data-toggle='modal' data-target='#addBestandModal'><i class='fas fa-plus'></i></button>
+                    <button type='button' id='reloadBestand'
+                            class='btn ml-4 mt-2 btn-outline-secondary  float-right' value='reloadBestand'>
+                        <i class="fa fa-retweet" aria-hidden="true"></i>
+                    </button>
+
+                </div>
                 <div class="card-body" id="elementBestand"></div>
             </div>
         </div>
@@ -769,6 +778,19 @@ init_page_serversides();
         });
 
     });
+
+    $("button[value='reloadBestand']").click(function () {
+        $("#elementBestand").html("");
+        $.ajax({
+            url: "getElementBestand.php",
+            type: "GET",
+            success: function (data) {
+                makeToaster("Reloaded!", true);
+                $("#elementBestand").html(data);
+            }
+        });
+    });
+
 </script>
 
 

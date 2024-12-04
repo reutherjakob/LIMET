@@ -35,7 +35,6 @@ if ($_GET["bestandInkl"] == 1) {
 
 }
 
-
 $result = $mysqli->query($sql);
 
 echo "<table class='table table-striped table-bordered table-sm' id='tableRoomAreaCosts' cellspacing='0' width='100%'>
@@ -69,10 +68,8 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . $row["SummevonAnzahl"] . "</td>";
     echo "<td>" . format_money($row["Kosten"]) . "</td>";
     echo "<td>" . format_money($row["Ausdr1"]) . "</td>";
-
-    echo "<td>" . ($row["Kosten"]) . "</td>";
-    echo "<td>" . ($row["Ausdr1"]) . "</td>";
-
+    echo "<td>" . (float)($row["Kosten"]) . "</td>";
+    echo "<td>" . (float)($row["Ausdr1"]) . "</td>";
     echo "<td>" . $row["Gewerke_Nr"] . "</td>";
     echo "<td>" . $row["GHG"] . "</td>";
     echo "<td>" . $row["GUG"] . "</td>";

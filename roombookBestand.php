@@ -1,12 +1,12 @@
 <?php
-session_start();
 include '_utils.php';
 init_page_serversides();
+include "_format.php";
 ?>
 
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <title>RB-Bestand</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
@@ -101,7 +101,7 @@ init_page_serversides();
                 echo "<td>" . $row["Bezeichnung"] . "</td>";
                 echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
                 echo "<td>" . $row["Variante"] . "</td>";
-                echo "<td>" . $row["Kosten"] . "</td>";
+                echo "<td>" . format_money($row["Kosten"]) . "</td>";
                 echo "</tr>";
             }
             echo "</tbody></table>";
@@ -120,7 +120,7 @@ init_page_serversides();
 </body>
 <script>
     function move_dt_search(id, where2) {
-        var dt_searcher = document.getElementById(id);
+        let dt_searcher = document.getElementById(id);
         dt_searcher.parentNode.removeChild(dt_searcher);
         document.getElementById(where2).appendChild(dt_searcher);
     }
@@ -145,6 +145,8 @@ init_page_serversides();
             "pageLength": 10,
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
+                "decimal": ",",
+                "thousands": ".",
                 "search": "",
                 "searchBuilder": {
                     "title": null
@@ -166,7 +168,6 @@ init_page_serversides();
                     type: "GET",
                     success: function (data) {
                         $("#bestandsRoombook").html(data);
-                        //move_dt_search("dt-search-1", "CH2");
                     }
                 });
 

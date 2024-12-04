@@ -32,13 +32,13 @@ init_page_serversides();
     <script type="text/javascript"
             src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
-<style >
-    .DIYbtn {
-        margin: 5px;
-        height: 19px;
-        padding: 1px 18px; /* Adjust padding to fit content */
-    }
-</style>
+    <style>
+        .DIYbtn {
+            margin: 5px;
+            height: 19px;
+            padding: 1px 18px; /* Adjust padding to fit content */
+        }
+    </style>
 
 </head>
 
@@ -54,7 +54,8 @@ init_page_serversides();
                         <div class="col-md-4"></div>
                         <div class="col-md-3">
                             <label class="float-right">
-                                MT-relevante Räume: <input type="checkbox" id="filter_MTrelevantRooms" checked="checked">
+                                MT-relevante Räume: <input type="checkbox" id="filter_MTrelevantRooms"
+                                                           checked="checked">
                             </label>
                         </div>
                         <div id="CardHeaderRaume" class="col-md-2"></div>
@@ -138,7 +139,15 @@ init_page_serversides();
                 </div>
             </div>
             <div class="mt-4 card">
-                <div class="card-header" id="BestandsdatenCardHeader">Bestandsdaten <button type='button' id='addBestandsElement' class='btn ml-4 mt-2 btn-outline-success btn-xs float-right' value='Hinzufügen' data-toggle='modal' data-target='#addBestandModal'><i class='fas fa-plus'></i></button> </div>
+                <div class="card-header" id="BestandsdatenCardHeader">Bestandsdaten
+                    <button type='button' id='addBestandsElement'
+                            class='btn ml-4 mt-2 btn-outline-success btn-xs float-right' value='Hinzufügen'
+                            data-toggle='modal' data-target='#addBestandModal'><i class='fas fa-plus'></i></button>
+                    <button type='button' id='reloadBestand'
+                            class='btn ml-4 mt-2 btn-outline-secondary  float-right' value='reloadBestand'>
+                        <i class="fa fa-retweet" aria-hidden="true"></i>
+                    </button>
+                </div>
                 <div class="card-body" id="elementBestand"></div>
             </div>
             <div class="mt-4 card">
@@ -289,6 +298,8 @@ init_page_serversides();
 
 <script>
 
+
+
     let toastCounter3 = 0;
     $.fn.dataTable.ext.search.push(
         function (settings, data) {
@@ -305,6 +316,9 @@ init_page_serversides();
     let table;
 
     $(document).ready(function () {
+
+
+
         $("#elementParameters").hide();
         $("#elementBestand").hide();
         $("#elementVerwendung").hide();
@@ -434,6 +448,20 @@ init_page_serversides();
             , 100);
 
 
+    });
+
+
+
+    $("button[value='reloadBestand']").click(function () {
+      $("#elementBestand").html("");
+        $.ajax({
+            url: "getElementBestand.php",
+            type: "GET",
+            success: function (data) {
+                makeToaster("Reloaded!", true);
+                $("#elementBestand").html(data);
+            }
+        });
     });
 
     // DB Elemente einblenden

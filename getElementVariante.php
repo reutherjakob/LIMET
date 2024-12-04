@@ -216,7 +216,7 @@ echo "</tbody></table>
 
 <script src="_utils.js"></script>
 <script>
-    document.getElementById('kosten').addEventListener('keydown', function(event) {
+    document.getElementById('kosten').addEventListener('keydown', function (event) {
         if (event.key === 'Enter') { //avoid annoying reload of the page, when hitting enter and subsequently causing useless form submission
             event.preventDefault();
         }
@@ -276,7 +276,11 @@ echo "</tbody></table>
                 }
             ],
             "scrollX": true,
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
+                "decimal": ",",
+                "thousands": "."
+            }
         });
     });
 

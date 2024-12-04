@@ -30,7 +30,6 @@ if (filter_input(INPUT_GET, 'stk') != "") {
 }
 
 
-
 $mysqli = utils_connect_sql();
 
 // Abfrage der Element-Geräte
@@ -57,7 +56,6 @@ $result = $mysqli->query($sql);
 $row_cnt = $result->num_rows;
 
 //    echo " <button type='button' id='addBestandsElement' class='btn ml-4 mt-2 btn-outline-success btn-xs' value='Hinzufügen' data-toggle='modal' data-target='#addBestandModal'><i class='fas fa-plus'></i></button>";
-
 
 
 echo "<div class='table-responsive'><table class='table table-striped table-bordered table-sm' id='tableElementBestandsdaten' cellspacing='0' width='100%'>
@@ -194,13 +192,14 @@ $mysqli->close();
             "scrollCollapse": true,
             "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                 if (aData[8] === "0") {
-                    $('td', nRow).css('background-color', 'LightCoral');
+                    $('td', nRow).css('background-color', ' rgba(100, 0, 25, 0.3) ');
                 } else {
-                    $('td', nRow).css('background-color', 'LightGreen');
+                    $('td', nRow).css('background-color', ' rgba(100, 140' +
+                        ', 25, 0.3) ');
                 }
             },
             "initComplete": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-               // move_item("addBestandsElement", "BestandsdatenCardHeader");
+                // move_item("addBestandsElement", "BestandsdatenCardHeader");
             }
 
         });
@@ -290,6 +289,8 @@ $mysqli->close();
     });
 
 
+
+
     //Änderung speichern
     $("button[value='saveBestand']").click(function () {
         var ID = this.id;
@@ -317,8 +318,8 @@ $mysqli->close();
                         url: "getElementBestand.php",
                         type: "GET",
                         success: function (data) {
-                            $("#elementBestand").html(data);
-
+                            makeToaster("Saved!", true);
+                            //$("#elementBestand").html(data);
                         }
                     });
                 }
