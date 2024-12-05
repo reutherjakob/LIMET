@@ -8,13 +8,11 @@
 
 function format_money($number): string // function to format costs for visualization in table
 {
-    $formattedNumber = sprintf('%s', number_format((float)$number, 2, ',', '.'));
-    return $formattedNumber;
+    return sprintf('%s', number_format((float)$number, 2, ',', '.'));
 }
 
 function format_money_report($number): string // function to format costs for reports
 {
-    $formattedNumber = sprintf('%s €', number_format((float)$number, 2, ',', '.'));
-    return $formattedNumber;
+    return sprintf('%s €', number_format((float)$number, 2, ',', '.'));
 }
 

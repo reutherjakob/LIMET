@@ -3,8 +3,10 @@
 session_start();
 require_once('TCPDF-main/TCPDF-main/tcpdf.php');
 
-class MYPDF extends TCPDF {
-    public function Header() {
+class MYPDF extends TCPDF
+{
+    public function Header()
+    {
         if ($this->numpages > 1) {
             // Logo        
             if ($_SESSION["projectAusfuehrung"] === "MADER") {
@@ -33,8 +35,7 @@ class MYPDF extends TCPDF {
             $this->Ln();
             $this->cell(0, 0, '', 'B', 1, 'L');
 //            $this->Ln();
-        }
-        // Titelblatt        
+        } // Titelblatt
         else {
 
             $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
@@ -102,14 +103,12 @@ class MYPDF extends TCPDF {
             $this->Ln();
             $this->SetFont('helvetica', '', 10);
             $this->Cell(0, 0, "Stand: " . date('Y-m-d'), 0, false, 'L', 0, '', 0, false, 'T', 'M');
-
             $this->Ln();
             $dateFromURL = getValidatedDateFromURL();
             $currentDate = date('Y-m-d');
             $futureDate = new DateTime($dateFromURL) > new DateTime($currentDate);
 
             if ($dateFromURL === $currentDate || $futureDate) {
-                
             } else {
                 $this->Cell(0, 0, "Änderungsverlauf bis: " . $dateFromURL, 0, false, 'L', 0, '', 0, false, 'T', 'M');
             }
@@ -153,12 +152,20 @@ class MYPDF extends TCPDF {
                     $this->Cell(0, 0, "BIC: BKAUATWW ", 0, false, 'R', 0, '', 0, false, 'B', 'B');
                 }
             }
-            // Deckblatt beenden            
+            // Deckblatt beenden
+
+            $Disclaimer = "Die nachfolgenden medizintechnischen Vorbemessungsangaben beziehen sich nur auf medizintechnisch-relevante Räume die seitens Medizintechnik-Planung bearbeitet werden. Die Angaben dienen als Grundlage für die Fachplaner Architektur, Elektrotechnik, HKLS, Medgas & Statik. Neben den aufgelisteten Vorbemessungsangaben je Fachbereich werden die medizintechnischen Elemente in Listenform am Ende eines Raumes angeführt. Diese sind ebenfalls als Planungsgrundlage heranzuziehen.";
+            $this->SetFont('helvetica', '', 10);
+
+            $height = $this->getStringHeight(390, $Disclaimer, 0, 'L', 0, 6);
+            $this->SetY(275 - $height);
+            $this->MultiCell(390, 6, $Disclaimer, 0, 'L', 0, 0);
         }
     }
 
     // Page footer
-    public function Footer() {
+    public function Footer()
+    {
         // Position at 15 mm from bottom
         $this->SetY(-15);
         // Set font

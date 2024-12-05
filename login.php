@@ -1,36 +1,38 @@
 <?php
+ 
 session_start();
-$username = $_POST["username"];
-$passwort = $_POST["password"];
-if ($passwort === "" || $passwort === null) {
-    echo "<script>window.location.href = '/index.php';</script>";
-}
-$passwort = md5($passwort);
 
-$mysqli = new mysqli('localhost', $username, $passwort, 'LIMET_RB');
+$username = $_POST["username"];
+$password = $_POST["password"];
+
+if (empty($password)) {
+    echo "<script>window.location.href = '/index.php';</script>";
+    exit();
+}
+
+$password = md5($password);
+
+$mysqli = new mysqli('localhost', $username, $password, 'LIMET_RB');
 
 if ($mysqli->connect_error) {
-
     echo "<script>window.location.href = '/index.php';</script>";
-
-} else {
-    $_SESSION["username"] = $username;
-    $_SESSION["password"] = $passwort;
-
-    $sql = "SELECT permission 
-        FROM tabelle_user_permission
-        WHERE user='" . $_SESSION["username"] . "';";
-
-    $result = $mysqli->query($sql);
-
-    $row = $result->fetch_assoc();
-
-    if ($row["permission"] == "1") {
-        $_SESSION["ext"] = 1;
-    } else {
-        $_SESSION["ext"] = 0;
-    }
-
-    $mysqli->close();
-    header("Location: projects.php");
+    exit();
 }
+$_SESSION["username"] = $username;
+$_SESSION["password"] = $password; // Keeping the password in the session as requested
+
+$stmt = $mysqli->prepare("SELECT permission FROM tabelle_user_permission WHERE user = ?");
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
+if ($row) {
+   $_SESSION["ext"] = ($row["permission"] == "1") ? 1 : 0;
+    header("Location: projects.php");
+} else {
+    echo "<script>window.location.href = '/index.php';</script>";
+}
+
+$stmt->close();
+$mysqli->close();

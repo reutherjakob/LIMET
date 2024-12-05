@@ -27,6 +27,11 @@ init_page_serversides("", "x");
         .table > thead > tr > th {
             background-color: rgba(100, 140, 25, 0.15);
         }
+
+        .dt-button {
+            height: 31px;
+            margin: 2px 2px 15px 2px;
+        }
     </style>
 </head>
 <body>
@@ -36,24 +41,26 @@ init_page_serversides("", "x");
         <div class="card-header-l px-2 py-2  d-inline-flex align-items-baseline justify-content-start border-light"
              id="HeaderTabelleCard">
             <div class="col-md-3 d-inline-flex justify-content-start align-items-baseline" id="sub1"></div>
-            <div class="form-check-inline  align-items-baseline"><label for="dateSelect"> </label><input type="date"
-                                                                                                         id="dateSelect"
-                                                                                                         name="dateSelect">
-                <div class="spacer"></div>
+            <div class="col-md-3 d-inline-flex justify-content-start align-items-baseline" id="sub12"> Select &ensp;
             </div>
-            <div class="col-md-3 d-inline-flex align-items-baseline" id="sub12"></div>
+
+            <div class="d-inline-flex align-items-baseline"><label for="dateSelect"> </label>
+                <input type="date" id="dateSelect" name="dateSelect">
+            </div>
             <div class="col-md-3 d-inline-flex align-items-baseline" id="sub2"></div>
-            <div class="col-md-2 form-check-inline justify-content-end  align-items-baseline" id="sub3"></div>
+            <div class="col-md-2 d-inline-flex justify-content-end align-items-baseline" id="sub3"></div>
         </div>
 
         <div class="card-header-s ml-4 px-2 py-2 border-light form-check-inline  flex-nowrap" id="HeaderTabelleCard2">
+            Raumbuch &ensp; &emsp;
             <div class="row">
-                <div class="col-6 d-inline-flex" id="sub21">Raumbuch</div>
-                <div class="col-6 d-inline-flex justify-content-center" id="sub22"> -</div>
+                <div class="col-6 d-inline-flex" id="sub21">
+                </div>
+                <div class="col-6 d-inline-flex justify-content-center" id="sub22"> &ensp; &emsp;</div>
             </div>
         </div>
         <div class="card-header-s ml-4 px-2 py-2 border-light form-check-inline  flex-nowrap" id="HeaderTabelleCard3">
-            Bauangaben -
+            Bauangaben &emsp;
         </div>
         <div class="card-body px-2 py-2">
             <?php
@@ -151,6 +158,7 @@ init_page_serversides("", "x");
             const reportURLs = {
                 "BAUANGABEN A3": "/pdf_createBauangabenBericht_A3Qeer.php",
                 "BAUANGABEN A3 2": "/pdf_createBauangabenBericht_A3Qeer_1.php",
+                "BAUANGABEN A3 3": "/pdf_createBauangabenBericht_A3Qeer_ohne_Lab_params.php",
                 "Elem./Raum (w/Bestand)": "/pdf_createRoombookElWithoutBestand.php"
             };
 
@@ -171,6 +179,7 @@ init_page_serversides("", "x");
 
         const buttonNewReports = [
             {text: "BAU A3", action: () => generateNewReports("BAUANGABEN A3", $("#dateSelect").val())},
+            {text: "ohne Lab", action: () => generateNewReports("BAUANGABEN A3 3", $("#dateSelect").val())},
             {text: "ohne Datum", action: () => generateNewReports("BAUANGABEN A3 2", $("#dateSelect").val())},
             {
                 text: "Elem./Raum (w/Bestand)",
@@ -183,7 +192,7 @@ init_page_serversides("", "x");
             {text: "0-PDF", link: "pdf_createRoombookWithout0PDF"},
             {text: "ohne Bestand-PDF", link: "pdf_createRoombookWithoutBestandPDF"},
             {text: "0-ohne Bestand-PDF", link: "pdf_createRoombookWithout0WothoutBestandPDF"},
-            {text: "inkl Bauangaben-0-PDF", link: "pdf_createRoombookWithBauangabenWithout0PDF"}
+            {text: "Bauangaben-0-PDF", link: "pdf_createRoombookWithBauangabenWithout0PDF"}
         ];
 
         const ButtonsBauangaben = [
@@ -198,7 +207,6 @@ init_page_serversides("", "x");
         ];
 
         const oldButtons2 = [
-            {text: " - ", link: "pdf"},
             {text: "BO-PDF", link: "pdf_createBOPDF"},
             {text: "VE-Gesamt-PDF", link: "pdf_createBericht_VE_PDF"},
             {text: "ENT-Gesamt-PDF", link: "pdf_createBericht_ENT_PDF"},

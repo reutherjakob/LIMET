@@ -6,12 +6,12 @@ check_login();
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <style>
-        .popover-content {
+        /* .popover-content {
             height: 200px;
             width: 200px;
         }
@@ -40,9 +40,9 @@ check_login();
             height: 22px;
             padding: 2px 5px;
             font-size: 12px;
-            line-height: 1.5; /* If Placeholder of the input is moved up, rem/modify this. */
+            line-height: 1.5;
             border-radius: 3px;
-        }
+        } */
 
     </style>
 </head>
@@ -50,17 +50,16 @@ check_login();
 
 <?php
 $mysqli = utils_connect_sql();
-// Raumkosten berechnen Neu-Elemente
+
 $sql = "SELECT Sum(`tabelle_räume_has_tabelle_elemente`.`Anzahl`*`tabelle_projekt_varianten_kosten`.`Kosten`) AS Summe_Neu
                 FROM tabelle_räume_has_tabelle_elemente INNER JOIN tabelle_projekt_varianten_kosten ON (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) AND (tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten = tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)
                 WHERE (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=" . $_SESSION["roomID"] . ") AND ((tabelle_räume_has_tabelle_elemente.Standort)=1) AND ((tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume_has_tabelle_elemente.`Neu/Bestand`)=1));";
 $result = $mysqli->query($sql);
-
 $row = $result->fetch_assoc();
-
+$SummeNeu = (float)$row["Summe_Neu"];
 $formattedNumber = format_money_report($row["Summe_Neu"]);
-
 echo "<form class='form-inline'>
+
             <div class='form-group'>
                 <label for='kosten_neu'>Raumkosten-Neu: </label>
                 <input type='text' class='ml-4 mr-4 form-control input-xs' id='kosten_neu' value= '$formattedNumber' disabled='disabled'></input>
@@ -72,10 +71,17 @@ $sql = "SELECT Sum(`tabelle_räume_has_tabelle_elemente`.`Anzahl`*`tabelle_proje
                 WHERE (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=" . $_SESSION["roomID"] . ") AND ((tabelle_räume_has_tabelle_elemente.Standort)=1) AND ((tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume_has_tabelle_elemente.`Neu/Bestand`)=0));";
 $result = $mysqli->query($sql);
 $row = $result->fetch_assoc();
-$formattedNumber = format_money_report(  $row["Summe_Bestand"]);
-echo "
-                <div class='form-group'>
+$formattedNumber = format_money_report($row["Summe_Bestand"]);
+
+echo "<div class='form-group'>
                     <label for='kosten_neu'>Raumkosten-Bestand: </label>
+                    <input type='text' class='ml-4 form-control input-xs' id='kosten_neu' value='$formattedNumber' disabled='disabled'></input>
+                </div>
+           </div>";
+$Summe = (float)$row["Summe_Bestand"] + $SummeNeu;
+$formattedNumber = format_money_report($Summe);
+echo "<div class='form-group'>
+                    <label for='kosten_neu'>Gesammt: </label>
                     <input type='text' class='ml-4 form-control input-xs' id='kosten_neu' value='$formattedNumber' disabled='disabled'></input>
                 </div>						  			 											 						 			
            </div>	
@@ -175,7 +181,7 @@ while ($row = $result->fetch_assoc()) {
     }
     echo "</select></td>";
 
-    if ( null != ($row["Kurzbeschreibung"])  ) {
+    if (null != ($row["Kurzbeschreibung"])) {
         echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment'></i></button></td>";
     } else {
         echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment-slash'></i></button></td>";
@@ -253,7 +259,6 @@ $mysqli->close();
 <script src="_utils.js"></script>
 <script>
 
-    // Element speichern
     $("button[value='saveElement']").click(function () {
         var id = this.id;
         var comment = $("#buttonComment" + id).val();
@@ -298,7 +303,7 @@ $mysqli->close();
             "info": true,
             "columnDefs": [
                 {
-                    "targets": [0,10],
+                    "targets": [0, 10],
                     "visible": false,
                     "searchable": false,
                     "sortable": false
@@ -372,7 +377,7 @@ $mysqli->close();
             });
         });
 
-        $("button[name='showComment']").popover({
+        /* $("button[name='showComment']").popover({
             trigger: 'click',
             placement: 'right',
             html: true,
@@ -397,7 +402,7 @@ $mysqli->close();
                 document.getElementById(id).value = $('.popover-textarea').val();
                 $(this).parents(".popover").popover('hide');
             });
-        });
+        });*/
     });
 
     $("input[value='Rauminhalt kopieren']").click(function () {

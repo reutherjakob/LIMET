@@ -12,49 +12,51 @@ init_page_serversides();
     <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
     <link rel="icon" href="iphone_favicon.png"/>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
-          integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"/>
 
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
-    <script type="text/javascript"
-            src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+          integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.jsdelivr.net/datatables.mark.js/2.0.0/datatables.mark.min.css"/>
-    <script type="text/javascript"
-            src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"
+            integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
+
+    <style>
+        .DIYbtn {
+            margin: 1px 1px 1px 1px;
+            height: 15px;
+            padding: 1px 20px 15px 5px;
+            width: 25px;
+        }
+    </style>
 
 </head>
 
 <body style="height:100%">
 <div id="limet-navbar"></div>
 <div class="container-fluid">
-
     <div class='row'>
         <div class='col-sm-8'>
             <div class="mt-2 card">
                 <div class="card-header">
                     <div class="row">
                         <div class="col-md-3">Räume im Projekt</div>
-                        <div class="col-md-4"></div>
                         <div class="col-md-3">
                             <label class="float-right">
-                                MT-relevante Räume: <input type="checkbox" id="filter_MTrelevantRooms" checked="true">
+                                MT-relevante: <input type="checkbox" id="filter_MTrelevantRooms"
+                                                           checked="checked">
                             </label>
                         </div>
-                        <div id="CardHeaderRaume" class="col-md-2"></div>
-
+                        <div id="CardHeaderRaume" class="col-md-6 d-inline-flex justify-content-end align-items-center"></div>
                     </div>
-
                 </div>
-
                 <div class="card-body" style="overflow: auto; ">
                     <?php
                     $mysqli = utils_connect_sql();
@@ -65,7 +67,7 @@ init_page_serversides();
                                                     tabelle_räume.`Anmerkung allgemein`, tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, 
                                                     tabelle_räume.idTABELLE_Räume, tabelle_räume.`MT-relevant`, `tabelle_räume`.`Anmerkung FunktionBO`
                                                 FROM tabelle_räume INNER JOIN tabelle_projekte ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
-                                                WHERE (((tabelle_projekte.idTABELLE_Projekte)=" . $_SESSION["projectID"] . "));";
+                                                WHERE (((tabelle_projekte.idTABELLE_Projekte )=" . $_SESSION["projectID"] . "));";
 
                     $result = $mysqli->query($sql);
 
@@ -98,8 +100,8 @@ init_page_serversides();
                         }
                         echo "</td>";
                         echo "<td>";
-                        if ( null != ($row["Anmerkung FunktionBO"]) ) {
-                            echo "<button type='button' class='btn btn-xs btn-outline-dark' id='buttonBO' value='" . $row["Anmerkung FunktionBO"] . "' data-toggle='modal' data-target='#boModal'><i class='fa fa-comment'></i></button>";
+                        if ($row["Anmerkung FunktionBO"] != null) {
+                            echo "<button type='button' class='btn btn-xs btn-outline-dark DIYbtn' id='buttonBO' value='" . $row["Anmerkung FunktionBO"] . "' data-toggle='modal' data-target='#boModal'><i class='fa fa-comment'></i></button>";
                         }
                         echo "</td>";
                         echo "</tr>";
@@ -132,7 +134,15 @@ init_page_serversides();
                 </div>
             </div>
             <div class="mt-4 card">
-                <div class="card-header">Bestandsdaten</div>
+                <div class="card-header" id="BestandsdatenCardHeader">Bestandsdaten
+                    <button type='button' id='addBestandsElement'
+                            class='btn ml-4 mt-2 btn-outline-success btn-xs float-right' value='Hinzufügen'
+                            data-toggle='modal' data-target='#addBestandModal'><i class='fas fa-plus'></i></button>
+                    <button type='button' id='reloadBestand'
+                            class='btn ml-4 mt-2 btn-outline-secondary  float-right' value='reloadBestand'>
+                        <i class="fa fa-retweet" aria-hidden="true"></i>
+                    </button>
+                </div>
                 <div class="card-body" id="elementBestand"></div>
             </div>
             <div class="mt-4 card">
@@ -141,12 +151,12 @@ init_page_serversides();
             </div>
         </div>
     </div>
-    <hr></hr>
+    <hr>
     <div class="mt-4 card">
         <div class="card-header">
             <button type="button" class="btn btn-outline-dark btn-xs" id="showDBElementData"><i
                         class="fas fa-caret-right"></i></button>
-            </button>Datenbank-Elemente
+            Datenbank-Elemente
         </div>
         <div class="card-body" style="display:none" id="DBElementData">
             <div class="row mt-4">
@@ -167,18 +177,15 @@ init_page_serversides();
                             while ($row = $result->fetch_assoc()) {
                                 echo "<option value=" . $row["idtabelle_element_gewerke"] . ">" . $row["Nummer"] . " - " . $row["Gewerk"] . "</option>";
                             }
-                            echo "</select>	
-												</div>
-										</div>";
-
-                            echo "<div class='form-group row'>
-									 			<label class='control-label col-md-2' for='elementHauptgruppe'>Hauptgruppe</label>
-												<div class='col-md-10'>
-													<select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>
-														<option selected>Gewerk auswählen</option>
-													</select>	
-												</div>
-										</div>";
+                            echo "</select></div></div>
+                                    <div class='form-group row'>
+                                            <label class='control-label col-md-2' for='elementHauptgruppe'>Hauptgruppe</label>
+                                            <div class='col-md-10'>
+                                                <select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>
+                                                    <option selected>Gewerk auswählen</option>
+                                                </select>	
+                                            </div>
+                                    </div>";
 
                             echo "<div class='form-group row'>
 									 			<label class='control-label col-md-2' for='elementGruppe'>Gruppe</label>
@@ -202,6 +209,7 @@ init_page_serversides();
 
                             $result = $mysqli->query($sql);
 
+                            /** @noinspection HtmlDeprecatedAttribute */
                             echo "<table class='table table-striped table-bordered table-sm' id='tableElementsInDB'  cellspacing='0' width='100%'>
 									<thead><tr>
 									<th>ID</th>
@@ -238,7 +246,7 @@ init_page_serversides();
                     </div>
                 </div>
             </div>
-            <hr></hr>
+            <hr>
             <div class="row mt-4">
                 <div class="col-md-6 col-sm-6">
                     <div class="mt-4 card">
@@ -283,26 +291,23 @@ init_page_serversides();
     </div>
 </div>
 
+<script src="_utils.js"></script>
 <script>
-
+    let table;
     let toastCounter3 = 0;
+
     $.fn.dataTable.ext.search.push(
-        function (settings, data, dataIndex) {
+        function (settings, data) {
             if (settings.nTable.id !== 'tableRooms') {
                 return true;
             }
             if ($("#filter_MTrelevantRooms").is(':checked')) {
-                if (data [7] === "Ja") {
-                    return true;
-                } else {
-                    return false;
-                }
+                return data [7] === "Ja";
             } else {
                 return true;
             }
         }
     );
-    let table;
 
     $(document).ready(function () {
         $("#elementParameters").hide();
@@ -310,21 +315,24 @@ init_page_serversides();
         $("#elementVerwendung").hide();
 
         table = $('#tableRooms').DataTable({
-            "select": true,
-            "paging": true,
-            "pagingType": "simple",
-            "lengthChange": false,
-            "pageLength": 10,
-            "columnDefs": [
+            select: true,
+            paging: true,
+            pagingType: "simple",
+            lengthChange: false,
+            pageLength: 10,
+            columnDefs: [
                 {
-                    "targets": [0],
-                    "visible": false,
-                    "searchable": false
+                    targets: [0],
+                    visible: false,
+                    searchable: false
                 }
             ],
-            "order": [[1, "asc"]],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json", "search": ""},
-            "mark": true
+            order: [[1, "asc"]],
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json", // Updated URL for German language file
+                search: ""
+            },
+            mark: true
         });
 
         $('#tableElementsInDB').DataTable({
@@ -358,7 +366,7 @@ init_page_serversides();
                     url: "setSessionVariables.php",
                     data: {"roomID": id},
                     type: "GET",
-                    success: function (data) {
+                    success: function () {
                         $("#RoomID").text(id);
                         $.ajax({
                             url: "getRoomVermerke.php",
@@ -384,11 +392,12 @@ init_page_serversides();
         $('#tableElementsInDB tbody').on('click', 'tr', function () {
 
             if ($(this).hasClass('info')) {
-                //$(this).removeClass('info');
+
             } else {
                 table1.$('tr.info').removeClass('info');
                 $(this).addClass('info');
                 const elementID = table1.row($(this)).data()[0];
+                //console.log(elementID);
                 $.ajax({
                     url: "getStandardElementParameters.php",
                     data: {"elementID": elementID},
@@ -423,16 +432,23 @@ init_page_serversides();
         });
 
         setTimeout(() => {
-                const dt_searcher = $("#tableRooms_filter");
-                dt_searcher.detach();
-                $("#CardHeaderRaume").append(dt_searcher);
-                $('#tableRooms_filter label').contents().filter(function () {
-                    return this.nodeType === 3; // Node.TEXT_NODE
-                }).remove();
+            move_item("dt-search-0", "CardHeaderRaume");
+        }, 200);
+
+
+    });
+
+
+    $("button[value='reloadBestand']").click(function () {
+        $("#elementBestand").html("");
+        $.ajax({
+            url: "getElementBestand.php",
+            type: "GET",
+            success: function (data) {
+                makeToaster("Reloaded!", true);
+                $("#elementBestand").html(data);
             }
-            , 100);
-
-
+        });
     });
 
     // DB Elemente einblenden
@@ -449,7 +465,7 @@ init_page_serversides();
 
     // Element Gewerk Änderung
     $('#elementGewerk').change(function () {
-        const gewerkID = this.value;
+        let gewerkID = this.value;
 
         $.ajax({
             url: "getElementGroupsByGewerk.php",

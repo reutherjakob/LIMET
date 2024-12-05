@@ -14,6 +14,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
     <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"/>
+
     <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous"/>-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
           integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
@@ -28,7 +29,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
             integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
             crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
-
 
     <style>
         .btn_vis, .btn_invis {
@@ -98,12 +98,15 @@ include 'roombookSpecifications_New_modal_addRoom.php';
         </div>
         <div class="card-body" id="table_container_div">
             <table class="table display compact table-responsive table-striped table-bordered table-sm sticky"
-                   width="100%" id="table_rooms">
+                   style="width:100%"
+                   id="table_rooms">
                 <thead>
                 <tr></tr>
                 </thead>
                 <tbody>
-                <td></td>
+                <tr>
+                    <td></td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -118,7 +121,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                 <header class="card-header ">
                     <button type="button" class="btn btn-outline-dark fix_size" id="showRoomElements"><i
                                 class="fas fa-caret-left"></i></button>
-                    <input type="text" class="pull-right fix_size" id="diy_searcher" placeholder="Search...">
+                    <label for="diy_searcher"></label><input type="text" class="pull-right fix_size" id="diy_searcher"
+                                                             placeholder="Search...">
                 </header>
                 <div class="card-body" id="additionalInfo">
                     <p id="roomElements"></p>
@@ -160,9 +164,10 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                 </div>
             </div>
             <footer class="modal-footer">
-                <button type="button" class="btn btn-warning" onclick="restoreDefaults()">Restore Default-</button>
-                <button type="button" class="btn btn-secondary" onclick="ModalInvisible()">-Close-</button>
-                <button type="button" class="btn btn-success" onclick="saveSettings()">-Save changes</button>
+                <button type="button" class="btn btn-warning" onclick="restoreDefaults()">Restore Default</button>
+                &ensp;
+                <button type="button" class="btn btn-secondary" onclick="ModalInvisible()">Close</button>&ensp;
+                <button type="button" class="btn btn-success" onclick="saveSettings()">Save changes</button>
             </footer>
         </div>
     </div>
@@ -172,12 +177,12 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 <script src="roombookSpecifications_constDeclarations.js"></script>
 <script src="_utils.js"></script>
 <script charset=utf-8>
-    var projectID = <?php echo json_encode($_SESSION["projectID"]); ?>;
-    var table;
-    var cellText = "";
-    var currentRowInd = 0;
-    var currentColInd = 0;
-    let current_edit = false; //variable keeps track if the input field to ediot the cells is open
+    let projectID = <?php echo json_encode($_SESSION["projectID"]); ?>;
+    let table;
+    let cellText = "";
+    let currentRowInd = 0;
+    let currentColInd = 0;
+    let current_edit = false; //letiable keeps track if the input field to ediot the cells is open
 
     $(document).ready(function () {
         loadSettings();
@@ -201,13 +206,13 @@ include 'roombookSpecifications_New_modal_addRoom.php';
     function init_MT_rel_filter() {
         setTimeout(function () {
             if ((document.getElementById('settings_save_state').checked || document.getElementById('settings_save_state_4all_projects').checked) && table.state.loaded()) {
-                var columnData = table.column("MT-relevant:name", {
+                let columnData = table.column("MT-relevant:name", {
                     search: 'applied',
                     order: 'applied',
                     visible: true
                 }).data().toArray();
                 if (!(columnData.length === 0)) {
-                    var uniqueValues = [...new Set(columnData)];
+                    let uniqueValues = [...new Set(columnData)];
                     if (uniqueValues.length === 1 && (uniqueValues[0] === '1' || uniqueValues[0] === '0')) {
                         $('#columnFilter').val(uniqueValues[0] === '1' ? 'Ja' : 'Nein').change();
                     }
@@ -279,7 +284,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
             {extend: 'colvis', text: 'Vis', columns: ':gt(5)', collectionLayout: 'fixed columns', className: 'btn'},
             ...buttonRanges.map(button => ({
                 text: button.name, className: 'btn btnx btn_vis',
-                action: (e, dt, node, config) => {
+                action: (e, dt, node) => {
                     toggleColumns(dt, button.start, button.end, button.name);
                     updateButtonClass(node, dt, button.start, button.end);
                 }
@@ -367,8 +372,8 @@ include 'roombookSpecifications_New_modal_addRoom.php';
     function restoreDefaults() {
         localStorage.clear();
         table.state.clear();
-        location.reload(true);
-        localStorage.setItem('settings_show_btn_grp_labels', true);
+        location.reload();
+        localStorage.setItem('settings_show_btn_grp_labels', "true");
     }
 
     function ModalInvisible() {
@@ -400,7 +405,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 
         if (saveState4AllProjects !== prevSaveState4AllProjects || saveState !== prevSaveState) {
             if (confirm("Um die geänderten Einstellungen wirksam zu machen, muss diese Seite neu geladen werden. Neu Laden?")) {
-                location.reload(true);
+                location.reload();
             } else {
                 $('#einstellungModal').modal('hide');
             }
@@ -416,9 +421,9 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 
 
     function check_angaben() {
-        var selectedRows = table.rows({selected: true}).data();
-        var roomIDs = [];
-        for (var i = 0; i < selectedRows.length; i++) {
+        let selectedRows = table.rows({selected: true}).data();
+        let roomIDs = [];
+        for (let i = 0; i < selectedRows.length; i++) {
             roomIDs.push(selectedRows[i]['idTABELLE_Räume']);
         }
         if (roomIDs.length === 0) {
@@ -457,7 +462,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                 cell.node().click();
                 table.keys.disable();
             } else {
-                var rowIndex = cell.index().row;
+                let rowIndex = cell.index().row;
                 if (rowIndex !== currentRowInd && !document.getElementById('checkbox_EditableTable').checked) {
                     currentRowInd = rowIndex;
                 }
@@ -522,23 +527,23 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 
     function table_click() {
         $(document).on('click', '#table_rooms tbody tr', function () {
-            var RaumID = table.row($(this)).data()['idTABELLE_Räume'];
+            let RaumID = table.row($(this)).data()['idTABELLE_Räume'];
             if ($('#checkbox_EditableTable').is(':checked')) {
-                var Raumbez = table.row($(this)).data()['Raumbezeichnung'];
-                var rowIndex = $(this).closest('tr').index();
-                var columnIndex = $(this).find('td').index(event.target);
+                let Raumbez = table.row($(this)).data()['Raumbezeichnung'];
+                let rowIndex = $(this).closest('tr').index();
+                let columnIndex = $(this).find('td').index(event.target);
                 if (columnIndex === -1) {
                     columnIndex = currentColInd;
                 }
-                var index_accounting_4_visibility = columnIndex;
-                var visibleColumns = table.columns().visible();
-                for (var i = 0; i <= index_accounting_4_visibility; i++) {
+                let index_accounting_4_visibility = columnIndex;
+                let visibleColumns = table.columns().visible();
+                for (let i = 0; i <= index_accounting_4_visibility; i++) {
                     if (!visibleColumns[i]) {
                         index_accounting_4_visibility++;
                     }
                 }
-                var dataIdentifier = columnsDefinition[index_accounting_4_visibility]['data'];
-                var cell = $(this).find('td').eq(columnIndex);
+                let dataIdentifier = columnsDefinition[index_accounting_4_visibility]['data'];
+                let cell = $(this).find('td').eq(columnIndex);
                 if (currentRowInd !== rowIndex || currentColInd !== columnIndex) {
                     cellText = cell.text().trim();
                 }
@@ -554,7 +559,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                     table.keys.disable();
                     cell.find('input, select').on('keydown blur', function (event) {
                         if (event.keyCode === 13 && current_edit) {
-                            var newData = format_data_input($(this).val(), dataIdentifier);
+                            let newData = format_data_input($(this).val(), dataIdentifier);
                             if (newData.trim() !== "") {
                                 cellText = newData;
                                 cell.html(newData);
@@ -580,8 +585,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                 url: "setSessionVariables.php",
                 data: {"roomID": RaumID},
                 type: "GET",
-                success: function (data) {
-                    //$("#RoomID").text(RaumID);
+                success: function () {
                     $.ajax({
                         url: "getRoomSpecifications2.php",
                         type: "GET",
@@ -591,7 +595,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                                 url: "getRoomElementsDetailed2.php",
                                 type: "GET",
                                 success: function (data) {
-                                    var tableX = $('#myTable').DataTable();
+                                    let tableX = $('#myTable').DataTable();
                                     tableX.destroy();
                                     if (!data || data.trim() === "") {
                                         $("#roomElements").empty();
@@ -613,14 +617,14 @@ include 'roombookSpecifications_New_modal_addRoom.php';
     }
 
     function init_editable_checkbox() {
-        let checkbox = $('<input>', {
+        $('<input>', {
             type: 'checkbox',
             name: 'EditableTable',
             id: 'checkbox_EditableTable',
             checked: document.getElementById('settings_save_edit_cbx').checked,
             class: 'form-check-inputz  form-check-input fix_size'
         }).appendTo($(`#TableCardHeader`));
-        let label = $('<label>', {
+        $('<label>', {
             id: 'edit_cbx',
             text: 'Edit Table',
             class: 'form-check-label ',
@@ -631,19 +635,19 @@ include 'roombookSpecifications_New_modal_addRoom.php';
     }
 
     function add_MT_rel_filter(location) {
-        var dropdownHtml = '<select class=" fix_size" id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
+        let dropdownHtml = '<select class=" fix_size" id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
         $(location).append(dropdownHtml);
         $('#columnFilter').change(function () {
-            var filterValue = $(this).val();
+            let filterValue = $(this).val();
             table.column('MT-relevant:name').search(filterValue).draw();
         });
     }
 
     function add_entfallen_filter(location) {
-        var dropdownHtml2 = '<select class="fix_size" id="EntfallenFilter">' + '<option value="">Entf</option><option value="1">1</option>' + '<option selected ="true" value="0">0</option></select>';
+        let dropdownHtml2 = '<select class="fix_size" id="EntfallenFilter">' + '<option value="">Entf</option><option value="1">1</option>' + '<option selected ="selected" value="0">0</option></select>';
         $(location).append(dropdownHtml2);
         $('#EntfallenFilter').change(function () {
-            var filterValue = $(this).val();
+            let filterValue = $(this).val();
             table.column('Entfallen:name').search(filterValue).draw();
         });
         table.column('Entfallen:name').search(0).draw();
@@ -676,7 +680,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
         }
 
         table.columns().every(function () {
-            var hasNonEmptyCell = this.data().toArray().some(function (cellData) {
+            let hasNonEmptyCell = this.data().toArray().some(function (cellData) {
                 return cellData !== null && cellData !== undefined && cellData !== '' && cellData !== '-' && cellData !== ' ' && cellData !== '  ' && cellData !== '   ' && cellData !== '.';
             });
             if (!hasNonEmptyCell) {
@@ -687,7 +691,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 
     function updateButtonClass(button, table, startColumn, endColumn) {
         const columns = table.columns().indexes();
-        var vis = table.column(columns[endColumn]).visible();
+        let vis = table.column(columns[endColumn]).visible();
         if (vis) {
             $(button).removeClass('btn_invis');
             $(button).addClass('btn_vis');
@@ -699,7 +703,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 
     function toggleColumns(table, startColumn, endColumn, button_name) {
         const columns = table.columns().indexes();
-        var vis = !table.column(columns[endColumn]).visible();
+        let vis = !table.column(columns[endColumn]).visible();
         for (let i = startColumn; i <= endColumn; i++) {
             table.column(columns[i]).visible(vis);
         }
@@ -755,7 +759,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 
     //SAVEING/CPYNG Rooms´
     function save_changes(RaumID, ColumnName, newData, raumname) {
-        console.log("SaveFunction: ", raumname, ColumnName, newData);
+        // console.log("SaveFunction: ", raumname, ColumnName, newData);
         $.ajax({
             url: "saveRoomProperties.php",
             data: {"roomID": RaumID, "column": ColumnName, "value": newData},
@@ -771,10 +775,10 @@ include 'roombookSpecifications_New_modal_addRoom.php';
     }
 
     $("#saveNewRoom").click(function () {
-        var nummer = $("#nummer").val();
-        var name = $("#name").val(); // var raumbereich = $("#raumbereich").val();
-        var funktionsteilstelle = $("#funktionsstelle").val();
-        var MTrelevant = $("#mt-relevant").val();
+        let nummer = $("#nummer").val();
+        let name = $("#name").val(); // let raumbereich = $("#raumbereich").val();
+        let funktionsteilstelle = $("#funktionsstelle").val();
+        let MTrelevant = $("#mt-relevant").val();
         console.log(funktionsteilstelle);
         save_new_room(nummer, name, funktionsteilstelle, MTrelevant);
     });
@@ -823,7 +827,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
         let requestData = {};
         columnsDefinition.forEach(column => {
             let field = column.data;
-            let dbFieldName = field.replace(/[ ]/g, '+'); // Replace dots and spaces with underscores to match the field names in the PHP file
+            let dbFieldName = field.replace(/[ ,.]/g, '+'); // Replace dots and spaces with underscores to match the field names in the PHP file
             requestData[dbFieldName] = selectedRowData[field];
         });
         delete requestData.idTABELLE_Räume;
@@ -833,6 +837,5 @@ include 'roombookSpecifications_New_modal_addRoom.php';
 
 </script>
 
-</html>
 
 

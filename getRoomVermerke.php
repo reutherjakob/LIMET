@@ -159,14 +159,14 @@ if(!isset($_SESSION["username"]))
                 } 
                 
             });
-            
-            // Popover for Vermerk	
-            $(function () {
-                $('[data-toggle="popover"]').popover();
-              });
-              
-            
-	 });
+        // Popover for Vermerk	TODO substiz
+        $(function () {
+            $('[data-toggle="popover"]').popover();
+        });
+
+
+
+    });
 
 
 
