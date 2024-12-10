@@ -3,6 +3,7 @@
 include '_utils.php';
 include "_format.php";
 check_login();
+//TODO assert og detailed page stil work    s
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -319,6 +320,7 @@ $mysqli->close();
         });
 
         var table = $('#tableRoomElements').DataTable();
+
         $('#tableRoomElements tbody').on('click', 'tr', function () {
             var id = table.row($(this)).data()[0];
             var stk = $("#amount" + id).val();

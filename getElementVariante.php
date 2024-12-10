@@ -25,12 +25,11 @@ $sql = "SELECT tabelle_projekt_varianten_kosten.Kosten
 $result = $mysqli->query($sql);
 
 $row = $result->fetch_assoc();
-echo "
-            <div class='col-md-12'>
-                <div class='card'>
-                <div class='ml-4 mt-4 card-title'><form class='form-inline'>
-                <label class='m-1' for='variante'>Variante</label>
-                <select class='form-control form-control-sm' id='variante'>";
+echo "<div class='col-md-12'>
+        <div class='card'>
+        <div class='ml-4 mt-4 card-title'><form class='form-inline'>
+        <label class='m-1' for='variante'>Variante</label>
+        <select class='form-control form-control-sm' id='variante'>";
 $options = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
 $selectedID = $_SESSION["variantenID"];
 
@@ -42,7 +41,7 @@ foreach ($options as $key => $value) {
 
 echo "</select>
                 <label class='m-1' for='kosten'>Kosten</label>
-                <input type='text' class='form-control form-control-sm' id='kosten' value= " . $row['Kosten'];
+                <input type='text' class='form-control form-control-sm' id='kosten' value= " . $row['Kosten'] ." ";
 echo "> </input>				  	
                 <button type='button' id='saveVariantePrice' class='btn btn-outline-dark btn-sm m-1' value='saveVariantePrice'><i class='far fa-save'></i> Kosten speichern</button>
                 <button type='button' id='getElementPriceHistory' class='btn btn-outline-dark btn-sm m-1' value='getElementPriceHistory'  data-toggle='modal' data-target='#getElementPriceHistoryModal'><i class='far fa-clock'></i> Kosten Änderungsverlauf</button>				

@@ -89,7 +89,7 @@ session_start();
 
             echo "<tr>";
             echo "<td>" . $row["id"] . "</td>";
-            echo "<td><input class='form-control form-control-sm' type='text' id='amount" . $row["id"] . "' value='" . $row["Anzahl"] . "' size='2'></input></td>";
+            echo "<td><input class='form-control form-control-sm' type='text' id='amount" . $row["id"] . "' value='" . intval( $row["Anzahl"]) . "' size='2'></input></td>";
             echo "<td>
    	    	<select class='form-control form-control-sm'' id='variante" . $row["id"] . "'>";
             switch ($row["tabelle_Varianten_idtabelle_Varianten"]) {
@@ -245,7 +245,7 @@ session_start();
                     "order": [[1, "asc"]],
                     "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
                     "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
-                    dom: '<"top"Blf>rt<"bottom"><"clear">',
+                    "dom": '<"top"Blf>rt<"bottom"><"clear">',
                     "buttons": [
                         {
                             extend: 'excel',

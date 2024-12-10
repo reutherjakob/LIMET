@@ -196,9 +196,7 @@ include "_format.php";
                     </button>
                     <label>Räume mit Element</label>
                 </div>
-                <div class="col-md-4 d-inline-flex justify-content-end" id="lemetrysth">
-                    <!--<button type="button" class="btn btn-outline-dark btn-xs" id="resetAnzahl" disabled>Reset Anzahl</button>-->
-                </div>
+
             </div>
 
         </div>

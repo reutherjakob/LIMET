@@ -34,6 +34,7 @@ $_SESSION["dbAdmin"] = "1";
     <div class="mt-4 card">
         <div class="card-header">Elemente</div>
         <div class="card-body">
+
             <div class="row mt-1">
                 <div class='col-md-6'>
                     <div class='mt-1 card'>
@@ -121,6 +122,8 @@ $_SESSION["dbAdmin"] = "1";
             </div>
         </div>
     </div>
+
+
     <hr></hr>
     <div class="mt-1 card">
         <div class="card-header">Geräte</div>
