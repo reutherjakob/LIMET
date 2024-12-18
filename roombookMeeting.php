@@ -23,9 +23,9 @@ init_page_serversides();
             src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.js"></script>
 </head>
 <body>
+<div id="limet-navbar"></div> <!-- Container für Navbar -->
 
 <div class="container-fluid">
-    <div id="limet-navbar"></div> <!-- Container für Navbar -->
 
     <div class="mt-4 card">
         <div class="card-body">

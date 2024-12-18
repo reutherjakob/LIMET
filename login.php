@@ -1,36 +1,39 @@
 <?php
-
 session_start();
-?>
-
-<?php
-
 $username = $_POST["username"];
-$passwort = $_POST["password"];
-$passwort = md5($passwort);
+$password = $_POST["password"];
 
-$mysqli = new mysqli('localhost', $username, $passwort, 'LIMET_RB');
+if (empty($password)) {
+    header('Location: index.php');
+    exit(); // Stop further execution
+}
+
+$password = md5($password);
+
+$mysqli = new mysqli('localhost', $username, $password, 'LIMET_RB');
+
 if ($mysqli->connect_error) {
-    header("Location: index.php");
+    header('Location: index.php');
+    $mysqli->close();;
+    exit(); // Stop further execution
 } else {
     $_SESSION["username"] = $username;
-    $_SESSION["password"] = $passwort;
+    $_SESSION["password"] = $password;
 
-    $sql = "SELECT permission
-                                FROM tabelle_user_permission 
-                                WHERE user='" . $_SESSION["username"] . "';";
-    $result = $mysqli->query($sql);
+    $stmt = $mysqli->prepare("SELECT permission FROM tabelle_user_permission WHERE user = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
     $row = $result->fetch_assoc();
-
-    if ($row["permission"] == "1") {
-        $_SESSION["ext"] = 1;
-    } else {
-        $_SESSION["ext"] = 0;
-    }
-
     $mysqli->close();
-    header("Location: projects.php");
-    //echo "Login erfolgreich. <br> <a href=\"projects.php\">Start</a>";
+    if ($row) {
+        $_SESSION["ext"] = ($row["permission"] == "1") ? 1 : 0;
+        header("Location: projects.php");
+        exit(); // Stop further execution
+    } else {
+        header('Location: index.php');
+        exit(); // Stop further execution
+    }
 }
-?>
- 
+

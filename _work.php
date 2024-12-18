@@ -1,20 +1,36 @@
-<?php
-//include '_utils.php';
-init_page_serversides("x", "x");
-$mysqli = utils_connect_sql();$externIds = [1425];
-$workflowteilIds = [5, 31, 32, 33, 34, 25, 26, 27];
-foreach ($externIds as $externId) {
-    foreach ($workflowteilIds as $workflowteil) {
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Save Cookie to Desktop</title>
+</head>
+<body>
+<button id="saveCookie">Save Cookie</button>
 
-        $sql = "INSERT INTO LIMET_RB.tabelle_lot_workflow (tabelle_lose_extern_idtabelle_Lose_Extern,         
-                                           tabelle_workflow_idtabelle_workflow,                             
-                                           tabelle_wofklowteil_idtabelle_wofklowteil)            
-    VALUES ($externId, 17, $workflowteil)";
-        if ($mysqli->query($sql) === TRUE) {
-            echo "New records created successfully for externId $externId and workflowteil $workflowteil\n";
-        } else {
-            echo "Error: " . $sql . "\n" . $mysqli->error;
-        }
-    }
-}
+<script>
+    document.getElementById('saveCookie').addEventListener('click', function() {
+        // Create a cookie
+        document.cookie = "username=Hahahah; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/";
 
+        // Get the cookie value
+        let cookieValue = document.cookie;
+
+        // Create a blob with the cookie data
+        let blob = new Blob([cookieValue], { type: 'text/plain' });
+
+        // Create a link element
+        let link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'cookie.txt';
+
+        // Append the link to the body
+        document.body.appendChild(link);
+
+        // Programmatically click the link to trigger the download
+        link.click();
+
+        // Remove the link from the document
+        document.body.removeChild(link);
+    });
+</script>
+</body>
+</html>

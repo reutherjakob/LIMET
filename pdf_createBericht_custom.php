@@ -11,7 +11,7 @@ $roomIDsArray = explode(",", $roomIDs);
 $PDF_input_bool = filter_input(INPUT_GET, 'PDFinputs');
 $PDF_input_bools = explode(",", $PDF_input_bool); //foreach ($roomIDsArray as $l) { echo $l;echo " <br> ";}echo $roomIDsArray;
 
-include 'pdf_createBericht_MYPDFclass.php'; //require_once('TCPDF-master/TCPDF-master/tcpdf.php'); is in class file
+include 'pdf_createBericht_MYPDFclass.php'; //require_once('TCPDF-main/TCPDF-main/tcpdf.php'); is in class file
 include 'pdf_createBericht_utils.php';
 include '_utils.php';
 if ($PDF_input_bools[8]) {
@@ -91,7 +91,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         raum_header($pdf, $horizontalSpacerLN2, $SB, $row['Raumbezeichnung'], $row['Raumnr'], $row['Raumbereich Nutzer'], $row['Geschoss'], $row['Bauetappe'], $row['Bauabschnitt']); //utils function 
 
 
-        if (strlen($row['Anmerkung FunktionBO']) > 0 && $PDF_input_bools[2]) {
+        if ( null != ($row['Anmerkung FunktionBO'])  && $PDF_input_bools[2]) {
             block_label($pdf, "BO-Beschreibung", $block_header_height);
             $outstr = format_text(clean_string(br2nl($row['Anmerkung FunktionBO'])));
             $rowHeightComment = $pdf->getStringHeight($SB, $outstr, false, true, '', 1);
@@ -301,7 +301,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
             $pdf->SetFont('helvetica', '', 10);
             $outstr = format_text(clean_string(br2nl($row['Anmerkung HKLS'])));
-            if (strlen($outstr) > 0 && is_not_no_comment($outstr)) { //Haustechnik anmerkung
+            if ( null != ($outstr)   && is_not_no_comment($outstr)) { //Haustechnik anmerkung
                 $pdf->Ln($horizontalSpacerLN2);
                 $rowHeightComment = $pdf->getStringHeight($SB - $e_E, $outstr, false, true, '', 1);
 
@@ -347,7 +347,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße, $row['NGA'], 1);
 
             $outstr = format_text(br2nl($row['Anmerkung MedGas']));
-            if (strlen($outstr) > 0 && is_not_no_comment($outstr)) {
+            if ( null != ($outstr)  && is_not_no_comment($outstr)) {
                 $pdf->Ln($horizontalSpacerLN2);
                 $rowHeightComment = $pdf->getStringHeight($SB - $e_E, $outstr, false, true, '', 1);
                 check_4_new_page($pdf, $rowHeightComment);
@@ -355,7 +355,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                 $pdf->MultiCell($SB - $e_E, $rowHeightComment, $outstr, 0, 'L', 0, 1);
             }
 
-            if (strlen($row['AR_Ausstattung']) > 0) {
+            if ( null != ($row['AR_Ausstattung']) ) {
 
                 block_label($pdf, "Architektur-Einrichtung", $block_header_height);
                 $pdf->SetFont('helvetica', '', 10);

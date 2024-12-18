@@ -1,82 +1,72 @@
 <?php
-session_start();
+include "_utils.php";
+check_login();
+// TODO get this to work
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-
 <head>
+    <title></title>
 </head>
 
 <body>
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
+<canvas id="myChart"></canvas>
 
-?>
-
-<canvas id="myChart" ></canvas>
-                
-</div>
-</body>
 <script>
-    
-    $(document).ready(function(){
-	$.ajax({
-		url: "getChartTenderSums.php",
-		method: "GET",
-		success: function(data) {
-			console.log(data);
-			var tender = [];
-			var sum = [];
+    $(document).ready(function () {
+        $.ajax({
+            url: "getChartTenderSums.php",
+            method: "GET",
+            success: function (data) {
+                console.log(data);
+                var tender = [];
+                var sum = [];
 
-			for(var i in data) {
-				tender.push(data[i].Lieferant);
-				sum.push(data[i].SummevonVergabesumme);
-			}
+                for (var i in data) {
+                    tender.push(data[i].Lieferant);
+                    sum.push(data[i].SummevonVergabesumme);
+                }
 
-			var chartdata = {
-				labels: tender,
-				datasets : [
-					{
-						label: "Vergabesumme",
-						backgroundColor: 'rgba(75, 192, 192, 0.2)',
-						borderColor: 'rgba(75, 192, 192, 1)',
-						hoverBackgroundColor: 'rgba(200, 200, 200, 1)',
-						hoverBorderColor: 'rgba(200, 200, 200, 1)',
-						data: sum,
-                                                borderWidth: 2                                                
-					}
-				]
-			};
+                var chartdata = {
+                    labels: tender,
+                    datasets: [
+                        {
+                            label: "Vergabesumme",
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            hoverBackgroundColor: 'rgba(200, 200, 200, 1)',
+                            hoverBorderColor: 'rgba(200, 200, 200, 1)',
+                            data: sum,
+                            borderWidth: 2
+                        }
+                    ]
+                };
 
-			var ctx = $("#myChart");
+                var ctx = $("#myChart");
 
-			var barGraph = new Chart(ctx, {
-				type: 'bar',
-				data: chartdata,                                
-                                options: {
-                                    responsive: true,
-                                    scales: {
-                                        yAxes: [{
-                                            ticks: {
-                                                beginAtZero:true
-                                            }
-                                        }]
-                                    }
+                var barGraph = new Chart(ctx, {
+                    type: 'bar',
+                    data: chartdata,
+                    options: {
+                        responsive: true,
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
                                 }
-			});
-		},
-		error: function(data) {
-			console.log(data);
-		}
-	});
+                            }]
+                        }
+                    }
+                });
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
     });
-    /*
-        var ctx = document.getElementById("myChart");
+    /*        var ctx = document.getElementById("myChart");
         var myChart = new Chart(ctx, {
             type: 'bar',
             data: {
@@ -113,8 +103,8 @@ if(!isset($_SESSION["username"]))
                     }]
                 }
             }
-        });
-    */
-</script>
+        });**/
 
+</script>
+</body>
 </html>

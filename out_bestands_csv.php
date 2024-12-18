@@ -1,22 +1,8 @@
 <?php
-// Start the session
-session_start();
+include "_utils.php";
 
-// Connect to the database
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
+$mysqli =  utils_connect_sql();
 
-// Check for connection errors
-if ($mysqli->connect_error) {
-    die("Connection failed: " . $mysqli->connect_error);
-}
-
-// Set the character set to UTF-8
-if (!$mysqli->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $mysqli->error);
-    exit();
-}
-
-// Query to retrieve data
 $sql = "SELECT 
             tabelle_elemente.ElementID, 
             tabelle_elemente.Bezeichnung, 
@@ -30,7 +16,8 @@ $sql = "SELECT
             tabelle_hersteller.Hersteller, 
             tabelle_räume.Raumnr, 
             tabelle_räume.Raumbezeichnung, 
-            tabelle_räume.`Raumbereich Nutzer`
+            tabelle_räume.`Raumbereich Nutzer`,
+            costs.Kosten
         FROM tabelle_hersteller 
         RIGHT JOIN (tabelle_geraete 
         RIGHT JOIN (tabelle_bestandsdaten 
@@ -42,6 +29,17 @@ $sql = "SELECT
         ON tabelle_bestandsdaten.tabelle_räume_has_tabelle_elemente_id = tabelle_räume_has_tabelle_elemente.id) 
         ON tabelle_geraete.idTABELLE_Geraete = tabelle_bestandsdaten.tabelle_geraete_idTABELLE_Geraete) 
         ON tabelle_hersteller.idtabelle_hersteller = tabelle_geraete.tabelle_hersteller_idtabelle_hersteller
+        LEFT JOIN (
+            SELECT 
+                tabelle_projekt_varianten_kosten.Kosten,
+                tabelle_räume_has_tabelle_elemente.id AS element_id
+            FROM tabelle_projekt_varianten_kosten
+            INNER JOIN tabelle_räume_has_tabelle_elemente
+            ON tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
+            AND tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
+            WHERE tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte = {$_SESSION['projectID']}
+        ) AS costs
+        ON tabelle_räume_has_tabelle_elemente.id = costs.element_id
         WHERE tabelle_räume.tabelle_projekte_idTABELLE_Projekte = {$_SESSION['projectID']}
         AND tabelle_räume_has_tabelle_elemente.`Neu/Bestand` = 0 
         AND tabelle_räume_has_tabelle_elemente.Standort = 1
@@ -69,7 +67,8 @@ if ($result && $result->num_rows > 0) {
         'Inventarnummer',
         'Seriennummer',
         'Anschaffungsjahr',
-        'Aktueller Ort'
+        'Aktueller Ort',
+        'Kosten'
     ], ';');
 
     // Loop through the result set
@@ -85,7 +84,8 @@ if ($result && $result->num_rows > 0) {
             $row['Inventarnummer'],
             $row['Seriennummer'],
             $row['Anschaffungsjahr'],
-            $row['Aktueller Ort']
+            $row['Aktueller Ort'],
+            $row['Kosten']
         ], ';');
     }
 

@@ -43,7 +43,7 @@
         
         $result = $mysqli->query($sql);
         $row = $result->fetch_assoc();
-        if(strlen($row["tabelle_Files_idtabelle_Files"]) > 0){
+        if( $row["tabelle_Files_idtabelle_Files"] != null){
             //Datei vorhanden -> Ersetzen!
             // move the uploaded (temporary) file to the specified destination
             if (move_uploaded_file($_FILES['fileUpload']['tmp_name'], $destination)) {

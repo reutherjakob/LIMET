@@ -6,10 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
     <link rel="icon" href="iphone_favicon.png"/>
-
-    <!--<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-            crossorigin="anonymous"></script> -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
@@ -28,15 +24,9 @@
     <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.css"
           rel="stylesheet"/>
     <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
-
-
     <style>
         .dt-input {
             width: 100px;
-        }
-
-        .table {
-            border: #75ff2e 1px solid;
         }
 
         .card-header {
@@ -51,8 +41,6 @@
             margin: 1px;
             padding: 5px;
         }
-
-
     </style>
 </head>
 
@@ -67,7 +55,7 @@ init_page_serversides();
     <div class="row">
         <div class="col-2">
             <div class="card">
-                <div class="card-header border-success-subtle"> RAUM</div>
+                <div class="card-header border-success"> RAUM</div>
             </div>
         </div>
         <div class="col-8">
@@ -97,7 +85,7 @@ init_page_serversides();
             </div>
         </div>
         <div class="col-2">
-            <div class="card border-primary-subtle">
+            <div class="card border-primary">
                 <div class="card-header "> VERGLEICH
                     <button type="button" class="btn btn-xs" onclick="show_modal('helpModal')">
                         <i class="fa fa-circle-info"></i>
@@ -110,7 +98,7 @@ init_page_serversides();
 
     <div class="row">
         <div class="col-12" id="col1">
-            <div class="card border-success-subtle" id="card1">
+            <div class="card border-success" id="card1">
                 <div class="card-header" id="CardHeaderRooms">
                     <button class="btn float-end grün" onclick="toggleCard('col1', 'col2', this)">
                         <i class="fa fa-arrow-right"> </i></button>
@@ -128,7 +116,7 @@ init_page_serversides();
             </div>
         </div>
         <div class="col-12" id="col2">
-            <div class="card border-primary-subtle" id="card2">
+            <div class="card border-primary" id="card2">
                 <div class="card-header justify-content-end d-inline-flex" id="CardHeaderVglRooms">
                     <button class="btn float-end toggle-btn grün "><i
                                 class="fa fa-arrow-up"></i>
@@ -143,7 +131,7 @@ init_page_serversides();
     </div>
     <div class="row mt-1">
         <div class="col-6" id="col3">
-            <div class="card border-success-subtle" id="card3">
+            <div class="card border-success" id="card3">
                 <div class="card-header">
                     Elemente im Raum
                     <button class="btn float-end grün 0"
@@ -163,7 +151,7 @@ init_page_serversides();
             </div>
         </div>
         <div class="col-6" id="col4">
-            <div class="card border-primary-subtle" id="card4">
+            <div class="card border-primary" id="card4">
                 <div class="card-header">
                     Elemente im Vergleichsraum
                     <button class="btn float-end toggle-btn grün "><i
@@ -185,14 +173,18 @@ init_page_serversides();
                 <h5 class="modal-title" id="helpModalLabel">Hilfe - Raumvergleich</h5>
             </div>
             <div class="modal-body">
-                <p>Vergleichen Sie Räume, deren Bauangaben und ihre Ausstattung. Wählen Sie einen Referenzraum und einen Vergleichsraum (selbe Funktionsstelle,
+                <p>Vergleichen Sie Räume, deren Bauangaben und ihre Ausstattung. Wählen Sie einen Referenzraum und einen
+                    Vergleichsraum (selbe Funktionsstelle,
                     um Unterschiede und Ähnlichkeiten zu erkennen.</p>
                 <h4>Nutzung</h4>
                 <ol>
                     <li><strong>Raum auswählen:</strong> Wählen Sie links/oben einen Referenzraum.</li>
-                    <li><strong>Vergleichsraum wählen:</strong> Wählen Sie rechts/darunter den Raum zum Vergleichen. Hier können ebenso detaillierte Bauangaben eingeblendet und verglichen werden.
+                    <li><strong>Vergleichsraum wählen:</strong> Wählen Sie rechts/darunter den Raum zum Vergleichen.
+                        Hier können ebenso detaillierte Bauangaben eingeblendet und verglichen werden.
                     </li>
-                    <li><strong>Checkbox-Filter:</strong> Funktion weniger Laden: Selektiert gleichartige Vergleichs Räume bereits vorher aus und zeigt jeweils nur einen an.</li>
+                    <li><strong>Checkbox-Filter:</strong> Funktion weniger Laden: Selektiert gleichartige Vergleichs
+                        Räume bereits vorher aus und zeigt jeweils nur einen an.
+                    </li>
                     <li><strong>Ausstattungsvergleich:</strong> Grün markierte Elemente sind in beiden Räumen vorhanden,
                         rot hervorgehobene nur im aktuell ausgewähltem Raum.
                     </li>

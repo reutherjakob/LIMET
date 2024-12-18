@@ -46,7 +46,7 @@ const columnsDefinition = [// NEW FIELD? - ADD Here, In get_rb_specs_data.php an
     {data: 'Bauetappe', title: 'Bauetappe', visible: false},
     {data: 'Bauabschnitt', title: 'Bauabschnitt', visible: false},
     {data: 'Nutzfläche', title: 'Nutzfläche', visible: false, case: "num"},
-    {data: 'Abdunkelbarkeit', title: 'Abdunkelbar', visible: false, case: "bit"},
+    {data: 'Abdunkelbarkeit', title: 'Abdunkelbar', visible: false, case: "bit+"},
     {data: 'Strahlenanwendung', title: 'Strahlenanw.', visible: false, case: "bit"},
     {data: 'Laseranwendung', title: 'Laseranw.', visible: false, case: "bit"},
     {data: 'Allgemeine Hygieneklasse', title: 'Allg. Hygieneklasse', visible: false},

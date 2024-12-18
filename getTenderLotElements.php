@@ -1,24 +1,28 @@
 <?php
-session_start();
+// V2.0: 2024-11-29, Reuther & Fux
 include '_utils.php';
 check_login();
 ?>
+
+
 <!DOCTYPE html>
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
 <html>
-    <head>
-    </head>
-    <body>
-        <?php
-        $mysqli = utils_connect_sql();
+<head>
+</head>
+<body>
 
-        if ($_GET["lotID"] != "") {
-            $_SESSION["lotID"] = $_GET["lotID"];
-        } else {
-            echo "Kein Los ausgewählt!";
-        }
 
-        $sql = "
+<?php
+$mysqli = utils_connect_sql();
+
+if ($_GET["lotID"] != "") {
+    $_SESSION["lotID"] = $_GET["lotID"];
+} else {
+    echo "Kein Los ausgewählt!";
+}
+
+$sql = "
 SELECT 
     tabelle_räume_has_tabelle_elemente.id, 
     tabelle_räume_has_tabelle_elemente.Anzahl, 
@@ -50,8 +54,8 @@ ORDER BY
     tabelle_räume.Raumnr;
 ";
 
-        $result = $mysqli->query($sql);
-        echo "<table class='table table-striped table-bordered table-sm' id='tableLotElements1'  cellspacing='0' width='100%'>
+$result = $mysqli->query($sql);
+echo "<table class='table table-striped table-bordered table-sm' id='tableLotElements1'  cellspacing='0' width='100%'>
             <thead><tr>
             <th>ID</th>
             <th>elementID</th>
@@ -63,135 +67,141 @@ ORDER BY
             <th>Bestand</th>
             <th>Raumnr</th>
             <th>Raum</th>
-             <th>Geschoss</th>
-                          <th>Raumbereich Nutzer</th>
-
+            <th>Geschoss</th>
+            <th>Raumbereich Nutzer</th>
             <th>Kommentar</th>								
             </tr></thead>           
             <tbody>";
 
-        while ($row = $result->fetch_assoc()) {
-            echo "<tr>";
-            echo "<td>" . $row["id"] . "</td>";
-            echo "<td>" . $row["TABELLE_Elemente_idTABELLE_Elemente"] . "</td>";
-            echo "<td>" . $row["tabelle_Varianten_idtabelle_Varianten"] . "</td>";
-            echo "<td>" . $row["Anzahl"] . "</td>";
-            echo "<td>" . $row["ElementID"] . "</td>";
-            echo "<td>" . $row["ElementBezeichnung"] . "</td>";
-            echo "<td>" . $row["Variante"] . "</td>";
-            echo "<td>";
-            switch ($row["Neu/Bestand"]) {
-                case 0:
-                    echo "Ja";
-                    break;
-                case 1:
-                    echo "Nein";
-                    break;
-            }
-            echo "</td>";
-            echo "<td>" . $row["Raumnr"] . "</td>";
-            echo "<td>" . $row["Raumbezeichnung"] . "</td>";
-            echo "<td>" . $row["Geschoss"] . "</td>";
-            echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
+while ($row = $result->fetch_assoc()) {
+    echo "<tr>";
+    echo "<td>" . $row["id"] . "</td>";
+    echo "<td>" . $row["TABELLE_Elemente_idTABELLE_Elemente"] . "</td>";
+    echo "<td>" . $row["tabelle_Varianten_idtabelle_Varianten"] . "</td>";
+    echo "<td>" . $row["Anzahl"] . "</td>";
+    echo "<td>" . $row["ElementID"] . "</td>";
+    echo "<td>" . $row["ElementBezeichnung"] . "</td>";
+    echo "<td>" . $row["Variante"] . "</td>";
+    echo "<td>";
+    switch ($row["Neu/Bestand"]) {
+        case 0:
+            echo "Ja";
+            break;
+        case 1:
+            echo "Nein";
+            break;
+    }
+    echo "</td>";
+    echo "<td>" . $row["Raumnr"] . "</td>";
+    echo "<td>" . $row["Raumbezeichnung"] . "</td>";
+    echo "<td>" . $row["Geschoss"] . "</td>";
+    echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
 
-            echo "<td><textarea id='comment" . $row["id"] . "' rows='1' style='width: 100%;'>" . $row["Kurzbeschreibung"] . "</textarea></td>";
-            echo "</tr>";
-        }
+    echo "<td><textarea id='comment" . $row["id"] . "' rows='1' style='width: 100%;'>" . $row["Kurzbeschreibung"] . "</textarea></td>";
+    echo "</tr>";
+}
+echo "</tbody></table>";
+$mysqli->close();
+?>
+<script src="_utils.js"></script>
+<script>
+    $(document).ready(function () {
 
-        echo "</tbody></table>";
-        $mysqli->close();
-        ?>
-        <script>
-            $(document).ready(function () {
-                $('#tableLotElements1').DataTable({
-                    "paging": true,
-                    "select": true,
-                    "columnDefs": [
-                        {
-                            "targets": [0, 1, 2],
-                            "visible": false,
-                            "searchable": false
-                        }
-                    ],
-                    "searching": true,
-                    "info": true,
-                    "order": [[3, "asc"]],
-                    "pagingType": "simple",
-                    "lengthChange": false,
-                    "pageLength": 10,
-                    "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
-                    dom: '<"top"fB> tip',
-                    "buttons": [
-                        {
-                            extend: 'excel',
-                            text: 'Download Excel'
-                        },
-                        {
-                            extend: 'excel',
-                            text: 'Verortungsliste',
-                            exportOptions: {
-                                columns: [3, 4, 5, 6, 7, 8, 9, 10,11] // Specify the columns you want to include
-                            },
-                            customize: function (xlsx) {
-                                var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                                 $('row:first', sheet).remove();
-                                $('row', sheet).each(function () {
-                                    var col3 = $('c[r^="A"]', this);
-                                    var col7 = $('c[r^="E"]', this);  
-                                    if (col3.text() == '0') {
-                                        $(this).remove();  
-                                    } 
-                                     if (col7.text() == 'Ja' ) {
-                                        $(this).remove();  
-                                    } 
-                                    
-                   
-                                });
+
+
+        $('#tableLotElements1').DataTable({
+            "paging": true,
+            "select": true,
+            "columnDefs": [
+                {
+                    "targets": [0, 1, 2],
+                    "visible": false,
+                    "searchable": false
+                }
+            ],
+            "searching": true,
+            "info": true,
+            "order": [[3, "asc"]],
+            "pagingType": "simple",
+            "lengthChange": false,
+            "pageLength": 10,
+            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+            dom: '<"top"fB> tip',
+            "buttons": [
+                {
+                    extend: 'excel',
+                    text: 'Download Excel'
+                },
+                {
+                    extend: 'excel',
+                    text: 'Verortungsliste',
+                    exportOptions: {
+                        columns: [3, 4, 5, 6, 7, 8, 9, 10, 11]
+                    },
+                    customize: function (xlsx) {
+                        var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                        $('row:first', sheet).remove();
+                        $('row', sheet).each(function () {
+                            var col3 = $('c[r^="A"]', this);
+                            var col7 = $('c[r^="E"]', this);
+                            if (col3.text() == '0') {
+                                $(this).remove();
                             }
-                        }
-                    ]
-                });
+                            if (col7.text() == 'Ja') {
+                                $(this).remove();
+                            }
 
-                var table = $('#tableLotElements1').DataTable();
 
-                $('#tableLotElements1 tbody').on('click', 'tr', function () {
-                    if ($(this).hasClass('info')) {
-                    } else {
-                        table.$('tr.info').removeClass('info');
-                        $(this).addClass('info');
-                        var elementID = table.row($(this)).data()[1];
-                        var variantenID = table.row($(this)).data()[2];
-                        var id = table.row($(this)).data()[0];
-                        var stk = table.row($(this)).data()[3];
+                        });
+                    }
+                }
+            ],
+            "initComplete":
+                function (settings, json) {
+                    move_item_by_class("dt-buttons", "elementsInLotCardHeader");
+                    move_item("tableTenderLots_filter", "elementsInLotCardHeader");
+                    $('#tableTenderLots_filter label').contents().filter(function () {
+                        return this.nodeType === 3; // Node.TEXT_NODE
+                    }).remove();
 
+                }
+        });
+
+        var table = $('#tableLotElements1').DataTable();
+        $('#tableLotElements1 tbody').on('click', 'tr', function () {
+            if ($(this).hasClass('info')) {
+            } else {
+                table.$('tr.info').removeClass('info');
+                $(this).addClass('info');
+                var elementID = table.row($(this)).data()[1];
+                var variantenID = table.row($(this)).data()[2];
+                var id = table.row($(this)).data()[0];
+                var stk = table.row($(this)).data()[3];
+
+                $.ajax({
+                    url: "getVariantenParameters.php",
+                    data: {"variantenID": variantenID, "elementID": elementID},
+                    type: "GET",
+                    success: function (data) {
+                        $("#elementsvariantenParameterInLot").html(data);
+                        $("#elementsvariantenParameterInLot").show();
                         $.ajax({
-                            url: "getVariantenParameters.php",
-                            data: {"variantenID": variantenID, "elementID": elementID},
+                            url: "getElementBestand.php",
+                            data: {"id": id, "stk": stk},
                             type: "GET",
                             success: function (data) {
-                                $("#elementsvariantenParameterInLot").html(data);
-                                $("#elementsvariantenParameterInLot").show();
-                                $.ajax({
-                                    url: "getElementBestand.php",
-                                    data: {"id": id, "stk": stk},
-                                    type: "GET",
-                                    success: function (data) {
-                                        $("#elementelementBestandsInLot").html(data);
-                                        $("#elementelementBestandsInLot").show();
-                                    }
-                                });
+                                $("#elementBestand").html(data);
+                                $("#elementBestand").show();
                             }
                         });
                     }
                 });
-            });
-
-            // PDF erzeugen
-            $('#createLotElementListPDF').click(function () {
-                window.open('/pdf_createLotElementListPDF.php');
-            });
-
-        </script> 
-
-    </body>
+            }
+        });
+    });
+    $('#createLotElementListPDF').click(function () {    // PDF erzeugen
+        window.open('/pdf_createLotElementListPDF.php');
+    });
+</script>
+</body>
 </html>

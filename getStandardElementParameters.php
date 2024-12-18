@@ -1,5 +1,6 @@
 <?php
-session_start();
+include "_utils.php";
+check_login();
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -8,25 +9,9 @@ session_start();
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" /></head>
 <body>
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
 
 <?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	
-	
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    printf("Error loading character set utf8: %s\n", $mysqli->error);
-	    exit();
-	} 
-	    
-			
+	$mysqli = utils_connect_sql();
 	$sql = "SELECT tabelle_parameter.Bezeichnung, tabelle_elemente_has_tabelle_parameter.Wert, tabelle_elemente_has_tabelle_parameter.Einheit
 			FROM tabelle_parameter INNER JOIN tabelle_elemente_has_tabelle_parameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_elemente_has_tabelle_parameter.TABELLE_Parameter_idTABELLE_Parameter
 			WHERE (((tabelle_elemente_has_tabelle_parameter.TABELLE_Elemente_idTABELLE_Elemente)=".$_GET["elementID"]."));";
