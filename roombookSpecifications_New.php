@@ -118,7 +118,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
         </div>
         <div class="mt-4 card">
             <div class="card">
-                <header class="card-header ">
+                <header class="card-header" id="CardHEaderElemntsInRoom">
                     <button type="button" class="btn btn-outline-dark fix_size" id="showRoomElements"><i
                                 class="fas fa-caret-left"></i></button>
                     <label for="diy_searcher"></label><input type="text" class="pull-right fix_size" id="diy_searcher"
@@ -183,6 +183,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
     let currentRowInd = 0;
     let currentColInd = 0;
     let current_edit = false; //letiable keeps track if the input field to ediot the cells is open
+    let Cookie_aktiv_tage = 90;
 
     $(document).ready(function () {
         loadSettings();
@@ -368,24 +369,57 @@ include 'roombookSpecifications_New_modal_addRoom.php';
         handleButtonClick();
     });
 
-    //SETTINGS SECTION
+
     function restoreDefaults() {
-        localStorage.clear();
+
+        setCookie('settings_show_btn_grp_labels', "true", Cookie_aktiv_tage);
+        setCookie('settings_save_state_4all_projects', "false", Cookie_aktiv_tage);
+        setCookie('settings_save_state' + projectID, "false", Cookie_aktiv_tage);
+        setCookie('settings_save_edit_cbx', "false", Cookie_aktiv_tage);
         table.state.clear();
         location.reload();
-        localStorage.setItem('settings_show_btn_grp_labels', "true");
     }
 
     function ModalInvisible() {
         $("#einstellungModal").modal('hide');
     }
 
+    function setCookie(name, value, days) {
+        let expires = "";
+        if (days) {
+            let date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
+    function eraseCookie(name) {
+        document.cookie = name + '=; Max-Age=-99999999;';
+    }
+
     function loadSettings() {
-        document.getElementById('settings_show_btn_grp_labels').checked = JSON.parse(localStorage.getItem('settings_show_btn_grp_labels')) || false;
-        change_top_label_visibility(JSON.parse(localStorage.getItem('settings_show_btn_grp_labels')) || false);
-        document.getElementById('settings_save_state_4all_projects').checked = JSON.parse(localStorage.getItem('settings_save_state_4all_projects')) || false;
-        document.getElementById('settings_save_state').checked = JSON.parse(localStorage.getItem('settings_save_state' + projectID)) || false;
-        document.getElementById('settings_save_edit_cbx').checked = JSON.parse(localStorage.getItem('settings_save_edit_cbx')) || false;
+        function getCookieValue(name) {
+            var value = getCookie(name);
+            return value ? JSON.parse(value) : false;
+        }
+
+        document.getElementById('settings_show_btn_grp_labels').checked = getCookieValue('settings_show_btn_grp_labels');
+        change_top_label_visibility(getCookieValue('settings_show_btn_grp_labels'));
+        document.getElementById('settings_save_state_4all_projects').checked = getCookieValue('settings_save_state_4all_projects');
+        document.getElementById('settings_save_state').checked = getCookieValue('settings_save_state' + projectID);
+        document.getElementById('settings_save_edit_cbx').checked = getCookieValue('settings_save_edit_cbx');
     }
 
     function saveSettings() {
@@ -394,14 +428,13 @@ include 'roombookSpecifications_New_modal_addRoom.php';
         const saveState = document.getElementById('settings_save_state').checked;
         const saveEditCbx = document.getElementById('settings_save_edit_cbx').checked;
 
-        const prevSaveState4AllProjects = localStorage.getItem('settings_save_state_4all_projects') === 'true';
-        const prevSaveState = localStorage.getItem('settings_save_state' + projectID) === 'true';
+        const prevSaveState4AllProjects = getCookie('settings_save_state_4all_projects') === 'true';
+        const prevSaveState = getCookie('settings_save_state' + projectID) === 'true';
 
-
-        localStorage.setItem('settings_show_btn_grp_labels', showBtnGrpLabels);
-        localStorage.setItem('settings_save_state_4all_projects', saveState4AllProjects);
-        localStorage.setItem('settings_save_state' + projectID, saveState);
-        localStorage.setItem('settings_save_edit_cbx', saveEditCbx);
+        setCookie('settings_show_btn_grp_labels', showBtnGrpLabels, Cookie_aktiv_tage);
+        setCookie('settings_save_state_4all_projects', saveState4AllProjects, Cookie_aktiv_tage);
+        setCookie('settings_save_state' + projectID, saveState, Cookie_aktiv_tage);
+        setCookie('settings_save_edit_cbx', saveEditCbx, Cookie_aktiv_tage);
 
         if (saveState4AllProjects !== prevSaveState4AllProjects || saveState !== prevSaveState) {
             if (confirm("Um die geänderten Einstellungen wirksam zu machen, muss diese Seite neu geladen werden. Neu Laden?")) {
@@ -413,7 +446,6 @@ include 'roombookSpecifications_New_modal_addRoom.php';
             $('#einstellungModal').modal('hide');
         }
     }
-
 
     function open_einstellung_modal() {
         $('#einstellungModal').modal('show');
@@ -487,7 +519,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
                 "Gentechnikgesetz - S3",
                 "Gentechnikgesetz - S4"
             ],
-            "H6020": [" - ", "H1a", "H1b", "H2a", "H2b", "H2c", "H3", "H4", "ÖNORM S 5224"],
+            "H6020": [" - ", "H1a", "H1b", "H1c", "H2a", "H2b", "H2c", "H3", "H4", "ÖNORM S 5224"],
             "Anwendungsgruppe": ["-", "0", "1", "2"],
             "Fussboden OENORM B5220": ["kA", "Klasse 1", "Klasse 2", "Klasse 3"]
         };

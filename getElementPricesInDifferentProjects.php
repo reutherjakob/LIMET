@@ -15,7 +15,7 @@ check_login();
 <?php
 $mysqli = utils_connect_sql();
 
-$sql = "SELECT tabelle_projekte.Projektname, tabelle_projekte.Interne_Nr, tabelle_varianten.Variante, tabelle_projekt_varianten_kosten.Kosten
+$sql = "SELECT tabelle_projekte.Projektname, tabelle_projekte.Interne_Nr, tabelle_projekte.Preisbasis , tabelle_varianten.Variante, tabelle_projekt_varianten_kosten.Kosten
 			FROM tabelle_varianten INNER JOIN (tabelle_projekt_varianten_kosten INNER JOIN tabelle_projekte ON tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte) ON tabelle_varianten.idtabelle_Varianten = tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten
 			WHERE (((tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente)=" . $_GET["elementID"] . "));";
 $result = $mysqli->query($sql);
@@ -25,6 +25,7 @@ echo "<table class='table table-striped table-bordered table-sm' id='tableElemen
             <th>Interne Nr</th>
             <th>Variante</th>
             <th>Kosten</th>
+            <th>Preisbasis </th>
             </tr></thead>
             <tbody>";
 while ($row = $result->fetch_assoc()) {
@@ -33,11 +34,11 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . $row["Interne_Nr"] . "</td>";
     echo "<td>" . $row["Variante"] . "</td>";
     echo "<td>" . format_money($row["Kosten"]) . "</td>";
+    echo "<td>" . $row["Preisbasis"] . "</td>";
     echo "</tr>";
 }
 echo "</tbody></table>";
-$mysqli->close();
-?>
+ ?>
 
 <script>
     $(document).ready(function () {
@@ -46,8 +47,6 @@ $mysqli->close();
             "searching": false,
             "info": false,
             "order": [[1, "asc"]],
-            //"pagingType": "simple_numbers",
-            //"lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
                 "decimal": ",",

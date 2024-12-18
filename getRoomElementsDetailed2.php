@@ -138,7 +138,13 @@ echo "</tbody></table>";
             }
         });
     });
+
     $(document).ready(function () {
+        if ($.fn.DataTable.isDataTable("#tableRoomElements")) {
+            $("#tableRoomElements").DataTable().destroy();
+
+        }
+        $("#excelButton").remove();
         let table = $("#tableRoomElements").DataTable({
             searching: true,
             info: true,
@@ -151,8 +157,26 @@ echo "</tbody></table>";
                 {"targets": [0], "visible": false, "searchable": false}
             ],
             paging: false,
-            sDom: "tli"//
+            sDom: "Btli",
+            buttons: [
+                {
+                    extend: 'excel',
+                    text: 'Excel',
+                    init: function (api, node, config) {
+                        $(node).attr('id', 'excelButton');
+                    }
+                }
+            ],
+            initComplete: function () {
+                if (typeof move_item === 'function') {
+                    move_item("excelButton", "CardHEaderElemntsInRoom");
+                } else {
+                    console.error("move_item function is not defined.");
+                }
+            }
         });
+
+
         $('#tableRoomElements tbody').on('click', 'tr', function () {
             if ($(this).hasClass('info')) {
             } else {

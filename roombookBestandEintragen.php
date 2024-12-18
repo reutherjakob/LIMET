@@ -72,11 +72,11 @@ include "_format.php";
         <div class="card-header container-fluid d-flex">
 
             <div class="row w-100">
-                <div class="col-md-1">
+                <div class="col-md-2">
                     <strong> Elemente im Projekt </strong>
                 </div>
 
-                <div class="col-md-8 d-inline-flex justify-content-start">
+                <div class="col-md-7 d-inline-flex justify-content-start">
                     <button type='button' class='btn h-75 btn-outline-dark ' id='createElementListPDF'>
                         <i class='far fa-file-pdf'></i> Elementliste PDF
                     </button>
@@ -87,7 +87,6 @@ include "_format.php";
                 <div class="col-md-3 d-inline-flex justify-content-end" id="CH_EIP"></div>
             </div>
         </div>
-
 
         <div class="card-body">
             <?php
@@ -110,8 +109,8 @@ include "_format.php";
 										<th>Variante</th>
 										<th>VariantenID</th>
 										<th>Bestand</th>										
-										<th>Kosten </th> <!-- unformatiert -->
-										<th>Kosten</th>
+										<th>Kosten </th> 
+										<th>Positionspreis</th>
 										<th>Gewerk</th>
 				
 									</tr>
@@ -130,8 +129,10 @@ include "_format.php";
                 } else {
                     echo "<td>Ja</td>";
                 }
-                echo "<td>" . (float)$row["Kosten"] . "</td>";
+
                 echo "<td>" . format_money($row["Kosten"]) . "</td>";
+                echo "<td>" . format_money(intval(  $row["Kosten"])* intval($row["SummevonAnzahl"])) . "</td>";
+
                 echo "<td>" . $row["Gewerke_Nr"] . "</td>";
 
                 echo "</tr>";
@@ -143,7 +144,6 @@ include "_format.php";
     </div>
 
     <div class="mt-4 card">
-
         <div class="row">
             <div class="col-md-8">
                 <div class="mt-1 card">
@@ -158,7 +158,6 @@ include "_format.php";
                     </div>
                 </div>
             </div>
-
 
             <div class="col-md-4">
                 <div class="mt-1 card">
@@ -181,9 +180,10 @@ include "_format.php";
 
     <div class="mt-4 card">
         <div class="card-header">
-            <label>DB Element</label>
             <button type="button" class="btn btn-outline-dark btn-xs" id="showDBElementData">
                 <i class="fas fa-caret-down"></i></button>
+            <label>DB Elemente</label>
+
         </div>
         <div class="card-body" id="DBElementData" style="display: none;">
             <div class="row">
@@ -292,7 +292,7 @@ include "_format.php";
             "order": [[2, "asc"]],
             "columnDefs": [
                 {
-                    "targets": [0, 5, 7],
+                    "targets": [0, 5],
                     "visible": false,
                     "searchable": false
                 }
@@ -319,6 +319,9 @@ include "_format.php";
         let table = $('#tableElementsInProject').DataTable();
 
         $('#tableElementsInProject tbody').on('click', 'tr', function () {
+            $("#devicesInDB").html("");
+            $("#elementBestand").html("");
+
             var elementID = table.row($(this)).data()[0];
             var variantenID = table.row($(this)).data()[5];
             var bestand = 1;
@@ -371,15 +374,21 @@ include "_format.php";
         $('#tableElementsInDB tbody').on('click', 'tr', function () {
             let elementID = table1.row($(this)).data()[0];
             $.ajax({
-                url: "getDevicesToElement.php",
+                url: "setSessionVariables.php",
                 data: {"elementID": elementID},
                 type: "GET",
-                success: function (data) {
-                    $("#devicesInDB").html(data);
+                success: function () {
+                    $.ajax({
+                        url: "getDevicesToElement.php",
+                        data: {"elementID": elementID},
+                        type: "GET",
+                        success: function (data) {
+                            $("#devicesInDB").html(data);
+                        }
+                    });
                 }
             });
         });
-
 
     });
 
@@ -396,9 +405,11 @@ include "_format.php";
         if ($("#roomsWithAndWithoutElements").is(':hidden')) {
             $(this).html("<i class='fas fa-caret-up'></i>");
             $("#roomsWithAndWithoutElements").show();
+            $("#elementBestand").show();
         } else {
             $(this).html("<i class='fas fa-caret-down'></i>");
             $("#roomsWithAndWithoutElements").hide();
+            $("#elementBestand").hide();
         }
     });
 

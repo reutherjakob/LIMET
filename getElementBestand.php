@@ -8,7 +8,6 @@ check_login();
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <style>
-
         .input-xs {
             height: 22px;
             padding: 2px 5px;
@@ -217,6 +216,7 @@ $mysqli->close();
 
     //Bestand hinzufügen
     $("#addBestand").click(function () {
+        $("#addBestandModal").modal('hide');
         var inventarNr = $("#invNr").val();
         var anschaffungsJahr = $("#year").val();
         var serienNr = $("#serNr").val();

@@ -3,7 +3,7 @@
 include '_utils.php';
 include "_format.php";
 check_login();
-//TODO assert og detailed page stil work    s
+//TODO assert og detailed page still works
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -12,7 +12,7 @@ check_login();
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <style>
-        /* .popover-content {
+        .popover-content {
             height: 200px;
             width: 200px;
         }
@@ -43,7 +43,10 @@ check_login();
             font-size: 12px;
             line-height: 1.5;
             border-radius: 3px;
-        } */
+        }
+        .card-body{
+            overflow: auto;
+        }
 
     </style>
 </head>

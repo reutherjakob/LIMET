@@ -1,11 +1,10 @@
 <?php
-session_start();
 include '_utils.php';
 init_page_serversides();
 ?>
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -83,9 +82,17 @@ init_page_serversides();
                 lines.forEach(line => {
                     const parts = line.split(':::');
                     const ROOM = parts[0].trim().split('---')[0];
+                    console.log(ROOM);
+
                     const R_ID = parts[0].trim().split('---')[1];
+                    console.log(R_ID);
+
                     const kathegorie = parts[1].split('->')[0].trim();
+                    console.log(kathegorie);
+
                     const issue = parts[1].split('->')[1].trim();
+                    console.log(issue);
+
 
                     roomIssues[R_ID] = roomIssues[R_ID] || [];
                     roomIssues[R_ID].push({ROOM, kathegorie, issue});
@@ -107,12 +114,7 @@ init_page_serversides();
                     new DataTable('#table1ID', {
                         dom: ' <"TableCardHeader"f>ti',
                         language: {
-                            "search": ""//,
-//                                                    searchBuilder: {
-//                                                        title: null,
-//                                                        depthLimit: 2,
-//                                                        stateSave: false
-//                                                    }
+                            "search": ""
                         },
                         keys: true,
                         scrollx: true,
@@ -165,23 +167,27 @@ init_page_serversides();
 //                                    else {console.log("No Success");}
         });
         setTimeout(function () {
-            var dt_searcher = document.getElementById("dt-search-0");
-            dt_searcher.parentNode.removeChild(dt_searcher);
-            dt_searcher.style.float = "right";
-            document.getElementById("CH1").appendChild(dt_searcher);
+            let dt_searcher = document.getElementById("dt-search-0");
+            if (dt_searcher) {
+
+                dt_searcher.parentNode.removeChild(dt_searcher);
+                dt_searcher.style.float = "right";
+                document.getElementById("CH1").appendChild(dt_searcher);
+            }
+
         }, 200);
 
 
         // Attach the function to the button click event
         const deleteButton = document.getElementById('deleteButton');
         deleteButton.addEventListener('click', deleteLocalStorageItem);
-    });
+    })
+
 
     function deleteLocalStorageItem() {
         localStorage.clear();
         console.log('Local storage cleared.');
     }
-
 
 </script>
 </html>

@@ -86,11 +86,11 @@ function load_nav_bar()
 {
     echo '<script>';
     echo '    window.onload = function () {';
-    echo '        $.get("navbar.html", function (data) {';
-    echo '            $("#limet-navbar").html(data);';
-    echo '            $(".navbar-nav").find("li:nth-child(3)")';
+    echo '        jQuery.get("navbar.html", function (data) {';
+    echo '            jQuery("#limet-navbar").html(data);';
+    echo '           jQuery(".navbar-nav").find("li:nth-child(3)")';
     echo '                    .addClass("active");';
-    echo '            $("#projectSelected").text(currentP);';
+    echo '           jQuery("#projectSelected").text(currentP);';
     echo '        });';
     echo '     };    </script>';
 }

@@ -298,6 +298,7 @@ echo "<!-- Modal --> <!-- data-toggle='modal' data-target='#myModal' -->
         }
     });
 
+
 </script>
 
 </body>
