@@ -52,7 +52,6 @@ init_page_serversides();
 </div>
 </body>
 <script>
-
     // Tabelle formatieren
     $(document).ready(function () {
         // Wenn Seite geladen, dann Inhalte dazu laden
@@ -84,11 +83,6 @@ init_page_serversides();
                 });
             }
         });
-
-
     });
-
-
 </script>
-
 </html>

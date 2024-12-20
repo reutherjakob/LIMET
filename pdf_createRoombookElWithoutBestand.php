@@ -1,7 +1,5 @@
 <?php
-
 require_once('TCPDF-main/TCPDF-main/tcpdf.php');
-session_start();
 include '_utils.php';
 check_login();
 

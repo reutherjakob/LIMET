@@ -26,7 +26,8 @@
     <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
     <style>
         .dt-input {
-            width: 100px;
+            width: 150px;
+            height: 40px;
         }
 
         .card-header {
@@ -45,61 +46,49 @@
 </head>
 
 <?php
-include '_utils.php'; // CHECKS SESSION AND LOGIN
-init_page_serversides();
+include '_utils.php'; // CHECKS SESSION
+init_page_serversides(); // checks LOGIN
 ?>
 
 <body style="height:100%">
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-2">
+        <!---<div class="col-2">
             <div class="card">
                 <div class="card-header border-success"> RAUM</div>
             </div>
-        </div>
-        <div class="col-8">
+    </div>--->
+        <div class="col-12">
             <div class="card">
                 <div class="card-header d-inline-flex justify-content-lg-left ">
+
                     <div class="form-check">
                         <input class="form-check-input track-checkbox" type="checkbox" id="checkbox1">
                         <label class="form-check-label" for="checkbox1">Weniger Vergleichsräume laden</label>
                     </div>
-                    <!--  <div class="form-check">
-                         <input class="form-check-input track-checkbox" type="checkbox" id="checkbox2">
-                         <label class="form-check-label" for="checkbox2">Checkbox 2</label>
-                     </div>
-                     <div class="form-check">
-                         <input class="form-check-input track-checkbox" type="checkbox" id="checkbox3">
-                         <label class="form-check-label" for="checkbox3">Checkbox 3</label>
-                     </div>
-                     <div class="form-check">
-                         <input class="form-check-input track-checkbox" type="checkbox" id="checkbox4">
-                         <label class="form-check-label" for="checkbox4">Checkbox 4</label>
-                     </div>
-                     <div class="form-check">
-                         <input class="form-check-input track-checkbox" type="checkbox" id="checkbox5">
-                         <label class="form-check-label" for="checkbox5">Checkbox 5</label>
-                     </div>  -->
-                </div>
-            </div>
-        </div>
-        <div class="col-2">
-            <div class="card border-primary">
-                <div class="card-header "> VERGLEICH
+
                     <button type="button" class="btn btn-xs" onclick="show_modal('helpModal')">
                         <i class="fa fa-circle-info"></i>
                     </button>
+
                 </div>
             </div>
         </div>
+        <!--   <div class="col-2">
+             <div class="card ">
+                 <div class="card-header ">
+
+                 </div>
+             </div>
+         </div>--->
     </div>
 
 
     <div class="row">
         <div class="col-12" id="col1">
             <div class="card border-success" id="card1">
-                <div class="card-header" id="CardHeaderRooms">
+                <div class="card-header" id="CardHeaderRooms"> Räume
                     <button class="btn float-end grün" onclick="toggleCard('col1', 'col2', this)">
                         <i class="fa fa-arrow-right"> </i></button>
 
@@ -116,8 +105,9 @@ init_page_serversides();
             </div>
         </div>
         <div class="col-12" id="col2">
-            <div class="card border-primary" id="card2">
-                <div class="card-header justify-content-end d-inline-flex" id="CardHeaderVglRooms">
+            <div class="card " id="card2">
+                <div class="card-header"> Vergleichsräume
+                    <div class=" justify-content-end d-inline-flex" id="CardHeaderVglRooms"></div>
                     <button class="btn float-end toggle-btn grün "><i
                                 class="fa fa-arrow-up"></i>
                     </button>
@@ -129,43 +119,90 @@ init_page_serversides();
             </div>
         </div>
     </div>
-    <div class="row mt-1">
-        <div class="col-6" id="col3">
-            <div class="card border-success" id="card3">
-                <div class="card-header">
-                    Elemente im Raum
-                    <button class="btn float-end grün 0"
-                            onclick="toggleCard('col3', 'col4', this)">
-                        <i class="fa fa-arrow-right"></i></button>
-                    <button class="btn float-end toggle-btn grün ">
-                        <i class="fa fa-arrow-up"></i>
-                    </button>
-                    <button class="btn float-end grün " id="Hide2"
-                            onclick="toggleCard('col3', 'col4', this)">
-                        <i class="fa fa-arrow-left"></i>
-                    </button>
+
+    <!--- Elemente im Raum --->
+    <div class="card" id="">
+        <div class="card-header"> ELEMENTE
+            <button class="btn float-end toggle-btn grün ">
+                <i class="fa fa-arrow-up"></i>
+            </button>
+        </div>
+        <div class="card-body" id="">
+            <div class="row mt-1">
+
+
+                <div class="col-6" id="col3">
+                    <div class="card border-success" id="card3">
+                        <div class="card-header">
+                            Elemente im Raum
+                            <!---<button class="btn float-end grün 0"
+                                onclick="toggleCard('col3', 'col4', this)">
+                            <i class="fa fa-arrow-right"></i></button>
+
+                            <button class="btn float-end toggle-btn grün ">
+                                <i class="fa fa-arrow-up"></i>
+                            </button>
+                           <button class="btn float-end grün " id="Hide2"
+                                    onclick="toggleCard('col3', 'col4', this)">
+                                <i class="fa fa-arrow-left"></i>
+                            </button> --->
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text" id="CB3"></p>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <p class="card-text" id="CB3"></p>
+                <div class="col-6" id="col4">
+                    <div class="card " id="card4">
+                        <div class="card-header">
+                            Elemente im Vergleichsraum
+                            <!---  <button class="btn float-end toggle-btn grün "><i
+                                      class="fa fa-arrow-up"></i>
+                          </button>--->
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text" id="CB4"></p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-6" id="col4">
-            <div class="card border-primary" id="card4">
-                <div class="card-header">
-                    Elemente im Vergleichsraum
-                    <button class="btn float-end toggle-btn grün "><i
-                                class="fa fa-arrow-up"></i>
-                    </button>
+    </div>
+
+    <!--- Textuelle Raumbeschreibungen--->
+    <div class="card">
+        <div class="card-header"> Raumbeschreibungen
+            <button class="btn float-end toggle-btn grün ">
+                <i class="fa fa-arrow-down"></i>
+            </button>
+        </div>
+        <div class="card-body" style="display: none" >
+            <div class="row mt-1">
+
+                <div class="col-6">
+
+                    <div class="card border-success" id="card3">
+                        <div class="card-header"> Text
+                        </div>
+                        <div class="card-body" id="bauangaben">
+
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <p class="card-text" id="CB4"></p>
+                <div class="col-6">
+                    <div class="card " id="card4">
+                        <div class="card-header">Txt Vergleichsraum
+                        </div>
+                        <div class="card-body"  id="bauangaben_vgl">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<!---  Help Modal   --->
 <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -173,19 +210,23 @@ init_page_serversides();
                 <h5 class="modal-title" id="helpModalLabel">Hilfe - Raumvergleich</h5>
             </div>
             <div class="modal-body">
-                <p>Vergleichen Sie Räume, deren Bauangaben und ihre Ausstattung. Wählen Sie einen Referenzraum und einen
+                <p>Vergleichen Sie Räume, deren Bauangaben und ihre Ausstattung. Wählen Sie einen Referenzraum
+                    und einen
                     Vergleichsraum (selbe Funktionsstelle,
                     um Unterschiede und Ähnlichkeiten zu erkennen.</p>
                 <h4>Nutzung</h4>
                 <ol>
                     <li><strong>Raum auswählen:</strong> Wählen Sie links/oben einen Referenzraum.</li>
-                    <li><strong>Vergleichsraum wählen:</strong> Wählen Sie rechts/darunter den Raum zum Vergleichen.
+                    <li><strong>Vergleichsraum wählen:</strong> Wählen Sie rechts/darunter den Raum zum
+                        Vergleichen.
                         Hier können ebenso detaillierte Bauangaben eingeblendet und verglichen werden.
                     </li>
-                    <li><strong>Checkbox-Filter:</strong> Funktion weniger Laden: Selektiert gleichartige Vergleichs
+                    <li><strong>Checkbox-Filter:</strong> Funktion weniger Laden: Selektiert gleichartige
+                        Vergleichs
                         Räume bereits vorher aus und zeigt jeweils nur einen an.
                     </li>
-                    <li><strong>Ausstattungsvergleich:</strong> Grün markierte Elemente sind in beiden Räumen vorhanden,
+                    <li><strong>Ausstattungsvergleich:</strong> Grün markierte Elemente sind in beiden Räumen
+                        vorhanden,
                         rot hervorgehobene nur im aktuell ausgewähltem Raum.
                     </li>
                 </ol>
@@ -231,8 +272,9 @@ init_page_serversides();
                         RID1 = selectedRowData[`idTABELLE_Räume`];
                         RID1change = true;
                     }
-
                 }
+                load_room_texts(RID1, "#bauangaben");
+
             }
             if (table_id === "t_rooms_vgl") {
                 selectedRowData = t_rooms_vgl.row('.selected').data();
@@ -241,6 +283,7 @@ init_page_serversides();
                         RID2 = selectedRowData["idTABELLE_Räume"];
                     }
                 }
+                load_room_texts(RID2, "#bauangaben_vgl");
             }
             if (selectedRowData) {
                 value = selectedRowData["TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen"]
@@ -249,6 +292,24 @@ init_page_serversides();
                     $('#CB4').empty();
                 }
                 get_el_in_room_table(selectedRowData['idTABELLE_Räume'], taget_id_4_new_content);
+            }
+        });
+    }
+
+    function load_room_texts(rid, where2putthedata ){
+
+        $.ajax({
+            url: "setSessionVariables.php",
+            data: {"roomID": rid},
+            type: "GET",
+            success: function () {
+                $.ajax({
+                    url: "getRoomSpecifications2.php",
+                    type: "GET",
+                    success: function (data) {
+                        $(where2putthedata).html(data);
+                    }
+                });
             }
         });
     }
@@ -450,7 +511,12 @@ init_page_serversides();
 
     function init_t_rooms() {
         const columnsDefinitionShort = [// NEW FIELD? - ADD Here, In get_rb_specs_data.php and the CPY/save methods
-            {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projek ID', visible: false, searchable: false},
+            {
+                data: 'tabelle_projekte_idTABELLE_Projekte',
+                title: 'Projek ID',
+                visible: false,
+                searchable: false
+            },
             {data: 'idTABELLE_Räume', title: 'Raum ID', visible: false, searchable: false},
             {
                 data: 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen',
@@ -459,7 +525,11 @@ init_page_serversides();
                 searchable: false
             },
             {
-                data: 'MT-relevant', title: 'MT-rel.', name: 'MT-relevant', case: "bit", render: function (data) {
+                data: 'MT-relevant',
+                title: 'MT-rel.',
+                name: 'MT-relevant',
+                case: "bit",
+                render: function (data) {
                     return data === '1' ? 'Ja' : 'Nein';
                 }
             },

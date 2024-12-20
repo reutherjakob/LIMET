@@ -4,7 +4,7 @@
         <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>            
-                <h4 class='modal-title'>Raum ändern</h4>
+                <h4 class='modal-title'>Raum hinzufügen &ensp;</h4>
                 <button type='button' class='close' data-dismiss='modal'>×</button>
             </div>
             <div class='modal-body' id='mbody'>

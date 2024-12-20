@@ -29,17 +29,19 @@ init_page_serversides();
 <body style="height:100%">
 <div id="limet-navbar" class=' '></div>
 <div class="container-fluid">
-    <div class="mt-2 card responsive">
+    <div class="mt-4 card responsive">
         <div class="card-header" id="CH1">Geräteliste
         </div>
-        <div id="CB1" class="table-responsive">
+        <div id="CB1" class="card-body table-responsive">
             <?php
             $mysqli = utils_connect_sql();
-            $sql = "SELECT *
-            FROM tabelle_geraete";
+            $sql = "SELECT tabelle_geraete.GeraeteID, tabelle_hersteller.Hersteller, tabelle_geraete.Typ, tabelle_geraete.Kurzbeschreibung, tabelle_geraete.idTABELLE_Geraete
+                FROM tabelle_geraete
+                INNER JOIN tabelle_hersteller ON tabelle_geraete.tabelle_hersteller_idtabelle_hersteller = tabelle_hersteller.idtabelle_hersteller
+                ORDER BY tabelle_geraete.GeraeteID DESC";
             $result = $mysqli->query($sql);
 
-            echo "<table class='table table-striped table-bordered table-sm' id='tableDevices' cellspacing='0' width='100%'>
+            echo "<table class='table table-striped table-bordered table-sm' id='tableDevices'>
                   <thead><tr>";
             $firstRow = $result->fetch_assoc();
             if ($firstRow) {
@@ -57,30 +59,110 @@ init_page_serversides();
                     foreach ($row as $value) {
                         echo "<td>" . ($value) . "</td>";
                     }
+                    echo "<td><button type='button' id='" . $row["idTABELLE_Geraete"] . "' class='btn btn-outline-dark btn-xs' value='changeDevice' data-toggle='modal' data-target='#addDeviceModal'><i class='fas fa-pencil-alt'></i></button></td>";
+
                     echo "</tr>";
                 }
             }
+
             echo "</tbody></table>";
             ?>
         </div>
     </div>
 </body>
 
+<!-- Modal zum Anlegen eines Gerätes -->
+<div class='modal fade' id='addDeviceModal' role='dialog'>
+    <div class='modal-dialog modal-md'>
+        <!-- Modal content-->
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h4 class='modal-title'>Gerät hinzufügen/bearbeiten</h4>
+                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+            </div>
+            <div class='modal-body' id='mbody'>
+                <form role="form">
+                    <?php
+                    $sql = "SELECT `tabelle_hersteller`.`idtabelle_hersteller`, `tabelle_hersteller`.`Hersteller`
+									FROM `LIMET_RB`.`tabelle_hersteller`
+									ORDER BY `tabelle_hersteller`.`Hersteller`;";
+
+
+                    $result = $mysqli->query($sql);
+
+                    echo "<div class='form-group'>
+                        <label for='hersteller'>Hersteller:</label>
+                        <label class='float-right'>
+                            <button type='button' id='openAddManufacturer' class='btn btn-xs btn-outline-dark ' value='openAddManufacturer' data-toggle='modal' data-target='#addManufacturerModal'><i class='far fa-plus-square'></i></button>
+                        </label>
+                            <select class='form-control form-control-sm' id='hersteller' name='hersteller'>";
+                    while ($row = $result->fetch_assoc()) {
+                        echo "<option value=" . $row["idtabelle_hersteller"] . ">" . $row["Hersteller"] . "</option>";
+                    }
+                    echo "</select></div>";
+
+                    $mysqli->close();
+                    ?>
+                    <div class="form-group">
+                        <label for="type">Type:</label>
+                        <input type="text" class="form-control form-control-sm" id="type" placeholder="Type"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="kurzbeschreibung">Kurzbeschreibung:</label>
+                        <textarea class="form-control form-control-sm" rows="5" id="kurzbeschreibung"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class='modal-footer'>
+                <input type='button' id='addDevice' class='btn btn-success btn-sm' value='Hinzufügen'>
+                <input type='button' id='saveDevice' class='btn btn-warning btn-sm' value='Speichern'>
+                <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Abbrechen</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Modal zum Anlegen eines Herstellers -->
+<div class='modal fade' id='addManufacturerModal' role='dialog'>
+    <div class='modal-dialog modal-sm'>
+        <!-- Modal content-->
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h4 class='modal-title'>Hersteller hinzufügen</h4>
+                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+            </div>
+            <div class='modal-body' id='mbodyAddManufacturerModal'>
+                <div class="form-group">
+                    <label for="manufacturer">Hersteller:</label>
+                    <input type="text" class="form-control form-control-sm" id="manufacturer" placeholder="Hersteller"/>
+                </div>
+            </div>
+            <div class='modal-footer'>
+                <input type='button' id='addManufacturer' class='btn btn-success btn-sm' value='Hinzufügen'>
+                <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Schließen</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="_utils.js"></script>
 <script>
+    let table;
+    let deviceID;
 
     $(document).ready(function () {
-        new DataTable('#tableDevices', {
+        table = new DataTable('#tableDevices', {
             responsive: true,
-            dom:'<"row"<"col-sm-12 col-md-6"f>> <"row"<"col-sm-12"tr>> <"row"<"col-md-2"i><"col-md-6"l><"col-md-4"p>>',
-            columnDefs: [
-                {
-                    targets: [0, 4, 5, 7, 8, 9],
-                    visible: false,
-                    searchable: false
-                }
-            ],
+            dom: '<"row"<"col-sm-12 col-md-6"f>> <"row"<"col-sm-12"tr>> <"row"<"col-md-2"i><"col-md-6"l><"col-md-4"p>>',
             paging: true,
+            pageLength: 25,
+            columnDefs: [{
+                targets: [4],
+                visible: false,
+                searchable: false
+            }],
             searching: true,
             ordering: true,
             info: true,
@@ -89,10 +171,118 @@ init_page_serversides();
                 searchPlaceholder: "Search...",
                 lengthMenu: "Show _MENU_ entries"
             },
-            initComplete: function (settings, json) {
+            initComplete: function () {
                 $('#dt-search-0').appendTo('#CH1');
             }
         });
+    });
+
+    $('#tableDevices tbody').on('click', 'tr', function () {
+        deviceID = table.row($(this)).data()[4];
+        document.getElementById("hersteller").value = table.row($(this)).data()[1];
+        document.getElementById("type").value = table.row($(this)).data()[2];
+        document.getElementById("kurzbeschreibung").value = table.row($(this)).data()[3];
+
+    });
+
+    $("#addDeviceModalButton").click(function () {
+        document.getElementById("type").value = "";
+        document.getElementById("kurzbeschreibung").value = "";
+        document.getElementById("saveDevice").style.display = "none";
+        document.getElementById("addDevice").style.display = "inline";
+    });
+
+    $("button[value='changeDevice']").click(function () {
+        // Buttons ein/ausblenden!
+        document.getElementById("addDevice").style.display = "none";
+        document.getElementById("saveDevice").style.display = "inline";
+    });
+
+
+    $("#addDevice").click(function () {
+        let hersteller = $("#hersteller").val();
+        let type = $("#type").val();
+        let kurzbeschreibung = $("#kurzbeschreibung").val();
+
+        if (hersteller !== "" && type !== "" && kurzbeschreibung !== "") {
+            $('#addDeviceModal').modal('hide');
+            $.ajax({
+                url: "addDevice.php",
+                data: {"hersteller": hersteller, "type": type, "kurzbeschreibung": kurzbeschreibung},
+                type: "GET",
+                success: function (data) {
+                    alert(data);
+                    $.ajax({
+                        url: "getDevicesToElement.php",
+                        type: "GET",
+                        success: function (data) {
+                            $("#devicesInDB").html(data);
+                        }
+                    });
+                }
+            });
+        } else {
+            alert("Bitte alle Felder ausfüllen!");
+        }
+    });
+
+    //Geraet speichern
+    $("#saveDevice").click(function () {
+        let hersteller = $("#hersteller").val();
+        let type = $("#type").val();
+        let kurzbeschreibung = $("#kurzbeschreibung").val();
+
+        if (hersteller !== "" && type !== "" && kurzbeschreibung !== "") {
+            $('#addDeviceModal').modal('hide');
+            $.ajax({
+                url: "saveDevice.php",
+                data: {
+                    "deviceID": deviceID,
+                    "hersteller": hersteller,
+                    "type": type,
+                    "kurzbeschreibung": kurzbeschreibung
+                },
+                type: "GET",
+                success: function (data) {
+                    alert(data);
+                    $.ajax({
+                        url: "getDevicesToElement.php",
+                        type: "GET",
+                        success: function (data) {
+                            $("#devicesInDB").html(data);
+                        }
+                    });
+                }
+            });
+        } else {
+            alert("Bitte alle Felder ausfüllen!");
+        }
+    });
+
+
+    //Hersteller hinzufügen
+    $("#addManufacturer").click(function () {
+        let manufacturer = $("#manufacturer").val();
+        if (manufacturer !== "") {
+            $('#addManufacturerModal').modal('hide');
+            $('#addDeviceModal').modal('hide');
+            $.ajax({
+                url: "addManufacturer.php",
+                data: {"manufacturer": manufacturer},
+                type: "GET",
+                success: function (data) {
+                    alert(data);
+                    $.ajax({
+                        url: "getDevicesToElement.php",
+                        data: {"elementID": ""},
+                        type: "GET",
+                        success: function (data) {
+                            $("#devicesInDB").html(data);
+                        }
+                    });
+                }
+            });
+        }
     });
 
 </script>

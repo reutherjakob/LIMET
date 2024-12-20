@@ -30,20 +30,20 @@ function check_max_value_rev(&$messages, $roomParams, $param, $max_value)
     }
 }
 
-function check_awg(&$messages, $roomParams)
+function check_RG(&$messages, $roomParams)
 {
     if (isset($roomParams['Anwendungsgruppe'])) {
         if ($roomParams['Anwendungsgruppe'] >= 1 && (!isset($roomParams['SV']) || $roomParams['SV'] != 1)) {
-            $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::AWG-> SV=" . $roomParams['SV'] . ",aber AWG=" . $roomParams['Anwendungsgruppe'] . ".<br>";
+            $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::RG -> SV=" . $roomParams['SV'] . ",aber RG =" . $roomParams['Anwendungsgruppe'] . ".<br>";
         }
         if ($roomParams['Anwendungsgruppe'] == 2 && (!isset($roomParams['ZSV']) || $roomParams['ZSV'] != 1)) {
-            $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::AWG-> ZSV=" . $roomParams['ZSV'] . ",aber AWG=" . $roomParams['Anwendungsgruppe'] . ".<br>";
+            $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::RG =2 -> ZSV=" . $roomParams['ZSV'] . ",aber RG =" . $roomParams['Anwendungsgruppe'] . ".<br>";
         }
         if ($roomParams['Anwendungsgruppe'] == 2 && (!isset($roomParams['Fussboden OENORM B5220']) || $roomParams['Fussboden OENORM B5220'] != "Klasse 1")) {
-            $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::AWG=2 -> Fußboden muss Klasse 1 sein, ist aber " . $roomParams['Fussboden OENORM B5220'] . ".<br>";
+            $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::RG =2 -> Fußboden muss Klasse 1 sein, ist aber " . $roomParams['Fussboden OENORM B5220'] . ".<br>";
         }
         if ($roomParams['Anwendungsgruppe'] != 2 && $roomParams['Fussboden OENORM B5220'] === "Klasse 1") {
-            $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::AWG is nicht 2 -> Muss der Fussboden OENORM B5220 hier Klasse 1 sein? " . $roomParams['Fussboden OENORM B5220'] . ".<br>";
+            $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::RG  is nicht 2 -> Muss der Fussboden OENORM B5220 hier Klasse 1 sein? " . $roomParams['Fussboden OENORM B5220'] . ".<br>";
         }
     }
 }
@@ -121,9 +121,8 @@ function check_4_room_paramz(&$messages, $roomParams, $theonetobechecked4, $the2
     }
 }
 
-function check4vorabsperr(&$messages, $roomParams, $elements_in_room, $stativ_präsent)
+function check4vorabsperr(&$messages, $roomParams, $elements_in_room)
 {
-    if ($stativ_präsent) {
         $found = false;
         foreach ($elements_in_room as $el) {
             if ($el["idTABELLE_Elemente"] == 664) {
@@ -132,9 +131,12 @@ function check4vorabsperr(&$messages, $roomParams, $elements_in_room, $stativ_pr
             }
         }
         if (!$found) {
-            $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::ElementPort-> Gasanschluss am Stativ, braucht Vorabsperrkasten! <br>";
+            $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::ElementPort -> Gasanschluss am Stativ, braucht Vorabsperrkasten! <br>";
         }
-    }
+    if( !isset(  $roomParams["Dl-5"]) || intval($roomParams["Dl-5"]) == 0){
+            $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Stativ ->  Stativ, braucht Druckluft! <br>";
+        }
+
 }
 
 function check_room_Leistungssumme(&$messages, $roomParams, $P)
@@ -207,7 +209,7 @@ function getQueryParam($param)
 }
 
 //   -------------  MAIN  ---------------
-session_start();
+
 include '_utils.php';
 check_login();
 $messages = array();
@@ -324,8 +326,8 @@ foreach ($raumparameter as $roomID => $roomParams) {
 //        echo $roomID. "<br> "; 
     }
 //        echo "RID: ".$roomID. "\n <br>";
-    //////// AWG
-    check_awg($messages, $roomParams);
+    //////// RG 
+    check_RG($messages, $roomParams);
     ////////ET 
     check_summe_leistungen($messages, $roomParams);
     check_dependency_non_zero($messages, $roomParams, 'IT Anbindung', 'ET_RJ45-Ports');
@@ -458,8 +460,9 @@ foreach ($raumparameter as $roomID => $roomParams) {
 //            echo "El: " . $row['Bezeichnung'] . "- GLZ: " . $temp_GLZ . "- Leistung: " . $temp_LeistungElement . "- Anzahl: " . $AnzahlElImRaum . "<br> "; //"<br> Abw El" . $Abwarme_el . 
         }
     }// END OF ELEMENTS LOOP
-
-    check4vorabsperr($messages, $roomParams, $elements_in_room, $check4Vorabsperrkasten);
+    if ($check4Vorabsperrkasten) {
+        check4vorabsperr($messages, $roomParams, $elements_in_room);
+    }
     check_max_value_rev($messages, $roomParams, "HT_Waermeabgabe_W", $Abwarme);
 //    echorow($NetzArtenImRaum);
     check_room_for_na($messages, $roomParams, $NetzArtenImRaum);
@@ -468,7 +471,8 @@ foreach ($raumparameter as $roomID => $roomParams) {
 $mysqli->close();
 
 foreach ($messages as $messages_out) {
-    //echo "\n;";
+    echo "\n";
+    echo "<br>";
     echo br2nl($messages_out);
 }                 
 

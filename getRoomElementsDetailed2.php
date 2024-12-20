@@ -173,6 +173,11 @@ echo "</tbody></table>";
                 } else {
                     console.error("move_item function is not defined.");
                 }
+                if ( $('#diy_searcher')) {
+                    $('#diy_searcher').on('keyup', function () {
+                        table.search(this.value).draw();
+                    });
+                }
             }
         });
 

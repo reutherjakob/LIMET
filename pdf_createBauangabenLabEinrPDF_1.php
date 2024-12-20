@@ -329,7 +329,7 @@ foreach ($teile as $valueOfRoomID) {
             else{
                 $pdf->SetTextColor(0);
                 $pdf->SetFont('helvetica', '', 9);
-                $pdf->MultiCell(40, 5, "Verdunkelung",0, 'L', 0, 0);
+                $pdf->MultiCell(40, 5, "Abdunkelung",0, 'L', 0, 0);
             }
         }    
         //schwarz

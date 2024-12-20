@@ -131,7 +131,7 @@ include "_format.php";
                 }
 
                 echo "<td>" . format_money($row["Kosten"]) . "</td>";
-                echo "<td>" . format_money(intval(  $row["Kosten"])* intval($row["SummevonAnzahl"])) . "</td>";
+                echo "<td>" . format_money(intval($row["Kosten"]) * intval($row["SummevonAnzahl"])) . "</td>";
 
                 echo "<td>" . $row["Gewerke_Nr"] . "</td>";
 
@@ -286,9 +286,8 @@ include "_format.php";
         $('#tableElementsInProject').DataTable({
             "paging": true,
             "select": true,
-            "pagingType": "simple",
-            "lengthChange": false,
-            "pageLength": 10,
+            "lengthChange": true,
+            "pageLength": 15,
             "order": [[2, "asc"]],
             "columnDefs": [
                 {
@@ -297,6 +296,7 @@ include "_format.php";
                     "searchable": false
                 }
             ],
+            "keys":true,
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
                 "search": "",
@@ -314,6 +314,7 @@ include "_format.php";
                     return this.nodeType === 3; // Node.TEXT_NODE
                 }).remove();
             }
+
         });
 
         let table = $('#tableElementsInProject').DataTable();
@@ -420,6 +421,70 @@ include "_format.php";
         } else {
             $(this).html("<i class='fas fa-caret-down'></i>");
             $("#DBElementData").hide();
+        }
+    });
+
+
+    $("#addBestand").click(function () {
+        console.log("Add BEstand Click");
+        $("#addBestandModal").modal('hide');
+        var inventarNr = $("#invNr").val();
+        var anschaffungsJahr = $("#year").val();
+        var serienNr = $("#serNr").val();
+        var gereatID = $("#geraetNr").val();
+        var currentPlace = $("#currentPlace").val();
+
+        if (inventarNr !== "") {
+            $.ajax({
+                url: "addBestand.php",
+                data: {
+                    "inventarNr": inventarNr,
+                    "anschaffungsJahr": anschaffungsJahr,
+                    "serienNr": serienNr,
+                    "gereatID": gereatID,
+                    "currentPlace": currentPlace
+                },
+                type: "GET",
+                success: function (data) {
+                    // alert(data);
+                    makeToaster(data, true);
+                    $("#addBestandModal").modal('hide');
+                    $.ajax({
+                        url: "getElementBestand.php",
+                        type: "GET",
+                        success: function (data) {
+                            $("#elementBestand").html(data)
+                            //$("#elementelementBestandsInLot").html(data);
+                        }
+                    });
+                }
+            });
+
+        } else {
+            alert("Bitte Inventarnummer angeben!");
+        }
+
+    });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            // Close all modals
+            let modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                modal.classList.remove('show');
+                modal.setAttribute('aria-hidden', 'true');
+                modal.style.display = 'none';
+            });
+
+            // Remove the backdrop
+            let backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(backdrop => {
+                backdrop.parentNode.removeChild(backdrop);
+            });
+
+            // Ensure the body is scrollable again
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
         }
     });
 
