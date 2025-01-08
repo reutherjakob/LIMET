@@ -37,7 +37,7 @@ init_page_serversides();
         }
 
         .card-header {
-            height: 50px;
+            height: 45px;
             overflow: hidden;
             background-color: rgba(100, 140, 25, 0.05);
         }
@@ -70,15 +70,16 @@ init_page_serversides();
             height: 30px !important;
         }
 
+
     </style>
 </head>
-<body style="height:100%">
+<body>
 <div class="container-fluid">
     <div id="limet-navbar" class=' '></div>
 
     <div class="  d-flex">
-        <div class="mt-2 card  border-success  col-9">
-            <div style="height: 60px" class="card-header d-flex align-items-center" id='TableCardHeader'>
+        <div class="mt-2 card  col-9">
+            <div class="card-header d-flex align-items-center" id='TableCardHeader'>
                 <label class="form-check-label"> RÄUME </label></div>
             <div class="card-body" id="table_container_div">
                 <table class="table display compact table-responsive table-striped table-bordered table-sm sticky"
@@ -89,24 +90,26 @@ init_page_serversides();
             </div>
         </div>
 
-        <div class=' mt-2 card  border-secondary  col-3'>
-            <div style="height: 60px" class="card-header d-flex align-items-center centeriiiiino"
+        <div class=' mt-2 card  col-3'>
+            <div class="card-header d-flex align-items-center centeriiiiino"><u> XLS Composer LOG </u></div>
+
+            <div   class="card-header d-flex align-items-center centeriiiiino"
                  id="makeXLScardHeader">
-                <button class="btn btn-success responsive" id="addSheet">Add Sheet</button>
-                <button class="btn btn-link" id="download">Download Excel</button>
-                <button class="btn btn-danger" style="margin-right: 20px;" id="reset">Reset Excel</button>
+                <button class="btn btn-sm btn-success responsive" id="addSheet">Add Sheet</button>
+                <button class="btn btn-sm btn-link" id="download">Download Excel</button>
+                <button class="btn btn-sm btn-danger" id="reset">Reset Excel</button>
             </div>
 
             <div class="card-body">
                 <p style="text-align-last: center;">
-                    <label class="form-check-label"> <u> XLS Composer > LOG </u> </label>
+                    <label class="form-check-label"> </label>
                 </p>
                 <ul style="text-align-last: center;" id="logx"></ul>
             </div>
         </div>
     </div>
 
-    <div class=' mt-1 card  border-secondary  col-12'>
+    <div class=' mt-1 card   col-12'>
         <div style="height: 50px" class="card-header d-inline-flex  align-content-start"
              id="elemetsParamsTableCardHeader">
             <label class="form-check-label"> <u> VORSCHAU [El.Param.Table] </u> </label>
@@ -332,7 +335,8 @@ init_page_serversides();
                 searchBuilder: {
                     title: null,
                     depthLimit: 2,
-                    stateSave: false
+                    stateSave: false,
+                    class: "btn btn-sm"
                 }
             },
             compact: true
@@ -362,7 +366,7 @@ init_page_serversides();
                 spacer,
                 {
                     extend: 'searchBuilder', label: "Search",
-                    className: "bg-white"
+                    className: "bg-white btn btn-sm"
                 },
                 {extend: 'spacer', text: "Select:", style: 'bar'},
                 {
@@ -371,14 +375,14 @@ init_page_serversides();
                         table.rows().select();
                         displaySelectedData(table);
                     },
-                    className: "bg-white"
+                    className: "bg-white btn btn-s"
                 }, {
                     text: 'Vis',
                     action: function () {
                         table.rows(':visible').select();
                         displaySelectedData(table);
                     },
-                    className: "bg-white"
+                    className: "bg-white btn btn-sm"
                 },
                 {
                     text: 'None',
@@ -386,7 +390,7 @@ init_page_serversides();
                         table.rows().deselect();
                         displaySelectedData(table);
                     },
-                    className: "bg-white"
+                    className: "bg-white btn btn-sm"
                 }
 
             ]

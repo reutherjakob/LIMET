@@ -24,14 +24,18 @@
     <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.css"
           rel="stylesheet"/>
     <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
+
     <style>
         .dt-input {
             width: 150px;
-            height: 40px;
+            height: 30px;
+        }
+        .dt-button {
+            height: 30px;
         }
 
         .card-header {
-            height: 50px;
+            height: 45px;
         }
 
         .card-body {
@@ -39,6 +43,7 @@
         }
 
         .btn {
+            height: 30px;
             margin: 1px;
             padding: 5px;
         }
@@ -61,20 +66,18 @@ init_page_serversides(); // checks LOGIN
     </div>--->
         <div class="col-12">
             <div class="card">
-                <div class="card-header d-inline-flex justify-content-lg-left ">
-
+                <div class="card-header d-inline-flex">
                     <div class="form-check">
                         <input class="form-check-input track-checkbox" type="checkbox" id="checkbox1">
                         <label class="form-check-label" for="checkbox1">Weniger Vergleichsräume laden</label>
                     </div>
-
-                    <button type="button" class="btn btn-xs" onclick="show_modal('helpModal')">
+                    <button type="button" class="btn btn-xs ms-auto" onclick="show_modal('helpModal')">
                         <i class="fa fa-circle-info"></i>
                     </button>
-
                 </div>
             </div>
         </div>
+
         <!--   <div class="col-2">
              <div class="card ">
                  <div class="card-header ">
@@ -86,7 +89,7 @@ init_page_serversides(); // checks LOGIN
 
 
     <div class="row">
-        <div class="col-12" id="col1">
+        <div class="col-6" id="col1">
             <div class="card border-success" id="card1">
                 <div class="card-header" id="CardHeaderRooms"> Räume
                     <button class="btn float-end grün" onclick="toggleCard('col1', 'col2', this)">
@@ -104,7 +107,7 @@ init_page_serversides(); // checks LOGIN
                 </div>
             </div>
         </div>
-        <div class="col-12" id="col2">
+        <div class="col-6" id="col2">
             <div class="card " id="card2">
                 <div class="card-header"> Vergleichsräume
                     <div class=" justify-content-end d-inline-flex" id="CardHeaderVglRooms"></div>
@@ -171,27 +174,25 @@ init_page_serversides(); // checks LOGIN
 
     <!--- Textuelle Raumbeschreibungen--->
     <div class="card">
-        <div class="card-header"> Raumbeschreibungen
+        <div class="card-header"> Bauangaben
             <button class="btn float-end toggle-btn grün ">
-                <i class="fa fa-arrow-down"></i>
+                <i class="fa fa-arrow-up"></i>
             </button>
         </div>
-        <div class="card-body" style="display: none" >
+
+        <div class="card-body" >
             <div class="row mt-1">
-
                 <div class="col-6">
-
                     <div class="card border-success" id="card3">
-                        <div class="card-header"> Text
+                        <div class="card-header"> Bauangaben Text
                         </div>
                         <div class="card-body" id="bauangaben">
-
                         </div>
                     </div>
                 </div>
                 <div class="col-6">
-                    <div class="card " id="card4">
-                        <div class="card-header">Txt Vergleichsraum
+                    <div class="card" id="card4">
+                        <div class="card-header">Bauangaben Text Vgl
                         </div>
                         <div class="card-body"  id="bauangaben_vgl">
                         </div>
@@ -199,6 +200,7 @@ init_page_serversides(); // checks LOGIN
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 
@@ -308,6 +310,7 @@ init_page_serversides(); // checks LOGIN
                     type: "GET",
                     success: function (data) {
                         $(where2putthedata).html(data);
+                        //  console.log("Data Loaded " + data);
                     }
                 });
             }
@@ -322,7 +325,7 @@ init_page_serversides(); // checks LOGIN
         let idsSet2 = new Set(elementIdsTable2);
 
         $(`#tableRoomElements${RID1}`).DataTable().rows().every(function () {
-            let row = this.node();
+
             let rowData = this.data();
             let rowId = rowData.ElementID;
 
@@ -338,7 +341,7 @@ init_page_serversides(); // checks LOGIN
         });
 
         $(`#tableVglRoomElements${RID2}`).DataTable().rows().every(function () {
-            let row = this.node();
+
             let rowData = this.data();
             let rowId = rowData.ElementID;
 
@@ -422,7 +425,7 @@ init_page_serversides(); // checks LOGIN
     }
 
     function getVisibleColumns() {
-        var visibleColumns = [];
+        let visibleColumns = [];
         t_rooms_vgl.columns().every(function () {
             if (this.visible()) {
                 visibleColumns.push(this.index());
@@ -437,7 +440,7 @@ init_page_serversides(); // checks LOGIN
             cDef.forEach(function (columnDef, index) {
                 columnDef.visible = !!visibleColumns.includes(index);
             });
-            console.log(cDef);
+            //   console.log(cDef);
             t_rooms_vgl.buttons('.buttons-colvis').remove();
             $('.dt-buttons').remove();
             $('#dt-search-' + (filter_init_counter - 1).toString()).remove(); // Remove the old search element

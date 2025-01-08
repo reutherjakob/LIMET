@@ -38,30 +38,29 @@ init_page_serversides("", "x");
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class="card">
-        <div class="card-header-l px-2 py-2  d-inline-flex align-items-baseline justify-content-start border-light"
+        <div class="card-header-s px-2 py-2  d-inline-flex align-items-baseline justify-content-start border-light"
              id="HeaderTabelleCard">
-            <div class="col-md-3 d-inline-flex justify-content-start align-items-baseline" id="sub1"></div>
-            <div class="col-md-3 d-inline-flex justify-content-start align-items-baseline" id="sub12"> Select &ensp;
+            <div class="col-4 d-inline-flex justify-content-start align-items-baseline" id="sub1"></div>
+            <div class="col-4 d-inline-flex justify-content-start align-items-baseline" id="sub12"> Select &ensp;
             </div>
 
             <div class="d-inline-flex align-items-baseline"><label for="dateSelect"> </label>
                 <input type="date" id="dateSelect" name="dateSelect">
             </div>
-            <div class="col-md-3 d-inline-flex align-items-baseline" id="sub2"></div>
-            <div class="col-md-2 d-inline-flex justify-content-end align-items-baseline" id="sub3"></div>
+            <div class="col-4 d-inline-flex align-items-baseline" id="sub2"></div>
         </div>
 
-        <div class="card-header-s ml-4 px-2 py-2 border-light form-check-inline  flex-nowrap" id="HeaderTabelleCard2">
-            Raumbuch &ensp; &emsp;
+        <div class="card-header-s px-2 py-2 border-light form-check-inline " id="HeaderTabelleCard2">
+
             <div class="row">
-                <div class="col-6 d-inline-flex" id="sub21">
-                </div>
-                <div class="col-6 d-inline-flex justify-content-center" id="sub22"> &ensp; &emsp;</div>
+                <div class="col-4 d-inline-flex justify-content-start align-items-baseline" id="sub21"> Raumbuch: &ensp;</div>
+                <div class="col-4 d-inline-flex justify-content-start align-items-baseline" id="sub22"> &emsp;</div>
+                <div class="col-4 d-inline-flex justify-content-start align-items-baseline" id="sub23"> Bauangaben: &ensp;</div>
             </div>
         </div>
-        <div class="card-header-s ml-4 px-2 py-2 border-light form-check-inline  flex-nowrap" id="HeaderTabelleCard3">
+        <!---<div class="card-header-s ml-4 px-2 py-2 border-light form-check-inline  flex-nowrap" id="HeaderTabelleCard3">
             Bauangaben &emsp;
-        </div>
+        </div> --->
         <div class="card-body px-2 py-2">
             <?php
             $mysqli = utils_connect_sql();
@@ -75,7 +74,7 @@ init_page_serversides("", "x");
                     return "r.`$col`";
                 }, $columns)) .
                 " FROM tabelle_räume r 
-                                INNER JOIN tabelle_projekte p 
+                                INNER JOIN tabelle_projekte p  
                                 ON r.tabelle_projekte_idTABELLE_Projekte = p.idTABELLE_Projekte 
                                 WHERE p.idTABELLE_Projekte=" . $_SESSION["projectID"];
 
@@ -83,7 +82,7 @@ init_page_serversides("", "x");
             if (!$result) {
                 die("Query failed: " . $mysqli->error);
             }
-            echo "<table class='table display compact table-striped table-bordered table-sm' id='tableRooms' cellspacing='0' width='100%'>
+            echo "<table class='table display compact table-striped table-bordered table-sm' id='tableRooms' >
                         <thead><tr>";
             foreach ($columns as $col) {
                 echo "<th>" . str_replace('_', ' ', $col) . "</th>";
@@ -110,12 +109,11 @@ init_page_serversides("", "x");
 <script charset="utf-8">
     $(document).ready(function () {
         const dateInput = document.getElementById('dateSelect');
-        const today = new Date().toISOString().split('T')[0];
-        dateInput.value = today;
+        dateInput.value = new Date().toISOString().split('T')[0];
 
         initDataTable();
-        $('#HeaderTabelleCard2').slideToggle();
-        $('#HeaderTabelleCard3').slideToggle();
+        //$('#HeaderTabelleCard2').slideToggle();
+        //$('#HeaderTabelleCard3').slideToggle();
         initButtons();
         setTimeout(() => {
             moveSearchBox('sub1');
@@ -130,24 +128,24 @@ init_page_serversides("", "x");
         addMTFilter('#sub1');
         add_entfallen_filter('#sub1');
 //                    addCheckbox('#sub3', "Show-old-Reports", toggleOldReports);
-        const toggleOldReportsButton = $('<button type="button" class="btn btn-sm btn-light border-dark" id="toggleOldReports">Show Old Reports</button>');
-        toggleOldReportsButton.on('click', toggleOldReports);
-        $('#sub3').append(toggleOldReportsButton);
+        //const toggleOldReportsButton = $('<button type="button" class="btn btn-sm btn-light border-dark" id="toggleOldReports">Alte Berichte anzeigen</button>');
+        //toggleOldReportsButton.on('click', toggleOldReports);
+        //$('#sub3').append(toggleOldReportsButton);
 
     });
 
-    function toggleOldReports() {
+    /*function toggleOldReports() {
         $('#HeaderTabelleCard2').slideToggle(() => {
             $('#HeaderTabelleCard3').slideToggle(() => {
                 const button = $('#toggleOldReports');
                 if ($('#HeaderTabelleCard2').is(':visible') || $('#HeaderTabelleCard3').is(':visible')) {
-                    button.text('Hide Old Reports');
+                    button.text('Alte Reports verbergen');
                 } else {
-                    button.text('Show Old Reports');
+                    button.text('Alte Reports zeigen');
                 }
             });
         });
-    }
+    }*/
 
     function generateNewReports(reportType, date) {
         const roomIDs = table.rows({selected: true}).data().toArray().map(row => row[0]);
@@ -227,7 +225,7 @@ init_page_serversides("", "x");
         $('#sub2').append(createButtonGroup(buttonNewReports, 'btn-light border-dark btn-sm'));
         $('#sub21').append(createButtonGroup(oldButtons, 'btn-light  border-dark'));
         $('#sub22').append(createButtonGroup(oldButtons2, 'btn-light  border-dark'));
-        $('#HeaderTabelleCard3').append(createButtonGroup(ButtonsBauangaben, 'btn-light  border-dark'));
+        $('#sub23').append(createButtonGroup(ButtonsBauangaben, 'btn-light  border-dark'));
 
     }
 

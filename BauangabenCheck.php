@@ -25,7 +25,7 @@ init_page_serversides();
                             </div>
                     </body>
                     <script>
-                        $(document).ready(function () {
+                        $(document).ready(function () { 
                             $.ajax({
                                 url: "get_angaben_check.php", // "ID": raumID,
 

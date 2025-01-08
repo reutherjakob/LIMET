@@ -1,14 +1,13 @@
 <!-- Modal zum Ändern des Raumes -->
 <div class='modal fade' id='addRoomModal' role='dialog'>
     <div class='modal-dialog modal-md'>
-        <!-- Modal content-->
         <div class='modal-content'>
-            <div class='modal-header'>            
+            <div class='modal-header'>
                 <h4 class='modal-title'>Raum hinzufügen &ensp;</h4>
-                <button type='button' class='close' data-dismiss='modal'>×</button>
+                <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
             </div>
             <div class='modal-body' id='mbody'>
-                <form role="form">       			        			        		
+                <form role="form">
                     <div class="form-group">
                         <label for="nummer">Nummer:</label>
                         <input type="text" class="form-control form-control-sm" id="nummer"/>
@@ -17,9 +16,7 @@
                         <label for="name">Name:</label>
                         <input type="text"  class="form-control form-control-sm" id="name"/>
                     </div>
-
                     <div class='form-group'>
-
                         <div class="dropdown">
                             <button onclick="myFunction(event)" class="dropbtn form-control form-control-sm">Funktionsstelle wählen</button>
                             <div id="myDropdown" class="dropdown-content">
@@ -46,7 +43,7 @@
                                 }
                                 ?>
                             </div>
-                        </div>						
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="mt-relevant">MT-relevant:</label>
@@ -57,13 +54,14 @@
                     </div>
                 </form>
             </div>
-            <div class='modal-footer'> 
+            <div class='modal-footer'>
                 <input type='button' id='saveNewRoom' class='btn btn-warning btn-sm' value='Speichern'></input>
-                <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Abbrechen</button>
+                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
             </div>
         </div>
     </div>
 </div>
+
 
 <script>
     function myFunction(event) {

@@ -2,7 +2,8 @@
 // V2.0: 2024-11-29, Reuther & Fux
 include '_utils.php';
 init_page_serversides();
-include 'roombookSpecifications_New_modal_addRoom.php';
+include 'roombookSpecifications_addRoomModal.php';
+include 'roombookSpecifications_HelpModal.php';
 ?>
 
 <!DOCTYPE html>
@@ -75,8 +76,9 @@ include 'roombookSpecifications_New_modal_addRoom.php';
         }
     </style>
 </head>
-<body style="height:100%">
+<body>
 <div id="limet-navbar"></div>
+
 <main class="container-fluid">
 
     <section class="mt-1 card">
@@ -140,50 +142,53 @@ include 'roombookSpecifications_New_modal_addRoom.php';
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <header class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Settings</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Einstellungen</h5>
+                <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
             </header>
             <div class="modal-body">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="settings_save_state_4all_projects">
-                    <label class="form-check-label" for="settings_save_state_4all_projects">Save Table State (all
-                        projects)</label>
+                    <label class="form-check-label" for="settings_save_state_4all_projects">Tabellenzustand speichern (f. alle Projekte)</label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="settings_save_state">
-                    <label class="form-check-label" for="settings_save_state">Save Table State (current project)</label>
+                    <label class="form-check-label" for="settings_save_state">Tabellenzustand speichern (f. aktuelles Projekte)</label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="settings_save_edit_cbx">
-                    <label class="form-check-label" for="settings_save_edit_cbx">Initiate Editable</label>
+                    <label class="form-check-label" for="settings_save_edit_cbx">Tabelle editierbar initiieren</label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="settings_show_btn_grp_labels">
-                    <label class="form-check-label" for="settings_show_btn_grp_labels">Show Labels above Button</label>
+                    <label class="form-check-label" for="settings_show_btn_grp_labels">Labels über den Buttons anzeigen</label>
                 </div>
-                <div>
-                    <label for="settings_toggle_btn_texts">Show Button Texts</label><input class="form-check-input"
-                                                                                           type="checkbox"
-                                                                                           id="settings_toggle_btn_texts">
-
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="settings_toggle_btn_texts">
+                    <label class="form-check-label" for="settings_toggle_btn_texts">Button Texte anzeigen</label>
                 </div>
             </div>
             <footer class="modal-footer">
                 <button type="button" class="btn btn-warning" onclick="restoreDefaults()">Restore Default</button>
                 &ensp;
-                <button type="button" class="btn btn-secondary" onclick="ModalInvisible()">Close</button>&ensp;
+                <button type="button" class="btn btn-secondary" data-bs-dismiss='modal'>Close</button>
+                &ensp;
                 <button type="button" class="btn btn-success" onclick="saveSettings()">Save changes</button>
             </footer>
         </div>
     </div>
 </div>
+
+
 </body>
 
 <script src="roombookSpecifications_constDeclarations.js"></script>
-<script src="_utils.js"></script>
+<script src="_utils.js">
+
+</script>
 <script charset=utf-8>
 
     let projectID = <?php echo json_encode($_SESSION["projectID"]); ?>;
-    let table;
+    var table;
     let cellText = "";
     let currentRowInd = 0;
     let currentColInd = 0;
@@ -210,9 +215,26 @@ include 'roombookSpecifications_New_modal_addRoom.php';
             change_top_label_visibility($(this).is(':checked'));
         });
 
-
     });
 
+    function add_MT_rel_filter(location, table) {
+        let dropdownHtml = '<select class=" fix_size" id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
+        $(location).append(dropdownHtml);
+        $('#columnFilter').change(function () {
+            let filterValue = $(this).val();
+            table.column('MT-relevant:name').search(filterValue).draw();
+        });
+    }
+
+    function add_entfallen_filter(location, table) {
+        let dropdownHtml2 = '<select class="fix_size" id="EntfallenFilter">' + '<option value="">Entf</option><option value="1">1</option>' + '<option selected ="selected" value="0">0</option></select>';
+        $(location).append(dropdownHtml2);
+        $('#EntfallenFilter').change(function () {
+            let filterValue = $(this).val();
+            table.column('Entfallen:name').search(filterValue).draw();
+        });
+        table.column('Entfallen:name').search(0).draw();
+    }
 
     function init_filter() {
         add_MT_rel_filter('#TableCardHeader', table);
@@ -296,6 +318,12 @@ include 'roombookSpecifications_New_modal_addRoom.php';
             },
             {
                 text: "",
+                className: "btn btn-light fas fa-info-circle",
+                titleAttr: "Help",
+                action: () => $('#HelpModal').modal('show')
+            },
+            {
+                text: "",
                 className: 'btn btn-light fas fa-cogs',
                 titleAttr: "Open Settings",
                 action: open_einstellung_modal
@@ -330,7 +358,7 @@ include 'roombookSpecifications_New_modal_addRoom.php';
         new $.fn.dataTable.Buttons(table, {buttons: buttonsGroupcolumnVisbilities}).container().appendTo($('<div class="btn-group" role="group"></div>').appendTo($('#TableCardHeader2')));
         new $.fn.dataTable.Buttons(table, {buttons: btn_grp_new_out}).container().appendTo($('<div class="btn-group"></div>').appendTo($('#TableCardHeader3')));
         new $.fn.dataTable.Buttons(table, {buttons: btn_grp_settings}).container().appendTo($('<div class="btn-group"></div>').appendTo($('#TableCardHeader4')));
- 
+
     }
 
     function init_dt() {
@@ -716,13 +744,11 @@ include 'roombookSpecifications_New_modal_addRoom.php';
         for (let i = 5; i <= 146; i++) {
             table.column(columns[i]).visible(false);
         }
-        const reportColumns = [4, 5, 11, 12, 13, 14, 15, 16, 17, 18, 19, 36, 37, 38, 39,
-            44, 46, 47, 48, 49, 50, 51, 52, 53, 25, 26, 28, 132, 128, 137, 133, 134,
-            61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71];
+        const reportColumns = [4, 5, 11, 12, 13, 14, 15, 16, 17, 18, 19, 25, 28, 35, 36, 37, 38, 39, 40,
+            46, 47, 48, 49, 50, 51, 52, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 128, 132, 133, 134, 137]
         for (let i = 0; i < reportColumns.length; i++) {
             table.column(columns[reportColumns[i]]).visible(true);
         }
-
     }
 
     function toggleColumns(table, startColumn, endColumn, button_name) {
