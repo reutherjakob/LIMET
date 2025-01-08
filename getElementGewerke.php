@@ -57,10 +57,10 @@ echo "
  
         <div class='col-8'>
             <div class='card'>
-                <div class='ml-4 mt-4 card-title'>
-                    <form class='form-inline'>
-
-                        <label class='m-4' for='gewerk'>Gewerk</label>
+                <div class='card-body'>
+                    <form class='d-inline-flex  align-items-center flex-wrap'>
+                        <div class='mr-2 mb-2'>
+                        <label class='mr-2' for='gewerk'>Gewerk</label>
                         <select class='form-control form-control-sm' id='gewerk'>";
 
 if ($gewerk) {
@@ -80,9 +80,10 @@ if ($gewerk) {
 }
 
 echo "
-                        </select>
-
-                        <label class='m-4' for='ghg'>GHG</label>
+             </select>
+                </div>
+                    <div class='mr-2 mb-2'>
+                        <label class='mr-2 ' for='ghg'>GHG</label>
                         <select class='form-control form-control-sm' id='ghg'>";
 
 if ($gewerk) {
@@ -115,10 +116,9 @@ if ($gewerk) {
     echo "<option selected value=0>Bitte Gewerk auswählen</option>";
 }
 
-echo "
-                        </select>		
-
-                        <label class='m-4' for='gug'>GUG</label>
+echo "   </select>
+                </div><div class='mr-2 mb-2'>
+                        <label class='mr-2' for='gug'>GUG</label>
                         <select class='form-control form-control-sm' id='gug'>";
 
 if ($gewerk) {
@@ -156,7 +156,7 @@ if ($gewerk) {
 }
 
 echo "
-     </select>
+     </select></div> 
                         <button type='button' id='saveElementGewerk' class='btn btn-outline-dark btn-sm ml-1' value='saveElementGewerk'>
                             <i class='far fa-save'></i> Gewerk speichern
                         </button>	

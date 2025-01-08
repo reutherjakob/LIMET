@@ -281,27 +281,100 @@ foreach ($teile as $valueOfRoomID) {
     $pdf->AddPage('P', 'A4');
     // Raumdaten laden ----------------------------------
     
-    $sql = "SELECT tabelle_räume.idTABELLE_Räume, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, tabelle_räume.`Funktionelle Raum Nr`, tabelle_räume.`Raumtyp BH`, tabelle_räume.Raumhoehe, tabelle_räume.`Raumhoehe 2`, tabelle_räume.`Raumhoehe_Soll`,
-            tabelle_räume.Bauabschnitt, tabelle_räume.Nutzfläche, tabelle_räume.Nutzfläche_Soll, tabelle_räume.Abdunkelbarkeit, tabelle_räume.Strahlenanwendung, tabelle_räume.Laseranwendung, tabelle_räume.H6020, tabelle_räume.GMP, 
-            tabelle_räume.ISO, tabelle_räume.`O2`, tabelle_räume.`O2 l/min`, tabelle_räume.`O2 Reinheit`, 
-            tabelle_räume.`VA`, tabelle_räume.`VA l/min`, 
-            tabelle_räume.`DL-10`, tabelle_räume.`DL-5`, 
-            tabelle_räume.`DL-tech`, tabelle_räume.`DL l/min`, tabelle_räume.`DL ISO 8573`,
-            tabelle_räume.CO2, tabelle_räume.`CO2 l/min`, tabelle_räume.`CO2 Reinheit`, 
-            tabelle_räume.N2, tabelle_räume.`N2 l/min`, tabelle_räume.`N2 Reinheit`, 
-            tabelle_räume.Ar, tabelle_räume.`Ar l/min`, tabelle_räume.`Ar Reinheit`, 
-            tabelle_räume.He, tabelle_räume.`He l/min`, tabelle_räume.`He Reinheit`, 
-            tabelle_räume.`He-RF`, tabelle_räume.`CO2 Melder`, tabelle_räume.`O2 Mangel`,
-            tabelle_räume.`LN`, tabelle_räume.`LN l/Tag`, 
-            tabelle_räume.H2, tabelle_räume.`H2 l/min`, tabelle_räume.`H2 Reinheit`, 
-            tabelle_räume.AV, tabelle_räume.SV, tabelle_räume.ZSV, tabelle_räume.USV, tabelle_räume.Anwendungsgruppe, tabelle_räume.`AR_Akustik`, tabelle_räume.`ET_EMV`, tabelle_räume.`AR_AnwesendePersonen`,
-            tabelle_räume.`Anmerkung MedGas`, tabelle_räume.`Anmerkung Elektro`, tabelle_räume.`Anmerkung HKLS`, tabelle_räume.`Anmerkung Geräte`, tabelle_räume.`Anmerkung FunktionBO`, tabelle_räume.`Anmerkung BauStatik`, 
-            tabelle_räume.`IT Anbindung`, tabelle_räume.`Fussboden OENORM B5220`, tabelle_projekte.Projektname, tabelle_planungsphasen.Bezeichnung, tabelle_räume.AR_Schwingungsklasse, tabelle_räume.`AR_APs`, tabelle_räume.`AR_Belichtung-nat`,
-            tabelle_räume.RaumNr_Bestand, tabelle_räume.Gebaeude_Bestand, tabelle_räume.`ET_EMV_ja-nein`, tabelle_räume.`EL_Leistungsbedarf W/m2`, tabelle_räume.`HT_Waermeabgabe`, tabelle_räume.`HT_Luftwechsel 1/h`, tabelle_räume.`HT_Geraeteabluft m3/h`, tabelle_räume.`HT_Kühlwasserleistung W`, tabelle_räume.HT_Kühlwasser, tabelle_räume.HT_Notdusche,
-            tabelle_räume.`Allgemeine Hygieneklasse`, tabelle_räume.Laserklasse, tabelle_räume.`Anspeisung ET Anzahl`, 
-            tabelle_räume.`Wasser Qual 1 l/Tag`, tabelle_räume.`Wasser Qual 1`, tabelle_räume.`Wasser Qual 2 l/Tag`, tabelle_räume.`Wasser Qual 2`, tabelle_räume.`Wasser Qual 3 l/min`, tabelle_räume.`Wasser Qual 3`
-            FROM tabelle_planungsphasen INNER JOIN (tabelle_projekte INNER JOIN tabelle_räume ON tabelle_projekte.idTABELLE_Projekte = tabelle_räume.tabelle_projekte_idTABELLE_Projekte) ON tabelle_planungsphasen.idTABELLE_Planungsphasen = tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen
-            WHERE (((tabelle_räume.idTABELLE_Räume)=".$valueOfRoomID."));";
+    $sql = "SELECT tabelle_räume.idTABELLE_Räume,
+       tabelle_räume.Raumnr,
+       tabelle_räume.Raumbezeichnung,
+       tabelle_räume.`Raumbereich Nutzer`,
+       tabelle_räume.Geschoss,
+       tabelle_räume.Bauetappe,
+       tabelle_räume.`Funktionelle Raum Nr`,
+       tabelle_räume.`Raumtyp BH`,
+       tabelle_räume.Raumhoehe,
+       tabelle_räume.`Raumhoehe 2`,
+       tabelle_räume.`Raumhoehe_Soll`,
+       tabelle_räume.Bauabschnitt,
+       tabelle_räume.Nutzfläche,
+       tabelle_räume.Nutzfläche_Soll,
+       tabelle_räume.Abdunkelbarkeit,
+       tabelle_räume.Strahlenanwendung,
+       tabelle_räume.Laseranwendung,
+       tabelle_räume.H6020,
+       tabelle_räume.GMP,
+       tabelle_räume.ISO,
+       tabelle_räume.`O2`,
+       tabelle_räume.`O2 l/min`,
+       tabelle_räume.`O2 Reinheit`,
+       tabelle_räume.`VA`,
+       tabelle_räume.`VA l/min`,
+       tabelle_räume.`DL-10`,
+       tabelle_räume.`DL-5`,
+       tabelle_räume.`DL-tech`,
+       tabelle_räume.`DL l/min`,
+       tabelle_räume.`DL ISO 8573`,
+       tabelle_räume.CO2,
+       tabelle_räume.`CO2 l/min`,
+       tabelle_räume.`CO2 Reinheit`,
+       tabelle_räume.N2,
+       tabelle_räume.`N2 l/min`,
+       tabelle_räume.`N2 Reinheit`,
+       tabelle_räume.Ar,
+       tabelle_räume.`Ar l/min`,
+       tabelle_räume.`Ar Reinheit`,
+       tabelle_räume.He,
+       tabelle_räume.`He l/min`,
+       tabelle_räume.`He Reinheit`,
+       tabelle_räume.`He-RF`,
+       tabelle_räume.`CO2_Melder`,
+       tabelle_räume.`O2_Mangel`,
+       tabelle_räume.`LN`,
+       tabelle_räume.`LN l/Tag`,
+       tabelle_räume.H2,
+       tabelle_räume.`H2 l/min`,
+       tabelle_räume.`H2 Reinheit`,
+       tabelle_räume.AV,
+       tabelle_räume.SV,
+       tabelle_räume.ZSV,
+       tabelle_räume.USV,
+       tabelle_räume.Anwendungsgruppe,
+       tabelle_räume.`AR_Akustik`,
+       tabelle_räume.`ET_EMV`,
+       tabelle_räume.`AR_AnwesendePersonen`,
+       tabelle_räume.`Anmerkung MedGas`,
+       tabelle_räume.`Anmerkung Elektro`,
+       tabelle_räume.`Anmerkung HKLS`,
+       tabelle_räume.`Anmerkung Geräte`,
+       tabelle_räume.`Anmerkung FunktionBO`,
+       tabelle_räume.`Anmerkung BauStatik`,
+       tabelle_räume.`IT Anbindung`,
+       tabelle_räume.`Fussboden OENORM B5220`,
+       tabelle_projekte.Projektname,
+       tabelle_planungsphasen.Bezeichnung,
+       tabelle_räume.AR_Schwingungsklasse,
+       tabelle_räume.`AR_APs`,
+       tabelle_räume.`AR_Belichtung-nat`,
+       tabelle_räume.RaumNr_Bestand,
+       tabelle_räume.Gebaeude_Bestand,
+       tabelle_räume.`ET_EMV_ja-nein`,
+       tabelle_räume.`EL_Leistungsbedarf_W_pro_m2`,
+       tabelle_räume.`HT_Waermeabgabe`,
+       tabelle_räume.`HT_Luftwechsel 1/h`,
+       tabelle_räume.`HT_Geraeteabluft m3/h`,
+       tabelle_räume.HT_Kühlwasser,
+       tabelle_räume.HT_Notdusche,
+       tabelle_räume.`Allgemeine Hygieneklasse`,
+       tabelle_räume.Laserklasse,
+       tabelle_räume.`Wasser Qual 1 l/Tag`,
+       tabelle_räume.`Wasser Qual 1`,
+       tabelle_räume.`Wasser Qual 2 l/Tag`,
+       tabelle_räume.`Wasser Qual 2`,
+       tabelle_räume.`Wasser Qual 3 l/min`,
+       tabelle_räume.`Wasser Qual 3`
+FROM tabelle_planungsphasen
+         INNER JOIN (tabelle_projekte INNER JOIN tabelle_räume
+                     ON tabelle_projekte.idTABELLE_Projekte = tabelle_räume.tabelle_projekte_idTABELLE_Projekte)
+                    ON tabelle_planungsphasen.idTABELLE_Planungsphasen =
+                       tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen
+WHERE (((tabelle_räume.idTABELLE_Räume) = ".$valueOfRoomID.")) ";
     
     
     
@@ -331,12 +404,12 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0);
         $pdf->MultiCell(40, 6, "Strahlenanwendung: ",0, 'R', 0, 0);
         if($row['Strahlenanwendung']==='0'){
-            $pdf->SetFont(zapfdingbats, '', 10);
+            $pdf->SetFont('zapfdingbats', '', 10);
             $pdf->MultiCell(40, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
         else{
             if($row['Strahlenanwendung']==='1'){
-                $pdf->SetFont(zapfdingbats, '', 10);
+                $pdf->SetFont('zapfdingbats', '', 10);
                 //grün
                 $pdf->SetTextColor(0, 255, 0); 
                 $pdf->MultiCell(40, 6, TCPDF_FONTS::unichr(52),0, 'L', 0, 0);
@@ -351,11 +424,11 @@ foreach ($teile as $valueOfRoomID) {
         if($row['AR_Belichtung-nat']==='1'){
             //grün
             $pdf->SetTextColor(0, 255, 0); 
-            $pdf->SetFont(zapfdingbats, '', 10);
+            $pdf->SetFont('zapfdingbats', '', 10);
             $pdf->MultiCell(40, 6, TCPDF_FONTS::unichr(52),0, 'L', 0, 0);
         }
         else{
-            $pdf->SetFont(zapfdingbats, '', 10);            
+            $pdf->SetFont('zapfdingbats', '', 10);            
             $pdf->MultiCell(40, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }       
         //schwarz 
@@ -364,11 +437,11 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->Ln();        
         $pdf->MultiCell(40, 6, "Laseranwendung: ",0, 'R', 0, 0);
         if($row['Laseranwendung']==='0'){
-            $pdf->SetFont(zapfdingbats, '', 10);
+            $pdf->SetFont('zapfdingbats', '', 10);
             $pdf->MultiCell(40, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
         else{
-            $pdf->SetFont(zapfdingbats, '', 10);
+            $pdf->SetFont('zapfdingbats', '', 10);
             //grün
             $pdf->SetTextColor(0, 255, 0);            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(52),0, 'L', 0, 0);
@@ -381,11 +454,11 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(60, 6, "Abdunkelbarkeit: ",0, 'R', 0, 0);
         if($row['Abdunkelbarkeit']==='0'){
-            $pdf->SetFont(zapfdingbats, '', 10);
+            $pdf->SetFont('zapfdingbats', '', 10);
             $pdf->MultiCell(40, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
         else{
-            $pdf->SetFont(zapfdingbats, '', 10);
+            $pdf->SetFont('zapfdingbats', '', 10);
             //grün
             $pdf->SetTextColor(0, 255, 0); 
             $pdf->MultiCell(40, 6, TCPDF_FONTS::unichr(52),0, 'L', 0, 0);
@@ -407,13 +480,13 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell(40,8, "Leistung: ",0, 'R', 0, 0);
         $pdf->MultiCell(40, 6, " ".$row['EL_Leistungsbedarf W/m2']." W/m2",0, 'L', 0, 0);  
         $pdf->Ln();
-        $pdf->MultiCell(40, 6, "Anschlusspunkte:",0, 'R', 0, 0);
-        $pdf->MultiCell(20, 6, " ".$row['Anspeisung ET Anzahl'],0, 'L', 0, 0);   
-        $pdf->Ln();       
+        //$pdf->MultiCell(40, 6, "Anschlusspunkte:",0, 'R', 0, 0);
+        //$pdf->MultiCell(20, 6, " ".$row['Anspeisung ET Anzahl'],0, 'L', 0, 0);
+        //$pdf->Ln();
         $pdf->SetFont('helvetica', '', 10);
         $pdf->SetTextColor(0, 0, 0);
         $pdf->MultiCell(40, 6, "Netzwerk: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['IT Anbindung']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
@@ -426,7 +499,7 @@ foreach ($teile as $valueOfRoomID) {
         //schwarz
         $pdf->SetTextColor(0, 0, 0);
         $pdf->MultiCell(20, 6, "AV: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['AV']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
@@ -439,7 +512,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(20, 6, "SV: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['SV']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
@@ -452,7 +525,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(20, 6, "USV: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['USV']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
@@ -465,7 +538,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetFont('helvetica', '', 10);
         $pdf->Ln();
         $pdf->MultiCell(40, 6, "EMV: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['ET_EMV_ja-nein']==='0'){            
             $pdf->MultiCell(20, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
@@ -498,7 +571,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell(20, 6, " ".$row['HT_Geraeteabluft m3/h']." m3/h",0, 'L', 0, 0);
         $pdf->Ln();
         $pdf->MultiCell(40,8, "Kühlwasser: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['HT_Kühlwasser']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
@@ -534,7 +607,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell(40,6, "Wasser nach ISO3696: ",0, 'R', 0, 0);
         $pdf->Ln();
         $pdf->MultiCell(60,6, "Grad 3: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['Wasser Qual 3']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
@@ -552,7 +625,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetFont('helvetica', '', 10);
         $pdf->Ln();
         $pdf->MultiCell(60,6, "Grad 2: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['Wasser Qual 2']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
@@ -569,7 +642,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetFont('helvetica', '', 10);
         $pdf->Ln();
         $pdf->MultiCell(60,6, "Grad 1: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['Wasser Qual 1']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
@@ -597,7 +670,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetFont('helvetica', '', 10);        
         $pdf->Ln();                      
         $pdf->MultiCell(40, 6, "DL-tech: ", 0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['DL-tech']==='0'){            
             $pdf->MultiCell(7, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
             $pdf->MultiCell(30,6, "",0, 'L', 0, 0); 
@@ -616,7 +689,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetFont('helvetica', '', 10);
         $pdf->Ln(); 
         $pdf->MultiCell(40, 6, "O2: ", 0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['O2']==='0'){            
             $pdf->MultiCell(7, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
             $pdf->MultiCell(30,6, "",0, 'L', 0, 0); 
@@ -634,7 +707,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 10);        
         $pdf->MultiCell(20, 6, "VA: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['VA']==='0'){            
             $pdf->MultiCell(7, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
             $pdf->MultiCell(30,6, "",0, 'L', 0, 0); 
@@ -659,7 +732,7 @@ foreach ($teile as $valueOfRoomID) {
             }
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(40, 6, "N2: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['N2']==='0'){            
             $pdf->MultiCell(7, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
             $pdf->MultiCell(30,6, "",0, 'L', 0, 0); 
@@ -677,7 +750,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(20, 6, "CO2: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['CO2']==='0'){            
             $pdf->MultiCell(7, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
             $pdf->MultiCell(30,6, "",0, 'L', 0, 0); 
@@ -695,7 +768,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(20, 6, "Ar: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['Ar']==='0'){            
             $pdf->MultiCell(7, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
             $pdf->MultiCell(30,6, "",0, 'L', 0, 0); 
@@ -717,7 +790,7 @@ foreach ($teile as $valueOfRoomID) {
             }
         $pdf->SetFont('helvetica', '', 10);        
         $pdf->MultiCell(40, 6, "H2: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['H2']==='0'){            
             $pdf->MultiCell(7, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
             $pdf->MultiCell(30,6, "",0, 'L', 0, 0); 
@@ -733,7 +806,7 @@ foreach ($teile as $valueOfRoomID) {
         }
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(20, 6, "He: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['He']==='0'){            
             $pdf->MultiCell(7, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
             $pdf->MultiCell(30,6, "",0, 'L', 0, 0); 
@@ -751,7 +824,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(20, 6, "He-RF: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['He-RF']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
@@ -769,7 +842,7 @@ foreach ($teile as $valueOfRoomID) {
             }
         $pdf->SetFont('helvetica', '', 10);        
         $pdf->MultiCell(40, 6, "LN: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['LN']==='0'){            
             $pdf->MultiCell(7, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
             $pdf->MultiCell(30,8, "",0, 'L', 0, 0); 
@@ -789,7 +862,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetFont('helvetica', '', 10); 
         $pdf->MultiCell(40, $rowHeightComment, "Gasalarm:",0, 'R', 0, 0);
         $pdf->MultiCell(57, 6, "CO2 Melder: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['CO2 Melder']==='0'){            
             $pdf->MultiCell(7, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
@@ -802,7 +875,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 10); 
         $pdf->MultiCell(50, 6, "O2 Mangel: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['O2 Mangel']==='0'){            
             $pdf->MultiCell(7, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }

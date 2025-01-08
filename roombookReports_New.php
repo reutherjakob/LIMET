@@ -12,17 +12,23 @@ init_page_serversides("", "x");
     <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
     <link rel="icon" href="iphone_favicon.png"/>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
-          integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-    <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.css"
-          rel="stylesheet"/>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+          integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
+          rel="stylesheet">
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
+
     <style>
         .table > thead > tr > th {
             background-color: rgba(100, 140, 25, 0.15);
@@ -31,6 +37,11 @@ init_page_serversides("", "x");
         .dt-button {
             height: 31px;
             margin: 2px 2px 15px 2px;
+
+        }
+
+        .btn {
+            margin: 2px 2px -2px -2px;
         }
     </style>
 </head>
@@ -38,30 +49,33 @@ init_page_serversides("", "x");
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class="card">
-        <div class="card-header-l px-2 py-2  d-inline-flex align-items-baseline justify-content-start border-light"
-             id="HeaderTabelleCard">
-            <div class="col-md-3 d-inline-flex justify-content-start align-items-baseline" id="sub1"></div>
-            <div class="col-md-3 d-inline-flex justify-content-start align-items-baseline" id="sub12"> Select &ensp;
-            </div>
-
-            <div class="d-inline-flex align-items-baseline"><label for="dateSelect"> </label>
-                <input type="date" id="dateSelect" name="dateSelect">
-            </div>
-            <div class="col-md-3 d-inline-flex align-items-baseline" id="sub2"></div>
-            <div class="col-md-2 d-inline-flex justify-content-end align-items-baseline" id="sub3"></div>
-        </div>
-
-        <div class="card-header-s ml-4 px-2 py-2 border-light form-check-inline  flex-nowrap" id="HeaderTabelleCard2">
-            Raumbuch &ensp; &emsp;
+        <div class="card-header-s" id="HeaderTabelleCard">
             <div class="row">
-                <div class="col-6 d-inline-flex" id="sub21">
-                </div>
-                <div class="col-6 d-inline-flex justify-content-center" id="sub22"> &ensp; &emsp;</div>
+                <div class="col-1 d-inline-flex justify-content-start" id="">Select</div>
+                <div class="col-5 d-inline-flex justify-content-start" id="sub1"></div>
+                <div class="col-5 d-inline-flex justify-content-start" id="">
+
+                    <label for="dateSelect"></label> <input type="date" id="dateSelect" name="dateSelect"> &ensp;</div>
             </div>
         </div>
-        <div class="card-header-s ml-4 px-2 py-2 border-light form-check-inline  flex-nowrap" id="HeaderTabelleCard3">
-            Bauangaben &emsp;
+
+        <div class="card-header-s" id="HeaderTabelleCard2">
+            <div class="row">
+                <div class="col-1 d-inline-flex justify-content-start" id="">Bauangaben</div>
+                <div class="col-5 d-inline-flex justify-content-start" id="sub23"></div>
+                <div class="col-6 d-inline-flex justify-content-start" id="sub2"></div>
+            </div>
         </div>
+        <div class="card-header-s">
+            <div class="row">
+                <div class="col-1 d-inline-flex justify-content-start" id=""> Raumbuch</div>
+                <div class="col-5 d-inline-flex justify-content-start" id="sub21"></div>
+                <div class="col-6 d-inline-flex justify-content-start" id="sub22">
+                </div>
+            </div>
+
+        </div>
+
         <div class="card-body px-2 py-2">
             <?php
             $mysqli = utils_connect_sql();
@@ -75,7 +89,7 @@ init_page_serversides("", "x");
                     return "r.`$col`";
                 }, $columns)) .
                 " FROM tabelle_räume r 
-                                INNER JOIN tabelle_projekte p 
+                                INNER JOIN tabelle_projekte p  
                                 ON r.tabelle_projekte_idTABELLE_Projekte = p.idTABELLE_Projekte 
                                 WHERE p.idTABELLE_Projekte=" . $_SESSION["projectID"];
 
@@ -83,7 +97,7 @@ init_page_serversides("", "x");
             if (!$result) {
                 die("Query failed: " . $mysqli->error);
             }
-            echo "<table class='table display compact table-striped table-bordered table-sm' id='tableRooms' cellspacing='0' width='100%'>
+            echo "<table class='table display compact table-striped table-bordered table-sm' id='tableRooms' >
                         <thead><tr>";
             foreach ($columns as $col) {
                 echo "<th>" . str_replace('_', ' ', $col) . "</th>";
@@ -110,12 +124,8 @@ init_page_serversides("", "x");
 <script charset="utf-8">
     $(document).ready(function () {
         const dateInput = document.getElementById('dateSelect');
-        const today = new Date().toISOString().split('T')[0];
-        dateInput.value = today;
-
+        dateInput.value = new Date().toISOString().split('T')[0];
         initDataTable();
-        $('#HeaderTabelleCard2').slideToggle();
-        $('#HeaderTabelleCard3').slideToggle();
         initButtons();
         setTimeout(() => {
             moveSearchBox('sub1');
@@ -129,25 +139,9 @@ init_page_serversides("", "x");
         }, 300);
         addMTFilter('#sub1');
         add_entfallen_filter('#sub1');
-//                    addCheckbox('#sub3', "Show-old-Reports", toggleOldReports);
-        const toggleOldReportsButton = $('<button type="button" class="btn btn-sm btn-light border-dark" id="toggleOldReports">Show Old Reports</button>');
-        toggleOldReportsButton.on('click', toggleOldReports);
-        $('#sub3').append(toggleOldReportsButton);
 
     });
 
-    function toggleOldReports() {
-        $('#HeaderTabelleCard2').slideToggle(() => {
-            $('#HeaderTabelleCard3').slideToggle(() => {
-                const button = $('#toggleOldReports');
-                if ($('#HeaderTabelleCard2').is(':visible') || $('#HeaderTabelleCard3').is(':visible')) {
-                    button.text('Hide Old Reports');
-                } else {
-                    button.text('Show Old Reports');
-                }
-            });
-        });
-    }
 
     function generateNewReports(reportType, date) {
         const roomIDs = table.rows({selected: true}).data().toArray().map(row => row[0]);
@@ -223,11 +217,11 @@ init_page_serversides("", "x");
             return buttonGroup;
         };
 
-        $('#sub12').append(createButtonGroup(buttons, 'btn-success btn-sm'));
-        $('#sub2').append(createButtonGroup(buttonNewReports, 'btn-light border-dark btn-sm'));
-        $('#sub21').append(createButtonGroup(oldButtons, 'btn-light  border-dark'));
-        $('#sub22').append(createButtonGroup(oldButtons2, 'btn-light  border-dark'));
-        $('#HeaderTabelleCard3').append(createButtonGroup(ButtonsBauangaben, 'btn-light  border-dark'));
+        $('#sub1').append(createButtonGroup(buttons, 'btn-success'));
+        $('#sub2').append(createButtonGroup(buttonNewReports, 'btn-light border-dark'));
+        $('#sub21').append(createButtonGroup(oldButtons, 'btn-light border-dark'));
+        $('#sub22').append(createButtonGroup(oldButtons2, 'btn-light border-dark'));
+        $('#sub23').append(createButtonGroup(ButtonsBauangaben, 'btn-light  border-dark'));
 
     }
 
@@ -291,7 +285,6 @@ init_page_serversides("", "x");
             window.open(`/${link}.php?roomID=${roomIDs.join(',')}`);
         }
     }
-
 </script>
 </body>
 </html>

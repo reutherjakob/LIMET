@@ -1,9 +1,8 @@
+<!-- 13.2.25: Reworked -->
 <?php
 include '_utils.php';
 init_page_serversides();
 ?>
-
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
@@ -13,64 +12,73 @@ init_page_serversides();
     <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
     <link rel="icon" href="iphone_favicon.png">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
-          integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
-    <script type="text/javascript"
-            src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.js"></script>
-
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.jsdelivr.net/datatables.mark.js/2.0.0/datatables.mark.min.css"/>
-    <script type="text/javascript"
-            src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+          integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
+          rel="stylesheet">
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <!--DATEPICKER -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker3.min.css">
     <script type='text/javascript'
             src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+    <style>
+        .card-body {
+            overflow: auto;
+        }
 
+        .card-body iframe {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 85vh;
+        }
+    </style>
 </head>
-
-
-<body style="height:100%">
+<body>
 <div id="limet-navbar"></div>
 <div class="container-fluid" style="height:100%">
-
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-7">
             <div class="mt-4 card">
-                <div class="card-header"><b>Vermerkgruppen</b>
-                    <label class="float-right">
-                        <button type='button' id='<?php echo $_SESSION["projectID"] ?>'
-                                class='btn btn-outline-success btn-sm' value='Neue Vermerkgruppe'><i
-                                    class='fas fa-plus'></i> Neu
-                        </button>
-                        <button type="button" class="btn btn-outline-dark btn-sm" value="searchDocumentation"
-                                data-toggle="modal" data-target="#showSearchModal"><i class="fas fa-search"></i> Suche
-                        </button>
-                    </label>
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-10">
+                            <b>Vermerkgruppen</b>
+                            <button type='button' id='<?php echo $_SESSION["projectID"] ?>'
+                                    class='btn btn-outline-success btn-sm' value='Neue Vermerkgruppe'><i
+                                        class='fas fa-plus'></i> Neu
+                            </button>
+                            <button type="button" class="btn btn-outline-dark btn-sm" value="searchDocumentation"
+                                    data-bs-toggle="modal" data-bs-target="#showSearchModal"><i
+                                        class="fas fa-search"></i>
+                                Suche
+                            </button>
+                        </div>
+
+                        <div class="col-2" id="CardHeaderVermerkGruppen">
+
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <?php
-
                     $mysqli = utils_connect_sql();
-
                     $sql = "SELECT tabelle_Vermerkgruppe.Gruppenname, tabelle_Vermerkgruppe.Gruppenart, tabelle_Vermerkgruppe.Ort, date_format(tabelle_Vermerkgruppe.Startzeit, '%h:%i') Startzeit, date_format(tabelle_Vermerkgruppe.Endzeit, '%h:%i') Endzeit, tabelle_Vermerkgruppe.Datum, tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe, tabelle_Vermerkgruppe.Verfasser
                                                         FROM tabelle_Vermerkgruppe
                                                         WHERE (((tabelle_Vermerkgruppe.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
                                                         ORDER BY tabelle_Vermerkgruppe.Datum DESC;";
-
                     $result = $mysqli->query($sql);
-
-                    echo "<table class='table table-striped table-bordered table-sm' id='tableVermerkGruppe'>
+                    echo "<table class='table table-striped table-bordered table-sm table-responsive' id='tableVermerkGruppe'>
                                                         <thead><tr>
                                                         <th>ID</th>
                                                         <th></th>
@@ -85,7 +93,6 @@ init_page_serversides();
                                                         <th>Start</th>
                                                         <th>Ende</th>
                                                         </tr></thead><tbody>";
-
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr>";
                         echo "<td>" . $row['idtabelle_Vermerkgruppe'] . "</td>";
@@ -96,82 +103,100 @@ init_page_serversides();
                         echo "<td align='center'>";
                         switch ($row["Gruppenart"]) {
                             case "Mailverkehr":
-                                echo "<span class='badge badge-pill badge-info'> Mailverkehr </span>";
+                                echo "<span class='badge rounded-pill bg-info'> Mailverkehr </span>";
                                 break;
                             case "Telefonnotiz":
-                                echo "<span class='badge badge-pill badge-dark'> Telefonnotiz </span>";
+                                echo "<span class='badge rounded-pill bg-dark'> Telefonnotiz </span>";
                                 break;
                             case "AV":
-                                echo "<span class='badge badge-pill badge-warning'> AV </span>";
+                                echo "<span class='badge rounded-pill bg-warning text-dark'> AV </span>";
                                 break;
                             case "Protokoll":
-                                echo "<span class='badge badge-pill badge-primary'> Protokoll </span>";
+                                echo "<span class='badge rounded-pill bg-primary'> Protokoll </span>";
                                 break;
                             case "ÖBA-Protokoll":
-                                echo "<span class='badge badge-pill badge-success'> ÖBA-Protokoll </span>";
+                                echo "<span class='badge rounded-pill bg-success'> ÖBA-Protokoll </span>";
                                 break;
                             default:
-                                echo "Art unbekannt: " . $row['Gruppenart'];
+                                echo $row['Gruppenart'];
                         }
                         echo "</td>";
                         echo "<td>" . $row['Ort'] . "</td>";
                         echo "<td>" . $row['Verfasser'] . "</td>";
-                        echo "<td><button type='button' id='" . $row['idtabelle_Vermerkgruppe'] . "' class='btn btn-outline-dark btn-xs' value='showGroupMembers' data-toggle='modal' data-target='#showGroupMembersModal'><i class='fas fa-users'></i></button></td>";
+                        echo "<td><button type='button' id='" . $row['idtabelle_Vermerkgruppe'] . "' class='btn btn-outline-dark btn-xs' value='showGroupMembers'  data-bs-toggle='modal' data-bs-target='#showGroupMembersModal'><i class='fas fa-users'></i></button></td>";
                         echo "<td><button type='button' id='" . $row['idtabelle_Vermerkgruppe'] . "' class='btn btn-outline-dark btn-xs' value='createGroupPDF' onclick='myFunction()'><i class='fas fa-file-pdf'></i></button></td>";
                         echo "<td>" . $row['Startzeit'] . "</td>";
                         echo "<td>" . $row['Endzeit'] . "</td>";
                         echo "</tr>";
                     }
                     echo "</tbody></table>";
-
-                    // echo "<button type='button' id='".$_SESSION["projectID"]."' class='btn btn-success btn-sm' value='Neue Vermerkgruppe'>Neue Vermerkgruppe</button>";
-
                     ?>
                 </div>
             </div>
+
             <div class="mt-4 card">
-                <div class="card-header"><b>Vermerkuntergruppen</b>
-                    <label class="float-right" id="divUntergruppeRightLabel">
-                        <button type='button' id='buttonNewVermerkuntergruppe' class='btn btn-outline-success btn-sm'
-                                value='Neue Vermerkuntergruppe' style='visibility:hidden'><i class='fas fa-plus'></i>
-                            Neu
-                        </button>
-                    </label>
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-7">
+                            <b>VermerkUnterGruppen</b>
+                            <button type='button' id='buttonNewVermerkuntergruppe'
+                                    class='btn btn-outline-success btn-sm'
+                                    value='Neue Vermerkuntergruppe' style='visibility:hidden'><i
+                                        class='fas fa-plus'></i>
+                                Neu
+                            </button>
+                        </div>
+                        <div class="col-3"></div>
+                        <div class="col-2" id="CardHeaderVermerkUntergruppen"></div>
+                    </div>
                 </div>
                 <div class="card-body" id="vermerkUntergruppen"></div>
+
             </div>
+
             <div class="mt-4 card">
-                <div class="card-header"><b>Vermerke</b>
-                    <label class="float-right" id="divVermerkeRightLabel">
-                        <button type='button' id='buttonNewVermerk' class='btn btn-outline-success btn-sm'
-                                value='Neuer Vermerk' style='visibility:hidden'><i class='fas fa-plus'></i> Neu
-                        </button>
-                    </label>
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-8">
+                            <b>Vermerke</b>
+                            <button type='button' id='buttonNewVermerk' class='btn btn-outline-success btn-sm'
+                                    value='Neuer Vermerk' style='visibility:hidden'><i class='fas fa-plus'></i>
+                                Neu
+                            </button>
+                        </div>
+                        <div class="col-2"></div>
+                        <div class="col-2" id="CardHeaderVermerkE"></div>
+                    </div>
+
                 </div>
                 <div class="card-body" id="vermerke"></div>
             </div>
-            <div class="mt-4 card">
-                <div class="card-header"><b>Bilder</b>
-                    <label class="float-right" id="divImagesRightLabel">
-                        <button type='button' id='addImage' class='btn btn-outline-success btn-sm'
-                                value='Bild hinzufügen' style='visibility:hidden'><i class='fas fa-plus'></i> Bild
-                            hinzufügen
-                        </button>
-                    </label>
-                </div>
-                <div class="card-body" id="images"><img id="images_cb"></div>
-            </div>
         </div>
+
+
+        <!-- div class="mt-4 card">    TODO
+            <div class="card-header"><b>Bilder</b>
+                <label class="float-right" id="divImagesRightLabel">
+                    <button type='button' id='addImage' class='btn btn-outline-success btn-sm'
+                            value='Bild hinzufügen' style='visibility:hidden'><i class='fas fa-plus'></i> Bild
+                        hinzufügen
+                    </button>
+                </label>
+            </div>
+            <div class="card-body" id="images"><img id="images_cb"></div>
+        </div-->
+
         <!-- Darstellung PDF -->
-        <div class="col-md-6">
+        <div class="col-md-5">
             <div class="mt-4 card">
                 <div class="card-header">Vorschau-PDF</div>
-                <div class="card-body embed-responsive embed-responsive-1by1">
+                <div class="card-body embed-responsive embed-responsive-3by2">
                     <iframe class="embed-responsive-item" id="pdfPreview"></iframe>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- Modal zum HinzufÃ¼gen/Ã„ndern einer Gruppe -->
     <div class='modal fade' id='changeGroupModal' role='dialog'>
@@ -180,7 +205,7 @@ init_page_serversides();
             <div class='modal-content'>
                 <div class='modal-header'>
                     <h4 class='modal-title'>Gruppendaten</h4>
-                    <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                    <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
 
                 </div>
                 <div class='modal-body' id='mbody'>
@@ -226,10 +251,11 @@ init_page_serversides();
                 </div>
                 <div class='modal-footer'>
                     <input type='button' id='addGroup' class='btn btn-success btn-sm' value='HinzufÃ¼gen'
-                           data-dismiss='modal'></input>
+                           data-bs-dismiss='modal'></input>
                     <input type='button' id='saveGroup' class='btn btn-warning btn-sm' value='Speichern'
-                           data-dismiss='modal'></input>
-                    <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Abbrechen</button>
+                           data-bs-dismiss='modal'></input>
+                    <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen
+                    </button>
                 </div>
             </div>
 
@@ -240,12 +266,10 @@ init_page_serversides();
     <!-- Modal fÃ¼r Gruppenmitglieder -->
     <div class='modal fade' id='showGroupMembersModal' role='dialog'>
         <div class='modal-dialog modal-lg'>
-
-            <!-- Modal content-->
             <div class='modal-content'>
                 <div class='modal-header'>
                     <h4 class='modal-title'>Teilnehmer:</h4>
-                    <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                    <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
                 </div>
                 <div class='modal-body' id='showGroupMembersModalBody'>
                     <div class="mt-4 card">
@@ -261,7 +285,8 @@ init_page_serversides();
                     </div>
                 </div>
                 <div class='modal-footer'>
-                    <button type='button' class='btn btn-default btn-sm' value='closeModal' data-dismiss='modal'>
+                    <button type='button' class='btn btn-default btn-sm' value='closeModal'
+                            data-bs-dismiss='modal'>
                         Schließen
                     </button>
                 </div>
@@ -276,7 +301,7 @@ init_page_serversides();
             <div class='modal-content'>
                 <div class='modal-header'>
                     <h4 class='modal-title'>Vermerke durchsuchen:</h4>
-                    <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                    <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
                 </div>
                 <div class='modal-body' id='showSearchModalBody'>
                     <?php
@@ -310,99 +335,112 @@ init_page_serversides();
                         echo "</tr>";
                     }
                     echo "</tbody></table>";
-
+                    $mysqli->close();
                     ?>
                 </div>
             </div>
             <div class='modal-footer'>
-                <button type='button' class='btn btn-default btn-sm' value='closeModal' data-dismiss='modal'>Schließen
+                <button type='button' class='btn btn-default btn-sm' value='closeModal' data-bs-dismiss='modal'>
+                    Schließen
                 </button>
             </div>
         </div>
     </div>
 </div>
-</div>
-<?php
-$mysqli->close();
-?>
+
 
 <script>
     var gruppenID;
-    var vermerkID;
+    var search_counter = 0;
+    var counter = 0;
+    var vermerkID; //       for getVermerkToUntergruppe.php
+    var untergruppenID; //  for getVermerkUntergruppeToGruppe.php
+
+
+    function move_dt_search(inp, location) {
+        const move = $(inp);
+        $(location).prepend(move);
+    }
 
     $(document).ready(function () {
-        var table = $('#tableVermerkGruppe').DataTable({
-            "columnDefs": [
+        var table = new DataTable('#tableVermerkGruppe', {
+            columnDefs: [
                 {
-                    "targets": [0, 4, 10, 11],
-                    "visible": false,
-                    "searchable": false,
-                    "sortable": false
+                    targets: [0, 4, 10, 11],
+                    visible: false,
+                    searchable: false,
+                    sortable: false
                 }
             ],
-            "select": true,
-            "paging": true,
-            "searching": true,
-            "info": true,
-            "order": [[3, "desc"]],
-            "pagingType": "simple",
-            "lengthChange": false,
-            "pageLength": 10,
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
-            "mark": true
+            select: true,
+            paging: true,
+            searching: true,
+            info: true,
+            order: [[3, "desc"]],
+            pagingType: "simple",
+            lengthChange: false,
+            pageLength: 10,
+            language: {
+                url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
+                search: ""
+            },
+            mark: true,
+            initComplete: function () {
+                setTimeout(function () {
+                    move_dt_search("#dt-search-" + search_counter, "#CardHeaderVermerkGruppen");
+                    search_counter = search_counter + 2;
+                });
+
+            }
         });
 
-        $('#tableSearchVermerk').DataTable({
-            "columnDefs": [
+        let tableSearchVermerk = new DataTable('#tableSearchVermerk', {
+            columnDefs: [
                 {
-                    "targets": [0],
-                    "visible": false,
-                    "searchable": false,
-                    "sortable": false
+                    targets: [0],
+                    visible: false,
+                    searchable: false,
+                    sortable: false
                 }
             ],
-            "select": false,
-            "paging": true,
-            "searching": true,
-            "info": true,
-            "order": [[2, "desc"]],
-            "pagingType": "simple",
-            "lengthChange": false,
-            "pageLength": 10,
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
-            "mark": true
+            select: false,
+            paging: true,
+            searching: true,
+            info: true,
+            order: [[2, "desc"]],
+            pagingType: "simple",
+            lengthChange: false,
+            pageLength: 10,
+            language: {
+                url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
+                search: ""
+            },
+            mark: true
         });
 
         $('#tableVermerkGruppe tbody').on('click', 'tr', function () {
-            if ($(this).hasClass('info')) {
+            gruppenID = table.row($(this)).data()[0];
+            document.getElementById("gruppenart").value = table.row($(this)).data()[4];
+            document.getElementById("gruppenName").value = table.row($(this)).data()[2];
+            document.getElementById("gruppenOrt").value = table.row($(this)).data()[6];
+            document.getElementById("gruppenVerfasser").value = table.row($(this)).data()[7];
+            document.getElementById("gruppenDatum").value = table.row($(this)).data()[3];
+            document.getElementById("gruppenStart").value = table.row($(this)).data()[10];
+            document.getElementById("gruppenEnde").value = table.row($(this)).data()[11];
+            $("#vermerke").hide();
 
-            } else {
-                gruppenID = table.row($(this)).data()[0];
-                document.getElementById("gruppenart").value = table.row($(this)).data()[4];
-                document.getElementById("gruppenName").value = table.row($(this)).data()[2];
-                document.getElementById("gruppenOrt").value = table.row($(this)).data()[6];
-                document.getElementById("gruppenVerfasser").value = table.row($(this)).data()[7];
-                document.getElementById("gruppenDatum").value = table.row($(this)).data()[3];
-                document.getElementById("gruppenStart").value = table.row($(this)).data()[10];
-                document.getElementById("gruppenEnde").value = table.row($(this)).data()[11];
+            $.ajax({
+                url: "getVermerkeuntergruppenToGruppe.php",
+                data: {"vermerkGruppenID": gruppenID},
+                type: "GET",
+                success: function (data) {
+                    $("#vermerkUntergruppen").html(data);
+                }
+            });
+            $('#pdfPreview').attr('src', '/pdf_createVermerkGroupPDF.php?gruppenID=' + gruppenID);
 
-                $("#vermerke").hide();
-                table.$('tr.info').removeClass('info');
-                $(this).addClass('info');
-                $.ajax({
-                    url: "getVermerkeuntergruppenToGruppe.php",
-                    data: {"vermerkGruppenID": table.row($(this)).data()[0]},
-                    type: "GET",
-                    success: function (data) {
-                        $("#vermerkUntergruppen").html(data);
-
-                    }
-                });
-                $('#pdfPreview').attr('src', '/pdf_createVermerkGroupPDF.php?gruppenID=' + gruppenID);
-            }
         });
     });
-
 
     $('#gruppenDatum').datepicker({
         format: "yyyy-mm-dd",
@@ -412,22 +450,21 @@ $mysqli->close();
         language: "de"
     });
 
-
-    $('#tablePossibleGroupMembers').DataTable({
-        "paging": false,
-        "searching": true,
-        "info": false,
-        "order": [[1, "asc"]],
-        "columnDefs": [
+    new DataTable('#tablePossibleGroupMembers', {
+        paging: false,
+        searching: true,
+        info: false,
+        order: [[1, "asc"]],
+        columnDefs: [
             {
-                "targets": [0],
-                "visible": true,
-                "searchable": false
+                targets: [0],
+                visible: true,
+                searchable: false
             }
         ],
-        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
-        "scrollY": '20vh',
-        "scrollCollapse": true
+        language: {url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+        scrollY: '20vh',
+        scrollCollapse: true
     });
 
     $("button[value='showGroupMembers']").click(function () {
@@ -449,7 +486,7 @@ $mysqli->close();
 
             }
         });
-        //$('#showGroupMembersModal').modal('show'); 	     
+        //$('#showGroupMembersModal').modal('show');
     });
 
     $("button[value='changeVermerkgruppe']").click(function () {
@@ -478,13 +515,12 @@ $mysqli->close();
         var gruppenOrt = $("#gruppenOrt").val();
         var gruppenVerfasser = $("#gruppenVerfasser").val();
         var gruppenDatum = $("#gruppenDatum").val();
+        console.log(gruppenDatum);
         var gruppenStart = $("#gruppenStart").val();
+        console.log(gruppenStart);
         var gruppenEnde = $("#gruppenEnde").val();
-        // var gruppenFortsetzung  = $("#gruppenFortsetzung").val();
-
+        console.log(gruppenEnde);
         if (gruppenart !== "" && gruppenName !== "" && gruppenOrt !== "" && gruppenVerfasser !== "" && gruppenDatum !== "" && gruppenStart !== "" && gruppenEnde !== "") {
-            // $('#addDeviceModal').modal('hide');
-
             $.ajax({
                 url: "addVermerkGroup.php",
                 data: {
@@ -499,7 +535,6 @@ $mysqli->close();
                 type: "GET",
                 success: function (data) {
                     alert(data);
-                    // Neu Laden der Vermerkliste
                     location.reload();
                 }
             });
@@ -517,7 +552,6 @@ $mysqli->close();
         var gruppenStart = $("#gruppenStart").val();
         var gruppenEnde = $("#gruppenEnde").val();
         //var gruppenFortsetzung  = $("#gruppenFortsetzung").val();
-
         if (gruppenart !== "" && gruppenName !== "" && gruppenOrt !== "" && gruppenVerfasser !== "" && gruppenDatum !== "" && gruppenStart !== "" && gruppenEnde !== "" && gruppenID !== "") {
             // $('#addDeviceModal').modal('hide');
             $.ajax({

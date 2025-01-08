@@ -73,7 +73,7 @@ class MYPDF extends TCPDF {
         $this->SetLineWidth(0.1);
         $this->SetFont('', '', '9');
         // Header
-        $w = array(60, 50, 50, 10, 10);
+        $w = array(40, 50, 35, 35, 10, 10);
         $num_headers = count($header);
         $this->Cell(0, 6, 'Teilnehmer/Verteiler:', 0, 0, 'L', 0);
         $this->Ln();
@@ -93,16 +93,18 @@ class MYPDF extends TCPDF {
             $this->Cell($w[0], $rowHeight, $row['Name'] . " " . $row['Vorname'], 1, 0, 'L', $fill, '', 0);
             $this->Cell($w[1], $rowHeight, $row['Mail'], 1, 0, 'L', $fill, '', 3);
             $this->Cell($w[2], $rowHeight, $row['Organisation'], 1, 0, 'L', $fill, '', 3);
+            $this->Cell($w[3], $rowHeight, $row['Zuständigkeit'], 1, 0, 'L', $fill, '', 3);
+
             $this->SetFont('zapfdingbats', '', 8);
             if ($row['Anwesenheit'] == '0') {
-                $this->Cell($w[3], $rowHeight, TCPDF_FONTS::unichr(54), 1, 0, 'C', $fill, '', 0);
-            } else {
-                $this->Cell($w[3], $rowHeight, TCPDF_FONTS::unichr(52), 1, 0, 'C', $fill, '', 0);
-            }
-            if ($row['Verteiler'] == '0') {
                 $this->Cell($w[4], $rowHeight, TCPDF_FONTS::unichr(54), 1, 0, 'C', $fill, '', 0);
             } else {
                 $this->Cell($w[4], $rowHeight, TCPDF_FONTS::unichr(52), 1, 0, 'C', $fill, '', 0);
+            }
+            if ($row['Verteiler'] == '0') {
+                $this->Cell($w[5], $rowHeight, TCPDF_FONTS::unichr(54), 1, 0, 'C', $fill, '', 0);
+            } else {
+                $this->Cell($w[5], $rowHeight, TCPDF_FONTS::unichr(52), 1, 0, 'C', $fill, '', 0);
             }
             $this->SetFont('helvetica', '', '8');
             $this->Ln();
@@ -248,12 +250,37 @@ while ($row = $result->fetch_assoc()) {
 }
 $pdf->Ln(5);
 // column titles
-$verteiler_table_header = array('Name', 'Mail', 'Organisation', 'Anw.', 'Vert.');
+$verteiler_table_header = array('Name', 'Mail', 'Organisation', 'Rolle', 'Anw.', 'Vert.');
 
 // data loading Ansprechpersonentabelle
+/*
 $sql = "SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen, tabelle_ansprechpersonen.Name, tabelle_ansprechpersonen.Vorname, tabelle_ansprechpersonen.Mail, tabelle_organisation.Organisation, tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.Anwesenheit, tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.Verteiler
 FROM tabelle_organisation INNER JOIN (tabelle_projekte_has_tabelle_ansprechpersonen INNER JOIN (tabelle_ansprechpersonen INNER JOIN tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen ON tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen = tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen) ON tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen = tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen) ON tabelle_organisation.idtabelle_organisation = tabelle_projekte_has_tabelle_ansprechpersonen.tabelle_organisation_idtabelle_organisation
 WHERE (((tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe)=" . filter_input(INPUT_GET, 'gruppenID') . ") AND ((tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ")) ORDER BY Organisation;";
+*/
+$sql = "
+SELECT
+    tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen,
+    tabelle_ansprechpersonen.Name,
+    tabelle_ansprechpersonen.Vorname,
+    tabelle_ansprechpersonen.Mail,
+    tabelle_organisation.Organisation,
+    tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.Anwesenheit,
+    tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.Verteiler, 
+    tabelle_projektzuständigkeiten.Zuständigkeit
+FROM
+    tabelle_organisation
+        INNER JOIN tabelle_projekte_has_tabelle_ansprechpersonen
+                   ON tabelle_organisation.idtabelle_organisation = tabelle_projekte_has_tabelle_ansprechpersonen.tabelle_organisation_idtabelle_organisation
+        INNER JOIN tabelle_ansprechpersonen
+                   ON tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen = tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen
+        INNER JOIN tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen
+                   ON tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen = tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen
+        INNER JOIN tabelle_projektzuständigkeiten
+                   ON tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projektzuständigkeiten_idTABELLE_Projektzuständigkeiten = tabelle_projektzuständigkeiten.idTABELLE_Projektzuständigkeiten
+WHERE
+    tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe = " . filter_input(INPUT_GET, 'gruppenID') . "
+  AND tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projekte_idTABELLE_Projekte = " . $_SESSION["projectID"] . "";
 
 $result = $mysqli->query($sql);
 $gruppenTeilnehmer = array();
@@ -264,6 +291,9 @@ while ($row = $result->fetch_assoc()) {
     $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Organisation'] = $row['Organisation'];
     $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Anwesenheit'] = $row['Anwesenheit'];
     $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Verteiler'] = $row['Verteiler'];
+    $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Zuständigkeit'] = $row['Zuständigkeit'];
+
+
 }
 
 // print colored table

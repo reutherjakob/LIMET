@@ -180,7 +180,7 @@ foreach($columnCounter as $row1) {
             $pdf->MultiCell($width, $rowHeight, $data[$i]['LosNr_Extern'],0, 'L', $fill, 0);
             $pdf->MultiCell($width, $rowHeight, $data[$i]['LosBezeichnung_Extern'],0, 'L', $fill, 0);
             $pdf->MultiCell($width, $rowHeight, $data[$i]['data'],'LTB', 'C', $fill, 0);
-            $pdf->SetFont(zapfdingbats, '', 8);
+            $pdf->SetFont('zapfdingbats', '', 8);
             if($data[$i]['Abgeschlossen']==='0'){            
                 $pdf->MultiCell($width, $rowHeight, TCPDF_FONTS::unichr(54),'TB', 'L', $fill, 0);
             }
@@ -194,7 +194,7 @@ foreach($columnCounter as $row1) {
         }
         else{
             $pdf->MultiCell($width, $rowHeight, $data[$i]['data'],'LTB', 'C', $fill, 0);
-            $pdf->SetFont(zapfdingbats, '', 8);
+            $pdf->SetFont('zapfdingbats', '', 8);
             if($data[$i]['Abgeschlossen']==='0'){            
                 $pdf->MultiCell($width, $rowHeight, TCPDF_FONTS::unichr(54),'TB', 'L', $fill, 0);
             }

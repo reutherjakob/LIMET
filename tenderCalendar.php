@@ -5,58 +5,61 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
-    <!--<link rel="icon" href="favicon.icon"> -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
-          integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <link rel="icon" href="iphone_favicon.png">
+
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+          integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
+          rel="stylesheet">
+
+
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.13.1/b-2.3.3/b-html5-2.3.3/sl-1.5.0/datatables.min.css"/>
-    <script type="text/javascript"
-            src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.13.1/b-2.3.3/b-html5-2.3.3/sl-1.5.0/datatables.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/js/bootstrap-datepicker.min.js"></script>
     <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker3.min.css">
-    <script type='text/javascript'
-            src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
-    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+          href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/css/bootstrap-datepicker.min.css">
+    <style>
+        .card-body {
+            overflow: scroll;
+        }
+
+        .form-control-sm {
+            width: 95px;
+        !important;
+        }
+
+        .btn-xs {
+            width: 95px;
+            height: 10px;
+            vertical-align: middle;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
 </head>
-<style>
-    .card-body {
-        overflow: scroll;
-    }
- 
-    .btn-xs {
-        width: 90%;
-        height: 10px;
-        vertical-align: middle;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-</style>
-
-<body style="height:100%" id="bodyTenderLots">
 
 <?php
-
 include '_utils.php';
-init_page_serversides("");
+init_page_serversides();
 ?>
 
-<div id="limet-navbar"></div> <!-- Container für Navbar Aufruf über onLoad -->
-
+<body id="bodyTenderLots">
+<div id="limet-navbar"></div>
 <div class="container-fluid">
-
-    <div class='row'>
-        <div class='col-sm-12'>
+    <div class="row">
+        <div class="col-12">
             <div class="mt-4 card">
                 <div class="card-body">
-                    <ul class="nav nav-tabs">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <?php
                         $mysqli = utils_connect_sql();
 
@@ -68,11 +71,11 @@ init_page_serversides("");
                         $counter = 1;
                         $workflows = array();
                         while ($row = $result->fetch_assoc()) {
-                            echo "<li class='nav-item'>";
+                            echo "<li class='nav-item' role='presentation'>";
                             if ($counter == 1) {
-                                echo "<a class='nav-link active' href='#tab-" . $row["tabelle_workflow_idtabelle_workflow"] . "' data-toggle='tab'>" . $row["Name"] . "</a>";
+                                echo "<button class='nav-link active' id='tab-" . $row["tabelle_workflow_idtabelle_workflow"] . "-tab' data-bs-toggle='tab' data-bs-target='#tab-" . $row["tabelle_workflow_idtabelle_workflow"] . "' type='button' role='tab' aria-controls='tab-" . $row["tabelle_workflow_idtabelle_workflow"] . "' aria-selected='true'>" . $row["Name"] . "</button>";
                             } else {
-                                echo "<a class='nav-link' href='#tab-" . $row["tabelle_workflow_idtabelle_workflow"] . "' data-toggle='tab'>" . $row["Name"] . "</a>";
+                                echo "<button class='nav-link' id='tab-" . $row["tabelle_workflow_idtabelle_workflow"] . "-tab' data-bs-toggle='tab' data-bs-target='#tab-" . $row["tabelle_workflow_idtabelle_workflow"] . "' type='button' role='tab' aria-controls='tab-" . $row["tabelle_workflow_idtabelle_workflow"] . "' aria-selected='false'>" . $row["Name"] . "</button>";
                             }
                             echo "</li>";
                             $workflows[$counter] = $row["tabelle_workflow_idtabelle_workflow"];
@@ -80,14 +83,14 @@ init_page_serversides("");
                         }
                         ?>
                     </ul>
-                    <div class="tab-content">
+                    <div class="tab-content" id="myTabContent">
                         <?php
                         $counter = 1;
                         foreach ($workflows as $workFlow) {
                             if ($counter == 1) {
-                                echo "<div class='tab-pane active' id='tab-" . $workFlow . "'>";
+                                echo "<div class='tab-pane fade show active' id='tab-" . $workFlow . "' role='tabpanel' aria-labelledby='tab-" . $workFlow . "-tab'>";
                             } else {
-                                echo "<div class='tab-pane' id='tab-" . $workFlow . "'>";
+                                echo "<div class='tab-pane fade' id='tab-" . $workFlow . "' role='tabpanel' aria-labelledby='tab-" . $workFlow . "-tab'>";
                             }
                             // -----------------Workflowteile eines Workflows laden----------------------------
                             $sql = "SELECT tabelle_workflowteil.idtabelle_wofklowteil, tabelle_workflow_has_tabelle_wofklowteil.Reihenfolgennummer, tabelle_workflowteil.aufgabe, tabelle_workflow_has_tabelle_wofklowteil.TageMinDanach
@@ -106,7 +109,7 @@ init_page_serversides("");
                             }
                             //-----------------------------------------------------------------------------------
 
-                            echo "<table id='table_" . $workFlow . "' class='table table-striped table-bordered table-sm'   '>
+                            echo "<table id='table_" . $workFlow . "' class='table table-striped table-bordered table-compact table-hover table-responsive'   '>
                                 <thead><tr>
                                 <th rowspan='2'>lotID</th>
                                 <th rowspan='2'>Nummer</th>
@@ -114,12 +117,18 @@ init_page_serversides("");
                                 <th rowspan='2'>Verfahren</th>
                                 <th rowspan='2'>Status</th>
                                 <th rowspan='2'></th>";
-
+                            $counterWorkFlowTeile = 0;
                             foreach ($workflowTeile as $array) {
-                                echo "<th colspan='3'>" . $array['Reihenfolgennummer'] . "-" . $array['aufgabe'] . "</th>";
+                                $counterWorkFlowTeile++;
+                                if ($counterWorkFlowTeile === count($workflowTeile)) {
+                                    echo "<th colspan='2'>" . $array['Reihenfolgennummer'] . "-" . $array['aufgabe'] . "</th>";
+                                } else {
+                                    echo "<th colspan='3'>" . $array['Reihenfolgennummer'] . "-" . $array['aufgabe'] . "</th>";
+                                }
                             }
-                            echo "</tr>
-                                <tr>";
+                            echo "</tr>";
+
+                            echo "<tr>";
                             $counterWorkFlowTeile = 0;
                             foreach ($workflowTeile as $array) {
                                 echo "<th>Soll-Datum</th>
@@ -140,12 +149,8 @@ init_page_serversides("");
                             $idLot = 0;
                             $sollDatumAlt = "0000-00-00";
 
-
                             while ($row = $result->fetch_assoc()) {
                                 if ($idLot != $row["idtabelle_Lose_Extern"]) {
-                                    if ($idLot != 0) {
-                                        echo "</tr>";
-                                    }
                                     echo "<tr>";
                                     echo "<td>" . $row["idtabelle_Lose_Extern"] . "</td>";
                                     echo "<td>" . $row["LosNr_Extern"] . "</td>";
@@ -155,81 +160,79 @@ init_page_serversides("");
                                     switch ($row["Vergabe_abgeschlossen"]) {
                                         case 0:
                                             //echo "<b><font color='red'>&#10007;</font></b>";
-                                            echo "<span class='badge badge-pill badge-danger'>Offen</span>";
+                                            echo "<span class='badge bg-danger'>Offen</span>";
                                             break;
                                         case 1:
                                             //echo "<b><font color='green'>&#10003;</font></b>";
-                                            echo "<span class='badge badge-pill badge-success'>Fertig</span>";
+                                            echo "<span class='badge bg-success'>Fertig</span>";
                                             break;
                                         case 2:
                                             //echo "<b><font color='blue'>&#8776;</font></b>";
-                                            echo "<span class='badge badge-pill badge-primary'>Wartend</span>";
+                                            echo "<span class='badge bg-primary'>Wartend</span>";
                                             break;
                                     }
                                     echo "</td>";
-                                    echo "<td><button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn btn-outline-dark btn-s float-right' value='calculateDates' data-toggle='modal' data-target='#claculateDatesModal'>Berechnen <i class='far fa-calendar-check'></i></button>"
+                                    echo "<td><button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn btn-sm' value='calculateDates' data-bs-toggle='modal' data-bs-target='#claculateDatesModal'>Berechnen <i class='far fa-calendar-check'></i></button>"
                                         . "</td>";
+
                                     if ($row["SOLLDATE"] == "0000-00-00") {
                                         echo "<td><form class='form-inline'>"
-                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm' size='10' id='SOLLDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "'/>-"
+                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm'   id='SOLLDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "'/>-"
                                             . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
                                             . "</form>"
                                             . "</td>";
                                     } else {
                                         echo "<td><form class='form-inline form-check-inline'>"
-                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm' size='10' id='SOLLDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "' value='" . $row["SOLLDATE"] . "'/>"
+                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm'   id='SOLLDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "' value='" . $row["SOLLDATE"] . "'/>"
                                             . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
                                             . "</form>"
                                             . "<span style='display:none'>" . $row["SOLLDATE"] . "</span></td>";
                                     }
-                                    if ($row["ISTDATE"] == "0000-00-00") {
-                                        echo "<td><form class='form-inline'>"
-                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm' size='10' id='ISTDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "'/>"
-                                            . "<button type='button' name='save_istdate' id='SAVE-ISTDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
-                                            . "</form></td>";
-                                    } else {
-                                        echo "<td><form class='form-inline'>"
-                                            . "<input type='text' name='input_istdate' class='form-control form-control-sm' size='10' id='ISTDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "' value='" . $row["ISTDATE"] . "'/>"
-                                            . "<button type='button' name='save_istdate' id='SAVE-ISTDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
-                                            . "</form>"
-                                            . "<span style='display:none'>" . $row["ISTDATE"] . "</span></td>";
-                                    }
+
                                 } else {
-                                    $daysBetween = round((strtotime($row["SOLLDATE"]) - strtotime($sollDatumAlt)) / (60 * 60 * 24));
+
+                                    $daysBetween = round((strtotime($row["SOLLDATE"] ?? '') - strtotime($sollDatumAlt ?? '')) / (60 * 60 * 24));
                                     if ($daysBetween >= $sollAbstandDanach) {
-                                        echo "<td style='text-align:center'><span class='badge badge-pill badge-success'>" . $daysBetween . "</span> / <span class='badge badge-pill badge-secondary'>" . $sollAbstandDanach . "</span></td>";
+                                        echo "<td style='text-align:center'><span class='badge bg-success'>" . $daysBetween . "</span> / <span class='badge bg-secondary'>" . $sollAbstandDanach . "</span></td>";
                                     } else {
-                                        echo "<td style='text-align:center'><span class='badge badge-pill badge-danger'>" . $daysBetween . "</span> / <span class='badge badge-pill badge-secondary'>" . $sollAbstandDanach . "</span></td>";
+                                        echo "<td style='text-align:center'><span class='badge bg-danger'>" . $daysBetween . "</span> / <span class='badge bg-secondary'>" . $sollAbstandDanach . "</span></td>";
                                     }
+
                                     if ($row["SOLLDATE"] == "0000-00-00") {
                                         echo "<td><form class='form-inline'>"
-                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm' size='10' id='SOLLDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "'/>"
+                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm'   id='SOLLDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "'/>"
                                             . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
                                             . "</form></td>";
                                     } else {
                                         echo "<td><form class='form-inline'>"
-                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm' size='10' id='SOLLDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "' value='" . $row["SOLLDATE"] . "'/>"
+                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm'   id='SOLLDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "' value='" . $row["SOLLDATE"] . "'/>"
                                             . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
                                             . "</form>"
                                             . "<span style='display:none'>" . $row["SOLLDATE"] . "</span></td>";
                                     }
-                                    if ($row["ISTDATE"] == "0000-00-00") {
-                                        echo "<td><form class='form-inline'>"
-                                            . "<input type='text' name='input_solldate' class='form-control form-control-sm' size='10' id='ISTDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "'/>"
-                                            . "<button type='button' name='save_istdate' id='SAVE-ISTDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
-                                            . "</form></td>";
-                                    } else {
-                                        echo "<td><form class='form-inline'>"
-                                            . "<input type='text' name='input_istdate' class='form-control form-control-sm' size='10' id='ISTDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "' value='" . $row["ISTDATE"] . "'/>"
-                                            . "<button type='button' name='save_istdate' id='SAVE-ISTDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
-                                            . "</form>"
-                                            . "<span style='display:none'>" . $row["ISTDATE"] . "</span></td>";
-                                    }
+
                                 }
+
+
+                                if ($row["ISTDATE"] == "0000-00-00") {
+                                    echo "<td><form class='form-inline'>"
+                                        . "<input type='text' name='input_solldate' class='form-control form-control-sm'   id='ISTDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "'/>"
+                                        . "<button type='button' name='save_istdate' id='SAVE-ISTDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
+                                        . "</form></td>";
+                                } else {
+                                    echo "<td><form class='form-inline'>"
+                                        . "<input type='text' name='input_istdate' class='form-control form-control-sm'   id='ISTDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "' value='" . $row["ISTDATE"] . "'/>"
+                                        . "<button type='button' name='save_istdate' id='SAVE-ISTDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-outline-dark btn-xs'><i class='far fa-save'></i></button>"
+                                        . "</form>"
+                                        . "<span style='display:none'>" . $row["ISTDATE"] . "</span></td>";
+                                }
+
                                 $idLot = $row["idtabelle_Lose_Extern"];
                                 $sollDatumAlt = $row["SOLLDATE"];
                                 $sollAbstandDanach = $workflowTeile[$row["tabelle_wofklowteil_idtabelle_wofklowteil"]]['TageMinDanach'];
+
                             }
+
                             echo "</tr>";
                             echo "</tbody></table>";
                             echo "</div>";
@@ -245,7 +248,7 @@ init_page_serversides("");
 
 
     <div class='row'>
-        <div class='col-sm-6'>
+        <div class='col-sm-12'>
             <div class="mt-4 card">
                 <div class="card-header">Bauphasen im Los
                 </div>
@@ -257,145 +260,146 @@ init_page_serversides("");
 </div>
 </body>
 
-<div class='modal fade' id='claculateDatesModal' role='dialog'>
-    <div class='modal-dialog modal-md'>
-        <div class='modal-content'>
-            <div class='modal-header'>
-                <h4 class='modal-title'>Daten automatisch berechnen</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+<div class="modal fade" id="claculateDatesModal" tabindex="-1" aria-labelledby="claculateDatesModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="claculateDatesModalLabel">Daten automatisch berechnen</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class='modal-body' id='mbody'>Wollen Sie die Soll-Daten automatisiert berechnen und bestehende Werte
-                überschreiben?
+            <div class="modal-body" id="mbody">
+                Wollen Sie die Soll-Daten automatisiert berechnen und bestehende Werte überschreiben?
             </div>
-            <div class='modal-footer'>
-                <input type='button' id='updateTenderWorkflowDates' class='btn btn-success btn-sm' value='Ja'
-                       data-dismiss='modal'></input>
-                <button type='button' class='btn btn-danger btn-sm' data-dismiss='modal'>Nein</button>
+            <div class="modal-footer">
+                <button type="button" id="updateTenderWorkflowDates" class="btn btn-success btn-sm" data-lot-id=""
+                        data-bs-dismiss="modal">Ja
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Nein</button>
             </div>
         </div>
     </div>
 </div>
-
 <script>
-    $(document).ready(function () {
+
+    document.addEventListener('DOMContentLoaded', function () {
         initializeDataTable();
         setupRowClickHandler();
         initializeDatePickers();
         setupAutomatedDateUpdate();
         setupIndividualDateUpdate();
+        document.querySelectorAll('button[data-bs-toggle="modal"]').forEach(button => {
+            button.addEventListener('click', function () {
+                const lotId = this.getAttribute('id');
+                document.getElementById('updateTenderWorkflowDates').setAttribute('data-lot-id', lotId);
+            });
+        });
     });
 
-    // Initialize DataTable with custom settings
     function initializeDataTable() {
-        $('table.table').DataTable({
-            "select": true,
-            "searching": true,
-            "paging": false,
-            "lengthChange": false,
-            "order": [[1, "asc"]],
-            "orderMulti": true,
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
-            "columnDefs": [
-                {
-                    "targets": [0],
-                    "visible": false,
-                    "searchable": false
+        document.querySelectorAll('table.table').forEach(function (table) {
+            new DataTable(table, {
+                select: true,
+                searching: true,
+                paging: false,
+                lengthChange: false,
+                order: [[1, "asc"]],
+                orderMulti: true,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json", search: ""
                 },
-                {
-                    "targets": [5],
-                    "searchable": false,
-                    "sortable": false
-                }
-            ],
-            dom: '<"d-flex justify-content-between"< B > < f >>ti',
-            "buttons": [
-                'excel'
-            ],
-            stateSave: true
-        });
-
-        $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function () {
-            $.fn.dataTable.tables({visible: true, api: true}).columns.adjust();
+                columnDefs: [
+                    {
+                        targets: [0],
+                        visible: false,
+                        searchable: false
+                    }
+                ],
+                //            dom: '<"d-flex justify-content-between"<B><f>>ti',
+                layout: {
+                    topStart: null,
+                    topEnd: ['buttons', 'search'],
+                    bottomStart: null,
+                    bottomEnd: 'info'
+                },
+                buttons: ['excel', 'pdf'],
+                stateSave: true
+            });
         });
     }
 
-    // Handle row click events to load lot details
+    document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(function (tabEl) {
+        tabEl.addEventListener('shown.bs.tab', function () {
+            DataTable.tables({visible: true, api: true}).columns.adjust();
+        });
+    });
+
     function setupRowClickHandler() {
-        var table = $('table.table').DataTable();
-        $('table.table tbody').on('click', 'tr', function () {
-            if (!$(this).hasClass('info')) {
-                var lotId = table.row($(this)).data()[0];
-                loadLotDetails(lotId);
-            }
-        });
-    }
-
-    // Load lot details with an AJAX call
-    function loadLotDetails(lotId) {
-        $.ajax({
-            url: "getBauphasenToLot.php",
-            data: {"lotID": lotId},
-            type: "GET",
-            success: function (data) {
-                $("#lotBauphasen").html(data);
-            }
-        });
-    }
-
-    // Initialize datepickers for date input fields
-    function initializeDatePickers() {
-        $("input[name='input_solldate']").datepicker({
-            format: "yyyy-mm-dd",
-            calendarWeeks: true,
-            autoclose: true,
-            todayBtn: "linked",
-            daysOfWeekDisabled: [0, 6]
-        });
-    }
-
-    // Set up automated date update when modal confirmation is clicked
-    function setupAutomatedDateUpdate() {
-        $("#updateTenderWorkflowDates").click(function () {
-            $.ajax({
-                url: "updateTenderWorkflowDates.php",
-                data: {"lotID": lotId},
-                type: "GET",
-                success: function (data) {
-                    alert(data);
-                    location.reload();
+        document.querySelectorAll('table.table tbody').forEach(function (tbody) {
+            tbody.addEventListener('click', function (event) {
+                const tr = event.target.closest('tr');
+                if (tr) {
+                    const table = DataTable.tables({visible: true, api: true});
+                    const lotId = table.row(tr).data()[0];
+                    loadLotDetails(lotId);
                 }
             });
         });
     }
 
-    // Set up individual date update for both Soll- and Ist-Dates
-    function setupIndividualDateUpdate() {
-        $("button[name='save_solldate']").click(function () {
-            var idParts = this.id.split(",");
-            var date = $(`#SOLLDATE-${idParts[1]}-${idParts[2]}-${idParts[3]}`).val();
-            updateDate("updateTenderWorkflowDate.php", idParts, date);
-        });
+    function loadLotDetails(lotId) {
+        fetch(`getBauphasenToLot.php?lotID=${lotId}`)
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("lotBauphasen").innerHTML = data;
+            });
+    }
 
-        $("button[name='save_istdate']").click(function () {
-            var idParts = this.id.split(",");
-            var date = $(`#ISTDATE-${idParts[1]}-${idParts[2]}-${idParts[3]}`).val();
-            updateDate("updateTenderWorkflowDateIST.php", idParts, date);
+    function initializeDatePickers() {
+        document.querySelectorAll("input[name='input_solldate'], input[name='input_istdate']").forEach(function (input) {
+            $(input).datepicker({
+                format: "yyyy-mm-dd",
+                autoclose: true,
+                todayBtn: "linked",
+                clearBtn: true,
+                language: "de"
+            });
         });
     }
 
-    // General function to update dates using AJAX
-    function updateDate(url, idParts, date) {
-        $.ajax({
-            url: url,
-            data: {"lotID": idParts[1], "workflowTeilID": idParts[2], "workflowID": idParts[3], "date": date},
-            type: "GET",
-            success: function (data) {
-                alert(data);
-            }
+
+    function setupAutomatedDateUpdate() {
+        document.getElementById("updateTenderWorkflowDates").addEventListener('click', function () {
+            const lotId = this.dataset.lotId; // or use this.getAttribute('data-lot-id')
+            console.log(lotId);
+
+            fetch(`updateTenderWorkflowDates.php?lotID=${lotId}`)
+                .then(response => response.text())
+                .then(data => {
+                    alert(data);
+                    location.reload();
+                });
         });
+    }
+
+    function setupIndividualDateUpdate() {
+        document.querySelectorAll("button[name='save_solldate'], button[name='save_istdate']").forEach(function (button) {
+            button.addEventListener('click', function () {
+                const idParts = this.id.split(",");
+                const dateType = this.name.includes('soll') ? 'SOLLDATE' : 'ISTDATE';
+                const date = document.getElementById(`${dateType}-${idParts[1]}-${idParts[2]}-${idParts[3]}`).value;
+                const url = this.name.includes('soll') ? 'updateTenderWorkflowDate.php' : 'updateTenderWorkflowDateIST.php';
+                updateDate(url, idParts, date);
+            });
+        });
+    }
+
+    function updateDate(url, idParts, date) {
+        fetch(`${url}?lotID=${idParts[1]}&workflowTeilID=${idParts[2]}&workflowID=${idParts[3]}&date=${date}`)
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+            });
     }
 </script>
-
 </html>
-
-

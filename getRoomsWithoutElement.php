@@ -1,29 +1,31 @@
+<!-- 17.2.25: Reworked -->
 <?php
-session_start();
+
 include '_utils.php';
 check_login();
+session_start();
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <head>
-    </head>
-    <body>
-        <?php
-        $mysqli = utils_connect_sql();
-        $elementID = filter_input(INPUT_GET, 'elementID');
-        $sql = "SELECT tabelle_räume.idTABELLE_Räume, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.`Raumbereich Nutzer`
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<head>
+    <title>Get Rooms Without ELement </title></head>
+<body>
+<?php
+$mysqli = utils_connect_sql();
+$elementID = filter_input(INPUT_GET, 'elementID');
+$sql = "SELECT tabelle_räume.idTABELLE_Räume, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.`Raumbereich Nutzer`
 			FROM tabelle_räume 
                         WHERE (((tabelle_räume.idTABELLE_Räume) Not In 
                         (SELECT tabelle_räume.idTABELLE_Räume FROM (tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) 
                         WHERE (((tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente)=" . $elementID . ") AND ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))))
                         AND ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
 			ORDER BY tabelle_räume.Raumnr;";
-        $result = $mysqli->query($sql);
+$result = $mysqli->query($sql);
 
-        //<button type='button' class='btn btn-outline-success btn-xs mb-2' id='addElements' data-toggle='modal' data-target='#addElementsToRoomModal'><i class='fas fa-plus'></i></button>
-        echo " <table class='table table-striped table-bordered table-sm' id='tableRoomsWithoutElement' cellspacing='0' width='100%'>
+//<button type='button' class='btn btn-outline-success btn-xs mb-2' id='addElements' data-toggle='modal' data-target='#addElementsToRoomModal'><i class='fas fa-plus'></i></button>
+echo " <table class='table table-striped table-bordered table-sm table-hover' id='tableRoomsWithoutElement'>
 	<thead><tr>
         <th>id</th>
 	<th>Raumnummer</th>
@@ -31,116 +33,135 @@ check_login();
 	<th>Raumbereich</th>
 	</tr></thead><tbody>";
 
-        while ($row = $result->fetch_assoc()) {
-            echo "<tr>";
-            echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
-            echo "<td>" . $row["Raumnr"] . "</td>";
-            echo "<td>" . $row["Raumbezeichnung"] . "</td>";
-            echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
-            echo "</tr>";
-        }
-        echo "</tbody></table>";
-        $mysqli->close();
-        echo "<!-- Modal zum kopieren der Elemente -->
-            <div class='modal fade' id='addElementsToRoomModal' role='dialog'>
-              <div class='modal-dialog modal-md'>
-                <!-- Modal content-->
-                <div class='modal-content'>
-                  <div class='modal-header'>                                  
-                    <h4 class='modal-title'>Kommentar hinzufügen, Stückzahl angeben</h4>
-                    <button type='button' class='close' data-dismiss='modal'>&times;</button>
-                  </div>
-                  <div class='modal-body' id='mbody'>
-                      <label for='amount' class='form-label'>Stück: </label>
-                      <input class='form-control form-control-sm' type='number' id='amount' value='1' size='2'></input>
-                      <label for='amount' class='form-label'>Kommentar: </label>
-                      <textarea class='form-control' id='comment' rows='2'></textarea>
-                  </div>
-                  <div class='modal-footer'>
-                      <input type='button' id='addElementToRooms' class='btn btn-success btn-sm' value='Hinzufügen' data-dismiss='modal'></input>
-                      <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Schließen</button>
-                  </div>
-                </div>
+while ($row = $result->fetch_assoc()) {
+    echo "<tr>";
+    echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
+    echo "<td>" . $row["Raumnr"] . "</td>";
+    echo "<td>" . $row["Raumbezeichnung"] . "</td>";
+    echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
+    echo "</tr>";
+}
+echo "</tbody></table>";
+$mysqli->close();
+?>
+<!-- Modal zum Kopieren der Elemente -->
+<div class='modal fade' id='addElementsToRoomModal' role='dialog'>
+    <div class='modal-dialog modal-md'>
+        <!-- Modal content-->
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h4 class='modal-title'>Kommentar hinzufügen, Stückzahl angeben</h4>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
+            </div>
+            <div class='modal-body' id='mbody'>
+                <label for='amount' class='form-label'>Stück: </label>
+                <input class='form-control form-control-sm' type='number' id='amount' value='1' size='2'>
+                <label for='amount' class='form-label'>Kommentar: </label>
+                <textarea class='form-control' id='comment' rows='2' cols="3"></textarea>
+            </div>
+            <div class='modal-footer'>
+                <input type='button' id='addElementToRooms' class='btn btn-success btn-sm' value='Hinzufügen'
+                       data-bs-dismiss='modal'>  
+                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Schließen</button>
 
-              </div>
-            </div>";
-        ?>
-        <script>
-            //RaumIDs zum kopieren speichern
-            var table;
-            var roomIDs = [];
-            var elementID = <?php echo $elementID; ?>;
-            $(document).ready(function () {
-                $('#tableRoomsWithoutElement').DataTable({
+            </div>
+        </div>
 
-                    "columnDefs": [
-                        {
-                            "targets": [0],
-                            "visible": false,
-                            "searchable": false
-                        }],
-                    "paging": true,
-                    "searching": true,
-                    "info": false,
-                    "order": [[1, "asc"]],
-                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-                    "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
-                    "select": {
-                        "style": "multi"
+    </div>
+</div>
+
+<script>
+    var tableRoomsWithoutElement, roomIDs = [], elementID =<?php echo $elementID; ?> ;
+
+    $(document).ready(function () {
+        tableRoomsWithoutElement = $('#tableRoomsWithoutElement').DataTable({
+            columnDefs: [
+                {
+                    targets: [0],
+                    visible: false,
+                    searchable: false
+                }
+            ],
+            paging: true,
+            searching: true,
+            info: false,
+            order: [[1, "asc"]],
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                search: ""
+            },
+            select: {
+                style: "multi"
+            },
+
+            scrollX: false,
+            scrollY: false,
+            stateSave: false,
+            autoWidth: false,
+            fixedHeader: false,
+            fixedColumns: false,
+            deferRender: false,
+            responsive: false,
+            rowReorder: false,
+            colReorder: false,
+            buttons: false
+        });
+
+
+        $('#tableRoomsWithoutElement tbody').on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+            if ($(this).hasClass('info')) {
+                $(this).removeClass('info');
+                for (var i = roomIDs.length - 1; i >= 0; i--) {
+                    if (roomIDs[i] === tableRoomsWithoutElement.row($(this)).data()[0]) {
+                        roomIDs.splice(i, 1);
                     }
-                });
-                table = $('#tableRoomsWithoutElement').DataTable();
+                }
+            } else {
+                $(this).addClass('info');
+                roomIDs.push(tableRoomsWithoutElement.row($(this)).data()[0]);
+            }
+        });
+    });
 
-                $('#tableRoomsWithoutElement tbody').on('click', 'tr', function () {
-                    $(this).toggleClass('selected');
-                    if ($(this).hasClass('info')) {
-                        $(this).removeClass('info');
-                        for (var i = roomIDs.length - 1; i >= 0; i--) {
-                            if (roomIDs[i] === table.row($(this)).data()[0]) {
-                                roomIDs.splice(i, 1);
-                            }
-                        }
-                    } else {
-                        $(this).addClass('info');
-                        roomIDs.push(table.row($(this)).data()[0]);
-                    }
-                });
-            });
-
-            //Elemente einfügen
-            $("#addElementToRooms").click(function () {
-                if (roomIDs.length === 0) {
-                    alert("Kein Raum ausgewählt!");
+    //Elemente einfügen
+    $("#addElementToRooms").click(function () {
+        if (roomIDs.length === 0) {
+            alert("Kein Raum ausgewählt!");
+        } else {
+            $.ajax({
+                url: "addElementToMultipleRooms.php",
+                type: "GET",
+                data: {
+                    "elementID": elementID,
+                    "rooms": roomIDs,
+                    "amount": $("#amount").val(),
+                    "comment": $("#comment").val()
+                },
+                success: function (data) {
+                    alert(data);
                     //$('#addElementsToRoomModal').modal('hide');
-                } else {
                     $.ajax({
-                        url: "addElementToMultipleRooms.php",
+                        url: "getRoomsWithElement.php",
+                        data: {"elementID": elementID},
                         type: "GET",
-                        data: {"elementID": elementID, "rooms": roomIDs, "amount": $("#amount").val(), "comment": $("#comment").val()},
                         success: function (data) {
-                            alert(data);
-                            //$('#addElementsToRoomModal').modal('hide');
+                            $("#roomsWithElement").html(data);
                             $.ajax({
-                                url: "getRoomsWithElement.php",
+                                url: "getRoomsWithoutElement.php",
                                 data: {"elementID": elementID},
                                 type: "GET",
                                 success: function (data) {
-                                    $("#roomsWithElement").html(data);
-                                    $.ajax({
-                                        url: "getRoomsWithoutElement.php",
-                                        data: {"elementID": elementID},
-                                        type: "GET",
-                                        success: function (data) {
-                                            $("#roomsWithoutElement").html(data);
-                                        }
-                                    });
+                                    $("#roomsWithoutElement").html(data);
                                 }
                             });
                         }
                     });
                 }
             });
-        </script>
-
-    </body>
+        }
+    });
+</script>
+</body>
 </html>

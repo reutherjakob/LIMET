@@ -153,8 +153,16 @@ class MYPDF extends TCPDF
             }
             // Deckblatt beenden
 
+            $Vorentwurf = "Im Vorentwurf sind die raumweisen elektrischen Leitungsangaben je Netzart ohne Gleichzeitigkeit angegeben. Die Werte stellen die Summe der Nennleistungen der im Raum geplanten Geräte inkl. einer Auslegungsreserve dar. Diese Auslegungsreserve ist erforderlich, um beispielsweise Geräte zu berücksichtigen, welche nicht im Raum verortet sind, aber dort genutzt werden können.Detailliertere Angaben zu Großgeräten (Röntgenanlagen, CT, MRT etc.) erfolgen stets gesondert.";
+            $Entwurf = "Die elektrischen Leistungsangaben je Netzart, die aus der Verwendung der medizintechnischen Geräte resultiert, wird aus der Summe der einzelnen Geräte/Element-Nennleistungen unter Berücksichtigung der Gleichzeitigkeit je Element berechnet. Die Differenz der angeführten Leistungssumme zu den Vorbemessungsangaben aus  dem Vorentwurfe ist die verbleibende Auslegungsreserve je Raum.";
             $Disclaimer = "Die nachfolgenden medizintechnischen Vorbemessungsangaben beziehen sich nur auf medizintechnisch-relevante Räume die seitens Medizintechnik-Planung bearbeitet werden. Die Angaben dienen als Grundlage für die Fachplaner Architektur, Elektrotechnik, HKLS, Medgas & Statik. Neben den aufgelisteten Vorbemessungsangaben je Fachbereich werden die medizintechnischen Elemente in Listenform am Ende eines Raumes angeführt. Diese sind ebenfalls als Planungsgrundlage heranzuziehen.";
             $this->SetFont('helvetica', '', 10);
+
+            if ($_SESSION["projectPlanungsphase"] === "Vorentwurf") {
+                $Disclaimer = $Disclaimer. "\n". $Vorentwurf;
+            } else if ($_SESSION["projectPlanungsphase"] === "Entwurf") {
+                $Disclaimer = $Disclaimer. "\n". $Entwurf;
+            }
 
             $height = $this->getStringHeight(390, $Disclaimer, 0, 'L', 0, 6);
             $this->SetY(275 - $height);

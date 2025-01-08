@@ -64,7 +64,7 @@ check_login();
         echo "
             <div class='well well-sm'>
                 <input type='button' id='saveBauangaben' class='btn btn-success btn-sm' value='Bauangaben speichern'>
-                <input type='button' class='btn btn-info btn-sm' value='Bauangaben kopieren exkl. BO' id='" . $_SESSION["roomID"] . "' data-toggle='modal' data-target='#myModal'>
+                <input type='button' class='btn btn-info btn-sm' value='Bauangaben kopieren exkl. BO' id='" . $_SESSION["roomID"] . "' data-bs-toggle='modal' data-bs-target='#myModal'>
             </div>      </form>";
 
         echo " <!-- Modal zum kopieren der Bauangaben -->
@@ -74,13 +74,13 @@ check_login();
             <div class='modal-content'>
               <div class='modal-header'>                                  
                 <h4 class='modal-title'>Bauangaben kopieren</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
               </div>
               <div class='modal-body' id='mbody2'>
               </div>
               <div class='modal-footer'>
                   <input type='button' id='copySpecifications' class='btn btn-success btn-sm' value='Bauangaben kopieren'></input>
-                  <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Close</button>
+                  <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Close</button>
               </div>
             </div>
           </div>
@@ -89,7 +89,6 @@ check_login();
         ?>
 
         <script>
-
             //Bauangaben speichern
             $("input[value='Bauangaben speichern']").click(function () {
                 var funktionBO = $("#FunktionBO").val();
@@ -112,20 +111,18 @@ check_login();
             //Bauangaben kopieren
             $("input[value='Bauangaben kopieren exkl. BO']").click(function () {
                 var ID = this.id;
-                console.log("File: getRbSpecs2.ph M:BauangabenKopieren RID: ", ID);
+                //console.log("File: getRbSpecs2.ph M:BauangabenKopieren RID: ", ID);
                 $.ajax({
                     url: "getRoomsToCopy.php",
                     type: "GET",
-                    data: {"id": ID},
+                    data: {"originRoomID": ID},
                     success: function (data) {
-                        console.log("Sucessfully opened getRoomsToCopy.php");
+                        //console.log("Sucessfully opened getRoomsToCopy.php");
                         $("#mbody2").html(data);
                         $('#myModal').modal('show');
                     }
                 });
             });
-
-        </script> 
-
+        </script>
     </body>
 </html> 

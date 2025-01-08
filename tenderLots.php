@@ -14,19 +14,22 @@ init_page_serversides();
     <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
     <link rel="icon" href="iphone_favicon.png">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
-          integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+          integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
+          rel="stylesheet">
+
+
+
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
-    <script type="text/javascript"
-            src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.js"></script>
     <!--DATEPICKER -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker3.min.css">
@@ -52,13 +55,13 @@ init_page_serversides();
 <div class="container-fluid">
 
     <div class='row'>
-        <div class='col-sm-8'>
+        <div class='col-12'>
             <div class="mt-4 card">
                 <div class="card-header d-inline-flex justify-content-between align-items-center">
                     <div class="d-inline-flex align-items-center">
                         <span> <strong>Lose im Projekt</strong>  </span>
                         <input type='button' id='addTenderLotModalButton' class='btn btn-success btn-sm'
-                               value='Los hinzufügen' data-toggle='modal' data-target='#addTenderLotModal'>
+                               value='Los hinzufügen' data-bs-toggle='modal' data-bs-target='#addTenderLotModal'>
                     </div>
                     <div class="d-inline-flex align-items-center" id="LoseCardHeaderSub">
                         <button type='button' class='btn btn-secondary btn-sm' id='createTenderListPDF'><i
@@ -209,7 +212,7 @@ init_page_serversides();
 
                             echo "<td>" . $row["Lieferant"] . "</td>";
 
-                            echo "<td><button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn btn-outline-dark btn-xs' value='LotWorkflow' data-toggle='modal' data-target='#workflowDataModal'><i class='fas fa-history'></i></button></td>";
+                            echo "<td><button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn btn-outline-dark btn-xs' value='LotWorkflow' data-bs-toggle='modal' data-bs-target='#workflowDataModal'><i class='fas fa-history'></i></button></td>";
                             echo "<td>" . $row["Notiz"] . "</td>";
 
                             echo "<td>" . $row["idTABELLE_Lieferant"] . "</td>";
@@ -230,19 +233,7 @@ init_page_serversides();
                 </div>
             </div>
         </div>
-        <?php
-        if ($_SESSION["ext"] == 0) {
-            echo "<div class='col-sm-4'> 
-                            <div class='mt-4 card'>
-                                    <div class='card-header' id='vermerkePanelHead'>Vermerke zu Los</div>
-                                    <div class='card-body'  id='lotVermerke'>	                                        
-                                    </div>
-                            </div>
-                        </div>";
-        }
-        ?>
     </div>
-
     <div class="row">
         <div class="col-sm-8">
             <div class="mt-4 card">
@@ -261,7 +252,7 @@ init_page_serversides();
                 <div class="card-header">Bestandsdaten
                     <button type='button' id='addBestandsElement'
                             class='btn ml-4 mt-2 btn-outline-success btn-xs float-right' value='Hinzufügen'
-                            data-toggle='modal' data-target='#addBestandModal'><i class='fas fa-plus'></i></button>
+                            data-bs-toggle='modal' data-bs-target='#addBestandModal'><i class='fas fa-plus'></i></button>
                     <button type='button' id='reloadBestand'
                             class='btn ml-4 mt-2 btn-outline-secondary  float-right' value='reloadBestand'>
                         <i class="fa fa-retweet" aria-hidden="true"></i>
@@ -282,12 +273,12 @@ init_page_serversides();
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Losdaten</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='mbody'>
                 <form role="form">
                     <form role='form'>
-                        <input id="lotMKF" data-toggle="toggle" type="checkbox" data-on="MKF" data-off="MKF"
+                        <input id="lotMKF" data-bs-toggle="toggle" type="checkbox" data-on="MKF" data-off="MKF"
                                data-onstyle="success" data-offstyle="danger"></input>
 
                         <div class='form-group'>
@@ -372,7 +363,7 @@ init_page_serversides();
             <div class='modal-footer'>
                 <input type='button' id='addTenderLot' class='btn btn-success btn-sm' value='Hinzufügen'></input>
                 <input type='button' id='saveTenderLot' class='btn btn-warning btn-sm' value='Speichern'></input>
-                <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Abbrechen</button>
+                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
             </div>
         </div>
     </div>
@@ -386,12 +377,12 @@ init_page_serversides();
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Los-Workflow</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='workflowModalBody'>
             </div>
             <div class='modal-footer'>
-                <button type='button' class='btn btn-danger btn-sm' data-dismiss='modal'>Schließen</button>
+                <button type='button' class='btn btn-danger btn-sm' data-bs-dismiss='modal'>Schließen</button>
             </div>
         </div>
     </div>
@@ -404,12 +395,12 @@ init_page_serversides();
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Info</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='infoBody'>
             </div>
             <div class='modal-footer'>
-                <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>OK</button>
+                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>OK</button>
             </div>
         </div>
 
@@ -419,7 +410,7 @@ init_page_serversides();
 
 <script src="_utils.js"></script>
 <script>
-    var ext = '<?php echo $_SESSION["ext"] ?>';
+
     var lotID;
     var lotVerfahren;
     $(document).ready(function () {
@@ -465,10 +456,7 @@ init_page_serversides();
                     if (button) {
                         button.classList.remove("dt-buttons");
                     }
-                    move_item("tableTenderLots_filter", "LoseCardHeaderSub");
-                    $('#tableTenderLots_filter label').contents().filter(function () {
-                        return this.nodeType === 3; // Node.TEXT_NODE
-                    }).remove();
+
 
                 }
         });

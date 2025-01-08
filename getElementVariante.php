@@ -331,12 +331,13 @@ echo "</tbody></table>
             if (KostenFormatiert.toLowerCase().endsWith('k')) {
                 KostenFormatiert = KostenFormatiert.slice(0, -1) + '000';
             }
-            KostenFormatiert.replace(/,/g, '.').replace(/[^0-9.]/g, '');
-
+            console.log(KostenFormatiert.toLowerCase());
+            KostenFormatiert = KostenFormatiert.replace(/,/g, '.').replace(/[^0-9.]/g, '');
+            console.log(KostenFormatiert.toLowerCase());
             $.ajax({
                 url: "saveVariantePrice.php",
-                data: {"kosten": KostenFormatiert},
                 type: "GET",
+                data: {"kosten": KostenFormatiert},
                 success: function (data) {
                     makeToaster(data.trim(), true);
                     $("#possibleVariantenParameter").show();

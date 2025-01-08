@@ -124,7 +124,7 @@ while ($row = $result->fetch_assoc()) {
             //echo "<td>".$row["ISTDATE"]."</td>";
         }
     } else {
-        $daysBetween = round((strtotime($row["SOLLDATE"]) - strtotime($sollDatumAlt)) / (60 * 60 * 24));
+        $daysBetween = round((strtotime($row["SOLLDATE"] ?? '' ) - strtotime($sollDatumAlt ?? '' )) / (60 * 60 * 24));
         if ($daysBetween >= $sollAbstandDanach) {
             echo "<td style='text-align:center'><span class='badge badge-pill badge-success'>" . $daysBetween . "</span> / <span class='badge badge-pill badge-secondary'>" . $sollAbstandDanach . "</span></td>";
         } else {

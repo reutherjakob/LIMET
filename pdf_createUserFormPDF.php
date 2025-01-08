@@ -308,19 +308,19 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->Ln(6);        
         $pdf->MultiCell(40, 6, "Patientenwege: ",0, 'R', 0, 0);
         $pdf->MultiCell(20, 6, "Gehend: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         $pdf->MultiCell(20, 6, TCPDF_FONTS::unichr(114),0, 'L', 0, 0);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(20, 6, "Rollstuhl: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         $pdf->MultiCell(20, 6, TCPDF_FONTS::unichr(114),0, 'L', 0, 0);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(20, 6, "Liege: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         $pdf->MultiCell(20, 6, TCPDF_FONTS::unichr(114),0, 'L', 0, 0);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(10, 6, "Bett: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         $pdf->MultiCell(20, 6, TCPDF_FONTS::unichr(114),0, 'L', 0, 0);
         $pdf->SetFont('helvetica', 'B', 10);
         $pdf->Ln();           
@@ -331,29 +331,29 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(40, 6, "Gase: ",0, 'R', 0, 0);
         $pdf->MultiCell(20, 6, "O2: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         $pdf->MultiCell(20, 6, TCPDF_FONTS::unichr(114),0, 'L', 0, 0);  
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(20, 6, "DL: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         $pdf->MultiCell(20, 6, TCPDF_FONTS::unichr(114),0, 'L', 0, 0);  
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(20, 6, "VA: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         $pdf->MultiCell(20, 6, TCPDF_FONTS::unichr(114),0, 'L', 0, 0);  
         $pdf->Ln();
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(40, 6, "",0, 'R', 0, 0);
         $pdf->MultiCell(20, 6, "CO2: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         $pdf->MultiCell(20, 6, TCPDF_FONTS::unichr(114),0, 'L', 0, 0);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(20, 6, "N2O: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         $pdf->MultiCell(20, 6, TCPDF_FONTS::unichr(114),0, 'L', 0, 0);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(20, 6, "NGA: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         $pdf->MultiCell(20, 6, TCPDF_FONTS::unichr(114),0, 'L', 0, 0);   
         $pdf->Ln();
         $pdf->SetFont('helvetica', '', 10);
@@ -364,12 +364,12 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0);
         $pdf->MultiCell(40, 6, "Strahlenanwendung: ",0, 'R', 0, 0);
         if($row['Strahlenanwendung']==='0'){
-            $pdf->SetFont(zapfdingbats, '', 10);
+            $pdf->SetFont('zapfdingbats', '', 10);
             $pdf->MultiCell(15, 6, TCPDF_FONTS::unichr(114),0, 'L', 0, 0);
         }
         else{
             if($row['Strahlenanwendung']==='1'){
-                $pdf->SetFont(zapfdingbats, '', 10);
+                $pdf->SetFont('zapfdingbats', '', 10);
                 //grün
                 $pdf->SetTextColor(0, 255, 0); 
                 $pdf->MultiCell(15, 6, TCPDF_FONTS::unichr(52),0, 'L', 0, 0);
@@ -383,11 +383,11 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetFont('helvetica', '', 10);    
         $pdf->MultiCell(31, 6, "Laseranwendung: ",0, 'R', 0, 0);
         if($row['Laseranwendung']==='0'){
-            $pdf->SetFont(zapfdingbats, '', 10);
+            $pdf->SetFont('zapfdingbats', '', 10);
             $pdf->MultiCell(15, 6, TCPDF_FONTS::unichr(114),0, 'L', 0, 0);
         }
         else{
-            $pdf->SetFont(zapfdingbats, '', 10);
+            $pdf->SetFont('zapfdingbats', '', 10);
             //grün
             $pdf->SetTextColor(0, 255, 0);            
             $pdf->MultiCell(15, 6, TCPDF_FONTS::unichr(52),0, 'L', 0, 0);
@@ -397,11 +397,11 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(30, 6, "Abdunkelbarkeit: ",0, 'R', 0, 0);
         if($row['Abdunkelbarkeit']==='0'){
-            $pdf->SetFont(zapfdingbats, '', 10);
+            $pdf->SetFont('zapfdingbats', '', 10);
             $pdf->MultiCell(15, 6, TCPDF_FONTS::unichr(114),0, 'L', 0, 0);
         }
         else{
-            $pdf->SetFont(zapfdingbats, '', 10);
+            $pdf->SetFont('zapfdingbats', '', 10);
             //grün
             $pdf->SetTextColor(0, 255, 0); 
             $pdf->MultiCell(15, 6, TCPDF_FONTS::unichr(52),0, 'L', 0, 0);
@@ -409,7 +409,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(20, 6, "Sterilgut: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         $pdf->MultiCell(15, 6, TCPDF_FONTS::unichr(114),0, 'L', 0, 0);               
         $pdf->Ln();
     }

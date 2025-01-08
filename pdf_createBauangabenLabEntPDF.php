@@ -329,12 +329,12 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0);
         $pdf->MultiCell(40, 6, "Strahlenanwendung: ",0, 'R', 0, 0);
         if($row['Strahlenanwendung']==='0'){
-            $pdf->SetFont(zapfdingbats, '', 10);
+            $pdf->SetFont('zapfdingbats', '', 10);
             $pdf->MultiCell(40, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
         else{
             if($row['Strahlenanwendung']==='1'){
-                $pdf->SetFont(zapfdingbats, '', 10);
+                $pdf->SetFont('zapfdingbats', '', 10);
                 //grün
                 $pdf->SetTextColor(0, 255, 0); 
                 $pdf->MultiCell(40, 6, TCPDF_FONTS::unichr(52),0, 'L', 0, 0);
@@ -351,11 +351,11 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->Ln();        
         $pdf->MultiCell(40, 6, "Laseranwendung: ",0, 'R', 0, 0);
         if($row['Laseranwendung']==='0'){
-            $pdf->SetFont(zapfdingbats, '', 10);
+            $pdf->SetFont('zapfdingbats', '', 10);
             $pdf->MultiCell(40, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
         else{
-            $pdf->SetFont(zapfdingbats, '', 10);
+            $pdf->SetFont('zapfdingbats', '', 10);
             //grün
             $pdf->SetTextColor(0, 255, 0);            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(52),0, 'L', 0, 0);
@@ -371,7 +371,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->Ln();        
         $pdf->MultiCell(40, 6, "Abdunkelbarkeit: ",0, 'R', 0, 0);
         if($row['Abdunkelbarkeit']==='0'){
-            $pdf->SetFont(zapfdingbats, '', 10);
+            $pdf->SetFont('zapfdingbats', '', 10);
             $pdf->MultiCell(40, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
         else{
@@ -392,7 +392,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->Ln();       
          
         $pdf->MultiCell(40, 6, "EMV: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['ET_EMV_ja-nein']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
@@ -417,7 +417,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(40, 6, "Netzarten: ",0, 'R', 0, 0); 
         $pdf->MultiCell(20, 6, "AV: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['AV']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
@@ -430,7 +430,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(40, 6, "SV: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['SV']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
@@ -443,7 +443,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(40, 6, "USV: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['USV']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
@@ -468,7 +468,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(40, 6, "Netzwerk: ",0, 'R', 0, 0);        
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['IT Anbindung']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
@@ -533,7 +533,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell(20, 6, " ".$row['HT_Notdusche']." Stk",0, 'L', 0, 0);
         $pdf->Ln();
         $pdf->MultiCell(40,8, "Wasser Qual 3: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['Wasser Qual 3']==='0'){                        
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
@@ -549,7 +549,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->Ln();
         $pdf->MultiCell(40,8, "Wasser Qual 2: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['Wasser Qual 2']==='0'){                        
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
@@ -564,7 +564,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetFont('helvetica', '', 10);    
         $pdf->Ln();
         $pdf->MultiCell(40,8, "Wasser Qual 1: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['Wasser Qual 1']==='0'){                        
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
@@ -591,7 +591,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell(160,8, "Zentrale Gasversorgung: ", 'T', 'L', 0, 0);
         $pdf->Ln();
         $pdf->MultiCell(40, 6, "DL: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['DL-tech']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
@@ -610,7 +610,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell(160,8, "Dezentrale Gasversorgung: ", 0, 'L', 0, 0);
         $pdf->Ln();
         $pdf->MultiCell(40, 6, "O2: ", 0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['O2']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
             $pdf->MultiCell(20, 6, "", 0, 'L', 0, 0);  
@@ -627,7 +627,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(20, 6, "VA: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['VA']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
             $pdf->MultiCell(20, 6, "", 0, 'L', 0, 0);
@@ -642,7 +642,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(20, 6, "CO2: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['CO2']==='0'){            
             $pdf->MultiCell(8, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
             $pdf->MultiCell(20, 6, "", 0, 'L', 0, 0);
@@ -664,7 +664,7 @@ foreach ($teile as $valueOfRoomID) {
             }
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(40, 6, "N2: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['N2']==='0'){            
             $pdf->MultiCell(8, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
             $pdf->MultiCell(20, 6, "", 0, 'L', 0, 0);
@@ -681,7 +681,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(20, 6, "Ar: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['Ar']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
             $pdf->MultiCell(20, 6, "", 0, 'L', 0, 0);
@@ -698,7 +698,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(20, 6, "H2: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['H2']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
             $pdf->MultiCell(20, 6, "", 0, 'L', 0, 0);
@@ -716,7 +716,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(40, 6, "He: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['He']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
             $pdf->MultiCell(20, 6, "", 0, 'L', 0, 0);
@@ -733,7 +733,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(20, 6, "He-RF: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['He-RF']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
             $pdf->MultiCell(20, 6, "", 0, 'L', 0, 0);
@@ -748,7 +748,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(20, 6, "LN: ",0, 'R', 0, 0);
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['LN']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
             $pdf->MultiCell(20, 6, "", 0, 'L', 0, 0);
@@ -769,7 +769,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell(160,8, "Sicherheitseinrichtungen: ", 0, 'L', 0, 0);
         $pdf->Ln();
         $pdf->MultiCell(90, 6, "O2-Mangel: ",0, 'R', 0, 0);        
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['O2_Mangel']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }
@@ -781,7 +781,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 10); 
         $pdf->MultiCell(40, 6, "CO2-Melder: ",0, 'R', 0, 0);        
-        $pdf->SetFont(zapfdingbats, '', 10);
+        $pdf->SetFont('zapfdingbats', '', 10);
         if($row['CO2_Melder']==='0'){            
             $pdf->MultiCell(10, 6, TCPDF_FONTS::unichr(54),0, 'L', 0, 0);
         }

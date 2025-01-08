@@ -1,8 +1,6 @@
 <?php
 include '_utils.php';
 init_page_serversides();
-//TODO:
-// - PDFs
 ?>
 
 <!DOCTYPE html>
@@ -14,37 +12,18 @@ init_page_serversides();
     <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
     <link rel="icon" href="iphone_favicon.png"/>
 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+          integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
+          rel="stylesheet">
 
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"/>
-
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
-          integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous"/>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
-    <script type="text/javascript"
-            src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.js"></script>
-
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.jsdelivr.net/datatables.mark.js/2.0.0/datatables.mark.min.css"/>
-    <script type="text/javascript"
-            src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
-    <style>
-        .DIYbtn {
-            margin: 5px;
-            height: 19px;
-            padding: 1px 18px; /* Adjust padding to fit content */
-        }
-    </style>
 
 </head>
 
@@ -112,7 +91,7 @@ init_page_serversides();
                         echo "</td>";
                         echo "<td>";
                         if ($row["Anmerkung FunktionBO"] != null) {
-                            echo "<button type='button' class='btn btn-xs btn-outline-dark DIYbtn' id='buttonBO' value='" . $row["Anmerkung FunktionBO"] . "' data-toggle='modal' data-target='#boModal'><i class='fa fa-comment'></i></button>";
+                            echo "<button type='button' class='btn btn-xs btn-outline-dark' style='height=20px; ' id='buttonBO' value='" . $row["Anmerkung FunktionBO"] . "' data-bs-toggle='modal' data-bs-target='#boModal'><i class='fa fa-comment'></i></button>";
                         }
                         echo "</td>";
                         echo "</tr>";
@@ -148,7 +127,8 @@ init_page_serversides();
                 <div class="card-header" id="BestandsdatenCardHeader">Bestandsdaten
                     <button type='button' id='addBestandsElement'
                             class='btn ml-4 mt-2 btn-outline-success btn-xs float-right' value='Hinzufügen'
-                            data-toggle='modal' data-target='#addBestandModal'><i class='fas fa-plus'></i></button>
+                            data-bs-toggle='modal' data-bs-target='#addBestandModal'><i class='fas fa-plus'></i>
+                    </button>
                     <button type='button' id='reloadBestand'
                             class='btn ml-4 mt-2 btn-outline-secondary  float-right' value='reloadBestand'>
                         <i class="fa fa-retweet" aria-hidden="true"></i>
@@ -290,20 +270,19 @@ init_page_serversides();
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>BO-Anmerkung</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='boModalBody'>
 
             </div>
             <div class='modal-footer'>
-                <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>OK</button>
+                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>OK</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-
 
 
     let toastCounter3 = 0;
@@ -322,121 +301,144 @@ init_page_serversides();
     let table;
 
     $(document).ready(function () {
+        /*
+        $('#tableProjectVermerke').on('draw.dt', function () {
+            $('.vermerk-popover').popover('dispose').popover({
+                html: true,
+                content: function () {
+                    let content = $(this).attr('data-bs-content');
+                    return '<div class="popover-content">' + content + '</div>';
 
+                },
+                placement: 'right'
+            });
 
+        });
 
+        $(document).on('click', function (e) {
+            if ($(e.target).closest('.popover').length === 0 && !$(e.target).hasClass('vermerk-popover')) {
+                $('.vermerk-popover').popover('hide');
+            }
+        });
+
+        $(document).on('click', '.vermerk-popover', function (e) {
+            $('.vermerk-popover').not(this).popover('hide');
+            $(this).popover('toggle');
+            e.stopPropagation();
+        });
+        */
         $("#elementParameters").hide();
         $("#elementBestand").hide();
         $("#elementVerwendung").hide();
 
-        table = $('#tableRooms').DataTable({
-            "select": true,
-            "paging": true,
-            "pagingType": "simple",
-            "lengthChange": false,
-            "pageLength": 10,
-            "columnDefs": [
+        let table = new DataTable('#tableRooms', {
+            select: true,
+            paging: {
+                type: 'simple',
+                numbers: 10
+            },
+            lengthChange: false,
+            columnDefs: [
                 {
-                    "targets": [0],
-                    "visible": false,
-                    "searchable": false
+                    targets: [0],
+                    visible: false,
+                    searchable: false
                 }
             ],
-            "order": [[1, "asc"]],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json", "search": ""},
-            "mark": true
+            order: [[1, "asc"]],
+            language: {
+                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
+                search: ''
+            },
+            mark: true
         });
 
-        $('#tableElementsInDB').DataTable({
-            "paging": true,
-            "pagingType": "simple",
-            "lengthChange": false,
-            "pageLength": 10,
-            "columnDefs": [
+        const table1 = new DataTable('#tableElementsInDB', {
+            paging: {
+                type: 'simple',
+                numbers: 10
+            },
+            lengthChange: false,
+            columnDefs: [
                 {
-                    "targets": [0],
-                    "visible": false,
-                    "searchable": false
+                    targets: [0],
+                    visible: false,
+                    searchable: false
                 }
             ],
-            "info": false,
-            "order": [[1, "asc"]],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+            info: false,
+            order: [[1, "asc"]],
+            language: {
+                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json', search: ""
+            }
         });
+
 
         $('#tableRooms tbody').on('click', 'tr', function () {
-            if ($(this).hasClass('info')) {
-            } else {
-                $("#elementParameters").hide();
-                $("#elementBestand").hide();
-                $("#elementVerwendung").hide();
 
-                table.$('tr.info').removeClass('info');
-                $(this).addClass('info');
-                const id = table.row($(this)).data()[0];
-                $.ajax({
-                    url: "setSessionVariables.php",
-                    data: {"roomID": id},
-                    type: "GET",
-                    success: function () {
-                        $("#RoomID").text(id);
-                        $.ajax({
-                            url: "getRoomVermerke.php",
-                            type: "GET",
-                            success: function (data) {
-                                $("#roomVermerke").html(data);
-                                $.ajax({
-                                    url: "getRoomElementsDetailed1.php",
-                                    type: "GET",
-                                    success: function (data) {
-                                        $("#roomElements").html(data);
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-            }
+            $("#elementParameters").hide();
+            $("#elementBestand").hide();
+            $("#elementVerwendung").hide();
+
+            table.$('tr.info').removeClass('info');
+            $(this).addClass('info');
+            const id = table.row($(this)).data()[0];
+            $.ajax({
+                url: "setSessionVariables.php",
+                data: {"roomID": id},
+                type: "GET",
+                success: function () {
+                    $("#RoomID").text(id);
+                    $.ajax({
+                        url: "getRoomVermerke.php",
+                        type: "GET",
+                        success: function (data) {
+                            $("#roomVermerke").html(data);
+                            $.ajax({
+                                url: "getRoomElementsDetailed1.php",
+                                type: "GET",
+                                success: function (data) {
+                                    $("#roomElements").html(data);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
         });
-
-
-        const table1 = $('#tableElementsInDB').DataTable();
         $('#tableElementsInDB tbody').on('click', 'tr', function () {
+            table1.$('tr.info').removeClass('info');
+            $(this).addClass('info');
+            const elementID = table1.row($(this)).data()[0];
+            //console.log(elementID);
+            $.ajax({
+                url: "getStandardElementParameters.php",
+                data: {"elementID": elementID},
+                type: "GET",
+                success: function (data) {
+                    $("#elementParametersInDB").html(data);
+                    $.ajax({
+                        url: "getElementPricesInDifferentProjects.php",
+                        data: {"elementID": elementID},
+                        type: "GET",
+                        success: function (data) {
+                            $("#elementPricesInOtherProjects").html(data);
+                            $.ajax({
+                                url: "getDevicesToElement.php",
+                                data: {"elementID": elementID},
+                                type: "GET",
+                                success: function (data) {
+                                    $("#devicesInDB").html(data);
+                                }
+                            });
 
-            if ($(this).hasClass('info')) {
+                        }
+                    });
 
-            } else {
-                table1.$('tr.info').removeClass('info');
-                $(this).addClass('info');
-                const elementID = table1.row($(this)).data()[0];
-                //console.log(elementID);
-                $.ajax({
-                    url: "getStandardElementParameters.php",
-                    data: {"elementID": elementID},
-                    type: "GET",
-                    success: function (data) {
-                        $("#elementParametersInDB").html(data);
-                        $.ajax({
-                            url: "getElementPricesInDifferentProjects.php",
-                            data: {"elementID": elementID},
-                            type: "GET",
-                            success: function (data) {
-                                $("#elementPricesInOtherProjects").html(data);
-                                $.ajax({
-                                    url: "getDevicesToElement.php",
-                                    data: {"elementID": elementID},
-                                    type: "GET",
-                                    success: function (data) {
-                                        $("#devicesInDB").html(data);
-                                    }
-                                });
+                }
+            });
 
-                            }
-                        });
-
-                    }
-                });
-            }
         });
 
         $('#filter_MTrelevantRooms').change(function () {
@@ -444,22 +446,17 @@ init_page_serversides();
         });
 
         setTimeout(() => {
-                let dt_searcher = $("#tableRooms_filter");
-                dt_searcher.detach();
-                $("#CardHeaderRaume").append(dt_searcher);
-                $('#tableRooms_filter label').contents().filter(function () {
-                    return this.nodeType === 3; // Node.TEXT_NODE
-                }).remove();
-            }
-            , 100);
+            let dt_searcher = $("#dt-search-0");
+            dt_searcher.detach();
+            $("#CardHeaderRaume").append(dt_searcher);
+        }, 100);
 
 
     });
 
 
-
     $("button[value='reloadBestand']").click(function () {
-      $("#elementBestand").html("");
+        $("#elementBestand").html("");
         $.ajax({
             url: "getElementBestand.php",
             type: "GET",

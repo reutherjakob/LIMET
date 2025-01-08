@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 ?>
 
@@ -118,7 +119,7 @@ if(!isset($_SESSION["username"]))
 	    echo "<td>".$row["Raumbereich Nutzer"]."</td>";
 		echo "<td>
 	    	<select class='form-control form-control-sm' id='bestand".$row["id"]."'>";
-					if($row["Neu/Bestand"] == "0"){						
+					if($row["Neu/Bestand"] == "0"){
 				  		echo "<option value=0 selected>Ja</option>";
 				  		echo "<option value=1>Nein</option>";
 					}
@@ -126,10 +127,10 @@ if(!isset($_SESSION["username"]))
 						echo "<option value=0>Ja</option>";
 				  		echo "<option value=1 selected>Nein</option>";
 					}
-		  	echo "</select></td>";	    
+		  	echo "</select></td>";
    	    echo "<td>   	
                 <select class='form-control form-control-sm' id='Standort".$row["id"]."'>";
-					if($row["Standort"] == "0"){						
+					if($row["Standort"] == "0"){
 				  		echo "<option value=0 selected>Nein</option>";
 				  		echo "<option value=1>Ja</option>";
 					}
@@ -140,7 +141,7 @@ if(!isset($_SESSION["username"]))
 		  	echo "</select></td>";
 	    echo "<td>   	    	
                         <select class='form-control form-control-sm' id='Verwendung".$row["id"]."'>";
-                                    if($row["Verwendung"] == "0"){						
+                                    if($row["Verwendung"] == "0"){
                                             echo "<option value=0 selected>Nein</option>";
                                             echo "<option value=1>Ja</option>";
                                     }

@@ -13,8 +13,10 @@ $row = $result->fetch_assoc();
 $elementID = $row["TABELLE_Elemente_idTABELLE_Elemente"];
 
 $sql = "SELECT tabelle_projekt_varianten_kosten.Kosten
-			FROM tabelle_projekt_varianten_kosten
-			WHERE (((tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)=" . $_GET["variantenID"] . ") AND ((tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente)=" . $elementID . ") AND ((tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "));";
+        FROM tabelle_projekt_varianten_kosten
+        WHERE (((tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)=" . $_GET["variantenID"] . ")
+        AND ((tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente)=" . $elementID . ") 
+        AND ((tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "));";
 
 $result = $mysqli->query($sql);
 $row = $result->fetch_assoc();
@@ -55,6 +57,4 @@ if ($mysqli->query($sql) === TRUE) {
 }
 
 $mysqli->close();
-
-
 ?>

@@ -46,7 +46,7 @@ while ($row = $result->fetch_assoc()) {
     echo "</tr>";
 }
 echo "</tbody></table>";
-echo "<input type='button' id='addPriceModal' class='btn btn-success btn-sm' value='Preis hinzufügen' data-toggle='modal' data-target='#addPriceToElementModal'></input>";
+echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Preis hinzufügen' data-toggle='modal' data-target='#addPriceToElementModal'> Preis hinzufügen</button>";
 ?>
 
 <div class='modal fade' id='addPriceToElementModal' role='dialog'>
@@ -106,7 +106,7 @@ echo "<input type='button' id='addPriceModal' class='btn btn-success btn-sm' val
                     echo "<div class='form-group'>
                                                     <label for='project'>Lieferant:</label>									
                                                     <select class='form-control input-sm' id='lieferant' name='lieferant'>
-                                                            <option value=0>Lieferant auswählen</option>";
+                                                            <option value='0'>Lieferant auswählen</option>";
                     while ($row = $result1->fetch_assoc()) {
                         echo "<option value=" . $row["idTABELLE_Lieferant"] . ">" . $row["Lieferant"] . "</option>";
                     }

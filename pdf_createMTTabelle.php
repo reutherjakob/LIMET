@@ -14,7 +14,6 @@ function checkEntry($jsonArray, $elementId, $parameterId) {
 function checkAndManipulateString($input) {
     // Check if the string contains '/min'
     if (strpos($input, '/min') !== false) {
-        // Add a space in front of the string
         $input = ' ' . $input;
     }
     return $input;
