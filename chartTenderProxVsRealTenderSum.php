@@ -1,27 +1,18 @@
 <?php
-session_start();
+include "_utils.php";
+check_login();
+// TODO get this to work
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
+    <title></title>
 </head>
 
 <body>
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-
-?>
-
 <canvas id="myChart" ></canvas>
-                
-</div>
-</body>
+
 <script>
     
     $(document).ready(function(){
@@ -78,5 +69,5 @@ if(!isset($_SESSION["username"]))
     });
 
 </script>
-
+</body>
 </html>

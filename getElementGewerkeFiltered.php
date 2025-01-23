@@ -35,7 +35,7 @@ return $return;
 	} 
 	echo "<form class='form-inline'>";
 		// Wenn GHG geändert
-		if(strlen($_GET["filterValueGHG"]) != 0 && strlen($_GET["filterValueGewerke"]) != 0){
+		if( null != ($_GET["filterValueGHG"])  && null != ($_GET["filterValueGewerke"]) ){
 			$sql="SELECT tabelle_auftraggeber_gewerke.Gewerke_Nr, tabelle_auftraggeber_gewerke.Bezeichnung, tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke
 						FROM tabelle_projekte INNER JOIN tabelle_auftraggeber_gewerke ON tabelle_projekte.TABELLE_Auftraggeber_Codes_idTABELLE_Auftraggeber_Codes = tabelle_auftraggeber_gewerke.TABELLE_Auftraggeber_Codes_idTABELLE_Auftraggeber_Codes
 						WHERE (((tabelle_projekte.idTABELLE_Projekte)=".$_SESSION["projectID"]."))
@@ -86,7 +86,7 @@ return $return;
 			}
 			else{
 				// Wenn Gewerk geändert		
-				if(strlen($_GET["filterValueGewerke"]) != 0){
+				if(null !=  ($_GET["filterValueGewerke"]) ){
 					$sql="SELECT tabelle_auftraggeber_gewerke.Gewerke_Nr, tabelle_auftraggeber_gewerke.Bezeichnung, tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke
 								FROM tabelle_projekte INNER JOIN tabelle_auftraggeber_gewerke ON tabelle_projekte.TABELLE_Auftraggeber_Codes_idTABELLE_Auftraggeber_Codes = tabelle_auftraggeber_gewerke.TABELLE_Auftraggeber_Codes_idTABELLE_Auftraggeber_Codes
 								WHERE (((tabelle_projekte.idTABELLE_Projekte)=".$_SESSION["projectID"]."))

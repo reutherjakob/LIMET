@@ -2,7 +2,7 @@
 session_start();
 include '_utils.php';
 check_login();
-require_once('TCPDF-master/TCPDF-master/tcpdf.php');
+require_once('TCPDF-main/TCPDF-main/tcpdf.php');
 
 
 class MYPDF extends TCPDF {
@@ -131,14 +131,14 @@ class MYPDF extends TCPDF {
         foreach ($data as $row) {
             $this->SetFont('helvetica', '', '8');
             $betreffText = "";
-            if ($_SESSION["projectName"] === "GCP" && strlen($row['Raumnummer_Nutzer']) > 0) {
+            if ($_SESSION["projectName"] === "GCP" && null != $row['Raumnummer_Nutzer'] ) {
                 $betreffText = $betreffText . 'Betrifft Raum: ' . $row['Raumnummer_Nutzer'] . " " . $row['Raumbezeichnung'] . "\n";
             } else {
-                if (strlen($row['Raumnr']) > 0) {
+                if ( null != ($row['Raumnr']) ) {
                     $betreffText = $betreffText . 'Betrifft Raum: ' . " " . $row['Raumnr'] . " " . $row['Raumbezeichnung'] . "\n";
                 }
             }
-            if (strlen($row['LosNr_Extern']) > 0) {
+            if ( null != ($row['LosNr_Extern']) ) {
                 $betreffText = $betreffText . 'Betrifft Los: ' . $row['LosNr_Extern'] . " " . $row['LosBezeichnung_Extern'] . "\n";
             }
 

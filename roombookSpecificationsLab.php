@@ -1,5 +1,4 @@
 <?php
-session_start();
 include '_utils.php';
 init_page_serversides();
 ?> 
@@ -32,9 +31,9 @@ init_page_serversides();
 
     
                         <body style="height:100%">
+                        <div id="limet-navbar"></div> <!-- Container für Navbar -->
 
-                            <div class="container-fluid" >
-                                <div id="limet-navbar"></div> <!-- Container für Navbar -->		
+                        <div class="container-fluid" >
 
 
 

@@ -6,10 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
     <link rel="icon" href="iphone_favicon.png"/>
-
-    <!--<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-            crossorigin="anonymous"></script> -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
@@ -29,18 +25,17 @@
           rel="stylesheet"/>
     <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
 
-
     <style>
         .dt-input {
-            width: 100px;
+            width: 150px;
+            height: 30px;
         }
-
-        .table {
-            border: #75ff2e 1px solid;
+        .dt-button {
+            height: 30px;
         }
 
         .card-header {
-            height: 50px;
+            height: 45px;
         }
 
         .card-body {
@@ -48,70 +43,55 @@
         }
 
         .btn {
+            height: 30px;
             margin: 1px;
             padding: 5px;
         }
-
-
     </style>
 </head>
 
 <?php
-include '_utils.php'; // CHECKS SESSION AND LOGIN
-init_page_serversides();
+include '_utils.php'; // CHECKS SESSION
+init_page_serversides(); // checks LOGIN
 ?>
 
 <body style="height:100%">
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-2">
+        <!---<div class="col-2">
             <div class="card">
-                <div class="card-header border-success-subtle"> RAUM</div>
+                <div class="card-header border-success"> RAUM</div>
             </div>
-        </div>
-        <div class="col-8">
+    </div>--->
+        <div class="col-12">
             <div class="card">
-                <div class="card-header d-inline-flex justify-content-lg-left ">
+                <div class="card-header d-inline-flex">
                     <div class="form-check">
                         <input class="form-check-input track-checkbox" type="checkbox" id="checkbox1">
                         <label class="form-check-label" for="checkbox1">Weniger Vergleichsräume laden</label>
                     </div>
-                    <!--  <div class="form-check">
-                         <input class="form-check-input track-checkbox" type="checkbox" id="checkbox2">
-                         <label class="form-check-label" for="checkbox2">Checkbox 2</label>
-                     </div>
-                     <div class="form-check">
-                         <input class="form-check-input track-checkbox" type="checkbox" id="checkbox3">
-                         <label class="form-check-label" for="checkbox3">Checkbox 3</label>
-                     </div>
-                     <div class="form-check">
-                         <input class="form-check-input track-checkbox" type="checkbox" id="checkbox4">
-                         <label class="form-check-label" for="checkbox4">Checkbox 4</label>
-                     </div>
-                     <div class="form-check">
-                         <input class="form-check-input track-checkbox" type="checkbox" id="checkbox5">
-                         <label class="form-check-label" for="checkbox5">Checkbox 5</label>
-                     </div>  -->
-                </div>
-            </div>
-        </div>
-        <div class="col-2">
-            <div class="card border-primary-subtle">
-                <div class="card-header "> VERGLEICH
-                    <button type="button" class="btn btn-xs" onclick="show_modal('helpModal')">
+                    <button type="button" class="btn btn-xs ms-auto" onclick="show_modal('helpModal')">
                         <i class="fa fa-circle-info"></i>
                     </button>
                 </div>
             </div>
         </div>
+
+        <!--   <div class="col-2">
+             <div class="card ">
+                 <div class="card-header ">
+
+                 </div>
+             </div>
+         </div>--->
     </div>
 
 
     <div class="row">
-        <div class="col-12" id="col1">
-            <div class="card border-success-subtle" id="card1">
-                <div class="card-header" id="CardHeaderRooms">
+        <div class="col-6" id="col1">
+            <div class="card border-success" id="card1">
+                <div class="card-header" id="CardHeaderRooms"> Räume
                     <button class="btn float-end grün" onclick="toggleCard('col1', 'col2', this)">
                         <i class="fa fa-arrow-right"> </i></button>
 
@@ -127,9 +107,10 @@ init_page_serversides();
                 </div>
             </div>
         </div>
-        <div class="col-12" id="col2">
-            <div class="card border-primary-subtle" id="card2">
-                <div class="card-header justify-content-end d-inline-flex" id="CardHeaderVglRooms">
+        <div class="col-6" id="col2">
+            <div class="card " id="card2">
+                <div class="card-header"> Vergleichsräume
+                    <div class=" justify-content-end d-inline-flex" id="CardHeaderVglRooms"></div>
                     <button class="btn float-end toggle-btn grün "><i
                                 class="fa fa-arrow-up"></i>
                     </button>
@@ -141,43 +122,89 @@ init_page_serversides();
             </div>
         </div>
     </div>
-    <div class="row mt-1">
-        <div class="col-6" id="col3">
-            <div class="card border-success-subtle" id="card3">
-                <div class="card-header">
-                    Elemente im Raum
-                    <button class="btn float-end grün 0"
-                            onclick="toggleCard('col3', 'col4', this)">
-                        <i class="fa fa-arrow-right"></i></button>
-                    <button class="btn float-end toggle-btn grün ">
-                        <i class="fa fa-arrow-up"></i>
-                    </button>
-                    <button class="btn float-end grün " id="Hide2"
-                            onclick="toggleCard('col3', 'col4', this)">
-                        <i class="fa fa-arrow-left"></i>
-                    </button>
-                </div>
-                <div class="card-body">
-                    <p class="card-text" id="CB3"></p>
-                </div>
-            </div>
+
+    <!--- Elemente im Raum --->
+    <div class="card" id="">
+        <div class="card-header"> ELEMENTE
+            <button class="btn float-end toggle-btn grün ">
+                <i class="fa fa-arrow-up"></i>
+            </button>
         </div>
-        <div class="col-6" id="col4">
-            <div class="card border-primary-subtle" id="card4">
-                <div class="card-header">
-                    Elemente im Vergleichsraum
-                    <button class="btn float-end toggle-btn grün "><i
-                                class="fa fa-arrow-up"></i>
-                    </button>
+        <div class="card-body" id="">
+            <div class="row mt-1">
+
+
+                <div class="col-6" id="col3">
+                    <div class="card border-success" id="card3">
+                        <div class="card-header">
+                            Elemente im Raum
+                            <!---<button class="btn float-end grün 0"
+                                onclick="toggleCard('col3', 'col4', this)">
+                            <i class="fa fa-arrow-right"></i></button>
+
+                            <button class="btn float-end toggle-btn grün ">
+                                <i class="fa fa-arrow-up"></i>
+                            </button>
+                           <button class="btn float-end grün " id="Hide2"
+                                    onclick="toggleCard('col3', 'col4', this)">
+                                <i class="fa fa-arrow-left"></i>
+                            </button> --->
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text" id="CB3"></p>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <p class="card-text" id="CB4"></p>
+                <div class="col-6" id="col4">
+                    <div class="card " id="card4">
+                        <div class="card-header">
+                            Elemente im Vergleichsraum
+                            <!---  <button class="btn float-end toggle-btn grün "><i
+                                      class="fa fa-arrow-up"></i>
+                          </button>--->
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text" id="CB4"></p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!--- Textuelle Raumbeschreibungen--->
+    <div class="card">
+        <div class="card-header"> Bauangaben
+            <button class="btn float-end toggle-btn grün ">
+                <i class="fa fa-arrow-up"></i>
+            </button>
+        </div>
+
+        <div class="card-body" >
+            <div class="row mt-1">
+                <div class="col-6">
+                    <div class="card border-success" id="card3">
+                        <div class="card-header"> Bauangaben Text
+                        </div>
+                        <div class="card-body" id="bauangaben">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card" id="card4">
+                        <div class="card-header">Bauangaben Text Vgl
+                        </div>
+                        <div class="card-body"  id="bauangaben_vgl">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
 
+<!---  Help Modal   --->
 <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -185,15 +212,23 @@ init_page_serversides();
                 <h5 class="modal-title" id="helpModalLabel">Hilfe - Raumvergleich</h5>
             </div>
             <div class="modal-body">
-                <p>Vergleichen Sie Räume, deren Bauangaben und ihre Ausstattung. Wählen Sie einen Referenzraum und einen Vergleichsraum (selbe Funktionsstelle,
+                <p>Vergleichen Sie Räume, deren Bauangaben und ihre Ausstattung. Wählen Sie einen Referenzraum
+                    und einen
+                    Vergleichsraum (selbe Funktionsstelle,
                     um Unterschiede und Ähnlichkeiten zu erkennen.</p>
                 <h4>Nutzung</h4>
                 <ol>
                     <li><strong>Raum auswählen:</strong> Wählen Sie links/oben einen Referenzraum.</li>
-                    <li><strong>Vergleichsraum wählen:</strong> Wählen Sie rechts/darunter den Raum zum Vergleichen. Hier können ebenso detaillierte Bauangaben eingeblendet und verglichen werden.
+                    <li><strong>Vergleichsraum wählen:</strong> Wählen Sie rechts/darunter den Raum zum
+                        Vergleichen.
+                        Hier können ebenso detaillierte Bauangaben eingeblendet und verglichen werden.
                     </li>
-                    <li><strong>Checkbox-Filter:</strong> Funktion weniger Laden: Selektiert gleichartige Vergleichs Räume bereits vorher aus und zeigt jeweils nur einen an.</li>
-                    <li><strong>Ausstattungsvergleich:</strong> Grün markierte Elemente sind in beiden Räumen vorhanden,
+                    <li><strong>Checkbox-Filter:</strong> Funktion weniger Laden: Selektiert gleichartige
+                        Vergleichs
+                        Räume bereits vorher aus und zeigt jeweils nur einen an.
+                    </li>
+                    <li><strong>Ausstattungsvergleich:</strong> Grün markierte Elemente sind in beiden Räumen
+                        vorhanden,
                         rot hervorgehobene nur im aktuell ausgewähltem Raum.
                     </li>
                 </ol>
@@ -239,8 +274,9 @@ init_page_serversides();
                         RID1 = selectedRowData[`idTABELLE_Räume`];
                         RID1change = true;
                     }
-
                 }
+                load_room_texts(RID1, "#bauangaben");
+
             }
             if (table_id === "t_rooms_vgl") {
                 selectedRowData = t_rooms_vgl.row('.selected').data();
@@ -249,6 +285,7 @@ init_page_serversides();
                         RID2 = selectedRowData["idTABELLE_Räume"];
                     }
                 }
+                load_room_texts(RID2, "#bauangaben_vgl");
             }
             if (selectedRowData) {
                 value = selectedRowData["TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen"]
@@ -261,6 +298,25 @@ init_page_serversides();
         });
     }
 
+    function load_room_texts(rid, where2putthedata ){
+
+        $.ajax({
+            url: "setSessionVariables.php",
+            data: {"roomID": rid},
+            type: "GET",
+            success: function () {
+                $.ajax({
+                    url: "getRoomSpecifications2.php",
+                    type: "GET",
+                    success: function (data) {
+                        $(where2putthedata).html(data);
+                        //  console.log("Data Loaded " + data);
+                    }
+                });
+            }
+        });
+    }
+
     function compareElementTables() {
         let elementIdsTable1 = $(`#tableRoomElements${RID1}`).DataTable().column(1).data().toArray();
         let elementIdsTable2 = $(`#tableVglRoomElements${RID2}`).DataTable().column(1).data().toArray();
@@ -269,7 +325,7 @@ init_page_serversides();
         let idsSet2 = new Set(elementIdsTable2);
 
         $(`#tableRoomElements${RID1}`).DataTable().rows().every(function () {
-            let row = this.node();
+
             let rowData = this.data();
             let rowId = rowData.ElementID;
 
@@ -285,7 +341,7 @@ init_page_serversides();
         });
 
         $(`#tableVglRoomElements${RID2}`).DataTable().rows().every(function () {
-            let row = this.node();
+
             let rowData = this.data();
             let rowId = rowData.ElementID;
 
@@ -369,7 +425,7 @@ init_page_serversides();
     }
 
     function getVisibleColumns() {
-        var visibleColumns = [];
+        let visibleColumns = [];
         t_rooms_vgl.columns().every(function () {
             if (this.visible()) {
                 visibleColumns.push(this.index());
@@ -384,7 +440,7 @@ init_page_serversides();
             cDef.forEach(function (columnDef, index) {
                 columnDef.visible = !!visibleColumns.includes(index);
             });
-            console.log(cDef);
+            //   console.log(cDef);
             t_rooms_vgl.buttons('.buttons-colvis').remove();
             $('.dt-buttons').remove();
             $('#dt-search-' + (filter_init_counter - 1).toString()).remove(); // Remove the old search element
@@ -458,7 +514,12 @@ init_page_serversides();
 
     function init_t_rooms() {
         const columnsDefinitionShort = [// NEW FIELD? - ADD Here, In get_rb_specs_data.php and the CPY/save methods
-            {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projek ID', visible: false, searchable: false},
+            {
+                data: 'tabelle_projekte_idTABELLE_Projekte',
+                title: 'Projek ID',
+                visible: false,
+                searchable: false
+            },
             {data: 'idTABELLE_Räume', title: 'Raum ID', visible: false, searchable: false},
             {
                 data: 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen',
@@ -467,7 +528,11 @@ init_page_serversides();
                 searchable: false
             },
             {
-                data: 'MT-relevant', title: 'MT-rel.', name: 'MT-relevant', case: "bit", render: function (data) {
+                data: 'MT-relevant',
+                title: 'MT-rel.',
+                name: 'MT-relevant',
+                case: "bit",
+                render: function (data) {
                     return data === '1' ? 'Ja' : 'Nein';
                 }
             },

@@ -156,8 +156,7 @@ if ($gewerk) {
 }
 
 echo "
-                        </select>
-                        
+     </select>
                         <button type='button' id='saveElementGewerk' class='btn btn-outline-dark btn-sm ml-1' value='saveElementGewerk'>
                             <i class='far fa-save'></i> Gewerk speichern
                         </button>	
@@ -168,11 +167,14 @@ echo "
 
         <div class='col-4'>   
             <button type='button' id='saveElementGewerk94' class='btn btn-outline-dark btn-sm ml-1' value='saveElementGewerk2'>
-                <i class='far fa-save'></i> Gewerk 94 speichern
+                <i class='far fa-save'></i> OrtsVeränderlich speichern
             </button>
             <button type='button' id='saveElementGewerk93' class='btn btn-outline-dark btn-sm ml-1' value='saveElementGewerk1'>
-                <i class='far fa-save'></i> Gewerk 93 speichern
+                <i class='far fa-save'></i> OrtsFest speichern
             </button>    
+               <button type='button' id='saveElementGewerk91' class='btn btn-outline-dark btn-sm ml-1' value='saveElementGewerk6'>
+                <i class='far fa-save'></i> MetalMöbel speichern
+            </button> 
         </div>
  ";
 
@@ -271,6 +273,17 @@ $mysqli->close();
                 $.ajax({
                     url: "saveElementGewerk.php",
                     data: {"gewerk": 1, "ghg": $('#ghg').val(), "gug": $('#gug').val()},
+                    type: "GET",
+                    success: function (data) {
+                        makeToaster(data.trim(), true);
+                    }
+                });
+            });
+
+            $("button[value='saveElementGewerk6']").click(function () {
+                $.ajax({
+                    url: "saveElementGewerk.php",
+                    data: {"gewerk": 6, "ghg": $('#ghg').val(), "gug": $('#gug').val()},
                     type: "GET",
                     success: function (data) {
                         makeToaster(data.trim(), true);

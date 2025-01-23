@@ -25,7 +25,7 @@
  */
 
 // Include the main TCPDF library (search for installation path).
-require_once('TCPDF-master/TCPDF-master/tcpdf.php');
+require_once('TCPDF-main/TCPDF-main/tcpdf.php');
 
 // extend TCPF with custom functions
 class MYPDF extends TCPDF {
@@ -249,12 +249,12 @@ foreach($raumbereichData as $rowData2) {
     }
     $result = $mysqli->query($sql);
     $row = $result->fetch_assoc();
-    if (strlen($row['PP_neu']) > 0 ){            
+    if ( null != ($row['PP_neu'])){
         $pdf->MultiCell(30, 4, money_format('€ %!n', $row["PP_neu"]), 0, 'R', $fill, 0);
         //$sumRaumbereichBestand = $sumRaumbereichBestand + $row['PP'];
     }
     else{
-        $pdf->MultiCell(30, 4, money_format("€ %!n", 0), 0, 'R', $fill, 0);
+        $pdf->MultiCell(30, 4,  sprintf('%01.2f', 0), 0, 'R', $fill, 0);
     }
     $sumGewerkNeu = $sumGewerkNeu + $row["PP_neu"];    
     //--------------------------------------------------------------    
@@ -273,12 +273,12 @@ foreach($raumbereichData as $rowData2) {
     
     $result = $mysqli->query($sql);
     $row = $result->fetch_assoc();
-    if (strlen($row['PP']) > 0 ){            
+    if ( null != ($row['PP'])  ){
         $pdf->MultiCell(30, 4, money_format('€ %!n', $row["PP"]), 0, 'R', $fill, 0);
         //$sumRaumbereichBestand = $sumRaumbereichBestand + $row['PP'];
     }
     else{
-        $pdf->MultiCell(30, 4, money_format("€ %!n", 0), 0, 'R', $fill, 0);
+        $pdf->MultiCell(30, 4,  sprintf('%01.2f', 0), 0, 'R', $fill, 0);
     }
     //--------------------------------------------------------------
     

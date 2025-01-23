@@ -12,7 +12,7 @@
 
 
 // Include the main TCPDF library (search for installation path).
-require_once('TCPDF-master/TCPDF-master/tcpdf.php');
+require_once('TCPDF-main/TCPDF-main/tcpdf.php');
 
 // extend TCPF with custom functions
 class MYPDF extends TCPDF {
@@ -261,23 +261,23 @@ while ($row = $result3->fetch_assoc()) {
         else{
             $additionalRoombookData = $additionalRoombookData."\nVerwendung: Nein";
         }
-        if(strlen($row['Kurzbeschreibung'])>0){
+        if( null != ($row['Kurzbeschreibung'])){
             $additionalRoombookData = $additionalRoombookData."\nKommentar: ".$row['Kurzbeschreibung'];
         }
-        if(strlen($row['Inventarnummer'])>0){
+        if( null != ($row['Inventarnummer'])){
             $additionalRoombookData = $additionalRoombookData."\nBestandsgerät ".$bestandsCounter.":\n     Inventarnummer: ".$row['Inventarnummer'];
         }
-        if(strlen($row['Seriennummer'])>0){
+        if( null != ($row['Seriennummer'])){
             $additionalRoombookData = $additionalRoombookData."\n     Seriennummer: ".$row['Seriennummer'];
         }
-        if(strlen($row['Anschaffungsjahr'])>0){
+        if( null != ($row['Anschaffungsjahr'])){
             $additionalRoombookData = $additionalRoombookData."\n     Anschaffungsjahr: ".$row['Anschaffungsjahr'];
         }
-        if(strlen($row['Hersteller'])>0){
+        if( null != ($row['Hersteller'])){
             $additionalRoombookData = $additionalRoombookData."\n     Gerät: ".$row['Hersteller']." ".$row['Typ'];
         }            
 
-        if(strlen($additionalRoombookData)>0){
+        if( null != ($additionalRoombookData)){
             $pdf->Ln();
             $pdf->SetFont('helvetica', 'I', 6);
             $rowHeight = $pdf->getStringHeight(50,$additionalRoombookData,false,true,'',1);

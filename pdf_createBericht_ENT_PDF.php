@@ -116,7 +116,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell(100, 6, "Bauetappe: " . $row['Bauetappe'], 'B', 'L', 0, 0);
         $pdf->MultiCell(80, 6, "Bauteil: " . $row['Bauabschnitt'], 'B', 'L', 0, 1); 
 
-        if (strlen($row['Anmerkung FunktionBO']) > 0) {
+        if ( null != ($row['Anmerkung FunktionBO']) ) {
              
             block_label($pdf, "BO-Beschreibung");
             $outstr = format_text(clean_string(br2nl($row['Anmerkung FunktionBO'])));
@@ -368,7 +368,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetFont('helvetica', '', 10);
         $outstr = format_text(clean_string(br2nl($row['Anmerkung HKLS'])));
         
-        if (strlen($outstr) > 0 && is_not_no_comment($outstr)) { //Haustechnik anmerkung
+        if ( null != ($outstr)  && is_not_no_comment($outstr)) { //Haustechnik anmerkung
             $pdf->Ln($ln_spacer2);
             $rowHeightComment = $pdf->getStringHeight($SB-$einzug_anm, $outstr, false, true, '', 1);
  
@@ -423,7 +423,7 @@ foreach ($teile as $valueOfRoomID) {
          
         $outstr = format_text(br2nl($row['Anmerkung MedGas']));
         
-        if (strlen($outstr) > 0 && is_not_no_comment($outstr)) {
+        if ( null != ($outstr) && is_not_no_comment($outstr)) {
             $pdf->Ln($ln_spacer2);
             $rowHeightComment = $pdf->getStringHeight($Sb -$einzug_anm, $outstr, false, true, '', 1);
             check_4_new_page($pdf, $rowHeightComment);
@@ -431,7 +431,7 @@ foreach ($teile as $valueOfRoomID) {
             $pdf->MultiCell($Sb -$einzug_anm, $rowHeightComment,$outstr, 0, 'L', 0, 1);
         }
 
-        if (strlen($row['AR_Ausstattung']) > 0) {
+        if ( null != ($row['AR_Ausstattung']) ) {
             $pdf->Ln(8);
             block_label($pdf, "Architektur-Einrichtung");
             $pdf->SetFont('helvetica', '', 10);

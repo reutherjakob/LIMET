@@ -1,6 +1,5 @@
 <?php
-//
-//Reutherer & Fux. LAst Update 14.5.24 
+// V2.0: 2024-11-29, Reuther & Fux
 session_start();
 include '_utils.php';
 check_login();
@@ -8,7 +7,7 @@ check_login();
 
 <!DOCTYPE html>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-<html>
+<html lang="de">
     <head>
         <style>
             .hr-sect {
@@ -30,6 +29,7 @@ check_login();
                 margin: 0px 10px;
             }
         </style>
+        <title>Get Roombook Specs</title>
     </head>
     <body>
 

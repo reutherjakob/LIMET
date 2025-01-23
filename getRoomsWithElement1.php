@@ -89,7 +89,7 @@ session_start();
 
             echo "<tr>";
             echo "<td>" . $row["id"] . "</td>";
-            echo "<td><input class='form-control form-control-sm' type='text' id='amount" . $row["id"] . "' value='" . $row["Anzahl"] . "' size='2'></input></td>";
+            echo "<td><input class='form-control form-control-sm' type='text' id='amount" . $row["id"] . "' value='" . intval( $row["Anzahl"]) . "' size='2'></input></td>";
             echo "<td>
    	    	<select class='form-control form-control-sm'' id='variante" . $row["id"] . "'>";
             switch ($row["tabelle_Varianten_idtabelle_Varianten"]) {
@@ -192,7 +192,7 @@ session_start();
                 echo "<option value=1 selected>Ja</option>";
             }
             echo "</select></td>";
-            if (strlen($row["Kurzbeschreibung"]) > 0) {
+            if ( null != ($row["Kurzbeschreibung"]) ) {
                 echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment'></i></button></td>";
             } else {
                 echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment-slash'></i></button></td>";
@@ -245,7 +245,7 @@ session_start();
                     "order": [[1, "asc"]],
                     "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
                     "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
-                    dom: '<"top"Blf>rt<"bottom"><"clear">',
+                    "dom": '<"top"Blf>rt<"bottom"><"clear">',
                     "buttons": [
                         {
                             extend: 'excel',
@@ -285,8 +285,8 @@ session_start();
                 $("button[name='showComment']").click(function () {
                     //hide any visible comment-popover
                     $("button[name='showComment']").not(this).popover('hide');
-                    var id = this.id;
-                    var val = document.getElementById(id).value;
+                    let id = this.id;
+                    let val = document.getElementById(id).value;
                     //attach/link text
                     $('.popover-textarea').val(val).focus();
                     //update link text on submit    
@@ -300,13 +300,13 @@ session_start();
 
             // Element speichern
             $("button[value='saveElement']").click(function () {
-                var id = this.id;
-                var comment = $("#buttonComment" + id).val();
-                var amount = $("#amount" + id).val();
-                var variantenID = $("#variante" + id).val();
-                var bestand = $("#bestand" + id).val();
-                var standort = $("#Standort" + id).val();
-                var verwendung = $("#Verwendung" + id).val();
+                let id = this.id;
+                let comment = $("#buttonComment" + id).val();
+                let amount = $("#amount" + id).val();
+                let variantenID = $("#variante" + id).val();
+                let bestand = $("#bestand" + id).val();
+                let standort = $("#Standort" + id).val();
+                let verwendung = $("#Verwendung" + id).val();
 
                 if (standort === '0' && verwendung === '0') {
                     alert("Standort und Verwendung kann nicht Nein sein!");
