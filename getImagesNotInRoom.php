@@ -37,7 +37,7 @@ if(!isset($_SESSION["username"]))
             }         
                 echo "<div class='m-1 card'>";
                     echo "<div class='card-header'>   
-                            <button type='button' id='".$row["idtabelle_Files"]."' class='float-right btn btn-outline-success btn-xs' value='addImageToRoom'><i class='fas fa-plus'></i></button>                                           
+                            <button type='button' id='".$row["idtabelle_Files"]."' class='float-right btn btn-outline-success btn-sm' value='addImageToRoom'><i class='fas fa-plus'></i></button>                                           
                          </div>";
                     echo "<div class='card-body'>";
                         echo "<img src='https://limet-rb.com/Dokumente_RB/Images/".$row['Name']."' height='200' width='200'>";

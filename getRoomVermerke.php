@@ -56,7 +56,7 @@ while ($row = $result->fetch_assoc()) {
     }
     echo "</td>";
     echo "<td>" . $row["Datum"] . "</td>";
-    echo "<td><button type='button' class='btn btn-xs btn-outline-dark' data-toggle='popover' title='Vermerk' data-placement='left' data-content='" . $row["Vermerktext"] . "'><i class='fa fa-comment'></i></button></td>";
+    echo "<td><button type='button' class='btn btn-sm btn-outline-dark' data-toggle='popover' title='Vermerk' data-placement='left' data-content='" . $row["Vermerktext"] . "'><i class='fa fa-comment'></i></button></td>";
     echo "<td>" . $row["Vermerkart"] . "</td>";
     echo "<td>" . $row["Name"] . "</td>";
     echo "<td>";

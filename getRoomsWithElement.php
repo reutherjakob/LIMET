@@ -4,8 +4,7 @@ session_start();
 check_login();
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
 <head>
@@ -68,11 +67,11 @@ while ($row = $result->fetch_assoc()) {
     }
     echo "</td>";
     if (null != ($row["Kurzbeschreibung"])) {
-        echo "<td><button type='button' class='btn btn-xs btn-outline-dark comment-btn' id='" . $row["id"] . "' data-description='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment'></i></button></td>";
+        echo "<td><button type='button' class='btn btn-sm btn-outline-dark comment-btn' id='" . $row["id"] . "' data-description='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment'></i></button></td>";
     } else {
-        echo "<td><button type='button' class='btn btn-xs btn-outline-dark comment-btn' id='" . $row["id"] . "' data-description='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment-slash'></i></button></td>";
+        echo "<td><button type='button' class='btn btn-sm btn-outline-dark comment-btn' id='" . $row["id"] . "' data-description='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment-slash'></i></button></td>";
     }
-    echo "<td><button type='button' id='" . $row["id"] . "' class='btn btn-warning btn-xs' value='saveElement'><i class='far fa-save'></i></button></td>";
+    echo "<td><button type='button' id='" . $row["id"] . "' class='btn btn-warning btn-sm' value='saveElement'><i class='far fa-save'></i></button></td>";
     echo "</tr>";
 }
 echo "</tbody></table>";

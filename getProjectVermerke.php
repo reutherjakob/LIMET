@@ -59,7 +59,7 @@
             }
             echo "</td>";
             echo "<td>";
-            echo '<button type="button" class="btn btn-xs btn-light vermerk-popover" data-bs-toggle="popover" data-placement="right" data-vermerk-id="'.  $row["idtabelle_Vermerke"] . '" data-bs-content="' . htmlspecialchars($row["Vermerktext"], ENT_QUOTES). '"><i class="far fa-comment"></i></button>';
+            echo '<button type="button" class="btn btn-sm btn-light vermerk-popover" data-bs-toggle="popover" data-placement="right" data-vermerk-id="'.  $row["idtabelle_Vermerke"] . '" data-bs-content="' . htmlspecialchars($row["Vermerktext"], ENT_QUOTES). '"><i class="far fa-comment"></i></button>';
             echo "</td>";
             echo "<td>" . $row["Raumnr"] . " " . $row["Raumbezeichnung"] . "</td>";
             echo "<td>" . $row["LosNr_Extern"] . "</td>";

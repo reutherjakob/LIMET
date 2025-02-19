@@ -155,7 +155,7 @@ $gugOptions = $gewerkeData['ghg'] ? fetchGUGOptions($mysqli, $gewerkeData['ghg']
                     <div>
                         <button type='button' id='saveElementGewerk' class='btn btn-outline-dark btn-sm' value='saveElementGewerk'>
                             <i class='far fa-save'></i> Gewerk speichern
-                        </button>
+                        </button>       <label>&nbsp;</label>       <label>&nbsp;</label>
                         <button type='button' id='saveElementGewerk94' class='btn btn-outline-dark btn-sm' value='saveElementGewerk2'>
                             <i class='far fa-save'></i> OrtsVeränderlich speichern
                         </button>
@@ -198,7 +198,7 @@ $mysqli->close();
 </div>
 
 <script src="_utils.js"></script>
-<script>
+<script charset="utf-8">
 
     //GHG geändert
     $('#ghg').change(function () {

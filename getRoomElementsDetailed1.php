@@ -50,13 +50,13 @@ $sql_room_elements = "SELECT tabelle_räume_has_tabelle_elemente.id, tabelle_rä
        tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.Anzahl, 
        tabelle_elemente.ElementID, tabelle_elemente.Kurzbeschreibung As `Elementbeschreibung`, tabelle_varianten.Variante, 
        tabelle_elemente.Bezeichnung, tabelle_geraete.GeraeteID, tabelle_hersteller.Hersteller, tabelle_geraete.Typ, 
-       tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.Standort, 
+       tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.Standort,  
        tabelle_räume_has_tabelle_elemente.Verwendung, tabelle_räume_has_tabelle_elemente.Kurzbeschreibung, 
        tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
        tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete
 FROM tabelle_varianten INNER JOIN (tabelle_hersteller RIGHT JOIN ((tabelle_räume_has_tabelle_elemente LEFT JOIN tabelle_geraete ON tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete = tabelle_geraete.idTABELLE_Geraete) INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON tabelle_hersteller.idtabelle_hersteller = tabelle_geraete.tabelle_hersteller_idtabelle_hersteller) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
 WHERE (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=?))
-ORDER BY tabelle_elemente.ElementID;";
+ORDER BY   tabelle_räume_has_tabelle_elemente.Anzahl DESC ;";
 
 // Function to execute query and calculate costs
 function calculateCosts($mysqli, $sql, $roomID, $projectID)
@@ -158,7 +158,8 @@ $mysqli->close();
     <?php if ($result_room_elements->num_rows > 0): ?>
         <div id="room-action-buttons" class="d-inline-flex">
             <button type="button" class="btn btn-outline-dark mr-2 custom-btn" id="<?php echo $_SESSION["roomID"]; ?>"
-                    data-bs-toggle="modal" data-bs-target="#copyRoomElementsModal" value="Rauminhalt kopieren" >Inhalt kopieren
+                    data-bs-toggle="modal" data-bs-target="#copyRoomElementsModal" value="Rauminhalt kopieren">Inhalt
+                kopieren
             </button>
             <button type="button" class="btn btn-outline-dark mr-2 custom-btn" id="<?php echo $_SESSION["roomID"]; ?>"
                     value="createRoombookPDF"><i class="far fa-file-pdf"></i> RB-PDF
@@ -170,7 +171,8 @@ $mysqli->close();
     <?php endif; ?>
 </div>
 
-<table class="table table-striped table-bordered table-sm" id="tableRoomElements" style="width:100%">
+<table class="table table-sm compact table-responsiv table-striped border border-light border-5" id="tableRoomElements"
+       style="width:100%">
     <thead>
     <tr>
         <th>ID</th>
@@ -225,23 +227,24 @@ $mysqli->close();
                     <option value="1" <?php echo $row["Verwendung"] == "1" ? "selected" : ""; ?>>Ja</option>
                 </select></td>
             <td data-order="<?php echo trim($row["Kurzbeschreibung"] ?? "");
-                $Kurzbeschreibung = trim($row["Kurzbeschreibung"] ?? "");
-                $buttonClass = $Kurzbeschreibung === "" ? "btn-outline-secondary" : "btn-outline-dark";
-                $iconClass = $Kurzbeschreibung === "" ? "fa fa-comment-slash" : "fa fa-comment";
-                $dataAttr = $Kurzbeschreibung === "" ? "data-description= '' " : "data-description='" . htmlspecialchars($Kurzbeschreibung, ENT_QUOTES, 'UTF-8') . "'"; ?>
+            $Kurzbeschreibung = trim($row["Kurzbeschreibung"] ?? "");
+            $buttonClass = $Kurzbeschreibung === "" ? "btn-outline-secondary" : "btn-outline-dark";
+            $iconClass = $Kurzbeschreibung === "" ? "fa fa-comment-slash" : "fa fa-comment";
+            $dataAttr = $Kurzbeschreibung === "" ? "data-description= '' " : "data-description='" . htmlspecialchars($Kurzbeschreibung, ENT_QUOTES, 'UTF-8') . "'"; ?>
 
-                "> <button type="button"
-                        class="btn btn-xs <?php echo $buttonClass; ?> comment-btn" <?php echo $dataAttr; ?>
+                ">
+                <button type="button"
+                        class="btn btn-sm <?php echo $buttonClass; ?> comment-btn" <?php echo $dataAttr; ?>
                         id="<?php echo $row["id"]; ?>" title="Kommentar"><i class="<?php echo $iconClass; ?>"></i>
                 </button>
             </td>
             <td data-order="history">
-                <button type="button" id="<?php echo $row["id"]; ?>" class="btn btn-xs btn-outline-dark"
+                <button type="button" id="<?php echo $row["id"]; ?>" class="btn btn-sm btn-outline-dark"
                         value="history"><i
                             class="fas fa-history"></i></button>
             </td>
             <td data-order="saveElement">
-                <button type="button" id="<?php echo $row["id"]; ?>" class="btn btn-xs btn-warning" value="saveElement">
+                <button type="button" id="<?php echo $row["id"]; ?>" class="btn btn-sm btn-warning" value="saveElement">
                     <i class="far fa-save"></i></button>
             </td>
         </tr>
@@ -275,13 +278,14 @@ $mysqli->close();
         <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
-                <h4 class='modal-title'>Verlauf</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <h4 class='modal-title'>Verlauf </h4>
+                <div class='' id="ElementName4Header"></div>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='mbodyHistory'>
             </div>
             <div class='modal-footer'>
-                <button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>
+                <button type='button' class='btn btn-default' data-bs-dismiss='modal'>Close</button>
             </div>
         </div>
     </div>
@@ -319,11 +323,13 @@ $mysqli->close();
 
         $("button[value='history']").click(function () {
             let roombookID = this.id;
+            let elementName = $("#ElementName" + roombookID).text();
             $.ajax({
                 url: "getCommentHistory.php",
                 type: "GET",
                 data: {"roombookID": roombookID},
                 success: function (data) {
+                    $('#ElementName4Header').text(elementName);
                     $("#mbodyHistory").html(data);
                     $("#historyModal").modal('show');
 
@@ -377,7 +383,7 @@ $mysqli->close();
     // var tableRoomElements;
     $("button[value='saveElement']").click(function () {
         let id = this.id;
-        console.log(id)
+        //console.log(id)
         let comment = $(".comment-btn[id='" + id + "']").attr('data-description');
         // console.log(comment);
         let amount = $("#amount" + id).val();
@@ -413,9 +419,11 @@ $mysqli->close();
             paging: true,
             pagingType: "simple",
             lengthChange: true,
-            pageLength: 10,
+            pageLength: 25,
             searching: true,
             info: true,
+            hover: true,
+
             columnDefs: [
                 {
                     targets: [0],
@@ -429,23 +437,29 @@ $mysqli->close();
                     orderable: true
                 }
             ],
-            order: [[1, "asc"]],
+            order: [[3, "desc"]],
             language: {
                 url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/de-DE.json",
                 search: ""
             },
             search: {
                 placeholder: ""
+            },
+            layout: {
+                topStart: null,
+                topEnd: null,
+                bottomEnd: ['search', 'pageLength', 'paging'],
+                bottomStart: 'info'
             }
         });
 
 
         $('#tableRoomElements tbody').on('click', 'tr', function () {
             let id = tableRoomElements.row($(this)).data()[0].display;
-            console.log(id);
-            console.log("#amount" + id);
+            //console.log(id);
+            //console.log("#amount" + id);
             let stk = $("#amount" + id).val();
-            console.log(stk);
+            // console.log(stk);
             let standort = $("#Standort" + id).val();
             let verwendung = $("#Verwendung" + id).val();
             $.ajax({

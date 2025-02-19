@@ -213,7 +213,7 @@ init_page_serversides("");
                                     echo $row["Faelligkeit"];
                                 }
                                 echo "</td>";
-                                echo "<td><button type='button' class='btn btn-xs btn-light' data-toggle='popover' title='Vermerk' data-placement='right' data-content='" . $row["Vermerktext"] . "'><i class='far fa-comment'></i></button></td>";
+                                echo "<td><button type='button' class='btn btn-sm btn-light' data-toggle='popover' title='Vermerk' data-placement='right' data-content='" . $row["Vermerktext"] . "'><i class='far fa-comment'></i></button></td>";
                                 echo "<td>" . $row["Raumnr"] . " " . $row["Raumbezeichnung"] . "</td>";
                                 echo "<td>" . $row["Bearbeitungsstatus"] . "</td>";
                                 echo "</tr>";

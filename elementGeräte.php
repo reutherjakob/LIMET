@@ -66,7 +66,7 @@
                     foreach ($row as $value) {
                         echo "<td>" . ($value) . "</td>";
                     }
-                    echo "<td><button type='button' id='" . $row["idTABELLE_Geraete"] . "' class='btn btn-outline-dark btn-xs' value='changeDevice' data-toggle='modal' data-target='#changeDeviceModal'><i class='fas fa-pencil-alt'></i></button></td>";
+                    echo "<td><button type='button' id='" . $row["idTABELLE_Geraete"] . "' class='btn btn-outline-dark btn-sm' value='changeDevice' data-toggle='modal' data-target='#changeDeviceModal'><i class='fas fa-pencil-alt'></i></button></td>";
                     echo "</tr>";
                 }
             }

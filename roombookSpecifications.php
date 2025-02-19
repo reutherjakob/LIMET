@@ -33,7 +33,7 @@ check_login();
     <script type="text/javascript" src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
 
     <style>
-        .btn-xs {
+        .btn-sm {
             height: 22px;
             padding: 2px 5px;
             font-size: 12px;
@@ -171,9 +171,9 @@ check_login();
 
             while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
-                // echo "<td class='col-md-1'><input type='button' id='".$row["idTABELLE_Räume"]."' class='btn btn-success btn-xs' value='Raum auswählen'></td>";
+                // echo "<td class='col-md-1'><input type='button' id='".$row["idTABELLE_Räume"]."' class='btn btn-success btn-sm' value='Raum auswählen'></td>";
                 echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
-                echo "<td><button type='button' id='" . $row["idTABELLE_Räume"] . "' class='btn btn-outline-dark btn-xs' value='changeRoom' data-toggle='modal' data-target='#changeRoomModal'><i class='fa fa-edit'></i></button></td>";
+                echo "<td><button type='button' id='" . $row["idTABELLE_Räume"] . "' class='btn btn-outline-dark btn-sm' value='changeRoom' data-toggle='modal' data-target='#changeRoomModal'><i class='fa fa-edit'></i></button></td>";
                 echo "<td>" . $row["Raumnr"] . "</td>";
                 echo "<td>" . $row["Raumbezeichnung"] . "</td>";
                 echo "<td>" . $row["Nutzfläche"] . "</td>";
@@ -245,7 +245,7 @@ check_login();
         <div class="mt-4 card">
             <div class="card">
                 <div class="card-header">
-                    <button type="button" class="btn btn-outline-dark btn-xs" id="showRoomElements"><i
+                    <button type="button" class="btn btn-outline-dark btn-sm" id="showRoomElements"><i
                                 class="fas fa-caret-left"></i></button>
                 </div>
                 <div class="card-body" id="additionalInfo">
@@ -330,8 +330,6 @@ check_login();
 
 <script>
     var raumID;
-
-
     $.fn.dataTable.ext.search.push(
         function (settings, data, dataIndex) {
             if (settings.nTable.id !== 'tableRooms') {
@@ -368,6 +366,7 @@ check_login();
         $.get("navbar4.html", function (data) {
             $("#limet-navbar").html(data);
             $(".navbar-nav").find("li:nth-child(3)").addClass("active");
+            let currentP = <?php     echo json_encode($_SESSION["projectName"]); ?>;
             $("#projectSelected").text(currentP);
 
         });
@@ -414,7 +413,6 @@ check_login();
             buttons: ['excel', 'copy', 'csv']
         });
         buttons.container().appendTo('#dt-buttons');
-
 
         $('#tableRooms tbody').on('click', 'tr', function () {
 

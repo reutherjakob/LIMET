@@ -3,8 +3,7 @@ include '_utils.php';
 check_login();
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
@@ -34,11 +33,11 @@ echo "<th>ElementID</th>
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
     echo "<td>" . $row["idTABELLE_Elemente"] . "</td>";
-    echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-success btn-xs' value='addElement' data-toggle='modal' data-target='#addRoomElementModal'><i class='fa fa-plus'></i></button></td>";
+    echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-success btn-sm' value='addElement' data-toggle='modal' data-target='#addRoomElementModal'><i class='fa fa-plus'></i></button></td>";
     echo "<td>" . $row["ElementID"] . "</td>";
     echo "<td>" . $row["Bezeichnung"] . "</td>";
     echo "<td>" . $row["Kurzbeschreibung"] . "</td>";
-    echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-dark btn-xs' value='changeElement' data-toggle='modal' data-target='#changeElementModal'><i class='fas fa-pencil-alt'></i></button></td>";
+    echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-dark btn-sm' value='changeElement' data-toggle='modal' data-target='#changeElementModal'><i class='fas fa-pencil-alt'></i></button></td>";
     echo "</tr>";
 }
 echo "</tbody></table>";

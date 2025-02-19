@@ -2,7 +2,7 @@
 session_start();	
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -46,11 +46,11 @@ if(!isset($_SESSION["username"]))
 	
 	while($row = $result->fetch_assoc()) {
 	    echo "<tr>";
-	    echo "<td><button type='button' id='".$row["idTABELLE_Lieferant"]."' class='btn btn-outline-danger btn-xs' value='deleteLieferant'><i class='fas fa-minus'></i></button></td>";
+	    echo "<td><button type='button' id='".$row["idTABELLE_Lieferant"]."' class='btn btn-outline-danger btn-sm' value='deleteLieferant'><i class='fas fa-minus'></i></button></td>";
 	    echo "<td>".$row["Lieferant"]."</td>";
             echo "<td>".$row["Land"]."</td>";
             echo "<td>".$row["Ort"]."</td>";
-            echo "<td><button type='button' id='".$row["idTABELLE_Lieferant"]."' class='btn btn-outline-dark btn-xs' value='showLieferantContacts' data-toggle='modal' data-target='#showLieferantContactsModal'><i class='fas fa-users'></i></button></td>";
+            echo "<td><button type='button' id='".$row["idTABELLE_Lieferant"]."' class='btn btn-outline-dark btn-sm' value='showLieferantContacts' data-toggle='modal' data-target='#showLieferantContactsModal'><i class='fas fa-users'></i></button></td>";
 	    echo "</tr>";
 	}
 	

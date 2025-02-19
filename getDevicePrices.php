@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
@@ -46,7 +46,7 @@ while ($row = $result->fetch_assoc()) {
     echo "</tr>";
 }
 echo "</tbody></table>";
-echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Preis hinzufügen' data-toggle='modal' data-target='#addPriceToElementModal'> Preis hinzufügen</button>";
+echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Preis hinzufügen' data-bs-toggle='modal' data-bs-target='#addPriceToElementModal'> Preis hinzufügen</button>";
 ?>
 
 <div class='modal fade' id='addPriceToElementModal' role='dialog'>
@@ -54,7 +54,7 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Preis hinzufügen</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='mbody'>
                 <form role="form">
@@ -118,8 +118,8 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
             </div>
             <div class='modal-footer'>
                 <input type='button' id='addPrice' class='btn btn-success btn-sm' value='Speichern'
-                       data-dismiss='modal'></input>
-                <button type='button' class='btn btn-danger btn-sm' data-dismiss='modal'>Abbrechen</button>
+                       data-bs-dismiss='modal'></input>
+                <button type='button' class='btn btn-danger btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
             </div>
         </div>
 

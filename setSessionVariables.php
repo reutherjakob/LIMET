@@ -1,17 +1,13 @@
+<!DOCTYPE html>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<html lang="de">
+<head>
+    <title> Set Session Variables </title></head>
+<body>
+
 <?php
 include "_utils.php";
 check_login();
-?>
-
-<!DOCTYPE html>
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-<html>
-<head>
-</head>
-<body>
-
-
-<?php
 if (isset($_GET["projectID"]) && $_GET["projectID"] != "") {
     $_SESSION["projectID"] = $_GET["projectID"];
 }
@@ -30,9 +26,10 @@ if (isset($_GET["projectAusfuehrung"]) && $_GET["projectAusfuehrung"] != "") {
 if (isset($_GET["projectPlanungsphase"]) && $_GET["projectPlanungsphase"] != "") {
     $_SESSION["projectPlanungsphase"] = $_GET["projectPlanungsphase"];
 }
-
+if (isset($_GET["variantenID"]) &&$_GET["variantenID"] != "") {
+    $_SESSION["variantenID"] = $_GET["variantenID"];
+}
 ?>
-
 
 </body>
 </html>

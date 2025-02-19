@@ -163,7 +163,7 @@ init_page_serversides();
                             echo "<tr>";
                             echo "<td>" . $row["idtabelle_Lose_Extern"] . "</td>";
 
-                            echo "<td> <button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn btn-outline-dark btn-xs' value='changeTenderLot'><i class='fas fa-pencil-alt'></i></button></td>";
+                            echo "<td> <button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn btn-outline-dark btn-sm' value='changeTenderLot'><i class='fas fa-pencil-alt'></i></button></td>";
                             echo "<td>" . $row["LosNr_Extern"] . "</td>";
                             echo "<td>" . $row["LosBezeichnung_Extern"] . "</td>";
 
@@ -212,7 +212,7 @@ init_page_serversides();
 
                             echo "<td>" . $row["Lieferant"] . "</td>";
 
-                            echo "<td><button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn btn-outline-dark btn-xs' value='LotWorkflow' data-bs-toggle='modal' data-bs-target='#workflowDataModal'><i class='fas fa-history'></i></button></td>";
+                            echo "<td><button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn btn-outline-dark btn-sm' value='LotWorkflow' data-bs-toggle='modal' data-bs-target='#workflowDataModal'><i class='fas fa-history'></i></button></td>";
                             echo "<td>" . $row["Notiz"] . "</td>";
 
                             echo "<td>" . $row["idTABELLE_Lieferant"] . "</td>";
@@ -251,7 +251,7 @@ init_page_serversides();
             <div class="mt-4 card">
                 <div class="card-header">Bestandsdaten
                     <button type='button' id='addBestandsElement'
-                            class='btn ml-4 mt-2 btn-outline-success btn-xs float-right' value='Hinzufügen'
+                            class='btn ml-4 mt-2 btn-outline-success btn-sm float-right' value='Hinzufügen'
                             data-bs-toggle='modal' data-bs-target='#addBestandModal'><i class='fas fa-plus'></i></button>
                     <button type='button' id='reloadBestand'
                             class='btn ml-4 mt-2 btn-outline-secondary  float-right' value='reloadBestand'>

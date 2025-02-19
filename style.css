@@ -1,15 +1,24 @@
+.card-body{
+    overflow: auto;
+}
 
 
 .grün {
     background-color: rgba(100, 140, 25, 0.3) !important;
 }
+
 .rot {
     background-color: rgba(100, 0, 25, 0.3) !important;
 }
 
-.custom-popover{
+.custom-popover {
     z-index: 99;
 }
+
+.table > thead > tr > th{
+    background-color: rgba(100, 140, 25, 0.15);
+}
+
 
 #scrollBtn {
     height: 45px; /* Adjust height for ellipse shape */
@@ -33,13 +42,10 @@
     background-color: #0056b3;
 }
 
-#btn{
-    box-shadow: 0 3px 3px 0 rgba(1,0,1,0.2), 0 5px 5px 0 rgba(1,1,0,0.10);
+#btn {
+    box-shadow: 0 3px 3px 0 rgba(1, 0, 1, 0.2), 0 5px 5px 0 rgba(1, 1, 0, 0.10);
 }
 
-#dt-column-title {
-    background-color: rgba(100, 140, 25, 0.15);
-}
 
 .form-check-input:checked {
     background-color: rgba(100, 140, 25, 0.75) !important;
@@ -77,6 +83,7 @@
     color: #FFFFFF;
     background-color: #64F361;
 }
+
 #searchbar {
     height: 3%;
     background-color: #E5E5E5;
@@ -86,53 +93,54 @@
     height: 93%;
     background-color: #F5F5F5;
 }
+
 #td {
     padding: 5px;
 }
+
 #table {
     border-spacing: 1px;
 }
 
 
-#data40{
+#data40 {
     width: 100%;
     height: 40%;
     overflow: auto;
 
 }
 
-#data20_1{
+#data20_1 {
     width: 100%;
     height: 20%;
     overflow: auto;
 
 }
 
-#data33_1{
+#data33_1 {
     width: 100%;
     height: 33%;
     overflow: auto;
 
 }
-#data33_2{
+
+#data33_2 {
     width: 100%;
     height: 33%;
     overflow: auto;
 }
 
-#data33_3{
+#data33_3 {
     width: 100%;
     height: 33%;
     overflow: auto;
 }
 
 
-
-#data33{
+#data33 {
     width: 100%;
     height: 33%;
 }
-
 
 
 #tableData {
@@ -140,32 +148,38 @@
     height: 50%;
     overflow: auto;
 }
+
 #tableEdit {
     width: 100%;
     height: 50%;
 }
+
 #tableNotices {
     width: 50%;
     height: 100%;
     overflow: auto;
-    float:left;
+    float: left;
 
 }
+
 #addNotice {
     width: 50%;
     height: 100%;
-    float:right;
+    float: right;
 }
+
 #noticeCategory {
     width: 100%;
     height: 10%;
 }
+
 #noticeText {
     width: 100%;
     height: 70%;
 }
+
 #noticeMenu {
     width: 100%;
     height: 15%;
-    padding-top:10px;
+    padding-top: 10px;
 }

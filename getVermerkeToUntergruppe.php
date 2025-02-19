@@ -32,7 +32,7 @@ echo "<table class='table table-striped table-bordered table-responsive' id='tab
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
     echo "<td>" . $row['idtabelle_Vermerke'] . "</td>";
-    echo "<td><button type='button' id='" . $row['idtabelle_Vermerke'] . "' class='btn btn-outline-dark btn-xs' value='changeVermerk'><i class='fas fa-pencil-alt'></i></button></td>";
+    echo "<td><button type='button' id='" . $row['idtabelle_Vermerke'] . "' class='btn btn-outline-dark btn-sm' value='changeVermerk'><i class='fas fa-pencil-alt'></i></button></td>";
     echo "<td id='vermerktText" . $row["idtabelle_Vermerke"] . "' value ='" . $row['Vermerktext'] . "'>" . $row['Vermerktext'] . "</td>";
     echo "<td>" . $row['Ersteller'] . "</td>";
     if ($row["Vermerkart"] != "Info") {
@@ -44,7 +44,7 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . $row['Erstellungszeit'] . "</td>";
     echo "<td id='bearbeitungsstatus" . $row["idtabelle_Vermerke"] . "' value ='" . $row['Bearbeitungsstatus'] . "'>" . $row['Bearbeitungsstatus'] . "</td>";
     echo "<td id='vermerkTyp" . $row["idtabelle_Vermerke"] . "' value ='" . $row['Vermerkart'] . "'>" . $row['Vermerkart'] . "</td>";
-    echo "<td><button type='button' id=" . $row['idtabelle_Vermerke'] . " class='btn btn-outline-dark btn-xs' value='showVermerkZustaendigkeit' data-bs-toggle='modal' data-bs-target='#showVermerkZustaendigkeitModal'><i class='fas fa-users'></i></button></td>";
+    echo "<td><button type='button' id=" . $row['idtabelle_Vermerke'] . " class='btn btn-outline-dark btn-sm' value='showVermerkZustaendigkeit' data-bs-toggle='modal' data-bs-target='#showVermerkZustaendigkeitModal'><i class='fas fa-users'></i></button></td>";
     echo "<td id='lot" . $row["idtabelle_Vermerke"] . "' value ='" . $row['tabelle_lose_extern_idtabelle_Lose_Extern'] . "'>" . $row['tabelle_lose_extern_idtabelle_Lose_Extern'] . "</td>";
     echo "<td id='room" . $row["idtabelle_Vermerke"] . "' value ='" . $row['tabelle_räume_idTABELLE_Räume'] . "'>" . $row['tabelle_räume_idTABELLE_Räume'] . "</td>";
     echo "<td>" . $row['LosNr_Extern'] . "</td>";

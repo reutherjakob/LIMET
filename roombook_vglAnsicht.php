@@ -70,7 +70,7 @@ init_page_serversides(); // checks LOGIN
                         <input class="form-check-input track-checkbox" type="checkbox" id="checkbox1">
                         <label class="form-check-label" for="checkbox1">Weniger Vergleichsräume laden</label>
                     </div>
-                    <button type="button" class="btn btn-xs ms-auto" onclick="show_modal('helpModal')">
+                    <button type="button" class="btn btn-sm ms-auto" onclick="show_modal('helpModal')">
                         <i class="fa fa-circle-info"></i>
                     </button>
                 </div>

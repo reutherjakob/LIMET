@@ -1,11 +1,4 @@
-<?php
-include '_utils.php';
-init_page_serversides("x");
-$_SESSION["dbAdmin"] = "1";
-?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 
 <head>
@@ -14,18 +7,18 @@ $_SESSION["dbAdmin"] = "1";
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
     <link rel="icon" href="iphone_favicon.png">
+    <!-- Rework 2025 CDNs -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
-          integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
-    <script type="text/javascript"
-            src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+          integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
+          rel="stylesheet">
 </head>
 
 <body style="height:100%">
@@ -34,13 +27,14 @@ $_SESSION["dbAdmin"] = "1";
     <div class="mt-4 card">
         <div class="card-header">Elemente</div>
         <div class="card-body">
-
             <div class="row mt-1">
                 <div class='col-md-6'>
                     <div class='mt-1 card'>
                         <div class='card-header'><label>Elementgruppen</label></div>
                         <div class='card-body' id='elementGroups'>
                             <?php
+                            include '_utils.php';
+                            init_page_serversides("x");
                             $mysqli = utils_connect_sql();
                             $sql = "SELECT tabelle_element_gewerke.idtabelle_element_gewerke, tabelle_element_gewerke.Nummer, tabelle_element_gewerke.Gewerk
 												FROM tabelle_element_gewerke
@@ -79,7 +73,11 @@ $_SESSION["dbAdmin"] = "1";
                         </div>
                     </div>
                     <div class="mt-1 card">
-                        <div class="card-header"><label>Elemente in DB</label></div>
+                        <div class="card-header d-flex align-items-center flex-nowrap justify-content-between"
+                             id="tableCardHeader1">
+                            <label>Elemente in DB</label>
+
+                        </div>
                         <div class="card-body" id="elementsInDB">
                             <?php
                             $sql = "SELECT tabelle_elemente.idTABELLE_Elemente, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_elemente.Kurzbeschreibung
@@ -88,7 +86,7 @@ $_SESSION["dbAdmin"] = "1";
 
                             $result = $mysqli->query($sql);
 
-                            echo "<table class='table table-striped table-sm' id='tableElementsInDB'  cellspacing='0' width='100%'>
+                            echo "<table class='table table-striped table-sm' id='tableElementsInDB' >
 									<thead><tr>
 									<th>ID</th>
 									<th>ElementID</th>
@@ -103,7 +101,7 @@ $_SESSION["dbAdmin"] = "1";
                                 echo "<td>" . $row["ElementID"] . "</td>";
                                 echo "<td>" . $row["Bezeichnung"] . "</td>";
                                 echo "<td>" . $row["Kurzbeschreibung"] . "</td>";
-                                echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-dark btn-xs'' value='changeElement' data-toggle='modal' data-target='#changeElementModal'><i class='fas fa-pencil-alt'></i></button></td>";
+                                echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-dark btn-sm' value='changeElement' data-bs-toggle ='modal' data-bs-target='#changeElementModal'><i class='fas fa-pencil-alt'></i></button></td>";
                                 echo "</tr>";
                             }
                             echo "</tbody></table>";
@@ -124,7 +122,7 @@ $_SESSION["dbAdmin"] = "1";
     </div>
 
 
-    <hr></hr>
+    <hr>
     <div class="mt-1 card">
         <div class="card-header">Geräte</div>
         <div class="card-body">
@@ -203,108 +201,111 @@ $_SESSION["dbAdmin"] = "1";
 </div>
         -->
     </div>
+</body>
 
-    <!-- Modal zum Ändern eines Elements -->
-    <div class='modal fade' id='changeElementModal' role='dialog'>
-        <div class='modal-dialog modal-md'>
-
-            <!-- Modal content-->
-            <div class='modal-content'>
-                <div class='modal-header'>
-                    <h4 class='modal-title'>Element ändern</h4>
-                    <button type='button' class='close' data-dismiss='modal'>&times;</button>
-                </div>
-                <div class='modal-body' id='mbody'>
-                    <form role="form">
-                        <div class="form-group">
-                            <label for="bezeichnung">Bezeichnung:</label>
-                            <input type="text" class="form-control" id="bezeichnung" placeholder="Type"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="kurzbeschreibung">Kurzbeschreibung:</label>
-                            <textarea class="form-control" rows="5" id="kurzbeschreibungModal"></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div class='modal-footer'>
-                    <input type='button' id='saveElement' class='btn btn-warning btn-sm' value='Speichern'></input>
-                    <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Abbrechen</button>
-                </div>
+<!-- Modal zum Ändern eines Elements -->
+<div class='modal fade' id='changeElementModal' role='dialog'>
+    <div class='modal-dialog modal-md'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h4 class='modal-title'>Element ändern</h4>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
-
+            <div class='modal-body' id='mbody'>
+                <form role="form">
+                    <div class="form-group">
+                        <label for="bezeichnung">Bezeichnung:</label>
+                        <input type="text" class="form-control" id="bezeichnung" placeholder="Type"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="kurzbeschreibungModal">Kurzbeschreibung:</label>
+                        <textarea class="form-control" rows="5" id="kurzbeschreibungModal"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class='modal-footer'>
+                <input type='button' id='saveElement' class='btn btn-warning btn-sm' value='Speichern'>
+                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
+            </div>
         </div>
+
     </div>
+</div>
 
-    <script>
-        // Tabellen formatieren
-        $(document).ready(function () {
-            $('#tableElementsInDB').DataTable({
-                "paging": true,
-                "columnDefs": [
-                    {
-                        "targets": [0],
-                        "visible": false,
-                        "searchable": false
-                    },
-                    {
-                        "targets": [4],
-                        "visible": true,
-                        "searchable": false,
-                        "sortable": false
-                    }
-                ],
-                "select": true,
-                "info": true,
-                "pagingType": "simple",
-                "lengthChange": false,
-                "pageLength": 10,
-                "order": [[1, "asc"]],
-                "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
-            });
+<script charset="utf-8" type="text/javascript">
+    var table1;
+    $(document).ready(function () {
+        table1 = new DataTable('#tableElementsInDB', {
+            paging: true,
+            columnDefs: [
+                {
+                    targets: [0],
+                    visible: false,
+                    searchable: false
+                },
+                {
+                    targets: [4],
+                    visible: true,
+                    searchable: false,
+                    orderable: false
+                }
+            ],
+            select: true,
+            info: true,
+            pagingType: 'simple',
+            lengthChange: false,
+            pageLength: 10,
+            order: [[1, 'asc']],
+            language: {
+                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
+                search: "",
+                searchPlaceholder: "Suche"
+            },
+            layout: {
+                topStart: null,
+                topEnd: null,
+                bottomStart: ['info', 'search'],
+                bottomEnd: ['paging'],
+            },
+            initComplete: function () {
+                // $('#dt-search-0').removeClass("form-control form-control-sm").addClass("btn btn-sm bg-white border border-secondary-subtle").appendTo('#tableCardHeader1');
+            }
+        });
 
 
-            // CLICK TABELLE ELEMENTE IN DB
-            let table1 = $('#tableElementsInDB').DataTable();
+        $('#tableElementsInDB tbody').on('click', 'tr', function () {
+            $("#deviceParametersInDB").hide();
+            $("#devicePrices").hide();
+            $("#deviceLieferanten").hide();
+            table1.$('tr.info').removeClass('info');
+            $(this).addClass('info');
+            let elementID = table1.row($(this)).data()[0];
+            document.getElementById("bezeichnung").value = table1.row($(this)).data()[2];
+            document.getElementById("kurzbeschreibungModal").value = table1.row($(this)).data()[3];
 
-            $('#tableElementsInDB tbody').on('click', 'tr', function () {
-
-                if ($(this).hasClass('info')) {
-                    //$(this).removeClass('info');
-                } else {
-                    $("#deviceParametersInDB").hide();
-                    $("#devicePrices").hide();
-                    $("#deviceLieferanten").hide();
-                    table1.$('tr.info').removeClass('info');
-                    $(this).addClass('info');
-                    let elementID = table1.row($(this)).data()[0];
-                    document.getElementById("bezeichnung").value = table1.row($(this)).data()[2];
-                    document.getElementById("kurzbeschreibungModal").value = table1.row($(this)).data()[3];
-
+            $.ajax({
+                url: "setSessionVariables.php",
+                data: {"elementID": elementID},
+                type: "GET",
+                success: function () {
                     $.ajax({
-                        url: "setSessionVariables.php",
+                        url: "getStandardElementParameters.php",
                         data: {"elementID": elementID},
                         type: "GET",
                         success: function (data) {
+                            $("#elementParametersInDB").html(data);
                             $.ajax({
-                                url: "getStandardElementParameters.php",
+                                url: "getElementPricesInDifferentProjects.php",
                                 data: {"elementID": elementID},
                                 type: "GET",
                                 success: function (data) {
-                                    $("#elementParametersInDB").html(data);
+                                    $("#elementPricesInOtherProjects").html(data);
                                     $.ajax({
-                                        url: "getElementPricesInDifferentProjects.php",
+                                        url: "getDevicesToElement.php",
                                         data: {"elementID": elementID},
                                         type: "GET",
                                         success: function (data) {
-                                            $("#elementPricesInOtherProjects").html(data);
-                                            $.ajax({
-                                                url: "getDevicesToElement.php",
-                                                data: {"elementID": elementID},
-                                                type: "GET",
-                                                success: function (data) {
-                                                    $("#devicesInDB").html(data);
-                                                }
-                                            });
+                                            $("#devicesInDB").html(data);
                                         }
                                     });
                                 }
@@ -313,55 +314,55 @@ $_SESSION["dbAdmin"] = "1";
                     });
                 }
             });
+
+
         });
 
+    });
 
-        // Element Gewerk Änderung
-        $('#elementGewerk').change(function () {
-            let gewerkID = this.value;
-            $.ajax({
-                url: "getElementGroupsByGewerk.php",
-                data: {"gewerkID": gewerkID},
-                type: "GET",
-                success: function (data) {
-                    $("#elementGroups").html(data);
-                }
-            });
+
+    // Element Gewerk Änderung
+    $('#elementGewerk').change(function () {
+        let gewerkID = this.value;
+        $.ajax({
+            url: "getElementGroupsByGewerk.php",
+            data: {"gewerkID": gewerkID},
+            type: "GET",
+            success: function (data) {
+                $("#elementGroups").html(data);
+            }
         });
+    });
 
-        //Element speichern
-        $("#saveElement").click(function () {
-            let bezeichnung = $("#bezeichnung").val();
-            let kurzbeschreibung = $("#kurzbeschreibungModal").val();
-            if (bezeichnung !== "") {
-                if (kurzbeschreibung !== "") {
-                    $.ajax({
-                        url: "saveElement.php",
-                        data: {"bezeichnung": bezeichnung, "kurzbeschreibung": kurzbeschreibung},
-                        type: "GET",
-                        success: function (data) {
-                            alert(data);
-                            $('#changeElementModal').modal('hide');
-                            $.ajax({
-                                url: "getElementsInDB.php",
-                                type: "GET",
-                                success: function (data) {
-                                    $("#elementsInDB").html(data);
-                                }
-                            });
-                        }
-                    });
-                } else {
-                    alert("Bitte alle Felder ausfüllen!");
-                }
+    //Element speichern
+    $("#saveElement").click(function () {
+        let bezeichnung = $("#bezeichnung").val();
+        let kurzbeschreibung = $("#kurzbeschreibungModal").val();
+        if (bezeichnung !== "") {
+            if (kurzbeschreibung !== "") {
+                $.ajax({
+                    url: "saveElement.php",
+                    data: {"bezeichnung": bezeichnung, "kurzbeschreibung": kurzbeschreibung},
+                    type: "GET",
+                    success: function (data) {
+                        alert(data);
+                        $('#changeElementModal').modal('hide');
+                        $.ajax({
+                            url: "getElementsInDB.php",
+                            type: "GET",
+                            success: function (data) {
+                                $("#elementsInDB").html(data);
+                            }
+                        });
+                    }
+                });
             } else {
                 alert("Bitte alle Felder ausfüllen!");
             }
-        });
-
-
-    </script>
-
-</body>
+        } else {
+            alert("Bitte alle Felder ausfüllen!");
+        }
+    });
+</script>
 
 </html>

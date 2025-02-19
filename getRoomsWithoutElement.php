@@ -6,7 +6,7 @@ check_login();
 session_start();
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
 <head>
@@ -24,7 +24,7 @@ $sql = "SELECT tabelle_räume.idTABELLE_Räume, tabelle_räume.Raumnr, tabelle_r
 			ORDER BY tabelle_räume.Raumnr;";
 $result = $mysqli->query($sql);
 
-//<button type='button' class='btn btn-outline-success btn-xs mb-2' id='addElements' data-toggle='modal' data-target='#addElementsToRoomModal'><i class='fas fa-plus'></i></button>
+//<button type='button' class='btn btn-outline-success btn-sm mb-2' id='addElements' data-toggle='modal' data-target='#addElementsToRoomModal'><i class='fas fa-plus'></i></button>
 echo " <table class='table table-striped table-bordered table-sm table-hover' id='tableRoomsWithoutElement'>
 	<thead><tr>
         <th>id</th>

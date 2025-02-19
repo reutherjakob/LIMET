@@ -318,7 +318,7 @@ include "_format.php";
                 table.$('tr.info').removeClass('info');
                 $(this).addClass('info');
                 var elementID = table.row($(this)).data()[1];
-                var variantenID = table.row($(this)).data()[2];
+                let variantenID = table.row($(this)).data()[2];
                 var losID = table.row($(this)).data()[3];
                 var bestand = table.row($(this)).data()[4];
                 var raumbereich = table.row($(this)).data()[9];

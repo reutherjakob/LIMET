@@ -1,5 +1,4 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
@@ -12,7 +11,7 @@
 <body>
 
 <?php
-// V2.0: 2024-11-29, Reuther & Fux
+// V3.0: 2025 Rework: Reuther & Fux
 include "_utils.php";
 check_login();
 $mysqli = utils_connect_sql();
@@ -32,10 +31,10 @@ $sql = "SELECT tabelle_geraete.idTABELLE_Geraete, tabelle_geraete.GeraeteID, tab
 $stmt = $mysqli->prepare($sql);
 $stmt->bind_param('i', $elementID); // 'i' specifies the type as integer
 $stmt->execute();
-$result = $stmt->get_result() ;
+$result = $stmt->get_result();
 $stmt->close();
 
-echo "<table class='table table-striped table-sm' id='tableDevicesToElement' cellspacing='0' width='100%'>
+echo "<table class='table table-striped table-sm' id='tableDevicesToElement'>
 	<thead><tr>
 	<th>ID</th>
 	<th>GeraeteID</th>
@@ -55,16 +54,16 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . $row["Typ"] . "</td>";
     echo "<td>" . $row["Kurzbeschreibung"] . "</td>";
     echo "<td>" . $row["idtabelle_hersteller"] . "</td>";
-    echo "<td><button type='button' id='" . $row["idTABELLE_Geraete"] . "' class='btn btn-outline-dark btn-xs' value='changeDevice' data-bs-toggle='modal' data-bs-target='#addDeviceModal'><i class='fas fa-pencil-alt'></i></button></td>";
+    echo "<td><button type='button' id='" . $row["idTABELLE_Geraete"] . "' class='btn btn-outline-dark btn-sm' value='changeDevice' data-bs-toggle='modal' data-bs-target='#addDeviceModal'><i class='fas fa-pencil-alt'></i></button></td>";
     echo "</tr>";
 }
 
 echo "</tbody></table>";
-echo "<input type='button' id='addDeviceModalButton' class='btn btn-success btn-sm' value='Gerät hinzufügen' data-bs-toggle='modal' data-bs-target='#addDeviceModal'></input>";
-echo "<input type='button' id='" .$elementID . "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggle='modal' data-bs-target='#deviceComparisonModal'></input>";
+echo "<input type='button' id='addDeviceModalButton' class='btn btn-success btn-sm' value='Gerät hinzufügen' data-bs-toggle='modal' data-bs-target='#addDeviceModal'>";
+echo "<input type='button' id='" . $elementID . "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggle='modal' data-bs-target='#deviceComparisonModal'>";
 ?>
 
-<!-- Modal zum Anlegen eines Gerätes -->
+
 <div class='modal fade' id='addDeviceModal' role='dialog'>
     <div class='modal-dialog modal-md'>
         <!-- Modal content-->
@@ -79,21 +78,17 @@ echo "<input type='button' id='" .$elementID . "' class='btn btn-default btn-sm'
                     $sql = "SELECT `tabelle_hersteller`.`idtabelle_hersteller`, `tabelle_hersteller`.`Hersteller`
 									FROM `LIMET_RB`.`tabelle_hersteller`
 									ORDER BY `tabelle_hersteller`.`Hersteller`;";
-
-
                     $result = $mysqli->query($sql);
-
                     echo "<div class='form-group'>
                         <label for='hersteller'>Hersteller:</label>
                         <label class='float-right'>
-                            <button type='button' id='openAddManufacturer' class='btn btn-xs btn-outline-dark ' value='openAddManufacturer' data-bs-toggle='modal' data-bs-target='#addManufacturerModal'><i class='far fa-plus-square'></i></button>
+                            <button type='button' id='openAddManufacturer' class='btn btn-sm btn-outline-dark ' value='openAddManufacturer' data-bs-toggle='modal' data-bs-target='#addManufacturerModal'><i class='far fa-plus-square'></i></button>
                         </label>
                             <select class='form-control form-control-sm' id='hersteller' name='hersteller'>";
                     while ($row = $result->fetch_assoc()) {
                         echo "<option value=" . $row["idtabelle_hersteller"] . ">" . $row["Hersteller"] . "</option>";
                     }
                     echo "</select></div>";
-
                     $mysqli->close();
                     ?>
                     <div class="form-group">
@@ -107,15 +102,14 @@ echo "<input type='button' id='" .$elementID . "' class='btn btn-default btn-sm'
                 </form>
             </div>
             <div class='modal-footer'>
-                <input type='button' id='addDevice' class='btn btn-success btn-sm' value='Hinzufügen'></input>
-                <input type='button' id='saveDevice' class='btn btn-warning btn-sm' value='Speichern'></input>
+                <input type='button' id='addDevice' class='btn btn-success btn-sm' value='Hinzufügen'>
+                <input type='button' id='saveDevice' class='btn btn-warning btn-sm' value='Speichern'>
                 <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
             </div>
         </div>
 
     </div>
 </div>
-
 
 <!-- Modal zum Zeigen des Parametervergleichs -->
 <div class='modal fade' id='deviceComparisonModal' role='dialog'>
@@ -152,98 +146,101 @@ echo "<input type='button' id='" .$elementID . "' class='btn btn-default btn-sm'
                 </div>
             </div>
             <div class='modal-footer'>
-                <input type='button' id='addManufacturer' class='btn btn-success btn-sm' value='Hinzufügen'></input>
+                <input type='button' id='addManufacturer' class='btn btn-success btn-sm' value='Hinzufügen'>
                 <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Schließen</button>
             </div>
         </div>
     </div>
 </div>
 
-
-<script>
+<!--suppress ES6ConvertVarToLetConst -->
+<script charset="utf-8" type="text/javascript">
     var deviceID;
+    var tableDevicesToElement;
     $(document).ready(function () {
-        $("#tableDevicesToElement").DataTable({
-            "columnDefs": [
+        tableDevicesToElement = $('#tableDevicesToElement').DataTable({
+            columnDefs: [
                 {
-                    "targets": [0, 5],
-                    "visible": false,
-                    "searchable": false
+                    targets: [0, 5],
+                    visible: false,
+                    searchable: false
                 },
                 {
-                    "targets": [6],
-                    "searchable": false,
-                    "sortable": false
+                    targets: [6],
+                    searchable: false,
+                    sortable: false
                 }
             ],
-            "select": true,
-            "paging": true,
-            "pagingType": "simple",
-            "lengthChange": false,
-            "pageLength": 10,
-            "searching": false,
-            "info": false,
-            "order": [[1, "asc"]],
-
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+            select: true,
+            paging: true,
+            pagingType: 'simple',
+            lengthChange: false,
+            pageLength: 10,
+            searching: true, // Enable searching
+            info: false,
+            order: [[1, 'asc']],
+            language: {
+                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
+                search: "", //'<i class="fa fa-filter" aria-hidden="true"></i>', // Custom search icon
+                searchPlaceholder: 'Suche...' // Custom placeholder
+            },
+            layout: {
+                topStart: 'paging',
+                topEnd: 'search',
+                bottomStart: null,
+                bottomEnd: null
+            }
         });
 
-
-        var table1 = $('#tableDevicesToElement').DataTable();
-
         $('#tableDevicesToElement tbody').on('click', 'tr', function () {
-            if ($(this).hasClass('info')) {
-            } else {
-                $("#deviceParametersInDB").show();
-                $("#devicePrices").show();
-                $("#deviceLieferanten").show();
-                table1.$('tr.info').removeClass('info');
-                $(this).addClass('info');
-                deviceID = table1.row($(this)).data()[0];
-                document.getElementById("hersteller").value = table1.row($(this)).data()[5];
-                document.getElementById("type").value = table1.row($(this)).data()[3];
-                document.getElementById("kurzbeschreibung").value = table1.row($(this)).data()[4];
+            $("#deviceParametersInDB").show();
+            $("#devicePrices").show();
+            $("#deviceLieferanten").show();
+            deviceID = tableDevicesToElement.row($(this)).data()[0];
+            document.getElementById("hersteller").value = tableDevicesToElement.row($(this)).data()[5];
+            document.getElementById("type").value = tableDevicesToElement.row($(this)).data()[3];
+            document.getElementById("kurzbeschreibung").value = tableDevicesToElement.row($(this)).data()[4];
 
-                $.ajax({
-                    url: "getStandardDeviceParameters.php",
-                    data: {"deviceID": deviceID},
-                    type: "GET",
-                    success: function (data) {
-                        $("#deviceParametersInDB").html(data);
-                        $.ajax({
-                            url: "getDevicePrices.php",
-                            data: {"deviceID": deviceID},
-                            type: "GET",
-                            success: function (data) {
-                                $("#devicePrices").html(data);
-                                $.ajax({
-                                    url: "getLieferantenToDevices.php",
-                                    type: "GET",
-                                    success: function (data) {
-                                        $("#deviceLieferanten").html(data);
-                                        $.ajax({
-                                            url: "getDeviceServicePrices.php",
-                                            data: {"deviceID": deviceID},
-                                            type: "GET",
-                                            success: function (data) {
-                                                $("#deviceServicePrices").html(data);
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-            }
+            $.ajax({
+                url: "getStandardDeviceParameters.php",
+                data: {"deviceID": deviceID},
+                type: "GET",
+                success: function (data) {
+                    $("#deviceParametersInDB").html(data);
+                    $.ajax({
+                        url: "getDevicePrices.php",
+                        data: {"deviceID": deviceID},
+                        type: "GET",
+                        success: function (data) {
+                            $("#devicePrices").html(data);
+                            $.ajax({
+                                url: "getLieferantenToDevices.php",
+                                type: "GET",
+                                success: function (data) {
+                                    $("#deviceLieferanten").html(data);
+                                    $.ajax({
+                                        url: "getDeviceServicePrices.php",
+                                        data: {"deviceID": deviceID},
+                                        type: "GET",
+                                        success: function (data) {
+                                            $("#deviceServicePrices").html(data);
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
         });
     });
 
     //Geraet hinzufügen
     $("#addDevice").click(function () {
-        var hersteller = $("#hersteller").val();
-        var type = $("#type").val();
-        var kurzbeschreibung = $("#kurzbeschreibung").val();
+        let hersteller = $("#hersteller").val();
+        let type = $("#type").val();
+        let kurzbeschreibung = $("#kurzbeschreibung").val();
 
         if (hersteller !== "" && type !== "" && kurzbeschreibung !== "") {
             $('#addDeviceModal').modal('hide');
@@ -269,9 +266,9 @@ echo "<input type='button' id='" .$elementID . "' class='btn btn-default btn-sm'
 
     //Geraet speichern
     $("#saveDevice").click(function () {
-        var hersteller = $("#hersteller").val();
-        var type = $("#type").val();
-        var kurzbeschreibung = $("#kurzbeschreibung").val();
+        let hersteller = $("#hersteller").val();
+        let type = $("#type").val();
+        let kurzbeschreibung = $("#kurzbeschreibung").val();
 
         if (hersteller !== "" && type !== "" && kurzbeschreibung !== "") {
             $('#addDeviceModal').modal('hide');
@@ -315,8 +312,7 @@ echo "<input type='button' id='" .$elementID . "' class='btn btn-default btn-sm'
 
     //Gerätevergleich anzeigen
     $("input[value='Geräte vergleichen']").click(function () {
-        var ID = this.id;
-
+        let ID = this.id;
         $.ajax({
             url: "getDeviceComparison.php",
             type: "GET",
@@ -329,9 +325,8 @@ echo "<input type='button' id='" .$elementID . "' class='btn btn-default btn-sm'
 
     //Hersteller hinzufügen
     $("#addManufacturer").click(function () {
-        var manufacturer = $("#manufacturer").val();
-        //var elementID = <?php $_SESSION["elementID"] ?>;
-
+        let manufacturer = $("#manufacturer").val();
+        //var elementID = // $_SESSION["elementID"];
         if (manufacturer !== "") {
             $('#addManufacturerModal').modal('hide');
             $('#addDeviceModal').modal('hide');
@@ -355,8 +350,6 @@ echo "<input type='button' id='" .$elementID . "' class='btn btn-default btn-sm'
             alert("Bitte Hersteller ausfüllen!");
         }
     });
-
-
 </script>
 </body>
 </html>

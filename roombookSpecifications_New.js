@@ -506,6 +506,7 @@ function table_click() {
                                         $cardHeader2.append($('#room-action-buttons'));
                                     }, 100)
 
+                                    console.log("Moved: dt_search_counter: ", dt_search_counter);
                                 },
                                 error: function (jqXHR, textStatus, errorThrown) {
                                     console.error("AJAX call failed: " + textStatus + ", " + errorThrown);

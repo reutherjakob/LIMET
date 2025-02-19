@@ -2,7 +2,7 @@
 session_start();
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -45,7 +45,7 @@ if(!isset($_SESSION["username"]))
 	
 	while($row = $result->fetch_assoc()) {
 	    echo "<tr>";           
-            echo "<td><button type='button' id='".$row["id_Standortelement"]."' class='btn btn-danger btn-xs' value='deleteStandortElement'><i class='fas fa-minus-circle'></i></button></td>";
+            echo "<td><button type='button' id='".$row["id_Standortelement"]."' class='btn btn-danger btn-sm' value='deleteStandortElement'><i class='fas fa-minus-circle'></i></button></td>";
             echo "<td>".$row["Variante"]."</td>";
 	    echo "<td>".$row["Raumnr"]."</td>";
 	    echo "<td>".$row["Raumbezeichnung"]."</td>";
@@ -56,7 +56,7 @@ if(!isset($_SESSION["username"]))
 	}	
 	echo "</tbody></table></div>";
         //echo "<input type='button' id='addStandortElementModalButton' class='btn btn-success btn-sm' value='Standortelement hinzufügen' data-toggle='modal' data-target='#addStandortElementModal'></input>";
-        echo "<button type='button' id='addStandortElementModalButton' class='btn ml-4 mt-2 btn-success btn-xs' value='Standortelement hinzufügen' data-toggle='modal' data-target='#addStandortElementModal'><i class='fas fa-plus-square'></i></button>";
+        echo "<button type='button' id='addStandortElementModalButton' class='btn ml-4 mt-2 btn-success btn-sm' value='Standortelement hinzufügen' data-toggle='modal' data-target='#addStandortElementModal'><i class='fas fa-plus-square'></i></button>";
 	
         
         ?>

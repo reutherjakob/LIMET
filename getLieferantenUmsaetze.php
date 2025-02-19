@@ -1,26 +1,20 @@
-<?php
-include "_utils.php";
-include "_format.php";
-check_login();
-?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-
+<!DOCTYPE html  >
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-
     <!--DATEPICKER -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css"/>
     <script type='text/javascript'
             src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
-
+    <title></title>
 </head>
 <body>
-
+<!-- Rework 2025 -->
 <?php
+include "_utils.php";
+include "_format.php";
+check_login();
 $mysqli = utils_connect_sql();
 
 if ($_GET["lieferantenID"] != "") {
@@ -52,7 +46,7 @@ while ($row = $result->fetch_assoc()) {
 }
 
 echo "</tbody></table>";
-echo "<input type='button' id='addUmsatzModal' class='btn btn-success btn-sm' value='Umsatz hinzufügen' data-toggle='modal' data-target='#addUmsatzToLieferantModal'></input>";
+echo "<input type='button' id='addUmsatzModal' class='btn btn-success btn-sm' value='Umsatz hinzufügen'  data-bs-toggle='modal' data-bs-target='#addUmsatzToLieferantModal'>";
 
 ?>
 
@@ -63,14 +57,14 @@ echo "<input type='button' id='addUmsatzModal' class='btn btn-success btn-sm' va
         <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
                 <h4 class='modal-title'>Umsatz hinzufügen</h4>
             </div>
             <div class='modal-body' id='mbody'>
                 <form role="form">
                     <div class="form-group">
                         <label for="umsatz">Umsatz:</label>
-                        <input type="umsatz" class="form-control form-control-sm" id="umsatz" placeholder="Komma ."/>
+                        <input type="Umsatz" class="form-control form-control-sm" id="umsatz" placeholder="Komma ."/>
                     </div>
                     <div class="form-group">
                         <label for="bereich">Geschäftsbereich:</label>
@@ -85,42 +79,40 @@ echo "<input type='button' id='addUmsatzModal' class='btn btn-success btn-sm' va
             </div>
             <div class='modal-footer'>
                 <input type='button' id='addUmsatz' class='btn btn-success btn-sm' value='Speichern'
-                       data-dismiss='modal'></input>
-                <button type='button' class='btn btn-danger btn-sm' data-dismiss='modal'>Abbrechen</button>
+                       data-bs-dismiss='modal'>
+                <button type='button' class='btn btn-danger btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
             </div>
         </div>
 
     </div>
 </div>
 
-
 <script>
-
-
-    $("#tableLieferantenUmsaetze").DataTable({
-        "select": true,
-        "paging": false,
-        "searching": false,
-        "info": false,
-        "order": [[3, "desc"]];
-        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
-        "scrollY": '20vh',
-        "scrollCollapse": true,
-        "columnDefs": [
+    new DataTable('#tableLieferantenUmsaetze', {
+        select: true,
+        paging: false,
+        searching: false,
+        info: false,
+        order: [[3, 'desc']],
+        language: {
+            url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json'
+        },
+        scrollY: '20vh',
+        scrollCollapse: true,
+        columnDefs: [
             {
-                "targets": [0],
-                "visible": false,
-                "searchable": false
+                targets: [0],
+                visible: false,
+                searchable: false
             }
-        ],
+        ]
     });
 
     //Preis zu Geraet hinzufügen
     $("#addUmsatz").click(function () {
-        var umsatz = $("#umsatz").val();
-        var bereich = $("#bereich").val();
-        var jahr = $("#jahr").val();
-
+        let umsatz = $("#umsatz").val();
+        let bereich = $("#bereich").val();
+        let jahr = $("#jahr").val();
         if (umsatz !== "" && bereich !== "" && jahr !== "") {
             $.ajax({
                 url: "addUmsatzToLieferant.php",
@@ -137,13 +129,11 @@ echo "<input type='button' id='addUmsatzModal' class='btn btn-success btn-sm' va
                     });
                 }
             });
-
         } else {
             alert("Bitte alle Felder ausfüllen!");
         }
     });
 
 </script>
-
 </body>
 </html>

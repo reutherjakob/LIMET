@@ -174,7 +174,7 @@ $mysqli->close();
                 table.$('tr.info').removeClass('info');
                 $(this).addClass('info');
                 var elementID = table.row($(this)).data()[1];
-                var variantenID = table.row($(this)).data()[2];
+                let variantenID = table.row($(this)).data()[2];
                 var id = table.row($(this)).data()[0];
                 var stk = table.row($(this)).data()[3];
 

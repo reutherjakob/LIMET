@@ -36,7 +36,7 @@ session_start();
 
  <style>
 
-.btn-xs {
+.btn-sm {
   height: 22px;
   padding: 2px 5px;
   font-size: 12px;

@@ -41,7 +41,7 @@ function abk_vz($result4, $pdf, $f_size) {
 function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dataChanges) {
 
     // $result4 = Abkürzungen
-    // -------------------------Elemente parameter ------------------------- 
+    // -------------------------Elemente parameter -------------------------
     $elementParamInfos = array();
     $elementParamInfosCounter = 0;
     while ($row = $result3->fetch_assoc()) {
@@ -107,12 +107,9 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dat
     $lastXCoordinate = $pdf->GetX();
     $lastYCoordinate = $pdf->GetY();
     $pdf->SetXY($lastXCoordinateHeader, $lastYCoordinateHeader);
-
     $pdf->MultiCell($lastXCoordinate - $lastXCoordinateHeader, $rowHeight, $lastCategory, 1, 'C', 0, 0);
-
     $pdf->SetXY($lastXCoordinate, $lastYCoordinate);
     $pdf->Ln($rowHeight);
-//    $pdf->SetFont('courier', '', $f_size);
 
     $is_even_row = 0;
 

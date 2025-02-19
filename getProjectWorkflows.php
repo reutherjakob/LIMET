@@ -2,7 +2,7 @@
 session_start();
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -43,7 +43,7 @@ if(!isset($_SESSION["username"]))
             echo "<tr>";
             echo "<td>".$row["idtabelle_workflow"]."</td>";
             echo "<td>".$row["Name"]."</td>";
-            echo "<td><button type='button' id='".$row["idtabelle_workflow"]."' class='btn btn-outline-success btn-xs' value='addWorkflow'><i class='fas fa-plus'></i></button></td>";
+            echo "<td><button type='button' id='".$row["idtabelle_workflow"]."' class='btn btn-outline-success btn-sm' value='addWorkflow'><i class='fas fa-plus'></i></button></td>";
             echo "</tr>";
         }
         echo "</tbody></table>";

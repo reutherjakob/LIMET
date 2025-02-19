@@ -12,7 +12,6 @@ init_page_serversides("", "x");
     <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
     <link rel="icon" href="iphone_favicon.png"/>
 
-
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -25,52 +24,37 @@ init_page_serversides("", "x");
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
 
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 
-    <style>
-        .table > thead > tr > th {
-            background-color: rgba(100, 140, 25, 0.15);
-        }
-
-        .dt-button {
-            height: 31px;
-            margin: 2px 2px 15px 2px;
-
-        }
-
-        .btn {
-            margin: 2px 2px -2px -2px;
-        }
-    </style>
 </head>
 <body>
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class="card">
-        <div class="card-header-s" id="HeaderTabelleCard">
+        <div class="card-header px-1 py-1" id="HeaderTabelleCard">
             <div class="row">
                 <div class="col-1 d-inline-flex justify-content-start" id="">Select</div>
-                <div class="col-5 d-inline-flex justify-content-start" id="sub1"></div>
-                <div class="col-5 d-inline-flex justify-content-start" id="">
+                <div class="col-5 d-inline-flex justify-content-start " id="sub1"></div>
+                <div class="col-5 d-inline-flex justify-content-start " id="">
 
-                    <label for="dateSelect"></label> <input type="date" id="dateSelect" name="dateSelect"> &ensp;</div>
+                    <label for="dateSelect"></label> <input type="date" id="dateSelect" name="dateSelect"> &ensp;
+                </div>
             </div>
         </div>
 
-        <div class="card-header-s" id="HeaderTabelleCard2">
+        <div class="card-header px-1 py-1" id="HeaderTabelleCard2">
             <div class="row">
                 <div class="col-1 d-inline-flex justify-content-start" id="">Bauangaben</div>
-                <div class="col-5 d-inline-flex justify-content-start" id="sub23"></div>
-                <div class="col-6 d-inline-flex justify-content-start" id="sub2"></div>
+                <div class="col-5 d-inline-flex justify-content-start " id="sub23"></div>
+                <div class="col-6 d-inline-flex justify-content-start " id="sub2"></div>
             </div>
         </div>
-        <div class="card-header-s">
+        <div class="card-header px-1 py-1 ">
             <div class="row">
                 <div class="col-1 d-inline-flex justify-content-start" id=""> Raumbuch</div>
-                <div class="col-5 d-inline-flex justify-content-start" id="sub21"></div>
-                <div class="col-6 d-inline-flex justify-content-start" id="sub22">
+                <div class="col-5 d-inline-flex justify-content-start " id="sub21"></div>
+                <div class="col-6 d-inline-flex justify-content-start " id="sub22">
                 </div>
             </div>
 
@@ -173,8 +157,8 @@ init_page_serversides("", "x");
 
         const buttonNewReports = [
             {text: "BAU A3", action: () => generateNewReports("BAUANGABEN A3", $("#dateSelect").val())},
-            {text: "ohne Lab", action: () => generateNewReports("BAUANGABEN A3 3", $("#dateSelect").val())},
-            {text: "ohne Datum", action: () => generateNewReports("BAUANGABEN A3 2", $("#dateSelect").val())},
+            //{text: "ohne Lab", action: () => generateNewReports("BAUANGABEN A3 3", $("#dateSelect").val())},
+            //{text: "ohne Datum", action: () => generateNewReports("BAUANGABEN A3 2", $("#dateSelect").val())},
             {
                 text: "Elem./Raum (w/Bestand)",
                 action: () => generateNewReports("Elem./Raum (w/Bestand)", $("#dateSelect").val())

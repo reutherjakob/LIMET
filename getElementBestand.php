@@ -3,7 +3,7 @@ include "_utils.php";
 include "_format.php";
 check_login();
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
@@ -54,7 +54,7 @@ $sql = "SELECT `tabelle_bestandsdaten`.`idtabelle_bestandsdaten`, tabelle_bestan
 $result = $mysqli->query($sql);
 $row_cnt = $result->num_rows;
 
-//    echo " <button type='button' id='addBestandsElement' class='btn ml-4 mt-2 btn-outline-success btn-xs' value='Hinzufügen' data-toggle='modal' data-target='#addBestandModal'><i class='fas fa-plus'></i></button>";
+//    echo " <button type='button' id='addBestandsElement' class='btn ml-4 mt-2 btn-outline-success btn-sm' value='Hinzufügen' data-toggle='modal' data-target='#addBestandModal'><i class='fas fa-plus'></i></button>";
 
 
 echo "<div class='table-responsive'><table class='table table-striped table-bordered table-sm' id='tableElementBestandsdaten' cellspacing='0' width='100%'>
@@ -74,7 +74,7 @@ echo "<div class='table-responsive'><table class='table table-striped table-bord
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
     echo "<td>" . $row["idtabelle_bestandsdaten"] . "</td>";
-    echo "<td><button type='button' id='" . $row["idtabelle_bestandsdaten"] . "' class='btn btn-danger btn-xs' value='deleteBestand'><i class='fas fa-minus-circle'></i></button></td>";
+    echo "<td><button type='button' id='" . $row["idtabelle_bestandsdaten"] . "' class='btn btn-danger btn-sm' value='deleteBestand'><i class='fas fa-minus-circle'></i></button></td>";
     echo "<td><input class='form-control form-control-sm' type='text' id='inventNr" . $row["idtabelle_bestandsdaten"] . "' value='" . $row["Inventarnummer"] . "' ></input></td>";
     echo "<td><input class='form-control form-control-sm' type='text' id='serienNr" . $row["idtabelle_bestandsdaten"] . "' value='" . $row["Seriennummer"] . "' ></input></td>";
     echo "<td><input class='form-control form-control-sm' type='text' id='yearNr" . $row["idtabelle_bestandsdaten"] . "' value='" . $row["Anschaffungsjahr"] . "' ></input></td>";
@@ -96,7 +96,7 @@ while ($row = $result->fetch_assoc()) {
     }
     echo "</select></td>";
     echo "<td><input class='form-control form-control-sm' type='text' id='currentPlace" . $row["idtabelle_bestandsdaten"] . "' value='" . $row["Aktueller Ort"] . "' ></input></td>";
-    echo "<td><button type='button' id='" . $row["idtabelle_bestandsdaten"] . "' class='btn btn-warning btn-xs' value='saveBestand'><i class='far fa-save'></i></button></td>";
+    echo "<td><button type='button' id='" . $row["idtabelle_bestandsdaten"] . "' class='btn btn-warning btn-sm' value='saveBestand'><i class='far fa-save'></i></button></td>";
     echo "<td>";
     if ($row_cnt == $_SESSION["stk"]) {
         echo "1";

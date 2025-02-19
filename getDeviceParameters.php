@@ -2,7 +2,7 @@
 session_start();
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -47,7 +47,7 @@ if(!isset($_SESSION["username"]))
 
         while($row = $result->fetch_assoc()) {
             echo "<tr>";						 
-            echo "<td><button type='button' id='".$row["tabelle_parameter_idTABELLE_Parameter"]."' class='btn btn-outline-danger btn-xs' value='deleteParameter'><i class='fas fa-minus'></i></button></td>";
+            echo "<td><button type='button' id='".$row["tabelle_parameter_idTABELLE_Parameter"]."' class='btn btn-outline-danger btn-sm' value='deleteParameter'><i class='fas fa-minus'></i></button></td>";
             echo "<td>".$row["Kategorie"]."</td>";
             echo "<td>".$row["Bezeichnung"]."</td>";
             echo "<td><input type='text' id='wert".$row["tabelle_parameter_idTABELLE_Parameter"]."' value='".$row["Wert"]."'></input></td>";

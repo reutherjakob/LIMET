@@ -51,8 +51,6 @@ function get_project()
     echo '</script>';
 }
 
-//function nl2br($string){  https://www.php.net/manual/de/function.nl2br.php
-
 function br2nl($string)
 {
     if ($string != null) {

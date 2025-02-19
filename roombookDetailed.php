@@ -91,7 +91,7 @@ init_page_serversides();
                         echo "</td>";
                         echo "<td>";
                         if ($row["Anmerkung FunktionBO"] != null) {
-                            echo "<button type='button' class='btn btn-xs btn-outline-dark' style='height=20px; ' id='buttonBO' value='" . $row["Anmerkung FunktionBO"] . "' data-bs-toggle='modal' data-bs-target='#boModal'><i class='fa fa-comment'></i></button>";
+                            echo "<button type='button' class='btn btn-sm btn-outline-dark' style='height=20px; ' id='buttonBO' value='" . $row["Anmerkung FunktionBO"] . "' data-bs-toggle='modal' data-bs-target='#boModal'><i class='fa fa-comment'></i></button>";
                         }
                         echo "</td>";
                         echo "</tr>";
@@ -126,7 +126,7 @@ init_page_serversides();
             <div class="mt-4 card">
                 <div class="card-header" id="BestandsdatenCardHeader">Bestandsdaten
                     <button type='button' id='addBestandsElement'
-                            class='btn ml-4 mt-2 btn-outline-success btn-xs float-right' value='Hinzufügen'
+                            class='btn ml-4 mt-2 btn-outline-success btn-sm float-right' value='Hinzufügen'
                             data-bs-toggle='modal' data-bs-target='#addBestandModal'><i class='fas fa-plus'></i>
                     </button>
                     <button type='button' id='reloadBestand'
@@ -145,7 +145,7 @@ init_page_serversides();
     <hr>
     <div class="mt-4 card">
         <div class="card-header">
-            <button type="button" class="btn btn-outline-dark btn-xs" id="showDBElementData"><i
+            <button type="button" class="btn btn-outline-dark btn-sm" id="showDBElementData"><i
                         class="fas fa-caret-right"></i></button>
             Datenbank-Elemente
         </div>

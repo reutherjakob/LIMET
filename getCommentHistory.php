@@ -1,20 +1,16 @@
-<?php
-include "_utils.php";
-check_login();
-?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <title></title>
 </head>
 <body>
-
+<!-- Rework 2025 -->
 
 <?php
+include "_utils.php";
+check_login();
 $mysqli = utils_connect_sql();
-
 $sql = "SELECT tabelle_rb_aenderung.Kurzbeschreibung,
         tabelle_rb_aenderung.Kurzbeschreibung_copy1,
         tabelle_rb_aenderung.Timestamp,
@@ -26,7 +22,7 @@ $sql = "SELECT tabelle_rb_aenderung.Kurzbeschreibung,
                 ORDER BY tabelle_rb_aenderung.Timestamp DESC;";
 $result = $mysqli->query($sql);
 
-echo "<table class='table table-striped table-bordered table-sm' id='historyTable' cellspacing='0' width='100%'>
+echo "<table class='table table-striped table-bordered table-sm' id='historyTable'>
 	<thead><tr>
 	<th>Datum</th>
 	<th>user</th>
@@ -55,17 +51,13 @@ $mysqli->close();
 
 
 <script>
-
-    //$(document).ready(function(){
     $("#historyTable").DataTable({
-        "paging": false,
-        "order": [[0, "desc"]],
-        "searching": true,
-        "info": false,
-        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+        paging: false,
+        order: [[0, "desc"]],
+        searching: true,
+        info: false,
+        language: {url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
     });
-    //} );
-
 </script>
 
 </body>

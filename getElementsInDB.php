@@ -3,8 +3,7 @@
 include "_utils.php";
 check_login();
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 
 <head>
@@ -31,11 +30,11 @@ echo "<table class='table table-striped table-condensed' id='tableElementsInDB' 
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
     echo "<td>" . $row["idTABELLE_Elemente"] . "</td>";
-    echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-success btn-xs' value='addElement' data-toggle='modal' data-target='#addRoomElementModal'><span class='glyphicon glyphicon-plus'></span></button></td>";
+    echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-success btn-sm' value='addElement' data-toggle='modal' data-target='#addRoomElementModal'><span class='glyphicon glyphicon-plus'></span></button></td>";
     echo "<td>" . $row["ElementID"] . "</td>";
     echo "<td>" . $row["Bezeichnung"] . "</td>";
     echo "<td>" . $row["Kurzbeschreibung"] . "</td>";
-    echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-default btn-xs' value='changeElement' data-toggle='modal' data-target='#changeElementModal'><span class='glyphicon glyphicon-pencil'></span></button></td>";
+    echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-default btn-sm' value='changeElement' data-toggle='modal' data-target='#changeElementModal'><span class='glyphicon glyphicon-pencil'></span></button></td>";
     echo "</tr>";
 
 }

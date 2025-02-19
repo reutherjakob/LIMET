@@ -57,7 +57,7 @@ include 'projects_changeProjectModal.html';
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id='tableProjects'
-                               class='table table-sm compact table-hover table-striped table-borderless border border-light border-5'>
+                               class='table table-sm compact table-hover table-striped  border border-light border-5'>
                             <thead>
                             <tr>
                                 <th>ID</th><!-- invis -->
@@ -86,7 +86,7 @@ include 'projects_changeProjectModal.html';
                             while ($row = $result->fetch_assoc()) {
                                 echo "<tr>";
                                 echo "<td>" . $row["idTABELLE_Projekte"] . "</td>";
-                                echo "<td> <button type='button' id='" . $row["idTABELLE_Projekte"] . "' class='btn btn-outline-dark btn-xs' value='changeProject' data-bs-toggle='modal' data-bs-target='#changeProjectModal'><i class='fas fa-pencil-alt'></i></button></td>";
+                                echo "<td> <button type='button' id='" . $row["idTABELLE_Projekte"] . "' class='btn btn-outline-dark btn-sm' value='changeProject' data-bs-toggle='modal' data-bs-target='#changeProjectModal'><i class='fas fa-pencil-alt'></i></button></td>";
                                 echo "<td>" . $row["Interne_Nr"] . "</td>";
                                 echo "<td><b>" . $row["Projektname"] . "</b></td>";
                                 echo "<td>";
@@ -164,7 +164,6 @@ include 'projects_changeProjectModal.html';
     let searchCounter = 1;
     var table;
     $(document).ready(function () {
-
         table = $('#tableProjects').DataTable({
             columnDefs: [
                 {

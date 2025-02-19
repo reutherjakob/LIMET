@@ -2,7 +2,7 @@
 session_start();
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -85,7 +85,7 @@ if ($result->num_rows == 0) {
         }
         echo "</td>";
         echo "<td>" . $row["user"] . "</td>";
-        echo "<td><button type='button' id='" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "' class='btn btn-xs btn-default' value='saveWorkflowteil'><i class='far fa-save'></i></button></td>";
+        echo "<td><button type='button' id='" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "' class='btn btn-sm btn-default' value='saveWorkflowteil'><i class='far fa-save'></i></button></td>";
         echo "</tr>";
 
 

@@ -36,7 +36,7 @@ session_start();
 
  <style>
 
-.btn-xs {
+.btn-sm {
   height: 22px;
   padding: 2px 5px;
   font-size: 12px;
@@ -195,7 +195,7 @@ if(!isset($_SESSION["username"]))
                             }         
                                 echo "<div class='m-1 card'>";
                                     echo "<div class='card-header'>                                            
-                                            <button type='button' class='float-right btn btn-outline-dark btn-xs' value='deleteImage' id='".$row["idtabelle_Files"]."'><i class='fas fa-trash-alt'></i></button>                                            
+                                            <button type='button' class='float-right btn btn-outline-dark btn-sm' value='deleteImage' id='".$row["idtabelle_Files"]."'><i class='fas fa-trash-alt'></i></button>                                            
                                          </div>";
                                     echo "<div class='card-body'>";
                                         echo "<img src='https://limet-rb.com/Dokumente_RB/Images/".$row['Name']."' height='200' width='200'>";

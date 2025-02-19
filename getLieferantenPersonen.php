@@ -71,7 +71,7 @@ if(!isset($_SESSION["username"]))
                     echo "<td>".$row["Lieferant"]."</td>";
                     echo "<td>".$row["Abteilung"]."</td>";
                     echo "<td>".$row["Gebietsbereich"]."</td>";
-                    echo "<td><button type='button' id='".$row["idTABELLE_Ansprechpersonen"]."' class='btn btn-default btn-xs' value='changeContact' data-toggle='modal' data-target='#addContactModal'><span class='glyphicon glyphicon-pencil'></span></button></td>";
+                    echo "<td><button type='button' id='".$row["idTABELLE_Ansprechpersonen"]."' class='btn btn-default btn-sm' value='changeContact' data-toggle='modal' data-target='#addContactModal'><span class='glyphicon glyphicon-pencil'></span></button></td>";
                     echo "<td>".$row["idTABELLE_Lieferant"]."</td>";
                     echo "<td>".$row["idtabelle_abteilung"]."</td>";
                     echo "</tr>";

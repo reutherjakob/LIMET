@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
 <head>
@@ -45,7 +45,10 @@ include "_utils.php";
 check_login();
 $mysqli = utils_connect_sql();
 
-$sql = "SELECT tabelle_räume_has_tabelle_elemente.id, tabelle_räume.idTABELLE_Räume, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume_has_tabelle_elemente.Anzahl, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.Standort, tabelle_räume_has_tabelle_elemente.Verwendung, tabelle_räume_has_tabelle_elemente.Kurzbeschreibung, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
+$sql = "SELECT tabelle_räume_has_tabelle_elemente.id, tabelle_räume.idTABELLE_Räume, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.`Raumbereich Nutzer`,
+       tabelle_räume_has_tabelle_elemente.Anzahl, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.Standort, 
+       tabelle_räume_has_tabelle_elemente.Verwendung, tabelle_räume_has_tabelle_elemente.Kurzbeschreibung, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten,
+       tabelle_räume.Geschoss
 			FROM tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
 			WHERE ( ((tabelle_räume_has_tabelle_elemente.`Neu/Bestand`)=" . filter_input(INPUT_GET, 'bestand') . ") AND ((tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten)=" . filter_input(INPUT_GET, 'variantenID') . ") AND ((tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente)=" . filter_input(INPUT_GET, 'elementID') . ") AND ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
 			ORDER BY tabelle_räume.Raumnr;";
@@ -69,6 +72,7 @@ echo "<table class='table table-striped table-bordered table-sm' id='tableRoomsW
         <th>Excel Verwendung</th>
         <th>Excel Bestand</th>
         <th>Excel Anzahl</th>
+    <th>Geschoss</th>
 	</tr></thead><tbody>";
 
 while ($row = $result->fetch_assoc()) {
@@ -178,16 +182,18 @@ while ($row = $result->fetch_assoc()) {
     }
     echo "</select></td>";
     if (null != ($row["Kurzbeschreibung"])) {
-        echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment'></i></button></td>";
+        echo "<td><button type='button' class='btn btn-sm btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment'></i></button></td>";
     } else {
-        echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment-slash'></i></button></td>";
+        echo "<td><button type='button' class='btn btn-sm btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment-slash'></i></button></td>";
     }
-    echo "<td><button type='button' id='" . $row["id"] . "' class='btn btn-warning btn-xs' value='saveElement'><i class='far fa-save'></i></button></td>";
+    echo "<td><button type='button' id='" . $row["id"] . "' class='btn btn-warning btn-sm' value='saveElement'><i class='far fa-save'></i></button></td>";
     echo "<td>" . $row["tabelle_Varianten_idtabelle_Varianten"] . "</td>";
     echo "<td>" . $row["Standort"] . "</td>";
     echo "<td>" . $row["Verwendung"] . "</td>";
     echo "<td>" . $row["Neu/Bestand"] . "</td>";
     echo "<td>" . $row["Anzahl"] . "</td>";
+    echo "<td>" . $row["Geschoss"] . "</td>";
+
     echo "</tr>";
 }
 echo "</tbody></table>";
@@ -266,7 +272,7 @@ $mysqli->close();
             content: "<textarea class='popover-textarea'></textarea>",
             template: "<div class='popover'>" +
                 "<h4 class='popover-header'></h4><div class='popover-body'>" +
-                "</div><div class='popover-footer'><button type='button' class='btn btn-xs btn-outline-dark popover-submit'><i class='fas fa-check'></i>" +
+                "</div><div class='popover-footer'><button type='button' class='btn btn-sm btn-outline-dark popover-submit'><i class='fas fa-check'></i>" +
                 "</button>&nbsp;" +
                 "</div>"
 

@@ -29,7 +29,7 @@ echo "<table class='table table-striped table-bordered table-sm table-responsive
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
     echo "<td>" . $row['idtabelle_Vermerkuntergruppe'] . "</td>";
-    echo "<td><button type='button' id='" . $row['idtabelle_Vermerkuntergruppe'] . "' class='btn btn-outline-dark btn-xs' value='changeVermerkuntergruppe'><i class='fas fa-pencil-alt'></i></button></td>";
+    echo "<td><button type='button' id='" . $row['idtabelle_Vermerkuntergruppe'] . "' class='btn btn-outline-dark btn-sm' value='changeVermerkuntergruppe'><i class='fas fa-pencil-alt'></i></button></td>";
     echo "<td>" . $row['Untergruppennummer'] . "</td>";
     echo "<td>" . $row['Untergruppenname'] . "</td>";
     echo "<td>" . filter_input(INPUT_GET, 'vermerkGruppenID') . "</td>";

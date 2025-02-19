@@ -5,7 +5,7 @@ check_login();
 
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -150,7 +150,7 @@ $mysqli->close();
                 table.$('tr.info').removeClass('info');
                 $(this).addClass('info');
                 var elementID = table.row($(this)).data()[0];
-                var variantenID = table.row($(this)).data()[1];
+                let variantenID = table.row($(this)).data()[1];
                 var losID = table.row($(this)).data()[2];
                 var bestand = table.row($(this)).data()[3];
                 var raumbereich = table.row($(this)).data()[8];

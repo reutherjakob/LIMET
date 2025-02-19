@@ -121,7 +121,7 @@ check_login();
                             <th>NF</th>
                             <th>RH</th>
                             <th>ET Leistungsbedarf W/m2</th>                            
-                            <th>ET_Leistung W</th>
+                            <th>ET_Leistung W (=Fläche * W/m2)</th>
                             <th>Strahlen j/n</th>
                             <th>Laser j/n</th>
                             <th>Laserklasse</th>
@@ -515,7 +515,7 @@ check_login();
 
 
     function fnCreateTextBox(value, fieldprop, id) {
-        return "<input name='" + fieldprop + "' type='text' value='" + value + "' id='" + fieldprop + "-" + id + "'></input><button type='button' id='SAVE," + fieldprop + "," + id + "' class='btn btn-xs btn-outline-dark' name='saveElement'  onclick='saveElement(this.id)'><i class='far fa-save'></i></button>";
+        return "<input name='" + fieldprop + "' type='text' value='" + value + "' id='" + fieldprop + "-" + id + "'></input><button type='button' id='SAVE," + fieldprop + "," + id + "' class='btn btn-sm btn-outline-dark' name='saveElement'  onclick='saveElement(this.id)'><i class='far fa-save'></i></button>";
     }
 
     function saveElement(clicked_id) {
