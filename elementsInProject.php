@@ -240,9 +240,10 @@ ORDER BY tabelle_elemente.ElementID;";
     </div>
 </div>
 <script src="_utils.js"></script>
-<script>
+<script charset="utf-8">
+    var tableElementsInProject;
     $(document).ready(function () {
-        new DataTable('#tableElementsInProject', {
+        tableElementsInProject = new DataTable('#tableElementsInProject', {
             paging: true,
             select: true,
             pagingType: 'simple',
@@ -257,11 +258,12 @@ ORDER BY tabelle_elemente.ElementID;";
                 }
             ],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/2.0.0/i18n/de-DE.json', search:" "
+                url: 'https://cdn.datatables.net/plug-ins/2.0.0/i18n/de-DE.json', search: " "
             },
             stateSave: true,
             layout: {
-                topStart: ['buttons', 'pageLength'],
+                topStart: null,
+                topEnd: ['buttons', 'pageLength', 'search'],
                 bottomStart: 'info',
                 bottomEnd: 'paging'
             },
@@ -276,18 +278,16 @@ ORDER BY tabelle_elemente.ElementID;";
         });
 
 
-        let table = $('#tableElementsInProject').DataTable();
-
         $('#tableElementsInProject tbody').on('click', 'tr', function () {
             if ($(this).hasClass('info')) {
                 //$(this).removeClass('info');
             } else {
-                table.$('tr.info').removeClass('info');
+                tableElementsInProject.$('tr.info').removeClass('info');
                 $(this).addClass('info');
-                var elementID = table.row($(this)).data()[0];
-                var variantenID = table.row($(this)).data()[5];
+                var elementID = tableElementsInProject.row($(this)).data()[0];
+                var variantenID = tableElementsInProject.row($(this)).data()[5];
                 var bestand = 1;
-                if (table.row($(this)).data()[6] === "Ja") {
+                if (tableElementsInProject.row($(this)).data()[6] === "Ja") {
                     bestand = 0;
                 }
                 $.ajax({

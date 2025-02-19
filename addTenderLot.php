@@ -14,7 +14,7 @@ if(!isset($_SESSION["username"]))
 <?php
 	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
 	if ($mysqli ->connect_error) {
-	    die("Connection failed: " . $conn->connect_error);
+	    die("Connection failed: " . $mysqli->connect_error);
 	}
 	
 	/* change character set to utf8 */
@@ -168,7 +168,7 @@ if(!isset($_SESSION["username"]))
                     $mkfLosBezeichnung = $row["LosBezeichnung_Extern"];
             }
             
-            if( null != ($_GET["lotSum"])	>){
+            if( null != ($_GET["lotSum"])){
                 if(filter_input(INPUT_GET, 'lotAuftragnehmer')==0){
                     $sql= "INSERT INTO `LIMET_RB`.`tabelle_lose_extern`
                                     (`LosNr_Extern`,

@@ -55,13 +55,13 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . $row["Typ"] . "</td>";
     echo "<td>" . $row["Kurzbeschreibung"] . "</td>";
     echo "<td>" . $row["idtabelle_hersteller"] . "</td>";
-    echo "<td><button type='button' id='" . $row["idTABELLE_Geraete"] . "' class='btn btn-outline-dark btn-xs' value='changeDevice' data-toggle='modal' data-target='#addDeviceModal'><i class='fas fa-pencil-alt'></i></button></td>";
+    echo "<td><button type='button' id='" . $row["idTABELLE_Geraete"] . "' class='btn btn-outline-dark btn-xs' value='changeDevice' data-bs-toggle='modal' data-bs-target='#addDeviceModal'><i class='fas fa-pencil-alt'></i></button></td>";
     echo "</tr>";
 }
 
 echo "</tbody></table>";
-echo "<input type='button' id='addDeviceModalButton' class='btn btn-success btn-sm' value='Gerät hinzufügen' data-toggle='modal' data-target='#addDeviceModal'></input>";
-echo "<input type='button' id='" .$elementID . "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-toggle='modal' data-target='#deviceComparisonModal'></input>";
+echo "<input type='button' id='addDeviceModalButton' class='btn btn-success btn-sm' value='Gerät hinzufügen' data-bs-toggle='modal' data-bs-target='#addDeviceModal'></input>";
+echo "<input type='button' id='" .$elementID . "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggle='modal' data-bs-target='#deviceComparisonModal'></input>";
 ?>
 
 <!-- Modal zum Anlegen eines Gerätes -->
@@ -71,7 +71,7 @@ echo "<input type='button' id='" .$elementID . "' class='btn btn-default btn-sm'
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Gerät hinzufügen/bearbeiten</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='mbody'>
                 <form role="form">
@@ -86,7 +86,7 @@ echo "<input type='button' id='" .$elementID . "' class='btn btn-default btn-sm'
                     echo "<div class='form-group'>
                         <label for='hersteller'>Hersteller:</label>
                         <label class='float-right'>
-                            <button type='button' id='openAddManufacturer' class='btn btn-xs btn-outline-dark ' value='openAddManufacturer' data-toggle='modal' data-target='#addManufacturerModal'><i class='far fa-plus-square'></i></button>
+                            <button type='button' id='openAddManufacturer' class='btn btn-xs btn-outline-dark ' value='openAddManufacturer' data-bs-toggle='modal' data-bs-target='#addManufacturerModal'><i class='far fa-plus-square'></i></button>
                         </label>
                             <select class='form-control form-control-sm' id='hersteller' name='hersteller'>";
                     while ($row = $result->fetch_assoc()) {
@@ -109,7 +109,7 @@ echo "<input type='button' id='" .$elementID . "' class='btn btn-default btn-sm'
             <div class='modal-footer'>
                 <input type='button' id='addDevice' class='btn btn-success btn-sm' value='Hinzufügen'></input>
                 <input type='button' id='saveDevice' class='btn btn-warning btn-sm' value='Speichern'></input>
-                <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Abbrechen</button>
+                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
             </div>
         </div>
 
@@ -125,12 +125,12 @@ echo "<input type='button' id='" .$elementID . "' class='btn btn-default btn-sm'
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Geräte-Vergleich</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='mbodyDeviceComparison'>
             </div>
             <div class='modal-footer'>
-                <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Schließen</button>
+                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Schließen</button>
             </div>
         </div>
     </div>
@@ -143,7 +143,7 @@ echo "<input type='button' id='" .$elementID . "' class='btn btn-default btn-sm'
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Hersteller hinzufügen</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='mbodyAddManufacturerModal'>
                 <div class="form-group">
@@ -153,7 +153,7 @@ echo "<input type='button' id='" .$elementID . "' class='btn btn-default btn-sm'
             </div>
             <div class='modal-footer'>
                 <input type='button' id='addManufacturer' class='btn btn-success btn-sm' value='Hinzufügen'></input>
-                <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Schließen</button>
+                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Schließen</button>
             </div>
         </div>
     </div>

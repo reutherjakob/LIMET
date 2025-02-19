@@ -27,8 +27,10 @@ $result = $mysqli->query($sql);
 $row = $result->fetch_assoc();
 echo "<div class='col-md-12'>
         <div class='card'>
-        <div class='ml-4 mt-4 card-title'><form class='form-inline'>
+        <div class='ml-4 mt-4 card-title'>
+        <form class='form-inline'>
         <label class='m-1' for='variante'>Variante</label>
+        
         <select class='form-control form-control-sm' id='variante'>";
 $options = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
 $selectedID = $_SESSION["variantenID"];
@@ -44,15 +46,16 @@ echo "</select>
                 <input type='text' class='form-control form-control-sm' id='kosten' value= " . $row['Kosten'] ." ";
 echo "> </input>				  	
                 <button type='button' id='saveVariantePrice' class='btn btn-outline-dark btn-sm m-1' value='saveVariantePrice'><i class='far fa-save'></i> Kosten speichern</button>
-                <button type='button' id='getElementPriceHistory' class='btn btn-outline-dark btn-sm m-1' value='getElementPriceHistory'  data-toggle='modal' data-target='#getElementPriceHistoryModal'><i class='far fa-clock'></i> Kosten Änderungsverlauf</button>				
+                <button type='button' id='getElementPriceHistory' class='btn btn-outline-dark btn-sm m-1' value='getElementPriceHistory'  data-bs-toggle='modal' data-bs-target='#getElementPriceHistoryModal'><i class='far fa-clock'></i> Kosten Änderungsverlauf</button>				
           </form> </div>
+          
         <div class='card-body'>
           <div class='row'>
           <div class='col-md-6'>                            
               <div class='card'>
                   <div class='card-header'>
                       Variantenparameter                                        
-                      <button type='button' id='addVariantenParameters' class='btn btn-outline-dark btn-sm m-1' value='addVariantenParameters' data-toggle='modal' data-target='#addVariantenParameterToElementModal'><i class='fas fa-upload'></i> Variantenparameter übernehmen</button>
+                      <button type='button' id='addVariantenParameters' class='btn btn-outline-dark btn-sm m-1' value='addVariantenParameters' data-bs-toggle='modal' data-bs-target='#addVariantenParameterToElementModal'><i class='fas fa-upload'></i> Variantenparameter übernehmen</button>
                   </div>
                   <div class='card-body' id='variantenParameter'>";
 
@@ -133,7 +136,7 @@ echo "</tbody></table>
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Kostenänderungen</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='mbody'>
                 <?php
@@ -169,7 +172,7 @@ echo "</tbody></table>
                 ?>
             </div>
             <div class='modal-footer'>
-                <button type='button' class='btn btn-danger btn-sm' data-dismiss='modal'>Schließen</button>
+                <button type='button' class='btn btn-danger btn-sm' data-bs-dismiss='modal'>Schließen</button>
             </div>
         </div>
     </div>
@@ -180,14 +183,14 @@ echo "</tbody></table>
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
                 <h4 class="modal-title"><span class='glyphicon glyphicon-info-sign'></span> Info</h4>
             </div>
             <div class="modal-body">
                 <p id="error"></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -200,13 +203,13 @@ echo "</tbody></table>
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Elemtparameter übernehmen</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='mbody'>Wollen Sie die Elementparameter wirklich überschreiben?</div>
             <div class='modal-footer'>
                 <input type='button' id='addVariantenParameterToElement' class='btn btn-success btn-sm' value='Ja'
-                       data-dismiss='modal'></input>
-                <button type='button' class='btn btn-danger btn-sm' data-dismiss='modal'>Nein</button>
+                       data-bs-dismiss='modal'></input>
+                <button type='button' class='btn btn-danger btn-sm' data-bs-dismiss='modal'>Nein</button>
             </div>
         </div>
 

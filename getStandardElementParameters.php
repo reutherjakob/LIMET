@@ -35,7 +35,7 @@ check_login();
 	}
 	
 	echo "</tbody></table>";
-	echo "<input type='button' id='".$_GET["elementID"]."' class='btn btn-default btn-sm' value='Elementparameter-Vergleich' data-toggle='modal' data-target='#elementParameterComparisonModal'></input>";
+	echo "<input type='button' id='".$_GET["elementID"]."' class='btn btn-default btn-sm' value='Elementparameter-Vergleich' data-bs-toggle='modal' data-bs-target='#elementParameterComparisonModal'></input>";
 	$mysqli ->close();
 	?>
     
@@ -46,13 +46,13 @@ check_login();
 	      <!-- Modal content-->
 	      <div class='modal-content'>
 	        <div class='modal-header'>
-	          <button type='button' class='close' data-dismiss='modal'>&times;</button>
+	          <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
 	          <h4 class='modal-title'>Element-Parameter-Vergleich</h4>
 	        </div>
 	        <div class='modal-body' id='mbodyElementParameterComparison'>
 	    	</div>
 	        <div class='modal-footer'>
-	          	<button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Schließen</button>
+	          	<button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Schließen</button>
 	        </div>
 	      </div>	      
 	    </div>
