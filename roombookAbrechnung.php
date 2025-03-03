@@ -50,7 +50,7 @@ init_page_serversides()
 
 
     <div class='row mt-4 '>
-        <div class='col-sm-5'>
+        <div class='col-lg-5'>
             <div class="card">
                 <div class="card-header"><h4>Gewerke</h4>
                 </div>
@@ -108,7 +108,7 @@ init_page_serversides()
                 </div>
             </div>
         </div>
-        <div class='col-sm-5'>
+        <div class='col-lg-5'>
             <div class="card">
                 <div class="card-header"><h4>Rechnungen</h4>
                 </div>
@@ -122,7 +122,7 @@ init_page_serversides()
                 </div>
             </div>
         </div>
-        <div class='col-sm-2'>
+        <div class='col-lg-2'>
             <div class="card">
                 <div class="card-header"><h4>Rechnungsdetails</h4></div>
                 <div class="card-body">

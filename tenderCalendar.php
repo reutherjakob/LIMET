@@ -248,7 +248,7 @@ init_page_serversides();
 
 
     <div class='row'>
-        <div class='col-sm-12'>
+        <div class='col-lg-12'>
             <div class="mt-4 card">
                 <div class="card-header">Bauphasen im Los
                 </div>

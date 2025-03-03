@@ -105,29 +105,28 @@ $mysqli->close();
 ?>
 <script src="_utils.js"></script>
 <script>
+    var tableLotElements1;
     $(document).ready(function () {
-
-
-
-        $('#tableLotElements1').DataTable({
-            "paging": true,
-            "select": true,
-            "columnDefs": [
+        tableLotElements1 = new DataTable('#tableLotElements1', {
+            paging: true,
+            select: true,
+            columnDefs: [
                 {
-                    "targets": [0, 1, 2],
-                    "visible": false,
-                    "searchable": false
+                    targets: [0, 1, 2],
+                    visible: false,
+                    searchable: false
                 }
             ],
-            "searching": true,
-            "info": true,
-            "order": [[3, "asc"]],
-            "pagingType": "simple",
-            "lengthChange": false,
-            "pageLength": 10,
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
-            dom: '<"top"fB> tip',
-            "buttons": [
+            searching: true,
+            info: true,
+            order: [[3, 'asc']],
+            pagingType: 'simple',
+            lengthChange: false,
+            pageLength: 10,
+            language: {
+                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json'
+            },
+            buttons: [
                 {
                     extend: 'excel',
                     text: 'Download Excel'
@@ -139,64 +138,47 @@ $mysqli->close();
                         columns: [3, 4, 5, 6, 7, 8, 9, 10, 11]
                     },
                     customize: function (xlsx) {
-                        var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                        $('row:first', sheet).remove();
-                        $('row', sheet).each(function () {
-                            var col3 = $('c[r^="A"]', this);
-                            var col7 = $('c[r^="E"]', this);
-                            if (col3.text() == '0') {
-                                $(this).remove();
+                        const sheet = xlsx.xl.worksheets['sheet1.xml'];
+                        sheet.querySelector('row:first-child').remove();
+                        sheet.querySelectorAll('row').forEach(row => {
+                            const col3 = row.querySelector('c[r^="A"]');
+                            const col7 = row.querySelector('c[r^="E"]');
+                            if (col3.textContent === '0' || col7.textContent === 'Ja') {
+                                row.remove();
                             }
-                            if (col7.text() == 'Ja') {
-                                $(this).remove();
-                            }
-
-
                         });
                     }
                 }
             ],
-            "initComplete":
-                function (settings, json) {
-                    move_item_by_class("dt-buttons", "elementsInLotCardHeader");
-                    move_item("tableTenderLots_filter", "elementsInLotCardHeader");
-                    $('#tableTenderLots_filter label').contents().filter(function () {
-                        return this.nodeType === 3; // Node.TEXT_NODE
-                    }).remove();
-
-                }
+            initComplete: function () {
+                // Your initialization code here
+            }
         });
 
-        var table = $('#tableLotElements1').DataTable();
-        $('#tableLotElements1 tbody').on('click', 'tr', function () {
-            if ($(this).hasClass('info')) {
-            } else {
-                table.$('tr.info').removeClass('info');
-                $(this).addClass('info');
-                var elementID = table.row($(this)).data()[1];
-                let variantenID = table.row($(this)).data()[2];
-                var id = table.row($(this)).data()[0];
-                var stk = table.row($(this)).data()[3];
 
-                $.ajax({
-                    url: "getVariantenParameters.php",
-                    data: {"variantenID": variantenID, "elementID": elementID},
-                    type: "GET",
-                    success: function (data) {
-                        $("#elementsvariantenParameterInLot").html(data);
-                        $("#elementsvariantenParameterInLot").show();
-                        $.ajax({
-                            url: "getElementBestand.php",
-                            data: {"id": id, "stk": stk},
-                            type: "GET",
-                            success: function (data) {
-                                $("#elementBestand").html(data);
-                                $("#elementBestand").show();
-                            }
-                        });
-                    }
-                });
-            }
+        $('#tableLotElements1 tbody').on('click', 'tr', function () {
+            let elementID = tableLotElements1.row($(this)).data()[1];
+            let variantenID = tableLotElements1.row($(this)).data()[2];
+            let id = tableLotElements1.row($(this)).data()[0];
+            let stk = tableLotElements1.row($(this)).data()[3];
+            $.ajax({
+                url: "getVariantenParameters.php",
+                data: {"variantenID": variantenID, "elementID": elementID},
+                type: "GET",
+                success: function (data) {
+                    $("#elementsvariantenParameterInLot").html(data);
+                    $("#elementsvariantenParameterInLot").show();
+                    $.ajax({
+                        url: "getElementBestand.php",
+                        data: {"id": id, "stk": stk},
+                        type: "GET",
+                        success: function (data) {
+                            $("#elementBestand").html(data);
+                            $("#elementBestand").show();
+                        }
+                    });
+                }
+            });
         });
     });
     $('#createLotElementListPDF').click(function () {    // PDF erzeugen

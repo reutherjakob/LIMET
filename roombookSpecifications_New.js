@@ -624,10 +624,12 @@ function init_showRoomElements_btn() {
     $("#showRoomElements").click(function () {
         if ($("#roomElements").is(':hidden')) {
             $(this).html("<i class='fas fa-caret-right'></i>");
+            $('#CardHEaderElemntsInRoom_SUB').show()
             $("#additionalInfo").show();
         } else {
             $(this).html("<i class='fas fa-caret-left'></i>");
             $("#additionalInfo").hide();
+            $("#CardHEaderElemntsInRoom_SUB").hide();
         }
     });
 }

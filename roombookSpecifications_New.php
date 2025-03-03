@@ -48,12 +48,11 @@ include 'roombookSpecifications_HelpModal.php';
         }
 
 
-        .btn, .fix_size, .btn-group .btn, .dt-input {
+        .btn, .btn-group .btn, .dt-input {
             padding: 0.2vw 0.2vw !important;
             margin: 0 1px !important;
             height: 30px !important;
         }
-
 
         div.dt-button-collection, div.dt-button-collection.fixed.six-column {
             width: 1600px; /* Adjust this value to make the panel broader */
@@ -91,7 +90,7 @@ include 'roombookSpecifications_HelpModal.php';
             </div>
         </header>
         <div class="card-header container-fluid d-flex align-items-start border-dark">
-            <div class="col-sm-4 d-flex justify-content-left align-items-left" id='TableCardHeader'></div>
+            <div class="col-lg-4 d-flex justify-content-left align-items-left" id='TableCardHeader'></div>
             <div class="col-md-1 d-flex justify-content-end align-items-center" id="TableCardHeaderX"></div>
             <div class="col-md-4 d-flex justify-content-center align-items-center" id="TableCardHeader2"></div>
             <div class="col-md-1 d-flex justify-content-end align-items-right" id='TableCardHeader3'></div>
@@ -120,12 +119,11 @@ include 'roombookSpecifications_HelpModal.php';
         <div class="mt-4 card">
             <div class="card">
                 <div class="card-header form-inline d-inline-flex" id="CardHEaderElemntsInRoom">
-                    <button type="button" class="btn btn-outline-dark fix_size" id="showRoomElements"><i
+                    <button type="button" class="btn btn-outline-dark " id="showRoomElements" style="width: 30px;"><i
                                 class="fas fa-caret-left"></i></button>
-                    <div class="row">
+                    <div class="row" id="CardHEaderElemntsInRoom_SUB">
                         <div class="col-6" id="CardHEaderElemntsInRoom1"></div>
-                        <div class="col-6" id="CardHEaderElemntsInRoom2"></div>
-
+                        <div class="col-6 d-flex" id="CardHEaderElemntsInRoom2"></div>
                     </div>
                 </div>
                 <div class="card-body" id="additionalInfo">

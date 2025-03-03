@@ -52,7 +52,7 @@ init_page_serversides();
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class='row'>
-        <div class='col-sm-8'>
+        <div class='col-lg-8'>
             <div class="mt-2 card">
                 <div class="card-header">
                     <div class="row">
@@ -121,7 +121,7 @@ init_page_serversides();
                 </div>
             </div>
         </div>
-        <div class="col-sm-4">
+        <div class="col-lg-4">
             <div class="mt-2 card">
                 <div class="card-header">Vermerke zu Raum</div>
                 <div class="card-body" id="roomVermerke"></div>
@@ -129,13 +129,13 @@ init_page_serversides();
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-8">
+        <div class="col-lg-8">
             <div class="mt-4 card">
                 <div class="card-header">Elemente im Raum</div>
                 <div class="card-body" id="roomElements"></div>
             </div>
         </div>
-        <div class="col-sm-4">
+        <div class="col-lg-4">
             <div class="mt-4 card">
                 <div class="card-header">Variantenparameter</div>
                 <div class="card-body">
@@ -170,7 +170,7 @@ init_page_serversides();
         </div>
         <div class="card-body" style="display:none" id="DBElementData">
             <div class="row mt-4">
-                <div class="col-sm-6">
+                <div class="col-lg-6">
                     <div class="mt-4 card">
                         <div class="card-header">Elementgruppen</div>
                         <div class="card-body" id="elementGroups">
@@ -244,13 +244,13 @@ init_page_serversides();
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-3">
+                <div class="col-md-3 col-lg-3">
                     <div class="mt-4 card">
                         <div class="card-header">Elementparameter</div>
                         <div class="card-body" id="elementParametersInDB"></div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-3">
+                <div class="col-md-3 col-lg-3">
                     <div class="mt-4 card">
                         <div class="card-header">Elementkosten in anderen Projekten</div>
                         <div class="card-body" id="elementPricesInOtherProjects"></div>
@@ -261,19 +261,19 @@ init_page_serversides();
 
             <hr>
             <div class="row mt-4">
-                <div class="col-md-6 col-sm-6">
+                <div class="col-md-6 col-lg-6">
                     <div class="mt-4 card">
                         <div class="card-header">Geräte</div>
                         <div class="card-body" id="devicesInDB"></div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-3">
+                <div class="col-md-3 col-lg-3">
                     <div class="mt-4 card">
                         <div class="card-header">Geräteparameter</div>
                         <div class="card-body" id="deviceParametersInDB"></div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-3">
+                <div class="col-md-3 col-lg-3">
                     <div class="mt-4 card">
                         <div class="card-header">Gerätepreise</div>
                         <div class="card-body" id="devicePrices"></div>

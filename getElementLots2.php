@@ -45,22 +45,7 @@ echo "<table class='table table-striped table-bordered nowrap table-condensed' i
 
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
-    echo "<td>" . $row["TABELLE_Elemente_idTABELLE_Elemente"] . "</td>";
-    echo "<td>" . $row["idtabelle_Varianten"] . "</td>";
-    echo "<td>" . $row["idtabelle_Lose_Extern"] . "</td>";
-    echo "<td>" . $row["Neu/Bestand"] . "</td>";
-    echo "<td>" . $row["SummevonAnzahl"] . "</td>";
-    echo "<td>" . $row["ElementID"] . "</td>";
-    echo "<td>" . $row["Bezeichnung"] . "</td>";
-    echo "<td>" . $row["Variante"] . "</td>";
-    echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
-    if ($row["Neu/Bestand"] == 1) {
-        echo "<td>Nein</td>";
-    } else {
-        echo "<td>Ja</td>";
-    }
-
-    echo "<td>" . format_money($row["Kosten"]) . "</td>";
+    extracted($row);
     echo "<td>" . $row["PP"] . "</td>";
     echo "<td>" . $row["LosNr_Extern"] . "</td>";
     echo "<td>" . $row["LosBezeichnung_Extern"] . "</td>";

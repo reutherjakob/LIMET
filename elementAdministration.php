@@ -74,10 +74,11 @@
                         </div>
                     </div>
                     <div class="mt-1 card">
-                        <div class="card-header d-flex align-items-center flex-nowrap justify-content-between"
-                             id="tableCardHeader1">
-                            <label>Elemente in DB</label>
-
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-6">Elemente in DB</div>
+                                <div class="col-6" id="CardHeaderELementesInDb"></div>
+                            </div>
                         </div>
                         <div class="card-body" id="elementsInDB">
                             <?php
@@ -87,13 +88,13 @@
 
                             $result = $mysqli->query($sql);
 
-                            echo "<table class='table table-striped table-sm' id='tableElementsInDB' >
+                            echo "<table class='table table-striped table-sm table-hover border border-light border-5' id='tableElementsInDB' >
 									<thead><tr>
 									<th>ID</th>
 									<th>ElementID</th>
 									<th>Element</th>
 									<th>Beschreibung</th>
-                                                                        <th></th>
+                                        <th></th>
 									</tr></thead><tbody>";
 
                             while ($row = $result->fetch_assoc()) {
@@ -157,7 +158,7 @@
             </div>
         </div>
         <!--
-                <div class="col-md-4 col-sm-4">
+                <div class="col-md-4 col-lg-4">
                         <div class="panel-group">
                                 <div class="panel panel-info">
                                         <div class="panel-heading"><label>Elementparameter</label></div>
@@ -168,7 +169,7 @@
         </div>
 
         <div class="row">
-                <div class="col-md-4 col-sm-4">
+                <div class="col-md-4 col-lg-4">
                         <div class="panel-group">
                                 <div class="panel panel-success">
                                         <div class="panel-heading"><label>Geräte</label></div>
@@ -177,7 +178,7 @@
                                 </div>
                         </div>
                 </div>
-                <div class="col-md-4 col-sm-4">
+                <div class="col-md-4 col-lg-4">
                         <div class="panel-group">
                                 <div class="panel panel-success">
                                         <div class="panel-heading"><label>Geräteparameter</label></div>
@@ -185,7 +186,7 @@
                                 </div>
                         </div>
                 </div>
-                <div class="col-md-4 col-sm-4">
+                <div class="col-md-4 col-lg-4">
                         <div class="panel-group">
                                 <div class="panel panel-success">
                                         <div class="panel-heading"><label>Gerätepreise</label></div>
@@ -269,7 +270,9 @@
                 bottomEnd: ['paging'],
             },
             initComplete: function () {
-                // $('#dt-search-0').removeClass("form-control form-control-sm").addClass("btn btn-sm bg-white border border-secondary-subtle").appendTo('#tableCardHeader1');
+                let dt_searcher = document.getElementById("dt-search-0");
+                dt_searcher.parentNode.removeChild(dt_searcher);
+                document.getElementById('CardHeaderELementesInDb').appendChild(dt_searcher);
             }
         });
 

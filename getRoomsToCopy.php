@@ -93,9 +93,10 @@ $mysqli->close();
             scrollY: '50vh',
             scrollCollapse: true,
             layout: {
-                top: 'search',
-                bottom: null
-            }
+                topEnd: 'search',
+                bottomEnd: null
+            },
+            responsive: true
         });
 
         $('#tableRoomsToCopy tbody').on('click', 'tr', function () {

@@ -44,12 +44,12 @@ init_page_serversides();
 <div id="limet-navbar"></div> <!-- Container für Navbar Aufruf über onLoad -->
 <div class="container-fluid">
     <div class='row'>
-        <div class='col-sm-12'>
+        <div class='col-lg-12'>
             <div class="mt-1 card">
                 <div class="card-header">Elemente</div>
                 <div class="card-body" id="DBElementData">
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-lg-6">
                             <div class="mt-1 card">
                                 <div class="card-header">Elementgruppen</div>
                                 <div class="card-body" id="elementGroups">
@@ -103,7 +103,7 @@ init_page_serversides();
 
                                     $result = $mysqli->query($sql);
 
-                                    echo "<table class='table table-striped table-bordered table-hover table-sm' id='tableElementsInDB'>
+                                    echo "<table class='table table-sm table-responsive compact table-striped table-hover border border-light border-5 ' id='tableElementsInDB'>
 									<thead><tr>
 									<th>ID</th>
 									<th>ElementID</th>
@@ -126,13 +126,13 @@ init_page_serversides();
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3 col-sm-3">
+                        <div class="col-md-3 col-lg-3">
                             <div class="mt-1 card">
                                 <div class="card-header">Elementparameter</div>
                                 <div class="card-body" id="elementParametersInDB"></div>
                             </div>
                         </div>
-                        <div class="col-md-3 col-sm-3">
+                        <div class="col-md-3 col-lg-3">
                             <div class="mt-1 card">
                                 <div class="card-header">Elementkosten in anderen Projekten</div>
                                 <div class="card-body" id="elementPricesInOtherProjects"></div>
@@ -143,25 +143,27 @@ init_page_serversides();
             </div>
         </div>
     </div>
+
     <div class='row'>
-        <div class='col-sm-6'>
+        <div class='col-lg-6'>
             <div class="mt-1 card">
                 <div class="card-header h-100">Räume mit Element</div>
                 <div class="card-body" id="roomsWithElement"></div>
             </div>
         </div>
-        <div class='col-sm-6'>
+        <div class='col-lg-6'>
             <div class="mt-1 card">
                 <div class="card-header h-100" id="RäumeOhneElCardHeader ">
 
                     <div class="row ">
-                        <div class="col-8"> Räume ohne Element</div>
-                        <div class="col-4 d-flex flex-nowrap justify-content-end">
-                            <button type='button' class='btn btn-outline-success btn-sm' id='addElements'
+                        <div class="col-lg-5"> Räume ohne Element</div>
+                        <div class="col-lg-7 d-flex flex-nowrap justify-content-end">
+                            <button type='button' class='btn btn-outline-success btn-sm ' id='addElements'
                                     data-bs-toggle='modal' data-bs-target='#addElementsToRoomModal'><i
-                                        class='fas fa-plus'></i>
+                                        class='fas fa-plus'></i> Element zu Raum hinzufügen
                             </button>
-                            <button type='button' id="selectAllRows" class="btn btn-primary btn-sm">Sichtbare auswählen
+                            <button type='button' id="selectAllRows" class="btn btn-primary btn-sm">Sichtbare
+                                auswählen
                             </button>
                         </div>
 

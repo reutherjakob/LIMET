@@ -87,7 +87,7 @@
         </div>
     </div>
     <div class='mt-1 row'>
-        <div class='col-sm-8'>
+        <div class='col-lg-8'>
             <div class="mt-4 card">
                 <div class="card-header d-flex justify-content-between">
                     Lieferanten
@@ -136,7 +136,7 @@
                 </div>
             </div>
         </div>
-        <div class='col-sm-4'>
+        <div class='col-lg-4'>
             <div class="mt-4 card">
                 <div class="card-header">Lieferantenumsaetze</div>
                 <div class="card-body" id="lieferantenumsaetze">

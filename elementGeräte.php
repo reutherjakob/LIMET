@@ -158,7 +158,7 @@
     $(document).ready(function () {
         table = new DataTable('#tableDevices', {
             responsive: true,
-            dom: '<"row"<"col-sm-12 col-md-6"f>> <"row"<"col-sm-12"tr>> <"row"<"col-md-2"i><"col-md-6"l><"col-md-4"p>>',
+            dom: '<"row"<"col-lg-12 col-md-6"f>> <"row"<"col-lg-12"tr>> <"row"<"col-md-2"i><"col-md-6"l><"col-md-4"p>>',
             paging: true,
             pageLength: 25,
             columnDefs: [{

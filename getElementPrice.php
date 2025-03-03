@@ -22,8 +22,8 @@ check_login();
         
 	echo "<form>
 		 <div class='form-group row'>
-                    <label class='ml-4 col-sm-5 col-form-label col-form-label-sm' for='price'>Kosten</label>
-                    <div class='col-sm-6'>
+                    <label class='ml-4 col-lg-5 col-form-label col-form-label-sm' for='price'>Kosten</label>
+                    <div class='col-lg-6'>
                         <input type='text' class='form-control form-control-sm' id='price' value=". format_money( $row["Kosten"])." disabled='disabled'></input>
                     </div>						  			 											 						 			
 	 	</div>	
