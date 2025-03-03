@@ -24,7 +24,7 @@ $mysqli= utils_connect_sql();
 	while($row = $result->fetch_assoc()) {
             echo "
                 <div class='row mt-4'>
-                    <div class='col-sm-4'>
+                    <div class='col-lg-4'>
                         <div class='card card-default m-2'>
                             <div class='card-header'>
                                 <h4 class='m-b-2 text-dark'><i class='fas fa-arrows-alt'></i> Architektur</h4>
@@ -42,7 +42,7 @@ $mysqli= utils_connect_sql();
                             </div>
                         </div>
                     </div>
-                    <div class='col-sm-4'>                    
+                    <div class='col-lg-4'>                    
                         <div class='card card-default m-2'>
                             <div class='card-header'>
                                 <h4 class='m-b-2 text-danger'><i class='fas fa-bolt'></i> Elektro</h4>
@@ -77,7 +77,7 @@ $mysqli= utils_connect_sql();
                             </div>
                         </div>
                     </div>
-                    <div class='col-sm-4'>                    
+                    <div class='col-lg-4'>                    
                         <div class='card card-default m-2'>
                             <div class='card-header'>
                                 <h4 class='m-b-2 text-dark'>Gase</h4>
@@ -155,7 +155,7 @@ $mysqli= utils_connect_sql();
                     </div>
                 </div>
                 <div class='row mt-4'>
-                    <div class='col-sm-4'>                    
+                    <div class='col-lg-4'>                    
                         <div class='card card-default m-2'>
                             <div class='card-header'>
                                 <h4 class='m-b-2 text-dark'><i class='far fa-hospital'></i> Raumklasse/Lüftung</h4>
@@ -168,7 +168,7 @@ $mysqli= utils_connect_sql();
                             </div>
                         </div>
                     </div>
-                    <div class='col-sm-4'>                                        
+                    <div class='col-lg-4'>                                        
                         <div class='card card-default m-2'>
                             <div class='card-header'>
                                 <h4 class='m-b-2 text-dark'><i class='fas fa-exclamation-triangle'></i> Laser/Strahlen</h4>
@@ -220,7 +220,7 @@ $mysqli= utils_connect_sql();
                 }
             echo "</td>";
             echo "<td>".$row["Datum"]."</td>";
-            echo "<td><button type='button' class='btn btn-xs btn-light' data-toggle='popover' title='Vermerk' data-placement='bottom' data-content='".$row["Vermerktext"]."'><i class='fa fa-comment'></i></button></td>";
+            echo "<td><button type='button' class='btn btn-sm btn-light' data-toggle='popover' title='Vermerk' data-placement='bottom' data-content='".$row["Vermerktext"]."'><i class='fa fa-comment'></i></button></td>";
             echo "<td>".$row["Vermerkart"]."</td>";
             echo "<td>".$row["Name"]."</td>";
             echo "<td>";

@@ -275,7 +275,7 @@ $e_C_2_3rd = $e_C - $e_C_3rd;
 $font_size = 6;
 $block_header_height = 10;
 $block_header_w = 25;
-$einzugPlus = 10; //um den text auf die Höhe der Anderen Angaben zu shiften bei ANM BO
+$einzugPlus = 10; //um den text auf die Höhe der anderen Angaben zu shiften bei ANM BO
 
 $colour_line = array(110, 150, 80);
 $style_dashed = array('width' => 0.1, 'cap' => 'round', 'join' => 'round', 'dash' => 4, 'color' => $colour_line); //$pdf->SetLineStyle(array('width' => 0.1, 'cap' => 'round', 'join' => 'round', 'dash' => 6, 'color' => array(110, 150, 80)));

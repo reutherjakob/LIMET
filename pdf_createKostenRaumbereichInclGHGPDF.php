@@ -1,37 +1,12 @@
 <?php
-
-//============================================================+
-// File name   : example_011.php
-// Begin       : 2008-03-04
-// Last Update : 2013-05-14
-//
-// Description : Example 011 for TCPDF class
-//               Colored Table (very simple table)
-//
-// Author: Nicola Asuni
-//
-// (c) Copyright:
-//               Nicola Asuni
-//               Tecnick.com LTD
-//               www.tecnick.com
-//               info@tecnick.com
-//============================================================+
-
-/**
- * Creates an example PDF TEST document using TCPDF
- * @package com.tecnick.tcpdf
- * @abstract TCPDF - Example: Colored Table
- * @author Nicola Asuni
- * @since 2008-03-04
- */
-// Include the main TCPDF library (search for installation path).
 require_once('TCPDF-main/TCPDF-main/tcpdf.php');
 
-// extend TCPF with custom functions
-class MYPDF extends TCPDF {
+class MYPDF extends TCPDF
+{
 
     //Page header
-    public function Header() {
+    public function Header()
+    {
         // Logo
         if ($_SESSION["projectAusfuehrung"] === "MADER") {
             $image_file = 'Mader_Logo_neu.jpg';
@@ -63,7 +38,8 @@ class MYPDF extends TCPDF {
     }
 
     // Page footer
-    public function Footer() {
+    public function Footer()
+    {
         // Position at 15 mm from bottom
         $this->SetY(-15);
         // Set font
@@ -93,8 +69,8 @@ $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PD
 $pdf->setFooterData(array(0, 64, 0), array(0, 64, 128));
 
 // set header and footer fonts
-$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+$pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+$pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 
 // set default monospaced font
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
@@ -120,16 +96,11 @@ if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
 // set font
 $pdf->SetFont('helvetica', '', 10);
 
-// add a page
-//$pdf->AddPage('', 'A4');
-// Daten laden
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
+include "_utils.php";
+include "_format.php";
+check_login();
+$mysqli = utils_connect_sql();
 
-/* change character set to utf8 */
-if (!$mysqli->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $mysqli->error);
-    exit();
-}
 
 // data loading Raumbereiche ----------------------------------
 $pdf->SetFont('helvetica', '', 8);
@@ -156,7 +127,7 @@ while ($row = $result->fetch_assoc()) {
     $raumbereicheInProject[$i]['Raumbereich Nutzer'] = $row['Raumbereich Nutzer'];
     $raumbereicheInProject[$i]['Projektname'] = $row['Projektname'];
     $raumbereicheInProject[$i]['Planungsphase'] = $row['Bezeichnung'];
-    
+
     $raumbereicheInProject[$i]['Preisbasis'] = $row['Preisbasis'];
     $i++;
 }

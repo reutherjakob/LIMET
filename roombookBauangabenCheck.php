@@ -41,7 +41,7 @@ init_page_serversides();
         <div class="card-header d-inline-flex" id="CH1">BAUANGABEN CHECK &ensp;
             <button id="deleteButton">Delete Storage</button>
 
-            <button type="button" class="btn btn-xs ms-auto" onclick="show_modal('InfoModal')">
+            <button type="button" class="btn btn-sm ms-auto" onclick="show_modal('InfoModal')">
                 <i class="fa fa-circle-info"></i>
             </button>
 

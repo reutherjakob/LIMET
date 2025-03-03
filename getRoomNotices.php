@@ -45,7 +45,7 @@ if(!isset($_SESSION["username"]))
 	while($row = $result->fetch_assoc()) {
 	    echo "<tr>";
 	    echo "<td>".$row["idTABELLE_Notizen"]."</td>";
-	    //echo "<td><input type='button' id='".$row["idTABELLE_Notizen"]."' class='btn btn-success btn-xs' value='Notiz auswählen'></td>";
+	    //echo "<td><input type='button' id='".$row["idTABELLE_Notizen"]."' class='btn btn-success btn-sm' value='Notiz auswählen'></td>";
 	    
 	    echo "<td>".$row["Datum"]."</td>";
 	    if($row["Notiz_bearbeitet"] == 0){

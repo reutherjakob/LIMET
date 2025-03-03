@@ -33,7 +33,7 @@ $excludeColumns = [// Define columns to exclude
 ];
 $excludedTitles = array_map(function ($column) use ($columnsDefinition) {
     foreach ($columnsDefinition as $colDef) {
-        if ($colDef['data'] === $column) { 
+        if ($colDef['data'] === $column) {
             return $colDef['title'];
         }
     }
@@ -52,6 +52,20 @@ $columnsList = implode(", ", $columns);
 $sql = "SELECT $columnsList, `Anwendungsgruppe`, `Anmerkung MedGas`, `Anmerkung Elektro`, `Anmerkung HKLS`, `Anmerkung Geräte`, `Anmerkung BauStatik` FROM tabelle_räume WHERE ((tabelle_räume.idTABELLE_Räume)=" . $_SESSION["roomID"] . ");";
 $result = $mysqli->query($sql);
 $row = $result->fetch_assoc();
+
+// Create a list of copied column names
+$copiedColumns = array_map(function ($column) use ($columnsDefinition) {
+    foreach ($columnsDefinition as $colDef) {
+        if ($colDef['data'] === trim($column, '`')) {
+            return $colDef['title'];
+        }
+    }
+    return trim($column, '`');
+}, $columns);
+
+// Add additional columns to the copied columns list
+$additionalColumns = ['Anwendungsgruppe', 'Anmerkung MedGas', 'Anmerkung Elektro', 'Anmerkung HKLS', 'Anmerkung Geräte', 'Anmerkung BauStatik'];
+$copiedColumns = array_merge($copiedColumns, $additionalColumns);
 
 foreach ($roomIDs as $valueOfRoomID) {
     $update_sql = "UPDATE tabelle_räume SET ";
@@ -74,11 +88,15 @@ foreach ($roomIDs as $valueOfRoomID) {
 
     if ($mysqli->query($update_sql) === TRUE) {
         $ausgabe .= "Raum $valueOfRoomID erfolgreich aktualisiert! \n";
-        $ausgabe .= "Excluded columns: " . implode(", ", $excludedTitles) . "\n";
     } else {
         $ausgabe .= "Error: " . $update_sql . "<br>" . $mysqli->error;
     }
 }
+
+// Add the list of copied columns to the ausgabe
+$ausgabe .= "\nKopierte Spalten: " . implode(", ", $copiedColumns) . "\n";
+$ausgabe .= "Ausgeschlossene Spalten: " . implode(", ", $excludedTitles) . "\n";
+$ausgabe .= "\n Änderungswünsche? Gerne :)";
 $mysqli->close();
 echo $ausgabe;
 ?>

@@ -49,7 +49,7 @@ if(!isset($_SESSION["username"]))
                 '".filter_input(INPUT_GET, 'menge')."',
                 '".filter_input(INPUT_GET, 'wartungsart')."',
                 '".filter_input(INPUT_GET, 'info')."',
-                '".date("Y-m-d", strtotime(filter_input(INPUT_GET, 'date')))."',
+                '".date("Y-m-d", strtotime(filter_input(INPUT_GET, 'date')) ?? '' )."',
                 ".$_SESSION["deviceID"].",
                 '".filter_input(INPUT_GET, 'lieferant')."',
                 ".$projectID.");";

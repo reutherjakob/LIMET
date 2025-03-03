@@ -1,317 +1,70 @@
 <?php
-session_start();
+include '_utils.php';
+check_login();
+$mysqli = utils_connect_sql();
 
-?>
+function insertLos($mysqli, $data, $isMainLos = true) {
+    $commonFields = [
+        'LosNr_Extern' => $data['losNr'],
+        'LosBezeichnung_Extern' => $data['losName'],
+        'Ausführungsbeginn' => date("Y-m-d", strtotime($data['losDatum']) ?? ''),
+        'tabelle_projekte_idTABELLE_Projekte' => $_SESSION["projectID"],
+        'Vergabe_abgeschlossen' => $data['lotVergabe'],
+        'Versand_LV' => date("Y-m-d", strtotime($data['lotLVSend']) ?? ''),
+        'Verfahren' => $data['lotVerfahren'],
+        'Bearbeiter' => $data['lotLVBearbeiter'],
+        'Notiz' => $data['lotNotice'],
+        'Kostenanschlag' => $data['kostenanschlag'],
+        'Budget' => $data['budget']
+    ];
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+    if (!$isMainLos) {
+        $commonFields['mkf_von_los'] = $data['lotMKFOf'];
+        $commonFields['mkf_nr'] = $data['laufendeNr'];
+    }
 
-<?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	if ($mysqli ->connect_error) {
-	    die("Connection failed: " . $conn->connect_error);
-	}
-	
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    echo "Error loading character set utf8: " . $mysqli->error;
-	    exit();
-	} 
-        
-        if(filter_input(INPUT_GET, 'lotMKFOf')==0){        
-            if(null !=  ($_GET["lotSum"]) ){
-                if(filter_input(INPUT_GET, 'lotAuftragnehmer')==0){
-                    $sql= "INSERT INTO `LIMET_RB`.`tabelle_lose_extern`
-                                    (`LosNr_Extern`,
-                                    `LosBezeichnung_Extern`,
-                                    `Ausführungsbeginn`,
-                                    `tabelle_projekte_idTABELLE_Projekte`,
-                                    `Vergabesumme`,
-                                    `Vergabe_abgeschlossen`,
-                                    `Versand_LV`,
-                                    `Verfahren`,
-                                    `Bearbeiter`,
-                                    `Notiz`,
-                                    `Kostenanschlag`,
-                                    `Budget`)
-                                    VALUES
-                                    ('".$_GET["losNr"]."',
-                                    '".$_GET["losName"]."',
-                                    '".$_GET["losDatum"]."',
-                                    ".$_SESSION["projectID"].",
-                                    '".$_GET["lotSum"]."',
-                                    '".$_GET["lotVergabe"]."',
-                                    '".date("Y-m-d", strtotime($_GET["lotLVSend"]))."',
-                                    '".$_GET["lotVerfahren"]."',
-                                    '".$_GET["lotLVBearbeiter"]."',
-                                    '".$_GET["lotNotice"]."',
-                                    '".$_GET["kostenanschlag"]."',
-                                    '".$_GET["budget"]."');";
-                }
-                else{
-                    $sql= "INSERT INTO `LIMET_RB`.`tabelle_lose_extern`
-                                    (`LosNr_Extern`,
-                                    `LosBezeichnung_Extern`,
-                                    `Ausführungsbeginn`,
-                                    `tabelle_projekte_idTABELLE_Projekte`,
-                                    `Vergabesumme`,
-                                    `Vergabe_abgeschlossen`,
-                                    `Versand_LV`,
-                                    `Verfahren`,
-                                    `Bearbeiter`,
-                                    `Notiz`,
-                                    `tabelle_lieferant_idTABELLE_Lieferant`,
-                                    `Kostenanschlag`,
-                                    `Budget`)
-                                    VALUES
-                                    ('".$_GET["losNr"]."',
-                                    '".$_GET["losName"]."',
-                                    '".date("Y-m-d", strtotime($_GET["losDatum"]))."',
-                                    ".$_SESSION["projectID"].",
-                                    '".$_GET["lotSum"]."',
-                                    '".$_GET["lotVergabe"]."',
-                                    '".date("Y-m-d", strtotime($_GET["lotLVSend"]))."',
-                                    '".$_GET["lotVerfahren"]."',
-                                    '".$_GET["lotLVBearbeiter"]."',
-                                    '".$_GET["lotNotice"]."',
-                                    ".filter_input(INPUT_GET, 'lotAuftragnehmer').",
-                                    '".$_GET["kostenanschlag"]."',
-                                    '".$_GET["budget"]."');";               
-                }
+    if (isset($data['lotSum'])) {
+        $commonFields['Vergabesumme'] = $data['lotSum'];
+    }
 
-            }
-            else{
-                if(filter_input(INPUT_GET, 'lotAuftragnehmer')==0){
-                    $sql= "INSERT INTO `LIMET_RB`.`tabelle_lose_extern`
-                                    (`LosNr_Extern`,
-                                    `LosBezeichnung_Extern`,
-                                    `Ausführungsbeginn`,
-                                    `tabelle_projekte_idTABELLE_Projekte`,
-                                    `Vergabe_abgeschlossen`,
-                                    `Versand_LV`,
-                                    `Verfahren`,
-                                    `Bearbeiter`,
-                                    `Notiz`,
-                                    `Kostenanschlag`,
-                                    `Budget`)
-                                    VALUES
-                                    ('".$_GET["losNr"]."',
-                                    '".$_GET["losName"]."',
-                                    '".date("Y-m-d", strtotime($_GET["losDatum"]))."',
-                                    ".$_SESSION["projectID"].",
-                                    '".$_GET["lotVergabe"]."',
-                                    '".date("Y-m-d", strtotime($_GET["lotLVSend"]))."',
-                                    '".$_GET["lotVerfahren"]."',
-                                    '".$_GET["lotLVBearbeiter"]."',
-                                    '".$_GET["lotNotice"]."',
-                                    '".$_GET["kostenanschlag"]."',
-                                    '".$_GET["budget"]."');";
-                }
-                else{
-                    $sql= "INSERT INTO `LIMET_RB`.`tabelle_lose_extern`
-                                    (`LosNr_Extern`,
-                                    `LosBezeichnung_Extern`,
-                                    `Ausführungsbeginn`,
-                                    `tabelle_projekte_idTABELLE_Projekte`,
-                                    `Vergabe_abgeschlossen`,
-                                    `Versand_LV`,
-                                    `Verfahren`,
-                                    `Bearbeiter`,
-                                    `Notiz`,
-                                    `tabelle_lieferant_idTABELLE_Lieferant`,
-                                    `Kostenanschlag`,
-                                    `Budget`)
-                                    VALUES
-                                    ('".$_GET["losNr"]."',
-                                    '".$_GET["losName"]."',
-                                    '".date("Y-m-d", strtotime($_GET["losDatum"]))."',
-                                    ".$_SESSION["projectID"].",
-                                    '".$_GET["lotVergabe"]."',
-                                    '".date("Y-m-d", strtotime($_GET["lotLVSend"]))."',
-                                    '".$_GET["lotVerfahren"]."',
-                                    '".$_GET["lotLVBearbeiter"]."',
-                                    '".$_GET["lotNotice"]."',
-                                    ".filter_input(INPUT_GET, 'lotAuftragnehmer').",
-                                    '".$_GET["kostenanschlag"]."',
-                                    '".$_GET["budget"]."');";               
-                }
-            }
-        }
-        else{
-            // MKF anlegen
-            // Abfragen laufenden Nr            
-            $sqlMKF = "SELECT Max(tabelle_lose_extern.mkf_nr) AS Maxvonmkf_nr
-                        FROM tabelle_lose_extern
-                        WHERE (((tabelle_lose_extern.mkf_von_los)=".filter_input(INPUT_GET, 'lotMKFOf')."));";
-            
-            $resultMKFNr = $mysqli->query($sqlMKF);
-            while($row = $resultMKFNr->fetch_assoc()) {
-                    $laufendeNr = $row["Maxvonmkf_nr"];
-                    $laufendeNr = $laufendeNr+1;
-            }
-            if($laufendeNr == ""){
-                    $laufendeNr = 1;
-            }
-            
-            $sqlLosDaten = "SELECT tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern
-                            FROM tabelle_lose_extern
-                            WHERE (((tabelle_lose_extern.idtabelle_Lose_Extern)=".filter_input(INPUT_GET, 'lotMKFOf')."));";
-            
-            $resultLosDaten = $mysqli->query($sqlLosDaten);
-            while($row = $resultLosDaten->fetch_assoc()) {
-                    $mkfLosNr = $row["LosNr_Extern"].".".$laufendeNr;
-                    $mkfLosBezeichnung = $row["LosBezeichnung_Extern"];
-            }
-            
-            if( null != ($_GET["lotSum"])	>){
-                if(filter_input(INPUT_GET, 'lotAuftragnehmer')==0){
-                    $sql= "INSERT INTO `LIMET_RB`.`tabelle_lose_extern`
-                                    (`LosNr_Extern`,
-                                    `LosBezeichnung_Extern`,
-                                    `Ausführungsbeginn`,
-                                    `tabelle_projekte_idTABELLE_Projekte`,
-                                    `Vergabesumme`,
-                                    `Vergabe_abgeschlossen`,
-                                    `Versand_LV`,
-                                    `Verfahren`,
-                                    `Bearbeiter`,
-                                    `Notiz`,
-                                    `mkf_von_los`,
-                                    `mkf_nr`,
-                                    `Kostenanschlag`,
-                                    `Budget`)
-                                    VALUES
-                                    ('".$mkfLosNr."',
-                                    '".$mkfLosBezeichnung."',
-                                    '".$_GET["losDatum"]."',
-                                    ".$_SESSION["projectID"].",
-                                    '".$_GET["lotSum"]."',
-                                    '".$_GET["lotVergabe"]."',
-                                    '".date("Y-m-d", strtotime($_GET["lotLVSend"]))."',
-                                    '".$_GET["lotVerfahren"]."',
-                                    '".$_GET["lotLVBearbeiter"]."',
-                                    '".$_GET["lotNotice"]."',
-                                    '".filter_input(INPUT_GET, 'lotMKFOf')."',
-                                    '".$laufendeNr."',
-                                    '".$_GET["kostenanschlag"]."',
-                                    '".$_GET["budget"]."');";
-                }
-                else{
-                    $sql= "INSERT INTO `LIMET_RB`.`tabelle_lose_extern`
-                                    (`LosNr_Extern`,
-                                    `LosBezeichnung_Extern`,
-                                    `Ausführungsbeginn`,
-                                    `tabelle_projekte_idTABELLE_Projekte`,
-                                    `Vergabesumme`,
-                                    `Vergabe_abgeschlossen`,
-                                    `Versand_LV`,
-                                    `Verfahren`,
-                                    `Bearbeiter`,
-                                    `Notiz`,
-                                    `tabelle_lieferant_idTABELLE_Lieferant`,
-                                    `mkf_von_los`,
-                                    `mkf_nr`,
-                                    `Kostenanschlag`,
-                                    `Budget`)
-                                    VALUES
-                                    ('".$mkfLosNr."',
-                                    '".$mkfLosBezeichnung."',
-                                    '".date("Y-m-d", strtotime($_GET["losDatum"]))."',
-                                    ".$_SESSION["projectID"].",
-                                    '".$_GET["lotSum"]."',
-                                    '".$_GET["lotVergabe"]."',
-                                    '".date("Y-m-d", strtotime($_GET["lotLVSend"]))."',
-                                    '".$_GET["lotVerfahren"]."',
-                                    '".$_GET["lotLVBearbeiter"]."',
-                                    '".$_GET["lotNotice"]."',
-                                    ".filter_input(INPUT_GET, 'lotAuftragnehmer').",
-                                    '".filter_input(INPUT_GET, 'lotMKFOf')."',
-                                    '".$laufendeNr."',
-                                    '".$_GET["kostenanschlag"]."',
-                                    '".$_GET["budget"]."');";              
-                }
+    if ($data['lotAuftragnehmer'] != 0) {
+        $commonFields['tabelle_lieferant_idTABELLE_Lieferant'] = $data['lotAuftragnehmer'];
+    }
 
-            }
-            else{
-                if(filter_input(INPUT_GET, 'lotAuftragnehmer')==0){
-                    $sql= "INSERT INTO `LIMET_RB`.`tabelle_lose_extern`
-                                    (`LosNr_Extern`,
-                                    `LosBezeichnung_Extern`,
-                                    `Ausführungsbeginn`,
-                                    `tabelle_projekte_idTABELLE_Projekte`,
-                                    `Vergabe_abgeschlossen`,
-                                    `Versand_LV`,
-                                    `Verfahren`,
-                                    `Bearbeiter`,
-                                    `Notiz`,
-                                    `mkf_von_los`,
-                                    `mkf_nr`,
-                                    `Kostenanschlag`,
-                                    `Budget`)
-                                    VALUES
-                                    ('".$mkfLosNr."',
-                                    '".$mkfLosBezeichnung."',
-                                    '".date("Y-m-d", strtotime($_GET["losDatum"]))."',
-                                    ".$_SESSION["projectID"].",
-                                    '".$_GET["lotVergabe"]."',
-                                    '".date("Y-m-d", strtotime($_GET["lotLVSend"]))."',
-                                    '".$_GET["lotVerfahren"]."',
-                                    '".$_GET["lotLVBearbeiter"]."',
-                                    '".$_GET["lotNotice"]."',
-                                    '".filter_input(INPUT_GET, 'lotMKFOf')."',
-                                    '".$laufendeNr."',
-                                    '".$_GET["kostenanschlag"]."',
-                                    '".$_GET["budget"]."');";
-                }
-                else{
-                    $sql= "INSERT INTO `LIMET_RB`.`tabelle_lose_extern`
-                                    (`LosNr_Extern`,
-                                    `LosBezeichnung_Extern`,
-                                    `Ausführungsbeginn`,
-                                    `tabelle_projekte_idTABELLE_Projekte`,
-                                    `Vergabe_abgeschlossen`,
-                                    `Versand_LV`,
-                                    `Verfahren`,
-                                    `Bearbeiter`,
-                                    `Notiz`,
-                                    `tabelle_lieferant_idTABELLE_Lieferant`,
-                                    `mkf_von_los`,
-                                    `mkf_nr`,
-                                    `Kostenanschlag`,
-                                    `Budget`)
-                                    VALUES
-                                    ('".$mkfLosNr."',
-                                    '".$mkfLosBezeichnung."',
-                                    '".date("Y-m-d", strtotime($_GET["losDatum"]))."',
-                                    ".$_SESSION["projectID"].",
-                                    '".$_GET["lotVergabe"]."',
-                                    '".date("Y-m-d", strtotime($_GET["lotLVSend"]))."',
-                                    '".$_GET["lotVerfahren"]."',
-                                    '".$_GET["lotLVBearbeiter"]."',
-                                    '".$_GET["lotNotice"]."',
-                                    ".filter_input(INPUT_GET, 'lotAuftragnehmer').",
-                                    '".filter_input(INPUT_GET, 'lotMKFOf')."',
-                                    '".$laufendeNr."',
-                                    '".$_GET["kostenanschlag"]."',
-                                    '".$_GET["budget"]."');";               
-                }
-            }
+    $columns = implode(", ", array_keys($commonFields));
+    $values = "'" . implode("', '", array_values($commonFields)) . "'";
 
-            
-        }
-			
-	if ($mysqli ->query($sql) === TRUE) {
-	    echo "Los zu Projekt hinzugefügt!";
-	} else {
-	    echo "Error: " . $sql . "<br>" . $mysqli->error;
-	}
-	
-	
-	$mysqli ->close();	
-					
+    $sql = "INSERT INTO `LIMET_RB`.`tabelle_lose_extern` ($columns) VALUES ($values)";
+
+    if ($mysqli->query($sql) === TRUE) {
+        echo "Los zu Projekt hinzugefügt!";
+    } else {
+        echo "Error: " . $sql . "<br>" . $mysqli->error;
+    }
+}
+
+$data = $_GET;
+$data['lotAuftragnehmer'] = filter_input(INPUT_GET, 'lotAuftragnehmer', FILTER_VALIDATE_INT);
+$data['lotMKFOf'] = filter_input(INPUT_GET, 'lotMKFOf', FILTER_VALIDATE_INT);
+
+if ($data['lotMKFOf'] == 0) {
+    insertLos($mysqli, $data);
+} else {
+    // MKF anlegen
+    $sqlMKF = "SELECT Max(mkf_nr) AS Maxvonmkf_nr FROM tabelle_lose_extern WHERE mkf_von_los = " . $data['lotMKFOf'];
+    $resultMKFNr = $mysqli->query($sqlMKF);
+    $laufendeNr = ($resultMKFNr->fetch_assoc()['Maxvonmkf_nr'] ?? 0) + 1;
+
+    $sqlLosDaten = "SELECT LosNr_Extern, LosBezeichnung_Extern FROM tabelle_lose_extern WHERE idtabelle_Lose_Extern = " . $data['lotMKFOf'];
+    $resultLosDaten = $mysqli->query($sqlLosDaten);
+    $losDaten = $resultLosDaten->fetch_assoc();
+
+    $data['losNr'] = $losDaten['LosNr_Extern'] . "." . $laufendeNr;
+    $data['losName'] = $losDaten['LosBezeichnung_Extern'];
+    $data['laufendeNr'] = $laufendeNr;
+
+    insertLos($mysqli, $data, false);
+}
+
+$mysqli->close();
 ?>

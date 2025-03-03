@@ -12,10 +12,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-          integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
-          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+    integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -71,7 +70,7 @@ init_page_serversides(); // checks LOGIN
                         <input class="form-check-input track-checkbox" type="checkbox" id="checkbox1">
                         <label class="form-check-label" for="checkbox1">Weniger Vergleichsräume laden</label>
                     </div>
-                    <button type="button" class="btn btn-xs ms-auto" onclick="show_modal('helpModal')">
+                    <button type="button" class="btn btn-sm ms-auto" onclick="show_modal('helpModal')">
                         <i class="fa fa-circle-info"></i>
                     </button>
                 </div>
@@ -644,15 +643,6 @@ init_page_serversides(); // checks LOGIN
         }
     }
 
-
-    //    function addToggleButton(cardId) {
-    //                    const card = document.getElementById(cardId);
-    //                    const cardHeader = card.querySelector('.card-header');
-    //                    const cardBody = card.querySelector('.card-body');
-    //                    $(cardHeader).click(function () {
-    //                        $(cardBody).toggle();
-    //                    });
-    //                }
 
 </script>
 </body>

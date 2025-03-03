@@ -1,7 +1,7 @@
-// scrollUp.js
+// _scrollUp.js
 
 function scrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
 function initScrollButton() {
@@ -30,4 +30,4 @@ function initScrollButton() {
 document.addEventListener('DOMContentLoaded', initScrollButton);
 
 // USAGE
-//<script src="scrollUp.js" defer></script>
+//<script src="_scrollUp.js" defer></script>

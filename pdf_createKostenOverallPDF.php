@@ -1,56 +1,11 @@
 <?php
-
-use const format_money_report0 as format_money_report0Alias;
-
 include "_utils.php";
 include "_format.php";
-require_once("TCPDF-main/TCPDF-main/tcpdf.php");
+include "pdf_MyPDF_class_Kosten.php";
+include "_pdf_utils.php";
+check_login();
+$mysqli = utils_connect_sql();
 
-
-class MYPDF extends TCPDF
-{
-    public function Header()
-    {
-        if ($_SESSION["projectAusfuehrung"] === "MADER") {        // Logo
-            $image_file = 'Mader_Logo_neu.jpg';
-            $this->Image($image_file, 15, 5, 40, 10, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-        } else {
-            if ($_SESSION["projectAusfuehrung"] === "LIMET") {
-                $image_file = 'LIMET_web.png';
-                $this->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-            } else {
-                $image_file = 'LIMET_web.png';
-                $this->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                $image_file = 'Mader_Logo_neu.jpg';
-                $this->Image($image_file, 38, 5, 40, 10, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-            }
-
-        }
-        $this->SetFont('helvetica', '', 8);
-        if ($_SESSION["projectPlanungsphase"] == "Vorentwurf") {
-            $this->Cell(0, 0, 'Medizintechnische Kostenschätzung', 0, false, 'R', 0, '', 0, false, 'B', 'B');
-        } else {
-            $this->Cell(0, 0, 'Medizintechnische Kostenberechnung', 0, false, 'R', 0, '', 0, false, 'B', 'B');
-        }
-        //$this->Cell(0, 0, 'Gesamt-Kosten', 0, false, 'R', 0, '', 0, false, 'B', 'B');
-        $this->Ln();
-        $this->cell(0, 0, '', 'B', 0, 'L');
-    }
-
-    // Page footer
-    public function Footer()
-    {
-        // Position at 15 mm from bottom
-        $this->SetY(-15);
-        $this->SetFont('helvetica', 'I', 8);
-        $this->cell(0, 0, '', 'T', 0, 'L');
-        $this->Ln();
-        $tDate = date('Y-m-d');
-        $this->Cell(0, 0, $tDate, 0, false, 'L', 0, '', 0, false, 'T', 'M');
-        $this->Cell(0, 0, 'Seite ' . $this->getAliasNumPage() . ' von ' . $this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
-    }
-
-}
 
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
@@ -86,21 +41,11 @@ $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 // set some language-dependent strings (optional)
 if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
     require_once(dirname(__FILE__) . '/lang/eng.php');
-    // TODO $pdf->setLanguageArray($l);
+    $pdf->setLanguageArray($l);
 }
-
-// --------------------------------------------------------
-
-// set font
 $pdf->SetFont('helvetica', '', 10);
-
-// add a page
 $pdf->AddPage('L', 'A4');
 
-
-// Daten laden
-
-$mysqli = utils_connect_sql();
 
 // --------------------- TITELZEILE MIT PROJEKT INFOS -----------------------------
 $sql = "SELECT tabelle_projekte.Projektname, tabelle_projekte.Preisbasis, tabelle_planungsphasen.Bezeichnung
@@ -221,7 +166,7 @@ foreach ($raumbereicheInProject as $rowData) {
                 WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume.`Raumbereich Nutzer`)='" . $rowData['Raumbereich Nutzer'] . "') AND ((tabelle_räume.Geschoss)='" . $rowData['Geschoss'] . "') AND ((tabelle_auftraggeber_gewerke.Gewerke_Nr)='" . $rowDataGewerkeInProject['Gewerke_Nr'] . "') AND ((tabelle_räume_has_tabelle_elemente.Standort)=1) AND tabelle_räume_has_tabelle_elemente.`Neu/Bestand`=1);";
         $result1 = $mysqli->query($sql1);
         $row1 = $result1->fetch_assoc();
-        if (null != ($row['PP'])) {
+        if (null != ($row1['PP_Neu'])) {
             $pdf->MultiCell(25, 4, format_money_report($row1["PP_Neu"]), 0, 'R', $fill, 0);
             $sumRaumbereichNeu = $sumRaumbereichNeu + $row1['PP_Neu'];
         } else {
@@ -270,10 +215,10 @@ $pdf->MultiCell(50, 4, 'Gesamt', 'T', 'L', 0, 0);
 $pdf->MultiCell(20, 4, '', 'T', 'R', 0, 0);
 $sumGesamt = 0;
 foreach ($gewerkeInProject as $rowDataGewerkeInProject) {
-    $pdf->MultiCell(25, 4, format_money_report( $rowDataGewerkeInProject['GewerkeSummeGesamt']), 'T', 'R', 0, 0);
+    $pdf->MultiCell(25, 4, format_money_report($rowDataGewerkeInProject['GewerkeSummeGesamt']), 'T', 'R', 0, 0);
     $sumGesamt = $sumGesamt + $rowDataGewerkeInProject['GewerkeSummeGesamt'];
 }
-$pdf->MultiCell(25, 4, format_money_report( $sumGesamt), 'T', 'R', 0, 0);
+$pdf->MultiCell(25, 4, format_money_report($sumGesamt), 'T', 'R', 0, 0);
 
 // Neusumme----------------------------------------------------
 $pdf->Ln();
@@ -300,5 +245,6 @@ foreach ($gewerkeInProject as $rowDataGewerkeInProject) {
 $pdf->MultiCell(25, 4, format_money_report($sumGesamtBestand), 0, 'R', 0, 0);
 
 ob_end_clean();
-$pdf->Output('NameOfTheGame.pdf', 'I');
+
+$pdf->Output(getFileName("KostenGesamt", "pdf")  ,'I');
 

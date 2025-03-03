@@ -4,8 +4,8 @@
         <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
-                <h4 class='modal-title'>Dokumentation</h4>
-                <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+                <h5 class='modal-title'>Dokumentation</h5>
+                <button type='button' class='btn-close' data-BS-dismiss='modal' aria-label='Close'></button>
             </div>
             <div class='modal-body' id='mbody'>
                 <table class='table table-bordered'>
@@ -97,7 +97,6 @@
                             (Allerdings muss dies, um zu funktionieren, beim Laden der Tabelle bereits aktiviert sein.
                             Dementsprechend der Aufruf die Seite neu zu laden).
                         </td>
-
                     </tr>
 
                     <tr>
@@ -107,18 +106,12 @@
                                 <li>Löschen von Räumen nicht möglich! Raumparameter durch " - " ersetzbar.</li>
                                 <li>Neuer Raumparameter: Entfällt [1 oder 0]</li>
                             </ul>
-
-
                         </td>
                     </tr>
-
-
                     </tbody>
                 </table>
             </div>
-            <div class='modal-footer'>
-                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Schließen</button>
-            </div>
+
         </div>
     </div>
 </div>

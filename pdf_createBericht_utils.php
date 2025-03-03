@@ -1,5 +1,27 @@
 <?php
 
+function getUnitMultiplier($einheit)
+{
+    $prefixes = [
+        'k' => 1000,    // kilo
+        'M' => 1000000, // Mega
+        'G' => 1000000000, // Giga
+        'm' => 0.001,   // milli
+        'µ' => 0.000001, // micro
+        'n' => 0.000000001 // nano
+    ];
+
+    // Extract the prefix (if any) from the unit
+    $prefix = substr($einheit, 0, 1);
+
+    if (isset($prefixes[$prefix])) {
+        return $prefixes[$prefix];
+    }
+
+    // If no prefix or unrecognized prefix, return 1 (no multiplication)
+    return 1;
+}
+
 ///------------------ GET/Process DATA FUNCTIONS  ------------------
 function filter_old_equal_new($data)
 {
@@ -58,12 +80,25 @@ function kify($input)
     if (is_numeric($input)) {
         if ($input >= 1000) {
             $input = $input / 1000;
-            $input = rtrim(number_format($input, 3, ',', ''), '0');
-            $input = rtrim($input, ',') . 'k';
+            $input = ceil($input * 100) / 100; // Round up to 2 decimal places
+            $input = number_format($input, 2, ',', ''); // Format with 2 decimal places
+            $input = rtrim($input, '0'); // Remove trailing zeros
+            $input = rtrim($input, ','); // Remove trailing comma if present
+            if (substr($input, -1) != ',') {
+                $input .= ' k';
+            } else {
+                $input = rtrim($input, ',') . ' k';
+            }
+        } else {
+            $input = number_format($input, 2, ',', '');
+            $input = rtrim($input, '0');
+            $input = rtrim($input, ',');
+            $input = $input . " ";
         }
     }
     return $input;
 }
+
 
 function is_not_no_comment($str)
 {
@@ -225,7 +260,7 @@ function anmA3($pdf, $inp_text, $SB, $block_header_w)
 }
 
 
-function separate_headerwdth_proportionally()
+function separate_headerwdth_proportionally($output_pairs, $ln_spacer)
 {
     $result_widths = [];
     foreach ($output_pairs as $pair) {
@@ -325,6 +360,7 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
     $pdf->SetFont('helvetica', '', 10);
 }
 
+/** @noinspection PhpUndefinedConstantInspection */
 function init_pdf_attributes($pdf, $einzugLR, $marginTop, $marginBTM, $format = "", $label = "")
 {
     $pdf->SetCreator(PDF_CREATOR);
@@ -342,10 +378,6 @@ function init_pdf_attributes($pdf, $einzugLR, $marginTop, $marginBTM, $format = 
     $pdf->SetFooterMargin($marginBTM); //10
     $pdf->SetAutoPageBreak(FALSE, PDF_MARGIN_BOTTOM);
     $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-    if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) { // set some language-dependent strings (optional)
-        require_once(dirname(__FILE__) . '/lang/eng.php');
-        $pdf->setLanguageArray($l);
-    }
     $pdf->SetFont('helvetica', '', 10);
     if ($format == "A3") {
         $pdf->AddPage('L', 'A3');
@@ -384,7 +416,7 @@ function multicell_with_nr($pdf, $NR, $unit, $schriftgr, $einzug, $Ausrichtung =
     if ($NR > 0) {
         $pdf->MultiCell($einzug, $schriftgr, $NR . $unit, 0, $Ausrichtung, 1, 0);
     } else {
-        $pdf->MultiCell($einzug, $schriftgr, " - ", 0, $Ausrichtung, 1, 0);
+        $pdf->MultiCell($einzug, $schriftgr, "-", 0, $Ausrichtung, 1, 0);
     }
     $pdf->SetFontSize($originalFontSize);
     $pdf->SetFillColor(255, 255, 255);
@@ -396,7 +428,7 @@ function multicell_with_str($pdf, $STR, $einzug, $Unit, $schriftgr = 6)
     if (null != ($STR)) {
         $pdf->MultiCell($einzug, $schriftgr, $STR . " " . $Unit, 0, 'L', 1, 0);
     } else {
-        $pdf->MultiCell($einzug, $schriftgr, " - ", 0, 'L', 1, 0);
+        $pdf->MultiCell($einzug, $schriftgr, "-", 0, 'L', 1, 0);
     }
     $pdf->SetFontSize($originalFontSize);
     $pdf->SetFillColor(255, 255, 255);

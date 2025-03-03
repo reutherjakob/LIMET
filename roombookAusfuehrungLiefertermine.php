@@ -38,7 +38,7 @@ init_page_serversides();
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class='row'>
-        <div class='col-sm-11'>
+        <div class='col-lg-11'>
             <div class="mt-4 card">
                 <div class="card-header"><b>Elemente im Projekt</b>
                 </div>
@@ -106,7 +106,7 @@ init_page_serversides();
                 </div>
             </div>
         </div>
-        <div class='col-sm-1'>
+        <div class='col-lg-1'>
             <div class="mt-4 card">
                 <div class="card-header"><b>Lieferdatum</b>
                 </div>

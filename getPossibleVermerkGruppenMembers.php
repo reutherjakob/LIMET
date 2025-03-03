@@ -2,7 +2,7 @@
 session_start();
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -47,7 +47,7 @@ if(!isset($_SESSION["username"]))
 
         while($row = $result->fetch_assoc()) {
             echo "<tr>";
-            echo "<td><button type='button' id='".$row["idTABELLE_Ansprechpersonen"]."' class='btn btn-outline-success btn-xs' value='addVermerkGroupMember'><i class='fas fa-plus'></i></button></td>";
+            echo "<td><button type='button' id='".$row["idTABELLE_Ansprechpersonen"]."' class='btn btn-outline-success btn-sm' value='addVermerkGroupMember'><i class='fas fa-plus'></i></button></td>";
             echo "<td>".$row["Name"]."</td>";
             echo "<td>".$row["Vorname"]."</td>";
             echo "</tr>";

@@ -148,7 +148,7 @@ include "_format.php";
             <div class="col-md-8">
                 <div class="mt-1 card">
                     <div class="card-header">
-                        <button type="button" class="btn btn-outline-dark btn-xs" id="showRoomsWithAndWithoutElement">
+                        <button type="button" class="btn btn-outline-dark btn-sm" id="showRoomsWithAndWithoutElement">
                             <i class="fas fa-caret-up"></i>
                         </button>
                         <label>Räume mit Element</label>
@@ -164,10 +164,10 @@ include "_format.php";
                     <div class="card-header" id="BestandsdatenCardHeader">
                         <label>Bestandsdaten</label>
                         <button type='button' id='addBestandsElement'
-                                class='btn btn-outline-success btn-xs float-right' value='Hinzufügen'
+                                class='btn btn-outline-success btn-sm float-right' value='Hinzufügen'
                                 data-toggle='modal' data-target='#addBestandModal'><i class='fas fa-plus'></i></button>
                         <button type='button' id='reloadBestand'
-                                class='btn btn-outline-secondary btn-xs float-right' value='reloadBestand'>
+                                class='btn btn-outline-secondary btn-sm float-right' value='reloadBestand'>
                             <i class="fa fa-retweet" aria-hidden="true"></i>
                         </button>
                     </div>
@@ -180,7 +180,7 @@ include "_format.php";
 
     <div class="mt-4 card">
         <div class="card-header">
-            <button type="button" class="btn btn-outline-dark btn-xs" id="showDBElementData">
+            <button type="button" class="btn btn-outline-dark btn-sm" id="showDBElementData">
                 <i class="fas fa-caret-down"></i></button>
             <label>DB Elemente</label>
 
@@ -257,7 +257,7 @@ include "_format.php";
                                 echo "<td>" . $row["ElementID"] . "</td>";
                                 echo "<td>" . $row["Bezeichnung"] . "</td>";
                                 echo "<td>" . $row["Kurzbeschreibung"] . "</td>";
-                                echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-dark btn-xs'' value='changeElement' data-toggle='modal' data-target='#changeElementModal'><i class='fas fa-pencil-alt'></i></button></td>";
+                                echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-dark btn-sm'' value='changeElement' data-toggle='modal' data-target='#changeElementModal'><i class='fas fa-pencil-alt'></i></button></td>";
                                 echo "</tr>";
                             }
                             echo "</tbody></table>";
@@ -324,7 +324,7 @@ include "_format.php";
             $("#elementBestand").html("");
 
             var elementID = table.row($(this)).data()[0];
-            var variantenID = table.row($(this)).data()[5];
+            let variantenID = table.row($(this)).data()[5];
             var bestand = 1;
             if (table.row($(this)).data()[6] === "Ja") {
                 bestand = 0;

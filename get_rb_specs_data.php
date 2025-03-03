@@ -164,7 +164,8 @@ tabelle_räume.AR_Flaechenlast_kgcm2,
 tabelle_räume.HT_Tempgradient_Ch,
 tabelle_räume.HT_Abluft_Geraete,
 tabelle_räume.`ET_EMV_ja-nein`,
-tabelle_räume.`Entfallen`
+tabelle_räume.`Entfallen`, 
+tabelle_räume.AR_Statik_relevant
 
 
 FROM tabelle_räume

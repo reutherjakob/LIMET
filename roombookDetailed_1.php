@@ -16,10 +16,6 @@ init_page_serversides();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-            crossorigin="anonymous"></script>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
           integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
@@ -27,6 +23,16 @@ init_page_serversides();
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+            integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+            crossorigin="anonymous"></script>
+    <!--
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
+      -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+            integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+            crossorigin="anonymous"></script>
 
     <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.css"
           rel="stylesheet"/>
@@ -46,7 +52,7 @@ init_page_serversides();
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class='row'>
-        <div class='col-sm-8'>
+        <div class='col-lg-8'>
             <div class="mt-2 card">
                 <div class="card-header">
                     <div class="row">
@@ -105,7 +111,7 @@ init_page_serversides();
                         echo "</td>";
                         echo "<td>";
                         if ($row["Anmerkung FunktionBO"] != null) {
-                            echo "<button type='button' class='btn btn-xs btn-outline-dark DIYbtn' id='buttonBO' value='" . $row["Anmerkung FunktionBO"] . "' data-toggle='modal' data-target='#boModal'><i class='fa fa-comment'></i></button>";
+                            echo "<button type='button' class='btn btn-sm btn-outline-dark DIYbtn' id='buttonBO' value='" . $row["Anmerkung FunktionBO"] . "' data-bs-toggle='modal' data-bs-target='#boModal'><i class='fa fa-comment'></i></button>";
                         }
                         echo "</td>";
                         echo "</tr>";
@@ -115,7 +121,7 @@ init_page_serversides();
                 </div>
             </div>
         </div>
-        <div class="col-sm-4">
+        <div class="col-lg-4">
             <div class="mt-2 card">
                 <div class="card-header">Vermerke zu Raum</div>
                 <div class="card-body" id="roomVermerke"></div>
@@ -123,13 +129,13 @@ init_page_serversides();
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-8">
+        <div class="col-lg-8">
             <div class="mt-4 card">
                 <div class="card-header">Elemente im Raum</div>
                 <div class="card-body" id="roomElements"></div>
             </div>
         </div>
-        <div class="col-sm-4">
+        <div class="col-lg-4">
             <div class="mt-4 card">
                 <div class="card-header">Variantenparameter</div>
                 <div class="card-body">
@@ -140,8 +146,8 @@ init_page_serversides();
             <div class="mt-4 card">
                 <div class="card-header" id="BestandsdatenCardHeader">Bestandsdaten
                     <button type='button' id='addBestandsElement'
-                            class='btn ml-4 mt-2 btn-outline-success btn-xs float-right' value='Hinzufügen'
-                            data-toggle='modal' data-target='#addBestandModal'><i class='fas fa-plus'></i></button>
+                            class='btn ml-4 mt-2 btn-outline-success btn-sm float-right' value='Hinzufügen'
+                            data-bs-toggle='modal' data-bs-target='#addBestandModal'><i class='fas fa-plus'></i></button>
                     <button type='button' id='reloadBestand'
                             class='btn ml-4 mt-2 btn-outline-secondary  float-right' value='reloadBestand'>
                         <i class="fa fa-retweet" aria-hidden="true"></i>
@@ -158,20 +164,20 @@ init_page_serversides();
     <hr>
     <div class="mt-4 card">
         <div class="card-header">
-            <button type="button" class="btn btn-outline-dark btn-xs" id="showDBElementData"><i
+            <button type="button" class="btn btn-outline-dark btn-sm" id="showDBElementData"><i
                         class="fas fa-caret-right"></i></button>
             Datenbank-Elemente
         </div>
         <div class="card-body" style="display:none" id="DBElementData">
             <div class="row mt-4">
-                <div class="col-sm-6">
+                <div class="col-lg-6">
                     <div class="mt-4 card">
                         <div class="card-header">Elementgruppen</div>
                         <div class="card-body" id="elementGroups">
                             <?php
                             $sql = "SELECT tabelle_element_gewerke.idtabelle_element_gewerke, tabelle_element_gewerke.Nummer, tabelle_element_gewerke.Gewerk
 												FROM tabelle_element_gewerke
-												ORDER BY tabelle_element_gewerke.Nummer;";
+												ORDER BY tabelle_element_gewerke.Nummer";
 
                             $result = $mysqli->query($sql);
                             echo "<div class='form-group row'>
@@ -181,6 +187,7 @@ init_page_serversides();
                             while ($row = $result->fetch_assoc()) {
                                 echo "<option value=" . $row["idtabelle_element_gewerke"] . ">" . $row["Nummer"] . " - " . $row["Gewerk"] . "</option>";
                             }
+
                             echo "</select></div></div>
                                     <div class='form-group row'>
                                             <label class='control-label col-md-2' for='elementHauptgruppe'>Hauptgruppe</label>
@@ -237,13 +244,13 @@ init_page_serversides();
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-3">
+                <div class="col-md-3 col-lg-3">
                     <div class="mt-4 card">
                         <div class="card-header">Elementparameter</div>
                         <div class="card-body" id="elementParametersInDB"></div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-3">
+                <div class="col-md-3 col-lg-3">
                     <div class="mt-4 card">
                         <div class="card-header">Elementkosten in anderen Projekten</div>
                         <div class="card-body" id="elementPricesInOtherProjects"></div>
@@ -254,19 +261,19 @@ init_page_serversides();
 
             <hr>
             <div class="row mt-4">
-                <div class="col-md-6 col-sm-6">
+                <div class="col-md-6 col-lg-6">
                     <div class="mt-4 card">
                         <div class="card-header">Geräte</div>
                         <div class="card-body" id="devicesInDB"></div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-3">
+                <div class="col-md-3 col-lg-3">
                     <div class="mt-4 card">
                         <div class="card-header">Geräteparameter</div>
                         <div class="card-body" id="deviceParametersInDB"></div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-3">
+                <div class="col-md-3 col-lg-3">
                     <div class="mt-4 card">
                         <div class="card-header">Gerätepreise</div>
                         <div class="card-body" id="devicePrices"></div>
@@ -285,13 +292,13 @@ init_page_serversides();
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>BO-Anmerkung</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='boModalBody'>
 
             </div>
             <div class='modal-footer'>
-                <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>OK</button>
+                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>OK</button>
             </div>
         </div>
     </div>
@@ -300,7 +307,7 @@ init_page_serversides();
 </body>
 
 <script src="_utils.js"></script>
- <script>
+<script>
     let table;
     let toastCounter3 = 0;
 
@@ -397,6 +404,7 @@ init_page_serversides();
 
 
         const table1 = $('#tableElementsInDB').DataTable();
+
         $('#tableElementsInDB tbody').on('click', 'tr', function () {
 
             if ($(this).hasClass('info')) {
@@ -434,15 +442,12 @@ init_page_serversides();
                 });
             }
         });
-
         $('#filter_MTrelevantRooms').change(function () {
             table.draw();
         });
-
         setTimeout(() => {
             move_item("dt-search-0", "CardHeaderRaume");
-        }, 400);
-
+        }, 200);
 
     });
 

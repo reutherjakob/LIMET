@@ -1,0 +1,66 @@
+
+<div class="modal fade" id="changeProjectModal" role="dialog">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Projekt ändern</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="mbody">
+        <form>
+          <div class="mb-3">
+            <label for="active" class="form-label">Aktiv:</label>
+            <select class="form-select form-select-sm" id="active" name="active">
+              <option value="1">Ja</option>
+              <option value="0">Nein</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="neubau" class="form-label">Neubau:</label>
+            <select class="form-select form-select-sm" id="neubau" name="neubau">
+              <option value="1">Ja</option>
+              <option value="0">Nein</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="betten" class="form-label">Bettenanzahl:</label>
+            <input type="text" class="form-control form-control-sm" id="betten" name="betten">
+          </div>
+          <div class="mb-3">
+            <label for="bgf" class="form-label">BGF:</label>
+            <input type="text" class="form-control form-control-sm" id="bgf" name="bgf">
+          </div>
+          <div class="mb-3">
+            <label for="nf" class="form-label">NF:</label>
+            <input type="text" class="form-control form-control-sm" id="nf" name="nf">
+          </div>
+          <div class="mb-3">
+            <label for="bearbeitung" class="form-label">Bearbeitung:</label>
+            <select class="form-select form-select-sm" id="bearbeitung" name="bearbeitung">
+              <option value="LIMET">LIMET</option>
+              <option value="MADER">MADER</option>
+              <option value="LIMET-MADER">LIMET-MADER</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="planungsphase" class="form-label">Planungsphase:</label>
+            <select class="form-select form-select-sm" id="planungsphase" name="planungsphase">
+              <option value="1">Vorentwurf</option>
+              <option value="2">Entwurf</option>
+              <option value="4">Einreichung</option>
+              <option value="3">Ausführungsplanung</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="dateSelect" class="form-label">Preisbasis:</label>
+            <input type="date" class="form-control form-control-sm" id="dateSelect" name="dateSelect">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="saveProject" class="btn btn-warning btn-sm">Speichern</button>
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Abbrechen</button>
+      </div>
+    </div>
+  </div>
+</div>

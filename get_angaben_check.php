@@ -51,8 +51,8 @@ function check_RG(&$messages, $roomParams)
 function check_summe_leistungen(&$messages, $roomParams)
 {
     $summe = (intval($roomParams['ET_Anschlussleistung_AV_W']) + intval($roomParams['ET_Anschlussleistung_SV_W']) + intval($roomParams['ET_Anschlussleistung_ZSV_W']) + intval($roomParams['ET_Anschlussleistung_USV_W']));
-    if ($summe > intval($roomParams['ET_Anschlussleistung_W'])) {
-        $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Leistung ∑-> " . $roomParams['ET_Anschlussleistung_W'] . "= ∑Anschlussleistung(Raum) < ∑P je Netzart! (" . (intval($roomParams['ET_Anschlussleistung_AV_W']) . "/" . intval($roomParams['ET_Anschlussleistung_SV_W']) . "/" . intval($roomParams['ET_Anschlussleistung_ZSV_W']) . "/" . intval($roomParams['ET_Anschlussleistung_USV_W'])) . ")<br>  ";
+    if ($summe != intval($roomParams['ET_Anschlussleistung_W'])) {
+        $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Leistung ∑-> " . $roomParams['ET_Anschlussleistung_W'] . "= ∑Anschlussleistung(Raum) != ∑P je Netzart! (" .$summe."=". (intval($roomParams['ET_Anschlussleistung_AV_W']) . "+" . intval($roomParams['ET_Anschlussleistung_SV_W']) . "+" . intval($roomParams['ET_Anschlussleistung_ZSV_W']) . "+" . intval($roomParams['ET_Anschlussleistung_USV_W'])) . ")<br>  ";
     }
 }
 

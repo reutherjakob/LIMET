@@ -130,8 +130,8 @@ init_page_serversides();
 
         echo "  <div class='card-header'>Elemente im Bestand";
         if ($result->num_rows > 0) {
-            echo "<button type='button' class='ml-4 btn btn-outline-dark btn-xs' value='createBestandsPDF'><i class='far fa-file-pdf'></i> Bestands-PDF</button>";
-            echo "<button  class='ml-4 btn btn-outline-dark btn-xs' onclick=\"window.location.href='out_bestands_csv.php'\">Download CSV</button>";
+            echo "<button type='button' class='ml-4 btn btn-outline-dark btn-sm' value='createBestandsPDF'><i class='far fa-file-pdf'></i> Bestands-PDF</button>";
+            echo "<button  class='ml-4 btn btn-outline-dark btn-sm' onclick=\"window.location.href='out_bestands_csv.php'\">Download CSV</button>";
         }
         echo "</div> <div class='card-body'>";
         echo "<table class='table table-striped table-bordered table-sm' id='tableBestandsElemente'  cellspacing='0' width='100%'>
@@ -167,9 +167,9 @@ init_page_serversides();
             echo "<td>" . format_money($row["Kosten"]) . "</td>";
             echo "<td>" . (float)$row["Kosten"] . "</td>";
             if (null != ($row["Kurzbeschreibung"])) {
-                echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment'></i></button></td>";
+                echo "<td><button type='button' class='btn btn-sm btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment'></i></button></td>";
             } else {
-                echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment-slash'></i></button></td>";
+                echo "<td><button type='button' class='btn btn-sm btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment-slash'></i></button></td>";
             }
 
 
@@ -238,7 +238,7 @@ init_page_serversides();
             content: "<textarea class='popover-textarea'></textarea>",
             template: "<div class='popover'>" +
                 "<h4 class='popover-header'></h4><div class='popover-body'>" +
-                "</div><div class='popover-footer'><button type='button' class='btn btn-xs btn-outline-dark popover-submit'><i class='fas fa-check'></i>" +
+                "</div><div class='popover-footer'><button type='button' class='btn btn-sm btn-outline-dark popover-submit'><i class='fas fa-check'></i>" +
                 "</button>&nbsp;" +
                 "</div>"
 

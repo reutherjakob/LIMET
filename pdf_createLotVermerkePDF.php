@@ -158,7 +158,7 @@ class MYPDF extends TCPDF {
             if($row['Vermerkart'] == 'Bearbeitung'){
                 $text = $row['Name']."\n".$row['Faelligkeit'];
                 $this->MultiCell($w[2], $rowHeight, $text, 1, 'L', $fill, 0, '', '');
-                $this->SetFont(zapfdingbats, '', 8);
+                $this->SetFont('zapfdingbats', '', 8);
                 if($row['Bearbeitungsstatus'] == '0'){
                     $this->MultiCell($w[3], $rowHeight, TCPDF_FONTS::unichr(54), 1, 'L', $fill, 0, '', '');
                 }

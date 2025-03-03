@@ -4,7 +4,7 @@ check_login();
 ?>
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
 <head>
@@ -129,11 +129,11 @@ while ($row = $result->fetch_assoc()) {
         }
         echo "</select></td>";
         if (null != ($row["Kurzbeschreibung"])) {
-            echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment'></i></button></td>";
+            echo "<td><button type='button' class='btn btn-sm btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment'></i></button></td>";
         } else {
-            echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment-slash'></i></button></td>";
+            echo "<td><button type='button' class='btn btn-sm btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment-slash'></i></button></td>";
         }
-        echo "<td><button type='button' id='" . $row["id"] . "' class='btn btn-warning btn-xs' value='saveElement'><i class='far fa-save'></i></button></td>";
+        echo "<td><button type='button' id='" . $row["id"] . "' class='btn btn-warning btn-sm' value='saveElement'><i class='far fa-save'></i></button></td>";
         echo "<td>" . $row["tabelle_Varianten_idtabelle_Varianten"] . "</td>";
         echo "<td>" . $row["Standort"] . "</td>";
         echo "<td>" . $row["Verwendung"] . "</td>";
@@ -248,7 +248,7 @@ echo "<!-- Modal --> <!-- data-toggle='modal' data-target='#myModal' -->
         content: "<textarea class='popover-textarea'></textarea>",
         template: "<div class='popover'>" +
             "<h4 class='popover-header'></h4><div class='popover-body'>" +
-            "</div><div class='popover-footer'><button type='button' class='btn btn-xs btn-outline-dark popover-submit'><i class='fas fa-check'></i>" +
+            "</div><div class='popover-footer'><button type='button' class='btn btn-sm btn-outline-dark popover-submit'><i class='fas fa-check'></i>" +
             "</button>&nbsp;" +
             "</div>"
 

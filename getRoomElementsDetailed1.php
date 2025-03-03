@@ -3,220 +3,269 @@
 include '_utils.php';
 include "_format.php";
 check_login();
-//TODO assert og detailed page still works
-?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <style>
-        .popover-content {
-            height: 200px;
-            width: 200px;
-        }
-
-        textarea.popover-textarea {
-            border: 1px;
-            margin: 0px;
-            width: 100%;
-            height: 200px;
-            padding: 0px;
-            box-shadow: none;
-        }
-
-        .popover-footer {
-            margin: 0;
-            padding: 8px 14px;
-            font-size: 14px;
-            font-weight: 400;
-            line-height: 18px;
-            background-color: #F7F7F7;
-            border-bottom: 1px solid #EBEBEB;
-            border-radius: 5px 5px 0 0;
-        }
-
-        .input-xs {
-            height: 22px;
-            padding: 2px 5px;
-            font-size: 12px;
-            line-height: 1.5;
-            border-radius: 3px;
-        }
-        .card-body{
-            overflow: auto;
-        }
-
-    </style>
-</head>
-<body>
-
-<?php
 $mysqli = utils_connect_sql();
 
-$sql = "SELECT Sum(`tabelle_räume_has_tabelle_elemente`.`Anzahl`*`tabelle_projekt_varianten_kosten`.`Kosten`) AS Summe_Neu
-                FROM tabelle_räume_has_tabelle_elemente INNER JOIN tabelle_projekt_varianten_kosten ON (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) AND (tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten = tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)
-                WHERE (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=" . $_SESSION["roomID"] . ") AND ((tabelle_räume_has_tabelle_elemente.Standort)=1) AND ((tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume_has_tabelle_elemente.`Neu/Bestand`)=1));";
-$result = $mysqli->query($sql);
-$row = $result->fetch_assoc();
-$SummeNeu = (float)$row["Summe_Neu"];
-$formattedNumber = format_money_report($row["Summe_Neu"]);
-echo "<form class='form-inline'>
+// SQL Queries
+$sql_new = "SELECT 
+    Sum(tabelle_räume_has_tabelle_elemente.Anzahl * tabelle_projekt_varianten_kosten.Kosten) AS Summe_Neu,
+    tabelle_elemente.ElementID
+FROM 
+    tabelle_räume_has_tabelle_elemente 
+INNER JOIN 
+    tabelle_projekt_varianten_kosten 
+    ON (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) 
+    AND (tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten = tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)
+INNER JOIN
+    tabelle_elemente
+    ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente
+WHERE 
+    tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = ? 
+    AND tabelle_räume_has_tabelle_elemente.Standort = 1 
+    AND tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte = ? 
+    AND tabelle_räume_has_tabelle_elemente.`Neu/Bestand` = 1
+GROUP BY tabelle_elemente.ElementID;";
 
-            <div class='form-group'>
-                <label for='kosten_neu'>Raumkosten-Neu: </label>
-                <input type='text' class='ml-4 mr-4 form-control input-xs' id='kosten_neu' value= '$formattedNumber' disabled='disabled'></input>
-            </div>";
+$sql_existing = "SELECT 
+    Sum(tabelle_räume_has_tabelle_elemente.Anzahl * tabelle_projekt_varianten_kosten.Kosten) AS Summe_Bestand,
+    tabelle_elemente.ElementID
+FROM 
+    tabelle_räume_has_tabelle_elemente 
+INNER JOIN 
+    tabelle_projekt_varianten_kosten 
+    ON (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) 
+    AND (tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten = tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)
+INNER JOIN
+    tabelle_elemente
+    ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente
+WHERE 
+    tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = ?
+    AND tabelle_räume_has_tabelle_elemente.Standort = 1 
+    AND tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte = ?
+    AND tabelle_räume_has_tabelle_elemente.`Neu/Bestand` = 0
+GROUP BY tabelle_elemente.ElementID;";
 
-// Raumkosten berechnen Bestand-Elemente
-$sql = "SELECT Sum(`tabelle_räume_has_tabelle_elemente`.`Anzahl`*`tabelle_projekt_varianten_kosten`.`Kosten`) AS Summe_Bestand
-                FROM tabelle_räume_has_tabelle_elemente INNER JOIN tabelle_projekt_varianten_kosten ON (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) AND (tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten = tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)
-                WHERE (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=" . $_SESSION["roomID"] . ") AND ((tabelle_räume_has_tabelle_elemente.Standort)=1) AND ((tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume_has_tabelle_elemente.`Neu/Bestand`)=0));";
-$result = $mysqli->query($sql);
-$row = $result->fetch_assoc();
-$formattedNumber = format_money_report($row["Summe_Bestand"]);
-
-echo "<div class='form-group'>
-                    <label for='kosten_neu'>Raumkosten-Bestand: </label>
-                    <input type='text' class='ml-4 form-control input-xs' id='kosten_neu' value='$formattedNumber' disabled='disabled'></input>
-                </div>
-           </div>";
-$Summe = (float)$row["Summe_Bestand"] + $SummeNeu;
-$formattedNumber = format_money_report($Summe);
-echo "<div class='form-group'>
-                    <label for='kosten_neu'>Gesammt: </label>
-                    <input type='text' class='ml-4 form-control input-xs' id='kosten_neu' value='$formattedNumber' disabled='disabled'></input>
-                </div>						  			 											 						 			
-           </div>	
-           </form>";
-
-//Elemente im Raum abfragen
-$sql = "SELECT tabelle_räume_has_tabelle_elemente.id, tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete,
+$sql_room_elements = "SELECT tabelle_räume_has_tabelle_elemente.id, tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete,
        tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
        tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.Anzahl, 
        tabelle_elemente.ElementID, tabelle_elemente.Kurzbeschreibung As `Elementbeschreibung`, tabelle_varianten.Variante, 
        tabelle_elemente.Bezeichnung, tabelle_geraete.GeraeteID, tabelle_hersteller.Hersteller, tabelle_geraete.Typ, 
-       tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.Standort, 
+       tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.Standort,  
        tabelle_räume_has_tabelle_elemente.Verwendung, tabelle_räume_has_tabelle_elemente.Kurzbeschreibung, 
        tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
        tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete
-			FROM tabelle_varianten INNER JOIN (tabelle_hersteller RIGHT JOIN ((tabelle_räume_has_tabelle_elemente LEFT JOIN tabelle_geraete ON tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete = tabelle_geraete.idTABELLE_Geraete) INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON tabelle_hersteller.idtabelle_hersteller = tabelle_geraete.tabelle_hersteller_idtabelle_hersteller) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
-			WHERE (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=" . $_SESSION["roomID"] . "))
-			ORDER BY tabelle_elemente.ElementID;";
+FROM tabelle_varianten INNER JOIN (tabelle_hersteller RIGHT JOIN ((tabelle_räume_has_tabelle_elemente LEFT JOIN tabelle_geraete ON tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete = tabelle_geraete.idTABELLE_Geraete) INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON tabelle_hersteller.idtabelle_hersteller = tabelle_geraete.tabelle_hersteller_idtabelle_hersteller) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
+WHERE (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=?))
+ORDER BY   tabelle_räume_has_tabelle_elemente.Anzahl DESC ;";
 
-$result = $mysqli->query($sql);
-if ($result->num_rows > 0) {
-    echo "<input type='button' class='mt-4 btn btn-outline-dark btn-xs' value='Rauminhalt kopieren' id='" . $_SESSION["roomID"] . "' data-toggle='modal' data-target='#copyRoomElementsModal'></input>";
-    echo "<button type='button' class='mt-4 ml-4 btn btn-outline-dark btn-xs' value='createRoombookPDF' id='" . $_SESSION["roomID"] . "'><i class='far fa-file-pdf'></i> Raumbuch-PDF</button>";
-    echo "<button type='button' class='mt-4 ml-4 btn btn-outline-dark btn-xs' value='createRoombookPDFCosts' id='" . $_SESSION["roomID"] . "'><i class='far fa-file-pdf'></i> Raumbuch-PDF-Kosten</button>";
+// Function to execute query and calculate costs
+function calculateCosts($mysqli, $sql, $roomID, $projectID)
+{
+    $stmt = $mysqli->prepare($sql);
+    $stmt->bind_param("ii", $roomID, $projectID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $sum = 0;
+    $costs = ['ortsfest' => 0, 'ortsveränderlich' => 0];
+
+    while ($row = $result->fetch_assoc()) {
+        $summe = isset($row["Summe_Neu"]) ? (float)$row["Summe_Neu"] : (float)$row["Summe_Bestand"];
+        $sum += $summe;
+        if (str_starts_with($row["ElementID"] ?? '', '1') || str_starts_with($row["ElementID"] ?? '', '4')) {
+            $costs['ortsfest'] += $summe;
+        } else {
+            $costs['ortsveränderlich'] += $summe;
+        }
+
+    }
+
+    return ['sum' => $sum, 'costs' => $costs];
 }
 
+// Calculate costs
+$new_costs = calculateCosts($mysqli, $sql_new, $_SESSION["roomID"], $_SESSION["projectID"]);
+$existing_costs = calculateCosts($mysqli, $sql_existing, $_SESSION["roomID"], $_SESSION["projectID"]);
 
-echo "
-            <table class='table table-striped table-bordered table-sm' id='tableRoomElements'  style='width:100%'>
-	<thead><tr>
-	<th>ID</th>  
-	<th>Element</th>
-	<th>Var</th>
-	<th>Stk</th>
-	<th>Best</th>
-	<th>Stand</th>
-	<th>Verw</th>
-	<th>Kommentar</th>
-    <th>Verlauf</th>
-	<th></th> 
-	</tr></thead>
-	<tbody>";
+$SummeNeu = $new_costs['sum'];
+$SummeBestand = $existing_costs['sum'];
+$SummeGesamt = $SummeNeu + $SummeBestand;
+$Kosten_ortsfest = $new_costs['costs']['ortsfest'] + $existing_costs['costs']['ortsfest'];
+$Kosten_ortsveränderlich = $new_costs['costs']['ortsveränderlich'] + $existing_costs['costs']['ortsveränderlich'];
 
-while ($row = $result->fetch_assoc()) {
-    echo "<tr>";
-    echo "<td>" . $row["id"] . "</td>";
-    echo "<td> <span id='ElementName" . $row["id"] . "'>" . $row["ElementID"] . " " . $row["Bezeichnung"] . " </span> </td>";
-    echo "<td>
-	    	<select class='form-control form-control-sm' id='variante" . $row["id"] . "'>";
+// Format money values
+$formattedNumberGesamt = format_money_report($SummeGesamt);
+$formattedNumberNeu = format_money_report($SummeNeu);
+$formattedNumberBestand = format_money_report($SummeBestand);
+$formattedKostenOrtsfest = format_money_report($Kosten_ortsfest);
+$formattedKostenOrtsveränderlich = format_money_report($Kosten_ortsveränderlich);
 
-    $selectedOption = $row["tabelle_Varianten_idtabelle_Varianten"];
-    $options = [
-        1 => 'A',
-        2 => 'B',
-        3 => 'C',
-        4 => 'D',
-        5 => 'E',
-        6 => 'F',
-        7 => 'G'
-    ];
-
-    foreach ($options as $value => $label) {
-        $selected = ($selectedOption == $value) ? "selected" : "";
-        echo "<option value='$value' $selected>$label</option>";
-    }
-
-    echo "</select></td>";
-    echo "<td><input class='form-control form-control-sm' type='text' id='amount" . $row["id"] . "' value='" . $row["Anzahl"] . "' size='2'></input></td>";
-    echo "<td>
-	    	<select class='form-control form-control-sm' id='bestand" . $row["id"] . "'>";
-    if ($row["Neu/Bestand"] == "0") {
-        echo "<option value=0 selected>Ja</option>";
-        echo "<option value=1>Nein</option>";
-    } else {
-        echo "<option value=0>Ja</option>";
-        echo "<option value=1 selected>Nein</option>";
-    }
-    echo "</select></td>";
-    echo "<td>   	
-                <select class='form-control form-control-sm' id='Standort" . $row["id"] . "'>";
-    if ($row["Standort"] == "0") {
-        echo "<option value=0 selected>Nein</option>";
-        echo "<option value=1>Ja</option>";
-    } else {
-        echo "<option value=0>Nein</option>";
-        echo "<option value=1 selected>Ja</option>";
-    }
-    echo "</select></td>";
-    echo "<td>   	    	
-                        <select class='form-control form-control-sm' id='Verwendung" . $row["id"] . "'>";
-    if ($row["Verwendung"] == "0") {
-        echo "<option value=0 selected>Nein</option>";
-        echo "<option value=1>Ja</option>";
-    } else {
-        echo "<option value=0>Nein</option>";
-        echo "<option value=1 selected>Ja</option>";
-    }
-    echo "</select></td>";
-
-    if (null != ($row["Kurzbeschreibung"])) {
-        echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment'></i></button></td>";
-    } else {
-        echo "<td><button type='button' class='btn btn-xs btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment-slash'></i></button></td>";
-    }
-    echo "<td><button type='button' id='" . $row["id"] . "' class='btn btn-xs btn-outline-dark' value='history'><i class='fas fa-history'></i></button></td>";
-    echo "<td><button type='button' id='" . $row["id"] . "' class='btn btn-xs btn-warning' value='saveElement'><i class='far fa-save'></i></button></td>";
-    echo "<td>" . $row["TABELLE_Elemente_idTABELLE_Elemente"] . "</td>";
-    echo "</tr>";
-}
-
-echo "</tbody></table>";
+// Fetch room elements
+$stmt_room_elements = $mysqli->prepare($sql_room_elements);
+$stmt_room_elements->bind_param("i", $_SESSION["roomID"]);
+$stmt_room_elements->execute();
+$result_room_elements = $stmt_room_elements->get_result();
 
 $mysqli->close();
 ?>
 
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <title>Room Elements Detailed</title>
+    <style>
+        .custom-btn {
+            padding: 0.25rem 0.5rem;
+            width: 150px;
+        }
+
+        .custom-popover {
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .custom-popover textarea {
+            width: 150px;
+            min-height: 150px;
+        }
+    </style>
+</head>
+<body>
+<div class="d-flex align-items-center justify-content-between w-100">
+    <?php
+    $cost_fields = [
+        'kosten_gesamt' => ['label' => 'Raumkosten', 'value' => $formattedNumberGesamt],
+        'kosten_neu' => ['label' => 'Neu', 'value' => $formattedNumberNeu],
+        'kosten_bestand' => ['label' => 'Bestand', 'value' => $formattedNumberBestand],
+        'kosten_ortsfest' => ['label' => ' OF', 'value' => $formattedKostenOrtsfest],
+        'kosten_ortsveränderlich' => ['label' => ' OV', 'value' => $formattedKostenOrtsveränderlich]
+    ]; ?>
+
+    <div class="d-flex flex-wrap justify-content-between">
+        <?php foreach ($cost_fields as $id => $field): ?>
+            <span class="badge rounded-pill bg-light text-dark m-1 p-2">
+        <span class="fw-normal"><?php echo $field['label']; ?>:</span>
+        <span class="fw-bold"><?php echo $field['value']; ?></span>
+    </span>
+        <?php endforeach; ?>
+    </div>
+
+    <?php if ($result_room_elements->num_rows > 0): ?>
+        <div id="room-action-buttons" class="d-inline-flex">
+            <button type="button" class="btn btn-outline-dark mr-2 custom-btn" id="<?php echo $_SESSION["roomID"]; ?>"
+                    data-bs-toggle="modal" data-bs-target="#copyRoomElementsModal" value="Rauminhalt kopieren">Inhalt
+                kopieren
+            </button>
+            <button type="button" class="btn btn-outline-dark mr-2 custom-btn" id="<?php echo $_SESSION["roomID"]; ?>"
+                    value="createRoombookPDF"><i class="far fa-file-pdf"></i> RB-PDF
+            </button>
+            <button type="button" class="btn btn-outline-dark custom-btn" id="<?php echo $_SESSION["roomID"]; ?>"
+                    value="createRoombookPDFCosts"><i class="far fa-file-pdf"></i> RB-Kosten-PDF
+            </button>
+        </div>
+    <?php endif; ?>
+</div>
+
+<table class="table table-sm compact table-responsiv table-striped border border-light border-5" id="tableRoomElements"
+       style="width:100%">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Element</th>
+        <th>Var</th>
+        <th>Stk</th>
+        <th>Best</th>
+        <th>Stand</th>
+        <th>Verw</th>
+        <th>Kom</th>
+        <th>Verlauf</th>
+        <th></th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <?php while ($row = $result_room_elements->fetch_assoc()): ?>
+        <tr>
+            <td data-order="<?php echo $row["id"]; ?>"><?php echo $row["id"]; ?></td>
+            <td data-order="<?php echo $row["ElementID"] . " " . $row["Bezeichnung"]; ?>">
+                <span id="ElementName<?php echo $row["id"]; ?>"><?php echo $row["ElementID"] . " " . $row["Bezeichnung"]; ?></span>
+            </td>
+            <td data-order="<?php echo $row["tabelle_Varianten_idtabelle_Varianten"]; ?>">
+                <label for="variante<?php echo $row["id"]; ?>"></label><select class="form-control form-control-sm"
+                                                                               id="variante<?php echo $row["id"]; ?>">
+                    <?php
+                    $options = ['A' => 1, 'B' => 2, 'C' => 3, 'D' => 4, 'E' => 5, 'F' => 6, 'G' => 7];
+                    foreach ($options as $label => $value) {
+                        $selected = ($row["tabelle_Varianten_idtabelle_Varianten"] == $value) ? "selected" : "";
+                        echo "<option value='$value' $selected>$label</option>";
+                    }
+                    ?>
+                </select>
+            </td>
+            <td data-order="<?php echo $row["Anzahl"]; ?>"><input class="form-control form-control-sm" type="text"
+                                                                  id="amount<?php echo $row["id"]; ?>"
+                                                                  value="<?php echo $row["Anzahl"]; ?>" size="2"></td>
+            <td data-order="<?php echo $row["Neu/Bestand"]; ?>">
+                <select class="form-control form-control-sm" id="bestand<?php echo $row["id"]; ?>">
+                    <option value="0" <?php echo $row["Neu/Bestand"] == "0" ? "selected" : ""; ?>>Ja</option>
+                    <option value="1" <?php echo $row["Neu/Bestand"] == "1" ? "selected" : ""; ?>>Nein</option>
+                </select>
+            </td>
+            <td data-order="<?php echo $row["Standort"]; ?>">
+                <select class="form-control form-control-sm" id="Standort<?php echo $row["id"]; ?>">
+                    <option value="0" <?php echo $row["Standort"] == "0" ? "selected" : ""; ?>>Nein</option>
+                    <option value="1" <?php echo $row["Standort"] == "1" ? "selected" : ""; ?>>Ja</option>
+                </select></td>
+            <td data-order="<?php echo $row["Verwendung"]; ?>"><select class="form-control form-control-sm"
+                                                                       id="Verwendung<?php echo $row["id"]; ?>">
+                    <option value="0" <?php echo $row["Verwendung"] == "0" ? "selected" : ""; ?>>Nein</option>
+                    <option value="1" <?php echo $row["Verwendung"] == "1" ? "selected" : ""; ?>>Ja</option>
+                </select></td>
+            <td data-order="<?php echo trim($row["Kurzbeschreibung"] ?? "");
+            $Kurzbeschreibung = trim($row["Kurzbeschreibung"] ?? "");
+            $buttonClass = $Kurzbeschreibung === "" ? "btn-outline-secondary" : "btn-outline-dark";
+            $iconClass = $Kurzbeschreibung === "" ? "fa fa-comment-slash" : "fa fa-comment";
+            $dataAttr = $Kurzbeschreibung === "" ? "data-description= '' " : "data-description='" . htmlspecialchars($Kurzbeschreibung, ENT_QUOTES, 'UTF-8') . "'"; ?>
+
+                ">
+                <button type="button"
+                        class="btn btn-sm <?php echo $buttonClass; ?> comment-btn" <?php echo $dataAttr; ?>
+                        id="<?php echo $row["id"]; ?>" title="Kommentar"><i class="<?php echo $iconClass; ?>"></i>
+                </button>
+            </td>
+            <td data-order="history">
+                <button type="button" id="<?php echo $row["id"]; ?>" class="btn btn-sm btn-outline-dark"
+                        value="history"><i
+                            class="fas fa-history"></i></button>
+            </td>
+            <td data-order="saveElement">
+                <button type="button" id="<?php echo $row["id"]; ?>" class="btn btn-sm btn-warning" value="saveElement">
+                    <i class="far fa-save"></i></button>
+            </td>
+        </tr>
+    <?php endwhile; ?>
+    </tbody>
+</table>
+
 <!-- Modal zum Kopieren des Rauminhalts -->
 <div class='modal fade' id='copyRoomElementsModal' role='dialog'>
     <div class='modal-dialog modal-lg'>
-
-        <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Rauminhalt kopieren</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
-            <div class='modal-body' id='mbody'>
+            <div class='modal-body' id='mbodyCRE'>
             </div>
             <div class='modal-footer'>
                 <input type='button' id='copyRoomElements' class='btn btn-info btn-sm'
-                       value='Elemente kopieren'></input>
-                <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Close</button>
+                       value='Elemente kopieren'>
+                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Close</button>
             </div>
         </div>
 
@@ -229,50 +278,119 @@ $mysqli->close();
         <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
-                <h4 class='modal-title'>Verlauf</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <h4 class='modal-title'>Verlauf </h4>
+                <div class='' id="ElementName4Header"></div>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='mbodyHistory'>
             </div>
             <div class='modal-footer'>
-                <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Close</button>
+                <button type='button' class='btn btn-default' data-bs-dismiss='modal'>Close</button>
             </div>
         </div>
-    </div>
-</div>
-
-<!-- Modal Info -->
-<div class='modal fade' id='infoModal' role='dialog'>
-    <div class='modal-dialog modal-sm'>
-        <!-- Modal content-->
-        <div class='modal-content'>
-            <div class='modal-header'>
-                <h4 class='modal-title'>Info</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
-            </div>
-            <div class='modal-body' id='infoBody'>
-            </div>
-            <div class='modal-footer'>
-                <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>OK</button>
-            </div>
-        </div>
-
     </div>
 </div>
 
 <script src="_utils.js"></script>
-<script>
+<script charset="utf-8" type="module">
 
+    function attachButtonListeners() {
+        $("button[value='createRoombookPDF']").click(function () {
+            window.open('/pdf_createRoombookPDF.php?roomID=' + this.id);//there are many ways to do this
+        });
+
+        $("button[value='createRoombookPDFCosts']").click(function () {
+            window.open('/pdf_createRoombookPDFwithCosts.php?roomID=' + this.id);//there are many ways to do this
+        });
+
+        $("button[value='Rauminhalt kopieren']").click(function () {
+            $("#copyRoomElementsModal").modal('show');
+            if (typeof dt_search_counter !== 'undefined' && dt_search_counter !== null) {
+                dt_search_counter = dt_search_counter + 1;  // Or dt_search_counter++;
+            }
+            let originRoomID = this.id;  // The ID of the current room
+            $.ajax({
+                url: "getRoomsToCopy.php",
+                type: "GET",
+                data: {
+                    "originRoomID": originRoomID
+                },
+                success: function (data) {
+                    $("#mbodyCRE").html(data);
+                }
+            });
+        });
+
+        $("button[value='history']").click(function () {
+            let roombookID = this.id;
+            let elementName = $("#ElementName" + roombookID).text();
+            $.ajax({
+                url: "getCommentHistory.php",
+                type: "GET",
+                data: {"roombookID": roombookID},
+                success: function (data) {
+                    $('#ElementName4Header').text(elementName);
+                    $("#mbodyHistory").html(data);
+                    $("#historyModal").modal('show');
+
+                }
+            });
+        });
+    }
+
+    import CustomPopover from './_popover.js';
+
+    CustomPopover.init('.comment-btn', {
+        onSave: function (trigger, newText) {
+            trigger.dataset.description = newText; // Update the trigger's data attribute
+            // send an AJAX request to save the new text
+            let id = trigger.id;
+            let comment = newText;
+            //    console.log(comment);
+            let amount = $("#amount" + id).val();
+            let variantenID = $("#variante" + id).val();
+            let bestand = $("#bestand" + id).val();
+            let standort = $("#Standort" + id).val();
+            let verwendung = $("#Verwendung" + id).val();
+            if (standort === '0' && verwendung === '0') {
+                alert("Standort und Verwendung kann nicht Nein sein!");
+            } else {
+                $.ajax({
+                    url: "saveRoombookEntry.php",
+                    data: {
+                        "comment": comment,
+                        "id": id,
+                        "amount": amount,
+                        "variantenID": variantenID,
+                        "bestand": bestand,
+                        "standort": standort,
+                        "verwendung": verwendung
+                    },
+                    type: "GET",
+                    success: function (data) {
+                        makeToaster(data.trim(), true);
+                        $(".comment-btn[id='" + id + "']").removeClass('btn-outline-secondary');
+                        $(".comment-btn[id='" + id + "']").addClass('btn-outline-dark');
+                        $(".comment-btn[id='" + id + "']").find('i').removeClass('fa fa-comment-slash');
+                        $(".comment-btn[id='" + id + "']").find('i').addClass('fa fa-comment');
+                        $(".comment-btn[id='" + id + "']").attr('data-description', newText).data('description', newText);
+                    }
+                });
+            }
+        }
+    });
+
+    // var tableRoomElements;
     $("button[value='saveElement']").click(function () {
-        var id = this.id;
-        var comment = $("#buttonComment" + id).val();
-        var amount = $("#amount" + id).val();
-        var variantenID = $("#variante" + id).val();
-        var bestand = $("#bestand" + id).val();
-        var standort = $("#Standort" + id).val();
-        var verwendung = $("#Verwendung" + id).val();
-        var ElementName = $("#ElementName" + id).text();
-
+        let id = this.id;
+        //console.log(id)
+        let comment = $(".comment-btn[id='" + id + "']").attr('data-description');
+        // console.log(comment);
+        let amount = $("#amount" + id).val();
+        let variantenID = $("#variante" + id).val();
+        let bestand = $("#bestand" + id).val();
+        let standort = $("#Standort" + id).val();
+        let verwendung = $("#Verwendung" + id).val();
         if (standort === '0' && verwendung === '0') {
             alert("Standort und Verwendung kann nicht Nein sein!");
         } else {
@@ -289,7 +407,6 @@ $mysqli->close();
                 },
                 type: "GET",
                 success: function (data) {
-                    //alert(data);    data + $("#infoBody").html(data);  $('#infoModal').modal('show');
                     makeToaster(data.trim(), true);
                 }
             });
@@ -297,40 +414,54 @@ $mysqli->close();
     });
 
     $(document).ready(function () {
-        $("#tableRoomElements").DataTable({
-            "select": true,
-            "paging": true,
-            "pagingType": "simple",
-            "lengthChange": false,
-            "pageLength": 10,
-            "searching": true,
-            "info": true,
-            "columnDefs": [
+        let tableRoomElements = $("#tableRoomElements").DataTable({
+            select: true,
+            paging: true,
+            pagingType: "simple",
+            lengthChange: true,
+            pageLength: 25,
+            searching: true,
+            info: true,
+            hover: true,
+
+            columnDefs: [
                 {
-                    "targets": [0, 10],
-                    "visible": false,
-                    "searchable": false,
-                    "sortable": false
+                    targets: [0],
+                    visible: false,
+                    searchable: false,
+                    orderable: false
                 },
                 {
-                    "targets": [3, 4, 5, 6, 7, 8, 9],
-                    "searchable": false,
-
+                    targets: [3, 4, 5, 6, 7, 8, 9],
+                    searchable: false,
+                    orderable: true
                 }
             ],
-            "order": [[1, "asc"]],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+            order: [[3, "desc"]],
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/de-DE.json",
+                search: ""
+            },
+            search: {
+                placeholder: ""
+            },
+            layout: {
+                topStart: null,
+                topEnd: null,
+                bottomEnd: ['search', 'pageLength', 'paging'],
+                bottomStart: 'info'
+            }
         });
 
-        var table = $('#tableRoomElements').DataTable();
 
         $('#tableRoomElements tbody').on('click', 'tr', function () {
-            var id = table.row($(this)).data()[0];
-            var stk = $("#amount" + id).val();
-            var standort = $("#Standort" + id).val();
-            var verwendung = $("#Verwendung" + id).val();
-            var elementID = table.row($(this)).data()[10];
-
+            let id = tableRoomElements.row($(this)).data()[0].display;
+            //console.log(id);
+            //console.log("#amount" + id);
+            let stk = $("#amount" + id).val();
+            // console.log(stk);
+            let standort = $("#Standort" + id).val();
+            let verwendung = $("#Verwendung" + id).val();
             $.ajax({
                 url: "getElementParameters.php",
                 data: {"id": id},
@@ -351,7 +482,8 @@ $mysqli->close();
                                 success: function (data) {
                                     $("#elementBestand").html(data);
                                     $("#elementBestand").show();
-                                    if (standort === '0' && verwendung === '1') {
+                                    if (verwendung === '1' && standort === '0') {
+
                                         $.ajax({
                                             url: "getElementStandort.php",
                                             data: {"id": id, "elementID": elementID},
@@ -381,72 +513,9 @@ $mysqli->close();
                 }
             });
         });
-
-        /* $("button[name='showComment']").popover({
-            trigger: 'click',
-            placement: 'right',
-            html: true,
-            container: 'body',
-            content: "<textarea class='popover-textarea'></textarea>",
-            template: "<div class='popover'>" +
-                "<h4 class='popover-header'></h4><div class='popover-body'>" +
-                "</div><div class='popover-footer'><button type='button' class='btn btn-xs btn-outline-dark popover-submit'><i class='fas fa-check'></i>" +
-                "</button>&nbsp;" +
-                "</div>"
-        });
-
-        $("button[name='showComment']").click(function () {
-            //hide any visible comment-popover
-            $("button[name='showComment']").not(this).popover('hide');
-            var id = this.id;
-            var val = document.getElementById(id).value;
-            //attach/link text
-            $('.popover-textarea').val(val).focus();
-            //update link text on submit
-            $('.popover-submit').click(function () {
-                document.getElementById(id).value = $('.popover-textarea').val();
-                $(this).parents(".popover").popover('hide');
-            });
-        });*/
-    });
-
-    $("input[value='Rauminhalt kopieren']").click(function () {
-        var ID = this.id;
-
-        $.ajax({
-            url: "getRoomsToCopy.php",
-            type: "GET",
-            data: {"id": ID},
-            success: function (data) {
-                $("#mbody").html(data);
-            }
-        });
-    });
-
-    $("button[value='history']").click(function () {
-        var roombookID = this.id;
-        $.ajax({
-            url: "getCommentHistory.php",
-            type: "GET",
-            data: {"roombookID": roombookID},
-            success: function (data) {
-                $("#mbodyHistory").html(data);
-                $("#historyModal").modal('show');
-
-            }
-        });
-    });
-
-    $("button[value='createRoombookPDF']").click(function () {
-        window.open('/pdf_createRoombookPDF.php?roomID=' + this.id);//there are many ways to do this
-    });
-
-    $("button[value='createRoombookPDFCosts']").click(function () {
-        window.open('/pdf_createRoombookPDFwithCosts.php?roomID=' + this.id);//there are many ways to do this
+        attachButtonListeners();
     });
 
 
 </script>
-
 </body>
-</html>

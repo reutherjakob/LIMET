@@ -28,10 +28,10 @@ if (filter_input(INPUT_GET, 'mkf') == 0) {
                                         SET
                                         `LosNr_Extern` = '" . $_GET["losNr"] . "',
                                         `LosBezeichnung_Extern` = '" . $_GET["losName"] . "',
-                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])) . "',
+                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"]) ?? '') . "',
                                         `Vergabesumme`= '" . $_GET["lotSum"] . "',
                                         `Vergabe_abgeschlossen`='" . $_GET["lotVergabe"] . "',
-                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])) . "',
+                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])?? '' ) . "',
                                         `Verfahren`='" . $_GET["lotVerfahren"] . "',
                                         `Bearbeiter`='" . $_GET["lotLVBearbeiter"] . "',
                                         `Notiz` = '" . $_GET["lotNotice"] . "',
@@ -43,10 +43,10 @@ if (filter_input(INPUT_GET, 'mkf') == 0) {
                                         SET
                                         `LosNr_Extern` = '" . $_GET["losNr"] . "',
                                         `LosBezeichnung_Extern` = '" . $_GET["losName"] . "',
-                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])) . "',
+                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])?? '') . "',
                                         `Vergabesumme`= '" . $_GET["lotSum"] . "',
                                         `Vergabe_abgeschlossen`='" . $_GET["lotVergabe"] . "',
-                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])) . "',
+                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])?? '') . "',
                                         `Verfahren`='" . $_GET["lotVerfahren"] . "',
                                         `Bearbeiter`='" . $_GET["lotLVBearbeiter"] . "',
                                         `Notiz` = '" . $_GET["lotNotice"] . "',
@@ -61,9 +61,9 @@ if (filter_input(INPUT_GET, 'mkf') == 0) {
                                         SET
                                         `LosNr_Extern` = '" . $_GET["losNr"] . "',
                                         `LosBezeichnung_Extern` = '" . $_GET["losName"] . "',
-                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])) . "',
+                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])?? '') . "',
                                         `Vergabe_abgeschlossen`='" . $_GET["lotVergabe"] . "',
-                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])) . "',
+                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])?? '') . "',
                                         `Verfahren`='" . $_GET["lotVerfahren"] . "',
                                         `Bearbeiter`='" . $_GET["lotLVBearbeiter"] . "',
                                         `Notiz` = '" . $_GET["lotNotice"] . "',
@@ -75,9 +75,9 @@ if (filter_input(INPUT_GET, 'mkf') == 0) {
                                         SET
                                         `LosNr_Extern` = '" . $_GET["losNr"] . "',
                                         `LosBezeichnung_Extern` = '" . $_GET["losName"] . "',
-                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])) . "',
+                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])?? '') . "',
                                         `Vergabe_abgeschlossen`='" . $_GET["lotVergabe"] . "',
-                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])) . "',
+                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])?? '') . "',
                                         `Verfahren`='" . $_GET["lotVerfahren"] . "',
                                         `Bearbeiter`='" . $_GET["lotLVBearbeiter"] . "',
                                         `Notiz` = '" . $_GET["lotNotice"] . "',                                    
@@ -92,10 +92,10 @@ if (filter_input(INPUT_GET, 'mkf') == 0) {
         if (filter_input(INPUT_GET, 'lotAuftragnehmer') == 0) {
             $sql = "UPDATE `LIMET_RB`.`tabelle_lose_extern`
                                         SET
-                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])) . "',
+                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])?? '') . "',
                                         `Vergabesumme`= '" . $_GET["lotSum"] . "',
                                         `Vergabe_abgeschlossen`='" . $_GET["lotVergabe"] . "',
-                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])) . "',
+                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])?? '') . "',
                                         `Bearbeiter`='" . $_GET["lotLVBearbeiter"] . "',
                                         `Notiz` = '" . $_GET["lotNotice"] . "',
                                         `Kostenanschlag` = '" . $_GET["kostenanschlag"] . "',
@@ -104,10 +104,10 @@ if (filter_input(INPUT_GET, 'mkf') == 0) {
         } else {
             $sql = "UPDATE `LIMET_RB`.`tabelle_lose_extern`
                                         SET
-                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])) . "',
+                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])?? '') . "',
                                         `Vergabesumme`= '" . $_GET["lotSum"] . "',
                                         `Vergabe_abgeschlossen`='" . $_GET["lotVergabe"] . "',
-                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])) . "',
+                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])?? '') . "',
                                         `Bearbeiter`='" . $_GET["lotLVBearbeiter"] . "',
                                         `Notiz` = '" . $_GET["lotNotice"] . "',
                                         `tabelle_lieferant_idTABELLE_Lieferant` = " . filter_input(INPUT_GET, 'lotAuftragnehmer') . ",
@@ -119,9 +119,9 @@ if (filter_input(INPUT_GET, 'mkf') == 0) {
         if (filter_input(INPUT_GET, 'lotAuftragnehmer') == 0) {
             $sql = "UPDATE `LIMET_RB`.`tabelle_lose_extern`
                                         SET
-                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])) . "',
+                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])?? '') . "',
                                         `Vergabe_abgeschlossen`='" . $_GET["lotVergabe"] . "',
-                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])) . "',
+                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])?? '') . "',
                                         `Bearbeiter`='" . $_GET["lotLVBearbeiter"] . "',
                                         `Notiz` = '" . $_GET["lotNotice"] . "',
                                         `Kostenanschlag` = '" . $_GET["kostenanschlag"] . "',
@@ -130,9 +130,9 @@ if (filter_input(INPUT_GET, 'mkf') == 0) {
         } else {
             $sql = "UPDATE `LIMET_RB`.`tabelle_lose_extern`
                                         SET
-                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])) . "',
+                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])?? '') . "',
                                         `Vergabe_abgeschlossen`='" . $_GET["lotVergabe"] . "',
-                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])) . "',
+                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"]) ?? '') . "',
                                         `Bearbeiter`='" . $_GET["lotLVBearbeiter"] . "',
                                         `Notiz` = '" . $_GET["lotNotice"] . "',                                    
                                         `tabelle_lieferant_idTABELLE_Lieferant` = " . filter_input(INPUT_GET, 'lotAuftragnehmer') . ",

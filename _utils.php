@@ -42,18 +42,14 @@ function check_if_project_selected_else_redirect()
 
 function get_project()
 {
-    if ($_SESSION["projectName"] != "") {
-        echo '<script>';
+    echo '<script>';
+    if (isset($_SESSION["projectName"])) {
         echo 'var currentP = ' . json_encode($_SESSION["projectName"]) . ';';
-        echo '</script>';
     } else {
-        echo '<script>';
         echo 'var currentP = ' . json_encode(" KEIN PROJEKT AUSGEWÄHLT ") . ';';
-        echo '</script>';
     }
+    echo '</script>';
 }
-
-//function nl2br($string){  https://www.php.net/manual/de/function.nl2br.php
 
 function br2nl($string)
 {

@@ -1,21 +1,53 @@
 <?php
 
-session_start();
 include '_utils.php';
+
+function getProjectName($projectID) {
+    $mysqli = utils_connect_sql();
+
+    // SQL query to fetch the project name
+    $sql = "SELECT Projektname FROM tabelle_projekte WHERE idTABELLE_Projekte = ?";
+
+    // Prepare and execute the statement
+    if ($stmt = $mysqli->prepare($sql)) {
+        $stmt->bind_param("i", $projectID);
+        $stmt->execute();
+        $stmt->bind_result($projectName);
+        $stmt->fetch();
+        $stmt->close();
+    } else {
+        // Handle errors
+        return "Error: " . $mysqli->error;
+    }
+
+    $mysqli->close();
+    return $projectName;
+}
+
 $conn = utils_connect_sql();
 
 $table = "tabelle_räume";
-$field = $_GET['field'] ?? 'Raumbezeichnung';
-$search = $_GET['search'] ?? 'None';
+$field = filter_input(INPUT_GET, 'field', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 'Raumbezeichnung';
+$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 'None';
 
-$sql = "SELECT * FROM $table WHERE $field LIKE '%$search%'";
-$result = $conn->query($sql);
-$conn->close();
+$sql = "SELECT * FROM $table WHERE $field LIKE ?";
+$stmt = $conn->prepare($sql);
+$searchParam = "%$search%";
+$stmt->bind_param("s", $searchParam);
+$stmt->execute();
+$result = $stmt->get_result();
 
 $data = array();
 while ($row = $result->fetch_assoc()) {
+    // Fetch and translate the project ID to project name
+    if (isset($row['tabelle_projekte_idTABELLE_Projekte'])) {
+        $row['tabelle_projekte_idTABELLE_Projekte'] = getProjectName($row['tabelle_projekte_idTABELLE_Projekte']);
+    }
     $data[] = $row;
 }
+
+$stmt->close();
+$conn->close();
 
 header('Content-Type: application/json');
 echo json_encode($data);

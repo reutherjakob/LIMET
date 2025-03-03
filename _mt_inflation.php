@@ -53,7 +53,7 @@ $mysqli->close();
 
 $data = [];
 foreach ($top_geraete_entries as $entry) {
-    $month = date('Y-m', strtotime($entry['Datum']));
+    $month = date('Y-m', strtotime($entry['Datum']) ?? '');
     $geraet_id = $entry['TABELLE_Geraete_idTABELLE_Geraete'];
     $data[$geraet_id][$month][] = $entry['Preis'];
 }
@@ -101,7 +101,7 @@ foreach ($data as $geraet_id => $months) {
         $overall_development[$geraet_id] = round($overall_percentage_change, 2);
 
         // Calculate annual inflation
-        $total_months = (strtotime($last_month) - strtotime($first_month)) / (60 * 60 * 24 * 30); // Approx. number of months
+        $total_months = (strtotime($last_month ?? '') - strtotime($first_month ?? '')) / (60 * 60 * 24 * 30.5); // Approx. number of months
         if ($total_months >= 1) {
             $annual_inflation[$geraet_id] = round(pow($last_month_price / $first_month_price, 12 / $total_months) - 1, 4) * 100;
         } else {

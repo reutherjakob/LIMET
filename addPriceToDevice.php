@@ -4,7 +4,7 @@ check_login();
 
 $mysqli = utils_connect_sql();
 
-$timestamp = strtotime($_GET["date"]);
+$timestamp = strtotime($_GET["date"] ?? '' );
 
 $projectID = filter_input(INPUT_GET, 'project');
 if ($projectID == 0) {
@@ -24,7 +24,7 @@ $sql = "INSERT INTO `LIMET_RB`.`tabelle_preise`
 			('" . filter_input(INPUT_GET, 'ep') . "',
 			'" . filter_input(INPUT_GET, 'menge') . "',
 			'" . filter_input(INPUT_GET, 'quelle') . "',
-			'" . date("Y-m-d", strtotime(filter_input(INPUT_GET, 'date'))) . "',
+			'" . date("Y-m-d", strtotime(filter_input(INPUT_GET, 'date')) ?? '' ) . "',
 			" . $_SESSION["deviceID"] . ",
 			'" . filter_input(INPUT_GET, 'nk') . "',
                         " . $projectID . ",

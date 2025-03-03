@@ -1,98 +1,105 @@
-<?php
-include '_utils.php';
-init_page_serversides();
-include "_format.php";
-?>
-
-
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <title>RB-Elemente im Projekt</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
     <link rel="icon" href="iphone_favicon.png"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
-          integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous"/>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
 
-
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
-    <script type="text/javascript"
-            src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.js"></script>
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.jsdelivr.net/datatables.mark.js/2.0.0/datatables.mark.min.css"/>
-    <script type="text/javascript"
-            src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
-
-    <style>
-        .top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .top .dt-buttons {
-            margin-right: 10px;
-        }
-
-        .bottom {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .bottom .dataTables_info {
-            margin-right: 10px;
-        }
-
-        .card-body {
-            padding: 3px;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+          integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
+          rel="stylesheet">
 </head>
 
-<body style="height:100%">
+<body>
+<!-- Rework 2025 -->
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class="mt-4 card">
-        <div class="card-header container-fluid d-flex">
-            <div class="col-md-4"><strong> Elemente im Projekt </strong>
-            </div>
-            <div class="col-md-2  d-flex justify-content-end" id="target_div"><strong> </strong>
-            </div>
-            <div class="col-md-6 d-flex justify-content-end">
-                <button type='button' class='btn btn-outline-dark btn-sm' id='createElementListPDF'>
-                    <i class='far fa-file-pdf'></i> Elementliste-PDF
-                </button>
-                <button type='button' class='btn btn-outline-dark btn-sm' id='createElementListWithPricePDF'>
-                    <i class='far fa-file-pdf'></i> Elementliste inkl. Preis - PDF
-                </button>
-                <button type='button' class='btn btn-outline-dark btn-sm' id='createElementEinbringwegePDF'>
-                    <i class='far fa-file-pdf'></i> Einbringwege - PDF
-                </button>
+        <div class="card-header d-flex justify-content-between">
+            <strong> Elemente im Projekt </strong>
+            <div class="d-flex align-items-center" id="target_div">
+                <div class="btn-group btn-group-sm" role="group" aria-label="PDF Generation Buttons">
+                    <button type='button' class='btn btn-outline-dark me-1' id='createElementListPDF'>
+                        <i class='far fa-file-pdf'></i> Elementliste
+                    </button>
+                    <button type='button' class='btn btn-outline-dark  me-1' id='createElementListWithPricePDF'>
+                        <i class='far fa-file-pdf'></i> El.liste & Preis
+                    </button>
+                    <button type='button' class='btn btn-outline-dark  me-1' id='createElementEinbringwegePDF'>
+                        <i class='far fa-file-pdf'></i> Einbringwege
+                    </button>
+                </div>
             </div>
         </div>
+
         <div class="card-body">
             <?php
+            include '_utils.php';
+            init_page_serversides();
+            include "_format.php";
             $mysqli = utils_connect_sql();
-            $sql = "SELECT Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_varianten.idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, 
-                        tabelle_projekt_varianten_kosten.Kosten, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
-                        tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern, tabelle_räume_has_tabelle_elemente.tabelle_Lose_Intern_idtabelle_Lose_Intern,
-                        tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke, tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG, tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG, tabelle_auftraggeber_gewerke.Gewerke_Nr, tabelle_auftraggeber_ghg.GHG, tabelle_auftraggeberg_gug.GUG
-										FROM tabelle_auftraggeber_gewerke RIGHT JOIN (tabelle_auftraggeberg_gug RIGHT JOIN (tabelle_auftraggeber_ghg RIGHT JOIN (tabelle_projekt_element_gewerk RIGHT JOIN (tabelle_elemente INNER JOIN (tabelle_räume INNER JOIN (tabelle_varianten INNER JOIN (tabelle_projekt_varianten_kosten INNER JOIN tabelle_räume_has_tabelle_elemente ON (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) AND (tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten)) ON tabelle_varianten.idtabelle_Varianten = tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten) ON (tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte) AND (tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)) ON tabelle_elemente.idTABELLE_Elemente = tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente) ON (tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente = tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente) AND (tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte = tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte)) ON tabelle_auftraggeber_ghg.idtabelle_auftraggeber_GHG = tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG) ON tabelle_auftraggeberg_gug.idtabelle_auftraggeberg_GUG = tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG) ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke = tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
-										WHERE (((tabelle_räume_has_tabelle_elemente.Standort)=1) AND ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
-										GROUP BY tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_varianten.idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_projekt_varianten_kosten.Kosten, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke, tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG, tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
-										ORDER BY tabelle_elemente.ElementID;";
+            $sql = "SELECT Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
+                           tabelle_elemente.ElementID,
+                           tabelle_elemente.Bezeichnung,
+                           tabelle_varianten.Variante,
+                           tabelle_varianten.idtabelle_Varianten,
+                           tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
+                           tabelle_projekt_varianten_kosten.Kosten,
+                           tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
+                           tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern,
+                           tabelle_räume_has_tabelle_elemente.tabelle_Lose_Intern_idtabelle_Lose_Intern,
+                           tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke,
+                           tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG,
+                           tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG,
+                           tabelle_auftraggeber_gewerke.Gewerke_Nr,
+                           tabelle_auftraggeber_ghg.GHG,
+                           tabelle_auftraggeberg_gug.GUG
+                    FROM tabelle_auftraggeber_gewerke
+                    RIGHT JOIN (tabelle_auftraggeberg_gug RIGHT JOIN (tabelle_auftraggeber_ghg RIGHT JOIN (tabelle_projekt_element_gewerk RIGHT JOIN (tabelle_elemente INNER JOIN (tabelle_räume INNER JOIN (tabelle_varianten INNER JOIN (tabelle_projekt_varianten_kosten INNER JOIN tabelle_räume_has_tabelle_elemente
+                                                                                                                                                                                                                                ON (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente =
+                                                                                                                                                                                                                                    tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) AND
+                                                                                                                                                                                                                                   (tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten =
+                                                                                                                                                                                                                                    tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten))
+                                                                                                                                                                                                  ON tabelle_varianten.idtabelle_Varianten =
+                                                                                                                                                                                                     tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)
+                                                                                                                                                                        ON (tabelle_räume.tabelle_projekte_idTABELLE_Projekte =
+                                                                                                                                                                            tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte) AND
+                                                                                                                                                                           (tabelle_räume.idTABELLE_Räume =
+                                                                                                                                                                            tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume))
+                                                                                                                                           ON tabelle_elemente.idTABELLE_Elemente =
+                                                                                                                                              tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente)
+                                                                                                ON (tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente =
+                                                                                                    tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente) AND
+                                                                                                   (tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte =
+                                                                                                    tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte))
+                                                           ON tabelle_auftraggeber_ghg.idtabelle_auftraggeber_GHG =
+                                                              tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG)
+                    ON tabelle_auftraggeberg_gug.idtabelle_auftraggeberg_GUG =
+                        tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG)
+                    ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke =
+                        tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
+WHERE (((tabelle_räume_has_tabelle_elemente.Standort) = 1) AND
+       ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["projectID"] . "))
+GROUP BY tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante,
+         tabelle_varianten.idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
+         tabelle_projekt_varianten_kosten.Kosten,
+         tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
+         tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke,
+         tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG,
+         tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
+ORDER BY tabelle_elemente.ElementID;";
             $result = $mysqli->query($sql);
-            echo "<table class='table table-striped table-bordered table-sm' id='tableElementsInProject'  cellspacing='0' width='100%'>
+            echo "<table class='table table-striped table-bordered table-sm' id='tableElementsInProject'>
 									<thead><tr>
 										<th>ID</th>
 										<th>Anzahl</th>
@@ -134,9 +141,10 @@ include "_format.php";
             ?>
         </div>
     </div>
+
     <div class="mt-1 card">
         <div class="card-header">
-            <button type="button" class="btn btn-outline-dark btn-xs" id="showElementVariante"><i
+            <button type="button" class="btn btn-outline-dark btn-sm" id="showElementVariante"><i
                         class="fas fa-caret-right"></i></button>
             <label>Elementvarianten</label></div>
         <div class="card-body" id="elementInfo" style="display:none">
@@ -146,18 +154,18 @@ include "_format.php";
     </div>
     <div class="mt-1 card">
         <div class="card-header">
-            <button type="button" class="btn btn-outline-dark btn-xs" id="showDBData"><i class="fas fa-caret-right"></i>
+            <button type="button" class="btn btn-outline-dark btn-sm" id="showDBData"><i class="fas fa-caret-right"></i>
             </button>
             <label>Datenbank-Vergleichsdaten</label></div>
         <div class="card-body" style="display:none" id="dbData">
-            <div class="row mt-4">
-                <div class='col-md-4'>
+            <div class="row">
+                <div class='col-md-6'>
                     <div class='mt-1 card'>
                         <div class='card-header'><label>DB-Elementparameter</label></div>
                         <div class='card-body' id='elementDBParameter'></div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="mt-1 card">
                         <div class="card-header"><label>Elementkosten in anderen Projekten</label></div>
                         <div class="card-body" id="elementPricesInOtherProjects"></div>
@@ -191,7 +199,7 @@ include "_format.php";
         <div class="card-header ">
             <div class="row">
                 <div class="col-md-8 d-flex justify-content-start">
-                    <button type="button" class="btn btn-outline-dark btn-xs" id="showRoomsWithAndWithoutElement">
+                    <button type="button" class="btn btn-outline-dark btn-sm" id="showRoomsWithAndWithoutElement">
                         <i class="fas fa-caret-right"></i>
                     </button>
                     <label>Räume mit Element</label>
@@ -202,55 +210,65 @@ include "_format.php";
         </div>
         <div class="card-body" id="roomsWithAndWithoutElements" style="display:none"></div>
     </div>
-</div>
-<script src="_utils.js"></script>
-<script>
-    $(document).ready(function () {
-        $('#tableElementsInProject').DataTable({
-            "paging": true,
-            "select": true,
-            "pagingType": "simple",
-            "lengthChange": false,
-            "pageLength": 10,
-            "order": [[2, "asc"]],
-            "columnDefs": [
-                {
-                    "targets": [0, 5, 7],
-                    "visible": false,
-                    "searchable": false
-                }
-            ],
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
-                "decimal": ",",
-                "thousands": "."
-            },
-            "stateSave": true,
-            "dom": '<"top"Blf>rt<"bottom"ip><"clear">',
-            "buttons": [
-                {
-                    extend: 'excel',
-                    exportOptions: {
-                        columns: function (idx) {
-                            return idx !== 5 && idx !== 8;
-                        }
+
+
+    <script src="_utils.js"></script>
+    <script charset="utf-8">
+        var tableElementsInProject;
+
+        $(document).ready(function () {
+            tableElementsInProject = new DataTable('#tableElementsInProject', {
+                paging: true,
+                select: true,
+                pagingType: 'simple',
+                lengthChange: false,
+                pageLength: 10,
+                order: [[2, 'asc']],
+                columnDefs: [
+                    {
+                        targets: [0, 5, 7],
+                        visible: false,
+                        searchable: false
                     }
+                ],
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/2.0.0/i18n/de-DE.json',
+                    search: ""
+                },
+                stateSave: true,
+                layout: {
+                    topStart: null,
+                    topEnd: ['buttons', 'pageLength', 'search'],
+                    bottomStart: 'info',
+                    bottomEnd: 'paging'
+                },
+                buttons: [
+                    {
+                        extend: 'excel',
+                        exportOptions: {
+                            columns: ':not(:nth-child(6)):not(:nth-child(9))'
+                        },
+                        text: '<i class="fas fa-file-excel"></i> Excel',
+                        className: 'btn-sm btn-light btn-outline-dark me-2'
+                    }
+
+                ],
+                compact: true,
+                initComplete: function () {
+                    //$('.buttons-excel').appendTo('#target_div');
+                    tableElementsInProject.buttons().container().appendTo('#target_div .btn-group');
+
+                    $('.dt-search input').removeClass('form-control').removeClass('form-control-sm').addClass("btn btn-sm btn-outline-dark bg-white border border-dark text-dark");
+                    $('.dt-search').addClass('fa fa-search').appendTo('#target_div');
                 }
-            ]
-        });
+            });
 
-        let table = $('#tableElementsInProject').DataTable();
 
-        $('#tableElementsInProject tbody').on('click', 'tr', function () {
-            if ($(this).hasClass('info')) {
-                //$(this).removeClass('info');
-            } else {
-                table.$('tr.info').removeClass('info');
-                $(this).addClass('info');
-                var elementID = table.row($(this)).data()[0];
-                var variantenID = table.row($(this)).data()[5];
-                var bestand = 1;
-                if (table.row($(this)).data()[6] === "Ja") {
+            $('#tableElementsInProject tbody').on('click', 'tr', function () {
+                let elementID = tableElementsInProject.row($(this)).data()[0];
+                let variantenID = tableElementsInProject.row($(this)).data()[5];
+                let bestand = 1;
+                if (tableElementsInProject.row($(this)).data()[6] === "Ja") {
                     bestand = 0;
                 }
                 $.ajax({
@@ -293,73 +311,67 @@ include "_format.php";
                                                                 //resetAnzahlBtn();
                                                             }
                                                         });
-
                                                     }
                                                 });
-
                                             }
                                         });
-
                                     }
                                 });
                             }
                         });
                     }
                 });
+
+            });
+        })
+        ;
+
+
+        // ElementVariantenPanel einblenden
+        $("#showElementVariante").click(function () {
+            if ($("#elementInfo").is(':hidden')) {
+                $(this).html("<i class='fas fa-caret-down'></i>");
+                $("#elementInfo").show();
+            } else {
+                $(this).html("<i class='fas fa-caret-right'></i>");
+                $("#elementInfo").hide();
             }
         });
-    });
 
+        // DB Element/Gerätedaten einblenden
+        $("#showDBData").click(function () {
+            if ($("#dbData").is(':hidden')) {
+                $(this).html("<i class='fas fa-caret-down'></i>");
+                $("#dbData").show();
+            } else {
+                $(this).html("<i class='fas fa-caret-right'></i>");
+                $("#dbData").hide();
+            }
+        });
 
-    // ElementVariantenPanel einblenden
-    $("#showElementVariante").click(function () {
-        if ($("#elementInfo").is(':hidden')) {
-            $(this).html("<i class='fas fa-caret-down'></i>");
-            $("#elementInfo").show();
-        } else {
-            $(this).html("<i class='fas fa-caret-right'></i>");
-            $("#elementInfo").hide();
-        }
-    });
+        // Räume mit und ohne Element einblenden
+        $("#showRoomsWithAndWithoutElement").click(function () {
+            if ($("#roomsWithAndWithoutElements").is(':hidden')) {
+                $(this).html("<i class='fas fa-caret-down'></i>");
+                $("#roomsWithAndWithoutElements").show();
+            } else {
+                $(this).html("<i class='fas fa-caret-right'></i>");
+                $("#roomsWithAndWithoutElements").hide();
+            }
+        });
 
-    // DB Element/Gerätedaten einblenden
+        // PDF erzeugen
+        $('#createElementListPDF').click(function () {
+            window.open('/pdf_createElementListPDF.php');
+        });
 
-    $("#showDBData").click(function () {
-        if ($("#dbData").is(':hidden')) {
-            $(this).html("<i class='fas fa-caret-down'></i>");
-            $("#dbData").show();
-        } else {
-            $(this).html("<i class='fas fa-caret-right'></i>");
-            $("#dbData").hide();
-        }
-    });
+        $('#createElementListWithPricePDF').click(function () {
+            window.open('/pdf_createElementListWithPricePDF.php');
+        });
 
-    // Räume mit und ohne Element einblenden
-
-    $("#showRoomsWithAndWithoutElement").click(function () {
-        if ($("#roomsWithAndWithoutElements").is(':hidden')) {
-            $(this).html("<i class='fas fa-caret-down'></i>");
-            $("#roomsWithAndWithoutElements").show();
-        } else {
-            $(this).html("<i class='fas fa-caret-right'></i>");
-            $("#roomsWithAndWithoutElements").hide();
-        }
-    });
-
-
-    // PDF erzeugen
-    $('#createElementListPDF').click(function () {
-        window.open('/pdf_createElementListPDF.php');
-    });
-
-    $('#createElementListWithPricePDF').click(function () {
-        window.open('/pdf_createElementListWithPricePDF.php');
-    });
-
-    $('#createElementEinbringwegePDF').click(function () {
-        window.open('/pdf_createElementEinbringwegePDF.php');
-    });
-
-</script>
+        $('#createElementEinbringwegePDF').click(function () {
+            window.open('/pdf_createElementEinbringwegePDF.php');
+        });
+    </script>
 </body>
 </html>

@@ -1,6 +1,7 @@
+<!-- 13.2.25: Reworked -->
 <?php
 include '_utils.php';
-init_page_serversides("");
+check_login();
 ?>
 
 <!DOCTYPE html>
@@ -31,10 +32,8 @@ init_page_serversides("");
             src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
 
-
     <style>
-
-        .btn-xs {
+        .btn-sm {
             height: 22px;
             padding: 2px 5px;
             font-size: 12px;
@@ -42,20 +41,24 @@ init_page_serversides("");
             border-radius: 3px;
         }
 
+        .card-body {
+            overflow: auto;
+        }
     </style>
-
 </head>
 
 <body style="height:100%">
 <div id="limet-navbar"></div> <!-- Container für Navbar -->
 <div class="container-fluid">
-
     <div class="mt-4 card">
-        <div class="card-header">Räume im Projekt</div>
+        <div class="card-header" id="CardHEaderRäumeImProjekt">Räume im Projekt
+            <button type='button' id='addRoomButton' class='btn btn-success btn-sm mb-2' value='addRoom'
+                    data-toggle='modal' data-target='#changeRoomModal'>Raum hinzufügen
+                <i class='far fa-plus-square'></i></button>
+            <div id="dt-buttons" class="float-right"></div>
+        </div>
         <div class="card-body">
             <?php
-            echo "<button type='button' id='addRoomButton' class='btn btn-success btn-sm mb-2' value='addRoom' data-toggle='modal' data-target='#changeRoomModal'>Raum hinzufügen <i class='far fa-plus-square'></i></button>";
-
             $mysqli = utils_connect_sql();
             $sql = "SELECT tabelle_räume.idTABELLE_Räume, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Nutzfläche, tabelle_räume.Raumhoehe, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, 
                                     tabelle_räume.Bauabschnitt, tabelle_räume.Abdunkelbarkeit, tabelle_räume.Strahlenanwendung, tabelle_räume.Laseranwendung, tabelle_räume.H6020, tabelle_räume.GMP, tabelle_räume.ISO, 
@@ -168,9 +171,9 @@ init_page_serversides("");
 
             while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
-                // echo "<td class='col-md-1'><input type='button' id='".$row["idTABELLE_Räume"]."' class='btn btn-success btn-xs' value='Raum auswählen'></td>";
+                // echo "<td class='col-md-1'><input type='button' id='".$row["idTABELLE_Räume"]."' class='btn btn-success btn-sm' value='Raum auswählen'></td>";
                 echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
-                echo "<td><button type='button' id='" . $row["idTABELLE_Räume"] . "' class='btn btn-outline-dark btn-xs' value='changeRoom' data-toggle='modal' data-target='#changeRoomModal'><i class='fa fa-edit'></i></button></td>";
+                echo "<td><button type='button' id='" . $row["idTABELLE_Räume"] . "' class='btn btn-outline-dark btn-sm' value='changeRoom' data-toggle='modal' data-target='#changeRoomModal'><i class='fa fa-edit'></i></button></td>";
                 echo "<td>" . $row["Raumnr"] . "</td>";
                 echo "<td>" . $row["Raumbezeichnung"] . "</td>";
                 echo "<td>" . $row["Nutzfläche"] . "</td>";
@@ -242,7 +245,7 @@ init_page_serversides("");
         <div class="mt-4 card">
             <div class="card">
                 <div class="card-header">
-                    <button type="button" class="btn btn-outline-dark btn-xs" id="showRoomElements"><i
+                    <button type="button" class="btn btn-outline-dark btn-sm" id="showRoomElements"><i
                                 class="fas fa-caret-left"></i></button>
                 </div>
                 <div class="card-body" id="additionalInfo">
@@ -250,11 +253,10 @@ init_page_serversides("");
                     <p id="elementParameters"></div>
             </div>
         </div>
-
     </div>
+    (Support für diese Seite ist am auslaufen - bitte neue Seite nutzen)
 </div>
 
-</div>
 
 <!-- Modal zum Ändern des Raumes -->
 <div class='modal fade' id='changeRoomModal' role='dialog'>
@@ -323,12 +325,11 @@ init_page_serversides("");
             </div>
         </div>
     </div>
+
 </div>
 
 <script>
     var raumID;
-    var table;
-
     $.fn.dataTable.ext.search.push(
         function (settings, data, dataIndex) {
             if (settings.nTable.id !== 'tableRooms') {
@@ -362,6 +363,14 @@ init_page_serversides("");
 
     // Tabellen formatieren
     $(document).ready(function () {
+        $.get("navbar4.html", function (data) {
+            $("#limet-navbar").html(data);
+            $(".navbar-nav").find("li:nth-child(3)").addClass("active");
+            let currentP = <?php     echo json_encode($_SESSION["projectName"]); ?>;
+            $("#projectSelected").text(currentP);
+
+        });
+
         $('#tableRooms').DataTable({
             "paging": true,
             "order": [[2, "asc"]],
@@ -391,15 +400,19 @@ init_page_serversides("");
             "lengthChange": false,
             "pageLength": 10,
             "info": true,
-            "dom": 'Bfrtip',
+            "dom": 'frt<"bottom"ip>',
             "buttons": [
                 'excel', 'copy', 'csv'
             ],
             "mark": true
-
         });
 
+
         table = $('#tableRooms').DataTable();
+        var buttons = new $.fn.dataTable.Buttons(table, {
+            buttons: ['excel', 'copy', 'csv']
+        });
+        buttons.container().appendTo('#dt-buttons');
 
         $('#tableRooms tbody').on('click', 'tr', function () {
 
@@ -452,51 +465,20 @@ init_page_serversides("");
                                     type: "GET",
                                     success: function (data) {
                                         $("#roomElements").html(data);
-
-
                                     }
                                 });
-
                                 //}
                                 //    });
-
                             }
                         });
                         //}
                         //});
-
                     }
                 });
-
             }
         });
 
     });
-
-
-    //	//Bauangaben einblenden/ausblenden
-    //	$("#showBauangaben").click(function() {
-    //	  if($("#bauangaben").is(':hidden')){
-    //	    $(this).html("<span class='glyphicon glyphicon-menu-down'></span>");
-    //	    $("#bauangaben").show();
-    //	  }
-    //	  else {
-    //	  	$(this).html("<span class='glyphicon glyphicon-menu-right'></span>");
-    //	    $("#bauangaben").hide();
-    //	  }
-    //	});
-    //
-    //	// Notizen einblenden/ausblenden
-    //	$("#showNotices").click(function() {
-    //	  if($("#notices").is(':hidden')){
-    //	    $(this).html("<span class='glyphicon glyphicon-menu-down'></span>");
-    //	    $("#notices").show();
-    //	  }
-    //	  else {
-    //	  	$(this).html("<span class='glyphicon glyphicon-menu-right'></span>");
-    //	    $("#notices").hide();
-    //	  }
-    //	});
 
     //Raum speichern
     $("#saveRoom").click(function () {
@@ -614,7 +596,5 @@ init_page_serversides("");
     });
 
 </script>
-
 </body>
-
 </html>
