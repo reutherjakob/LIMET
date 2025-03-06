@@ -300,7 +300,7 @@ $mysqli->close();
             "searching": false,
             "info": false,
             "order": [[0, "asc"]],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
         });
         $("#ovMT").DataTable({
             "select": false,
@@ -308,7 +308,7 @@ $mysqli->close();
             "searching": false,
             "info": false,
             "order": [[0, "asc"]],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
         });
         $("#moebel").DataTable({
             "select": false,
@@ -316,7 +316,7 @@ $mysqli->close();
             "searching": false,
             "info": false,
             "order": [[0, "asc"]],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
         });
         $("#gase").DataTable({
             "select": false,
@@ -324,7 +324,7 @@ $mysqli->close();
             "searching": false,
             "info": false,
             "order": [[0, "asc"]],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
         });
         $("#labor").DataTable({
             "select": false,
@@ -332,7 +332,7 @@ $mysqli->close();
             "searching": false,
             "info": false,
             "order": [[0, "asc"]],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
         });
     });
 </script>

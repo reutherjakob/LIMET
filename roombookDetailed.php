@@ -61,7 +61,7 @@ init_page_serversides();
                     $result = $mysqli->query($sql);
 
                     /** @noinspection HtmlDeprecatedAttribute */
-                    echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'  cellspacing='0' width='100%'>
+                    echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'   >
 						<thead><tr>
 						<th>ID</th>
 						<th>Raumnr</th>
@@ -117,9 +117,14 @@ init_page_serversides();
         </div>
         <div class="col-lg-4">
             <div class="mt-4 card">
-                <div class="card-header">Variantenparameter</div>
+                <div class="card-header">
+
+                    <div class="row">
+                        <div class="col-6"> Variantenparameter</div>
+                        <div class="col-6 d-flex justify-content-end" id="price"></div>
+                    </div>
+                </div>
                 <div class="card-body">
-                    <div class="row" id="price"></div>
                     <div class="row" id="elementParameters"></div>
                 </div>
             </div>
@@ -201,7 +206,7 @@ init_page_serversides();
                             $result = $mysqli->query($sql);
 
                             /** @noinspection HtmlDeprecatedAttribute */
-                            echo "<table class='table table-striped table-bordered table-sm' id='tableElementsInDB'  cellspacing='0' width='100%'>
+                            echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableElementsInDB'   >
 									<thead><tr>
 									<th>ID</th>
 									<th>ElementID</th>
@@ -283,9 +288,6 @@ init_page_serversides();
 </div>
 
 <script>
-
-
-    let toastCounter3 = 0;
     $.fn.dataTable.ext.search.push(
         function (settings, data) {
             if (settings.nTable.id !== 'tableRooms') {
@@ -347,7 +349,7 @@ init_page_serversides();
             ],
             order: [[1, "asc"]],
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 search: ''
             },
             mark: true
@@ -369,19 +371,15 @@ init_page_serversides();
             info: false,
             order: [[1, "asc"]],
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json', search: ""
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json', search: ""
             }
         });
 
 
         $('#tableRooms tbody').on('click', 'tr', function () {
-
             $("#elementParameters").hide();
             $("#elementBestand").hide();
             $("#elementVerwendung").hide();
-
-            table.$('tr.info').removeClass('info');
-            $(this).addClass('info');
             const id = table.row($(this)).data()[0];
             $.ajax({
                 url: "setSessionVariables.php",
@@ -405,40 +403,41 @@ init_page_serversides();
                     });
                 }
             });
-
         });
+
         $('#tableElementsInDB tbody').on('click', 'tr', function () {
-            table1.$('tr.info').removeClass('info');
-            $(this).addClass('info');
             const elementID = table1.row($(this)).data()[0];
-            //console.log(elementID);
             $.ajax({
-                url: "getStandardElementParameters.php",
+                url: "setSessionVariables.php",
                 data: {"elementID": elementID},
                 type: "GET",
-                success: function (data) {
-                    $("#elementParametersInDB").html(data);
+                success: function () {
                     $.ajax({
-                        url: "getElementPricesInDifferentProjects.php",
+                        url: "getStandardElementParameters.php",
                         data: {"elementID": elementID},
                         type: "GET",
                         success: function (data) {
-                            $("#elementPricesInOtherProjects").html(data);
+                            $("#elementParametersInDB").html(data);
                             $.ajax({
-                                url: "getDevicesToElement.php",
+                                url: "getElementPricesInDifferentProjects.php",
                                 data: {"elementID": elementID},
                                 type: "GET",
                                 success: function (data) {
-                                    $("#devicesInDB").html(data);
+                                    $("#elementPricesInOtherProjects").html(data);
+                                    $.ajax({
+                                        url: "getDevicesToElement.php",
+                                        data: {"elementID": elementID},
+                                        type: "GET",
+                                        success: function (data) {
+                                            $("#devicesInDB").html(data);
+                                        }
+                                    });
                                 }
                             });
-
                         }
                     });
-
                 }
             });
-
         });
 
         $('#filter_MTrelevantRooms').change(function () {
@@ -450,8 +449,6 @@ init_page_serversides();
             dt_searcher.detach();
             $("#CardHeaderRaume").append(dt_searcher);
         }, 100);
-
-
     });
 
 
@@ -468,7 +465,6 @@ init_page_serversides();
     });
 
     // DB Elemente einblenden
-
     $("#showDBElementData").click(function () {
         if ($("#DBElementData").is(':hidden')) {
             $(this).html("<i class='fas fa-caret-down'></i>");
@@ -482,7 +478,6 @@ init_page_serversides();
     // Element Gewerk Änderung
     $('#elementGewerk').change(function () {
         let gewerkID = this.value;
-
         $.ajax({
             url: "getElementGroupsByGewerk.php",
             data: {"gewerkID": gewerkID},
@@ -491,16 +486,12 @@ init_page_serversides();
                 $("#elementGroups").html(data);
             }
         });
-
     });
 
     $("button[id='buttonBO']").click(function () {
         $("#boModalBody").html(this.value);
     });
 
-
 </script>
-
 </body>
-
 </html>

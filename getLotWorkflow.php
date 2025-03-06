@@ -39,7 +39,7 @@ $result = $mysqli->query($sql);
 if ($result->num_rows == 0) {
     echo "<button type='button' class='btn btn-outline-dark btn-sm btn-default' value='addWorkflowToLot'>Workflow hinzufügen</button>";
 } else {
-    echo "<table class='table table-sm' id='tableWorkflow' cellspacing='0' width='100%'>
+    echo "<table class='table table-sm' id='tableWorkflow'  >
                 <thead><tr>
                 <th>Nr</th>
                 <th>Aufgabe</th>
@@ -113,7 +113,7 @@ $mysqli->close();
         ],
         //"pagingType": "simple_numbers",
         //"lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
-        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+        "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
     });
 
 

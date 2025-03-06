@@ -99,7 +99,7 @@ if(!isset($_SESSION["username"]))
 			"searching": false,
 			"info": false,
 			"order": [[ 1, "desc" ]],
-	        'language': {'url': '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json'},
+	        'language': {'url': 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'},
 	        "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 	    			if ( aData[2] == "Offen" )
                     {

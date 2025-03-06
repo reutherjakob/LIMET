@@ -275,7 +275,7 @@ $mysqli->close();
                     });
                 },
                 error: function (data) {
-                    alert("Frag N Jakob, lol");
+                    alert("Lol, hätteste gern.\nGeht aber nich... \nFrag den Jakob. \n",  data);
                 }
             });
     });

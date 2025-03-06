@@ -37,7 +37,7 @@ if(!isset($_SESSION["username"]))
                         FROM tabelle_abteilung INNER JOIN (tabelle_lieferant INNER JOIN tabelle_ansprechpersonen ON tabelle_lieferant.idTABELLE_Lieferant = tabelle_ansprechpersonen.tabelle_lieferant_idTABELLE_Lieferant) ON tabelle_abteilung.idtabelle_abteilung = tabelle_ansprechpersonen.tabelle_abteilung_idtabelle_abteilung;";						
                 $result = $mysqli->query($sql);
 
-                echo "<table class='table table-striped table-bordered nowrap table-condensed' id='tableLieferanten'  cellspacing='0' width='100%'>
+                echo "<table class='table table-striped table-bordered nowrap table-condensed' id='tableLieferanten'   >
                 <thead><tr>
                 <th>ID</th>
                 <th>Name</th>
@@ -71,14 +71,14 @@ if(!isset($_SESSION["username"]))
                     echo "<td>".$row["Lieferant"]."</td>";
                     echo "<td>".$row["Abteilung"]."</td>";
                     echo "<td>".$row["Gebietsbereich"]."</td>";
-                    echo "<td><button type='button' id='".$row["idTABELLE_Ansprechpersonen"]."' class='btn btn-default btn-sm' value='changeContact' data-toggle='modal' data-target='#addContactModal'><span class='glyphicon glyphicon-pencil'></span></button></td>";
+                    echo "<td><button type='button' id='".$row["idTABELLE_Ansprechpersonen"]."' class='btn btn-default btn-sm' value='changeContact' data-bs-toggle='modal' data-bs-target='#addContactModal'><span class='glyphicon glyphicon-pencil'></span></button></td>";
                     echo "<td>".$row["idTABELLE_Lieferant"]."</td>";
                     echo "<td>".$row["idtabelle_abteilung"]."</td>";
                     echo "</tr>";
 
                 }
                 echo "</tbody></table>";	
-                echo "<input type='button' id='addContactModalButton' class='btn btn-success btn-sm' value='Lieferantenkontakt hinzufügen' data-toggle='modal' data-target='#addContactModal'></input>";
+                echo "<input type='button' id='addContactModalButton' class='btn btn-success btn-sm' value='Lieferantenkontakt hinzufügen' data-bs-toggle='modal' data-bs-target='#addContactModal'></input>";
 	}
 	
 	
@@ -90,7 +90,7 @@ if(!isset($_SESSION["username"]))
 	      <!-- Modal content-->
 	      <div class='modal-content'>
 	        <div class='modal-header'>
-	          <button type='button' class='close' data-dismiss='modal'>&times;</button>
+	          <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
 	          <h4 class='modal-title'>Lieferantenkontakt hinzufügen</h4>
 	        </div>
 	        <div class='modal-body' id='mbody'>
@@ -166,7 +166,7 @@ if(!isset($_SESSION["username"]))
 	        <div class='modal-footer'>
                     <input type='button' id='addLieferantenKontakt' class='btn btn-success btn-sm' value='Hinzufügen'></input>
                     <input type='button' id='saveLieferantenKontakt' class='btn btn-warning btn-sm' value='Speichern'></input>
-                    <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Abbrechen</button>
+                    <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
 	        </div>
 	      </div>	      
 	    </div>
@@ -191,7 +191,7 @@ if(!isset($_SESSION["username"]))
 			"order": [[ 1, "asc" ]],
 	        "pagingType": "simple_numbers",
 	        "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-	        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}		     
+	        "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}		     
 	    } );
 	    
 	    

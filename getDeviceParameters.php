@@ -34,7 +34,7 @@ if(!isset($_SESSION["username"]))
 	    
 	$result = $mysqli->query($sql);
 	
-	echo "<table class='table table-striped table-sm' id='tableDeviceParameters' cellspacing='0'>
+	echo "<table class='table table-striped table-sm' id='tableDeviceParameters'  >
         <thead><tr>
         <th>ID</th>
         <th>Kategorie</th>
@@ -76,7 +76,7 @@ if(!isset($_SESSION["username"]))
                 "searchable": false
             }
         ],
-        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+        "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
         "scrollY": '20vh',
         "scrollCollapse": true   	 
      } );  

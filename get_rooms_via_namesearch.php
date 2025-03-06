@@ -1,5 +1,4 @@
 <?php
-
 include '_utils.php';
 
 function getProjectName($projectID) {

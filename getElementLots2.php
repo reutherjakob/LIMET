@@ -22,7 +22,7 @@ $sql = "SELECT Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl
 
 $result = $mysqli->query($sql);
 
-echo "<table class='table table-striped table-bordered nowrap table-condensed' id='tableElementsInProject'  cellspacing='0' width='100%'>
+echo "<table class='table table-striped table-bordered nowrap table-condensed' id='tableElementsInProject'   >
 		<thead><tr>
 			<th>ID-Element</th>
 			<th>ID-Variante</th>
@@ -86,7 +86,7 @@ $mysqli->close();
                     "visible": false,
                     "searchable": false
             ],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
             //"scrollY":        '20vh',
             //"scrollCollapse": true,
             "search": {search: searchV},

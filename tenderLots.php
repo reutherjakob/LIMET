@@ -417,7 +417,6 @@ init_page_serversides();
     var lotVerfahren;
     var tableTenderLots;
     $(document).ready(function () {
-
         tableTenderLots = new DataTable('#tableTenderLots', {
             columnDefs: [
                 {
@@ -436,7 +435,7 @@ init_page_serversides();
             lengthChange: true,
             pageLength: 10,
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 decimal: ',',
                 thousands: '.',
                 searchPlaceholder: 'Suche..',
@@ -469,12 +468,16 @@ init_page_serversides();
                 bottomEnd: ['pageLength', 'paging', 'search', 'buttons']
             },
             initComplete: function () {
+
                 move_item_by_class("dt-buttons", "LoseCardHeaderSub");
                 const button = document.querySelector(".dt-buttons");
                 if (button) {
                     button.classList.remove("dt-buttons");
                 }
-                move_item_by_class("dt-search", "LoseCardHeaderSub");
+
+                $('.dt-search input').addClass("btn btn-sm btn-outline-dark");
+                $('.dt-search').children().removeClass('form-control form-control-sm').addClass("d-flex align-items-center").appendTo('#LoseCardHeaderSub');
+
             }
         });
 

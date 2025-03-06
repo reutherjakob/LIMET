@@ -186,7 +186,7 @@ include 'projects_changeProjectModal.html';
             info: false,
             order: [[2, "asc"]],
             language: {
-                url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
+                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                 search: ""
             },
             mark: true,

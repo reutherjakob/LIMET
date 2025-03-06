@@ -56,7 +56,7 @@ $mysqli->close();
         order: [[0, "desc"]],
         searching: true,
         info: false,
-        language: {url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+        language: {url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
     });
 </script>
 

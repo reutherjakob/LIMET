@@ -1,5 +1,4 @@
 <?php
-session_start();
 include '_utils.php';
 check_login(); 
 	$mysqli = utils_connect_sql();

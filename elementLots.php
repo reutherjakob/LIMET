@@ -31,167 +31,143 @@
 <body style="height:100%">
 <div id="limet-navbar"></div> <!-- Container für Navbar -->
 <div class="container-fluid">
-    <div class="mt-4 card">
-        <div class="card-header">
-            <div class="row">
-                <div class="col-6"><b>Elemente im Projekt</b></div>
-                <div id="ElInPrCardHeader" class="col-6 d-flex justify-content-end"></div>
-            </div>
-        </div>
-        <div class="card-body" id="elementLots">
+    <div class="mt-1 card">
 
-            <?php
-            include '_utils.php';
-            init_page_serversides();
-            include "_format.php";
-            $mysqli = utils_connect_sql();
-            $sql = "SELECT Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_projekt_varianten_kosten.Kosten, tabelle_projekt_varianten_kosten.Kosten*Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS PP, tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern, tabelle_lose_extern.Ausführungsbeginn, tabelle_lose_extern.idtabelle_Lose_Extern, tabelle_lose_extern.Vergabe_abgeschlossen, tabelle_varianten.idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
-                                                                        tabelle_auftraggeber_gewerke.Gewerke_Nr, tabelle_projektbudgets.Budgetnummer
-                                                                        FROM tabelle_projekt_varianten_kosten 
-                                                                        INNER JOIN (tabelle_varianten 
-                                                                                                INNER JOIN (tabelle_lose_extern 
-                                                                                                                        RIGHT JOIN ((tabelle_räume_has_tabelle_elemente 
-                                                                                                                                                INNER JOIN tabelle_räume ON tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = tabelle_räume.idTABELLE_Räume) 
-                                                                                                            INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON tabelle_lose_extern.idtabelle_Lose_Extern = tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) ON (tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte = tabelle_räume.tabelle_projekte_idTABELLE_Projekte) AND (tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) AND (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente)
-                                                                                                            LEFT JOIN tabelle_projekt_element_gewerk ON tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte=tabelle_räume.tabelle_projekte_idTABELLE_Projekte AND tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente=tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
-                                                                                                            LEFT JOIN tabelle_auftraggeber_gewerke ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke = tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
-                                                                                                            LEFT JOIN tabelle_projektbudgets ON tabelle_räume_has_tabelle_elemente.tabelle_projektbudgets_idtabelle_projektbudgets = tabelle_projektbudgets.idtabelle_projektbudgets
-                                                                        WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume_has_tabelle_elemente.Standort)=1))
-                                                                        GROUP BY tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_projekt_varianten_kosten.Kosten, tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern, tabelle_lose_extern.Ausführungsbeginn, tabelle_lose_extern.idtabelle_Lose_Extern, tabelle_varianten.idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_projektbudgets.Budgetnummer
-                                                                        ORDER BY tabelle_elemente.ElementID;";
+        <?php
+        include '_utils.php';
+        init_page_serversides();
+        include "_format.php";
 
-            $result = $mysqli->query($sql);
 
-            echo "<table class='table table-sm table-striped table-hover border border-light border-5' id='tableElementsInProject' >
-									<thead><tr>
-                                        <th></th>
-										<th>ID-Element</th>
-										<th>ID-Variante</th>
-										<th>ID-Los</th>
-										<th>Bestand-Wert</th>
-										<th>Anzahl</th>
-										<th>ID</th>
-										<th>Element</th>
-										<th>Variante</th>
-										<th>Raumbereich</th>
-										<th>Bestand</th>                                                                              									
-										<th>EP</th>
-										<th>PP</th>
-										<th>Los-Nr</th>
-										<th>Los</th>
-										<th>Ausführungsbeginn</th>
-                                                        <th>Gewerk</th>
-                                                        <th>Budget</th>
-                                                        <th>Abgeschlossen</th> 
-                                        </tr><tr>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th><b>Stk >0 <input type='checkbox' id='filter_count'></b></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th><select id='filter_bestand'>
-                                                    <option value='2'></option>
-                                                    <option value='1'>Ja</option>
-                                                    <option value='0'>Nein</option>
-                                                </select>
-                                            </th>                                                                              									
-                                            <th></th>
-                                            <th></th>
-                                            <th><input type='checkbox' id='filter_lot'></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-									</tr>
-									</thead><tbody>";
+        function makeTable($result): void
+        {
+            $headers = [
+                '', 'ID-Element', 'ID-Variante', 'ID-Los', 'Bestand-Wert', 'Anzahl', 'ID', 'Element', 'Variante', 'Raumbereich',
+                'Bestand', 'EP', 'PP', 'Los-Nr', 'Los', 'Ausführungsbeginn', 'Gewerk', 'Budget', 'Abgeschlossen'
+            ];
 
-            /**
-             * @param array $row
-             * @return void
-             */
-            function extracted(array $row): void
-            {
-                echo "<td>" . $row["TABELLE_Elemente_idTABELLE_Elemente"] . "</td>";
-                echo "<td>" . $row["idtabelle_Varianten"] . "</td>";
-                echo "<td>" . $row["idtabelle_Lose_Extern"] . "</td>";
-                echo "<td>" . $row["Neu/Bestand"] . "</td>";
-                echo "<td>" . $row["SummevonAnzahl"] . "</td>";
-                echo "<td>" . $row["ElementID"] . "</td>";
-                echo "<td>" . $row["Bezeichnung"] . "</td>";
-                echo "<td>" . $row["Variante"] . "</td>";
-                echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
-                if ($row["Neu/Bestand"] == 1) {
-                    echo "<td>Nein</td>";
-                } else {
-                    echo "<td>Ja</td>";
-                }
-                echo "<td>" . format_money($row["Kosten"]) . "</td>";
-            }
+            $filters = [
+                '', '', '', '', '',
+                "<b>Stk >0 <input type='checkbox' id='filter_count'></b>",
+                '', '', '', '',
+                "<select id='filter_bestand'>
+            <option value='2'></option>
+            <option value='1'>Ja</option>
+            <option value='0'>Nein</option>
+        </select>",
+                '', '',
+                "<input type='checkbox' id='filter_lot'>",
+                '', '', '', '', ''
+            ];
+
+            $statusBadges = [
+                0 => "<span class='badge badge-pill bg-danger'>Offen</span>",
+                1 => "<span class='badge badge-pill bg-success'>Fertig</span>",
+                2 => "<span class='badge badge-pill bg-primary'>Wartend</span>"
+            ];
+
+            echo "<table class='table table-sm table-striped table-hover border border-light border-5' id='tableElementsInProject'>";
+            echo "<thead>";
+            echo "<tr>" . implode('', array_map(fn($h) => "<th>$h</th>", $headers)) . "</tr>";
+            echo "<tr>" . implode('', array_map(fn($f) => "<th>$f</th>", $filters)) . "</tr>";
+            echo "</thead><tbody>";
 
             while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
                 echo "<td></td>";
-                extracted($row);
-                echo "<td>" . format_money($row["PP"]) . "</td>";
-                echo "<td>" . $row["LosNr_Extern"] . "</td>";
-                echo "<td>" . $row["LosBezeichnung_Extern"] . "</td>";
-                echo "<td>" . $row["Ausführungsbeginn"] . "</td>";
-                echo "<td>" . $row["Gewerke_Nr"] . "</td>";
-                echo "<td>" . $row["Budgetnummer"] . "</td>";
-                echo "<td>";
-                switch ($row["Vergabe_abgeschlossen"]) {
-                    case 0:
-                        //echo "<b><font color='red'>&#10007;</font></b>";
-                        echo "<span class='badge badge-pill bg-danger'>Offen</span>";
-                        break;
-                    case 1:
-                        //echo "<b><font color='green'>&#10003;</font></b>";
-                        echo "<span class='badge badge-pill bg-success'>Fertig</span>";
-                        break;
-                    case 2:
-                        //echo "<b><font color='blue'>&#8776;</font></b>";
-                        echo "<span class='badge badge-pill bg-primary'>Wartend</span>";
-                        break;
-                }
-                echo "</td>";
+                echo "<td>{$row['TABELLE_Elemente_idTABELLE_Elemente']}</td>";
+                echo "<td>{$row['idtabelle_Varianten']}</td>";
+                echo "<td>{$row['idtabelle_Lose_Extern']}</td>";
+                echo "<td>{$row['Neu/Bestand']}</td>";
+                echo "<td>{$row['SummevonAnzahl']}</td>";
+                echo "<td>{$row['ElementID']}</td>";
+                echo "<td>{$row['Bezeichnung']}</td>";
+                echo "<td>{$row['Variante']}</td>";
+                echo "<td>{$row['Raumbereich Nutzer']}</td>";
+                echo "<td>" . ($row['Neu/Bestand'] == 1 ? 'Nein' : 'Ja') . "</td>";
+                echo "<td>" . format_money($row['Kosten']) . "</td>";
+                echo "<td>" . format_money($row['PP']) . "</td>";
+                echo "<td>{$row['LosNr_Extern']}</td>";
+                echo "<td>{$row['LosBezeichnung_Extern']}</td>";
+                echo "<td>{$row['Ausführungsbeginn']}</td>";
+                echo "<td>{$row['Gewerke_Nr']}</td>";
+                echo "<td>{$row['Budgetnummer']}</td>";
+                echo "<td>" . ($statusBadges[$row['Vergabe_abgeschlossen']] ?? '') . "</td>";
                 echo "</tr>";
-
             }
             echo "</tbody></table>";
-            $mysqli->close();
+        }
 
-            ?>
+
+        echo '<div class="card-header ">
+                    <div class="row "> 
+                        <div class="col-3">  <b>Elemente im Projekt</b>  </div>
+                        <div class="col-6 d-flex justify-content-between">                               <!--div id="groupCheckboxes">  <b>Group Data By:</b>    </div -->
+                        </div>
+                        <div id="ElInPrCardHeader" class="col-3 d-inline-flex align-items-center justify-content-end"> (Änderungen nicht in Tabelle? - Reload!) &emsp;               </div>
+                    </div>
+                </div>';
+
+
+        echo '<div class="card-body" id="elementLots">';
+
+
+        $mysqli = utils_connect_sql();
+        $sql = "SELECT SUM(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, 
+                tabelle_varianten.Variante, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_projekt_varianten_kosten.Kosten, 
+                tabelle_projekt_varianten_kosten.Kosten*Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS PP, tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern, 
+                tabelle_lose_extern.Ausführungsbeginn, tabelle_lose_extern.idtabelle_Lose_Extern, tabelle_lose_extern.Vergabe_abgeschlossen, 
+                tabelle_varianten.idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
+                tabelle_auftraggeber_gewerke.Gewerke_Nr, tabelle_projektbudgets.Budgetnummer
+                FROM tabelle_projekt_varianten_kosten 
+                INNER JOIN (tabelle_varianten 
+                                        INNER JOIN (tabelle_lose_extern 
+                                                                RIGHT JOIN ((tabelle_räume_has_tabelle_elemente 
+                                                                                        INNER JOIN tabelle_räume ON tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = tabelle_räume.idTABELLE_Räume) 
+                                                    INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON tabelle_lose_extern.idtabelle_Lose_Extern = tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) ON (tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte = tabelle_räume.tabelle_projekte_idTABELLE_Projekte) AND (tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) AND (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente)
+                                                    LEFT JOIN tabelle_projekt_element_gewerk ON tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte=tabelle_räume.tabelle_projekte_idTABELLE_Projekte AND tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente=tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
+                                                    LEFT JOIN tabelle_auftraggeber_gewerke ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke = tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
+                                                    LEFT JOIN tabelle_projektbudgets ON tabelle_räume_has_tabelle_elemente.tabelle_projektbudgets_idtabelle_projektbudgets = tabelle_projektbudgets.idtabelle_projektbudgets
+                WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume_has_tabelle_elemente.Standort)=1))
+                GROUP BY tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, 
+                tabelle_räume.`Raumbereich Nutzer`, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, 
+                tabelle_projekt_varianten_kosten.Kosten, tabelle_lose_extern.LosNr_Extern, 
+                tabelle_lose_extern.LosBezeichnung_Extern, tabelle_lose_extern.Ausführungsbeginn, 
+                tabelle_lose_extern.idtabelle_Lose_Extern, tabelle_varianten.idtabelle_Varianten, 
+                tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
+                tabelle_projektbudgets.Budgetnummer
+                ORDER BY tabelle_elemente.ElementID;";
+        $result = $mysqli->query($sql);
+
+        makeTable($result);
+        $mysqli->close();
+        ?>
+    </div>
+</div>
+<!-- Räume mit Element -->
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="mt-4 card">
+            <div class="card-header" id="roomsWithElementCardHeader">Räume mit Element</div>
+            <div class="card-body" id="roomsWithElement"></div>
         </div>
     </div>
-    <!-- Räume mit Element -->
-
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="mt-4 card">
-                <div class="card-header" id="roomsWithElementCardHeader">Räume mit Element</div>
-                <div class="card-body" id="roomsWithElement"></div>
-            </div>
+    <div class="col-lg-4">
+        <div class="mt-4 card">
+            <div class="card-header">Variantenparameter</div>
+            <div class="card-body" id="variantenParameter"></div>
         </div>
-        <div class="col-lg-4">
-            <div class="mt-4 card">
-                <div class="card-header">Variantenparameter</div>
-                <div class="card-body" id="variantenParameter"></div>
-            </div>
-            <div class="mt-4 card">
-                <div class="card-header">Bestandsdaten</div>
-                <div class="card-body" id="elementBestand"></div>
-            </div>
+        <div class="mt-4 card">
+            <div class="card-header">Bestandsdaten</div>
+            <div class="card-body" id="elementBestand"></div>
         </div>
     </div>
 </div>
+</div>
 
 <!--suppress JSUnusedLocalSymbols, ES6ConvertVarToLetConst -->
+<script src="_utils.js"></script>
 <script>
     var table;
     $.fn.dataTable.ext.search.push(
@@ -259,26 +235,28 @@
     });
 
     $(document).ready(function () {
+
         table = new DataTable('#tableElementsInProject', {
             paging: true,
             select: true,
             order: [[6, 'asc']],
             columnDefs: [
                 {
-                    targets: [0, 1, 2, 3, 4, 15],
+                    targets: [0, 1, 2, 3, 4],
                     visible: false,
                     searchable: false
                 }
             ],
             orderCellsTop: true,
             pagingType: 'simple',
-            lengthChange: false,
+            lengthChange: true,
             pageLength: 10,
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 decimal: ',',
                 thousands: '.',
-                search: ""
+                search: "",
+                searchPlaceholder: "Suche... "
             },
             mark: true,
             layout: {
@@ -287,10 +265,27 @@
                 bottomStart: 'info',
                 bottomEnd: ['pageLength', 'paging']
             }, initComplete: function () {
-                $('.dt-search').children().removeClass('form-control form-control-sm').addClass("bg-white").appendTo('#ElInPrCardHeader');
-
+                $('.dt-search input').addClass("btn btn-sm btn-outline-dark");
+                $('.dt-search').children().removeClass('form-control form-control-sm').addClass("d-flex align-items-center").appendTo('#ElInPrCardHeader');
             }
         });
+
+/*        $('.group-checkbox').on('change', function () {
+            let selectedColumns = $('.group-checkbox:checked').map(function () {
+                return $(this).val();
+            }).get();
+
+            if (selectedColumns.length > 0) {
+                table.rowGroup().dataSrc(selectedColumns);
+                table.rowGroup().enable();
+                table.order(selectedColumns.map(col => [table.column(col + ':name').index(), 'asc']));
+            } else {
+                table.rowGroup().disable();
+                table.order([[6, 'asc']]);  // Default sorting
+            }
+
+            table.draw();
+        });*/
 
         $('#tableElementsInProject tbody').on('click', 'tr', function () {
             let elementID = table.row($(this)).data()[1];
@@ -321,14 +316,8 @@
                     });
                 }
             });
-
-
         });
     });
-
 </script>
-
-
 </body>
-
 </html>

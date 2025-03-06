@@ -2,7 +2,7 @@
 include 'pdf_createBericht_MYPDFclass.php';
 include 'pdf_createBericht_utils.php';
 include '_utils.php'; //this one contains br2nl nowadays...
-session_start();
+
 
 $hackerl_Zellgröße=15; 
 $hackerl_schriftgröße= 10;
@@ -170,7 +170,7 @@ foreach ($teile as $valueOfRoomID) {
             $pdf->Ln($ln_spacer1);
         }
         
-        $SizeElektroSegement = 60 + $block_label_size + 9* $ln_spacer1 ; //TODO calc precisely
+        $SizeElektroSegement = 60 + $block_label_size + 9* $ln_spacer1 ;
         
         newpage_or_spacer($pdf, $SizeElektroSegement, $block_spacerx);
         block_label($pdf, "Elektro");
@@ -312,7 +312,7 @@ foreach ($teile as $valueOfRoomID) {
         hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße,$row['EL_Jalousie JA/NEIN'], "JA");
  
 
-        $next_block_size = $block_label_size + 40; //manually added up //TODO account for all the space taken up beforehand
+        $next_block_size = $block_label_size + 40; //manually added up
         newpage_or_spacer($pdf, $next_block_size, $block_spacerx);
         
         block_label($pdf, "Haustechnik");

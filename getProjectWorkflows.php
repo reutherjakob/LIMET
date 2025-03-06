@@ -31,7 +31,7 @@ if(!isset($_SESSION["username"]))
                 WHERE (((tabelle_workflow_has_tabelle_projekte.tabelle_projekte_idTABELLE_Projekte)=".$_SESSION["projectID"].") AND ((tabelle_workflow.tabelle_workflowtyp_idtabelle_workflowtyp)=1));";
         
 	$result = $mysqli->query($sql);	     
-        echo "<table class='table table-sm' id='tableprojectWorkflows' cellspacing='0' width='100%'>
+        echo "<table class='table table-sm' id='tableprojectWorkflows'  >
             <thead><tr>
             <th>WorkflowID</th>
             <th>Workflow</th>
@@ -68,7 +68,7 @@ if(!isset($_SESSION["username"]))
         ],
         //"pagingType": "simple_numbers",
         //"lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
-        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"} 		     
+        "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"} 		     
     } );
     
     

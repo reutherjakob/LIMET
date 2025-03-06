@@ -3,7 +3,7 @@
 
 include '_utils.php';
 check_login();
-session_start();
+
 ?>
 
 <!DOCTYPE html >
@@ -24,7 +24,7 @@ $sql = "SELECT tabelle_räume.idTABELLE_Räume, tabelle_räume.Raumnr, tabelle_r
 			ORDER BY tabelle_räume.Raumnr;";
 $result = $mysqli->query($sql);
 
-//<button type='button' class='btn btn-outline-success btn-sm mb-2' id='addElements' data-toggle='modal' data-target='#addElementsToRoomModal'><i class='fas fa-plus'></i></button>
+//<button type='button' class='btn btn-outline-success btn-sm mb-2' id='addElements' data-bs-toggle='modal' data-bs-target='#addElementsToRoomModal'><i class='fas fa-plus'></i></button>
 echo " <table class='table table-striped table-bordered table-sm table-hover' id='tableRoomsWithoutElement'>
 	<thead><tr>
         <th>id</th>

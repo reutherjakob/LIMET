@@ -1,6 +1,10 @@
 <?php
-include '_utils.php';
-init_page_serversides()
+session_start();
+if ($_SESSION["projectName"] == "") {
+    header("Location: /projects.php");
+    exit;
+}
+
 ?>
 
 
@@ -72,7 +76,7 @@ init_page_serversides()
 
                     $result = $mysqli->query($sql);
 
-                    echo "<table class='table table-striped table-bordered table-sm' id='tableGewerke'  cellspacing='0' width='100%'>
+                    echo "<table class='table table-striped table-bordered table-sm' id='tableGewerke'   >
                         <thead><tr>
                         <th>ID</th>
                         <th>Nummer</th>
@@ -115,7 +119,7 @@ init_page_serversides()
                 <div class="card-body" id="rechnungen"></div>
                 <div class="card-footer">
                     <label for='lotSchlussrechnung'>Schlussgerechnet:</label>
-                    <input id="lotSchlussrechnung" type="checkbox" data-toggle="toggle" data-size="sm"
+                    <input id="lotSchlussrechnung" type="checkbox" data-bs-toggle="toggle" data-size="sm"
                            data-onstyle="success" data-offstyle="secondary" data-on="Ja" data-off="Nein"
                            disabled></input>
                     <input type='button' id='saveLot' class='btn btn-outline-dark btn-sm' value='Speichern'></input>
@@ -161,7 +165,7 @@ init_page_serversides()
                         </div>
                         <div class='form-group'>
                             <label for='rechnungSchlussrechnung'>Schlussgerechnet:</label>
-                            <input id="rechnungSchlussrechnung" type="checkbox" data-toggle="toggle" data-size="sm"
+                            <input id="rechnungSchlussrechnung" type="checkbox" data-bs-toggle="toggle" data-size="sm"
                                    data-onstyle="success" data-offstyle="secondary" data-on="Ja"
                                    data-off="Nein"></input>
                         </div>
@@ -184,7 +188,7 @@ init_page_serversides()
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Rechnung uploaden</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='mbody'>
                 <form role='form' id="uploadForm" enctype="multipart/form-data">
@@ -199,7 +203,7 @@ init_page_serversides()
             </div>
             <div class='modal-footer'>
                 <input type='button' id='uploadRechnungButton' class='btn btn-outline-dark btn-sm' value='Upload'
-                       data-dismiss='modal'></input>
+                       data-bs-dismiss='modal'></input>
             </div>
         </div>
     </div>
@@ -208,6 +212,15 @@ init_page_serversides()
     var id = 0;
     // Tabellen formatieren
     $(document).ready(function () {
+
+
+        $.get("navbar4.html", function (data) {
+            $("#limet-navbar").html(data);
+            $(".navbar-nav").find("li:nth-child(3)").addClass("active");
+            currentP = <?php     echo json_encode($_SESSION["projectName"]); ?>;
+            $("#projectSelected").text(currentP);
+        });
+
         $('#tableGewerke').DataTable({
             "select": true,
             "paging": true,
@@ -223,7 +236,7 @@ init_page_serversides()
             ],
             "order": [[1, "asc"]],
             "orderMulti": true,
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
             "mark": true
         });
 

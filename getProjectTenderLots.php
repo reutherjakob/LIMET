@@ -19,7 +19,7 @@ $sql = "SELECT tabelle_lose_extern.idtabelle_Lose_Extern, tabelle_lose_extern.Lo
 
 $result = $mysqli->query($sql);
 
-echo "<table class='table table-striped table-bordered nowrap table-condensed' id='tableTenderLots'  cellspacing='0' width='100%'>
+echo "<table class='table table-striped table-bordered nowrap table-condensed' id='tableTenderLots'   >
                         <thead><tr>
                         <th>ID</th>
                         <th>Los-Nummer</th>
@@ -95,7 +95,7 @@ echo "</tbody></table>";
             "order": [[1, "asc"]],
             "pagingType": "simple_numbers",
             "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
             "scrollY": '40vh',
             "scrollCollapse": true,
             "footerCallback": function (row, data, start, end, display) {

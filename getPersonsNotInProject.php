@@ -16,7 +16,7 @@ $stmt->bind_param("i", $_SESSION["projectID"]);
 $stmt->execute();
 $result = $stmt->get_result();
 
-echo "<table class='table table-striped table-bordered table-sm' id='tablePersonsNotInProject' cellspacing='0' width='100%'>
+echo "<table class='table table-striped table-bordered table-sm' id='tablePersonsNotInProject'  >
     <thead>
         <tr>
             <th>ID</th>
@@ -68,7 +68,7 @@ $mysqli->close();
             lengthChange: false,
             pageLength: 10,
             language: {
-                url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
+                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                 search: ""
             }
         });

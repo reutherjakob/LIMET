@@ -28,7 +28,7 @@ if(!isset($_SESSION["username"]))
 			
 	
 	
-	echo "<table class='table table-striped table-condensed' id='tablePossibleRoomBOs' cellspacing='0'>
+	echo "<table class='table table-striped table-condensed' id='tablePossibleRoomBOs'  >
 	<thead><tr>
 	<th></th>
 	<th>Gruppe
@@ -111,7 +111,7 @@ if(!isset($_SESSION["username"]))
 			"order": [[ 1, "asc" ]],
 	        //"pagingType": "simple_numbers",
 	        //"lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
-	        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+	        "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
 	        "scrollY":        '20vh',
 	    	"scrollCollapse": true,
 	    	"columnDefs": [

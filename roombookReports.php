@@ -55,7 +55,7 @@ init_page_serversides();
 
             $result = $mysqli->query($sql);
 
-            echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'  cellspacing='0' width='100%'>
+            echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'   >
 						<thead><tr>
 						<th>ID</th>
 						<th>Raumnr</th>
@@ -159,7 +159,7 @@ init_page_serversides();
             ],
             "orderCellsTop": true,
             "order": [[1, "asc"]],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
             "scrollY": '20vh',
             "scrollCollapse": true,
             dom: 'Bfrtip',

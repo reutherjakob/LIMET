@@ -233,7 +233,8 @@ ORDER BY tabelle_elemente.ElementID;";
                 ],
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/2.0.0/i18n/de-DE.json',
-                    search: ""
+                    search: "",
+                    searchPlaceholder:"Suche... "
                 },
                 stateSave: true,
                 layout: {
@@ -257,9 +258,10 @@ ORDER BY tabelle_elemente.ElementID;";
                 initComplete: function () {
                     //$('.buttons-excel').appendTo('#target_div');
                     tableElementsInProject.buttons().container().appendTo('#target_div .btn-group');
-
-                    $('.dt-search input').removeClass('form-control').removeClass('form-control-sm').addClass("btn btn-sm btn-outline-dark bg-white border border-dark text-dark");
-                    $('.dt-search').addClass('fa fa-search').appendTo('#target_div');
+                    $('.dt-search input').addClass("btn btn-sm btn-outline-dark");
+                    $('.dt-search').children().removeClass('form-control form-control-sm').addClass("fa fa-search d-flex align-items-center").appendTo('#target_div');
+                    //  $('.dt-search input').removeClass('form-control').removeClass('form-control-sm').addClass("btn btn-sm btn-outline-dark bg-white border border-dark text-dark");
+                    // $('.dt-search').addClass('fa fa-search').appendTo('#target_div');
                 }
             });
 

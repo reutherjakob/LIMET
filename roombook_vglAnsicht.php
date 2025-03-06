@@ -13,8 +13,8 @@
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
-    integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"/>
+          integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -24,29 +24,7 @@
           rel="stylesheet"/>
     <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
 
-    <style>
-        .dt-input {
-            width: 150px;
-            height: 30px;
-        }
-        .dt-button {
-            height: 30px;
-        }
 
-        .card-header {
-            height: 45px;
-        }
-
-        .card-body {
-            padding: 1px;
-        }
-
-        .btn {
-            height: 30px;
-            margin: 1px;
-            padding: 5px;
-        }
-    </style>
 </head>
 
 <?php
@@ -58,11 +36,6 @@ init_page_serversides(); // checks LOGIN
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class="row">
-        <!---<div class="col-2">
-            <div class="card">
-                <div class="card-header border-success"> RAUM</div>
-            </div>
-    </div>--->
         <div class="col-12">
             <div class="card">
                 <div class="card-header d-inline-flex">
@@ -74,49 +47,45 @@ init_page_serversides(); // checks LOGIN
                         <i class="fa fa-circle-info"></i>
                     </button>
                 </div>
-            </div>
-        </div>
 
-        <!--   <div class="col-2">
-             <div class="card ">
-                 <div class="card-header ">
+                <div class=" card-body">
+                    <div class="row">
+                        <div class="col-6" id="col1">
+                            <div class="card border-success" id="card1">
+                                <div class="card-header"> Räume auf dem aktuellen Projekt
+                                    <button class="btn float-end grün" onclick="toggleCard('col1', 'col2', this)">
+                                        <i class="fa fa-arrow-right"> </i></button>
 
-                 </div>
-             </div>
-         </div>--->
-    </div>
+                                    <button class="btn toggle-btn float-end grün ">
+                                        <i class="fa fa-arrow-up"></i></button>
 
-
-    <div class="row">
-        <div class="col-6" id="col1">
-            <div class="card border-success" id="card1">
-                <div class="card-header" id="CardHeaderRooms"> Räume
-                    <button class="btn float-end grün" onclick="toggleCard('col1', 'col2', this)">
-                        <i class="fa fa-arrow-right"> </i></button>
-
-                    <button class="btn toggle-btn float-end grün ">
-                        <i class="fa fa-arrow-up"></i></button>
-
-                    <button class="btn float-end grün " onclick="toggleCard('col1', 'col2', this)"
-                            id="Hide1"><i class="fa fa-arrow-left"></i></button>
-                </div>
-                <div class="card-body">
-                    <table class="table table-compact table-responsive table-striped table-lg" id="t_rooms"
-                           style="width: 100%"></table>
-                </div>
-            </div>
-        </div>
-        <div class="col-6" id="col2">
-            <div class="card " id="card2">
-                <div class="card-header"> Vergleichsräume
-                    <div class=" justify-content-end d-inline-flex" id="CardHeaderVglRooms"></div>
-                    <button class="btn float-end toggle-btn grün "><i
-                                class="fa fa-arrow-up"></i>
-                    </button>
-                </div>
-                <div class="card-body">
-                    <table class="table table-compact table-responsive table-striped table-lg" id="t_rooms_vgl"
-                           style="width: 100%"></table>
+                                    <button class="btn float-end grün " onclick="toggleCard('col1', 'col2', this)"
+                                            id="Hide1"><i class="fa fa-arrow-left"></i></button>
+                                    <div class="d-flex align-items-center float-end" id="CardHeaderRooms"></div>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-compact table-responsive table-striped table-lg"
+                                           id="t_rooms"
+                                           style="width: 100%"></table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6" id="col2">
+                            <div class="card " id="card2">
+                                <div class="card-header"> Vergleichsräume
+                                    <div class=" justify-content-end d-inline-flex" id="CardHeaderVglRooms"></div>
+                                    <button class="btn float-end toggle-btn grün "><i
+                                                class="fa fa-arrow-up"></i>
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-compact table-responsive table-striped table-lg"
+                                           id="t_rooms_vgl"
+                                           style="width: 100%"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -137,17 +106,7 @@ init_page_serversides(); // checks LOGIN
                     <div class="card border-success" id="card3">
                         <div class="card-header">
                             Elemente im Raum
-                            <!---<button class="btn float-end grün 0"
-                                onclick="toggleCard('col3', 'col4', this)">
-                            <i class="fa fa-arrow-right"></i></button>
 
-                            <button class="btn float-end toggle-btn grün ">
-                                <i class="fa fa-arrow-up"></i>
-                            </button>
-                           <button class="btn float-end grün " id="Hide2"
-                                    onclick="toggleCard('col3', 'col4', this)">
-                                <i class="fa fa-arrow-left"></i>
-                            </button> --->
                         </div>
                         <div class="card-body">
                             <p class="card-text" id="CB3"></p>
@@ -158,9 +117,6 @@ init_page_serversides(); // checks LOGIN
                     <div class="card " id="card4">
                         <div class="card-header">
                             Elemente im Vergleichsraum
-                            <!---  <button class="btn float-end toggle-btn grün "><i
-                                      class="fa fa-arrow-up"></i>
-                          </button>--->
                         </div>
                         <div class="card-body">
                             <p class="card-text" id="CB4"></p>
@@ -179,7 +135,7 @@ init_page_serversides(); // checks LOGIN
             </button>
         </div>
 
-        <div class="card-body" >
+        <div class="card-body">
             <div class="row mt-1">
                 <div class="col-6">
                     <div class="card border-success" id="card3">
@@ -193,7 +149,7 @@ init_page_serversides(); // checks LOGIN
                     <div class="card" id="card4">
                         <div class="card-header">Bauangaben Text Vgl
                         </div>
-                        <div class="card-body"  id="bauangaben_vgl">
+                        <div class="card-body" id="bauangaben_vgl">
                         </div>
                     </div>
                 </div>
@@ -255,7 +211,6 @@ init_page_serversides(); // checks LOGIN
     let filter_init_counter = 1;
     let t_rooms;
     let t_rooms_vgl;
-
     let RID1;
     let RID2;
     const newEntry = {data: 'Projektname', title: 'Projekt', visible: true, searchable: true};
@@ -297,7 +252,7 @@ init_page_serversides(); // checks LOGIN
         });
     }
 
-    function load_room_texts(rid, where2putthedata ){
+    function load_room_texts(rid, where2putthedata) {
 
         $.ajax({
             url: "setSessionVariables.php",

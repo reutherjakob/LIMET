@@ -38,7 +38,7 @@
 
         .btn-sm {
             width: 95px;
-            height: 10px;
+            height: 15px;
             vertical-align: middle;
             display: flex;
             justify-content: center;
@@ -159,15 +159,12 @@ init_page_serversides();
                                     echo "<td>";
                                     switch ($row["Vergabe_abgeschlossen"]) {
                                         case 0:
-                                            //echo "<b><font color='red'>&#10007;</font></b>";
                                             echo "<span class='badge bg-danger'>Offen</span>";
                                             break;
                                         case 1:
-                                            //echo "<b><font color='green'>&#10003;</font></b>";
                                             echo "<span class='badge bg-success'>Fertig</span>";
                                             break;
                                         case 2:
-                                            //echo "<b><font color='blue'>&#8776;</font></b>";
                                             echo "<span class='badge bg-primary'>Wartend</span>";
                                             break;
                                     }
@@ -178,19 +175,20 @@ init_page_serversides();
                                     if ($row["SOLLDATE"] == "0000-00-00") {
                                         echo "<td><form class='form-inline'>"
                                             . "<input type='text' name='input_solldate' class='form-control form-control-sm'   id='SOLLDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "'/>-"
-                                            . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-outline-dark btn-sm'><i class='far fa-save'></i></button>"
+                                            . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn  btn-light btn-outline-dark btn-sm'><i class='far fa-save'></i></button>"
                                             . "</form>"
                                             . "</td>";
                                     } else {
                                         echo "<td><form class='form-inline form-check-inline'>"
                                             . "<input type='text' name='input_solldate' class='form-control form-control-sm'   id='SOLLDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "' value='" . $row["SOLLDATE"] . "'/>"
-                                            . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-outline-dark btn-sm'><i class='far fa-save'></i></button>"
+                                            . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn  btn-light btn-outline-dark btn-sm'><i class='far fa-save'></i></button>"
                                             . "</form>"
                                             . "<span style='display:none'>" . $row["SOLLDATE"] . "</span></td>";
                                     }
 
                                 } else {
 
+                                    $sollAbstandDanach = $workflowTeile[$row["tabelle_wofklowteil_idtabelle_wofklowteil"]]['TageMinDanach'];
                                     $daysBetween = round((strtotime($row["SOLLDATE"] ?? '') - strtotime($sollDatumAlt ?? '')) / (60 * 60 * 24));
                                     if ($daysBetween >= $sollAbstandDanach) {
                                         echo "<td style='text-align:center'><span class='badge bg-success'>" . $daysBetween . "</span> / <span class='badge bg-secondary'>" . $sollAbstandDanach . "</span></td>";
@@ -201,28 +199,27 @@ init_page_serversides();
                                     if ($row["SOLLDATE"] == "0000-00-00") {
                                         echo "<td><form class='form-inline'>"
                                             . "<input type='text' name='input_solldate' class='form-control form-control-sm'   id='SOLLDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "'/>"
-                                            . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-outline-dark btn-sm'><i class='far fa-save'></i></button>"
+                                            . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-light btn-outline-dark btn-sm'><i class='far fa-save'></i></button>"
                                             . "</form></td>";
                                     } else {
                                         echo "<td><form class='form-inline'>"
                                             . "<input type='text' name='input_solldate' class='form-control form-control-sm'   id='SOLLDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "' value='" . $row["SOLLDATE"] . "'/>"
-                                            . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-outline-dark btn-sm'><i class='far fa-save'></i></button>"
+                                            . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-light btn-outline-dark btn-sm'><i class='far fa-save'></i></button>"
                                             . "</form>"
                                             . "<span style='display:none'>" . $row["SOLLDATE"] . "</span></td>";
                                     }
 
                                 }
 
-
                                 if ($row["ISTDATE"] == "0000-00-00") {
                                     echo "<td><form class='form-inline'>"
                                         . "<input type='text' name='input_solldate' class='form-control form-control-sm'   id='ISTDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "'/>"
-                                        . "<button type='button' name='save_istdate' id='SAVE-ISTDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-outline-dark btn-sm'><i class='far fa-save'></i></button>"
+                                        . "<button type='button' name='save_istdate' id='SAVE-ISTDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-light btn-outline-dark btn-sm'><i class='far fa-save'></i></button>"
                                         . "</form></td>";
                                 } else {
                                     echo "<td><form class='form-inline'>"
                                         . "<input type='text' name='input_istdate' class='form-control form-control-sm'   id='ISTDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "' value='" . $row["ISTDATE"] . "'/>"
-                                        . "<button type='button' name='save_istdate' id='SAVE-ISTDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-outline-dark btn-sm'><i class='far fa-save'></i></button>"
+                                        . "<button type='button' name='save_istdate' id='SAVE-ISTDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-light btn-outline-dark btn-sm'><i class='far fa-save'></i></button>"
                                         . "</form>"
                                         . "<span style='display:none'>" . $row["ISTDATE"] . "</span></td>";
                                 }
@@ -230,9 +227,7 @@ init_page_serversides();
                                 $idLot = $row["idtabelle_Lose_Extern"];
                                 $sollDatumAlt = $row["SOLLDATE"];
                                 $sollAbstandDanach = $workflowTeile[$row["tabelle_wofklowteil_idtabelle_wofklowteil"]]['TageMinDanach'];
-
                             }
-
                             echo "</tr>";
                             echo "</tbody></table>";
                             echo "</div>";
@@ -280,6 +275,7 @@ init_page_serversides();
         </div>
     </div>
 </div>
+<!--suppress JSCheckFunctionSignatures -->
 <script>
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -306,7 +302,7 @@ init_page_serversides();
                 order: [[1, "asc"]],
                 orderMulti: true,
                 language: {
-                    url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json", search: ""
+                    url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json", search: ""
                 },
                 columnDefs: [
                     {
@@ -315,7 +311,6 @@ init_page_serversides();
                         searchable: false
                     }
                 ],
-                //            dom: '<"d-flex justify-content-between"<B><f>>ti',
                 layout: {
                     topStart: null,
                     topEnd: ['buttons', 'search'],

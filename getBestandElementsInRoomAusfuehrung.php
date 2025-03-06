@@ -30,7 +30,7 @@
     
     $result = $mysqli->query($sql);
 
-    echo "<table class='table table-striped table-bordered table-sm' id='tableBestandElements'  cellspacing='0' width='100%'>
+    echo "<table class='table table-striped table-bordered table-sm' id='tableBestandElements'   >
     <thead><tr>    
     <th>Stück</th>
     <th>Element</th>
@@ -64,7 +64,7 @@
             "pageLength": 10,
             "order": [[ 1, "asc" ]],
             "orderMulti": true,
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
         } );
     });
 </script>

@@ -49,7 +49,7 @@ if(!isset($_SESSION["username"]))
     
 	$result = $mysqli->query($sql);
 	
-	echo "<table class='table table-striped' id='tableRoombookChanges' cellspacing='0'>
+	echo "<table class='table table-striped' id='tableRoombookChanges'  >
 	<thead><tr>
 	<th>Zeitpunkt</th>
 	<th>ID</th>
@@ -144,7 +144,7 @@ if(!isset($_SESSION["username"]))
 			"paging": true,
 	        "pagingType": "simple_numbers",
 	        "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-	        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}	        
+	        "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}	        
 	    } ); 	
 	} );
 </script>

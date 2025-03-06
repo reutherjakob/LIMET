@@ -31,7 +31,7 @@ session_start();
 
         $result = $mysqli->query($sql);
 
-        echo "<table class='table table-striped table-sm' id='tableVarianteParameters' cellspacing='0'>
+        echo "<table class='table table-striped table-sm' id='tableVarianteParameters'  >
 	<thead><tr>
 	<th></th>
 	<th>Kategorie</th>
@@ -74,7 +74,7 @@ session_start();
                             "sortable": false
                         }
                     ],
-                    "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+                    "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
                     "scrollY": '20vh',
                     "scrollCollapse": true
                 });

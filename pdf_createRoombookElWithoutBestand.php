@@ -228,6 +228,9 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(100, 6, "Bereich: " . $row['Raumbereich Nutzer'], 0, 'L', 0, 0);
         $pdf->MultiCell(80, 6, "Geschoss: " . $row['Geschoss'], 0, 'L', 0, 0);
+        if ($pdf->getStringHeight(100, "Raum: " . $row['Raumbereich Nutzer'], false, true, '', 1)>6) {
+            $pdf->Ln($LN);
+        }
         $pdf->Ln($LN);
         $pdf->MultiCell(100, 6, "Raumfläche: " . $row['Nutzfläche'] . " m2", 0, 'L', 0, 0);
         $pdf->MultiCell(100, 6, "Projektstatus: " . $row['Bezeichnung'], '', 'L', 0, 0);
@@ -236,12 +239,12 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell(80, 6, "Bauteil: " . $row['Bauabschnitt'], "B", 'L', 0, 0);
 
         $pdf->SetFont('helvetica', '', 8);
-        if (null != ($row['Anmerkung FunktionBO'])) {
-            $pdf->Ln();
-            $rowHeightComment = $pdf->getStringHeight(150, br2nl($row['Anmerkung FunktionBO']), false, true, '', 1);
-            $pdf->MultiCell(30, $rowHeightComment, "Funktion BO:", 'B', 'L', 0, 0);
-            $pdf->MultiCell(150, $rowHeightComment, br2nl($row['Anmerkung FunktionBO']), 'B', 'L', 0, 0);
-        }
+        //if (null != ($row['Anmerkung FunktionBO'])) {
+        //    $pdf->Ln();
+        //    $rowHeightComment = $pdf->getStringHeight(150, br2nl($row['Anmerkung FunktionBO']), false, true, '', 1);
+        //    $pdf->MultiCell(30, $rowHeightComment, "Funktion BO:", 'B', 'L', 0, 0);
+        //    $pdf->MultiCell(150, $rowHeightComment, br2nl($row['Anmerkung FunktionBO']), 'B', 'L', 0, 0);
+        //}
     }
     $pdf->Ln();
     $pdf->SetFont('helvetica', '', 10);

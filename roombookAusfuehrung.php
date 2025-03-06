@@ -1,10 +1,14 @@
 <?php
-include '_utils.php';
-init_page_serversides();
+session_start();
+if (!isset($_SESSION["username"])) {
+    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
+    exit;
+}
+
 ?>
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <title>RB - Ausführung</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
@@ -60,7 +64,7 @@ init_page_serversides();
 
                     $result = $mysqli->query($sql);
 
-                    echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'  cellspacing='0' width='100%'>
+                    echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'   >
 						<thead><tr>
 						<th>ID</th>
                                                 <th>Raumbereich Nutzer</th>
@@ -123,25 +127,33 @@ init_page_serversides();
     </div>
 </div>
 <script>
+
+
     $.fn.dataTable.ext.search.push(
         function (settings, data, dataIndex) {
             if (settings.nTable.id !== 'tableRooms') {
                 return true;
             }
             if ($("#filter_MTrelevantRooms").is(':checked')) {
-                if (data [10] === "Ja") {
-                    return true;
-                } else {
-                    return false;
-                }
+                return data [10] === "Ja";
             } else {
                 return true;
             }
         }
     );
 
-    // Tabellen formatieren
+
+
     $(document).ready(function () {
+
+
+        $.get("navbar4.html", function (data) {
+            $("#limet-navbar").html(data);
+            $(".navbar-nav").find("li:nth-child(3)").addClass("active");
+            currentP = <?php     echo json_encode($_SESSION["projectName"]); ?>;
+            $("#projectSelected").text(currentP);
+        });
+
 
         $('#tableRooms').DataTable({
             "select": true,
@@ -158,11 +170,12 @@ init_page_serversides();
             ],
             "order": [[1, "asc"]],
             "orderMulti": true,
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
             "mark": true
         });
 
         var table = $('#tableRooms').DataTable();
+
         $('#tableRooms tbody').on('click', 'tr', function () {
 
             if ($(this).hasClass('info')) {

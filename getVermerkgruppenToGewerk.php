@@ -36,7 +36,7 @@ if(!isset($_SESSION["username"]))
         
         $result = $mysqli->query($sql);
 
-        echo "<table class='table table-striped table-bordered table-sm' id='tableVermerkgruppen'  cellspacing='0' width='100%'>
+        echo "<table class='table table-striped table-bordered table-sm' id='tableVermerkgruppen'   >
                 <thead><tr>
                 <th>ID</th>                
                 <th>Name</th>
@@ -96,7 +96,7 @@ if(!isset($_SESSION["username"]))
             ],
             "order": [[ 2, "asc" ]],
             "orderMulti": false,
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
             "mark":true
         } );   
 

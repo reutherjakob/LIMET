@@ -5,7 +5,7 @@ init_page_serversides();
 ?>
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <title>RB-Bestand</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
@@ -13,69 +13,18 @@ init_page_serversides();
     <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
     <link rel="icon" href="iphone_favicon.png">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
-          integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+    <!-- Rework 2025 CDNs -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+          integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
+          rel="stylesheet">
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
-    <script type="text/javascript"
-            src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.js"></script>
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.jsdelivr.net/datatables.mark.js/2.0.0/datatables.mark.min.css"/>
-    <script type="text/javascript"
-            src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
-    <style>
-
-        .popover-content {
-            height: 200px;
-            width: 200px;
-        }
-
-        textarea.popover-textarea {
-            border: 1px;
-            margin: 0px;
-            width: 100%;
-            height: 200px;
-            padding: 0px;
-            box-shadow: none;
-        }
-
-        .popover-footer {
-            margin: 0;
-            padding: 8px 14px;
-            font-size: 14px;
-            font-weight: 400;
-            line-height: 18px;
-            background-color: #F7F7F7;
-            border-bottom: 1px solid #EBEBEB;
-            border-radius: 5px 5px 0 0;
-        }
-
-        .input-xs {
-            height: 22px;
-            padding: 2px 5px;
-            font-size: 12px;
-            line-height: 1.5; /* If Placeholder of the input is moved up, rem/modify this. */
-            border-radius: 3px;
-        }
-        .bottom {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-    </style>
 </head>
 
 <body style="height:100%">
@@ -128,13 +77,17 @@ init_page_serversides();
 
         $result = $mysqli->query($sql);
 
-        echo "  <div class='card-header'>Elemente im Bestand";
+        echo "  <div class='card-header'>
+                <div class='row'> 
+                    <div class='col-6'> <b>Elemente im Bestand</b> </div>
+                    <div class='col-6 d-flex flex-nowrap  justify-content-end' id='CardHeader'> 
+                ";
         if ($result->num_rows > 0) {
             echo "<button type='button' class='ml-4 btn btn-outline-dark btn-sm' value='createBestandsPDF'><i class='far fa-file-pdf'></i> Bestands-PDF</button>";
             echo "<button  class='ml-4 btn btn-outline-dark btn-sm' onclick=\"window.location.href='out_bestands_csv.php'\">Download CSV</button>";
         }
-        echo "</div> <div class='card-body'>";
-        echo "<table class='table table-striped table-bordered table-sm' id='tableBestandsElemente'  cellspacing='0' width='100%'>
+        echo "</div> </div> </div> <div class='card-body'>";
+        echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableBestandsElemente'>
             <thead><tr>
             <th>ID</th>
             <th>ElementID</th>
@@ -167,12 +120,15 @@ init_page_serversides();
             echo "<td>" . format_money($row["Kosten"]) . "</td>";
             echo "<td>" . (float)$row["Kosten"] . "</td>";
             if (null != ($row["Kurzbeschreibung"])) {
-                echo "<td><button type='button' class='btn btn-sm btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment'></i></button></td>";
+                echo "<td><button type='button' class='btn btn-sm btn-outline-dark' 
+    data-bs-toggle='popover' 
+    data-bs-placement='top' 
+    data-bs-content='" . htmlspecialchars($row["Kurzbeschreibung"]) . "' 
+    title='Kommentar'>
+    <i class='fa fa-comment'></i></button></td>";
             } else {
-                echo "<td><button type='button' class='btn btn-sm btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment-slash'></i></button></td>";
+                echo "<td> </td>";
             }
-
-
             echo "</tr>";
         }
         echo "</tbody></table>";
@@ -181,87 +137,85 @@ init_page_serversides();
 </div>
 </body>
 <script>
-
-    // Tabelle formatieren
+    var table1;
     $(document).ready(function () {
-        $('#tableBestandsElemente').DataTable({
-            "columnDefs": [
-                {
-                    "targets": [0],
-                    "visible": false,
-                    "searchable": false
-                }
+        new DataTable('#tableBestandsElemente', {
+            columns: [
+                {visible: false, searchable: false}, // Column 0
+                null, // Column 1
+                null, // Column 2
+                null, // Column 3
+                null, // Column 4
+                null, // Column 5
+                null, // Column 6
+                null, // Column 7
+                null, // Column 8
+                null, // Column 9
+                null, // Column 10
+                null, // Column 
+                null
             ],
-            "paging": true,
-            "searching": true,
-            "info": true,
-            "order": [[1, "asc"]],
-            "pagingType": "simple",
-            "lengthChange": false,
-            "pageLength": 10,
-            'language': {
-                'url': '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
-                "decimal": ",",
-                "thousands": "."
+            paging: true,
+            pagingType: 'simple',
+            lengthChange: true,
+            pageLength: 25,
+            searching: true,
+            info: true,
+            order: [[1, 'asc']],
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                decimal: ',',
+                thousands: '.',
+                search: "",
+                searchPlaceholder: ""
             },
-            "dom": '<"top"Blf>rt<"bottom"ip><"clear">',
-            "buttons": [
+            buttons: [
                 {
                     extend: 'excel',
                     exportOptions: {
                         columns: function (idx) {
-                            return idx !== 0 && idx!==10 ;
+                            return idx !== 0 && idx !== 10;
                         }
                     }
                 }
             ],
-            "mark": true
-        });
+            mark: true,
+            layout: {
+                topStart: "buttons",
+                topEnd: "search",
+                bottomStart: "info",
+                bottomEnd: ["pageLength", "paging"]
+            },
+            rowCallback: function (row, data) {
+            }, initComplete: function () {
+                $('.dt-buttons').children().addClass("btn-sm").appendTo('#CardHeader');
+                $('.dt-search label').remove();
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeader');
 
-
-        // CLICK TABELLE
-        var table1 = $('#tableBestandsElemente').DataTable();
-
-        $('#tableBestandsElemente tbody').on('click', 'tr', function () {
-            if ($(this).hasClass('info')) {
-            } else {
-                table1.$('tr.info').removeClass('info');
-                $(this).addClass('info');
             }
         });
 
-        $("button[name='showComment']").popover({
-            trigger: 'click',
-            placement: 'right',
-            html: true,
-            container: 'body',
-            content: "<textarea class='popover-textarea'></textarea>",
-            template: "<div class='popover'>" +
-                "<h4 class='popover-header'></h4><div class='popover-body'>" +
-                "</div><div class='popover-footer'><button type='button' class='btn btn-sm btn-outline-dark popover-submit'><i class='fas fa-check'></i>" +
-                "</button>&nbsp;" +
-                "</div>"
+        let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        let popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'click',
+                html: true
+            })
+        })
 
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest('[data-bs-toggle="popover"]').length &&
+                !$(e.target).closest('.popover').length) {
+                $('[data-bs-toggle="popover"]').popover('hide');
+            }
         });
 
-        $("button[name='showComment']").click(function () {
-            //hide any visible comment-popover
-            $("button[name='showComment']").not(this).popover('hide');
-            var id = this.id;
-            var val = document.getElementById(id).value;
-            //attach/link text
-            $('.popover-textarea').val(val).focus();
-            //update link text on submit
-            $('.popover-submit').click(function () {
-                document.getElementById(id).value = $('.popover-textarea').val();
-                $(this).parents(".popover").popover('hide');
-            });
+        $("button[value='createBestandsPDF']").click(function () {
+            window.open('/pdf_createBestandPDF.php');//there are many ways to do this
         });
     });
 
-    $("button[value='createBestandsPDF']").click(function () {
-        window.open('/pdf_createBestandPDF.php');//there are many ways to do this
-    });
+
 </script>
 
 

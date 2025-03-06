@@ -4,7 +4,10 @@
 <head>
     <title></title></head>
 <body>
+
+
 <?php
+// --> REWORKED 25 <--
 include "_utils.php";
 check_login();
 
@@ -24,10 +27,24 @@ while ($row = $result->fetch_assoc()) {
     $lotsInProject[$row['idtabelle_Lose_Extern']]['LosNr_Extern'] = $row['LosNr_Extern'];
     $lotsInProject[$row['idtabelle_Lose_Extern']]['idtabelle_Lose_Extern'] = $row['idtabelle_Lose_Extern'];
     $lotsInProject[$row['idtabelle_Lose_Extern']]['LosBezeichnung_Extern'] = $row['LosBezeichnung_Extern'];
-}
+} ?>
 
+
+<div class="form-group form-check-inline d-flex align-items-center border border-light rounded bg-light">
+    <label for="globalLosExtern" class="mr-2">Select Lot for All Elements in Batch: &emsp;</label>
+    <select class="form-control form-control-sm mr-2 me-2" id="globalLosExtern" style="width: auto;">
+        <option value="0" selected>Select a Lot</option>
+        <?php
+        foreach ($lotsInProject as $array) {
+            echo "<option value=" . $array['idtabelle_Lose_Extern'] . ">" . $array['LosNr_Extern'] . " - " . $array['LosBezeichnung_Extern'] . "</option>";
+        } ?>
+    </select>
+    <button id="saveSelected" class="btn btn-warning  k btn-sm mr-2 me-2"><i class='far fa-save'></i></button>
+</div>
+
+
+<?php
 $raumbereich = urldecode($_GET["raumbereich"]);
-
 if ($_GET["losID"] != "") {
     if ($raumbereich != "") {
         $sql = "SELECT tabelle_räume_has_tabelle_elemente.id, tabelle_räume.idTABELLE_Räume, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume_has_tabelle_elemente.Anzahl, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.Standort, tabelle_räume_has_tabelle_elemente.Verwendung, tabelle_räume_has_tabelle_elemente.Kurzbeschreibung, tabelle_lose_extern.LosNr_Extern, tabelle_varianten.Variante, tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern
@@ -58,7 +75,7 @@ if ($_GET["losID"] != "") {
 
 $result = $mysqli->query($sql);
 
-echo "<table class='table table-striped table-bordered table-sm' id='tableRoomsWithElementTenderLots' >
+echo "<table class='table table-striped table-bordered border border-light border-5 table-sm' id='tableRoomsWithElementTenderLots' >
 	<thead><tr>
 	<th>ID</th>
         <th></th>
@@ -72,6 +89,7 @@ echo "<table class='table table-striped table-bordered table-sm' id='tableRoomsW
 	<th>Komm</th>
 	<th>LosNr</th>
 	<th></th>
+		<th>Batch</th>
 	</tr></thead><tbody>";
 
 
@@ -80,7 +98,7 @@ while ($row = $result->fetch_assoc()) {
     echo "<tr>";
     echo "<td>" . $row["id"] . "</td>";
     echo "<td></td>";
-    echo "<td><input type='text' id='amount" . $row["id"] . "' value='" . $row["Anzahl"] . "' size='4'></input></td>";
+    echo "<td><input type='text' id='amount" . $row["id"] . "' value='" . $row["Anzahl"] . "' size='4'></td>";
     echo "<td>" . $row["Raumnr"] . "</td>";
     echo "<td>" . $row["Raumbezeichnung"] . "</td>";
     echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
@@ -115,11 +133,6 @@ while ($row = $result->fetch_assoc()) {
     }
     echo "</select></td>";
     echo "<td><textarea id='comment" . $row["id"] . "' rows='1' style='width: 100%;'>" . $row["Kurzbeschreibung"] . "</textarea></td>";
-    /*
-    echo "<td>";
-        echo "<button type='button' id='".$row["id"]."' class='btn btn-default btn-sm' value='openComment' >Kommentar <span class='glyphicon glyphicon-list-alt'></span></button>";
-    echo "</td>";
-    */
     echo "<td>
 	    	<select class='form-control form-control-sm' id='losExtern" . $row["id"] . "'>";
     if ($row["tabelle_Lose_Extern_idtabelle_Lose_Extern"] != "") {
@@ -138,26 +151,27 @@ while ($row = $result->fetch_assoc()) {
         }
     }
     echo "</select></td>";
-
     echo "<td><button type='button' id='" . $row["id"] . "' class='btn btn-warning btn-sm' value='saveElement'><i class='far fa-save'></i></button></td>";
+    echo "<td><input type='checkbox'  class='batch-select' id='batchSelect" . $row["id"] . "'checked></td>";
     echo "</tr>";
-
 }
 echo "</tbody></table>";
 $mysqli->close();
 ?>
+
 <!-- Modal zum Anzeigen bzw Speichern des Kommentars -->
 <div class='modal fade' id='commentModal' role='dialog'>
     <div class='modal-dialog modal-md'>
         <div class='modal-content'>
             <div class='modal-header'>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
                 <h4 class='modal-title'>Kommentar</h4>
             </div>
             <div class='modal-body' id='mbody'>
                 <form role='form'>
                     <div class='form-group'>
-                        <textarea class='form-control' rows='5' id='modalKurzbeschreibung'></textarea>
+                        <label for='modalKurzbeschreibung'></label><textarea class='form-control' rows='5'
+                                                                             id='modalKurzbeschreibung'></textarea>
                     </div>
                 </form>
             </div>
@@ -171,7 +185,45 @@ $mysqli->close();
 </div>
 
 
+<!--suppress ES6ConvertVarToLetConst -->
 <script>
+    function saveElement(ID) {
+        let amount = $("#amount" + ID).val();
+        let bestand = $("#bestand" + ID).val();
+        let losExtern = $("#losExtern" + ID).val();
+        if(losExtern === '0' ) {
+            makeToaster("Erst los wählen...", false);
+            return;
+        }
+        let comment = $("#comment" + ID).val();
+        let standort = $("#Standort" + ID).val();
+        let verwendung = $("#Verwendung" + ID).val();
+        if (standort === '0' && verwendung === '0') {
+            alert("Standort und Verwendung kann nicht Nein sein!");
+            return; // Stop execution if validation fails
+        }
+        $.ajax({   // Make an AJAX call to save the data
+            url: "saveRoombookTender.php", // Server-side script to handle saving
+            type: "GET", // HTTP method
+            data: {
+                "amount": amount,
+                "bestand": bestand,
+                "losExtern": losExtern,
+                "roombookID": ID,
+                "comment": comment,
+                "standort": standort,
+                "verwendung": verwendung
+            },
+            success: function (data) {
+                makeToaster(data.trim(), (data.trim() === "Erfolgreich aktualisiert!"));
+            },
+            error: function (xhr, status, error) {
+                console.error("Error saving data:", error);
+                alert("Es gab einen Fehler beim Speichern der Daten. Bitte versuchen Sie es erneut.");
+            }
+        });
+    }
+
     var tableRoomsWithElementTenderLots;
     $(document).ready(function () {
         tableRoomsWithElementTenderLots = new DataTable('#tableRoomsWithElementTenderLots', {
@@ -207,8 +259,9 @@ $mysqli->close();
             lengthChange: false,
             pageLength: 10,
             language: {
-                url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
-                search: ""
+                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
+                search: "",
+                searchPlaceholder:"Suche..."
             },
             layout: {
                 topEnd: 'search',
@@ -233,69 +286,60 @@ $mysqli->close();
             });
 
         });
-    });
 
-    //Kommentar anzeigen
-    $("button[value='openComment']").click(function () {
-        let ID = this.id;
-        $.ajax({
-            url: "getComment.php",
-            type: "GET",
-            data: {"commentID": ID},
-            success: function (data) {
-                $("#modalKurzbeschreibung").html(data);
-                $('#commentModal').modal('show');
-            }
+        $("#globalLosExtern").change(function () {
+            var selectedLot = $(this).val();
+            $(".batch-select:checked").each(function() {
+                var id = $(this).attr('id').replace('batchSelect', '');
+                $("#losExtern" + id).val(selectedLot);
+            });
+            console.log(selectedLot);
         });
-    });
 
-    //Eintrag speichern 
-    $("button[value='saveElement']").click(function () {
-        let ID = this.id;
-        let amount = $("#amount" + ID).val();
-        let bestand = $("#bestand" + ID).val();
-        let losExtern = $("#losExtern" + ID).val();
-        let comment = $("#comment" + ID).val();
-        let standort = $("#Standort" + ID).val();
-        let verwendung = $("#Verwendung" + ID).val();
-        if (standort === '0' && verwendung === '0') {
-            alert("Standort und Verwendung kann nicht Nein sein!");
-        } else {
+
+        $("#saveSelected").click(function () {
+            $(".batch-select:checked").each(function () {
+                var ID = $(this).attr('id').replace('batchSelect', '');
+                console.log("Selected LOT" ,ID);
+                saveElement(ID);
+            });
+        });
+
+
+        $("button[value='saveElement']").click(function () {
+            saveElement(this.id);
+        });
+
+        //Kommentar anzeigen
+        $("button[value='openComment']").click(function () {
+            let ID = this.id;
             $.ajax({
-                url: "saveRoombookTender.php",
+                url: "getComment.php",
                 type: "GET",
-                data: {
-                    "amount": amount,
-                    "bestand": bestand,
-                    "losExtern": losExtern,
-                    "roombookID": ID,
-                    "comment": comment,
-                    "standort": standort,
-                    "verwendung": verwendung
-                },
+                data: {"commentID": ID},
                 success: function (data) {
-                    //alert(data);
-                    makeToaster(data.trim(), (data.trim()=== "Erfolgreich aktualisiert!"));
+                    $("#modalKurzbeschreibung").html(data);
+                    $('#commentModal').modal('show');
                 }
             });
-        }
-    });
+        });
 
 
-    //Kommentar speichern
-    $("button[value='saveComment']").click(function () {
-        let comment = $("#modalKurzbeschreibung").val();
-        alert(comment);
-        $.ajax({
-            url: "saveRoombookComment.php",
-            type: "GET",
-            data: {"comment": comment},
-            success: function (data) {
-                alert(data);
-                $('#commentModal').modal('hide');
-            }
+        $("button[value='saveComment']").click(function () {
+            let comment = $("#modalKurzbeschreibung").val();
+            alert(comment);
+            $.ajax({
+                url: "saveRoombookComment.php",
+                type: "GET",
+                data: {"comment": comment},
+                success: function (data) {
+                    alert(data);
+                    $('#commentModal').modal('hide');
+                }
+            });
         });
     });
+
 
 </script>
 

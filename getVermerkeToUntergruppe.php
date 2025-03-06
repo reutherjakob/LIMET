@@ -279,7 +279,7 @@ echo "</tbody></table>";
             order: [[5, 'asc']],
             compact: true,
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json', search: ""
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json', search: ""
             },
             rowCallback: function (row, data, displayNum, displayIndex, dataIndex) {
                 if (data[7] === "Bearbeitung") {

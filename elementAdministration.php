@@ -88,7 +88,7 @@
 
                             $result = $mysqli->query($sql);
 
-                            echo "<table class='table table-striped table-sm table-hover border border-light border-5' id='tableElementsInDB' >
+                            echo "<table class='table compact table-striped table-sm table-hover border border-light border-5' id='tableElementsInDB' >
 									<thead><tr>
 									<th>ID</th>
 									<th>ElementID</th>
@@ -157,51 +157,7 @@
                 </div>
             </div>
         </div>
-        <!--
-                <div class="col-md-4 col-lg-4">
-                        <div class="panel-group">
-                                <div class="panel panel-info">
-                                        <div class="panel-heading"><label>Elementparameter</label></div>
-                                        <div class="panel-body" id="elementParametersInDB"></div>
-                                </div>
-                        </div>
-                </div>
-        </div>
 
-        <div class="row">
-                <div class="col-md-4 col-lg-4">
-                        <div class="panel-group">
-                                <div class="panel panel-success">
-                                        <div class="panel-heading"><label>Geräte</label></div>
-                                        <div class="panel-body" id="devicesInDB">
-                                        </div>
-                                </div>
-                        </div>
-                </div>
-                <div class="col-md-4 col-lg-4">
-                        <div class="panel-group">
-                                <div class="panel panel-success">
-                                        <div class="panel-heading"><label>Geräteparameter</label></div>
-                                        <div class="panel-body" id="deviceParametersInDB"></div>
-                                </div>
-                        </div>
-                </div>
-                <div class="col-md-4 col-lg-4">
-                        <div class="panel-group">
-                                <div class="panel panel-success">
-                                        <div class="panel-heading"><label>Gerätepreise</label></div>
-                                        <div class="panel-body" id="devicePrices"></div>
-                                </div>
-                                <div class="panel panel-success">
-                                        <div class="panel-heading"><label>Lieferanten</label></div>
-                                        <div class="panel-body" id="deviceLieferanten">
-                                        </div>
-                                </div>
-                        </div>
-                </div>
-        </div>
-</div>
-        -->
     </div>
 </body>
 
@@ -259,7 +215,7 @@
             pageLength: 10,
             order: [[1, 'asc']],
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 search: "",
                 searchPlaceholder: "Suche"
             },
@@ -319,9 +275,7 @@
                 }
             });
 
-
         });
-
     });
 
 

@@ -3,10 +3,10 @@ session_start();
 ?>
 
 <!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml">
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type" /></head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <title></title></head>
 <body>
 <?php
 if(!isset($_SESSION["username"]))
@@ -18,17 +18,14 @@ if(!isset($_SESSION["username"]))
 
 <?php
 	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	
-	
+
 	/* change character set to utf8 */
 	if (!$mysqli->set_charset("utf8")) {
 	    printf("Error loading character set utf8: %s\n", $mysqli->error);
 	    exit();
-	} 	    
-			
+	}
 	
-	
-	echo "<table class='table table-striped table-condensed' id='tablePossibleRoomBOs' cellspacing='0'>
+	echo "<table class='table table-striped table-condensed' id='tablePossibleRoomBOs'  >
 	<thead><tr>
 	<th></th>
 	<th>Gruppe
@@ -113,7 +110,7 @@ if(!isset($_SESSION["username"]))
 			"order": [[ 1, "asc" ]],
 	        //"pagingType": "simple_numbers",
 	        //"lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
-	        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+	        "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
 	        "scrollY":        '20vh',
 	    	"scrollCollapse": true,
 	    	"columnDefs": [

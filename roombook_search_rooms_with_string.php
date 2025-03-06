@@ -3,33 +3,31 @@ include '_utils.php';
 init_page_serversides("x");
 ?>
 
-<html data-bs-theme="dark" xmlns="http://www.w3.org/1999/xhtml">
+<html data-bs-theme="dark" xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <title>RB.RaumSuche</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
     <link rel="icon" href="iphone_favicon.png"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
-          integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-            integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
-            crossorigin="anonymous"></script>
-    <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.css"
-          rel="stylesheet"/>
+
+    <!-- Rework 2025 CDNs -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+          integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
+          rel="stylesheet">
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
 
-    <style>
-        /* Add any custom styles here */
-    </style>
 </head>
 <body style="height:100%">
 <div id="limet-navbar" class='bla'></div>
@@ -46,21 +44,16 @@ init_page_serversides("x");
             <button id="searchButton" class="btn btn-primary mt-1">Search</button>
         </div>
         <div class="card-body" id="cardx">
-            <table id="table_rooms" class="display" style="width:100%">
-                <thead>
-                <tr>
-                    <!-- Table headers will be dynamically generated -->
-                </tr>
-                </thead>
-                <tbody>
-                <!-- Table data will be dynamically generated -->
-                </tbody>
+            <table id="table_rooms" class="table table-striped table-hover border border-light border-5 display" >
+
             </table>
         </div>
     </div>
     <div class="card">
         <div class="card d-inline-flex">
-            <header class="card-header">Elemente im Raum (Kostenberechnung auf Basis des aktiven Projektes!) </header>
+            <header class="card-header"><b> Elemente im Raum </b> &emsp;(Kostenberechnung basierend auf den Daten des aktiven
+                Projektes!)
+            </header>
             <div class="card-body" id="additionalInfo">
                 <p id="roomElements"></p>
                 <p id="elementParameters"></p>
@@ -86,6 +79,7 @@ init_page_serversides("x");
         option.text = field.text;
         fieldSelect.appendChild(option);
     });
+
     document.getElementById('searchButton').addEventListener('click', function () {
         const selectedField = document.getElementById('fieldSelect').value;
         const searchString = document.getElementById('searchInput').value;
@@ -105,7 +99,19 @@ init_page_serversides("x");
                 table = $('#table_rooms').DataTable({
                     data: response,
                     columns: columnsDefinition,
-                    dom: '  <"TableCardHeader"f>t<"btm.d-flex justify-content-between"lip>   ',
+                    layout: {
+                        topStart: {
+                            searchBuilder: {
+                                depthLimit: 3
+                            },
+                            buttons: ['colvis']
+                        },
+                        topEnd: 'search',
+                        bottomStart: 'info',
+                        bottomEnd: {
+                            paging: 'simple_numbers'
+                        }
+                    },
                     scrollX: true,
                     scrollCollapse: true,
                     select: "os",
@@ -113,11 +119,14 @@ init_page_serversides("x");
                         start: 2
                     },
                     language: {
-                        "search": "",
+                        search: "",
+                        searchPlaceholder: "Suche...",
                         searchBuilder: {
                             title: null,
-                            depthLimit: 2,
-                            stateSave: false,
+                            button: {
+                                0: '',
+                                _: ' (%d)'
+                            },
                         }
                     },
                     keys: true,
@@ -125,13 +134,14 @@ init_page_serversides("x");
                     stateSave: false,
                     info: true,
                     paging: true,
-                    pagingType: "simple_numbers",
                     pageLength: 10,
                     lengthMenu: [
                         [5, 10, 20, 50],
-                        ['5 rows', '10 rows', '20 rows', '50 rows']
+                        ['5 Zeilen', '10 Zeilen', '20 Zeilen', '50 Zeilen']
                     ],
-                    compact: true
+                    compact: true,
+                    stripeClasses: ['odd', 'even'],
+                    responsive: true
                 });
             },
             error: function (xhr, status, error) {
@@ -164,9 +174,9 @@ init_page_serversides("x");
                             $("#roomElements").empty();
                         } else {
                             $("#roomElements").html(data);
+                            $('.btn-warning').prop('disabled', true);
                         }
                         $('#elementParameters').empty();
-
                         $.ajax({
                             url: "getRoomSpecifications2.php",
                             type: "GET",

@@ -5,10 +5,10 @@ check_login();
 ?>
 
 <!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml">
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang="">
 <head>
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type" /></head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <title></title></head>
 <body>
 <?php
 
@@ -20,14 +20,12 @@ check_login();
 	$result = $mysqli->query($sql);
 	$row = $result->fetch_assoc();
         
-	echo "<form>
-		 <div class='form-group row'>
-                    <label class='ml-4 col-lg-5 col-form-label col-form-label-sm' for='price'>Kosten</label>
-                    <div class='col-lg-6'>
-                        <input type='text' class='form-control form-control-sm' id='price' value=". format_money( $row["Kosten"])." disabled='disabled'></input>
-                    </div>						  			 											 						 			
-	 	</div>	
-            </form>";
+	echo "
+		 <div class='d-flex flex-wrap justify-content-end'>
+		     <span class='badge rounded-pill bg-light text-dark border-dark m-1 p-2'>     
+                     <span class='fw-normal'> Kosten: </span>
+                     <span class='fw-bold'>" . format_money($row["Kosten"]) . "</span>
+            </span>    	</div>	 ";
 
 	$mysqli ->close();
 	?>

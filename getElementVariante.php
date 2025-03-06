@@ -7,7 +7,6 @@
 
 <?php
 include '_utils.php';
-check_login();
 if (filter_input(INPUT_GET, 'elementID') != "") {
     $_SESSION["elementID"] = filter_input(INPUT_GET, 'elementID');
 }
@@ -358,7 +357,7 @@ $row = $result->fetch_assoc(); ?>
                 }
             ],
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 search: ""
             },
             layout: {
@@ -384,7 +383,7 @@ $row = $result->fetch_assoc(); ?>
                 }
             ],
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 search: ""
             },
             layout: {
@@ -410,7 +409,7 @@ $row = $result->fetch_assoc(); ?>
                 }
             ],
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 decimal: ',',
                 thousands: '.'
             },

@@ -12,71 +12,31 @@ include "_format.php";
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
     <link rel="icon" href="iphone_favicon.png"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
-          integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous"/>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <!-- Rework 2025 CDNs -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
 
-
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
-    <script type="text/javascript"
-            src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.js"></script>
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.jsdelivr.net/datatables.mark.js/2.0.0/datatables.mark.min.css"/>
-    <script type="text/javascript"
-            src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
-
-    <style>
-        .top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .top .dt-buttons {
-            margin-right: 10px;
-        }
-
-        .bottom {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .bottom .dataTables_info {
-            margin-right: 10px;
-        }
-
-        .card-body {
-            padding: 3px;
-            overflow: auto;
-        }
-
-        .card-header {
-            height: 50px;
-        }
-
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+          integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
+          rel="stylesheet">
 </head>
-
-<body style="height:100%">
+<body>
 <div id="limet-navbar"></div>
 <div class="container-fluid">
-
     <div class="mt-4 card">
-        <div class="card-header container-fluid d-flex">
-
-            <div class="row w-100">
-                <div class="col-md-2">
+        <div class="card-header">
+            <div class="row d-flex flex-nowrap">
+                <div class="col-md-4">
                     <strong> Elemente im Projekt </strong>
                 </div>
 
-                <div class="col-md-7 d-inline-flex justify-content-start">
+                <div class="col-md-8 d-flex justify-content-end" id="CH_EIP">
                     <button type='button' class='btn h-75 btn-outline-dark ' id='createElementListPDF'>
                         <i class='far fa-file-pdf'></i> Elementliste PDF
                     </button>
@@ -84,7 +44,7 @@ include "_format.php";
                         <i class='far fa-file-pdf'></i> inkl. Preis
                     </button>
                 </div>
-                <div class="col-md-3 d-inline-flex justify-content-end" id="CH_EIP"></div>
+
             </div>
         </div>
 
@@ -100,7 +60,7 @@ include "_format.php";
 										GROUP BY tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_varianten.idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_projekt_varianten_kosten.Kosten, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke, tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG, tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
 										ORDER BY tabelle_elemente.ElementID;";
             $result = $mysqli->query($sql);
-            echo "<table class='table table-striped table-bordered table-sm' id='tableElementsInProject'  cellspacing='0' width='100%'>
+            echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableElementsInProject'   >
 									<thead><tr>
 										<th>ID</th>
 										<th>Anzahl</th>
@@ -161,15 +121,21 @@ include "_format.php";
 
             <div class="col-md-4">
                 <div class="mt-1 card">
-                    <div class="card-header" id="BestandsdatenCardHeader">
-                        <label>Bestandsdaten</label>
-                        <button type='button' id='addBestandsElement'
-                                class='btn btn-outline-success btn-sm float-right' value='Hinzufügen'
-                                data-toggle='modal' data-target='#addBestandModal'><i class='fas fa-plus'></i></button>
-                        <button type='button' id='reloadBestand'
-                                class='btn btn-outline-secondary btn-sm float-right' value='reloadBestand'>
-                            <i class="fa fa-retweet" aria-hidden="true"></i>
-                        </button>
+                    <div class="card-header " id="BestandsdatenCardHeader">
+                        <div class="row">
+                            <div class="col-6"><label>Bestandsdaten</label></div>
+                            <div class="col-6 d-flex align-items-center justify-content-end">
+                                <button type='button' id='addBestandsElement'
+                                        class='btn btn-outline-success btn-sm' value='Hinzufügen'
+                                        data-bs-toggle='modal' data-bs-target='#addBestandModal'><i
+                                            class='fas fa-plus'></i>
+                                </button>
+                                <button type='button' id='reloadBestand'
+                                        class='btn btn-outline-secondary btn-sm' value='reloadBestand'>
+                                    <i class="fa fa-retweet" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="card-body" id="elementBestand"></div>
@@ -242,7 +208,7 @@ include "_format.php";
 
                             $result = $mysqli->query($sql);
 
-                            echo "<table class='table table-striped table-sm' id='tableElementsInDB'  cellspacing='0' width='100%'>
+                            echo "<table class='table table-striped table-sm table-hover border border-light border-5' id='tableElementsInDB' >
 									<thead><tr>
 									<th>ID</th>
 									<th>ElementID</th>
@@ -257,7 +223,7 @@ include "_format.php";
                                 echo "<td>" . $row["ElementID"] . "</td>";
                                 echo "<td>" . $row["Bezeichnung"] . "</td>";
                                 echo "<td>" . $row["Kurzbeschreibung"] . "</td>";
-                                echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-dark btn-sm'' value='changeElement' data-toggle='modal' data-target='#changeElementModal'><i class='fas fa-pencil-alt'></i></button></td>";
+                                echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-dark btn-sm'' value='changeElement' data-bs-toggle='modal' data-bs-target='#changeElementModal'><i class='fas fa-pencil-alt'></i></button></td>";
                                 echo "</tr>";
                             }
                             echo "</tbody></table>";
@@ -282,51 +248,54 @@ include "_format.php";
 
 <script src="_utils.js"></script>
 <script>
+    var tableElementsInProject, tableElementsInDB;
     $(document).ready(function () {
-        $('#tableElementsInProject').DataTable({
-            "paging": true,
-            "select": true,
-            "lengthChange": true,
-            "pageLength": 15,
-            "order": [[2, "asc"]],
-            "columnDefs": [
+
+
+        tableElementsInProject = new DataTable('#tableElementsInProject', {
+            paging: true,
+            select: true,
+            lengthChange: true,
+            pageLength: 15,
+            order: [[2, "asc"]],
+            columnDefs: [
                 {
-                    "targets": [0, 5],
-                    "visible": false,
-                    "searchable": false
+                    targets: [0, 5],
+                    visible: false,
+                    searchable: false
                 }
             ],
-            "keys":true,
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
-                "search": "",
-                "decimal": ",",
-                "thousands": ".",
-                "searchPlaceholder": "Suche"
-
+            keys: true,
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
+                search: "",
+                decimal: ",",
+                thousands: ".",
+                searchPlaceholder: "Suche"
             },
-            "stateSave": true,
-            /* "buttons":[{extend: 'excel', exportOptions: {columns: function (idx) {return idx !== 5 && idx !== 8;}}}], */
-            "dom": '<"top"lf>rt<"bottom"ip><"clear">',
-            "initComplete": function () {
-                move_item("tableElementsInProject_filter", "CH_EIP");
-                $('#tableElementsInProject_filter label').contents().filter(function () {
-                    return this.nodeType === 3; // Node.TEXT_NODE
-                }).remove();
-            }
+            stateSave: true,
+            layout: {
+                topStart: null,
+                topEnd: null,
+                bottomStart: 'info',
+                bottomEnd: ['search', 'pageLength', 'paging']
+            },
+            initComplete: function () {
+                $('.dt-search label').remove();
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CH_EIP');
 
+            }
         });
 
-        let table = $('#tableElementsInProject').DataTable();
 
         $('#tableElementsInProject tbody').on('click', 'tr', function () {
             $("#devicesInDB").html("");
             $("#elementBestand").html("");
 
-            var elementID = table.row($(this)).data()[0];
-            let variantenID = table.row($(this)).data()[5];
-            var bestand = 1;
-            if (table.row($(this)).data()[6] === "Ja") {
+            let elementID = tableElementsInProject.row($(this)).data()[0];
+            let variantenID = tableElementsInProject.row($(this)).data()[5];
+            let bestand = 1;
+            if (tableElementsInProject.row($(this)).data()[6] === "Ja") {
                 bestand = 0;
             }
             $.ajax({
@@ -340,40 +309,45 @@ include "_format.php";
             });
         });
 
-        $('#tableElementsInDB').DataTable({
-            "paging": true,
-            "columnDefs": [
+        tableElementsInDB = new DataTable('#tableElementsInDB', {
+            paging: true,
+            columnDefs: [
                 {
-                    "targets": [0],
-                    "visible": false,
-                    "searchable": false
+                    targets: [0],
+                    visible: false,
+                    searchable: false
                 },
                 {
-                    "targets": [4],
-                    "visible": true,
-                    "searchable": false,
-                    "sortable": false
+                    targets: [4],
+                    visible: true,
+                    searchable: false,
+                    orderable: false
                 }
             ],
-            "select": true,
-            "info": true,
-            "pagingType": "simple",
-            "lengthChange": false,
-            "pageLength": 10,
-            "order": [[1, "asc"]],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
-            "initComplete": function () {
-                move_item("tableElementsInDB_filter", "CH_elementsInDB");
-                $('#tableElementsInDB_filter label').contents().filter(function () {
-                    return this.nodeType === 3; // Node.TEXT_NODE
-                }).remove();
-
+            select: true,
+            info: true,
+            pagingType: "simple",
+            lengthChange: false,
+            pageLength: 10,
+            order: [[1, "asc"]],
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
+                search: "", searchPlaceholder: "Suche..."
+            },
+            layout: {
+                topEnd : "search",
+                topStart : null,
+                bottomStart: 'info',
+                bottomEnd: ["pageLength", 'paging']
+            },
+            initComplete: function (settings, json) {
+                // Your initComplete function here
             }
         });
 
-        let table1 = $('#tableElementsInDB').DataTable();
-        $('#tableElementsInDB tbody').on('click', 'tr', function () {
-            let elementID = table1.row($(this)).data()[0];
+
+        $('#tableElementsInDB tbody').on('click', 'tr', function () { //todo
+            let elementID = tableElementsInDB.row($(this)).data()[0];
             $.ajax({
                 url: "setSessionVariables.php",
                 data: {"elementID": elementID},
@@ -426,14 +400,12 @@ include "_format.php";
 
 
     $("#addBestand").click(function () {
-        console.log("Add BEstand Click");
         $("#addBestandModal").modal('hide');
-        var inventarNr = $("#invNr").val();
-        var anschaffungsJahr = $("#year").val();
-        var serienNr = $("#serNr").val();
-        var gereatID = $("#geraetNr").val();
-        var currentPlace = $("#currentPlace").val();
-
+        let inventarNr = $("#invNr").val();
+        let anschaffungsJahr = $("#year").val();
+        let serienNr = $("#serNr").val();
+        let gereatID = $("#geraetNr").val();
+        let currentPlace = $("#currentPlace").val();
         if (inventarNr !== "") {
             $.ajax({
                 url: "addBestand.php",
@@ -453,8 +425,7 @@ include "_format.php";
                         url: "getElementBestand.php",
                         type: "GET",
                         success: function (data) {
-                            $("#elementBestand").html(data)
-                            //$("#elementelementBestandsInLot").html(data);
+                            $("#elementBestand").html(data);
                         }
                     });
                 }
@@ -462,29 +433,6 @@ include "_format.php";
 
         } else {
             alert("Bitte Inventarnummer angeben!");
-        }
-
-    });
-
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            // Close all modals
-            let modals = document.querySelectorAll('.modal');
-            modals.forEach(modal => {
-                modal.classList.remove('show');
-                modal.setAttribute('aria-hidden', 'true');
-                modal.style.display = 'none';
-            });
-
-            // Remove the backdrop
-            let backdrops = document.querySelectorAll('.modal-backdrop');
-            backdrops.forEach(backdrop => {
-                backdrop.parentNode.removeChild(backdrop);
-            });
-
-            // Ensure the body is scrollable again
-            document.body.classList.remove('modal-open');
-            document.body.style.overflow = '';
         }
     });
 

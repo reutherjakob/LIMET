@@ -34,7 +34,7 @@ if(!isset($_SESSION["username"]))
 	    
 	$result = $mysqli->query($sql);
 	
-	echo "<div class='table-responsive'><table class='table table-striped table-sm' id='tableElementVerwendungsdaten' cellspacing='0'>
+	echo "<div class='table-responsive'><table class='table table-striped table-sm' id='tableElementVerwendungsdaten'  >
 	<thead><tr>
 	<th>Raumnr</th>
 	<th>Raumbezeichnung</th>
@@ -67,7 +67,7 @@ if(!isset($_SESSION["username"]))
 		"info": false,
         //"pagingType": "simple_numbers",
         //"lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
-        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+        "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
         "scrollY":        '20vh',
     	"scrollCollapse": true   		     
     } );

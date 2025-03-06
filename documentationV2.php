@@ -312,7 +312,7 @@ init_page_serversides();
 
                     $result = $mysqli->query($sql);
 
-                    echo "<table class='table table-striped table-bordered table-sm' id='tableSearchVermerk'  cellspacing='0' width='100%'>
+                    echo "<table class='table table-striped table-bordered table-sm' id='tableSearchVermerk'   >
                                             <thead><tr>
                                             <th>ID</th>
                                             <th>Gruppe</th>
@@ -352,7 +352,7 @@ init_page_serversides();
 <script>
     var gruppenID;
     var search_counter = 0;
-    var counter = 0;
+    var counter = 1;
     var vermerkID; //       for getVermerkToUntergruppe.php
     var untergruppenID; //  for getVermerkUntergruppeToGruppe.php
 
@@ -381,7 +381,7 @@ init_page_serversides();
             lengthChange: false,
             pageLength: 10,
             language: {
-                url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
+                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                 search: ""
             },
             mark: true,
@@ -412,7 +412,7 @@ init_page_serversides();
             lengthChange: false,
             pageLength: 10,
             language: {
-                url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
+                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                 search: ""
             },
             mark: true
@@ -462,7 +462,7 @@ init_page_serversides();
                 searchable: false
             }
         ],
-        language: {url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+        language: {url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
         scrollY: '20vh',
         scrollCollapse: true
     });

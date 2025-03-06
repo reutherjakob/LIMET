@@ -22,11 +22,11 @@ $sql = "SELECT tabelle_varianten.Variante, tabelle_projekt_varianten_kosten_aend
 
 $result = $mysqli->query($sql);
 
-echo "<table class='table table-striped table-sm' id='tableVarianteCostChanges' cellspacing='0' width='100%'>
-	<thead><tr>
+echo "<table class='table table-striped table-sm' id='tableVarianteCostChanges'  >
+	<thead> <tr>
 	<th>Variante</th>
-	<th>Kosten vorher</th>
-	<th>Kosten nachher</th>						
+	<th>Kosten <i class='fas fa-hourglass-start'></th>
+	<th>Kosten <i class='fas fa-hourglass-end'></th>						
 	<th>User</th>
 	<th>Datum</th>
 	</tr></thead>
@@ -38,24 +38,32 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . format_money($row["kosten_alt"]) . "</td>";
     echo "<td>" . format_money($row["kosten_neu"]) . "</td>";
     echo "<td>" . $row["user"] . "</td>";
-    echo "<td>" . $row["user"] . "</td>";
     echo "<td>" . $row["timestamp"] . "</td>";
     echo "</tr>";
 
 }
-
 echo "</tbody></table>";
 $mysqli->close();
 ?>
 
 <script>
 
-    $("#tableVarianteCostChanges").DataTable({
-        "paging": false,
-        "searching": false,
-        "info": false,
-        "order": [[4, "desc"]],
-        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+    $(document).ready(function () {
+        new DataTable('#tableVarianteCostChanges', {
+            paging: false,
+            searching: false,
+            info: false,
+            order: [[4, 'desc']],
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+            },
+            layout: {
+                topStart: null,
+                topEnd: null,
+                bottomStart: null,
+                bottomEnd: null
+            }
+        });
     });
 
 </script>

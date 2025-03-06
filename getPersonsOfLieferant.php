@@ -5,9 +5,9 @@ session_start();
 <!DOCTYPE html>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 
-<html>
+<html lang="de">
 <head>
-</head>
+    <title></title></head>
 <body>
 <?php
 if(!isset($_SESSION["username"]))
@@ -37,7 +37,7 @@ if(!isset($_SESSION["username"]))
                         WHERE (((tabelle_ansprechpersonen.tabelle_lieferant_idTABELLE_Lieferant)=".filter_input(INPUT_GET, 'lieferantID')."));";						
                 $result = $mysqli->query($sql);
 
-                echo "<table class='table table-striped table-bordered table-sm' id='tablePersonsOfLieferant'  cellspacing='0' width='100%'>
+                echo "<table class='table table-striped table-bordered table-sm' id='tablePersonsOfLieferant'   >
                 <thead><tr>
                 <th>ID</th>
                 <th>Name</th>
@@ -92,7 +92,7 @@ if(!isset($_SESSION["username"]))
 			"order": [[ 1, "asc" ]],
 	        "pagingType": "simple_numbers",
 	        "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-	        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}		     
+	        "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}		     
 	    } );	    		
 	});
 	

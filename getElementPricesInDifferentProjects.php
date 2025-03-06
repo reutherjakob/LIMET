@@ -47,7 +47,7 @@ echo "</tbody></table>";
             info: false,
             order: [[1, "asc"]],
             language: {
-                url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
+                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                 decimal: ",",
                 thousands: "."
             }

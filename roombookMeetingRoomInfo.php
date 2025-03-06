@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 include '_utils.php';
 init_page_serversides();
 ?>
@@ -220,7 +220,7 @@ $mysqli= utils_connect_sql();
                 }
             echo "</td>";
             echo "<td>".$row["Datum"]."</td>";
-            echo "<td><button type='button' class='btn btn-sm btn-light' data-toggle='popover' title='Vermerk' data-placement='bottom' data-content='".$row["Vermerktext"]."'><i class='fa fa-comment'></i></button></td>";
+            echo "<td><button type='button' class='btn btn-sm btn-light' data-bs-toggle='popover' title='Vermerk' data-placement='bottom' data-content='".$row["Vermerktext"]."'><i class='fa fa-comment'></i></button></td>";
             echo "<td>".$row["Vermerkart"]."</td>";
             echo "<td>".$row["Name"]."</td>";
             echo "<td>";

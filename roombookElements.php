@@ -180,9 +180,9 @@ init_page_serversides();
         targetDiv.style.height = '650px';
         targetDiv.style.overflow = 'hidden';
         targetDiv.style.overflowY = 'scroll';
-
+        var tableElementsInDB;
         $(document).ready(function () {
-            const table1 = new DataTable('#tableElementsInDB', {
+            tableElementsInDB = new DataTable('#tableElementsInDB', {
                 select: true,
                 paging: true,
                 pageLength: 10,
@@ -213,38 +213,47 @@ init_page_serversides();
             });
 
             $('#tableElementsInDB tbody').on('click', 'tr', function () {
-                let elementID = table1.row($(this)).data()[0];
+
+
+                let elementID = tableElementsInDB.row($(this)).data()[0];
                 $.ajax({
-                    url: "getStandardElementParameters.php",
+                    url: "setSessionVariables.php",
                     data: {"elementID": elementID},
                     type: "GET",
-                    success: function (data) {
-                        $("#elementParametersInDB").html(data);
+                    success: function () {
                         $.ajax({
-                            url: "getElementPricesInDifferentProjects.php",
+                            url: "getStandardElementParameters.php",
                             data: {"elementID": elementID},
                             type: "GET",
                             success: function (data) {
-                                $("#elementPricesInOtherProjects").html(data);
+                                $("#elementParametersInDB").html(data);
                                 $.ajax({
-                                    url: "getDevicesToElement.php",
+                                    url: "getElementPricesInDifferentProjects.php",
                                     data: {"elementID": elementID},
                                     type: "GET",
                                     success: function (data) {
-                                        $("#devicesInDB").html(data);
+                                        $("#elementPricesInOtherProjects").html(data);
                                         $.ajax({
-                                            url: "getRoomsWithElement.php",
+                                            url: "getDevicesToElement.php",
                                             data: {"elementID": elementID},
                                             type: "GET",
                                             success: function (data) {
-                                                $("#roomsWithElement").html(data);
+                                                $("#devicesInDB").html(data);
                                                 $.ajax({
-                                                    url: "getRoomsWithoutElement.php",
+                                                    url: "getRoomsWithElement.php",
                                                     data: {"elementID": elementID},
                                                     type: "GET",
                                                     success: function (data) {
-                                                        $("#roomsWithoutElement").html(data);
+                                                        $("#roomsWithElement").html(data);
+                                                        $.ajax({
+                                                            url: "getRoomsWithoutElement.php",
+                                                            data: {"elementID": elementID},
+                                                            type: "GET",
+                                                            success: function (data) {
+                                                                $("#roomsWithoutElement").html(data);
 
+                                                            }
+                                                        });
                                                     }
                                                 });
                                             }
@@ -255,7 +264,6 @@ init_page_serversides();
                         });
                     }
                 });
-
             });
 
             $('#elementGewerk').change(function () {
@@ -273,11 +281,11 @@ init_page_serversides();
             $('#selectAllRows').click(function () {
                 $('#roomsWithoutElement table tbody tr:visible').each(function () {
                     $(this).addClass('selected');
-                    let roomID = table.row($(this)).data()[0];
+                    let roomID = tableRoomsWithoutElement.row($(this)).data()[0];
                     if (!roomIDs.includes(roomID)) {
                         roomIDs.push(roomID);
                     }
-                    console.log(roomIDs);
+                    //console.log(roomIDs);
                 });
             });
         });
