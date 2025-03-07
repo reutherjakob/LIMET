@@ -34,7 +34,7 @@
     <div class="mt-1 card">
 
         <?php
-        include '_utils.php';
+        if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
         init_page_serversides();
         include "_format.php";
 
@@ -147,13 +147,13 @@
 <!-- Räume mit Element -->
 
 <div class="row">
-    <div class="col-lg-8">
+    <div class="col-xxl-8">
         <div class="mt-4 card">
             <div class="card-header" id="roomsWithElementCardHeader">Räume mit Element</div>
             <div class="card-body" id="roomsWithElement"></div>
         </div>
     </div>
-    <div class="col-lg-4">
+    <div class="col-xxl-4">
         <div class="mt-4 card">
             <div class="card-header">Variantenparameter</div>
             <div class="card-body" id="variantenParameter"></div>

@@ -34,7 +34,7 @@
                 </thead>
                 <tbody>
                 <?php
-                include '_utils.php';
+                if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
                 init_page_serversides("", "x");
                 $conn = utils_connect_sql();
                 $rooms = $conn->query("

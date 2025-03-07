@@ -161,7 +161,7 @@ if(!isset($_SESSION["username"]))
           </ul>              
     </nav>
     <div class='mt-4 row'>  
-        <div class='col-md-12'>
+        <div class='col-xxl-12'>
             <div class="mt-4 card">
                 <div class="card-header"><b>Projektfotos </b>
                     <label class="float-right">

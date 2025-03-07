@@ -42,7 +42,7 @@ if (!isset($_SESSION["username"])) {
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class='row'>
-        <div class='col-lg-12'>
+        <div class='col-xxl-12'>
             <div class="mt-4 card">
                 <div class="card-header   align-items-center  ">
 
@@ -134,7 +134,7 @@ if (!isset($_SESSION["username"])) {
                 </div>
             </div>
         </div>
-        <!---div class='col-lg-1'>
+        <!---div class='col-xxl-1'>
             <div class="mt-4 card">
                 <div class="card-header"><b>Lieferdatum</b>
                 </div>

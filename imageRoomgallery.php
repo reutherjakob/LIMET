@@ -161,7 +161,7 @@ if(!isset($_SESSION["username"]))
           </ul>              
     </nav>
     <div class='mt-4 row'>  
-        <div class='col-md-12'>
+        <div class='col-xxl-12'>
             <div class="mt-4 card">
                 <div class="card-header"><b>Räume im Projekt</b>
                 </div>
@@ -228,7 +228,7 @@ if(!isset($_SESSION["username"]))
         </div>
     </div>
     <div class='row'>
-        <div class='col-md-6'>
+        <div class='col-xxl-6'>
             <div class='mt-4 card'>
                 <div class="card-header"><b>Fotos zu Raum</b></div>
                 <div class="card-body" id="roomImages">
@@ -236,7 +236,7 @@ if(!isset($_SESSION["username"]))
                 </div>
             </div>
         </div>
-        <div class='col-md-6'>
+        <div class='col-xxl-6'>
             <div class='mt-4 card'>
                 <div class="card-header"><b>Fotos im Projekt</b></div>
                 <div class="card-body" id="projectImages">

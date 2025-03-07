@@ -44,7 +44,7 @@
 
         <div class="card-body">
             <?php
-            include '_utils.php';
+            if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
             init_page_serversides();
             include "_format.php";
             $mysqli = utils_connect_sql();
@@ -159,13 +159,13 @@ ORDER BY tabelle_elemente.ElementID;";
             <label>Datenbank-Vergleichsdaten</label></div>
         <div class="card-body" style="display:none" id="dbData">
             <div class="row">
-                <div class='col-md-6'>
+                <div class='col-xxl-6'>
                     <div class='mt-1 card'>
                         <div class='card-header'><label>DB-Elementparameter</label></div>
                         <div class='card-body' id='elementDBParameter'></div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-xxl-6">
                     <div class="mt-1 card">
                         <div class="card-header"><label>Elementkosten in anderen Projekten</label></div>
                         <div class="card-body" id="elementPricesInOtherProjects"></div>
@@ -173,19 +173,19 @@ ORDER BY tabelle_elemente.ElementID;";
                 </div>
             </div>
             <div class="row">
-                <div class='col-md-4'>
+                <div class='col-xxl-4'>
                     <div class='mt-1 card'>
                         <div class='card-header'><label>Geräte zu Element</label></div>
                         <div class='card-body' id='devicesToElement'></div>
                     </div>
                 </div>
-                <div class='col-md-4'>
+                <div class='col-xxl-4'>
                     <div class='mt-1 card'>
                         <div class='card-header'><label>Geräteparameter</label></div>
                         <div class='card-body' id='deviceParametersInDB'></div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-xxl-4">
                     <div class="mt-1 card">
                         <div class="card-header"><label>Gerätepreise</label></div>
                         <div class="card-body" id="devicePrices"></div>
@@ -198,7 +198,7 @@ ORDER BY tabelle_elemente.ElementID;";
     <div class="mt-1 card">
         <div class="card-header ">
             <div class="row">
-                <div class="col-md-8 d-flex justify-content-start">
+                <div class="col-xxl-8 d-flex justify-content-start">
                     <button type="button" class="btn btn-outline-dark btn-sm" id="showRoomsWithAndWithoutElement">
                         <i class="fas fa-caret-right"></i>
                     </button>

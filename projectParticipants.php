@@ -1,7 +1,7 @@
 <!-- 13.2.25: Reworked -->
 
 <?php
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 init_page_serversides();
 ?>
 
@@ -42,7 +42,7 @@ init_page_serversides();
     </div>
 
     <div class='mt-2 row'>
-        <div class='col-lg-8'>
+        <div class='col-xxl-8'>
             <div class="mt-2 card">
                 <div class="card-header">
                     <div class="row">
@@ -54,7 +54,7 @@ init_page_serversides();
                 <div class="card-body" id='personsNotInProject'></div>
             </div>
         </div>
-        <div class='col-lg-4'>
+        <div class='col-xxl-4'>
             <div class="mt-2 card">
                 <div class="card-header">Person zu Projekt hinzufügen</div>
                 <div class="card-body" id='addPersonToProject'></div>

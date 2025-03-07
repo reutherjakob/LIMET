@@ -41,11 +41,11 @@ if (!isset($_SESSION["username"])) {
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class='row'>
-        <div class='col-lg-12'>
+        <div class='col-xxl-12'>
             <div class="mt-4 card">
                 <div class="card-header"><b>Räume im Projekt</b>
                     <label class="float-right">
-                        Nur MT-relevante Räume: <input type="checkbox" id="filter_MTrelevantRooms" checked="true">
+                        Nur MT-relevante Räume: <input type="checkbox" id="filter_MTrelevantRooms" class="form-check-input" checked>
                     </label>
                 </div>
                 <div class="card-body">
@@ -110,14 +110,14 @@ if (!isset($_SESSION["username"])) {
         </div>
     </div>
     <div class='row'>
-        <div class='col-lg-6'>
+        <div class='col-xxl-6'>
             <div class="mt-4 card">
                 <div class="card-header"><b>Neu</b>
                 </div>
                 <div class="card-body" id="newElements"></div>
             </div>
         </div>
-        <div class='col-lg-6'>
+        <div class='col-xxl-6'>
             <div class="mt-4 card">
                 <div class="card-header"><b>Bestand</b>
                 </div>

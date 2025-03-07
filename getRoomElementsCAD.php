@@ -77,7 +77,7 @@ if(!isset($_SESSION["username"]))
 	    echo "<td>".$row["ElementID"]."</td>";
 	    echo "<td>".$row["Variante"]."</td>";
 	    echo "<td>".$row["Bezeichnung"]."</td>";
-	    echo "<td class='col-md-2'><textarea class='form-control' style='width: 100%;'>".$row["Kurzbeschreibung"]."</textarea></td>";
+	    echo "<td class='col-xxl-2'><textarea class='form-control' style='width: 100%;'>".$row["Kurzbeschreibung"]."</textarea></td>";
   	    echo "<td>";
    	    	if($row["Standort"]==1){
    	    		echo "Ja";
@@ -125,7 +125,7 @@ if(!isset($_SESSION["username"]))
    	    		echo "Nein";
    	    	}
    	    echo "</td>";
-	    echo "<td class='col-md-2'><textarea class='form-control' style='width: 100%;'>".$row["CAD_Kommentar"]."</textarea></td>";
+	    echo "<td class='col-xxl-2'><textarea class='form-control' style='width: 100%;'>".$row["CAD_Kommentar"]."</textarea></td>";
 	    echo "</tr>";
 	    
 	}

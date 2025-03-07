@@ -41,7 +41,7 @@ if (!isset($_SESSION["username"])) {
 <body>
 <div id="limet-navbar"></div> <!-- Container für Navbar -->
 <div class="container-fluid">
-    <div class="col-md-12 col-lg-12">
+    <div class="col-xxl-12 col-xxl-12">
         <div class="mt-4 card">
             <div class="card-header">
                 <div class='form-group'>

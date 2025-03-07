@@ -1,6 +1,6 @@
 <!-- 13.2.25: Reworked -->
 <?php
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 init_page_serversides();
 ?>
 
@@ -74,7 +74,7 @@ init_page_serversides();
 
     </div>
     <div class="row mt-4">
-        <div class="col-md-1">
+        <div class="col-xxl-1">
             <div class="card bg-dark text-center">
                 <div class="card-body" id="roomInfo">
                     <div class="card-title">
@@ -103,7 +103,7 @@ init_page_serversides();
                 </div>
             </div>
         </div>
-        <div class="col-md-11">
+        <div class="col-xxl-11">
             <div class="card">
                 <div class="card-header" id="informationHeader">
                 </div>

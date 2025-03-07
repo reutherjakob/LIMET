@@ -1,5 +1,5 @@
 <?php
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 init_page_serversides();
 include "_format.php";
 ?>
@@ -32,11 +32,11 @@ include "_format.php";
     <div class="mt-4 card">
         <div class="card-header">
             <div class="row d-flex flex-nowrap">
-                <div class="col-md-4">
+                <div class="col-xxl-4">
                     <strong> Elemente im Projekt </strong>
                 </div>
 
-                <div class="col-md-8 d-flex justify-content-end" id="CH_EIP">
+                <div class="col-xxl-8 d-flex justify-content-end" id="CH_EIP">
                     <button type='button' class='btn h-75 btn-outline-dark ' id='createElementListPDF'>
                         <i class='far fa-file-pdf'></i> Elementliste PDF
                     </button>
@@ -105,7 +105,7 @@ include "_format.php";
 
     <div class="mt-4 card">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-xxl-8">
                 <div class="mt-1 card">
                     <div class="card-header">
                         <button type="button" class="btn btn-outline-dark btn-sm" id="showRoomsWithAndWithoutElement">
@@ -119,7 +119,7 @@ include "_format.php";
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-xxl-4">
                 <div class="mt-1 card">
                     <div class="card-header " id="BestandsdatenCardHeader">
                         <div class="row">
@@ -131,7 +131,7 @@ include "_format.php";
                                             class='fas fa-plus'></i>
                                 </button>
                                 <button type='button' id='reloadBestand'
-                                        class='btn btn-outline-secondary btn-sm' value='reloadBestand'>
+                                        class='btn  btn-sm btn-outline-secondary ' value='reloadBestand'>
                                     <i class="fa fa-retweet" aria-hidden="true"></i>
                                 </button>
                             </div>
@@ -153,7 +153,7 @@ include "_format.php";
         </div>
         <div class="card-body" id="DBElementData" style="display: none;">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-xxl-8">
                     <div class='mt-1 card'>
                         <div class='card-header'><label>Elementgruppen</label></div>
                         <div class='card-body' id='elementGroups'>
@@ -165,8 +165,8 @@ include "_format.php";
 
                             $result = $mysqli->query($sql);
                             echo "<div class='form-group row'>
-									 			<label class='control-label col-md-2' for='elementGewerk'>Gewerk</label>
-												<div class='col-md-10'>
+									 			<label class='control-label col-xxl-2' for='elementGewerk'>Gewerk</label>
+												<div class='col-xxl-10'>
 													<select class='form-control form-control-sm' id='elementGewerk' name='elementGewerk'>";
                             while ($row = $result->fetch_assoc()) {
                                 echo "<option value=" . $row["idtabelle_element_gewerke"] . ">" . $row["Nummer"] . " - " . $row["Gewerk"] . "</option>";
@@ -176,8 +176,8 @@ include "_format.php";
 										</div>";
 
                             echo "<div class='form-group row'>
-									 			<label class='control-label col-md-2' for='elementHauptgruppe'>Hauptgruppe</label>
-												<div class='col-md-10'>
+									 			<label class='control-label col-xxl-2' for='elementHauptgruppe'>Hauptgruppe</label>
+												<div class='col-xxl-10'>
 													<select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>
 														<option selected>Gewerk auswählen</option>
 													</select>	
@@ -185,8 +185,8 @@ include "_format.php";
 										</div>";
 
                             echo "<div class='form-group row'>
-									 			<label class='control-label col-md-2' for='elementGruppe'>Gruppe</label>
-												<div class='col-md-10'>
+									 			<label class='control-label col-xxl-2' for='elementGruppe'>Gruppe</label>
+												<div class='col-xxl-10'>
 													<select class='form-control form-control-sm' id='elementGruppe' name='elementGruppe'>
 														<option selected>Gewerk auswählen</option>
 													</select>	
@@ -233,7 +233,7 @@ include "_format.php";
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-xxl-4">
                     <div class="mt-1 card">
                         <div class='card-header'><label>Geräte zu Element</label></div>
                         <div class='card-body' id='devicesInDB'></div>

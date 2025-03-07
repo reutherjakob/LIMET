@@ -28,7 +28,7 @@
 </head>
 
 <?php
-include '_utils.php'; // CHECKS SESSION
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; } // CHECKS SESSION
 init_page_serversides(); // checks LOGIN
 ?>
 

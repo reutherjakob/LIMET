@@ -1,5 +1,5 @@
 <?php
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 init_page_serversides("");
 ?>
 
@@ -30,7 +30,7 @@ init_page_serversides("");
 <div id="limet-navbar"></div> <!-- Container für Navbar -->
 <div class="container-fluid">
     <div class='row mt-4 mb-4'>
-        <div class='col-lg-3'>
+        <div class='col-xxl-3'>
             <div class="card border-info">
                 <div class="card-body">
                     <h4 class="card-subtitle text-muted">Vorleistungen kontrolliert</h4>
@@ -64,7 +64,7 @@ init_page_serversides("");
                 </div>
             </div>
         </div>
-        <div class='col-lg-3'>
+        <div class='col-xxl-3'>
             <div class="card border-danger">
                 <div class="card-body">
                     <h4 class="card-subtitle text-muted">Liefertermine fixiert</h4>
@@ -98,7 +98,7 @@ init_page_serversides("");
                 </div>
             </div>
         </div>
-        <div class='col-lg-3'>
+        <div class='col-xxl-3'>
             <div class="card border-success">
                 <div class="card-body">
                     <h4 class="card-subtitle text-muted">Abgerechnet</h4>
@@ -122,7 +122,7 @@ init_page_serversides("");
                 </div>
             </div>
         </div>
-        <div class='col-lg-3'>
+        <div class='col-xxl-3'>
             <div class="card border-warning">
                 <div class="card-body">
                     <h4 class="card-subtitle text-muted">Schlussgerechnet</h4>
@@ -156,12 +156,12 @@ init_page_serversides("");
     </div>
     <hr>
     <div class='row'>
-        <div class='col-lg-6'>
+        <div class='col-xxl-6'>
             <div class="mt-4 card">
                 <div class="card-header"><h4>ToDo's</h4></div>
                 <div class="card-body">
                     <div class="row">
-                        <div class='col-lg-12'>
+                        <div class='col-xxl-12'>
                             <?php
                             $sql = "SELECT tabelle_Vermerkgruppe.Gruppenname, tabelle_Vermerkgruppe.Gruppenart, tabelle_Vermerkgruppe.Ort, tabelle_Vermerkgruppe.Datum, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern, tabelle_ansprechpersonen.Name, tabelle_ansprechpersonen.Vorname, tabelle_Vermerke.Faelligkeit, tabelle_Vermerke.Vermerkart, tabelle_Vermerke.Bearbeitungsstatus, tabelle_Vermerke.Vermerktext, tabelle_Vermerke.idtabelle_Vermerke
                                         FROM (((tabelle_Vermerke LEFT JOIN (tabelle_ansprechpersonen RIGHT JOIN tabelle_Vermerke_has_tabelle_ansprechpersonen ON tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen = tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen) ON tabelle_Vermerke.idtabelle_Vermerke = tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_Vermerke_idtabelle_Vermerke) INNER JOIN (tabelle_Vermerkgruppe INNER JOIN tabelle_Vermerkuntergruppe ON tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe = tabelle_Vermerkuntergruppe.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe) ON tabelle_Vermerke.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe = tabelle_Vermerkuntergruppe.idtabelle_Vermerkuntergruppe) LEFT JOIN tabelle_räume ON tabelle_Vermerke.tabelle_räume_idTABELLE_Räume = tabelle_räume.idTABELLE_Räume) LEFT JOIN tabelle_lose_extern ON tabelle_Vermerke.tabelle_lose_extern_idtabelle_Lose_Extern = tabelle_lose_extern.idtabelle_Lose_Extern
@@ -216,11 +216,11 @@ init_page_serversides("");
                 </div>
             </div>
         </div>
-        <div class='col-lg-6'>
+        <div class='col-xxl-6'>
             <div class="mt-4 card">
                 <div class="card-body">
                     <div class="row">
-                        <div class='col-lg-12'>
+                        <div class='col-xxl-12'>
                             <h4 class="card-subtitle text-muted">Kommende Termine</h4>
                             <?php
                             $sql = "SELECT WEEK(tabelle_räume_has_tabelle_elemente.Lieferdatum) as lieferWeek, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern, WEEK(CURDATE()) as currentWeek, tabelle_lieferant.Lieferant

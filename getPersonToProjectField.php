@@ -1,5 +1,5 @@
 <?php
-include "_utils.php";
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 check_login();
 $mysqli = utils_connect_sql();
 
@@ -42,24 +42,24 @@ echo "<form id='addPersonForm' class='form-horizontal' role='form' method='POST'
 
 foreach ($formFields as $field) {
     echo "<div class='form-group row'>
-            <label class='control-label col-md-2' for='{$field[0]}'>{$field[0]}</label>
-            <div class='col-md-8'>
+            <label class='control-label col-xxl-2' for='{$field[0]}'>{$field[0]}</label>
+            <div class='col-xxl-8'>
                 <input type='{$field[1]}' class='form-control form-control-sm' id='{$field[0]}' name='{$field[0]}' required>
             </div>
           </div>";
 }
 
 echo "
-<div class='form-group row'><label class='control-label col-md-2' for='zustaendigkeit'> Zuständigkeit</label>
-    <div class='col-md-8'><select class='form-control form-control-sm' id='zustaendigkeit' name='zustaendigkeit'
+<div class='form-group row'><label class='control-label col-xxl-2' for='zustaendigkeit'> Zuständigkeit</label>
+    <div class='col-xxl-8'><select class='form-control form-control-sm' id='zustaendigkeit' name='zustaendigkeit'
                                   required> $zustaendigkeitOptions</select></div>
 </div>
-<div class='form-group row'><label class='control-label col-md-2' for='organisation'> Organisation</label>
-    <div class='col-md-8'><select class='form-control form-control-sm' id='organisation' name='organisation' required>
+<div class='form-group row'><label class='control-label col-xxl-2' for='organisation'> Organisation</label>
+    <div class='col-xxl-8'><select class='form-control form-control-sm' id='organisation' name='organisation' required>
             $organisationOptions</select></div>
 </div>
 <div class='form-group row'>
-    <div class='col-md-offset-2 col-md-8'><input type='submit' id='addPersonToProjectButton'
+    <div class='col-xxl-offset-2 col-xxl-8'><input type='submit' id='addPersonToProjectButton'
                                                  class='btn btn-success btn-sm' value='Person zu Projekt hinzufügen'>
     </div></div></form > ";
 

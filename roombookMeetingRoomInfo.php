@@ -1,6 +1,6 @@
 <?php
 
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 init_page_serversides();
 ?>
 
@@ -24,7 +24,7 @@ $mysqli= utils_connect_sql();
 	while($row = $result->fetch_assoc()) {
             echo "
                 <div class='row mt-4'>
-                    <div class='col-lg-4'>
+                    <div class='col-xxl-4'>
                         <div class='card card-default m-2'>
                             <div class='card-header'>
                                 <h4 class='m-b-2 text-dark'><i class='fas fa-arrows-alt'></i> Architektur</h4>
@@ -42,7 +42,7 @@ $mysqli= utils_connect_sql();
                             </div>
                         </div>
                     </div>
-                    <div class='col-lg-4'>                    
+                    <div class='col-xxl-4'>                    
                         <div class='card card-default m-2'>
                             <div class='card-header'>
                                 <h4 class='m-b-2 text-danger'><i class='fas fa-bolt'></i> Elektro</h4>
@@ -77,7 +77,7 @@ $mysqli= utils_connect_sql();
                             </div>
                         </div>
                     </div>
-                    <div class='col-lg-4'>                    
+                    <div class='col-xxl-4'>                    
                         <div class='card card-default m-2'>
                             <div class='card-header'>
                                 <h4 class='m-b-2 text-dark'>Gase</h4>
@@ -155,7 +155,7 @@ $mysqli= utils_connect_sql();
                     </div>
                 </div>
                 <div class='row mt-4'>
-                    <div class='col-lg-4'>                    
+                    <div class='col-xxl-4'>                    
                         <div class='card card-default m-2'>
                             <div class='card-header'>
                                 <h4 class='m-b-2 text-dark'><i class='far fa-hospital'></i> Raumklasse/Lüftung</h4>
@@ -168,7 +168,7 @@ $mysqli= utils_connect_sql();
                             </div>
                         </div>
                     </div>
-                    <div class='col-lg-4'>                                        
+                    <div class='col-xxl-4'>                                        
                         <div class='card card-default m-2'>
                             <div class='card-header'>
                                 <h4 class='m-b-2 text-dark'><i class='fas fa-exclamation-triangle'></i> Laser/Strahlen</h4>

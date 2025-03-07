@@ -85,7 +85,7 @@ if ($result->num_rows == 0) {
         }
         echo "</td>";
         echo "<td>" . $row["user"] . "</td>";
-        echo "<td><button type='button' id='" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "' class='btn btn-sm btn-default' value='saveWorkflowteil'><i class='far fa-save'></i></button></td>";
+        echo "<td><button type='button' id='" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "' class='btn btn-sm btn-warning' value='saveWorkflowteil'><i class='far fa-save'></i></button></td>";
         echo "</tr>";
 
 

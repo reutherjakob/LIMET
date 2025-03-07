@@ -1,6 +1,5 @@
 <?php
-
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 check_login();
 require_once('TCPDF-main/TCPDF-main/tcpdf.php');
 
@@ -45,11 +44,8 @@ class MYPDF extends TCPDF {
     // Page footer
     public function Footer() {
         $this->SetY(-15);
-        // Position at 15 mm from bottom
-        // Set font
         $this->SetFont('helvetica', 'I', 8);
         $this->cell(0, 0, '', 'T', 0, 'L');
-        // Page number
         $this->Cell(0, 10, 'Seite ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
     }
 
@@ -123,7 +119,7 @@ class MYPDF extends TCPDF {
         $this->SetLineWidth(0.1);
         $this->SetFont('', '', '9');
         // Header
-        $w = array(135, 18, 25);
+        $w = array(140, 15, 25);
         $num_headers = count($header);
         $this->SetFillColor(244, 244, 244);
         $this->SetTextColor(0);

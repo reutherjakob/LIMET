@@ -1,6 +1,6 @@
 <?php
 
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 include 'pdf_createBericht_MYPDFclass_1.php';
 include 'pdf_createBericht_utils.php';
 

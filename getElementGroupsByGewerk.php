@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 check_login();
 ?>
 
@@ -19,8 +19,8 @@ check_login();
 
         $result = $mysqli->query($sql);
         echo "<div class='form-group row'>
- 			<label class='control-label col-md-2' for='elementGewerk'>Gewerk</label>
-			<div class='col-md-10'>
+ 			<label class='control-label col-xxl-2' for='elementGewerk'>Gewerk</label>
+			<div class='col-xxl-10'>
 				<select class='form-control form-control-sm' id='elementGewerk' name='elementGewerk'>";
         while ($row = $result->fetch_assoc()) {
             if ($row["idtabelle_element_gewerke"] == $_GET["gewerkID"]) {
@@ -43,8 +43,8 @@ check_login();
         $result = $mysqli->query($sql);
 
         echo "<div class='form-group row'>
- 			<label class='control-label col-md-2' for='elementHauptgruppe'>Hauptgruppe</label>
-			<div class='col-md-10'>
+ 			<label class='control-label col-xxl-2' for='elementHauptgruppe'>Hauptgruppe</label>
+			<div class='col-xxl-10'>
 				<select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>";
         while ($row = $result->fetch_assoc()) {
             echo "<option value=" . $row["idTABELLE_Element_Hauptgruppe"] . ">" . $row["Nummer"] . " - " . $row["Hauptgruppe"] . "</option>";
@@ -54,8 +54,8 @@ check_login();
 	</div>";
 
         echo "<div class='form-group row'>
- 			<label class='control-label col-md-2' for='elementGruppe'>Gruppe</label>
-			<div class='col-md-10'>
+ 			<label class='control-label col-xxl-2' for='elementGruppe'>Gruppe</label>
+			<div class='col-xxl-10'>
 				<select class='form-control form-control-sm' id='elementGruppe' name='elementGruppe'>
 				</select>	
 			</div>

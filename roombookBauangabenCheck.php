@@ -1,5 +1,5 @@
 <?php
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 init_page_serversides();
 ?>
 
@@ -9,24 +9,20 @@ init_page_serversides();
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bauangaben check</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <!--- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
-          integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous"> --->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-          integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
-          crossorigin="anonymous" referrerpolicy="no-referrer"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-
     <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
 
-    <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.css"
+    <!-- Rework 2025 CDNs -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+          integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
     <style>
         .checked {
             text-decoration: line-through;
@@ -34,20 +30,26 @@ init_page_serversides();
     </style>
 </head>
 
-<body style="height:100%">
-<div id="limet-navbar" class=' '></div>
+<body>
+<div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class="mt-4 card responsive">
-        <div class="card-header d-inline-flex" id="CH1">BAUANGABEN CHECK &ensp;
-            <button id="deleteButton">Delete Storage</button>
+        <div class="card-header">
+            <div class="row ">
+                <div class="col-6"><b>BAUANGABEN CHECK</b></div>
+                <div class="col-6 d-inline-flex justify-content-end" id="CH1">
 
-            <button type="button" class="btn btn-sm ms-auto" onclick="show_modal('InfoModal')">
-                <i class="fa fa-circle-info"></i>
-            </button>
-
+                    <button id="deleteButton" class="btn btn-sm btn-outline-dark me-1"> Markierungen löschen</button>
+                    <button type="button" class="btn btn-sm btn-info me-1" onclick="show_modal('InfoModal')">
+                        <i class="fas fa-question-circle"></i>
+                    </button>
+                </div>
+            </div>
         </div>
+
         <div id="CB_C1" class="table-responsive">
-            <table class="table display compact table-striped table-bordered table-sm" id="table1ID"
+            <table class="table compact table-striped table-bordered table-hover border border-5 border-light"
+                   id="table1ID"
                    style="z-index: 1; ">
                 <thead>
                 <tr>
@@ -68,13 +70,15 @@ init_page_serversides();
 <div class="modal fade" id="InfoModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
-            <div class="modal-header ">
+            <div class="modal-header">
                 <h5 class="modal-title" id="helpModalLabel">Hilfe - Bauangaben Check</h5>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">x</button>
             </div>
             <div class="modal-body">
                 <p>Checks werden nur für die ausgewählten Räume durchgeführt. Überprüfung der Bauangaben auf folgende
                     Kriterien:</p>
-                <table class="table table-striped table-bordered" id="table1ID">
+                <table class="table compact table-hover table-striped table-bordered border border-5 border-light"
+                       id="table1ID">
                     <thead>
                     <tr>
                         <th>Kategorie</th>
@@ -219,14 +223,18 @@ init_page_serversides();
 
                     </tbody>
                 </table>
-                <p>Wenn die <strong>Gleichzeitigkeit</strong> undefiniert ist, beträgt der Standardwert 1! Sowohl ET-Leistungs- als auch
+                <p>Wenn die <strong>Gleichzeitigkeit</strong> undefiniert ist, beträgt der Standardwert 1! Sowohl
+                    ET-Leistungs- als auch
                     HT-Wärmeangaben werden mit und ohne Gleichzeitigkeit überprüft und ggf. ausgegeben.</p>
-                <p>Wenn der <strong>Elementparameter Netzart</strong> mehrere Angaben enthält, wird die Leistung gleichmäßig auf die beiden Netzarten aufgeteilt
+                <p>Wenn der <strong>Elementparameter Netzart</strong> mehrere Angaben enthält, wird die Leistung
+                    gleichmäßig auf die beiden Netzarten aufgeteilt
                     (beispielsweise Elementparameter NA "SV/ZSV": Leistung wird 50/50 aufgeteilt). </p>
-                <p>Die <strong>Checkboxen</strong> in der ersten Spalte der Prüftabelle dienen nur zur Übersicht. Der Browser speichert (bis zum Schließen),
+                <p>Die <strong>Checkboxen</strong> in der ersten Spalte der Prüftabelle dienen nur zur Übersicht. Der
+                    Browser speichert (bis zum Schließen),
                     welche Punkte auf der Liste abgehakt wurden. Diese Funktion ist kosmetisch und soll ermöglichen,
                     den Überblick zu behalten und zu kennzeichnen, welche Prüfungen ignoriert werden.</p>
-                <p> <strong>Feedback:</strong> &ensp;Bei Problemen, Unstimmigkeiten und Wünschen wenden Sie sich bitte an das Support-Team.</p>
+                <p><strong>Feedback:</strong> &ensp;Bei Problemen, Unstimmigkeiten und Wünschen wenden Sie sich bitte an
+                    das Support-Team.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
@@ -239,18 +247,17 @@ init_page_serversides();
 <script src="_utils.js"></script>
 <script>
     function getRoomIdsFromCurrentUrl() {
-        var urlObj = new URL(window.location.href);
-        var roomIDParam = urlObj.searchParams.get("roomID");
+        let urlObj = new URL(window.location.href);
+        let roomIDParam = urlObj.searchParams.get("roomID");
         if (roomIDParam) {
-            var roomIDs = roomIDParam.split(",");
-            return roomIDs;
+            return roomIDParam.split(",");
         } else {
             return [];
         }
     }
 
     $(document).ready(function () {
-        ids = getRoomIdsFromCurrentUrl();
+        let ids = getRoomIdsFromCurrentUrl();
         // console.log(ids);
         $.ajax({
             url: "get_angaben_check.php",
@@ -262,56 +269,51 @@ init_page_serversides();
                 const roomIssues = {};
                 lines.forEach(line => {
                     const parts = line.split(':::');
-                    const ROOM = parts[0].trim().split('---')[0];
-                    //  console.log(ROOM);
-
-                    const R_ID = parts[0].trim().split('---')[1];
-                    //      console.log(R_ID);
-
-                    const kathegorie = parts[1].split('->')[0].trim();
-                    //   console.log(kathegorie);
-
-                    const issue = parts[1].split('->')[1].trim();
-                    //   console.log(issue);
-
-
+                    const ROOM = parts[0].trim().split('---')[0].replace(/<br\s*\/?>/g, " ");   //  console.log(ROOM);
+                    const R_ID = parts[0].trim().split('---')[1];                               //  console.log(R_ID);
+                    const kathegorie = parts[1].split('->')[0].trim();                          //  console.log(kathegorie);
+                    const issue = parts[1].split('->')[1].trim();                               //  console.log(issue);
                     roomIssues[R_ID] = roomIssues[R_ID] || [];
                     roomIssues[R_ID].push({ROOM, kathegorie, issue});
                 });
 
                 const tbody = document.getElementById('tableBody');
                 for (const id in roomIssues) {
-//                                            console.log(id);
                     const rows = roomIssues[id].map((item, index) => {
                         const isChecked = localStorage.getItem(`${id}-${index}`) === 'true';
-                        return `<tr class="${isChecked ? 'checked' : ''}" data-id="${id}"> <td><input type='checkbox' ${isChecked ? 'checked' : ''}></td>  <td>${item.ROOM}</td>  <td>${item.kathegorie}</td><td>${item.issue}</td>   </tr>`;
+                        return `<tr class="${isChecked ? 'checked' : ''}" data-id="${id}"> <td><input class="form-check-input"  type='checkbox' ${isChecked ? 'checked' : ''}></td>  <td>${item.ROOM}</td>  <td>${item.kathegorie}</td><td>${item.issue}</td>   </tr>`;
                     });
-
                     tbody.innerHTML += rows.join('');
                 }
 
                 if (tbody.innerHTML.trim() !== '') {
-
                     new DataTable('#table1ID', {
                         dom: ' <"TableCardHeader"f>ti',
                         language: {
-                            "search": ""
+                            search: "",
+                            seachPlaceholder: "Suche...",
                         },
                         keys: true,
                         scrollx: true,
                         pageLength: -1,
                         compact: true,
                         savestate: true,
-                        select: 'os', // Set select to 'os'
+                        select: 'os',
                         columns: [
-                            {width: '5%'},
+                            {width: '2%'},
                             {width: '25%'},
                             {width: '20%'},
                             {width: '50%'}
-                        ]
+                        ],
+                        initComplete: function () {
+                            $('.dt-search label').remove();
+                            $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CH1');
+
+                        }
                     });
                 } else {
                     document.getElementById('table1ID').style.display = 'none';
+                    alert("Keine Angaben zu checken? Oder bug?");
                 }
 
                 $('#table1ID').on('change', 'input[type="checkbox"]', function () {
@@ -330,7 +332,6 @@ init_page_serversides();
                     }
                 });
 
-                // Load the saved data from local storage
                 $('#table1ID tr').each(function (index, row) {
                     if (index !== 0) { // Skip the header row
                         const id = $(row).data('id');
@@ -343,23 +344,9 @@ init_page_serversides();
                         }
                     }
                 });
-
             }
-//                                    else {console.log("No Success");}
         });
-        setTimeout(function () {
-            let dt_searcher = document.getElementById("dt-search-0");
-            if (dt_searcher) {
 
-                dt_searcher.parentNode.removeChild(dt_searcher);
-                dt_searcher.style.float = "right";
-                document.getElementById("CH1").appendChild(dt_searcher);
-            }
-
-        }, 200);
-
-
-        // Attach the function to the button click event
         const deleteButton = document.getElementById('deleteButton');
         deleteButton.addEventListener('click', deleteLocalStorageItem);
     })

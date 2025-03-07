@@ -1,5 +1,5 @@
 <?php
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 
 if (!isset($_GET['roomId']) || empty($_GET['roomId'])) {
     die("Ungültige Raum-ID");

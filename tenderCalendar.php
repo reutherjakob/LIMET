@@ -48,7 +48,7 @@
 </head>
 
 <?php
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 init_page_serversides();
 ?>
 
@@ -109,7 +109,7 @@ init_page_serversides();
                             }
                             //-----------------------------------------------------------------------------------
 
-                            echo "<table id='table_" . $workFlow . "' class='table table-striped table-bordered table-compact table-hover table-responsive'   '>
+                            echo "<table id='table_" . $workFlow . "' class='table table-striped table-bordered table-compact table-hover table-responsive border border-light border-5'>
                                 <thead><tr>
                                 <th rowspan='2'>lotID</th>
                                 <th rowspan='2'>Nummer</th>
@@ -243,7 +243,7 @@ init_page_serversides();
 
 
     <div class='row'>
-        <div class='col-lg-12'>
+        <div class='col-xxl-12'>
             <div class="mt-4 card">
                 <div class="card-header">Bauphasen im Los
                 </div>

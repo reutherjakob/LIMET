@@ -33,8 +33,8 @@ if(!isset($_SESSION["username"]))
 												
 	$result = $mysqli->query($sql);
 	echo "<div class='form-group row'>
- 			<label class='control-label col-md-2' for='elementGewerk'>Gewerk</label>
-			<div class='col-md-10'>
+ 			<label class='control-label col-xxl-2' for='elementGewerk'>Gewerk</label>
+			<div class='col-xxl-10'>
 				<select class='form-control form-control-sm' id='elementGewerk' name='elementGewerk'>";
 					while($row = $result->fetch_assoc()) {
 						if($row["idtabelle_element_gewerke"] == $_GET["gewerkID"]){
@@ -60,8 +60,8 @@ if(!isset($_SESSION["username"]))
 
 	
 	echo "<div class='form-group row'>
- 			<label class='control-label col-md-2' for='elementHauptgruppe'>Hauptgruppe</label>
-			<div class='col-md-10'>
+ 			<label class='control-label col-xxl-2' for='elementHauptgruppe'>Hauptgruppe</label>
+			<div class='col-xxl-10'>
 				<select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>";
 					while($row = $result->fetch_assoc()) {
 						if($row["idTABELLE_Element_Hauptgruppe"] == $_GET["hauptgruppeID"]){
@@ -86,8 +86,8 @@ if(!isset($_SESSION["username"]))
 	$result = $mysqli->query($sql);
 
 	echo "<div class='form-group row'>
- 			<label class='control-label col-md-2' for='elementGruppe'>Gruppe</label>
-			<div class='col-md-10'>
+ 			<label class='control-label col-xxl-2' for='elementGruppe'>Gruppe</label>
+			<div class='col-xxl-10'>
 				<select class='form-control form-control-sm' id='elementGruppe' name='elementGruppe'>";
 					echo "<option value=0 selected>Gruppe auswählen</option>";
 					while($row = $result->fetch_assoc()) {

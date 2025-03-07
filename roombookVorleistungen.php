@@ -53,7 +53,7 @@ if (!isset($_SESSION["username"])) {
 <div class="container-fluid">
 
     <div class='row mt-4 '>
-        <div class='col-lg-4'>
+        <div class='col-xxl-4'>
             <div class="card">
                 <div class="card-header"><h4>Gewerke</h4>
                 </div>
@@ -106,7 +106,7 @@ if (!isset($_SESSION["username"])) {
                 </div>
             </div>
         </div>
-        <div class='col-lg-3'>
+        <div class='col-xxl-3'>
             <div class="card">
                 <div class="card-header"><h4>Infos</h4>
                 </div>
@@ -114,7 +114,7 @@ if (!isset($_SESSION["username"])) {
             </div>
         </div>
         <!-- Darstellung PDF -->
-        <div class="col-lg-5">
+        <div class="col-xxl-5">
             <div class="card">
                 <div class="card-header"><h4>Vorschau-PDF</h4></div>
                 <div class="card-body embed-responsive embed-responsive-1by1">

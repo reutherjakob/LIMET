@@ -42,24 +42,24 @@ session_start();
 
         echo "<form>
                     <div class='form-group row'>
-                        <div class='col-md-1'>Allgemein</div>
-                        <label class='control-label col-md-1' for='bestandsraumNr'>Raum-Nr Bestand:</label>
-                        <div class='col-md-2'>
+                        <div class='col-xxl-1'>Allgemein</div>
+                        <label class='control-label col-xxl-1' for='bestandsraumNr'>Raum-Nr Bestand:</label>
+                        <div class='col-xxl-2'>
                                <input type='text' class=form-control form-control-xs' id='bestandsraumNr' value='" . $row["RaumNr_Bestand"] . "'>
                         </div>
-                        <label class='control-label col-md-1' for='bestandsGeb'>Gebäude Bestand:</label>
-                        <div class='col-md-2'>
+                        <label class='control-label col-xxl-1' for='bestandsGeb'>Gebäude Bestand:</label>
+                        <div class='col-xxl-2'>
                                <input type='text' class=form-control form-control-xs' id='bestandsGeb' value='" . $row["Gebaeude_Bestand"] . "'>
                         </div>
-                        <label class='control-label col-md-1' for='raumTypBH'>Typ BH:</label>
-                        <div class='col-md-2'>
+                        <label class='control-label col-xxl-1' for='raumTypBH'>Typ BH:</label>
+                        <div class='col-xxl-2'>
                                <input type='text' class=form-control form-control-xs' id='raumTypBH' value='" . $row["Raumtyp BH"] . "'>
                         </div>
                     </div>
                         <div class='form-group row'>
-                                <div class='col-md-1'></div>
-                                <label class='control-label col-md-2' for='strahlenanwendung'>Strahlenanwendung</label>
-                                <div class='col-md-1'>
+                                <div class='col-xxl-1'></div>
+                                <label class='control-label col-xxl-2' for='strahlenanwendung'>Strahlenanwendung</label>
+                                <div class='col-xxl-1'>
                                         <select class='form-control form-control-sm' id='strahlenanwendung'>";
         if ($row["Strahlenanwendung"] == 1) {
             echo "<option selected>Ja</option>
@@ -79,14 +79,14 @@ session_start();
         }
         echo "</select>	
                                 </div>
-                                <label class='checkbox-inline col-md-2'>";
+                                <label class='checkbox-inline col-xxl-2'>";
         if ($row["Abdunkelbarkeit"] == 1) {
             echo "<input id='abdunkelbarkeit' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger' data-size='mini'  type='checkbox' ></input>Abdunkelbarkeit";
         } else {
             echo "<input id='abdunkelbarkeit' data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger' data-size='mini'  type='checkbox' ></input>Abdunkelbarkeit";
         }
         echo "</label>
-                        <label class='checkbox-inline col-md-2'>";
+                        <label class='checkbox-inline col-xxl-2'>";
         if ($row["Laseranwendung"] == 1) {
             echo "<input id='laseranwendung' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger' data-size='mini'  type='checkbox' ></input>Laseranwendung";
         } else {
@@ -97,23 +97,23 @@ session_start();
                         </div>
                         <hr>
                         <div class='form-group row'>
-                                <label class='control-label col-md-1' for='funktionBO'>FunktionBO</label>
-                                <div class='col-md-11'>
+                                <label class='control-label col-xxl-1' for='funktionBO'>FunktionBO</label>
+                                <div class='col-xxl-11'>
                                         <textarea class='form-control form-control-sm' rows='5' id='funktionBO'>" . br2nl($row["Anmerkung FunktionBO"]) . "</textarea>
                                 </div>
                         </div>
                         <hr>
                         <div class='form-group row'>
-                                 <label class='control-label col-md-1' for='geraete'>Geräte</label>
-                                 <div class='col-md-11'>
+                                 <label class='control-label col-xxl-1' for='geraete'>Geräte</label>
+                                 <div class='col-xxl-11'>
                                         <textarea class='form-control form-control-sm' rows='5' id='geraete'>" . br2nl($row["Anmerkung Geräte"]) . "</textarea>
                                  </div>
                          </div>
                          <hr>                         
                          <div class='form-group row'>
-                                 <label class='control-label col-md-1' for='baustatik'>Bau/Statik</label>
-                                 <label class='control-label col-md-1' for='schwingungsklasse'>Schwingungsklasse</label>
-                                <div class='col-md-1'>
+                                 <label class='control-label col-xxl-1' for='baustatik'>Bau/Statik</label>
+                                 <label class='control-label col-xxl-1' for='schwingungsklasse'>Schwingungsklasse</label>
+                                <div class='col-xxl-1'>
                                         <select class='form-control form-control-sm' id='schwingungsklasse'>";
         switch ($row["AR_Schwingungsklasse"]) {
             case "VC-A":
@@ -169,16 +169,16 @@ session_start();
                                 </div>	
                         </div>
                         <div class='form-group row'>
-                                <div class='col-md-1'></div>
-                                <div class='col-md-11'>
+                                <div class='col-xxl-1'></div>
+                                <div class='col-xxl-11'>
                                         <textarea class='form-control form-control-sm' rows='5' id='baustatik'>" . br2nl($row["Anmerkung BauStatik"]) . "</textarea>
                                  </div>
                          </div>
                          <hr>
                          <div class='form-group row'>
-                            <div class='col-md-1'>Elektro</div>
-                            <label class='control-label col-md-1' for='awg'>ÖVE E8101</label>
-                            <div class='col-md-1'>
+                            <div class='col-xxl-1'>Elektro</div>
+                            <label class='control-label col-xxl-1' for='awg'>ÖVE E8101</label>
+                            <div class='col-xxl-1'>
                                 <select class='form-control form-control-sm' id='awg'>";
         switch ($row["Anwendungsgruppe"]) {
             case "-":
@@ -215,8 +215,8 @@ session_start();
         echo "</select>						
                             </div>
                             
-                                <label class='control-label col-md-1' for='fussbodenklasse'>B5220</label>
-                                <div class='col-md-1'>
+                                <label class='control-label col-xxl-1' for='fussbodenklasse'>B5220</label>
+                                <div class='col-xxl-1'>
                                 <select class='form-control form-control-sm' id='fussbodenklasse'>";
         switch ($row["Fussboden OENORM B5220"]) {
             case "kA":
@@ -247,42 +247,42 @@ session_start();
         }
         echo "</select>						
                             </div>
-                            <label class='checkbox-inline col-md-1'>";
+                            <label class='checkbox-inline col-xxl-1'>";
         if ($row["IT Anbindung"] == 1) {
             echo "<input id='it' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger' data-size='mini'  type='checkbox' ></input> IT";
         } else {
             echo "<input id='it' data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger' data-size='mini'  type='checkbox' ></input> IT";
         }
         echo "</label>
-                            <label class='checkbox-inline col-md-1'>";
+                            <label class='checkbox-inline col-xxl-1'>";
         if ($row["AV"] == 1) {
             echo "<input id='av' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger' data-size='mini'  type='checkbox' ></input> AV";
         } else {
             echo "<input id='av' data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger' data-size='mini'  type='checkbox' ></input> AV";
         }
         echo "</label>
-                            <label class='checkbox-inline col-md-1'>";
+                            <label class='checkbox-inline col-xxl-1'>";
         if ($row["SV"] == 1) {
             echo "<input id='sv' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger' data-size='mini'  type='checkbox' ></input> SV";
         } else {
             echo "<input id='sv' data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger' data-size='mini'  type='checkbox' ></input> SV";
         }
         echo "</label>	
-                            <label class='checkbox-inline col-md-1'>";
+                            <label class='checkbox-inline col-xxl-1'>";
         if ($row["ZSV"] == 1) {
             echo "<input id='zsv' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input> ZSV";
         } else {
             echo "<input id='zsv' data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input> ZSV";
         }
         echo "</label>	
-                            <label class='checkbox-inline col-md-1'>";
+                            <label class='checkbox-inline col-xxl-1'>";
         if ($row["USV"] == 1) {
             echo "<input id='usv' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input> USV";
         } else {
             echo "<input id='usv' data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input> USV";
         }
         echo "</label>
-                            <label class='checkbox-inline col-md-1'>";
+                            <label class='checkbox-inline col-xxl-1'>";
         if ($row["ET_EMV_ja-nein"] == 1) {
             echo "<input id='emv' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input> EMV";
         } else {
@@ -291,23 +291,23 @@ session_start();
         echo "</label>                                
                         </div>
                         <div class='form-group row'>  
-                            <div class='col-md-1'></div>                            
-                            <label class='control-label col-md-1' for='leistungsbedarfET'>Leistung W/m2:</label>
-                            <div class='col-md-1'>
+                            <div class='col-xxl-1'></div>                            
+                            <label class='control-label col-xxl-1' for='leistungsbedarfET'>Leistung W/m2:</label>
+                            <div class='col-xxl-1'>
                                    <input type='number' class=form-control form-control-xs' id='leistungsbedarfET' value='" . $row["EL_Leistungsbedarf_W_pro_m2"] . "'>
                             </div>
                         </div>
                             <div class='form-group row'>
-                                <label class='control-label col-md-1' for='Elektro'></label>
-                                <div class='col-md-11'>
+                                <label class='control-label col-xxl-1' for='Elektro'></label>
+                                <div class='col-xxl-11'>
                                        <textarea class='form-control form-control-sm' rows='5' id='Elektro'>" . br2nl($row["Anmerkung Elektro"]) . "</textarea>
                                 </div>
                         </div>
                         <hr>
                         <div class='form-group row'>
-                                <div class='col-md-1'>HKLS</div>
-                                <label class='control-label col-md-1' for='h6020'>Raumklasse H6020</label>
-                                <div class='col-md-1'>
+                                <div class='col-xxl-1'>HKLS</div>
+                                <label class='control-label col-xxl-1' for='h6020'>Raumklasse H6020</label>
+                                <div class='col-xxl-1'>
                                         <select class='form-control form-control-sm' id='h6020'>";
         switch ($row["H6020"]) {
             case "H1a":
@@ -393,8 +393,8 @@ session_start();
         }
         echo "</select>	
                                 </div>	
-                                <label class='control-label col-md-1' for='iso'>Raumklasse ISO</label>
-                                <div class='col-md-1'>
+                                <label class='control-label col-xxl-1' for='iso'>Raumklasse ISO</label>
+                                <div class='col-xxl-1'>
                                         <select class='form-control form-control-sm' id='iso'>";
         switch ($row["ISO"]) {
             case "1":
@@ -512,8 +512,8 @@ session_start();
 
         echo "</select>	
                                 </div>	
-                                <label class='control-label col-md-1' for='gmp'>Raumklasse GMP</label>
-                                <div class='col-md-1'>
+                                <label class='control-label col-xxl-1' for='gmp'>Raumklasse GMP</label>
+                                <div class='col-xxl-1'>
                                         <select class='form-control form-control-sm' id='gmp'>";
         switch ($row["GMP"]) {
             case "A":
@@ -562,8 +562,8 @@ session_start();
         }
         echo "</select>	
                                 </div>	
-                                <label class='control-label col-md-1' for='hygieneklasse'>Raumeinteilung nach</label>
-                                <div class='col-md-2'>
+                                <label class='control-label col-xxl-1' for='hygieneklasse'>Raumeinteilung nach</label>
+                                <div class='col-xxl-2'>
                                         <select class='form-control form-control-sm' id='hygieneklasse'>";
         switch ($row["Allgemeine Hygieneklasse"]) {
             case "ÖAK - I - Ordination- und Behandlung":
@@ -726,62 +726,62 @@ session_start();
         }
         echo "</select>	
                                 </div>
-                                <label class='control-label col-md-1' for='Notdusche'>Notdusche Stk:</label>
-                                <div class='col-md-1'>
+                                <label class='control-label col-xxl-1' for='Notdusche'>Notdusche Stk:</label>
+                                <div class='col-xxl-1'>
                                        <input type='number' class=form-control form-control-xs' id='Notdusche' value='" . $row["HT_Notdusche"] . "'>
                                 </div>
                         </div>
                         <div class='form-group row'>  
-                            <div class='col-md-1'></div>                            
-                            <label class='control-label col-md-1' for='waermeabgabeHT'>Wärme [W/m2]:</label>
-                            <div class='col-md-1'>
+                            <div class='col-xxl-1'></div>                            
+                            <label class='control-label col-xxl-1' for='waermeabgabeHT'>Wärme [W/m2]:</label>
+                            <div class='col-xxl-1'>
                                    <input type='number' class=form-control form-control-xs' id='waermeabgabeHT' value='" . $row["HT_Waermeabgabe"] . "'>
                             </div>                           
-                            <label class='control-label col-md-1' for='luftwechselrateHT'>LWR [1/h]:</label>
-                            <div class='col-md-1'>
+                            <label class='control-label col-xxl-1' for='luftwechselrateHT'>LWR [1/h]:</label>
+                            <div class='col-xxl-1'>
                                    <input type='number' class=form-control form-control-xs' id='luftwechselrateHT' value='" . $row["HT_Luftwechsel 1/h"] . "'>
                             </div>
-                            <label class='control-label col-md-1' for='gereateAbluftHT'>Geräteabluft [m3/h]:</label>
-                            <div class='col-md-1'>
+                            <label class='control-label col-xxl-1' for='gereateAbluftHT'>Geräteabluft [m3/h]:</label>
+                            <div class='col-xxl-1'>
                                    <input type='number' class=form-control form-control-xs' id='gereateAbluftHT' value='" . $row["HT_Geraeteabluft m3/h"] . "'>
                             </div>
-                            <label class='control-label col-md-1' for='kuehlwasserLeistungHT'>Kühlwasser [W]:</label>
-                            <div class='col-md-1'>
+                            <label class='control-label col-xxl-1' for='kuehlwasserLeistungHT'>Kühlwasser [W]:</label>
+                            <div class='col-xxl-1'>
                                    <input type='number' class=form-control form-control-xs' id='kuehlwasserLeistungHT' value='" . $row["HT_Kühlwasserleistung_W"] . "'>
                             </div>
                         </div>
                         
                         <div class='form-group row'>
-                                 <label class='control-label col-md-1' for='hkls'></label>
-                                 <div class='col-md-11'>
+                                 <label class='control-label col-xxl-1' for='hkls'></label>
+                                 <div class='col-xxl-11'>
                                         <textarea class='form-control form-control-sm' rows='5' id='hkls'>" . br2nl($row["Anmerkung HKLS"]) . "</textarea>
                                  </div>
                          </div>
                          <hr>
                          <div class='form-group row'>
-                                <div class='col-md-1'>MedGas</div>
-                                <label class='checkbox-inline col-md-1'>";
+                                <div class='col-xxl-1'>MedGas</div>
+                                <label class='checkbox-inline col-xxl-1'>";
         if ($row["1 Kreis O2"] == 1) {
             echo "<input id='1kreiso2' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger' data-size='mini'  type='checkbox' ></input>1 Kreis O2";
         } else {
             echo "<input id='1kreiso2' data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>1 Kreis O2";
         }
         echo "</label>
-                        <label class='checkbox-inline col-md-1'>";
+                        <label class='checkbox-inline col-xxl-1'>";
         if ($row["1 Kreis Va"] == 1) {
             echo "<input id='1kreisva' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>1 Kreis VA";
         } else {
             echo "<input id='1kreisva' data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>1 Kreis VA";
         }
         echo "</label>	
-                                <label class='checkbox-inline col-md-1'>";
+                                <label class='checkbox-inline col-xxl-1'>";
         if ($row["1 Kreis DL-5"] == 1) {
             echo "<input id='1kreisdl5' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>1 Kreis DL-5";
         } else {
             echo "<input id='1kreisdl5' data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>1 Kreis DL-5";
         }
         echo "</label>	
-                                <label class='checkbox-inline col-md-1'>";
+                                <label class='checkbox-inline col-xxl-1'>";
         if ($row["DL-10"] == 1) {
             echo "<input id='dl10' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>DL-10";
         } else {
@@ -791,29 +791,29 @@ session_start();
                           </div>
 
                          <div class='form-group row'>
-                                <div class='col-md-1'></div>
-                                <label class='checkbox-inline col-md-1'>";
+                                <div class='col-xxl-1'></div>
+                                <label class='checkbox-inline col-xxl-1'>";
         if ($row["2 Kreis O2"] == 1) {
             echo "<input id='2kreiso2' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>2 Kreis O2";
         } else {
             echo "<input id='2kreiso2' data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>2 Kreis O2";
         }
         echo "</label>
-                        <label class='checkbox-inline col-md-1'>";
+                        <label class='checkbox-inline col-xxl-1'>";
         if ($row["2 Kreis Va"] == 1) {
             echo "<input id='2kreisva' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>2 Kreis VA";
         } else {
             echo "<input id='2kreisva' data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>2 Kreis VA";
         }
         echo "</label>	
-                                <label class='checkbox-inline col-md-1'>";
+                                <label class='checkbox-inline col-xxl-1'>";
         if ($row["2 Kreis DL-5"] == 1) {
             echo "<input id='2kreisdl5' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>2 Kreis DL-5";
         } else {
             echo "<input id='2kreisdl5' data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>2 Kreis DL-5";
         }
         echo "</label>	
-                                <label class='checkbox-inline col-md-1'>";
+                                <label class='checkbox-inline col-xxl-1'>";
         if ($row["DL-tech"] == 1) {
             echo "<input id='dltech' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>DL-Tech";
         } else {
@@ -823,57 +823,57 @@ session_start();
 
                           </div>
                           <div class='form-group row'>
-                                <div class='col-md-1'></div>
-                                <label class='checkbox-inline col-md-1'>";
+                                <div class='col-xxl-1'></div>
+                                <label class='checkbox-inline col-xxl-1'>";
         if ($row["NGA"] == 1) {
             echo "<input id='nga' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>NGA";
         } else {
             echo "<input id='nga' data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>NGA";
         }
         echo "</label>
-                                        <label class='checkbox-inline col-md-1'>";
+                                        <label class='checkbox-inline col-xxl-1'>";
         if ($row["N2O"] == 1) {
             echo "<input id='n2o' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>N2O";
         } else {
             echo "<input id='n2o' data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>N2O";
         }
         echo "</label>
-                                        <label class='checkbox-inline col-md-1'>";
+                                        <label class='checkbox-inline col-xxl-1'>";
         if ($row["CO2"] == 1) {
             echo "<input id='co2' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>CO2";
         } else {
             echo "<input id='co2' data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>CO2";
         }
         echo "</label>
-                                            <label class='checkbox-inline col-md-1'>";
+                                            <label class='checkbox-inline col-xxl-1'>";
         if ($row["H2"] == 1) {
             echo "<input id='H2' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>H2";
         } else {
             echo "<input id='H2' data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>H2";
         }
         echo "</label>	
-                                            <label class='checkbox-inline col-md-1'>";
+                                            <label class='checkbox-inline col-xxl-1'>";
         if ($row["He"] == 1) {
             echo "<input id='He' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>He";
         } else {
             echo "<input id='He' data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>He";
         }
         echo "</label>	
-                                            <label class='checkbox-inline col-md-1'>";
+                                            <label class='checkbox-inline col-xxl-1'>";
         if ($row["He-RF"] == 1) {
             echo "<input id='HeRF' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>He-RF";
         } else {
             echo "<input id='HeRF' data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>He-RF";
         }
         echo "</label>	
-                                            <label class='checkbox-inline col-md-1'>";
+                                            <label class='checkbox-inline col-xxl-1'>";
         if ($row["Ar"] == 1) {
             echo "<input id='Ar' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>Ar";
         } else {
             echo "<input id='Ar' data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>Ar";
         }
         echo "</label>	
-                                            <label class='checkbox-inline col-md-1'>";
+                                            <label class='checkbox-inline col-xxl-1'>";
         if ($row["N2"] == 1) {
             echo "<input id='N2' checked data-bs-toggle='toggle' data-on='Ja' data-off='Nein' data-onstyle='success' data-offstyle='danger'  data-size='mini' type='checkbox' ></input>N2";
         } else {
@@ -882,13 +882,13 @@ session_start();
         echo "</label>	
                           </div>
                         <div class='form-group row'>
-                                 <label class='control-label col-md-1' for='medgas'></label>
-                                 <div class='col-md-11'>
+                                 <label class='control-label col-xxl-1' for='medgas'></label>
+                                 <div class='col-xxl-11'>
                                         <textarea class='form-control form-control-sm' rows='5' id='medgas'>" . br2nl($row["Anmerkung MedGas"]) . "</textarea>
                                  </div>
                          </div>
                         <div class='form-group row'>
-                                <div class='col-md-1'></div>
+                                <div class='col-xxl-1'></div>
                                 <input type='button' id='saveBauangaben' class='btn btn-warning btn-sm' value='Bauangaben speichern'></input>
 
 

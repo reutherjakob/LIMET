@@ -1,5 +1,5 @@
 <?php
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 init_page_serversides();
 ?>
 
@@ -60,7 +60,7 @@ init_page_serversides();
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class="row mt-3">
-        <div class="col-xl-3 col-lg-6 py-2">
+        <div class="col-xxl-3 col-xxl-6 py-2">
             <div class="card text-dark h-100">
                 <div class="card-header bg-light"><h3>Anzahl meiner aktiven Projekte</h3></div>
                 <div class="card-body text-dark">
@@ -74,7 +74,7 @@ init_page_serversides();
     </div>
     <!--
     <div class="row mt-3">
-        <div class="col-xl-3 col-lg-6 py-2">
+        <div class="col-xxl-3 col-xxl-6 py-2">
             <div class="card text-white bg-warning h-100">
                 <div class="card-header"><h3>Offene Vermerke in meinen Projekten</h3></div>      
                 <div class="card-body">                            
@@ -87,7 +87,7 @@ init_page_serversides();
     </div>
     -->
     <div class="row mt-3">
-        <div class="col-xl-6 col-lg-6 py-2">
+        <div class="col-xxl-6 col-xxl-6 py-2">
             <div class="card text-dark h-100">
                 <div class="card-header bg-light "><h3>Offene Protokollpunkte</h3></div>
                 <div class="card-body">
@@ -95,7 +95,7 @@ init_page_serversides();
                 </div>
             </div>
         </div>
-        <div class="col-xl-6 col-lg-6 py-2">
+        <div class="col-xxl-6 col-xxl-6 py-2">
             <div class="card text-dark h-100">
                 <div class="card-header bg-light "><h3>Offene Verfahren nach Status</h3></div>
                 <div class="card-body">

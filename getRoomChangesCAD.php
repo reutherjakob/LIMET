@@ -126,8 +126,8 @@ if(!isset($_SESSION["username"]))
 			        break;
 			}
    	    echo "</td>";
-	    echo "<td class='col-md-2'><textarea class='form-control' style='width: 100%;'>".$row["Kurzbeschreibung"]."</textarea></td>";
-	    echo "<td class='col-md-2'><textarea class='form-control' style='width: 100%;'>".$row["Kurzbeschreibung_copy1"]."</textarea></td>";
+	    echo "<td class='col-xxl-2'><textarea class='form-control' style='width: 100%;'>".$row["Kurzbeschreibung"]."</textarea></td>";
+	    echo "<td class='col-xxl-2'><textarea class='form-control' style='width: 100%;'>".$row["Kurzbeschreibung_copy1"]."</textarea></td>";
 	    echo "</tr>";
 	    
 	}

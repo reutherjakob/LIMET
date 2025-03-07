@@ -31,7 +31,7 @@
         <div class="card-header" id="CH1">Geräteliste</div>
         <div id="CB1" class="card-body table-responsive">
             <?php
-            include '_utils.php';
+            if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
             init_page_serversides();
             $mysqli = utils_connect_sql();
             $sql = "SELECT 
@@ -164,7 +164,7 @@
     $(document).ready(function () {
         table = new DataTable('#tableDevices', {
             responsive: true,
-            dom: '<"row"<"col-lg-12 col-md-6"f>> <"row"<"col-lg-12"tr>> <"row"<"col-md-2"i><"col-md-6"l><"col-md-4"p>>',
+            dom: '<"row"<"col-xxl-12 col-xxl-6"f>> <"row"<"col-xxl-12"tr>> <"row"<"col-xxl-2"i><"col-xxl-6"l><"col-xxl-4"p>>',
             paging: true,
             pageLength: 25,
             columnDefs: [{

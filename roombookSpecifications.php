@@ -1,6 +1,6 @@
 <!-- 13.2.25: Reworked -->
 <?php
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 check_login();
 ?>
 
@@ -171,7 +171,7 @@ check_login();
 
             while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
-                // echo "<td class='col-md-1'><input type='button' id='".$row["idTABELLE_Räume"]."' class='btn btn-success btn-sm' value='Raum auswählen'></td>";
+                // echo "<td class='col-xxl-1'><input type='button' id='".$row["idTABELLE_Räume"]."' class='btn btn-success btn-sm' value='Raum auswählen'></td>";
                 echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
                 echo "<td><button type='button' id='" . $row["idTABELLE_Räume"] . "' class='btn btn-outline-dark btn-sm' value='changeRoom' data-toggle='modal' data-target='#changeRoomModal'><i class='fa fa-edit'></i></button></td>";
                 echo "<td>" . $row["Raumnr"] . "</td>";

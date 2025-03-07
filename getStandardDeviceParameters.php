@@ -7,7 +7,7 @@
 </head>
 <body>
 <?php
-include "_utils.php";
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 check_login();
 $mysqli = utils_connect_sql();
 $sql = "SELECT tabelle_parameter.Bezeichnung, tabelle_geraete_has_tabelle_parameter.Wert, tabelle_geraete_has_tabelle_parameter.Einheit, tabelle_parameter_kategorie.Kategorie
@@ -78,7 +78,7 @@ echo "<button type='button' id='" . $_SESSION["deviceID"] . "' class='btn btn-de
             <div class='modal-body' id='mbody'>
                 <form role="form">
                     <div class="row">
-                        <div class='col-md-12'>
+                        <div class='col-xxl-12'>
                             <div class='mt-1 card'>
                                 <div class='card-header'><label>Geräteparameter</label></div>
                                 <div class='card-body' id='deviceParameters'>
@@ -118,7 +118,7 @@ echo "<button type='button' id='" . $_SESSION["deviceID"] . "' class='btn btn-de
                     </div>
                     <hr></hr>
                     <div class="row">
-                        <div class='col-md-12'>
+                        <div class='col-xxl-12'>
                             <div class='mt-1 card'>
                                 <div class='card-header'><label>Mögliche Geräteparameter</label></div>
                                 <div class='card-body' id='possibleDeviceParameters'>

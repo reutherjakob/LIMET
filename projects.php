@@ -1,11 +1,3 @@
-<!-- 13.2.25: Reworked -->
-
-<?php
-include '_utils.php';
-init_page_serversides("No Redirect");
-include 'projects_changeProjectModal.html';
-?>
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
@@ -14,7 +6,7 @@ include 'projects_changeProjectModal.html';
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
     <link rel="icon" href="iphone_favicon.png"/>
-
+    <!-- 13.2.25: Reworked -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
@@ -34,23 +26,30 @@ include 'projects_changeProjectModal.html';
 </head>
 <body>
 <div id="limet-navbar"></div>
-<div class="container-fluid">
 
+<?php
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
+init_page_serversides("No Redirect");
+include 'projects_changeProjectModal.html';
+?>
+
+<div class="container-fluid">
     <div class='mt-1 row'>
-        <div class='col-md-10'>
+        <div class='col-xxl-10'>
             <div class="mt-1 card">
                 <div class="card-header" id="PRCardHeader">
                     <div class="row align-items-center">
-                        <div class="col-8"><b>Projekte</b></div>
-                        <div class="col-2">
-                            <div class="form-check form-check-inline float-end">
+                        <div class="col-6"><b>Projekte</b></div>
+                        <div class="col-6 d-inline-flex justify-content-end text-nowrap" id="STH">
+                            <div class="form-check form-check-inline align-items-center float-end">
                                 <input class="form-check-input" type="checkbox" id="filter_ActiveProjects" checked>
                                 <label class="form-check-label" for="filter_ActiveProjects">
                                     Nur aktive Projekte
                                 </label>
                             </div>
                         </div>
-                        <div class="col-2" id="STH"></div>
                     </div>
                 </div>
 
@@ -119,7 +118,7 @@ include 'projects_changeProjectModal.html';
             </div>
         </div>
 
-        <div class='col-md-2'>
+        <div class='col-xxl-2'>
             <div class='mt-1 card'>
                 <div class='card-header'>Quick-Check
                 </div>
@@ -130,7 +129,7 @@ include 'projects_changeProjectModal.html';
 
     </div>
     <div class='mt-1 row'>
-        <div class='col-md-10'>
+        <div class='col-xxl-10'>
             <div class='card'>
                 <div class='card-header d-inline-flex' id='vermerkPanelHead'>
                     <div class='col-10'>
@@ -160,6 +159,7 @@ include 'projects_changeProjectModal.html';
 </div>
 </body>
 
+<!--suppress ES6ConvertVarToLetConst -->
 <script charset="utf-8">
     let searchCounter = 1;
     var table;
@@ -191,19 +191,23 @@ include 'projects_changeProjectModal.html';
             },
             mark: true,
             search: {
-                custom: function (data, rowIdx) {
+                custom: function (data) {
                     if ($("#filter_ActiveProjects").is(':checked')) {
                         return data[4] === "Ja";
                     } else {
                         return true;
                     }
                 }
+            },
+            initComplete: function () {
+
+                $('.dt-search label').remove();
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#STH');
+
+
             }
         });
 
-        setTimeout(function () {
-            move_dt_search('#dt-search-0', '#STH');
-        }, 100);
 
         $('#filter_ActiveProjects').change(function () {
             table.column(4).search($(this).is(':checked') ? 'Ja' : '').draw();
