@@ -33,7 +33,7 @@
         </div>
         <div class="card-body">
             <?php
-            include '_utils.php';
+            if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
             init_page_serversides("x");
             $mysqli = utils_connect_sql();
             $sql = "SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen, tabelle_ansprechpersonen.Name, tabelle_ansprechpersonen.Vorname, tabelle_ansprechpersonen.Tel, tabelle_ansprechpersonen.Adresse, tabelle_ansprechpersonen.PLZ, tabelle_ansprechpersonen.Ort, tabelle_ansprechpersonen.Land, tabelle_ansprechpersonen.Mail, tabelle_lieferant.Lieferant, tabelle_abteilung.Abteilung,

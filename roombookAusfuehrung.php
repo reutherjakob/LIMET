@@ -45,7 +45,7 @@ if (!isset($_SESSION["username"])) {
             <div class="mt-4 card">
                 <div class="card-header"><b>Räume im Projekt</b>
                     <label class="float-right">
-                        Nur MT-relevante Räume: <input type="checkbox" id="filter_MTrelevantRooms" checked="true">
+                        Nur MT-relevante Räume: <input type="checkbox" id="filter_MTrelevantRooms" class="form-check-input" checked>
                     </label>
                 </div>
                 <div class="card-body">

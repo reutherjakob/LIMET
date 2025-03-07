@@ -1,5 +1,5 @@
 <?php
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 init_page_serversides();
 include "_format.php";
 ?>
@@ -131,7 +131,7 @@ include "_format.php";
                                             class='fas fa-plus'></i>
                                 </button>
                                 <button type='button' id='reloadBestand'
-                                        class='btn btn-outline-secondary btn-sm' value='reloadBestand'>
+                                        class='btn  btn-sm btn-outline-secondary ' value='reloadBestand'>
                                     <i class="fa fa-retweet" aria-hidden="true"></i>
                                 </button>
                             </div>

@@ -121,7 +121,7 @@ if ($_SESSION["projectName"] == "") {
                     <label for='lotSchlussrechnung'>Schlussgerechnet:</label>
                     <input id="lotSchlussrechnung" type="checkbox" data-bs-toggle="toggle" data-size="sm"
                            data-onstyle="success" data-offstyle="secondary" data-on="Ja" data-off="Nein"
-                           disabled></input>
+                           disabled class="form-check-input">
                     <input type='button' id='saveLot' class='btn btn-outline-dark btn-sm' value='Speichern'></input>
                 </div>
             </div>
@@ -167,13 +167,13 @@ if ($_SESSION["projectName"] == "") {
                             <label for='rechnungSchlussrechnung'>Schlussgerechnet:</label>
                             <input id="rechnungSchlussrechnung" type="checkbox" data-bs-toggle="toggle" data-size="sm"
                                    data-onstyle="success" data-offstyle="secondary" data-on="Ja"
-                                   data-off="Nein"></input>
+                                   data-off="Nein" class="form-check-input">
                         </div>
                         <div class='form-group'>
                             <input type='button' id='saveRechnung' class='btn btn-outline-dark btn-sm'
-                                   value='Speichern'></input>
+                                   value='Speichern'>
                             <input type='button' id='addRechnung' class='btn btn-outline-dark btn-sm'
-                                   value='Hinzufügen'></input>
+                                   value='Hinzufügen'>
                         </div>
                     </form>
                 </div>

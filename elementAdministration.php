@@ -34,7 +34,7 @@
                         <div class='card-header'><label>Elementgruppen</label></div>
                         <div class='card-body' id='elementGroups'>
                             <?php
-                            include '_utils.php';
+                            if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
                             init_page_serversides("x");
                             $mysqli = utils_connect_sql();
                             $sql = "SELECT tabelle_element_gewerke.idtabelle_element_gewerke, tabelle_element_gewerke.Nummer, tabelle_element_gewerke.Gewerk

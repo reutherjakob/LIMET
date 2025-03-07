@@ -1,6 +1,6 @@
 <?php
 // V2.0: 2024-11-29, Reuther & Fux
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 include "_format.php";
 check_login();
 
@@ -196,7 +196,7 @@ $mysqli->close();
                 <span id="ElementName<?php echo $row["id"]; ?>"><?php echo $row["ElementID"] . " " . $row["Bezeichnung"]; ?></span>
             </td>
             <td data-order="<?php echo $row["tabelle_Varianten_idtabelle_Varianten"]; ?>">
-                <label for="variante<?php echo $row["id"]; ?>"></label><select class="form-control form-control-sm"
+                 <select class="form-control form-control-sm"
                                                                                id="variante<?php echo $row["id"]; ?>">
                     <?php
                     $options = ['A' => 1, 'B' => 2, 'C' => 3, 'D' => 4, 'E' => 5, 'F' => 6, 'G' => 7];
@@ -209,7 +209,7 @@ $mysqli->close();
             </td>
             <td data-order="<?php echo $row["Anzahl"]; ?>"><input class="form-control form-control-sm" type="text"
                                                                   id="amount<?php echo $row["id"]; ?>"
-                                                                  value="<?php echo $row["Anzahl"]; ?>" size="2"></td>
+                                                                  value="<?php echo $row["Anzahl"]; ?>" size="1"></td>
             <td data-order="<?php echo $row["Neu/Bestand"]; ?>">
                 <select class="form-control form-control-sm" id="bestand<?php echo $row["id"]; ?>">
                     <option value="0" <?php echo $row["Neu/Bestand"] == "0" ? "selected" : ""; ?>>Ja</option>

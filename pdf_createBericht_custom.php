@@ -13,7 +13,7 @@ $PDF_input_bools = explode(",", $PDF_input_bool); //foreach ($roomIDsArray as $l
 
 include 'pdf_createBericht_MYPDFclass.php'; //require_once('TCPDF-main/TCPDF-main/tcpdf.php'); is in class file
 include 'pdf_createBericht_utils.php';
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 if ($PDF_input_bools[8]) {
     include 'pdf_createMTTabelle.php';
 }

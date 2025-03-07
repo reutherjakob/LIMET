@@ -1,6 +1,6 @@
 <!-- 13.2.25: Reworked -->
 <?php
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 init_page_serversides();
 ?>
 <!DOCTYPE html>
@@ -52,17 +52,19 @@ init_page_serversides();
             <div class="mt-4 card">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col-10">
-                            <b>Vermerkgruppen</b>
-                            <button type='button' id='<?php echo $_SESSION["projectID"] ?>'
-                                    class='btn btn-outline-success btn-sm' value='Neue Vermerkgruppe'><i
-                                        class='fas fa-plus'></i> Neu
-                            </button>
-                            <button type="button" class="btn btn-outline-dark btn-sm" value="searchDocumentation"
+                        <div class="col-7">
+                            <b>Vermerkgruppen</b></div>
+                        <div class="col-3 d-inline-flex justify-content-end align-items-center">
+                            <button type="button" class="btn btn-sm btn-outline-dark me-2" value="searchDocumentation"
                                     data-bs-toggle="modal" data-bs-target="#showSearchModal"><i
                                         class="fas fa-search"></i>
-                                Suche
+                                Vermerke durchsuchen
                             </button>
+                            <button type='button' id='<?php echo $_SESSION["projectID"] ?>'
+                                    class='btn btn-sm btn-outline-success  ' value='Neue Vermerkgruppe'><i
+                                        class='fas fa-plus'></i> Neu
+                            </button>
+
                         </div>
 
                         <div class="col-2" id="CardHeaderVermerkGruppen">
@@ -78,7 +80,7 @@ init_page_serversides();
                                                         WHERE (((tabelle_Vermerkgruppe.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
                                                         ORDER BY tabelle_Vermerkgruppe.Datum DESC;";
                     $result = $mysqli->query($sql);
-                    echo "<table class='table table-striped table-bordered table-sm table-responsive' id='tableVermerkGruppe'>
+                    echo "<table class='table responsive compact table-striped table-bordered table-sm table-hover  border border-light border-5' id='tableVermerkGruppe'>
                                                         <thead><tr>
                                                         <th>ID</th>
                                                         <th></th>
@@ -139,14 +141,16 @@ init_page_serversides();
                     <div class="row">
                         <div class="col-7">
                             <b>VermerkUnterGruppen</b>
+                        </div>
+                        <div class="col-3 d-inline-flex justify-content-end">
                             <button type='button' id='buttonNewVermerkuntergruppe'
                                     class='btn btn-outline-success btn-sm'
                                     value='Neue Vermerkuntergruppe' style='visibility:hidden'><i
                                         class='fas fa-plus'></i>
                                 Neu
                             </button>
+
                         </div>
-                        <div class="col-3"></div>
                         <div class="col-2" id="CardHeaderVermerkUntergruppen"></div>
                     </div>
                 </div>
@@ -174,7 +178,7 @@ init_page_serversides();
         </div>
 
 
-        <!-- div class="mt-4 card">    TODO
+        <!-- div class="mt-4 card">    TODO - Bilder
             <div class="card-header"><b>Bilder</b>
                 <label class="float-right" id="divImagesRightLabel">
                     <button type='button' id='addImage' class='btn btn-outline-success btn-sm'
@@ -312,7 +316,7 @@ init_page_serversides();
 
                     $result = $mysqli->query($sql);
 
-                    echo "<table class='table table-striped table-bordered table-sm' id='tableSearchVermerk'   >
+                    echo "<table class='table table-striped table-bordered table-sm' id='tableSearchVermerk'>
                                             <thead><tr>
                                             <th>ID</th>
                                             <th>Gruppe</th>
@@ -415,7 +419,13 @@ init_page_serversides();
                 url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                 search: ""
             },
-            mark: true
+            mark: true,
+            layout: {
+                topEnd: "search",
+                topStart: null,
+                bottomStart: "info",
+                bottomEnd: "paging",
+            }
         });
 
         $('#tableVermerkGruppe tbody').on('click', 'tr', function () {

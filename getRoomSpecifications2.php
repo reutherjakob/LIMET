@@ -1,7 +1,7 @@
 <?php
 // V2.0: 2024-11-29, Reuther & Fux
 session_start();
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 check_login();
 ?>
 

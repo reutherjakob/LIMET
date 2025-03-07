@@ -31,7 +31,7 @@
         <div class="card-header" id="CH1">Geräteliste</div>
         <div id="CB1" class="card-body table-responsive">
             <?php
-            include '_utils.php';
+            if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
             init_page_serversides();
             $mysqli = utils_connect_sql();
             $sql = "SELECT 

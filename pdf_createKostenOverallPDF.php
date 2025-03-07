@@ -1,5 +1,5 @@
 <?php
-include "_utils.php";
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 include "_format.php";
 include "pdf_MyPDF_class_Kosten.php";
 include "_pdf_utils.php";

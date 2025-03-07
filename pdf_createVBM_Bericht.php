@@ -3,7 +3,7 @@
 session_start();
 require_once('TCPDF-main/TCPDF-main/tcpdf.php');
 include 'pdf_createBericht_utils.php';
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 check_login();
 
 $roomIDs = filter_input(INPUT_GET, 'roomID');

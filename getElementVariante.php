@@ -6,7 +6,7 @@
 <body>
 
 <?php
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 if (filter_input(INPUT_GET, 'elementID') != "") {
     $_SESSION["elementID"] = filter_input(INPUT_GET, 'elementID');
 }

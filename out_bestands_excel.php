@@ -1,5 +1,5 @@
 <?php
-include "_utils.php";
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 require 'vendor/autoload.php'; // Include PhpSpreadsheet autoloader (make sure this path is correct)
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
