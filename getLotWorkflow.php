@@ -1,15 +1,12 @@
-<?php
-session_start();
-?>
-
 <!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml">
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang="">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <title></title>
 </head>
 <body>
 <?php
+session_start();
 if (!isset($_SESSION["username"])) {
     echo "Bitte erst <a href=\"index.php\">einloggen</a>";
     exit;
@@ -30,7 +27,15 @@ if (filter_input(INPUT_GET, 'lotID') != "") {
     $_SESSION["lotID"] = filter_input(INPUT_GET, 'lotID');
 }
 
-$sql = "SELECT tabelle_lot_workflow.tabelle_lose_extern_idtabelle_Lose_Extern, tabelle_workflow_has_tabelle_wofklowteil.Reihenfolgennummer, tabelle_workflowteil.aufgabe, tabelle_lot_workflow.tabelle_wofklowteil_idtabelle_wofklowteil, tabelle_lot_workflow.Timestamp_Ist, tabelle_lot_workflow.Timestamp_Soll, tabelle_lot_workflow.Abgeschlossen, tabelle_lot_workflow.user, tabelle_lot_workflow.Kommentar
+$sql = "SELECT tabelle_lot_workflow.tabelle_lose_extern_idtabelle_Lose_Extern,
+       tabelle_workflow_has_tabelle_wofklowteil.Reihenfolgennummer, 
+       tabelle_workflowteil.aufgabe, 
+       tabelle_lot_workflow.tabelle_wofklowteil_idtabelle_wofklowteil, 
+       tabelle_lot_workflow.Timestamp_Ist, 
+       tabelle_lot_workflow.Timestamp_Soll, 
+       tabelle_lot_workflow.Abgeschlossen, 
+       tabelle_lot_workflow.user, 
+       tabelle_lot_workflow.Kommentar
                 FROM (tabelle_workflow_has_tabelle_wofklowteil INNER JOIN tabelle_workflowteil ON tabelle_workflow_has_tabelle_wofklowteil.tabelle_wofklowteil_idtabelle_wofklowteil = tabelle_workflowteil.idtabelle_wofklowteil) INNER JOIN tabelle_lot_workflow ON (tabelle_workflow_has_tabelle_wofklowteil.tabelle_workflow_idtabelle_workflow = tabelle_lot_workflow.tabelle_workflow_idtabelle_workflow) AND (tabelle_workflow_has_tabelle_wofklowteil.tabelle_wofklowteil_idtabelle_wofklowteil = tabelle_lot_workflow.tabelle_wofklowteil_idtabelle_wofklowteil)
                 WHERE (((tabelle_lot_workflow.tabelle_lose_extern_idtabelle_Lose_Extern)=" . $_SESSION["lotID"] . "))
                 ORDER BY tabelle_workflow_has_tabelle_wofklowteil.Reihenfolgennummer;";
@@ -97,23 +102,28 @@ $mysqli->close();
 
 <script>
 
-
-    $("#tableWorkflow").DataTable({
-        "paging": false,
-        "searching": false,
-        "info": false,
-        "order": [[0, "asc"]],
-        "columnDefs": [
+    new DataTable('#tableWorkflow', {
+        paging: false,
+        searching: false,
+        info: false,
+        order: [[0, "asc"]],
+        columnDefs: [
             {
-                "targets": [2, 3, 4, 5, 6],
-                "visible": true,
-                "searchable": false,
-                "sortable": false
+                targets: [2, 3, 4, 5, 6],
+                visible: true,
+                searchable: false,
+                orderable: false
             }
         ],
-        //"pagingType": "simple_numbers",
-        //"lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
-        "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+        },
+        layout: {
+            topStart: null,
+            topEnd: null,
+            bottomStart: null,
+            bottomEnd: null
+        }
     });
 
 
@@ -132,11 +142,11 @@ $mysqli->close();
 
     // Workfloweintrag speichern
     $("button[value='saveWorkflowteil']").click(function () {
-        var workflowID = this.id;
-        var date_Is = $("#workflowDateIs" + workflowID).val();
-        var date_Should = $("#workflowDateShould" + workflowID).val();
-        var comment = $("#workflowComment" + workflowID).val();
-        var status = ($("#workflowStatus" + workflowID).prop('checked') === true) ? 1 : 0;
+        let workflowID = this.id;
+        let date_Is = $("#workflowDateIs" + workflowID).val();
+        let date_Should = $("#workflowDateShould" + workflowID).val();
+        let comment = $("#workflowComment" + workflowID).val();
+        let status = ($("#workflowStatus" + workflowID).prop('checked') === true) ? 1 : 0;
 
         if (workflowID === "") {
             alert("Keinen Workflowteilgefunden!");
