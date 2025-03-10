@@ -242,7 +242,7 @@ $mysqli = utils_connect_sql();
             ],
             initComplete: function () {
                 $('.dt-search label').remove();
-                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#cardHeader');
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-success").appendTo('#cardHeader');
                 $('.dt-buttons').children().addClass("btn-sm ms-1 me-1");
             }
         });

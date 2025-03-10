@@ -1,9 +1,13 @@
-<nav class="navbar navbar-expand-lg bg-light navbar-light responsive" id="LimetNavBar">
-    <div class="container-fluid justify-content-start d-inline-flex">
-        <a class="py-0 navbar-brand" href="#"><img src="LIMET_logo.png" alt="LIMETLOGO" height="55"/></a>
-        <ul class="navbar-nav col-10">
+<div class="container-fluid ">
+    <nav class="navbar navbar-expand-lg navbar-light responsive bg-white border border-light border-3  rounded  rounded-3" id="LimetNavBar">
+        <ul class="navbar-nav col-10 d-inline-flex align-items-center">
+            <li class="">
+                <a href="/projects.php">
+                    <img src="LIMET_logo.png" alt="LIMETLOGO" style="height:40px;">
+                </a>
+            </li>
             <li class="nav-item dropdown">
-                <a class="py-0 nav-link dropdown-toggle"  href="#" role="button"
+                <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
                    data-bs-toggle="dropdown"><i class="fa fa-list-alt"></i> Projekte</a>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="projects.php"><i class="fa fa-list-alt"></i> Projektauswahl</a>
@@ -52,7 +56,7 @@
                 </ul>
             </li>
             <li class="nav-item dropdown">
-                <a class="py-0 nav-link dropdown-toggle"  href="#" role="button"
+                <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
                    data-bs-toggle="dropdown"><i class="fa fa-recycle"></i> Bestand</a>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="roombookBestand.php"> Bestand - Raumbereich</a></li>
@@ -125,10 +129,13 @@
                 </ul>
             </li>
         </ul>
-        <ul class="navbar-nav ml-auto d-inline-flex justify-content-end">
+        <ul class="navbar-nav col-2 d-inline-flex align-items-center justify-content-end text-nowrap">
             <li class="nav-item"><a class="py-0 nav-link text-success disabled" id="projectSelected"
                                     style="font-size:15px!important">Kein Projekttitel geladen</a></li>
             <li><a class="py-0 nav-link" href="logout.php"><i class="fa fa-sign-out-alt"></i>Logout</a></li>
         </ul>
-    </div>
-</nav>
+
+    </nav>
+
+</div>
+

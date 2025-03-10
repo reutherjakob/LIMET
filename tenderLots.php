@@ -40,7 +40,9 @@
 
 <body id="bodyTenderLots">
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 include "_format.php";
 init_page_serversides();
 ?>
@@ -48,7 +50,7 @@ init_page_serversides();
 <div class="container-fluid">
 
     <div class='row'>
-        <div class='col-xxl-8' id="mainCardColumn">
+        <div class='col-xxl-9' id="mainCardColumn">
             <div class="mt-4 card">
                 <div class="card-header d-inline-flex justify-content-between align-items-center">
                     <div class="d-inline-flex align-items-center">
@@ -119,7 +121,7 @@ init_page_serversides();
 
                         $result = $mysqli->query($sql);
 
-                        echo "<table  id='tableTenderLots' class='table table-sm compact table-striped table-bordered border-light border-5 table-responsive '>
+                        echo "<table  id='tableTenderLots' class='table table-sm table-responsive table-striped compact border border-light border-5'>
 								<thead><tr>
 								<th>ID</th>
                                         <th></th>
@@ -224,7 +226,7 @@ init_page_serversides();
                 </div>
             </div>
         </div>
-        <div class='col-xxl-4' id='vermerkeCardColumn'>
+        <div class='col-xxl-3' id='vermerkeCardColumn'>
             <div class='mt-4 card'>
                 <div class='card-header' id='vermerkePanelHead'>Vermerke zu Los
                     <button id='toggleVermerkeBtn' class='btn btn-sm float-end'>
@@ -373,9 +375,8 @@ init_page_serversides();
 
 
 <!-- Modal zum Zeigen des Los-Workflows -->
-<div class='modal fade' id='workflowDataModal' role='dialog'>
+<div class='modal fade' id='workflowDataModal' role='dialog' data-bs-keyboard="true">
     <div class='modal-dialog modal-lg'>
-        <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Los-Workflow</h4>
@@ -390,10 +391,12 @@ init_page_serversides();
     </div>
 </div>
 
-<!-- Modal Info -->
+
+</body>
+
+<!-- Modal Info
 <div class='modal fade' id='infoModal' role='dialog'>
     <div class='modal-dialog modal-dialog-centered modal-sm'>
-        <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Info</h4>
@@ -408,9 +411,10 @@ init_page_serversides();
 
     </div>
 </div>
-</body>
+-->
 
 <script src="_utils.js"></script>
+<!--suppress ES6ConvertVarToLetConst -->
 <script>
 
     var lotID;
@@ -468,19 +472,17 @@ init_page_serversides();
                 bottomEnd: ['pageLength', 'paging', 'search', 'buttons']
             },
             initComplete: function () {
-
                 move_item_by_class("dt-buttons", "LoseCardHeaderSub");
                 const button = document.querySelector(".dt-buttons");
                 if (button) {
                     button.classList.remove("dt-buttons");
                 }
 
-                $('.dt-search input').addClass("btn btn-sm btn-outline-dark");
-                $('.dt-search').children().removeClass('form-control form-control-sm').addClass("d-flex align-items-center").appendTo('#LoseCardHeaderSub');
+                $('.dt-search label').remove();
+                $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-success").appendTo('#LoseCardHeaderSub');
 
             }
         });
-
 
         $('#tableTenderLots tbody').on('click', 'tr', function () {
             if ($.fn.DataTable.isDataTable('#tableLotElements1')) {
@@ -549,83 +551,6 @@ init_page_serversides();
         });
 
     });
-
-    /*Los hinzufügen
-    $("#addTenderLot").click(function () {
-        let losNr = $("#lotNr").val();
-        let losName = $("#lotName").val();
-        let losDatum = $("#lotStart").val();
-        let kostenanschlag = $("#kostenanschlag").val();
-        let budget = $("#budget").val();
-        let lotSum = $("#lotSum").val();
-        let lotVergabe = $("#lotVergabe").val();
-        let lotNotice = $("#lotNotice").val();
-        let lotAuftragnehmer = $("#lotAuftragnehmer").val();
-        let lotLVSend = $("#lotLVSend").val();
-        let lotVerfahren = $("#lotVerfahren").val();
-        let lotLVBearbeiter = $("#lotLVBearbeiter").val();
-        let lotMKFOf = $("#lotMKFOf").val();
-        if (lotMKFOf === "0") {
-            if (losNr !== "" && losName !== "" && losDatum !== "" && lotLVSend !== "" && lotVerfahren !== "" && lotLVBearbeiter !== "") {
-                $('#addTenderLotModal').modal('hide');
-                $.ajax({
-                    url: "addTenderLot.php",
-                    data: {
-                        "losNr": losNr,
-                        "losName": losName,
-                        "losDatum": losDatum,
-                        "lotSum": lotSum,
-                        "lotVergabe": lotVergabe,
-                        "lotNotice": lotNotice,
-                        "lotAuftragnehmer": lotAuftragnehmer,
-                        "lotLVSend": lotLVSend,
-                        "lotVerfahren": lotVerfahren,
-                        "lotLVBearbeiter": lotLVBearbeiter,
-                        "lotMKFOf": lotMKFOf,
-                        "kostenanschlag": kostenanschlag,
-                        "budget": budget
-                    },
-                    type: "GET",
-                    success: function (data) {
-                        alert(data);
-                        window.location.replace("tenderLots.php");
-                    }
-                });
-            } else {
-                alert("Bitte alle Felder außer der Vergabesumme und Auftragnehmer ausfüllen!");
-            }
-        } else {
-            if (losDatum !== "" && lotLVSend !== "" && lotVerfahren !== "" && lotLVBearbeiter !== "") {
-                $('#addTenderLotModal').modal('hide');
-                $.ajax({
-                    url: "addTenderLot.php",
-                    data: {
-                        "losNr": losNr,
-                        "losName": losName,
-                        "losDatum": losDatum,
-                        "lotSum": lotSum,
-                        "lotVergabe": lotVergabe,
-                        "lotNotice": lotNotice,
-                        "lotAuftragnehmer": lotAuftragnehmer,
-                        "lotLVSend": lotLVSend,
-                        "lotVerfahren": lotVerfahren,
-                        "lotLVBearbeiter": lotLVBearbeiter,
-                        "lotMKFOf": lotMKFOf,
-                        "kostenanschlag": kostenanschlag,
-                        "budget": budget
-                    },
-                    type: "GET",
-                    success: function (data) {
-                        alert(data);
-                        window.location.replace("tenderLots.php");
-                    }
-                });
-            } else {
-                alert("Für MKF bitte alle Felder außer der Vergabesumme und Auftragnehmer ausfüllen!");
-            }
-        }
-    });
-    */
 
     document.getElementById("addTenderLot").addEventListener("click", function () {
         const formData = {

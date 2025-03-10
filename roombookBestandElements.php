@@ -190,7 +190,7 @@ init_page_serversides();
             }, initComplete: function () {
                 $('.dt-buttons').children().addClass("btn-sm").appendTo('#CardHeader');
                 $('.dt-search label').remove();
-                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeader');
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-success").appendTo('#CardHeader');
 
             }
         });

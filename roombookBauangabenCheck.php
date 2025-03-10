@@ -307,7 +307,7 @@ init_page_serversides();
                         ],
                         initComplete: function () {
                             $('.dt-search label').remove();
-                            $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CH1');
+                            $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-success").appendTo('#CH1');
 
                         }
                     });

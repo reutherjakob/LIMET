@@ -29,7 +29,7 @@ if(!isset($_SESSION["username"]))
         
         
 	if ($mysqli ->query($sql) === TRUE) {
-	    echo "Workflow erfolgreich zu Los hinzugefügt!";
+	    echo "Erfolg!";//  "Workflow erfolgreich zu Los hinzugefügt!";
 	} else {
 	    echo "Error: " . $sql . "<br>" . $mysqli->error;
 	}
