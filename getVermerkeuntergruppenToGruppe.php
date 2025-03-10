@@ -1,6 +1,6 @@
 <!-- 13.2.25: Reworked -->
 <?php
-include "_utils.php";
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 check_login();;
 ?>
 <!DOCTYPE html>
@@ -17,7 +17,7 @@ $sql = "SELECT tabelle_Vermerkuntergruppe.idtabelle_Vermerkuntergruppe, tabelle_
                 ORDER BY Untergruppennummer;";
 $result = $mysqli->query($sql);
 
-echo "<table class='table table-striped table-bordered table-sm table-responsive' id='tableVermerkUnterGruppe'>
+echo "<table class='table responsive compact table-striped table-bordered table-sm table-hover  border border-light border-5' id='tableVermerkUnterGruppe'>
                 <thead><tr>
                 <th>ID</th>
                 <th></th>
@@ -94,15 +94,15 @@ $mysqli->close();
             select: true,
             responsive:true,
             language: {
-                'url': '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
+                'url': 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 search: ""
             }, initComplete: function () {
                 console.log(counter, search_counter);
                 $('#dt-search-' + (counter)).remove();
-                $('#dt-search-' + (counter)).remove();
                 move_dt_search("#dt-search-" + search_counter, "#CardHeaderVermerkUntergruppen");
-                counter = search_counter;
                 search_counter = search_counter + 1;
+                counter = search_counter;
+
             }
         });
 

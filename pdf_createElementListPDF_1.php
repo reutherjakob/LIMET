@@ -11,7 +11,7 @@
 //
 //============================================================+
 
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 require_once('TCPDF-main/TCPDF-main/tcpdf.php');
 
 class MYPDF extends TCPDF {

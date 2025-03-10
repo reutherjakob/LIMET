@@ -37,7 +37,7 @@ while ($row = $result1->fetch_assoc()) {
 }
 //-----------------------------------------------------------------------------------
 
-echo "<table  id='tableTenderCalendar' class='table table-striped table-bordered table-sm' cellspacing='0' width='100%'>
+echo "<table  id='tableTenderCalendar' class='table table-striped table-bordered table-sm'  >
     <thead><tr>
     <th rowspan='2'>lotID</th>
     <th rowspan='2'>Nummer</th>
@@ -96,7 +96,7 @@ while ($row = $result->fetch_assoc()) {
                 break;
         }
         echo "</td>";
-        echo "<td><button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn btn-outline-dark btn-sm float-right' value='calculateDates' data-toggle='modal' data-target='#claculateDatesModal'>Berechnen <i class='far fa-calendar-check'></i></button>"
+        echo "<td><button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn btn-outline-dark btn-sm float-right' value='calculateDates' data-bs-toggle='modal' data-bs-target='#claculateDatesModal'>Berechnen <i class='far fa-calendar-check'></i></button>"
             . "</td>";
         if ($row["SOLLDATE"] == "0000-00-00") {
             echo "<td><form class='form-inline'>"
@@ -167,15 +167,15 @@ $mysqli->close();
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Daten automatisch berechnen</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='mbody'>Wollen Sie die Soll-Daten automatisiert berechnen und bestehende Werte
                 überschreiben?
             </div>
             <div class='modal-footer'>
                 <input type='button' id='updateTenderWorkflowDates' class='btn btn-success btn-sm' value='Ja'
-                       data-dismiss='modal'></input>
-                <button type='button' class='btn btn-danger btn-sm' data-dismiss='modal'>Nein</button>
+                       data-bs-dismiss='modal'></input>
+                <button type='button' class='btn btn-danger btn-sm' data-bs-dismiss='modal'>Nein</button>
             </div>
         </div>
     </div>
@@ -194,7 +194,7 @@ $mysqli->close();
             "order": [[1, "asc"]],
             "orderMulti": true,
             "language": {
-                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
+                "url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                 "decimal": ",",
                 "thousands": "."
             },

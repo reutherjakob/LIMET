@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 
 $mysqli = utils_connect_sql();
 
@@ -139,20 +139,20 @@ $average_percentage_change = $total_entries ? round($total_percentage_change / $
         <div class="container-fluid mt-5">
             <form method="post" action="">
                 <div class="form-group row">
-                    <div class="col-md-10">
+                    <div class="col-xxl-10">
                         <label for="query_type">Select Query Type:</label>
                         <select class="form-control" id="query_type" name="query_type">
                             <option value="more_than_4_entries">Geräte more than 4 entries with different dates</option>
                             <option value="most_frequent">Most Frequent Geräte</option>
                         </select>
                     </div>
-                    <div class="col-md-2 align-self-end">
+                    <div class="col-xxl-2 align-self-end">
                         <button type="submit" class="btn btn-primary">Fetch Data</button>
                     </div>
                 </div>
             </form>
             <div class="row mt-4">
-                <div class="col-md-3">
+                <div class="col-xxl-3">
                     <div class="card" id="PriceDevCard">
                         <div class="card-header">Price Development Details and Results</div>
                         <div class="card-body">
@@ -179,7 +179,7 @@ $average_percentage_change = $total_entries ? round($total_percentage_change / $
                         </div>
                     </div>
                 </div>
-                <div class="col-md-9">
+                <div class="col-xxl-9">
                     <div class="card">
                         <div class="card-header">Price Development Plot</div>
                         <div class="card-body">

@@ -96,7 +96,7 @@ if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
 // set font
 $pdf->SetFont('helvetica', '', 10);
 
-include "_utils.php";
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 include "_format.php";
 check_login();
 $mysqli = utils_connect_sql();

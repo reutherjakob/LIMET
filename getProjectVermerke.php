@@ -1,5 +1,5 @@
 <div class='table-responsive'>
-    <table class='table table-striped table-bordered table-sm' id='tableProjectVermerke' cellspacing='0' width='100%'>
+    <table class='table table-striped table-bordered table-sm' id='tableProjectVermerke'  >
         <thead>
         <tr>
             <th>ID</th>
@@ -18,7 +18,7 @@
         </thead>
         <tbody>
         <?php
-        include "_utils.php";
+        if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
         check_login();
         $mysqli = utils_connect_sql();
 
@@ -89,7 +89,7 @@
             info: true,
             order: [[4, 'desc']],
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 search: ''
             },
             rowCallback: function (row, data, index) {

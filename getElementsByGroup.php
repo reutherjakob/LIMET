@@ -1,5 +1,5 @@
 <?php
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 check_login();
 ?>
 
@@ -20,7 +20,7 @@ $result = $mysqli->query($sql);
 
 
 
-echo "<table class='table table-striped table-sm' id='tableElementsInDB'  cellspacing='0' width='100%'>
+echo "<table class='table table-striped table-sm' id='tableElementsInDB'   >
 	<thead><tr>
 	<th>ID</th>";
 echo "<th></th>";
@@ -33,11 +33,11 @@ echo "<th>ElementID</th>
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
     echo "<td>" . $row["idTABELLE_Elemente"] . "</td>";
-    echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-success btn-sm' value='addElement' data-toggle='modal' data-target='#addRoomElementModal'><i class='fa fa-plus'></i></button></td>";
+    echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-success btn-sm' value='addElement' data-bs-toggle='modal' data-bs-target='#addRoomElementModal'><i class='fa fa-plus'></i></button></td>";
     echo "<td>" . $row["ElementID"] . "</td>";
     echo "<td>" . $row["Bezeichnung"] . "</td>";
     echo "<td>" . $row["Kurzbeschreibung"] . "</td>";
-    echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-dark btn-sm' value='changeElement' data-toggle='modal' data-target='#changeElementModal'><i class='fas fa-pencil-alt'></i></button></td>";
+    echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-dark btn-sm' value='changeElement' data-bs-toggle='modal' data-bs-target='#changeElementModal'><i class='fas fa-pencil-alt'></i></button></td>";
     echo "</tr>";
 }
 echo "</tbody></table>";
@@ -52,7 +52,7 @@ $mysqli->close();
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Element in Raum stellen</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='mbody'>Wollen Sie das Element <br>
                 <div id="elID"></div>
@@ -60,8 +60,8 @@ $mysqli->close();
             </div>
             <div class='modal-footer'>
                 <input type='button' id='addElementToRoom' class='btn btn-success btn-sm' value='Ja'
-                       data-dismiss='modal'></input>
-                <button type='button' class='btn btn-danger btn-sm' data-dismiss='modal'>Nein</button>
+                       data-bs-dismiss='modal'></input>
+                <button type='button' class='btn btn-danger btn-sm' data-bs-dismiss='modal'>Nein</button>
             </div>
         </div>
 
@@ -75,7 +75,7 @@ $mysqli->close();
         <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
                 <h4 class='modal-title'>Element ändern</h4>
             </div>
             <div class='modal-body' id='mbody'>
@@ -92,7 +92,7 @@ $mysqli->close();
             </div>
             <div class='modal-footer'>
                 <input type='button' id='saveElement' class='btn btn-warning btn-sm' value='Speichern'></input>
-                <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Abbrechen</button>
+                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
             </div>
         </div>
 
@@ -106,12 +106,12 @@ $mysqli->close();
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Info</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='infoBody'>
             </div>
             <div class='modal-footer'>
-                <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>OK</button>
+                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>OK</button>
             </div>
         </div>
     </div>
@@ -135,13 +135,13 @@ $mysqli->close();
             "lengthChange": false,
             "pageLength": 10,
             "order": [[2, "asc"]],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
         });
 
 
         var table1 = $('#tableElementsInDB').DataTable();
 
-        $('#tableElementsInDB tbody').on('click', 'tr', function () {
+        $('#tableElementsInDB tbody').on('click', 'tr', function () {// TODO
             if ($(this).hasClass('info')) {
             } else {
                 $("#deviceParametersInDB").hide();

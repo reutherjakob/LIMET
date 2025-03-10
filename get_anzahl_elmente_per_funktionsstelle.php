@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 
 if (isset($_GET["value"])) {
     $value = filter_var($_GET["value"], FILTER_SANITIZE_STRING);

@@ -202,7 +202,8 @@ function init_dt() {
             scrollX: true,
             scrollCollapse: true,
             language: {
-                search: "", searchBuilder: {
+                search: "",
+                searchBuilder: {
                     button: '(%d)'
                 }
             },
@@ -505,8 +506,7 @@ function table_click() {
                                         // attachButtonListeners();
                                         $cardHeader2.append($('#room-action-buttons'));
                                     }, 100)
-
-                                    console.log("Moved: dt_search_counter: ", dt_search_counter);
+                                    //console.log("Moved: dt_search_counter: ", dt_search_counter);
                                 },
                                 error: function (jqXHR, textStatus, errorThrown) {
                                     console.error("AJAX call failed: " + textStatus + ", " + errorThrown);

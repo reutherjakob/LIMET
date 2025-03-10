@@ -16,9 +16,9 @@
 <div id="limet-navbar"></div>
 <div class="container-fluid mt-4">
     <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
+        <div class="card-header">
             <h4>Räume
-                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#infoModal">
+                <button type="button" class="btn btn-info float-end" data-bs-toggle="modal" data-bs-target="#infoModal">
                     <i class="fas fa-info-circle"></i>
                 </button>
             </h4>
@@ -34,7 +34,7 @@
                 </thead>
                 <tbody>
                 <?php
-                include '_utils.php';
+                if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
                 init_page_serversides("", "x");
                 $conn = utils_connect_sql();
                 $rooms = $conn->query("
@@ -63,6 +63,7 @@
     <div class="card collapse" id="changesCard">
         <div class="card-header bg-secondary text-white d-inline-flex">
             <h4>Änderungshistorie</h4>
+            &emsp;(Prototyp)
         </div>
         <div class="card-body" id="changesContent"></div>
     </div>
@@ -76,8 +77,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
             </div>
             <div class="modal-body">
-                <p>Achtung, nicht alle Parameteränderungen werden aufgezeichnet!!! NUR Änderungen an den folgenden
-                    Feldern:</p>
+                <p>Achtung, nicht alle Parameteränderungen werden aufgezeichnet! Derzeit NUR Änderungen der folgenden
+                    Parameter:</p>
                 <ul>
                     <li><strong>Raumidentifikation:</strong>
                         <ul>
@@ -224,7 +225,7 @@
                             <li>Schwingungsklasse</li>
                             <li>Akustik</li>
                         </ul>
-                    <li>
+                    </li>
                 </ul>
             </div>
             <div class="modal-footer">

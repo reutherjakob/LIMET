@@ -13,7 +13,7 @@ $PDF_input_bools = explode(",", $PDF_input_bool); //foreach ($roomIDsArray as $l
 
 include 'pdf_createBericht_MYPDFclass.php'; //require_once('TCPDF-main/TCPDF-main/tcpdf.php'); is in class file
 include 'pdf_createBericht_utils.php';
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 if ($PDF_input_bools[8]) {
     include 'pdf_createMTTabelle.php';
 }
@@ -262,7 +262,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             $pdf->SetFont('helvetica', '', 8);
             $pdf->MultiCell($restspace - (2 * $manual_offset), 6, "Elektrisch:", 0, 'R', 0, 0);
             hackerl($pdf, $hackerl_schriftgröße, $hackerl_Zellgröße, $row['EL_Jalousie JA/NEIN'], "JA");
-            $next_block_size = $block_header_height + 40; //manually added up //TODO account for all the space taken up beforehand
+            $next_block_size = $block_header_height + 40;
             newpage_or_spacer($pdf, $next_block_size);
         }
 

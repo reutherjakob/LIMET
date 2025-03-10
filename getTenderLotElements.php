@@ -1,21 +1,18 @@
 <?php
-// V2.0: 2024-11-29, Reuther & Fux
-include '_utils.php';
+// reworked 25
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 check_login();
 ?>
 
-
 <!DOCTYPE html>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-<html>
+<html lang="de">
 <head>
-</head>
+    <title></title></head>
 <body>
-
 
 <?php
 $mysqli = utils_connect_sql();
-
 if ($_GET["lotID"] != "") {
     $_SESSION["lotID"] = $_GET["lotID"];
 } else {
@@ -51,11 +48,10 @@ WHERE
     tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern = " . $_SESSION["lotID"] . " 
     AND tabelle_räume_has_tabelle_elemente.Standort = 1
 ORDER BY 
-    tabelle_räume.Raumnr;
-";
+    tabelle_räume.Raumnr;";
 
 $result = $mysqli->query($sql);
-echo "<table class='table table-striped table-bordered table-sm' id='tableLotElements1'  cellspacing='0' width='100%'>
+echo "<table class='table table-striped table-bordered table-sm' id='tableLotElements1'>
             <thead><tr>
             <th>ID</th>
             <th>elementID</th>
@@ -124,7 +120,7 @@ $mysqli->close();
             lengthChange: false,
             pageLength: 10,
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json'
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
             },
             buttons: [
                 {

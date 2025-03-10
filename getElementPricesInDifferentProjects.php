@@ -1,6 +1,6 @@
 <?php
 // V2.0: 2024-11-29, Reuther & Fux
-include "_utils.php";
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 include "_format.php";
 check_login();
 ?>
@@ -47,7 +47,7 @@ echo "</tbody></table>";
             info: false,
             order: [[1, "asc"]],
             language: {
-                url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
+                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                 decimal: ",",
                 thousands: "."
             }

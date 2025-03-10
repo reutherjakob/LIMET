@@ -1,6 +1,6 @@
 <?php
 // V2.0: 2024-11-28, Reuther & Fux
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 init_page_serversides();
 ?>
 
@@ -80,7 +80,7 @@ init_page_serversides();
 
             $result = $mysqli->query($sql);
 
-            echo "<table class='table table-striped table-bordered table-sm' id='tableRaumbereiche'  cellspacing='0' width='100%'>
+            echo "<table class='table table-striped table-bordered table-sm' id='tableRaumbereiche'>
                                             <thead><tr>
                                             <th>Raumbereich</th>
                                             <th>Geschoss</th>
@@ -144,7 +144,7 @@ init_page_serversides();
             pageLength: 10,
 
             language: {
-                url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
+                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                 searchPlaceholder: "Suche",
                 search: ""
             },

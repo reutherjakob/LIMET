@@ -10,7 +10,7 @@
 </head>
 <body>
 <?php
-include "_utils.php";
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 include "_format.php";
 check_login();
 
@@ -146,7 +146,7 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
         "order": [[0, "desc"]],
         //"pagingType": "simple_numbers",
         //"lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
-        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json", "decimal": ",", "thousands":"."},
+        "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json", "decimal": ",", "thousands":"."},
         "scrollY": '20vh',
         "scrollCollapse": true
     });

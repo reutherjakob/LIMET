@@ -6,8 +6,7 @@
 <body>
 
 <?php
-include '_utils.php';
-check_login();
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 if (filter_input(INPUT_GET, 'elementID') != "") {
     $_SESSION["elementID"] = filter_input(INPUT_GET, 'elementID');
 }
@@ -20,11 +19,11 @@ $sql = "SELECT tabelle_projekt_varianten_kosten.Kosten
 			WHERE (((tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)=" . $_SESSION["variantenID"] . ") AND ((tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente)=" . $_SESSION["elementID"] . ") AND ((tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "));";
 $result = $mysqli->query($sql);
 $row = $result->fetch_assoc(); ?>
-<div class='col-md-12'>
+<div class='col-xxl-12'>
     <div class='card'>
         <div class='card-body'>
             <div class='row'>
-                <div class="col-md-6">
+                <div class="col-xxl-6">
                     <div class='card'>
                         <div class='card-body'>
                             <div class='d-flex align-items-center'>
@@ -160,7 +159,7 @@ $row = $result->fetch_assoc(); ?>
                 </div>
 
 
-                <div class='col-md-6'>
+                <div class='col-xxl-6'>
                     <div class='card'>
                         <div class='card-header d-flex justify-content-between' id='mglParameterCardHeader'>Mögliche
                             Parameter
@@ -221,7 +220,7 @@ $row = $result->fetch_assoc(); ?>
                         </div>
                     </div>
                 </div>
-                <div class='col-md-6'></div>
+                <div class='col-xxl-6'></div>
 
             </div>
         </div>
@@ -358,7 +357,7 @@ $row = $result->fetch_assoc(); ?>
                 }
             ],
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 search: ""
             },
             layout: {
@@ -384,7 +383,7 @@ $row = $result->fetch_assoc(); ?>
                 }
             ],
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 search: ""
             },
             layout: {
@@ -410,7 +409,7 @@ $row = $result->fetch_assoc(); ?>
                 }
             ],
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 decimal: ',',
                 thousands: '.'
             },

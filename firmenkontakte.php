@@ -33,7 +33,7 @@
         </div>
         <div class="card-body">
             <?php
-            include '_utils.php';
+            if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
             init_page_serversides("x");
             $mysqli = utils_connect_sql();
             $sql = "SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen, tabelle_ansprechpersonen.Name, tabelle_ansprechpersonen.Vorname, tabelle_ansprechpersonen.Tel, tabelle_ansprechpersonen.Adresse, tabelle_ansprechpersonen.PLZ, tabelle_ansprechpersonen.Ort, tabelle_ansprechpersonen.Land, tabelle_ansprechpersonen.Mail, tabelle_lieferant.Lieferant, tabelle_abteilung.Abteilung,
@@ -87,7 +87,7 @@
         </div>
     </div>
     <div class='mt-1 row'>
-        <div class='col-lg-8'>
+        <div class='col-xxl-8'>
             <div class="mt-4 card">
                 <div class="card-header d-flex justify-content-between">
                     Lieferanten
@@ -136,7 +136,7 @@
                 </div>
             </div>
         </div>
-        <div class='col-lg-4'>
+        <div class='col-xxl-4'>
             <div class="mt-4 card">
                 <div class="card-header">Lieferantenumsaetze</div>
                 <div class="card-body" id="lieferantenumsaetze">
@@ -358,7 +358,7 @@
             lengthChange: false,
             pageLength: 10,
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 searchPlaceholder: '',
                 search: ""
             },
@@ -401,7 +401,7 @@
             lengthChange: false,
             pageLength: 10,
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 searchPlaceholder: 'Suche',
                 search: ""
             },

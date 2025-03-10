@@ -8,7 +8,7 @@
 <!-- Rework 2025 -->
 
 <?php
-include "_utils.php";
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 check_login();
 $mysqli = utils_connect_sql();
 $sql = "SELECT tabelle_rb_aenderung.Kurzbeschreibung,
@@ -56,7 +56,7 @@ $mysqli->close();
         order: [[0, "desc"]],
         searching: true,
         info: false,
-        language: {url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+        language: {url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
     });
 </script>
 

@@ -47,26 +47,26 @@ if(!isset($_SESSION["username"]))
 	   
 	echo "<form class='form-horizontal' role='form'>
 			  			 <div class='form-group'>
-		  			 			<label class='control-label col-md-4' for='raumnummer'>Raumnummer</label>
-		  			 			<div class='col-md-8'>
+		  			 			<label class='control-label col-xxl-4' for='raumnummer'>Raumnummer</label>
+		  			 			<div class='col-xxl-8'>
 		  			 				<input type='text' class='form-control input-sm' id='raumnummer' value='$raumnummer'></input>
 								</div>						  			 											 						 			
 		  			 	</div>		  			 		
 		  			 	<div class='form-group row'>
-		  			 			<label class='control-label col-md-4' for='raumanmerkung'>Raumanmerkung</label>
-		  			 			<div class='col-md-8'>
+		  			 			<label class='control-label col-xxl-4' for='raumanmerkung'>Raumanmerkung</label>
+		  			 			<div class='col-xxl-8'>
 		  			 				<textarea class='form-control input-sm' rows='3' id='raumanmerkung'>".$anmerkung."</textarea>
 		  			 			</div>
 		  			 	</div>
 		  			 	<div class='form-group row'>
-		  			 			<label class='control-label col-md-4' for='raumbezeichnung'>Raumbezeichnung</label>
-		  			 			<div class='col-md-8'>
+		  			 			<label class='control-label col-xxl-4' for='raumbezeichnung'>Raumbezeichnung</label>
+		  			 			<div class='col-xxl-8'>
 		  			 				<input type='text' class='form-control input-sm' id='raumbezeichnung' value='$raumbezeichnung'></input>
 								</div>	
 						</div>
 		  			 	<div class='form-group row'>		
-								<label class='control-label col-md-4' for='raumbereich'>Raumbereich Nutzer</label>
-		  			 			<div class='col-md-8'>
+								<label class='control-label col-xxl-4' for='raumbereich'>Raumbereich Nutzer</label>
+		  			 			<div class='col-xxl-8'>
 		  			 				<select class='form-control input-sm' id='raumbereich' name='raumbereich'>";
 		  			 					
 											$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');	
@@ -97,34 +97,34 @@ if(!isset($_SESSION["username"]))
 						</div>
 		  			 	<div class='form-group row'>
 		
-								<label class='control-label col-md-4' for='raumbereich_neu'>Neuer Raumbereich</label>
-		  			 			<div class='col-md-8'>
+								<label class='control-label col-xxl-4' for='raumbereich_neu'>Neuer Raumbereich</label>
+		  			 			<div class='col-xxl-8'>
 		  			 				<input type='text' class='form-control input-sm' id='raumbereich_neu'></input>
 								</div>									 
 		  			 	</div>	
 		  			 	<div class='form-group row'>
-		  			 			<label class='control-label col-md-4' for='geschoss'>Geschoß</label>
-		  			 			<div class='col-md-8'>
+		  			 			<label class='control-label col-xxl-4' for='geschoss'>Geschoß</label>
+		  			 			<div class='col-xxl-8'>
 		  			 				<input type='text' class='form-control input-sm' id='geschoss' value='$geschoss'></input>
 								</div>
 						</div>	
 		  			 	<div class='form-group row'>
 
-								<label class='control-label col-md-4' for='nutzflaeche'>Nutzfläche</label>
-		  			 			<div class='col-md-8'>
+								<label class='control-label col-xxl-4' for='nutzflaeche'>Nutzfläche</label>
+		  			 			<div class='col-xxl-8'>
 		  			 				<input type='text' class='form-control input-sm' id='nutzflaeche' value='$flaeche'></input>
 								</div>	
 														  			 											 
 		  			 	</div>			
 		  			 	<div class='form-group row'>
-		  			 			<label class='control-label col-md-4' for='bauteil'>Bauteil</label>
-		  			 			<div class='col-md-8'>
+		  			 			<label class='control-label col-xxl-4' for='bauteil'>Bauteil</label>
+		  			 			<div class='col-xxl-8'>
 		  			 				<input type='text' class='form-control input-sm' id='bauteil' value='$bauteil'></input>
 								</div>	
 						</div>	
 		  			 	<div class='form-group row'>
-								<label class='control-label col-md-4' for='bauetappe'>Bauetappe</label>
-		  			 			<div class='col-md-8'>
+								<label class='control-label col-xxl-4' for='bauetappe'>Bauetappe</label>
+		  			 			<div class='col-xxl-8'>
 		  			 				<input type='text' class='form-control input-sm' id='bauetappe' value='$bauetappe'></input>
 								</div>						  			 											 
 		  			 	</div>	

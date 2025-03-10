@@ -1,7 +1,7 @@
 <?php
 // V2.0: 2024-11-29, Reuther & Fux
 session_start();
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 check_login();
 ?>
 
@@ -54,9 +54,9 @@ check_login();
         echo "<form class='form-horizontal'>";
         foreach ($anmerkungen as $key => $label) {
             echo" <div class='form-group row'>
-                    <label class='control-label col-md-12' for='$key'></label>
-                    <div class='col-md-12 hr-sect'><b> $label </b></div>
-                    <div class='col-md-12'>
+                    <label class='control-label col-xxl-12' for='$key'></label>
+                    <div class='col-xxl-12 hr-sect'><b> $label </b></div>
+                    <div class='col-xxl-12'>
                         <textarea class='form-control form-control-sm' rows='5' id='$key'>" . br2nl($row["Anmerkung " . ucfirst($key)]) . "</textarea>
                     </div>
                 </div>";

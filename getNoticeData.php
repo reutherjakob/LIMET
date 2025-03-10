@@ -77,10 +77,10 @@ if(!isset($_SESSION["username"]))
 				  	
 	*/	  	
 	echo "<form>
-			<div class='col-md-12'>
+			<div class='col-xxl-12'>
 				<div class='form-group row'>
-					<label class='control-label col-md-3' for='selectCategory'>Notizkategorie wählen:</label>
-					<div class='col-md-3'>
+					<label class='control-label col-xxl-3' for='selectCategory'>Notizkategorie wählen:</label>
+					<div class='col-xxl-3'>
 						<select class='form-control input-sm' id='selectCategory' name='selectCategory'>";
 							if($row["Kategorie"] == "Medgas"){
 										echo "<option selected>Medgas</option>
@@ -104,8 +104,8 @@ if(!isset($_SESSION["username"]))
 									}
 								echo "</select>	
 					</div>
-					<label class='control-label col-md-3' for='selectStatus'>Notizstatus:</label>
-					<div class='col-md-3'>
+					<label class='control-label col-xxl-3' for='selectStatus'>Notizstatus:</label>
+					<div class='col-xxl-3'>
 						<select class='form-control input-sm' id='selectStatus' name='selectStatus'>";
 							if($row["Notiz_bearbeitet"] == "0"){
 										echo "<option value='0' selected>Offen</option>

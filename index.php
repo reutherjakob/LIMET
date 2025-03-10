@@ -37,8 +37,8 @@ if (isset($_SESSION['username'])) {
                 <a class="py-0 navbar-brand" href="#"><img src="LIMET_logo.png" alt="LIMETLOGO" height="40"/></a>                              
             </nav>
             <div class='row' >
-                <div class='col-md-12' id='login'>
-                    <form class='form col-md-2' action='login.php' method='post'>
+                <div class='col-xxl-12' id='login'>
+                    <form class='form col-xxl-2' action='login.php' method='post'>
                         <label for='username'>Login</label>
                         <input class='form-control form-control-sm' type='text' id='username' name='username'></input>
                         <label for='password'>Passwort</label>

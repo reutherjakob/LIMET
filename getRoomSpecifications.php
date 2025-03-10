@@ -48,17 +48,17 @@ return $return;
 	
 	echo "<form class='form-horizontal'>
 	  			<div class='form-group form-group-sm'>
-				  	<label class='control-label col-md-1' for='funktionBO'>FunktionBO</label>
-					  <div class='col-md-2'>
-					  	<textarea class='form-control col-md-2' rows='3' id='funktionBO'>".br2nl($row["Anmerkung FunktionBO"])."</textarea>
+				  	<label class='control-label col-xxl-1' for='funktionBO'>FunktionBO</label>
+					  <div class='col-xxl-2'>
+					  	<textarea class='form-control col-xxl-2' rows='3' id='funktionBO'>".br2nl($row["Anmerkung FunktionBO"])."</textarea>
 					  </div> 
-					  <label class='control-label col-md-1' for='Elektro'>Elektro</label>
-					  <div class='col-md-2'>
+					  <label class='control-label col-xxl-1' for='Elektro'>Elektro</label>
+					  <div class='col-xxl-2'>
 					  	<textarea class='form-control' rows='3' id='Elektro'>".br2nl($row["Anmerkung Elektro"])."</textarea>
 					  </div> 
 					  <div class='form-group'>
-							  <label class='control-label col-md-1' for='awg'>AWG</label>
-		  			 			<div class='col-md-1'>
+							  <label class='control-label col-xxl-1' for='awg'>AWG</label>
+		  			 			<div class='col-xxl-1'>
 			  			 			<select class='form-control input-sm' id='awg'>";
 								    if($row["Anwendungsgruppe"]==0){
 							   	    		echo "<option selected>0</option>
@@ -79,8 +79,8 @@ return $return;
 							   	    	}					 
 								    echo "</select>						
 								</div>
-								<label class='control-label col-md-1' for='av'>AV</label>
-		  			 			<div class='col-md-1'>
+								<label class='control-label col-xxl-1' for='av'>AV</label>
+		  			 			<div class='col-xxl-1'>
 			  			 			<select class='form-control input-sm' id='av'>";
 								    if($row["AV"]==1){
 							   	    		echo "<option selected>Ja</option>
@@ -93,8 +93,8 @@ return $return;
 							   	    	}					 
 								    echo "</select>	
 								</div>
-								<label class='control-label col-md-1' for='sv'>SV</label>
-		  			 			<div class='col-md-1'>
+								<label class='control-label col-xxl-1' for='sv'>SV</label>
+		  			 			<div class='col-xxl-1'>
 			  			 			<select class='form-control input-sm' id='sv'>";
 								    if($row["SV"]==1){
 							   	    		echo "<option selected>Ja</option>
@@ -108,8 +108,8 @@ return $return;
 								    echo "</select>	
 								</div>
 						
-								<label class='control-label col-md-1' for='zsv'>ZSV</label>
-		  			 			<div class='col-md-1'>
+								<label class='control-label col-xxl-1' for='zsv'>ZSV</label>
+		  			 			<div class='col-xxl-1'>
 			  			 			<select class='form-control input-sm' id='zsv'>";
 								    if($row["ZSV"]==1){
 							   	    		echo "<option selected>Ja</option>
@@ -123,8 +123,8 @@ return $return;
 								    echo "</select>	
 			
 								</div>		
-								<label class='control-label col-md-1' for='usv'>USV</label>
-		  			 			<div class='col-md-1'>
+								<label class='control-label col-xxl-1' for='usv'>USV</label>
+		  			 			<div class='col-xxl-1'>
 			  			 			<select class='form-control input-sm' id='usv'>";
 								    if($row["USV"]==1){
 							   	    		echo "<option selected>Ja</option>
@@ -140,17 +140,17 @@ return $return;
 		  			 	</div>
 				 </div>
 				 <div class='form-group'>
-					  <label class='control-label col-md-1' for='geraete'>Geräte</label>
-					  <div class='col-md-2'>
+					  <label class='control-label col-xxl-1' for='geraete'>Geräte</label>
+					  <div class='col-xxl-2'>
 					  	<textarea class='form-control' rows='3' id='geraete'>".br2nl($row["Anmerkung Geräte"])."</textarea>
 					  </div> 
-					  <label class='control-label col-md-1' for='medgas'>Medgas</label>
-					  <div class='col-md-2'>
+					  <label class='control-label col-xxl-1' for='medgas'>Medgas</label>
+					  <div class='col-xxl-2'>
 					  	<textarea class='form-control' rows='3' id='medgas'>".br2nl($row["Anmerkung MedGas"])."</textarea>
 					  </div> 
 						  <div class='form-group'>
-	  			 			<label class='control-label col-md-1' for='h6020'>Raumklasse H6020</label>
-	  			 			<div class='col-md-1'>
+	  			 			<label class='control-label col-xxl-1' for='h6020'>Raumklasse H6020</label>
+	  			 			<div class='col-xxl-1'>
 		  			 			<select class='form-control input-sm' id='h6020'>";
 							        switch ($row["H6020"]) {
 									    case "H1a":
@@ -236,8 +236,8 @@ return $return;
 									}						    
 							    echo "</select>	
 							</div>	
-	  			 			<label class='control-label col-md-1' for='iso'>Raumklasse ISO</label>
-	  			 			<div class='col-md-1'>
+	  			 			<label class='control-label col-xxl-1' for='iso'>Raumklasse ISO</label>
+	  			 			<div class='col-xxl-1'>
 		  			 			<select class='form-control input-sm' id='iso'>";
 							        switch ($row["ISO"]) {
 									    case "1":
@@ -356,8 +356,8 @@ return $return;
 							        
 							    echo "</select>	
 							</div>	
-							<label class='control-label col-md-1' for='gmp'>Raumklasse GMP</label>
-	  			 			<div class='col-md-1'>
+							<label class='control-label col-xxl-1' for='gmp'>Raumklasse GMP</label>
+	  			 			<div class='col-xxl-1'>
 		  			 			<select class='form-control input-sm' id='gmp'>";
 							        switch ($row["GMP"]) {
 									    case "A":
@@ -410,17 +410,17 @@ return $return;
 	  			 	</div>
 				 </div>
 				 <div class='form-group'>
-					  <label class='control-label col-md-1' for='baustatik'>Bau/Statik</label>
-					  <div class='col-md-2'>
+					  <label class='control-label col-xxl-1' for='baustatik'>Bau/Statik</label>
+					  <div class='col-xxl-2'>
 					  	<textarea class='form-control' rows='3' id='baustatik'>".br2nl($row["Anmerkung BauStatik"])."</textarea>
 					  </div> 
-					  <label class='control-label col-md-1' for='hkls'>HKLS</label>
-					  <div class='col-md-2'>
+					  <label class='control-label col-xxl-1' for='hkls'>HKLS</label>
+					  <div class='col-xxl-2'>
 					  	<textarea class='form-control' rows='3' id='hkls'>".br2nl($row["Anmerkung HKLS"])."</textarea>
 					  </div> 
 					  <div class='form-group'>
-						  <label class='control-label col-md-1' for='abdunkelbarkeit'>Abdunkelbarkeit</label>
-	  			 			<div class='col-md-1'>
+						  <label class='control-label col-xxl-1' for='abdunkelbarkeit'>Abdunkelbarkeit</label>
+	  			 			<div class='col-xxl-1'>
 		  			 			<select class='form-control input-sm' id='abdunkelbarkeit'>";
 		  			 				if($row["Abdunkelbarkeit"]==1){
 						   	    		echo "<option selected>Ja</option>
@@ -434,8 +434,8 @@ return $return;
 							    echo "</select>	
 							</div>
 						
-							<label class='control-label col-md-1' for='strahlenanwendung'>Strahlenanwendung</label>
-	  			 			<div class='col-md-1'>
+							<label class='control-label col-xxl-1' for='strahlenanwendung'>Strahlenanwendung</label>
+	  			 			<div class='col-xxl-1'>
 		  			 			<select class='form-control input-sm' id='strahlenanwendung'>";
 							    if($row["Strahlenanwendung"]==1){
 						   	    		echo "<option selected>Ja</option>
@@ -458,8 +458,8 @@ return $return;
 						   	    	}					 
 							    echo "</select>	
 							</div>
-							<label class='control-label col-md-1' for='laseranwendung'>Laseranwendung</label>
-	  			 			<div class='col-md-1'>
+							<label class='control-label col-xxl-1' for='laseranwendung'>Laseranwendung</label>
+	  			 			<div class='col-xxl-1'>
 		  			 			<select class='form-control input-sm' id='laseranwendung'>";
 							     if($row["Laseranwendung"]==1){
 						   	    		echo "<option selected>Ja</option>
@@ -476,8 +476,8 @@ return $return;
 				 </div>
   			 		
   			 	<div class='form-group'>
-  			 			<label class='control-label col-md-1' for='1kreiso2'>1 Kreis O2</label>
-  			 			<div class='col-md-1'>
+  			 			<label class='control-label col-xxl-1' for='1kreiso2'>1 Kreis O2</label>
+  			 			<div class='col-xxl-1'>
 	  			 			<select class='form-control input-sm' id='1kreiso2'>";
 						    if($row["1 Kreis O2"]==1){
 					   	    		echo "<option selected>Ja</option>
@@ -490,8 +490,8 @@ return $return;
 					   	    	}					 
 						    echo "</select>	
 						</div>	
-  			 			<label class='control-label col-md-1' for='2kreiso2'>2 Kreis O2</label>
-  			 			<div class='col-md-1'>
+  			 			<label class='control-label col-xxl-1' for='2kreiso2'>2 Kreis O2</label>
+  			 			<div class='col-xxl-1'>
 	  			 			<select class='form-control input-sm' id='2kreiso2'>";
 						    if($row["2 Kreis O2"]==1){
 					   	    		echo "<option selected>Ja</option>
@@ -504,8 +504,8 @@ return $return;
 					   	    	}					 
 						    echo "</select>	
 						</div>	
-						<label class='control-label col-md-1' for='1kreisva'>1 Kreis VA</label>
-  			 			<div class='col-md-1'>
+						<label class='control-label col-xxl-1' for='1kreisva'>1 Kreis VA</label>
+  			 			<div class='col-xxl-1'>
 	  			 			<select class='form-control input-sm' id='1kreisva'>";
 						    if($row["1 Kreis Va"]==1){
 					   	    		echo "<option selected>Ja</option>
@@ -518,8 +518,8 @@ return $return;
 					   	    	}					 
 						    echo "</select>	
 						</div>	
-  			 			<label class='control-label col-md-1' for='2kreisva'>2 Kreis VA</label>
-  			 			<div class='col-md-1'>
+  			 			<label class='control-label col-xxl-1' for='2kreisva'>2 Kreis VA</label>
+  			 			<div class='col-xxl-1'>
 	  			 			<select class='form-control input-sm' id='2kreisva'>";
 						    if($row["2 Kreis Va"]==1){
 					   	    		echo "<option selected>Ja</option>
@@ -534,8 +534,8 @@ return $return;
 
 	
 						</div>	
-						<label class='control-label col-md-1' for='1kreisdl5'>1 Kreis DL-5</label>
-  			 			<div class='col-md-1'>
+						<label class='control-label col-xxl-1' for='1kreisdl5'>1 Kreis DL-5</label>
+  			 			<div class='col-xxl-1'>
 	  			 			<select class='form-control input-sm' id='1kreisdl5'>";
 						    if($row["1 Kreis DL-5"]==1){
 					   	    		echo "<option selected>Ja</option>
@@ -550,8 +550,8 @@ return $return;
 
 	
 						</div>	
-  			 			<label class='control-label col-md-1' for='2kreisdl5'>2 Kreis DL-5</label>
-  			 			<div class='col-md-1'>
+  			 			<label class='control-label col-xxl-1' for='2kreisdl5'>2 Kreis DL-5</label>
+  			 			<div class='col-xxl-1'>
 	  			 			<select class='form-control input-sm' id='2kreisdl5'>";
 						    if($row["2 Kreis DL-5"]==1){
 					   	    		echo "<option selected>Ja</option>
@@ -567,8 +567,8 @@ return $return;
 						</div>	  			 											 
   			 	</div>	
 				<div class='form-group'>
-  			 			<label class='control-label col-md-1' for='dl10'>DL-10</label>
-  			 			<div class='col-md-1'>
+  			 			<label class='control-label col-xxl-1' for='dl10'>DL-10</label>
+  			 			<div class='col-xxl-1'>
 	  			 			<select class='form-control input-sm' id='dl10'>";
 						    if($row["DL-10"]==1){
 					   	    		echo "<option selected>Ja</option>
@@ -583,8 +583,8 @@ return $return;
 
 	
 						</div>	
-  			 			<label class='control-label col-md-1' for='dltech'>DL-Tech</label>
-  			 			<div class='col-md-1'>
+  			 			<label class='control-label col-xxl-1' for='dltech'>DL-Tech</label>
+  			 			<div class='col-xxl-1'>
 	  			 			<select class='form-control input-sm' id='dltech'>";
 						    if($row["DL-tech"]==1){
 					   	    		echo "<option selected>Ja</option>
@@ -598,8 +598,8 @@ return $return;
 						    echo "</select>	
 
 						</div>	
-						<label class='control-label col-md-1' for='co2'>CO2</label>
-  			 			<div class='col-md-1'>
+						<label class='control-label col-xxl-1' for='co2'>CO2</label>
+  			 			<div class='col-xxl-1'>
 	  			 			<select class='form-control input-sm' id='co2'>";
 						    if($row["CO2"]==1){
 					   	    		echo "<option selected>Ja</option>
@@ -613,8 +613,8 @@ return $return;
 						    echo "</select>	
 	
 						</div>	
-  			 			<label class='control-label col-md-1' for='nga'>NGA</label>
-  			 			<div class='col-md-1'>
+  			 			<label class='control-label col-xxl-1' for='nga'>NGA</label>
+  			 			<div class='col-xxl-1'>
 	  			 			<select class='form-control input-sm' id='nga'>";
 						    if($row["NGA"]==1){
 					   	    		echo "<option selected>Ja</option>
@@ -628,8 +628,8 @@ return $return;
 						    echo "</select>	
 
 						</div>	
-						<label class='control-label col-md-1' for='n2o'>N2O</label>
-  			 			<div class='col-md-1'>
+						<label class='control-label col-xxl-1' for='n2o'>N2O</label>
+  			 			<div class='col-xxl-1'>
 	  			 			<select class='form-control input-sm' id='n2o'>";
 						    if($row["N2O"]==1){
 					   	    		echo "<option selected>Ja</option>

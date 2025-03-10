@@ -40,7 +40,7 @@
 
 <body id="bodyTenderLots">
 <?php
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 include "_format.php";
 init_page_serversides();
 ?>
@@ -48,7 +48,7 @@ init_page_serversides();
 <div class="container-fluid">
 
     <div class='row'>
-        <div class='col-lg-8' id="mainCardColumn">
+        <div class='col-xxl-8' id="mainCardColumn">
             <div class="mt-4 card">
                 <div class="card-header d-inline-flex justify-content-between align-items-center">
                     <div class="d-inline-flex align-items-center">
@@ -224,7 +224,7 @@ init_page_serversides();
                 </div>
             </div>
         </div>
-        <div class='col-lg-4' id='vermerkeCardColumn'>
+        <div class='col-xxl-4' id='vermerkeCardColumn'>
             <div class='mt-4 card'>
                 <div class='card-header' id='vermerkePanelHead'>Vermerke zu Los
                     <button id='toggleVermerkeBtn' class='btn btn-sm float-end'>
@@ -237,7 +237,7 @@ init_page_serversides();
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-xxl-8">
             <div class="mt-4 card">
                 <div class="card-header d-inline-flex justify-content-between align-items-center"
                      id="elementsInLotCardHeader">Elemente im Los
@@ -245,7 +245,7 @@ init_page_serversides();
                 <div class="card-body" id="elementsInLot"></div>
             </div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-xxl-4">
             <div class="mt-4 card">
                 <div class="card-header">Variantenparameter</div>
                 <div class="card-body" id="elementsvariantenParameterInLot"></div>
@@ -417,7 +417,6 @@ init_page_serversides();
     var lotVerfahren;
     var tableTenderLots;
     $(document).ready(function () {
-
         tableTenderLots = new DataTable('#tableTenderLots', {
             columnDefs: [
                 {
@@ -436,7 +435,7 @@ init_page_serversides();
             lengthChange: true,
             pageLength: 10,
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 decimal: ',',
                 thousands: '.',
                 searchPlaceholder: 'Suche..',
@@ -469,12 +468,16 @@ init_page_serversides();
                 bottomEnd: ['pageLength', 'paging', 'search', 'buttons']
             },
             initComplete: function () {
+
                 move_item_by_class("dt-buttons", "LoseCardHeaderSub");
                 const button = document.querySelector(".dt-buttons");
                 if (button) {
                     button.classList.remove("dt-buttons");
                 }
-                move_item_by_class("dt-search", "LoseCardHeaderSub");
+
+                $('.dt-search input').addClass("btn btn-sm btn-outline-dark");
+                $('.dt-search').children().removeClass('form-control form-control-sm').addClass("d-flex align-items-center").appendTo('#LoseCardHeaderSub');
+
             }
         });
 
@@ -849,8 +852,8 @@ init_page_serversides();
 
 
     $('#toggleVermerkeBtn').click(function () {
-        $('#mainCardColumn').toggleClass('col-lg-8 col-lg-11');
-        $('#vermerkeCardColumn').toggleClass('col-lg-4 col-lg-1');
+        $('#mainCardColumn').toggleClass('col-xxl-8 col-xxl-11');
+        $('#vermerkeCardColumn').toggleClass('col-xxl-4 col-xxl-1');
         $('#lotVermerke').toggleClass('d-none');
         $(this).find('i').toggleClass('fa-chevron-right fa-chevron-left');
     });

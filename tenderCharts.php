@@ -1,11 +1,15 @@
 <?php
-include '_utils.php';
-init_page_serversides();
+session_start();
+if (!isset($_SESSION["username"])) {
+    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
+    exit;
+}
+
 ?>
 
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <title>RB-Vergabediagramme</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
@@ -33,23 +37,16 @@ init_page_serversides();
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker3.min.css">
     <script type='text/javascript'
             src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
-
-
 </head>
-
-
-<body style="height:100%">
-
+<body>
 <div id="limet-navbar"></div> <!-- Container für Navbar -->
-
 <div class="container-fluid">
-
-
-    <div class="col-md-12 col-lg-12">
+    <div class="col-xxl-12 col-xxl-12">
         <div class="mt-4 card">
             <div class="card-header">
                 <div class='form-group'>
-                    <select class='form-control form-control-sm' id='selectTenderChart'>
+                    <label for='selectTenderChart'></label><select class='form-control form-control-sm'
+                                                                   id='selectTenderChart'>
                         <option value=0 selected>Diagramm wählen</option>
                         <option value="chartTenderSums.php">Vergabesumme nach Lieferant</option>
                         <option value="chartTenderProxVsRealTenderSum.php">Vergleich Schätzkosten zu Vergabesumme
@@ -75,6 +72,12 @@ init_page_serversides();
                 }
             });
         }
+    });
+    $.get("navbar4.html", function (data) {
+        $("#limet-navbar").html(data);
+        $(".navbar-nav").find("li:nth-child(3)").addClass("active");
+        currentP = <?php     echo json_encode($_SESSION["projectName"]); ?>;
+        $("#projectSelected").text(currentP);
     });
 
 

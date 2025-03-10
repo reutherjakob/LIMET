@@ -1,6 +1,5 @@
 <?php
-session_start();
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 init_page_serversides();
 ?>
 
@@ -13,18 +12,20 @@ init_page_serversides();
     <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
     <link rel="icon" href="iphone_favicon.png">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
-          integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <!-- Rework 2025 CDNs -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+          integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
+          rel="stylesheet">
 
 
-    <link rel="stylesheet" type="text/css"
-          href="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
-    <script type="text/javascript"
-            src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.js"></script>
 
 </head>
 <body style="height:100%">
@@ -34,36 +35,33 @@ init_page_serversides();
 
     <div class="mt-4 card">
         <div class="card-header">
-            <form class="form-inline">
-                <label class="mr-sm-2" for='selectRoomArea'>Raumbereich</label>
-                <select class='form-control form-control-sm' id='selectRoomArea' name='selectRoomArea'>
+            <form class="form-inline d-flex text-nowrap col-6 align-items-center">
+                <label class="mr-sm-2 me-2" for="selectRoomArea">Raumbereich</label>
+                <select class="form-control form-control-sm mr-sm-2 w-25 " id="selectRoomArea" name="selectRoomArea">
                     <?php
                     $mysqli = utils_connect_sql();
                     $sql = "SELECT tabelle_räume.`Raumbereich Nutzer`
-												FROM tabelle_räume
-												WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
-												GROUP BY tabelle_räume.`Raumbereich Nutzer`
-												ORDER BY tabelle_räume.`Raumbereich Nutzer`;";
-
+                    FROM tabelle_räume
+                    WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
+                    GROUP BY tabelle_räume.`Raumbereich Nutzer`
+                    ORDER BY tabelle_räume.`Raumbereich Nutzer`;";
                     $result = $mysqli->query($sql);
                     while ($row = $result->fetch_assoc()) {
-                        echo "<option value=" . $row["Raumbereich Nutzer"] . ">" . $row["Raumbereich Nutzer"] . "</option>";
+                        echo "<option value='" . $row["Raumbereich Nutzer"] . "'>" . $row["Raumbereich Nutzer"] . "</option>";
                     }
                     ?>
                 </select>
-
-                <label class="ml-sm-2 mr-sm-2" for='selectBestand'>inkl. Bestand</label>
-
-                <select class='form-control form-control-sm' id='selectBestand' name='selectBestand'>
+                <label class="mr-sm-2 me-2 ms-2" for="selectBestand">inkl. Bestand:</label>
+                <select class="form-control form-control-sm mr-sm-2 w-25" id="selectBestand" name="selectBestand">
                     <option value="1">Ja</option>
                     <option value="0">Nein</option>
                 </select>
-
-                <button type='button' id='calculateCostsRoomArea' class='btn btn-outline-dark btn-sm'
-                        value='calculateCostsRoomArea'><i class="far fa-play-circle"></i> Berechnen
+                <button type="button" id="calculateCostsRoomArea" class="btn btn-outline-dark btn-sm">
+                    <i class="far fa-play-circle"></i> Berechnen
                 </button>
             </form>
         </div>
+
         <div class="card-body" id="costsRoomArea">
         </div>
     </div>
@@ -71,11 +69,11 @@ init_page_serversides();
 <script>
 
     // Kosten berechnen
-    $("button[value='calculateCostsRoomArea']").click(function () {
-        var bestandInkl = $('#selectBestand').val();
-        var x = document.getElementById("selectRoomArea").selectedIndex;
-        var y = document.getElementById("selectRoomArea").options;
-        var roomArea = y[x].text;
+    $("button[id='calculateCostsRoomArea']").click(function () {
+        let bestandInkl = $('#selectBestand').val();
+        let x = document.getElementById("selectRoomArea").selectedIndex;
+        let y = document.getElementById("selectRoomArea").options;
+        let roomArea = y[x].text;
 
         $.ajax({
             url: "getRoomAreaCosts.php",

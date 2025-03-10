@@ -32,7 +32,7 @@ if(!isset($_SESSION["username"]))
         
 	$result = $mysqli->query($sql);
 	
-	echo "<div class='table-responsive'><table class='table table-striped table-sm' id='tableElementStandortdaten' cellspacing='0'>
+	echo "<div class='table-responsive'><table class='table table-striped table-sm' id='tableElementStandortdaten'  >
 	<thead><tr>
         <th></th>
         <th>Variante</th>
@@ -55,8 +55,8 @@ if(!isset($_SESSION["username"]))
 	    
 	}	
 	echo "</tbody></table></div>";
-        //echo "<input type='button' id='addStandortElementModalButton' class='btn btn-success btn-sm' value='Standortelement hinzufügen' data-toggle='modal' data-target='#addStandortElementModal'></input>";
-        echo "<button type='button' id='addStandortElementModalButton' class='btn ml-4 mt-2 btn-success btn-sm' value='Standortelement hinzufügen' data-toggle='modal' data-target='#addStandortElementModal'><i class='fas fa-plus-square'></i></button>";
+        //echo "<input type='button' id='addStandortElementModalButton' class='btn btn-success btn-sm' value='Standortelement hinzufügen' data-bs-toggle='modal' data-bs-target='#addStandortElementModal'></input>";
+        echo "<button type='button' id='addStandortElementModalButton' class='btn ml-4 mt-2 btn-success btn-sm' value='Standortelement hinzufügen' data-bs-toggle='modal' data-bs-target='#addStandortElementModal'><i class='fas fa-plus-square'></i></button>";
 	
         
         ?>
@@ -68,7 +68,7 @@ if(!isset($_SESSION["username"]))
 	      <div class='modal-content'>
 	        <div class='modal-header'>
 	          <h4 class='modal-title'>Standortelement hinzufügen</h4>
-                    <button type='button' class='close' data-dismiss='modal'>&times;</button>   	          
+                    <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
 	        </div>
 	        <div class='modal-body' id='mbody'>
                     <form role="form">
@@ -95,7 +95,7 @@ if(!isset($_SESSION["username"]))
                 </div>
 	        <div class='modal-footer'>
 	        	<input type='button' id='addStandortElement' class='btn btn-success btn-sm' value='Hinzufügen'></input>                        
-	          	<button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Abbrechen</button>
+	          	<button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
 	        </div>
 	      </div>
 	      
@@ -124,7 +124,7 @@ if(!isset($_SESSION["username"]))
                 ],
         //"pagingType": "simple_numbers",
         //"lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
-        "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+        "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
         "scrollY":        '20vh',
     	"scrollCollapse": true   		     
     } );

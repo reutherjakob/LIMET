@@ -1,6 +1,6 @@
 <?php
 // V2.0
-include "_utils.php";
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 check_login();
 ?>
 
@@ -18,19 +18,19 @@ check_login();
 
 <?php
 $mysqli = utils_connect_sql();
-$deviceID="";
+$deviceID = "";
 if ($_GET["deviceID"] != "") {
     $deviceID = $_GET["deviceID"];
 }
 
 $sql = "SELECT tabelle_wartungspreise.Datum, tabelle_wartungspreise.Info, tabelle_wartungspreise.Menge, tabelle_wartungspreise.Wartungsart, tabelle_wartungspreise.WartungspreisProJahr, tabelle_projekte.Projektname, tabelle_lieferant.Lieferant, tabelle_wartungspreise.idtabelle_wartungspreise
                 FROM (tabelle_wartungspreise LEFT JOIN tabelle_lieferant ON tabelle_wartungspreise.tabelle_lieferant_idTABELLE_Lieferant = tabelle_lieferant.idTABELLE_Lieferant) LEFT JOIN tabelle_projekte ON tabelle_wartungspreise.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
-                 WHERE (((tabelle_wartungspreise.tabelle_geraete_idTABELLE_Geraete)=" .$deviceID. "));";
+                 WHERE (((tabelle_wartungspreise.tabelle_geraete_idTABELLE_Geraete)=" . $deviceID . "));";
 
 
 $result = $mysqli->query($sql);
 
-echo "<table class='table table-striped table-sm' id='tableDeviceServicePrices' cellspacing='0'>
+echo "<table class='table table-striped table-sm' id='tableDeviceServicePrices'  >
 	<thead><tr>";
 echo "<th>Datum</th>
 		<th>Info</th>
@@ -58,7 +58,7 @@ while ($row = $result->fetch_assoc()) {
     echo "</tr>";
 }
 echo "</tbody></table>";
-echo "<input type='button' id='addServicePriceModalButton' class='btn btn-success btn-sm' value='Wartungspreis hinzufügen' data-toggle='modal' data-target='#addServicePriceModal'></input>";
+echo "<input type='button' id='addServicePriceModalButton' class='btn btn-success btn-sm' value='Wartungspreis hinzufügen' data-bs-toggle='modal' data-bs-target='#addServicePriceModal'></input>";
 ?>
 
 <!-- Modal zum Anlegen eines Preises -->
@@ -68,7 +68,7 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Wartungspreis hinzufügen</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='mbody'>
                 <form role="form">
@@ -122,7 +122,9 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
                     echo "<div class='form-group'>
                                                     <label for='lieferantService'>Lieferant:</label>									
                                                     <select class='form-control input-sm' id='lieferantService' name='lieferantService'>
-                                                            <option value=0>Lieferant auswählen</option>";
+                                                            <option value=0>Lieferant auswählen</option>
+                                                             <option value='add'>Nicht dabei? - Zu Element Hinzufügen! </option>
+                                                             <option value='new'>Nicht dabei? - Neu Anlegen!</option>";
                     while ($row = $result1->fetch_assoc()) {
                         echo "<option value=" . $row["idTABELLE_Lieferant"] . ">" . $row["Lieferant"] . "</option>";
                     }
@@ -134,8 +136,8 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
             </div>
             <div class='modal-footer'>
                 <input type='button' id='addServicePrice' class='btn btn-success btn-sm' value='Speichern'
-                       data-dismiss='modal'></input>
-                <button type='button' class='btn btn-danger btn-sm' data-dismiss='modal'>Abbrechen</button>
+                       data-bs-dismiss='modal'></input>
+                <button type='button' class='btn btn-danger btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
             </div>
         </div>
 
@@ -153,29 +155,47 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
         });
     });
 
-    $("#tableDeviceServicePrices").DataTable({
-        "paging": true,
-        "pagingType": "simple",
-        "lengthChange": false,
-        "searching": false,
-        "info": false,
-        "order": [[0, "desc"]],
-        "language": {
-            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
-            "decimal": ",",
-            "thousands": 0
+    new DataTable('#tableDeviceServicePrices', {
+        paging: true,
+        pagingType: 'simple',
+        lengthChange: false,
+        searching: false,
+        info: false,
+        order: [[0, 'desc']],
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+            decimal: ',',
+            thousands: '.'
         },
+        layout: {
+            topStart: null,
+            topEnd: null,
+            bottomStart: null,
+            bottomEnd: 'paging'
+        }
+    });
+
+
+    document.getElementById('lieferantService').addEventListener('change', function () {
+        if (this.value === 'new') {
+            window.location.href = 'firmenkontakte.php';
+        }
+        if (this.value === 'add') {
+            $('#addServicePriceModal').modal("hide");
+
+            $('#addLieferantModal').modal('toggle');
+        }
     });
 
 
     $("#addServicePrice").click(function () {//Wartungspreis zu Geraet hinzufügen
-        var date = $("#dateService").val();
-        var info = $("#infoService").val();
-        var menge = $("#mengeService").val();
-        var wartungsart = $("#wartungsart").val();
-        var wartungspreis = $("#wartungspreis").val();
-        var project = $("#projectService").val();
-        var lieferant = $("#lieferantService").val();
+        let date = $("#dateService").val();
+        let info = $("#infoService").val();
+        let menge = $("#mengeService").val();
+        let wartungsart = $("#wartungsart").val();
+        let wartungspreis = $("#wartungspreis").val();
+        let project = $("#projectService").val();
+        let lieferant = $("#lieferantService").val();
 
         if (date !== "" && info !== "" && menge !== "" && wartungsart !== "" && wartungspreis !== "" && lieferant > 0) {
             $.ajax({

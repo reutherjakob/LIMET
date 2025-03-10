@@ -31,7 +31,7 @@
     
     $result = $mysqli->query($sql);
 
-    echo "<table class='table table-striped table-bordered table-sm' id='tableRechnungen'  cellspacing='0' width='100%'>
+    echo "<table class='table table-striped table-bordered table-sm' id='tableRechnungen'   >
     <thead><tr>    
     <th>id</th>
     <th>Interne Nr</th>
@@ -98,7 +98,7 @@
             "pageLength": 10,
             "order": [[ 1, "asc" ]],
             "orderMulti": true,
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
             "columnDefs": [
                             {
                                 "targets": [ 0,5, 9 ],

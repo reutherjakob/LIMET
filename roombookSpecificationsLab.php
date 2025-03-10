@@ -1,10 +1,9 @@
 <?php
-include '_utils.php';
 session_start();
-check_login();
-?>
-
-
+if (!isset($_SESSION["username"])) {
+    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
+    exit;
+} ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
@@ -78,14 +77,18 @@ check_login();
             <a class="toggle-vis" data-column="40">HT_Spuele Stk</a>
         </div>
         <div class="card-body">
+
             <?php
-            $mysqli = utils_connect_sql();
-            /*
-              $sql = "SELECT tabelle_räume.idTABELLE_Räume, tabelle_räume.Raumnr
-              FROM tabelle_räume
-              WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=".$_SESSION["projectID"]."))
-              ORDER BY tabelle_räume.Raumnr;";
-             */
+            $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
+            if ($mysqli->connect_errno) {
+                echo "Failed to connect to MySQL: " . $mysqli->connect_error;
+
+            }
+            if (!$mysqli->set_charset("utf8")) {
+                printf("Error loading character set utf8: %s\n", $mysqli->error);
+                exit();
+            }
+
             $sql = "SELECT tabelle_räume.idTABELLE_Räume, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Nutzfläche, tabelle_räume.Raumhoehe, tabelle_räume.Geschoss, 
 
                                     tabelle_räume.Abdunkelbarkeit, tabelle_räume.Strahlenanwendung, tabelle_räume.Laseranwendung,  tabelle_räume.Laserklasse,  
@@ -103,7 +106,7 @@ check_login();
 
             $result = $mysqli->query($sql);
 
-            echo "<table class='table table-striped table-bordered table-sm' id='tableRoomsLab'  cellspacing='0' width='100%'>
+            echo "<table class='table table-striped table-bordered table-sm' id='tableRoomsLab'   >
                             <thead><tr>
                             <th>ID</th>
                             <th></th>
@@ -212,6 +215,7 @@ check_login();
     var table;
     var column_clicked;
     var row_clicked;
+    var currentP;
 
 
     $.fn.dataTable.ext.search.push(
@@ -248,7 +252,7 @@ check_login();
     // Tabellen formatieren
     $(document).ready(function () {
         table = $('#tableRoomsLab').DataTable({
-            language: {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+            language: {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
             columns: [
                 {
                     "data": "id",
@@ -475,8 +479,8 @@ check_login();
         $.get("navbar4.html", function (data) {
             $("#limet-navbar").html(data);
             $(".navbar-nav").find("li:nth-child(3)").addClass("active");
+            currentP = <?php     echo json_encode($_SESSION["projectName"]); ?>;
             $("#projectSelected").text(currentP);
-
         });
 
         $("#tableRoomsLab tbody").on('click', 'td.editable-text', function () {
@@ -511,6 +515,13 @@ check_login();
         });
 
 
+        $.get("navbar4.html", function (data) {
+            $("#limet-navbar").html(data);
+            $(".navbar-nav").find("li:nth-child(3)").addClass("active");
+            let currentP = <?php     echo json_encode($_SESSION["projectName"]); ?>;
+            $("#projectSelected").text(currentP);
+
+        });
     });
 
 

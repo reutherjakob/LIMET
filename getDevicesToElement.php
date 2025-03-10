@@ -12,7 +12,7 @@
 
 <?php
 // V3.0: 2025 Rework: Reuther & Fux
-include "_utils.php";
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 check_login();
 $mysqli = utils_connect_sql();
 $elementID = "0";
@@ -59,8 +59,8 @@ while ($row = $result->fetch_assoc()) {
 }
 
 echo "</tbody></table>";
-echo "<input type='button' id='addDeviceModalButton' class='btn btn-success btn-sm' value='Gerät hinzufügen' data-bs-toggle='modal' data-bs-target='#addDeviceModal'>";
-echo "<input type='button' id='" . $elementID . "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggle='modal' data-bs-target='#deviceComparisonModal'>";
+echo "<input type='button' id='addDeviceModalButton' class='btn btn-success btn-sm' value='Gerät hinzufügen' data-bs-toggle='modal' data-bs-target='#addDeviceModal'><input type='button' id='";
+echo $elementID; echo"' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggle='modal' data-bs-target='#deviceComparisonModal'>";
 ?>
 
 
@@ -157,6 +157,7 @@ echo "<input type='button' id='" . $elementID . "' class='btn btn-default btn-sm
 <script charset="utf-8" type="text/javascript">
     var deviceID;
     var tableDevicesToElement;
+
     $(document).ready(function () {
         tableDevicesToElement = $('#tableDevicesToElement').DataTable({
             columnDefs: [
@@ -180,15 +181,15 @@ echo "<input type='button' id='" . $elementID . "' class='btn btn-default btn-sm
             info: false,
             order: [[1, 'asc']],
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 search: "", //'<i class="fa fa-filter" aria-hidden="true"></i>', // Custom search icon
                 searchPlaceholder: 'Suche...' // Custom placeholder
             },
             layout: {
-                topStart: 'paging',
-                topEnd: 'search',
+                topStart:null,
+                topEnd: null,
                 bottomStart: null,
-                bottomEnd: null
+                bottomEnd: ['search','paging']
             }
         });
 
@@ -200,7 +201,6 @@ echo "<input type='button' id='" . $elementID . "' class='btn btn-default btn-sm
             document.getElementById("hersteller").value = tableDevicesToElement.row($(this)).data()[5];
             document.getElementById("type").value = tableDevicesToElement.row($(this)).data()[3];
             document.getElementById("kurzbeschreibung").value = tableDevicesToElement.row($(this)).data()[4];
-
             $.ajax({
                 url: "getStandardDeviceParameters.php",
                 data: {"deviceID": deviceID},

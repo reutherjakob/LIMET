@@ -1,6 +1,6 @@
 <?php
 // V2.0: 2024-11-29, Reuther & Fux
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 include "_format.php";
 check_login();
 
@@ -196,7 +196,7 @@ $mysqli->close();
                 <span id="ElementName<?php echo $row["id"]; ?>"><?php echo $row["ElementID"] . " " . $row["Bezeichnung"]; ?></span>
             </td>
             <td data-order="<?php echo $row["tabelle_Varianten_idtabelle_Varianten"]; ?>">
-                <label for="variante<?php echo $row["id"]; ?>"></label><select class="form-control form-control-sm"
+                 <select class="form-control form-control-sm"
                                                                                id="variante<?php echo $row["id"]; ?>">
                     <?php
                     $options = ['A' => 1, 'B' => 2, 'C' => 3, 'D' => 4, 'E' => 5, 'F' => 6, 'G' => 7];
@@ -209,7 +209,7 @@ $mysqli->close();
             </td>
             <td data-order="<?php echo $row["Anzahl"]; ?>"><input class="form-control form-control-sm" type="text"
                                                                   id="amount<?php echo $row["id"]; ?>"
-                                                                  value="<?php echo $row["Anzahl"]; ?>" size="2"></td>
+                                                                  value="<?php echo $row["Anzahl"]; ?>" size="1"></td>
             <td data-order="<?php echo $row["Neu/Bestand"]; ?>">
                 <select class="form-control form-control-sm" id="bestand<?php echo $row["id"]; ?>">
                     <option value="0" <?php echo $row["Neu/Bestand"] == "0" ? "selected" : ""; ?>>Ja</option>
@@ -253,22 +253,23 @@ $mysqli->close();
 </table>
 
 <!-- Modal zum Kopieren des Rauminhalts -->
-<div class='modal fade' id='copyRoomElementsModal' role='dialog'>
-    <div class='modal-dialog modal-lg'>
+<div class='modal fade' id='copyRoomElementsModal' tabindex='-1' aria-labelledby='copyRoomElementsModalLabel' aria-hidden='true'>
+    <div class='modal-dialog modal-xl'>
         <div class='modal-content'>
+
             <div class='modal-header'>
-                <h4 class='modal-title'>Rauminhalt kopieren</h4>
-                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
+                <h5 class='modal-title' id='copyRoomElementsModalLabel'>Rauminhalt kopieren</h5>
+                <p class='mb-0 ms-3'>(Bisher im Raum verortete Elemente werden hierdurch NICHT verändert!)</p>
+                <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
             </div>
+
             <div class='modal-body' id='mbodyCRE'>
             </div>
             <div class='modal-footer'>
-                <input type='button' id='copyRoomElements' class='btn btn-info btn-sm'
-                       value='Elemente kopieren'>
-                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Close</button>
+                <button type='button' id='copyRoomElements' class='btn btn-primary'>Elemente kopieren</button>
+                <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Close</button>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -293,6 +294,7 @@ $mysqli->close();
 
 <script src="_utils.js"></script>
 <script charset="utf-8" type="module">
+    var tableRoomElements;
 
     function attachButtonListeners() {
         $("button[value='createRoombookPDF']").click(function () {
@@ -414,7 +416,7 @@ $mysqli->close();
     });
 
     $(document).ready(function () {
-        let tableRoomElements = $("#tableRoomElements").DataTable({
+        tableRoomElements = $("#tableRoomElements").DataTable({
             select: true,
             paging: true,
             pagingType: "simple",
@@ -448,8 +450,8 @@ $mysqli->close();
             layout: {
                 topStart: null,
                 topEnd: null,
-                bottomEnd: ['search', 'pageLength', 'paging'],
-                bottomStart: 'info'
+                bottomEnd: [ 'pageLength', 'paging'],
+                bottomStart: ['search','info']
             }
         });
 
@@ -462,6 +464,8 @@ $mysqli->close();
             // console.log(stk);
             let standort = $("#Standort" + id).val();
             let verwendung = $("#Verwendung" + id).val();
+            let elementID = tableRoomElements.row($(this)).data()[0]['display'];
+//            console.log(elementID);
             $.ajax({
                 url: "getElementParameters.php",
                 data: {"id": id},
@@ -515,7 +519,6 @@ $mysqli->close();
         });
         attachButtonListeners();
     });
-
 
 </script>
 </body>

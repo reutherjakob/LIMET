@@ -29,12 +29,12 @@
         <div class="card-header">Elemente</div>
         <div class="card-body">
             <div class="row mt-1">
-                <div class='col-md-6'>
+                <div class='col-xxl-6'>
                     <div class='mt-1 card'>
                         <div class='card-header'><label>Elementgruppen</label></div>
                         <div class='card-body' id='elementGroups'>
                             <?php
-                            include '_utils.php';
+                            if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
                             init_page_serversides("x");
                             $mysqli = utils_connect_sql();
                             $sql = "SELECT tabelle_element_gewerke.idtabelle_element_gewerke, tabelle_element_gewerke.Nummer, tabelle_element_gewerke.Gewerk
@@ -43,8 +43,8 @@
 
                             $result = $mysqli->query($sql);
                             echo "<div class='form-group row'>
-									 			<label class='control-label col-md-2' for='elementGewerk'>Gewerk</label>
-												<div class='col-md-10'>
+									 			<label class='control-label col-xxl-2' for='elementGewerk'>Gewerk</label>
+												<div class='col-xxl-10'>
 													<select class='form-control form-control-sm' id='elementGewerk' name='elementGewerk'>";
                             while ($row = $result->fetch_assoc()) {
                                 echo "<option value=" . $row["idtabelle_element_gewerke"] . ">" . $row["Nummer"] . " - " . $row["Gewerk"] . "</option>";
@@ -54,8 +54,8 @@
 										</div>";
 
                             echo "<div class='form-group row'>
-									 			<label class='control-label col-md-2' for='elementHauptgruppe'>Hauptgruppe</label>
-												<div class='col-md-10'>
+									 			<label class='control-label col-xxl-2' for='elementHauptgruppe'>Hauptgruppe</label>
+												<div class='col-xxl-10'>
 													<select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>
 														<option selected>Gewerk auswählen</option>
 													</select>	
@@ -63,8 +63,8 @@
 										</div>";
 
                             echo "<div class='form-group row'>
-									 			<label class='control-label col-md-2' for='elementGruppe'>Gruppe</label>
-												<div class='col-md-10'>
+									 			<label class='control-label col-xxl-2' for='elementGruppe'>Gruppe</label>
+												<div class='col-xxl-10'>
 													<select class='form-control form-control-sm' id='elementGruppe' name='elementGruppe'>
 														<option selected>Gewerk auswählen</option>
 													</select>	
@@ -88,7 +88,7 @@
 
                             $result = $mysqli->query($sql);
 
-                            echo "<table class='table table-striped table-sm table-hover border border-light border-5' id='tableElementsInDB' >
+                            echo "<table class='table compact table-striped table-sm table-hover border border-light border-5' id='tableElementsInDB' >
 									<thead><tr>
 									<th>ID</th>
 									<th>ElementID</th>
@@ -113,7 +113,7 @@
                         </div>
                     </div>
                 </div>
-                <div class='col-md-6'>
+                <div class='col-xxl-6'>
                     <div class="mt-1 card">
                         <div class="card-header"><label>Schätzkosten in Projekten</label></div>
                         <div class="card-body" id="elementPricesInOtherProjects"></div>
@@ -129,19 +129,19 @@
         <div class="card-header">Geräte</div>
         <div class="card-body">
             <div class="row mt-1">
-                <div class='col-md-4'>
+                <div class='col-xxl-4'>
                     <div class='mt-1 card'>
                         <div class='card-header'><label>Geräte zu Element</label></div>
                         <div class='card-body' id='devicesInDB'></div>
                     </div>
                 </div>
-                <div class='col-md-4'>
+                <div class='col-xxl-4'>
                     <div class='mt-1 card'>
                         <div class='card-header'><label>Geräteparameter</label></div>
                         <div class='card-body' id='deviceParametersInDB'></div>
                     </div>
                 </div>
-                <div class='col-md-4'>
+                <div class='col-xxl-4'>
                     <div class='mt-1 card'>
                         <div class='card-header'><label>Gerätepreise</label></div>
                         <div class='card-body' id='devicePrices'></div>
@@ -157,51 +157,7 @@
                 </div>
             </div>
         </div>
-        <!--
-                <div class="col-md-4 col-lg-4">
-                        <div class="panel-group">
-                                <div class="panel panel-info">
-                                        <div class="panel-heading"><label>Elementparameter</label></div>
-                                        <div class="panel-body" id="elementParametersInDB"></div>
-                                </div>
-                        </div>
-                </div>
-        </div>
 
-        <div class="row">
-                <div class="col-md-4 col-lg-4">
-                        <div class="panel-group">
-                                <div class="panel panel-success">
-                                        <div class="panel-heading"><label>Geräte</label></div>
-                                        <div class="panel-body" id="devicesInDB">
-                                        </div>
-                                </div>
-                        </div>
-                </div>
-                <div class="col-md-4 col-lg-4">
-                        <div class="panel-group">
-                                <div class="panel panel-success">
-                                        <div class="panel-heading"><label>Geräteparameter</label></div>
-                                        <div class="panel-body" id="deviceParametersInDB"></div>
-                                </div>
-                        </div>
-                </div>
-                <div class="col-md-4 col-lg-4">
-                        <div class="panel-group">
-                                <div class="panel panel-success">
-                                        <div class="panel-heading"><label>Gerätepreise</label></div>
-                                        <div class="panel-body" id="devicePrices"></div>
-                                </div>
-                                <div class="panel panel-success">
-                                        <div class="panel-heading"><label>Lieferanten</label></div>
-                                        <div class="panel-body" id="deviceLieferanten">
-                                        </div>
-                                </div>
-                        </div>
-                </div>
-        </div>
-</div>
-        -->
     </div>
 </body>
 
@@ -259,7 +215,7 @@
             pageLength: 10,
             order: [[1, 'asc']],
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 search: "",
                 searchPlaceholder: "Suche"
             },
@@ -319,9 +275,7 @@
                 }
             });
 
-
         });
-
     });
 
 

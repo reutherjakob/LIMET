@@ -1,5 +1,5 @@
 <?php
-include "_utils.php";
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 include "_format.php";
 check_login();
 ?>
@@ -54,10 +54,10 @@ $sql = "SELECT `tabelle_bestandsdaten`.`idtabelle_bestandsdaten`, tabelle_bestan
 $result = $mysqli->query($sql);
 $row_cnt = $result->num_rows;
 
-//    echo " <button type='button' id='addBestandsElement' class='btn ml-4 mt-2 btn-outline-success btn-sm' value='Hinzufügen' data-toggle='modal' data-target='#addBestandModal'><i class='fas fa-plus'></i></button>";
+//    echo " <button type='button' id='addBestandsElement' class='btn ml-4 mt-2 btn-outline-success btn-sm' value='Hinzufügen' data-bs-toggle='modal' data-bs-target='#addBestandModal'><i class='fas fa-plus'></i></button>";
 
 
-echo "<div class='table-responsive'><table class='table table-striped table-bordered table-sm' id='tableElementBestandsdaten' cellspacing='0' width='100%'>
+echo "<div class='table-responsive'><table class='table table-striped table-bordered table-sm table-hover border border-5 border-light' id='tableElementBestandsdaten' >
 	<thead><tr>
 	<th>ID</th>
 	<th></th>
@@ -66,7 +66,7 @@ echo "<div class='table-responsive'><table class='table table-striped table-bord
 	<th>Anschaffungsjahr</th>
 	<th>Gerät</th>
     <th>Standort aktuell</th>
-	<th></th>
+	<th></th>                                                                                            
     <th>Check ob genug bestand da</th>
 	</tr></thead>
 	<tbody>";
@@ -117,7 +117,7 @@ $mysqli->close();
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Bestand hinzufügen</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
 
             </div>
             <div class='modal-body' id='mbody'>
@@ -156,10 +156,10 @@ $mysqli->close();
             </div>
             <div class='modal-footer'>
                 <input type='button' id='addBestand' class='btn btn-success btn-sm' value='Hinzufügen'
-                       data-dismiss='modal'></input>
+                       data-bs-dismiss='modal'></input>
                 <input type='button' id='saveBestand' class='btn btn-warning btn-sm' value='Speichern'
-                       data-dismiss='modal'></input>
-                <button type='button' class='btn btn-danger btn-sm' data-dismiss='modal'>Abbrechen</button>
+                       data-bs-dismiss='modal'></input>
+                <button type='button' class='btn btn-danger btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
             </div>
         </div>
     </div>
@@ -167,61 +167,53 @@ $mysqli->close();
 
 <script src="_utils.js"></script>
 <script>
+    var table;
     $(document).ready(function () {
-        $("#tableElementBestandsdaten").DataTable({
-            "paging": false,
-            "sortable": false,
-            "searching": false,
-            "info": false,
-            "columnDefs": [
+        table = new DataTable("#tableElementBestandsdaten", {
+            paging: false,
+            ordering: false,
+            searching: false,
+            info: false,
+            columnDefs: [
                 {
-                    "targets": [0, 8],
-                    "visible": false,
-                    "searchable": false
+                    targets: [0, 8],
+                    visible: false,
+                    searchable: false
                 },
                 {
-                    "targets": [1, 7],
-                    "visible": true,
-                    "searchable": false,
-                    "sortable": false
+                    targets: [1, 7],
+                    visible: true,
+                    searchable: false,
+                    orderable: false
                 }
             ],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
-            "scrollY": '20vh',
-            "scrollCollapse": true,
-            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-                if (aData[8] === "0") {
-                    $('td', nRow).css('background-color', ' rgba(100, 0, 25, 0.3) ');
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+            },
+            scrollY: '20vh',
+            scrollCollapse: true,
+            rowCallback: function (row, data, displayNum, displayIndex, dataIndex) {
+                if (data[8] === "0") {
+                    $(row).css('background-color', 'rgba(100, 0, 25, 0.3)');
                 } else {
-                    $('td', nRow).css('background-color', ' rgba(100, 140' +
-                        ', 25, 0.3) ');
+                    $(row).css('background-color', 'rgba(100, 140, 25, 0.3)');
                 }
             },
-            "initComplete": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-                // move_item("addBestandsElement", "BestandsdatenCardHeader");
-            }
-
-        });
-        var table = $('#tableElementBestandsdaten').DataTable();
-        $('#tableElementBestandsdaten tbody').on('click', 'tr', function () {
-            if ($(this).hasClass('info')) {
-            } else {
-                table.$('tr.info').removeClass('info');
-                $(this).addClass('info');
+            initComplete: function (settings, json) {
+                // Your initComplete function here
             }
         });
-
     });
 
 
     //Bestand hinzufügen
     $("#addBestand").click(function () {
         $("#addBestandModal").modal('hide');
-        var inventarNr = $("#invNr").val();
-        var anschaffungsJahr = $("#year").val();
-        var serienNr = $("#serNr").val();
-        var gereatID = $("#geraetNr").val();
-        var currentPlace = $("#currentPlace").val();
+        let inventarNr = $("#invNr").val();
+        let anschaffungsJahr = $("#year").val();
+        let serienNr = $("#serNr").val();
+        let gereatID = $("#geraetNr").val();
+        let currentPlace = $("#currentPlace").val();
 
         if (inventarNr !== "") {
             $.ajax({
@@ -254,16 +246,19 @@ $mysqli->close();
 
     });
 
-    //Bestand löschen
     $("button[value='deleteBestand']").click(function () {
-        var id = this.id;
+        let id = this.id;
         if (id !== "") {
             $.ajax({
                 url: "deleteBestand.php",
                 data: {"bestandID": id},
                 type: "GET",
                 success: function (data) {
-                    alert(data);
+                    if (data.includes("error")) {
+                        alert("Lol, hätteste gern.\nGeht aber nich... \nFrag den Jakob.");
+                    } else {
+                        alert(data);
+                    }
                     $.ajax({
                         url: "getElementBestand.php",
                         type: "GET",
@@ -271,7 +266,9 @@ $mysqli->close();
                             $("#elementBestand").html(data);
                         }
                     });
-
+                },
+                error: function () {
+                    alert("Lol, hätteste gern.\nGeht aber nich... \nFrag den Jakob.");
                 }
             });
         }
@@ -279,7 +276,7 @@ $mysqli->close();
 
     //Bestand ändern
     $("button[value='changeBestand']").click(function () {
-        var id = this.id;
+        let id = this.id;
         $("#saveBestand").show();
         $("#addBestand").hide();
         document.getElementById("invNr").value = invent_clicked;
@@ -288,17 +285,13 @@ $mysqli->close();
         $('#addBestandModal').modal("show");
     });
 
-
-
-
-    //Änderung speichern
     $("button[value='saveBestand']").click(function () {
-        var ID = this.id;
-        var geraeteIDNeu = $("#gereatIDSelect" + ID).val();
-        var inventNr = $("#inventNr" + ID).val();
-        var serienNr = $("#serienNr" + ID).val();
-        var yearNr = $("#yearNr" + ID).val();
-        var currentPlace = $("#currentPlace" + ID).val();
+        let ID = this.id;
+        let geraeteIDNeu = $("#gereatIDSelect" + ID).val();
+        let inventNr = $("#inventNr" + ID).val();
+        let serienNr = $("#serienNr" + ID).val();
+        let yearNr = $("#yearNr" + ID).val();
+        let currentPlace = $("#currentPlace" + ID).val();
 
         if (ID !== "" && inventNr !== "") {
             $.ajax({
@@ -327,19 +320,13 @@ $mysqli->close();
         } else {
             alert("Keine Bestands-ID gefunden bzw. Keine Inventarnummer eingegeben!");
         }
-
     });
 
-
-    //Bestand hinzufügen Buttons ein/ausblenden
     $("#addBestandsElement").click(function () {
         var id = this.id;
         $("#addBestand").show();
         $("#saveBestand").hide();
     });
-
-
 </script>
-
 </body>
 </html>

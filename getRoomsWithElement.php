@@ -1,5 +1,5 @@
 <?php
-include "_utils.php";
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 session_start();
 check_login();
 ?>
@@ -24,16 +24,16 @@ echo "<table class='table table-striped table-responsive table-hover table-borde
 	<thead><tr>
 	<th>ID</th>
 	<th>Var</th>
-	<th>RaumNr</th>
+	<th>Raum Nr</th>
 	<th>Raum</th>
         <th>Ebene</th>
 	<th>Bereich</th>
 	<th>Stk</th>
 	<th>Bestand</th>
 	<th>Standort</th>
-	<th>Verwendung</th>
-	<th>Kommentar</th>
-	<th>Speichern</th>
+	<th>Verw.</th>
+	<th>Komm.</th>
+	<th class='fa fa-save'> </th>
 	</tr></thead><tbody>";
 
 while ($row = $result->fetch_assoc()) {

@@ -1,7 +1,7 @@
 <!-- 13.2.25: Reworked -->
 
 <?php
-include "_utils.php";
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 check_login();
 
 $mysqli = utils_connect_sql();
@@ -12,7 +12,7 @@ $sql = "SELECT tabelle_Vermerke.idtabelle_Vermerke, tabelle_Vermerke.tabelle_rä
 
 $result = $mysqli->query($sql);
 
-echo "<table class='table table-striped table-bordered table-responsive' id='tableVermerke'>
+echo "<table class='table table-striped table-bordered table-responsive border border-light border-5' id='tableVermerke'>
                 <thead><tr>
                 <th>ID</th>
                 <th></th>
@@ -279,7 +279,7 @@ echo "</tbody></table>";
             order: [[5, 'asc']],
             compact: true,
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json', search: ""
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json', search: ""
             },
             rowCallback: function (row, data, displayNum, displayIndex, dataIndex) {
                 if (data[7] === "Bearbeitung") {

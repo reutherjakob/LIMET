@@ -12,7 +12,7 @@
 <body>
 <!-- Rework 2025 -->
 <?php
-include "_utils.php";
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 include "_format.php";
 check_login();
 $mysqli = utils_connect_sql();
@@ -28,7 +28,7 @@ $sql = "SELECT tabelle_umsaetze.idtabelle_umsaetze, tabelle_umsaetze.umsatz, tab
 
 $result = $mysqli->query($sql);
 
-echo "<table class='table table-striped table-sm' id='tableLieferantenUmsaetze' cellspacing='0'>
+echo "<table class='table table-striped table-sm' id='tableLieferantenUmsaetze'  >
 	<thead><tr>";
 echo "<th>ID</th>
 		<th>Umsatz</th>
@@ -95,7 +95,7 @@ echo "<input type='button' id='addUmsatzModal' class='btn btn-success btn-sm' va
         info: false,
         order: [[3, 'desc']],
         language: {
-            url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json'
+            url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
         },
         scrollY: '20vh',
         scrollCollapse: true,

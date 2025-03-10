@@ -1,5 +1,5 @@
 <?php
-include "_utils.php";
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 check_login();
 ?>
 
@@ -25,7 +25,7 @@ $sql = "SELECT tabelle_Vermerkgruppe.Gruppenname, tabelle_Vermerkgruppe.Gruppena
 
 $result = $mysqli->query($sql);
 
-echo "<div class='table-responsive'><table class='table table-striped table-bordered table-sm' id='tableRoomVermerke' cellspacing='0' width='100%'>
+echo "<div class='table-responsive'><table class='table table-striped table-bordered table-sm' id='tableRoomVermerke'  >
 	<thead><tr>
 	<th>ID</th> 
         <th>Art</th>
@@ -56,7 +56,7 @@ while ($row = $result->fetch_assoc()) {
     }
     echo "</td>";
     echo "<td>" . $row["Datum"] . "</td>";
-    echo "<td><button type='button' class='btn btn-sm btn-outline-dark' data-toggle='popover' title='Vermerk' data-placement='left' data-content='" . $row["Vermerktext"] . "'><i class='fa fa-comment'></i></button></td>";
+    echo "<td><button type='button' class='btn btn-sm btn-outline-dark' data-bs-toggle='popover' title='Vermerk' data-placement='left' data-bs-content='" . $row["Vermerktext"] . "'><i class='fa fa-comment'></i></button></td>";
     echo "<td>" . $row["Vermerkart"] . "</td>";
     echo "<td>" . $row["Name"] . "</td>";
     echo "<td>";
@@ -90,7 +90,7 @@ $mysqli->close();
             "searching": true,
             "info": true,
             "order": [[4, "desc"]],
-            'language': {'url': '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json'},
+            'language': {'url': 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'},
             "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                 //Farbe bestimmen
                 if (aData[6] === "Bearbeitung") {
@@ -137,9 +137,9 @@ $mysqli->close();
             }
 
         });
-        // Popover for Vermerk	TODO substiz
+        // Popover for Vermerk	TODO
         $(function () {
-            $('[data-toggle="popover"]').popover();
+            $('[data-bs-toggle="popover"]').popover();
         });
 
 

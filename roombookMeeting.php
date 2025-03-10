@@ -1,6 +1,6 @@
 <!-- 13.2.25: Reworked -->
 <?php
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 init_page_serversides();
 ?>
 
@@ -41,7 +41,7 @@ init_page_serversides();
                                             WHERE tabelle_projekte.idTABELLE_Projekte=" . $_SESSION["projectID"] . " AND tabelle_räume.Entfallen <>1
                                             ORDER BY tabelle_räume.`MT-relevant` DESC";
             $result = $mysqli->query($sql);
-            echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'  cellspacing='0' width='100%'>
+            echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'   >
                             <thead class='thead'><tr>
                             <th>ID</th>
                             <th>Raumnr</th>
@@ -74,7 +74,7 @@ init_page_serversides();
 
     </div>
     <div class="row mt-4">
-        <div class="col-md-1">
+        <div class="col-xxl-1">
             <div class="card bg-dark text-center">
                 <div class="card-body" id="roomInfo">
                     <div class="card-title">
@@ -103,7 +103,7 @@ init_page_serversides();
                 </div>
             </div>
         </div>
-        <div class="col-md-11">
+        <div class="col-xxl-11">
             <div class="card">
                 <div class="card-header" id="informationHeader">
                 </div>
@@ -141,7 +141,7 @@ init_page_serversides();
                 numbers: 10
             },
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json', search: ""
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json', search: ""
             },
             buttons: ["searchBuilder","colvis"]
         });

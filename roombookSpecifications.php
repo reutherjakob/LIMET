@@ -1,6 +1,6 @@
 <!-- 13.2.25: Reworked -->
 <?php
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 check_login();
 ?>
 
@@ -72,7 +72,7 @@ check_login();
 
             $result = $mysqli->query($sql);
 
-            echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'  cellspacing='0' width='100%'>
+            echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'   >
                             <thead><tr>
                             <th>ID</th>
                             <th></th>
@@ -171,7 +171,7 @@ check_login();
 
             while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
-                // echo "<td class='col-md-1'><input type='button' id='".$row["idTABELLE_Räume"]."' class='btn btn-success btn-sm' value='Raum auswählen'></td>";
+                // echo "<td class='col-xxl-1'><input type='button' id='".$row["idTABELLE_Räume"]."' class='btn btn-success btn-sm' value='Raum auswählen'></td>";
                 echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
                 echo "<td><button type='button' id='" . $row["idTABELLE_Räume"] . "' class='btn btn-outline-dark btn-sm' value='changeRoom' data-toggle='modal' data-target='#changeRoomModal'><i class='fa fa-edit'></i></button></td>";
                 echo "<td>" . $row["Raumnr"] . "</td>";
@@ -329,27 +329,35 @@ check_login();
 </div>
 
 <script>
+
+    function adaptResponseData(data) {
+        // Replace Bootstrap 5 classes with their Bootstrap 4 equivalents
+        data = data.replace(/class="([^"]*)\bg-0\b([^"]*)"/g, 'class="$1no-gutters$2"');
+        data = data.replace(/\bms-(\d+|auto)\b/g, 'ml-$1');
+        data = data.replace(/\bme-(\d+|auto)\b/g, 'mr-$1');
+        data = data.replace(/\bps-(\d+|auto)\b/g, 'pl-$1');
+        data = data.replace(/\bpe-(\d+|auto)\b/g, 'pr-$1');
+
+        // Replace Bootstrap 5 data attributes with Bootstrap 4 equivalents
+        data = data.replace(/data-bs-toggle/g, 'data-toggle');
+        data = data.replace(/data-bs-target/g, 'data-target');
+        data = data.replace(/data-bs-dismiss/g, 'data-dismiss');
+
+        return data;
+    }
+
+
     var raumID;
     $.fn.dataTable.ext.search.push(
         function (settings, data, dataIndex) {
             if (settings.nTable.id !== 'tableRooms') {
                 return true;
             }
-
-
             if ($("#filter_MTrelevant").val() === '1') {
-                if (data [39] === "1") {
-                    return true;
-                } else {
-                    return false;
-                }
+                return data [39] === "1";
             } else {
                 if ($("#filter_MTrelevant").val() === '0') {
-                    if (data [39] === "0") {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    return data [39] === "0";
                 } else {
                     return true;
                 }
@@ -376,7 +384,7 @@ check_login();
             "order": [[2, "asc"]],
             //"pagingType": "simple_numbers",
             //"lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
             "columnDefs": [
                 {
                     "targets": [0, 40],
@@ -409,7 +417,7 @@ check_login();
 
 
         table = $('#tableRooms').DataTable();
-        var buttons = new $.fn.dataTable.Buttons(table, {
+        let buttons = new $.fn.dataTable.Buttons(table, {
             buttons: ['excel', 'copy', 'csv']
         });
         buttons.container().appendTo('#dt-buttons');
@@ -454,6 +462,7 @@ check_login();
                             url: "getRoomSpecifications1.php",
                             type: "GET",
                             success: function (data) {
+                                data = adaptResponseData(data);
                                 $("#bauangaben").html(data);
                                 // $.ajax({
                                 //url : "getRoomNotices.php",
@@ -464,33 +473,28 @@ check_login();
                                     url: "getRoomElementsDetailed1.php",
                                     type: "GET",
                                     success: function (data) {
+                                        data = adaptResponseData(data);
                                         $("#roomElements").html(data);
                                     }
                                 });
-                                //}
-                                //    });
                             }
                         });
-                        //}
-                        //});
                     }
                 });
             }
         });
-
     });
-
     //Raum speichern
     $("#saveRoom").click(function () {
-        var nummer = $("#nummer").val();
-        var name = $("#name").val();
-        var flaeche = $("#flaeche").val();
-        var raumbereich = $("#raumbereich").val();
-        var geschoss = $("#geschoss").val();
-        var bauetappe = $("#bauetappe").val();
-        var bauteil = $("#bauteil").val();
-        var funktionsteilstelle = $("#funktionsstelle").val();
-        var MTrelevant = $("#mt-relevant").val();
+        let nummer = $("#nummer").val();
+        let name = $("#name").val();
+        let flaeche = $("#flaeche").val();
+        let raumbereich = $("#raumbereich").val();
+        let geschoss = $("#geschoss").val();
+        let bauetappe = $("#bauetappe").val();
+        let bauteil = $("#bauteil").val();
+        let funktionsteilstelle = $("#funktionsstelle").val();
+        let MTrelevant = $("#mt-relevant").val();
 
         if (nummer !== "" && name !== "" && flaeche !== "" && raumbereich !== "" && geschoss !== "" && bauetappe !== "" && bauteil !== "" && funktionsteilstelle !== 0 && MTrelevant !== "") {
 
@@ -510,6 +514,7 @@ check_login();
                 },
                 type: "GET",
                 success: function (data) {
+                    data = adaptResponseData(data);
                     $('#changeRoomModal').modal('hide');
                     alert(data);
                     window.location.replace("roombookSpecifications.php");
@@ -523,15 +528,15 @@ check_login();
     //Raum hinzufügen
     $("#addRoom").click(function () {
         console.log("Add btn click");
-        var nummer = $("#nummer").val();
-        var name = $("#name").val();
-        var flaeche = $("#flaeche").val();
-        var raumbereich = $("#raumbereich").val();
-        var geschoss = $("#geschoss").val();
-        var bauetappe = $("#bauetappe").val();
-        var bauteil = $("#bauteil").val();
-        var funktionsteilstelle = $("#funktionsstelle").val();
-        var MTrelevant = $("#mt-relevant").val();
+      let nummer = $("#nummer").val();
+      let name = $("#name").val();
+      let flaeche = $("#flaeche").val();
+      let raumbereich = $("#raumbereich").val();
+      let geschoss = $("#geschoss").val();
+      let bauetappe = $("#bauetappe").val();
+      let bauteil = $("#bauteil").val();
+      let funktionsteilstelle = $("#funktionsstelle").val();
+      let MTrelevant = $("#mt-relevant").val();
 
         if (nummer !== "" && name !== "" && flaeche !== "" && raumbereich !== "" && geschoss !== "" && bauetappe !== "" && bauteil !== "" && funktionsteilstelle !== 0 && MTrelevant !== "") {
 
@@ -551,6 +556,7 @@ check_login();
                 },
                 type: "GET",
                 success: function (data) {
+                    data = adaptResponseData(data);
                     $('#changeRoomModal').modal('hide');
                     alert(data);
                     window.location.replace("roombookSpecifications.php");

@@ -35,7 +35,7 @@ function check_login()
 function check_if_project_selected_else_redirect()
 {
     if ($_SESSION["projectName"] == "") {
-        header("Location: https://limet-rb.com/projects.php");
+        header("Location: /projects.php");
         exit;
     }
 }

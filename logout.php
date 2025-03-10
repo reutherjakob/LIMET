@@ -58,7 +58,7 @@ if(!isset($_SESSION["username"]))
 		    </div>	  
 	</nav>
 	<div class="row" style="min-height: 0%; max-height:90%; overflow:auto">
-		  <div class="col-md-12" >
+		  <div class="col-xxl-12" >
 		  	<?php
 				
 				// Initialize the session.

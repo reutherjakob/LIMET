@@ -1,49 +1,13 @@
 <?php
-include "_utils.php";
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 check_login();
 ?>
-
 
 <!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
 <head>
-    <style>
-        .popover-content {
-            height: 180px;
-            width: 200px;
-        }
-
-        textarea.popover-textarea {
-            border: 0px;
-            margin: 0px;
-            width: 100%;
-            height: 100%;
-            padding: 0px;
-            box-shadow: none;
-        }
-
-        .popover-footer {
-            margin: 0;
-            padding: 8px 14px;
-            font-size: 14px;
-            font-weight: 400;
-            line-height: 18px;
-            background-color: #F7F7F7;
-            border-bottom: 1px solid #EBEBEB;
-            border-radius: 5px 5px 0 0;
-        }
-
-        .input-xs {
-            height: 22px;
-            padding: 2px 5px;
-            font-size: 12px;
-            line-height: 1.5; /* If Placeholder of the input is moved up, rem/modify this. */
-            border-radius: 3px;
-        }
-    </style>
     <title>GetRoomsWithElementsAndBestand</title>
-
 </head>
 <body>
 
@@ -56,7 +20,7 @@ $sql = "SELECT tabelle_räume_has_tabelle_elemente.id, tabelle_räume.idTABELLE_
 			ORDER BY tabelle_räume.Raumnr;";
 
 $result = $mysqli->query($sql);
-echo "<table class='table table-striped table-bordered table-sm' id='tableRoomsWithElement' cellspacing='0' width='100%'>
+echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableRoomsWithElement' >
 	<thead><tr>
         <th>ID</th>
 	<th>Anzahl</th>
@@ -77,7 +41,6 @@ echo "<table class='table table-striped table-bordered table-sm' id='tableRoomsW
 	</tr></thead><tbody>";
 
 while ($row = $result->fetch_assoc()) {
-    // echo"<script> console.log(". $row["Anzahl"]." );  </script>";
     if (intval($row["Anzahl"]) > 0) {
         echo "<tr>";
         echo "<td>" . $row["id"] . "</td>";
@@ -129,9 +92,14 @@ while ($row = $result->fetch_assoc()) {
         }
         echo "</select></td>";
         if (null != ($row["Kurzbeschreibung"])) {
-            echo "<td><button type='button' class='btn btn-sm btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment'></i></button></td>";
+            echo "<td><button type='button' class='btn btn-sm btn-outline-dark' 
+    data-bs-toggle='popover' 
+    data-bs-placement='top' 
+    data-bs-content='" . htmlspecialchars($row["Kurzbeschreibung"]) . "' 
+    title='Kommentar'>
+    <i class='fa fa-comment'></i></button></td>";
         } else {
-            echo "<td><button type='button' class='btn btn-sm btn-outline-dark' id='buttonComment" . $row["id"] . "' name='showComment' value='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment-slash'></i></button></td>";
+            echo "<td> </td>";
         }
         echo "<td><button type='button' id='" . $row["id"] . "' class='btn btn-warning btn-sm' value='saveElement'><i class='far fa-save'></i></button></td>";
         echo "<td>" . $row["tabelle_Varianten_idtabelle_Varianten"] . "</td>";
@@ -144,21 +112,20 @@ while ($row = $result->fetch_assoc()) {
 }
 echo "</tbody></table>";
 $mysqli->close();
-echo "<!-- Modal --> <!-- data-toggle='modal' data-target='#myModal' --> 
+
+echo "
 <div class='modal fade' id='myModal' role='dialog'>
   <div class='modal-dialog'>
-
-    <!-- Modal content-->
     <div class='modal-content'>
       <div class='modal-header'>
-        <button type='button' class='close' data-dismiss='modal'>&times;</button>
+        <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
         <h4 class='modal-title'>Kommentar</h4>
       </div>
       <div class='modal-body' id='mbody'>
               <div class='modal-body-inner'></div>
       </div>
       <div class='modal-footer'>
-        <button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>
+        <button type='button' class='btn btn-default' data-bs-dismiss='modal'>Close</button>
       </div>
     </div>
 
@@ -167,32 +134,37 @@ echo "<!-- Modal --> <!-- data-toggle='modal' data-target='#myModal' -->
 ?>
 
 <script src="_utils.js"></script>
-<script src="_datatables.js"></script>
 <script>
-
+    var tableRoomsWithElement;
     $(document).ready(function () {
-        define_custom_search_function_for_input_table_elements();
-        $('#tableRoomsWithElement_filter').remove();
-        $('#tableRoomsWithElement').DataTable({
-            "columnDefs": [
+        let tableRoomsWithElement = new DataTable('#tableRoomsWithElement', {
+            columnDefs: [
                 {
-                    "targets": [0, 11, 12, 13, 14, 15],
-                    "visible": false,
-                    "searchable": false
+                    targets: [0, 11, 12, 13, 14, 15],
+                    visible: false,
+                    searchable: false
                 },
                 {
-                    "targets": 1, // Assuming "Anzahl" is in the second column (index 1)
-                    "orderDataType": "dom-text-numeric"
+                    targets: 1, // Assuming "Anzahl" is in the second column (index 1)
+                    orderDataType: "dom-text-numeric"
                 }
             ],
-            "paging": false,
-            "searching": true,
-            "info": false,
-            "order": [[1, "asc"]],
-            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json", search: ""},
-            "dom": '<"top"lf>rt<"bottom"><"clear">',
-            "buttons": [
+            paging: false,
+            searching: true,
+            info: false,
+            order: [[1, "asc"]],
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
+                search: ""
+            },
+            layout: {
+                topStart: 'pageLength',
+                topEnd: 'search',
+                bottomStart: null,
+                bottomEnd: null
+            },
+            buttons: [
                 {
                     extend: 'excel',
                     exportOptions: {
@@ -200,20 +172,17 @@ echo "<!-- Modal --> <!-- data-toggle='modal' data-target='#myModal' -->
                     }
                 }
             ],
-            "select": true,
-            "initComplete": function () {
-                move_item("tableRoomsWithElement_filter", "CH_RME");
-                $('#tableRoomsWithElement_filter label').contents().filter(function () {
-                    return this.nodeType === 3; // Node.TEXT_NODE
-                }).remove();
+            select: true,
+            initComplete: function (settings, json) {
+                // Your initComplete function here
             }
         });
 
-        var table = $('#tableRoomsWithElement').DataTable();
+
 
         $('#tableRoomsWithElement tbody').on('click', 'tr', function () {
-            var id = table.row($(this)).data()[0];
-            var stk = $("#amount" + id).val();
+            let id = tableRoomsWithElement.row($(this)).data()[0];
+            let stk = $("#amount" + id).val();
             $.ajax({
                 url: "getElementBestand.php",
                 data: {"id": id, "stk": stk},
@@ -224,82 +193,71 @@ echo "<!-- Modal --> <!-- data-toggle='modal' data-target='#myModal' -->
             });
         });
 
+        let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        let popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                trigger: 'click',
+                html: true
+            })
+        })
 
-    });
-
-    $("button[value='reloadBestand']").click(function () {
-        $("#elementBestand").html("");
-        $.ajax({
-            url: "getElementBestand.php",
-            type: "GET",
-            success: function (data) {
-                makeToaster("Reloaded!", true);
-                $("#elementBestand").html(data);
+        // Close popover when clicking outside
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest('[data-bs-toggle="popover"]').length &&
+                !$(e.target).closest('.popover').length) {
+                $('[data-bs-toggle="popover"]').popover('hide');
             }
         });
-    });
 
 
-    $("button[name='showComment']").popover({
-        trigger: 'click',
-        placement: 'top',
-        html: true,
-        container: 'body',
-        content: "<textarea class='popover-textarea'></textarea>",
-        template: "<div class='popover'>" +
-            "<h4 class='popover-header'></h4><div class='popover-body'>" +
-            "</div><div class='popover-footer'><button type='button' class='btn btn-sm btn-outline-dark popover-submit'><i class='fas fa-check'></i>" +
-            "</button>&nbsp;" +
-            "</div>"
 
-    });
 
-    $("button[name='showComment']").click(function () {
-        //hide any visible comment-popover
-        $("button[name='showComment']").not(this).popover('hide');
-        let id = this.id;
-        let val = document.getElementById(id).value;
-        //attach/link text
-        $('.popover-textarea').val(val).focus();
-        //update link text on submit
-        $('.popover-submit').click(function () {
-            document.getElementById(id).value = $('.popover-textarea').val();
-            $(this).parents(".popover").popover('hide');
-        });
-    });
-
-    $("button[value='saveElement']").click(function () {
-        let id = this.id;
-        let comment = $("#buttonComment" + id).val();
-        let amount = $("#amount" + id).val();
-        let variantenID = $("#variante" + id).val();
-        let bestand = $("#bestand" + id).val();
-        let standort = $("#Standort" + id).val();
-        let verwendung = $("#Verwendung" + id).val();
-        if (standort === '0' && verwendung === '0') {
-            alert("Standort und Verwendung kann nicht Nein sein!");
-        } else {
+        $("button[value='reloadBestand']").click(function () {
+            $("#elementBestand").html("");
             $.ajax({
-                url: "saveRoombookEntry.php",
-                data: {
-                    "comment": comment,
-                    "id": id,
-                    "amount": amount,
-                    "variantenID": variantenID,
-                    "bestand": bestand,
-                    "standort": standort,
-                    "verwendung": verwendung
-                },
+                url: "getElementBestand.php",
                 type: "GET",
                 success: function (data) {
-                    makeToaster(data.trim(), true);
+                    makeToaster("Reloaded!", true);
+                    $("#elementBestand").html(data);
                 }
             });
-        }
+        });
+
+
+        $("button[value='saveElement']").click(function () {
+            let id = this.id;
+            let comment = $("#buttonComment" + id).val();
+            let amount = $("#amount" + id).val();
+            let variantenID = $("#variante" + id).val();
+            let bestand = $("#bestand" + id).val();
+            let standort = $("#Standort" + id).val();
+            let verwendung = $("#Verwendung" + id).val();
+            if (standort === '0' && verwendung === '0') {
+                alert("Standort und Verwendung kann nicht Nein sein!");
+            } else {
+                $.ajax({
+                    url: "saveRoombookEntry.php",
+                    data: {
+                        "comment": comment,
+                        "id": id,
+                        "amount": amount,
+                        "variantenID": variantenID,
+                        "bestand": bestand,
+                        "standort": standort,
+                        "verwendung": verwendung
+                    },
+                    type: "GET",
+                    success: function (data) {
+                        makeToaster(data.trim(), true);
+                    }
+                });
+            }
+        });
+
     });
 
 
 </script>
-
 </body>
 </html>

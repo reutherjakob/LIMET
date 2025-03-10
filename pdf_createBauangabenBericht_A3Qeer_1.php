@@ -7,7 +7,7 @@
 
 include 'pdf_createBericht_MYPDFclass.php'; //require_once('TCPDF-main/TCPDF-main/tcpdf.php'); is in class file
 include 'pdf_createBericht_utils.php';
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 include 'pdf_createMTTabelle.php';
 session_start();
 check_login();

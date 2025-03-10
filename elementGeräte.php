@@ -8,15 +8,21 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css">
     <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
-    <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.css"
+
+    <!-- Rework 2025 CDNs -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+          integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
+
 </head>
 <body style="height:100%">
 <div id="limet-navbar" class=''></div>
@@ -25,7 +31,7 @@
         <div class="card-header" id="CH1">Geräteliste</div>
         <div id="CB1" class="card-body table-responsive">
             <?php
-            include '_utils.php';
+            if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
             init_page_serversides();
             $mysqli = utils_connect_sql();
             $sql = "SELECT 
@@ -66,7 +72,7 @@
                     foreach ($row as $value) {
                         echo "<td>" . ($value) . "</td>";
                     }
-                    echo "<td><button type='button' id='" . $row["idTABELLE_Geraete"] . "' class='btn btn-outline-dark btn-sm' value='changeDevice' data-toggle='modal' data-target='#changeDeviceModal'><i class='fas fa-pencil-alt'></i></button></td>";
+                    echo "<td><button type='button' id='" . $row["idTABELLE_Geraete"] . "' class='btn btn-outline-dark btn-sm' value='changeDevice' data-bs-toggle='modal' data-bs-target='#changeDeviceModal'><i class='fas fa-pencil-alt'></i></button></td>";
                     echo "</tr>";
                 }
             }
@@ -82,7 +88,7 @@
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Gerät hinzufügen/bearbeiten</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='mbody'>
                 <form role="form">
@@ -103,7 +109,7 @@
                             </select>
                             <div class="input-group-append">
                                 <button type='button' id='openAddManufacturer' class='btn btn-outline-secondary'
-                                        data-toggle='modal' data-target='#addManufacturerModal'>
+                                        data-bs-toggle='modal' data-bs-target='#addManufacturerModal'>
                                     <i class='far fa-plus-square'></i>
                                 </button>
                             </div>
@@ -122,7 +128,7 @@
             <div class='modal-footer'>
                 <input type='button' id='addDevice' class='btn btn-success btn-sm' value='Hinzufügen'>
                 <input type='button' id='saveDevice' class='btn btn-warning btn-sm' value='Speichern'>
-                <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Abbrechen</button>
+                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
             </div>
         </div>
     </div>
@@ -134,7 +140,7 @@
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Hersteller hinzufügen</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='mbodyAddManufacturerModal'>
                 <div class="form-group">
@@ -144,7 +150,7 @@
             </div>
             <div class='modal-footer'>
                 <input type='button' id='addManufacturer' class='btn btn-success btn-sm' value='Hinzufügen'>
-                <button type='button' class='btn btn-default btn-sm' data-dismiss='modal'>Schließen</button>
+                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Schließen</button>
             </div>
         </div>
     </div>
@@ -158,7 +164,7 @@
     $(document).ready(function () {
         table = new DataTable('#tableDevices', {
             responsive: true,
-            dom: '<"row"<"col-lg-12 col-md-6"f>> <"row"<"col-lg-12"tr>> <"row"<"col-md-2"i><"col-md-6"l><"col-md-4"p>>',
+            dom: '<"row"<"col-xxl-12 col-xxl-6"f>> <"row"<"col-xxl-12"tr>> <"row"<"col-xxl-2"i><"col-xxl-6"l><"col-xxl-4"p>>',
             paging: true,
             pageLength: 25,
             columnDefs: [{

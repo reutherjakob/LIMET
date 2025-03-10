@@ -1,6 +1,6 @@
 <?php
 require_once('TCPDF-main/TCPDF-main/tcpdf.php');
-include "_utils.php";
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 include "_format.php";
 check_login();
 

@@ -69,7 +69,7 @@ if(!isset($_SESSION["username"]))
                     }
                   ?>
             <li class="py-0 nav-item dropdown">
-              <a class="py-0 nav-link dropdown-toggle" data-toggle="dropdown" href="#"><i class='fa fa-list-alt'></i> Projekte</a>              
+              <a class="py-0 nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"><i class='fa fa-list-alt'></i> Projekte</a>
               <ul class="dropdown-menu">                  
                   <a class="dropdown-item" href="projects.php"><i class='fa fa-list-alt'></i> Projektauswahl</a> 
                   <?php 
@@ -83,7 +83,7 @@ if(!isset($_SESSION["username"]))
               <?php 
                     if($_SESSION["ext"]==0){
                         echo "<li class='nav-item dropdown'>
-                                <a class=' py-0 nav-link dropdown-toggle' data-toggle='dropdown' href='#'><i class='fa fa-book'></i> Raumbuch</a>              
+                                <a class=' py-0 nav-link dropdown-toggle' data-bs-toggle='dropdown' href='#'><i class='fa fa-book'></i> Raumbuch</a>              
                                 <ul class='dropdown-menu'>
                                     <a class='dropdown-item' href='roombookSpecifications.php'>Raumbuch - Bauangaben</a>
                                     <a class='dropdown-item' href='roombookMeeting.php'>Raumbuch - Meeting</a>
@@ -94,7 +94,7 @@ if(!isset($_SESSION["username"]))
                                 </ul>
                               </li>
                               <li class='nav-item dropdown'>
-                                <a class='py-0 nav-link dropdown-toggle' data-toggle='dropdown' href='#'><i class='fa fa-euro-sign'></i> Kosten</a>              
+                                <a class='py-0 nav-link dropdown-toggle' data-bs-toggle='dropdown' href='#'><i class='fa fa-euro-sign'></i> Kosten</a>              
                                 <ul class='dropdown-menu'>
                                     <a class='dropdown-item' href='costsOverall.php'>Kosten - Berichte</a> 
                                     <a class='dropdown-item' href='costsRoomArea.php'>Kosten - Raumbereich</a>
@@ -105,14 +105,14 @@ if(!isset($_SESSION["username"]))
                     }
                 ?>            	                 
             <li class="py-0 nav-item dropdown">
-              <a class="py-0 nav-link dropdown-toggle" data-toggle="dropdown" href="#"><i class='fa fa-recycle'></i> Bestand</a>             
+              <a class="py-0 nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"><i class='fa fa-recycle'></i> Bestand</a>
               <ul class="dropdown-menu">
                   <a class="dropdown-item" href="roombookBestand.php">Bestand - Raumbereich</a>	
                   <a class="dropdown-item" href="roombookBestandElements.php">Bestand - Gesamt</a>
               </ul>
             </li>
             <li class="py-0 nav-item dropdown">
-              <a class="py-0 nav-link dropdown-toggle" data-toggle="dropdown" href="#"><i class='fa fa-tasks'></i> Ausschreibungen</a>
+              <a class="py-0 nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"><i class='fa fa-tasks'></i> Ausschreibungen</a>
               <ul class="dropdown-menu">
                     <a class="dropdown-item" href="tenderLots.php">Los-Verwaltung</a>
                     <a class="dropdown-item" href="tenderCalendar.php">Vergabekalender</a>
@@ -125,7 +125,7 @@ if(!isset($_SESSION["username"]))
               </ul>
             </li>
               <li class="py-0 nav-item dropdown">
-              <a class="py-0 nav-link dropdown-toggle" data-toggle="dropdown" href="#"><i class='fas fa-wrench'></i> Ausführung-ÖBA</a>
+              <a class="py-0 nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"><i class='fas fa-wrench'></i> Ausführung-ÖBA</a>
               <ul class="dropdown-menu">
                 <a class="dropdown-item" href="dashboardAusfuehrung.php"><i class='fas fa-tachometer-alt'></i> Dashboard</a>
                 <a class="dropdown-item" href="roombookAusfuehrung.php"><i class='fas fa-building'></i> Räume</a>
@@ -133,7 +133,7 @@ if(!isset($_SESSION["username"]))
               </ul>
             </li>
              <li class="py-0 nav-item dropdown">
-                <a class="py-0 nav-link dropdown-toggle" data-toggle="dropdown" href="#"><i class='fas fa-camera'></i> Fotos</a>
+                <a class="py-0 nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"><i class='fas fa-camera'></i> Fotos</a>
                 <ul class="dropdown-menu">
                     <a class='dropdown-item active' href='imageGallery.php'><i class='fas fa-images'></i> Gesamt</a>
                     <a class='dropdown-item' href='imageRoomgallery.php'><i class='fas fa-sitemap'></i> Raumzuordnung</a>
@@ -143,7 +143,7 @@ if(!isset($_SESSION["username"]))
           <?php 
                 if($_SESSION["ext"]==0){
                     echo "<li class='py-0 nav-item dropdown'>
-                                <a class='py-0 nav-link dropdown-toggle' data-toggle='dropdown' href='#'><i class='fa fa-buromobelexperte '></i> Datenbank-Verwaltung</a>              
+                                <a class='py-0 nav-link dropdown-toggle' data-bs-toggle='dropdown' href='#'><i class='fa fa-buromobelexperte '></i> Datenbank-Verwaltung</a>              
                                 <ul class='dropdown-menu'>
                                     <a class='dropdown-item' href='elementAdministration.php'>Elemente-Verwaltung</a>
                                     <a class='dropdown-item' href='elementeCAD.php'>Elemente-CAD</a>
@@ -161,7 +161,7 @@ if(!isset($_SESSION["username"]))
           </ul>              
     </nav>
     <div class='mt-4 row'>  
-        <div class='col-md-12'>
+        <div class='col-xxl-12'>
             <div class="mt-4 card">
                 <div class="card-header"><b>Projektfotos </b>
                     <label class="float-right">
@@ -219,7 +219,7 @@ if(!isset($_SESSION["username"]))
         <div class='modal-content'>
             <div class='modal-header'>	          
               <h4 class='modal-title'><i class='fas fa-upload'></i> Bild uploaden</h4>
-              <button type='button' class='close' data-dismiss='modal'>&times;</button>
+              <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='mbody'>
               <form role='form' id="uploadForm" enctype="multipart/form-data">   
@@ -231,7 +231,7 @@ if(!isset($_SESSION["username"]))
               </form>              
             </div>
             <div class='modal-footer'>
-              <input type='button' id='uploadImageButton' class='btn btn-outline-dark btn-sm' value='Upload' data-dismiss='modal'></input> 
+              <input type='button' id='uploadImageButton' class='btn btn-outline-dark btn-sm' value='Upload' data-bs-dismiss='modal'></input>
             </div>
         </div>
     </div>

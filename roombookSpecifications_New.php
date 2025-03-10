@@ -1,6 +1,6 @@
 <!-- 13.2.25: Reworked -->
 <?php
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 init_page_serversides();
 include 'roombookSpecifications_addRoomModal.php';
 include 'roombookSpecifications_HelpModal.php';
@@ -81,20 +81,20 @@ include 'roombookSpecifications_HelpModal.php';
 
     <section class="mt-1 card">
         <header class="card-header d-flex border-light" style="height: 1vh; font-size: 1vh;" id="btnLabelz">
-            <div class="col-md-4"><strong>Edit & Filter</strong></div>
-            <div class="col-md-1 d-flex justify-content-end "><strong>Auswahl</strong></div>
-            <div class="col-md-1"></div>
-            <div class="col-md-3"><strong>Sichtbarkeit</strong></div>
-            <div class="col-md-1 d-flex justify-content-end align-items-right "><strong>Neu & Output</strong></div>
-            <div class="col-md-2 d-flex justify-content-end align-items-right"><strong style="float: right;">Check&Settings</strong>
+            <div class="col-xxl-4"><strong>Edit & Filter</strong></div>
+            <div class="col-xxl-1 d-flex justify-content-end "><strong>Auswahl</strong></div>
+            <div class="col-xxl-1"></div>
+            <div class="col-xxl-3"><strong>Sichtbarkeit</strong></div>
+            <div class="col-xxl-1 d-flex justify-content-end align-items-right "><strong>Neu & Output</strong></div>
+            <div class="col-xxl-2 d-flex justify-content-end align-items-right"><strong style="float: right;">Check&Settings</strong>
             </div>
         </header>
         <div class="card-header container-fluid d-flex align-items-start border-dark">
-            <div class="col-lg-4 d-flex justify-content-left align-items-left" id='TableCardHeader'></div>
-            <div class="col-md-1 d-flex justify-content-end align-items-center" id="TableCardHeaderX"></div>
-            <div class="col-md-4 d-flex justify-content-center align-items-center" id="TableCardHeader2"></div>
-            <div class="col-md-1 d-flex justify-content-end align-items-right" id='TableCardHeader3'></div>
-            <div class="col-md-2 d-flex justify-content-end align-items-right" id='TableCardHeader4'></div>
+            <div class="col-xxl-4 d-flex justify-content-left align-items-left" id='TableCardHeader'></div>
+            <div class="col-xxl-1 d-flex justify-content-end align-items-center" id="TableCardHeaderX"></div>
+            <div class="col-xxl-4 d-flex justify-content-center align-items-center" id="TableCardHeader2"></div>
+            <div class="col-xxl-1 d-flex justify-content-end align-items-right" id='TableCardHeader3'></div>
+            <div class="col-xxl-2 d-flex justify-content-end align-items-right" id='TableCardHeader4'></div>
         </div>
         <div class="card-body" id="table_container_div">
             <table class="table display compact table-responsive table-striped table-bordered table-sm sticky"

@@ -1,6 +1,6 @@
 <!-- 17.2.25: Reworked -->
 <?php
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 init_page_serversides();
 ?>
 
@@ -44,12 +44,12 @@ init_page_serversides();
 <div id="limet-navbar"></div> <!-- Container für Navbar Aufruf über onLoad -->
 <div class="container-fluid">
     <div class='row'>
-        <div class='col-lg-12'>
+        <div class='col-xxl-12'>
             <div class="mt-1 card">
                 <div class="card-header">Elemente</div>
                 <div class="card-body" id="DBElementData">
                     <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-xxl-6">
                             <div class="mt-1 card">
                                 <div class="card-header">Elementgruppen</div>
                                 <div class="card-body" id="elementGroups">
@@ -60,8 +60,8 @@ init_page_serversides();
                                                                 ORDER BY tabelle_element_gewerke.Nummer;";
                                     $result = $mysqli->query($sql);
                                     echo "<div class='form-group row'>
-                                                        <label class='control-label col-md-2' for='elementGewerk'>Gewerk</label>
-                                                        <div class='col-md-10'>
+                                                        <label class='control-label col-xxl-2' for='elementGewerk'>Gewerk</label>
+                                                        <div class='col-xxl-10'>
                                                                 <select class='form-control form-control-sm' id='elementGewerk' name='elementGewerk'>";
                                     while ($row = $result->fetch_assoc()) {
                                         echo "<option value=" . $row["idtabelle_element_gewerke"] . ">" . $row["Nummer"] . " - " . $row["Gewerk"] . "</option>";
@@ -70,16 +70,16 @@ init_page_serversides();
                                                         </div>
                                         </div>";
                                     echo "<div class='form-group row'>
-                                                        <label class='control-label col-md-2' for='elementHauptgruppe'>Hauptgruppe</label>
-                                                        <div class='col-md-10'>
+                                                        <label class='control-label col-xxl-2' for='elementHauptgruppe'>Hauptgruppe</label>
+                                                        <div class='col-xxl-10'>
                                                                 <select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>
                                                                         <option selected>Gewerk auswählen</option>
                                                                 </select>	
                                                         </div>
                                         </div>";
                                     echo "<div class='form-group row'>
-                                                        <label class='control-label col-md-2' for='elementGruppe'>Gruppe</label>
-                                                        <div class='col-md-10'>
+                                                        <label class='control-label col-xxl-2' for='elementGruppe'>Gruppe</label>
+                                                        <div class='col-xxl-10'>
                                                                 <select class='form-control form-control-sm' id='elementGruppe' name='elementGruppe'>
                                                                         <option selected>Gewerk auswählen</option>
                                                                 </select>	
@@ -126,13 +126,13 @@ init_page_serversides();
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3 col-lg-3">
+                        <div class="col-xxl-3 col-xxl-3">
                             <div class="mt-1 card">
                                 <div class="card-header">Elementparameter</div>
                                 <div class="card-body" id="elementParametersInDB"></div>
                             </div>
                         </div>
-                        <div class="col-md-3 col-lg-3">
+                        <div class="col-xxl-3 col-xxl-3">
                             <div class="mt-1 card">
                                 <div class="card-header">Elementkosten in anderen Projekten</div>
                                 <div class="card-body" id="elementPricesInOtherProjects"></div>
@@ -145,19 +145,19 @@ init_page_serversides();
     </div>
 
     <div class='row'>
-        <div class='col-lg-6'>
+        <div class='col-xxl-6'>
             <div class="mt-1 card">
                 <div class="card-header h-100">Räume mit Element</div>
                 <div class="card-body" id="roomsWithElement"></div>
             </div>
         </div>
-        <div class='col-lg-6'>
+        <div class='col-xxl-6'>
             <div class="mt-1 card">
                 <div class="card-header h-100" id="RäumeOhneElCardHeader ">
 
                     <div class="row ">
-                        <div class="col-lg-5"> Räume ohne Element</div>
-                        <div class="col-lg-7 d-flex flex-nowrap justify-content-end">
+                        <div class="col-xxl-5"> Räume ohne Element</div>
+                        <div class="col-xxl-7 d-flex flex-nowrap justify-content-end">
                             <button type='button' class='btn btn-outline-success btn-sm ' id='addElements'
                                     data-bs-toggle='modal' data-bs-target='#addElementsToRoomModal'><i
                                         class='fas fa-plus'></i> Element zu Raum hinzufügen
@@ -180,9 +180,9 @@ init_page_serversides();
         targetDiv.style.height = '650px';
         targetDiv.style.overflow = 'hidden';
         targetDiv.style.overflowY = 'scroll';
-
+        var tableElementsInDB;
         $(document).ready(function () {
-            const table1 = new DataTable('#tableElementsInDB', {
+            tableElementsInDB = new DataTable('#tableElementsInDB', {
                 select: true,
                 paging: true,
                 pageLength: 10,
@@ -213,38 +213,47 @@ init_page_serversides();
             });
 
             $('#tableElementsInDB tbody').on('click', 'tr', function () {
-                let elementID = table1.row($(this)).data()[0];
+
+
+                let elementID = tableElementsInDB.row($(this)).data()[0];
                 $.ajax({
-                    url: "getStandardElementParameters.php",
+                    url: "setSessionVariables.php",
                     data: {"elementID": elementID},
                     type: "GET",
-                    success: function (data) {
-                        $("#elementParametersInDB").html(data);
+                    success: function () {
                         $.ajax({
-                            url: "getElementPricesInDifferentProjects.php",
+                            url: "getStandardElementParameters.php",
                             data: {"elementID": elementID},
                             type: "GET",
                             success: function (data) {
-                                $("#elementPricesInOtherProjects").html(data);
+                                $("#elementParametersInDB").html(data);
                                 $.ajax({
-                                    url: "getDevicesToElement.php",
+                                    url: "getElementPricesInDifferentProjects.php",
                                     data: {"elementID": elementID},
                                     type: "GET",
                                     success: function (data) {
-                                        $("#devicesInDB").html(data);
+                                        $("#elementPricesInOtherProjects").html(data);
                                         $.ajax({
-                                            url: "getRoomsWithElement.php",
+                                            url: "getDevicesToElement.php",
                                             data: {"elementID": elementID},
                                             type: "GET",
                                             success: function (data) {
-                                                $("#roomsWithElement").html(data);
+                                                $("#devicesInDB").html(data);
                                                 $.ajax({
-                                                    url: "getRoomsWithoutElement.php",
+                                                    url: "getRoomsWithElement.php",
                                                     data: {"elementID": elementID},
                                                     type: "GET",
                                                     success: function (data) {
-                                                        $("#roomsWithoutElement").html(data);
+                                                        $("#roomsWithElement").html(data);
+                                                        $.ajax({
+                                                            url: "getRoomsWithoutElement.php",
+                                                            data: {"elementID": elementID},
+                                                            type: "GET",
+                                                            success: function (data) {
+                                                                $("#roomsWithoutElement").html(data);
 
+                                                            }
+                                                        });
                                                     }
                                                 });
                                             }
@@ -255,7 +264,6 @@ init_page_serversides();
                         });
                     }
                 });
-
             });
 
             $('#elementGewerk').change(function () {
@@ -273,11 +281,11 @@ init_page_serversides();
             $('#selectAllRows').click(function () {
                 $('#roomsWithoutElement table tbody tr:visible').each(function () {
                     $(this).addClass('selected');
-                    let roomID = table.row($(this)).data()[0];
+                    let roomID = tableRoomsWithoutElement.row($(this)).data()[0];
                     if (!roomIDs.includes(roomID)) {
                         roomIDs.push(roomID);
                     }
-                    console.log(roomIDs);
+                    //console.log(roomIDs);
                 });
             });
         });

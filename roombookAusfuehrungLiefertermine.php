@@ -1,6 +1,10 @@
 <?php
-include '_utils.php';
-init_page_serversides();
+session_start();
+if (!isset($_SESSION["username"])) {
+    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
+    exit;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -38,13 +42,38 @@ init_page_serversides();
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class='row'>
-        <div class='col-lg-11'>
+        <div class='col-xxl-12'>
             <div class="mt-4 card">
-                <div class="card-header"><b>Elemente im Projekt</b>
+                <div class="card-header   align-items-center  ">
+
+                    <div class="row">
+                        <div class="col-2"><b>Elemente im Projekt</b></div>
+                        <div class="col-6 d-flex justify-content-end ">
+                            <form role='form'>
+                                <div class='form-group form-inline'>
+                                    <label for='lieferdatum'>Lieferdatum: &emsp;</label>
+                                    <input type='text' class='form-control form-control-sm' id='lieferdatum'
+                                           placeholder='jjjj-mm-tt'/>
+                                    <input type='button' id='checkElements' class='btn btn-success btn-sm'
+                                           value='Speichern'>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-4 form-inline d-flex justify-content-end" id ="cardHeaderD3"></div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <?php
-                    $mysqli = utils_connect_sql();
+                    $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
+                    if ($mysqli->connect_errno) {
+                        echo "Failed to connect to MySQL: " . $mysqli->connect_error;
+
+                    }
+                    if (!$mysqli->set_charset("utf8")) {
+                        printf("Error loading character set utf8: %s\n", $mysqli->error);
+                        exit();
+                    }
 
                     $sql = "SELECT tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, tabelle_räume.Bauabschnitt, tabelle_bauphasen.bauphase, tabelle_bauphasen.datum_fertigstellung, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_lose_extern.LosBezeichnung_Extern,tabelle_lose_extern.LosNr_Extern, tabelle_räume_has_tabelle_elemente.Anzahl, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.Lieferdatum, tabelle_räume_has_tabelle_elemente.id
                                                         FROM ((((tabelle_räume LEFT JOIN tabelle_bauphasen ON tabelle_räume.tabelle_bauphasen_idtabelle_bauphasen = tabelle_bauphasen.idtabelle_bauphasen) INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) INNER JOIN tabelle_varianten ON tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten = tabelle_varianten.idtabelle_Varianten) LEFT JOIN tabelle_lose_extern ON tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern = tabelle_lose_extern.idtabelle_Lose_Extern
@@ -52,7 +81,7 @@ init_page_serversides();
 
                     $result = $mysqli->query($sql);
 
-                    echo "<table class='table table-striped table-bordered table-sm' id='tableElements'  cellspacing='0' width='100%'>
+                    echo "<table class='table table-striped table-bordered table-sm' id='tableElements'   >
 						<thead><tr>
 						<th>ID</th>
                                                 <th>Raumbereich Nutzer</th>
@@ -64,7 +93,7 @@ init_page_serversides();
 						<th>Raumnr</th>
 						<th>Raumbezeichnung</th>
 						<th>Gewerk</th>		
-//                                                <th>LosBezeichnung</th>
+                                                <th>LosBezeichnung</th>
                                                 <th>Anzahl</th>                                                
                                                 <th>ElementID</th>                                                
                                                 <th>Element</th>
@@ -99,14 +128,13 @@ init_page_serversides();
                         echo "</td>";
                         echo "<td>" . $row["Lieferdatum"] . "</td>";
                         echo "</tr>";
-
                     }
                     echo "</tbody></table>";
                     ?>
                 </div>
             </div>
         </div>
-        <div class='col-lg-1'>
+        <!---div class='col-xxl-1'>
             <div class="mt-4 card">
                 <div class="card-header"><b>Lieferdatum</b>
                 </div>
@@ -117,42 +145,48 @@ init_page_serversides();
                             <input type='text' class='form-control form-control-sm' id='lieferdatum'
                                    placeholder='jjjj-mm-tt'/>
                             <input type='button' id='checkElements' class='btn btn-success btn-sm'
-                                   value='Speichern'></input>
+                                   value='Speichern'>
                         </div>
                     </form>
                 </div>
             </div>
-        </div>
+        </div-->
     </div>
 </div>
 
-<!-- Modal für Abfrage -->
 <div class='modal fade' id='saveLieferdatumModal' role='dialog'>
     <div class='modal-dialog modal-sm'>
-        <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Lieferdatum speichern</h4>
-                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='mbody'>Wollen Sie das Lieferdatum für alle gewählten Elemente ändern?
             </div>
             <div class='modal-footer'>
                 <input type='button' id='saveLieferdatum' class='btn btn-success btn-sm' value='Ja'
-                       data-dismiss='modal'></input>
-                <button type='button' class='btn btn-danger btn-sm' data-dismiss='modal'>Nein</button>
+                       data-bs-dismiss='modal'>
+                <button type='button' class='btn btn-danger btn-sm' data-bs-dismiss='modal'>Nein</button>
             </div>
         </div>
     </div>
 </div>
 <script>
-    var elementIDs = [];
 
+    var elementIDs = [];
     $(document).ready(function () {
+
+
+        $.get("navbar4.html", function (data) {
+            $("#limet-navbar").html(data);
+            $(".navbar-nav").find("li:nth-child(3)").addClass("active");
+            currentP = <?php     echo json_encode($_SESSION["projectName"]); ?>;
+            $("#projectSelected").text(currentP);
+        });
 
         $('#tableElements').DataTable({
             "paging": true,
-            "pagingType": "simple",
+            "pagingType": "full_numbers",
             "lengthChange": false,
             "pageLength": 10,
             "columnDefs": [
@@ -164,24 +198,28 @@ init_page_serversides();
             ],
             "order": [[1, "asc"]],
             "orderMulti": true,
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"},
+            "language": {
+                "url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
+                search: "", searchPlaceholder: "Suche..."
+            },
             "mark": true,
             "select": {
                 style: 'multi'
+            }, initComplete: function () {
+                $('#tableElements_filter').appendTo('#cardHeaderD3');
             }
         });
 
         var table = $('#tableElements').DataTable();
+
         $('#tableElements tbody').on('click', 'tr', function () {
             if ($(this).hasClass('info')) {
-                //$(this).removeClass('info');
-                for (var i = elementIDs.length - 1; i >= 0; i--) {
+                for (let i = elementIDs.length - 1; i >= 0; i--) {
                     if (elementIDs[i] === table.row($(this)).data()[0]) {
                         elementIDs.splice(i, 1);
                     }
                 }
             } else {
-                //table1.$('tr.info').removeClass('info');
                 $(this).addClass('info');
                 document.getElementById("lieferdatum").value = table.row($(this)).data()[15];
                 elementIDs.push(table.row($(this)).data()[0]);
@@ -205,7 +243,7 @@ init_page_serversides();
     });
 
     $("#saveLieferdatum").click(function () {
-        var lieferdatum = $("#lieferdatum").val();
+        let lieferdatum = $("#lieferdatum").val();
         $.ajax({
             url: "saveLieferdatum.php",
             type: "GET",

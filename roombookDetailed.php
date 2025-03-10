@@ -1,8 +1,3 @@
-<?php
-include '_utils.php';
-init_page_serversides();
-?>
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
@@ -26,24 +21,28 @@ init_page_serversides();
 
 
 </head>
+<?php
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+init_page_serversides();
+?>
 
 <body style="height:100%">
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class='row'>
-        <div class='col-lg-8'>
+        <div class='col-xxl-8'>
             <div class="mt-2 card">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col-md-3">Räume im Projekt</div>
-                        <div class="col-md-4"></div>
-                        <div class="col-md-3">
+                        <div class="col-xxl-6">Räume im Projekt</div>
+
+                        <div id="CardHeaderRaume" class="col-xxl-6 d-flex justify-content-end align-items-center">
+
                             <label class="float-right">
                                 MT-relevante Räume: <input type="checkbox" id="filter_MTrelevantRooms"
-                                                           checked="checked">
+                                                           checked class="form-check-input me-4 ms-4">
                             </label>
                         </div>
-                        <div id="CardHeaderRaume" class="col-md-2"></div>
                     </div>
                 </div>
                 <div class="card-body" style="overflow: auto; ">
@@ -61,7 +60,7 @@ init_page_serversides();
                     $result = $mysqli->query($sql);
 
                     /** @noinspection HtmlDeprecatedAttribute */
-                    echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'  cellspacing='0' width='100%'>
+                    echo "<table class='table table-striped table-sm table-hover table-bordered border border-light border-5' id='tableRooms'   >
 						<thead><tr>
 						<th>ID</th>
 						<th>Raumnr</th>
@@ -101,7 +100,7 @@ init_page_serversides();
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-xxl-4">
             <div class="mt-2 card">
                 <div class="card-header">Vermerke zu Raum</div>
                 <div class="card-body" id="roomVermerke"></div>
@@ -109,30 +108,37 @@ init_page_serversides();
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-xxl-8">
             <div class="mt-4 card">
                 <div class="card-header">Elemente im Raum</div>
                 <div class="card-body" id="roomElements"></div>
             </div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-xxl-4">
             <div class="mt-4 card">
-                <div class="card-header">Variantenparameter</div>
+                <div class="card-header">
+
+                    <div class="row">
+                        <div class="col-6"> Variantenparameter</div>
+                        <div class="col-6 d-flex justify-content-end" id="price"></div>
+                    </div>
+                </div>
                 <div class="card-body">
-                    <div class="row" id="price"></div>
                     <div class="row" id="elementParameters"></div>
                 </div>
             </div>
             <div class="mt-4 card">
                 <div class="card-header" id="BestandsdatenCardHeader">Bestandsdaten
+
                     <button type='button' id='addBestandsElement'
-                            class='btn ml-4 mt-2 btn-outline-success btn-sm float-right' value='Hinzufügen'
+                            class='btn btn-sm ml-4 mt-2 btn-outline-success ' value='Hinzufügen'
                             data-bs-toggle='modal' data-bs-target='#addBestandModal'><i class='fas fa-plus'></i>
                     </button>
                     <button type='button' id='reloadBestand'
-                            class='btn ml-4 mt-2 btn-outline-secondary  float-right' value='reloadBestand'>
+                            class='btn btn-sm  ml-4 mt-2 btn-outline-secondary' value='reloadBestand'>
                         <i class="fa fa-retweet" aria-hidden="true"></i>
                     </button>
+
                 </div>
                 <div class="card-body" id="elementBestand"></div>
             </div>
@@ -151,7 +157,7 @@ init_page_serversides();
         </div>
         <div class="card-body" style="display:none" id="DBElementData">
             <div class="row mt-4">
-                <div class="col-lg-6">
+                <div class="col-xxl-6">
                     <div class="mt-4 card">
                         <div class="card-header">Elementgruppen</div>
                         <div class="card-body" id="elementGroups">
@@ -162,16 +168,16 @@ init_page_serversides();
 
                             $result = $mysqli->query($sql);
                             echo "<div class='form-group row'>
-									 			<label class='control-label col-md-2' for='elementGewerk'>Gewerk</label>
-												<div class='col-md-10'>
+									 			<label class='control-label col-xxl-2' for='elementGewerk'>Gewerk</label>
+												<div class='col-xxl-10'>
 													<select class='form-control form-control-sm' id='elementGewerk' name='elementGewerk'>";
                             while ($row = $result->fetch_assoc()) {
                                 echo "<option value=" . $row["idtabelle_element_gewerke"] . ">" . $row["Nummer"] . " - " . $row["Gewerk"] . "</option>";
                             }
                             echo "</select></div></div>
                                     <div class='form-group row'>
-                                            <label class='control-label col-md-2' for='elementHauptgruppe'>Hauptgruppe</label>
-                                            <div class='col-md-10'>
+                                            <label class='control-label col-xxl-2' for='elementHauptgruppe'>Hauptgruppe</label>
+                                            <div class='col-xxl-10'>
                                                 <select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>
                                                     <option selected>Gewerk auswählen</option>
                                                 </select>	
@@ -179,8 +185,8 @@ init_page_serversides();
                                     </div>";
 
                             echo "<div class='form-group row'>
-									 			<label class='control-label col-md-2' for='elementGruppe'>Gruppe</label>
-												<div class='col-md-10'>
+									 			<label class='control-label col-xxl-2' for='elementGruppe'>Gruppe</label>
+												<div class='col-xxl-10'>
 													<select class='form-control form-control-sm' id='elementGruppe' name='elementGruppe'>
 														<option selected>Gewerk auswählen</option>
 													</select>	
@@ -201,7 +207,7 @@ init_page_serversides();
                             $result = $mysqli->query($sql);
 
                             /** @noinspection HtmlDeprecatedAttribute */
-                            echo "<table class='table table-striped table-bordered table-sm' id='tableElementsInDB'  cellspacing='0' width='100%'>
+                            echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableElementsInDB'   >
 									<thead><tr>
 									<th>ID</th>
 									<th>ElementID</th>
@@ -224,13 +230,13 @@ init_page_serversides();
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-lg-3">
+                <div class="col-xxl-3 col-xxl-3">
                     <div class="mt-4 card">
                         <div class="card-header">Elementparameter</div>
                         <div class="card-body" id="elementParametersInDB"></div>
                     </div>
                 </div>
-                <div class="col-md-3 col-lg-3">
+                <div class="col-xxl-3 col-xxl-3">
                     <div class="mt-4 card">
                         <div class="card-header">Elementkosten in anderen Projekten</div>
                         <div class="card-body" id="elementPricesInOtherProjects"></div>
@@ -239,19 +245,19 @@ init_page_serversides();
             </div>
             <hr>
             <div class="row mt-4">
-                <div class="col-md-6 col-lg-6">
+                <div class="col-xxl-6 col-xxl-6">
                     <div class="mt-4 card">
                         <div class="card-header">Geräte</div>
                         <div class="card-body" id="devicesInDB"></div>
                     </div>
                 </div>
-                <div class="col-md-3 col-lg-3">
+                <div class="col-xxl-3 col-xxl-3">
                     <div class="mt-4 card">
                         <div class="card-header">Geräteparameter</div>
                         <div class="card-body" id="deviceParametersInDB"></div>
                     </div>
                 </div>
-                <div class="col-md-3 col-lg-3">
+                <div class="col-xxl-3 col-xxl-3">
                     <div class="mt-4 card">
                         <div class="card-header">Gerätepreise</div>
                         <div class="card-body" id="devicePrices"></div>
@@ -283,9 +289,6 @@ init_page_serversides();
 </div>
 
 <script>
-
-
-    let toastCounter3 = 0;
     $.fn.dataTable.ext.search.push(
         function (settings, data) {
             if (settings.nTable.id !== 'tableRooms') {
@@ -298,40 +301,14 @@ init_page_serversides();
             }
         }
     );
-    let table;
+    var  tableRooms, tableElementsInDB;
 
     $(document).ready(function () {
-        /*
-        $('#tableProjectVermerke').on('draw.dt', function () {
-            $('.vermerk-popover').popover('dispose').popover({
-                html: true,
-                content: function () {
-                    let content = $(this).attr('data-bs-content');
-                    return '<div class="popover-content">' + content + '</div>';
-
-                },
-                placement: 'right'
-            });
-
-        });
-
-        $(document).on('click', function (e) {
-            if ($(e.target).closest('.popover').length === 0 && !$(e.target).hasClass('vermerk-popover')) {
-                $('.vermerk-popover').popover('hide');
-            }
-        });
-
-        $(document).on('click', '.vermerk-popover', function (e) {
-            $('.vermerk-popover').not(this).popover('hide');
-            $(this).popover('toggle');
-            e.stopPropagation();
-        });
-        */
         $("#elementParameters").hide();
         $("#elementBestand").hide();
         $("#elementVerwendung").hide();
 
-        let table = new DataTable('#tableRooms', {
+         tableRooms = new DataTable('#tableRooms', {
             select: true,
             paging: {
                 type: 'simple',
@@ -347,13 +324,24 @@ init_page_serversides();
             ],
             order: [[1, "asc"]],
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json',
-                search: ''
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                search: '',
+                searchPlaceholder: 'Suche... '
             },
-            mark: true
+            mark: true,
+            layout: {
+                topStart: null,
+                topEnd: null,
+                bottomStart: "info",
+                bottomEnd: ["search", "paging"]
+            },
+            initComplete: function () {
+                $('.dt-search label').remove();
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeaderRaume');
+            }
         });
 
-        const table1 = new DataTable('#tableElementsInDB', {
+         tableElementsInDB = new DataTable('#tableElementsInDB', {
             paging: {
                 type: 'simple',
                 numbers: 10
@@ -369,20 +357,16 @@ init_page_serversides();
             info: false,
             order: [[1, "asc"]],
             language: {
-                url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json', search: ""
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json', search: ""
             }
         });
 
 
         $('#tableRooms tbody').on('click', 'tr', function () {
-
             $("#elementParameters").hide();
             $("#elementBestand").hide();
             $("#elementVerwendung").hide();
-
-            table.$('tr.info').removeClass('info');
-            $(this).addClass('info');
-            const id = table.row($(this)).data()[0];
+            const id = tableRooms.row($(this)).data()[0];
             $.ajax({
                 url: "setSessionVariables.php",
                 data: {"roomID": id},
@@ -405,51 +389,46 @@ init_page_serversides();
                     });
                 }
             });
-
         });
+
         $('#tableElementsInDB tbody').on('click', 'tr', function () {
-            table1.$('tr.info').removeClass('info');
-            $(this).addClass('info');
-            const elementID = table1.row($(this)).data()[0];
-            //console.log(elementID);
+            const elementID = tableElementsInDB.row($(this)).data()[0];
             $.ajax({
-                url: "getStandardElementParameters.php",
+                url: "setSessionVariables.php",
                 data: {"elementID": elementID},
                 type: "GET",
-                success: function (data) {
-                    $("#elementParametersInDB").html(data);
+                success: function () {
                     $.ajax({
-                        url: "getElementPricesInDifferentProjects.php",
+                        url: "getStandardElementParameters.php",
                         data: {"elementID": elementID},
                         type: "GET",
                         success: function (data) {
-                            $("#elementPricesInOtherProjects").html(data);
+                            $("#elementParametersInDB").html(data);
                             $.ajax({
-                                url: "getDevicesToElement.php",
+                                url: "getElementPricesInDifferentProjects.php",
                                 data: {"elementID": elementID},
                                 type: "GET",
                                 success: function (data) {
-                                    $("#devicesInDB").html(data);
+                                    $("#elementPricesInOtherProjects").html(data);
+                                    $.ajax({
+                                        url: "getDevicesToElement.php",
+                                        data: {"elementID": elementID},
+                                        type: "GET",
+                                        success: function (data) {
+                                            $("#devicesInDB").html(data);
+                                        }
+                                    });
                                 }
                             });
-
                         }
                     });
-
                 }
             });
-
         });
 
         $('#filter_MTrelevantRooms').change(function () {
-            table.draw();
+            tableRooms.draw();
         });
-
-        setTimeout(() => {
-            let dt_searcher = $("#dt-search-0");
-            dt_searcher.detach();
-            $("#CardHeaderRaume").append(dt_searcher);
-        }, 100);
 
 
     });
@@ -468,7 +447,6 @@ init_page_serversides();
     });
 
     // DB Elemente einblenden
-
     $("#showDBElementData").click(function () {
         if ($("#DBElementData").is(':hidden')) {
             $(this).html("<i class='fas fa-caret-down'></i>");
@@ -482,7 +460,6 @@ init_page_serversides();
     // Element Gewerk Änderung
     $('#elementGewerk').change(function () {
         let gewerkID = this.value;
-
         $.ajax({
             url: "getElementGroupsByGewerk.php",
             data: {"gewerkID": gewerkID},
@@ -491,16 +468,12 @@ init_page_serversides();
                 $("#elementGroups").html(data);
             }
         });
-
     });
 
     $("button[id='buttonBO']").click(function () {
         $("#boModalBody").html(this.value);
     });
 
-
 </script>
-
 </body>
-
 </html>

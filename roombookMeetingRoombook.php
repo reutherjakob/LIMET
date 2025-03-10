@@ -1,5 +1,5 @@
 <?php
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 init_page_serversides();
 ?>
 
@@ -73,7 +73,7 @@ $result = $mysqli->query($sql);
 echo "
         <div class='row mt-4'>
             
-            <div class='col-lg-6'>   
+            <div class='col-xxl-6'>   
                 <div class='card card-default m-2'>
                     <div class='card-header'>
                         <h4 class='m-b-2 text-dark'><i class='fas fa-weight-hanging'></i> Ortsfeste MT</h4>
@@ -121,7 +121,7 @@ $sql = "SELECT tabelle_räume_has_tabelle_elemente.id,
     ORDER BY tabelle_elemente.ElementID;";
 $result = $mysqli->query($sql);
 
-echo "<div class='col-lg-6'> 
+echo "<div class='col-xxl-6'> 
                 <div class='card card-default m-2'>
                     <div class='card-header'>
                         <h4 class='text-dark'><i class='fas fa-stethoscope'></i> Ortsveränderliche MT</h4>
@@ -170,7 +170,7 @@ $sql = "SELECT tabelle_räume_has_tabelle_elemente.id,
 $result = $mysqli->query($sql);
 
 echo "<div class='row mt-4'>
-            <div class='col-lg-6'> 
+            <div class='col-xxl-6'> 
                 <div class='card card-default m-2'>
                     <div class='card-header'>
                         <h4 class='text-dark'><i class='fas fa-arrows-alt'></i> Möbel</h4>
@@ -219,7 +219,7 @@ $sql = "SELECT tabelle_räume_has_tabelle_elemente.id,
 $result = $mysqli->query($sql);
 
 echo "
-            <div class='col-lg-6'> 
+            <div class='col-xxl-6'> 
                 <div class='card card-default m-2'>
                     <div class='card-header'>
                         <h4 class='text-dark'><i class='fas fa-arrows-alt'></i> Medizinische Gase</h4>
@@ -271,7 +271,7 @@ $result = $mysqli->query($sql);
 
 echo "
         <div class='row mt-4'>
-            <div class='col-lg-6'> 
+            <div class='col-xxl-6'> 
                 <div class='card card-default m-2'>
                     <div class='card-header'>
                         <h4 class='text-dark'><i class='fas fa-flask'></i> Laborausstattung</h4>
@@ -300,7 +300,7 @@ $mysqli->close();
             "searching": false,
             "info": false,
             "order": [[0, "asc"]],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
         });
         $("#ovMT").DataTable({
             "select": false,
@@ -308,7 +308,7 @@ $mysqli->close();
             "searching": false,
             "info": false,
             "order": [[0, "asc"]],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
         });
         $("#moebel").DataTable({
             "select": false,
@@ -316,7 +316,7 @@ $mysqli->close();
             "searching": false,
             "info": false,
             "order": [[0, "asc"]],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
         });
         $("#gase").DataTable({
             "select": false,
@@ -324,7 +324,7 @@ $mysqli->close();
             "searching": false,
             "info": false,
             "order": [[0, "asc"]],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
         });
         $("#labor").DataTable({
             "select": false,
@@ -332,7 +332,7 @@ $mysqli->close();
             "searching": false,
             "info": false,
             "order": [[0, "asc"]],
-            "language": {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json"}
+            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
         });
     });
 </script>

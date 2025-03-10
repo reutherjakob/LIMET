@@ -1,5 +1,5 @@
 <?php
-include "_utils.php";
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 check_login();
 ?>
 
@@ -67,7 +67,7 @@ check_login();
 			info: false,
 	            //"pagingType": "simple_numbers",
 	            //"lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
-	        language: {"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json", search: ""}
+	        language: {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json", search: ""}
 	    } );
 	 } );
          

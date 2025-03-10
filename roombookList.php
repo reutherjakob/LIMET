@@ -1,7 +1,7 @@
 <!-- 19.2.25: Reworked -->
 
 <?php
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 init_page_serversides();
 ?>
 
@@ -117,7 +117,7 @@ init_page_serversides();
                 }
             ],
             language: {
-                url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
+                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                 search: ""
             },
             buttons: ['excel', 'searchBuilder'],

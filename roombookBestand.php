@@ -1,5 +1,5 @@
 <?php
-include '_utils.php';
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 init_page_serversides();
 include "_format.php";
 ?>
@@ -13,33 +13,31 @@ include "_format.php";
     <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
     <link rel="icon" href="iphone_favicon.png"/>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
-          integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-    <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.css"
-          rel="stylesheet"/>
+    <!-- Rework 2025 CDNs -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
 
-    <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+          integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
+          rel="stylesheet">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-
-    <style>
-        .dt-input {
-            float: right;
-        }
-    </style>
 
 </head>
-<body style="height:100%">
+<body>
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class="mt-4 card">
-        <div class="card-header" id="TableCardHeader">Elemente im Bestand</div>
+        <div class="card-header" >
+            <div class="row">
+                <div class="col-8"><b>Elemente im Bestand</b></div>
+                <div class="col-4 d-flex flex-nowrap align-items-center justify-content-end" id="TableCardHeader"></div>
+            </div>
+        </div>
         <div class="card-body">
             <?php
             $mysqli = utils_connect_sql();
@@ -83,7 +81,7 @@ include "_format.php";
 
             $result = $mysqli->query($stmt);
 
-            echo "<table class='table table-striped table-bordered table-sm' id='tableBestandsElemente' cellspacing='0' width='100%'>
+            echo "<table class='table table-striped table-bordered table-sm' id='tableBestandsElemente'>
                         <thead><tr>
                         <th>ID</th>
                         <th>Stk</th>
@@ -118,52 +116,50 @@ include "_format.php";
     <div class="card-body overflow-scroll" id="bestandsRoombook"></div>
 </div>
 
-</div>
 </body>
 <script>
-    function move_dt_search(id, where2) {
-        let dt_searcher = document.getElementById(id);
-        dt_searcher.parentNode.removeChild(dt_searcher);
-        document.getElementById(where2).appendChild(dt_searcher);
-    }
-
-    // Tabelle formatieren
+    var table1;
     $(document).ready(function () {
-        $('#tableBestandsElemente').DataTable({
-            "columnDefs": [
+        table1 = new DataTable('#tableBestandsElemente', {
+            columnDefs: [
                 {
-                    "targets": [0],
-                    "visible": false,
-                    "searchable": false
+                    targets: [0],
+                    visible: false,
+                    searchable: false
                 }
             ],
-            "select": true,
-            "paging": true,
-            "searching": true,
-            "info": true,
-            "order": [[1, "asc"]],
-            "pagingType": "simple",
-            "lengthChange": false,
-            "pageLength": 10,
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json",
-                "decimal": ",",
-                "thousands": ".",
-                "search": "",
-                "searchBuilder": {
-                    "title": null
+            select: true,
+            paging: true,
+            searching: true,
+            info: true,
+            order: [[1, "asc"]],
+            pagingType: "full_numbers",
+            lengthChange: false,
+            pageLength: 10,
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
+                decimal: ",",
+                thousands: ".",
+                search: "",
+                searchBuilder: {
+                    title: null
                 }
+            },
+            layout: {
+                topStart: null,
+                topEnd: null,
+                bottomEnd: 'paging',
+                bottomStart: ['search', 'info']
+            },
+            initComplete: function () {
+                $('.dt-search label').remove();
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#TableCardHeader');
             }
         });
-        // CLICK TABELLE
-        var table1 = $('#tableBestandsElemente').DataTable();
+
         $('#tableBestandsElemente tbody').on('click', 'tr', function () {
-            if ($(this).hasClass('info')) {
-            } else {
-                table1.$('tr.info').removeClass('info');
-                $(this).addClass('info');
-                var elementID = table1.row($(this)).data()[0];
-                var raumbereich = table1.row($(this)).data()[4];
+                let elementID = table1.row($(this)).data()[0];
+                let raumbereich = table1.row($(this)).data()[4];
                 $.ajax({
                     url: "getBestandWithRaumbereich.php",
                     data: {"elementID": elementID, "raumbereich": raumbereich},
@@ -173,11 +169,7 @@ include "_format.php";
                     }
                 });
 
-            }
         });
-        setTimeout(function () {
-            move_dt_search("dt-search-0", "TableCardHeader");
-        }, 100);
     });
 </script>
 </html>

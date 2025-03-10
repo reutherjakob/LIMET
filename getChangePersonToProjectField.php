@@ -1,5 +1,5 @@
 <?php
-include "_utils.php";
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 check_login();
 
 $mysqli = utils_connect_sql();
@@ -38,50 +38,50 @@ $raumNr = $row["Raumnr"];
 
 echo "<form class='form-horizontal' role='form'>
 		 <div class='form-group row'>
-	 			<label class='control-label col-md-2' for='Name'>Name</label>
-	 			<div class='col-md-8'>
+	 			<label class='control-label col-xxl-2' for='Name'>Name</label>
+	 			<div class='col-xxl-8'>
 	 				<input type='text' class='form-control form-control-sm' id='Name' value='" . $name . "'></input>
 				</div>						  			 											 						 			
 	 	</div>		  			 		
 	 	<div class='form-group row'>
-	 			<label class='control-label col-md-2' for='Vorname'>Vorname</label>
-	 			<div class='col-md-8'>
+	 			<label class='control-label col-xxl-2' for='Vorname'>Vorname</label>
+	 			<div class='col-xxl-8'>
 	 				<input type='text' class='form-control form-control-sm' id='Vorname' value='" . $vorname . "'></input>
 				</div>	
 		</div>
 		<div class='form-group row'>
-	 			<label class='control-label col-md-2' for='Tel'>Tel</label>
-	 			<div class='col-md-8'>
+	 			<label class='control-label col-xxl-2' for='Tel'>Tel</label>
+	 			<div class='col-xxl-8'>
 	 				<input type='text' class='form-control form-control-sm' id='Tel' value='" . $tel . "'></input>
 				</div>	
 		</div>
 		<div class='form-group row'>
-	 			<label class='control-label col-md-2' for='Adresse'>Adresse</label>
-	 			<div class='col-md-8'>
+	 			<label class='control-label col-xxl-2' for='Adresse'>Adresse</label>
+	 			<div class='col-xxl-8'>
 	 				<input type='text' class='form-control form-control-sm' id='Adresse' value='" . $adresse . "'></input>
 				</div>	
 		</div>
 		<div class='form-group row'>
-	 			<label class='control-label col-md-2' for='PLZ'>PLZ</label>
-	 			<div class='col-md-8'>
+	 			<label class='control-label col-xxl-2' for='PLZ'>PLZ</label>
+	 			<div class='col-xxl-8'>
 	 				<input type='text' class='form-control form-control-sm' id='PLZ' value='" . $plz . "'></input>
 				</div>	
 		</div>
 		<div class='form-group row'>
-	 			<label class='control-label col-md-2' for='Ort'>Ort</label>
-	 			<div class='col-md-8'>
+	 			<label class='control-label col-xxl-2' for='Ort'>Ort</label>
+	 			<div class='col-xxl-8'>
 	 				<input type='text' class='form-control form-control-sm' id='Ort' value='" . $ort . "'></input>
 				</div>	
 		</div>
 		<div class='form-group row'>
-	 			<label class='control-label col-md-2' for='Land'>Land</label>
-	 			<div class='col-md-8'>
+	 			<label class='control-label col-xxl-2' for='Land'>Land</label>
+	 			<div class='col-xxl-8'>
 	 				<input type='text' class='form-control form-control-sm' id='Land' value='" . $land . "'></input>
 				</div>	
 		</div>
 		<div class='form-group row'>
-	 			<label class='control-label col-md-2' for='Email'>Email</label>
-	 			<div class='col-md-8'>
+	 			<label class='control-label col-xxl-2' for='Email'>Email</label>
+	 			<div class='col-xxl-8'>
 	 				<input type='text' class='form-control form-control-sm' id='Email' value='" . $mail . "'></input>
 				</div>	
 		</div>";
@@ -91,8 +91,8 @@ $result = $mysqli->query($sql);
 
 
 echo "<div class='form-group row'>
-	 			<label class='control-label col-md-2' for='zustaendigkeit'>Zuständigkeit</label>
-				<div class='col-md-8'>
+	 			<label class='control-label col-xxl-2' for='zustaendigkeit'>Zuständigkeit</label>
+				<div class='col-xxl-8'>
 					<select class='form-control form-control-sm' id='zustaendigkeit' name='selectCategory'>";
 while ($row = $result->fetch_assoc()) {
     if ($id_zustaendigkeit == $row["idTABELLE_Projektzuständigkeiten"]) {
@@ -107,8 +107,8 @@ $sql = "SELECT tabelle_organisation.idtabelle_organisation, tabelle_organisation
 $result = $mysqli->query($sql);
 
 echo "<div class='form-group row'>
-	 			<label class='control-label col-md-2' for='organisation'>Organisation</label>
-				<div class='col-md-8'>
+	 			<label class='control-label col-xxl-2' for='organisation'>Organisation</label>
+				<div class='col-xxl-8'>
 					<select class='form-control form-control-sm' id='organisation' name='organisation'>";
 while ($row = $result->fetch_assoc()) {
     if ($id_organisation == $row["idtabelle_organisation"]) {
@@ -121,8 +121,8 @@ echo "</select>
 				</div>
 		</div>
                 <div class='form-group row'>
-	 			<label class='control-label col-md-2' for='Raumnr'>Raumnr</label>
-	 			<div class='col-md-8'>
+	 			<label class='control-label col-xxl-2' for='Raumnr'>Raumnr</label>
+	 			<div class='col-xxl-8'>
 	 				<input type='text' class='form-control form-control-sm' id='Raumnr' value='" . $raumNr . "'>
 				</div>	
 		</div>
@@ -275,7 +275,7 @@ $mysqli->close();
                     });
                 },
                 error: function (data) {
-                    alert("Frag N Jakob, lol");
+                    alert("Lol, hätteste gern.\nGeht aber nich... \nFrag den Jakob. \n",  data);
                 }
             });
     });
