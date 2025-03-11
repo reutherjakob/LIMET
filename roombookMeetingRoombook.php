@@ -1,5 +1,7 @@
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 init_page_serversides();
 ?>
 
@@ -7,12 +9,6 @@ init_page_serversides();
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
 <html lang="de">
 <head>
-    <style>
-
-        .card-body {
-            padding: 5px;
-        }
-    </style>
     <title> Rauminhalt </title>
 </head>
 
@@ -74,12 +70,12 @@ echo "
         <div class='row mt-4'>
             
             <div class='col-xxl-6'>   
-                <div class='card card-default m-2'>
+                <div class='card  m-2'>
                     <div class='card-header'>
                         <h4 class='m-b-2 text-dark'><i class='fas fa-weight-hanging'></i> Ortsfeste MT</h4>
                     </div>
                     <div class='card-body'>";
-echo "<table class='table table-striped table-bordered table-sm' id='ofMT'  style='width:100%'>
+echo "<table class='table overflow-hidden table-responsive table-striped table-bordered table-sm   table-hover border border-light border-5' id='ofMT' >
                                 <thead><tr> 
                                 <th>Element</th>
                                 <th>Stk</th>
@@ -122,12 +118,12 @@ $sql = "SELECT tabelle_räume_has_tabelle_elemente.id,
 $result = $mysqli->query($sql);
 
 echo "<div class='col-xxl-6'> 
-                <div class='card card-default m-2'>
+                <div class='card  m-2'>
                     <div class='card-header'>
                         <h4 class='text-dark'><i class='fas fa-stethoscope'></i> Ortsveränderliche MT</h4>
                     </div>
                     <div class='card-body'>";
-echo "<table class='table table-striped table-bordered table-sm' id='ovMT'  style='width:100%'>
+echo "<table class='table overflow-hidden table-responsive table-striped table-bordered table-sm   table-hover border border-light border-5' id='ovMT' >
                                 <thead><tr> 
                                 <th>Element</th>
                                 <th>Stk</th>
@@ -171,12 +167,12 @@ $result = $mysqli->query($sql);
 
 echo "<div class='row mt-4'>
             <div class='col-xxl-6'> 
-                <div class='card card-default m-2'>
+                <div class='card  m-2'>
                     <div class='card-header'>
                         <h4 class='text-dark'><i class='fas fa-arrows-alt'></i> Möbel</h4>
                     </div>
                     <div class='card-body'>";
-echo "<table class='table table-striped table-bordered table-sm' id='moebel'  style='width:100%'>
+echo "<table class='table overflow-hidden table-responsive table-striped table-bordered table-sm   table-hover border border-light border-5' id='moebel' >
                                 <thead><tr> 
                                 <th>Element</th>
                                 <th>Stk</th>
@@ -220,12 +216,12 @@ $result = $mysqli->query($sql);
 
 echo "
             <div class='col-xxl-6'> 
-                <div class='card card-default m-2'>
+                <div class='card  m-2'>
                     <div class='card-header'>
                         <h4 class='text-dark'><i class='fas fa-arrows-alt'></i> Medizinische Gase</h4>
                     </div>
                     <div class='card-body'>";
-echo "<table class='table table-striped table-bordered table-sm' id='gase'  style='width:100%'>
+echo "<table class='table overflow-hidden table-responsive table-striped table-bordered table-sm   table-hover border border-light border-5' id='gase' >
                                 <thead><tr> 
                                 <th>Element</th>
                                 <th>Stk</th>
@@ -272,12 +268,12 @@ $result = $mysqli->query($sql);
 echo "
         <div class='row mt-4'>
             <div class='col-xxl-6'> 
-                <div class='card card-default m-2'>
+                <div class='card  m-2'>
                     <div class='card-header'>
                         <h4 class='text-dark'><i class='fas fa-flask'></i> Laborausstattung</h4>
                     </div>
                     <div class='card-body'>";
-echo "<table class='table table-striped table-bordered table-sm' id='labor'  style='width:100%'>
+echo "<table class='table overflow-hidden table-responsive table-striped table-bordered table-sm   table-hover border border-light border-5' id='labor' >
                                 <thead><tr> 
                                 <th>Element</th>
                                 <th>Stk</th>
