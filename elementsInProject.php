@@ -38,7 +38,9 @@
                     <button type='button' class='btn btn-outline-dark  me-1' id='createElementEinbringwegePDF'>
                         <i class='far fa-file-pdf'></i> Einbringwege
                     </button>
+
                 </div>
+                <i class='fa fa-search'></i>
             </div>
         </div>
 
@@ -99,7 +101,7 @@ GROUP BY tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varia
          tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
 ORDER BY tabelle_elemente.ElementID;";
             $result = $mysqli->query($sql);
-            echo "<table class='table table-striped table-bordered table-sm' id='tableElementsInProject'>
+            echo "<table class='table table-striped table-bordered table-sm table-hover table-hover border border-light border-5' id='tableElementsInProject'>
 									<thead><tr>
 										<th>ID</th>
 										<th>Anzahl</th>
@@ -256,12 +258,10 @@ ORDER BY tabelle_elemente.ElementID;";
                 ],
                 compact: true,
                 initComplete: function () {
-                    //$('.buttons-excel').appendTo('#target_div');
                     tableElementsInProject.buttons().container().appendTo('#target_div .btn-group');
-                    $('.dt-search input').addClass("btn btn-sm btn-outline-dark");
-                    $('.dt-search').children().removeClass('form-control form-control-sm').addClass("fa fa-search d-flex align-items-center").appendTo('#target_div');
-                    //  $('.dt-search input').removeClass('form-control').removeClass('form-control-sm').addClass("btn btn-sm btn-outline-dark bg-white border border-dark text-dark");
-                    // $('.dt-search').addClass('fa fa-search').appendTo('#target_div');
+                    $('.dt-search label').remove();
+                    $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-success").appendTo('#target_div');
+
                 }
             });
 

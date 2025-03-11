@@ -8,7 +8,7 @@
     }
     $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
     if ($mysqli ->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+        die("Connection failed: " . $mysqli->connect_error);
     }
     $mysqli->query("SET NAMES 'utf8'");
 

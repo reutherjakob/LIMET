@@ -1,6 +1,8 @@
 <?php
 // V2.0: 2024-11-29, Reuther & Fux
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 include "_format.php";
 check_login();
 
@@ -114,26 +116,6 @@ $mysqli->close();
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <title>Room Elements Detailed</title>
-    <style>
-        .custom-btn {
-            padding: 0.25rem 0.5rem;
-            width: 150px;
-        }
-
-        .custom-popover {
-            background-color: white;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-        }
-
-        .custom-popover textarea {
-            width: 150px;
-            min-height: 150px;
-        }
-    </style>
 </head>
 <body>
 <div class="d-flex align-items-center justify-content-between w-100">
@@ -156,15 +138,15 @@ $mysqli->close();
     </div>
 
     <?php if ($result_room_elements->num_rows > 0): ?>
-        <div id="room-action-buttons" class="d-inline-flex">
-            <button type="button" class="btn btn-outline-dark mr-2 custom-btn" id="<?php echo $_SESSION["roomID"]; ?>"
+        <div id="room-action-buttons" class="d-inline-flex text-nowrap">
+            <button type="button" class="btn btn-outline-dark " id="<?php echo $_SESSION["roomID"]; ?>"
                     data-bs-toggle="modal" data-bs-target="#copyRoomElementsModal" value="Rauminhalt kopieren">Inhalt
                 kopieren
             </button>
-            <button type="button" class="btn btn-outline-dark mr-2 custom-btn" id="<?php echo $_SESSION["roomID"]; ?>"
+            <button type="button" class="btn btn-outline-dark " id="<?php echo $_SESSION["roomID"]; ?>"
                     value="createRoombookPDF"><i class="far fa-file-pdf"></i> RB-PDF
             </button>
-            <button type="button" class="btn btn-outline-dark custom-btn" id="<?php echo $_SESSION["roomID"]; ?>"
+            <button type="button" class="btn btn-outline-dark" id="<?php echo $_SESSION["roomID"]; ?>"
                     value="createRoombookPDFCosts"><i class="far fa-file-pdf"></i> RB-Kosten-PDF
             </button>
         </div>
@@ -196,7 +178,7 @@ $mysqli->close();
                 <span id="ElementName<?php echo $row["id"]; ?>"><?php echo $row["ElementID"] . " " . $row["Bezeichnung"]; ?></span>
             </td>
             <td data-order="<?php echo $row["tabelle_Varianten_idtabelle_Varianten"]; ?>">
-                 <select class="form-control form-control-sm"
+                <label for="variante<?php echo $row["id"]; ?>"></label><select class="form-control form-control-sm"
                                                                                id="variante<?php echo $row["id"]; ?>">
                     <?php
                     $options = ['A' => 1, 'B' => 2, 'C' => 3, 'D' => 4, 'E' => 5, 'F' => 6, 'G' => 7];
@@ -211,13 +193,15 @@ $mysqli->close();
                                                                   id="amount<?php echo $row["id"]; ?>"
                                                                   value="<?php echo $row["Anzahl"]; ?>" size="1"></td>
             <td data-order="<?php echo $row["Neu/Bestand"]; ?>">
-                <select class="form-control form-control-sm" id="bestand<?php echo $row["id"]; ?>">
+                <label for="bestand<?php echo $row["id"]; ?>"></label><select class="form-control form-control-sm"
+                                                                              id="bestand<?php echo $row["id"]; ?>">
                     <option value="0" <?php echo $row["Neu/Bestand"] == "0" ? "selected" : ""; ?>>Ja</option>
                     <option value="1" <?php echo $row["Neu/Bestand"] == "1" ? "selected" : ""; ?>>Nein</option>
                 </select>
             </td>
             <td data-order="<?php echo $row["Standort"]; ?>">
-                <select class="form-control form-control-sm" id="Standort<?php echo $row["id"]; ?>">
+                <label for="Standort<?php echo $row["id"]; ?>"></label><select class="form-control form-control-sm"
+                                                                               id="Standort<?php echo $row["id"]; ?>">
                     <option value="0" <?php echo $row["Standort"] == "0" ? "selected" : ""; ?>>Nein</option>
                     <option value="1" <?php echo $row["Standort"] == "1" ? "selected" : ""; ?>>Ja</option>
                 </select></td>
@@ -226,13 +210,15 @@ $mysqli->close();
                     <option value="0" <?php echo $row["Verwendung"] == "0" ? "selected" : ""; ?>>Nein</option>
                     <option value="1" <?php echo $row["Verwendung"] == "1" ? "selected" : ""; ?>>Ja</option>
                 </select></td>
-            <td data-order="<?php echo trim($row["Kurzbeschreibung"] ?? "");
-            $Kurzbeschreibung = trim($row["Kurzbeschreibung"] ?? "");
-            $buttonClass = $Kurzbeschreibung === "" ? "btn-outline-secondary" : "btn-outline-dark";
-            $iconClass = $Kurzbeschreibung === "" ? "fa fa-comment-slash" : "fa fa-comment";
-            $dataAttr = $Kurzbeschreibung === "" ? "data-description= '' " : "data-description='" . htmlspecialchars($Kurzbeschreibung, ENT_QUOTES, 'UTF-8') . "'"; ?>
+            <td>
 
-                ">
+                <?php
+                $Kurzbeschreibung = trim($row["Kurzbeschreibung"] ?? "");
+                $buttonClass = $Kurzbeschreibung === "" ? "btn-outline-secondary" : "btn-outline-dark";
+                $iconClass = $Kurzbeschreibung === "" ? "fa fa-comment-slash" : "fa fa-comment";
+                $dataAttr = $Kurzbeschreibung === "" ? "data-description= '' " : "data-description='" . htmlspecialchars($Kurzbeschreibung, ENT_QUOTES, 'UTF-8') . "'";
+                ?>
+
                 <button type="button"
                         class="btn btn-sm <?php echo $buttonClass; ?> comment-btn" <?php echo $dataAttr; ?>
                         id="<?php echo $row["id"]; ?>" title="Kommentar"><i class="<?php echo $iconClass; ?>"></i>
@@ -253,7 +239,8 @@ $mysqli->close();
 </table>
 
 <!-- Modal zum Kopieren des Rauminhalts -->
-<div class='modal fade' id='copyRoomElementsModal' tabindex='-1' aria-labelledby='copyRoomElementsModalLabel' aria-hidden='true'>
+<div class='modal fade' id='copyRoomElementsModal' tabindex='-1' aria-labelledby='copyRoomElementsModalLabel'
+     aria-hidden='true'>
     <div class='modal-dialog modal-xl'>
         <div class='modal-content'>
 
@@ -344,41 +331,25 @@ $mysqli->close();
 
     CustomPopover.init('.comment-btn', {
         onSave: function (trigger, newText) {
-            trigger.dataset.description = newText; // Update the trigger's data attribute
+            trigger.dataset.description = newText;
             // send an AJAX request to save the new text
-            let id = trigger.id;
-            let comment = newText;
-            //    console.log(comment);
-            let amount = $("#amount" + id).val();
-            let variantenID = $("#variante" + id).val();
-            let bestand = $("#bestand" + id).val();
-            let standort = $("#Standort" + id).val();
-            let verwendung = $("#Verwendung" + id).val();
-            if (standort === '0' && verwendung === '0') {
-                alert("Standort und Verwendung kann nicht Nein sein!");
-            } else {
-                $.ajax({
-                    url: "saveRoombookEntry.php",
-                    data: {
-                        "comment": comment,
-                        "id": id,
-                        "amount": amount,
-                        "variantenID": variantenID,
-                        "bestand": bestand,
-                        "standort": standort,
-                        "verwendung": verwendung
-                    },
-                    type: "GET",
-                    success: function (data) {
-                        makeToaster(data.trim(), true);
-                        $(".comment-btn[id='" + id + "']").removeClass('btn-outline-secondary');
-                        $(".comment-btn[id='" + id + "']").addClass('btn-outline-dark');
-                        $(".comment-btn[id='" + id + "']").find('i').removeClass('fa fa-comment-slash');
-                        $(".comment-btn[id='" + id + "']").find('i').addClass('fa fa-comment');
-                        $(".comment-btn[id='" + id + "']").attr('data-description', newText).data('description', newText);
-                    }
-                });
-            }
+            let id = trigger.id;   // = tabelle_räume_has_tabelle_elemente.id
+            $.ajax({
+                url: "saveRoomElementComment.php",
+                data: {
+                    "comment": newText,
+                    "id": id
+                },
+                type: "GET",
+                success: function (data) {
+                    makeToaster(data.trim(), true);
+                    $(".comment-btn[id='" + id + "']").removeClass('btn-outline-secondary');
+                    $(".comment-btn[id='" + id + "']").addClass('btn-outline-dark');
+                    $(".comment-btn[id='" + id + "']").find('i').removeClass('fa fa-comment-slash');
+                    $(".comment-btn[id='" + id + "']").find('i').addClass('fa fa-comment');
+                    $(".comment-btn[id='" + id + "']").attr('data-description', newText).data('description', newText);
+                }
+            });
         }
     });
 
@@ -450,8 +421,8 @@ $mysqli->close();
             layout: {
                 topStart: null,
                 topEnd: null,
-                bottomEnd: [ 'pageLength', 'paging'],
-                bottomStart: ['search','info']
+                bottomEnd: ['pageLength', 'paging'],
+                bottomStart: ['search', 'info']
             }
         });
 

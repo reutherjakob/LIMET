@@ -13,7 +13,7 @@ if(!isset($_SESSION["username"]))
 <?php
 	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
 	if ($mysqli ->connect_error) {
-	    die("Connection failed: " . $conn->connect_error);
+	    die("Connection failed: " . $mysqli->connect_error);
 	}
 	mysqli_query($mysqli, "SET NAMES 'utf8'");
 	
@@ -53,9 +53,6 @@ if(!isset($_SESSION["username"]))
 	} else {
 	    echo "Error: " . $sql . "<br>" . $mysqli->error;
 	}
-	
 	$mysqli ->close();
-	
-	
-					
+
 ?>
