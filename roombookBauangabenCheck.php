@@ -31,8 +31,8 @@ init_page_serversides();
 </head>
 
 <body>
-<div id="limet-navbar"></div>
-<div class="container-fluid">
+<div class="container-fluid bg-light" >
+    <div id="limet-navbar"></div>
     <div class="mt-4 card responsive">
         <div class="card-header">
             <div class="row ">
@@ -307,7 +307,7 @@ init_page_serversides();
                         ],
                         initComplete: function () {
                             $('.dt-search label').remove();
-                            $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-success").appendTo('#CH1');
+                            $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CH1');
 
                         }
                     });

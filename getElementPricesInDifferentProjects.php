@@ -18,7 +18,7 @@ $sql = "SELECT tabelle_projekte.Projektname, tabelle_projekte.Interne_Nr, tabell
 			FROM tabelle_varianten INNER JOIN (tabelle_projekt_varianten_kosten INNER JOIN tabelle_projekte ON tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte) ON tabelle_varianten.idtabelle_Varianten = tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten
 			WHERE (((tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente)=" . $_GET["elementID"] . ") AND NOT (tabelle_projekte.Projektname = 'Test1' ) );";
 $result = $mysqli->query($sql);
-echo "<table class='table table-striped table-bordered table-sm' id='tableElementPricesInProjects'>
+echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableElementPricesInProjects'>
             <thead><tr>
             <th>Projekt</th>
             <th>Interne Nr</th>

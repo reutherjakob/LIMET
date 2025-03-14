@@ -13,7 +13,7 @@ function makeToaster(headerText, success) {
         </div>`;
     document.body.appendChild(toast);
 
-    const topPosition = 10 + visibleToasts.reduce((acc, t) => acc + t.offsetHeight + 10, 0);
+    const topPosition = 20 + visibleToasts.reduce((acc, t) => acc + t.offsetHeight + 10, 0);
     toast.style.top = `${topPosition}px`;
 
     setTimeout(() => {
@@ -22,7 +22,7 @@ function makeToaster(headerText, success) {
             toast.remove();
             updateToastPositions();
         }, 50);
-    }, 4000);
+    }, 5000);
 }
 
 function updateToastPositions() {
@@ -36,6 +36,7 @@ function updateToastPositions() {
 
 function move_item(item2move_id, where2move_id) {
     let item = document.getElementById(item2move_id);
+
     if (item) {
         item.parentNode.removeChild(item);
         document.getElementById(where2move_id).appendChild(item);

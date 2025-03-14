@@ -33,8 +33,8 @@ $mysqli = utils_connect_sql();
 </head>
 
 <body>
-<div id="limet-navbar"></div>
-<div class="container-fluid">
+<div class="container-fluid bg-light" >
+    <div id="limet-navbar"></div>
 
     <div class="mt-4 card">
         <div class="card-header">
@@ -242,7 +242,7 @@ $mysqli = utils_connect_sql();
             ],
             initComplete: function () {
                 $('.dt-search label').remove();
-                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-success").appendTo('#cardHeader');
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#cardHeader');
                 $('.dt-buttons').children().addClass("btn-sm ms-1 me-1");
             }
         });

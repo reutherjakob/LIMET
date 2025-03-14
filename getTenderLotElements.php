@@ -1,6 +1,8 @@
 <?php
 // reworked 25
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 check_login();
 ?>
 
@@ -51,7 +53,7 @@ ORDER BY
     tabelle_räume.Raumnr;";
 
 $result = $mysqli->query($sql);
-echo "<table class='table table-striped table-bordered table-sm' id='tableLotElements1'>
+echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableLotElements1'>
             <thead><tr>
             <th>ID</th>
             <th>elementID</th>
@@ -100,12 +102,11 @@ echo "</tbody></table>";
 $mysqli->close();
 ?>
 <script src="_utils.js"></script>
-<script>
+<script charset="utf-8">
     var tableLotElements1;
     $(document).ready(function () {
         tableLotElements1 = new DataTable('#tableLotElements1', {
-            paging: true,
-            select: true,
+            dom: '<"#topDiv.top-container d-flex"<"col-md-6 justify-content-start"><"#topDivSearch2.col-md-6"f>>t<"bottom d-flex" <"col-md-6 justify-content-start"i><"col-md-6 d-flex align-items-center justify-content-end"lp>>',
             columnDefs: [
                 {
                     targets: [0, 1, 2],
@@ -115,12 +116,16 @@ $mysqli->close();
             ],
             searching: true,
             info: true,
+            paging: true,
+            select: true,
             order: [[3, 'asc']],
             pagingType: 'simple',
             lengthChange: false,
             pageLength: 10,
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                search: "",
+                searchPlaceholder: "Suche..."
             },
             buttons: [
                 {
@@ -135,8 +140,8 @@ $mysqli->close();
                     },
                     customize: function (xlsx) {
                         const sheet = xlsx.xl.worksheets['sheet1.xml'];
-                        sheet.querySelector('row:first-child').remove();
-                        sheet.querySelectorAll('row').forEach(row => {
+                        sheet.querySelector(".row:first-child").remove();
+                        sheet.querySelectorAll('.row').forEach(row => {
                             const col3 = row.querySelector('c[r^="A"]');
                             const col7 = row.querySelector('c[r^="E"]');
                             if (col3.textContent === '0' || col7.textContent === 'Ja') {
@@ -157,6 +162,8 @@ $mysqli->close();
             let variantenID = tableLotElements1.row($(this)).data()[2];
             let id = tableLotElements1.row($(this)).data()[0];
             let stk = tableLotElements1.row($(this)).data()[3];
+            console.log("elementID, variantenID, id, stk: ", elementID, variantenID, id, stk);
+
             $.ajax({
                 url: "getVariantenParameters.php",
                 data: {"variantenID": variantenID, "elementID": elementID},
@@ -177,9 +184,11 @@ $mysqli->close();
             });
         });
     });
+
     $('#createLotElementListPDF').click(function () {    // PDF erzeugen
         window.open('/pdf_createLotElementListPDF.php');
     });
+
 </script>
 </body>
 </html>

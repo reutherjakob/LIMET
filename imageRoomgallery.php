@@ -183,7 +183,7 @@ if(!isset($_SESSION["username"]))
 
                         $result = $mysqli->query($sql);
 
-                        echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'   >
+                        echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableRooms'   >
                         <thead><tr>
                         <th>ID</th>
                         <th>Raumnr</th>

@@ -137,8 +137,9 @@ $mysqli->close();
         <?php endforeach; ?>
     </div>
 
+
     <?php if ($result_room_elements->num_rows > 0): ?>
-        <div id="room-action-buttons" class="d-inline-flex text-nowrap">
+        <div id="room-action-buttons" class="d-inline-flex text-nowrap align-items-center">
             <button type="button" class="btn btn-outline-dark " id="<?php echo $_SESSION["roomID"]; ?>"
                     data-bs-toggle="modal" data-bs-target="#copyRoomElementsModal" value="Rauminhalt kopieren">Inhalt
                 kopieren
@@ -149,12 +150,18 @@ $mysqli->close();
             <button type="button" class="btn btn-outline-dark" id="<?php echo $_SESSION["roomID"]; ?>"
                     value="createRoombookPDFCosts"><i class="far fa-file-pdf"></i> RB-Kosten-PDF
             </button>
+            <div class=" btn btn-outline-dark">
+                <input class="form-check-input" type="checkbox" id="hideZeroRows"
+                       checked>
+                <label class="form-check-label" for="hideZeroRows">
+                    Hide 0
+                </label>
+            </div>
         </div>
     <?php endif; ?>
 </div>
 
-<table class="table table-sm compact table-responsiv table-striped border border-light border-5" id="tableRoomElements"
-       style="width:100%">
+<table class="table table-sm compact table-responsiv table-striped border border-light border-5" id="tableRoomElements">
     <thead>
     <tr>
         <th>ID</th>
@@ -178,8 +185,9 @@ $mysqli->close();
                 <span id="ElementName<?php echo $row["id"]; ?>"><?php echo $row["ElementID"] . " " . $row["Bezeichnung"]; ?></span>
             </td>
             <td data-order="<?php echo $row["tabelle_Varianten_idtabelle_Varianten"]; ?>">
-                <label for="variante<?php echo $row["id"]; ?>"></label><select class="form-control form-control-sm"
-                                                                               id="variante<?php echo $row["id"]; ?>">
+                <label for="variante<?php echo $row["id"]; ?>" style="display: none;"></label><select
+                        class="form-control form-control-sm"
+                        id="variante<?php echo $row["id"]; ?>">
                     <?php
                     $options = ['A' => 1, 'B' => 2, 'C' => 3, 'D' => 4, 'E' => 5, 'F' => 6, 'G' => 7];
                     foreach ($options as $label => $value) {
@@ -189,24 +197,30 @@ $mysqli->close();
                     ?>
                 </select>
             </td>
-            <td data-order="<?php echo $row["Anzahl"]; ?>"><input class="form-control form-control-sm" type="text"
-                                                                  id="amount<?php echo $row["id"]; ?>"
-                                                                  value="<?php echo $row["Anzahl"]; ?>" size="1"></td>
+            <td data-order="<?php echo $row["Anzahl"]; ?>"><label style="display: none;"
+                                                                  for="amount<?php echo $row["id"]; ?>"></label><input
+                        class="form-control form-control-sm" type="text"
+                        id="amount<?php echo $row["id"]; ?>"
+                        value="<?php echo $row["Anzahl"]; ?>" size="1"></td>
             <td data-order="<?php echo $row["Neu/Bestand"]; ?>">
-                <label for="bestand<?php echo $row["id"]; ?>"></label><select class="form-control form-control-sm"
-                                                                              id="bestand<?php echo $row["id"]; ?>">
+                <label for="bestand<?php echo $row["id"]; ?>" style="display: none;"></label><select
+                        class="form-control form-control-sm"
+                        id="bestand<?php echo $row["id"]; ?>">
                     <option value="0" <?php echo $row["Neu/Bestand"] == "0" ? "selected" : ""; ?>>Ja</option>
                     <option value="1" <?php echo $row["Neu/Bestand"] == "1" ? "selected" : ""; ?>>Nein</option>
                 </select>
             </td>
             <td data-order="<?php echo $row["Standort"]; ?>">
-                <label for="Standort<?php echo $row["id"]; ?>"></label><select class="form-control form-control-sm"
-                                                                               id="Standort<?php echo $row["id"]; ?>">
+                <label for="Standort<?php echo $row["id"]; ?>" style="display: none;"></label><select
+                        class="form-control form-control-sm"
+                        id="Standort<?php echo $row["id"]; ?>">
                     <option value="0" <?php echo $row["Standort"] == "0" ? "selected" : ""; ?>>Nein</option>
                     <option value="1" <?php echo $row["Standort"] == "1" ? "selected" : ""; ?>>Ja</option>
                 </select></td>
-            <td data-order="<?php echo $row["Verwendung"]; ?>"><select class="form-control form-control-sm"
-                                                                       id="Verwendung<?php echo $row["id"]; ?>">
+            <td data-order="<?php echo $row["Verwendung"]; ?>"><label for="Verwendung<?php echo $row["id"]; ?>"
+                                                                      style="display: none;"></label><select
+                        class="form-control form-control-sm"
+                        id="Verwendung<?php echo $row["id"]; ?>">
                     <option value="0" <?php echo $row["Verwendung"] == "0" ? "selected" : ""; ?>>Nein</option>
                     <option value="1" <?php echo $row["Verwendung"] == "1" ? "selected" : ""; ?>>Ja</option>
                 </select></td>
@@ -413,30 +427,42 @@ $mysqli->close();
             order: [[3, "desc"]],
             language: {
                 url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/de-DE.json",
-                search: ""
-            },
-            search: {
-                placeholder: ""
+                search: "", searchPlaceholder: "Search...",
             },
             layout: {
                 topStart: null,
-                topEnd: null,
+                topEnd: "search",
                 bottomEnd: ['pageLength', 'paging'],
-                bottomStart: ['search', 'info']
+                bottomStart: ['info']
             }
+        });
+
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+                let hideZero = $("#hideZeroRows").is(":checked");
+                let row = tableRoomElements.row(dataIndex).node();
+                let amount = $(row).find('input[id^="amount"]').val();
+                amount = parseInt(amount) || 0;
+                // console.log("Row " + dataIndex + " amount: ", amount);
+                return !(hideZero && amount === 0);
+            }
+        );
+
+        $("#hideZeroRows").on("change", function () {
+            tableRoomElements.draw();
         });
 
 
         $('#tableRoomElements tbody').on('click', 'tr', function () {
             let id = tableRoomElements.row($(this)).data()[0].display;
-            //console.log(id);
+            //console.log("ID ", id);
             //console.log("#amount" + id);
             let stk = $("#amount" + id).val();
             // console.log(stk);
             let standort = $("#Standort" + id).val();
             let verwendung = $("#Verwendung" + id).val();
             let elementID = tableRoomElements.row($(this)).data()[0]['display'];
-//            console.log(elementID);
+            //console.log("ELID", elementID);
             $.ajax({
                 url: "getElementParameters.php",
                 data: {"id": id},

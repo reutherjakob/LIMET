@@ -59,19 +59,17 @@ init_page_serversides();
                                value='Los hinzufügen' data-bs-toggle='modal' data-bs-target='#addTenderLotModal'>
                     </div>
                     <div class="d-inline-flex align-items-center" id="LoseCardHeaderSub">
-                        <button type='button' class='btn btn-secondary btn-sm' id='createTenderListPDF'><i
-                                    class='far fa-file-pdf'></i> Losliste mit Elementen-PDF
+                        <button type='button' class='btn btn-secondary btn-sm' id='createTenderListPDF'>
+                            <i class='far fa-file-pdf'></i> Losliste mit Elementen-PDF
                         </button>
                         <button type='button' class='btn btn-secondary btn-sm' id='createTenderListWithoutElementsPDF'>
-                            <i
-                                    class='far fa-file-pdf'></i> Losliste-PDF
+                            <i class='far fa-file-pdf'></i> Losliste-PDF
                         </button>
-                        <button type='button' class='btn btn-secondary btn-sm' id='createTenderWorkflowPDF'><i
-                                    class='far fa-file-pdf'></i> Workflow-PDF
+                        <button type='button' class='btn btn-secondary btn-sm' id='createTenderWorkflowPDF'>
+                            <i class='far fa-file-pdf'></i> Workflow-PDF
                         </button>
                     </div>
                 </div>
-
                 <div class="card-body" id="projectLots">
                     <div class="">
                         <?php
@@ -82,13 +80,11 @@ init_page_serversides();
                                                                         ORDER BY `Lieferant`;";
 
                         $result = $mysqli->query($sql);
-
                         $possibleAuftragnehmer = array();
                         while ($row = $result->fetch_assoc()) {
                             $possibleAuftragnehmer[$row['idTABELLE_Lieferant']]['idTABELLE_Lieferant'] = $row['idTABELLE_Lieferant'];
                             $possibleAuftragnehmer[$row['idTABELLE_Lieferant']]['Lieferant'] = $row['Lieferant'];
                         }
-
 
                         // Abfrage der externen Lose
                         $sql = "SELECT tabelle_lose_extern.idtabelle_Lose_Extern, tabelle_lose_extern.LosNr_Extern, 
@@ -255,14 +251,13 @@ init_page_serversides();
             <div class="mt-4 card">
                 <div class="card-header">Bestandsdaten
                     <button type='button' id='addBestandsElement'
-                            class='btn ml-4 mt-2 btn-outline-success btn-sm float-right' value='Hinzufügen'
+                            class='btn btn-sm ml-4 mt-2 btn-outline-success float-right' value='Hinzufügen'
                             data-bs-toggle='modal' data-bs-target='#addBestandModal'><i class='fas fa-plus'></i>
                     </button>
                     <button type='button' id='reloadBestand'
-                            class='btn ml-4 mt-2 btn-outline-secondary  float-right' value='reloadBestand'>
+                            class='btn btn-sm ml-4 mt-2 btn-outline-secondary float-right' value='reloadBestand'>
                         <i class="fa fa-retweet" aria-hidden="true"></i>
                     </button>
-
                 </div>
                 <div class="card-body" id="elementBestand"></div>
             </div>
@@ -365,9 +360,9 @@ init_page_serversides();
                     </form>
             </div>
             <div class='modal-footer'>
-                <input type='button' id='addTenderLot' class='btn btn-success btn-sm' value='Hinzufügen'></input>
-                <input type='button' id='saveTenderLot' class='btn btn-warning btn-sm' value='Speichern'></input>
-                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
+                <input type='button' id='addTenderLot' class='btn btn-success btn-sm' value='Hinzufügen'>
+                <input type='button' id='saveTenderLot' class='btn btn-warning btn-sm' value='Speichern'>
+                <button type='button' class='btn btn-outline-dark btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
             </div>
         </div>
     </div>
@@ -393,7 +388,6 @@ init_page_serversides();
 
 
 </body>
-
 <!-- Modal Info
 <div class='modal fade' id='infoModal' role='dialog'>
     <div class='modal-dialog modal-dialog-centered modal-sm'>
@@ -422,13 +416,13 @@ init_page_serversides();
     var tableTenderLots;
     $(document).ready(function () {
         tableTenderLots = new DataTable('#tableTenderLots', {
-            columnDefs: [
-                {
-                    targets: [0, 14, 15, 16, 17, 18, 22, 23, 24],
-                    visible: false,
-                    searchable: false
-                }
-            ],
+            //columnDefs: [
+            //    {
+            //        targets: [0, 14, 15, 16, 17, 18, 22, 23, 24],
+            //        visible: false,
+            //        searchable: false
+            //    }
+            //],
             select: true,
             search: {search: ''},
             paging: true,
@@ -477,19 +471,17 @@ init_page_serversides();
                 if (button) {
                     button.classList.remove("dt-buttons");
                 }
-
                 $('.dt-search label').remove();
-                $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-success").appendTo('#LoseCardHeaderSub');
-
+                $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-dark").appendTo('#LoseCardHeaderSub');
             }
         });
 
         $('#tableTenderLots tbody').on('click', 'tr', function () {
             if ($.fn.DataTable.isDataTable('#tableLotElements1')) {
-
             }
             lotID = tableTenderLots.row($(this)).data()[0];
-            lotVerfahren1 = tableTenderLots.row($(this)).data()[5];
+
+            let lotVerfahren1 = tableTenderLots.row($(this)).data()[5];
 
             if (lotVerfahren1 === "MKF") {
                 $('#lotMKF').bootstrapToggle('enable');
@@ -501,20 +493,22 @@ init_page_serversides();
                 $('#lotMKF').bootstrapToggle('off');
                 $('#lotMKF').bootstrapToggle('disable');
             }
+
             document.getElementById("lotNr").value = tableTenderLots.row($(this)).data()[2];
             document.getElementById("lotName").value = tableTenderLots.row($(this)).data()[3];
-            document.getElementById("lotLVSend").value = tableTenderLots.row($(this)).data()[5];
-            document.getElementById("lotStart").value = tableTenderLots.row($(this)).data()[6];
-            document.getElementById("lotVerfahren").value = tableTenderLots.row($(this)).data()[7];
-            document.getElementById("lotLVBearbeiter").value = tableTenderLots.row($(this)).data()[8];
-            document.getElementById("kostenanschlag").value = tableTenderLots.row($(this)).data()[21];
-            document.getElementById("budget").value = tableTenderLots.row($(this)).data()[22];
-            document.getElementById("lotSum").value = tableTenderLots.row($(this)).data()[23];
-            document.getElementById("lotVergabe").value = tableTenderLots.row($(this)).data()[17];
-            document.getElementById("lotAuftragnehmer").value = tableTenderLots.row($(this)).data()[16];
-            document.getElementById("lotMKFOf").value = tableTenderLots.row($(this)).data()[18];
-            document.getElementById("lotNotice").value = tableTenderLots.row($(this)).data()[19];
+            document.getElementById("lotLVSend").value = tableTenderLots.row($(this)).data()[4];
+            document.getElementById("lotStart").value = tableTenderLots.row($(this)).data()[5];
+            document.getElementById("lotVerfahren").value = tableTenderLots.row($(this)).data()[6];
+            document.getElementById("lotLVBearbeiter").value = tableTenderLots.row($(this)).data()[7];
+            document.getElementById("kostenanschlag").value = tableTenderLots.row($(this)).data()[11];
 
+            document.getElementById("budget").value = tableTenderLots.row($(this)).data()[12];
+            document.getElementById("lotSum").value = tableTenderLots.row($(this)).data()[13];
+            document.getElementById("lotVergabe").value = tableTenderLots.row($(this)).data()[17];
+            document.getElementById("lotAuftragnehmer").value = tableTenderLots.row($(this)).data()[18];
+            document.getElementById("lotNotice").value = tableTenderLots.row($(this)).data()[21];
+
+            document.getElementById("lotMKFOf").value = tableTenderLots.row($(this)).data()[24]; //TODO ??
             $.ajax({
                 url: "getLotVermerke.php",
                 data: {"lotID": lotID},
@@ -628,7 +622,7 @@ init_page_serversides();
         let lotLVBearbeiter = $("#lotLVBearbeiter").val();
 
         if ($("#lotMKF").prop('checked') === false) {
-
+            console.log("$('#lotMKF').prop('checked') === false");
             if (losNr !== "" && losName !== "" && losDatum !== "" && lotLVSend !== "" && lotVerfahren !== "" && lotLVBearbeiter !== "") {
                 $('#addTenderLotModal').modal('hide');
                 $.ajax({
@@ -658,6 +652,7 @@ init_page_serversides();
             } else {
                 alert("Bitte alle Felder außer der Vergabesumme ausfüllen!");
             }
+
         } else {
             if (losDatum !== "" && lotLVSend !== "" && lotVerfahren !== "" && lotLVBearbeiter !== "") {
                 $('#addTenderLotModal').modal('hide');
@@ -689,12 +684,18 @@ init_page_serversides();
                 alert("Bitte alle Felder außer der Vergabesumme ausfüllen!");
             }
         }
-
-
     });
 
-    $("#addTenderLotModalButton").click(function () {
+    $("button[value='changeTenderLot']").click(function () {
+        $('#lotMKF').bootstrapToggle('disable');
+        document.getElementById("addTenderLot").style.display = "none";
+        document.getElementById("saveTenderLot").style.display = "inline";
+        $('#addTenderLotModal').modal('show');
+    });
 
+
+
+    $("#addTenderLotModalButton").click(function () {
         document.getElementById("lotNr").value = "";
         document.getElementById("lotName").value = "";
         document.getElementById("lotLVSend").value = "";
@@ -702,21 +703,14 @@ init_page_serversides();
         document.getElementById("lotVerfahren").value = "";
         document.getElementById("lotLVBearbeiter").value = "";
         document.getElementById("lotSum").value = "";
-        document.getElementById("lotVergabe").value = "0";
+        document.getElementById("lotVergabe").value = "";
         document.getElementById("lotAuftragnehmer").value = "";
-        // Buttons ein/ausblenden!
-        document.getElementById("saveTenderLot").style.display = "none";
+
+        document.getElementById("saveTenderLot").style.display = "none";      // Buttons ein/ausblenden!
         document.getElementById("addTenderLot").style.display = "inline";
         $('#lotMKF').bootstrapToggle('enable');
     });
 
-    $("button[value='changeTenderLot']").click(function () {
-        // Buttons ein/ausblenden!
-        $('#lotMKF').bootstrapToggle('disable');
-        document.getElementById("addTenderLot").style.display = "none";
-        document.getElementById("saveTenderLot").style.display = "inline";
-        $('#addTenderLotModal').modal('show');
-    });
 
     //MKF Checkbox
     $('#lotMKF').change(function () {
@@ -736,6 +730,11 @@ init_page_serversides();
             document.getElementById("lotMKFOf").value = 0;
         }
     });
+
+
+
+
+
 
     // PDF erzeugen
     $('#createTenderListPDF').click(function () {
@@ -775,10 +774,9 @@ init_page_serversides();
         });
     });
 
-
     $('#toggleVermerkeBtn').click(function () {
-        $('#mainCardColumn').toggleClass('col-xxl-8 col-xxl-11');
-        $('#vermerkeCardColumn').toggleClass('col-xxl-4 col-xxl-1');
+        $('#mainCardColumn').toggleClass('col-xxl-9 col-xxl-11');
+        $('#vermerkeCardColumn').toggleClass('col-xxl-3 col-xxl-1');
         $('#lotVermerke').toggleClass('d-none');
         $(this).find('i').toggleClass('fa-chevron-right fa-chevron-left');
     });

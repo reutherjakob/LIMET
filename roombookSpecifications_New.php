@@ -112,13 +112,13 @@ include 'roombookSpecifications_HelpModal.php';
         </div>
     </section>
     <section class='d-flex bd-highlight'>
-        <div class='mt-4 mr-2 card flex-grow-1'>
+        <div class='mt-4 me-2 mr-2 card flex-grow-1'>
             <header class="card-header fix_size"><b>Bauangaben</b></header>
             <div class="card-body" id="bauangaben"></div>
         </div>
         <div class="mt-4 card">
-            <div class="card">
-                <div class="card-header form-inline d-inline-flex" id="CardHEaderElemntsInRoom">
+            <div class="card me-2 ms-2">
+                <div class="card-header form-inline d-inline-flex " id="CardHEaderElemntsInRoom">
                     <button type="button" class="btn btn-outline-dark " id="showRoomElements" style="width: 30px;"><i
                                 class="fas fa-caret-left"></i></button>
                     <div class="row" id="CardHEaderElemntsInRoom_SUB">

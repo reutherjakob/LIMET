@@ -48,7 +48,7 @@ function parseBezeichnung($bezeichnung) {
     ];
 
     // Gib die lesbare Form zurück, falls sie im Mapping-Array existiert
-    return isset($mapping[$bezeichnung]) ? $mapping[$bezeichnung] : $bezeichnung;
+    return $mapping[$bezeichnung] ?? $bezeichnung;
 }
 
 //GET DATA 
@@ -64,7 +64,7 @@ $stmt = "SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte, tabelle_para
         . "ORDER BY Raumbezeichnung, ElementID DESC";
 $result_Einbring_elemente = $mysqli->query($stmt);
 $mysqli->close();
-
+$rooms = array();
 while ($row = $result_Einbring_elemente->fetch_assoc()) {
     if (!in_array($row["Raumnr"], $rooms)) {
         $rooms[] = $row["Raumnr"];

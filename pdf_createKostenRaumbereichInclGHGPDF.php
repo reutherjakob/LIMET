@@ -142,6 +142,7 @@ $sumGewerkBestand = 0;
 $sumRaumbereich = 0;
 $sumRaumbereichBestand = 0;
 $gewerk = 0;
+$sumGesamtNeu=0;
 
 foreach ($raumbereicheInProject as $rowData) {
     $pdf->AddPage('P', 'A4');
@@ -185,9 +186,9 @@ foreach ($raumbereicheInProject as $rowData) {
         if ($rowData2["Gewerke_Nr"] !== $gewerk) {
             $pdf->SetFont('helvetica', 'B', 10);
             if ($i > 0) {
-                $pdf->MultiCell(120, 4, money_format('€ %!n', $sumGewerk), 'T', 'R', 0, 0);
-                $pdf->MultiCell(30, 4, money_format('€ %!n', $sumGewerkNeu), 'T', 'R', 0, 0);
-                $pdf->MultiCell(30, 4, money_format('€ %!n', $sumGewerkBestand), 'T', 'R', 0, 0);
+                $pdf->MultiCell(120, 4, format_money_report( $sumGewerk), 'T', 'R', 0, 0);
+                $pdf->MultiCell(30, 4, format_money_report( $sumGewerkNeu), 'T', 'R', 0, 0);
+                $pdf->MultiCell(30, 4, format_money_report( $sumGewerkBestand), 'T', 'R', 0, 0);
                 $sumRaumbereich = $sumRaumbereich + $sumGewerk;
                 $sumGesamtNeu = $sumGesamtNeu + $sumGewerkNeu;
                 $sumRaumbereichBestand = $sumRaumbereichBestand + $sumGewerkBestand;
@@ -210,7 +211,7 @@ foreach ($raumbereicheInProject as $rowData) {
             } else {
                 $pdf->MultiCell(50, 6, "GHG: " . $rowData2["GHG"] . " " . $rowData2["GHG_Bezeichnung"], '', 'L', 0, 0);
             }
-            $pdf->MultiCell(50, 4, money_format('€ %!n', $rowData2["PP"]), 0, 'R', 0, 0);
+            $pdf->MultiCell(50, 4, format_money_report( $rowData2["PP"]), 0, 'R', 0, 0);
         } else {
             $pdf->SetFont('helvetica', 'I', 8);
             $pdf->MultiCell(20, 6, "", '', 'L', 0, 0);
@@ -219,7 +220,7 @@ foreach ($raumbereicheInProject as $rowData) {
             } else {
                 $pdf->MultiCell(50, 6, "GHG: " . $rowData2["GHG"] . " " . $rowData2["GHG_Bezeichnung"], '', 'L', 0, 0);
             }
-            $pdf->MultiCell(50, 4, money_format('€ %!n', $rowData2["PP"]), 0, 'R', 0, 0);
+            $pdf->MultiCell(50, 4, format_money_report( $rowData2["PP"]), 0, 'R', 0, 0);
         }
         // Neusumme ermitteln ----------------------------------
         if ($rowData2["GHG"] == "") {
@@ -234,7 +235,7 @@ foreach ($raumbereicheInProject as $rowData) {
 
         $result1 = $mysqli->query($sql1);
         $row = $result1->fetch_assoc();
-        $pdf->MultiCell(30, 4, money_format('€ %!n', $row["PP_neu"]), 0, 'R', $fill, 0);
+        $pdf->MultiCell(30, 4, format_money_report( $row["PP_neu"]), 0, 'R', $fill, 0);
 
         $sumGewerkNeu = $sumGewerkNeu + $row["PP_neu"];
         //---------------------------------------------------------------
@@ -251,7 +252,7 @@ foreach ($raumbereicheInProject as $rowData) {
 
         $result1 = $mysqli->query($sql1);
         $row1 = $result1->fetch_assoc();
-        $pdf->MultiCell(30, 4, money_format('€ %!n', $row1["PP"]), 0, 'R', $fill, 0);
+        $pdf->MultiCell(30, 4, format_money_report( $row1["PP"]), 0, 'R', $fill, 0);
         //---------------------------------------------------------------
         $gewerk = $rowData2["Gewerke_Nr"];
 
@@ -265,18 +266,18 @@ foreach ($raumbereicheInProject as $rowData) {
 
     // Ausgabe der letzten Summenzeile für letztes Gewerk pro raumbereich
     $pdf->SetFont('helvetica', 'B', 10);
-    $pdf->MultiCell(120, 4, money_format('€ %!n', $sumGewerk), 'T', 'R', 0, 0);
-    $pdf->MultiCell(30, 4, money_format('€ %!n', $sumGewerkNeu), 'T', 'R', 0, 0);
-    $pdf->MultiCell(30, 4, money_format('€ %!n', $sumGewerkBestand), 'T', 'R', 0, 0);
+    $pdf->MultiCell(120, 4, format_money_report( $sumGewerk), 'T', 'R', 0, 0);
+    $pdf->MultiCell(30, 4, format_money_report( $sumGewerkNeu), 'T', 'R', 0, 0);
+    $pdf->MultiCell(30, 4, format_money_report( $sumGewerkBestand), 'T', 'R', 0, 0);
     $sumRaumbereich = $sumRaumbereich + $sumGewerk;
     $sumGesamtNeu = $sumGesamtNeu + $sumGewerkNeu;
     $sumRaumbereichBestand = $sumRaumbereichBestand + $sumGewerkBestand;
     $pdf->Ln();
     $pdf->Ln();
     $pdf->MultiCell(90, 4, "GESAMT: ", 'T', 'L', 0, 0);
-    $pdf->MultiCell(30, 4, money_format('€ %!n', $sumRaumbereich), 'T', 'R', 0, 0);
-    $pdf->MultiCell(30, 4, money_format('€ %!n', $sumGesamtNeu), 'T', 'R', 0, 0);
-    $pdf->MultiCell(30, 4, money_format('€ %!n', $sumRaumbereichBestand), 'T', 'R', 0, 0);
+    $pdf->MultiCell(30, 4, format_money_report( $sumRaumbereich), 'T', 'R', 0, 0);
+    $pdf->MultiCell(30, 4, format_money_report( $sumGesamtNeu), 'T', 'R', 0, 0);
+    $pdf->MultiCell(30, 4, format_money_report( $sumRaumbereichBestand), 'T', 'R', 0, 0);
 
     $sumRaumbereich = 0;
     $sumRaumbereichBestand = 0;
@@ -292,7 +293,7 @@ foreach ($raumbereicheInProject as $rowData) {
   if($row["Gewerke_Nr"] !== $gewerk){
   $pdf->SetFont('helvetica', 'B', 10);
   if($i > 0){
-  $pdf->MultiCell(180, 4, money_format('€ %!n', $sumGewerk), 'T', 'R', 0, 0);
+  $pdf->MultiCell(180, 4, format_money_report( $sumGewerk), 'T', 'R', 0, 0);
   $sumGewerk = 0;
   $pdf->Ln();
   $pdf->Ln();
@@ -307,7 +308,7 @@ foreach ($raumbereicheInProject as $rowData) {
   else{
   $pdf->MultiCell(50, 6, "GHG: ".$row["GHG"],'', 'L', 0, 0);
   }
-  $pdf->MultiCell(50, 4, money_format('€ %!n', $row["PP"]), 0, 'R', 0, 0);
+  $pdf->MultiCell(50, 4, format_money_report( $row["PP"]), 0, 'R', 0, 0);
   }
   else{
   $pdf->SetFont('helvetica', 'I', 8);
@@ -318,7 +319,7 @@ foreach ($raumbereicheInProject as $rowData) {
   else{
   $pdf->MultiCell(50, 6, "GHG: ".$row["GHG"],'', 'L', 0, 0);
   }
-  $pdf->MultiCell(50, 4, money_format('€ %!n', $row["PP"]), 0, 'R', 0, 0);
+  $pdf->MultiCell(50, 4, format_money_report( $row["PP"]), 0, 'R', 0, 0);
   }
   $i++;
   $gewerk = $row["Gewerke_Nr"];
@@ -328,7 +329,7 @@ foreach ($raumbereicheInProject as $rowData) {
 
   // Letzte Gesamtsumme bilden
   $pdf->SetFont('helvetica', 'B', 10);
-  $pdf->MultiCell(180, 4, money_format('€ %!n', $sumGewerk), 'T', 'R', 0, 0);
+  $pdf->MultiCell(180, 4, format_money_report( $sumGewerk), 'T', 'R', 0, 0);
 
   // ---------------------------------------------------------
 
@@ -347,7 +348,7 @@ foreach ($raumbereicheInProject as $rowData) {
 
   $result = $mysqli->query($sql);
   $row = $result->fetch_assoc();
-  $pdf->MultiCell(25, 4, money_format('€ %!n', 10), 0, 'R', $fill, 0);
+  $pdf->MultiCell(25, 4, format_money_report( 10), 0, 'R', $fill, 0);
   $pdf->Ln();
 
   foreach($gewerkeInProject as $key => $rowDataGewerkeInProject) {
@@ -358,7 +359,7 @@ foreach ($raumbereicheInProject as $rowData) {
   $result = $mysqli->query($sql);
   $row = $result->fetch_assoc();
   if ( null != ($row['PP'])  ){
-  $pdf->MultiCell(25, 4, money_format('€ %!n', $row["PP"]), 0, 'R', $fill, 0);
+  $pdf->MultiCell(25, 4, format_money_report( $row["PP"]), 0, 'R', $fill, 0);
   $sumRaumbereich = $sumRaumbereich + $row['PP'];
   }
   else{
@@ -366,7 +367,7 @@ foreach ($raumbereicheInProject as $rowData) {
   }
   $gewerkeInProject[$key]['GewerkeSummeGesamt'] = $gewerkeInProject[$key]['GewerkeSummeGesamt'] + $row['PP'];
   }
-  $pdf->MultiCell(25, 4, money_format('€ %!n', $sumRaumbereich),0, 'R', $fill, 0);
+  $pdf->MultiCell(25, 4, format_money_report( $sumRaumbereich),0, 'R', $fill, 0);
   $pdf->Ln();
   $pdf->SetFont('helvetica', 'I', 6);
 
@@ -380,7 +381,7 @@ foreach ($raumbereicheInProject as $rowData) {
   $result = $mysqli->query($sql);
   $row = $result->fetch_assoc();
   if (null !=($row['PP']) ){
-  $pdf->MultiCell(25, 4, money_format('€ %!n', $row["PP"]), 0, 'R', $fill, 0);
+  $pdf->MultiCell(25, 4, format_money_report( $row["PP"]), 0, 'R', $fill, 0);
   $sumRaumbereichBestand = $sumRaumbereichBestand + $row['PP'];
   }
   else{
@@ -388,7 +389,7 @@ foreach ($raumbereicheInProject as $rowData) {
   }
   $gewerkeInProject[$key]['GewerkeSummeGesamtBestand'] = $gewerkeInProject[$key]['GewerkeSummeGesamtBestand'] + $row['PP'];
   }
-  $pdf->MultiCell(25, 4, money_format('€ %!n', $sumRaumbereichBestand),0, 'R', $fill, 0);
+  $pdf->MultiCell(25, 4, format_money_report( $sumRaumbereichBestand),0, 'R', $fill, 0);
   $pdf->Ln();
   $fill=!$fill;
   $sumRaumbereich = 0;
@@ -430,6 +431,8 @@ foreach ($raumbereicheInProject as $rowData) {
 
  */
 // close and output PDF document
+
+ob_end_clean();+#
 $pdf->Output('Kosten_Gewerke-GHG.pdf', 'I');
 
 //============================================================+

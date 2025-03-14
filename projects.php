@@ -203,7 +203,7 @@
             },
             initComplete: function () {
                 $('.dt-search label').remove();
-                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-success").appendTo('#STH');
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#STH');
                 table.column(4).search($('#filter_ActiveProjects').is(':checked') ? 'Ja' : '').draw();
             }
         });

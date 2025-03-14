@@ -74,8 +74,8 @@ if(!isset($_SESSION["username"]))
      
     //Parameter von Gerät entfernen
     $("button[value='deleteVermerkZustaendigkeit']").click(function(){
-        var id = this.id;
-        var vermerkID = "<?php echo filter_input(INPUT_GET, 'vermerkID') ?>";
+        let id = this.id;
+        let vermerkID = "<?php echo filter_input(INPUT_GET, 'vermerkID') ?>";
         
         if(id !== "" && vermerkID !== ""){
             $.ajax({

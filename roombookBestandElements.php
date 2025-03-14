@@ -28,8 +28,8 @@ init_page_serversides();
 </head>
 
 <body style="height:100%">
-<div id="limet-navbar"></div>
-<div class="container-fluid">
+<div class="container-fluid bg-light" >
+    <div id="limet-navbar"></div>
     <div class="mt-4 card">
         <?php
         $mysqli = utils_connect_sql();
@@ -87,7 +87,7 @@ init_page_serversides();
             echo "<button  class='ml-4 btn btn-outline-dark btn-sm' onclick=\"window.location.href='out_bestands_csv.php'\">Download CSV</button>";
         }
         echo "</div> </div> </div> <div class='card-body'>";
-        echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableBestandsElemente'>
+        echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5'' id='tableBestandsElemente'>
             <thead><tr>
             <th>ID</th>
             <th>ElementID</th>
@@ -190,7 +190,7 @@ init_page_serversides();
             }, initComplete: function () {
                 $('.dt-buttons').children().addClass("btn-sm").appendTo('#CardHeader');
                 $('.dt-search label').remove();
-                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-success").appendTo('#CardHeader');
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeader');
 
             }
         });

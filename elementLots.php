@@ -42,16 +42,16 @@
         function makeTable($result): void
         {
             $headers = [
-                '', 'ID-Element', 'ID-Variante', 'ID-Los', 'Bestand-Wert', 'Anzahl', 'ID', 'Element', 'Variante', 'Raumbereich',
+                '', 'ID-Element', 'ID-Variante', 'ID-Los', 'Bestand-Wert', 'Anzahl', 'ID', 'Element', 'Var', 'Raumbereich', 'Bauabschnitt',
                 'Bestand', 'EP', 'PP', 'Los-Nr', 'Los', 'Ausführungsbeginn', 'Gewerk', 'Budget', 'Abgeschlossen'
             ];
 
             $filters = [
                 '', '', '', '', '',
                 "<b>Stk >0 <input type='checkbox' id='filter_count'></b>",
-                '', '', '', '',
+                '', '', '', '','',
                 "<select id='filter_bestand'>
-            <option value='2'></option>
+            <option value='2'></option> 
             <option value='1'>Ja</option>
             <option value='0'>Nein</option>
         </select>",
@@ -84,6 +84,7 @@
                 echo "<td>{$row['Bezeichnung']}</td>";
                 echo "<td>{$row['Variante']}</td>";
                 echo "<td>{$row['Raumbereich Nutzer']}</td>";
+                echo "<td>{$row['Bauabschnitt']}</td>";
                 echo "<td>" . ($row['Neu/Bestand'] == 1 ? 'Nein' : 'Ja') . "</td>";
                 echo "<td>" . format_money($row['Kosten']) . "</td>";
                 echo "<td>" . format_money($row['PP']) . "</td>";
@@ -102,9 +103,9 @@
         echo '<div class="card-header ">
                     <div class="row "> 
                         <div class="col-3">  <b>Elemente im Projekt</b>  </div>
-                        <div class="col-6 d-flex justify-content-between">                               <!--div id="groupCheckboxes">  <b>Group Data By:</b>    </div -->
+                        <div class="col-3 d-flex justify-content-between">                               <!--div id="groupCheckboxes">  <b>Group Data By:</b>    </div -->
                         </div>
-                        <div id="ElInPrCardHeader" class="col-3 d-inline-flex align-items-center justify-content-end"> (Änderungen nicht in Tabelle? - Reload!) &emsp;               </div>
+                        <div id="ElInPrCardHeader" class="col-6 d-inline-flex align-items-center justify-content-end"> (Änderungen nicht in Tabelle? - Reload!) &emsp;               </div>
                     </div>
                 </div>';
 
@@ -118,7 +119,7 @@
                 tabelle_projekt_varianten_kosten.Kosten*Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS PP, tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern, 
                 tabelle_lose_extern.Ausführungsbeginn, tabelle_lose_extern.idtabelle_Lose_Extern, tabelle_lose_extern.Vergabe_abgeschlossen, 
                 tabelle_varianten.idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
-                tabelle_auftraggeber_gewerke.Gewerke_Nr, tabelle_projektbudgets.Budgetnummer
+                tabelle_auftraggeber_gewerke.Gewerke_Nr, tabelle_projektbudgets.Budgetnummer, tabelle_räume.Bauabschnitt
                 FROM tabelle_projekt_varianten_kosten 
                 INNER JOIN (tabelle_varianten 
                                         INNER JOIN (tabelle_lose_extern 
@@ -164,65 +165,46 @@
         </div>
     </div>
 </div>
-</div>
+
 
 <!--suppress JSUnusedLocalSymbols, ES6ConvertVarToLetConst -->
 <script src="_utils.js"></script>
 <script>
     var table;
-    $.fn.dataTable.ext.search.push(
-        function (settings, data, dataIndex) {
-            if (settings.nTable.id !== 'tableElementsInProject') {
-                return true;
-            }
 
-            if ($("#filter_bestand").val() === '1') {
-                if ($("#filter_count").is(':checked')) {
-                    if ($("#filter_lot").is(':checked')) {
-                        return data [10] === "Ja" && Number(data [5]) > 0 && data[13].length > 0;
-                    } else {
-                        return data [10] === "Ja" && Number(data [5]) > 0;
-                    }
-                } else {
-                    if ($("#filter_lot").is(':checked')) {
-                        return data [10] === "Ja" && data[13].length > 0;
-                    } else {
-                        return data [10] === "Ja" && Number(data [5]) > 0;
-                    }
-                }
-            } else {
-                if ($("#filter_bestand").val() === '0') {
-                    if ($("#filter_count").is(':checked')) {
-                        if ($("#filter_lot").is(':checked')) {
-                            return data [10] === "Nein" && Number(data [5]) > 0 && data[13].length > 0;
-                        } else {
-                            return data [10] === "Nein" && Number(data [5]) > 0;
-                        }
-                    } else {
-                        if ($("#filter_lot").is(':checked')) {
-                            return data [10] === "Nein" && data[13].length > 0;
-                        } else {
-                            return data [10] === "Nein" && Number(data [5]) > 0;
-                        }
-                    }
-                } else {
-                    if ($("#filter_count").is(':checked')) {
-                        if ($("#filter_lot").is(':checked')) {
-                            return Number(data [5]) > 0 && data[13].length > 0;
-                        } else {
-                            return Number(data [5]) > 0;
-                        }
-                    } else {
-                        if ($("#filter_lot").is(':checked')) {
-                            return data[13].length > 0;
-                        } else {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-    );
+    // Column configuration - update indexes here if columns change
+    const COLUMNS = {
+        BESTAND: 11,
+        COUNT: 5,
+        LOT: 14
+    };
+
+    $.fn.dataTable.ext.search.push(function(settings, data) {
+        if (settings.nTable.id !== 'tableElementsInProject') return true;
+
+        const bestandVal = data[COLUMNS.BESTAND];
+        const countVal = Number(data[COLUMNS.COUNT]);
+        const lotVal = data[COLUMNS.LOT];
+        const filterState = $("#filter_bestand").val();
+        const checkCount = $("#filter_count").is(':checked');
+        const checkLot = $("#filter_lot").is(':checked');
+
+        // Bestand filter logic
+        const bestandFilter = filterState === '1' ? "Ja" :
+            filterState === '0' ? "Nein" : null;
+
+        if (bestandFilter && bestandVal !== bestandFilter) return false;
+
+        // Conditional checks
+        const countCheck = checkCount ? countVal > 0 :
+            !checkLot && bestandFilter ? countVal > 0 : true;
+
+        const lotCheck = checkLot ? lotVal.length > 0 :
+            !checkCount && bestandFilter ? true : true;
+
+        return countCheck && lotCheck;
+    });
+
 
     $('#filter_bestand').change(function () {
         table.draw();
@@ -264,28 +246,25 @@
                 topStart: null,
                 bottomStart: 'info',
                 bottomEnd: ['pageLength', 'paging']
+
             }, initComplete: function () {
                 $('.dt-search input').addClass("btn btn-sm btn-outline-dark");
                 $('.dt-search').children().removeClass('form-control form-control-sm').addClass("d-flex align-items-center").appendTo('#ElInPrCardHeader');
             }
         });
 
-/*        $('.group-checkbox').on('change', function () {
-            let selectedColumns = $('.group-checkbox:checked').map(function () {
-                return $(this).val();
-            }).get();
-
-            if (selectedColumns.length > 0) {
-                table.rowGroup().dataSrc(selectedColumns);
-                table.rowGroup().enable();
-                table.order(selectedColumns.map(col => [table.column(col + ':name').index(), 'asc']));
-            } else {
-                table.rowGroup().disable();
-                table.order([[6, 'asc']]);  // Default sorting
+        const searchbuilder = [
+            {
+                extend: 'searchBuilder',
+                text: " ",
+                className: "fa fa-search",
+                titleAttr: "searchBuilder"
             }
+        ];
+        new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#ElInPrCardHeader'));
+        $('.dt-buttons').children().children().remove();
 
-            table.draw();
-        });*/
+
 
         $('#tableElementsInProject tbody').on('click', 'tr', function () {
             let elementID = table.row($(this)).data()[1];
@@ -293,6 +272,7 @@
             let losID = table.row($(this)).data()[3];
             let bestand = table.row($(this)).data()[4];
             let raumbereich = table.row($(this)).data()[9];
+            console.log(variantenID, losID, bestand, raumbereich);
             $.ajax({
                 url: "getRoomsWithElementTenderLots.php",
                 data: {

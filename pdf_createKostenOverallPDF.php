@@ -246,5 +246,5 @@ $pdf->MultiCell(25, 4, format_money_report($sumGesamtBestand), 0, 'R', 0, 0);
 
 ob_end_clean();
 
-$pdf->Output(getFileName("KostenGesamt", "pdf")  ,'I');
+$pdf->Output(getFileName("KostenGesamt")  ,'I');
 

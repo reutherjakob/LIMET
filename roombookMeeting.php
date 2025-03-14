@@ -121,7 +121,6 @@ init_page_serversides();
             //    bottomStart: 'info'
             //},
             dom: '<"#topDiv.top-container d-flex"<"col-md-6 justify-content-start"B><"col-md-6"f>>t<"bottom d-flex" <"col-md-6 justify-content-start"i><"col-md-6 d-flex justify-content-end"p>>',
-            // TODO Move top div
             columnDefs: [
                 {
                     targets: [0],

@@ -29,7 +29,7 @@ $sql = "SELECT tabelle_räume.Raumnr,
 
 $result = $mysqli->query($sql);
 
-echo "<table class='table table-striped table-bordered table-sm' id='tableRoomsToCopy' >
+echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableRoomsToCopy' >
     <thead><tr>
     <th>ID</th>
     <th>Raumnr</th>

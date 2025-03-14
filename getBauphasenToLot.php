@@ -36,7 +36,7 @@ $sql = "SELECT tabelle_bauphasen.bauphase, tabelle_bauphasen.datum_beginn, tabel
 
 $result = $mysqli->query($sql);
 
-echo "<table class='table table-striped table-bordered table-sm' id='tableBauphasen'   >
+echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableBauphasen'   >
     <thead><tr>  
     <th>id</th>
     <th>Bauphase</th>

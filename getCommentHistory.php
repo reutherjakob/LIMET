@@ -22,7 +22,7 @@ $sql = "SELECT tabelle_rb_aenderung.Kurzbeschreibung,
                 ORDER BY tabelle_rb_aenderung.Timestamp DESC;";
 $result = $mysqli->query($sql);
 
-echo "<table class='table table-striped table-bordered table-sm' id='historyTable'>
+echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='historyTable'>
 	<thead><tr>
 	<th>Datum</th>
 	<th>user</th>

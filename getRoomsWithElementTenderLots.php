@@ -8,7 +8,9 @@
 
 <?php
 // --> REWORKED 25 <--
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 check_login();
 
 $mysqli = utils_connect_sql();
@@ -30,16 +32,23 @@ while ($row = $result->fetch_assoc()) {
 } ?>
 
 
-<div class="form-group form-check-inline d-flex align-items-center border border-light rounded bg-light">
-    <label for="globalLosExtern" class="mr-2">Select Lot for All Elements in Batch: &emsp;</label>
-    <select class="form-control form-control-sm mr-2 me-2" id="globalLosExtern" style="width: auto;">
-        <option value="0" selected>Select a Lot</option>
-        <?php
-        foreach ($lotsInProject as $array) {
-            echo "<option value=" . $array['idtabelle_Lose_Extern'] . ">" . $array['LosNr_Extern'] . " - " . $array['LosBezeichnung_Extern'] . "</option>";
-        } ?>
-    </select>
-    <button id="saveSelected" class="btn btn-warning  k btn-sm mr-2 me-2"><i class='far fa-save'></i></button>
+<div class="row">
+    <div class="form-group form-check-inline d-flex align-items-center border border-light rounded bg-light">
+
+        <div class="col-6 d-flex align-items-center justify-content-start">
+            <label for="globalLosExtern" class="me-2"> Für ALLE Elemente im Batch</label>
+            <select class="form-control form-control-sm mr-2 me-2" id="globalLosExtern" style="width: auto;">
+                <option value="0" selected> Wähle ein Los</option>
+                <?php
+                foreach ($lotsInProject as $array) {
+                    echo "<option value=" . $array['idtabelle_Lose_Extern'] . ">" . $array['LosNr_Extern'] . " - " . $array['LosBezeichnung_Extern'] . "</option>";
+                } ?>
+            </select>
+            <button id="saveSelected" class="btn btn-warning  k btn-sm mr-2 me-2"><i class='far fa-save'></i></button>
+        </div>
+        <div class="col-6 d-flex justify-content-end" id="Whatever"></div>
+    </div>
+
 </div>
 
 
@@ -186,12 +195,13 @@ $mysqli->close();
 
 
 <!--suppress ES6ConvertVarToLetConst -->
-<script>
+<script charset="utf-8">
+
     function saveElement(ID) {
         let amount = $("#amount" + ID).val();
         let bestand = $("#bestand" + ID).val();
         let losExtern = $("#losExtern" + ID).val();
-        if(losExtern === '0' ) {
+        if (losExtern === '0') {
             makeToaster("Erst los wählen...", false);
             return;
         }
@@ -226,6 +236,7 @@ $mysqli->close();
 
     var tableRoomsWithElementTenderLots;
     $(document).ready(function () {
+        $('.dt-search').remove();
         tableRoomsWithElementTenderLots = new DataTable('#tableRoomsWithElementTenderLots', {
             paging: true,
             columnDefs: [
@@ -261,14 +272,21 @@ $mysqli->close();
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                 search: "",
-                searchPlaceholder:"Suche..."
+                searchPlaceholder: "Suche..."
             },
             layout: {
                 topEnd: 'search',
                 topStart: null,
                 bottomStart: 'paging',
                 bottomEnd: 'info'
+            },
+
+
+            initComplete: function () {
+                $('.dt-search label').remove();
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#Whatever');
             }
+
         });
 
 
@@ -289,7 +307,7 @@ $mysqli->close();
 
         $("#globalLosExtern").change(function () {
             var selectedLot = $(this).val();
-            $(".batch-select:checked").each(function() {
+            $(".batch-select:checked").each(function () {
                 var id = $(this).attr('id').replace('batchSelect', '');
                 $("#losExtern" + id).val(selectedLot);
             });
@@ -300,7 +318,7 @@ $mysqli->close();
         $("#saveSelected").click(function () {
             $(".batch-select:checked").each(function () {
                 var ID = $(this).attr('id').replace('batchSelect', '');
-                console.log("Selected LOT" ,ID);
+                console.log("Selected LOT", ID);
                 saveElement(ID);
             });
         });

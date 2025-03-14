@@ -1,6 +1,8 @@
 <?php
 // V2.0: 2024-11-28, Reuther & Fux
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 init_page_serversides();
 ?>
 
@@ -37,20 +39,22 @@ init_page_serversides();
 
 <div class="container-fluid">
     <div class="mt-4 card">
-        <div class="card-header d-inline-flex justify-content-start align-items-center">Gesamtprojekt
-            <button type='button' class='btn btn-outline-dark btn-sm' value='createKostenOverallPDF'><i
+        <div class="card-header d-inline-flex justify-content-start align-items-center">
+
+            Gesamtprojekt
+            <button type='button' class='btn btn-outline-dark btn-sm ms-2 me-2' value='createKostenOverallPDF'><i
                         class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk
             </button>
-            <button type='button' class='btn btn-outline-dark btn-sm' value='createKostenOverallBauabschnittPDF'><i
+            <button type='button' class='btn btn-outline-dark btn-sm me-2' value='createKostenOverallBauabschnittPDF'><i
                         class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk und Bauabschnitt
             </button>
-            <button type='button' class='btn btn-outline-dark btn-sm' value='createKostenOverallBauabschnittBudgetPDF'>
+            <button type='button' class='btn btn-outline-dark btn-sm me-2' value='createKostenOverallBauabschnittBudgetPDF'>
                 <i class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk, Bauabschnitt und Budget
             </button>
-            <button type='button' class='btn btn-outline-dark btn-sm' value='createKostenInclGHGOverallPDF'><i
+            <button type='button' class='btn btn-outline-dark btn-sm me-2' value='createKostenInclGHGOverallPDF'><i
                         class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk/GHG
             </button>
-            <button type='button' class='btn btn-outline-dark btn-sm' value='createKostenRaumbereichPDF'><i
+            <button type='button' class='btn btn-outline-dark btn-sm me-2' value='createKostenRaumbereichPDF'><i
                         class='far fa-file-pdf'></i> Raumbereich Gewerk/GHG
             </button>
             <!-- <div class="card-body"> </div>-->
@@ -58,21 +62,24 @@ init_page_serversides();
     </div>
 
     <div class="mt-4 card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center">
-                <span>Raumbereiche</span>
-                <button type='button' class='btn btn-outline-dark btn-sm ml-2' id='createRaumbereichPDF'>
-                    <i class='far fa-file-pdf'></i> Kosten-PDF
-                </button>
+        <div class="card-header">
+
+
+            <div class="row">
+                <div class="col-6"><span>Raumbereiche</span></div>
+                <div class="col-6 d-flex align-items-center justify-content-end text-nowrap" id="RaumsucheCardHeaderSub">
+                    <button type='button' class='btn btn-outline-dark btn-sm me-2 ml-2' id='createRaumbereichPDF'>
+                        <i class='far fa-file-pdf'></i> Kosten-PDF
+                    </button>
+                </div>
             </div>
-            <div id="RaumsucheCardHeaderSub" class="d-flex align-items-center">
-            </div>
+
         </div>
         <div class="card-body" id="costsRoomArea">
             <?php
             $mysqli = utils_connect_sql();
 
-            $sql = "SELECT tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss
+            $sql = "SELECT tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauabschnitt,  tabelle_räume.Bauetappe
                                                     FROM tabelle_auftraggeberg_gug RIGHT JOIN (tabelle_auftraggeber_ghg RIGHT JOIN (tabelle_auftraggeber_gewerke RIGHT JOIN ((tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) INNER JOIN tabelle_projekt_element_gewerk ON (tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) AND (tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte)) ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke = tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke) ON tabelle_auftraggeber_ghg.idtabelle_auftraggeber_GHG = tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG) ON tabelle_auftraggeberg_gug.idtabelle_auftraggeberg_GUG = tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
                                                     WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
                                                     GROUP BY tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss
@@ -80,10 +87,12 @@ init_page_serversides();
 
             $result = $mysqli->query($sql);
 
-            echo "<table class='table table-striped table-bordered table-sm' id='tableRaumbereiche'>
+            echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableRaumbereiche'>
                                             <thead><tr>
                                             <th>Raumbereich</th>
                                             <th>Geschoss</th>
+                                            <th>Bauabschnitt</th>
+                                            <th>Bauetappe</th>
                                             </tr></thead><tbody>";
 
 
@@ -91,6 +100,8 @@ init_page_serversides();
                 echo "<tr>";
                 echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
                 echo "<td>" . $row["Geschoss"] . "</td>";
+                echo "<td>" . $row["Bauabschnitt"] . "</td>";
+                echo "<td>" . $row["Bauetappe"] . "</td>";
                 echo "</tr>";
 
             }
@@ -140,7 +151,7 @@ init_page_serversides();
             info: false,
             order: [[1, "asc"]],
             pagingType: "simple",
-            lengthChange: false,
+            lengthChange: true,
             pageLength: 10,
 
             language: {
@@ -151,10 +162,28 @@ init_page_serversides();
             select: {
                 style: 'multi'
             },
+            layout: {
+                topStart: null,
+                topEnd: null,
+                bottomStart: ['search', 'pageLength'],
+                bottomEnd: 'paging'
+            },
             initComplete: function () {
-                move_item("dt-search-0", "RaumsucheCardHeaderSub");
+                $('.dt-search label').remove();
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#RaumsucheCardHeaderSub');
             }
         });
+        const searchbuilder = [
+            {
+                extend: 'searchBuilder',
+                text: " ",
+                className: "fa fa-search me-2",
+                titleAttr: "searchBuilder"
+            }
+        ];
+        new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#RaumsucheCardHeaderSub'));
+        $('.dt-buttons').children().children().remove();
+
 
         $('#tableRaumbereiche tbody').on('click', 'tr', function () {
             if ($(this).hasClass('info')) {

@@ -16,6 +16,7 @@ $sql = "SELECT
     tabelle_räume_has_tabelle_elemente.id,
     tabelle_räume.idTABELLE_Räume,
     tabelle_räume.Raumnr,
+    tabelle_räume.Raumnummer_Nutzer,
     tabelle_räume.Raumbezeichnung,
     tabelle_räume.`Raumbereich Nutzer`,
     tabelle_räume_has_tabelle_elemente.Anzahl,
@@ -71,73 +72,23 @@ while ($row = $result->fetch_assoc()) {
     echo "<td><input class='form-control form-control-sm' type='text' id='amount" . $row["id"] . "' value='" . intval($row["Anzahl"]) . "' size='2'></input></td>";
     echo "<td>
    	    	<select class='form-control form-control-sm'' id='variante" . $row["id"] . "'>";
-    switch ($row["tabelle_Varianten_idtabelle_Varianten"]) {
-        case "1":
-            echo "<option value='1' selected>A</option>
-										    <option value='2'>B</option>
-										    <option value='3'>C</option>
-										    <option value='4'>D</option>
-										    <option value='5'>E</option>
-										    <option value='6'>F</option>
-										    <option value='7'>G</option>";
-            break;
-        case "2":
-            echo "<option value='1'>A</option>
-										    <option value='2' selected>B</option>
-										    <option value='3'>C</option>
-										    <option value='4'>D</option>
-										    <option value='5'>E</option>
-										    <option value='6'>F</option>
-										    <option value='7'>G</option>";
-            break;
-        case "3":
-            echo "<option value='1'>A</option>
-										    <option value='2'>B</option>
-										    <option value='3' selected>C</option>
-										    <option value='4'>D</option>
-										    <option value='5'>E</option>
-										    <option value='6'>F</option>
-										    <option value='7'>G</option>";
-            break;
-        case "4":
-            echo "<option value='1'>A</option>
-										    <option value='2'>B</option>
-										    <option value='3'>C</option>
-										    <option value='4' selected>D</option>
-										    <option value='5'>E</option>
-										    <option value='6'>F</option>
-										    <option value='7'>G</option>";
-            break;
-        case "5":
-            echo "<option value='1'>A</option>
-										    <option value='2'>B</option>
-										    <option value='3'>C</option>
-										    <option value='4'>D</option>
-										    <option value='5' selected>E</option>
-										    <option value='6'>F</option>
-										    <option value='7'>G</option>";
-            break;
-        case "6":
-            echo "<option value='1'>A</option>
-										    <option value='2'>B</option>
-										    <option value='3'>C</option>
-										    <option value='4'>D</option>
-										    <option value='5'>E</option>
-										    <option value='6' selected>F</option>
-										    <option value='7'>G</option>";
-            break;
-        case "7":
-            echo "<option value='1'>A</option>
-										    <option value='2'>B</option>
-										    <option value='3'>C</option>
-										    <option value='4'>D</option>
-										    <option value='5'>E</option>
-										    <option value='6'>F</option>
-										    <option value='7' selected>G</option>";
-            break;
+
+    $options = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+    $selected = $row["tabelle_Varianten_idtabelle_Varianten"];
+
+    foreach ($options as $index => $option) {
+        $value = $index + 1;
+        $isSelected = ($value == $selected) ? ' selected' : '';
+        echo "<option value='$value'$isSelected>$option</option>";
     }
+
     echo "</select></td>";
-    echo "<td>" . $row["Raumnr"] . "</td>";
+    if ($_SESSION["projectName"] === "GCP") {
+        echo "<td>" . $row["Raumnummer_Nutzer"] . "</td>";
+    } else {
+        echo "<td>" . $row["Raumnr"] . "</td>";
+    }
+
     echo "<td>" . $row["Raumbezeichnung"] . "</td>";
     echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
     echo "<td>" . $row["Geschoss"] . "</td>";

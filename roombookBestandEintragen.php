@@ -27,8 +27,8 @@ include "_format.php";
           rel="stylesheet">
 </head>
 <body>
-<div id="limet-navbar"></div>
-<div class="container-fluid">
+<div class="container-fluid bg-light" >
+    <div id="limet-navbar"></div>
     <div class="mt-4 card">
         <div class="card-header">
             <div class="row d-flex flex-nowrap">
@@ -60,7 +60,7 @@ include "_format.php";
 										GROUP BY tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_varianten.idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_projekt_varianten_kosten.Kosten, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke, tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG, tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
 										ORDER BY tabelle_elemente.ElementID;";
             $result = $mysqli->query($sql);
-            echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableElementsInProject'   >
+            echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5'' id='tableElementsInProject'   >
 									<thead><tr>
 										<th>ID</th>
 										<th>Anzahl</th>
@@ -282,7 +282,7 @@ include "_format.php";
             },
             initComplete: function () {
                 $('.dt-search label').remove();
-                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-success").appendTo('#CH_EIP');
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CH_EIP');
 
             }
         });

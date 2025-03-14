@@ -22,8 +22,8 @@
 
 <body>
 <!-- Rework 2025 -->
-<div id="limet-navbar"></div>
-<div class="container-fluid">
+<div class="container-fluid bg-light" >
+    <div id="limet-navbar"></div>
     <div class="mt-4 card">
         <div class="card-header d-flex justify-content-between">
             <strong> Elemente im Projekt </strong>
@@ -40,7 +40,7 @@
                     </button>
 
                 </div>
-                <i class='fa fa-search'></i>
+
             </div>
         </div>
 
@@ -145,8 +145,8 @@ ORDER BY tabelle_elemente.ElementID;";
     </div>
 
     <div class="mt-1 card">
-        <div class="card-header">
-            <button type="button" class="btn btn-outline-dark btn-sm" id="showElementVariante"><i
+        <div class="card-header  d-flex justify-content-start align-items-center">
+            <button type="button" class="btn btn-outline-dark btn-sm me-2" id="showElementVariante"><i
                         class="fas fa-caret-right"></i></button>
             <label>Elementvarianten</label></div>
         <div class="card-body" id="elementInfo" style="display:none">
@@ -155,8 +155,8 @@ ORDER BY tabelle_elemente.ElementID;";
         </div>
     </div>
     <div class="mt-1 card">
-        <div class="card-header">
-            <button type="button" class="btn btn-outline-dark btn-sm" id="showDBData"><i class="fas fa-caret-right"></i>
+        <div class="card-header d-flex justify-content-start align-items-center">
+            <button type="button" class="btn btn-outline-dark btn-sm me-2" id="showDBData"><i class="fas fa-caret-right"></i>
             </button>
             <label>Datenbank-Vergleichsdaten</label></div>
         <div class="card-body" style="display:none" id="dbData">
@@ -184,7 +184,7 @@ ORDER BY tabelle_elemente.ElementID;";
                 <div class='col-xxl-4'>
                     <div class='mt-1 card'>
                         <div class='card-header'><label>Geräteparameter</label></div>
-                        <div class='card-body' id='deviceParametersInDB'></div>
+                        <div class='card-body' id='deviceParametersInDB'></div>8
                     </div>
                 </div>
                 <div class="col-xxl-4">
@@ -200,15 +200,13 @@ ORDER BY tabelle_elemente.ElementID;";
     <div class="mt-1 card">
         <div class="card-header ">
             <div class="row">
-                <div class="col-xxl-8 d-flex justify-content-start">
-                    <button type="button" class="btn btn-outline-dark btn-sm" id="showRoomsWithAndWithoutElement">
+                <div class="col-xxl-8 d-flex justify-content-start align-items-center">
+                    <button type="button" class="btn btn-outline-dark btn-sm me-2" id="showRoomsWithAndWithoutElement">
                         <i class="fas fa-caret-right"></i>
                     </button>
                     <label>Räume mit Element</label>
                 </div>
-
             </div>
-
         </div>
         <div class="card-body" id="roomsWithAndWithoutElements" style="display:none"></div>
     </div>
@@ -236,7 +234,7 @@ ORDER BY tabelle_elemente.ElementID;";
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/2.0.0/i18n/de-DE.json',
                     search: "",
-                    searchPlaceholder:"Suche... "
+                    searchPlaceholder:"Suche..."
                 },
                 stateSave: true,
                 layout: {
@@ -260,7 +258,7 @@ ORDER BY tabelle_elemente.ElementID;";
                 initComplete: function () {
                     tableElementsInProject.buttons().container().appendTo('#target_div .btn-group');
                     $('.dt-search label').remove();
-                    $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-success").appendTo('#target_div');
+                    $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-dark").appendTo('#target_div');
 
                 }
             });

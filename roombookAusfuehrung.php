@@ -38,8 +38,8 @@ if (!isset($_SESSION["username"])) {
 
 </head>
 <body style="height:100%">
-<div id="limet-navbar"></div>
-<div class="container-fluid">
+<div class="container-fluid bg-light" >
+    <div id="limet-navbar"></div>
     <div class='row'>
         <div class='col-xxl-12'>
             <div class="mt-4 card">
@@ -64,7 +64,7 @@ if (!isset($_SESSION["username"])) {
 
                     $result = $mysqli->query($sql);
 
-                    echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'   >
+                    echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableRooms'   >
 						<thead><tr>
 						<th>ID</th>
                                                 <th>Raumbereich Nutzer</th>

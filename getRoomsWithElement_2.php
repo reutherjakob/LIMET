@@ -20,7 +20,7 @@ $sql = "SELECT tabelle_räume_has_tabelle_elemente.id, tabelle_räume.idTABELLE_
 			ORDER BY tabelle_räume.Raumnr;";
 
 $result = $mysqli->query($sql);
-echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableRoomsWithElement' >
+echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5'' id='tableRoomsWithElement' >
 	<thead><tr>
         <th>ID</th>
 	<th>Anzahl</th>

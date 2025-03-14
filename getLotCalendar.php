@@ -37,7 +37,7 @@ while ($row = $result1->fetch_assoc()) {
 }
 //-----------------------------------------------------------------------------------
 
-echo "<table  id='tableTenderCalendar' class='table table-striped table-bordered table-sm'  >
+echo "<table  id='tableTenderCalendar' class='table table-striped table-bordered table-sm table-hover border border-light border-5'  >
     <thead><tr>
     <th rowspan='2'>lotID</th>
     <th rowspan='2'>Nummer</th>
