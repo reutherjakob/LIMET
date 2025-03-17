@@ -176,14 +176,7 @@ while ($row = $result1->fetch_assoc()) {
     $variantenInfosCounter = $variantenInfosCounter + 1;
 }
 
-function check4newpage($pdf, $rowHeightComment)
-{
-    $y = $pdf->GetY();
-    if (($y + $rowHeightComment) >= 270) {
-        $pdf->AddPage();
-        return true;
-    }
-}
+
 
 $roomIDs = filter_input(INPUT_GET, 'roomID');
 $teile = explode(",", $roomIDs);

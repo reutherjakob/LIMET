@@ -151,8 +151,7 @@ $mysqli->close();
                     value="createRoombookPDFCosts"><i class="far fa-file-pdf"></i> RB-Kosten-PDF
             </button>
             <div class=" btn btn-outline-dark">
-                <input class="form-check-input" type="checkbox" id="hideZeroRows"
-                       checked>
+                <input class="form-check-input" type="checkbox" id="hideZeroRows">
                 <label class="form-check-label" for="hideZeroRows">
                     Hide 0
                 </label>
@@ -401,7 +400,9 @@ $mysqli->close();
     });
 
     $(document).ready(function () {
-        tableRoomElements = $("#tableRoomElements").DataTable({
+        $.fn.dataTable.ext.search = [];
+
+         tableRoomElements = $("#tableRoomElements").DataTable({
             select: true,
             paging: true,
             pagingType: "simple",
@@ -420,14 +421,15 @@ $mysqli->close();
                 },
                 {
                     targets: [3, 4, 5, 6, 7, 8, 9],
-                    searchable: false,
+                    searchable: true,
                     orderable: true
                 }
             ],
             order: [[3, "desc"]],
             language: {
                 url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/de-DE.json",
-                search: "", searchPlaceholder: "Search...",
+                search: "",
+                searchPlaceholder: "Search...",
             },
             layout: {
                 topStart: null,
@@ -437,28 +439,12 @@ $mysqli->close();
             }
         });
 
-        $.fn.dataTable.ext.search.push(
-            function (settings, data, dataIndex) {
-                let hideZero = $("#hideZeroRows").is(":checked");
-                let row = tableRoomElements.row(dataIndex).node();
-                let amount = $(row).find('input[id^="amount"]').val();
-                amount = parseInt(amount) || 0;
-                // console.log("Row " + dataIndex + " amount: ", amount);
-                return !(hideZero && amount === 0);
-            }
-        );
-
-        $("#hideZeroRows").on("change", function () {
-            tableRoomElements.draw();
-        });
+        // Custom search function to hide rows with amount 0
 
 
         $('#tableRoomElements tbody').on('click', 'tr', function () {
             let id = tableRoomElements.row($(this)).data()[0].display;
-            //console.log("ID ", id);
-            //console.log("#amount" + id);
             let stk = $("#amount" + id).val();
-            // console.log(stk);
             let standort = $("#Standort" + id).val();
             let verwendung = $("#Verwendung" + id).val();
             let elementID = tableRoomElements.row($(this)).data()[0]['display'];
@@ -484,7 +470,6 @@ $mysqli->close();
                                     $("#elementBestand").html(data);
                                     $("#elementBestand").show();
                                     if (verwendung === '1' && standort === '0') {
-
                                         $.ajax({
                                             url: "getElementStandort.php",
                                             data: {"id": id, "elementID": elementID},
@@ -506,7 +491,6 @@ $mysqli->close();
                                             }
                                         });
                                     }
-
                                 }
                             });
                         }
@@ -515,6 +499,23 @@ $mysqli->close();
             });
         });
         attachButtonListeners();
+
+        $.fn.dataTable.ext.search.push(   //TODO. Its broken
+            function (settings, data, dataIndex) {
+                let hideZero = $("#hideZeroRows").is(":checked");
+                let row = tableRoomElements.row(dataIndex).node();
+                let amount = $(row).find('input[id^="amount"]').val();
+                amount = parseInt(amount) || 0;
+                console.log(dataIndex, amount, !(hideZero && (amount === 0)));
+                return !(hideZero && (amount === 0));
+            }
+        );
+
+        // Event handler for checkbox change
+        $("#hideZeroRows").on("change", function () {
+            tableRoomElements.draw();
+        });
+
     });
 
 </script>

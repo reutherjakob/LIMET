@@ -247,7 +247,6 @@ init_page_serversides();
         </div>
     </div>
 
-
     <div class='row'>
         <div class='col-xxl-12'>
             <div class="mt-4 card">
