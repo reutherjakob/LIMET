@@ -1,5 +1,7 @@
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 init_page_serversides("", "x");
 ?>
 
@@ -29,14 +31,13 @@ init_page_serversides("", "x");
 
 </head>
 <body>
-<div class="container-fluid bg-light" >
+<div class="container-fluid bg-light">
     <div id="limet-navbar"></div>
     <div class="card">
-        <div class="card-header px-1 py-1" id="HeaderTabelleCard">
+        <div class="card-header px-1 py-1 text-nowrap" id="HeaderTabelleCard">
             <div class="row">
-                <div class="col-1 d-inline-flex justify-content-start" id="">Select</div>
-                <div class="col-5 d-inline-flex justify-content-start " id="sub1"></div>
-                <div class="col-5 d-inline-flex justify-content-start " id="">
+                <div class="col-xxl-6 d-flex justify-content-start " id="sub1">Select</div>
+                <div class="col-xxl-6 d-flex justify-content-start " id="">
 
                     <label for="dateSelect"></label> <input type="date" id="dateSelect" name="dateSelect"> &ensp;
                 </div>
@@ -45,19 +46,17 @@ init_page_serversides("", "x");
 
         <div class="card-header px-1 py-1" id="HeaderTabelleCard2">
             <div class="row">
-                <div class="col-1 d-inline-flex justify-content-start" id="">Bauangaben</div>
-                <div class="col-5 d-inline-flex justify-content-start " id="sub23"></div>
-                <div class="col-6 d-inline-flex justify-content-start " id="sub2"></div>
+                <div class="col-xxl-6 d-flex justify-content-start " id="sub23">Bauangaben</div>
+                <div class="col-xxl-6 d-flex justify-content-start " id="sub2"></div>
             </div>
         </div>
+
         <div class="card-header px-1 py-1 ">
             <div class="row">
-                <div class="col-1 d-inline-flex justify-content-start" id=""> Raumbuch</div>
-                <div class="col-5 d-inline-flex justify-content-start " id="sub21"></div>
-                <div class="col-6 d-inline-flex justify-content-start " id="sub22">
+                <div class="col-xxl-6 d-flex justify-content-start " id="sub21"> Raumbuch</div>
+                <div class="col-xxl-6 d-flex justify-content-start " id="sub22">
                 </div>
             </div>
-
         </div>
 
         <div class="card-body px-2 py-2">
@@ -123,9 +122,7 @@ init_page_serversides("", "x");
         }, 300);
         addMTFilter('#sub1');
         add_entfallen_filter('#sub1');
-
     });
-
 
     function generateNewReports(reportType, date) {
         const roomIDs = table.rows({selected: true}).data().toArray().map(row => row[0]);
@@ -137,7 +134,7 @@ init_page_serversides("", "x");
                 "BAUANGABEN A3": "/pdf_createBauangabenBericht_A3Qeer.php",
                 "BAUANGABEN A3 2": "/pdf_createBauangabenBericht_A3Qeer_1.php",
                 "BAUANGABEN A3 3": "/pdf_createBauangabenBericht_A3Qeer_ohne_Lab_params.php",
-                "-":"-",
+                "-": "-",
                 "Elem./Raum (w/Bestand)": "/pdf_createRoombookElWithoutBestand.php",
                 "inkl.Elem.Kommentar": "/pdf_createRoombookElWithoutBestandWithComments.php"
             };
@@ -260,7 +257,7 @@ init_page_serversides("", "x");
     }
 
     function addCheckbox(location, name, callback) {
-        $(location).append(`<input type="checkbox" id="CBX${name}" class="form-check-input" checked="false"><label for="CBX${name}" class="form-check-label">${name}</label>`);
+        $(location).append(`<input type="checkbox" id="CBX${name}" class="form-check-input" ><label for="CBX${name}" class="form-check-label">${name}</label>`);
         $(`#CBX${name}`).change(callback);
     }
 

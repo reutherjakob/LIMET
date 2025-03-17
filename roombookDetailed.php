@@ -364,9 +364,11 @@ init_page_serversides();
                 return entfallen === "0";
             }
         );
+
         $('#filter_EntfalleneRooms').change(function () {
             tableRooms.draw();
         });
+
         $('#filter_MTrelevantRooms').change(function () {
             tableRooms.draw();
         });
@@ -391,7 +393,6 @@ init_page_serversides();
             }
         });
 
-
         $('#tableRooms tbody').on('click', 'tr', function () {
             $("#elementParameters").hide();
             $("#elementBestand").hide();
@@ -408,6 +409,7 @@ init_page_serversides();
                         type: "GET",
                         success: function (data) {
                             $("#roomVermerke").html(data);
+
                             $.ajax({
                                 url: "getRoomElementsDetailed1.php",
                                 type: "GET",
@@ -455,9 +457,7 @@ init_page_serversides();
                 }
             });
         });
-
     });
-
 
     $("button[value='reloadBestand']").click(function () {
         $("#elementBestand").html("");

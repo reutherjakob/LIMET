@@ -28,24 +28,28 @@
 </head>
 
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; } // CHECKS SESSION
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+} // CHECKS SESSION
 init_page_serversides(); // checks LOGIN
 ?>
 
 <body style="height:100%">
-<div class="container-fluid bg-light" >
+<div class="container-fluid bg-light">
     <div id="limet-navbar"></div>
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header d-inline-flex">
-                    <div class="form-check">
+                    <div class="form-check col-6">
                         <input class="form-check-input track-checkbox" type="checkbox" id="checkbox1">
                         <label class="form-check-label" for="checkbox1">Weniger Vergleichsräume laden</label>
+                    </div> &emsp;
+                    <div class="form-check col-6 d-flex justify-content-end">
+                        <button type="button" class="btn btn-info btn-sm me-2 text-dark"
+                                onclick="show_modal('helpModal')">
+                            <i class="fas fa-question-circle"></i></button>
                     </div>
-                    <button type="button" class="btn btn-sm ms-auto" onclick="show_modal('helpModal')">
-                        <i class="fa fa-circle-info"></i>
-                    </button>
                 </div>
 
                 <div class=" card-body">
