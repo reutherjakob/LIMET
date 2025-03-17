@@ -75,6 +75,7 @@ $mysqli->close();
 
 <script>
     $(document).ready(function () {
+        $('#topDivSearch').remove();
         document.getElementById("buttonNewVermerkuntergruppe").style.visibility = "visible";
         let tableVermerkUnterGruppe = $('#tableVermerkUnterGruppe').DataTable({
             columnDefs: [
@@ -84,10 +85,11 @@ $mysqli->close();
                     "searchable": false
                 }
             ],
+            dom: '<"#topDiv.top-container d-flex"<"col-md-6 justify-content-start"><"#topDivSearch.col-md-6"f>>t<"bottom d-flex" <"col-md-6 justify-content-start"i><"col-md-6 d-flex align-items-center justify-content-end"lp>>',
             paging: true,
             pagingType: "simple",
             pageLength: 10,
-            lengthChange: false,
+            lengthChange: true,
             searching: true,
             info: true,
             order: [[1, "asc"]],
@@ -95,13 +97,12 @@ $mysqli->close();
             responsive:true,
             language: {
                 'url': 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
-                search: ""
+                search: "",     searchPlaceholder:"Suche..."
             }, initComplete: function () {
-                console.log(counter, search_counter);
-                $('#dt-search-' + (counter)).remove();
-                move_dt_search("#dt-search-" + search_counter, "#CardHeaderVermerkUntergruppen");
-                search_counter = search_counter + 1;
-                counter = search_counter;
+                $('#topDivSearch label').remove();
+                $('#topDivSearch').removeClass("col-md-6").children().children().removeClass("form-control form-control-sm");
+                $('#topDivSearch').appendTo('#CardHeaderVermerkE').children().children().addClass("btn btn-sm btn-outline-dark");
+
 
             }
         });

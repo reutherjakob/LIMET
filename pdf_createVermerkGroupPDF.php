@@ -1,11 +1,15 @@
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 check_login();
 require_once('TCPDF-main/TCPDF-main/tcpdf.php');
 
 
-class MYPDF extends TCPDF {
-    public function Header() {
+class MYPDF extends TCPDF
+{
+    public function Header()
+    {
         // Logo        
         if ($_SESSION["projectAusfuehrung"] === "MADER") {
             $image_file = 'Mader_Logo_neu.jpg';
@@ -42,7 +46,8 @@ class MYPDF extends TCPDF {
     }
 
     // Page footer
-    public function Footer() {
+    public function Footer()
+    {
         $this->SetY(-15);
         $this->SetFont('helvetica', 'I', 8);
         $this->cell(0, 0, '', 'T', 0, 'L');
@@ -50,7 +55,8 @@ class MYPDF extends TCPDF {
     }
 
     // Load table data from file
-    public function LoadData($file) {
+    public function LoadData($file)
+    {
         // Read file lines
         $lines = file($file);
         $data = array();
@@ -61,7 +67,8 @@ class MYPDF extends TCPDF {
     }
 
     // Colored table
-    public function verteilerTable($header, $data) {
+    public function verteilerTable($header, $data)
+    {
         // Colors, line width and bold font
         $this->SetFillColor(255, 0, 0);
         $this->SetTextColor(0);
@@ -111,7 +118,8 @@ class MYPDF extends TCPDF {
     }
 
     // Topics table 
-    public function topicsTable($header, $data) {
+    public function topicsTable($header, $data)
+    {
         // Colors, line width and bold font
         $this->SetFillColor(255, 0, 0);
         $this->SetTextColor(0);
@@ -127,93 +135,95 @@ class MYPDF extends TCPDF {
         $fill = 0;
         $untergruppenID = 0;
         foreach ($data as $row) {
-            $this->SetFont('helvetica', '', '8');
-            $betreffText = "";
-            if ($_SESSION["projectName"] === "GCP" && null != $row['Raumnummer_Nutzer'] ) {
-                $betreffText = $betreffText . 'Betrifft Raum: ' . $row['Raumnummer_Nutzer'] . " " . $row['Raumbezeichnung'] . "\n";
-            } else {
-                if ( null != ($row['Raumnr']) ) {
-                    $betreffText = $betreffText . 'Betrifft Raum: ' . " " . $row['Raumnr'] . " " . $row['Raumbezeichnung'] . "\n";
-                }
-            }
-            if ( null != ($row['LosNr_Extern']) ) {
-                $betreffText = $betreffText . 'Betrifft Los: ' . $row['LosNr_Extern'] . " " . $row['LosBezeichnung_Extern'] . "\n";
-            }
-
-            if ($row['Vermerkart'] === 'Bearbeitung') {
-                $textNameFälligkeit = $row['Name'] . "\n" . $row['Faelligkeit'];
-                if ($row['Bearbeitungsstatus'] === "0") {
-                    $textNameFälligkeit = $textNameFälligkeit . "\n" . "Offen";
+            if (trim($row['Vermerktext']) !== "") {
+                $this->SetFont('helvetica', '', '8');
+                $betreffText = "";
+                if ($_SESSION["projectName"] === "GCP" && null != $row['Raumnummer_Nutzer']) {
+                    $betreffText = $betreffText . 'Betrifft Raum: ' . $row['Raumnummer_Nutzer'] . " " . $row['Raumbezeichnung'] . "\n";
                 } else {
-                    $textNameFälligkeit = $textNameFälligkeit . "\n" . "Erledigt";
+                    if (null != ($row['Raumnr'])) {
+                        $betreffText = $betreffText . 'Betrifft Raum: ' . " " . $row['Raumnr'] . " " . $row['Raumbezeichnung'] . "\n";
+                    }
                 }
-            } else {
-                $textNameFälligkeit = "";
-            }
-            $rowHeight1 = $this->getStringHeight($w[0], $row['Vermerktext'], false, true, '', 1);
-            $rowHeight4 = $this->getStringHeight($w[0], $betreffText, false, true, '', 1);
-            $rowHeight2 = $this->getStringHeight($w[2], $textNameFälligkeit, false, true, '', 1);
-            $rowHeight3 = $this->getStringHeight($w[0], $row['Untergruppennummer'] . " " . $row['Untergruppenname'], false, true, '', 1);
+                if (null != ($row['LosNr_Extern'])) {
+                    $betreffText = $betreffText . 'Betrifft Los: ' . $row['LosNr_Extern'] . " " . $row['LosBezeichnung_Extern'] . "\n";
+                }
 
-            if ($rowHeight1 + $rowHeight4 > $rowHeight2) {
-                $rowHeight = $rowHeight1 + $rowHeight4;
-            } else {
-                $rowHeight = $rowHeight2;
-                $rowHeight1 = $rowHeight - $rowHeight4;
-            }
-            if ($untergruppenID != $row['idtabelle_Vermerkuntergruppe']) {
+                if ($row['Vermerkart'] === 'Bearbeitung') {
+                    $textNameFälligkeit = $row['Name'] . "\n" . $row['Faelligkeit'];
+                    if ($row['Bearbeitungsstatus'] === "0") {
+                        $textNameFälligkeit = $textNameFälligkeit . "\n" . "Offen";
+                    } else {
+                        $textNameFälligkeit = $textNameFälligkeit . "\n" . "Erledigt";
+                    }
+                } else {
+                    $textNameFälligkeit = "";
+                }
+                $rowHeight1 = $this->getStringHeight($w[0], $row['Vermerktext'], false, true, '', 1);
+                $rowHeight4 = $this->getStringHeight($w[0], $betreffText, false, true, '', 1);
+                $rowHeight2 = $this->getStringHeight($w[2], $textNameFälligkeit, false, true, '', 1);
+                $rowHeight3 = $this->getStringHeight($w[0], $row['Untergruppennummer'] . " " . $row['Untergruppenname'], false, true, '', 1);
+
+                if ($rowHeight1 + $rowHeight4 > $rowHeight2) {
+                    $rowHeight = $rowHeight1 + $rowHeight4;
+                } else {
+                    $rowHeight = $rowHeight2;
+                    $rowHeight1 = $rowHeight - $rowHeight4;
+                }
+                if ($untergruppenID != $row['idtabelle_Vermerkuntergruppe']) {
+                    $y = $this->GetY();
+                    if (($y + 2 * $rowHeight3 + $rowHeight) >= 270) {
+                        $this->AddPage();
+                    } else {
+                        $this->Ln($rowHeight3);
+                    }
+                    $fill = 1;
+                    $this->SetFont('', 'B', '9');
+                    $this->MultiCell($w[0] + $w[1] + $w[2], $rowHeight3, $row['Untergruppennummer'] . ") " . $row['Untergruppenname'], 1, 'L', $fill, 0, '', '');
+                    $this->Ln();
+                    $this->SetFont('', 'B', '8');
+                    for ($i = 0; $i < $num_headers; ++$i) {
+                        $this->MultiCell($w[$i], $rowHeight3, $header[$i], 1, 'L', 0, 0, '', '');
+                    }
+                    $this->Ln();
+                    $untergruppenID = $row['idtabelle_Vermerkuntergruppe'];
+                    $fill = 0;
+                }
+
                 $y = $this->GetY();
-                if (($y + 2 * $rowHeight3 + $rowHeight ) >= 270) {
+                if (($y + $rowHeight1) >= 260) {
                     $this->AddPage();
+                }
+                $this->SetFont('', 'I', '7');
+                $this->MultiCell($w[0], $rowHeight4, $betreffText, 'LTR', 'L', $fill, 0, '', '');
+                $this->SetFont('', '', '8');
+                $this->MultiCell($w[1], $rowHeight, $row['Vermerkart'], 1, 'L', $fill, 0, '', '');
+                if ($row['Vermerkart'] == 'Bearbeitung') {
+                    $this->MultiCell($w[2], $rowHeight, $textNameFälligkeit, 1, 'L', $fill, 0, '', '');
+                    //$this->SetFont('helvetica','','8');
                 } else {
-                    $this->Ln($rowHeight3);
+                    $this->MultiCell($w[2], $rowHeight, '', 1, 'L', $fill, 0, '', '');
                 }
-                $fill = 1;
-                $this->SetFont('', 'B', '9');
-                $this->MultiCell($w[0] + $w[1] + $w[2], $rowHeight3, $row['Untergruppennummer'] . ") " . $row['Untergruppenname'], 1, 'L', $fill, 0, '', '');
-                $this->Ln();
-                $this->SetFont('', 'B', '8');
-                for ($i = 0; $i < $num_headers; ++$i) {
-                    $this->MultiCell($w[$i], $rowHeight3, $header[$i], 1, 'L', 0, 0, '', '');
-                }
-                $this->Ln();
-                $untergruppenID = $row['idtabelle_Vermerkuntergruppe'];
-                $fill = 0;
-            } 
-            
-            $y = $this->GetY();
-            if (($y + $rowHeight1) >= 260) {
-                $this->AddPage();
+                $this->Ln($rowHeight4);
+                $this->MultiCell($w[0], $rowHeight1, $row['Vermerktext'], 'LRB', 'L', $fill, 1, '', '');
             }
-            $this->SetFont('', 'I', '7');
-            $this->MultiCell($w[0], $rowHeight4, $betreffText, 'LTR', 'L', $fill, 0, '', '');
-            $this->SetFont('', '', '8');
-            $this->MultiCell($w[1], $rowHeight, $row['Vermerkart'], 1, 'L', $fill, 0, '', '');
-            if ($row['Vermerkart'] == 'Bearbeitung') {
-                $this->MultiCell($w[2], $rowHeight, $textNameFälligkeit, 1, 'L', $fill, 0, '', '');
-                //$this->SetFont('helvetica','','8');
-            } else {
-                $this->MultiCell($w[2], $rowHeight, '', 1, 'L', $fill, 0, '', '');
-            }
-            $this->Ln($rowHeight4);
-            $this->MultiCell($w[0], $rowHeight1, $row['Vermerktext'], 'LRB', 'L', $fill, 1, '', '');
         }
     }
 }
 
-$document_out_title_components =  $_SESSION['projectName']."_MT_";  
+$document_out_title_components = $_SESSION['projectName'] . "_MT_";
 
 // create new PDF document
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('LIMET Consulting und Planung ZT GmbH');
-$pdf->SetTitle('Dokumentation'. $_SESSION['projectName']);
+$pdf->SetTitle('Dokumentation' . $_SESSION['projectName']);
 $pdf->SetSubject('');
 $pdf->SetKeywords('');
 
 $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
-$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+$pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+$pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
 $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
@@ -240,7 +250,7 @@ while ($row = $result->fetch_assoc()) {
 
     $title = "Projekt: " . $row['Projektname'] . "\n" . "Thema: " . $row['Gruppenname'] . "\nDatum: " . $row['Datum'] . " von " . $row['Startzeit'] . " bis " . $row['Endzeit'] . "\nOrt: " . $row['Ort'];
     $verfasser = $row['Verfasser'];
-    $document_out_title_components = $document_out_title_components."".$row['Gruppenart']."_". $row['Datum']."_". $row['Gruppenname']."_";
+    $document_out_title_components = $document_out_title_components . "" . $row['Gruppenart'] . "_" . $row['Datum'] . "_" . $row['Gruppenname'] . "_";
     $rowHeight1 = $pdf->getStringHeight(180, $title, false, true, '', 1);
     $pdf->MultiCell(0, $rowHeight1, $title, 1, 'L', 0, 0, '', '', true);
 }
@@ -342,9 +352,7 @@ $pdf->Multicell(180, 5, $outstr, 0, 'L', 0, 1);
 //$pdf->Image('/var/www/vhosts/limet-rb.com/httpdocs/Dokumente_RB/Images/Image_Vermerk_2898_61e58a78cd4cf.jpeg', '', '', 40, 40, 'JPG', '', '', true, 150, '', false, false, 1, false, false, false);
 
 
-
-
-$document_out_title_components = $document_out_title_components. date('Y-m-d').".pdf";
+$document_out_title_components = $document_out_title_components . date('Y-m-d') . ".pdf";
 
 $pdf->Output($document_out_title_components, 'I');
 

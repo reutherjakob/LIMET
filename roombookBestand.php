@@ -29,8 +29,8 @@ include "_format.php";
 
 </head>
 <body>
-<div id="limet-navbar"></div>
-<div class="container-fluid">
+<div class="container-fluid bg-light" >
+    <div id="limet-navbar"></div>
     <div class="mt-4 card">
         <div class="card-header" >
             <div class="row">
@@ -81,7 +81,7 @@ include "_format.php";
 
             $result = $mysqli->query($stmt);
 
-            echo "<table class='table table-striped table-bordered table-sm' id='tableBestandsElemente'>
+            echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableBestandsElemente'>
                         <thead><tr>
                         <th>ID</th>
                         <th>Stk</th>

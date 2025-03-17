@@ -33,8 +33,8 @@ init_page_serversides();
 </head>
 
 <body style="height:100%">
-<div id="limet-navbar"></div>
-<div class="container-fluid">
+<div class="container-fluid bg-light" >
+    <div id="limet-navbar"></div>
 
     <div class="mt-4 card">
         <div class="card-header">Räume im Projekt</div>
@@ -55,7 +55,7 @@ init_page_serversides();
 
             $result = $mysqli->query($sql);
 
-            echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'   >
+            echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableRooms'   >
 						<thead><tr>
 						<th>ID</th>
 						<th>Raumnr</th>

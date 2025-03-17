@@ -170,7 +170,7 @@ init_page_serversides("");
 
                             $result = $mysqli->query($sql);
 
-                            echo "<div class='table-responsive'><table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableOEBAVermerke' > 
+                            echo "<div class='table-responsive'><table class='table table-striped table-bordered table-sm table-hover border border-light border-5'' id='tableOEBAVermerke' > 
                                         <thead><tr>
                                         <th>ID</th> 
                                         <th>Protokoll</th>
@@ -282,7 +282,7 @@ init_page_serversides("");
             order: [[5, 'asc']],
             orderMulti: false,
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json', search: "", searchPlaceholder: "Suche..."
             },
             layout: {
                 topStart: null,

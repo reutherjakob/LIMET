@@ -25,7 +25,7 @@ $sql = "SELECT tabelle_Vermerkgruppe.Gruppenname, tabelle_Vermerkgruppe.Gruppena
 
 $result = $mysqli->query($sql);
 
-echo "<div class='table-responsive'><table class='table table-striped table-bordered table-sm' id='tableRoomVermerke'  >
+echo "<div class='table-responsive'><table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableRoomVermerke'  >
 	<thead><tr>
 	<th>ID</th> 
         <th>Art</th>

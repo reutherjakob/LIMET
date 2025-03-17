@@ -18,7 +18,7 @@ $sql = "SELECT tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_be
                 ORDER BY tabelle_räume.Raumnr;";
 $result = $mysqli->query($sql);
 if ($result->num_rows > 0) {
-    echo "<table class='table table-striped table-bordered table-sm' id='tableRoombookBestand'>
+    echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableRoombookBestand'>
 	<thead><tr>
 	<th>Raumnummer</th>
 	<th>Raumbezeichnung</th>

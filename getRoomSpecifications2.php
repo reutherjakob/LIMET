@@ -67,7 +67,7 @@ check_login();
                 <input type='button' class='btn btn-info btn-sm' value='Bauangaben kopieren exkl. BO' id='" . $_SESSION["roomID"] . "' data-bs-toggle='modal' data-bs-target='#myModal'>
             </div>      </form>";
 
-        echo " <!-- Modal zum kopieren der Bauangaben -->
+        echo " <!-- Modal zum Kopieren der Bauangaben -->
         <div class='modal fade' id='myModal' role='dialog'>
           <div class='modal-dialog modal-lg'>
             <!-- Modal content--> 
@@ -91,18 +91,23 @@ check_login();
         <script>
             //Bauangaben speichern
             $("input[value='Bauangaben speichern']").click(function () {
-                var funktionBO = $("#FunktionBO").val();
-                var Elektro = $("#Elektro").val();
-                var geraete = $("#Geräte").val();
-                var medgas = $("#MedGas").val();
-                var baustatik = $("#BauStatik").val();
-                var hkls = $("#HKLS").val();
+                let funktionBO = $("#FunktionBO").val();
+                let Elektro = $("#Elektro").val();
+                let geraete = $("#Geräte").val();
+                let medgas = $("#MedGas").val();
+                let baustatik = $("#BauStatik").val();
+                let hkls = $("#HKLS").val();
                 $.ajax({
                     url: "saveRoomSpecifications2.php",
                     data: {"funktionBO": funktionBO, "Elektro": Elektro, "geraete": geraete, "medgas": medgas, "baustatik": baustatik, "hkls": hkls},
                     type: "GET",
                     success: function (data) {
-                        alert(data);
+                        try {
+                            makeToaster(data, data.substring(0,4) ==="Raum")
+                        } catch (err) {
+                            alert(data);
+                        }
+
                     }
                 });
 
@@ -110,7 +115,7 @@ check_login();
 
             //Bauangaben kopieren
             $("input[value='Bauangaben kopieren exkl. BO']").click(function () {
-                var ID = this.id;
+                let ID = this.id;
                 //console.log("File: getRbSpecs2.ph M:BauangabenKopieren RID: ", ID);
                 $.ajax({
                     url: "getRoomsToCopy.php",

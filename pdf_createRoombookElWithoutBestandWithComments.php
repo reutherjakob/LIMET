@@ -1,6 +1,9 @@
 <?php
 require_once('TCPDF-main/TCPDF-main/tcpdf.php');
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
+include "_pdf_utils.php";
 check_login();
 
 class MYPDF extends TCPDF
@@ -133,9 +136,9 @@ class MYPDF extends TCPDF
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('LIMET Consulting und Planung für Medizintechnik');
-$pdf->SetTitle('Raumbuch-MT');
-$pdf->SetSubject('Raumbuch-MT');
-$pdf->SetKeywords('Raumbuch-MT');
+$pdf->SetTitle('Raumbuch-MT-Elementliste');
+$pdf->SetSubject('Raumbuch-MT-Elementliste');
+$pdf->SetKeywords('Raumbuch-MT-Elementliste');
 $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING, array(0, 64, 255), array(0, 64, 128));
 $pdf->setFooterData(array(0, 64, 0), array(0, 64, 128));
 $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
@@ -186,6 +189,7 @@ $roomIDs = filter_input(INPUT_GET, 'roomID');
 $teile = explode(",", $roomIDs);
 $widths = array(0, 20, 20, 20, 90, 10, 20);
 
+
 foreach ($teile as $valueOfRoomID) {
     // Elemente im Raum laden
     $sql3 = "SELECT tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_räume_has_tabelle_elemente.Anzahl, 
@@ -219,16 +223,16 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->SetFont('helvetica', 'B', 10);
 
 
-        $pdf->MultiCell(100, 6, "Raum: " . $row['Raumbezeichnung'] , 0, 'L', 0, 0);
+        $pdf->MultiCell(100, 6, "Raum: " . $row['Raumbezeichnung'], 0, 'L', 0, 0);
         $pdf->MultiCell(80, 6, "Nummer: " . $row['Raumnr'], 0, 'L', 0, 0);
-        if ($pdf->getStringHeight(100, "Raum: " . $row['Raumbezeichnung'], false, true, '', 1)>6) {
+        if ($pdf->getStringHeight(100, "Raum: " . $row['Raumbezeichnung'], false, true, '', 1) > 6) {
             $pdf->Ln($LN);
         }
         $pdf->Ln($LN);
         $pdf->SetFont('helvetica', '', 10);
         $pdf->MultiCell(100, 6, "Bereich: " . $row['Raumbereich Nutzer'], 0, 'L', 0, 0);
         $pdf->MultiCell(80, 6, "Geschoss: " . $row['Geschoss'], 0, 'L', 0, 0);
-        if ($pdf->getStringHeight(100, "Raum: " . $row['Raumbereich Nutzer'], false, true, '', 1)>6) {
+        if ($pdf->getStringHeight(100, "Raum: " . $row['Raumbereich Nutzer'], false, true, '', 1) > 6) {
             $pdf->Ln($LN);
         }
         $pdf->Ln($LN);
@@ -249,10 +253,10 @@ foreach ($teile as $valueOfRoomID) {
     $pdf->Ln();
     $pdf->SetFont('helvetica', '', 10);
     $pdf->SetTextColor(0);
-    $rowHeightFirstLine = $pdf->getStringHeight($widths[4] + $widths[1], "ElementID", false, true, '', 1);
-   // $pdf->MultiCell($widths[0], $rowHeightFirstLine, "Gewerk", 'B', 'C', 0, 0);
+    $rowHeightFirstLine = $pdf->getStringHeight(50, "ElementID", false, true, '', 1);
+    // $pdf->MultiCell($widths[0], $rowHeightFirstLine, "Gewerk", 'B', 'C', 0, 0);
     //$pdf->MultiCell($widths[1], $rowHeightFirstLine, "GHG", 'B', 'C', 0, 0);
-    $pdf->MultiCell($widths[2]+$widths[0], $rowHeightFirstLine, "ElementID", 'B', 'C', 0, 0);
+    $pdf->MultiCell($widths[2] + $widths[0], $rowHeightFirstLine, "ElementID", 'B', 'C', 0, 0);
     $pdf->MultiCell($widths[3], $rowHeightFirstLine, "Var", 'B', 'C', 0, 0);
     $pdf->MultiCell($widths[5], $rowHeightFirstLine, "Stk", 'B', 'C', 0, 0);
     $pdf->MultiCell($widths[6], $rowHeightFirstLine, "Bestand", 'B', 'C', 0, 0);
@@ -271,13 +275,14 @@ foreach ($teile as $valueOfRoomID) {
             $fill = !$fill;
             $bestandsCounter = 1;
             $pdf->SetFont('helvetica', '', 8);
-            $rowHeightMainLine = $pdf->getStringHeight(50, $row['Bezeichnung'], false, true, '', 1);
+            $rowHeightMainLine = $pdf->getStringHeight($widths[4] + $widths[1], $row['Bezeichnung'], false, true, '', 1);
             check4newpage($pdf, $rowHeightMainLine);
-           //$pdf->MultiCell($widths[0], $rowHeightMainLine, $row['Gewerke_Nr'], 0, 'C', $fill, 0);
+            //$pdf->MultiCell($widths[0], $rowHeightMainLine, $row['Gewerke_Nr'], 0, 'C', $fill, 0);
             // $pdf->MultiCell($widths[1], $rowHeightMainLine, $row['GHG'], 0, 'C', $fill, 0);
-            $pdf->MultiCell($widths[2]+$widths[0], $rowHeightMainLine, $row['ElementID'], 0, 'C', $fill, 0);
+            $pdf->MultiCell($widths[2] + $widths[0], $rowHeightMainLine, $row['ElementID'], 0, 'C', $fill, 0);
             $pdf->MultiCell($widths[3], $rowHeightMainLine, $row['Variante'], 0, 'C', $fill, 0);
             $pdf->MultiCell($widths[5], $rowHeightMainLine, $row['Anzahl'], 0, 'C', $fill, 0);
+
             if ($row['Neu/Bestand'] == 1) {
                 $pdf->MultiCell($widths[6], $rowHeightMainLine, "nein", 0, 'C', $fill, 0);
             } else {
@@ -286,14 +291,14 @@ foreach ($teile as $valueOfRoomID) {
             $pdf->MultiCell($widths[4] + $widths[1], $rowHeightMainLine, $row['Bezeichnung'], 0, 'L', $fill, 0);
 
 
-            /*if ($row['Kurzbeschreibung'] != "") {
+            if ($row['Kurzbeschreibung'] != "") {
                 $pdf->SetFont('helvetica', 'I', 8);
                 $pdf->Ln();
                 $rowHeight = $pdf->getStringHeight($widths[4] + $widths[5] + $widths[6], $row['Kurzbeschreibung'], false, true, '', 1);
                 $pdf->MultiCell($widths[0] + $widths[3] + $widths[1] + $widths[2], $rowHeight, "Kommentar: ", 0, 'R', $fill, 0);
                 $pdf->MultiCell($widths[4] + $widths[5] + $widths[6], $rowHeight, $row['Kurzbeschreibung'], 0, 'L', $fill, 0);
                 $pdf->SetFont('helvetica', '', 8);
-            }*/
+            }
             $idRoombookEntry = $row['id'];
             $pdf->Ln();
         } else {
@@ -303,5 +308,5 @@ foreach ($teile as $valueOfRoomID) {
     }
     $pdf->Ln();
 }
-
-$pdf->Output('Raumbuch-MT.pdf', 'I');
+ob_end_clean();
+$pdf->Output( getFileName('Raumbuch-Elementliste'), 'I');

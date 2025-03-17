@@ -36,9 +36,9 @@ $sql = "SELECT tabelle_lot_workflow.tabelle_lose_extern_idtabelle_Lose_Extern,
        tabelle_lot_workflow.Abgeschlossen, 
        tabelle_lot_workflow.user, 
        tabelle_lot_workflow.Kommentar
-                FROM (tabelle_workflow_has_tabelle_wofklowteil INNER JOIN tabelle_workflowteil ON tabelle_workflow_has_tabelle_wofklowteil.tabelle_wofklowteil_idtabelle_wofklowteil = tabelle_workflowteil.idtabelle_wofklowteil) INNER JOIN tabelle_lot_workflow ON (tabelle_workflow_has_tabelle_wofklowteil.tabelle_workflow_idtabelle_workflow = tabelle_lot_workflow.tabelle_workflow_idtabelle_workflow) AND (tabelle_workflow_has_tabelle_wofklowteil.tabelle_wofklowteil_idtabelle_wofklowteil = tabelle_lot_workflow.tabelle_wofklowteil_idtabelle_wofklowteil)
-                WHERE (((tabelle_lot_workflow.tabelle_lose_extern_idtabelle_Lose_Extern)=" . $_SESSION["lotID"] . "))
-                ORDER BY tabelle_workflow_has_tabelle_wofklowteil.Reihenfolgennummer;";
+    FROM (tabelle_workflow_has_tabelle_wofklowteil INNER JOIN tabelle_workflowteil ON tabelle_workflow_has_tabelle_wofklowteil.tabelle_wofklowteil_idtabelle_wofklowteil = tabelle_workflowteil.idtabelle_wofklowteil) INNER JOIN tabelle_lot_workflow ON (tabelle_workflow_has_tabelle_wofklowteil.tabelle_workflow_idtabelle_workflow = tabelle_lot_workflow.tabelle_workflow_idtabelle_workflow) AND (tabelle_workflow_has_tabelle_wofklowteil.tabelle_wofklowteil_idtabelle_wofklowteil = tabelle_lot_workflow.tabelle_wofklowteil_idtabelle_wofklowteil)
+    WHERE (((tabelle_lot_workflow.tabelle_lose_extern_idtabelle_Lose_Extern)=" . $_SESSION["lotID"] . "))
+    ORDER BY tabelle_workflow_has_tabelle_wofklowteil.Reihenfolgennummer";
 
 $result = $mysqli->query($sql);
 if ($result->num_rows == 0) {

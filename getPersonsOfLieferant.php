@@ -37,7 +37,7 @@ if(!isset($_SESSION["username"]))
                         WHERE (((tabelle_ansprechpersonen.tabelle_lieferant_idTABELLE_Lieferant)=".filter_input(INPUT_GET, 'lieferantID')."));";						
                 $result = $mysqli->query($sql);
 
-                echo "<table class='table table-striped table-bordered table-sm' id='tablePersonsOfLieferant'   >
+                echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tablePersonsOfLieferant'   >
                 <thead><tr>
                 <th>ID</th>
                 <th>Name</th>

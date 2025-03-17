@@ -13,7 +13,7 @@ if(!isset($_SESSION["username"]))
 <?php
 	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
 	if ($mysqli ->connect_error) {
-	    die("Connection failed: " . $conn->connect_error);
+	    die("Connection failed: " . $mysqli->connect_error);
 	}
 	
 	/* change character set to utf8 */
@@ -29,7 +29,7 @@ if(!isset($_SESSION["username"]))
         
         
 	if ($mysqli ->query($sql) === TRUE) {
-	    echo "Workflow erfolgreich zu Los hinzugefügt!";
+	    echo "Erfolg!";//  "Workflow erfolgreich zu Los hinzugefügt!";
 	} else {
 	    echo "Error: " . $sql . "<br>" . $mysqli->error;
 	}

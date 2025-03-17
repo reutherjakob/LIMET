@@ -28,11 +28,20 @@
 <div id="limet-navbar" class=''></div>
 <div class="container-fluid">
     <div class="mt-4 card responsive">
-        <div class="card-header" id="CH1">Geräteliste</div>
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">Geräteliste
+                </div>
+                <div class="col-6 d-flex justify-content-end" id="CH1">
+                </div>
+            </div>
+        </div>
         <div id="CB1" class="card-body table-responsive">
             <?php
-            if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
-            init_page_serversides();
+            if (!function_exists('utils_connect_sql')) {
+                include "_utils.php";
+            }
+            init_page_serversides("x");
             $mysqli = utils_connect_sql();
             $sql = "SELECT 
                     tabelle_geraete.GeraeteID, 
@@ -54,7 +63,7 @@
 
             $result = $mysqli->query($sql);
 
-            echo "<table class='table table-striped table-bordered table-sm' id='tableDevices'>
+            echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableDevices'>
                       <thead><tr>";
             $firstRow = $result->fetch_assoc();
             if ($firstRow) {
@@ -181,7 +190,10 @@
                 lengthMenu: "Show _MENU_ entries"
             },
             initComplete: function () {
-                $('#dt-search-0').appendTo('#CH1');
+                $('.dt-search label').remove();
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CH1');
+
+
             }
         });
     });

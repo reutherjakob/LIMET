@@ -1,9 +1,3 @@
-<!-- 13.2.25: Reworked -->
-<?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
-init_page_serversides();
-?>
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
@@ -26,11 +20,17 @@ init_page_serversides();
           rel="stylesheet">
 </head>
 <body>
+<!-- 13.2.25: Reworked -->
+<?php
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
+init_page_serversides();
+?>
 <div id="limet-navbar"></div> <!-- Container für Navbar -->
 <div class="container-fluid">
-
     <div class="mt-4 card">
-        <div class="card-header"></div>
+        <div class="card-header" id="CardHeaderRooms"></div>
         <div class="card-body">
             <?php
             $mysqli = utils_connect_sql();
@@ -41,7 +41,7 @@ init_page_serversides();
                                             WHERE tabelle_projekte.idTABELLE_Projekte=" . $_SESSION["projectID"] . " AND tabelle_räume.Entfallen <>1
                                             ORDER BY tabelle_räume.`MT-relevant` DESC";
             $result = $mysqli->query($sql);
-            echo "<table class='table table-striped table-bordered table-sm' id='tableRooms'   >
+            echo "<table class='table table-striped table-bordered table-sm ' id='tableRooms'   >
                             <thead class='thead'><tr>
                             <th>ID</th>
                             <th>Raumnr</th>
@@ -71,42 +71,31 @@ init_page_serversides();
             echo "</tbody></table>";
             ?>
         </div>
-
     </div>
     <div class="row mt-4">
-        <div class="col-xxl-1">
+        <div class="col-xxl-1 col-sm-1">
             <div class="card bg-dark text-center">
-                <div class="card-body" id="roomInfo">
-                    <div class="card-title">
-                        <button type='button' class='btn text-light' style='background-color:transparent' >
-                            <h1><i class="fas fa-home"></i></h1></button>
-                    </div>
-                    <p class="card-text text-light">Rauminfo</p>
+                <div class="card-body" id="roomInfo" data-bs-toggle="tooltip" data-bs-placement="right"
+                     title="Rauminfo">
+                    <i class="fas fa-home fa-3x text-light"></i>
                 </div>
             </div>
             <div class="card bg-info text-center mt-4">
-                <div class="card-body" id="roombookBO">
-                    <div class="card-title">
-                        <button type='button' class='btn text-light' style='background-color:transparent'
-                                ><h1><i class="fas fa-user-md"></i></h1></button>
-                    </div>
-                    <p class="card-text text-light">Betriebsorganisation</p>
+                <div class="card-body" id="roombookBO" data-bs-toggle="tooltip" data-bs-placement="right"
+                     title="Betriebsorganisation">
+                    <i class="fas fa-user-md fa-3x text-light"></i>
                 </div>
             </div>
             <div class="card bg-success text-center mt-4">
-                <div class="card-body" id="roombook">
-                    <div class="card-title">
-                        <button type='button' class='btn text-light' style='background-color:transparent' >
-                            <h1><i class="fas fa-list"></i></h1></button>
-                    </div>
-                    <p class="card-text text-light">Rauminhalt</p>
+                <div class="card-body" id="roombook" data-bs-toggle="tooltip" data-bs-placement="right"
+                     title="Rauminhalt">
+                    <i class="fas fa-list fa-3x text-light"></i>
                 </div>
             </div>
         </div>
-        <div class="col-xxl-11">
+        <div class="col-xxl-11 col-sm-11 ">
             <div class="card">
-                <div class="card-header" id="informationHeader">
-                </div>
+                <div class="card-header" id="informationHeader"></div>
                 <div class="card-body" id="informationOverview"></div>
             </div>
         </div>
@@ -114,16 +103,24 @@ init_page_serversides();
 </div>
 
 </body>
+<!--suppress ES6ConvertVarToLetConst -->
 <script>
     var moduleSelected = 1;
     $(document).ready(function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl, {
+                delay: {"show": 10, "hide": 10} // milliseconds
+            });
+        });
         var table = $('#tableRooms').DataTable({
-            layout: {
-                topEnd: 'search',
-                topStart: 'buttons',
-                bottomEnd: 'paging',
-                bottomStart: 'info'
-            },
+            //layout: {
+            //    topEnd: 'search',
+            //    topStart: 'buttons',
+            //    bottomEnd: 'paging',
+            //    bottomStart: 'info'
+            //},
+            dom: '<"#topDiv.top-container d-flex"<"col-md-6 justify-content-start"B><"col-md-6"f>>t<"bottom d-flex" <"col-md-6 justify-content-start"i><"col-md-6 d-flex justify-content-end"p>>',
             columnDefs: [
                 {
                     targets: [0],
@@ -143,7 +140,10 @@ init_page_serversides();
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json', search: ""
             },
-            buttons: ["searchBuilder","colvis"]
+            buttons: ["searchBuilder", "colvis"],
+            initComplete: function () {
+                $('#topDiv').appendTo("#CardHeaderRooms");
+            }
         });
 
 
@@ -153,7 +153,7 @@ init_page_serversides();
                 url: "setSessionVariables.php",
                 data: {"roomID": id},
                 type: "GET",
-                success: function (data) {
+                success: function () {
                     var url = "roombookMeetingRoombook.php";
                     var anzeige = "<H4><i class='fas fa-list'></i> Rauminhalt</H4>";
                     var anzeigeColor = "#5cb85c";

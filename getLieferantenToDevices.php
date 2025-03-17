@@ -142,7 +142,7 @@ echo "<input type='button' id='addLieferantModalButton' class='btn btn-success b
             info: false,
             order: [[1, 'asc']],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json', search: "", searchPlaceholder: "Suche..."
             },
             layout: {
                 topStart: null,

@@ -20,29 +20,31 @@
     <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
 </head>
 <body>
 <div id="limet-navbar"></div>
 
-<?php
-if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
-}
-init_page_serversides("No Redirect");
-include 'projects_changeProjectModal.html';
-?>
+<div class="container-fluid bg-white">
 
-<div class="container-fluid">
-    <div class='mt-1 row'>
+
+    <?php
+    if (!function_exists('utils_connect_sql')) {
+        include "_utils.php";
+    }
+    init_page_serversides("No Redirect");
+    include 'projects_changeProjectModal.html';
+    ?>
+
+
+    <div class='row'>
         <div class='col-xxl-10'>
-            <div class="mt-1 card">
+            <div class="card mt-2">
                 <div class="card-header" id="PRCardHeader">
-                    <div class="row align-items-center">
+                    <div class="row">
                         <div class="col-6"><b>Projekte</b></div>
-                        <div class="col-6 d-inline-flex justify-content-end text-nowrap" id="STH">
+                        <div class="col-6 d-inline-flex justify-content-end text-nowrap align-items-center" id="STH">
                             <div class="form-check form-check-inline align-items-center float-end">
                                 <input class="form-check-input" type="checkbox" id="filter_ActiveProjects" checked>
                                 <label class="form-check-label" for="filter_ActiveProjects">
@@ -53,73 +55,73 @@ include 'projects_changeProjectModal.html';
                     </div>
                 </div>
 
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table id='tableProjects'
-                               class='table table-sm compact table-hover table-striped  border border-light border-5'>
-                            <thead>
-                            <tr>
-                                <th>ID</th><!-- invis -->
-                                <th></th>
-                                <th>Interne_Nr</th>
-                                <th>Projektname</th>
-                                <th>Aktiv</th>
-                                <th>Neubau</th>
-                                <th>Bettenanzahl</th>
-                                <th>BGF</th>
-                                <th>NF</th>
-                                <th>Bearbeitung</th>
-                                <th>Planungsphase</th>
-                                <th>PlanungsphasenID</th> <!-- invis -->
-                                <th>Preisbasis</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <?php $mysqli = utils_connect_sql();
-                            $sql = "SELECT tabelle_projekte.idTABELLE_Projekte, tabelle_projekte.Interne_Nr, tabelle_projekte.Projektname,"
-                                . " tabelle_projekte.Aktiv, tabelle_projekte.Neubau, tabelle_projekte.Bettenanzahl,"
-                                . " tabelle_projekte.BGF, tabelle_projekte.NF, tabelle_projekte.Ausfuehrung,tabelle_projekte.Preisbasis,"
-                                . " tabelle_planungsphasen.Bezeichnung, tabelle_planungsphasen.idTABELLE_Planungsphasen"
-                                . " FROM tabelle_projekte INNER JOIN tabelle_planungsphasen ON tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen = tabelle_planungsphasen.idTABELLE_Planungsphasen INNER JOIN tabelle_users_have_projects ON tabelle_projekte.idTABELLE_Projekte = tabelle_users_have_projects.tabelle_projekte_idTABELLE_Projekte WHERE tabelle_users_have_projects.User = '" . $_SESSION['username'] . "' ORDER BY tabelle_projekte.Interne_Nr;";
-                            $result = $mysqli->query($sql);
-                            while ($row = $result->fetch_assoc()) {
-                                echo "<tr>";
-                                echo "<td>" . $row["idTABELLE_Projekte"] . "</td>";
-                                echo "<td> <button type='button' id='" . $row["idTABELLE_Projekte"] . "' class='btn btn-outline-dark btn-sm' value='changeProject' data-bs-toggle='modal' data-bs-target='#changeProjectModal'><i class='fas fa-pencil-alt'></i></button></td>";
-                                echo "<td>" . $row["Interne_Nr"] . "</td>";
-                                echo "<td><b>" . $row["Projektname"] . "</b></td>";
-                                echo "<td>";
-                                if ($row["Aktiv"] == 1) {
-                                    echo "Ja";
-                                } else {
-                                    echo "Nein";
-                                }
-                                echo "</td>";
-                                echo "<td>";
-                                if ($row["Neubau"] == 1) {
-                                    echo "Ja";
-                                } else {
-                                    echo "Nein";
-                                }
-                                echo "</td>";
-                                echo "<td>" . $row["Bettenanzahl"] . "</td>";
-                                echo "<td>" . $row["BGF"] . "</td>";
-                                echo "<td>" . $row["NF"] . "</td>";
-                                echo "<td>" . $row["Ausfuehrung"] . "</td>";
-                                echo "<td>" . $row["Bezeichnung"] . "</td>";
-                                echo "<td>" . $row["idTABELLE_Planungsphasen"] . "</td>";
-                                echo "<td>" . $row["Preisbasis"] . "</td>";
-                                echo "</tr>";
-                            } ?>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="card-body table-responsive px-1 py-1">
+
+                    <table id='tableProjects'
+                           class='table table-sm compact table-hover table-striped border border-light border-5'>
+                        <thead>
+                        <tr>
+                            <th>ID</th><!-- invis -->
+                            <th></th>
+                            <th>Interne_Nr</th>
+                            <th>Projektname</th>
+                            <th>Aktiv</th>
+                            <th>Neubau</th>
+                            <th>Bettenanzahl</th>
+                            <th>BGF</th>
+                            <th>NF</th>
+                            <th>Bearbeitung</th>
+                            <th>Planungsphase</th>
+                            <th>PlanungsphasenID</th> <!-- invis -->
+                            <th>Preisbasis</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php $mysqli = utils_connect_sql();
+                        $sql = "SELECT tabelle_projekte.idTABELLE_Projekte, tabelle_projekte.Interne_Nr, tabelle_projekte.Projektname,"
+                            . " tabelle_projekte.Aktiv, tabelle_projekte.Neubau, tabelle_projekte.Bettenanzahl,"
+                            . " tabelle_projekte.BGF, tabelle_projekte.NF, tabelle_projekte.Ausfuehrung,tabelle_projekte.Preisbasis,"
+                            . " tabelle_planungsphasen.Bezeichnung, tabelle_planungsphasen.idTABELLE_Planungsphasen"
+                            . " FROM tabelle_projekte INNER JOIN tabelle_planungsphasen ON tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen = tabelle_planungsphasen.idTABELLE_Planungsphasen INNER JOIN tabelle_users_have_projects ON tabelle_projekte.idTABELLE_Projekte = tabelle_users_have_projects.tabelle_projekte_idTABELLE_Projekte WHERE tabelle_users_have_projects.User = '" . $_SESSION['username'] . "' ORDER BY tabelle_projekte.Interne_Nr;";
+                        $result = $mysqli->query($sql);
+                        while ($row = $result->fetch_assoc()) {
+                            echo "<tr>";
+                            echo "<td>" . $row["idTABELLE_Projekte"] . "</td>";
+                            echo "<td> <button type='button' id='" . $row["idTABELLE_Projekte"] . "' class='btn btn-outline-dark btn-sm' value='changeProject' data-bs-toggle='modal' data-bs-target='#changeProjectModal'><i class='fas fa-pencil-alt'></i></button></td>";
+                            echo "<td>" . $row["Interne_Nr"] . "</td>";
+                            echo "<td><b>" . $row["Projektname"] . "</b></td>";
+                            echo "<td>";
+                            if ($row["Aktiv"] == 1) {
+                                echo "Ja";
+                            } else {
+                                echo "Nein";
+                            }
+                            echo "</td>";
+                            echo "<td>";
+                            if ($row["Neubau"] == 1) {
+                                echo "Ja";
+                            } else {
+                                echo "Nein";
+                            }
+                            echo "</td>";
+                            echo "<td>" . $row["Bettenanzahl"] . "</td>";
+                            echo "<td>" . $row["BGF"] . "</td>";
+                            echo "<td>" . $row["NF"] . "</td>";
+                            echo "<td>" . $row["Ausfuehrung"] . "</td>";
+                            echo "<td>" . $row["Bezeichnung"] . "</td>";
+                            echo "<td>" . $row["idTABELLE_Planungsphasen"] . "</td>";
+                            echo "<td>" . $row["Preisbasis"] . "</td>";
+                            echo "</tr>";
+                        } ?>
+                        </tbody>
+                    </table>
+                    
                 </div>
             </div>
         </div>
 
         <div class='col-xxl-2'>
-            <div class='mt-1 card'>
+            <div class='card mt-2'>
                 <div class='card-header'>Quick-Check
                 </div>
                 <div class='card-body' id='quickCheckDashboard'>
@@ -128,7 +130,7 @@ include 'projects_changeProjectModal.html';
         </div>
 
     </div>
-    <div class='mt-1 row'>
+    <div class='mt-2 row'>
         <div class='col-xxl-10'>
             <div class='card'>
                 <div class='card-header d-inline-flex' id='vermerkPanelHead'>
@@ -139,10 +141,10 @@ include 'projects_changeProjectModal.html';
                                 <?php if ($_SESSION["projectName"] == "") {
                                     echo " style='display:none'";
                                 } ?>
-                            ><!--- important to close the above select -->
+                            >
                                 <option value=0 selected>Alle Vermerke</option>
                                 <option value=1>Bearbeitung offen</option>
-                                <!--<option value=2>Eigene Vermerke</option>  -->
+
                             </select>
                         </form>
                     </div>
@@ -200,14 +202,11 @@ include 'projects_changeProjectModal.html';
                 }
             },
             initComplete: function () {
-
                 $('.dt-search label').remove();
                 $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#STH');
-
-
+                table.column(4).search($('#filter_ActiveProjects').is(':checked') ? 'Ja' : '').draw();
             }
         });
-
 
         $('#filter_ActiveProjects').change(function () {
             table.column(4).search($(this).is(':checked') ? 'Ja' : '').draw();
@@ -287,20 +286,6 @@ include 'projects_changeProjectModal.html';
         $('#filter_ActiveProjects').change(function () {
             table.draw();
         });
-
-        function move_dt_search(inp, location) {
-            const move = $(inp);
-            $(location).prepend(move);
-        }
-
-        // function replace_dt_searcher(location) { //#newSearchLocation
-        //     let oldSearch = `#dt-search-${searchCounter}`;
-        //     let newSearch = `#dt-search-${searchCounter + 1}`;
-        //     $(oldSearch).remove();
-        //     const move = $(newSearch);
-        //     $(location).prepend(move);
-        //     searchCounter++;
-        // }
 
         $("#saveProject").click(function () {
             let date = new Date($("#dateSelect").val());

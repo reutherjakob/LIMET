@@ -89,24 +89,53 @@ if (!isset($_SESSION["username"])) {
                 exit();
             }
 
-            $sql = "SELECT tabelle_räume.idTABELLE_Räume, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Nutzfläche, tabelle_räume.Raumhoehe, tabelle_räume.Geschoss, 
-
-                                    tabelle_räume.Abdunkelbarkeit, tabelle_räume.Strahlenanwendung, tabelle_räume.Laseranwendung,  tabelle_räume.Laserklasse,  
-                                    tabelle_räume.AV, tabelle_räume.SV, tabelle_räume.ZSV, tabelle_räume.USV, tabelle_räume.`IT Anbindung`, tabelle_räume.`ET_RJ45-Ports`, tabelle_räume.`Fussboden OENORM B5220`,
-                                    tabelle_räume.`MT-relevant`, tabelle_räume.`ET_5x10mm2_AV_Stk`, tabelle_räume.`ET_5x10mm2_SV_Stk`, tabelle_räume.`ET_5x10mm2_USV_Stk`, tabelle_räume.`ET_5x10mm2_Digestorium_Stk`,
-                                    tabelle_räume.`ET_Digestorium_MSR_230V_SV_Stk`, tabelle_räume.`ET_32A_3Phasig_Einzelanschluss`, tabelle_räume.`ET_64A_3Phasig_Einzelanschluss`, 
-                                    tabelle_räume.`CO2_Melder`, tabelle_räume.`O2_Mangel`, tabelle_räume.`ET_EMV_ja-nein`, tabelle_räume.`EL_Leistungsbedarf_W_pro_m2`,
-                                    tabelle_räume.`HT_Waermeabgabe`, 
-                                    tabelle_räume.`HT_Notdusche`, tabelle_räume.`HT_Spuele_Stk`, 
-                                    tabelle_räume.`HT_Abluft_Sicherheitsschrank_Stk`, tabelle_räume.`HT_Abluft_Sicherheitsschrank_Unterbau_Stk`, tabelle_räume.`HT_Punktabsaugung_Stk`, tabelle_räume.`HT_Abluft_Digestorium_Stk`,
-                                    tabelle_räume.`HT_Kühlwasser`, tabelle_räume.`HT_Kühlwasserleistung_W`
-                                    FROM tabelle_räume
-                                    WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
-                                    ORDER BY tabelle_räume.Raumnr;";
+            $sql = "SELECT tabelle_räume.idTABELLE_Räume,
+       tabelle_räume.Raumnr,
+       tabelle_räume.Raumbezeichnung,
+       tabelle_räume.Raumnummer_Nutzer,
+       tabelle_räume.`Raumbereich Nutzer`,
+       tabelle_räume.Nutzfläche,
+       tabelle_räume.Raumhoehe,
+       tabelle_räume.Geschoss,
+       tabelle_räume.Abdunkelbarkeit,
+       tabelle_räume.Strahlenanwendung,
+       tabelle_räume.Laseranwendung,
+       tabelle_räume.Laserklasse,
+       tabelle_räume.AV,
+       tabelle_räume.SV,
+       tabelle_räume.ZSV,
+       tabelle_räume.USV,
+       tabelle_räume.`IT Anbindung`,
+       tabelle_räume.`ET_RJ45-Ports`,
+       tabelle_räume.`Fussboden OENORM B5220`,
+       tabelle_räume.`MT-relevant`,
+       tabelle_räume.`ET_5x10mm2_AV_Stk`,
+       tabelle_räume.`ET_5x10mm2_SV_Stk`,
+       tabelle_räume.`ET_5x10mm2_USV_Stk`,
+       tabelle_räume.`ET_5x10mm2_Digestorium_Stk`,
+       tabelle_räume.`ET_Digestorium_MSR_230V_SV_Stk`,
+       tabelle_räume.`ET_32A_3Phasig_Einzelanschluss`,
+       tabelle_räume.`ET_64A_3Phasig_Einzelanschluss`,
+       tabelle_räume.`CO2_Melder`,
+       tabelle_räume.`O2_Mangel`,
+       tabelle_räume.`ET_EMV_ja-nein`,
+       tabelle_räume.`EL_Leistungsbedarf_W_pro_m2`,
+       tabelle_räume.`HT_Waermeabgabe`,
+       tabelle_räume.`HT_Notdusche`,
+       tabelle_räume.`HT_Spuele_Stk`,
+       tabelle_räume.`HT_Abluft_Sicherheitsschrank_Stk`,
+       tabelle_räume.`HT_Abluft_Sicherheitsschrank_Unterbau_Stk`,
+       tabelle_räume.`HT_Punktabsaugung_Stk`,
+       tabelle_räume.`HT_Abluft_Digestorium_Stk`,
+       tabelle_räume.`HT_Kühlwasser`,
+       tabelle_räume.`HT_Kühlwasserleistung_W`
+FROM tabelle_räume
+WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["projectID"] . "))
+ORDER BY tabelle_räume.Raumnr;";
 
             $result = $mysqli->query($sql);
 
-            echo "<table class='table table-striped table-bordered table-sm' id='tableRoomsLab'   >
+            echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableRoomsLab'   >
                             <thead><tr>
                             <th>ID</th>
                             <th></th>
@@ -163,7 +192,11 @@ if (!isset($_SESSION["username"])) {
                 echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
                 echo "<td></td>";
                 echo "<td>" . $row["MT-relevant"] . "</td>";
-                echo "<td>" . $row["Raumnr"] . "</td>";
+                if ($_SESSION["projectName"] === "GCP") {
+                    echo "<td>" . $row["Raumnummer_Nutzer"] . "</td>";
+                } else {
+                    echo "<td>" . $row["Raumnr"] . "</td>";
+                }
                 echo "<td>" . $row["Raumbezeichnung"] . "</td>";
                 echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
                 echo "<td>" . $row["Geschoss"] . "</td>";

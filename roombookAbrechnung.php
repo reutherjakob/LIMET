@@ -49,8 +49,8 @@ if ($_SESSION["projectName"] == "") {
 
 </head>
 <body style="height:100%">
-<div id="limet-navbar"></div>
-<div class="container-fluid">
+<div class="container-fluid bg-light" >
+    <div id="limet-navbar"></div>
 
 
     <div class='row mt-4 '>
@@ -76,7 +76,7 @@ if ($_SESSION["projectName"] == "") {
 
                     $result = $mysqli->query($sql);
 
-                    echo "<table class='table table-striped table-bordered table-sm' id='tableGewerke'   >
+                    echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableGewerke'   >
                         <thead><tr>
                         <th>ID</th>
                         <th>Nummer</th>

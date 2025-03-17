@@ -23,14 +23,14 @@ function getProjectName($projectID) {
     return $projectName;
 }
 
-$conn = utils_connect_sql();
+$mysqli = utils_connect_sql();
 
 $table = "tabelle_räume";
 $field = filter_input(INPUT_GET, 'field', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 'Raumbezeichnung';
 $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 'None';
 
 $sql = "SELECT * FROM $table WHERE $field LIKE ?";
-$stmt = $conn->prepare($sql);
+$stmt = $mysqli->prepare($sql);
 $searchParam = "%$search%";
 $stmt->bind_param("s", $searchParam);
 $stmt->execute();
@@ -46,7 +46,7 @@ while ($row = $result->fetch_assoc()) {
 }
 
 $stmt->close();
-$conn->close();
+$mysqli->close();
 
 header('Content-Type: application/json');
 echo json_encode($data);

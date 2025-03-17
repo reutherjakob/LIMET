@@ -33,8 +33,8 @@ init_page_serversides(); // checks LOGIN
 ?>
 
 <body style="height:100%">
-<div id="limet-navbar"></div>
-<div class="container-fluid">
+<div class="container-fluid bg-light" >
+    <div id="limet-navbar"></div>
     <div class="row">
         <div class="col-12">
             <div class="card">

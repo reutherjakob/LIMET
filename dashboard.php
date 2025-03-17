@@ -57,8 +57,8 @@ init_page_serversides();
 </head>
 
 <body>
-<div id="limet-navbar"></div>
-<div class="container-fluid">
+<div class="container-fluid bg-light" >
+    <div id="limet-navbar"></div>
     <div class="row mt-3">
         <div class="col-xxl-3 col-xxl-6 py-2">
             <div class="card text-dark h-100">

@@ -22,13 +22,15 @@
 
 </head>
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 init_page_serversides();
 ?>
 
 <body style="height:100%">
-<div id="limet-navbar"></div>
-<div class="container-fluid">
+<div class="container-fluid bg-light">
+    <div id="limet-navbar"></div>
     <div class='row'>
         <div class='col-xxl-8'>
             <div class="mt-2 card">
@@ -37,10 +39,13 @@ init_page_serversides();
                         <div class="col-xxl-6">Räume im Projekt</div>
 
                         <div id="CardHeaderRaume" class="col-xxl-6 d-flex justify-content-end align-items-center">
-
+                            <label class="float-right">
+                                Entfallene: <input type="checkbox" id="filter_EntfalleneRooms"
+                                                   class="form-check-input me-2">
+                            </label>
                             <label class="float-right">
                                 MT-relevante Räume: <input type="checkbox" id="filter_MTrelevantRooms"
-                                                           checked class="form-check-input me-4 ms-4">
+                                                           checked class="form-check-input me-2">
                             </label>
                         </div>
                     </div>
@@ -53,7 +58,7 @@ init_page_serversides();
                                                     tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, 
                                                     tabelle_räume.Bauabschnitt,  tabelle_räume.Raumnummer_Nutzer,
                                                     tabelle_räume.`Anmerkung allgemein`, tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, 
-                                                    tabelle_räume.idTABELLE_Räume, tabelle_räume.`MT-relevant`, `tabelle_räume`.`Anmerkung FunktionBO`
+                                                    tabelle_räume.idTABELLE_Räume, tabelle_räume.`MT-relevant`, `tabelle_räume`.`Anmerkung FunktionBO`, tabelle_räume.Entfallen
                                                 FROM tabelle_räume INNER JOIN tabelle_projekte ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
                                                 WHERE (((tabelle_projekte.idTABELLE_Projekte)=" . $_SESSION["projectID"] . "));";
 
@@ -70,7 +75,8 @@ init_page_serversides();
 						<th>Raumbereich Nutzer</th>
                                                 <th>Ebene</th>
                                                 <th>MT-relevant</th>
-                                                <th>BO</th>
+                                                <th>BO</th>   
+                                                 <th> <i class='fas fa-slash'></i> </th>
 						</tr></thead><tbody>";
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr>";
@@ -93,6 +99,7 @@ init_page_serversides();
                             echo "<button type='button' class='btn btn-sm btn-outline-dark' style='height=20px; ' id='buttonBO' value='" . $row["Anmerkung FunktionBO"] . "' data-bs-toggle='modal' data-bs-target='#boModal'><i class='fa fa-comment'></i></button>";
                         }
                         echo "</td>";
+                        echo "<td>" . $row["Entfallen"] . "</td>";
                         echo "</tr>";
                     }
                     echo "</tbody></table>";
@@ -207,7 +214,7 @@ init_page_serversides();
                             $result = $mysqli->query($sql);
 
                             /** @noinspection HtmlDeprecatedAttribute */
-                            echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableElementsInDB'   >
+                            echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5'' id='tableElementsInDB'   >
 									<thead><tr>
 									<th>ID</th>
 									<th>ElementID</th>
@@ -289,26 +296,15 @@ init_page_serversides();
 </div>
 
 <script>
-    $.fn.dataTable.ext.search.push(
-        function (settings, data) {
-            if (settings.nTable.id !== 'tableRooms') {
-                return true;
-            }
-            if ($("#filter_MTrelevantRooms").is(':checked')) {
-                return data [7] === "Ja";
-            } else {
-                return true;
-            }
-        }
-    );
-    var  tableRooms, tableElementsInDB;
+
+    var tableRooms, tableElementsInDB;
 
     $(document).ready(function () {
         $("#elementParameters").hide();
         $("#elementBestand").hide();
         $("#elementVerwendung").hide();
 
-         tableRooms = new DataTable('#tableRooms', {
+        tableRooms = new DataTable('#tableRooms', {
             select: true,
             paging: {
                 type: 'simple',
@@ -339,9 +335,43 @@ init_page_serversides();
                 $('.dt-search label').remove();
                 $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeaderRaume');
             }
+
         });
 
-         tableElementsInDB = new DataTable('#tableElementsInDB', {
+        $.fn.dataTable.ext.search.push(
+            function (settings, data,) {
+                if (settings.nTable.id !== 'tableRooms') {
+                    return true;
+                }
+                let mtRelevant = data[7];
+                let filterMTRelevant = $("#filter_MTrelevantRooms").is(':checked');
+                if (!filterMTRelevant) {
+                    return true;
+                }
+                return mtRelevant === "Ja";
+            }
+        );
+        $.fn.dataTable.ext.search.push(
+            function (settings, data,) {
+                if (settings.nTable.id !== 'tableRooms') {
+                    return true;
+                }
+                let entfallen = data[9];
+                let filterentfallen = $("#filter_EntfalleneRooms").is(':checked');
+                if (!filterentfallen) {
+                    return true;
+                }
+                return entfallen === "0";
+            }
+        );
+        $('#filter_EntfalleneRooms').change(function () {
+            tableRooms.draw();
+        });
+        $('#filter_MTrelevantRooms').change(function () {
+            tableRooms.draw();
+        });
+
+        tableElementsInDB = new DataTable('#tableElementsInDB', {
             paging: {
                 type: 'simple',
                 numbers: 10
@@ -425,11 +455,6 @@ init_page_serversides();
                 }
             });
         });
-
-        $('#filter_MTrelevantRooms').change(function () {
-            tableRooms.draw();
-        });
-
 
     });
 

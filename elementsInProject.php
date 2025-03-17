@@ -22,8 +22,8 @@
 
 <body>
 <!-- Rework 2025 -->
-<div id="limet-navbar"></div>
-<div class="container-fluid">
+<div class="container-fluid bg-light" >
+    <div id="limet-navbar"></div>
     <div class="mt-4 card">
         <div class="card-header d-flex justify-content-between">
             <strong> Elemente im Projekt </strong>
@@ -38,7 +38,9 @@
                     <button type='button' class='btn btn-outline-dark  me-1' id='createElementEinbringwegePDF'>
                         <i class='far fa-file-pdf'></i> Einbringwege
                     </button>
+
                 </div>
+
             </div>
         </div>
 
@@ -99,7 +101,7 @@ GROUP BY tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varia
          tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
 ORDER BY tabelle_elemente.ElementID;";
             $result = $mysqli->query($sql);
-            echo "<table class='table table-striped table-bordered table-sm' id='tableElementsInProject'>
+            echo "<table class='table table-striped table-bordered table-sm table-hover table-hover border border-light border-5' id='tableElementsInProject'>
 									<thead><tr>
 										<th>ID</th>
 										<th>Anzahl</th>
@@ -143,8 +145,8 @@ ORDER BY tabelle_elemente.ElementID;";
     </div>
 
     <div class="mt-1 card">
-        <div class="card-header">
-            <button type="button" class="btn btn-outline-dark btn-sm" id="showElementVariante"><i
+        <div class="card-header  d-flex justify-content-start align-items-center">
+            <button type="button" class="btn btn-outline-dark btn-sm me-2" id="showElementVariante"><i
                         class="fas fa-caret-right"></i></button>
             <label>Elementvarianten</label></div>
         <div class="card-body" id="elementInfo" style="display:none">
@@ -153,8 +155,8 @@ ORDER BY tabelle_elemente.ElementID;";
         </div>
     </div>
     <div class="mt-1 card">
-        <div class="card-header">
-            <button type="button" class="btn btn-outline-dark btn-sm" id="showDBData"><i class="fas fa-caret-right"></i>
+        <div class="card-header d-flex justify-content-start align-items-center">
+            <button type="button" class="btn btn-outline-dark btn-sm me-2" id="showDBData"><i class="fas fa-caret-right"></i>
             </button>
             <label>Datenbank-Vergleichsdaten</label></div>
         <div class="card-body" style="display:none" id="dbData">
@@ -182,7 +184,7 @@ ORDER BY tabelle_elemente.ElementID;";
                 <div class='col-xxl-4'>
                     <div class='mt-1 card'>
                         <div class='card-header'><label>Geräteparameter</label></div>
-                        <div class='card-body' id='deviceParametersInDB'></div>
+                        <div class='card-body' id='deviceParametersInDB'></div>8
                     </div>
                 </div>
                 <div class="col-xxl-4">
@@ -198,15 +200,13 @@ ORDER BY tabelle_elemente.ElementID;";
     <div class="mt-1 card">
         <div class="card-header ">
             <div class="row">
-                <div class="col-xxl-8 d-flex justify-content-start">
-                    <button type="button" class="btn btn-outline-dark btn-sm" id="showRoomsWithAndWithoutElement">
+                <div class="col-xxl-8 d-flex justify-content-start align-items-center">
+                    <button type="button" class="btn btn-outline-dark btn-sm me-2" id="showRoomsWithAndWithoutElement">
                         <i class="fas fa-caret-right"></i>
                     </button>
                     <label>Räume mit Element</label>
                 </div>
-
             </div>
-
         </div>
         <div class="card-body" id="roomsWithAndWithoutElements" style="display:none"></div>
     </div>
@@ -234,7 +234,7 @@ ORDER BY tabelle_elemente.ElementID;";
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/2.0.0/i18n/de-DE.json',
                     search: "",
-                    searchPlaceholder:"Suche... "
+                    searchPlaceholder:"Suche..."
                 },
                 stateSave: true,
                 layout: {
@@ -256,12 +256,10 @@ ORDER BY tabelle_elemente.ElementID;";
                 ],
                 compact: true,
                 initComplete: function () {
-                    //$('.buttons-excel').appendTo('#target_div');
                     tableElementsInProject.buttons().container().appendTo('#target_div .btn-group');
-                    $('.dt-search input').addClass("btn btn-sm btn-outline-dark");
-                    $('.dt-search').children().removeClass('form-control form-control-sm').addClass("fa fa-search d-flex align-items-center").appendTo('#target_div');
-                    //  $('.dt-search input').removeClass('form-control').removeClass('form-control-sm').addClass("btn btn-sm btn-outline-dark bg-white border border-dark text-dark");
-                    // $('.dt-search').addClass('fa fa-search').appendTo('#target_div');
+                    $('.dt-search label').remove();
+                    $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-dark").appendTo('#target_div');
+
                 }
             });
 

@@ -37,7 +37,7 @@ if(!isset($_SESSION["username"]))
                 ));";					
         $result = $mysqli->query($sql);
 
-        echo "<table id='tablePossibleVermerkGroupMembers' class='table table-striped table-bordered table-sm'  >
+        echo "<table id='tablePossibleVermerkGroupMembers' class='table table-striped table-bordered table-sm table-hover border border-light border-5'  >
         <thead><tr>
         <th></th>
         <th>Name</th>

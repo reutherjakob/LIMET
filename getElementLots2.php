@@ -2,16 +2,16 @@
 if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 include "_format.php";
 check_login();
-
 ?>
 
 <!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml">
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang="">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <title></title>
 </head>
 <body>
+
 <?php
 $mysqli = utils_connect_sql();
 $sql = "SELECT Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_projekt_varianten_kosten.Kosten, tabelle_projekt_varianten_kosten.Kosten*Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS PP,tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern, tabelle_lose_extern.Ausführungsbeginn, tabelle_lose_extern.idtabelle_Lose_Extern, tabelle_varianten.idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
@@ -22,7 +22,7 @@ $sql = "SELECT Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl
 
 $result = $mysqli->query($sql);
 
-echo "<table class='table table-striped table-bordered nowrap table-condensed' id='tableElementsInProject'   >
+echo "<table class='table table-striped table-bordered nowrap table-condensed table-hover border border-light border-5' id='tableElementsInProject'>
 		<thead><tr>
 			<th>ID-Element</th>
 			<th>ID-Variante</th>
@@ -45,7 +45,7 @@ echo "<table class='table table-striped table-bordered nowrap table-condensed' i
 
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
-    extracted($row);
+    extracted($row); //TODO Was is hier passiert?
     echo "<td>" . $row["PP"] . "</td>";
     echo "<td>" . $row["LosNr_Extern"] . "</td>";
     echo "<td>" . $row["LosBezeichnung_Extern"] . "</td>";
@@ -166,9 +166,6 @@ $mysqli->close();
             }
         });
     })
-
-
 </script>
-
 </body>
 </html>

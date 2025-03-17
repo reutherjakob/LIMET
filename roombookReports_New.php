@@ -29,8 +29,8 @@ init_page_serversides("", "x");
 
 </head>
 <body>
-<div id="limet-navbar"></div>
-<div class="container-fluid">
+<div class="container-fluid bg-light" >
+    <div id="limet-navbar"></div>
     <div class="card">
         <div class="card-header px-1 py-1" id="HeaderTabelleCard">
             <div class="row">
@@ -137,7 +137,9 @@ init_page_serversides("", "x");
                 "BAUANGABEN A3": "/pdf_createBauangabenBericht_A3Qeer.php",
                 "BAUANGABEN A3 2": "/pdf_createBauangabenBericht_A3Qeer_1.php",
                 "BAUANGABEN A3 3": "/pdf_createBauangabenBericht_A3Qeer_ohne_Lab_params.php",
-                "Elem./Raum (w/Bestand)": "/pdf_createRoombookElWithoutBestand.php"
+                "-":"-",
+                "Elem./Raum (w/Bestand)": "/pdf_createRoombookElWithoutBestand.php",
+                "inkl.Elem.Kommentar": "/pdf_createRoombookElWithoutBestandWithComments.php"
             };
 
             if (reportURLs[reportType]) {
@@ -157,11 +159,16 @@ init_page_serversides("", "x");
 
         const buttonNewReports = [
             {text: "BAU A3", action: () => generateNewReports("BAUANGABEN A3", $("#dateSelect").val())},
-            //{text: "ohne Lab", action: () => generateNewReports("BAUANGABEN A3 3", $("#dateSelect").val())},
-            //{text: "ohne Datum", action: () => generateNewReports("BAUANGABEN A3 2", $("#dateSelect").val())},
+            {text: "ohne Lab", action: () => generateNewReports("BAUANGABEN A3 3", $("#dateSelect").val())},
+            {text: "ohne Datum", action: () => generateNewReports("BAUANGABEN A3 2", $("#dateSelect").val())},
+            {text: "-"},
             {
                 text: "Elem./Raum (w/Bestand)",
                 action: () => generateNewReports("Elem./Raum (w/Bestand)", $("#dateSelect").val())
+            },
+            {
+                text: "inkl.Elem.Kommentar",
+                action: () => generateNewReports("inkl.Elem.Kommentar", $("#dateSelect").val())
             }
         ];
 

@@ -6,7 +6,9 @@
 <body>
 
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 if (filter_input(INPUT_GET, 'elementID') != "") {
     $_SESSION["elementID"] = filter_input(INPUT_GET, 'elementID');
 }
@@ -431,7 +433,7 @@ $row = $result->fetch_assoc(); ?>
             data: {"variantenID": variantenID},
             type: "GET",
             success: function () {
-                console.log("JS:", variantenID);
+                //console.log("JS:", variantenID);
                 $.ajax({
                     url: "getSessionVariante.php",
                     type: "GET",
@@ -465,6 +467,7 @@ $row = $result->fetch_assoc(); ?>
                                         type: "GET",
                                         success: function (data) {
                                             $("#possibleVariantenParameter").html(data);
+                                            //console.log("0", data);
                                         }
                                     });
                                 }
@@ -508,6 +511,7 @@ $row = $result->fetch_assoc(); ?>
                                 type: "GET",
                                 success: function (data) {
                                     $("#possibleVariantenParameter").html(data);
+                                    //console.log("4", data);
                                 }
                             });
                         }
@@ -519,11 +523,11 @@ $row = $result->fetch_assoc(); ?>
         }
     });
 
-
     //Parameter zu Variante hinzufügen
     $("button[value='addParameter']").click(function () {
         let variantenID = $('#variante').val();
         let id = this.id;
+        //console.log(id, variantenID);
         if (id !== "") {
             $.ajax({
                 url: "addParameterToVariante.php",
@@ -542,6 +546,7 @@ $row = $result->fetch_assoc(); ?>
                                 data: {"variantenID": variantenID},
                                 type: "GET",
                                 success: function (data) {
+                                    //console.log("1", data);
                                     $("#possibleVariantenParameter").html(data);
                                 }
                             });
@@ -579,6 +584,7 @@ $row = $result->fetch_assoc(); ?>
                                 type: "GET",
                                 success: function (data) {
                                     $("#possibleVariantenParameter").html(data);
+                                    //console.log("2", data);
                                 }
                             });
 

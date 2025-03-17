@@ -1,5 +1,7 @@
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 include "_format.php";
 check_login();
 ?>
@@ -323,7 +325,7 @@ $mysqli->close();
     });
 
     $("#addBestandsElement").click(function () {
-        var id = this.id;
+        let id = this.id;
         $("#addBestand").show();
         $("#saveBestand").hide();
     });

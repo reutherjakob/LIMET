@@ -16,7 +16,7 @@ $stmt->bind_param("i", $_SESSION["projectID"]);
 $stmt->execute();
 $result = $stmt->get_result();
 
-echo "<table class='table table-striped table-bordered table-sm' id='tablePersonsNotInProject'  >
+echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tablePersonsNotInProject'  >
     <thead>
         <tr>
             <th>ID</th>

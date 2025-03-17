@@ -1,7 +1,10 @@
 <!-- 19.2.25: Reworked -->
 
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
+include "_format.php";
 init_page_serversides();
 ?>
 
@@ -30,18 +33,62 @@ init_page_serversides();
 
 
 <body style="height:100%">
-<div id="limet-navbar"></div>
-<div class="container-fluid">
+<div class="container-fluid bg-light">
+    <div id="limet-navbar"></div>
     <div class="mt-4 card">
         <div class="card-header"><b>Elemente im Projekt</b></div>
         <div class="card-body" id="elementLots">
             <?php
             $mysqli = utils_connect_sql();
-            $sql = "SELECT tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, tabelle_räume.Bauabschnitt, 
-                                                        tabelle_räume_has_tabelle_elemente.Anzahl, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.Standort, tabelle_projekt_varianten_kosten.Kosten AS EP, 
-                                                        tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_projektbudgets.Budgetnummer, tabelle_lose_extern.LosNr_Extern, tabelle_auftraggeber_gewerke.Gewerke_Nr, tabelle_auftraggeber_ghg.GHG, tabelle_räume_has_tabelle_elemente.Kurzbeschreibung
-                                                        FROM (((tabelle_projekt_element_gewerk RIGHT JOIN (tabelle_projektbudgets RIGHT JOIN (tabelle_lose_extern RIGHT JOIN (tabelle_varianten INNER JOIN (tabelle_elemente INNER JOIN ((tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) INNER JOIN tabelle_projekt_varianten_kosten ON (tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten = tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten) AND (tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte = tabelle_räume.tabelle_projekte_idTABELLE_Projekte) AND (tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente)) ON tabelle_elemente.idTABELLE_Elemente = tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente) ON tabelle_varianten.idtabelle_Varianten = tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten) ON tabelle_lose_extern.idtabelle_Lose_Extern = tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern) ON tabelle_projektbudgets.idtabelle_projektbudgets = tabelle_räume_has_tabelle_elemente.tabelle_projektbudgets_idtabelle_projektbudgets) ON (tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente = tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente) AND (tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte = tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte)) LEFT JOIN tabelle_auftraggeber_gewerke ON tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke = tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke) LEFT JOIN tabelle_auftraggeber_ghg ON tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG = tabelle_auftraggeber_ghg.idtabelle_auftraggeber_GHG) LEFT JOIN tabelle_auftraggeberg_gug ON tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG = tabelle_auftraggeberg_gug.idtabelle_auftraggeberg_GUG
-                                                        WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "));";
+            $sql = "SELECT tabelle_räume.Raumnr,
+       tabelle_räume.Raumbezeichnung,
+       tabelle_räume.`Raumbereich Nutzer`,
+       tabelle_räume.Raumnummer_Nutzer,
+       tabelle_räume.Geschoss,
+       tabelle_räume.Bauetappe,
+       tabelle_räume.Bauabschnitt,
+       tabelle_räume_has_tabelle_elemente.Anzahl,
+       tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
+       tabelle_räume_has_tabelle_elemente.Standort,
+       tabelle_projekt_varianten_kosten.Kosten AS EP,
+       tabelle_elemente.ElementID,
+       tabelle_elemente.Bezeichnung,
+       tabelle_varianten.Variante,
+       tabelle_projektbudgets.Budgetnummer,
+       tabelle_lose_extern.LosNr_Extern,
+       tabelle_auftraggeber_gewerke.Gewerke_Nr,
+       tabelle_auftraggeber_ghg.GHG,
+       tabelle_räume_has_tabelle_elemente.Kurzbeschreibung
+FROM (((tabelle_projekt_element_gewerk RIGHT JOIN (tabelle_projektbudgets RIGHT JOIN (tabelle_lose_extern RIGHT JOIN (tabelle_varianten INNER JOIN (tabelle_elemente INNER JOIN ((tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente
+                                                                                                                                                                                  ON tabelle_räume.idTABELLE_Räume =
+                                                                                                                                                                                     tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) INNER JOIN tabelle_projekt_varianten_kosten
+                                                                                                                                                                                 ON (tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten =
+                                                                                                                                                                                     tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten) AND
+                                                                                                                                                                                    (tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte =
+                                                                                                                                                                                     tabelle_räume.tabelle_projekte_idTABELLE_Projekte) AND
+                                                                                                                                                                                    (tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente =
+                                                                                                                                                                                     tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente))
+                                                                                                                                                    ON tabelle_elemente.idTABELLE_Elemente =
+                                                                                                                                                       tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente)
+                                                                                                                      ON tabelle_varianten.idtabelle_Varianten =
+                                                                                                                         tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)
+                                                                                      ON tabelle_lose_extern.idtabelle_Lose_Extern =
+                                                                                         tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern)
+                                                   ON tabelle_projektbudgets.idtabelle_projektbudgets =
+                                                      tabelle_räume_has_tabelle_elemente.tabelle_projektbudgets_idtabelle_projektbudgets)
+        ON (tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente =
+            tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente) AND
+           (tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte =
+            tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte)) LEFT JOIN tabelle_auftraggeber_gewerke
+       ON tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke =
+          tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke) LEFT JOIN tabelle_auftraggeber_ghg
+      ON tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG =
+         tabelle_auftraggeber_ghg.idtabelle_auftraggeber_GHG)
+         LEFT JOIN tabelle_auftraggeberg_gug
+                   ON tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG =
+                      tabelle_auftraggeberg_gug.idtabelle_auftraggeberg_GUG
+WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["projectID"] . "));";
+
             $result = $mysqli->query($sql);
             echo "<table class='table table-striped table-hover compact table-bordered' id='tableRoombookList'>
                                                         <thead><tr>
@@ -57,7 +104,8 @@ init_page_serversides();
                                                             <th>Variante</th>  
                                                             <th>Standort</th>  
                                                             <th>Bestand</th>                                                                              									
-                                                            <th>EP</th>                                                                
+                                                            <th>EP</th>            
+                                                             <th>EP-Excel</th>                                                            
                                                             <th>Los-Nr</th>
                                                             <th>Budget</th>                                                                
                                                             <th>Gewerk</th>
@@ -68,7 +116,11 @@ init_page_serversides();
             echo "<tbody>";
             while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
-                echo "<td>" . $row["Raumnr"] . "</td>";
+                if ($_SESSION["projectName"] === "GCP") {
+                    echo "<td>" . $row["Raumnummer_Nutzer"] . "</td>";
+                } else {
+                    echo "<td>" . $row["Raumnr"] . "</td>";
+                }
                 echo "<td>" . $row["Raumbezeichnung"] . "</td>";
                 echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
                 echo "<td>" . $row["Geschoss"] . "</td>";
@@ -80,7 +132,8 @@ init_page_serversides();
                 echo "<td>" . $row["Variante"] . "</td>";
                 echo "<td>" . $row["Standort"] . "</td>";
                 echo "<td>" . $row["Neu/Bestand"] . "</td>";
-                echo "<td>" . sprintf('%01.2f', $row["EP"]) . "</td>";
+                echo "<td>" . format_money( $row["EP"]) . "</td>";
+                echo "<td>" . $row["EP"] . "</td>";
                 echo "<td>" . $row["LosNr_Extern"] . "</td>";
                 echo "<td>" . $row["Budgetnummer"] . "</td>";
                 echo "<td>" . $row["Gewerke_Nr"] . "</td>";
@@ -111,7 +164,7 @@ init_page_serversides();
             order: [[2, "asc"]],
             columnDefs: [
                 {
-                    targets: [0, 5],
+                    targets: [11],
                     visible: false,
                     searchable: false
                 }

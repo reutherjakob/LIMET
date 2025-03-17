@@ -1,4 +1,3 @@
-<!-- local save-->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 
@@ -34,7 +33,9 @@
                         <div class='card-header'><label>Elementgruppen</label></div>
                         <div class='card-body' id='elementGroups'>
                             <?php
-                            if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+                            if (!function_exists('utils_connect_sql')) {
+                                include "_utils.php";
+                            }
                             init_page_serversides("x");
                             $mysqli = utils_connect_sql();
                             $sql = "SELECT tabelle_element_gewerke.idtabelle_element_gewerke, tabelle_element_gewerke.Nummer, tabelle_element_gewerke.Gewerk
@@ -77,9 +78,9 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-6">Elemente in DB</div>
-                                <div class="col-6" id="CardHeaderELementesInDb"></div>
+                                <div class="col-6 d-flex justify-content-end" id="CardHeaderELementesInDb"></div>
                             </div>
-                        </div>
+                        </div> 
                         <div class="card-body" id="elementsInDB">
                             <?php
                             $sql = "SELECT tabelle_elemente.idTABELLE_Elemente, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_elemente.Kurzbeschreibung
@@ -123,7 +124,6 @@
         </div>
     </div>
 
-
     <hr>
     <div class="mt-1 card">
         <div class="card-header">Geräte</div>
@@ -157,7 +157,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </body>
 
@@ -226,14 +225,13 @@
                 bottomEnd: ['paging'],
             },
             initComplete: function () {
-                let dt_searcher = document.getElementById("dt-search-0");
-                dt_searcher.parentNode.removeChild(dt_searcher);
-                document.getElementById('CardHeaderELementesInDb').appendChild(dt_searcher);
+                $('.dt-search label').remove();
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeaderELementesInDb');
             }
         });
 
 
-        $('#tableElementsInDB tbody').on('click', 'tr', function () {
+        $('#tableElementsInDB tbody').on('click', 'tr', function () { 
             $("#deviceParametersInDB").hide();
             $("#devicePrices").hide();
             $("#deviceLieferanten").hide();

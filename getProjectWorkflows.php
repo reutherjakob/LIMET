@@ -88,8 +88,8 @@ $mysqli->close();
                             $("#workflowModalBody").html(data);
                         }
                     });
-                    $("#infoBody").html(data);
-                    $('#infoModal').modal('show');
+                    makeToaster("Workflow erfolgreich zu Los hinzugefügt!", data="Erfolg!");
+
                 }
             });
         }

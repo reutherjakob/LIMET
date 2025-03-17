@@ -20,9 +20,9 @@ $sql = "SELECT tabelle_Vermerkgruppe.Gruppenname, tabelle_Vermerkgruppe.Gruppena
 
 $result = $mysqli->query($sql);
 
-echo "<button type='button' class='btn btn-default btn-sm' value='createLotVermerkePDF' id='" . filter_input(INPUT_GET, 'lotID') . "'><i class='far fa-file-pdf'></i> Losvermerke - PDF</button>";
+echo "<button type='button' class='btn btn-outline-dark btn-sm' value='createLotVermerkePDF' id='" . filter_input(INPUT_GET, 'lotID') . "'><i class='far fa-file-pdf'></i> Losvermerke - PDF</button>";
 
-echo "<table class='table table-striped table-bordered table-sm' id='tableLotVermerke'>
+echo "<table class='table table-striped table-bordered table-sm table-hover border border-5 border-light' id='tableLotVermerke'>
 	<thead><tr>
 	<th>ID</th>
         <th>Art</th>

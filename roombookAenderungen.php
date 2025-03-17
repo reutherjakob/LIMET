@@ -36,8 +36,8 @@
                 <?php
                 if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
                 init_page_serversides("", "x");
-                $conn = utils_connect_sql();
-                $rooms = $conn->query("
+                $mysqli = utils_connect_sql();
+                $rooms = $mysqli->query("
                     SELECT r.idTABELLE_Räume, r.Raumnr, r.Raumbezeichnung, 
                            MAX(a.Timestamp) AS last_change
                     FROM tabelle_räume r

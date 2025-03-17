@@ -31,8 +31,8 @@ init_page_serversides();
 </head>
 
 <body>
-<div id="limet-navbar"></div>
-<div class="container-fluid">
+<div class="container-fluid bg-light" >
+    <div id="limet-navbar"></div>
     <div class="mt-4 card responsive">
         <div class="card-header">
             <div class="row ">

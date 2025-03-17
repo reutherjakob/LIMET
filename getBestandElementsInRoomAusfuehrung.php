@@ -30,7 +30,7 @@
     
     $result = $mysqli->query($sql);
 
-    echo "<table class='table table-striped table-bordered table-sm' id='tableBestandElements'   >
+    echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableBestandElements'   >
     <thead><tr>    
     <th>Stück</th>
     <th>Element</th>

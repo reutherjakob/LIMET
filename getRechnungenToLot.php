@@ -31,7 +31,7 @@
     
     $result = $mysqli->query($sql);
 
-    echo "<table class='table table-striped table-bordered table-sm' id='tableRechnungen'   >
+    echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableRechnungen'   >
     <thead><tr>    
     <th>id</th>
     <th>Interne Nr</th>

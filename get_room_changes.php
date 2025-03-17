@@ -5,12 +5,12 @@ if (!isset($_GET['roomId']) || empty($_GET['roomId'])) {
     die("Ungültige Raum-ID");
 }
 
-$conn = utils_connect_sql();
+$mysqli = utils_connect_sql();
 
-$roomId = $conn->real_escape_string($_GET['roomId']);
+$roomId = $mysqli->real_escape_string($_GET['roomId']);
 
 // Get all changes for the room
-$result = $conn->query("
+$result = $mysqli->query("
     SELECT *
     FROM tabelle_raeume_aenderungen 
     WHERE raum_id = '$roomId'
