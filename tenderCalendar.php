@@ -271,6 +271,7 @@ init_page_serversides();
             </div>
             <div class="modal-body" id="mbody">
                 <p>Wollen Sie die Soll-Daten automatisiert berechnen und <b>bestehende Werte überschreiben?</b></p>
+                <p id="claculateDatesModalInformation"></p>
                 <p><i class="fas fa-info"></i>&emsp;Für die automatische Berechnung ist es zwingend <b>notwendig, den
                         letzten Arbeitsschritt zu datieren!</b>
                     Davon ausgehend werden die weiteren Stichtage auf basis der Angebenen Abstände eingetragen.</p>
