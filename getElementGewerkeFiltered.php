@@ -1,10 +1,13 @@
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 session_start();
 check_login();
 $mysqli = utils_connect_sql();
 
-function getGewerkOptions($mysqli, $projectID, $selectedGewerk) {
+function getGewerkOptions($mysqli, $projectID, $selectedGewerk)
+{
     $sql = "SELECT Gewerke_Nr, Bezeichnung, idTABELLE_Auftraggeber_Gewerke
             FROM tabelle_projekte 
             INNER JOIN tabelle_auftraggeber_gewerke ON tabelle_projekte.TABELLE_Auftraggeber_Codes_idTABELLE_Auftraggeber_Codes = tabelle_auftraggeber_gewerke.TABELLE_Auftraggeber_Codes_idTABELLE_Auftraggeber_Codes
@@ -24,7 +27,8 @@ function getGewerkOptions($mysqli, $projectID, $selectedGewerk) {
     return $options;
 }
 
-function getGHGOptions($mysqli, $gewerkID, $selectedGHG) {
+function getGHGOptions($mysqli, $gewerkID, $selectedGHG)
+{
     $sql = "SELECT GHG, Bezeichnung, idtabelle_auftraggeber_GHG
             FROM tabelle_auftraggeber_ghg
             WHERE tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke = ?";
@@ -42,7 +46,8 @@ function getGHGOptions($mysqli, $gewerkID, $selectedGHG) {
     return $options;
 }
 
-function getGUGOptions($mysqli, $ghgID, $selectedGUG) {
+function getGUGOptions($mysqli, $ghgID, $selectedGUG)
+{
     $sql = "SELECT idtabelle_auftraggeberg_GUG, GUG, Bezeichnung
             FROM tabelle_auftraggeberg_gug
             WHERE tabelle_auftraggeber_GHG_idtabelle_auftraggeber_GHG = ?";
@@ -86,7 +91,7 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
 
                 <div class='form-group mr-2'>
                     <label for='ghg'>GHG</label>
-                    <select class='form-control form-control-sm' id='ghg'>
+                    <select class='form-control form-control-sm me-1 ms-1' id='ghg'>
                         <?php
                         if ($filterValueGewerke) {
                             echo getGHGOptions($mysqli, $filterValueGewerke, $filterValueGHG);
@@ -99,7 +104,7 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
 
                 <div class='form-group mr-2'>
                     <label for='gug'>GUG</label>
-                    <select class='form-control form-control-sm' id='gug'>
+                    <select class='form-control form-control-sm me-1 ms-1' id='gug'>
                         <?php
                         if ($filterValueGHG) {
                             echo getGUGOptions($mysqli, $filterValueGHG, $filterValueGUG);
@@ -113,18 +118,24 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
                 <div class='form-group'>
                     <label>&nbsp;</label>
                     <div>
-                        <button type='button' id='saveElementGewerk' class='btn btn-outline-dark btn-sm' value='saveElementGewerk'>
+                        <button type='button' id='saveElementGewerk' class='btn btn-outline-dark btn-sm me-1 ms-1'
+                                value='saveElementGewerk'>
                             <i class='far fa-save'></i> Gewerk speichern
                         </button>
-                        <button type='button' id='saveElementGewerk94' class='btn btn-outline-dark btn-sm' value='saveElementGewerk2'>
-                            <i class='far fa-save'></i> OrtsVeränderlich speichern
+
+                        <button type='button' id='saveElementGewerk94' class='btn btn-outline-dark btn-sm me-1 ms-1'
+                                value='saveElementGewerk2'>
+                            <i class='far fa-save'></i> 94 speichern
                         </button>
-                        <button type='button' id='saveElementGewerk93' class='btn btn-outline-dark btn-sm' value='saveElementGewerk1'>
-                            <i class='far fa-save'></i> OrtsFest speichern
+                        <button type='button' id='saveElementGewerk93' class='btn btn-outline-dark btn-sm me-1 ms-1'
+                                value='saveElementGewerk1'>
+                            <i class='far fa-save'></i> 93 speichern
                         </button>
-                        <button type='button' id='saveElementGewerk91' class='btn btn-outline-dark btn-sm' value='saveElementGewerk6'>
-                            <i class='far fa-save'></i> MetalMöbel speichern
+                        <button type='button' id='saveElementGewerk91' class='btn btn-outline-dark btn-sm me-1 ms-1'
+                                value='saveElementGewerk6'>
+                            <i class='far fa-save'></i> 91 speichern
                         </button>
+
                     </div>
                 </div>
             </form>
@@ -135,37 +146,37 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="_utils.js"></script>
 <script>
-    $('#ghg').change(function(){
-        var ghgid = $('#ghg').val();
-        var gewerkid = $('#gewerk').val();
-        if(gewerkid !== '0' && ghgid !== '0'){
+    $('#ghg').change(function () {
+        let ghgid = $('#ghg').val();
+        let gewerkid = $('#gewerk').val();
+        if (gewerkid !== '0' && ghgid !== '0') {
             $.ajax({
                 url: "getElementGewerkeFiltered.php",
                 data: {"filterValueGHG": ghgid, "filterValueGewerke": gewerkid},
                 type: "GET",
-                success: function(data){
+                success: function (data) {
                     $("#elementGewerk").html(data);
                 }
             });
         }
     });
 
-    $('#gewerk').change(function(){
-        var gewerkid = $('#gewerk').val();
-        if(gewerkid !== '0'){
+    $('#gewerk').change(function () {
+        let gewerkid = $('#gewerk').val();
+        if (gewerkid !== '0') {
             $.ajax({
                 url: "getElementGewerkeFiltered.php",
                 data: {"filterValueGewerke": gewerkid},
                 type: "GET",
-                success: function(data){
+                success: function (data) {
                     $("#elementGewerk").html(data);
                 }
             });
         }
     });
 
-    $("#saveElementGewerk").click(function(){
-        if($('#gewerk').val() === "0"){
+    $("#saveElementGewerk").click(function () {
+        if ($('#gewerk').val() === "0") {
             makeToaster("Kein Gewerk ausgewählt!", false);
         } else {
             $.ajax({
@@ -176,41 +187,41 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
                     "gug": $('#gug').val()
                 },
                 type: "GET",
-                success: function(data){
+                success: function (data) {
                     makeToaster(data.trim(), true);
                 }
             });
         }
     });
 
-    $("#saveElementGewerk94").click(function(){
+    $("#saveElementGewerk94").click(function () {
         $.ajax({
             url: "saveElementGewerk.php",
             data: {"gewerk": 2, "ghg": $('#ghg').val(), "gug": $('#gug').val()},
             type: "GET",
-            success: function(data){
+            success: function (data) {
                 makeToaster(data.trim(), true);
             }
         });
     });
 
-    $("#saveElementGewerk93").click(function(){
+    $("#saveElementGewerk93").click(function () {
         $.ajax({
             url: "saveElementGewerk.php",
             data: {"gewerk": 1, "ghg": $('#ghg').val(), "gug": $('#gug').val()},
             type: "GET",
-            success: function(data){
+            success: function (data) {
                 makeToaster(data.trim(), true);
             }
         });
     });
 
-    $("#saveElementGewerk91").click(function(){
+    $("#saveElementGewerk91").click(function () {
         $.ajax({
             url: "saveElementGewerk.php",
             data: {"gewerk": 6, "ghg": $('#ghg').val(), "gug": $('#gug').val()},
             type: "GET",
-            success: function(data){
+            success: function (data) {
                 makeToaster(data.trim(), true);
             }
         });

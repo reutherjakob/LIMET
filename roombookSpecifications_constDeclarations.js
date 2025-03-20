@@ -169,7 +169,7 @@ const columnsDefinition = [
     {data: 'DL-tech', title: 'DL-tech', visible: false, case: "bit"}, // 70
     {data: 'NGA', title: 'NGA', visible: false, case: "bit"}, // 71
     {data: 'N2O', title: 'N2O', visible: false, case: "bit"}, // 72
-    {data: 'VEXAT_Zone', title: 'VEXAT Zone', visible: false, case: "bit"}, // 73
+    {data: 'VEXAT_Zone', title: 'VEXAT Zone', visible: false, case: ""}, // 73
     {data: 'O2', title: 'O2', visible: false, case: "bit"}, // 74
     {data: 'O2 l/min', title: 'O2_l/min', visible: false, case: "num"}, // 75
     {data: 'O2 Reinheit', title: 'O2 Reinheit', visible: false, case: ""}, // 76

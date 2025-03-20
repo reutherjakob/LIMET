@@ -143,10 +143,10 @@ $sumRaumbereich = 0;
 $sumRaumbereichBestand = 0;
 $gewerk = 0;
 $sumGesamtNeu=0;
+$w= array(90,30,30,30,20);
 
 foreach ($raumbereicheInProject as $rowData) {
     $pdf->AddPage('P', 'A4');
-    //Titelblock für Raumbereich einblenden
     $pdf->SetFont('helvetica', 'B', 10);
     $pdf->MultiCell(100, 6, "Kostenberechnung nach Gewerken und GHG", 'TL', 'L', 0, 0);
     $pdf->MultiCell(80, 6, "Preisbasis: " . $rowData['Preisbasis'], 'TR', 'L', 0, 0);
@@ -198,29 +198,30 @@ foreach ($raumbereicheInProject as $rowData) {
                 $pdf->Ln();
                 $pdf->Ln();
             }
-            $pdf->MultiCell(70, 6, "Gewerk " . $rowData2["Gewerke_Nr"] . " " . $rowData2["Gewerke_Bezeichnung"], 'B', 'L', 0, 0);
+
+
+            $pdf->MultiCell($w[0], 6, "Gewerk " . $rowData2["Gewerke_Nr"] . " " . $rowData2["Gewerke_Bezeichnung"], 'B', 'L', 0, 0);
             $pdf->SetFont('helvetica', '', 10);
-            $pdf->MultiCell(50, 6, "Kosten", 'B', 'R', 0, 0);
-            $pdf->MultiCell(30, 6, "davon Neu", 'B', 'R', 0, 0);
-            $pdf->MultiCell(30, 6, "davon Bestand", 'B', 'R', 0, 0);
+            $pdf->MultiCell($w[1], 6, "Kosten", 'B', 'R', 0, 0);
+            $pdf->MultiCell($w[2], 6, "davon Neu", 'B', 'R', 0, 0);
+            $pdf->MultiCell($w[3], 6, "davon Bestand", 'B', 'R', 0, 0);
             $pdf->Ln();
             $pdf->SetFont('helvetica', 'I', 8);
-            $pdf->MultiCell(20, 6, "", '', 'L', 0, 0);
             if (empty($rowData2["GHG"])) {
-                $pdf->MultiCell(50, 6, "ohne Zuteilung: ", '', 'L', 0, 0);
+                $pdf->MultiCell($w[0], 6, "ohne Zuteilung: ", '', 'L', 0, 0);
             } else {
-                $pdf->MultiCell(50, 6, "GHG: " . $rowData2["GHG"] . " " . $rowData2["GHG_Bezeichnung"], '', 'L', 0, 0);
+                $pdf->MultiCell($w[0], 6, "GHG: " . $rowData2["GHG"] . " " . $rowData2["GHG_Bezeichnung"], '', 'L', 0, 0);
             }
-            $pdf->MultiCell(50, 4, format_money_report( $rowData2["PP"]), 0, 'R', 0, 0);
+            $pdf->MultiCell($w[1], 4, format_money_report( $rowData2["PP"]), 0, 'R', 0, 0);
         } else {
             $pdf->SetFont('helvetica', 'I', 8);
-            $pdf->MultiCell(20, 6, "", '', 'L', 0, 0);
+
             if (empty($rowData2["GHG"])) {
-                $pdf->MultiCell(50, 6, "ohne Zuteilung: ", '', 'L', 0, 0);
+                $pdf->MultiCell($w[0], 6, "ohne Zuteilung: ", '', 'L', 0, 0);
             } else {
-                $pdf->MultiCell(50, 6, "GHG: " . $rowData2["GHG"] . " " . $rowData2["GHG_Bezeichnung"], '', 'L', 0, 0);
+                $pdf->MultiCell($w[0], 6, "GHG: " . $rowData2["GHG"] . " " . $rowData2["GHG_Bezeichnung"], '', 'L', 0, 0);
             }
-            $pdf->MultiCell(50, 4, format_money_report( $rowData2["PP"]), 0, 'R', 0, 0);
+            $pdf->MultiCell($w[1], 4, format_money_report( $rowData2["PP"]), 0, 'R', 0, 0);
         }
         // Neusumme ermitteln ----------------------------------
         if ($rowData2["GHG"] == "") {
@@ -235,7 +236,7 @@ foreach ($raumbereicheInProject as $rowData) {
 
         $result1 = $mysqli->query($sql1);
         $row = $result1->fetch_assoc();
-        $pdf->MultiCell(30, 4, format_money_report( $row["PP_neu"]), 0, 'R', $fill, 0);
+        $pdf->MultiCell($w[3], 4, format_money_report( $row["PP_neu"]), 0, 'R', $fill, 0);
 
         $sumGewerkNeu = $sumGewerkNeu + $row["PP_neu"];
         //---------------------------------------------------------------
@@ -252,7 +253,7 @@ foreach ($raumbereicheInProject as $rowData) {
 
         $result1 = $mysqli->query($sql1);
         $row1 = $result1->fetch_assoc();
-        $pdf->MultiCell(30, 4, format_money_report( $row1["PP"]), 0, 'R', $fill, 0);
+        $pdf->MultiCell($w[3], 4, format_money_report( $row1["PP"]), 0, 'R', $fill, 0);
         //---------------------------------------------------------------
         $gewerk = $rowData2["Gewerke_Nr"];
 

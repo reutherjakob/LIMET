@@ -649,7 +649,21 @@ function save_changes(RaumID, ColumnName, newData, raumname) {
             }
         }
     });
-    table.ajax.reload(null, false);
+    table.state.save();
+    table.ajax.reload(null, false).then(function () {
+        table.state.load();
+        // If using SearchBuilder, you might need to manually rebuild the search
+        // This part depends on how you've implemented SearchBuilder
+        // You can use the searchBuilder.getDetails() method to save the current state
+        // and then rebuild it after reloading the table.
+        // For example:
+        // var searchBuilder = new $.fn.dataTable.searchBuilder(table);
+        // var savedState = searchBuilder.getDetails();
+        // // Save the state somewhere (e.g., in a cookie or local storage)
+        // // After reloading:
+        // searchBuilder.rebuild(savedState);
+    });
+
 }
 
 

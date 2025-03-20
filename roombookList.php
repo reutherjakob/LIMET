@@ -41,6 +41,7 @@ init_page_serversides();
             <?php
             $mysqli = utils_connect_sql();
             $sql = "SELECT tabelle_räume.Raumnr,
+       tabelle_räume.idTABELLE_Räume,
        tabelle_räume.Raumbezeichnung,
        tabelle_räume.`Raumbereich Nutzer`,
        tabelle_räume.Raumnummer_Nutzer,
@@ -110,9 +111,9 @@ WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["pr
                                                             <th>Budget</th>                                                                
                                                             <th>Gewerk</th>
                                                             <th>GHG</th>
+                                                            <th>RAUM-ID</th>
                                                         </tr>
                                                         </thead>";
-
             echo "<tbody>";
             while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
@@ -138,13 +139,11 @@ WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["pr
                 echo "<td>" . $row["Budgetnummer"] . "</td>";
                 echo "<td>" . $row["Gewerke_Nr"] . "</td>";
                 echo "<td>" . $row["GHG"] . "</td>";
-
+                echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
                 echo "</tr>";
-
             }
             echo "</tbody></table>";
             $mysqli->close();
-
             ?>
         </div>
     </div>

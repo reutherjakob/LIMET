@@ -5,7 +5,6 @@ if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 include 'pdf_createBericht_utils.php';
 
 
-
 $Änderungsdatum = getValidatedDateFromURL();
 //echo $Änderungsdatum;
 $mysqli = utils_connect_sql();

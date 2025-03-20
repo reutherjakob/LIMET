@@ -57,6 +57,7 @@ if ($result->num_rows == 0) {
                 </tr></thead>
                 <tbody>";
 
+
     while ($row = $result->fetch_assoc()) {
         echo "<tr>";
         echo "<td>" . $row["Reihenfolgennummer"] . "</td>";
@@ -172,7 +173,7 @@ $mysqli->close();
     // Workfloweintrag speichern
     $("button[value='addWorkflowToLot']").click(function () {
         $.ajax({
-            url: "getProjectWorkflows.php",
+            url: ".php",
             type: "GET",
             success: function (data) {
                 $("#workflowModalBody").html(data);

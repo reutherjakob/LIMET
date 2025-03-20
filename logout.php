@@ -19,8 +19,8 @@ session_destroy();
 
 <div class='container-fluid bg-light' style="height:100vh;">
     <div class='row d-flex'>
-        <div class='col-5'></div>
-        <div class='col-2' id='login'>
+        <div class='col-xxl-5 col-xl-4 col-md-3'></div>
+        <div class='col-xxl-2 col-xl-4 col-md-6' id='login'>
             <div class='card me-4 ms-4 mt-4'>
                 <div class='card-header d-flex align-items-center justify-content-center'>
                     <img src="LIMET_logo.png" alt="LIMETLOGO">
@@ -35,7 +35,7 @@ session_destroy();
                 </div>
             </div>
         </div>
-        <div class='col-5'></div>
+        <div class='col-xxl-5'></div>
     </div>
 </div>
 </body>
