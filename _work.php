@@ -1,4 +1,13 @@
 <?php
+
+
+session_start();
+echo json_encode($_SESSION);
+
+
+
+
+
 /*
  *
 CREATE TABLE_users (
@@ -13,11 +22,16 @@ opt 2) CREATE TABLE_users. Create a new user with the permission only to read th
 opt 3) CREATE TABLE_users. Use env Variables on server to establish db connection -> then authenticate
 
 use bcrypt/ password
+
+
+
 */
 
  //  [ ... ]
 
 
+
+/*
 function safeRedirect($url) {
     header("Location: $url");
     exit();
@@ -115,6 +129,9 @@ try {
         $mysqli->close();
     }
 }
+*/
+
+
  // https://codeshack.io/secure-login-system-php-mysql/
 
 /*I understand your confusion. Let's walk through this step-by-step:

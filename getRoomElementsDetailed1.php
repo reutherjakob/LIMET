@@ -500,13 +500,13 @@ $mysqli->close();
         });
         attachButtonListeners();
 
-        $.fn.dataTable.ext.search.push(   //TODO. Its broken
+        $.fn.dataTable.ext.search.push(
             function (settings, data, dataIndex) {
                 let hideZero = $("#hideZeroRows").is(":checked");
                 let row = tableRoomElements.row(dataIndex).node();
                 let amount = $(row).find('input[id^="amount"]').val();
                 amount = parseInt(amount) || 0;
-                console.log(dataIndex, amount, !(hideZero && (amount === 0)));
+                //console.log(dataIndex, amount, !(hideZero && (amount === 0)));
                 return !(hideZero && (amount === 0));
             }
         );

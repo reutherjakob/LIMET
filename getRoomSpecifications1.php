@@ -45,15 +45,15 @@ session_start();
                         <div class='col-xxl-1'>Allgemein</div>
                         <label class='control-label col-xxl-1' for='bestandsraumNr'>Raum-Nr Bestand:</label>
                         <div class='col-xxl-2'>
-                               <input type='text' class=form-control form-control-xs' id='bestandsraumNr' value='" . $row["RaumNr_Bestand"] . "'>
+                               <input type='text' class='form-control form-control-xs' id='bestandsraumNr' value='" . $row["RaumNr_Bestand"] . "'>
                         </div>
                         <label class='control-label col-xxl-1' for='bestandsGeb'>Gebäude Bestand:</label>
                         <div class='col-xxl-2'>
-                               <input type='text' class=form-control form-control-xs' id='bestandsGeb' value='" . $row["Gebaeude_Bestand"] . "'>
+                               <input type='text' class='form-control form-control-xs' id='bestandsGeb' value='" . $row["Gebaeude_Bestand"] . "'>
                         </div>
                         <label class='control-label col-xxl-1' for='raumTypBH'>Typ BH:</label>
                         <div class='col-xxl-2'>
-                               <input type='text' class=form-control form-control-xs' id='raumTypBH' value='" . $row["Raumtyp BH"] . "'>
+                               <input type='text' class='form-control form-control-xs' id='raumTypBH' value='" . $row["Raumtyp BH"] . "'>
                         </div>
                     </div>
                         <div class='form-group row'>

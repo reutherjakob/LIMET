@@ -102,7 +102,6 @@ $mysqli->close();
 ?>
 
 <script>
-
     new DataTable('#tableWorkflow', {
         paging: false,
         searching: false,
@@ -129,7 +128,7 @@ $mysqli->close();
 
 
     $("input[value='workflowStatus']").change(function () {
-        var workflowID = this.id.substr(14, 10);
+        let workflowID = this.id.substr(14, 10);
         if ($(this).prop('checked') === true) {
             //Sperren
             document.getElementById("workflowDate" + workflowID).disabled = true;
@@ -173,7 +172,7 @@ $mysqli->close();
     // Workfloweintrag speichern
     $("button[value='addWorkflowToLot']").click(function () {
         $.ajax({
-            url: ".php",
+            url: "getProjectWorkflows.php",
             type: "GET",
             success: function (data) {
                 $("#workflowModalBody").html(data);

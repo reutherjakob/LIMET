@@ -20,7 +20,7 @@ $sql = "SELECT tabelle_räume_has_tabelle_elemente.id, tabelle_räume.idTABELLE_
                 ORDER BY tabelle_räume.Raumnr;";
 
 $result = $mysqli->query($sql);
-echo "<table class='table table-striped table-responsive table-hover table-bordered table-sm py-0' id='tableRoomsWithElements'>
+echo "<table class='table table-striped table-responsive table-hover table-bordered border border-5 border-light table-sm py-0' id='tableRoomsWithElements'>
 	<thead><tr>
 	<th>ID</th>
 	<th>Var</th>
@@ -98,7 +98,7 @@ $mysqli->close();
         const tableRoomsWithElements = new DataTable('#tableRoomsWithElements', {
             paging: true,
             searching: true,
-            info: false,
+            info: true,
             columnDefs: [
                 {
                     targets: [0],

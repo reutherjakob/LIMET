@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <title>RB-Losverwaltung</title>
@@ -416,13 +416,13 @@ init_page_serversides();
     var tableTenderLots;
     $(document).ready(function () {
         tableTenderLots = new DataTable('#tableTenderLots', {
-            //columnDefs: [
-            //    {
-            //        targets: [0, 14, 15, 16, 17, 18, 22, 23, 24],
-            //        visible: false,
-            //        searchable: false
-            //    }
-            //],
+             columnDefs: [
+                 {
+                     targets: [0, 14, 15, 16, 17, 18, 22, 23, 24],
+                     visible: false,
+                     searchable: false
+                 }
+             ],
             select: true,
             search: {search: ''},
             paging: true,

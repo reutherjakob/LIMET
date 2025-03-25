@@ -1,5 +1,6 @@
 <?php
 require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+include "_pdf_utils.php";
 if (!function_exists('utils_connect_sql')) {
     include "_utils.php";
 }
@@ -75,11 +76,28 @@ class MYPDF extends TCPDF
             $this->Ln();
             $this->Cell(0, 0, $raumInfos[0]['Planungsphase'], 0, false, 'L', 0, '', 0, false, 'B', 'B');
             $this->Ln();
+            if ($raumInfos[0]['Projektname'] === "GCP") {
+                $this->SetFont('helvetica', '', 10);
+                $this->Cell(0, 0, "GCP_Q_EI_Raumblätter-AstV_GP_I03_250321", 0, false, 'L', 0, '', 0, false, 'B', 'B');
+                $this->Ln();
+            }
+            $this->Ln();
+            $this->Ln();
+            $this->Ln();
             $this->Ln();
             $this->SetFont('helvetica', '', 12);
-            $this->Cell(0, 0, "Stand: " . date('Y-m-d'), 0, false, 'L', 0, '', 0, false, 'T', 'M');
+            $this->Cell(0, 0, "Stand: 2025-03-21 ", 0, false, 'L', 0, '', 0, false, 'T', 'M'); //. date('Y-m-d')
 
-
+            if ($raumInfos[0]['Projektname'] === "GCP") {
+                $this->Ln();
+                $this->SetFont('helvetica', '', 10);
+                $this->Cell(0, 0, "Vorgängerstände:", 0, false, 'L', 0, '', 0, false, 'T', 'M');
+                $this->Ln();
+                $this->Cell(0, 0, "Stand Überarbeitung nach Verhandlung: 2024-04-24", 0, false, 'L', 0, '', 0, false, 'T', 'M');
+                $this->Ln();
+                $this->Cell(0, 0, "Stand Einreichung: 2023-12-18", 0, false, 'L', 0, '', 0, false, 'T', 'M');
+                $this->Ln();
+            }
             $this->SetFont('helvetica', '', 6);
             //LOGOS einfügen
             if ($_SESSION["projectAusfuehrung"] === "MADER") {
@@ -115,21 +133,16 @@ class MYPDF extends TCPDF
                     $this->Cell(0, 0, "BIC STSPAT2GXXX", 0, false, 'R', 0, '', 0, false, 'B', 'B');
                 }
             }
-            // Deckblatt beenden            
         }
     }
 
-    // Page footer
     public function Footer()
     {
-        // Position at 15 mm from bottom
         $this->SetY(-15);
-        // Set font
         $this->SetFont('helvetica', 'I', 8);
-        // Page number
         $this->cell(0, 0, '', 'T', 0, 'L');
         $this->Ln();
-        $tDate = date('Y-m-d');
+        $tDate = "2025-03-21"; //date('Y-m-d');
         $this->Cell(0, 0, $tDate, 0, false, 'L', 0, '', 0, false, 'T', 'M');
         $this->Cell(0, 0, 'Seite ' . $this->getAliasNumPage() . ' von ' . $this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
     }
@@ -227,6 +240,7 @@ $GCP_bearbeit = [
     12156,
     12157,
     12159,
+    12160,
     12166,
     12172,
     12173,
@@ -473,12 +487,14 @@ $GCP_bearbeit = [
     26511,
     26512,
     26610,
+    26618,
     26631,
     26632,
     28892,
     28893,
     50703,
-    50704
+    50704,
+    105004
 ];
 
 
@@ -662,7 +678,7 @@ WHERE (((tabelle_räume.idTABELLE_Räume) = " . $valueOfRoomID . "));";
 
         if (in_array($valueOfRoomID, $GCP_bearbeit)) {
             $pdf->SetFont('helvetica', '', 8);
-            $pdf->MultiCell(180, 6, "Die Angaben dieses Raumes wurden seit der letzte AStV Einreichung bearbeitet.", 0, 'L', 0, 1);
+            $pdf->MultiCell(180, 6, "Die Angaben dieses Raumes wurden ggü. dem Vorgängerstand des Dokuments angepasst.", 0, 'L', 0, 1);
         }
         $pdf->SetFont('helvetica', 'B', 10);
 
@@ -835,7 +851,7 @@ WHERE (((tabelle_räume.idTABELLE_Räume) = " . $valueOfRoomID . "));";
         $pdf->SetFont('helvetica', '', 9);
         $pdf->SetTextColor(0, 0, 0);
         $pdf->MultiCell(40, 5, "Not-Aus-Funktion: ", 0, 'R', 0, 0);
-        $pdf->MultiCell(40, 5, $row['EL_Not_Aus_Funktion'], 0, 'L', 0, 0);
+        $pdf->MultiCell(80, 5, $row['EL_Not_Aus_Funktion'], 0, 'L', 0, 0);
         $pdf->Ln();
         $pdf->MultiCell(40, 5, "Beleuchtungsstärke: ", 0, 'R', 0, 0);
         $pdf->MultiCell(40, 5, $row['EL_Beleuchtungsstaerke'] . " lx", 0, 'L', 0, 0);
@@ -884,22 +900,18 @@ WHERE (((tabelle_räume.idTABELLE_Räume) = " . $valueOfRoomID . "));";
         $pdf->Ln();
         $pdf->MultiCell(40, 5, "Signaleinrichtungen: ", 0, 'R', 0, 0);
         $pdf->SetFont('zapfdingbats', '', 9);
-        if ($row["Laseranwendung"] === '0' || $row["Strahlenanwendung"] === '0' || $row["CO2_Melder"] === '0' || $row["O2_Mangel"] === '0') {
-            // if ($row['EL_Signaleinrichtung'] === '0' ) {
-            $pdf->SetTextColor(...$colour);
-            $pdf->MultiCell(10, 5, TCPDF_FONTS::unichr(52), 0, 'L', 0, 0);
-        } else {
-            //grün
+        if ($row['EL_Signaleinrichtung'] === '0') {
 
             $pdf->MultiCell(10, 5, TCPDF_FONTS::unichr(54), 0, 'L', 0, 0);
+        } else {
+            $pdf->SetTextColor(...$colour);
+            $pdf->MultiCell(10, 5, TCPDF_FONTS::unichr(52), 0, 'L', 0, 0);
         }
         $pdf->SetFont('helvetica', '', 9);
         $pdf->SetTextColor(0, 0, 0);
         $pdf->Ln();
-        $y = $pdf->GetY();
-        if (($y + 30) >= 270) {
-            $pdf->AddPage();
-        }
+
+        check4newpage($pdf, 30);
         $pdf->SetFont('helvetica', 'B', 10);
         $pdf->MultiCell(180, 5, 'Haustechnik', 'T', 'L', 1, 0, '', '', true);
         $pdf->SetFont('helvetica', '', 9);
@@ -910,7 +922,19 @@ WHERE (((tabelle_räume.idTABELLE_Räume) = " . $valueOfRoomID . "));";
         $pdf->MultiCell(40, 5, $row['HT_Entlueftung'], 0, 'L', 0, 0);
         $pdf->Ln();
         $pdf->MultiCell(40, 8, "Luftmenge: ", 0, 'R', 0, 0);
-        $pdf->MultiCell(40, 5, $row['HT_Luftmenge m3/h'] . " m3/h", 0, 'L', 0, 0);
+        $text = "";
+        if (is_numeric($row['HT_Luftmenge m3/h'])) {
+            $text = $row['HT_Luftmenge m3/h'] . " m3/h";
+        } else {
+            $text = $row['HT_Luftmenge m3/h'];
+        }
+
+        $pdf->MultiCell(40, 5, $text, 0, 'L', 0, 0);
+        if ($pdf->getStringHeight(40, $text, false, true, '', 1) > 8) {
+            $pdf->Ln();
+            $pdf->MultiCell(80, 5, "", 0, 'L', 0, 0);
+        }
+
         $pdf->MultiCell(40, 8, "Luftwechsel auf 3m: ", 0, 'R', 0, 0);
         $pdf->MultiCell(80, 5, $row['HT_Luftwechsel 1/h'] . "/h", 0, 'L', 0, 0);
         $pdf->Ln();
@@ -925,10 +949,19 @@ WHERE (((tabelle_räume.idTABELLE_Räume) = " . $valueOfRoomID . "));";
         }
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 9);
+
+
+
         $pdf->MultiCell(30, 8, "Kälteabgabe: ", 0, 'R', 0, 0);
         $pdf->MultiCell(60, 5, $row['HT_Kaelteabgabe_Typ'], 0, 'L', 0, 0);
-        $pdf->MultiCell(32, 8, "Raumtemp Kühlung: ", 0, 'R', 0, 0);
-        $pdf->MultiCell(10, 5, $row['HT_Raumtemp Sommer °C'], 0, 'L', 0, 0);
+        if ($pdf->getStringHeight(30, $row['HT_Kaelteabgabe_Typ'], false, true, '', 1) > 8) {
+            $pdf->Ln();
+        }
+
+        $pdf->MultiCell(30, 8, "Temp. Kühlung: ", 0, 'R', 0, 0);
+        $pdf->MultiCell(15, 5,  $row['HT_Raumtemp Sommer °C'], 0, 'L', 0, 0);
+
+
         $pdf->Ln();
         $pdf->MultiCell(40, 5, "Heizung: ", 0, 'R', 0, 0);
         $pdf->SetFont('zapfdingbats', '', 9);
@@ -941,10 +974,19 @@ WHERE (((tabelle_räume.idTABELLE_Räume) = " . $valueOfRoomID . "));";
         }
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('helvetica', '', 9);
+
         $pdf->MultiCell(30, 8, "Wärmeabgabe: ", 0, 'R', 0, 0);
+
         $pdf->MultiCell(60, 5, $row['HT_Waermeabgabe_Typ'], 0, 'L', 0, 0);
-        $pdf->MultiCell(32, 8, "Raumtemp Heizen: ", 0, 'R', 0, 0);
-        $pdf->MultiCell(10, 5, $row['HT_Raumtemp Winter °C'], 0, 'L', 0, 0);
+
+        $pdf->MultiCell(30, 8, "Temp. Heizen: ", 0, 'R', 0, 0);
+        $pdf->MultiCell(15, 5,  $row['HT_Raumtemp Winter °C'] , 0, 'L', 0, 0);
+
+        if ($pdf->getStringHeight(30, $row['HT_Waermeabgabe_Typ'], false, true, '', 1) > 8) {
+            $pdf->Ln();
+
+        }
+
         $pdf->Ln();
         $pdf->MultiCell(40, 8, "Notdusche: ", 0, 'R', 0, 0);
         $pdf->MultiCell(20, 6, " " . $row['HT_Notdusche'] . " Stk", 0, 'L', 0, 0);
@@ -1144,6 +1186,7 @@ WHERE (((tabelle_räume.idTABELLE_Räume) = " . $valueOfRoomID . "));";
         $pdf->SetFont('helvetica', 'B', 10);
         // set color for background
         $pdf->SetFillColor(...$colour);
+        check4newpage($pdf, 15);
         $pdf->MultiCell(180, 5, 'VEXAT', 'T', 'L', 1, 0, '', '', true);
         $pdf->Ln();
         $pdf->SetFont('helvetica', '', 9);

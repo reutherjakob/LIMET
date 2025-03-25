@@ -1,21 +1,24 @@
 <?php
 
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 include 'pdf_createBericht_MYPDFclass_1.php';
 include 'pdf_createBericht_utils.php';
 
 session_start();
 check_login();
 
-function cheat($str) {
+function cheat($str)
+{
     $outsr = $str;
     if ($outsr === "Röntgenaufnahmetisch") {
         $outsr = "Patiententisch";
     }
-    if ($outsr === "Angiographieanlage - Radiologisch") {
+    if ($outsr === "Angiographieanlage - Radiologisch" || $outsr === "Angiographieanlage - Kardiologisch - 1 Ebene") {
         $outsr = "Angiographieanlage";
     }
-    if ($outsr === "Unterkonstruktion Angiographieanlage - Kardiologisch" || $outsr === "Gerätetrageschiene 400cm") {
+    if ($outsr === "Unterkonstruktion Angiographieanlage - Kardiologisch" ) {
         $outsr = "Deckenschiene Röntgenanlage";
     }
     if ($outsr === "Laufband - Gewichtsentlastung - Luftpolster") {
@@ -24,7 +27,8 @@ function cheat($str) {
     return $outsr;
 }
 
-function tabelle_header($pdf, $fill, $spaces, $rowHeight) {
+function tabelle_header($pdf, $fill, $spaces, $rowHeight)
+{
 
     $pdf->SetFont('helvetica', 'B', 10);
     $pdf->MultiCell($spaces[0], $rowHeight, 'Raumnr./-name', 'RB', 'L', $fill, 0);
@@ -34,7 +38,8 @@ function tabelle_header($pdf, $fill, $spaces, $rowHeight) {
     $pdf->SetFont('helvetica', '', 8);
 }
 
-function parseBezeichnung($bezeichnung) {
+function parseBezeichnung($bezeichnung)
+{
     // Definiere das Mapping-Array
     $mapping = [
         'Einbringweg_Breite' => 'Breite',
@@ -59,9 +64,9 @@ $stmt = "SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte, tabelle_para
     tabelle_elemente.Bezeichnung as el_Bez, tabelle_parameter.Bezeichnung, tabelle_projekt_elementparameter.Wert, tabelle_projekt_elementparameter.Einheit
     FROM (tabelle_projekt_elementparameter INNER JOIN (tabelle_varianten INNER JOIN (tabelle_räume INNER JOIN (tabelle_elemente INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_elemente.idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) ON (tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) AND (tabelle_projekt_elementparameter.tabelle_elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente)) INNER JOIN tabelle_parameter ON tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter = tabelle_parameter.idTABELLE_Parameter
     WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ")"
-        . " AND ((tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie)=18) "
-        . "AND ((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))"
-        . "ORDER BY Raumbezeichnung, ElementID DESC";
+    . " AND ((tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie)=18) "
+    . "AND ((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))"
+    . "ORDER BY Raumbezeichnung, ElementID, Bezeichnung DESC";
 $result_Einbring_elemente = $mysqli->query($stmt);
 $mysqli->close();
 $rooms = array();
@@ -112,6 +117,7 @@ foreach ($rooms as $roomnr) {
 
     foreach ($data_array as $key => $entry) {
         if ($entry['Raumnr'] === $roomnr && $roomnr != "x.x.x.") {
+
             if ($entry['Wert']) {
                 if (check_4_new_page($pdf, -8)) {
                     $fill = false;
@@ -127,12 +133,11 @@ foreach ($rooms as $roomnr) {
                     if (check_4_new_page($pdf, 20)) {
                         $fill = false;
                         tabelle_header($pdf, $fill, $spaces, $rowHeight);
-                        $first_data_entry=true; 
+                        $first_data_entry = true;
                     }
                 }
 
                 if ($first_data_entry) {
-
                     $pdf->MultiCell($spaces[0], $rowHeight, $entry['Raumnr'] . " \n" . $entry['Raumbezeichnung'], "T", 'L', 0, 0);
                 } else {
                     $pdf->MultiCell($spaces[0], $rowHeight, "", 0, 'L', 0, 0);
@@ -144,8 +149,9 @@ foreach ($rooms as $roomnr) {
                 } else {
                     $pdf->MultiCell($spaces[1], $rowHeight, "", 'L', 'L', $fill, 0);
                 }
+                if( $entry['Wert'] <> ""){
                 $pdf->MultiCell($spaces[2], $rowHeight, parseBezeichnung($entry['Bezeichnung']) . ": ", "L", 'L', $fill, 0);
-                $pdf->MultiCell($spaces[3], $rowHeight, $entry['Wert'] . " " . $entry["Einheit"], 0, 'L', $fill, 1);
+                $pdf->MultiCell($spaces[3], $rowHeight, $entry['Wert'] . " " . $entry["Einheit"], 0, 'L', $fill, 1);}
 
                 $first_data_entry = false;
                 $fill = !$fill;

@@ -117,7 +117,7 @@ include 'roombookSpecifications_HelpModal.php';
             <div class="card-body" id="bauangaben"></div>
         </div>
         <div class="mt-4 card">
-            <div class="card me-2 ms-2">
+
                 <div class="card-header form-inline d-inline-flex " id="CardHEaderElemntsInRoom">
                     <button type="button" class="btn btn-outline-dark " id="showRoomElements" style="width: 30px;"><i
                                 class="fas fa-caret-left"></i></button>
@@ -130,7 +130,7 @@ include 'roombookSpecifications_HelpModal.php';
                     <p id="roomElements"></p>
                     <p id="elementParameters"></p>
                 </div>
-            </div>
+
         </div>
     </section>
 </main>
