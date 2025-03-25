@@ -10,7 +10,7 @@ function title2data(columnsDefinition, title) {
 
 
 const buttonRanges = [
-    {name: 'All', start: 6, end: 147, longName: 'Alle Spalten'},
+    {name: 'All', start: 6, end: 148, longName: 'Alle Spalten'},
     {name: 'R', start: 7, end: 24, longName: 'Raum'},
     {name: 'HKLS', start: 25, end: 34, longName: 'HKLS'},
     {name: 'ET', start: 35, end: 55, longName: 'Elektro'},
@@ -18,9 +18,10 @@ const buttonRanges = [
     {name: 'MG', start: 63, end: 74, longName: 'Medgas'},
     {name: 'LAB', start: 65, end: 147, longName: 'Labor'},
     {name: '-GAS', start: 75, end: 116, longName: 'Labor-GAS'},
-    {name: '-ET', start: 117, end: 127, longName: 'Labor-ET'},
-    {name: '-HT', start: 128, end: 138, longName: 'Labor-HT'},
-    {name: '-H2O', start: 139, end: 147, longName: 'Labor-H2O'}
+    {name: '-ET', start: 117, end: 128, longName: 'Labor-ET'},
+    {name: '-HT', start: 129, end: 139, longName: 'Labor-HT'},
+    {name: '-H2O', start: 140, end: 148, longName: 'Labor-H2O'},
+    {name: 'GCP', start: 148, end: 168, longName: ''}
 ];
 const columnsDefinition = [
     {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projek ID', visible: false, searchable: false}, // 0
@@ -145,12 +146,12 @@ const columnsDefinition = [
     {
         data: 'AR_Empf_Breite_cm',
         defaultContent: '-',
-        title: 'Empf. Breite [cm]',
+        title: 'Empfohlene Breite [cm]',
         visible: false,
         case: "num"
     }, // 58
-    {data: 'AR_Empf_Tiefe_cm', defaultContent: '-', title: 'Empf. Tiefe [cm]', visible: false, case: "num"}, // 59
-    {data: 'AR_Empf_Hoehe_cm', defaultContent: '-', title: 'Empf. Höhe [cm]', visible: false, case: "num"}, // 60
+    {data: 'AR_Empf_Tiefe_cm', defaultContent: '-', title: 'Empfohlene Tiefe [cm]', visible: false, case: "num"}, // 59
+    {data: 'AR_Empf_Hoehe_cm', defaultContent: '-', title: 'Empfohlene Höhe [cm]', visible: false, case: "num"}, // 60
     {
         data: 'AR_Flaechenlast_kgcm2',
         defaultContent: '-',
@@ -228,39 +229,70 @@ const columnsDefinition = [
     {data: 'ET_5x10mm2_AV_Stk', title: '5x10mm2 AV_Stk', visible: false, case: "num"}, // 124
     {data: 'EL_Not_Aus_Funktion', title: 'Not Aus Funktion', visible: false, case: ""}, // 125
     {data: 'EL_Not_Aus', title: 'Not Aus Stk', visible: false, case: 'num'}, // 126
-    {data: 'HT_Luftwechsel 1/h', title: 'Luftwechsel l/h', visible: false, case: "num"}, // 127
-    {data: 'HT_Abluft_Vakuumpumpe', title: 'Abluft Vakuumpumpe', visible: false, case: "num"}, // 128
+    {data: 'EL_Signaleinrichtung', title: 'Signaleinrichtung', visible: false, case: 'bit'}, // 127
+    {data: 'HT_Luftwechsel 1/h', title: 'Luftwechsel l/h', visible: false, case: "num"}, // 127 +1
+    {data: 'HT_Abluft_Vakuumpumpe', title: 'Abluft Vakuumpumpe', visible: false, case: "num"}, // 128+1
     {
         data: 'HT_Abluft_Sicherheitsschrank_Stk',
         title: 'Abluft Sicherheitsschrank Stk',
         visible: false,
         case: "num"
-    }, // 129
+    }, // 129              +1
     {
         data: 'HT_Abluft_Schweissabsaugung_Stk',
         title: 'Abluft Schweissabsaugung_Stk',
         visible: false,
         case: "num"
     }, // 130
-    {data: 'HT_Abluft_Esse_Stk', title: 'Abluft Esse_Stk', visible: false, case: "num"}, // 131
-    {data: 'HT_Abluft_Rauchgasabzug_Stk', title: 'Abluft Rauchgasabzug_Stk', visible: false, case: "num"}, // 132
-    {data: 'HT_Abluft_Digestorium_Stk', title: 'Abluft Digestorium_Stk', visible: false, case: "num"}, // 133
-    {data: 'HT_Punktabsaugung_Stk', title: 'Punktabsaugung_Stk', visible: false, case: "num"}, // 134
+    {data: 'HT_Abluft_Esse_Stk', title: 'Abluft Esse_Stk', visible: false, case: "num"}, // 131                         +1
+    {data: 'HT_Abluft_Rauchgasabzug_Stk', title: 'Abluft Rauchgasabzug_Stk', visible: false, case: "num"}, // 132       +1
+    {data: 'HT_Abluft_Digestorium_Stk', title: 'Abluft Digestorium_Stk', visible: false, case: "num"}, // 133           +1
+    {data: 'HT_Punktabsaugung_Stk', title: 'Punktabsaugung_Stk', visible: false, case: "num"}, // 134                   +1
     {
         data: 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk',
         title: 'Abluft Sicherheitsschrank_Unterbau_Stk',
         visible: false,
         case: "num"
-    }, // 135
-    {data: 'HT_Abwasser_Stk', title: 'Abwasser Stk', visible: false, case: "num"}, // 136
-    {data: 'HT_Abluft_Geraete', title: 'Abluft Geräte', visible: false, case: "num"}, // 137
-    {data: 'VE_Wasser', title: 'VE_Wasser', visible: false, case: 'num'}, // 138
-    {data: 'HT_Warmwasser', title: 'Warmwasser', visible: false, case: "num"}, // 139
-    {data: 'HT_Kaltwasser', title: 'Kaltwasser', visible: false, case: "num"}, // 140
-    {data: 'Wasser Qual 1 l/Tag', title: 'H20_Q1 l/Tag', visible: false, case: "num"}, // 141
-    {data: 'Wasser Qual 2 l/Tag', title: 'H20_Q2 l/Tag', visible: false, case: "num"}, // 142
-    {data: 'Wasser Qual 3 l/min', title: 'H2O_Q3 l/min', visible: false, case: "num"}, // 143
-    {data: 'Wasser Qual 3', title: 'H20 Q3', visible: false, case: "bit"}, // 144
-    {data: 'Wasser Qual 2', title: 'H20 Q2', visible: false, case: "bit"}, // 145
-    {data: 'Wasser Qual 1', title: 'H20 Q1', visible: false, case: "bit"} // 146
-];
+    }, // 135                                      +1
+    {data: 'HT_Abwasser_Stk', title: 'Abwasser Stk', visible: false, case: "num"}, // 136     +1
+    {data: 'HT_Abluft_Geraete', title: 'Abluft Geräte', visible: false, case: "num"}, // 137  +1
+    {data: 'VE_Wasser', title: 'VE_Wasser', visible: false, case: 'num'}, // 138              +1
+    {data: 'HT_Warmwasser', title: 'Warmwasser', visible: false, case: "num"}, // 139         +1
+    {data: 'HT_Kaltwasser', title: 'Kaltwasser', visible: false, case: "num"}, // 140         +1
+    {data: 'Wasser Qual 1 l/Tag', title: 'H20_Q1 l/Tag', visible: false, case: "num"}, // 141 +1
+    {data: 'Wasser Qual 2 l/Tag', title: 'H20_Q2 l/Tag', visible: false, case: "num"}, // 142 +1
+    {data: 'Wasser Qual 3 l/min', title: 'H2O_Q3 l/min', visible: false, case: "num"}, // 143 +1
+    {data: 'Wasser Qual 3', title: 'H20 Q3', visible: false, case: "bit"}, // 144 +1
+    {data: 'Wasser Qual 2', title: 'H20 Q2', visible: false, case: "bit"}, // 145 +1
+    {data: 'Wasser Qual 1', title: 'H20 Q1', visible: false, case: "bit"}, // 146 +1
+
+
+    {data: 'Belichtungsfläche', title: 'AR Belichtungsfläche', visible: false, case: ""},
+    {data: 'Fussboden', title: 'AR Fussboden', visible: false, case: ""},
+    {data: 'Decke', title: 'AR Decke', visible: false, case: " "},
+    {data: 'Anmerkung AR', title: 'AR Anmerkung', visible: false, case: ""},
+    {data: 'Taetigkeiten', title: 'AR Taetigkeiten', visible: false, case: " "},
+    {data: 'AR_APs', title: 'APs Anzahl', visible: false, case: " "},
+    {data: 'AP_Gefaehrdung', title: 'AP_Gefaehrdung', visible: false, case: ""},
+    {data: 'AP_Geistige', title: 'AP Geistige', visible: false, case: " "},
+    {data: 'AR_Schwingungsklasse', title: 'AR Schwingungsklasse', visible: false, case: " "},
+    {data: 'Spezialgase', title: 'Spezialgase', visible: false, case: " "},
+    {data: 'Gaswarneinrichtung-Art', title: 'Gaswarneinrichtung-Art', visible: false, case: ""},
+    {data: 'EL_Beleuchtungsstaerke', title: 'EL_Beleuchtungsstaerke', visible: false, case: " "},
+    {data: 'ET_EMV', title: 'ET_E EMV Maßnahme Txt', visible: false, case: ""},    //148
+    {data: 'HT_Luftmenge m3/h', title: 'HT_Luftmenge m3/h', visible: false, case: ""},
+    {data: 'HT_Kuehlung', title: 'HT_Kuehlung', visible: false, case: ""},
+    {data: 'HT_Kaelteabgabe_Typ', title: 'HT_Kaelteabgabe_Typ', visible: false, case: ""},
+
+    {data: 'HT_Heizung', title: 'HT_Heizung', visible: false, case: ""},
+    {data: 'HT_Waermeabgabe_Typ', title: 'HT_Waermeabgabe_Typ', visible: false, case: ""}, {
+        data: 'HT_Heizung',
+        title: 'HT_Heizung',
+        visible: false,
+        case: ""
+    },
+
+    {data: 'HT_Belueftung', title: 'HT_Belueftung', visible: false, case: ""},
+    {data: 'HT_Entlueftung', title: 'HT_Entlueftung', visible: false, case: ""},
+    {data: 'PHY_Akustik_Schallgrad', title: 'PHY_Akustik_Schallgrad', visible: false, case: ""}
+]

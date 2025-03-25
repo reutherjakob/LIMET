@@ -36,7 +36,7 @@ $output = [];// Define a mapping array for suffixes and their corresponding new 
 $suffixMapping = [
     '_alt' => '_neu',
     '_copy1' => '', // For _copy1, the old field has no suffix
-    'alt' => 'neu', // Assuming 'alt' should be treated like '_alt'
+    'alt' => 'neu' // Assuming 'alt' should be treated like '_alt'
 ];
 
 while ($row = $result->fetch_assoc()) {
@@ -60,10 +60,10 @@ while ($row = $result->fetch_assoc()) {
 
                 if ($oldVal != $newVal) {
                     $changes[] = sprintf(
-                        "<strong>%s:</strong> %s → %s",
+                        "<strong>%s:</strong> %s →<br>  %s",
                         htmlspecialchars(str_replace('_', ' ', $baseField)),
-                        htmlspecialchars($oldVal ?? 'N/A'),
-                        htmlspecialchars($newVal ?? 'N/A')
+                        htmlspecialchars( br2nl($oldVal) ?? 'N/A'),
+                        htmlspecialchars( br2nl($newVal) ?? 'N/A')
                     );
                 }
             }
@@ -73,7 +73,7 @@ while ($row = $result->fetch_assoc()) {
     if (!empty($changes)) {
         $output[] = "<div class='change-entry mb-3'>
             <div class='change-header text-muted small'>$timestamp - $user</div>
-            <div class='change-details'>".implode('<br>', $changes)."</div>
+            <div class='change-details'>".implode('<br>',   ($changes))."</div>
         </div><hr>";
     }
 }

@@ -1,63 +1,9 @@
 <?php
 
-require_once('TCPDF-main/TCPDF-main/tcpdf.php');
-
-// extend TCPF with custom functions
-class MYPDF extends TCPDF {
-    
-    //Page header
-    public function Header() {
-        // Logo
-        if($_SESSION["projectAusfuehrung"]==="MADER"){
-            $image_file = 'Mader_Logo_neu.jpg';
-            $this->Image($image_file, 15, 5, 40, 10, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-        }
-        else{
-            if($_SESSION["projectAusfuehrung"]==="LIMET"){
-                $image_file = 'LIMET_web.png';
-                $this->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-            }
-            else{
-                $image_file = 'LIMET_web.png';
-                $this->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                $image_file = 'Mader_Logo_neu.jpg';
-                $this->Image($image_file, 38, 5, 40, 10, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-            }
-            
-        }
-        
-        // Set font
-        $this->SetFont('helvetica', '', 8);
-        // Title
-        // Title        
-        if($_SESSION["projectPlanungsphase"]=="Vorentwurf"){
-            $this->Cell(0, 0, 'Medizintechnische Kostenschätzung', 0, false, 'R', 0, '', 0, false, 'B', 'B');
-        }
-        else{
-            $this->Cell(0, 0, 'Medizintechnische Kostenberechnung', 0, false, 'R', 0, '', 0, false, 'B', 'B');
-        }
-        //$this->Cell(0, 0, 'Gesamt-Kosten', 0, false, 'R', 0, '', 0, false, 'B', 'B');
-        $this->Ln();
-        $this->cell(0,0,'','B',0,'L');
-    }
-
-    // Page footer
-    public function Footer() {
-        // Position at 15 mm from bottom
-        $this->SetY(-15);
-        // Set font
-        $this->SetFont('helvetica', 'I', 8);
-        // Page number
-        $this->cell(0,0,'','T',0,'L');
-        $this->Ln();
-        $tDate=date('Y-m-d');
-        $this->Cell(0, 0, $tDate, 0, false, 'L', 0, '', 0, false, 'T', 'M');
-        $this->Cell(0, 0, 'Seite '.$this->getAliasNumPage().' von '.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
-    }
-    
-}
-
-session_start();
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+include "_format.php";
+include "_pdf_createBericht_utils.php";
+include "pdf_MyPDF_class_Kosten.php";
 // create new PDF document
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
@@ -107,13 +53,7 @@ $pdf->AddPage('L', 'A4');
 
 // Daten laden
 
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');	
-
-/* change character set to utf8 */
-if (!$mysqli->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $mysqli->error);
-    exit();
-}
+$mysqli = utils_connect_sql();
 
 
 // TITELZEILE MIT PROJEKTINFOS--------------------------------------------------
@@ -278,7 +218,7 @@ foreach($raumbereicheInProject as $rowData) {
                 $pdf->MultiCell(50, 4, "", 0, 'L', 0, 0);
                 $pdf->MultiCell(20, 4, $budgetsInProject[$row1['tabelle_projektbudgets_idtabelle_projektbudgets']]['Budgetnummer'], 0, 'C', 0, 0);
                 $pdf->setX($xPosition);
-                $pdf->MultiCell(25, 4, money_format('€ %!n', $row1["PP"]), 0, 'R', 0, 0);  
+                $pdf->MultiCell(25, 4, format_money_report( $row1["PP"]), 0, 'R', 0, 0);  
                 $oldY = $pdf->getY();
                 $pdf->Ln();
                 $pdf->SetFont('helvetica', 'I', 6);
@@ -286,14 +226,14 @@ foreach($raumbereicheInProject as $rowData) {
                 $pdf->MultiCell(20, 4, "", 0, 'L', 0, 0);
                 $pdf->MultiCell(20, 4, "davon Neu", 0, 'L', 0, 0);
                 $pdf->setX($xPosition);
-                $pdf->MultiCell(25, 4, money_format('€ %!n', $row1["PPNeu"]), 0, 'R', 0, 0); 
+                $pdf->MultiCell(25, 4, format_money_report( $row1["PPNeu"]), 0, 'R', 0, 0); 
                 $oldY1 = $pdf->getY();
                 $pdf->Ln();
                 $pdf->MultiCell(50, 4, "", 0, 'L', 0, 0);
                 $pdf->MultiCell(20, 4, "", 0, 'L', 0, 0);
                 $pdf->MultiCell(20, 4, "davon Bestand", 0, 'L', 0, 0);
                 $pdf->setX($xPosition);
-                $pdf->MultiCell(25, 4, money_format('€ %!n', $row1["PPBestand"]), 0, 'R', 0, 0);
+                $pdf->MultiCell(25, 4, format_money_report( $row1["PPBestand"]), 0, 'R', 0, 0);
                 $oldY2 = $pdf->getY();
                 $pdf->Ln();   
             }
@@ -301,7 +241,7 @@ foreach($raumbereicheInProject as $rowData) {
                 $pdf->MultiCell(50, 4, "", 0, 'L', 0, 0);
                 $pdf->MultiCell(20, 4, "NZ", 0, 'C', 0, 0);
                 $pdf->setX($xPosition);
-                $pdf->MultiCell(25, 4, money_format('€ %!n', $row1["PP"]), 0, 'R', 0, 0);
+                $pdf->MultiCell(25, 4, format_money_report( $row1["PP"]), 0, 'R', 0, 0);
                 $oldY = $pdf->getY();
                 $pdf->Ln();
                 $pdf->SetFont('helvetica', 'I', 6);
@@ -309,25 +249,25 @@ foreach($raumbereicheInProject as $rowData) {
                 $pdf->MultiCell(20, 4, "", 0, 'L', 0, 0);
                 $pdf->MultiCell(20, 4, "davon Neu", 0, 'L', 0, 0);
                 $pdf->setX($xPosition);
-                $pdf->MultiCell(25, 4, money_format('€ %!n', $row1["PPNeu"]), 0, 'R', 0, 0); 
+                $pdf->MultiCell(25, 4, format_money_report( $row1["PPNeu"]), 0, 'R', 0, 0); 
                 $oldY1 = $pdf->getY();
                 $pdf->Ln();
                 $pdf->MultiCell(50, 4, "", 0, 'L', 0, 0);
                 $pdf->MultiCell(20, 4, "", 0, 'L', 0, 0);
                 $pdf->MultiCell(20, 4, "davon Bestand", 0, 'L', 0, 0);
                 $pdf->setX($xPosition);
-                $pdf->MultiCell(25, 4, money_format('€ %!n', $row1["PPBestand"]), 0, 'R', 0, 0);
+                $pdf->MultiCell(25, 4, format_money_report( $row1["PPBestand"]), 0, 'R', 0, 0);
                 $oldY2 = $pdf->getY();
                 $pdf->Ln();   
             }
         }
         else{
             $pdf->setXY($xPosition,$oldY);
-            $pdf->MultiCell(25, 4, money_format('€ %!n', $row1["PP"]), 0, 'R', 0, 0); 
+            $pdf->MultiCell(25, 4, format_money_report( $row1["PP"]), 0, 'R', 0, 0); 
             $pdf->setXY($xPosition,$oldY1);
-            $pdf->MultiCell(25, 4, money_format('€ %!n', $row1["PPNeu"]), 0, 'R', 0, 0);   
+            $pdf->MultiCell(25, 4, format_money_report( $row1["PPNeu"]), 0, 'R', 0, 0);   
             $pdf->setXY($xPosition,$oldY2);
-            $pdf->MultiCell(25, 4, money_format('€ %!n', $row1["PPBestand"]), 0, 'R', 0, 0); 
+            $pdf->MultiCell(25, 4, format_money_report( $row1["PPBestand"]), 0, 'R', 0, 0); 
             $pdf->Ln();
         }
                
@@ -372,7 +312,7 @@ foreach($raumbereicheInProject as $rowData) {
     
     $pdf->Ln();
     
-    $x = $pdf->width;     
+    $x = $pdf->GetX();
     $y = $pdf->GetY();
 
     if (($y + 4) >= 180) {
@@ -382,7 +322,7 @@ foreach($raumbereicheInProject as $rowData) {
 }
 
 // close and output PDF document
-$pdf->Output('Gesamtkosten nach BA und Budget.pdf', 'I');
+$pdf->Output(getFileName( "Gesamtkosten-BA&Budget"), 'I');
 
 //============================================================+
 // END OF FILE

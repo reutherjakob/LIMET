@@ -1,13 +1,9 @@
 <?php
-
-//----------------------------- 
-// 10.5.2024
-// Reuther & Fux
-//----------------------------- 
-
 include 'pdf_createBericht_MYPDFclass.php'; //require_once('TCPDF-main/TCPDF-main/tcpdf.php'); is in class file
-include 'pdf_createBericht_utils.php';
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+include '_pdf_createBericht_utils.php';
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 include 'pdf_createMTTabelle.php';
 session_start();
 check_login();
@@ -92,12 +88,6 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
         multicelll($pdf, $e_C_2_3rd, $font_size, "Nutzfläche", "Fläche: ");
         multicell_with_nr($pdf, $row['Nutzfläche'], "m2", 10, 4 * $e_C_3rd);
-//        multicelll($pdf, $e_C_2_3rd, $font_size, "Allgemeine Hygieneklasse", "Hygieneklasse: ");
-//        if ($row['Allgemeine Hygieneklasse'] != "") {
-//            multicell_with_str($pdf, $row['Allgemeine Hygieneklasse'], $e_C_3rd * 4, "");
-//        } else {
-//            multicell_with_str($pdf, " - ", $e_C_3rd, "");
-//        }
 
         multicelll($pdf, $e_C_2_3rd, $font_size, 'Strahlenanwendung', "Strahlenanw.: ");
         if (($pdf->getStringHeight($e_C_3rd, $row['Strahlenanwendung'])) > 6) {
@@ -253,36 +243,6 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         multicelll($pdf, $e_C_2_3rd, $font_size, "VE_Wasser", "Warm Wasser:");
         multicell_with_str($pdf, translate_1_to_yes($row['HT_Warmwasser']), $e_C_3rd, "");
 
-//        multicelll($pdf, $e_C_2_3rd, $font_size, "GMP", "GMP: ");
-//        multicell_with_str($pdf, $row['GMP'], $e_C_3rd, "");
-//        multicelll($pdf, $e_C_2_3rd, $font_size, "HT_Abluft_Digestorium_Stk", "Abluft Digestorium:");
-//        multicell_with_str($pdf, $row['HT_Abluft_Digestorium_Stk'], $e_C_3rd, "Stk");
-//
-//        multicelll($pdf, $e_C_2_3rd + $e_C, $font_size, "HT_Abluft_Sicherheitsschrank_Stk", "Abluft Sicherheitsschrank:");
-//        multicell_with_str($pdf, $row['HT_Abluft_Sicherheitsschrank_Stk'], $e_C_3rd, "Stk");
-//        multicelll($pdf, $e_C_2_3rd, $font_size, "HT_Abluft_Digestorium_Stk", "Abluft Digestorium:" );
-//        multicell_with_str($pdf, $row['HT_Abluft_Digestorium_Stk'], $e_C_3rd, "Stk");
-//        $pdf->Ln($horizontalSpacerLN2);
-//        $pdf->Multicell($block_header_w, 1, "", 0, 0, 0, 0);
-//        multicelll($pdf, $e_C_2_3rd, $font_size, "HT_Punktabsaugung_Stk", "Punktabsaugung:");
-//        multicell_with_str($pdf, $row['HT_Punktabsaugung_Stk'], $e_C_3rd, "Stk");
-//
-//        multicelll($pdf, $e_C_2_3rd, $font_size, "HT_Notdusche", "Notdusche:");
-//        multicell_with_str($pdf, $row['HT_Notdusche'], $e_C_3rd, "");
-//
-//        multicelll($pdf, $e_C_2_3rd + $e_C, $font_size, "HT_Abluft_Sicherheitsschrank_Unterbau_Stk", "Abluft Sicherheitsschrank Unterbau:");
-//        multicell_with_str($pdf, $row['HT_Abluft_Sicherheitsschrank_Unterbau_Stk'], $e_C_3rd, "Stk");
-//
-//        $pdf->Ln($horizontalSpacerLN2);
-//        $pdf->Multicell($block_header_w, 1, "", 0, 0, 0, 0);
-//        multicelll($pdf, $e_C_2_3rd, $font_size, 'HT_Luftwechsel', "Luftwechsel:");
-//        multicell_with_str($pdf, $row['HT_Luftwechsel'], $e_C_3rd + $e_C_3rd, "/h");
-//
-//        multicelll($pdf, $e_C_2_3rd, $font_size, "HT_Raumtemp Sommer °C", "Temp. Sommer :");
-//        multicell_with_str($pdf, $row['HT_Raumtemp Sommer °C'], $e_C_3rd, "°C");
-//
-//        multicelll($pdf, $e_C_2_3rd, $font_size, "HT_Raumtemp Winter °C", "Temp. Winter:");
-//        multicell_with_str($pdf, $row['HT_Raumtemp Winter °C'], $e_C_3rd, "°C");
 
         $pdf->Ln($horizontalSpacerLN2);
         anmA3($pdf, $row['Anmerkung HKLS'], $SB, $block_header_w);
@@ -303,20 +263,6 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         multicelll($pdf, $e_C_2_3rd, $font_size, '1 Kreis DL-5', "1 Kreis Dl-5: ");
         hackerlA3($pdf, $font_size, $e_C_3rd, $row['1 Kreis DL-5'], 1);
 
-//        multicelll($pdf, $e_C_2_3rd, $font_size, "NGA", "NGA: ");
-//        hackerlA3($pdf, $font_size, $e_C_3rd, $row['NGA'], 1);
-//
-//        multicelll($pdf, $e_C_2_3rd, $font_size, "N2O", "N2O: ");
-//        hackerlA3($pdf, $font_size, $e_C_3rd, $row['N2O'], 1);
-//
-//        multicelll($pdf, $e_C_2_3rd, $font_size, "CO2", "CO2: ");
-//        hackerlA3($pdf, $font_size, $e_C_3rd, $row['CO2'], 1);
-//
-//        multicelll($pdf, $e_C_2_3rd, $font_size, "DL-10", "DL10: ");
-//        hackerlA3($pdf, $font_size, $e_C_3rd, $row['DL-10'], 1);
-//
-//        $pdf->Ln($horizontalSpacerLN);
-//        $pdf->MultiCell($block_header_w, $block_header_height, "", 0, 'L', 0, 0);
 
         multicelll($pdf, $e_C_2_3rd, $font_size, '2 Kreis O2', "2 Kreis O2: ");
         hackerlA3($pdf, $font_size, $e_C_3rd, $row['2 Kreis O2'], 1);
@@ -327,8 +273,6 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         multicelll($pdf, $e_C_2_3rd, $font_size, '2 Kreis DL-5', "2 Kreis DL-5: ");
         hackerlA3($pdf, $font_size, $e_C_3rd, $row['2 Kreis DL-5'], 1);
 
-//        multicelll($pdf, $e_C_2_3rd, $font_size, 'DL-tech', "DL-tech: ");
-//        hackerlA3($pdf, $font_size, $e_C_3rd, $row['DL-tech'], 1);
 
         $pdf->Ln($horizontalSpacerLN2);
         anmA3($pdf, $row['Anmerkung MedGas'], $SB, $block_header_w);

@@ -1,5 +1,7 @@
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 check_login();
 ?>
 
@@ -18,16 +20,14 @@ $sql = "SELECT tabelle_elemente.idTABELLE_Elemente, tabelle_elemente.ElementID, 
 											ORDER BY tabelle_elemente.ElementID;";
 $result = $mysqli->query($sql);
 
-
-
-echo "<table class='table table-striped table-sm' id='tableElementsInDB'   >
+echo "<table class='table table-striped table-sm table-bordered border border-light border-5' id='tableElementsInDB'   >
 	<thead><tr>
-	<th>ID</th>";
-echo "<th></th>";
-echo "<th>ElementID</th>
+	<th>ID</th>
+    <th></th>
+    <th>ElementID</th>
 	<th>Element</th>
 	<th>Beschreibung</th>
-        <th></th>
+    <th></th>
 	</tr></thead><tbody>";
 
 while ($row = $result->fetch_assoc()) {
@@ -56,11 +56,12 @@ $mysqli->close();
             </div>
             <div class='modal-body' id='mbody'>Wollen Sie das Element <br>
                 <div id="elID"></div>
+                <!--- TODO: Infos, welches Element in welchen Raum in dieses Modal.... eig alle modale --->
                 in den Raum stellen?
             </div>
             <div class='modal-footer'>
                 <input type='button' id='addElementToRoom' class='btn btn-success btn-sm' value='Ja'
-                       data-bs-dismiss='modal'></input>
+                       data-bs-dismiss='modal'>
                 <button type='button' class='btn btn-danger btn-sm' data-bs-dismiss='modal'>Nein</button>
             </div>
         </div>
@@ -68,11 +69,10 @@ $mysqli->close();
     </div>
 </div>
 
+
 <!-- Modal zum Ändern eines Elements -->
 <div class='modal fade' id='changeElementModal' role='dialog'>
     <div class='modal-dialog modal-md'>
-
-        <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
                 <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
@@ -86,7 +86,7 @@ $mysqli->close();
                     </div>
                     <div class="form-group">
                         <label for="kurzbeschreibung">Kurzbeschreibung:</label>
-                        <textarea class="form-control" rows="5" id="kurzbeschreibungModal"></textarea>
+                        <label for="kurzbeschreibungModal"></label><textarea class="form-control" rows="5" id="kurzbeschreibungModal"></textarea>
                     </div>
                 </form>
             </div>
@@ -119,27 +119,42 @@ $mysqli->close();
 
 <script charset="utf-8">
     $(document).ready(function () {
-        $('#tableElementsInDB').DataTable({
-            "paging": true,
-            "select": true,
-            "columnDefs": [
+        $("#CardHeaderELementesInDb .btn").remove();  
+        new DataTable('#tableElementsInDB', {
+            paging: true,
+            select: true,
+            columnDefs: [
                 {
-                    "targets": [0, 5],
-                    "visible": false,
-                    "searchable": false,
-                    "sortable": false
+                    targets: [0, 5],
+                    visible: false,
+                    searchable: false,
+                    orderable: false
                 }
             ],
-            "info": false,
-            "pagingType": "simple",
-            "lengthChange": false,
-            "pageLength": 10,
-            "order": [[2, "asc"]],
-            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
+            info: false,
+            pagingType: "full",
+            pageLength: 10,
+            order: [[2, "asc"]],
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
+                search: "",
+                searchPlaceholder: "Suche..."
+            },
+            layout: {
+                topStart: "search",
+                topEnd: null,
+                bottomStart: "pageLength",
+                bottomEnd: 'paging'
+            },
+            initComplete: function (settings, json) {
+
+                $('.dt-search label').remove();
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeaderELementesInDb');
+            }
         });
 
 
-        var table1 = $('#tableElementsInDB').DataTable();
+        let tableElementsInDB = $('#tableElementsInDB').DataTable();
 
         $('#tableElementsInDB tbody').on('click', 'tr', function () {// TODO
             if ($(this).hasClass('info')) {
@@ -147,11 +162,11 @@ $mysqli->close();
                 $("#deviceParametersInDB").hide();
                 $("#devicePrices").hide();
                 $("#deviceLieferanten").hide();
-                document.getElementById("bezeichnung").value = table1.row($(this)).data()[3];
-                document.getElementById("kurzbeschreibungModal").value = table1.row($(this)).data()[4];
-                table1.$('tr.info').removeClass('info');
+                document.getElementById("bezeichnung").value = tableElementsInDB.row($(this)).data()[3];
+                document.getElementById("kurzbeschreibungModal").value = tableElementsInDB.row($(this)).data()[4];
+                tableElementsInDB.$('tr.info').removeClass('info');
                 $(this).addClass('info');
-                var elementID = table1.row($(this)).data()[0];
+                let elementID = tableElementsInDB.row($(this)).data()[0];
                 $.ajax({
                     url: "setSessionVariables.php",
                     data: {"elementID": elementID},
@@ -207,7 +222,7 @@ $mysqli->close();
 
     //Element in Raum stellen= Dialog
     $("button[value='addElement']").click(function () {
-        var elementID = this.id;
+        let elementID = this.id;
         if (elementID !== "") {
             $.ajax({
                 url: "getElementToElementID.php",
@@ -242,9 +257,8 @@ $mysqli->close();
 
     //Element speichern
     $("#saveElement").click(function () {
-        var bezeichnung = $("#bezeichnung").val();
-        var kurzbeschreibung = $("#kurzbeschreibungModal").val();
-
+        let bezeichnung = $("#bezeichnung").val();
+        let kurzbeschreibung = $("#kurzbeschreibungModal").val();
         if (bezeichnung !== "" && kurzbeschreibung !== "") {
             $.ajax({
                 url: "saveElement.php",

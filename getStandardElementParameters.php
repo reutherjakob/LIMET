@@ -35,7 +35,7 @@ check_login();
 	}
 	
 	echo "</tbody></table>";
-	echo "<input type='button' id='".$_GET["elementID"]."' class='btn btn-default btn-sm' value='Elementparameter-Vergleich' data-bs-toggle='modal' data-bs-target='#elementParameterComparisonModal'></input>";
+	echo "<input type='button' id='".$_GET["elementID"]."' class='btn btn-outline-success btn-sm' value='Elementparameter-Vergleich' data-bs-toggle='modal' data-bs-target='#elementParameterComparisonModal'></input>";
 	$mysqli ->close();
 	?>
     

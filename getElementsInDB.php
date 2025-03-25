@@ -1,6 +1,8 @@
 <?php
 
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 check_login();
 ?>
 <!DOCTYPE html>
@@ -94,108 +96,96 @@ $mysqli->close();
     </div>
 </div>
 
+<script type='text/javascript' src="_utils.js"></script>
 <script>
 
-    var dbAdmin = <?php echo $_SESSION["dbAdmin"] ?>
-        // Tabellen formatieren
-        $(document).ready(function () {
-            if (dbAdmin === 1) {
-                $('#tableElementsInDB').DataTable({
-                    "paging": true,
-                    "info": true,
-                    "pagingType": "simple",
-                    "lengthChange": false,
-                    "pageLength": 10,
-                    "columnDefs": [
-                        {
-                            "targets": [0],
-                            "visible": false,
-                            "searchable": false
-                        },
-                        {
-                            "targets": [1],
-                            "visible": false,
-                            "searchable": false
-                        }
-                    ],
-                    "order": [[1, "asc"]],
-                    "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
-                });
+    $(document).ready(function () {
+
+        new DataTable('#tableElementsInDB', {
+            paging: true,
+            info: true,
+            pagingType: "simple",
+            lengthChange: false,
+            pageLength: 10,
+            columnDefs: [
+                {
+                    targets: [0],
+                    visible: false,
+                    searchable: false
+                },
+                {
+                    targets: [1],
+                    visible: false,
+                    searchable: false
+                }
+            ],
+            order: [[1, "asc"]],
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+            },
+            layout: {
+                topStart: null,
+                topEnd: null,
+                bottomStart: 'info',
+                bottomEnd: 'paging'
+            }
+        });
+
+
+        let table1 = $('#tableElementsInDB').DataTable();
+
+        $('#tableElementsInDB tbody').on('click', 'tr', function () { //TODO
+
+            if ($(this).hasClass('info')) {
+                //$(this).removeClass('info');
             } else {
-                $('#tableElementsInDB').DataTable({
-                    "paging": false,
-                    "columnDefs": [
-                        {
-                            "targets": [0],
-                            "visible": false,
-                            "searchable": false
-                        }
-                    ],
-                    "info": false,
-                    "order": [[1, "asc"]],
-                    "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
-                    "scrollY": '20vh',
-                    "scrollCollapse": true
+                $("#deviceParametersInDB").hide();
+                $("#devicePrices").hide();
+                $("#deviceLieferanten").hide();
+                document.getElementById("bezeichnung").value = table1.row($(this)).data()[3];
+                document.getElementById("kurzbeschreibungModal").value = table1.row($(this)).data()[4];
+
+                table1.$('tr.info').removeClass('info');
+                $(this).addClass('info');
+                var elementID = table1.row($(this)).data()[0];
+                $.ajax({
+                    url: "setSessionVariables.php",
+                    data: {"elementID": elementID},
+                    type: "GET",
+                    success: function (data) {
+                        $.ajax({
+                            url: "getStandardElementParameters.php",
+                            data: {"elementID": elementID},
+                            type: "GET",
+                            success: function (data) {
+                                $("#elementParametersInDB").html(data);
+                                $.ajax({
+                                    url: "getElementPricesInDifferentProjects.php",
+                                    data: {"elementID": elementID},
+                                    type: "GET",
+                                    success: function (data) {
+                                        $("#elementPricesInOtherProjects").html(data);
+                                        $.ajax({
+                                            url: "getDevicesToElement.php",
+                                            data: {"elementID": elementID},
+                                            type: "GET",
+                                            success: function (data) {
+                                                $("#devicesInDB").html(data);
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
                 });
             }
-
-
-            // CLICK TABELLE ELEMENTE IN DB
-            var table1 = $('#tableElementsInDB').DataTable();
-
-            $('#tableElementsInDB tbody').on('click', 'tr', function () { //TODO
-
-                if ($(this).hasClass('info')) {
-                    //$(this).removeClass('info');
-                } else {
-                    $("#deviceParametersInDB").hide();
-                    $("#devicePrices").hide();
-                    $("#deviceLieferanten").hide();
-                    document.getElementById("bezeichnung").value = table1.row($(this)).data()[3];
-                    document.getElementById("kurzbeschreibungModal").value = table1.row($(this)).data()[4];
-
-                    table1.$('tr.info').removeClass('info');
-                    $(this).addClass('info');
-                    var elementID = table1.row($(this)).data()[0];
-                    $.ajax({
-                        url: "setSessionVariables.php",
-                        data: {"elementID": elementID},
-                        type: "GET",
-                        success: function (data) {
-                            $.ajax({
-                                url: "getStandardElementParameters.php",
-                                data: {"elementID": elementID},
-                                type: "GET",
-                                success: function (data) {
-                                    $("#elementParametersInDB").html(data);
-                                    $.ajax({
-                                        url: "getElementPricesInDifferentProjects.php",
-                                        data: {"elementID": elementID},
-                                        type: "GET",
-                                        success: function (data) {
-                                            $("#elementPricesInOtherProjects").html(data);
-                                            $.ajax({
-                                                url: "getDevicesToElement.php",
-                                                data: {"elementID": elementID},
-                                                type: "GET",
-                                                success: function (data) {
-                                                    $("#devicesInDB").html(data);
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
-            });
         });
+    });
 
     //Element in Raum stellen= Dialog
     $("button[value='addElement']").click(function () {
-        var elementID = this.id;
-
+        let elementID = this.id;
         if (elementID !== "") {
             $.ajax({
                 url: "getElementToElementID.php",
@@ -214,7 +204,7 @@ $mysqli->close();
             url: "addElementToRoom.php",
             type: "GET",
             success: function (data) {
-                alert(data);
+                makeToaster(data, true);
                 $.ajax({
                     url: "getRoomElementsDetailed1.php",
                     type: "GET",
@@ -222,7 +212,6 @@ $mysqli->close();
                         $("#roomElements").html(data);
                     }
                 });
-
             }
         });
     });

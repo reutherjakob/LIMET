@@ -26,9 +26,10 @@ $sql = "SELECT
     tabelle_räume_has_tabelle_elemente.Kurzbeschreibung,
     tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten,
     tabelle_räume.Geschoss,
+    tabelle_räume.Bauetappe,
+    tabelle_räume.Bauabschnitt,
     tabelle_elemente.ElementID,
     tabelle_elemente.Bezeichnung AS ElementName
-
 FROM
     tabelle_räume
         INNER JOIN
@@ -44,12 +45,15 @@ $result = $mysqli->query($sql);
 echo "<table class='table table-striped table-bordered table-sm  table-hover border border-light border-5' id='tableRoomsWithElement'>
 	<thead><tr>
         <th>ID</th>
-	<th>Anzahl</th>
-	<th>Variante</th>
+	
 	<th>Raum Nr.</th>
 	<th>Raumbez.</th>
 	<th>Raumbereich</th>
     <th>Geschoss</th>
+        <th>Bauetappe</th>
+            <th>Bauabschnitt</th>
+    <th>Anzahl</th>
+	<th>Variante</th>
 	<th>Bestand</th>
 	<th>Standort</th>
 	<th>Verwendung</th>
@@ -69,6 +73,17 @@ while ($row = $result->fetch_assoc()) {
 
     echo "<tr>";
     echo "<td>" . $row["id"] . "</td>";
+    if ($_SESSION["projectName"] === "GCP") {
+        echo "<td>" . $row["Raumnummer_Nutzer"] . "</td>";
+    } else {
+        echo "<td>" . $row["Raumnr"] . "</td>";
+    }
+
+    echo "<td>" . $row["Raumbezeichnung"] . "</td>";
+    echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
+    echo "<td>" . $row["Geschoss"] . "</td>";
+    echo "<td>" . $row["Bauetappe"] . "</td>";
+    echo "<td>" . $row["Bauabschnitt"] . "</td>";
     echo "<td><input class='form-control form-control-sm' type='text' id='amount" . $row["id"] . "' value='" . intval($row["Anzahl"]) . "' size='2'></input></td>";
     echo "<td>
    	    	<select class='form-control form-control-sm'' id='variante" . $row["id"] . "'>";
@@ -83,15 +98,6 @@ while ($row = $result->fetch_assoc()) {
     }
 
     echo "</select></td>";
-    if ($_SESSION["projectName"] === "GCP") {
-        echo "<td>" . $row["Raumnummer_Nutzer"] . "</td>";
-    } else {
-        echo "<td>" . $row["Raumnr"] . "</td>";
-    }
-
-    echo "<td>" . $row["Raumbezeichnung"] . "</td>";
-    echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
-    echo "<td>" . $row["Geschoss"] . "</td>";
     echo "<td>
 	    	<select class='form-control form-control-sm'' id='bestand" . $row["id"] . "'>";
     if ($row["Neu/Bestand"] == "0") {
@@ -181,7 +187,7 @@ $mysqli->close();
         tableRoomsWithElement = new DataTable('#tableRoomsWithElement', {
             columnDefs: [
                 {
-                    targets: [0, 12, 13, 14, 15, 16, 17, 18, 19],
+                    targets: [0, 14, 15, 16, 17, 18, 19, 20, 21],
                     visible: false,
                     searchable: false
                 }
@@ -207,8 +213,8 @@ $mysqli->close();
                     exportOptions: {
                         columns: [3, 4, 5, 12, 13, 14, 15, 16, 17, 18, 19]
                     },
-                    text: '<i class="fas fa-file-excel"></i> Excel', // Add Font Awesome icon
-                    className: 'btn btn-sm btn-light btn-outline-success', // Bootstrap small
+                    text: '<i class="fas fa-file-excel me-2"></i> Excel', // Add Font Awesome icon
+                    className: 'btn btn-sm btn-outline-success bg-white', // Bootstrap small
                 }
             ]
         });

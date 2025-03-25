@@ -105,7 +105,7 @@
                         <div class="col-3">  <b>Elemente im Projekt</b>  </div>
                         <div class="col-3 d-flex justify-content-between">                               <!--div id="groupCheckboxes">  <b>Group Data By:</b>    </div -->
                         </div>
-                        <div id="ElInPrCardHeader" class="col-6 d-inline-flex align-items-center justify-content-end"> (Änderungen nicht in Tabelle? - Reload!) &emsp;               </div>
+                        <div id="ElInPrCardHeader" class="col-xxl-6 d-inline-flex align-items-center justify-content-end"> (Änderungen nicht in Tabelle? - Reload!) &emsp;               </div>
                     </div>
                 </div>';
 

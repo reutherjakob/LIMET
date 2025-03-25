@@ -98,7 +98,7 @@ if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
 // ---------------------------------------------------------
 
 $pdf->SetFont('helvetica', '', 10);
-$pdf->AddPage('H', 'A4');
+$pdf->AddPage('L', 'A4');
 $pageHeight = 254;
 $w=array(45,10) ;
 

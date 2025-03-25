@@ -150,8 +150,8 @@ $mysqli->close();
             <button type="button" class="btn btn-outline-dark" id="<?php echo $_SESSION["roomID"]; ?>"
                     value="createRoombookPDFCosts"><i class="far fa-file-pdf"></i> RB-Kosten-PDF
             </button>
-            <div class=" btn btn-outline-dark">
-                <input class="form-check-input" type="checkbox" id="hideZeroRows">
+            <div class="btn btn-outline-dark">
+                <input class="form-check-input" type="checkbox" id="hideZeroRows" checked>
                 <label class="form-check-label" for="hideZeroRows">
                     Hide 0
                 </label>
@@ -237,6 +237,7 @@ $mysqli->close();
                         id="<?php echo $row["id"]; ?>" title="Kommentar"><i class="<?php echo $iconClass; ?>"></i>
                 </button>
             </td>
+
             <td data-order="history">
                 <button type="button" id="<?php echo $row["id"]; ?>" class="btn btn-sm btn-outline-dark"
                         value="history"><i
@@ -500,13 +501,13 @@ $mysqli->close();
         });
         attachButtonListeners();
 
-        $.fn.dataTable.ext.search.push(   //TODO. Its broken
+        $.fn.dataTable.ext.search.push(
             function (settings, data, dataIndex) {
                 let hideZero = $("#hideZeroRows").is(":checked");
                 let row = tableRoomElements.row(dataIndex).node();
                 let amount = $(row).find('input[id^="amount"]').val();
                 amount = parseInt(amount) || 0;
-                console.log(dataIndex, amount, !(hideZero && (amount === 0)));
+                //console.log(dataIndex, amount, !(hideZero && (amount === 0)));
                 return !(hideZero && (amount === 0));
             }
         );

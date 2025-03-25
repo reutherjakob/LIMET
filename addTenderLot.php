@@ -35,7 +35,7 @@ function insertLos($mysqli, $data, $isMainLos = true) {
     $values = "'" . implode("', '", array_values($commonFields)) . "'";
 
     $sql = "INSERT INTO `LIMET_RB`.`tabelle_lose_extern` ($columns) VALUES ($values)";
-
+    //echo $sql;
     if ($mysqli->query($sql) === TRUE) {
         echo "Los zu Projekt hinzugefügt!";
     } else {

@@ -29,13 +29,7 @@
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
-    <style>
-        .btn-sm, .buttons-excel {
-            margin: 5px;
-            height: 30px;
-            padding: 1px 20px;
-        }
-    </style>
+
 </head>
 
 <body id="bodyTenderLots">
@@ -55,17 +49,19 @@ init_page_serversides();
                 <div class="card-header d-inline-flex justify-content-between align-items-center">
                     <div class="d-inline-flex align-items-center">
                         <span> <strong>Lose im Projekt</strong>  &emsp;</span>
-                        <input type='button' id='addTenderLotModalButton' class='btn btn-success btn-sm'
-                               value='Los hinzufügen' data-bs-toggle='modal' data-bs-target='#addTenderLotModal'>
+
+                        <button type='button' id='addTenderLotModalButton' class='btn btn-outline-success btn-sm me-2 ms-2 '
+                                value='Los hinzufügen' data-bs-toggle='modal' data-bs-target='#addTenderLotModal'>    <i class="fa fa-plus" aria-hidden="true"></i>Los hinzufügen </button>
                     </div>
                     <div class="d-inline-flex align-items-center" id="LoseCardHeaderSub">
-                        <button type='button' class='btn btn-secondary btn-sm' id='createTenderListPDF'>
+                        <button type='button' class='btn btn-outline-secondary btn-sm' id='createTenderListPDF'>
                             <i class='far fa-file-pdf'></i> Losliste mit Elementen-PDF
                         </button>
-                        <button type='button' class='btn btn-secondary btn-sm' id='createTenderListWithoutElementsPDF'>
+                        <button type='button' class='btn btn-outline-secondary btn-sm me-2 ms-2 '
+                                id='createTenderListWithoutElementsPDF'>
                             <i class='far fa-file-pdf'></i> Losliste-PDF
                         </button>
-                        <button type='button' class='btn btn-secondary btn-sm' id='createTenderWorkflowPDF'>
+                        <button type='button' class='btn btn-outline-secondary btn-sm me-2 ms-2 ' id='createTenderWorkflowPDF'>
                             <i class='far fa-file-pdf'></i> Workflow-PDF
                         </button>
                     </div>
@@ -201,7 +197,7 @@ init_page_serversides();
 
                             echo "<td>" . $row["Lieferant"] . "</td>";
 
-                            echo "<td><button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn btn-outline-dark btn-sm' value='LotWorkflow' data-bs-toggle='modal' data-bs-target='#workflowDataModal'><i class='fas fa-history'></i></button></td>";
+                            echo "<td><button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn btn-outline-secondary btn-sm' value='LotWorkflow' data-bs-toggle='modal' data-bs-target='#workflowDataModal'><i class='fas fa-history'></i></button></td>";
                             echo "<td>" . $row["Notiz"] . "</td>";
 
                             echo "<td>" . $row["idTABELLE_Lieferant"] . "</td>";
@@ -251,7 +247,7 @@ init_page_serversides();
             <div class="mt-4 card">
                 <div class="card-header">Bestandsdaten
                     <button type='button' id='addBestandsElement'
-                            class='btn btn-sm ml-4 mt-2 btn-outline-success float-right' value='Hinzufügen'
+                            class='btn btn-sm ml-4 mt-2 btn-outline-secondary float-right' value='Hinzufügen'
                             data-bs-toggle='modal' data-bs-target='#addBestandModal'><i class='fas fa-plus'></i>
                     </button>
                     <button type='button' id='reloadBestand'
@@ -362,7 +358,7 @@ init_page_serversides();
             <div class='modal-footer'>
                 <input type='button' id='addTenderLot' class='btn btn-success btn-sm' value='Hinzufügen'>
                 <input type='button' id='saveTenderLot' class='btn btn-warning btn-sm' value='Speichern'>
-                <button type='button' class='btn btn-outline-dark btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
+                <button type='button' class='btn btn-outline-secondary btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
             </div>
         </div>
     </div>
@@ -409,20 +405,19 @@ init_page_serversides();
 
 <script src="_utils.js"></script>
 <!--suppress ES6ConvertVarToLetConst -->
-<script>
-
+<script charset="utf-8" type="module">
     var lotID;
     var lotVerfahren;
     var tableTenderLots;
     $(document).ready(function () {
         tableTenderLots = new DataTable('#tableTenderLots', {
-            //columnDefs: [
-            //    {
-            //        targets: [0, 14, 15, 16, 17, 18, 22, 23, 24],
-            //        visible: false,
-            //        searchable: false
-            //    }
-            //],
+            columnDefs: [
+                {
+                    targets: [0, 14, 15, 16, 17, 18, 22, 23, 24],
+                    visible: false,
+                    searchable: false
+                }
+            ],
             select: true,
             search: {search: ''},
             paging: true,
@@ -442,6 +437,7 @@ init_page_serversides();
             buttons: [
                 {
                     extend: 'excel',
+                    className: "btn btn-outline-secondary bg-white fas fa-file-excel me-2 ms-2 ",
                     exportOptions: {
                         columns: function (idx) {
                             return idx !== 0 &&
@@ -471,8 +467,9 @@ init_page_serversides();
                 if (button) {
                     button.classList.remove("dt-buttons");
                 }
+
                 $('.dt-search label').remove();
-                $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-dark").appendTo('#LoseCardHeaderSub');
+                $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-secondary").appendTo('#LoseCardHeaderSub');
             }
         });
 
@@ -501,10 +498,35 @@ init_page_serversides();
             document.getElementById("lotVerfahren").value = tableTenderLots.row($(this)).data()[6];
             document.getElementById("lotLVBearbeiter").value = tableTenderLots.row($(this)).data()[7];
             document.getElementById("kostenanschlag").value = tableTenderLots.row($(this)).data()[11];
-
             document.getElementById("budget").value = tableTenderLots.row($(this)).data()[12];
             document.getElementById("lotSum").value = tableTenderLots.row($(this)).data()[13];
-            document.getElementById("lotVergabe").value = tableTenderLots.row($(this)).data()[17];
+
+
+            const htmlString = tableTenderLots.row($(this)).data()[8];
+            const textContent = htmlString.replace(/<[^>]*>/g, '');
+            console.log(textContent);
+            let selectedValue;
+            switch (textContent) {
+                case 'Offen':
+                    selectedValue = 0;
+                    break;
+                case 'Fertig':
+                    selectedValue = 1;
+                    break;
+                case 'Wartend':
+                    selectedValue = 2;
+                    break;
+                default:
+                    selectedValue = 0; // Default to 'Offen' if not recognized
+            }
+            document.getElementById("lotVergabe").value = selectedValue;
+            const selectElement = document.getElementById("lotVergabe");
+            for (let i = 0; i < selectElement.options.length; i++) {
+                if (selectElement.options[i].value === selectedValue) {
+                    selectElement.options[i].selected = true;
+                    break;
+                }
+            }
             document.getElementById("lotAuftragnehmer").value = tableTenderLots.row($(this)).data()[18];
             document.getElementById("lotNotice").value = tableTenderLots.row($(this)).data()[21];
 
@@ -577,7 +599,7 @@ init_page_serversides();
                 formData.lotVerfahren !== "" && formData.lotLVBearbeiter !== "") {
                 sendData(formData);
             } else {
-                alert("Für MKF bitte alle Felder außer der Vergabesumme und Auftragnehmer ausfüllen!");
+                alert("Für MKF bitte alle Felder r ausfüllen (außer der Vergabesumme und Auftragnehmer und Auftragnehme)!");
             }
         }
     });
@@ -602,7 +624,7 @@ init_page_serversides();
             .catch(error => {
                 console.error('Error:', error);
             });
-        window.location.replace("tenderLots.php");
+       // window.location.replace("tenderLots.php");
     }
 
 
@@ -650,7 +672,7 @@ init_page_serversides();
                     }
                 });
             } else {
-                alert("Bitte alle Felder außer der Vergabesumme ausfüllen!");
+                alert("Bitte alle Felder außer der Vergabesumme/Auftragnehmer ausfüllen!");
             }
 
         } else {
@@ -681,7 +703,7 @@ init_page_serversides();
                     }
                 });
             } else {
-                alert("Bitte alle Felder außer der Vergabesumme ausfüllen!");
+                alert("Bitte alle Felder außer der Vergabesumme/Auftragnehmer ausfüllen!");
             }
         }
     });
@@ -692,7 +714,6 @@ init_page_serversides();
         document.getElementById("saveTenderLot").style.display = "inline";
         $('#addTenderLotModal').modal('show');
     });
-
 
 
     $("#addTenderLotModalButton").click(function () {
@@ -730,10 +751,6 @@ init_page_serversides();
             document.getElementById("lotMKFOf").value = 0;
         }
     });
-
-
-
-
 
 
     // PDF erzeugen

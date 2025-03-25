@@ -35,7 +35,7 @@ while ($row = $result->fetch_assoc()) {
 <div class="row">
     <div class="form-group form-check-inline d-flex align-items-center border border-light rounded bg-light">
 
-        <div class="col-6 d-flex align-items-center justify-content-start">
+        <div class="col-xxl-6 d-flex align-items-center justify-content-start">
             <label for="globalLosExtern" class="me-2"> Für ALLE Elemente im Batch</label>
             <select class="form-control form-control-sm mr-2 me-2" id="globalLosExtern" style="width: auto;">
                 <option value="0" selected> Wähle ein Los</option>
@@ -46,7 +46,7 @@ while ($row = $result->fetch_assoc()) {
             </select>
             <button id="saveSelected" class="btn btn-warning  k btn-sm mr-2 me-2"><i class='far fa-save'></i></button>
         </div>
-        <div class="col-6 d-flex justify-content-end" id="Whatever"></div>
+        <div class="col-xxl-6 d-flex justify-content-end" id="Whatever"></div>
     </div>
 
 </div>

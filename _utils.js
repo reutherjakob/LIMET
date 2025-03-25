@@ -22,7 +22,7 @@ function makeToaster(headerText, success) {
             toast.remove();
             updateToastPositions();
         }, 50);
-    }, 5000);
+    }, 10000);
 }
 
 function updateToastPositions() {

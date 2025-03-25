@@ -126,8 +126,8 @@ init_page_serversides();
                 <div class="card-header">
 
                     <div class="row">
-                        <div class="col-6"> Variantenparameter</div>
-                        <div class="col-6 d-flex justify-content-end" id="price"></div>
+                        <div class="col-xxl-6"> Variantenparameter</div>
+                        <div class="col-xxl-6 d-flex justify-content-end" id="price"></div>
                     </div>
                 </div>
                 <div class="card-body">

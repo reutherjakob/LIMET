@@ -26,7 +26,7 @@
 
 // Include the main TCPDF library (search for installation path).
 require_once('TCPDF-main/TCPDF-main/tcpdf.php');
-include 'pdf_createBericht_utils.php';
+include '_pdf_createBericht_utils.php';
 
 function br2nl($string){
     $return= str_replace(array("<br/>"), "\n", $string);

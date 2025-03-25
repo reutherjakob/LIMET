@@ -93,20 +93,60 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . $row["Raumnr"] . "</td>";
     echo "<td>" . $row["Raumbezeichnung"] . "</td>";
     echo "<td>" . $row["Geschoss"] . "</td>";
-    echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
+    echo "<td>" . $row["Raumbereich Nutzer"] . "</td>         <td>";
 
-    echo "<td><textarea id='comment" . $row["id"] . "' rows='1' style='width: 100%;'>" . $row["Kurzbeschreibung"] . "</textarea></td>";
+    $Kurzbeschreibung = trim($row["Kurzbeschreibung"] ?? "");
+    $buttonClass = $Kurzbeschreibung === "" ? "btn-outline-secondary" : "btn-outline-dark";
+    $iconClass = $Kurzbeschreibung === "" ? "fa fa-comment-slash" : "fa fa-comment";
+    $dataAttr = $Kurzbeschreibung === "" ? "data-description= '' " : "data-description='" . htmlspecialchars($Kurzbeschreibung, ENT_QUOTES, 'UTF-8') . "'";
+
+    echo " <button type='button'
+        class='btn btn-sm " . $buttonClass . "comment-btn'" . $dataAttr . " id='" . $row['id'] . "' title='Kommentar'><i class='" . $iconClass . " '></i> $Kurzbeschreibung
+        </button></td>";
+
+    //echo "<td><textarea id='comment" . $row["id"] . "' rows='1' style='width: 100%;'>" . $row["Kurzbeschreibung"] . "</textarea></td>";
     echo "</tr>";
 }
 echo "</tbody></table>";
 $mysqli->close();
 ?>
+
 <script src="_utils.js"></script>
-<script charset="utf-8">
+<script charset="utf-8" type="module" >
+    import CustomPopover from './_popover.js'; //TODO: Find out why this doesnt work, but others witht he same code do work??
+
+    CustomPopover.init('.comment-btn', {
+        onSave: function (trigger, newText) {
+            trigger.dataset.description = newText;
+            // send an AJAX request to save the new text
+            let id = trigger.id;   // = tabelle_räume_has_tabelle_elemente.id
+            $.ajax({
+                url: "saveRoomElementComment.php",
+                data: {
+                    "comment": newText,
+                    "id": id
+                },
+                type: "GET",
+                success: function (data) {
+                    makeToaster(data.trim(), true);
+                    $(".comment-btn[id='" + id + "']").removeClass('btn-outline-secondary');
+                    $(".comment-btn[id='" + id + "']").addClass('btn-outline-dark');
+                    $(".comment-btn[id='" + id + "']").find('i').removeClass('fa fa-comment-slash');
+                    $(".comment-btn[id='" + id + "']").find('i').addClass('fa fa-comment');
+                    $(".comment-btn[id='" + id + "']").attr('data-description', newText).data('description', newText);
+                }
+            });
+        }
+    });
+
+
+
     var tableLotElements1;
     $(document).ready(function () {
+
+
         tableLotElements1 = new DataTable('#tableLotElements1', {
-            dom: '<"#topDiv.top-container d-flex"<"col-md-6 justify-content-start"><"#topDivSearch2.col-md-6"f>>t<"bottom d-flex" <"col-md-6 justify-content-start"i><"col-md-6 d-flex align-items-center justify-content-end"lp>>',
+            dom: '<"#topDiv.top-container d-flex"<"col-md-6 justify-content-start"B><"#topDivSearch2.col-md-6"f>>t<"bottom d-flex" <"col-md-6 justify-content-start"i><"col-md-6 d-flex align-items-center justify-content-end"lp>>',
             columnDefs: [
                 {
                     targets: [0, 1, 2],
@@ -128,16 +168,18 @@ $mysqli->close();
                 searchPlaceholder: "Suche..."
             },
             buttons: [
-                {
-                    extend: 'excel',
-                    text: 'Download Excel'
-                },
+                 {
+                     extend: 'excel',
+                    text: 'Excel',
+                     className:"btn btn-md bg-white btn-outline-secondary fas fa-file-excel",
+                 },
                 {
                     extend: 'excel',
                     text: 'Verortungsliste',
                     exportOptions: {
                         columns: [3, 4, 5, 6, 7, 8, 9, 10, 11]
                     },
+                    className:"btn btn-md bg-white btn-outline-secondary fas fa-file-excel",
                     customize: function (xlsx) {
                         const sheet = xlsx.xl.worksheets['sheet1.xml'];
                         sheet.querySelector(".row:first-child").remove();
@@ -162,8 +204,7 @@ $mysqli->close();
             let variantenID = tableLotElements1.row($(this)).data()[2];
             let id = tableLotElements1.row($(this)).data()[0];
             let stk = tableLotElements1.row($(this)).data()[3];
-            console.log("elementID, variantenID, id, stk: ", elementID, variantenID, id, stk);
-
+            //console.log("elementID, variantenID, id, stk: ", elementID, variantenID, id, stk);
             $.ajax({
                 url: "getVariantenParameters.php",
                 data: {"variantenID": variantenID, "elementID": elementID},
@@ -183,6 +224,8 @@ $mysqli->close();
                 }
             });
         });
+
+
     });
 
     $('#createLotElementListPDF').click(function () {    // PDF erzeugen

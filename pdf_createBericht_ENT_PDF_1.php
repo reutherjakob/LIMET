@@ -1,6 +1,6 @@
 <?php
 include 'pdf_createBericht_MYPDFclass.php';
-include 'pdf_createBericht_utils.php';
+include '_pdf_createBericht_utils.php';
 if (!function_exists('utils_connect_sql')) {  include "_utils.php"; } //this one contains br2nl nowadays...
 
 

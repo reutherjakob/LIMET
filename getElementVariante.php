@@ -187,7 +187,7 @@ $row = $result->fetch_assoc(); ?>
 
                             $result = $mysqli->query($sql);
                             echo "
-                                <table class='table table-striped table-sm' id='tablePossibleElementParameters'                             >
+                                <table class='table table-striped table-sm table-hover table-bordered border border-5 border-light' id='tablePossibleElementParameters'                             >
                                     <thead>
                                     <tr>
                                         <th></th>
@@ -319,7 +319,7 @@ $row = $result->fetch_assoc(); ?>
                 </button>
             </div>
             <div class='modal-body' id='mbody'>
-                Oder hat das je was gemacht? Wird das genutzt? Vermisst? Sags m Dev...<!-- Wollen Sie die Elementparameter wirklich
+                Oder hat das je was gemacht? Wird das genutzt? Vermisst? #Sags m Dev...<!-- Wollen Sie die Elementparameter wirklich
                 überschreiben? -->
             </div>
             <div class='modal-footer'>
@@ -338,6 +338,7 @@ $row = $result->fetch_assoc(); ?>
 <script src="_utils.js"></script>
 
 <script>
+    var tablePossibleElementParameters;
     document.getElementById('kosten').addEventListener('keydown', function (event) {
         if (event.key === 'Enter') { //avoid annoying reload of the page, when hitting enter and subsequently causing useless form submission
             event.preventDefault();
@@ -371,10 +372,10 @@ $row = $result->fetch_assoc(); ?>
             scrollX: true
         });
 
-        $('#tablePossibleElementParameters').DataTable({
+        tablePossibleElementParameters=   $('#tablePossibleElementParameters').DataTable({
             select: true,
             searching: true,
-            info: true,
+            info: false,
             order: [[1, 'asc']],
             columnDefs: [
                 {
@@ -394,7 +395,10 @@ $row = $result->fetch_assoc(); ?>
                 bottomStart: 'info',
                 bottomEnd: 'paging'
             },
-            scrollX: true
+            scrollX: true,
+            initComplete: function (settings, json) {
+
+            }
         });
 
         $('#tableVariantenCostsOverTime').DataTable({
@@ -517,6 +521,7 @@ $row = $result->fetch_assoc(); ?>
                         }
                     });
                 }
+
             });
         } else {
             alert("Kosten eingeben!");
@@ -527,7 +532,8 @@ $row = $result->fetch_assoc(); ?>
     $("button[value='addParameter']").click(function () {
         let variantenID = $('#variante').val();
         let id = this.id;
-        //console.log(id, variantenID);
+        let searchValue = tablePossibleElementParameters.search();
+        console.log(searchValue);
         if (id !== "") {
             $.ajax({
                 url: "addParameterToVariante.php",
@@ -546,8 +552,10 @@ $row = $result->fetch_assoc(); ?>
                                 data: {"variantenID": variantenID},
                                 type: "GET",
                                 success: function (data) {
-                                    //console.log("1", data);
+
+
                                     $("#possibleVariantenParameter").html(data);
+                                    $('#tablePossibleElementParameters').DataTable().search(searchValue).draw();
                                 }
                             });
 
@@ -627,6 +635,11 @@ $row = $result->fetch_assoc(); ?>
     $("#addVariantenParameterToElement").click(function () {
         const elementID = <?php echo $_SESSION["elementID"] ?>;
         const variantenID = <?php echo $_SESSION["variantenID"] ?>;
+console.log(elementID);
+
+        $.ajax({
+            url: "setSessio.php",
+        })
 
         $.ajax({
             url: "addVariantenParameterToElement.php",

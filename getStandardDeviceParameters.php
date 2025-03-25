@@ -6,13 +6,23 @@
     <title></title>
 </head>
 <body>
+
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 check_login();
+
+
+$deviceID = 0;
+if (isset($_GET["deviceID"]) && $_GET["deviceID"] != "") {
+    $deviceID = $_GET["deviceID"];
+}
+
 $mysqli = utils_connect_sql();
 $sql = "SELECT tabelle_parameter.Bezeichnung, tabelle_geraete_has_tabelle_parameter.Wert, tabelle_geraete_has_tabelle_parameter.Einheit, tabelle_parameter_kategorie.Kategorie
                 FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN tabelle_geraete_has_tabelle_parameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_geraete_has_tabelle_parameter.TABELLE_Parameter_idTABELLE_Parameter) ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
-                WHERE (((tabelle_geraete_has_tabelle_parameter.TABELLE_Geraete_idTABELLE_Geraete)=" . $_SESSION["deviceID"] . "));";
+                WHERE (((tabelle_geraete_has_tabelle_parameter.TABELLE_Geraete_idTABELLE_Geraete)=" . $deviceID . "));";
 $result = $mysqli->query($sql);
 
 echo "<table class='table table-striped table-sm' id='tableStandardDeviceParameters'  >
@@ -34,13 +44,7 @@ while ($row = $result->fetch_assoc()) {
 }
 
 echo "</tbody></table>";
-
-//if ($_SESSION["dbAdmin"] == "1") {
-//   echo "<input type='button' id='changeDeviceParametersButton' class='btn btn-warning btn-sm' value='Parameter bearbeiten' data-bs-toggle='modal' data-bs-target='#changeDeviceParameters'></input>";
-//} else {
-echo "<button type='button' id='" . $_SESSION["deviceID"] . "' class='btn btn-default btn-sm' value='ParameterOvertake' data-bs-toggle='modal' data-bs-target='#parameterOvertakeModal'><span class='glyphicon glyphicon-open-file'></span> Parameter übernehmen</button>";
-//}
-
+echo "<button type='button' id='" . $deviceID . "' class='btn btn-outline-success btn-sm' value='ParameterOvertake' data-bs-toggle='modal' data-bs-target='#parameterOvertakeModal'><span class='glyphicon glyphicon-open-file'></span> Parameter übernehmen</button>";
 ?>
 <!-- Modal zum Übernehmen der Geräteparameter -->
 <div class='modal fade' id='parameterOvertakeModal' role='dialog'>
@@ -85,7 +89,7 @@ echo "<button type='button' id='" . $_SESSION["deviceID"] . "' class='btn btn-de
                                     <?php
                                     $sql = "SELECT tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung, tabelle_geraete_has_tabelle_parameter.Wert, tabelle_geraete_has_tabelle_parameter.Einheit, tabelle_geraete_has_tabelle_parameter.TABELLE_Parameter_idTABELLE_Parameter, tabelle_geraete_has_tabelle_parameter.tabelle_parameter_idTABELLE_Parameter
                                                     FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN tabelle_geraete_has_tabelle_parameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_geraete_has_tabelle_parameter.TABELLE_Parameter_idTABELLE_Parameter) ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
-                                                    WHERE (((tabelle_geraete_has_tabelle_parameter.TABELLE_Geraete_idTABELLE_Geraete)=" . $_SESSION["deviceID"] . "));";
+                                                    WHERE (((tabelle_geraete_has_tabelle_parameter.TABELLE_Geraete_idTABELLE_Geraete)=" . $deviceID . "));";
                                     $result = $mysqli->query($sql);
 
                                     echo "<table class='table table-striped table-sm' id='tableDeviceParameters'  >
@@ -129,7 +133,7 @@ echo "<button type='button' id='" . $_SESSION["deviceID"] . "' class='btn btn-de
 								AND tabelle_parameter.idTABELLE_Parameter NOT IN 
 								(SELECT tabelle_geraete_has_tabelle_parameter.TABELLE_Parameter_idTABELLE_Parameter
                                                                 FROM tabelle_geraete_has_tabelle_parameter
-                                                                WHERE (((tabelle_geraete_has_tabelle_parameter.TABELLE_Geraete_idTABELLE_Geraete)=" . $_SESSION["deviceID"] . "))) 
+                                                                WHERE (((tabelle_geraete_has_tabelle_parameter.TABELLE_Geraete_idTABELLE_Geraete)=" . $deviceID . "))) 
 								ORDER BY tabelle_parameter_kategorie.Kategorie;";
 
                                     $result = $mysqli->query($sql);
@@ -152,6 +156,7 @@ echo "<button type='button' id='" . $_SESSION["deviceID"] . "' class='btn btn-de
                                     }
 
                                     echo "</tbody></table>";
+                                    $mysqli->close();
                                     ?>
                                 </div>
                             </div>
@@ -166,61 +171,80 @@ echo "<button type='button' id='" . $_SESSION["deviceID"] . "' class='btn btn-de
     </div>
 </div>
 
-<?php
-$mysqli->close();
-?>
 
 <script>
-
-
-    $("#tableStandardDeviceParameters").DataTable({
-        "paging": false,
-        "searching": false,
-        "info": false,
-        //"pagingType": "simple_numbers",
-        //"lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
-        "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
-        "scrollY": '20vh',
-        "scrollCollapse": true
+     deviceID = '<?php echo $deviceID; ?>';
+    new DataTable('#tableStandardDeviceParameters', {
+        paging: false,
+        searching: false,
+        info: false,
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+        },
+        scrollY: '20vh',
+        scrollCollapse: true,
+        layout: {
+            topStart: null,
+            topEnd: null,
+            bottomStart: null,
+            bottomEnd: null
+        }
     });
 
-    $('#tableDeviceParameters').DataTable({
-        "paging": false,
-        "searching": true,
-        "info": false,
-        "order": [[1, "asc"]],
-        "columnDefs": [
+
+    new DataTable('#tableDeviceParameters', {
+        paging: false,
+        searching: true,
+        info: false,
+        order: [[1, "asc"]],
+        columnDefs: [
             {
-                "targets": [0],
-                "visible": true,
-                "searchable": false
+                targets: [0],
+                visible: true,
+                searchable: false
             }
         ],
-        "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
-        "scrollY": '20vh',
-        "scrollCollapse": true
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+        },
+        scrollY: '20vh',
+        scrollCollapse: true,
+        layout: {
+            topStart: null,
+            topEnd: null,
+            bottomStart: null,
+            bottomEnd: 'search'
+        }
     });
 
-    $('#tablePossibleDeviceParameters').DataTable({
-        "paging": false,
-        "searching": true,
-        "info": false,
-        "order": [[1, "asc"]],
-        "columnDefs": [
+    new DataTable('#tablePossibleDeviceParameters', {
+        paging: false,
+        searching: true,
+        info: false,
+        order: [[1, "asc"]],
+        columnDefs: [
             {
-                "targets": [0],
-                "visible": true,
-                "searchable": false
+                targets: [0],
+                visible: true,
+                searchable: false
             }
         ],
-        "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
-        "scrollY": '20vh',
-        "scrollCollapse": true
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+        },
+        scrollY: '20vh',
+        scrollCollapse: true,
+        layout: {
+            topStart: null,
+            topEnd: null,
+            bottomStart: null,
+            bottomEnd: 'search'
+        }
     });
 
     //Parameter zu Gerät hinzufügen
     $("button[value='addParameter']").click(function () {
-        var id = this.id;
+        let id = this.id;
         if (id !== "") {
             $.ajax({
                 url: "addParameterToDevice.php",
@@ -250,7 +274,7 @@ $mysqli->close();
 
     //Parameter von Gerät entfernen
     $("button[value='deleteParameter']").click(function () {
-        var id = this.id;
+        let id = this.id;
         if (id !== "") {
             $.ajax({
                 url: "deleteParameterFromDevice.php",
@@ -282,10 +306,9 @@ $mysqli->close();
 
     //Parameter ändern
     $("button[value='saveParameter']").click(function () {
-        var id = this.id;
-        var wert = $("#wert" + id).val();
-        var einheit = $("#einheit" + id).val();
-
+        let id = this.id;
+        let wert = $("#wert" + id).val();
+        let einheit = $("#einheit" + id).val();
         if (id !== "") {
             $.ajax({
                 url: "updateDeviceParameter.php",
@@ -303,17 +326,15 @@ $mysqli->close();
         $.ajax({
             url: "getStandardDeviceParameters.php",
             type: "GET",
+
             success: function (data) {
                 $("#deviceParametersInDB").html(data);
                 $('#changeDeviceParameters').modal('hide');
                 $('.modal-backdrop').remove();
             }
         });
-
-
     });
 
-    //Geräteparameter für Variante übernehmen
     $("#saveParametersFromDevice").click(function () {
         $.ajax({
             url: "addDeviceParametersToVariante.php",
@@ -331,8 +352,6 @@ $mysqli->close();
             }
         });
     });
-
 </script>
-
 </body>
 </html>

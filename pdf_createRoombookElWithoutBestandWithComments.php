@@ -3,7 +3,7 @@ require_once('TCPDF-main/TCPDF-main/tcpdf.php');
 if (!function_exists('utils_connect_sql')) {
     include "_utils.php";
 }
-include "_pdf_utils.php";
+include "_pdf_createBericht_utils.php";
 check_login();
 
 class MYPDF extends TCPDF

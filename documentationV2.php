@@ -140,10 +140,10 @@ init_page_serversides();
             <div class="mt-1 card">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-xxl-6">
                             <b>Vermerk-Untergruppen</b>
                         </div>
-                        <div class="col-6 d-flex justify-content-end" id="CardHeaderVermerUntergruppen">
+                        <div class="col-xxl-6 d-flex justify-content-end" id="CardHeaderVermerUntergruppen">
                             <button type='button' id='buttonNewVermerkuntergruppe'
                                     class='btn  btn-sm btn-outline-success me-2'
                                     value='Neue Vermerkuntergruppe' style='visibility:hidden'><i
@@ -162,10 +162,10 @@ init_page_serversides();
             <div class="mt-1 card">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-xxl-6">
                             <b>Vermerke</b>
                         </div>
-                        <div class="col-6 d-flex justify-content-end align-items-center" id="CardHeaderVermerkE">
+                        <div class="col-xxl-6 d-flex justify-content-end align-items-center" id="CardHeaderVermerkE">
                             <button type='button' id='buttonNewVermerk' class='btn btn-outline-success btn-sm me-2'
                                     value='Neuer Vermerk' style='visibility:hidden'><i class='fas fa-plus'></i>
                                 Neu

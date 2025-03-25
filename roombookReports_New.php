@@ -136,6 +136,7 @@ init_page_serversides("", "x");
                 "BAUANGABEN A3": "/pdf_createBauangabenBericht_A3Qeer.php",
                 "BAUANGABEN A3 2": "/pdf_createBauangabenBericht_A3Qeer_1.php",
                 "BAUANGABEN A3 3": "/pdf_createBauangabenBericht_A3Qeer_ohne_Lab_params.php",
+                "BAUANGABEN A3 4": "/pdf_createBauangabenBericht_A3Qeer_PSy.php",
                 "-": "-",
                 "Elem./Raum (w/Bestand)": "/pdf_createRoombookElWithoutBestand.php",
                 "inkl.Elem.Kommentar": "/pdf_createRoombookElWithoutBestandWithComments.php"
@@ -160,6 +161,7 @@ init_page_serversides("", "x");
             {text: "BAU A3", action: () => generateNewReports("BAUANGABEN A3", $("#dateSelect").val())},
             {text: "ohne Lab", action: () => generateNewReports("BAUANGABEN A3 3", $("#dateSelect").val())},
             {text: "ohne Datum", action: () => generateNewReports("BAUANGABEN A3 2", $("#dateSelect").val())},
+            {text: "Psy", action: () => generateNewReports("BAUANGABEN A3 4", $("#dateSelect").val())},
             {text: "-"},
             {
                 text: "Elem./Raum (w/Bestand)",

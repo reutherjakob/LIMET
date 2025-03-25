@@ -16,7 +16,8 @@ const CustomPopover = (function ($) {
         }).css({
             position: 'absolute',
             top: `${position.top}px`,
-            left: `${position.left}px`
+            left: `${position.left}px`,
+            zIndex: 9999
         });
     }
 
@@ -83,7 +84,7 @@ const CustomPopover = (function ($) {
 
     function init(selector, options = {}) {
         onSaveCallback = options.onSave || null;
-
+        console.log("Popover Inititaion... ");
         $(document).on('click', function(e) {
             const trigger = $(e.target).closest(selector);
             if (trigger.length) {

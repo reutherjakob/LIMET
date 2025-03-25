@@ -36,8 +36,8 @@ init_page_serversides();
     <div class="mt-4 card responsive">
         <div class="card-header">
             <div class="row ">
-                <div class="col-6"><b>BAUANGABEN CHECK</b></div>
-                <div class="col-6 d-inline-flex justify-content-end" id="CH1">
+                <div class="col-xxl-6"><b>BAUANGABEN CHECK</b></div>
+                <div class="col-xxl-6 d-inline-flex justify-content-end" id="CH1">
 
                     <button id="deleteButton" class="btn btn-sm btn-outline-dark me-1"> Markierungen löschen</button>
                     <button type="button" class="btn btn-sm btn-info me-1" onclick="show_modal('InfoModal')">

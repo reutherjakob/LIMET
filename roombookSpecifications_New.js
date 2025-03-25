@@ -8,6 +8,9 @@ fetch('get_project_id.php')
     .catch(error => console.error('Error:', error));
 
 var table;
+
+var table_edited = false;
+const Reload_string = "The table has been edited. Please reload the page before downloading. Reload now?";
 let cellText = "";
 let currentRowInd = 0;
 let currentColInd = 0;
@@ -16,21 +19,38 @@ let Cookie_aktiv_tage = 90;
 let previous_room_session = 0;
 var dt_search_counter = 1;
 
+let savestate = document.getElementById('settings_save_state').checked || document.getElementById('settings_save_state_4all_projects').checked;
+
+const searchbuilder = [
+    {
+        extend: 'searchBuilder',
+        text: "",
+        className: "btn btn-light fa fa-search search-builder-btn",
+        titleAttr: "Suche konfigurieren",
+        stateSave: savestate
+    }
+];
 $(document).ready(function () {
     loadSettings();
-    init_dt();
+    init_dt(); //    move_item("dt-search-0", "TableCardHeader");
     init_editable_checkbox();
 
-    move_item("dt-search-0", "TableCardHeader");
     init_showRoomElements_btn();
     init_btn_4_dt();
     init_visibilities();
     table_click();
-
     init_filter();
     handleCheckboxChange();
-
     add_room_modal();
+    $('#search-input').on('input', function () {
+        let searchValue = $(this).val();
+        if (searchValue === "") {
+            table.search("").draw(); // Clear active search
+            table.state.clear(); // Remove saved state [7]
+            table.ajax.reload(null, false); // Reload data without resetting paging
+        }
+    });
+
 });
 
 function add_MT_rel_filter(location, table) {
@@ -119,22 +139,48 @@ function init_btn_4_dt() {
             text: '',
             className: "btn btn-light border-secondary fas fa-window-restore",
             titleAttr: "Copy Selected Row",
-            action: copySelectedRow
+            action: function () {
+                if (table_edited) {
+                    if (confirm(Reload_string)) {
+                        location.reload();
+                    }
+                } else {
+                    copySelectedRow();
+                }
+            }
         },
         {
             extend: 'excelHtml5',
             exportOptions: {columns: ':visible'},
             className: 'btn btn-light border-secondary fa fa-download',
             text: "",
-            titleAttr: "Download as Excel"
+            titleAttr: "Download as Excel",
+            action: function (e, dt, node, config) {
+                if (table_edited) {
+                    if (confirm(Reload_string)) {
+                        location.reload();
+                    }
+                } else {
+                    $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, node, config);
+                }
+            }
         }
     ];
+
     const btn_grp_settings = [
         {
             text: "",
             className: "btn btn-light border-secondary fas fa-vote-yea",
             titleAttr: "Bauangaben Check",
-            action: check_angaben
+            action: function () {
+                if (table_edited) {
+                    if (confirm(Reload_string)) {
+                        location.reload();
+                    }
+                } else {
+                    check_angaben();
+                }
+            }
         },
         {
             text: "",
@@ -153,15 +199,11 @@ function init_btn_4_dt() {
         {
             extend: 'colvis',
             text: 'Vis',
-            columns: ':gt(5)',
+            columns: ':gt(6)',
             className: 'btn btn-light border-secondary',
             collectionLayout: 'fixed six-column',
             fade: 0,
             align: 'center'
-            //,prefixButtons: [{
-            //    extend: 'colvisRestore',
-            //    text: 'Standard Wieder'
-            // }]
         },
         ...buttonRanges.map(button => ({
             text: button.name, className: 'btn btnx btn_vis',
@@ -175,16 +217,7 @@ function init_btn_4_dt() {
             action: toggleReportColumnsVisible
         }
     ];
-    const savestate = document.getElementById('settings_save_state').checked || document.getElementById('settings_save_state_4all_projects').checked;
-    const searchbuilder = [
-        {
-            extend: 'searchBuilder',
-            text: "",
-            className: "btn btn-light  fa fa-search",
-            titleAttr: "Suche konfigurieren",
-            stateSave: savestate
-        }
-    ];
+    // TODO: Search Builder is breaking, when data is saved and the tzale is reloaded.
     new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#TableCardHeader'));
     new $.fn.dataTable.Buttons(table, {buttons: buttons_group_selct}).container().appendTo($('<div class="btn-group"></div>').appendTo($('#TableCardHeaderX')));
     new $.fn.dataTable.Buttons(table, {buttons: buttonsGroupcolumnVisbilities}).container().appendTo($('<div class="btn-group" role="group"></div>').appendTo($('#TableCardHeader2')));
@@ -192,37 +225,42 @@ function init_btn_4_dt() {
     new $.fn.dataTable.Buttons(table, {buttons: btn_grp_settings}).container().appendTo($('<div class="btn-group"></div>').appendTo($('#TableCardHeader4')));
 }
 
-
 function init_dt() {
-    const savestate = document.getElementById('settings_save_state').checked || document.getElementById('settings_save_state_4all_projects').checked;
+    savestate = document.getElementById('settings_save_state').checked || document.getElementById('settings_save_state_4all_projects').checked;
     table = new DataTable('#table_rooms', {
-            ajax: {url: 'get_rb_specs_data.php', dataSrc: ''},
-            columns: columnsDefinition,
-            layout: {topStart: null, top: null, bottomStart: ['pageLength', 'info'], bottomEnd: 'paging'},
-            scrollX: true,
-            scrollCollapse: true,
-            language: {
-                search: "",
-                searchBuilder: {
-                    button: '(%d)'
-                }
-            },
-            select: "os",
-            fixedColumns: {start: 2},
-            fixedHeader: true,
-            keys: true,
-            order: [{
-                name: 'Raumbezeichnung',
-                dir: 'asc'
-            }, {name: 'Nummer', dir: 'asc'}],
-            stateSave: savestate,
-            pageLength: 10,
-            lengthMenu: [[5, 10, 20, 50, -1], ['5 rows', '10 rows', '20 rows', '50 rows', 'All']],
-            compact: true,
+        ajax: {url: 'get_rb_specs_data.php', dataSrc: ''},
+        columns: columnsDefinition,
+        layout: {
+            topStart: null, top: null, bottomStart: ['pageLength', 'info'], bottomEnd: ['paging']
+        },
+        scrollX: true,
+        scrollCollapse: true,
+        language: {
+            search: "",
+            searchPlaceholder: "Suche...",
+            searchBuilder: {
+                button: '(%d)'
+            } //,url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
+        },
+        select: "multi",
+        fixedColumns: {start: 2},
+        fixedHeader: true,
+        keys: true,
+        order: [{
+            name: 'Raumbezeichnung',
+            dir: 'asc'
+        }, {name: 'Nummer', dir: 'asc'}],
+        stateSave: savestate,
+        pageLength: 10,
+        lengthMenu: [[5, 10, 20, 50, -1], ['5 rows', '10 rows', '20 rows', '50 rows', 'All']],
+        compact: true,
+        initComplete: function () {
+            $('.dt-search input').addClass("btn btn-sm btn-outline-secondary");
+            $('.dt-search label').remove();
+            $('.dt-search').children().addClass("d-flex align-items-center").appendTo('#TableCardHeader');//removeClass('form-control form-control-sm')
         }
-    );
+    });
 }
-
 
 function toggleButtonTexts() {
     $('#checkbox_EditableTable').next('label').toggle();
@@ -298,7 +336,6 @@ function loadSettings() {
     document.getElementById('settings_save_state_4all_projects').checked = getCookieValue('settings_save_state_4all_projects');
     document.getElementById('settings_save_state').checked = getCookieValue('settings_save_state' + projectID);
     document.getElementById('settings_save_edit_cbx').checked = getCookieValue('settings_save_edit_cbx');
-
     $('#settings_show_btn_grp_labels').change(function () {
         change_top_label_visibility($(this).is(':checked'));
     });
@@ -308,17 +345,14 @@ function loadSettings() {
 function saveSettings() {
     const showBtnGrpLabels = document.getElementById('settings_show_btn_grp_labels').checked;
     const saveState4AllProjects = document.getElementById('settings_save_state_4all_projects').checked;
-    const saveState = document.getElementById('settings_save_state').checked;
+    saveState = document.getElementById('settings_save_state').checked;
     const saveEditCbx = document.getElementById('settings_save_edit_cbx').checked;
-
     const prevSaveState4AllProjects = getCookie('settings_save_state_4all_projects') === 'true';
     const prevSaveState = getCookie('settings_save_state' + projectID) === 'true';
-
     setCookie('settings_show_btn_grp_labels', showBtnGrpLabels, Cookie_aktiv_tage);
     setCookie('settings_save_state_4all_projects', saveState4AllProjects, Cookie_aktiv_tage);
     setCookie('settings_save_state' + projectID, saveState, Cookie_aktiv_tage);
     setCookie('settings_save_edit_cbx', saveEditCbx, Cookie_aktiv_tage);
-
     if (saveState4AllProjects !== prevSaveState4AllProjects || saveState !== prevSaveState) {
         if (confirm("Um die geänderten Einstellungen wirksam zu machen, muss diese Seite neu geladen werden. Neu Laden?")) {
             location.reload();
@@ -344,16 +378,6 @@ function check_angaben() {
         window.open('/roombookBauangabenCheck.php?roomID=' + roomIDs);
     }
 }
-
-
-/*function event_table_keyz() {
-table.on('key-focus', function (e, datatable, cell) {
-    let rowIndex = cell.index().row;
-    if (rowIndex !== currentRowInd && !document.getElementById('checkbox_EditableTable').checked) {
-        currentRowInd = rowIndex;
-    }
-});
-} */
 
 
 /// EDIT TABLE
@@ -382,7 +406,7 @@ function html_2_plug_into_edit_cell(dataIdentifier) {
             "Gentechnikgesetz - S3",
             "Gentechnikgesetz - S4"
         ],
-        "H6020": [" - ", "H1a", "H1b", "H1c", "H2a", "H2b", "H2c", "H3", "H4", "ÖNORM S 5224"],
+        "H6020": [" - ", "H1a", "H1b", "H1c", "H2a", "H2b", "H2c", "H3", "H4", "ÖNORM S 5224", "DUGV 213-850"],
         "Anwendungsgruppe": ["-", "0", "1", "2"],
         "Fussboden OENORM B5220": ["kA", "Klasse 1", "Klasse 2", "Klasse 3"]
     };
@@ -392,20 +416,16 @@ function html_2_plug_into_edit_cell(dataIdentifier) {
             .join('\n');
         return `<select class="form-control form-control-sm" id="${dataIdentifier}_dropdowner">\n${dropdownOptions}\n</select>`;
     } else if (getCase(dataIdentifier) === "bit") {
-        return `
-                                    <select class="form-control form-control-sm" id="${dataIdentifier}_dropdowner">
+        return ` <select class="form-control form-control-sm" id="${dataIdentifier}_dropdowner">
                                         <option value="0"${cellText === '0' ? ' selected' : ''}>0</option>
                                         <option value="1"${cellText === '1' ? ' selected' : ''}>1</option>
-                                    </select>
-                                `;
+                                    </select> `;
     } else if (getCase(dataIdentifier) === "abd") {
-        return `
-                                    <select class="form-control form-control-sm" id="${dataIdentifier}_dropdowner">
+        return ` <select class="form-control form-control-sm" id="${dataIdentifier}_dropdowner">
                                         <option value="0"${cellText === '0' ? ' selected' : ''}> kein Anspruch </option>
                                         <option value="1"${cellText === '1' ? ' selected' : ''}> abdunkelbar </option>
                                         <option value="2"${cellText === '2' ? ' selected' : ''}> vollverdunkelbar </option>
-                                    </select>
-                                `;
+                                    </select>   `;
     } else {
         return `<input class="form-control form-control-sm" id="CellInput" onclick="this.select()" type="text" value="${cellText}">`;
     }
@@ -415,6 +435,8 @@ function html_2_plug_into_edit_cell(dataIdentifier) {
 function table_click() {
     $(document).on('click', '#table_rooms tbody tr', function () {
         let RaumID = table.row($(this)).data()['idTABELLE_Räume'];
+        console.log(RaumID);
+
         if ($('#checkbox_EditableTable').is(':checked')) {
             let Raumbez = table.row($(this)).data()['Raumbezeichnung'];
             let rowIndex = $(this).closest('tr').index();
@@ -434,6 +456,7 @@ function table_click() {
             if (currentRowInd !== rowIndex || currentColInd !== columnIndex) {
                 cellText = cell.text().trim();
             }
+
             currentRowInd = rowIndex;
             currentColInd = columnIndex;
             if (getCase(dataIdentifier) !== "none-edit") {
@@ -446,7 +469,7 @@ function table_click() {
                 cell.find('input, select').focus();
                 table.keys.disable();
                 cell.find('input, select').on('keydown blur', function (event) {
-                    if (event.keyCode === 13 && current_edit) {
+                    if ((event.keyCode === 13 || event.keyCode === 9) && current_edit) {
                         let newData = format_data_input($(this).val(), dataIdentifier); //utils.js
                         if (newData.trim() !== "") {
                             cellText = newData;
@@ -457,7 +480,7 @@ function table_click() {
                             current_edit = false;
                         }
                     }
-                    if (event.keyCode === 27 || event.type === "blur" || event.keyCode === 9) {
+                    if (event.keyCode === 27 || event.type === "blur") {
                         cell.html(cellText);
                         if (current_edit) {
                             makeToaster("Changes NOT Saved", false);
@@ -468,6 +491,8 @@ function table_click() {
                     }
                 });
             }
+        } else {
+            current_edit = false;
         }
 
         $.ajax({
@@ -498,15 +523,11 @@ function table_click() {
                                     $cardHeader1.find('[id^="dt-search-"]').remove();
 
                                     setTimeout(function () {
-                                        //$cardHeader.append("&ensp;");
                                         move_item("dt-search-" + dt_search_counter, "CardHEaderElemntsInRoom1");
                                         // console.log(dt_search_counter, " -> ", dt_search_counter+1);
-                                        dt_search_counter++;
-
-                                        // attachButtonListeners();
+                                        dt_search_counter++; // attachButtonListeners();
                                         $cardHeader2.append($('#room-action-buttons'));
                                     }, 100)
-                                    //console.log("Moved: dt_search_counter: ", dt_search_counter);
                                 },
                                 error: function (jqXHR, textStatus, errorThrown) {
                                     console.error("AJAX call failed: " + textStatus + ", " + errorThrown);
@@ -643,31 +664,18 @@ function save_changes(RaumID, ColumnName, newData, raumname) {
         type: "GET",
         success: function (data) {
             if (data === "Erfolgreich aktualisiert!") {
-                makeToaster("SAVED</b>" + raumname + ";  " + ColumnName + ";  " + newData + " ", true);
+                makeToaster("SAVED </b>" + raumname + ";  " + ColumnName + ";  " + newData + " ", true);
             } else {
-                makeToaster("FAILED!!</b>" + data + "---", false);
+                makeToaster("FAILED!! </b>" + data + "---", false);
             }
         }
     });
-    table.state.save();
-    table.ajax.reload(null, false).then(function () {
-        table.state.load();
-        // If using SearchBuilder, you might need to manually rebuild the search
-        // This part depends on how you've implemented SearchBuilder
-        // You can use the searchBuilder.getDetails() method to save the current state
-        // and then rebuild it after reloading the table.
-        // For example:
-        // var searchBuilder = new $.fn.dataTable.searchBuilder(table);
-        // var savedState = searchBuilder.getDetails();
-        // // Save the state somewhere (e.g., in a cookie or local storage)
-        // // After reloading:
-        // searchBuilder.rebuild(savedState);
-    });
-
+    table_edited = true;
+    //table.ajax.reload();
 }
 
-
 function copySelectedRow() {
+
     if (!confirm('Raum Kopieren??')) {
         return 0;
     }

@@ -38,8 +38,8 @@ init_page_serversides();
         <div class="mt-2 card col-8 ">
             <div class="card-header">
                 <div class="row">
-                    <div class="col-6 d-flex flex-nowrap overflow-auto" id='TableCardHeader1'></div>
-                    <div class="col-6 d-inline-flex flex-nowrap overflow-auto justify-content-end"
+                    <div class="col-xxl-6 d-flex flex-nowrap overflow-auto" id='TableCardHeader1'></div>
+                    <div class="col-xxl-6 d-inline-flex flex-nowrap overflow-auto justify-content-end"
                          id='TableCardHeader'></div>
                 </div>
             </div>

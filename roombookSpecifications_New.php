@@ -117,20 +117,20 @@ include 'roombookSpecifications_HelpModal.php';
             <div class="card-body" id="bauangaben"></div>
         </div>
         <div class="mt-4 card">
-            <div class="card me-2 ms-2">
+
                 <div class="card-header form-inline d-inline-flex " id="CardHEaderElemntsInRoom">
                     <button type="button" class="btn btn-outline-dark " id="showRoomElements" style="width: 30px;"><i
                                 class="fas fa-caret-left"></i></button>
                     <div class="row" id="CardHEaderElemntsInRoom_SUB">
-                        <div class="col-6" id="CardHEaderElemntsInRoom1"></div>
-                        <div class="col-6 d-flex" id="CardHEaderElemntsInRoom2"></div>
+                        <div class="col-xxl-6" id="CardHEaderElemntsInRoom1"></div>
+                        <div class="col-xxl-6 d-flex" id="CardHEaderElemntsInRoom2"></div>
                     </div>
                 </div>
                 <div class="card-body" id="additionalInfo">
                     <p id="roomElements"></p>
                     <p id="elementParameters"></p>
                 </div>
-            </div>
+
         </div>
     </section>
 </main>
@@ -159,7 +159,7 @@ include 'roombookSpecifications_HelpModal.php';
                     <label class="form-check-label" for="settings_save_edit_cbx">Tabelle editierbar initiieren</label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="settings_show_btn_grp_labels">
+                    <input class="form-check-input" type="checkbox" id="settings_show_btn_grp_labels" checked>
                     <label class="form-check-label" for="settings_show_btn_grp_labels">Labels über den Buttons
                         anzeigen</label>
                 </div>

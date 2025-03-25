@@ -1,5 +1,7 @@
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 include "_format.php";
 check_login();
 
@@ -82,18 +84,31 @@ while ($row = $result->fetch_assoc()) {
     echo "</tr>";
 }
 echo "</tbody>
-
-        <tfoot>
-            <tr>
-                <th colspan='4' style='text-align:right'>Summe:</th>
-                <th></th>
-            </tr>
-        </tfoot>
 </table>";
 $mysqli->close();
 ?>
+<div class="row">
+    <div class="col-10">
+        <div class="d-flex align-items-center justify-content-end">
+            <label class="badge bg-success"> SUMME PPs:
+                <input class="bg-success-subtle border-light text-dark text-md-center fs-5" disabled id="SUMME">
+            </label>
+        </div>
+
+    </div>
+
+</div>
 
 <script>
+    function formatGermanCurrency(amount) {
+        return new Intl.NumberFormat('de-DE', {
+            style: 'currency',
+            currency: 'EUR',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).format(amount);
+    }
+
     $(document).ready(function () {
         new DataTable('#tableRoomAreaCosts', {
             paging: false,
@@ -114,19 +129,19 @@ $mysqli->close();
             ],
             buttons: [
                 {
-                    extend: 'excel',
+                    extend: 'excelHtml5',
+                    footer: false,
                     exportOptions: {
-                        columns: function (idx) {
-                            return idx !== 3 && idx !== 4;
-                        }
-                    }
+                        columns: [1, 2, 5, 6, 7, 8, 9],
+                    }, text: '<i class="fas fa-file-excel"></i> Excel', // Add Font Awesome icon
+                    className: 'btn btn-sm btn-light btn-outline-success' // Bootstrap small
                 }
             ],
             layout: {
-                topStart: null,
+                topStart: "buttons",
                 topEnd: null,
                 bottomStart: 'info',
-                bottomEnd: 'buttons'
+                bottomEnd: null
             },
             footerCallback: function () {//row, data, start, end, display) {
                 let api = this.api();
@@ -136,28 +151,14 @@ $mysqli->close();
                         typeof i === 'number' ?
                             i : 0;
                 };
-                // Total over all pages
                 let total = api
-                    .column(4)
+                    .column(6)
                     .data()
                     .reduce(function (a, b) {
                         return intVal(a) + intVal(b);
                     }, 0);
 
-                // Total over this page
-                let pageTotal = api
-                    .column(4, {page: 'current'})
-                    .data()
-                    .reduce(function (a, b) {
-                        return intVal(a) + intVal(b);
-                    }, 0);
-
-                // Format the total
-                const formattedNumber = new Intl.NumberFormat('de-DE', {
-                    style: 'currency',
-                    currency: 'EUR'
-                }).format(pageTotal);
-                $(api.column(4).footer()).html(formattedNumber);
+                $("#SUMME").val(formatGermanCurrency(total));
             }
         });
 

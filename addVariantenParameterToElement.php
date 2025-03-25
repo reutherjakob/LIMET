@@ -5,7 +5,7 @@ $mysqli = utils_connect_sql();
 
 // Vorhandene Elementparameter löschen
 $sqlDelete = "DELETE FROM tabelle_elemente_has_tabelle_parameter WHERE (((tabelle_elemente_has_tabelle_parameter.TABELLE_Elemente_idTABELLE_Elemente)=" . filter_input(INPUT_GET, 'elementID') . "));";
-
+// TODO
 if ($mysqli->query($sqlDelete) === TRUE) {
     echo "Zentrale Elementparameter gelöscht!";
 } else {

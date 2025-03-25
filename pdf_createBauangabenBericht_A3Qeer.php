@@ -1,7 +1,7 @@
 <?php
 
 include 'pdf_createBericht_MYPDFclass.php'; //require_once('TCPDF-main/TCPDF-main/tcpdf.php'); is in class file
-include 'pdf_createBericht_utils.php';
+include '_pdf_createBericht_utils.php';
 if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 include 'pdf_createMTTabelle.php';
 
@@ -578,7 +578,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                 multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, $item[0], $item[1], $parameter_changes_t_räume);
 
                 if ($item[0] === 'EL_AV Steckdosen Stk') {
-                    multicell_with_nr($pdf, $row[$item[0]], "Stk", $font_size, $e_C_3rd);
+                    multicell_with_nr($pdf, $row[$item[0]], " Stk", $font_size, $e_C_3rd);
                 } else {
                     multicell_with_str($pdf, $row[$item[0]], $e_C_3rd, "Stk");
                 }

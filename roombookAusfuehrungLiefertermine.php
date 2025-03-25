@@ -48,7 +48,7 @@ if (!isset($_SESSION["username"])) {
 
                     <div class="row">
                         <div class="col-2"><b>Elemente im Projekt</b></div>
-                        <div class="col-6 d-flex justify-content-end ">
+                        <div class="col-xxl-6 d-flex justify-content-end ">
                             <form role='form'>
                                 <div class='form-group form-inline'>
                                     <label for='lieferdatum'>Lieferdatum: &emsp;</label>

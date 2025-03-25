@@ -44,9 +44,9 @@
 
                             $result = $mysqli->query($sql);
                             echo "<div class='form-group row'>
-									 			<label class='control-label col-xxl-2' for='elementGewerk'>Gewerk</label>
-												<div class='col-xxl-10'>
-													<select class='form-control form-control-sm' id='elementGewerk' name='elementGewerk'>";
+									 			<label class='control-label col-xxl-3 col-md-3' for='elementGewerk'>Gewerk</label>
+												<div class='col-xxl-9 col-md-9'>
+													<select class='form-control form-control-sm mt-1' id='elementGewerk' name='elementGewerk'>";
                             while ($row = $result->fetch_assoc()) {
                                 echo "<option value=" . $row["idtabelle_element_gewerke"] . ">" . $row["Nummer"] . " - " . $row["Gewerk"] . "</option>";
                             }
@@ -55,18 +55,18 @@
 										</div>";
 
                             echo "<div class='form-group row'>
-									 			<label class='control-label col-xxl-2' for='elementHauptgruppe'>Hauptgruppe</label>
-												<div class='col-xxl-10'>
-													<select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>
+									 			<label class='control-label col-xxl-3 col-md-3' for='elementHauptgruppe'>Hauptgruppe</label>
+												<div class='col-xxl-9 col-md-9'>
+													<select class='form-control form-control-sm  mt-1' id='elementHauptgruppe' name='elementHauptgruppe'>
 														<option selected>Gewerk auswählen</option>
 													</select>	
 												</div>
 										</div>";
 
                             echo "<div class='form-group row'>
-									 			<label class='control-label col-xxl-2' for='elementGruppe'>Gruppe</label>
-												<div class='col-xxl-10'>
-													<select class='form-control form-control-sm' id='elementGruppe' name='elementGruppe'>
+									 			<label class='control-label col-xxl-3 col-md-3' for='elementGruppe'>Gruppe</label>
+												<div class='col-xxl-9 col-md-9'>
+													<select class='form-control form-control-sm  mt-1'  id='elementGruppe' name='elementGruppe'>
 														<option selected>Gewerk auswählen</option>
 													</select>	
 												</div>
@@ -77,8 +77,8 @@
                     <div class="mt-1 card">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-6">Elemente in DB</div>
-                                <div class="col-6 d-flex justify-content-end" id="CardHeaderELementesInDb"></div>
+                                <div class="col-xxl-6">Elemente in DB</div>
+                                <div class="col-xxl-6 d-flex justify-content-end" id="CardHeaderELementesInDb"></div>
                             </div>
                         </div> 
                         <div class="card-body" id="elementsInDB">

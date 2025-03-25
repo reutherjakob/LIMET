@@ -1,6 +1,8 @@
 <?php
 session_start();
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 check_login();
 ?>
 
@@ -15,7 +17,8 @@ $_SESSION["elementID"] = $_GET["elementID"];
 $mysqli = utils_connect_sql();
 
 // Function to fetch Gewerk, GHG, and GUG
-function fetchGewerkeData($mysqli, $projectID, $elementID) {
+function fetchGewerkeData($mysqli, $projectID, $elementID)
+{
     $sql = "SELECT 
                 tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke AS gewerk, 
                 tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG AS ghg, 
@@ -34,7 +37,8 @@ function fetchGewerkeData($mysqli, $projectID, $elementID) {
 }
 
 // Function to fetch Gewerk options
-function fetchGewerkOptions($mysqli, $projectID) {
+function fetchGewerkOptions($mysqli, $projectID)
+{
     $sql = "SELECT 
                 tabelle_auftraggeber_gewerke.Gewerke_Nr, 
                 tabelle_auftraggeber_gewerke.Bezeichnung, 
@@ -55,7 +59,8 @@ function fetchGewerkOptions($mysqli, $projectID) {
 }
 
 // Function to fetch GHG options
-function fetchGHGOptions($mysqli, $gewerk) {
+function fetchGHGOptions($mysqli, $gewerk)
+{
     $sql = "SELECT 
                 tabelle_auftraggeber_ghg.GHG, 
                 tabelle_auftraggeber_ghg.Bezeichnung, 
@@ -72,7 +77,8 @@ function fetchGHGOptions($mysqli, $gewerk) {
 }
 
 // Function to fetch GUG options
-function fetchGUGOptions($mysqli, $ghg) {
+function fetchGUGOptions($mysqli, $ghg)
+{
     $sql = "SELECT 
                 tabelle_auftraggeberg_gug.idtabelle_auftraggeberg_GUG, 
                 tabelle_auftraggeberg_gug.GUG, 
@@ -99,11 +105,11 @@ $gugOptions = $gewerkeData['ghg'] ? fetchGUGOptions($mysqli, $gewerkeData['ghg']
 
 <div class='col-12'>
     <div class='card'>
-        <div class='card-body'>
+        <div class='card-body d-inline-flex'>
             <form class='d-flex align-items-center flex-wrap'>
-                <div class='form-group mr-2'>
-                    <label for='gewerk'>Gewerk</label>
-                    <select class='form-control form-control-sm' id='gewerk'>
+                <div class='form-group d-flex align-items-center mr-2'>
+                    <label for='gewerk' class="mb-0">Gewerk:</label>
+                    <select class='form-control form-control-sm me-1 ms-1' id='gewerk'>
                         <option value='0'>Bitte auswählen</option>
                         <?php while ($row = $gewerkOptions->fetch_assoc()): ?>
                             <option value="<?= $row['idTABELLE_Auftraggeber_Gewerke'] ?>"
@@ -114,8 +120,8 @@ $gugOptions = $gewerkeData['ghg'] ? fetchGUGOptions($mysqli, $gewerkeData['ghg']
                     </select>
                 </div>
 
-                <div class='form-group mr-2'>
-                    <label for='ghg'>GHG</label>
+                <div class='form-group d-flex align-items-center mr-2'>
+                    <label class="mb-0" for='ghg'>GHG:</label>
                     <select class='form-control form-control-sm me-1 ms-1' id='ghg'>
                         <?php if ($ghgOptions): ?>
                             <option value='0'>Bitte auswählen</option>
@@ -131,8 +137,8 @@ $gugOptions = $gewerkeData['ghg'] ? fetchGUGOptions($mysqli, $gewerkeData['ghg']
                     </select>
                 </div>
 
-                <div class='form-group mr-2'>
-                    <label for='gug'>GUG</label>
+                <div class='form-group d-flex align-items-center mr-2'>
+                    <label class="mb-0" for='gug'>GUG:</label>
                     <select class='form-control form-control-sm me-1 ms-1' id='gug'>
                         <?php if ($gugOptions): ?>
                             <option value='0'>Bitte auswählen</option>
@@ -150,19 +156,24 @@ $gugOptions = $gewerkeData['ghg'] ? fetchGUGOptions($mysqli, $gewerkeData['ghg']
                     </select>
                 </div>
 
-                <div class='form-group'>
-                    <label>&nbsp;</label>
+                <div class='form-group d-flex align-items-center mr-2'>
+
                     <div>
-                        <button type='button' id='saveElementGewerk' class='btn btn-outline-dark btn-sm me-1 ms-1 ' value='saveElementGewerk'>
+                        <button type='button' id='saveElementGewerk' class='btn btn-outline-dark btn-sm me-1 ms-1 '
+                                value='saveElementGewerk'>
                             <i class='far fa-save'></i> Gewerk speichern
-                        </button>       <label>&nbsp;</label>       <label>&nbsp;</label>
-                        <button type='button' id='saveElementGewerk94' class='btn btn-outline-dark btn-sm me-1 ms-1 ' value='saveElementGewerk2'>
+                        </button>
+                        <label>&nbsp;</label> <label>&nbsp;</label>
+                        <button type='button' id='saveElementGewerk94' class='btn btn-outline-dark btn-sm me-1 ms-1 '
+                                value='saveElementGewerk2'>
                             <i class='far fa-save'></i> 94 speichern
                         </button>
-                        <button type='button' id='saveElementGewerk93' class='btn btn-outline-dark btn-sm me-1 ms-1 ' value='saveElementGewerk1'>
+                        <button type='button' id='saveElementGewerk93' class='btn btn-outline-dark btn-sm me-1 ms-1 '
+                                value='saveElementGewerk1'>
                             <i class='far fa-save'></i> 93 speichern
                         </button>
-                        <button type='button' id='saveElementGewerk91' class='btn btn-outline-dark btn-sm me-1 ms-1 ' value='saveElementGewerk6'>
+                        <button type='button' id='saveElementGewerk91' class='btn btn-outline-dark btn-sm me-1 ms-1 '
+                                value='saveElementGewerk6'>
                             <i class='far fa-save'></i> 91 speichern
                         </button>
                     </div>
@@ -175,7 +186,6 @@ $gugOptions = $gewerkeData['ghg'] ? fetchGUGOptions($mysqli, $gewerkeData['ghg']
 <?php
 $mysqli->close();
 ?>
-
 
 
 <!-- Modal Info -->
