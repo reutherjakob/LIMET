@@ -23,10 +23,10 @@ function check_max_value(&$messages, $roomParams, $param, $max_value)
     }
 }
 
-function check_max_value_rev(&$messages, $roomParams, $param, $max_value, $extraInp= "")
+function check_max_value_rev(&$messages, $roomParams, $param, $max_value, $extraInp = "")
 {     //TODO-> check out what happens if param aint set.
     if (!isset($roomParams[$param]) || $roomParams[$param] < $max_value) {
-        $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Abwärme". $extraInp ."-> " . $max_value . " übersteigt Raumangabe=" . $roomParams[$param] . ".<br>";
+        $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Abwärme" . $extraInp . "-> " . $max_value . " übersteigt Raumangabe=" . $roomParams[$param] . ".<br>";
     }
 }
 
@@ -52,7 +52,7 @@ function check_summe_leistungen(&$messages, $roomParams)
 {
     $summe = (intval($roomParams['ET_Anschlussleistung_AV_W']) + intval($roomParams['ET_Anschlussleistung_SV_W']) + intval($roomParams['ET_Anschlussleistung_ZSV_W']) + intval($roomParams['ET_Anschlussleistung_USV_W']));
     if ($summe != intval($roomParams['ET_Anschlussleistung_W'])) {
-        $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Leistung ∑-> " . $roomParams['ET_Anschlussleistung_W'] . "= ∑Anschlussleistung(Raum) != ∑P je Netzart! (" .$summe."=". (intval($roomParams['ET_Anschlussleistung_AV_W']) . "+" . intval($roomParams['ET_Anschlussleistung_SV_W']) . "+" . intval($roomParams['ET_Anschlussleistung_ZSV_W']) . "+" . intval($roomParams['ET_Anschlussleistung_USV_W'])) . ")<br>  ";
+        $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Leistung ∑-> " . $roomParams['ET_Anschlussleistung_W'] . "= ∑Anschlussleistung(Raum) != ∑P je Netzart! (" . $summe . "=" . (intval($roomParams['ET_Anschlussleistung_AV_W']) . "+" . intval($roomParams['ET_Anschlussleistung_SV_W']) . "+" . intval($roomParams['ET_Anschlussleistung_ZSV_W']) . "+" . intval($roomParams['ET_Anschlussleistung_USV_W'])) . ")<br>  ";
     }
 }
 
@@ -123,6 +123,12 @@ function check_4_room_paramz(&$messages, $roomParams, $theonetobechecked4, $the2
 
 function check4vorabsperr(&$messages, $roomParams, $elements_in_room)
 {
+    echorow( $roomParams);
+    // stativ check > bREMSENß
+    if (intval($roomParams["1 Kreis DL-5"]) == 0) {
+        $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Stativ ->  Stativ, braucht Druckluft! <br>";
+    }
+
     $found = false;
     foreach ($elements_in_room as $el) {
         if ($el["idTABELLE_Elemente"] == 664) {
@@ -133,13 +139,10 @@ function check4vorabsperr(&$messages, $roomParams, $elements_in_room)
     if (!$found) {
         $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::ElementPort -> Gasanschluss am Stativ, braucht Vorabsperrkasten! <br>";
     }
-    if (!isset($roomParams["Dl-5"]) || intval($roomParams["Dl-5"]) == 0) {
-        $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Stativ ->  Stativ, braucht Druckluft! <br>";
-    }
 
 }
 
-function check_room_Leistungssumme(&$messages, $roomParams, $P, $extraInp= "")
+function check_room_Leistungssumme(&$messages, $roomParams, $P, $extraInp = "")
 {
     $mapping = array("NoNA", "AV", "SV", "ZSV", "USV");  //Structure i chose for the array of power within room
     $summe = 0;
@@ -147,10 +150,10 @@ function check_room_Leistungssumme(&$messages, $roomParams, $P, $extraInp= "")
     foreach ($P as $index => $P_jeNA) {
         if ($index > 0 && $index < 5) {
             if ($P_jeNA > $roomParams['ET_Anschlussleistung_' . $mapping[$index] . '_W']) {
-                $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Leistung ∑".$extraInp."-> ∑P[" . $mapping[$index] . "](Elemente) =" . $P_jeNA . " > " . $mapping[$index] . "_W=" . $roomParams['ET_Anschlussleistung_' . $mapping[$index] . '_W'] . " <br>";
+                $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Leistung ∑" . $extraInp . "-> ∑P[" . $mapping[$index] . "](Elemente) =" . $P_jeNA . " > " . $mapping[$index] . "_W=" . $roomParams['ET_Anschlussleistung_' . $mapping[$index] . '_W'] . " <br>";
             }
             if ($P_jeNA > 8000 && $index === 3) {
-                $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Leistung ∑".$extraInp."-> P[" . $mapping[$index] . "](Elemente) > 8kW! <br>";
+                $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Leistung ∑" . $extraInp . "-> P[" . $mapping[$index] . "](Elemente) > 8kW! <br>";
             }
         } else {
             //if ($P_jeNA > 0) {
@@ -160,7 +163,7 @@ function check_room_Leistungssumme(&$messages, $roomParams, $P, $extraInp= "")
         $summe += $P_jeNA;
         if ($P_jeNA === 0 && $index > 0) {
             if ($roomParams[$mapping[$index]] === 1) {
-                $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Leistung der Elemente im Raum".$extraInp." -> P[Elemente][" . $mapping[$index] . "]=0, aber Raumparameter=1? Element parametrisieren oder NA aus Raum hinterfragen <br>";
+                $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Leistung der Elemente im Raum" . $extraInp . " -> P[Elemente][" . $mapping[$index] . "]=0, aber Raumparameter=1? Element parametrisieren oder NA aus Raum hinterfragen <br>";
             }
         }
     }
@@ -211,7 +214,9 @@ function getQueryParam($param)
 
 //   -------------  MAIN  ---------------
 
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 check_login();
 $messages = array();
 $roomIDsArray = array();
@@ -412,7 +417,7 @@ foreach ($raumparameter as $roomID => $roomParams) {
     $LeistungImRaum = array(0, 0, 0, 0, 0); // ALLGEMEIN / AV/SV/ZSV/USV
     $LeistungImRaumExkl = array(0, 0, 0, 0, 0); // ALLGEMEIN / AV/SV/ZSV/USV
     $Abwarme = 0;
-    $AbwarmeExkl =0;
+    $AbwarmeExkl = 0;
     $check4Vorabsperrkasten = false;
     $elements_counter = 0;
 
@@ -487,9 +492,11 @@ foreach ($raumparameter as $roomID => $roomParams) {
                     }
                 }
                 if ($parameterInfo['idTABELLE_Parameter_Kategorie'] === 12) {  //MEDGAS
-                    check_room_for_parameters_cause_elementParamKathegorie($messages, $roomParams, $parameterInfo['idTABELLE_Parameter'], $row);   //check for if room got that plug.  
+                    check_room_for_parameters_cause_elementParamKathegorie($messages, $roomParams, $parameterInfo['idTABELLE_Parameter'], $row);   //check for if room got that plug.
+
                     if (stripos($row['Bezeichnung'], "stativ") && !$check4Vorabsperrkasten) {
                         $check4Vorabsperrkasten = true;
+                        echo "\n <br>" . $row['Bezeichnung'] . "\n <br>";
                     }
                 }
             }
@@ -497,7 +504,7 @@ foreach ($raumparameter as $roomID => $roomParams) {
         $Abwarme += $Abwarme_el * $temp_GLZ * $AnzahlElImRaum; //
         $AbwarmeExkl += $Abwarme_el * $AnzahlElImRaum; // ohne GLZ
         $LeistungInklGLZ = $temp_LeistungElement * $temp_GLZ * $AnzahlElImRaum;
-        $LeistungExklGLZ = $temp_LeistungElement *  $AnzahlElImRaum;// ohne GLZ
+        $LeistungExklGLZ = $temp_LeistungElement * $AnzahlElImRaum;// ohne GLZ
 
         $LeistungImRaum = distribute($LeistungInklGLZ, $LeistungImRaum, $tempNA_perElement); // LEISTUNg wird je nach Element Netzart aufgeteilt
 

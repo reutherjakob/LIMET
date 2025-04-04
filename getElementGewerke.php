@@ -44,7 +44,7 @@ function fetchGewerkOptions($mysqli, $projectID) {
             INNER JOIN 
                 tabelle_auftraggeber_gewerke ON tabelle_projekte.TABELLE_Auftraggeber_Codes_idTABELLE_Auftraggeber_Codes = tabelle_auftraggeber_gewerke.TABELLE_Auftraggeber_Codes_idTABELLE_Auftraggeber_Codes
             WHERE 
-                tabelle_projekte.idTABELLE_Projekte = ?
+                tabelle_projekte.idTABELLE_Projekte = ?  
             ORDER BY 
                 tabelle_auftraggeber_gewerke.Gewerke_Nr";
 
@@ -66,7 +66,7 @@ function fetchGHGOptions($mysqli, $gewerk) {
                 tabelle_auftraggeber_ghg.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke = ?";
 
     $stmt = $mysqli->prepare($sql);
-    $stmt->bind_param("i", $gewerk);
+    $stmt->bind_param("i", $gewerk); // =tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
     $stmt->execute();
     return $stmt->get_result();
 }
@@ -116,7 +116,7 @@ $gugOptions = $gewerkeData['ghg'] ? fetchGUGOptions($mysqli, $gewerkeData['ghg']
 
                 <div class='form-group mr-2'>
                     <label for='ghg'>GHG</label>
-                    <select class='form-control form-control-sm' id='ghg'>
+                    <select class='form-control form-control-sm me-1 ms-1' id='ghg'>
                         <?php if ($ghgOptions): ?>
                             <option value='0'>Bitte auswählen</option>
                             <?php while ($row = $ghgOptions->fetch_assoc()): ?>
@@ -133,7 +133,7 @@ $gugOptions = $gewerkeData['ghg'] ? fetchGUGOptions($mysqli, $gewerkeData['ghg']
 
                 <div class='form-group mr-2'>
                     <label for='gug'>GUG</label>
-                    <select class='form-control form-control-sm' id='gug'>
+                    <select class='form-control form-control-sm me-1 ms-1' id='gug'>
                         <?php if ($gugOptions): ?>
                             <option value='0'>Bitte auswählen</option>
                             <?php while ($row = $gugOptions->fetch_assoc()): ?>
@@ -153,17 +153,17 @@ $gugOptions = $gewerkeData['ghg'] ? fetchGUGOptions($mysqli, $gewerkeData['ghg']
                 <div class='form-group'>
                     <label>&nbsp;</label>
                     <div>
-                        <button type='button' id='saveElementGewerk' class='btn btn-outline-dark btn-sm' value='saveElementGewerk'>
+                        <button type='button' id='saveElementGewerk' class='btn btn-outline-dark btn-sm me-1 ms-1 ' value='saveElementGewerk'>
                             <i class='far fa-save'></i> Gewerk speichern
                         </button>       <label>&nbsp;</label>       <label>&nbsp;</label>
-                        <button type='button' id='saveElementGewerk94' class='btn btn-outline-dark btn-sm' value='saveElementGewerk2'>
-                            <i class='far fa-save'></i> OrtsVeränderlich speichern
+                        <button type='button' id='saveElementGewerk94' class='btn btn-outline-dark btn-sm me-1 ms-1 ' value='saveElementGewerk2'>
+                            <i class='far fa-save'></i> 94 speichern
                         </button>
-                        <button type='button' id='saveElementGewerk93' class='btn btn-outline-dark btn-sm' value='saveElementGewerk1'>
-                            <i class='far fa-save'></i> OrtsFest speichern
+                        <button type='button' id='saveElementGewerk93' class='btn btn-outline-dark btn-sm me-1 ms-1 ' value='saveElementGewerk1'>
+                            <i class='far fa-save'></i> 93 speichern
                         </button>
-                        <button type='button' id='saveElementGewerk91' class='btn btn-outline-dark btn-sm' value='saveElementGewerk6'>
-                            <i class='far fa-save'></i> MetalMöbel speichern
+                        <button type='button' id='saveElementGewerk91' class='btn btn-outline-dark btn-sm me-1 ms-1 ' value='saveElementGewerk6'>
+                            <i class='far fa-save'></i> 91 speichern
                         </button>
                     </div>
                 </div>

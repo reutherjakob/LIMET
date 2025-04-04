@@ -97,8 +97,8 @@ include 'roombookSpecifications_HelpModal.php';
             <div class="col-xxl-2 d-flex justify-content-end align-items-right" id='TableCardHeader4'></div>
         </div>
         <div class="card-body" id="table_container_div">
-            <table class="table display compact table-responsive table-striped table-bordered table-sm sticky"
-                   style="width:100%"
+            <table class="table compact  table-responsive table-striped table-bordered border border-5 border-light table-sm sticky"
+
                    id="table_rooms">
                 <thead>
                 <tr></tr>
@@ -117,7 +117,7 @@ include 'roombookSpecifications_HelpModal.php';
             <div class="card-body" id="bauangaben"></div>
         </div>
         <div class="mt-4 card">
-            <div class="card me-2 ms-2">
+
                 <div class="card-header form-inline d-inline-flex " id="CardHEaderElemntsInRoom">
                     <button type="button" class="btn btn-outline-dark " id="showRoomElements" style="width: 30px;"><i
                                 class="fas fa-caret-left"></i></button>
@@ -130,7 +130,7 @@ include 'roombookSpecifications_HelpModal.php';
                     <p id="roomElements"></p>
                     <p id="elementParameters"></p>
                 </div>
-            </div>
+
         </div>
     </section>
 </main>

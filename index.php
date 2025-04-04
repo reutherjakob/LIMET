@@ -26,47 +26,43 @@ if (isset($_SESSION['username'])) {
 
 <div class='container-fluid bg-light' style="height:100vh;">
     <div class='row d-flex'>
-        <div class='col-5'></div>
-        <div class='col-2' id='login'>
-            <div class='card me-4 ms-4 mt-4'>
-                <div class='card-header d-flex align-items-center justify-content-center'>
-                    <img src="LIMET_logo.png" alt="LIMETLOGO">
-                </div>
-                <div class=''>
-                    <form class='form' action='login.php' method='post'>
-                        <div class='card-body'>
-                            <div class='row '>
-                                <div class='col-12 mt-4'>
-                                    <label for='username' class="visually-hidden">Username</label>
-                                    <input class='form-control form-control-lg' type='text' id='username'
-                                           name='username'
-                                           placeholder="Username">
-                                </div>
-                                <div class='col-12 mt-4'>
-                                    <label for='password' class="visually-hidden">Passwort</label>
-                                    <input class='form-control form-control-lg' type='password' id='password'
-                                           name='password'
-                                           placeholder="Passwort">
-                                </div>
-                                <div class='col-12 mt-4'></div>
+        <div class='col-xxl-5 col-xl-4 col-md-3'>
+    </div>
+    <div class='col-xxl-2 col-xl-4 col-md-6' id='login'>
+        <div class='card me-4 ms-4 mt-4'>
+            <div class='card-header d-flex align-items-center justify-content-center'>
+                <img src="LIMET_logo.png" alt="LIMETLOGO">
+            </div>
+            <div class=''>
+                <form class='form' action='login.php' method='post'>
+                    <div class='card-body'>
+                        <div class='row '>
+                            <div class='col-xxl-12 mt-4'>
+                                <label for='username' class="visually-hidden">Username</label>
+                                <input class='form-control form-control-lg' type='text' id='username'
+                                       name='username'
+                                       placeholder="Username">
                             </div>
-                        </div>
-                        <div class='card-footer'>
-                            <div class='d-flex align-items-center justify-content-center'>
-                                <input type='submit' class='btn btn-success' value='Login'>
+                            <div class='col-xxl-12 mt-4'>
+                                <label for='password' class="visually-hidden">Passwort</label>
+                                <input class='form-control form-control-lg' type='password' id='password'
+                                       name='password'
+                                       placeholder="Passwort">
                             </div>
+                            <div class='col-xxl-12 mt-4'></div>
                         </div>
-
-                    </form>
-                </div>
-
-
+                    </div>
+                    <div class='card-footer'>
+                        <div class='d-flex align-items-center justify-content-center'>
+                            <input type='submit' class='btn btn-success' value='Login'>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-    <div class='col-5'></div>
+    <div class='col-xxl-5'></div>
 </div>
-
 </body>
 </html>
 

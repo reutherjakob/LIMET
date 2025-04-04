@@ -36,9 +36,9 @@ init_page_serversides("", "x");
     <div class="card">
         <div class="card-header px-1 py-1 text-nowrap" id="HeaderTabelleCard">
             <div class="row">
-                <div class="col-xxl-6 d-flex justify-content-start " id="sub1">Select</div>
+                <div class="col-xxl-1 d-flex justify-content-start " id="">Select</div>
+                <div class="col-xxl-5 d-flex justify-content-start " id="sub1"> </div>
                 <div class="col-xxl-6 d-flex justify-content-start " id="">
-
                     <label for="dateSelect"></label> <input type="date" id="dateSelect" name="dateSelect"> &ensp;
                 </div>
             </div>
@@ -46,14 +46,16 @@ init_page_serversides("", "x");
 
         <div class="card-header px-1 py-1" id="HeaderTabelleCard2">
             <div class="row">
-                <div class="col-xxl-6 d-flex justify-content-start " id="sub23">Bauangaben</div>
+                <div class="col-xxl-1 d-flex justify-content-start " id="">Bauangaben</div>
+                <div class="col-xxl-5 d-flex justify-content-start " id="sub23"></div>
                 <div class="col-xxl-6 d-flex justify-content-start " id="sub2"></div>
             </div>
         </div>
 
         <div class="card-header px-1 py-1 ">
             <div class="row">
-                <div class="col-xxl-6 d-flex justify-content-start " id="sub21"> Raumbuch</div>
+                <div class="col-xxl-1 d-flex justify-content-start " id="">Raumbuch</div>
+                <div class="col-xxl-5 d-flex justify-content-start " id="sub21"> </div>
                 <div class="col-xxl-6 d-flex justify-content-start " id="sub22">
                 </div>
             </div>

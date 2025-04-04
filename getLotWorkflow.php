@@ -57,6 +57,7 @@ if ($result->num_rows == 0) {
                 </tr></thead>
                 <tbody>";
 
+
     while ($row = $result->fetch_assoc()) {
         echo "<tr>";
         echo "<td>" . $row["Reihenfolgennummer"] . "</td>";
@@ -101,7 +102,6 @@ $mysqli->close();
 ?>
 
 <script>
-
     new DataTable('#tableWorkflow', {
         paging: false,
         searching: false,
@@ -128,7 +128,7 @@ $mysqli->close();
 
 
     $("input[value='workflowStatus']").change(function () {
-        var workflowID = this.id.substr(14, 10);
+        let workflowID = this.id.substr(14, 10);
         if ($(this).prop('checked') === true) {
             //Sperren
             document.getElementById("workflowDate" + workflowID).disabled = true;

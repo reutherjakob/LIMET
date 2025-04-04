@@ -157,6 +157,9 @@ while ($row = $result->fetch_assoc()) {
     $sollDatumAlt = $row["SOLLDATE"];
     $sollAbstandDanach = $workflowTeile[$row["tabelle_wofklowteil_idtabelle_wofklowteil"]]['TageMinDanach'];
 }
+
+
+
 echo "</tr>";
 echo "</tbody></table>";
 $mysqli->close();

@@ -25,7 +25,7 @@ $sql = "SELECT tabelle_räume.idTABELLE_Räume, tabelle_räume.Raumnr, tabelle_r
 $result = $mysqli->query($sql);
 
 //<button type='button' class='btn btn-outline-success btn-sm mb-2' id='addElements' data-bs-toggle='modal' data-bs-target='#addElementsToRoomModal'><i class='fas fa-plus'></i></button>
-echo " <table class='table table-striped table-bordered table-sm table-hover' id='tableRoomsWithoutElement'>
+echo " <table class='table table-striped table-bordered table-sm table-hover border border-5 border-light' id='tableRoomsWithoutElement'>
 	<thead><tr>
         <th>id</th>
 	<th>Raumnummer</th>
@@ -84,7 +84,7 @@ $mysqli->close();
             ],
             paging: true,
             searching: true,
-            info: false,
+            info: true,
             order: [[1, "asc"]],
             lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
             language: {

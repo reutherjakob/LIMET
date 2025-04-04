@@ -55,30 +55,44 @@ $mysqli->close();
 <script src="_utils.js"></script>
 <script>
     $(document).ready(function () {
-        $('#tablePossibleVarianteParameters').DataTable({
-            "paging": false,
-            "searching": true,
-            "info": false,
-            "order": [[1, "asc"]],
-            "columnDefs": [
+
+        tablePossibleElementParameters = $('#tablePossibleVarianteParameters').DataTable({
+            paging: true,
+            searching: true,
+            info: false,
+            order: [[1, "asc"]],
+            columnDefs: [
                 {
-                    "targets": [0],
-                    "visible": true,
-                    "searchable": false,
-                    "sortable": false
+                    targets: [0],
+                    visible: true,
+                    searchable: false,
+                    orderable: false
                 }
             ],
-            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
-            "scrollY": '20vh',
-            "scrollCollapse": true
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+            },
+            scrollY: '20vh',
+            scrollCollapse: true,
+            layout: {
+                topEnd: "search",
+                topStart: null,
+                bottomStart: null,
+                bottomEnd: 'paging'
+            },
+            initComplete: function (settings, json) {
+
+            }
         });
     });
+
 
     //Parameter zu Variante hinzufügen
     $("button[value='addParameter']").click(function () {
         let variantenID = $('#variante').val();
         let id = this.id;
-
+        let searchValue = $('#tablePossibleElementParameters').DataTable().search();
+        console.log("GetPossiblevarianteParameter: ", searchValue);
         if (id !== "") {
             $.ajax({
                 url: "addParameterToVariante.php",
@@ -86,7 +100,7 @@ $mysqli->close();
                 type: "GET",
                 success: function (data) {
                     //		        	alert(data);
-                    makeToaster(data, data.substring(0,4)==="Para");
+                    makeToaster(data, data.trim().substring(0, 4) === "Para");
                     $.ajax({
                         url: "getVarianteParameters.php",
                         data: {"variantenID": variantenID},
@@ -100,6 +114,7 @@ $mysqli->close();
                                 success: function (data) {
                                     //console.log("1.1", data);
                                     $("#possibleVariantenParameter").html(data);
+
                                 }
                             });
 

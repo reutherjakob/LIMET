@@ -38,6 +38,9 @@
                     <button type='button' class='btn btn-outline-dark  me-1' id='createElementEinbringwegePDF'>
                         <i class='far fa-file-pdf'></i> Einbringwege
                     </button>
+                    <button type='button' class='btn btn-outline-dark  me-1' id='createElementEinbringwegePDF2'>
+                        <i class='far fa-file-pdf'></i> Einbringwege2
+                    </button>
 
                 </div>
 
@@ -184,7 +187,7 @@ ORDER BY tabelle_elemente.ElementID;";
                 <div class='col-xxl-4'>
                     <div class='mt-1 card'>
                         <div class='card-header'><label>Geräteparameter</label></div>
-                        <div class='card-body' id='deviceParametersInDB'></div>8
+                        <div class='card-body' id='deviceParametersInDB'></div>
                     </div>
                 </div>
                 <div class="col-xxl-4">
@@ -215,7 +218,6 @@ ORDER BY tabelle_elemente.ElementID;";
     <script src="_utils.js"></script>
     <script charset="utf-8">
         var tableElementsInProject;
-
         $(document).ready(function () {
             tableElementsInProject = new DataTable('#tableElementsInProject', {
                 paging: true,
@@ -259,7 +261,6 @@ ORDER BY tabelle_elemente.ElementID;";
                     tableElementsInProject.buttons().container().appendTo('#target_div .btn-group');
                     $('.dt-search label').remove();
                     $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-dark").appendTo('#target_div');
-
                 }
             });
 
@@ -289,6 +290,7 @@ ORDER BY tabelle_elemente.ElementID;";
                                     data: {"elementID": elementID},
                                     type: "GET",
                                     success: function (data) {
+
                                         $("#elementDBParameter").html(data);
                                         $.ajax({
                                             url: "getElementPricesInDifferentProjects.php",
@@ -371,6 +373,9 @@ ORDER BY tabelle_elemente.ElementID;";
 
         $('#createElementEinbringwegePDF').click(function () {
             window.open('/pdf_createElementEinbringwegePDF.php');
+        });
+        $('#createElementEinbringwegePDF2').click(function () {
+            window.open('/pdf_createElementEinbringwegePDFschöner.php');
         });
     </script>
 </body>

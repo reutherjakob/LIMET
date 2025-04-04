@@ -408,7 +408,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         block_label_queer($block_header_w, $pdf, "Elektro", $Block_height, $block_header_height, $SB);
 
         multicell_text_hightlight($pdf, $e_C, $font_size, "Anwendungsgruppe", "ÖVE E8101:", $parameter_changes_t_räume);
-        multicell_with_str($pdf, $row['Anwendungsgruppe'], $e_C_3rd, "");
+        multicell_with_str($pdf, $row['Anwendungsgruppe'], $e_C_3rd+10, "");
 
 
         $electricalItems = [
@@ -434,7 +434,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
 
         $powerItems = [
-            ['ET_Anschlussleistung_W', 'Raum Anschlussl. ohne Glz:', $e_C],
+                ['ET_Anschlussleistung_W', 'Raum Anschlussl. ohne Glz:', $e_C],
             ['ET_Anschlussleistung_AV_W', 'AV(Rauml.): ', $e_C_2_3rd],
             ['ET_Anschlussleistung_SV_W', 'SV(Rauml.): ', $e_C_2_3rd],
             ['ET_Anschlussleistung_ZSV_W', 'ZSV(Rauml.): ', $e_C_2_3rd],
@@ -445,7 +445,9 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             multicell_text_hightlight($pdf, $item[2], $font_size, $item[0], $item[1], $parameter_changes_t_räume);
 
             $outsr = ($row[$item[0]] != "0") ? kify($row[$item[0]]) . "W" : "-";
-            multicell_with_str($pdf, $outsr, $e_C_3rd, "");
+            $space = $e_C_3rd;
+            if($item[2]==$e_C){$space = $e_C_3rd +10; }
+            multicell_with_str($pdf, $outsr, $space, "");
         }
 
 
@@ -546,7 +548,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
 
             $pdf->MultiCell($e_C, $block_header_height, "Elemente Leistung inkl. Glz:", 0, 'L', 0, 0);
-            multicell_with_nr($pdf, kify($total_sum), "W", $font_size, $e_C_3rd);
+            multicell_with_nr($pdf, kify($total_sum), "W", $font_size, $e_C_3rd+10);
             foreach ($netzart_options as $NA) {
                 $pdf->MultiCell($e_C_2_3rd, $block_header_height, $NA . "(El.& Glz.):", 0, 'L', 0, 0);
                 if ($leistung_dict[$NA] != 0) {
@@ -563,7 +565,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             multicell_with_str($pdf, $row['ET_16A_3Phasig_Einzelanschluss'], $e_C_3rd, "Stk");
 
             $pdf->Ln($horizontalSpacerLN);
-            $pdf->MultiCell($block_header_w + $e_C + $e_C_3rd, $block_header_height, "", 0, 'L', 0, 0);
+            $pdf->MultiCell($block_header_w + $e_C + $e_C_3rd +10 , $block_header_height, "", 0, 'L', 0, 0);
 
             $electricalItems = [
                 ['EL_AV Steckdosen Stk', 'AV SSD: '],

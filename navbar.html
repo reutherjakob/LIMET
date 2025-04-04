@@ -1,8 +1,8 @@
 <nav class="navbar navbar-expand-xxl navbar-light responsive bg-white border border-light border-3 rounded rounded-3"
      id="LimetNavBar">
     <div class="container-fluid">
-        <ul class="navbar-nav col-10 d-flex align-items-center">
-            <li class="">
+        <ul class="navbar-nav col-10 d-inline-flex align-items-center">
+            <li class="ms-2">
                 <a href="/projects.php">
                     <img src="LIMET_logo.png" alt="LIMETLOGO" style="height:40px;">
                 </a>
@@ -25,26 +25,139 @@
                 <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
                    data-bs-toggle="dropdown"><i class="fa fa-book"></i> Raumbuch</a>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="roombookSpecifications.php">Raumbuch - Bauangaben alt</a></li>
-                    <li><a class="dropdown-item" href="roombookSpecifications_New.php">Raumbuch - Bauangaben</a></li>
-                    <li><a class="dropdown-item" href="roombookSpecificationsLab.php">Raumbuch - Bauangaben Labor</a>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="roombookSpecifications.php">
+                            <div class="col-2 text-center">
+                               <i class="fas fa-tools"></i>
+                            </div>
+                            <div class="col-10">
+                                Bauangaben alt
+                            </div>
+                        </a>
                     </li>
-                    <li><a class="dropdown-item" href="roombookMeeting.php">Raumbuch - Meeting</a></li>
-                    <li><a class="dropdown-item" href="roombookDetailed.php">Raumbuch - Detail</a></li>
-                    <li><a class="dropdown-item" href="roombookElements.php">Raumbuch - Räume mit Element</a></li>
-                    <li><a class="dropdown-item" href="roombookReports_New.php">Raumbuch - Berichte</a></li>
-                    <li><a class="dropdown-item" href="elementsInProject.php"> <i class="fas fa-briefcase-medical"></i> Elemente im Projekt</a></li>
-                    <li><a class="dropdown-item" href="roombook_ElemetsInRoom_ParameterTable.php"><i
-                            class="fas fa-file-excel"></i> Elementparameter Tabelle </a></li>
-                    <li><a class="dropdown-item" href="roombookList.php"><i class="fas fa-list-ul"></i> Raumbuch - Liste</a>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="roombookSpecifications_New.php">
+                            <div class="col-2 text-center">
+                            </i> <i class="fas fa-tools"></i>
+                            </div>
+                            <div class="col-10">
+                                Bauangaben
+                            </div>
+                        </a>
                     </li>
-                    <li><a class="dropdown-item" href="roombook_vglAnsicht.php"><i class="fas fa-not-equal"></i>
-                        Raumbuch - Raumvergleich</a></li>
-                    <li><a class="dropdown-item" href="roombookAenderungen.php"><i class="fas fa-redo"></i>
-                        Raum-Änderungen</a></li>
-                    <li><a class="dropdown-item" href="roombook_search_rooms_with_string.php"><i
-                            class="fas fa-search"></i> Raumsuche </a></li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="roombookSpecificationsLab.php">
+                            <div class="col-2 text-center">
+                             <i class="fas fa-tools"></i>
+                            </div>
+                            <div class="col-10">
+                                Bauangaben Labor
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="roombookMeeting.php">
+                            <div class="col-2 text-center">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="col-10">
+                                Meeting
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="roombookDetailed.php">
+                            <div class="col-2 text-center">
+                                <i class="fas fa-search-plus"></i>
+                            </div>
+                            <div class="col-10">
+                                Detail
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="roombookElements.php">
+                            <div class="col-2 text-center">
+                                <i class="fas fa-hospital-alt"></i>
+                            </div>
+                            <div class="col-10">
+                                Räume mit Element
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="roombookReports_New.php">
+                            <div class="col-2 text-center">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <div class="col-10">
+                                Berichte
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="elementsInProject.php">
+                            <div class="col-2 text-center">
+                                <i class="fas fa-briefcase-medical"></i>
+                            </div>
+                            <div class="col-10">
+                                Elemente im Projekt
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center"
+                           href="roombook_ElemetsInRoom_ParameterTable.php">
+                            <div class="col-2 text-center">
+                                <i class="fas fa-file-excel"></i>
+                            </div>
+                            <div class="col-10">
+                                Elementparameter
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="roombookList.php">
+                            <div class="col-2 text-center">
+                                <i class="fas fa-list-ul"></i>
+                            </div>
+                            <div class="col-10">
+                                Liste
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="roombook_vglAnsicht.php">
+                            <div class="col-2 text-center">
+                                <i class="fas fa-not-equal"></i>
+                            </div>
+                            <div class="col-10">
+                                Raumvergleich
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="roombookAenderungen.php">
+                            <div class="col-2 text-center">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <div class="col-10">
+                                Raum-Änderungen
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="roombook_search_rooms_with_string.php">
+                            <div class="col-2 text-center">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="col-10">
+                                Raumsuche
+                            </div>
+                        </a>
+                    </li>
                 </ul>
+
             </li>
             <li class="nav-item dropdown">
                 <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
