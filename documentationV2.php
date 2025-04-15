@@ -50,7 +50,7 @@ init_page_serversides();
 <div class="container-fluid bg-light" >
     <div id="limet-navbar"></div>
     <div class="row">
-        <div class="col-xxl-7">
+        <div class="col-xxl-8">
             <div class="mt-1 card">
                 <div class="card-header">
                     <div class="row">
@@ -193,7 +193,7 @@ init_page_serversides();
         </div-->
 
         <!-- Darstellung PDF -->
-        <div class="col-xxl-5">
+        <div class="col-xxl-4">
             <div class="mt-1 card">
                 <div class="card-header">Vorschau-PDF</div>
                 <div class="card-body embed-responsive embed-responsive-3by2">

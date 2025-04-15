@@ -26,9 +26,9 @@ if (isset($_SESSION['username'])) {
 
 <div class='container-fluid bg-light' style="height:100vh;">
     <div class='row d-flex'>
-        <div class='col-xxl-5 col-xl-4 col-md-3'>
+        <div class='col-xxl-5 col-xl-3 col-sm-3 col-2'>
     </div>
-    <div class='col-xxl-2 col-xl-4 col-md-6' id='login'>
+    <div class='col-xxl-2 col-xl-6 col-sm-6 col-8' id='login'>
         <div class='card me-4 ms-4 mt-4'>
             <div class='card-header d-flex align-items-center justify-content-center'>
                 <img src="LIMET_logo.png" alt="LIMETLOGO">

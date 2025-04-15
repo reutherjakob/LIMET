@@ -1,60 +1,25 @@
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+#2025done
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 include "_format.php";
-include "_pdf_createBericht_utils.php";
-include "pdf_MyPDF_class_Kosten.php";
+include "pdf_createBericht_MYPDFclass_A4_ohneTitelblatt.php";
 
+require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+include "_pdf_createBericht_utils.php";
+
+if ($_SESSION["projectPlanungsphase"] == "Vorentwurf") {
+    $_SESSION["PDFTITEL"] = "Medizintechnische Kostenschätzung";
+} else {
+    $_SESSION["PDFTITEL"] = "Medizintechnische Kostenberechnung";
+}
+$marginTop = 17;
+$marginBTM = 10;
+$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4", "Medizintechnische Gesamt Kosten");
 check_login();
 $mysqli = utils_connect_sql();
-// create new PDF document
-$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
-// set document information
-$pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor('LIMET Consulting und Planung ZT GmbH');
-$pdf->SetTitle('Gesamt Kosten');
-$pdf->SetSubject('MT-Kosten');
-$pdf->SetKeywords('MT-Kosten');
-
-// set default header data
-$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING, array(0,64,255), array(0,64,128));
-$pdf->setFooterData(array(0,64,0), array(0,64,128));
-
-// set header and footer fonts
-$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-
-// set default monospaced font
-$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-// set margins
-$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-// set auto page breaks
-$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
-// set image scale factor
-$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-// set some language-dependent strings (optional)
-if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
-    require_once(dirname(__FILE__).'/lang/eng.php');
-    $pdf->setLanguageArray($l);
-}
-
-// ---------------------------------------------------------
-
-// set font
-$pdf->SetFont('helvetica', '', 10);
-
-// add a page
-$pdf->AddPage('', 'A4');
-
-
-// Daten laden
- 
 
 $sql = "SELECT tabelle_projekte.Projektname, tabelle_projekte.Preisbasis,  tabelle_planungsphasen.Bezeichnung
     FROM tabelle_projekte INNER JOIN tabelle_planungsphasen ON tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen = tabelle_planungsphasen.idTABELLE_Planungsphasen
@@ -173,7 +138,7 @@ foreach($raumbereichData as $rowData2) {
         //$sumRaumbereichBestand = $sumRaumbereichBestand + $row['PP'];
     }
     else{
-        $pdf->MultiCell(30, 4,  sprintf('%01.2f', 0), 0, 'R', $fill, 0);
+        $pdf->MultiCell(30, 4,  format_money_report( 0), 0, 'R', $fill, 0);
     }
     $sumGewerkNeu = $sumGewerkNeu + $row["PP_neu"];    
     //--------------------------------------------------------------    
@@ -197,7 +162,7 @@ foreach($raumbereichData as $rowData2) {
         //$sumRaumbereichBestand = $sumRaumbereichBestand + $row['PP'];
     }
     else{
-        $pdf->MultiCell(30, 4,  sprintf('%01.2f', 0), 0, 'R', $fill, 0);
+        $pdf->MultiCell(30, 4,  format_money_report( 0), 0, 'R', $fill, 0);
     }
     //--------------------------------------------------------------
     
@@ -225,12 +190,8 @@ $pdf->MultiCell(30, 4,  format_money_report( $sumGesamtNeu), 'T', 'R', 0, 0);
 $pdf->MultiCell(30, 4,  format_money_report( $sumGesamtBestand), 'T', 'R', 0, 0);
 
 // ---------------------------------------------------------
+$mysqli->close();
+ob_end_clean();
+$pdf->Output(getFileName("Kosten_Gewerke-GHG"), 'I');
 
-
-// close and output PDF document
-$pdf->Output('Kosten_Gewerke-GHG.pdf', 'I');
-
-//============================================================+
-// END OF FILE
-//============================================================+
 

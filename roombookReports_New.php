@@ -178,7 +178,9 @@ init_page_serversides("", "x");
             {text: "0-PDF", link: "pdf_createRoombookWithout0PDF"},
             {text: "ohne Bestand-PDF", link: "pdf_createRoombookWithoutBestandPDF"},
             {text: "0-ohne Bestand-PDF", link: "pdf_createRoombookWithout0WothoutBestandPDF"},
-            {text: "Bauangaben-0-PDF", link: "pdf_createRoombookWithBauangabenWithout0PDF"}
+            {text: "Bauangaben-0-PDF", link: "pdf_createRoombookWithBauangabenWithout0PDF"},
+            {text: "Bauang. Großgeräte", link: "pdf_createVBM_Bericht"}
+
         ];
 
         const ButtonsBauangaben = [

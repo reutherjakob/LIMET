@@ -1,31 +1,15 @@
 <?php
 session_start();
 require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+include "pdf_createBericht_LOGO.php";
 
 class MYPDF extends TCPDF
 {
     public function Header()
     {
         if ($this->numpages > 1) {
-            // Logo        
-            if ($_SESSION["projectAusfuehrung"] === "MADER") {
-                $image_file = 'Mader_Logo_neu.jpg';
-                $this->Image($image_file, 15, 5, 40, 10, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-            } else {
-                if ($_SESSION["projectAusfuehrung"] === "LIMET") {
-                    $image_file = 'LIMET_web.png';
-                    $this->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                } else {
-                    $image_file = 'PERNTHALER_LOGO.png';
-                    $this->Image($image_file, 15, 5, 30, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                    $image_file = 'LIMET_web.png';
-                    $this->Image($image_file, 50, 4, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                    $image_file = 'MADER_Logo.png';
-                    $this->Image($image_file, 75, 5, 12, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                }
-            }
+            get_header_logo($this);
             $this->SetFont('helvetica', '', 8);
-            // Title
             if ($_SESSION["projectPlanungsphase"] === "Vorentwurf") {
                 $this->Cell(0, 0, 'Medizintechnische Vorbemessungsangaben', 0, false, 'R', 0, '', 0, false, 'B', 'B');
             } else {
@@ -33,10 +17,7 @@ class MYPDF extends TCPDF
             }
             $this->Ln();
             $this->cell(0, 0, '', 'B', 1, 'L');
-//            $this->Ln();
-        } // Titelblatt
-        else {
-
+        } else {
             $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
             if (!$mysqli->set_charset("utf8")) {
                 printf("Error loading character set utf8: %s\n or Login timed out", $mysqli->error);
@@ -107,64 +88,23 @@ class MYPDF extends TCPDF
             $currentDate = date('Y-m-d');
             $futureDate = new DateTime($dateFromURL) > new DateTime($currentDate);
 
-            if ($dateFromURL === $currentDate || $futureDate) {
-            } else {
+            if ($dateFromURL !== $currentDate && !$futureDate) {
                 $this->Cell(0, 0, "Änderungsverlauf bis: " . $dateFromURL, 0, false, 'L', 0, '', 0, false, 'T', 'M');
             }
 
             $this->SetFont('helvetica', '', 6);
             //LOGOS einfügen
-            if ($_SESSION["projectAusfuehrung"] === "MADER") {
-                $image_file = 'Mader_Logo_neu.jpg';
-                $this->Image($image_file, 145, 40, 50, 15, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-            } else {
-                if ($_SESSION["projectAusfuehrung"] === "LIMET") {
-                    $image_file = 'LIMET_web.png';
-                    $this->Image($image_file, 110, 40, 30, 15, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                } else {
-                    $image_file = 'PERNTHALER_LOGO.png';
-                    $this->Image($image_file, 165, 45, 30, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                    //$image_file = 'LIMET_web.png';
-                    //$this->Image($image_file, 135, 42, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                    //$image_file = 'Mader_Logo_neu.jpg';
-                    //$this->Image($image_file, 145, 41, 40, 20, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                    $this->SetY(60);
-                    $this->SetX(110);
-                    $this->Cell(0, 0, "DI Markus Pernthaler Architekt ZT GmbH", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Cell(0, 0, "Marienplatz 1", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Cell(0, 0, "8020 Graz", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Ln();
-                    $this->Cell(0, 0, "tel: +43 (0)316 – 32 11 50", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Cell(0, 0, "fax: +43 (0)316 – 32 11 50 – 14", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Cell(0, 0, "e-mail: architekt@pernthaler.at", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Ln();
-                    $this->Cell(0, 0, "UDI ATU 61879729", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Cell(0, 0, "IBAN: AT89 1100 0048 83871800", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Cell(0, 0, "BIC: BKAUATWW ", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                }
-            }
-            // Deckblatt beenden
+            get_titelblatt_logo($this);
 
             $Vorentwurf = " Im Vorentwurf sind die raumweisen elektrischen Leitungsangaben je Netzart ohne Gleichzeitigkeit angegeben. Die Werte stellen die Summe der Nennleistungen der im Raum geplanten medizin- und labortechnischen Geräte inkl. einer Auslegungsreserve dar. Diese Auslegungsreserve ist erforderlich, um beispielsweise Geräte zu berücksichtigen, welche nicht im Raum verortet sind, aber dort genutzt werden können. Detailliertere Angaben zu Großgeräten (Röntgenanlagen, CT, MRT etc.) erfolgen stets gesondert.";
             $Entwurf = " Die elektrischen Leistungsangaben je Netzart, die aus der Verwendung der medizin- und labortechnischen Geräte resultiert, wird aus der Summe der einzelnen Geräte/Element-Nennleistungen unter Berücksichtigung der Gleichzeitigkeit je Element berechnet. Die Differenz der angeführten Leistungssumme zu den Vorbemessungsangaben aus  dem Vorentwurf ist die verbleibende Auslegungsreserve je Raum.";
-            $Disclaimer = "Die nachfolgenden medizin- und labortechnischen Angaben beziehen sich nur auf diejenigen medizin- und labortechnisch-relevante Räume, die seitens der Planung bearbeitet werden. Die Angaben dienen als Grundlage für die Fachplaner Architektur, Elektrotechnik, HKLS, Medgas & Statik. Neben den aufgelisteten Bemessungsangaben je Fachbereich werden die medizin- und labortechnischen Elemente eines Raumes in Listenform angeführt. Diese sind ebenfalls als Planungsgrundlage heranzuziehen.";
+            $Disclaimer = "Die nachfolgenden medizin- und labortechnischen Angaben beziehen sich nur auf diejenigen medizin- und labortechnisch-relevanten Räume, die seitens der Planung bearbeitet werden. Die Angaben dienen als Grundlage für die Fachplaner Architektur, Elektrotechnik, HKLS, Medgas & Statik. Neben den aufgelisteten Bemessungsangaben je Fachbereich werden die medizin- und labortechnischen Elemente eines Raumes in Listenform angeführt. Diese sind ebenfalls als Planungsgrundlage heranzuziehen.";
             $this->SetFont('helvetica', '', 10);
-
-
             if ($_SESSION["projectPlanungsphase"] === "Vorentwurf") {
                 $Disclaimer = $Disclaimer . $Vorentwurf;
             } else if ($_SESSION["projectPlanungsphase"] === "Entwurf") {
                 $Disclaimer = $Disclaimer . $Entwurf;
             }
-
             $height = $this->getStringHeight(390, $Disclaimer, 0, 'J', 0, 6);
             $this->SetY(275 - $height);
             $this->MultiCell(390, 6, $Disclaimer, 0, 'J', 0, 0);

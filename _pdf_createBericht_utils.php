@@ -1,17 +1,61 @@
 <?php
+
+function createRaumHeaderRaumbuch($pdf, $Raumdaten)
+{
+    while ($row = $Raumdaten->fetch_assoc()) {
+        $pdf->SetFont('helvetica', 'B', 10);
+        $pdf->MultiCell(100, 6, "Raum: " . $row['Raumbezeichnung'], 0, 'L', 0, 0);
+        $pdf->MultiCell(80, 6, "Nummer: " . $row['Raumnr'], 0, 'L', 0, 0);
+        $pdf->Ln();
+        $pdf->SetFont('helvetica', '', 10);
+        $pdf->MultiCell(100, 6, "Bereich: " . $row['Raumbereich Nutzer'], 0, 'L', 0, 0);
+        $pdf->MultiCell(80, 6, "Geschoss: " . $row['Geschoss'], 0, 'L', 0, 0);
+        if ($pdf->getStringHeight(100, "Bereich: " . $row['Raumbereich Nutzer'], false, true, "") > 8) {
+            $pdf->Ln();
+        }
+
+        $pdf->Ln();
+        $pdf->MultiCell(100, 6, "Raumfläche: " . $row['Nutzfläche'] . " m2", 'B', 'L', 0, 0);
+        //$pdf->Ln();
+        //ss$pdf->MultiCell(100, 6, "Projekt: " . $row['Projektname'], 0, 'L', 0, 0);
+        $pdf->MultiCell(80, 6, "Bauteil: " . $row['Bauabschnitt'], 'B', 'L', 0, 0);
+        // $pdf->Ln();
+        // $pdf->MultiCell(100, 6, "Projektstatus: " . $row['Bezeichnung'], 'B', 'L', 0, 0);
+        // $pdf->MultiCell(80, 6, "Bauetappe: " . $row['Bauetappe'], 'B', 'L', 0, 0);
+
+        $pdf->SetFont('helvetica', '', 8);
+        if (!empty(str_replace(' ', '', br2nl($row['Anmerkung FunktionBO'])))) {
+            $pdf->Ln();
+            $rowHeightComment = $pdf->getStringHeight(150, br2nl($row['Anmerkung FunktionBO']), false, true, '', 1);
+            $y = $pdf->GetY();
+            if (($y + $rowHeightComment) >= 270) {
+                $pdf->AddPage();
+            }
+            $pdf->MultiCell(30, $rowHeightComment, "Funktion BO:", 'B', 'L', 0, 0);
+            $pdf->MultiCell(150, $rowHeightComment, br2nl($row['Anmerkung FunktionBO']), 'B', 'L', 0, 0);
+        }
+    }
+
+}
+
+
 function getFileName($topic)
 {
     $projectname = $_SESSION['projectName'];
     return $projectname . "__GPMT__" . $topic . "__" . date("Y-m-d") . ".pdf";
 }
 
-function check4newpage($pdf, $rowHeightComment): void
+function check4newpage($pdf, $rowHeightComment)
 {
     $y = $pdf->GetY();
     if (($y + $rowHeightComment) >= 270) {
         $pdf->AddPage();
+        return True;
+    } else {
+        return false;
     }
 }
+
 function getUnitMultiplier($einheit)
 {
     $prefixes = [
@@ -393,8 +437,10 @@ function init_pdf_attributes($pdf, $einzugLR, $marginTop, $marginBTM, $format = 
     $pdf->SetFont('helvetica', '', 10);
     if ($format == "A3") {
         $pdf->AddPage('L', 'A3');
-    } else {
+    } else if ($format == "A4") {
         $pdf->AddPage('P', 'A4');
+    } else if ($format == "A4_queer") {
+        $pdf->AddPage('L', 'A4');
     }
     return $pdf;
 }
@@ -479,10 +525,12 @@ function strahlenanw($pdf, $param, $cellsize, $gr)
 {
     $originalFontSize = $pdf->getFontSizePt();
     $pdf->SetFont('zapfdingbats', '', 10);
-    if ($param === '0') {//        $pdf->SetTextColor(255, 0, 0);
+    if ($param === '0') {
+        // $pdf->SetTextColor(255, 0, 0);
         $pdf->MultiCell($cellsize, $gr, TCPDF_FONTS::unichr(54), 0, 'L', 1, 0);
     } else {
-        if ($param === '1') {//            $pdf->SetTextColor(0, 255, 0);
+        if ($param === '1') {
+            //  $pdf->SetTextColor(0, 255, 0);
             $pdf->MultiCell($cellsize, $gr, TCPDF_FONTS::unichr(52), 0, 'L', 1, 0);
         } else {
             $pdf->SetFont('helvetica', '', 10);

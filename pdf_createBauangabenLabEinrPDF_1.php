@@ -1,508 +1,343 @@
 <?php
-require_once('TCPDF-main/TCPDF-main/tcpdf.php');
-include "_pdf_createBericht_utils.php";
+#2025done
 if (!function_exists('utils_connect_sql')) {
     include "_utils.php";
 }
 check_login();
 
-class MYPDF extends TCPDF
-{
-    public function Header()
-    {
-        //Abfrage ob Titelblatt
-        if ($this->numpages > 1) {
-            $this->Ln();
-            $this->Cell(0, 0, '', 0, false, 'L', 0, '', 0, false, 'B', 'B');
+require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+include "pdf_createBericht_MYPDFclass_A4_Raumbuch.php";
+include "_pdf_createBericht_utils.php";
+$marginTop = 17; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/
+$marginBTM = 10;
+$_SESSION["PDFTITEL"] = "Labor Raumangaben";
+$pdf = new MYPDF('P', PDF_UNIT, "A4", true, 'UTF-8', false, true);
+$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4", "Raumangaben");
 
-            if ($_SESSION["projectAusfuehrung"] === "MADER") {
-                $image_file = 'MADER_Logo.png';
-                $this->SetFont('helvetica', '', 8);
-                $this->Image($image_file, 15, 5, 13, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-            } else {
-                if ($_SESSION["projectAusfuehrung"] === "LIMET") {
-                    $image_file = 'LIMET_web.png';
-                    $this->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                } else {
-                    $image_file = 'logo_ffa.png';
-                    $this->Image($image_file, 15, 5, 50, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                    $image_file = 'LIMET_web.png';
-                    $this->Image($image_file, 158, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                    $image_file = 'MADER_Logo.png';
-                    $this->Image($image_file, 180, 5, 13, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                }
-            }
-            $this->Ln();
-            // Set font
-            $this->SetFont('helvetica', '', 8);
-            // Title
-            $this->cell(0, 0, '', 'B', 0, 'L');
-        } // Titelblatt
-        else {
-            // Verbindung herstellen
-            $mysqli = utils_connect_sql();
+// ------------------ URsprünglioch am Titelblatt --------------------------
+// //if ($raumInfos[0]['Projektname'] === "GCP") {
+//     $this->Ln();
+//     $this->SetFont('helvetica', '', 10);
+//     $this->Cell(0, 0, "Vorgängerstände:", 0, false, 'L', 0, '', 0, false, 'T', 'M');
+//     $this->Ln();
+//     $this->Cell(0, 0, "Stand Überarbeitung nach Verhandlung: 2024-04-24", 0, false, 'L', 0, '', 0, false, 'T', 'M');
+//     $this->Ln();
+//     $this->Cell(0, 0, "Stand Einreichung: 2023-12-18", 0, false, 'L', 0, '', 0, false, 'T', 'M');
+//     $this->Ln();
+// }
 
-            $roomIDs = filter_input(INPUT_GET, 'roomID');
-            $teile = explode(",", $roomIDs);
+// $GCP_bearbeit = [
+//   12630,
+//   11984,
+//   11985,
+//   12007,
+//   12010,
+//   12011,
+//   12012,
+//   12017,
+//   12022,
+//   12023,
+//   12024,
+//   12037,
+//   12039,
+//   12060,
+//   12061,
+//   12062,
+//   12063,
+//   12064,
+//   12065,
+//   12066,
+//   12067,
+//   12068,
+//   12070,
+//   12071,
+//   12072,
+//   12073,
+//   12075,
+//   12076,
+//   12077,
+//   12078,
+//   12079,
+//   12080,
+//   12081,
+//   12082,
+//   12083,
+//   12084,
+//   12085,
+//   12086,
+//   12087,
+//   12088,
+//   12089,
+//   12090,
+//   12144,
+//   12145,
+//   12148,
+//   12149,
+//   12150,
+//   12155,
+//   12156,
+//   12157,
+//   12159,
+//   12160,
+//   12166,
+//   12172,
+//   12173,
+//   12174,
+//   12175,
+//   12194,
+//   12204,
+//   12205,
+//   12217,
+//   12218,
+//   12219,
+//   12220,
+//   12222,
+//   12223,
+//   12224,
+//   12225,
+//   12227,
+//   12228,
+//   12229,
+//   12230,
+//   12231,
+//   12235,
+//   12242,
+//   12244,
+//   12246,
+//   12251,
+//   12252,
+//   12254,
+//   12255,
+//   12256,
+//   12259,
+//   12260,
+//   12266,
+//   12267,
+//   12269,
+//   12301,
+//   12302,
+//   12303,
+//   12304,
+//   12314,
+//   12316,
+//   12333,
+//   12335,
+//   12336,
+//   12337,
+//   12339,
+//   12340,
+//   12341,
+//   12342,
+//   12357,
+//   12359,
+//   12360,
+//   12362,
+//   12363,
+//   12365,
+//   12366,
+//   12367,
+//   12368,
+//   12369,
+//   12370,
+//   12371,
+//   12372,
+//   12373,
+//   12374,
+//   12375,
+//   12376,
+//   12377,
+//   12378,
+//   12379,
+//   12380,
+//   12381,
+//   12383,
+//   12384,
+//   12386,
+//   12387,
+//   12388,
+//   12406,
+//   12407,
+//   12408,
+//   12409,
+//   12410,
+//   12411,
+//   12412,
+//   12413,
+//   12417,
+//   12430,
+//   12431,
+//   12432,
+//   12435,
+//   12437,
+//   12440,
+//   12441,
+//   12442,
+//   12446,
+//   12448,
+//   12450,
+//   12451,
+//   12452,
+//   12453,
+//   12454,
+//   12455,
+//   12456,
+//   12457,
+//   12458,
+//   12460,
+//   12461,
+//   12462,
+//   12463,
+//   12464,
+//   12466,
+//   12468,
+//   12469,
+//   12470,
+//   12479,
+//   12480,
+//   12481,
+//   12482,
+//   12483,
+//   12484,
+//   12485,
+//   12486,
+//   12487,
+//   12488,
+//   12490,
+//   12491,
+//   12504,
+//   12505,
+//   12506,
+//   12507,
+//   12508,
+//   12509,
+//   12510,
+//   12512,
+//   12513,
+//   12514,
+//   12515,
+//   12516,
+//   12517,
+//   12518,
+//   12519,
+//   12520,
+//   12521,
+//   12523,
+//   12524,
+//   12525,
+//   12528,
+//   12529,
+//   12530,
+//   12531,
+//   12561,
+//   12563,
+//   12570,
+//   12572,
+//   12573,
+//   12574,
+//   12575,
+//   12576,
+//   12577,
+//   12578,
+//   12579,
+//   12581,
+//   12582,
+//   12587,
+//   12588,
+//   12589,
+//   12590,
+//   12591,
+//   12592,
+//   12593,
+//   12595,
+//   12596,
+//   12597,
+//   12602,
+//   12604,
+//   12606,
+//   12609,
+//   12611,
+//   12613,
+//   12614,
+//   12615,
+//   12616,
+//   12617,
+//   12618,
+//   12619,
+//   12620,
+//   12622,
+//   12623,
+//   12624,
+//   12625,
+//   12626,
+//   12628,
+//   12629,
+//   12630,
+//   12635,
+//   12636,
+//   12644,
+//   12646,
+//   12647,
+//   12648,
+//   12659,
+//   12672,
+//   12673,
+//   12674,
+//   12675,
+//   12676,
+//   12677,
+//   12678,
+//   12679,
+//   12680,
+//   12681,
+//   12682,
+//   12683,
+//   12698,
+//   12701,
+//   12711,
+//   12713,
+//   12718,
+//   12720,
+//   12721,
+//   14706,
+//   14814,
+//   14815,
+//   14816,
+//   14817,
+//   14818,
+//   14820,
+//   14840,
+//   14841,
+//   15288,
+//   15289,
+//   15290,
+//   15293,
+//   15296,
+//   15298,
+//   15299,
+//   15595,
+//   26286,
+//   26287,
+//   26288,
+//   26289,
+//   26290,
+//   26291,
+//   26293,
+//   26511,
+//   26512,
+//   26610,
+//   26618,
+//   26631,
+//   26632,
+//   28892,
+//   28893,
+//   50703,
+//   50704,
+//   105004
+//;
 
-            $sql = "SELECT tabelle_projekte.Projektname, tabelle_planungsphasen.Bezeichnung, tabelle_räume.`Raumbereich Nutzer`
-                    FROM tabelle_räume INNER JOIN (tabelle_planungsphasen INNER JOIN tabelle_projekte ON tabelle_planungsphasen.idTABELLE_Planungsphasen = tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen) ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte ";
-            $i = 0;
-            foreach ($teile as $valueOfRoomID) {
-                if ($i == 0) {
-                    $sql = $sql . "WHERE tabelle_räume.idTABELLE_Räume=" . $valueOfRoomID . " ";
-                } else {
-                    $sql = $sql . "OR tabelle_räume.idTABELLE_Räume=" . $valueOfRoomID . " ";
-                }
-                $i++;
-            }
-            $sql = $sql . "GROUP BY tabelle_projekte.Projektname, tabelle_planungsphasen.Bezeichnung, tabelle_räume.`Raumbereich Nutzer` ORDER BY tabelle_räume.`Raumbereich Nutzer`;";
-            $result = $mysqli->query($sql);
-            $raumInfos = array();
-            $raumInfosCounter = 0;
-            while ($row = $result->fetch_assoc()) {
-                $raumInfos[$raumInfosCounter]['Projektname'] = $row['Projektname'];
-                $raumInfos[$raumInfosCounter]['Planungsphase'] = $row['Bezeichnung'];
-                $raumInfos[$raumInfosCounter]['Raumbereich'] = $row['Raumbereich Nutzer'];
-                $raumInfosCounter = $raumInfosCounter + 1;
-            }
-
-            $mysqli->close();
-            // Set font
-            $this->SetFont('helvetica', 'B', 15);
-            // Title
-            $this->SetY(50);
-            $this->Cell(0, 0, $raumInfos[0]['Projektname'], 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            $this->Ln();
-            $this->Cell(0, 0, $raumInfos[0]['Planungsphase'], 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            $this->Ln();
-            if ($raumInfos[0]['Projektname'] === "GCP") {
-                $this->SetFont('helvetica', '', 10);
-                $this->Cell(0, 0, "GCP_Q_EI_Raumblätter-AstV_GP_I03_250321", 0, false, 'L', 0, '', 0, false, 'B', 'B');
-                $this->Ln();
-            }
-            $this->Ln();
-            $this->Ln();
-            $this->Ln();
-            $this->Ln();
-            $this->SetFont('helvetica', '', 12);
-            $this->Cell(0, 0, "Stand: 2025-03-21 ", 0, false, 'L', 0, '', 0, false, 'T', 'M'); //. date('Y-m-d')
-
-            if ($raumInfos[0]['Projektname'] === "GCP") {
-                $this->Ln();
-                $this->SetFont('helvetica', '', 10);
-                $this->Cell(0, 0, "Vorgängerstände:", 0, false, 'L', 0, '', 0, false, 'T', 'M');
-                $this->Ln();
-                $this->Cell(0, 0, "Stand Überarbeitung nach Verhandlung: 2024-04-24", 0, false, 'L', 0, '', 0, false, 'T', 'M');
-                $this->Ln();
-                $this->Cell(0, 0, "Stand Einreichung: 2023-12-18", 0, false, 'L', 0, '', 0, false, 'T', 'M');
-                $this->Ln();
-            }
-            $this->SetFont('helvetica', '', 6);
-            //LOGOS einfügen
-            if ($_SESSION["projectAusfuehrung"] === "MADER") {
-                $image_file = 'MADER_Logo.png';
-                $this->Image($image_file, 145, 40, 50, 15, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-            } else {
-                if ($_SESSION["projectAusfuehrung"] === "LIMET") {
-                    $image_file = 'LIMET_web.png';
-                    $this->Image($image_file, 110, 40, 30, 15, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                } else {
-                    $image_file = 'LIMET_web.png';
-                    $this->Image($image_file, 145, 40, 30, 13, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                    $image_file = 'MADER_Logo.png';
-                    $this->Image($image_file, 178, 41, 15, 13, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                    $this->SetY(60);
-                    $this->SetX(110);
-                    $this->Cell(0, 0, "ARGE LIMET-MADER", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Cell(0, 0, "Zwerggase 6/1", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Cell(0, 0, "8010 Graz", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Ln();
-                    $this->Cell(0, 0, "Tel: +43 1 470 48 33 Dipl.-Ing. Jens Liebmann, MBA", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Cell(0, 0, "Tel: +43 650 523 27 38 Dipl.-Ing. Peter Mader", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Ln();
-                    $this->Cell(0, 0, "UID ATU 69334945", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Cell(0, 0, "IBAN AT90 2081 5208 0067 8128", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Cell(0, 0, "BIC STSPAT2GXXX", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                }
-            }
-        }
-    }
-
-    public function Footer()
-    {
-        $this->SetY(-15);
-        $this->SetFont('helvetica', 'I', 8);
-        $this->cell(0, 0, '', 'T', 0, 'L');
-        $this->Ln();
-        $tDate = "2025-03-21"; //date('Y-m-d');
-        $this->Cell(0, 0, $tDate, 0, false, 'L', 0, '', 0, false, 'T', 'M');
-        $this->Cell(0, 0, 'Seite ' . $this->getAliasNumPage() . ' von ' . $this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
-    }
-
-}
-
-
-$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-$pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor('LIMET Consulting und Planung für Medizintechnik');
-$pdf->SetTitle('Bauangaben-MT');
-$pdf->SetSubject('LaborBauangabenBericht Einreichung');
-$pdf->SetKeywords('xxx');
-
-// set default header data
-$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING, array(0, 64, 255), array(0, 64, 128));
-$pdf->setFooterData(array(0, 64, 0), array(0, 64, 128));
-
-// set header and footer fonts
-$pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-
-// set default monospaced font
-$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-// set margins
-$pdf->SetMargins(PDF_MARGIN_LEFT, 20, PDF_MARGIN_RIGHT);
-$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-// set auto page breaks
-$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
-// set image scale factor
-$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-// set some language-dependent strings (optional)
-if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
-    require_once(dirname(__FILE__) . '/lang/eng.php');
-    $pdf->setLanguageArray($l);
-}
-
-// ---------------------------------------------------------
-
-
-$GCP_bearbeit = [
-    12630,
-    11984,
-    11985,
-    12007,
-    12010,
-    12011,
-    12012,
-    12017,
-    12022,
-    12023,
-    12024,
-    12037,
-    12039,
-    12060,
-    12061,
-    12062,
-    12063,
-    12064,
-    12065,
-    12066,
-    12067,
-    12068,
-    12070,
-    12071,
-    12072,
-    12073,
-    12075,
-    12076,
-    12077,
-    12078,
-    12079,
-    12080,
-    12081,
-    12082,
-    12083,
-    12084,
-    12085,
-    12086,
-    12087,
-    12088,
-    12089,
-    12090,
-    12144,
-    12145,
-    12148,
-    12149,
-    12150,
-    12155,
-    12156,
-    12157,
-    12159,
-    12160,
-    12166,
-    12172,
-    12173,
-    12174,
-    12175,
-    12194,
-    12204,
-    12205,
-    12217,
-    12218,
-    12219,
-    12220,
-    12222,
-    12223,
-    12224,
-    12225,
-    12227,
-    12228,
-    12229,
-    12230,
-    12231,
-    12235,
-    12242,
-    12244,
-    12246,
-    12251,
-    12252,
-    12254,
-    12255,
-    12256,
-    12259,
-    12260,
-    12266,
-    12267,
-    12269,
-    12301,
-    12302,
-    12303,
-    12304,
-    12314,
-    12316,
-    12333,
-    12335,
-    12336,
-    12337,
-    12339,
-    12340,
-    12341,
-    12342,
-    12357,
-    12359,
-    12360,
-    12362,
-    12363,
-    12365,
-    12366,
-    12367,
-    12368,
-    12369,
-    12370,
-    12371,
-    12372,
-    12373,
-    12374,
-    12375,
-    12376,
-    12377,
-    12378,
-    12379,
-    12380,
-    12381,
-    12383,
-    12384,
-    12386,
-    12387,
-    12388,
-    12406,
-    12407,
-    12408,
-    12409,
-    12410,
-    12411,
-    12412,
-    12413,
-    12417,
-    12430,
-    12431,
-    12432,
-    12435,
-    12437,
-    12440,
-    12441,
-    12442,
-    12446,
-    12448,
-    12450,
-    12451,
-    12452,
-    12453,
-    12454,
-    12455,
-    12456,
-    12457,
-    12458,
-    12460,
-    12461,
-    12462,
-    12463,
-    12464,
-    12466,
-    12468,
-    12469,
-    12470,
-    12479,
-    12480,
-    12481,
-    12482,
-    12483,
-    12484,
-    12485,
-    12486,
-    12487,
-    12488,
-    12490,
-    12491,
-    12504,
-    12505,
-    12506,
-    12507,
-    12508,
-    12509,
-    12510,
-    12512,
-    12513,
-    12514,
-    12515,
-    12516,
-    12517,
-    12518,
-    12519,
-    12520,
-    12521,
-    12523,
-    12524,
-    12525,
-    12528,
-    12529,
-    12530,
-    12531,
-    12561,
-    12563,
-    12570,
-    12572,
-    12573,
-    12574,
-    12575,
-    12576,
-    12577,
-    12578,
-    12579,
-    12581,
-    12582,
-    12587,
-    12588,
-    12589,
-    12590,
-    12591,
-    12592,
-    12593,
-    12595,
-    12596,
-    12597,
-    12602,
-    12604,
-    12606,
-    12609,
-    12611,
-    12613,
-    12614,
-    12615,
-    12616,
-    12617,
-    12618,
-    12619,
-    12620,
-    12622,
-    12623,
-    12624,
-    12625,
-    12626,
-    12628,
-    12629,
-    12630,
-    12635,
-    12636,
-    12644,
-    12646,
-    12647,
-    12648,
-    12659,
-    12672,
-    12673,
-    12674,
-    12675,
-    12676,
-    12677,
-    12678,
-    12679,
-    12680,
-    12681,
-    12682,
-    12683,
-    12698,
-    12701,
-    12711,
-    12713,
-    12718,
-    12720,
-    12721,
-    14706,
-    14814,
-    14815,
-    14816,
-    14817,
-    14818,
-    14820,
-    14840,
-    14841,
-    15288,
-    15289,
-    15290,
-    15293,
-    15296,
-    15298,
-    15299,
-    15595,
-    26286,
-    26287,
-    26288,
-    26289,
-    26290,
-    26291,
-    26293,
-    26511,
-    26512,
-    26610,
-    26618,
-    26631,
-    26632,
-    28892,
-    28893,
-    50703,
-    50704,
-    105004
-];
-
-
-//$colour = array(104,140,4);
 $colour = array(132, 164, 76);
 $pdf->SetFillColor(...$colour);
-$pdf->SetFont('helvetica', '', 10);
-$pdf->AddPage('P', 'A4');
+
 $mysqli = utils_connect_sql();
 
 // -----------------Variantenparameter Info laden----------------------------
@@ -676,10 +511,10 @@ WHERE (((tabelle_räume.idTABELLE_Räume) = " . $valueOfRoomID . "));";
     $result2 = $mysqli->query($sql);
     while ($row = $result2->fetch_assoc()) {
 
-        if (in_array($valueOfRoomID, $GCP_bearbeit)) {
-            $pdf->SetFont('helvetica', '', 8);
-            $pdf->MultiCell(180, 6, "Die Angaben dieses Raumes wurden ggü. dem Vorgängerstand des Dokuments angepasst.", 0, 'L', 0, 1);
-        }
+      // if (in_array($valueOfRoomID, $GCP_bearbeit)) {
+      //     $pdf->SetFont('helvetica', '', 8);
+      //     $pdf->MultiCell(180, 6, "Die Angaben dieses Raumes wurden ggü. dem Vorgängerstand des Dokuments angepasst.", 0, 'L', 0, 1);
+      // }
         $pdf->SetFont('helvetica', 'B', 10);
 
         $pdf->MultiCell(100, 6, "Projekt: " . $row['Projektname'], 0, 'L', 0, 0);
@@ -1255,12 +1090,8 @@ WHERE (((tabelle_räume.idTABELLE_Räume) = " . $valueOfRoomID . "));";
 }
 
 $mysqli->close();
-
-
-//$pdf->MultiCell(50, 6, "Bereich",'B', 'L', 0, 0);
-//$pdf->MultiCell(20, 6, "Geschoss",'B', 'C', 0, 0);
 ob_end_clean();
-$pdf->Output('Raumbuch-MT.pdf', 'I');
+$pdf->Output( getFileName('Raumbuch'), 'I');
 
 //============================================================+
 // END OF FILE

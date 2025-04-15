@@ -64,6 +64,8 @@ init_page_serversides();
                         <button type='button' class='btn btn-outline-secondary btn-sm me-2 ms-2 ' id='createTenderWorkflowPDF'>
                             <i class='far fa-file-pdf'></i> Workflow-PDF
                         </button>
+
+
                     </div>
                 </div>
                 <div class="card-body" id="projectLots">

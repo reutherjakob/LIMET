@@ -140,7 +140,6 @@ $mysqli->close();
     });
 
 
-
     var tableLotElements1;
     $(document).ready(function () {
 
@@ -191,10 +190,17 @@ $mysqli->close();
                             }
                         });
                     }
+                },
+                {
+                    text: 'Los Elementliste PDF',
+                    className: "btn btn-md bg-white btn-outline-secondary fas fa-file-pdf",
+                    action: function () {
+                        window.open('/pdf_createLotElementListPDF.php');
+                    }
                 }
             ],
             initComplete: function () {
-                // Your initialization code here
+
             }
         });
 
@@ -228,7 +234,7 @@ $mysqli->close();
 
     });
 
-    $('#createLotElementListPDF').click(function () {    // PDF erzeugen
+    $('#createLotElementListPDF').click(function () {
         window.open('/pdf_createLotElementListPDF.php');
     });
 

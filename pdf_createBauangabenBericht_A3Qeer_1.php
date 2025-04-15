@@ -1,12 +1,11 @@
 <?php
-include 'pdf_createBericht_MYPDFclass.php'; //require_once('TCPDF-main/TCPDF-main/tcpdf.php'); is in class file
+include 'pdf_createBericht_MYPDFclass_A3Queer.php'; //require_once('TCPDF-main/TCPDF-main/tcpdf.php'); is in class file
 include '_pdf_createBericht_utils.php';
 if (!function_exists('utils_connect_sql')) {
     include "_utils.php";
 }
 include 'pdf_createMTTabelle.php';
-session_start();
-check_login();
+ check_login();
 
 $roomIDs = filter_input(INPUT_GET, 'roomID');
 $roomIDsArray = explode(",", $roomIDs);
@@ -315,5 +314,4 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
 $mysqli->close();
 ob_end_clean();
-
 $pdf->Output('BAUANGABEN-MT.pdf', 'I');

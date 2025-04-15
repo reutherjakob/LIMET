@@ -1,119 +1,21 @@
 <?php
-//============================================================+
-// File name   : pdf_createElementListWithPricePDF.php
-// Begin       : 2017-09-18
-// Last Update : 2017-09-18
-//
-// Description : Erstellt ein PDF mit der Auflistung 
-// aller Element in einem Projekt mit Schätzpreis und Gewerk
-//
-// Author: Jakob Reuther
-//
-//============================================================+
-
-
-// Include the main TCPDF library (search for installation path).
+#2025done
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
+check_login();
 require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+include "pdf_createBericht_MYPDFclass_A4_ohneTitelblatt.php";
+include "_pdf_createBericht_utils.php";
 
-// extend TCPF with custom functions
-class MYPDF extends TCPDF {
-    
-    //Page header
-    public function Header() {
-        // Logo
-        if($_SESSION["projectAusfuehrung"]==="MADER"){
-            $image_file = 'Mader_Logo_neu.jpg';
-            $this->Image($image_file, 15, 5, 40, 10, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-        }
-        else{
-            if($_SESSION["projectAusfuehrung"]==="LIMET"){
-                $image_file = 'LIMET_web.png';
-                $this->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-            }
-            else{
-                $image_file = 'LIMET_web.png';
-                $this->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                $image_file = 'Mader_Logo_neu.jpg';
-                $this->Image($image_file, 38, 5, 40, 10, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-            }
-            
-        }
-        // Set font
-        $this->SetFont('helvetica', '', 8);
-        // Title
-        $this->Cell(0, 0, 'Medizintechnische Elementliste', 0, false, 'R', 0, '', 0, false, 'B', 'B');
-        $this->Ln();
-        $this->cell(0,0,'','B',0,'L');
-    }
+$_SESSION["PDFTITEL"] = "Medizintechnische Elementliste";
+$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false, true);
+$marginTop = 20; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/
+$marginBTM = 10;
+init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4_queer", "Elementliste-MT");
 
-    // Page footer
-    public function Footer() {
-        // Position at 15 mm from bottom
-        $this->SetY(-15);
-        // Set font
-        $this->SetFont('helvetica', 'I', 8);
-        // Page number
-        $this->cell(0,0,'','T',0,'L');
-        $this->Ln();
-        $tDate=date('Y-m-d');
-        $this->Cell(0, 0, $tDate, 0, false, 'L', 0, '', 0, false, 'T', 'M');
-        $this->Cell(0, 0, 'Seite '.$this->getAliasNumPage().' von '.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
-    }
-    
-}
-session_start();
-// create new PDF document
-$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+$mysqli = utils_connect_sql();
 
-// set document information
-$pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor('LIMET Consulting und Planung für Medizintechnik');
-$pdf->SetTitle('Elementliste-MT');
-$pdf->SetSubject('xxx');
-$pdf->SetKeywords('xxx');
-
-// set default header data
-$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING, array(0,64,255), array(0,64,128));
-$pdf->setFooterData(array(0,64,0), array(0,64,128));
-
-// set header and footer fonts
-$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-
-// set default monospaced font
-$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-// set margins
-$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-// set auto page breaks
-$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
-// set image scale factor
-$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-// set some language-dependent strings (optional)
-if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
-    require_once(dirname(__FILE__).'/lang/eng.php');
-    $pdf->setLanguageArray($l);
-}
-
-// ---------------------------------------------------------
-
-// set font
-$pdf->SetFont('helvetica', '', 10);
-
-
-// Daten laden
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');	
-
-// change character set to utf8 
-if (!$mysqli->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $mysqli->error);
-    exit();
-}
 
 // Variantenparameter Info laden
 $sql ="SELECT tabelle_projekt_elementparameter.Wert, tabelle_projekt_elementparameter.Einheit, tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten, tabelle_projekt_elementparameter.tabelle_elemente_idTABELLE_Elemente, tabelle_parameter.Bezeichnung, tabelle_parameter_kategorie.Kategorie
@@ -168,10 +70,8 @@ while ($row = $result3->fetch_assoc()) {
 }
 
 
-$pdf->AddPage('L', 'A4');
 
-
-//Kopfzeile
+//Kopfzeil
 $pdf->SetFont('helvetica', '', 8);
 $pdf->SetTextColor(0);
 $rowHeightFirstLine = $pdf->getStringHeight(50,"ElementID",false,true,'',1);
@@ -225,8 +125,7 @@ while ($row = $result3->fetch_assoc()) {
         $rowHeight1 = $pdf->getStringHeight(50,$varInfo,false,true,'',1);
         
         $rowHeightFinal = 0;
-        
-        // Wenn Seitenende? Überprüfen und neue Seite anfangen
+
         $y = $pdf->GetY();
         if($rowHeight > $rowHeight1){
             $rowHeightFinal = $rowHeight;
@@ -239,7 +138,7 @@ while ($row = $result3->fetch_assoc()) {
             $pdf->AddPage();
         } 
         
-                   
+
         $pdf->MultiCell(8, $rowHeightFinal, $row['SummevonAnzahl'],0, 'C', $fill, 0);
         $pdf->MultiCell(20, $rowHeightFinal, $row['ElementID'],0, 'C', $fill, 0);
         $pdf->MultiCell(50, $rowHeightFinal, $row['Bezeichnung'],0, 'C', $fill, 0);
@@ -261,19 +160,9 @@ while ($row = $result3->fetch_assoc()) {
                 }               
             }
         }
-        
-        
-        
-
     $pdf->Ln();                                    
 }
 
-
-
-// close and output PDF document
-$pdf->Output('Elementeliste-MT.pdf', 'I');
-
-//============================================================+
-// END OF FILE
-//============================================================+
-
+$mysqli->close();
+ob_end_clean();
+$pdf->Output(getFileName('Elementeliste'), 'I');

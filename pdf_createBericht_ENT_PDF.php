@@ -1,75 +1,38 @@
 <?php
+#2025done
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
+check_login();
+require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+include "pdf_createBericht_MYPDFclass_A4_Raumbuch.php";
+include "_pdf_createBericht_utils.php";
 
-// Most Current version 29.11
-include 'pdf_createBericht_MYPDFclass.php';
-include '_pdf_createBericht_utils.php';
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
-
-$hackerl_Zellgröße=15; 
 $hackerl_schriftgröße= 10;
-
 $block_label_size = 13;
-
 $ln_spacer1 = 4;
 $ln_spacer2 = 6; //bigger than 1
-
 $einzugLR=15;               // standard einzug L/R
 $SB = 210 - 2* $einzugLR ;  // A4: seitenbreite minus die lr einzüge
 $einzugC1 = 40;             // C: Seite dritteln
 $einzugC2 = 60 - $einzugC1;
-
 $einzugE = 30;              // E: Einzug vor erster Unterkathegorie von Et
 $einzugF = $SB/6 - $hackerl_Zellgröße  ;  // F: Seite sexteln, zb Medgas
 $manual_offset = 5;
 $abzug_ersterC_einzug= $einzugC1- $einzugE-$manual_offset; //rückt erstes element je gedritteltem segment nach links
 $einzug_anm  = $einzugE+$manual_offset;
-
-        
 $bool_extra_zeile = false;
 
-// create new PDF document
-/** @noinspection PhpUndefinedConstantInspection */
+$marginTop = 20; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/
+$marginBTM = 10;
+$_SESSION["PDFTITEL"] = "Medizintechnik Angaben";
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false, true);
+$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4", "Raumbuch");
 
-// set document information
-$pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor('LIMET Consulting und Planung ZT GmbH');
-$pdf->SetTitle('Raumbuch');
-$pdf->SetSubject('Raumbuch');
-$pdf->SetKeywords('Raumbuch');
+$mysqli = utils_connect_sql();
 
-// set default header data
-$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING, array(0, 64, 255), array(0, 64, 128));
-$pdf->setFooterData(array(0, 64, 0), array(0, 64, 128));
 
-// set header and footer fonts
-$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-$marginTop = 20; // set margins  
-$pdf->SetMargins($einzugLR, $marginTop, $einzugLR);
-$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-// set some language-dependent strings (optional)
-if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
-    require_once(dirname(__FILE__) . '/lang/eng.php');
-    $pdf->setLanguageArray($l);
-}
-
-// ---------------------------------------------------------
-$pdf->SetFont('helvetica', '', 10); 
-$pdf->AddPage('P', 'A4');
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-
-/* change character set to utf8 */
-if (!$mysqli->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $mysqli->error);
-    exit();
-}
 $roomIDs = filter_input(INPUT_GET, 'roomID');
 $teile = explode(",", $roomIDs);
 
@@ -463,14 +426,12 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell($SB, 10, " Keine Elemente im Raum. ", 0, 'C', 0, 1);
     }
 }
-
-// MYSQL-Verbindung schließen
-$mysqli->close();
 //$pdf->MultiCell(50, 6, "Bereich",'B', 'L', 0, 0);
 //$pdf->MultiCell(20, 6, "Geschoss",'B', 'C', 0, 0);
+
+$mysqli->close();
 ob_end_clean();
-// close and output PDF document
-$pdf->Output('Raumbuch-MT.pdf', 'I');
+$pdf->Output( getFileName("Medizintechnische-Bauangaben"), 'I');
 
 //============================================================+
 // END OF FILE

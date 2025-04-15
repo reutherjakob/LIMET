@@ -1,12 +1,13 @@
 <?php
+#2025done
 
 if (!function_exists('utils_connect_sql')) {
     include "_utils.php";
 }
-include 'pdf_createBericht_MYPDFclass_1.php';
+require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+include 'pdf_createBericht_MYPDFclass_A4_Raumbuch.php';
 include '_pdf_createBericht_utils.php';
 
-session_start();
 check_login();
 
 function cheat($str)
@@ -58,7 +59,7 @@ $stmt = "SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte, tabelle_para
     . "AND ((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))"
     . "ORDER BY el_Bez, Raumnr, Bezeichnung DESC";
 $result_Einbring_elemente = $mysqli->query($stmt);
-$mysqli->close();
+
 
 // Organisiere Daten nach Elementen
 $elements = array();
@@ -109,11 +110,18 @@ foreach ($proportions as $prop) {
     $spaces[] = $SB * $prop;
 }
 
-//     -----     MAKE PDF    -----
-$pdf = new MYPDF('P', PDF_UNIT, "A4", true, 'UTF-8', false, true);
-$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4", "Einbringwege");
-$pdf->AddPage('P', 'A4');
+$_SESSION["PDFTITEL"] = "Einbringung von medizinischen Großgeräten";
+$_SESSION["DisclaimerText"] = "Die beschriebenen Komponenten weisen die jeweils größten Abmessungen "
+    . "und/oder Gewichtslasten je Anlage auf. Die vollständigen Systeme bestehen aus"
+    . " mehreren, hier nicht angeführten Elementen, die jedoch kleiner und/oder leichter als"
+    . " das größte bzw. schwerste Einzelteil sind. Die angegebenen Werte sind produktneutrale"
+    . " Maximalspezifikationen, was bedeutet, dass beispielsweise das Gewicht von Leitfabrikat "
+    . "A und die Abmessungen von Leitfabrikat B verwendet wurden. Die hier angeführten Parameter"
+    . " dienen exklusiv der Bestimmung der Einbringwege.";
 
+$pdf = new MYPDF('P', PDF_UNIT, "A4", true, 'UTF-8', false, true);
+$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4", "Großgeräte Einbringung");
+$pdf->AddPage('P', 'A4');
 $pdf->SetFont('helvetica', '', $font_size);
 $pdf->SetLineStyle($style_dashed);
 $pdf->SetFillColor(220, 230, 210);
@@ -189,6 +197,7 @@ foreach ($elements as $element => $data) {
     $pdf->Ln(10);
 }
 
+$mysqli->close();
 ob_end_clean();
 $pdf->Output('Einbringwege-MT.pdf', 'I');
 

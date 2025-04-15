@@ -1,12 +1,13 @@
 <?php
+#2025done
 
 if (!function_exists('utils_connect_sql')) {
     include "_utils.php";
 }
-include 'pdf_createBericht_MYPDFclass_1.php';
+require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+include 'pdf_createBericht_MYPDFclass_A4_Raumbuch.php';
 include '_pdf_createBericht_utils.php';
 
-session_start();
 check_login();
 
 function cheat($str)
@@ -29,7 +30,6 @@ function cheat($str)
 
 function tabelle_header($pdf, $fill, $spaces, $rowHeight)
 {
-
     $pdf->SetFont('helvetica', 'B', 10);
     $pdf->MultiCell($spaces[0], $rowHeight, 'Raumnr./-name', 'RB', 'L', $fill, 0);
     $pdf->MultiCell($spaces[1], $rowHeight, 'Element', 'BRL', 'L', $fill, 0);
@@ -40,7 +40,6 @@ function tabelle_header($pdf, $fill, $spaces, $rowHeight)
 
 function parseBezeichnung($bezeichnung)
 {
-    // Definiere das Mapping-Array
     $mapping = [
         'Einbringweg_Breite' => 'Breite',
         'Einbringweg_Breite_2' => 'Breite 2',
@@ -51,8 +50,6 @@ function parseBezeichnung($bezeichnung)
         'Einbringweg_Tiefe' => 'Tiefe',
         'Einbringweg_Tiefe_2' => 'Tiefe 2'
     ];
-
-    // Gib die lesbare Form zurück, falls sie im Mapping-Array existiert
     return $mapping[$bezeichnung] ?? $bezeichnung;
 }
 
@@ -72,7 +69,7 @@ $stmt = "SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte, tabelle_para
 
 
 $result_Einbring_elemente = $mysqli->query($stmt);
-$mysqli->close();
+
 $rooms = array();
 while ($row = $result_Einbring_elemente->fetch_assoc()) {
     if (!in_array($row["Raumnr"], $rooms)) {
@@ -102,12 +99,20 @@ foreach ($proportions as $prop) {
 }
 $counter = 0;
 $last_el_id = "";
-//
-//     -----     MAKE PDF    -----     
-$pdf = new MYPDF('P', PDF_UNIT, "A4", true, 'UTF-8', false, true);
-$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4", "Einbringwege");
-$pdf->AddPage('P', 'A4');
 
+$_SESSION["PDFTITEL"] = "Einbringung von medizinischen Großgeräten";
+$_SESSION["DisclaimerText"] = "Die beschriebenen Komponenten weisen die jeweils größten Abmessungen "
+    . "und/oder Gewichtslasten je Anlage auf. Die vollständigen Systeme bestehen aus"
+    . " mehreren, hier nicht angeführten Elementen, die jedoch kleiner und/oder leichter als"
+    . " das größte bzw. schwerste Einzelteil sind. Die angegebenen Werte sind produktneutrale"
+    . " Maximalspezifikationen, was bedeutet, dass beispielsweise das Gewicht von Leitfabrikat "
+    . "A und die Abmessungen von Leitfabrikat B verwendet wurden. Die hier angeführten Parameter"
+    . " dienen exklusiv der Bestimmung der Einbringwege.";
+
+$pdf = new MYPDF('P', PDF_UNIT, "A4", true, 'UTF-8', false, true);
+$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4", "Großgeräte Einbringung");
+
+$pdf->AddPage('P', 'A4');
 $pdf->SetFont('helvetica', '', $font_size);
 $pdf->SetLineStyle($style_dashed);
 $pdf->SetFillColor(220, 230, 210);
@@ -165,7 +170,7 @@ foreach ($rooms as $roomnr) {
         }
     }
 }
-
+$mysqli->close();
 ob_end_clean(); // brauchts irgendwie.... ?  
 $pdf->Output(getFileName('Einbringwege'), 'I');
 

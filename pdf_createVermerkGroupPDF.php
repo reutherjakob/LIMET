@@ -1,8 +1,10 @@
 <?php
+#2025done
 if (!function_exists('utils_connect_sql')) {
     include "_utils.php";
 }
 check_login();
+include "pdf_createBericht_LOGO.php";
 require_once('TCPDF-main/TCPDF-main/tcpdf.php');
 
 
@@ -10,42 +12,22 @@ class MYPDF extends TCPDF
 {
     public function Header()
     {
-        // Logo        
-        if ($_SESSION["projectAusfuehrung"] === "MADER") {
-            $image_file = 'Mader_Logo_neu.jpg';
-            $this->Image($image_file, 15, 5, 40, 10, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-        } else {
-            if ($_SESSION["projectAusfuehrung"] === "LIMET") {
-                $image_file = 'LIMET_web.png';
-                $this->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-            } else {
-
-                $image_file = 'LIMET_web.png';
-                $this->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                $image_file1 = 'Mader_Logo_neu.jpg';
-                $this->Image($image_file1, 38, 5, 40, 10, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-            }
-        }
-
+       get_header_logo($this);
         $this->SetFont('helvetica', '', 10);
         $mysqli = utils_connect_sql();
         $sql = "SELECT tabelle_Vermerkgruppe.Gruppenname, tabelle_Vermerkgruppe.Gruppenart, tabelle_Vermerkgruppe.Ort, tabelle_Vermerkgruppe.Verfasser, tabelle_Vermerkgruppe.Startzeit, tabelle_Vermerkgruppe.Endzeit, tabelle_Vermerkgruppe.Datum, tabelle_projekte.Projektname
                     FROM tabelle_Vermerkgruppe INNER JOIN tabelle_projekte ON tabelle_Vermerkgruppe.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
                     WHERE (((tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe)=" . filter_input(INPUT_GET, 'gruppenID') . "));";
-
         $result = $mysqli->query($sql);
-
         while ($row = $result->fetch_assoc()) {
             $title = $row['Gruppenname'];
         }
         $mysqli->close();
-
         $this->Cell(0, 0, $title, 0, false, 'R', 0, '', 0, false, 'B', 'B');
         $this->Ln();
         $this->cell(0, 0, '', 'B', 0, 'L');
     }
 
-    // Page footer
     public function Footer()
     {
         $this->SetY(-15);
@@ -89,7 +71,7 @@ class MYPDF extends TCPDF
         $this->SetTextColor(0);
         $this->SetFont('', '', '8');
 
-        // Data      
+        // Data
         $fill = 0;
         foreach ($data as $row) {
             $rowHeight = 5;
@@ -117,7 +99,7 @@ class MYPDF extends TCPDF
         $this->Cell(array_sum($w), 0, '', 'T');
     }
 
-    // Topics table 
+    // Topics table
     public function topicsTable($header, $data)
     {
         // Colors, line width and bold font
@@ -131,7 +113,7 @@ class MYPDF extends TCPDF
         $num_headers = count($header);
         $this->SetFillColor(244, 244, 244);
         $this->SetTextColor(0);
-        // Data        
+        // Data
         $fill = 0;
         $untergruppenID = 0;
         foreach ($data as $row) {
@@ -211,7 +193,7 @@ class MYPDF extends TCPDF
     }
 }
 
-$document_out_title_components = $_SESSION['projectName'] . "_MT_";
+$document_out_title_components = $_SESSION['projectName'] . "_GPMT_";
 
 // create new PDF document
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -353,6 +335,5 @@ $pdf->Multicell(180, 5, $outstr, 0, 'L', 0, 1);
 
 
 $document_out_title_components = $document_out_title_components . date('Y-m-d') . ".pdf";
-
 $pdf->Output($document_out_title_components, 'I');
 

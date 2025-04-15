@@ -180,10 +180,11 @@ ORDER BY tabelle_räume.Raumnr;";
                             <th>HT_Abluft Sicherheitsschrank Unterbau Stk</th> 
                             <th>HT_Punktabsaugung Stk</th>
                             <th>HT_Abluft Digestorium Stk</th>
-                            <th>HT_Kühlwasser j/n</th>
+                            <th>HT_Kühlwasser Stk</th>
                             <th>HT_Kühlwasserleistung W</th>
                             <th>HT_Notdusche Stk</th>
                             <th>HT_Spuele Stk</th>                            
+                            
                             </tr>                               
                             </thead>
                             <tbody>";

@@ -1,57 +1,29 @@
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+#2025done
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 include "_format.php";
-include "pdf_MyPDF_class_Kosten.php";
+include "pdf_createBericht_MYPDFclass_A4_ohneTitelblatt.php";
+
+require_once('TCPDF-main/TCPDF-main/tcpdf.php');
 include "_pdf_createBericht_utils.php";
+
+if ($_SESSION["projectPlanungsphase"] == "Vorentwurf") {
+    $_SESSION["PDFTITEL"] = "Medizintechnische Kostenschätzung";
+} else {
+    $_SESSION["PDFTITEL"] = "Medizintechnische Kostenberechnung";
+}
+$marginTop = 20;
+$marginBTM = 10;
+$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4_queer", "Medizintechnische Gesamt Kosten");
 check_login();
 $mysqli = utils_connect_sql();
-
-
-$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
-// set document information
-$pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor('LIMET Consulting und Planung');
-$pdf->SetTitle('Gesamt Kosten');
-$pdf->SetSubject('MT-Kosten');
-$pdf->SetKeywords('MT-Kosten');
-
-// set default header data
-$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING, array(0, 64, 255), array(0, 64, 128));
-$pdf->setFooterData(array(0, 64, 0), array(0, 64, 128));
-
-// set header and footer fonts
-$pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-
-// set default monospaced font
-$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-// set margins
-$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-// set auto page breaks
-$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
-// set image scale factor
-$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-// set some language-dependent strings (optional)
-if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
-    require_once(dirname(__FILE__) . '/lang/eng.php');
-    $pdf->setLanguageArray($l);
-}
-$pdf->SetFont('helvetica', '', 10);
-$pdf->AddPage('L', 'A4');
-
-
 // --------------------- TITELZEILE MIT PROJEKT INFOS -----------------------------
 $sql = "SELECT tabelle_projekte.Projektname, tabelle_projekte.Preisbasis, tabelle_planungsphasen.Bezeichnung
     FROM tabelle_projekte INNER JOIN tabelle_planungsphasen ON tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen = tabelle_planungsphasen.idTABELLE_Planungsphasen
     WHERE (((tabelle_projekte.idTABELLE_Projekte)=" . $_SESSION["projectID"] . "));";
-
 $result = $mysqli->query($sql);
 $row = $result->fetch_assoc();
 
@@ -202,10 +174,8 @@ foreach ($raumbereicheInProject as $rowData) {
     $sumRaumbereichBestand = 0;
     $x = $pdf->GetX();
     $y = $pdf->GetY();
-
     if (($y + 4) >= 180) {
         $pdf->AddPage();
-        // $y = 0; // should be your top margin
     }
 }
 // ---------------------------------------------------------
@@ -244,7 +214,7 @@ foreach ($gewerkeInProject as $rowDataGewerkeInProject) {
 }
 $pdf->MultiCell(25, 4, format_money_report($sumGesamtBestand), 0, 'R', 0, 0);
 
+$mysqli->close();
 ob_end_clean();
-
-$pdf->Output(getFileName("KostenGesamt")  ,'I');
+$pdf->Output(getFileName("KostenGesamt"), 'I');
 
