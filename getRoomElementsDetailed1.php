@@ -139,7 +139,7 @@ $mysqli->close();
 
 
     <?php if ($result_room_elements->num_rows > 0): ?>
-        <div id="room-action-buttons" class="d-inline-flex text-nowrap align-items-center">
+        <div id="room-action-buttons" class="d-inline-flex justify-content-end align-items-center text-nowrap">
             <button type="button" class="btn btn-outline-dark " id="<?php echo $_SESSION["roomID"]; ?>"
                     data-bs-toggle="modal" data-bs-target="#copyRoomElementsModal" value="Rauminhalt kopieren">Inhalt
                 kopieren
@@ -150,12 +150,12 @@ $mysqli->close();
             <button type="button" class="btn btn-outline-dark" id="<?php echo $_SESSION["roomID"]; ?>"
                     value="createRoombookPDFCosts"><i class="far fa-file-pdf"></i> RB-Kosten-PDF
             </button>
-            <div class="btn btn-outline-dark">
-                <input class="form-check-input" type="checkbox" id="hideZeroRows" checked>
-                <label class="form-check-label" for="hideZeroRows">
-                    Hide 0
-                </label>
-            </div>
+
+            <input class="btn-check" type="checkbox" id="hideZeroRows" checked>
+            <label class="btn btn-outline-dark" for="hideZeroRows">
+                Hide 0
+            </label>
+
         </div>
     <?php endif; ?>
 </div>
@@ -294,7 +294,8 @@ $mysqli->close();
 </div>
 
 <script src="_utils.js"></script>
-<script charset="utf-8" type="module">
+<script charset="utf-8" type="module">                    // type="module"
+
     var tableRoomElements;
 
     function attachButtonListeners() {
@@ -341,7 +342,7 @@ $mysqli->close();
         });
     }
 
-    import CustomPopover from './_popover.js';
+     import CustomPopover from './_popover.js';
 
     CustomPopover.init('.comment-btn', {
         onSave: function (trigger, newText) {
@@ -403,7 +404,7 @@ $mysqli->close();
     $(document).ready(function () {
         $.fn.dataTable.ext.search = [];
 
-         tableRoomElements = $("#tableRoomElements").DataTable({
+        tableRoomElements = $("#tableRoomElements").DataTable({
             select: true,
             paging: true,
             pagingType: "simple",
@@ -434,9 +435,9 @@ $mysqli->close();
             },
             layout: {
                 topStart: null,
-                topEnd: "search",
+                topEnd: null,
                 bottomEnd: ['pageLength', 'paging'],
-                bottomStart: ['info']
+                bottomStart: ["search", 'info']
             }
         });
 
@@ -503,16 +504,24 @@ $mysqli->close();
 
         $.fn.dataTable.ext.search.push(
             function (settings, data, dataIndex) {
+                // 'settings' is the DataTable settings object for the current table.
+                // You can check which table this is by looking at settings.nTable
+                // or settings.sTableId (the table DOM node or its ID).
+
+                // For example, to target a table with id "myTable":
+                if (settings.nTable.id !== 'myTable') {
+                    return true; // Don't filter other tables
+                }
+
                 let hideZero = $("#hideZeroRows").is(":checked");
                 let row = tableRoomElements.row(dataIndex).node();
                 let amount = $(row).find('input[id^="amount"]').val();
                 amount = parseInt(amount) || 0;
-                //console.log(dataIndex, amount, !(hideZero && (amount === 0)));
                 return !(hideZero && (amount === 0));
             }
         );
 
-        // Event handler for checkbox change
+
         $("#hideZeroRows").on("change", function () {
             tableRoomElements.draw();
         });

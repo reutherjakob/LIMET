@@ -146,7 +146,7 @@ init_page_serversides();
                         <div class="col-xxl-4 d-flex flex-nowrap align-items-center" id="CardHeaderRäumeOhneElement">
                             Räume ohne Element
                         </div>
-                        <div class="col-xxl-8 d-flex flex-nowrap text-nowrap justify-content-end">
+                        <div class="col-xxl-8 d-flex flex-nowrap justify-content-end">
                             <button type='button' class='btn btn-outline-success btn-sm ' id='addElements'
                                     data-bs-toggle='modal' data-bs-target='#addElementsToRoomModal'><i
                                         class='fas fa-plus'></i> Element zu Raum hinzufügen

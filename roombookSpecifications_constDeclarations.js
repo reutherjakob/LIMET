@@ -266,33 +266,31 @@ const columnsDefinition = [
     {data: 'Wasser Qual 2', title: 'H20 Q2', visible: false, case: "bit"}, // 145 +1
     {data: 'Wasser Qual 1', title: 'H20 Q1', visible: false, case: "bit"}, // 146 +1
 
-
-    {data: 'Belichtungsfläche', title: 'AR Belichtungsfläche', visible: false, case: ""},
-    {data: 'Fussboden', title: 'AR Fussboden', visible: false, case: ""},
-    {data: 'Decke', title: 'AR Decke', visible: false, case: " "},
-    {data: 'Anmerkung AR', title: 'AR Anmerkung', visible: false, case: ""},
-    {data: 'Taetigkeiten', title: 'AR Taetigkeiten', visible: false, case: " "},
-    {data: 'AR_APs', title: 'APs Anzahl', visible: false, case: " "},
-    {data: 'AP_Gefaehrdung', title: 'AP_Gefaehrdung', visible: false, case: ""},
-    {data: 'AP_Geistige', title: 'AP Geistige', visible: false, case: " "},
-    {data: 'AR_Schwingungsklasse', title: 'AR Schwingungsklasse', visible: false, case: " "},
-    {data: 'Spezialgase', title: 'Spezialgase', visible: false, case: " "},
-    {data: 'Gaswarneinrichtung-Art', title: 'Gaswarneinrichtung-Art', visible: false, case: ""},
-    {data: 'EL_Beleuchtungsstaerke', title: 'EL_Beleuchtungsstaerke', visible: false, case: " "},
-    {data: 'ET_EMV', title: 'ET_E EMV Maßnahme Txt', visible: false, case: ""},    //148
-    {data: 'HT_Luftmenge m3/h', title: 'HT_Luftmenge m3/h', visible: false, case: ""},
-    {data: 'HT_Kuehlung', title: 'HT_Kuehlung', visible: false, case: ""},
-    {data: 'HT_Kaelteabgabe_Typ', title: 'HT_Kaelteabgabe_Typ', visible: false, case: ""},
-
-    {data: 'HT_Heizung', title: 'HT_Heizung', visible: false, case: ""},
-    {data: 'HT_Waermeabgabe_Typ', title: 'HT_Waermeabgabe_Typ', visible: false, case: ""}, {
-        data: 'HT_Heizung',
-        title: 'HT_Heizung',
-        visible: false,
-        case: ""
-    },
-
-    {data: 'HT_Belueftung', title: 'HT_Belueftung', visible: false, case: ""},
-    {data: 'HT_Entlueftung', title: 'HT_Entlueftung', visible: false, case: ""},
-    {data: 'PHY_Akustik_Schallgrad', title: 'PHY_Akustik_Schallgrad', visible: false, case: ""}
+    // GCP STISSL... 
+   {data: 'Belichtungsfläche', title: 'AR Belichtungsfläche', visible: false, case: ""},
+   {data: 'Fussboden', title: 'AR Fussboden', visible: false, case: ""},
+   {data: 'Decke', title: 'AR Decke', visible: false, case: ""},
+   {data: 'Anmerkung AR', title: 'AR Anmerkung', visible: false, case: ""},
+   {data: 'Taetigkeiten', title: 'AR Taetigkeiten', visible: false, case: ""},
+   {data: 'AR_APs', title: 'APs Anzahl', visible: false, case: ""},
+   {data: 'AP_Gefaehrdung', title: 'AP_Gefaehrdung', visible: false, case: ""},
+   {data: 'AP_Geistige', title: 'AP Geistige', visible: false, case: ""},
+   {data: 'AR_Schwingungsklasse', title: 'AR Schwingungsklasse', visible: false, case: ""},
+   {data: 'Spezialgase', title: 'Spezialgase', visible: false, case: ""},
+   {data: 'Gaswarneinrichtung-Art', title: 'Gaswarneinrichtung-Art', visible: false, case: ""},
+   {data: 'EL_Beleuchtungsstaerke', title: 'EL_Beleuchtungsstaerke', visible: false, case: ""},
+   {data: 'ET_EMV', title: 'ET_E EMV Maßnahme Txt', visible: false, case: ""},    //148
+   {data: 'HT_Luftmenge m3/h', title: 'HT_Luftmenge m3/h', visible: false, case: ""},
+   {data: 'HT_Kuehlung', title: 'HT_Kuehlung', visible: false, case: ""},
+   {data: 'HT_Kaelteabgabe_Typ', title: 'HT_Kaelteabgabe_Typ', visible: false, case: ""},
+   {data: 'HT_Heizung', title: 'HT_Heizung', visible: false, case: ""},
+   {data: 'HT_Waermeabgabe_Typ', title: 'HT_Waermeabgabe_Typ', visible: false, case: ""}, {
+       data: 'HT_Heizung',
+       title: 'HT_Heizung',
+       visible: false,
+       case: ""
+   },
+   {data: 'HT_Belueftung', title: 'HT_Belueftung', visible: false, case: ""},
+   {data: 'HT_Entlueftung', title: 'HT_Entlueftung', visible: false, case: ""},
+   {data: 'PHY_Akustik_Schallgrad', title: 'PHY_Akustik_Schallgrad', visible: false, case: ""}
 ]
