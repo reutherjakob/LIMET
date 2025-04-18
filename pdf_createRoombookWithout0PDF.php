@@ -9,9 +9,10 @@ include "_pdf_createBericht_utils.php";
 include "pdf_createBericht_MYPDFclass_A4_Raumbuch.php";
 
 
-$marginTop = 20; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/
+$marginTop = 17; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/
 $marginBTM = 10;
 $_SESSION["PDFTITEL"] = "Medizintechnisches Raumbuch";
+$_SESSION["PDFHeaderSubtext"] = "Projekt: " . $_SESSION["projectName"] . " - PPH: " . $_SESSION["projectPlanungsphase"];
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false, true);
 $pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4", "Raumbuch-MT");
 
@@ -51,37 +52,8 @@ foreach ($teile as $valueOfRoomID) {
                 WHERE (((tabelle_räume.idTABELLE_Räume)=" . $valueOfRoomID . "));";
 
     $result2 = $mysqli->query($sql);
-    while ($row = $result2->fetch_assoc()) {
-        $pdf->SetFont('helvetica', 'B', 10);
-        $pdf->MultiCell(100, 6, "Raum: " . $row['Raumbezeichnung'], 0, 'L', 0, 0);
-        $pdf->MultiCell(80, 6, "Nummer: " . $row['Raumnr'], 0, 'L', 0, 0);
-        $pdf->Ln();
-        $pdf->SetFont('helvetica', '', 10);
-        $pdf->MultiCell(100, 6, "Bereich: " . $row['Raumbereich Nutzer'], 0, 'L', 0, 0);
-        $pdf->MultiCell(80, 6, "Geschoss: " . $row['Geschoss'], 0, 'L', 0, 0);
-        $pdf->Ln();
-        $pdf->MultiCell(100, 6, "Raumfläche: " . $row['Nutzfläche'] . " m2", 0, 'L', 0, 0);
-        $pdf->Ln();
-        $pdf->MultiCell(100, 6, "Projekt: " . $row['Projektname'], 0, 'L', 0, 0);
-        $pdf->MultiCell(80, 6, "Bauteil: " . $row['Bauabschnitt'], 0, 'L', 0, 0);
-        $pdf->Ln();
-        $pdf->MultiCell(100, 6, "Projektstatus: " . $row['Bezeichnung'], 'B', 'L', 0, 0);
-        $pdf->MultiCell(80, 6, "Bauetappe: " . $row['Bauetappe'], 'B', 'L', 0, 0);
 
-        $pdf->SetFont('helvetica', '', 8);
-        if (null != ($row['Anmerkung FunktionBO'])) {
-            $pdf->Ln();
-            $outstr = format_text(br2nl($row['Anmerkung FunktionBO']));
-            $rowHeightComment = $pdf->getStringHeight(150, $outstr, false, true, '', 1);
-            // Wenn Seitenende? Überprüfen und neue Seite anfangen
-            $y = $pdf->GetY();
-            if (($y + $rowHeightComment) >= 270) {
-                $pdf->AddPage();
-            }
-            $pdf->MultiCell(30, $rowHeightComment, "Funktion BO:", 'B', 'L', 0, 0);
-            $pdf->MultiCell(150, $rowHeightComment, $outstr, 'B', 'L', 0, 0);
-        }
-    }
+    createRaumHeaderRaumbuch($pdf, $result2);
 
     $pdf->Ln();
     $pdf->SetFont('helvetica', '', 10);

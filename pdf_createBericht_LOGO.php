@@ -7,9 +7,8 @@ function get_header_logo($pdf)
         $pdf->Image($image_file, 15, 4, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
         //$image_file = 'Mader_Logo_neu.jpg';
         //$pdf->Image($image_file, 38, 5, 40, 10, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-
         $image_file = 'MADER_Logo.png';
-        $pdf->Image($image_file, 38, 5, 13, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
+        $pdf->Image($image_file, 38, 4, 14, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
 
     } else if ($_SESSION["projectAusfuehrung"] === "LIMET") {
         $image_file = 'LIMET_web.png';

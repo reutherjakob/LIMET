@@ -29,6 +29,7 @@ if (isset($_GET["projectPlanungsphase"]) && $_GET["projectPlanungsphase"] != "")
 if (isset($_GET["variantenID"]) &&$_GET["variantenID"] != "") {
     $_SESSION["variantenID"] = $_GET["variantenID"];
 }
+
 ?>
 
 </body>

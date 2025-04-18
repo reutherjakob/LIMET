@@ -3,51 +3,64 @@ if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
 check_login();
 $mysqli = utils_connect_sql();
 
+$elementID = filter_input(INPUT_GET, 'elementID', FILTER_VALIDATE_INT);
+$variantenID = filter_input(INPUT_GET, 'variantenID', FILTER_VALIDATE_INT);
+$projectID = $_SESSION["projectID"];
+
 // Vorhandene Elementparameter löschen
-$sqlDelete = "DELETE FROM tabelle_elemente_has_tabelle_parameter WHERE (((tabelle_elemente_has_tabelle_parameter.TABELLE_Elemente_idTABELLE_Elemente)=" . filter_input(INPUT_GET, 'elementID') . "));";
-// TODO
-if ($mysqli->query($sqlDelete) === TRUE) {
+$sqlDelete = "DELETE FROM tabelle_elemente_has_tabelle_parameter WHERE TABELLE_Elemente_idTABELLE_Elemente = ?";
+$stmtDelete = $mysqli->prepare($sqlDelete);
+$stmtDelete->bind_param("i", $elementID);
+
+if ($stmtDelete->execute()) {
     echo "Zentrale Elementparameter gelöscht!";
 } else {
-    echo "Error: " . $sqlDelete . "<br>" . $mysqli->error;
+    echo "Error: " . $stmtDelete->error;
 }
+$stmtDelete->close();
 
+// Elementparameter aus Projekt laden, inklusive Bezeichnung
+$sql = "
+    SELECT pep.tabelle_parameter_idTABELLE_Parameter, pep.Wert, pep.Einheit, p.Bezeichnung
+    FROM tabelle_projekt_elementparameter pep
+    JOIN tabelle_parameter p ON pep.tabelle_parameter_idTABELLE_Parameter = p.idTABELLE_Parameter
+    WHERE pep.tabelle_projekte_idTABELLE_Projekte = ?
+      AND pep.tabelle_elemente_idTABELLE_Elemente = ?
+      AND pep.tabelle_Varianten_idtabelle_Varianten = ?
+";
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("iii", $projectID, $elementID, $variantenID);
+$stmt->execute();
+$result = $stmt->get_result();
 
-//Elementparameter aus Projekt laden
-$sql = "SELECT tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter, tabelle_projekt_elementparameter.Wert, tabelle_projekt_elementparameter.Einheit
-                FROM tabelle_projekt_elementparameter
-                WHERE (((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND "
-    . "((tabelle_projekt_elementparameter.tabelle_elemente_idTABELLE_Elemente)=" . filter_input(INPUT_GET, 'elementID') . ") AND ((tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten)=" . filter_input(INPUT_GET, 'variantenID') . "));";
-
-$result = $mysqli->query($sql);
 $elementParameters = array();
 while ($row = $result->fetch_assoc()) {
-    $elementParameters[$row['tabelle_parameter_idTABELLE_Parameter']]['tabelle_parameter_idTABELLE_Parameter'] = $row['tabelle_parameter_idTABELLE_Parameter'];
-    $elementParameters[$row['tabelle_parameter_idTABELLE_Parameter']]['Wert'] = $row['Wert'];
-    $elementParameters[$row['tabelle_parameter_idTABELLE_Parameter']]['Einheit'] = $row['Einheit'];
+    $elementParameters[] = $row;
 }
+$stmt->close();
 
-// Elementparameter in zentrales Projekt speichern
+$insertSql = "
+    INSERT INTO LIMET_RB.tabelle_elemente_has_tabelle_parameter
+    (TABELLE_Elemente_idTABELLE_Elemente, TABELLE_Parameter_idTABELLE_Parameter, Wert, Einheit, TABELLE_Planungsphasen_idTABELLE_Planungsphasen)
+    VALUES (?, ?, ?, ?, 1)
+";
+$stmtInsert = $mysqli->prepare($insertSql);
+
 foreach ($elementParameters as $data) {
-    $sql = "INSERT INTO `LIMET_RB`.`tabelle_elemente_has_tabelle_parameter`
-			(`TABELLE_Elemente_idTABELLE_Elemente`,
-			`TABELLE_Parameter_idTABELLE_Parameter`,			
-			`Wert`,
-			`Einheit`,
-                        `TABELLE_Planungsphasen_idTABELLE_Planungsphasen`)
-			VALUES
-			(" . filter_input(INPUT_GET, 'elementID') . ",
-                         " . $data["tabelle_parameter_idTABELLE_Parameter"] . ",
-                         '" . $data["Wert"] . "',
-                         '" . $data["Einheit"] . "', 1);";
+    $stmtInsert->bind_param(
+        "iiss",
+        $elementID,
+        $data['tabelle_parameter_idTABELLE_Parameter'],
+        $data['Wert'],
+        $data['Einheit']
+    );
 
-    if ($mysqli->query($sql) === TRUE) {
-        echo "\nParameter " . $data['Wert'] . " " . $data['Einheit'] . " zu Variante hinzugefügt!";
+    if ($stmtInsert->execute()) {
+        echo "\nParameter '{$data['Bezeichnung']}' ({$data['Wert']} {$data['Einheit']}) zu Element hinzugefügt!";
     } else {
-        echo "Error: " . $sql . "<br>" . $mysqli->error;
+        echo "Error: " . $stmtInsert->error;
     }
 }
-
+$stmtInsert->close();
 
 $mysqli->close();
-?>

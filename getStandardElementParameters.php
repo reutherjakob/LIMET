@@ -35,7 +35,7 @@ check_login();
 	}
 	
 	echo "</tbody></table>";
-	echo "<input type='button' id='".$_GET["elementID"]."' class='btn btn-outline-success btn-sm' value='Elementparameter-Vergleich' data-bs-toggle='modal' data-bs-target='#elementParameterComparisonModal'></input>";
+	echo "<button id='" . $_GET["elementID"] . "' class='btn btn-outline-success' value='Elementparameter-Vergleich' data-bs-toggle='modal' data-bs-target='#elementParameterComparisonModal'> Element Parameter Vergleich</button>";
 	$mysqli ->close();
 	?>
     
@@ -72,7 +72,7 @@ check_login();
 	 } );
          
          //Gerätevergleich anzeigen
-	$("input[value='Elementparameter-Vergleich']").click(function(){
+	$("button[value='Elementparameter-Vergleich']").click(function(){
 	    let ID = this.id;
             $.ajax({
 	        url : "getElementParameterComparison.php",

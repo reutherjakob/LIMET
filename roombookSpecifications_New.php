@@ -14,7 +14,7 @@ init_page_serversides();
     <title>RB-Bauangaben</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
+
     <link rel="icon" href="iphone_favicon.png"/>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -31,7 +31,7 @@ init_page_serversides();
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
+    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
 
     <style>
         .btn_vis, .btn_invis {

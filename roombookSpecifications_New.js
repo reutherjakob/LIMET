@@ -13,7 +13,6 @@ var dt_search_counter = 1;
 var savestate = document.getElementById('settings_save_state').checked || document.getElementById('settings_save_state_4all_projects').checked;
 
 const Reload_string = "The table has been edited. Please reload the page before downloading. Reload now?";
-
 let cellText = "";
 let currentRowInd = 0;
 let currentColInd = 0;
@@ -25,8 +24,6 @@ let previous_room_session = 0;
 $(document).ready(function () {
     loadSettings();
     init_dt();
-
-
     init_btn_4_dt();
     init_showRoomElements_btn();
     init_visibilities();
@@ -86,7 +83,7 @@ function handleCheckboxChange() {
 
 function change_top_label_visibility(x) {
     if (x) {
-        $('#btnLabelz').attr("style", "font-size: 1vh !important; height: 1vh !important; display: flex !important; ");
+        $('#btnLabelz').attr("style", "font-size: 1vh !important; height: 2vh !important; display: flex !important; ");
     } else {
         $('#btnLabelz').attr("style", "display: none !important");
     }
@@ -160,7 +157,6 @@ function init_btn_4_dt() {
             }
         }
     ];
-
     const btn_grp_settings = [
         {
             text: "",
@@ -211,7 +207,6 @@ function init_btn_4_dt() {
             action: () => toggleReportColumnsVisible
         }
     ];
-
     new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#TableCardHeader'));
     new $.fn.dataTable.Buttons(table, {buttons: buttons_group_selct}).container().appendTo($('<div class="btn-group"></div>').appendTo($('#TableCardHeaderX')));
     new $.fn.dataTable.Buttons(table, {buttons: buttonsGroupcolumnVisbilities}).container().appendTo($('<div class="btn-group" role="group"></div>').appendTo($('#TableCardHeader2')));
@@ -235,7 +230,8 @@ function init_dt() {
             searchPlaceholder: "Suche...",
             searchBuilder: {
                 button: '(%d)'
-            } //,url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
+            }
+            //,url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
         },
         select: "single",
         fixedColumns: {start: 2},
@@ -250,10 +246,9 @@ function init_dt() {
         lengthMenu: [[5, 10, 20, 50, -1], ['5 rows', '10 rows', '20 rows', '50 rows', 'All']],
         compact: true,
         initComplete: function () {
-            //  $('.dt-search input').addClass("btn btn-sm btn-outline-secondary");
             $('.dt-search label').remove();
             $('.dt-search').children().appendTo('#TableCardHeader');//removeClass('form-control form-control-sm')
-            console.log("Done");
+
         }
     });
 }

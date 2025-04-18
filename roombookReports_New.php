@@ -28,7 +28,13 @@ init_page_serversides("", "x");
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-
+    <style>
+        .custom-tooltip {
+            --bs-tooltip-max-width: 400px;
+            font-size: 1rem;
+            padding: 1rem;
+        }
+    </style>
 </head>
 <body>
 <div class="container-fluid bg-light">
@@ -36,27 +42,47 @@ init_page_serversides("", "x");
     <div class="card">
         <div class="card-header px-1 py-1 text-nowrap" id="HeaderTabelleCard">
             <div class="row">
-                <div class="col-xxl-1 d-flex justify-content-start " id="">Select</div>
-                <div class="col-xxl-5 d-flex justify-content-start " id="sub1"> </div>
-                <div class="col-xxl-6 d-flex justify-content-start " id="">
-                    <label for="dateSelect"></label> <input type="date" id="dateSelect" name="dateSelect"> &ensp;
+                <div class="col-xxl-1 d-flex justify-content-start  align-items-center  customClass" id="Select">
+                    Select
+                </div>
+                <div class="col-xxl-11 d-flex justify-content-start  align-items-center" id="sub1">
+                    <label for="dateSelect4Report"></label>
+                    <input type="date"
+                           id="dateSelect4Report"
+                           name="dateSelect"
+                           class=" me-1"
+                           data-bs-toggle="tooltip"
+                           data-bs-title="Dieses Datum wird auf dem Bericht als Ausgabedatum angeführt. "
+                           data-bs-custom-class="custom-tooltip">
                 </div>
             </div>
         </div>
 
         <div class="card-header px-1 py-1" id="HeaderTabelleCard2">
             <div class="row">
-                <div class="col-xxl-1 d-flex justify-content-start " id="">Bauangaben</div>
-                <div class="col-xxl-5 d-flex justify-content-start " id="sub23"></div>
-                <div class="col-xxl-6 d-flex justify-content-start " id="sub2"></div>
+                <div class="col-xxl-1 d-flex justify-content-start align-items-center" id="Bauangaben">Bauangaben</div>
+                <div class="col-xxl-5 d-flex justify-content-start align-items-center" id="sub23"></div>
+                <div class="col-xxl-5 d-flex justify-content-start align-items-center" id="sub2">
+                </div>
+                <div class="col-xxl-1 d-flex justify-content-end align-items-center" id="">
+                    <label for="dateSelect"></label>
+                    <input type="date"
+                           id="dateSelect"
+                           name="dateSelect"
+                           class="ms-1 me-1"
+                           data-bs-toggle="tooltip"
+                           data-bs-title="Bis zu welchem Datum Änderungen markiert werden sollen"
+                           data-bs-custom-class="custom-tooltip">
+                </div>
             </div>
         </div>
 
         <div class="card-header px-1 py-1 ">
             <div class="row">
-                <div class="col-xxl-1 d-flex justify-content-start " id="">Raumbuch</div>
-                <div class="col-xxl-5 d-flex justify-content-start " id="sub21"> </div>
-                <div class="col-xxl-6 d-flex justify-content-start " id="sub22">
+                <div class="col-xxl-1 d-flex justify-content-start align-items-center" id="Raumbuch">Raumbuch</div>
+                <div class="col-xxl-5 d-flex justify-content-start align-items-center" id="sub21"></div>
+                <div class="col-xxl-6 d-flex justify-content-start align-items-center" id="sub22">
+
                 </div>
             </div>
         </div>
@@ -106,38 +132,63 @@ init_page_serversides("", "x");
     </div>
 </div>
 
+dateSelect4Report
+
 <script charset="utf-8">
     $(document).ready(function () {
         const dateInput = document.getElementById('dateSelect');
         dateInput.value = new Date().toISOString().split('T')[0];
+        const dateSelect4Report = document.getElementById('dateSelect4Report');
+        dateSelect4Report.value = new Date().toISOString().split('T')[0];
+
         initDataTable();
         initButtons();
         setTimeout(() => {
-            moveSearchBox('sub1');
+
             let searchbuilder = [{
                 extend: 'searchBuilder',
-                className: "btn fas fa-search",
+                className: "btn fas fa-search me-1 ms-1",
                 text: " ",
                 titleAttr: "Suche konfigurieren"
             }];
             new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#sub1'));
-        }, 300);
+            moveSearchBox('sub1');
+        }, 200);
         addMTFilter('#sub1');
         add_entfallen_filter('#sub1');
+
+        const tooltip = new bootstrap.Tooltip(document.getElementById('dateSelect'), {
+            delay: {show: 0, hide: 200} // show instantly, hide after 200ms
+
+        });  const tooltipR = new bootstrap.Tooltip(document.getElementById('dateSelect4Report'), {
+            delay: {show: 0, hide: 200} // show instantly, hide after 200ms
+        });
+
+        handleReproitDateSelctioN();
+        $('#dateSelect4Report').change(function() {
+            handleReproitDateSelctioN();
+        });
     });
+
+    function handleReproitDateSelctioN(){
+
+        const dateInputr = document.getElementById('dateSelect4Report');
+        console.log(dateInputr.value);
+        $.get('pdf_setSession.php', { PDFdatum: dateInputr.value });
+    }
+
 
     function generateNewReports(reportType, date) {
         const roomIDs = table.rows({selected: true}).data().toArray().map(row => row[0]);
         if (roomIDs.length === 0) {
             alert("Kein Raum ausgewählt!");
         } else {
-            const formattedDate = date || getDate();
+            const formattedDate = date || getDate("#dateSelect");
             const reportURLs = {
                 "BAUANGABEN A3": "/pdf_createBauangabenBericht_A3Qeer.php",
                 "BAUANGABEN A3 2": "/pdf_createBauangabenBericht_A3Qeer_1.php",
                 "BAUANGABEN A3 3": "/pdf_createBauangabenBericht_A3Qeer_ohne_Lab_params.php",
                 "BAUANGABEN A3 4": "/pdf_createBauangabenBericht_A3Qeer_PSy.php",
-                "-": "-",
                 "Elem./Raum (w/Bestand)": "/pdf_createRoombookElWithoutBestand.php",
                 "inkl.Elem.Kommentar": "/pdf_createRoombookElWithoutBestandWithComments.php"
             };
@@ -160,9 +211,12 @@ init_page_serversides("", "x");
         const buttonNewReports = [
             {text: "BAU A3", action: () => generateNewReports("BAUANGABEN A3", $("#dateSelect").val())},
             {text: "ohne Lab", action: () => generateNewReports("BAUANGABEN A3 3", $("#dateSelect").val())},
-            {text: "ohne Datum", action: () => generateNewReports("BAUANGABEN A3 2", $("#dateSelect").val())},
+            {text: "ohne Änderungsmarkierungen", action: () => generateNewReports("BAUANGABEN A3 2", $("#dateSelect").val())},
             {text: "Psy", action: () => generateNewReports("BAUANGABEN A3 4", $("#dateSelect").val())},
-            {text: "-"},
+
+        ];
+
+        const ElementListe = [
             {
                 text: "Elem./Raum (w/Bestand)",
                 action: () => generateNewReports("Elem./Raum (w/Bestand)", $("#dateSelect").val())
@@ -211,8 +265,10 @@ init_page_serversides("", "x");
             return buttonGroup;
         };
 
-        $('#sub1').append(createButtonGroup(buttons, 'btn-success'));
+        $('#sub1').append(createButtonGroup(buttons, 'btn-sm btn-outline-success'));
+
         $('#sub2').append(createButtonGroup(buttonNewReports, 'btn-light border-dark'));
+        $('#sub22').append(createButtonGroup(ElementListe, 'btn-light border-dark me-1'));
         $('#sub21').append(createButtonGroup(oldButtons, 'btn-light border-dark'));
         $('#sub22').append(createButtonGroup(oldButtons2, 'btn-light border-dark'));
         $('#sub23').append(createButtonGroup(ButtonsBauangaben, 'btn-light  border-dark'));
@@ -238,7 +294,7 @@ init_page_serversides("", "x");
     }
 
     function addMTFilter(location) {
-        $(location).append('<select class="form-control-sm" id="columnFilter"><option value="">MT</option><option selected="true"  value="Ja">Ja</option><option value="Nein">Nein</option></select>');
+        $(location).append('<select class="form-control-sm ms-1 me-1" id="columnFilter"><option value="">MT</option><option selected="true"  value="Ja">Ja</option><option value="Nein">Nein</option></select>');
         $('#columnFilter').change(function () {
             table.column(1).search($(this).val()).draw();
         });
@@ -246,7 +302,7 @@ init_page_serversides("", "x");
     }
 
     function add_entfallen_filter(location) {
-        var dropdownHtml2 = '<select class="form-control-sm" id="EntfallenFilter">' + '<option value="">Entf</option><option value="1">1</option>' + '<option selected ="true" value="0">0</option></select>';
+        var dropdownHtml2 = '<select class="form-control-sm me-1 ms-1 " id="EntfallenFilter">' + '<option value="">Entf</option><option value="1">1</option>' + '<option selected ="true" value="0">0</option></select>';
         $(location).append(dropdownHtml2);
 
         $('#EntfallenFilter').change(function () {
@@ -257,8 +313,8 @@ init_page_serversides("", "x");
     }
 
 
-    function getDate() {
-        let date = new Date($("#dateSelect").val() || Date.now());
+    function getDate(dateSelectID) {
+        let date = new Date($(dateSelectID).val() || Date.now());
         return `${('0' + date.getDate()).slice(-2)}-${('0' + (date.getMonth() + 1)).slice(-2)}-${date.getFullYear()}`;
     }
 

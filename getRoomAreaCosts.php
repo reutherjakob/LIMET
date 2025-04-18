@@ -10,37 +10,44 @@ $bestandInkl = isset($_GET["bestandInkl"]) && $_GET["bestandInkl"] == 1;
 $projectID = $_SESSION["projectID"] ?? 0;
 $roomArea = $_GET["roomArea"] ?? '';
 
-$sql = "SELECT 
-    tvk.Kosten, 
-    SUM(trte.Anzahl) AS SummevonAnzahl, 
-    SUM(tvk.Kosten * trte.Anzahl) AS Ausdr1, 
-    trte.`Neu/Bestand`, 
-    tag.Gewerke_Nr, 
-    tagh.GHG, 
-    tagug.GUG, 
-    te.ElementID, 
-    te.Bezeichnung
-FROM 
-    tabelle_räume_has_tabelle_elemente trte
-    INNER JOIN tabelle_räume tr ON trte.TABELLE_Räume_idTABELLE_Räume = tr.idTABELLE_Räume
-    INNER JOIN tabelle_projekt_varianten_kosten tvk ON tvk.tabelle_Varianten_idtabelle_Varianten = trte.tabelle_Varianten_idtabelle_Varianten
-        AND tvk.tabelle_elemente_idTABELLE_Elemente = trte.TABELLE_Elemente_idTABELLE_Elemente
-        AND tvk.tabelle_projekte_idTABELLE_Projekte = tr.tabelle_projekte_idTABELLE_Projekte
-    INNER JOIN tabelle_projekt_element_gewerk tpeg ON tpeg.tabelle_elemente_idTABELLE_Elemente = tvk.tabelle_elemente_idTABELLE_Elemente
-        AND tpeg.tabelle_projekte_idTABELLE_Projekte = tvk.tabelle_projekte_idTABELLE_Projekte
-    LEFT JOIN tabelle_auftraggeber_gewerke tag ON tag.idTABELLE_Auftraggeber_Gewerke = tpeg.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
-    LEFT JOIN tabelle_auftraggeber_ghg tagh ON tagh.idtabelle_auftraggeber_GHG = tpeg.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG
-    LEFT JOIN tabelle_auftraggeberg_gug tagug ON tagug.idtabelle_auftraggeberg_GUG = tpeg.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
-    INNER JOIN tabelle_elemente te ON te.idTABELLE_Elemente = trte.TABELLE_Elemente_idTABELLE_Elemente
-WHERE 
-    trte.Standort = 1
-    AND tr.tabelle_projekte_idTABELLE_Projekte = ?
-    AND tr.`Raumbereich Nutzer` = ?
-    " . ($bestandInkl ? "" : "AND trte.`Neu/Bestand` = 1") . "
-GROUP BY 
-    tvk.Kosten, trte.`Neu/Bestand`, tag.Gewerke_Nr, tagh.GHG, tagug.GUG, te.ElementID, te.Bezeichnung
-ORDER BY 
-    tag.Gewerke_Nr, tagh.GHG, tagug.GUG";
+$sql = "SELECT tabelle_projekt_varianten_kosten.Kosten,
+       Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
+       Sum(`Kosten` * `Anzahl`)                       AS Ausdr1,
+       tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
+       tabelle_auftraggeber_gewerke.Gewerke_Nr,
+       tabelle_auftraggeber_ghg.GHG,
+       tabelle_auftraggeberg_gug.GUG,
+       tabelle_elemente.ElementID,
+       tabelle_elemente.Bezeichnung
+FROM tabelle_elemente
+         INNER JOIN (tabelle_auftraggeberg_gug RIGHT JOIN (tabelle_auftraggeber_ghg RIGHT JOIN (tabelle_auftraggeber_gewerke RIGHT JOIN (tabelle_projekt_element_gewerk RIGHT JOIN (tabelle_projekt_varianten_kosten INNER JOIN (tabelle_räume_has_tabelle_elemente INNER JOIN tabelle_räume
+                                                                                                                                                                                                                                 ON tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume =
+                                                                                                                                                                                                                                    tabelle_räume.idTABELLE_Räume)
+                                                                                                                                                                                    ON (tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten =
+                                                                                                                                                                                        tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) AND
+                                                                                                                                                                                       (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente =
+                                                                                                                                                                                        tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) AND
+                                                                                                                                                                                       (tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte =
+                                                                                                                                                                                        tabelle_räume.tabelle_projekte_idTABELLE_Projekte))
+                                                                                                                                         ON (tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente =
+                                                                                                                                             tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente) AND
+                                                                                                                                            (tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte =
+                                                                                                                                             tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte))
+                                                                                                ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke =
+                                                                                                   tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke)
+                                                           ON tabelle_auftraggeber_ghg.idtabelle_auftraggeber_GHG =
+                                                              tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG)
+                     ON tabelle_auftraggeberg_gug.idtabelle_auftraggeberg_GUG =
+                        tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG)
+                    ON tabelle_elemente.idTABELLE_Elemente =
+                       tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
+WHERE (tabelle_räume_has_tabelle_elemente.Standort = 1
+AND tabelle_räume.tabelle_projekte_idTABELLE_Projekte = ? 
+AND tabelle_räume.`Raumbereich Nutzer`= ?
+ " . ($bestandInkl ? "" : "AND tabelle_räume_has_tabelle_elemente.`Neu/Bestand` = 1") . " )  
+GROUP BY tabelle_projekt_varianten_kosten.Kosten, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
+         tabelle_auftraggeber_gewerke.Gewerke_Nr, tabelle_auftraggeber_ghg.GHG, tabelle_auftraggeberg_gug.GUG,
+         tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_räume.`Raumbereich Nutzer` ";
 
 $mysqli = utils_connect_sql();
 $stmt = $mysqli->prepare($sql);
@@ -90,8 +97,8 @@ $mysqli->close();
 <div class="row">
     <div class="col-10">
         <div class="d-flex align-items-center justify-content-end">
-            <label class="badge bg-success"> SUMME PPs:
-                <input class="bg-success-subtle border-light text-dark text-md-center fs-5" disabled id="SUMME">
+            <label class="badge bg-secondary"> SUMME PPs:
+                <input class="bg-secondary-subtle border-light text-dark text-md-center fs-5" disabled id="SUMME">
             </label>
         </div>
 

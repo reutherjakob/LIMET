@@ -170,7 +170,7 @@
 <!--suppress JSUnusedLocalSymbols, ES6ConvertVarToLetConst -->
 <script src="_utils.js"></script>
 <script>
-    var table;
+    var tableElementsInProject;
 
     // Column configuration - update indexes here if columns change
     const COLUMNS = {
@@ -207,18 +207,18 @@
 
 
     $('#filter_bestand').change(function () {
-        table.draw();
+        tableElementsInProject.draw();
     });
     $('#filter_count').change(function () {
-        table.draw();
+        tableElementsInProject.draw();
     });
     $('#filter_lot').change(function () {
-        table.draw();
+        tableElementsInProject.draw();
     });
 
     $(document).ready(function () {
 
-        table = new DataTable('#tableElementsInProject', {
+        tableElementsInProject = new DataTable('#tableElementsInProject', {
             paging: true,
             select: true,
             order: [[6, 'asc']],
@@ -261,18 +261,18 @@
                 titleAttr: "searchBuilder"
             }
         ];
-        new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#ElInPrCardHeader'));
+        new $.fn.dataTable.Buttons(tableElementsInProject, {buttons: searchbuilder}).container().appendTo($('#ElInPrCardHeader'));
         $('.dt-buttons').children().children().remove();
 
 
 
         $('#tableElementsInProject tbody').on('click', 'tr', function () {
-            let elementID = table.row($(this)).data()[1];
-            let variantenID = table.row($(this)).data()[2];
-            let losID = table.row($(this)).data()[3];
-            let bestand = table.row($(this)).data()[4];
-            let raumbereich = table.row($(this)).data()[9];
-            console.log(variantenID, losID, bestand, raumbereich);
+            let elementID = tableElementsInProject.row($(this)).data()[1];
+            let variantenID = tableElementsInProject.row($(this)).data()[2];
+            let losID = tableElementsInProject.row($(this)).data()[3];
+            let bestand = tableElementsInProject.row($(this)).data()[4];
+            let raumbereich = tableElementsInProject.row($(this)).data()[9];
+            //console.log(variantenID, losID, bestand, raumbereich);
             $.ajax({
                 url: "getRoomsWithElementTenderLots.php",
                 data: {

@@ -140,19 +140,19 @@ $mysqli->close();
 
     <?php if ($result_room_elements->num_rows > 0): ?>
         <div id="room-action-buttons" class="d-inline-flex justify-content-end align-items-center text-nowrap">
-            <button type="button" class="btn btn-outline-dark " id="<?php echo $_SESSION["roomID"]; ?>"
+            <button type="button" class="btn btn-outline-dark me-1" id="<?php echo $_SESSION["roomID"]; ?>"
                     data-bs-toggle="modal" data-bs-target="#copyRoomElementsModal" value="Rauminhalt kopieren">Inhalt
                 kopieren
             </button>
-            <button type="button" class="btn btn-outline-dark " id="<?php echo $_SESSION["roomID"]; ?>"
+            <button type="button" class="btn btn-outline-dark  me-1" id="<?php echo $_SESSION["roomID"]; ?>"
                     value="createRoombookPDF"><i class="far fa-file-pdf"></i> RB-PDF
             </button>
-            <button type="button" class="btn btn-outline-dark" id="<?php echo $_SESSION["roomID"]; ?>"
+            <button type="button" class="btn btn-outline-dark  me-1" id="<?php echo $_SESSION["roomID"]; ?>"
                     value="createRoombookPDFCosts"><i class="far fa-file-pdf"></i> RB-Kosten-PDF
             </button>
 
             <input class="btn-check" type="checkbox" id="hideZeroRows" checked>
-            <label class="btn btn-outline-dark" for="hideZeroRows">
+            <label class="btn btn-outline-secondary" for="hideZeroRows">
                 Hide 0
             </label>
 
@@ -508,8 +508,7 @@ $mysqli->close();
                 // You can check which table this is by looking at settings.nTable
                 // or settings.sTableId (the table DOM node or its ID).
 
-                // For example, to target a table with id "myTable":
-                if (settings.nTable.id !== 'myTable') {
+                if (settings.nTable.id !== 'tableRoomElements') {
                     return true; // Don't filter other tables
                 }
 

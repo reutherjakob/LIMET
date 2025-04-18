@@ -41,8 +41,9 @@ function createRaumHeaderRaumbuch($pdf, $Raumdaten)
 
 function getFileName($topic)
 {
+    $date = $_SESSION["PDFdatum"] ?? date('Y-m-d');
     $projectname = $_SESSION['projectName'];
-    return $projectname . "__GPMT__" . $topic . "__" . date("Y-m-d") . ".pdf";
+    return $projectname . "__GPMT__" . $topic . "__" . $date . ".pdf";
 }
 
 function check4newpage($pdf, $rowHeightComment)

@@ -27,13 +27,13 @@
     <div class="mt-4 card">
         <div class="card-header">
             <div class="row d-flex align-items-center justify-content-between">
-                <div class="col-1">Elemente im
+                <div class="col-2">Elemente im
                     Projekt
                 </div>
 
 
-                <div class="col-11 d-flex align-items-center justify-content-end" id="target_div">
-                    <div class="me-4 d-flex flex-nowrap" id="sbdiv"></div>
+                <div class="col-10 d-flex align-items-center justify-content-end" id="target_div">
+                    <div class="me-4 d-flex " id="sbdiv"></div>
                     <div class="btn-group btn-group-sm" role="group" aria-label="PDF Generation Buttons">
                         <button type='button' class='btn btn-outline-dark me-1' id='createElementListPDF'>
                             <i class='far fa-file-pdf'></i> Elementliste

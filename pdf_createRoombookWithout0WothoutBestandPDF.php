@@ -12,7 +12,7 @@ include "_pdf_createBericht_utils.php";
 $marginTop = 20; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/
 $marginBTM = 10;
 $_SESSION["PDFTITEL"] = "Medizintechnisches Raumbuch";
-$_SESSION["PDFHeaderSubtext"] = "Projekt: " . $_SESSION["projectName"] . "- Status: " . $_SESSION["projectPlanungsphase"];
+$_SESSION["PDFHeaderSubtext"] = "Projekt: " . $_SESSION["projectName"] . " - PPH: " . $_SESSION["projectPlanungsphase"];
 
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false, true);
 $pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4", "Raumbuch-MT");

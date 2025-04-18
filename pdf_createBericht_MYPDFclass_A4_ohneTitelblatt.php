@@ -35,6 +35,11 @@ class MYPDF extends TCPDF
         $this->cell(0, 0, '', 'T', 0, 'L');
         $this->Ln();
         $tDate = date('Y-m-d');
+        if (isset($_SESSION["PDFdatum"]) && $_SESSION["PDFdatum"] != null) {
+            $this->Cell(0, 0, $_SESSION["PDFdatum"], 0, false, 'L', 0, '', 0, false, 'T', 'M');
+        } else {
+            $this->Cell(0, 0, $tDate, 0, false, 'L', 0, '', 0, false, 'T', 'M');
+        }
         $this->Cell(0, 0, $tDate, 0, false, 'L', 0, '', 0, false, 'T', 'M');
         $this->Cell(0, 0, 'Seite ' . $this->getAliasNumPage() . ' von ' . $this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
     }

@@ -17,7 +17,9 @@ class MYPDF extends TCPDF
             }
             $this->Ln();
             $this->cell(0, 0, '', 'B', 1, 'L');
+
         } else {
+
             $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
             if (!$mysqli->set_charset("utf8")) {
                 printf("Error loading character set utf8: %s\n or Login timed out", $mysqli->error);
@@ -46,11 +48,8 @@ class MYPDF extends TCPDF
                 $raumInfos[$raumInfosCounter]['Raumbereich'] = $row['Raumbereich Nutzer'];
                 $raumInfosCounter = $raumInfosCounter + 1;
             }
-
             $mysqli->close();
-            // Set font
             $this->SetFont('helvetica', 'B', 15);
-            // Title
             $this->SetY(50);
             $this->Cell(0, 0, "" . $raumInfos[0]['Projektname'], 0, false, 'L', 0, '', 0, false, 'B', 'B');
             $this->Ln();
@@ -78,22 +77,26 @@ class MYPDF extends TCPDF
             }
             $this->SetFont('helvetica', '', 12);
             $this->MultiCell(150, 6, $funktionsStellen, 0, 'L', 0, 0);
-            //$this->Cell(0, 0, $funktionsStellen, 0, false, 'L', 0, '', 0, false, 'B', 'B');
             $this->Ln();
             $this->Ln();
             $this->SetFont('helvetica', '', 10);
-            $this->Cell(0, 0, "Stand: " . date('Y-m-d'), 0, false, 'L', 0, '', 0, false, 'T', 'M');
+            if (isset($_SESSION["PDFdatum"]) && $_SESSION["PDFdatum"] != null) {
+                $this->Cell(0, 0, "Stand: ", $_SESSION["PDFdatum"], 0, false, 'L', 0, '', 0, false, 'T', 'M');
+            } else {
+                $this->Cell(0, 0, "Stand: " . date('Y-m-d'), 0, false, 'L', 0, '', 0, false, 'T', 'M');
+            }
+
             $this->Ln();
             $dateFromURL = getValidatedDateFromURL();
             $currentDate = date('Y-m-d');
             $futureDate = new DateTime($dateFromURL) > new DateTime($currentDate);
 
             if ($dateFromURL !== $currentDate && !$futureDate) {
-                $this->Cell(0, 0, "Änderungsverlauf bis: " . $dateFromURL, 0, false, 'L', 0, '', 0, false, 'T', 'M');
+                $this->Cell(0, 0, "Änderungen markiert ab: " . $dateFromURL, 0, false, 'L', 0, '', 0, false, 'T', 'M');
             }
 
             $this->SetFont('helvetica', '', 6);
-            //LOGOS einfügen
+
             get_titelblatt_logo($this);
 
             $Vorentwurf = " Im Vorentwurf sind die raumweisen elektrischen Leitungsangaben je Netzart ohne Gleichzeitigkeit angegeben. Die Werte stellen die Summe der Nennleistungen der im Raum geplanten medizin- und labortechnischen Geräte inkl. einer Auslegungsreserve dar. Diese Auslegungsreserve ist erforderlich, um beispielsweise Geräte zu berücksichtigen, welche nicht im Raum verortet sind, aber dort genutzt werden können. Detailliertere Angaben zu Großgeräten (Röntgenanlagen, CT, MRT etc.) erfolgen stets gesondert.";
@@ -122,7 +125,11 @@ class MYPDF extends TCPDF
         $this->cell(0, 0, '', 'T', 0, 'L');
         $this->Ln();
         $tDate = date('Y-m-d');
-        $this->Cell(0, 0, $tDate, 0, false, 'L', 0, '', 0, false, 'T', 'M');
+        if (isset($_SESSION["PDFdatum"]) && $_SESSION["PDFdatum"] != null) {
+            $this->Cell(0, 0, $_SESSION["PDFdatum"], 0, false, 'L', 0, '', 0, false, 'T', 'M');
+        } else {
+            $this->Cell(0, 0, $tDate, 0, false, 'L', 0, '', 0, false, 'T', 'M');
+        }
         $this->Cell(0, 0, 'Seite ' . $this->getAliasNumPage() . ' von ' . $this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
     }
 }

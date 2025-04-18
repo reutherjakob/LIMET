@@ -80,7 +80,7 @@ while ($row = $result_Einbring_elemente->fetch_assoc()) {
 
 
 //     -----   FORMATTING VARIABLES    -----     
-$marginTop = 20; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/ 
+$marginTop = 17; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/
 $marginBTM = 10;
 $SB = 210 - 2 * PDF_MARGIN_LEFT;  // A4: 210 x 297 // A3: 297 x 420
 $SH = 297 - $marginTop - $marginBTM; // PDF_MARGIN_FOOTER;
@@ -108,7 +108,7 @@ $_SESSION["DisclaimerText"] = "Die beschriebenen Komponenten weisen die jeweils 
     . " Maximalspezifikationen, was bedeutet, dass beispielsweise das Gewicht von Leitfabrikat "
     . "A und die Abmessungen von Leitfabrikat B verwendet wurden. Die hier angeführten Parameter"
     . " dienen exklusiv der Bestimmung der Einbringwege.";
-
+$_SESSION["PDFHeaderSubtext"] = "Projekt: " . $_SESSION["projectName"] . " - PPH: " . $_SESSION["projectPlanungsphase"];
 $pdf = new MYPDF('P', PDF_UNIT, "A4", true, 'UTF-8', false, true);
 $pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4", "Großgeräte Einbringung");
 
@@ -173,4 +173,6 @@ foreach ($rooms as $roomnr) {
 $mysqli->close();
 ob_end_clean(); // brauchts irgendwie.... ?  
 $pdf->Output(getFileName('Einbringwege'), 'I');
+$_SESSION["PDFHeaderSubtext"] = "";
+
 
