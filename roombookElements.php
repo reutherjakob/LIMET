@@ -124,7 +124,8 @@ init_page_serversides();
         <div class="col-xxl-3">
             <div class="card mt-1">
                 <div class="card-header"> Hier könnte ihre Inhalt stehen.</div>
-                <div class="card-body" id=""> Wenn Mensch hier weitere Informationen sehen will, sag Bescheid welche. </div>
+                <div class="card-body" id=""> Wenn Mensch hier weitere Informationen sehen will, sag Bescheid welche.
+                </div>
             </div>
         </div>
 
@@ -148,7 +149,7 @@ init_page_serversides();
                         </div>
                         <div class="col-xxl-8 d-flex flex-nowrap justify-content-end">
                             <button type='button' class='btn btn-outline-success btn-sm ' id='addElements'
-                                    data-bs-toggle='modal' data-bs-target='#addElementsToRoomModal'><i
+                                    data-bs-toggle='modal' data-bs-target='#addElementsToRoomModal' disabled><i
                                         class='fas fa-plus'></i> Element zu Raum hinzufügen
                             </button>
                             <button type='button' id="selectAllRows"
@@ -172,8 +173,13 @@ init_page_serversides();
 
 
 <script>
+    var elementBezeichnung; //var, beacause used to set Modal Title in getRoomsWithoutElement
+    var selectedRooms = [];
     var tableElementsInDB;
+
     $(document).ready(function () {
+
+
         tableElementsInDB = new DataTable('#tableElementsInDB', {
             select: true,
             paging: true,
@@ -202,11 +208,14 @@ init_page_serversides();
             initComplete: function () {
                 $('.dt-search label').remove();
                 $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeaderELementesInDb');
-
             }
         });
 
+
         $('#tableElementsInDB tbody').on('click', 'tr', function () {
+            elementBezeichnung = tableElementsInDB.row($(this)).data()[2];
+
+            $('#addElements').prop('disabled', true);
             let elementID = tableElementsInDB.row($(this)).data()[0];
             $.ajax({
                 url: "setSessionVariables.php",
@@ -225,7 +234,6 @@ init_page_serversides();
                                 type: "GET",
                                 success: function (data) {
                                     $("#roomsWithoutElement").html(data);
-
                                 }
                             });
                         }
@@ -245,31 +253,30 @@ init_page_serversides();
                 }
             });
         });
-
+6
         $('#selectAllRows').click(function () {
             $('#roomsWithoutElement table tbody tr:visible').each(function () {
+                let row = tableRoomsWithoutElement.row(this);
+                let data = row.data();
+                let id = data[0];
                 $(this).addClass('selected');
-                let roomID = tableRoomsWithoutElement.row($(this)).data()[0];
-                if (!roomIDs.includes(roomID)) {
-                    roomIDs.push(roomID);
-                }
-                //console.log(roomIDs);
+                if (!roomIDs.includes(id)) roomIDs.push(id);
             });
+            updateSelectedRoomsDisplay();
         });
+
 
         $('#deselectAllRows').click(function () {
             $('#roomsWithoutElement table tbody tr:visible').each(function () {
+                let row = tableRoomsWithoutElement.row(this);
+                let data = row.data();
+                let id = data[0];
                 $(this).removeClass('selected');
-                roomIDs = []
-
-                //console.log(roomIDs);
+                roomIDs = roomIDs.filter(rid => rid !== id);
             });
+            updateSelectedRoomsDisplay();
         });
-
-
     });
-
-
 </script>
 </body>
 </html>

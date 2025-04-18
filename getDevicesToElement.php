@@ -157,8 +157,10 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
 </div>
 
 <!--suppress ES6ConvertVarToLetConst -->
-<script charset="utf-8" type="text/javascript">var deviceID;
-    console.log("GetDev2Element", deviceID);
+<script charset="utf-8" type="text/javascript">
+
+    var deviceID;
+
     var tableDevicesToElement;
 
     $(document).ready(function () {
@@ -201,6 +203,7 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
             $("#devicePrices").show();
             $("#deviceLieferanten").show();
             deviceID = tableDevicesToElement.row($(this)).data()[0];
+            console.log("GetDev2Element", deviceID);
             document.getElementById("hersteller").value = tableDevicesToElement.row($(this)).data()[5];
             document.getElementById("type").value = tableDevicesToElement.row($(this)).data()[3];
             document.getElementById("kurzbeschreibung").value = tableDevicesToElement.row($(this)).data()[4];

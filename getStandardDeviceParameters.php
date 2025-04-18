@@ -56,8 +56,8 @@ echo "<button type='button' id='" . $deviceID . "' class='btn btn-outline-succes
                 <h4 class='modal-title'>Parameter übernehmen</h4>
                 <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
-            <div class='modal-body' id='mbody'>Wollen Sie die Geräteparameter übernehmen? Alle gespeicherten
-                Variantenparameter gehen verloren?
+            <div class='modal-body' id='mbody'>Wollen Sie diese Geräteparameter für ihr Element im Projekt übernehmen?
+                <br> Alle (projektspezifisch) gespeicherten Variantenparameter gehen verloren?
             </div>
             <div class='modal-footer'>
                 <input type='button' id='saveParametersFromDevice' class='btn btn-success btn-sm' value='Ja'
