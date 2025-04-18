@@ -23,8 +23,8 @@ $sql = "SELECT tabelle_element_gewerke.idtabelle_element_gewerke, tabelle_elemen
 
 $result = $mysqli->query($sql);
 echo "<div class='form-group row  mt-1'>
- 			<label class='control-label col-xxl-2' for='elementGewerk'>Gewerk</label>
-			<div class='col-xxl-10'>
+ 			<label class='control-label col-xxl-3' for='elementGewerk'>Gewerk</label>
+			<div class='col-xxl-9'>
 				<select class='form-control form-control-sm' id='elementGewerk' name='elementGewerk'>";
 while ($row = $result->fetch_assoc()) {
     if ($row["idtabelle_element_gewerke"] == $_GET["gewerkID"]) {
@@ -47,8 +47,8 @@ $result = $mysqli->query($sql);
 
 
 echo "<div class='form-group row mt-1'>
- 			<label class='control-label col-xxl-2' for='elementHauptgruppe'>Hauptgruppe</label>
-			<div class='col-xxl-10'>
+ 			<label class='control-label col-xxl-3' for='elementHauptgruppe'>Hauptgruppe</label>
+			<div class='col-xxl-9'>
 				<select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>";
 while ($row = $result->fetch_assoc()) {
     if ($row["idTABELLE_Element_Hauptgruppe"] == $_GET["hauptgruppeID"]) {
@@ -69,8 +69,8 @@ $sql = "SELECT `tabelle_element_gruppe`.`idTABELLE_Element_Gruppe`,
 
 $result = $mysqli->query($sql);
 echo "<div class='form-group row mt-1'>
- 			<label class='control-label col-xxl-2' for='elementGruppe'>Gruppe</label>
-			<div class='col-xxl-10'>
+ 			<label class='control-label col-xxl-3' for='elementGruppe'>Gruppe</label>
+			<div class='col-xxl-9'>
 				<select class='form-control form-control-sm' id='elementGruppe' name='elementGruppe'>";
 echo "<option value=0 selected>Gruppe auswählen</option>";
 while ($row = $result->fetch_assoc()) {
@@ -86,6 +86,8 @@ $mysqli->close();
 
     $('#elementGewerk').change(function () {
         let gewerkID = this.value;
+       // console.log(gewerkID);
+
         $.ajax({
             url: "getElementGroupsByGewerk.php",
             data: {"gewerkID": gewerkID},
@@ -100,6 +102,8 @@ $mysqli->close();
     // Element Gewerk Änderung
     $('#elementHauptgruppe').change(function () {
         let hauptgruppeID = this.value;
+        console.log(hauptgruppeID);
+
         let gewerkID = $("#elementGewerk").val();
         $.ajax({
             url: "getElementGroupsByHauptgruppe.php",
@@ -115,6 +119,8 @@ $mysqli->close();
     // Element Gewerk Änderung
     $('#elementGruppe').change(function () {
         let gruppeID = this.value;
+        console.log(gruppeID);
+
         if (gruppeID !== 0) {
             $.ajax({
                 url: "getElementsByGroup.php",

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-
 <head>
     <title>Element Admin</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
@@ -20,6 +19,10 @@
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
 </head>
+<?php
+if (!function_exists('utils_connect_sql')) {
+include "_utils.php";
+} init_page_serversides("x"); ?>
 
 <body style="height:100%">
 <div id="limet-navbar"></div> <!-- Container für Navbar -->
@@ -30,48 +33,9 @@
             <div class="row mt-1">
                 <div class='col-xxl-6'>
                     <div class='mt-1 card'>
-                        <div class='card-header'><label>Elementgruppen</label></div>
+                        <div class='card-header' id="CardHeaderElementGruppen"><label>Elementgruppen</label></div>
                         <div class='card-body' id='elementGroups'>
-                            <?php
-                            if (!function_exists('utils_connect_sql')) {
-                                include "_utils.php";
-                            }
-                            init_page_serversides("x");
-                            $mysqli = utils_connect_sql();
-                            $sql = "SELECT tabelle_element_gewerke.idtabelle_element_gewerke, tabelle_element_gewerke.Nummer, tabelle_element_gewerke.Gewerk
-												FROM tabelle_element_gewerke
-												ORDER BY tabelle_element_gewerke.Nummer;";
-
-                            $result = $mysqli->query($sql);
-                            echo "<div class='form-group row'>
-									 			<label class='control-label col-xxl-3 col-md-3' for='elementGewerk'>Gewerk</label>
-												<div class='col-xxl-9 col-md-9'>
-													<select class='form-control form-control-sm mt-1' id='elementGewerk' name='elementGewerk'>";
-                            while ($row = $result->fetch_assoc()) {
-                                echo "<option value=" . $row["idtabelle_element_gewerke"] . ">" . $row["Nummer"] . " - " . $row["Gewerk"] . "</option>";
-                            }
-                            echo "</select>	
-												</div>
-										</div>";
-
-                            echo "<div class='form-group row'>
-									 			<label class='control-label col-xxl-3 col-md-3' for='elementHauptgruppe'>Hauptgruppe</label>
-												<div class='col-xxl-9 col-md-9'>
-													<select class='form-control form-control-sm  mt-1' id='elementHauptgruppe' name='elementHauptgruppe'>
-														<option selected>Gewerk auswählen</option>
-													</select>	
-												</div>
-										</div>";
-
-                            echo "<div class='form-group row'>
-									 			<label class='control-label col-xxl-3 col-md-3' for='elementGruppe'>Gruppe</label>
-												<div class='col-xxl-9 col-md-9'>
-													<select class='form-control form-control-sm  mt-1'  id='elementGruppe' name='elementGruppe'>
-														<option selected>Gewerk auswählen</option>
-													</select>	
-												</div>
-										</div>";
-                            ?>
+                            <?php include "getElementgruppenCardContent.php"; ?>
                         </div>
                     </div>
                     <div class="mt-1 card">
@@ -80,37 +44,9 @@
                                 <div class="col-xxl-6">Elemente in DB</div>
                                 <div class="col-xxl-6 d-flex justify-content-end" id="CardHeaderELementesInDb"></div>
                             </div>
-                        </div> 
+                        </div>
                         <div class="card-body" id="elementsInDB">
-                            <?php
-                            $sql = "SELECT tabelle_elemente.idTABELLE_Elemente, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_elemente.Kurzbeschreibung
-											FROM tabelle_elemente
-											ORDER BY tabelle_elemente.ElementID;";
-
-                            $result = $mysqli->query($sql);
-
-                            echo "<table class='table compact table-striped table-sm table-hover border border-light border-5' id='tableElementsInDB' >
-									<thead><tr>
-									<th>ID</th>
-									<th>ElementID</th>
-									<th>Element</th>
-									<th>Beschreibung</th>
-                                        <th></th>
-									</tr></thead><tbody>";
-
-                            while ($row = $result->fetch_assoc()) {
-                                echo "<tr>";
-                                echo "<td>" . $row["idTABELLE_Elemente"] . "</td>";
-                                echo "<td>" . $row["ElementID"] . "</td>";
-                                echo "<td>" . $row["Bezeichnung"] . "</td>";
-                                echo "<td>" . $row["Kurzbeschreibung"] . "</td>";
-                                echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-dark btn-sm' value='changeElement' data-bs-toggle ='modal' data-bs-target='#changeElementModal'><i class='fas fa-pencil-alt'></i></button></td>";
-                                echo "</tr>";
-                            }
-                            echo "</tbody></table>";
-
-                            $mysqli->close();
-                            ?>
+                            <?php include "getElementsInDbCardBodyContent.php"; ?>
                         </div>
                     </div>
                 </div>
@@ -231,7 +167,7 @@
         });
 
 
-        $('#tableElementsInDB tbody').on('click', 'tr', function () { 
+        $('#tableElementsInDB tbody').on('click', 'tr', function () {
             $("#deviceParametersInDB").hide();
             $("#devicePrices").hide();
             $("#deviceLieferanten").hide();
@@ -276,19 +212,6 @@
         });
     });
 
-
-    // Element Gewerk Änderung
-    $('#elementGewerk').change(function () {
-        let gewerkID = this.value;
-        $.ajax({
-            url: "getElementGroupsByGewerk.php",
-            data: {"gewerkID": gewerkID},
-            type: "GET",
-            success: function (data) {
-                $("#elementGroups").html(data);
-            }
-        });
-    });
 
     //Element speichern
     $("#saveElement").click(function () {

@@ -107,6 +107,9 @@ $sumRaumbereichBestand = 0;
 
 $fill = 0;
 foreach ($raumbereicheInProject as $rowData) {
+    $sumRaumbereich = 0;
+    $sumRaumbereichNeu = 0;
+    $sumRaumbereichBestand = 0;
     $pdf->SetFont('helvetica', '', 8);
     $pdf->MultiCell(50, 4, $rowData['Raumbereich Nutzer'], 0, 'L', $fill, 0);
     $pdf->MultiCell(20, 4, $rowData['Geschoss'], 0, 'C', $fill, 0);
@@ -132,6 +135,7 @@ foreach ($raumbereicheInProject as $rowData) {
     // ------------------------------------Neu --------------------------------------------------
     $pdf->MultiCell(50, 4, 'davon Neu', 0, 'R', $fill, 0);
     $pdf->MultiCell(20, 4, '', 0, 'C', $fill, 0);
+
     foreach ($gewerkeInProject as $key => $rowDataGewerkeInProject) {
         $sql1 = "SELECT Sum(`Kosten`*`Anzahl`) AS PP_Neu
                 FROM tabelle_projekt_varianten_kosten INNER JOIN (tabelle_auftraggeber_gewerke RIGHT JOIN ((tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) INNER JOIN tabelle_projekt_element_gewerk ON (tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) AND (tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte)) ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke = tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke) ON (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) AND (tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) AND (tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte = tabelle_räume.tabelle_projekte_idTABELLE_Projekte)
@@ -144,7 +148,7 @@ foreach ($raumbereicheInProject as $rowData) {
         } else {
             $pdf->MultiCell(25, 4, format_money_report(0), 0, 'R', $fill, 0);
         }
-        $gewerkeInProject[$key]['GewerkeSummeGesamtNeu'] = $gewerkeInProject[$key]['GewerkeSummeGesamtNeu'] + $row1['PP_Neu'];
+        $gewerkeInProject[$key]['GewerkeSummeGesamtNeu'] += $row1['PP_Neu'];
     }
     $pdf->MultiCell(25, 4, format_money_report($sumRaumbereichNeu), 0, 'R', $fill, 0);
     $pdf->Ln();
@@ -164,14 +168,11 @@ foreach ($raumbereicheInProject as $rowData) {
         } else {
             $pdf->MultiCell(25, 4, format_money_report(0), 0, 'R', $fill, 0);
         }
-        $gewerkeInProject[$key]['GewerkeSummeGesamtBestand'] = $gewerkeInProject[$key]['GewerkeSummeGesamtBestand'] + $row['PP'];
+        $gewerkeInProject[$key]['GewerkeSummeGesamtBestand'] +=  $row['PP'];
     }
     $pdf->MultiCell(25, 4, format_money_report($sumRaumbereichBestand), 0, 'R', $fill, 0);
     $pdf->Ln();
     $fill = !$fill;
-    $sumRaumbereich = 0;
-    $sumRaumbereichNeu = 0;
-    $sumRaumbereichBestand = 0;
     $x = $pdf->GetX();
     $y = $pdf->GetY();
     if (($y + 4) >= 180) {

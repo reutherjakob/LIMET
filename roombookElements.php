@@ -33,7 +33,6 @@ init_page_serversides();
         .card-header {
             min-height: 4vh !important;
         }
-
     </style>
 </head>
 
@@ -51,72 +50,16 @@ init_page_serversides();
                     </div>
                 </div>
                 <div class="card-body" id="elementsInDB">
-                    <?php
-                    $mysqli = utils_connect_sql();
-                    $sql = "SELECT tabelle_elemente.idTABELLE_Elemente, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_elemente.Kurzbeschreibung
-											FROM tabelle_elemente 
-											ORDER BY tabelle_elemente.ElementID;";
-                    $result = $mysqli->query($sql);
-                    echo "<table class='table table-sm table-responsive compact table-striped table-hover border border-light border-5 ' id='tableElementsInDB'>
-									<thead><tr>
-									<th>ID</th>
-									<th>ElementID</th>
-									<th>Element</th>
-									<th>Beschreibung</th>
-									</tr></thead><tbody>";
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<tr>";
-                        echo "<td>" . $row["idTABELLE_Elemente"] . "</td>";
-                        echo "<td>" . $row["ElementID"] . "</td>";
-                        echo "<td>" . $row["Bezeichnung"] . "</td>";
-                        echo "<td>" . $row["Kurzbeschreibung"] . "</td>";
-                        echo "</tr>";
-                    }
-                    echo "</tbody></table>";
-
-                    ?>
+                    <?php include "getElementsInDbCardBodyContent.php"; ?>
                 </div>
             </div>
         </div>
 
         <div class="col-xxl-3">
             <div class="card mt-1">
-                <div class="card-header">Elementgruppen</div>
+                <div class="card-header" id="CardHeaderElementGruppen">Elementgruppen</div>
                 <div class="card-body" id="elementGroups">
-                    <?php
-
-                    $sql = "SELECT tabelle_element_gewerke.idtabelle_element_gewerke, tabelle_element_gewerke.Nummer, tabelle_element_gewerke.Gewerk
-                                                                FROM tabelle_element_gewerke
-                                                                ORDER BY tabelle_element_gewerke.Nummer;";
-                    $result = $mysqli->query($sql);
-                    echo "<div class='form-group row mt-1'>
-                                                        <label class='control-label col-xxl-3' for='elementGewerk'>Gewerk</label>
-                                                        <div class='col-xxl-9'>
-                                                                <select class='form-control form-control-sm' id='elementGewerk' name='elementGewerk'>";
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<option value=" . $row["idtabelle_element_gewerke"] . ">" . $row["Nummer"] . " - " . $row["Gewerk"] . "</option>";
-                    }
-                    echo "                       </select>	
-                                                        </div>
-                                        </div>";
-                    echo "<div class='form-group row mt-1'>
-                                                        <label class='control-label col-xxl-3' for='elementHauptgruppe'>Hauptgruppe</label>
-                                                        <div class='col-xxl-9'>
-                                                                <select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>
-                                                                        <option selected>Gewerk auswählen</option>
-                                                                </select>	
-                                                        </div>
-                                        </div>";
-                    echo "<div class='form-group row mt-1'>
-                                                        <label class='control-label col-xxl-3' for='elementGruppe'>Gruppe</label>
-                                                        <div class='col-xxl-9'>
-                                                                <select class='form-control form-control-sm' id='elementGruppe' name='elementGruppe'>
-                                                                        <option selected>Gewerk auswählen</option>
-                                                                </select>	
-                                                        </div>
-                                        </div>";
-                    $mysqli->close();
-                    ?>
+                    <?php include "getElementgruppenCardContent.php";?>
                 </div>
             </div>
         </div>
@@ -124,7 +67,8 @@ init_page_serversides();
         <div class="col-xxl-3">
             <div class="card mt-1">
                 <div class="card-header"> Hier könnte ihre Inhalt stehen.</div>
-                <div class="card-body" id=""> Wenn Mensch hier weitere Informationen sehen will, sag Bescheid welche. </div>
+                <div class="card-body" id=""> Wenn Mensch hier weitere Informationen sehen will, sag Bescheid welche.
+                </div>
             </div>
         </div>
 
@@ -148,7 +92,7 @@ init_page_serversides();
                         </div>
                         <div class="col-xxl-8 d-flex flex-nowrap justify-content-end">
                             <button type='button' class='btn btn-outline-success btn-sm ' id='addElements'
-                                    data-bs-toggle='modal' data-bs-target='#addElementsToRoomModal'><i
+                                    data-bs-toggle='modal' data-bs-target='#addElementsToRoomModal' disabled><i
                                         class='fas fa-plus'></i> Element zu Raum hinzufügen
                             </button>
                             <button type='button' id="selectAllRows"
@@ -172,8 +116,13 @@ init_page_serversides();
 
 
 <script>
+    var elementBezeichnung; //var, beacause used to set Modal Title in getRoomsWithoutElement
+    var selectedRooms = [];
     var tableElementsInDB;
+
     $(document).ready(function () {
+
+
         tableElementsInDB = new DataTable('#tableElementsInDB', {
             select: true,
             paging: true,
@@ -202,11 +151,14 @@ init_page_serversides();
             initComplete: function () {
                 $('.dt-search label').remove();
                 $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeaderELementesInDb');
-
             }
         });
 
+
         $('#tableElementsInDB tbody').on('click', 'tr', function () {
+            elementBezeichnung = tableElementsInDB.row($(this)).data()[2];
+
+            $('#addElements').prop('disabled', true);
             let elementID = tableElementsInDB.row($(this)).data()[0];
             $.ajax({
                 url: "setSessionVariables.php",
@@ -225,7 +177,6 @@ init_page_serversides();
                                 type: "GET",
                                 success: function (data) {
                                     $("#roomsWithoutElement").html(data);
-
                                 }
                             });
                         }
@@ -234,42 +185,29 @@ init_page_serversides();
             });
         });
 
-        $('#elementGewerk').change(function () {
-            let gewerkID = this.value;
-            $.ajax({
-                url: "getElementGroupsByGewerk.php",
-                data: {"gewerkID": gewerkID},
-                type: "GET",
-                success: function (data) {
-                    $("#elementGroups").html(data);
-                }
-            });
-        });
-
         $('#selectAllRows').click(function () {
             $('#roomsWithoutElement table tbody tr:visible').each(function () {
+                let row = tableRoomsWithoutElement.row(this);
+                let data = row.data();
+                let id = data[0];
                 $(this).addClass('selected');
-                let roomID = tableRoomsWithoutElement.row($(this)).data()[0];
-                if (!roomIDs.includes(roomID)) {
-                    roomIDs.push(roomID);
-                }
-                //console.log(roomIDs);
+                if (!roomIDs.includes(id)) roomIDs.push(id);
             });
+            updateSelectedRoomsDisplay();
         });
+
 
         $('#deselectAllRows').click(function () {
             $('#roomsWithoutElement table tbody tr:visible').each(function () {
+                let row = tableRoomsWithoutElement.row(this);
+                let data = row.data();
+                let id = data[0];
                 $(this).removeClass('selected');
-                roomIDs = []
-
-                //console.log(roomIDs);
+                roomIDs = roomIDs.filter(rid => rid !== id);
             });
+            updateSelectedRoomsDisplay();
         });
-
-
     });
-
-
 </script>
 </body>
 </html>

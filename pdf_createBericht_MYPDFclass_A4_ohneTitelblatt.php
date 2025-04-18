@@ -17,7 +17,7 @@ class MYPDF extends TCPDF
             $this->Cell(0, 0, '', 0, false, 'R', 0, '', 0, false, 'B', 'B');
         }
         $this->Ln(1);//
-        if (!empty(str_replace(" ", "", $_SESSION["PDFHeaderSubtext"]))) {
+        if (!empty(str_replace(" ", "", $_SESSION["PDFHeaderSubtext"] ?? ""))) {
             $this->Cell(0, 0, $_SESSION["PDFHeaderSubtext"], 'B', false, 'R', 0, '', 0, false, 'B', 'B');
             $this->Ln();
         } else {
@@ -40,7 +40,7 @@ class MYPDF extends TCPDF
         } else {
             $this->Cell(0, 0, $tDate, 0, false, 'L', 0, '', 0, false, 'T', 'M');
         }
-        $this->Cell(0, 0, $tDate, 0, false, 'L', 0, '', 0, false, 'T', 'M');
+
         $this->Cell(0, 0, 'Seite ' . $this->getAliasNumPage() . ' von ' . $this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
     }
 }

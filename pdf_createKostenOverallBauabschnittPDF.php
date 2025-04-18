@@ -52,7 +52,7 @@ $pdf->SetFont('helvetica', 'I', 7);
 $result = $mysqli->query($sql);
 $modvar = 0;
 while ($row = $result->fetch_assoc()) {
-    $modvar = ($modvar + 1)%2;
+    $modvar = ($modvar + 1) % 2;
     if ($modvar === 1) {
         $pdf->MultiCell(177, '', "", '', 'L', 0, 0);
         $pdf->MultiCell(50, '', $row['Gewerke_Nr'] . "-" . $row['Bezeichnung'], '', 'L', 0, 0);
@@ -149,7 +149,7 @@ foreach ($raumbereicheInProject as $rowData) {
         } else {
             $pdf->MultiCell(25, 4, format_money_report(0), 0, 'R', $fill, 0);
         }
-        $gewerkeInProject[$key]['GewerkeSummeGesamt'] = $gewerkeInProject[$key]['GewerkeSummeGesamt'] + $row['PP'];
+        $gewerkeInProject[$key]['GewerkeSummeGesamt'] += ($row['PP'] ?? 0);
     }
     $pdf->MultiCell(25, 4, format_money_report($sumRaumbereich), 0, 'R', $fill, 0);
     $pdf->Ln();
@@ -161,7 +161,7 @@ foreach ($raumbereicheInProject as $rowData) {
     $pdf->MultiCell(20, 4, '', 0, 'C', $fill, 0);
 
     foreach ($gewerkeInProject as $key => $rowDataGewerkeInProject) {
-        $sql1 = "SELECT COALESCE(SUM(`Kosten` * `Anzahl`), 0) AS PP_Neu
+        $sql1 = "SELECT Sum(`Kosten`*`Anzahl`) AS PP_Neu
                 FROM tabelle_projekt_varianten_kosten 
                     INNER JOIN (tabelle_auftraggeber_gewerke 
                     RIGHT JOIN ((tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) 
@@ -175,19 +175,18 @@ foreach ($raumbereicheInProject as $rowData) {
                 WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") 
                 AND ((tabelle_räume.`Bauabschnitt`)='" . $rowData['Bauabschnitt'] . "') 
                 AND ((tabelle_auftraggeber_gewerke.Gewerke_Nr)='" . $rowDataGewerkeInProject['Gewerke_Nr'] . "') 
- 
                 AND ((tabelle_räume_has_tabelle_elemente.Standort)=1) AND tabelle_räume_has_tabelle_elemente.`Neu/Bestand`=1);";
 
         $result1 = $mysqli->query($sql1);
         $row1 = $result1->fetch_assoc();
 
-        if (null != ($row['PP'])) {
+        if (isset($row1['PP_Neu']) && (null != $row1['PP_Neu'])) {
             $pdf->MultiCell(25, 4, format_money_report($row1["PP_Neu"]), 0, 'R', $fill, 0);
             $sumRaumbereichNeu = $sumRaumbereichNeu + $row1['PP_Neu'];
         } else {
             $pdf->MultiCell(25, 4, format_money_report(0), 0, 'R', $fill, 0);
         }
-        $gewerkeInProject[$key]['GewerkeSummeGesamtNeu'] = $gewerkeInProject[$key]['GewerkeSummeGesamtNeu'] + $row1['PP_Neu'];
+        $gewerkeInProject[$key]['GewerkeSummeGesamtNeu'] += ($row1['PP_Neu'] ?? 0);
     }
     $pdf->MultiCell(25, 4, format_money_report($sumRaumbereichNeu), 0, 'R', $fill, 0);
     $pdf->Ln();

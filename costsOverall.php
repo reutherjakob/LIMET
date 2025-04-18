@@ -45,7 +45,7 @@ init_page_serversides();
             <button type='button' class='btn btn-outline-dark btn-sm ms-2 me-2' value='createKostenOverallPDF'><i
                         class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk
             </button>
-            <button type='button' class='btn btn-outline-dark btn-sm me-2' value='createKostenOverallBauabschnittPDF' disabled><i
+            <button type='button' class='btn btn-outline-dark btn-sm me-2' value='createKostenOverallBauabschnittPDF'><i
                         class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk und Bauabschnitt <!--- TODO: Fix Wrong calculations -->
             </button>
             <button type='button' class='btn btn-outline-dark btn-sm me-2' value='createKostenOverallBauabschnittBudgetPDF'>

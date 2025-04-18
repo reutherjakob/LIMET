@@ -309,26 +309,32 @@ $row = $result->fetch_assoc(); ?>
 
 <!-- Variantenparameter übernehmen Modal -->
 <div class='modal fade' id='addVariantenParameterToElementModal' role='dialog'>
-    <div class='modal-dialog modal-sm'>
+    <div class='modal-dialog modal-md'>
         <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
-                <h4 class='modal-title'>Variantenparameter übernehmen? </h4>
+                <h4 class='modal-title justify-content-center'>Variantenparameter übernehmen? </h4>
                 <button type='button' class='close' data-bs-dismiss='modal'>&times;
                 </button>
             </div>
             <div class='modal-body' id='mbody'>
                 Wollen Sie die Elementparameter wirklich
-                überschreiben? Sind Sie Hr. Reuther?
+                überschreiben? <br>
+                <strong> Sind Sie Hr. Reuther? </strong>
             </div>
-            <div class='modal-footer'>
-                <button type='button' id='addVariantenParameterToElement'
-                        class='btn btn-success btn-sm' value='Ja'
-                        data-bs-dismiss='modal'> Ja
-                </button>
-                <button type='button' class='btn btn-danger btn-sm'
-                        data-bs-dismiss='modal'>Nein
-                </button>
+            <div class='modal-footer row'>
+                <div class="d-flex justify-content-center align-items-center">
+                    <div class="col-1"></div>
+                    <button type='button' id='addVariantenParameterToElement'
+                            class='btn btn-success btn-sm col-5 me-1 ms-1' value='Ja'
+                            data-bs-dismiss='modal'> Ja
+                    </button>
+
+                    <button type='button' class='btn btn-danger btn-sm col-5 me-1 ms-1'
+                            data-bs-dismiss='modal'>Nein
+                    </button>
+                </div>
+
             </div>
         </div>
 
@@ -336,7 +342,6 @@ $row = $result->fetch_assoc(); ?>
 </div>
 
 <script src="_utils.js"></script>
-
 <script>
     var tablePossibleElementParameters;
     document.getElementById('kosten').addEventListener('keydown', function (event) {
@@ -619,26 +624,31 @@ $row = $result->fetch_assoc(); ?>
 
     // Variantenparameter übernehmen in zentrales Element
     $("#addVariantenParameterToElement").click(function () {
-        const elementID = <?php echo $_SESSION["elementID"] ?>;
-        const variantenID = <?php echo $_SESSION["variantenID"] ?>;
-        console.log(elementID, variantenID);
+        const username = "  <?php echo $_SESSION["username"] ?>";
+        if (username.toLowerCase() === "reuther") {
+            const elementID = <?php echo $_SESSION["elementID"] ?>;
+            const variantenID = <?php echo $_SESSION["variantenID"] ?>;
+            console.log(elementID, variantenID);
 
-        $.ajax({
-            url: "addVariantenParameterToElement.php",
-            data: {"elementID": elementID, "variantenID": variantenID},
-            type: "GET",
-            success: function (data) {
-                makeToaster(data.trim(), true);  //alert(data);
-                $.ajax({
-                    url: "getStandardElementParameters.php",
-                    data: {"elementID": elementID},
-                    type: "GET",
-                    success: function (data) {
-                        $("#elementDBParameter").html(data);
-                    }
-                });
-            }
-        });
+            $.ajax({
+                url: "addVariantenParameterToElement.php",
+                data: {"elementID": elementID, "variantenID": variantenID},
+                type: "GET",
+                success: function (data) {
+                    makeToaster(data.trim(), true);  //alert(data);
+                    $.ajax({
+                        url: "getStandardElementParameters.php",
+                        data: {"elementID": elementID},
+                        type: "GET",
+                        success: function (data) {
+                            $("#elementDBParameter").html(data);
+                        }
+                    });
+                }
+            });
+        } else {
+            alert("Lügner!");
+        }
     });
 </script>
 </body>
