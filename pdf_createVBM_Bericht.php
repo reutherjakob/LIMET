@@ -1,17 +1,23 @@
-<?php
+<?php #2025done
 
-session_start();
-require_once('TCPDF-main/TCPDF-main/tcpdf.php');
-include 'pdf_createBericht_utils.php';
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 check_login();
+
+require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+include "pdf_createBericht_MYPDFclass_A4_Raumbuch.php";
+include "_pdf_createBericht_utils.php";
 
 $roomIDs = filter_input(INPUT_GET, 'roomID');
 $roomIDsArray = explode(",", $roomIDs);
 
+$parameterarray = array();
+$execute_once = true;
 //     -----   FORMATTING VARIABLES    -----     
 $marginTop = 17; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/ 
 $marginBTM = 10;
+
 $SB = 210 - 2 * PDF_MARGIN_LEFT;  // A4: 210 x 297 // A3: 297 x 420
 $SH = 297 - $marginTop - $marginBTM; // PDF_MARGIN_FOOTER;
 $horizontalSpacerLN = 4;
@@ -29,57 +35,16 @@ $e_D_2_3rd = $e_D - $e_D_3rd;
 $einzug_anm = 5;
 $font_size = 6;
 $block_header_height = 5;
+$colour_line = array(110, 150, 80);
 $style_normal = array('width' => 0.1, 'cap' => 'round', 'join' => 'round', 'dash' => 0, 'color' => $colour_line); //$pdf->SetLineStyle(array('width' => 0.1, 'cap' => 'round', 'join' => 'round', 'dash' => 6, 'color' => array(110, 150, 80)));
 
-class MYPDF extends TCPDF {
 
-    public function Header() {
-        if ($this->numpages > 1) {
-            $image_file = 'LIMET_web.png';
-            $this->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-            $this->SetFont('helvetica', '', 8);
-            $this->Cell(0, 0, 'Großgeräte Parameter', 0, false, 'R', 0, '', 0, false, 'B', 'B');
-            $this->Ln();
-            $this->cell(0, 0, '', 'B', 0, 'L');
-        } else { // Titelblatt
-            $Disclaimer_txt = "Alle Angaben beziehen sich exklusiv auf die im jeweiligen Raume angeführten Geräte und Anlagen. Die folgenden Angaben beinhalten KEINE weitere im Raum verortete Medizin Technik. ";
-            $Einzug = 10;
-            $this->SetFont('helvetica', 'B', 15);
-            $this->SetY(60);
-            $this->Cell($Einzug, 0, "", 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            $this->Cell(0, 0, $_SESSION["projectName"], 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            $this->Ln();
-            $this->Cell($Einzug, 0, "", 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            $this->Cell(0, 0, "Vorentwurf ", 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            $this->Ln(100);
-            $this->Cell($Einzug, 0, "", 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            $this->Cell(0, 0, 'Bauangaben' . "", 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            $this->Ln();
-            $this->Cell($Einzug, 0, "", 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            $this->Cell(0, 0, "von medizinischen Großgeräten", 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            $this->Ln(30);
-            $this->SetFont('helvetica', '', 9);
-            $this->SetY(280 - ($this->getStringHeight(180, $Disclaimer_txt, 0, false, 'L', 0, '', 0, false, '', '')));
-            $this->Multicell(180, 0, $Disclaimer_txt, 0, 'L', 0, 0);
-            $this->SetFont('helvetica', '', 6);
-            $image_file = 'LIMET_web.png';
-            $this->Image($image_file, 150, 40, 30, 15, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-        }
-    }
-
-    public function Footer() {  // Page footer
-        $this->SetY(-15);
-        $this->SetFont('helvetica', 'I', 8);
-        $this->cell(0, 0, '', 'T', 0, 'L');
-        $this->Ln();
-        $tDate = date('Y-m-d');
-        $this->Cell(0, 0, $tDate, 0, false, 'L', 0, '', 0, false, 'T', 'M');
-        $this->Cell(0, 0, 'Seite ' . $this->getAliasNumPage() . ' von ' . $this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
-    }
-}
-
+#
+$_SESSION["PDFTITEL"] = "Bauangaben von medizinischen Großgeräten";
+$_SESSION["DisclaimerText"] =  "Alle Angaben beziehen sich exklusiv auf die im jeweiligen Raume angeführten Geräte und Anlagen. Die folgenden Angaben beinhalten KEINE weitere im Raum verortete Medizintechnik.";
 $pdf = new MYPDF('P', PDF_UNIT, "A4", true, 'UTF-8', false, true);
-$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "", "Bauangaben");
+$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4", "Bauangaben");
+
 $pdf->AddPage('P', 'A4');
 $pdf->SetFillColor(0, 0, 0, 0); //$pdf->SetFillColor(244, 244, 244); 
 $pdf->SetFont('helvetica', '', $font_size);
@@ -87,8 +52,6 @@ $pdf->SetLineStyle($style_normal);
 
 $mysqli = utils_connect_sql();
 
-$parameterarray = array();
-$execute_once = true;
 
 foreach ($roomIDsArray as $valueOfRoomID) {
     $pdf->SetFont('helvetica', '', $font_size);
@@ -183,7 +146,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                 hackerlA3($pdf, $font_size, $e_C_3rd, $row['Laseranwendung'], "JA");
                 $pdf->Ln($horizontalSpacerLN2);
                 if ($row['Strahlenanwendung']) {
-                    anm_txt($pdf,"Baulicher Strahlenschutz und Strahlenwarnleuchte außen vorgesehen."  ,$SB, $einzug_anm);
+                    anm_txt($pdf, "Baulicher Strahlenschutz und Strahlenwarnleuchte außen vorgesehen.", $SB, $einzug_anm);
                     $pdf->Ln($horizontalSpacerLN);
                 }
             }
@@ -269,12 +232,14 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
         $pdf->Ln($horizontalSpacerLN2);
         anm_txt($pdf, $row['Anmerkung HKLS'], $SB, $einzug_anm);
-        if (( "" != $row['Anmerkung BauStatik'] && $row['Anmerkung BauStatik'] != "keine Angaben MT") || ($row["AR_Flaechenlast_kgcm2"] !== 0 || $row["AR_Flaechenlast_kgcm2"] !== "-")) {
+        if (("" != $row['Anmerkung BauStatik'] && $row['Anmerkung BauStatik'] != "keine Angaben MT") || ($row["AR_Flaechenlast_kgcm2"] !== 0 || $row["AR_Flaechenlast_kgcm2"] !== "-")) {
             if (!check_4_new_page($pdf, getAnmHeight($pdf, $row['Anmerkung BauStatik'], $SB))) {
-                if( $row['Anmerkung HKLS']!=="" ){
-                $pdf->Ln($horizontalSpacerLN);}
-                else{    $pdf->Ln(2);}
-                
+                if ($row['Anmerkung HKLS'] !== "") {
+                    $pdf->Ln($horizontalSpacerLN);
+                } else {
+                    $pdf->Ln(2);
+                }
+
             } else {
                 $pdf->Ln(2);
                 balken($pdf, $horizontalSpacerLN, $SB);
@@ -284,7 +249,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 ////  ------- BauStatik ---------
 
 
-        if (( "" != $row['Anmerkung BauStatik'] && $row['Anmerkung BauStatik'] != "keine Angaben MT") || ($row["AR_Flaechenlast_kgcm2"] !== 0 || $row["AR_Flaechenlast_kgcm2"] !== "-" || $row['Fussboden OENORM B5220'] !== "kA" )) {
+        if (("" != $row['Anmerkung BauStatik'] && $row['Anmerkung BauStatik'] != "keine Angaben MT") || ($row["AR_Flaechenlast_kgcm2"] !== 0 || $row["AR_Flaechenlast_kgcm2"] !== "-" || $row['Fussboden OENORM B5220'] !== "kA")) {
             check_4_new_page($pdf, 10 + $block_header_height + getAnmHeight($pdf, $row['Anmerkung BauStatik'], $SB));
             block_label($pdf, "Bau/Statik/Schwingungsklasse", $block_header_height, $SB);
 
@@ -307,11 +272,9 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                 balken($pdf, 2, $SB);
             }
         }
-
-//        $pdf->AddPage(); 
     }
 }
 
 $mysqli->close();
 ob_end_clean();
-$pdf->Output('BAUANGABEN-MT.pdf', 'I');
+$pdf->Output(getFileName('BAUANGABEN'), 'I');

@@ -18,8 +18,8 @@
     <div class="card mb-4">
         <div class="card-header">
             <div class="row">
-                <h4 class="col-6">Räume </h4>
-                <div class=" col-6 d-flex align-items-center justify-content-end">
+                <h4 class="col-xxl-6">Räume </h4>
+                <div class=" col-xxl-6 d-flex align-items-center justify-content-end">
                     <label for="start_date_raumänderungen">Von</label><input type="date" class="me-2 ms-2"
                                                                              id="start_date_raumänderungen"
                                                                              name="start_date">
@@ -78,8 +78,8 @@
     <div class="card collapse" id="changesCard">
         <div class="card-header bg-secondary text-white d-flex">
             <div class="row">
-                <h4 class="col-6"> Änderungshistorie </h4>
-                <div class=" col-6 d-flex align-items-center justify-content-end">
+                <h4 class="col-xxl-6"> Änderungshistorie </h4>
+                <div class=" col-xxl-6 d-flex align-items-center justify-content-end">
                     <div class="d-flex align-items-center justify-content-end">
                         <label for="start_date">Von </label><input type="date" id="start_date" name="start_date">
                         <label for="end_date">Bis </label><input type="date" id="end_date" name="end_date">

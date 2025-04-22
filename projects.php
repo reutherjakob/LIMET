@@ -43,8 +43,8 @@
             <div class="card mt-2">
                 <div class="card-header" id="PRCardHeader">
                     <div class="row">
-                        <div class="col-6"><b>Projekte</b></div>
-                        <div class="col-6 d-inline-flex justify-content-end text-nowrap align-items-center" id="STH">
+                        <div class="col-xxl-6"><b>Projekte</b></div>
+                        <div class="col-xxl-6 d-inline-flex justify-content-end text-nowrap align-items-center" id="STH">
                             <div class="form-check form-check-inline align-items-center float-end">
                                 <input class="form-check-input" type="checkbox" id="filter_ActiveProjects" checked>
                                 <label class="form-check-label" for="filter_ActiveProjects">
@@ -322,7 +322,7 @@
                     }
                 });
             } else {
-                alert("Bitte alle Felder korrekt ausfÃ¼llen!");
+                alert("Bitte alle Felder korrekt ausfüllen!");
             }
         });
 

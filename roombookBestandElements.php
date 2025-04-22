@@ -79,8 +79,8 @@ init_page_serversides();
 
         echo "  <div class='card-header'>
                 <div class='row'> 
-                    <div class='col-6'> <b>Elemente im Bestand</b> </div>
-                    <div class='col-6 d-flex flex-nowrap  justify-content-end' id='CardHeader'> 
+                    <div class='col-xxl-6'> <b>Elemente im Bestand</b> </div>
+                    <div class='col-xxl-6 d-flex flex-nowrap  justify-content-end' id='CardHeader'> 
                 ";
         if ($result->num_rows > 0) {
             echo "<button type='button' class='ml-4 btn btn-outline-dark btn-sm' value='createBestandsPDF'><i class='far fa-file-pdf'></i> Bestands-PDF</button>";

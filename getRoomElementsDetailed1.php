@@ -139,23 +139,23 @@ $mysqli->close();
 
 
     <?php if ($result_room_elements->num_rows > 0): ?>
-        <div id="room-action-buttons" class="d-inline-flex text-nowrap align-items-center">
-            <button type="button" class="btn btn-outline-dark " id="<?php echo $_SESSION["roomID"]; ?>"
+        <div id="room-action-buttons" class="d-inline-flex justify-content-end align-items-center text-nowrap">
+            <button type="button" class="btn btn-outline-dark me-1" id="<?php echo $_SESSION["roomID"]; ?>"
                     data-bs-toggle="modal" data-bs-target="#copyRoomElementsModal" value="Rauminhalt kopieren">Inhalt
                 kopieren
             </button>
-            <button type="button" class="btn btn-outline-dark " id="<?php echo $_SESSION["roomID"]; ?>"
+            <button type="button" class="btn btn-outline-dark  me-1" id="<?php echo $_SESSION["roomID"]; ?>"
                     value="createRoombookPDF"><i class="far fa-file-pdf"></i> RB-PDF
             </button>
-            <button type="button" class="btn btn-outline-dark" id="<?php echo $_SESSION["roomID"]; ?>"
+            <button type="button" class="btn btn-outline-dark  me-1" id="<?php echo $_SESSION["roomID"]; ?>"
                     value="createRoombookPDFCosts"><i class="far fa-file-pdf"></i> RB-Kosten-PDF
             </button>
-            <div class=" btn btn-outline-dark">
-                <input class="form-check-input" type="checkbox" id="hideZeroRows">
-                <label class="form-check-label" for="hideZeroRows">
-                    Hide 0
-                </label>
-            </div>
+
+            <input class="btn-check" type="checkbox" id="hideZeroRows" checked>
+            <label class="btn btn-outline-secondary" for="hideZeroRows">
+                Hide 0
+            </label>
+
         </div>
     <?php endif; ?>
 </div>
@@ -237,6 +237,7 @@ $mysqli->close();
                         id="<?php echo $row["id"]; ?>" title="Kommentar"><i class="<?php echo $iconClass; ?>"></i>
                 </button>
             </td>
+
             <td data-order="history">
                 <button type="button" id="<?php echo $row["id"]; ?>" class="btn btn-sm btn-outline-dark"
                         value="history"><i
@@ -293,7 +294,8 @@ $mysqli->close();
 </div>
 
 <script src="_utils.js"></script>
-<script charset="utf-8" type="module">
+<script charset="utf-8" type="module">                    // type="module"
+
     var tableRoomElements;
 
     function attachButtonListeners() {
@@ -340,7 +342,7 @@ $mysqli->close();
         });
     }
 
-    import CustomPopover from './_popover.js';
+     import CustomPopover from './_popover.js';
 
     CustomPopover.init('.comment-btn', {
         onSave: function (trigger, newText) {
@@ -402,7 +404,7 @@ $mysqli->close();
     $(document).ready(function () {
         $.fn.dataTable.ext.search = [];
 
-         tableRoomElements = $("#tableRoomElements").DataTable({
+        tableRoomElements = $("#tableRoomElements").DataTable({
             select: true,
             paging: true,
             pagingType: "simple",
@@ -433,9 +435,9 @@ $mysqli->close();
             },
             layout: {
                 topStart: null,
-                topEnd: "search",
+                topEnd: null,
                 bottomEnd: ['pageLength', 'paging'],
-                bottomStart: ['info']
+                bottomStart: ["search", 'info']
             }
         });
 
@@ -502,16 +504,23 @@ $mysqli->close();
 
         $.fn.dataTable.ext.search.push(
             function (settings, data, dataIndex) {
+                // 'settings' is the DataTable settings object for the current table.
+                // You can check which table this is by looking at settings.nTable
+                // or settings.sTableId (the table DOM node or its ID).
+
+                if (settings.nTable.id !== 'tableRoomElements') {
+                    return true; // Don't filter other tables
+                }
+
                 let hideZero = $("#hideZeroRows").is(":checked");
                 let row = tableRoomElements.row(dataIndex).node();
                 let amount = $(row).find('input[id^="amount"]').val();
                 amount = parseInt(amount) || 0;
-                //console.log(dataIndex, amount, !(hideZero && (amount === 0)));
                 return !(hideZero && (amount === 0));
             }
         );
 
-        // Event handler for checkbox change
+
         $("#hideZeroRows").on("change", function () {
             tableRoomElements.draw();
         });

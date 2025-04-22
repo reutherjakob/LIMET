@@ -1,57 +1,29 @@
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+#2025done
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 include "_format.php";
-include "pdf_MyPDF_class_Kosten.php";
-include "_pdf_utils.php";
+include "pdf_createBericht_MYPDFclass_A4_ohneTitelblatt.php";
+
+require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+include "_pdf_createBericht_utils.php";
+
+if ($_SESSION["projectPlanungsphase"] == "Vorentwurf") {
+    $_SESSION["PDFTITEL"] = "Medizintechnische Kostenschätzung";
+} else {
+    $_SESSION["PDFTITEL"] = "Medizintechnische Kostenberechnung";
+}
+$marginTop = 20;
+$marginBTM = 10;
+$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4_queer", "Medizintechnische Gesamt Kosten");
 check_login();
 $mysqli = utils_connect_sql();
-
-
-$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
-// set document information
-$pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor('LIMET Consulting und Planung');
-$pdf->SetTitle('Gesamt Kosten');
-$pdf->SetSubject('MT-Kosten');
-$pdf->SetKeywords('MT-Kosten');
-
-// set default header data
-$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING, array(0, 64, 255), array(0, 64, 128));
-$pdf->setFooterData(array(0, 64, 0), array(0, 64, 128));
-
-// set header and footer fonts
-$pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-
-// set default monospaced font
-$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-// set margins
-$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-// set auto page breaks
-$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
-// set image scale factor
-$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-// set some language-dependent strings (optional)
-if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
-    require_once(dirname(__FILE__) . '/lang/eng.php');
-    $pdf->setLanguageArray($l);
-}
-$pdf->SetFont('helvetica', '', 10);
-$pdf->AddPage('L', 'A4');
-
-
 // --------------------- TITELZEILE MIT PROJEKT INFOS -----------------------------
 $sql = "SELECT tabelle_projekte.Projektname, tabelle_projekte.Preisbasis, tabelle_planungsphasen.Bezeichnung
     FROM tabelle_projekte INNER JOIN tabelle_planungsphasen ON tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen = tabelle_planungsphasen.idTABELLE_Planungsphasen
     WHERE (((tabelle_projekte.idTABELLE_Projekte)=" . $_SESSION["projectID"] . "));";
-
 $result = $mysqli->query($sql);
 $row = $result->fetch_assoc();
 
@@ -135,6 +107,9 @@ $sumRaumbereichBestand = 0;
 
 $fill = 0;
 foreach ($raumbereicheInProject as $rowData) {
+    $sumRaumbereich = 0;
+    $sumRaumbereichNeu = 0;
+    $sumRaumbereichBestand = 0;
     $pdf->SetFont('helvetica', '', 8);
     $pdf->MultiCell(50, 4, $rowData['Raumbereich Nutzer'], 0, 'L', $fill, 0);
     $pdf->MultiCell(20, 4, $rowData['Geschoss'], 0, 'C', $fill, 0);
@@ -160,6 +135,7 @@ foreach ($raumbereicheInProject as $rowData) {
     // ------------------------------------Neu --------------------------------------------------
     $pdf->MultiCell(50, 4, 'davon Neu', 0, 'R', $fill, 0);
     $pdf->MultiCell(20, 4, '', 0, 'C', $fill, 0);
+
     foreach ($gewerkeInProject as $key => $rowDataGewerkeInProject) {
         $sql1 = "SELECT Sum(`Kosten`*`Anzahl`) AS PP_Neu
                 FROM tabelle_projekt_varianten_kosten INNER JOIN (tabelle_auftraggeber_gewerke RIGHT JOIN ((tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) INNER JOIN tabelle_projekt_element_gewerk ON (tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) AND (tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte)) ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke = tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke) ON (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) AND (tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) AND (tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte = tabelle_räume.tabelle_projekte_idTABELLE_Projekte)
@@ -172,7 +148,7 @@ foreach ($raumbereicheInProject as $rowData) {
         } else {
             $pdf->MultiCell(25, 4, format_money_report(0), 0, 'R', $fill, 0);
         }
-        $gewerkeInProject[$key]['GewerkeSummeGesamtNeu'] = $gewerkeInProject[$key]['GewerkeSummeGesamtNeu'] + $row1['PP_Neu'];
+        $gewerkeInProject[$key]['GewerkeSummeGesamtNeu'] += $row1['PP_Neu'];
     }
     $pdf->MultiCell(25, 4, format_money_report($sumRaumbereichNeu), 0, 'R', $fill, 0);
     $pdf->Ln();
@@ -192,20 +168,15 @@ foreach ($raumbereicheInProject as $rowData) {
         } else {
             $pdf->MultiCell(25, 4, format_money_report(0), 0, 'R', $fill, 0);
         }
-        $gewerkeInProject[$key]['GewerkeSummeGesamtBestand'] = $gewerkeInProject[$key]['GewerkeSummeGesamtBestand'] + $row['PP'];
+        $gewerkeInProject[$key]['GewerkeSummeGesamtBestand'] +=  $row['PP'];
     }
     $pdf->MultiCell(25, 4, format_money_report($sumRaumbereichBestand), 0, 'R', $fill, 0);
     $pdf->Ln();
     $fill = !$fill;
-    $sumRaumbereich = 0;
-    $sumRaumbereichNeu = 0;
-    $sumRaumbereichBestand = 0;
     $x = $pdf->GetX();
     $y = $pdf->GetY();
-
     if (($y + 4) >= 180) {
         $pdf->AddPage();
-        // $y = 0; // should be your top margin
     }
 }
 // ---------------------------------------------------------
@@ -244,7 +215,7 @@ foreach ($gewerkeInProject as $rowDataGewerkeInProject) {
 }
 $pdf->MultiCell(25, 4, format_money_report($sumGesamtBestand), 0, 'R', 0, 0);
 
+$mysqli->close();
 ob_end_clean();
-
-$pdf->Output(getFileName("KostenGesamt")  ,'I');
+$pdf->Output(getFileName("KostenGesamt"), 'I');
 

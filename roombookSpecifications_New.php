@@ -1,9 +1,11 @@
 <!-- 13.2.25: Reworked -->
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 init_page_serversides();
-include 'roombookSpecifications_addRoomModal.php';
-include 'roombookSpecifications_HelpModal.php';
+ include 'roombookSpecifications_addRoomModal.php';
+ include 'roombookSpecifications_HelpModal.php';
 ?>
 
 <!DOCTYPE html>
@@ -12,7 +14,7 @@ include 'roombookSpecifications_HelpModal.php';
     <title>RB-Bauangaben</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
+
     <link rel="icon" href="iphone_favicon.png"/>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -29,19 +31,17 @@ include 'roombookSpecifications_HelpModal.php';
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
+    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
 
     <style>
         .btn_vis, .btn_invis {
             color: black;
             box-shadow: 0 2px 2px 0 rgba(100, 140, 25, 0.2), 0 2px 2px 0 rgba(100, 140, 25, 0.2);
         }
-
         .btn_vis {
             background-color: rgba(100, 140, 25, 0.1) !important;
             font-weight: 600;
         }
-
         .btn_invis {
             background-color: rgba(100, 0, 25, 0.1) !important;
             font-weight: 400;
@@ -55,7 +55,7 @@ include 'roombookSpecifications_HelpModal.php';
         }
 
         div.dt-button-collection, div.dt-button-collection.fixed.six-column {
-            width: 1600px; /* Adjust this value to make the panel broader */
+            width: 1500px; /* Adjust this value to make the panel broader */
             left: 50% !important;
             transform: translateX(-50%);
             margin-top: 10px; /* Adjust as needed */
@@ -90,7 +90,20 @@ include 'roombookSpecifications_HelpModal.php';
             </div>
         </header>
         <div class="card-header container-fluid d-flex align-items-start border-dark">
-            <div class="col-xxl-4 d-flex justify-content-left align-items-left" id='TableCardHeader'></div>
+            <div class="col-xxl-4 d-flex justify-content-left align-items-left" id='TableCardHeader'>
+                <label for="checkbox_EditableTable"
+                       id="edit_cbx"
+                       class="form-check-label"
+                       style="display: none;">
+                    Edit Table
+                </label>
+                <input type="checkbox"
+                       name="EditableTable"
+                       id="checkbox_EditableTable"
+                       class="form-check-input dt-input"
+                       style="width: 20px; height: 30px;"
+                       checked/>
+            </div>
             <div class="col-xxl-1 d-flex justify-content-end align-items-center" id="TableCardHeaderX"></div>
             <div class="col-xxl-4 d-flex justify-content-center align-items-center" id="TableCardHeader2"></div>
             <div class="col-xxl-1 d-flex justify-content-end align-items-right" id='TableCardHeader3'></div>
@@ -117,19 +130,18 @@ include 'roombookSpecifications_HelpModal.php';
             <div class="card-body" id="bauangaben"></div>
         </div>
         <div class="mt-4 card">
-
-                <div class="card-header form-inline d-inline-flex " id="CardHEaderElemntsInRoom">
-                    <button type="button" class="btn btn-outline-dark " id="showRoomElements" style="width: 30px;"><i
-                                class="fas fa-caret-left"></i></button>
-                    <div class="row" id="CardHEaderElemntsInRoom_SUB">
-                        <div class="col-6" id="CardHEaderElemntsInRoom1"></div>
-                        <div class="col-6 d-flex" id="CardHEaderElemntsInRoom2"></div>
-                    </div>
+            <div class="card-header form-inline d-inline-flex " id="CardHEaderElemntsInRoom">
+                <button type="button" class="btn btn-outline-dark " id="showRoomElements" style="width: 30px;"><i
+                            class="fas fa-caret-left"></i></button>
+                <div class="row" id="CardHEaderElemntsInRoom_SUB">
+                    <div class="col-xxl-6" id="CardHEaderElemntsInRoom1"></div>
+                    <div class="col-xxl-6 d-flex" id="CardHEaderElemntsInRoom2"></div>
                 </div>
-                <div class="card-body" id="additionalInfo">
-                    <p id="roomElements"></p>
-                    <p id="elementParameters"></p>
-                </div>
+            </div>
+            <div class="card-body" id="additionalInfo">
+                <p id="roomElements"></p>
+                <p id="elementParameters"></p>
+            </div>
 
         </div>
     </section>
@@ -159,7 +171,7 @@ include 'roombookSpecifications_HelpModal.php';
                     <label class="form-check-label" for="settings_save_edit_cbx">Tabelle editierbar initiieren</label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="settings_show_btn_grp_labels">
+                    <input class="form-check-input" type="checkbox" id="settings_show_btn_grp_labels" checked>
                     <label class="form-check-label" for="settings_show_btn_grp_labels">Labels über den Buttons
                         anzeigen</label>
                 </div>
@@ -181,4 +193,4 @@ include 'roombookSpecifications_HelpModal.php';
 </body>
 <script src="roombookSpecifications_constDeclarations.js"></script>
 <script src="_utils.js"></script>
-<script src="roombookSpecifications_New.js " charset=utf-8></script>
+<script src="roombookSpecifications_New.js" charset=utf-8></script>

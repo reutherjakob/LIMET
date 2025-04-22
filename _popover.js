@@ -16,12 +16,24 @@ const CustomPopover = (function ($) {
         }).css({
             position: 'absolute',
             top: `${position.top}px`,
-            left: `${position.left}px`
+            left: `${position.left}px`,
+            zIndex: 9999
         });
     }
 
     function showPopover(trigger, text, position) {
-        hidePopover(); // Close any existing popover
+        const prevTrigger = currentTrigger;
+        const prevPopover = popoverElement;
+
+        if (prevPopover && prevTrigger) {
+            // Save previous content before opening new one
+            const newText = prevPopover.find('.popover-textarea').val();
+            if (onSaveCallback) {
+                onSaveCallback(prevTrigger, newText);
+            }
+            prevPopover.remove();
+        }
+
         currentTrigger = trigger;
         popoverElement = createPopover(text, position);
         $('body').append(popoverElement);
@@ -33,12 +45,11 @@ const CustomPopover = (function ($) {
         $('body').addClass('popover-open');
     }
 
-
     function handleSave() {
         const newText = popoverElement.find('.popover-textarea').val();
         if (onSaveCallback) {
             onSaveCallback(currentTrigger, newText);
-        } else{
+        } else {
             console.log("Did not have a save callback: ", newText);
         }
         hidePopover();
@@ -83,8 +94,8 @@ const CustomPopover = (function ($) {
 
     function init(selector, options = {}) {
         onSaveCallback = options.onSave || null;
-
-        $(document).on('click', function(e) {
+        console.log("Popover Inititaion... ");
+        $(document).on('click', function (e) {
             const trigger = $(e.target).closest(selector);
             if (trigger.length) {
                 e.stopPropagation();

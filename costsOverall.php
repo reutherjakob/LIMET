@@ -46,7 +46,7 @@ init_page_serversides();
                         class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk
             </button>
             <button type='button' class='btn btn-outline-dark btn-sm me-2' value='createKostenOverallBauabschnittPDF'><i
-                        class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk und Bauabschnitt
+                        class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk und Bauabschnitt <!--- TODO: Fix Wrong calculations -->
             </button>
             <button type='button' class='btn btn-outline-dark btn-sm me-2' value='createKostenOverallBauabschnittBudgetPDF'>
                 <i class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk, Bauabschnitt und Budget
@@ -66,8 +66,8 @@ init_page_serversides();
 
 
             <div class="row">
-                <div class="col-6"><span>Raumbereiche</span></div>
-                <div class="col-6 d-flex align-items-center justify-content-end text-nowrap" id="RaumsucheCardHeaderSub">
+                <div class="col-xxl-6"><span>Raumbereiche</span></div>
+                <div class="col-xxl-6 d-flex align-items-center justify-content-end text-nowrap" id="RaumsucheCardHeaderSub">
                     <button type='button' class='btn btn-outline-dark btn-sm me-2 ml-2' id='createRaumbereichPDF'>
                         <i class='far fa-file-pdf'></i> Kosten-PDF
                     </button>

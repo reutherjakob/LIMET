@@ -1,144 +1,37 @@
 <?php
-//============================================================+
-// File name   : example_011.php
-// Begin       : 2008-03-04
-// Last Update : 2013-05-14
-//
-// Description : Example 011 for TCPDF class
-//               Colored Table (very simple table)
-//
-// Author: Nicola Asuni
-//
-// (c) Copyright:
-//               Nicola Asuni
-//               Tecnick.com LTD
-//               www.tecnick.com
-//               info@tecnick.com
-//============================================================+
-
-/**
- * Creates an example PDF TEST document using TCPDF
- * @package com.tecnick.tcpdf
- * @abstract TCPDF - Example: Colored Table
- * @author Nicola Asuni
- * @since 2008-03-04
- */
-
-// Include the main TCPDF library (search for installation path).
+#2025done
 require_once('TCPDF-main/TCPDF-main/tcpdf.php');
-
-// extend TCPF with custom functions
-class MYPDF extends TCPDF {
-    
-    //Page header
-    public function Header() {
-        // Logo
-        if($_SESSION["projectAusfuehrung"]==="MADER"){
-            $image_file = 'Mader_Logo_neu.jpg';
-            $this->Image($image_file, 15, 5, 40, 10, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-        }
-        else{
-            if($_SESSION["projectAusfuehrung"]==="LIMET"){
-                $image_file = 'LIMET_web.png';
-                $this->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-            }
-            else{
-                $image_file = 'LIMET_web.png';
-                $this->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                $image_file = 'Mader_Logo_neu.jpg';
-                $this->Image($image_file, 38, 5, 40, 10, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-            }
-            
-        }
-        // Set font
-        $this->SetFont('helvetica', '', 8);
-        // Title
-        $this->Cell(0, 0, 'Medizintechnisches Raumbuch', 0, false, 'R', 0, '', 0, false, 'B', 'B');
-        $this->Ln();
-        $this->cell(0,0,'','B',0,'L');
-    }
-
-    // Page footer
-    public function Footer() {
-        // Position at 15 mm from bottom
-        $this->SetY(-15);
-        // Set font
-        $this->SetFont('helvetica', 'I', 8);
-        // Page number
-        $this->cell(0,0,'','T',0,'L');
-        $this->Ln();
-        $tDate=date('Y-m-d');
-        $this->Cell(0, 0, $tDate, 0, false, 'L', 0, '', 0, false, 'T', 'M');
-        $this->Cell(0, 0, 'Seite '.$this->getAliasNumPage().' von '.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
-    }
-    
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
 }
-session_start();
+include "_pdf_createBericht_utils.php";
+include "pdf_createBericht_MYPDFclass_A4_Raumbuch.php";
+check_login();
+
+
+$marginTop = 20; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/
+$marginBTM = 10;
 // create new PDF document
-$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
-// set document information
-$pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor('LIMET Consulting und Planung für Medizintechnik');
-$pdf->SetTitle('Raumbuch-MT');
-$pdf->SetSubject('xxx');
-$pdf->SetKeywords('xxx');
-
-// set default header data
-$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING, array(0,64,255), array(0,64,128));
-$pdf->setFooterData(array(0,64,0), array(0,64,128));
-
-// set header and footer fonts
-$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-
-// set default monospaced font
-$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-// set margins
-$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-// set auto page breaks
-$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
-// set image scale factor
-$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-// set some language-dependent strings (optional)
-if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
-    require_once(dirname(__FILE__).'/lang/eng.php');
-    $pdf->setLanguageArray($l);
-}
-
-// ---------------------------------------------------------
-
-// set font
+$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false, true);
+$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4", "MT-Raumbuch");
 $pdf->SetFont('helvetica', '', 10);
-
-// add a page
 $pdf->AddPage('P', 'A4');
-
-//Moneyformat
-setlocale(LC_MONETARY, 'de_DE');
-
 // Daten laden
+$mysqli = utils_connect_sql();
 
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');	
-
-/* change character set to utf8 */
-if (!$mysqli->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $mysqli->error);
-    exit();
-}
 
 // Raumdaten laden ----------------------------------
-$sql = "SELECT tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung,  tabelle_projekte.Projektname, tabelle_planungsphasen.Bezeichnung, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Nutzfläche, tabelle_räume.Bauetappe, tabelle_räume.Bauabschnitt, tabelle_räume.Geschoss
-            FROM tabelle_planungsphasen INNER JOIN (tabelle_projekte INNER JOIN tabelle_räume ON tabelle_projekte.idTABELLE_Projekte = tabelle_räume.tabelle_projekte_idTABELLE_Projekte) ON tabelle_planungsphasen.idTABELLE_Planungsphasen = tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen
-            WHERE (((tabelle_räume.idTABELLE_Räume)=".filter_input(INPUT_GET, 'roomID')."));";
+$sql = "SELECT tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, 
+       tabelle_projekte.Projektname, tabelle_planungsphasen.Bezeichnung, 
+       tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Nutzfläche,
+       tabelle_räume.Bauetappe, tabelle_räume.Bauabschnitt, tabelle_räume.Geschoss
+            FROM tabelle_planungsphasen INNER JOIN (tabelle_projekte
+                INNER JOIN tabelle_räume ON tabelle_projekte.idTABELLE_Projekte = tabelle_räume.tabelle_projekte_idTABELLE_Projekte)
+                ON tabelle_planungsphasen.idTABELLE_Planungsphasen = tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen
+            WHERE (((tabelle_räume.idTABELLE_Räume)=" . filter_input(INPUT_GET, 'roomID') . "));";
 
 $result = $mysqli->query($sql);
+
 while ($row = $result->fetch_assoc()) { 
     $pdf->SetFont('helvetica', 'B', 10);
     $pdf->MultiCell(100, 6, "Raum: ".$row['Raumbezeichnung'],0, 'L', 0, 0);
@@ -235,10 +128,10 @@ while ($row = $result->fetch_assoc()) {
             }
         }
         if($row['Standort']==1){
-            $additionalRoombookData = $additionalRoombookData."\nStandort: Ja";
+            $additionalRoombookData = $additionalRoombookData."Standort: Ja";
         }
         else{
-            $additionalRoombookData = $additionalRoombookData."\nStandort: Nein";
+            $additionalRoombookData = $additionalRoombookData."Standort: Nein";
         }
         if($row['Verwendung']==1){
             $additionalRoombookData = $additionalRoombookData."\nVerwendung: Ja";
@@ -313,16 +206,14 @@ while ($row = $result->fetch_assoc()) {
         $pdf->MultiCell(30, $rowHeight, "",0, 'C', $fill, 0);
         $bestandsCounter++;
     }
-    $pdf->Ln();    
-    
+    $pdf->Ln();
+
 }
 
+$mysqli->close();
+ob_end_clean();
+$pdf->Output(getFileName('Raumbuch'), 'I');
 
-//$pdf->MultiCell(50, 6, "Bereich",'B', 'L', 0, 0);
-//$pdf->MultiCell(20, 6, "Geschoss",'B', 'C', 0, 0);
-
-// close and output PDF document
-$pdf->Output('Raumbuch-MT.pdf', 'I');
 
 //============================================================+
 // END OF FILE

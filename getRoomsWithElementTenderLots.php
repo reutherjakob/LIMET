@@ -34,19 +34,20 @@ while ($row = $result->fetch_assoc()) {
 
 <div class="row">
     <div class="form-group form-check-inline d-flex align-items-center border border-light rounded bg-light">
+        <div class="col-xxl-6 d-flex justify-content-start" id="Whatever"></div>
+        <div class="col-xxl-6 d-flex align-items-center justify-content-end">
 
-        <div class="col-6 d-flex align-items-center justify-content-start">
-            <label for="globalLosExtern" class="me-2"> Für ALLE Elemente im Batch</label>
             <select class="form-control form-control-sm mr-2 me-2" id="globalLosExtern" style="width: auto;">
-                <option value="0" selected> Wähle ein Los</option>
+                <option value="0" selected> Wähle ein Los für den Elemente Batch</option>
                 <?php
                 foreach ($lotsInProject as $array) {
                     echo "<option value=" . $array['idtabelle_Lose_Extern'] . ">" . $array['LosNr_Extern'] . " - " . $array['LosBezeichnung_Extern'] . "</option>";
                 } ?>
             </select>
+            <label for="globalLosExtern" class="me-2"></label>
             <button id="saveSelected" class="btn btn-warning  k btn-sm mr-2 me-2"><i class='far fa-save'></i></button>
         </div>
-        <div class="col-6 d-flex justify-content-end" id="Whatever"></div>
+
     </div>
 
 </div>
@@ -161,7 +162,10 @@ while ($row = $result->fetch_assoc()) {
     }
     echo "</select></td>";
     echo "<td><button type='button' id='" . $row["id"] . "' class='btn btn-warning btn-sm' value='saveElement'><i class='far fa-save'></i></button></td>";
-    echo "<td><input type='checkbox'  class='batch-select' id='batchSelect" . $row["id"] . "'checked></td>";
+    echo "<td><div class='form-check form-switch'>
+              <input class='form-check-input batch-select' type='checkbox' id='batchSelect" . $row["id"] . "' checked>
+              <label class='form-check-label' for='flexSwitchCheckChecked'> </label>
+            </div></td>";
     echo "</tr>";
 }
 echo "</tbody></table>";

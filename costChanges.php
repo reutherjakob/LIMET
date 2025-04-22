@@ -32,10 +32,10 @@ init_page_serversides();
     <div class="mt-41 card">
         <div class="card-header">
             <div class="row">
-                <div class="col-6">
+                <div class="col-xxl-6">
                     <b>Raumbuchänderungen</b>
                 </div>
-                <div class="col-6 d-inline-flex justify-content-end align-items-center" id="CardHeader"> &emsp; <i
+                <div class="col-xxl-6 d-inline-flex justify-content-end align-items-center" id="CardHeader"> &emsp; <i
                             class='fas fa-hourglass-start'>=Vorher</i> &emsp; <i
                             class='fas fa-hourglass-end'>=Nachher</i> &emsp;
                 </div>

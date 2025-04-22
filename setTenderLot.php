@@ -1,156 +1,82 @@
 <?php
-session_start();
 
-if (!isset($_SESSION["username"])) {
-    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-    exit;
+// Include necessary utility functions
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
 }
 
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-if ($mysqli->connect_error) {
-    die("Connection failed: " . $mysqli->connect_error);
-}
+// Establish database connection
+$mysqli = utils_connect_sql();
 
-/* change character set to utf8 */
-if (!$mysqli->set_charset("utf8")) {
-    echo "Error loading character set utf8: " . $mysqli->error;
-    exit();
-}
+// Define input fields and their corresponding database columns
+$fields = [
+    'LosNr_Extern' => 'losNr',
+    'LosBezeichnung_Extern' => 'losName',
+    'Ausführungsbeginn' => 'losDatum',
+    'Vergabesumme' => 'lotSum',
+    'Vergabe_abgeschlossen' => 'lotVergabe',
+    'Versand_LV' => 'lotLVSend',
+    'Verfahren' => 'lotVerfahren',
+    'Bearbeiter' => 'lotLVBearbeiter',
+    'Notiz' => 'lotNotice',
+    'Kostenanschlag' => 'kostenanschlag',
+    'Budget' => 'budget',
+];
 
-if ($_GET["lotID"] != "") {
+// Set lotID from GET request if provided
+if (!empty($_GET["lotID"])) {
     $_SESSION["lotID"] = $_GET["lotID"];
 }
 
-if (filter_input(INPUT_GET, 'mkf') == 0) {
-    if (null != $_GET["lotSum"]) {
-        if (filter_input(INPUT_GET, 'lotAuftragnehmer') == 0) {
-            $sql = "UPDATE `LIMET_RB`.`tabelle_lose_extern`
-                                        SET
-                                        `LosNr_Extern` = '" . $_GET["losNr"] . "',
-                                        `LosBezeichnung_Extern` = '" . $_GET["losName"] . "',
-                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"]) ?? '') . "',
-                                        `Vergabesumme`= '" . $_GET["lotSum"] . "',
-                                        `Vergabe_abgeschlossen`='" . $_GET["lotVergabe"] . "',
-                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])?? '' ) . "',
-                                        `Verfahren`='" . $_GET["lotVerfahren"] . "',
-                                        `Bearbeiter`='" . $_GET["lotLVBearbeiter"] . "',
-                                        `Notiz` = '" . $_GET["lotNotice"] . "',
-                                        `Kostenanschlag` = '" . $_GET["kostenanschlag"] . "',
-                                        `Budget` = '" . $_GET["budget"] . "'
-                                        WHERE `idtabelle_Lose_Extern` = " . $_SESSION["lotID"] . ";";
-        } else {
-            $sql = "UPDATE `LIMET_RB`.`tabelle_lose_extern`
-                                        SET
-                                        `LosNr_Extern` = '" . $_GET["losNr"] . "',
-                                        `LosBezeichnung_Extern` = '" . $_GET["losName"] . "',
-                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])?? '') . "',
-                                        `Vergabesumme`= '" . $_GET["lotSum"] . "',
-                                        `Vergabe_abgeschlossen`='" . $_GET["lotVergabe"] . "',
-                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])?? '') . "',
-                                        `Verfahren`='" . $_GET["lotVerfahren"] . "',
-                                        `Bearbeiter`='" . $_GET["lotLVBearbeiter"] . "',
-                                        `Notiz` = '" . $_GET["lotNotice"] . "',
-                                        `tabelle_lieferant_idTABELLE_Lieferant` = " . filter_input(INPUT_GET, 'lotAuftragnehmer') . ",
-                                        `Kostenanschlag` = '" . $_GET["kostenanschlag"] . "',
-                                        `Budget` = '" . $_GET["budget"] . "'
-                                        WHERE `idtabelle_Lose_Extern` = " . $_SESSION["lotID"] . ";";
-        }
+// Prepare SQL query
+$queryFields = [];
+foreach ($fields as $column => $inputField) {
+    if ($inputField == 'losDatum' || $inputField == 'lotLVSend') {
+        $value = date("Y-m-d", strtotime($_GET[$inputField]) ?? '');
+    } elseif ($inputField == 'kostenanschlag') {
+        $value = $_GET[$inputField];
     } else {
-        if (filter_input(INPUT_GET, 'lotAuftragnehmer') == 0) {
-            $sql = "UPDATE `LIMET_RB`.`tabelle_lose_extern`
-                                        SET
-                                        `LosNr_Extern` = '" . $_GET["losNr"] . "',
-                                        `LosBezeichnung_Extern` = '" . $_GET["losName"] . "',
-                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])?? '') . "',
-                                        `Vergabe_abgeschlossen`='" . $_GET["lotVergabe"] . "',
-                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])?? '') . "',
-                                        `Verfahren`='" . $_GET["lotVerfahren"] . "',
-                                        `Bearbeiter`='" . $_GET["lotLVBearbeiter"] . "',
-                                        `Notiz` = '" . $_GET["lotNotice"] . "',
-                                        `Kostenanschlag` = '" . $_GET["kostenanschlag"] . "',
-                                        `Budget` = '" . $_GET["budget"] . "'
-                                        WHERE `idtabelle_Lose_Extern` = " . $_SESSION["lotID"] . ";";
-        } else {
-            $sql = "UPDATE `LIMET_RB`.`tabelle_lose_extern`
-                                        SET
-                                        `LosNr_Extern` = '" . $_GET["losNr"] . "',
-                                        `LosBezeichnung_Extern` = '" . $_GET["losName"] . "',
-                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])?? '') . "',
-                                        `Vergabe_abgeschlossen`='" . $_GET["lotVergabe"] . "',
-                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])?? '') . "',
-                                        `Verfahren`='" . $_GET["lotVerfahren"] . "',
-                                        `Bearbeiter`='" . $_GET["lotLVBearbeiter"] . "',
-                                        `Notiz` = '" . $_GET["lotNotice"] . "',                                    
-                                        `tabelle_lieferant_idTABELLE_Lieferant` = " . filter_input(INPUT_GET, 'lotAuftragnehmer') . ",
-                                        `Kostenanschlag` = '" . $_GET["kostenanschlag"] . "',
-                                        `Budget` = '" . $_GET["budget"] . "'
-                                        WHERE `idtabelle_Lose_Extern` = " . $_SESSION["lotID"] . ";";
-        }
-    }
-} else {
-    if ( null != ($_GET["lotSum"])  ) {
-        if (filter_input(INPUT_GET, 'lotAuftragnehmer') == 0) {
-            $sql = "UPDATE `LIMET_RB`.`tabelle_lose_extern`
-                                        SET
-                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])?? '') . "',
-                                        `Vergabesumme`= '" . $_GET["lotSum"] . "',
-                                        `Vergabe_abgeschlossen`='" . $_GET["lotVergabe"] . "',
-                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])?? '') . "',
-                                        `Bearbeiter`='" . $_GET["lotLVBearbeiter"] . "',
-                                        `Notiz` = '" . $_GET["lotNotice"] . "',
-                                        `Kostenanschlag` = '" . $_GET["kostenanschlag"] . "',
-                                        `Budget` = '" . $_GET["budget"] . "'
-                                        WHERE `idtabelle_Lose_Extern` = " . $_SESSION["lotID"] . ";";
-        } else {
-            $sql = "UPDATE `LIMET_RB`.`tabelle_lose_extern`
-                                        SET
-                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])?? '') . "',
-                                        `Vergabesumme`= '" . $_GET["lotSum"] . "',
-                                        `Vergabe_abgeschlossen`='" . $_GET["lotVergabe"] . "',
-                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])?? '') . "',
-                                        `Bearbeiter`='" . $_GET["lotLVBearbeiter"] . "',
-                                        `Notiz` = '" . $_GET["lotNotice"] . "',
-                                        `tabelle_lieferant_idTABELLE_Lieferant` = " . filter_input(INPUT_GET, 'lotAuftragnehmer') . ",
-                                        `Kostenanschlag` = '" . $_GET["kostenanschlag"] . "',
-                                        `Budget` = '" . $_GET["budget"] . "'
-                                        WHERE `idtabelle_Lose_Extern` = " . $_SESSION["lotID"] . ";";
-        }
-    } else {
-        if (filter_input(INPUT_GET, 'lotAuftragnehmer') == 0) {
-            $sql = "UPDATE `LIMET_RB`.`tabelle_lose_extern`
-                                        SET
-                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])?? '') . "',
-                                        `Vergabe_abgeschlossen`='" . $_GET["lotVergabe"] . "',
-                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"])?? '') . "',
-                                        `Bearbeiter`='" . $_GET["lotLVBearbeiter"] . "',
-                                        `Notiz` = '" . $_GET["lotNotice"] . "',
-                                        `Kostenanschlag` = '" . $_GET["kostenanschlag"] . "',
-                                        `Budget` = '" . $_GET["budget"] . "'
-                                        WHERE `idtabelle_Lose_Extern` = " . $_SESSION["lotID"] . ";";
-        } else {
-            $sql = "UPDATE `LIMET_RB`.`tabelle_lose_extern`
-                                        SET
-                                        `Ausführungsbeginn` = '" . date("Y-m-d", strtotime($_GET["losDatum"])?? '') . "',
-                                        `Vergabe_abgeschlossen`='" . $_GET["lotVergabe"] . "',
-                                        `Versand_LV`='" . date("Y-m-d", strtotime($_GET["lotLVSend"]) ?? '') . "',
-                                        `Bearbeiter`='" . $_GET["lotLVBearbeiter"] . "',
-                                        `Notiz` = '" . $_GET["lotNotice"] . "',                                    
-                                        `tabelle_lieferant_idTABELLE_Lieferant` = " . filter_input(INPUT_GET, 'lotAuftragnehmer') . ",
-                                        `Kostenanschlag` = '" . $_GET["kostenanschlag"] . "',
-                                        `Budget` = '" . $_GET["budget"] . "'
-                                        WHERE `idtabelle_Lose_Extern` = " . $_SESSION["lotID"] . ";";
-        }
+        $value = $_GET[$inputField] ?? '';
     }
 
+    // Skip empty fields to avoid overwriting existing data
+    if (!empty($value) || $inputField == 'kostenanschlag') {
+        if ($column == 'tabelle_lieferant_idTABELLE_Lieferant') {
+            $value = filter_input(INPUT_GET, 'lotAuftragnehmer');
+            if ($value == 0) {
+                continue; // Skip if lotAuftragnehmer is 0
+            }
+        }
+        $queryFields[] = "`$column` = '$value'";
+    }
 }
 
-
-if ($mysqli->query($sql) === TRUE) {
-    echo "Los erfolgreich aktualisiert!";
-
+// Add specific conditions based on input
+if (filter_input(INPUT_GET, 'mkf') == 0) {
+    // Add additional fields if mkf is 0
+    if (!empty($_GET["lotSum"])) {
+        $queryFields[] = "`Vergabesumme` = '" . $_GET["lotSum"] . "'";
+    }
 } else {
-    echo "Error: " . $sql . "<br>" . $mysqli->error;
+    // Handle mkf != 0
+    if (!empty($_GET["lotSum"])) {
+        $queryFields[] = "`Vergabesumme` = '" . $_GET["lotSum"] . "'";
+    }
+}
+
+// Construct SQL query
+if (!empty($queryFields)) {
+    $sql = "UPDATE `LIMET_RB`.`tabelle_lose_extern` SET " . implode(', ', $queryFields) . " WHERE `idtabelle_Lose_Extern` = " . $_SESSION["lotID"] . ";";
+    //echo $sql;
+
+    // Execute query
+    if ($mysqli->query($sql) === TRUE) {
+        echo "Los erfolgreich aktualisiert!";
+    } else {
+        echo "Error: " . $sql . "<br>" . $mysqli->error;
+    }
+} else {
+    echo "No fields to update.";
 }
 
 $mysqli->close();
-?>

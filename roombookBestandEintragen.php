@@ -123,8 +123,8 @@ include "_format.php";
                 <div class="mt-1 card">
                     <div class="card-header " id="BestandsdatenCardHeader">
                         <div class="row">
-                            <div class="col-6"><label>Bestandsdaten</label></div>
-                            <div class="col-6 d-flex align-items-center justify-content-end">
+                            <div class="col-xxl-6"><label>Bestandsdaten</label></div>
+                            <div class="col-xxl-6 d-flex align-items-center justify-content-end">
                                 <button type='button' id='addBestandsElement'
                                         class='btn btn-outline-success btn-sm' value='Hinzufügen'
                                         data-bs-toggle='modal' data-bs-target='#addBestandModal'><i

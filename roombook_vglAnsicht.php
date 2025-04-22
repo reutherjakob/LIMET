@@ -41,11 +41,11 @@ init_page_serversides(); // checks LOGIN
         <div class="col-12">
             <div class="card">
                 <div class="card-header d-inline-flex">
-                    <div class="form-check col-6">
+                    <div class="form-check col-xxl-6">
                         <input class="form-check-input track-checkbox" type="checkbox" id="checkbox1">
                         <label class="form-check-label" for="checkbox1">Weniger Vergleichsräume laden</label>
                     </div> &emsp;
-                    <div class="form-check col-6 d-flex justify-content-end">
+                    <div class="form-check col-xxl-6 d-flex justify-content-end">
                         <button type="button" class="btn btn-info btn-sm me-2 text-dark"
                                 onclick="show_modal('helpModal')">
                             <i class="fas fa-question-circle"></i></button>
@@ -54,7 +54,7 @@ init_page_serversides(); // checks LOGIN
 
                 <div class=" card-body">
                     <div class="row">
-                        <div class="col-6" id="col1">
+                        <div class="col-xxl-6" id="col1">
                             <div class="card border-success" id="card1">
                                 <div class="card-header"> Räume auf dem aktuellen Projekt
                                     <button class="btn float-end grün" onclick="toggleCard('col1', 'col2', this)">
@@ -74,7 +74,7 @@ init_page_serversides(); // checks LOGIN
                                 </div>
                             </div>
                         </div>
-                        <div class="col-6" id="col2">
+                        <div class="col-xxl-6" id="col2">
                             <div class="card " id="card2">
                                 <div class="card-header"> Vergleichsräume
                                     <div class=" justify-content-end d-inline-flex" id="CardHeaderVglRooms"></div>
@@ -106,7 +106,7 @@ init_page_serversides(); // checks LOGIN
             <div class="row mt-1">
 
 
-                <div class="col-6" id="col3">
+                <div class="col-xxl-6" id="col3">
                     <div class="card border-success" id="card3">
                         <div class="card-header">
                             Elemente im Raum
@@ -117,7 +117,7 @@ init_page_serversides(); // checks LOGIN
                         </div>
                     </div>
                 </div>
-                <div class="col-6" id="col4">
+                <div class="col-xxl-6" id="col4">
                     <div class="card " id="card4">
                         <div class="card-header">
                             Elemente im Vergleichsraum
@@ -141,7 +141,7 @@ init_page_serversides(); // checks LOGIN
 
         <div class="card-body">
             <div class="row mt-1">
-                <div class="col-6">
+                <div class="col-xxl-6">
                     <div class="card border-success" id="card3">
                         <div class="card-header"> Bauangaben Text
                         </div>
@@ -149,7 +149,7 @@ init_page_serversides(); // checks LOGIN
                         </div>
                     </div>
                 </div>
-                <div class="col-6">
+                <div class="col-xxl-6">
                     <div class="card" id="card4">
                         <div class="card-header">Bauangaben Text Vgl
                         </div>
@@ -557,28 +557,28 @@ init_page_serversides(); // checks LOGIN
         const col1 = document.getElementById(colId1);
         const col2 = document.getElementById(colId2);
         if (button.id.startsWith("Hide")) {
-            if (col1.classList.contains('col-6')) {
-                col1.classList.remove('col-6');
+            if (col1.classList.contains('col-xxl-6')) {
+                col1.classList.remove('col-xxl-6');
                 col1.classList.add('col-2');
-                col2.classList.remove('col-6');
+                col2.classList.remove('col-xxl-6');
                 col2.classList.add('col-10');
             } else if (col1.classList.contains('col-12')) {
                 col1.classList.remove('col-12');
-                col1.classList.add('col-6');
+                col1.classList.add('col-xxl-6');
                 col2.classList.remove('col-12');
-                col2.classList.add('col-6');
+                col2.classList.add('col-xxl-6');
             }
         } else {
-            if (col1.classList.contains('col-6') && col2.classList.contains('col-6')) {
-                col1.classList.remove('col-6');
+            if (col1.classList.contains('col-xxl-6') && col2.classList.contains('col-xxl-6')) {
+                col1.classList.remove('col-xxl-6');
                 col1.classList.add('col-12');
-                col2.classList.remove('col-6');
+                col2.classList.remove('col-xxl-6');
                 col2.classList.add('col-12');
             } else if (col1.classList.contains('col-2')) {
                 col1.classList.remove('col-2');
-                col1.classList.add('col-6');
+                col1.classList.add('col-xxl-6');
                 col2.classList.remove('col-10');
-                col2.classList.add('col-6');
+                col2.classList.add('col-xxl-6');
             }
         }
         tableRedraw();

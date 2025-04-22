@@ -1,253 +1,27 @@
 <?php
-//============================================================+
-// 
-// Begin       : 2008-03-04
-// Last Update : 2018-09-03
-//
-// Description : Erstellt den Bauangaben Bericht
-//               
-//
-//============================================================+
+#2025done
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
+check_login();
 
-/**
- * Creates an example PDF TEST document using TCPDF
- * @package com.tecnick.tcpdf
- * @abstract TCPDF - Example: Colored Table
- * @author Nicola Asuni
- * @since 2008-03-04
- */
-
-// Include the main TCPDF library (search for installation path).
 require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+include "pdf_createBericht_MYPDFclass_A4_Raumbuch.php";
+include "_pdf_createBericht_utils.php";
 
-
-function br2nl($string)
-{
-    $return = str_replace(array("<br/>"), "\n", $string);
-    return $return;
+$marginTop = 20; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/
+$marginBTM = 10;
+if($_SESSION["projectPlanungsphase"]=="Vorentwurf"){
+    $_SESSION["PDFTITEL"] = "Medizintechnische Vorbemessungsangaben";
 }
-
-// extend TCPF with custom functions
-class MYPDF extends TCPDF
-#
-{
-
-    //Page header
-    public function Header()
-    {
-        //Abfrage ob Titelblatt
-        if ($this->numpages > 1) {
-            // Logo
-            if ($_SESSION["projectAusfuehrung"] === "MADER") {
-                $image_file = 'Mader_Logo_neu.jpg';
-                $this->Image($image_file, 15, 5, 40, 10, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-            } else {
-                if ($_SESSION["projectAusfuehrung"] === "LIMET") {
-                    $image_file = 'LIMET_web.png';
-                    $this->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                } else {
-                    $image_file = 'LIMET_web.png';
-                    $this->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                    $image_file = 'Mader_Logo_neu.jpg';
-                    $this->Image($image_file, 38, 5, 40, 10, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                }
-
-            }
-            // Set font
-            $this->SetFont('helvetica', '', 8);
-            // Title
-            if ($_SESSION["projectPlanungsphase"] == "Vorentwurf") {
-                $this->Cell(0, 0, 'Medizintechnische Vorbemessungsangaben', 0, false, 'R', 0, '', 0, false, 'B', 'B');
-            } else {
-                $this->Cell(0, 0, 'Medizintechnische Bauangaben', 0, false, 'R', 0, '', 0, false, 'B', 'B');
-            }
-            $this->Ln();
-            $this->cell(0, 0, '', 'B', 0, 'L');
-        } // Titelblatt
-        else {
-            // Verbindung herstellen
-            $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-            if (!$mysqli->set_charset("utf8")) {
-                printf("Error loading character set utf8: %s\n", $mysqli->error);
-                exit();
-            }
-
-            $roomIDs = filter_input(INPUT_GET, 'roomID');
-            $teile = explode(",", $roomIDs);
-
-            $sql = "SELECT tabelle_projekte.Projektname, tabelle_planungsphasen.Bezeichnung, tabelle_räume.`Raumbereich Nutzer`
-                    FROM tabelle_räume INNER JOIN (tabelle_planungsphasen INNER JOIN tabelle_projekte ON tabelle_planungsphasen.idTABELLE_Planungsphasen = tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen) ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte ";
-            $i = 0;
-            foreach ($teile as $valueOfRoomID) {
-                if ($i == 0) {
-                    $sql = $sql . "WHERE tabelle_räume.idTABELLE_Räume=" . $valueOfRoomID . " ";
-                } else {
-                    $sql = $sql . "OR tabelle_räume.idTABELLE_Räume=" . $valueOfRoomID . " ";
-                }
-                $i++;
-            }
-            $sql = $sql . "GROUP BY tabelle_projekte.Projektname, tabelle_planungsphasen.Bezeichnung, tabelle_räume.`Raumbereich Nutzer` ORDER BY tabelle_räume.`Raumbereich Nutzer`;";
-            $result = $mysqli->query($sql);
-            $raumInfos = array();
-            $raumInfosCounter = 0;
-            while ($row = $result->fetch_assoc()) {
-                $raumInfos[$raumInfosCounter]['Projektname'] = $row['Projektname'];
-                $raumInfos[$raumInfosCounter]['Planungsphase'] = $row['Bezeichnung'];
-                $raumInfos[$raumInfosCounter]['Raumbereich'] = $row['Raumbereich Nutzer'];
-                $raumInfosCounter = $raumInfosCounter + 1;
-            }
-
-            $mysqli->close();
-            // Set font
-            $this->SetFont('helvetica', 'B', 15);
-            // Title
-            $this->SetY(50);
-            $this->Cell(0, 0, $raumInfos[0]['Projektname'], 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            $this->Ln();
-            $this->Cell(0, 0, $raumInfos[0]['Planungsphase'], 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            $this->Ln();
-            $this->Ln();
-            if ($_SESSION["projectPlanungsphase"] == "Vorentwurf") {
-                $this->Cell(0, 0, 'Medizintechnische', 0, false, 'L', 0, '', 0, false, 'B', 'B');
-                $this->Ln();
-                $this->Cell(0, 0, 'Vorbemessungsangaben', 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            } else {
-                $this->Cell(0, 0, 'Medizintechnische', 0, false, 'L', 0, '', 0, false, 'B', 'B');
-                $this->Ln();
-                $this->Cell(0, 0, 'Bauangaben', 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            }
-            $this->Ln();
-            $this->Ln();
-            $this->Cell(0, 0, 'Funktionsstellen: ', 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            $this->Ln();
-            $raumInfosCounter = 0;
-            $funktionsStellen = "";
-            foreach ($raumInfos as $valueOfRaumInfos) {
-                if ($raumInfosCounter > 0) {
-                    $funktionsStellen = $funktionsStellen . ', ';
-                }
-                $funktionsStellen = $funktionsStellen . $raumInfos[$raumInfosCounter]['Raumbereich'];
-
-                $raumInfosCounter = $raumInfosCounter + 1;
-            }
-            $this->Cell(0, 0, $funktionsStellen, 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            $this->Ln();
-            $this->SetFont('helvetica', '', 12);
-            $this->Cell(0, 0, "Stand: " . date('Y-m-d'), 0, false, 'L', 0, '', 0, false, 'T', 'M');
-
-            $this->SetFont('helvetica', '', 6);
-            //LOGOS einfügen
-            if ($_SESSION["projectAusfuehrung"] === "MADER") {
-                $image_file = 'Mader_Logo_neu.jpg';
-                $this->Image($image_file, 145, 40, 50, 15, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-            } else {
-                if ($_SESSION["projectAusfuehrung"] === "LIMET") {
-                    $image_file = 'LIMET_web.png';
-                    $this->Image($image_file, 110, 40, 30, 15, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                } else {
-                    $image_file = 'LIMET_web.png';
-                    $this->Image($image_file, 110, 40, 30, 13, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                    $image_file = 'Mader_Logo_neu.jpg';
-                    $this->Image($image_file, 145, 41, 50, 13, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                    $this->SetY(60);
-                    $this->SetX(110);
-                    $this->Cell(0, 0, "ARGE LIMET-MADER", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Cell(0, 0, "Zwerggase 6/1", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Cell(0, 0, "8010 Graz", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Ln();
-                    $this->Cell(0, 0, "Tel: +43 1 470 48 33 Dipl.-Ing. Jens Liebmann, MBA", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Cell(0, 0, "Tel: +43 650 523 27 38 Dipl.-Ing. Peter Mader", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Ln();
-                    $this->Cell(0, 0, "UID ATU 69334945", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Cell(0, 0, "IBAN AT90 2081 5208 0067 8128", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Cell(0, 0, "BIC STSPAT2GXXX", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                }
-            }
-            // Deckblatt beenden           
-        }
-    }
-
-    // Page footer
-    public function Footer()
-    {
-        // Position at 15 mm from bottom
-        $this->SetY(-15);
-        // Set font
-        $this->SetFont('helvetica', 'I', 8);
-        // Page number
-        $this->cell(0, 0, '', 'T', 0, 'L');
-        $this->Ln();
-        $tDate = date('Y-m-d');
-        $this->Cell(0, 0, $tDate, 0, false, 'L', 0, '', 0, false, 'T', 'M');
-        $this->Cell(0, 0, 'Seite ' . $this->getAliasNumPage() . ' von ' . $this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
-    }
-
+else{
+    $_SESSION["PDFTITEL"] = "Medizintechnische Bauangaben";
 }
+$_SESSION["PDFHeaderSubtext"] = "Projekt: " . $_SESSION["projectName"] . " - PPH: " . $_SESSION["projectPlanungsphase"];
 
-session_start();
-// create new PDF document
-$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
-// set document information
-$pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor('LIMET Consulting und Planung für Medizintechnik');
-$pdf->SetTitle('Bauangaben-MT');
-$pdf->SetSubject('xxx');
-$pdf->SetKeywords('xxx');
-
-// set default header data
-$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING, array(0, 64, 255), array(0, 64, 128));
-$pdf->setFooterData(array(0, 64, 0), array(0, 64, 128));
-
-// set header and footer fonts
-$pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-
-// set default monospaced font
-$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-// set margins
-$pdf->SetMargins(PDF_MARGIN_LEFT, 20, PDF_MARGIN_RIGHT);
-$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-// set auto page breaks
-$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
-// set image scale factor
-$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-// set some language-dependent strings (optional)
-if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
-    require_once(dirname(__FILE__) . '/lang/eng.php');
-    $pdf->setLanguageArray($l);
-}
-
-// ---------------------------------------------------------
-
-// set font
-$pdf->SetFont('helvetica', '', 10);
-
-// add a page
-$pdf->AddPage('P', 'A4');
-
-
-// Daten laden
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-
-/* change character set to utf8 */
-if (!$mysqli->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $mysqli->error);
-    exit();
-}
-
+$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false, true);
+$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4", "MT-Bauangaben");
+$mysqli = utils_connect_sql();
 
 // -----------------Variantenparameter Info laden----------------------------
 $sql = "SELECT tabelle_projekt_elementparameter.Wert, tabelle_projekt_elementparameter.Einheit, tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten, tabelle_projekt_elementparameter.tabelle_elemente_idTABELLE_Elemente, tabelle_parameter.Bezeichnung, tabelle_parameter_kategorie.Kategorie
@@ -303,10 +77,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->Ln();
         $pdf->MultiCell(100, 6, "Raumfläche: " . $row['Nutzfläche'] . " m2", 0, 'L', 0, 0);
         $pdf->Ln();
-        $pdf->MultiCell(100, 6, "Projekt: " . $row['Projektname'], 0, 'L', 0, 0);
-        $pdf->MultiCell(80, 6, "Bauteil: " . $row['Bauabschnitt'], 0, 'L', 0, 0);
-        $pdf->Ln();
-        $pdf->MultiCell(100, 6, "Projektstatus: " . $row['Bezeichnung'], 'B', 'L', 0, 0);
+        $pdf->MultiCell(100, 6, "Bauteil: " . $row['Bauabschnitt'], 'B', 'L', 0, 0);
         $pdf->MultiCell(80, 6, "Bauetappe: " . $row['Bauetappe'], 'B', 'L', 0, 0);
         $pdf->Ln();
         if (null !== $row['Anmerkung FunktionBO']) {
@@ -823,16 +594,10 @@ foreach ($teile as $valueOfRoomID) {
     }
 }
 
-// MYSQL-Verbindung schließen
 $mysqli->close();
-
-
-//$pdf->MultiCell(50, 6, "Bereich",'B', 'L', 0, 0);
-//$pdf->MultiCell(20, 6, "Geschoss",'B', 'C', 0, 0);
-
-// close and output PDF document
-$pdf->Output('Raumbuch-MT.pdf', 'I');
-
+ob_end_clean();
+$pdf->Output(getFileName('Bauangaben'), 'I');
+$_SESSION["PDFHeaderSubtext"]="";
 //============================================================+
 // END OF FILE
 //============================================================+

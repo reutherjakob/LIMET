@@ -22,34 +22,41 @@
 
 <body>
 <!-- Rework 2025 -->
-<div class="container-fluid bg-light" >
+<div class="container-fluid bg-light">
     <div id="limet-navbar"></div>
     <div class="mt-4 card">
-        <div class="card-header d-flex justify-content-between">
-            <strong> Elemente im Projekt </strong>
-            <div class="d-flex align-items-center" id="target_div">
-                <div class="btn-group btn-group-sm" role="group" aria-label="PDF Generation Buttons">
-                    <button type='button' class='btn btn-outline-dark me-1' id='createElementListPDF'>
-                        <i class='far fa-file-pdf'></i> Elementliste
-                    </button>
-                    <button type='button' class='btn btn-outline-dark  me-1' id='createElementListWithPricePDF'>
-                        <i class='far fa-file-pdf'></i> El.liste & Preis
-                    </button>
-                    <button type='button' class='btn btn-outline-dark  me-1' id='createElementEinbringwegePDF'>
-                        <i class='far fa-file-pdf'></i> Einbringwege
-                    </button>
-                    <button type='button' class='btn btn-outline-dark  me-1' id='createElementEinbringwegePDF2'>
-                        <i class='far fa-file-pdf'></i> Einbringwege2
-                    </button>
-
+        <div class="card-header">
+            <div class="row d-flex align-items-center justify-content-between">
+                <div class="col-2">Elemente im
+                    Projekt
                 </div>
 
+
+                <div class="col-10 d-flex align-items-center justify-content-end" id="target_div">
+                    <div class="me-4 d-flex " id="sbdiv"></div>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="PDF Generation Buttons">
+                        <button type='button' class='btn btn-outline-dark me-1' id='createElementListPDF'>
+                            <i class='far fa-file-pdf'></i> Elementliste
+                        </button>
+                        <button type='button' class='btn btn-outline-dark  me-1' id='createElementListWithPricePDF'>
+                            <i class='far fa-file-pdf'></i> El.liste & Preis
+                        </button>
+                        <button type='button' class='btn btn-outline-dark  me-1' id='createElementEinbringwegePDF'>
+                            <i class='far fa-file-pdf'></i> Einbringwege
+                        </button>
+                        <button type='button' class='btn btn-outline-dark  me-1' id='createElementEinbringwegePDF2'>
+                            <i class='far fa-file-pdf'></i> Einbringwege2
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="card-body">
             <?php
-            if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+            if (!function_exists('utils_connect_sql')) {
+                include "_utils.php";
+            }
             init_page_serversides();
             include "_format.php";
             $mysqli = utils_connect_sql();
@@ -159,7 +166,8 @@ ORDER BY tabelle_elemente.ElementID;";
     </div>
     <div class="mt-1 card">
         <div class="card-header d-flex justify-content-start align-items-center">
-            <button type="button" class="btn btn-outline-dark btn-sm me-2" id="showDBData"><i class="fas fa-caret-right"></i>
+            <button type="button" class="btn btn-outline-dark btn-sm me-2" id="showDBData"><i
+                        class="fas fa-caret-right"></i>
             </button>
             <label>Datenbank-Vergleichsdaten</label></div>
         <div class="card-body" style="display:none" id="dbData">
@@ -218,6 +226,15 @@ ORDER BY tabelle_elemente.ElementID;";
     <script src="_utils.js"></script>
     <script charset="utf-8">
         var tableElementsInProject;
+        const searchbuilder = [
+            {
+                extend: 'searchBuilder',
+                text: "Filter",
+                className: "btn btn-light btn-outline-secondary fas fa-search ",
+                titleAttr: "Filter",
+            }
+        ];
+
         $(document).ready(function () {
             tableElementsInProject = new DataTable('#tableElementsInProject', {
                 paging: true,
@@ -234,9 +251,33 @@ ORDER BY tabelle_elemente.ElementID;";
                     }
                 ],
                 language: {
-                    url: 'https://cdn.datatables.net/plug-ins/2.0.0/i18n/de-DE.json',
+                    //  url: 'https://cdn.datatables.net/plug-ins/2.0.0/i18n/de-DE.json',
                     search: "",
-                    searchPlaceholder:"Suche..."
+                    searchPlaceholder: "Suche...",
+                    searchBuilder: {
+                        button: '(%d)'
+                    }
+                    // searchBuilder: {
+                    //     button: {
+                    //         0: '  Filter',
+                    //         1: '  Filter (%d)',
+                    //         _: '  Filter (%d)'
+                    //     },
+                    //     title: {
+                    //         0: '',
+                    //         _: ''
+                    //     },
+                    //     clearAll: 'Alle löschen',
+                    //     add: '<i class="fas fa-search"> </i> Filter',
+                    //     condition: 'Bedingung',
+                    //     data: 'Spalte',
+                    //     deleteTitle: 'Löschen',
+                    //     leftTitle: 'Nach links',
+                    //     logicAnd: 'Und',
+                    //     logicOr: 'Oder',
+                    //     rightTitle: 'Nach rechts',
+                    //     value: 'Wert'
+                    // }
                 },
                 stateSave: true,
                 layout: {
@@ -254,16 +295,26 @@ ORDER BY tabelle_elemente.ElementID;";
                         text: '<i class="fas fa-file-excel"></i> Excel',
                         className: 'btn-sm btn-light btn-outline-dark me-2'
                     }
-
                 ],
                 compact: true,
-                initComplete: function () {
-                    tableElementsInProject.buttons().container().appendTo('#target_div .btn-group');
+                initComplete: async function () {
+                    //var searchBuilderContainer = await this.api().searchBuilder.container();
+                    //
+                    //$('#target_div').append(searchBuilderContainer);
+                    //$('.dtsb-searchBuilder').children().children().addClass('bg-white btn-sm btn-outline-dark').appendTo('#sbdiv');
+                    //$('#target_div .dtsb-searchBuilder').remove();
+                    //$(' .dtsb-titleRow').remove();
+
                     $('.dt-search label').remove();
                     $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-dark").appendTo('#target_div');
+
+                    setTimeout(function () {
+                        tableElementsInProject.buttons().container().appendTo('#target_div .btn-group');
+                        new $.fn.dataTable.Buttons(tableElementsInProject, {buttons: searchbuilder}).container().appendTo('#sbdiv');
+                    }, 200);
+
                 }
             });
-
 
             $('#tableElementsInProject tbody').on('click', 'tr', function () {
                 let elementID = tableElementsInProject.row($(this)).data()[0];
@@ -277,7 +328,9 @@ ORDER BY tabelle_elemente.ElementID;";
                     data: {"elementID": elementID, "variantenID": variantenID, "bestand": bestand},
                     type: "GET",
                     success: function (data) {
+
                         $("#roomsWithAndWithoutElements").html(data);
+
                         $("#resetAnzahl").prop('disabled', false); // Enable the buttons
                         $.ajax({
                             url: "getElementVariante.php",
@@ -325,8 +378,7 @@ ORDER BY tabelle_elemente.ElementID;";
                 });
 
             });
-        })
-        ;
+        });
 
 
         // ElementVariantenPanel einblenden

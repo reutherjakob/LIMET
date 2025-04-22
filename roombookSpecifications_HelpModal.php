@@ -13,7 +13,7 @@
                     <tr>
                         <td><strong>EDIT</strong></td>
                         <td>Checkbox (oben-links) aktivieren, um die Bauangaben direkt in der Tabelle zu bearbeiten.
-                            Zum Speichern eines neuen Eintrags die <strong>ENTER</strong> Taste drücken.
+                            Zum Speichern eines neuen Eintrags die <strong>ENTER</strong> oder <strong>TAB</strong>  Taste drücken.
                         </td>
                     </tr>
                     <tr>

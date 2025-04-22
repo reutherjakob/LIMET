@@ -30,9 +30,9 @@
     <div class="mt-4 card responsive">
         <div class="card-header">
             <div class="row">
-                <div class="col-6">Geräteliste
+                <div class="col-xxl-6">Geräteliste
                 </div>
-                <div class="col-6 d-flex justify-content-end" id="CH1">
+                <div class="col-xxl-6 d-flex justify-content-end" id="CH1">
                 </div>
             </div>
         </div>

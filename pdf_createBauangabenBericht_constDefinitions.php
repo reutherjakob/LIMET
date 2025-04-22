@@ -1,9 +1,5 @@
 <?php
 
-session_start();
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
-check_login();
-
 $mapping = array("raum_nr_alt" => "raum_nr_neu",
     "raumbezeichnung_alt" => "raumbezeichnung_neu",
     "funktionelle_raum_nr_alt" => "funktionelle_raum_nr_neu",
@@ -90,7 +86,6 @@ $mapping = array("raum_nr_alt" => "raum_nr_neu",
     "ET_Anschlussleistung_SV_W_alt" => "ET_Anschlussleistung_SV_W_neu",
     "ET_Anschlussleistung_ZSV_W_alt" => "ET_Anschlussleistung_ZSV_W_neu",
     "ET_Anschlussleistung_USV_W_alt" => "ET_Anschlussleistung_USV_W_neu",
-    
     "HT_Summe Kühlung W alt" => "HT_Summe Kühlung W neu",
     "HT_Luftmenge m3/h alt" => "HT_Luftmenge m3/h neu",
     "HT_Luftwechsel 1/h alt" => "HT_Luftwechsel 1/h neu",
@@ -137,7 +132,7 @@ $mp2 = array(//tabelle änderunge => tabelle_räume
     "AR_Akustik neu" => "",
     "NF_Soll neu" => "",
     "EL_Leistungsbedarf W/m2 neu" => "",
-    "HT_Notdusche neu" => "",
+    "HT_Notdusche neu" => "HT_Notdusche",
     "AR_Ausstattung neu" => "",
     "AR_APs neu" => "",
     "Raumtyp BH neu" => "",
@@ -151,6 +146,9 @@ $mp2 = array(//tabelle änderunge => tabelle_räume
     "AR_AnwesendePers neu" => "",
     "RaumnrBestand neu" => "",
     "GebaeudeBestand neu" => "",
+    "HT_Luftwechsel 1/h neu" => "HT_Luftwechsel 1/h",
+    "HT_Raumtemp Sommer °C neu" => "HT_Raumtemp Sommer °C",
+    "HT_Raumtemp Winter °C neu" => "HT_Raumtemp Winter °C",
     "raum_nr_neu" => "Raumnr",
     "raumbezeichnung_neu" => "Raumbezeichnung",
     "raumbereich_nutzer_neu" => "Raumbereich Nutzer",
@@ -215,8 +213,8 @@ $mp2 = array(//tabelle änderunge => tabelle_räume
     "ET_Anschlussleistung_W_neu" => "ET_Anschlussleistung_W",
     "ET_Anschlussleistung_AV_W_neu" => "ET_Anschlussleistung_AV_W",
     "ET_Anschlussleistung_SV_W_neu" => "ET_Anschlussleistung_SV_W",
-    "ET_Anschlussleistung_ZSV_W_neu" => "ET_Anschlussleistung_USV_W",
-    "ET_Anschlussleistung_USV_W_neu" => "ET_Anschlussleistung_ZSV_W",
+    "ET_Anschlussleistung_ZSV_W_neu" => "ET_Anschlussleistung_ZSV_W",
+    "ET_Anschlussleistung_USV_W_neu" => "ET_Anschlussleistung_USV_W",
     "EL_Doppeldatendose Stk neu" => "EL_Doppeldatendose Stk",
     "EL_Einzel-Datendose Stk neu" => "EL_Einzel-Datendose Stk",
     "EL_Bodendose Typ neu" => "EL_Bodendose Typ",
@@ -232,15 +230,12 @@ $mp2 = array(//tabelle änderunge => tabelle_räume
     "EL_Lichtfarbe K neu" => "EL_Lichtfarbe K",
     "HT_Summe Kühlung W neu" => "HT_Summe Kühlung W",
     "HT_Luftmenge m3/h neu" => "HT_Luftmenge m3/h",
-    "HT_Luftwechsel 1/h neu" => "HT_Luftwechsel 1/h",
     "HT_Kühlung Lüftung W neu" => "HT_Kühlung Lueftung W",
     "HT_Heizlast W neu" => "HT_Heizlast W",
     "HT_Kühllast W neu" => "HT_Kühllast W",
     "HT_Fussbodenkühlung W neu" => "HT_Fussbodenkühlung W",
     "HT_Kühldecke W neu" => "HT_Kühldecke W",
     "HT_Fancoil W neu" => "HT_Fancoil",
-    "HT_Raumtemp Sommer °C neu" => "HT_Raumtemp Sommer °C",
-    "HT_Raumtemp Winter °C neu" => "HT_Raumtemp Winter °C",
     "HT_Waermeabgabe_W_neu" => "HT_Waermeabgabe_W",
     "O2 neu" => "O2",
     "VA neu" => "Va",
@@ -250,131 +245,3 @@ $mp2 = array(//tabelle änderunge => tabelle_räume
     "He-RF neu" => "He-RF",
     "Ar neu" => "Ar",
     "N2 neu" => "N2");
-
-//// FETCH  DATA 
-$selectedDate = '2024-01-01'; //load data only up to selcetd Date
-$rID = $_SESSION["roomID"];
-if (isset($_GET['date']) && !empty($_GET['date'])) {
-    $selectedDate = $_GET['date'];
-}
-if (isset($_GET['id']) && !empty($_GET['id'])) {
-    $rID = $_GET['id'];
-}
-
-$mysqli = utils_connect_sql();
-$stmt = $mysqli->prepare("SELECT * FROM `tabelle_raeume_aenderungen` WHERE `raum_id`= ?  AND `Timestamp` > ?"); // (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
-$stmt->bind_param("is", $rID, $selectedDate);
-$stmt->execute();
-$result = $stmt->get_result();
-
-$changeSqlResult = array();
-while ($row = $result->fetch_assoc()) {
-    $changeSqlResult[] = $row;
-}
-echorow($changeSqlResult); 
-
-$changedData = array();
-$parameters_t_räume = array();
-
-foreach ($mapping as $oldK => $newK) {
-    $entries = array();
-    foreach ($changeSqlResult as $changeKey => $entry) {
-        if ($entry[$oldK] !== $entry[$newK]) {
-            $entries[] = array(
-                'timestamp' => $entry['Timestamp'],
-                'oldValue' => $entry[$oldK],
-                $mp2[$newK] => $entry[$newK]
-            );
-        }
-    }
-    if (!empty($entries)) {
-        usort($entries, function ($a, $b) {
-            return $a['timestamp'] <=> $b['timestamp'];
-        });
-        if (end($entries)[$mp2[$newK]] !== reset($entries)['oldValue']) {
-            $changedData[$newK] = end($entries);
-            $parameters_t_räume[] = $mp2[$newK];
-        }
-    }
-}
-$mysqli->close();
-header('Content-Type: application/json');
-echo json_encode($parameters_t_räume);
-
-
-/*$Änderungsdatum = "2024-06-01"  ;// "23-06-2024";
-//$sql = "SELECT tabelle_projekt_elementparameter_aenderungen.idtabelle_projekt_elementparameter_aenderungen, tabelle_projekt_elementparameter_aenderungen.projekt, tabelle_projekt_elementparameter_aenderungen.element, tabelle_projekt_elementparameter_aenderungen.parameter, tabelle_projekt_elementparameter_aenderungen.variante, tabelle_projekt_elementparameter_aenderungen.wert_alt, tabelle_projekt_elementparameter_aenderungen.wert_neu, tabelle_projekt_elementparameter_aenderungen.einheit_alt, tabelle_projekt_elementparameter_aenderungen.einheit_neu, tabelle_projekt_elementparameter_aenderungen.timestamp, tabelle_projekt_elementparameter_aenderungen.user
-//            FROM tabelle_projekt_elementparameter_aenderungen
-//            WHERE (((tabelle_projekt_elementparameter_aenderungen.projekt)=" . $_SESSION["projectID"] . "))
-//            AND tabelle_projekt_elementparameter_aenderungen.timestamp > '$Änderungsdatum'
-//            ORDER BY tabelle_projekt_elementparameter_aenderungen.timestamp DESC;";
-//$changes = $mysqli->query($sql);
-//$dataChanges = array();
-//while ($row = $changes->fetch_assoc()) {
-//    $dataChanges[] = $row;
-//}
-//include '_pdf_createBericht_utils.php';
-//$dataChanges = filter_old_equal_new($dataChanges); */
-
-/*  $queryParts = array();
-//  //foreach ($mapping as $old => $new) {
-//  //    $queryParts[] = "`$old` <> `$new`";
-//  //}
-//  //$whereClause = implode(' OR ', $queryParts);
-//  // $query= "SELECT * FROM `tabelle_raeume_aenderungen` WHERE `raum_id`=".$_SESSION["roomID"]." AND ". $whereClause ;
-//  ////$stmt = $mysqli->prepare($query);
-//  ////$stmt->bind_param("i", $_SESSION["roomID"]);
-//  ////$stmt->execute();
-//  ////$result = $stmt->get_result();
-//  // $result = $mysqli ->query($query);
-//  //while ($row = $result->fetch_assoc()) {
-//  //    $changeSqlResult[] = $row;
-//  //}
-//  //echorow($changeSqlResult); */
-
-/* $changedData = array();
-  //foreach ($mapping as $oldK => $newK) {
-  //    foreach ($changeSqlResult as $changeKey => $entry) {
-  //        if ($entry[$oldK] !== $entry[$newK]) {
-  //            // echo "ARRAY:". $changeKey.":" .$newK." ". $entry['Timestamp'] ."<br>";// " ---> " . $entry[$oldK] . " ||| " . $entry[$newK] . "<br>";
-  //            $changedData[$newK][] = array(
-  ////                'changeKey' => $changeKey,
-  //                'timestamp' => $entry['Timestamp'],
-  //                'oldValue' => $entry[$oldK],
-  //                $mp2[$newK] => $entry[$newK]
-  //            );
-  //        }
-  //    }
-  //}
-  //
-  ////echo "Initial changed data:<br>";
-  ////print_r($changedData);
-  //
-  //$parameters_t_räume= array();
-  //
-  //foreach ($changedData as $newK => $entries) {
-  //    usort($entries, function ($a, $b) {
-  //        return $a['timestamp'] <=> $b['timestamp'];
-  //    });
-  ////    echo "<br>Sorted entries for $newK:<br>";
-  ////    print_r($entries);
-  ////    echo "<br>";
-  //    // If the earliest old and latest new value are the same, drop all entries
-  //    if (end($entries)[$mp2[$newK]] === reset($entries)['oldValue']) {
-  //        unset($changedData[$newK]);
-  ////        echo "<br>Dropped all entries for $newK because the earliest old and latest new value are the same.<br>";
-  //    } else {
-  //        // Keep only the latest entry
-  //        $changedData[$newK] = end($entries);
-  ////        echo "<br>Kept only the latest entry for $newK:<br>";
-  ////        print_r($changedData[$newK]);echo "<br>";
-  //        $parameters_t_räume[] = $mp2[$newK];
-  //    }
-  //}
-
-
-  //echo "<br> Final changed data:<br>";
-  //echorow($changedData);
-
-  //echo "<br> Just the changed SQL keys:<br>";
-  //echorow($parameters_t_räume); */

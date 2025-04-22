@@ -12,7 +12,9 @@
 
 <?php
 // V3.0: 2025 Rework: Reuther & Fux
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 check_login();
 $mysqli = utils_connect_sql();
 $elementID = "0";
@@ -60,7 +62,8 @@ while ($row = $result->fetch_assoc()) {
 
 echo "</tbody></table>";
 echo "<input type='button' id='addDeviceModalButton' class='btn btn-success btn-sm' value='Gerät hinzufügen' data-bs-toggle='modal' data-bs-target='#addDeviceModal'><input type='button' id='";
-echo $elementID; echo"' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggle='modal' data-bs-target='#deviceComparisonModal'>";
+echo $elementID;
+echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggle='modal' data-bs-target='#deviceComparisonModal'>";
 ?>
 
 
@@ -155,7 +158,9 @@ echo $elementID; echo"' class='btn btn-default btn-sm' value='Geräte vergleiche
 
 <!--suppress ES6ConvertVarToLetConst -->
 <script charset="utf-8" type="text/javascript">
+
     var deviceID;
+
     var tableDevicesToElement;
 
     $(document).ready(function () {
@@ -186,10 +191,10 @@ echo $elementID; echo"' class='btn btn-default btn-sm' value='Geräte vergleiche
                 searchPlaceholder: 'Suche...' // Custom placeholder
             },
             layout: {
-                topStart:null,
+                topStart: null,
                 topEnd: null,
                 bottomStart: null,
-                bottomEnd: ['search','paging']
+                bottomEnd: ['search', 'paging']
             }
         });
 
@@ -198,6 +203,7 @@ echo $elementID; echo"' class='btn btn-default btn-sm' value='Geräte vergleiche
             $("#devicePrices").show();
             $("#deviceLieferanten").show();
             deviceID = tableDevicesToElement.row($(this)).data()[0];
+            console.log("GetDev2Element", deviceID);
             document.getElementById("hersteller").value = tableDevicesToElement.row($(this)).data()[5];
             document.getElementById("type").value = tableDevicesToElement.row($(this)).data()[3];
             document.getElementById("kurzbeschreibung").value = tableDevicesToElement.row($(this)).data()[4];

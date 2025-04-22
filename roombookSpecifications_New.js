@@ -8,37 +8,30 @@ fetch('get_project_id.php')
     .catch(error => console.error('Error:', error));
 
 var table;
+var table_edited = false;
+var dt_search_counter = 1;
+var savestate = document.getElementById('settings_save_state').checked || document.getElementById('settings_save_state_4all_projects').checked;
+
+const Reload_string = "The table has been edited. Please reload the page before downloading. Reload now?";
 let cellText = "";
 let currentRowInd = 0;
 let currentColInd = 0;
 let current_edit = false; //keeps track if the input field to edit the cells is open
 let Cookie_aktiv_tage = 90;
 let previous_room_session = 0;
-var dt_search_counter = 1;
 
-let savestate = document.getElementById('settings_save_state').checked || document.getElementById('settings_save_state_4all_projects').checked;
 
-const searchbuilder = [
-    {
-        extend: 'searchBuilder',
-        text: "",
-        className: "btn btn-light fa fa-search search-builder-btn",
-        titleAttr: "Suche konfigurieren",
-        stateSave: savestate
-    }
-];
 $(document).ready(function () {
     loadSettings();
     init_dt();
-    init_editable_checkbox();
-    move_item("dt-search-0", "TableCardHeader");
-    init_showRoomElements_btn();
     init_btn_4_dt();
+    init_showRoomElements_btn();
     init_visibilities();
     table_click();
     init_filter();
     handleCheckboxChange();
     add_room_modal();
+
 });
 
 function add_MT_rel_filter(location, table) {
@@ -57,12 +50,13 @@ function add_entfallen_filter(location, table) {
         let filterValue = $(this).val();
         table.column('Entfallen:name').search(filterValue).draw();
     });
-    table.column('Entfallen:name').search(0).draw();
+
 }
 
 function init_filter() {
     add_MT_rel_filter('#TableCardHeader', table);
     add_entfallen_filter('#TableCardHeader', table);
+    table.column('Entfallen:name').search(0).draw();
     setTimeout(function () {
         if ((document.getElementById('settings_save_state').checked || document.getElementById('settings_save_state_4all_projects').checked) && table.state.loaded()) {
             let columnData = table.column("MT-relevant:name", {
@@ -89,13 +83,22 @@ function handleCheckboxChange() {
 
 function change_top_label_visibility(x) {
     if (x) {
-        $('#btnLabelz').attr("style", "font-size: 1vh !important; height: 1vh !important; display: flex !important; ");
+        $('#btnLabelz').attr("style", "font-size: 1vh !important; height: 2vh !important; display: flex !important; ");
     } else {
         $('#btnLabelz').attr("style", "display: none !important");
     }
 }
 
 function init_btn_4_dt() {
+    const searchbuilder = [
+        {
+            extend: 'searchBuilder',
+            text: "",
+            className: "btn btn-light fa fa-search search-builder-btn",
+            titleAttr: "Suche konfigurieren",
+            stateSave: savestate
+        }
+    ];
     const buttons_group_selct = [
         {
             text: '',
@@ -127,14 +130,31 @@ function init_btn_4_dt() {
             text: '',
             className: "btn btn-light border-secondary fas fa-window-restore",
             titleAttr: "Copy Selected Row",
-            action: copySelectedRow
+            action: function () {
+                if (table_edited) {
+                    if (confirm(Reload_string)) {
+                        location.reload();
+                    }
+                } else {
+                    copySelectedRow();
+                }
+            }
         },
         {
             extend: 'excelHtml5',
             exportOptions: {columns: ':visible'},
             className: 'btn btn-light border-secondary fa fa-download',
             text: "",
-            titleAttr: "Download as Excel"
+            titleAttr: "Download as Excel",
+            action: function (e, dt, node, config) {
+                if (table_edited) {
+                    if (confirm(Reload_string)) {
+                        location.reload();
+                    }
+                } else {
+                    $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, node, config);
+                }
+            }
         }
     ];
     const btn_grp_settings = [
@@ -142,7 +162,15 @@ function init_btn_4_dt() {
             text: "",
             className: "btn btn-light border-secondary fas fa-vote-yea",
             titleAttr: "Bauangaben Check",
-            action: check_angaben
+            action: function () {
+                if (table_edited) {
+                    if (confirm(Reload_string)) {
+                        location.reload();
+                    }
+                } else {
+                    check_angaben();
+                }
+            }
         },
         {
             text: "",
@@ -161,7 +189,7 @@ function init_btn_4_dt() {
         {
             extend: 'colvis',
             text: 'Vis',
-            columns: ':gt(5)',
+            columns: ':gt(6)',
             className: 'btn btn-light border-secondary',
             collectionLayout: 'fixed six-column',
             fade: 0,
@@ -176,10 +204,9 @@ function init_btn_4_dt() {
         })), {
             text: '<i class="fa fa-paper-plane"></i> R',
             className: 'btn btn-light border-secondary',
-            action: toggleReportColumnsVisible
+            action: () => toggleReportColumnsVisible
         }
     ];
-    // TODO: Search Builder is breaking, when data is saved and the tzale is reloaded.
     new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#TableCardHeader'));
     new $.fn.dataTable.Buttons(table, {buttons: buttons_group_selct}).container().appendTo($('<div class="btn-group"></div>').appendTo($('#TableCardHeaderX')));
     new $.fn.dataTable.Buttons(table, {buttons: buttonsGroupcolumnVisbilities}).container().appendTo($('<div class="btn-group" role="group"></div>').appendTo($('#TableCardHeader2')));
@@ -189,34 +216,41 @@ function init_btn_4_dt() {
 
 function init_dt() {
     savestate = document.getElementById('settings_save_state').checked || document.getElementById('settings_save_state_4all_projects').checked;
+
     table = new DataTable('#table_rooms', {
-            ajax: {url: 'get_rb_specs_data.php', dataSrc: ''},
-            columns: columnsDefinition,
-            layout: {
-                topStart: null, top: null, bottomStart: ['pageLength', 'info'], bottomEnd: ['paging']
-            },
-            scrollX: true,
-            scrollCollapse: true,
-            language: {
-                search: "",
-                searchBuilder: {
-                    button: '(%d)'
-                }
-            },
-            select: "os",
-            fixedColumns: {start: 2},
-            fixedHeader: true,
-            keys: true,
-            order: [{
-                name: 'Raumbezeichnung',
-                dir: 'asc'
-            }, {name: 'Nummer', dir: 'asc'}],
-            stateSave: savestate,
-            pageLength: 10,
-            lengthMenu: [[5, 10, 20, 50, -1], ['5 rows', '10 rows', '20 rows', '50 rows', 'All']],
-            compact: true,
+        ajax: {url: 'get_rb_specs_data.php', dataSrc: ''},
+        columns: columnsDefinition,
+        layout: {
+            topStart: null, topEnd: null, bottomStart: ['pageLength', 'info', "search"], bottomEnd: ['paging']
+        },
+        scrollX: true,
+        scrollCollapse: true,
+        language: {
+            search: "",
+            searchPlaceholder: "Suche...",
+            searchBuilder: {
+                button: '(%d)'
+            }
+            //,url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
+        },
+        select: "single",
+        fixedColumns: {start: 2},
+        fixedHeader: true,
+        keys: true,
+        order: [{
+            name: 'Raumbezeichnung',
+            dir: 'asc'
+        }, {name: 'Nummer', dir: 'asc'}],
+        stateSave: savestate,
+        pageLength: 10,
+        lengthMenu: [[5, 10, 20, 50, -1], ['5 rows', '10 rows', '20 rows', '50 rows', 'All']],
+        compact: true,
+        initComplete: function () {
+            $('.dt-search label').remove();
+            $('.dt-search').children().appendTo('#TableCardHeader');//removeClass('form-control form-control-sm')
+
         }
-    );
+    });
 }
 
 function toggleButtonTexts() {
@@ -253,10 +287,6 @@ function restoreDefaults() {
     location.reload();
 }
 
-function ModalInvisible() {
-    $("#einstellungModal").modal('hide');
-}
-
 function setCookie(name, value, days) {
     let expires = "";
     if (days) {
@@ -278,9 +308,6 @@ function getCookie(name) {
     return null;
 }
 
-function eraseCookie(name) {
-    document.cookie = name + '=; Max-Age=-99999999;';
-}
 
 function loadSettings() {
     function getCookieValue(name) {
@@ -392,6 +419,8 @@ function html_2_plug_into_edit_cell(dataIdentifier) {
 function table_click() {
     $(document).on('click', '#table_rooms tbody tr', function () {
         let RaumID = table.row($(this)).data()['idTABELLE_Räume'];
+        // console.log(RaumID);
+
         if ($('#checkbox_EditableTable').is(':checked')) {
             let Raumbez = table.row($(this)).data()['Raumbezeichnung'];
             let rowIndex = $(this).closest('tr').index();
@@ -411,6 +440,7 @@ function table_click() {
             if (currentRowInd !== rowIndex || currentColInd !== columnIndex) {
                 cellText = cell.text().trim();
             }
+
             currentRowInd = rowIndex;
             currentColInd = columnIndex;
             if (getCase(dataIdentifier) !== "none-edit") {
@@ -423,7 +453,7 @@ function table_click() {
                 cell.find('input, select').focus();
                 table.keys.disable();
                 cell.find('input, select').on('keydown blur', function (event) {
-                    if (event.keyCode === 13 && current_edit) {
+                    if ((event.keyCode === 13 || event.keyCode === 9) && current_edit) {
                         let newData = format_data_input($(this).val(), dataIdentifier); //utils.js
                         if (newData.trim() !== "") {
                             cellText = newData;
@@ -434,7 +464,7 @@ function table_click() {
                             current_edit = false;
                         }
                     }
-                    if (event.keyCode === 27 || event.type === "blur" || event.keyCode === 9) {
+                    if (event.keyCode === 27 || event.type === "blur") {
                         cell.html(cellText);
                         if (current_edit) {
                             makeToaster("Changes NOT Saved", false);
@@ -445,6 +475,8 @@ function table_click() {
                     }
                 });
             }
+        } else {
+            current_edit = false;
         }
 
         $.ajax({
@@ -493,27 +525,6 @@ function table_click() {
     });
 }
 
-function init_editable_checkbox() {
-    $('<input>', {
-        type: 'checkbox',
-        name: 'EditableTable',
-        id: 'checkbox_EditableTable',
-        checked: document.getElementById('settings_save_edit_cbx').checked,
-        class: 'form-check-input dt-input'
-    }).css({
-        width: '20px',
-        height: '30px'
-    }).appendTo($(`#TableCardHeader`));
-
-    $('<label>', {
-        id: 'edit_cbx',
-        text: 'Edit Table',
-        class: 'form-check-label',
-        css: {
-            'display': 'none'
-        }
-    }).appendTo($('#TableCardHeader'));
-}
 
 //VISIBILITY
 function init_visibilities() {
@@ -526,7 +537,6 @@ function init_visibilities() {
         }
     });
 }
-
 
 function updateButtonClass(button, table, startColumn, endColumn) {
     const columns = table.columns().indexes();
@@ -616,13 +626,13 @@ function save_changes(RaumID, ColumnName, newData, raumname) {
         type: "GET",
         success: function (data) {
             if (data === "Erfolgreich aktualisiert!") {
+                table_edited = true;
                 makeToaster("SAVED </b>" + raumname + ";  " + ColumnName + ";  " + newData + " ", true);
             } else {
                 makeToaster("FAILED!! </b>" + data + "---", false);
             }
         }
     });
-    table.ajax.reload();
 }
 
 function copySelectedRow() {

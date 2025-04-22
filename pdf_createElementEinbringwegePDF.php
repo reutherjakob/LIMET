@@ -1,12 +1,13 @@
 <?php
+#2025done
 
 if (!function_exists('utils_connect_sql')) {
     include "_utils.php";
 }
-include 'pdf_createBericht_MYPDFclass_1.php';
-include 'pdf_createBericht_utils.php';
+require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+include 'pdf_createBericht_MYPDFclass_A4_Raumbuch.php';
+include '_pdf_createBericht_utils.php';
 
-session_start();
 check_login();
 
 function cheat($str)
@@ -18,7 +19,7 @@ function cheat($str)
     if ($outsr === "Angiographieanlage - Radiologisch" || $outsr === "Angiographieanlage - Kardiologisch - 1 Ebene") {
         $outsr = "Angiographieanlage";
     }
-    if ($outsr === "Unterkonstruktion Angiographieanlage - Kardiologisch" ) {
+    if ($outsr === "Unterkonstruktion Angiographieanlage - Kardiologisch") {
         $outsr = "Deckenschiene Röntgenanlage";
     }
     if ($outsr === "Laufband - Gewichtsentlastung - Luftpolster") {
@@ -29,7 +30,6 @@ function cheat($str)
 
 function tabelle_header($pdf, $fill, $spaces, $rowHeight)
 {
-
     $pdf->SetFont('helvetica', 'B', 10);
     $pdf->MultiCell($spaces[0], $rowHeight, 'Raumnr./-name', 'RB', 'L', $fill, 0);
     $pdf->MultiCell($spaces[1], $rowHeight, 'Element', 'BRL', 'L', $fill, 0);
@@ -40,7 +40,6 @@ function tabelle_header($pdf, $fill, $spaces, $rowHeight)
 
 function parseBezeichnung($bezeichnung)
 {
-    // Definiere das Mapping-Array
     $mapping = [
         'Einbringweg_Breite' => 'Breite',
         'Einbringweg_Breite_2' => 'Breite 2',
@@ -51,8 +50,6 @@ function parseBezeichnung($bezeichnung)
         'Einbringweg_Tiefe' => 'Tiefe',
         'Einbringweg_Tiefe_2' => 'Tiefe 2'
     ];
-
-    // Gib die lesbare Form zurück, falls sie im Mapping-Array existiert
     return $mapping[$bezeichnung] ?? $bezeichnung;
 }
 
@@ -65,10 +62,14 @@ $stmt = "SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte, tabelle_para
     FROM (tabelle_projekt_elementparameter INNER JOIN (tabelle_varianten INNER JOIN (tabelle_räume INNER JOIN (tabelle_elemente INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_elemente.idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) ON (tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) AND (tabelle_projekt_elementparameter.tabelle_elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente)) INNER JOIN tabelle_parameter ON tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter = tabelle_parameter.idTABELLE_Parameter
     WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ")"
     . " AND ((tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie)=18) "
+    . " AND ((tabelle_räume_has_tabelle_elemente.Anzahl)<>0) "
+
     . "AND ((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))"
     . "ORDER BY Raumbezeichnung, ElementID, Bezeichnung DESC";
+
+
 $result_Einbring_elemente = $mysqli->query($stmt);
-$mysqli->close();
+
 $rooms = array();
 while ($row = $result_Einbring_elemente->fetch_assoc()) {
     if (!in_array($row["Raumnr"], $rooms)) {
@@ -79,7 +80,7 @@ while ($row = $result_Einbring_elemente->fetch_assoc()) {
 
 
 //     -----   FORMATTING VARIABLES    -----     
-$marginTop = 20; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/ 
+$marginTop = 17; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/
 $marginBTM = 10;
 $SB = 210 - 2 * PDF_MARGIN_LEFT;  // A4: 210 x 297 // A3: 297 x 420
 $SH = 297 - $marginTop - $marginBTM; // PDF_MARGIN_FOOTER;
@@ -98,12 +99,20 @@ foreach ($proportions as $prop) {
 }
 $counter = 0;
 $last_el_id = "";
-//
-//     -----     MAKE PDF    -----     
-$pdf = new MYPDF('P', PDF_UNIT, "A4", true, 'UTF-8', false, true);
-$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4", "Einbringwege");
-$pdf->AddPage('P', 'A4');
 
+$_SESSION["PDFTITEL"] = "Einbringung von medizinischen Großgeräten";
+$_SESSION["DisclaimerText"] = "Die beschriebenen Komponenten weisen die jeweils größten Abmessungen "
+    . "und/oder Gewichtslasten je Anlage auf. Die vollständigen Systeme bestehen aus"
+    . " mehreren, hier nicht angeführten Elementen, die jedoch kleiner und/oder leichter als"
+    . " das größte bzw. schwerste Einzelteil sind. Die angegebenen Werte sind produktneutrale"
+    . " Maximalspezifikationen, was bedeutet, dass beispielsweise das Gewicht von Leitfabrikat "
+    . "A und die Abmessungen von Leitfabrikat B verwendet wurden. Die hier angeführten Parameter"
+    . " dienen exklusiv der Bestimmung der Einbringwege.";
+$_SESSION["PDFHeaderSubtext"] = "Projekt: " . $_SESSION["projectName"] . " - PPH: " . $_SESSION["projectPlanungsphase"];
+$pdf = new MYPDF('P', PDF_UNIT, "A4", true, 'UTF-8', false, true);
+$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4", "Großgeräte Einbringung");
+
+$pdf->AddPage('P', 'A4');
 $pdf->SetFont('helvetica', '', $font_size);
 $pdf->SetLineStyle($style_dashed);
 $pdf->SetFillColor(220, 230, 210);
@@ -149,9 +158,10 @@ foreach ($rooms as $roomnr) {
                 } else {
                     $pdf->MultiCell($spaces[1], $rowHeight, "", 'L', 'L', $fill, 0);
                 }
-                if( $entry['Wert'] <> ""){
-                $pdf->MultiCell($spaces[2], $rowHeight, parseBezeichnung($entry['Bezeichnung']) . ": ", "L", 'L', $fill, 0);
-                $pdf->MultiCell($spaces[3], $rowHeight, $entry['Wert'] . " " . $entry["Einheit"], 0, 'L', $fill, 1);}
+                if ($entry['Wert'] <> "") {
+                    $pdf->MultiCell($spaces[2], $rowHeight, parseBezeichnung($entry['Bezeichnung']) . ": ", "L", 'L', $fill, 0);
+                    $pdf->MultiCell($spaces[3], $rowHeight, $entry['Wert'] . " " . $entry["Einheit"], 0, 'L', $fill, 1);
+                }
 
                 $first_data_entry = false;
                 $fill = !$fill;
@@ -160,7 +170,9 @@ foreach ($rooms as $roomnr) {
         }
     }
 }
-
+$mysqli->close();
 ob_end_clean(); // brauchts irgendwie.... ?  
-$pdf->Output('Einbringwege-MT.pdf', 'I');
+$pdf->Output(getFileName('Einbringwege'), 'I');
+$_SESSION["PDFHeaderSubtext"] = "";
+
 

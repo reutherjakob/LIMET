@@ -35,7 +35,7 @@ init_page_serversides();
 
     <div class="mt-4 card">
         <div class="card-header">
-            <form class="form-inline d-flex text-nowrap col-6 align-items-center">
+            <form class="form-inline d-flex text-nowrap col-xxl-6 align-items-center">
                 <label class="mr-sm-2 me-2" for="selectRoomArea">Raumbereich</label>
                 <select class="form-control form-control-sm mr-sm-2 w-25 " id="selectRoomArea" name="selectRoomArea">
                     <?php

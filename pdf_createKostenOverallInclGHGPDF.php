@@ -1,144 +1,25 @@
 <?php
-//============================================================+
-// File name   : example_011.php
-// Begin       : 2008-03-04
-// Last Update : 2013-05-14
-//
-// Description : Example 011 for TCPDF class
-//               Colored Table (very simple table)
-//
-// Author: Nicola Asuni
-//
-// (c) Copyright:
-//               Nicola Asuni
-//               Tecnick.com LTD
-//               www.tecnick.com
-//               info@tecnick.com
-//============================================================+
+#2025done
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
+include "_format.php";
+include "pdf_createBericht_MYPDFclass_A4_ohneTitelblatt.php";
 
-/**
- * Creates an example PDF TEST document using TCPDF
- * @package com.tecnick.tcpdf
- * @abstract TCPDF - Example: Colored Table
- * @author Nicola Asuni
- * @since 2008-03-04
- */
-
-// Include the main TCPDF library (search for installation path).
 require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+include "_pdf_createBericht_utils.php";
 
-// extend TCPF with custom functions
-class MYPDF extends TCPDF {
-    
-    //Page header
-    public function Header() {
-        // Logo
-        if($_SESSION["projectAusfuehrung"]==="MADER"){
-            $image_file = 'Mader_Logo_neu.jpg';
-            $this->Image($image_file, 15, 5, 40, 10, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-        }
-        else{
-            if($_SESSION["projectAusfuehrung"]==="LIMET"){
-                $image_file = 'LIMET_web.png';
-                $this->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-            }
-            else{
-                $image_file = 'LIMET_web.png';
-                $this->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                $image_file = 'Mader_Logo_neu.jpg';
-                $this->Image($image_file, 38, 5, 40, 10, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-            }
-            
-        }
-        
-        // Set font
-        $this->SetFont('helvetica', '', 8);
-        // Title
-        // Title        
-        if($_SESSION["projectPlanungsphase"]=="Vorentwurf"){
-            $this->Cell(0, 0, 'Medizintechnische Kostenschätzung', 0, false, 'R', 0, '', 0, false, 'B', 'B');
-        }
-        else{
-            $this->Cell(0, 0, 'Medizintechnische Kostenberechnung', 0, false, 'R', 0, '', 0, false, 'B', 'B');
-        }
-        //$this->Cell(0, 0, 'Gesamt-Kosten', 0, false, 'R', 0, '', 0, false, 'B', 'B');
-        $this->Ln();
-        $this->cell(0,0,'','B',0,'L');
-    }
-
-    // Page footer
-    public function Footer() {
-        // Position at 15 mm from bottom
-        $this->SetY(-15);
-        // Set font
-        $this->SetFont('helvetica', 'I', 8);
-        // Page number
-        $this->cell(0,0,'','T',0,'L');
-        $this->Ln();
-        $tDate=date('Y-m-d');
-        $this->Cell(0, 0, $tDate, 0, false, 'L', 0, '', 0, false, 'T', 'M');
-        $this->Cell(0, 0, 'Seite '.$this->getAliasNumPage().' von '.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
-    }
-    
+if ($_SESSION["projectPlanungsphase"] == "Vorentwurf") {
+    $_SESSION["PDFTITEL"] = "Medizintechnische Kostenschätzung";
+} else {
+    $_SESSION["PDFTITEL"] = "Medizintechnische Kostenberechnung";
 }
-
-session_start();
-// create new PDF document
+$marginTop = 17;
+$marginBTM = 10;
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
-// set document information
-$pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor('LIMET Consulting und Planung ZT GmbH');
-$pdf->SetTitle('Gesamt Kosten');
-$pdf->SetSubject('MT-Kosten');
-$pdf->SetKeywords('MT-Kosten');
-
-// set default header data
-$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING, array(0,64,255), array(0,64,128));
-$pdf->setFooterData(array(0,64,0), array(0,64,128));
-
-// set header and footer fonts
-$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-
-// set default monospaced font
-$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-// set margins
-$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-// set auto page breaks
-$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
-// set image scale factor
-$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-// set some language-dependent strings (optional)
-if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
-    require_once(dirname(__FILE__).'/lang/eng.php');
-    $pdf->setLanguageArray($l);
-}
-
-// ---------------------------------------------------------
-
-// set font
-$pdf->SetFont('helvetica', '', 10);
-
-// add a page
-$pdf->AddPage('', 'A4');
-
-
-// Daten laden
-
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');	
-
-/* change character set to utf8 */
-if (!$mysqli->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $mysqli->error);
-    exit();
-}
+$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4", "Medizintechnische Gesamt Kosten");
+check_login();
+$mysqli = utils_connect_sql();
 
 $sql = "SELECT tabelle_projekte.Projektname, tabelle_projekte.Preisbasis,  tabelle_planungsphasen.Bezeichnung
     FROM tabelle_projekte INNER JOIN tabelle_planungsphasen ON tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen = tabelle_planungsphasen.idTABELLE_Planungsphasen
@@ -185,6 +66,9 @@ while ($row = $result->fetch_assoc()) {
 setlocale(LC_MONETARY,"de_DE");
 $pdf->SetFillColor(244, 244, 244);
 $sumGewerk = 0;
+$sumGesamt =0;
+$sumGesamtNeu =0;
+$sumGesamtBestand =0;
 $sumGewerkBestand = 0; 
 $sumGewerkNeu = 0; 
 $i = 0;
@@ -196,9 +80,9 @@ foreach($raumbereichData as $rowData2) {
     if($rowData2["Gewerke_Nr"] !== $gewerk){
         $pdf->SetFont('helvetica', 'B', 10);    
         if($i > 0){
-            $pdf->MultiCell(120, 4, money_format('€ %!n', $sumGewerk), 'T', 'R', 0, 0);
-            $pdf->MultiCell(30, 4, money_format('€ %!n', $sumGewerkNeu), 'T', 'R', 0, 0);
-            $pdf->MultiCell(30, 4, money_format('€ %!n', $sumGewerkBestand), 'T', 'R', 0, 0);
+            $pdf->MultiCell(120, 4,  format_money_report( $sumGewerk), 'T', 'R', 0, 0);
+            $pdf->MultiCell(30, 4,  format_money_report( $sumGewerkNeu), 'T', 'R', 0, 0);
+            $pdf->MultiCell(30, 4,  format_money_report( $sumGewerkBestand), 'T', 'R', 0, 0);
             $sumGesamt = $sumGesamt + $sumGewerk;
             $sumGesamtNeu = $sumGesamtNeu + $sumGewerkNeu;
             $sumGesamtBestand = $sumGesamtBestand + $sumGewerkBestand;
@@ -222,7 +106,7 @@ foreach($raumbereichData as $rowData2) {
         else{
             $pdf->MultiCell(50, 6, "GHG: ".$rowData2["GHG"]." ".$rowData2["GHG_Bezeichnung"],'', 'L', 0, 0);
         }
-        $pdf->MultiCell(50, 4, money_format('€ %!n', $rowData2["PP"]), 0, 'R', 0, 0);                
+        $pdf->MultiCell(50, 4,  format_money_report( $rowData2["PP"]), 0, 'R', 0, 0);                
     }
     else{
         $pdf->SetFont('helvetica', 'I', 8);
@@ -233,7 +117,7 @@ foreach($raumbereichData as $rowData2) {
         else{
             $pdf->MultiCell(50, 6, "GHG: ".$rowData2["GHG"]." ".$rowData2["GHG_Bezeichnung"],'', 'L', 0, 0);
         }
-        $pdf->MultiCell(50, 4, money_format('€ %!n', $rowData2["PP"]), 0, 'R', 0, 0);
+        $pdf->MultiCell(50, 4,  format_money_report( $rowData2["PP"]), 0, 'R', 0, 0);
     }       
     
     // Neusumme ermitteln ----------------------------------
@@ -250,11 +134,11 @@ foreach($raumbereichData as $rowData2) {
     $result = $mysqli->query($sql);
     $row = $result->fetch_assoc();
     if ( null != ($row['PP_neu'])){
-        $pdf->MultiCell(30, 4, money_format('€ %!n', $row["PP_neu"]), 0, 'R', $fill, 0);
+        $pdf->MultiCell(30, 4,  format_money_report( $row["PP_neu"]), 0, 'R', $fill, 0);
         //$sumRaumbereichBestand = $sumRaumbereichBestand + $row['PP'];
     }
     else{
-        $pdf->MultiCell(30, 4,  sprintf('%01.2f', 0), 0, 'R', $fill, 0);
+        $pdf->MultiCell(30, 4,  format_money_report( 0), 0, 'R', $fill, 0);
     }
     $sumGewerkNeu = $sumGewerkNeu + $row["PP_neu"];    
     //--------------------------------------------------------------    
@@ -274,11 +158,11 @@ foreach($raumbereichData as $rowData2) {
     $result = $mysqli->query($sql);
     $row = $result->fetch_assoc();
     if ( null != ($row['PP'])  ){
-        $pdf->MultiCell(30, 4, money_format('€ %!n', $row["PP"]), 0, 'R', $fill, 0);
+        $pdf->MultiCell(30, 4,  format_money_report( $row["PP"]), 0, 'R', $fill, 0);
         //$sumRaumbereichBestand = $sumRaumbereichBestand + $row['PP'];
     }
     else{
-        $pdf->MultiCell(30, 4,  sprintf('%01.2f', 0), 0, 'R', $fill, 0);
+        $pdf->MultiCell(30, 4,  format_money_report( 0), 0, 'R', $fill, 0);
     }
     //--------------------------------------------------------------
     
@@ -292,26 +176,22 @@ foreach($raumbereichData as $rowData2) {
 
 // Letzte Gesamtsumme bilden
 $pdf->SetFont('helvetica', 'B', 10);
-$pdf->MultiCell(120, 4, money_format('€ %!n', $sumGewerk), 'T', 'R', 0, 0);
-$pdf->MultiCell(30, 4, money_format('€ %!n', $sumGewerkNeu), 'T', 'R', 0, 0);
-$pdf->MultiCell(30, 4, money_format('€ %!n', $sumGewerkBestand), 'T', 'R', 0, 0);
+$pdf->MultiCell(120, 4,  format_money_report( $sumGewerk), 'T', 'R', 0, 0);
+$pdf->MultiCell(30, 4,  format_money_report( $sumGewerkNeu), 'T', 'R', 0, 0);
+$pdf->MultiCell(30, 4,  format_money_report( $sumGewerkBestand), 'T', 'R', 0, 0);
 $sumGesamt = $sumGesamt + $sumGewerk;
 $sumGesamtNeu = $sumGesamtNeu + $sumGewerkNeu;
 $sumGesamtBestand = $sumGesamtBestand + $sumGewerkBestand;
 $pdf->Ln();
 $pdf->Ln(); 
 $pdf->MultiCell(90, 4, "GESAMT: ", 'T', 'L', 0, 0);
-$pdf->MultiCell(30, 4, money_format('€ %!n', $sumGesamt), 'T', 'R', 0, 0);
-$pdf->MultiCell(30, 4, money_format('€ %!n', $sumGesamtNeu), 'T', 'R', 0, 0);
-$pdf->MultiCell(30, 4, money_format('€ %!n', $sumGesamtBestand), 'T', 'R', 0, 0);
+$pdf->MultiCell(30, 4,  format_money_report( $sumGesamt), 'T', 'R', 0, 0);
+$pdf->MultiCell(30, 4,  format_money_report( $sumGesamtNeu), 'T', 'R', 0, 0);
+$pdf->MultiCell(30, 4,  format_money_report( $sumGesamtBestand), 'T', 'R', 0, 0);
 
 // ---------------------------------------------------------
+$mysqli->close();
+ob_end_clean();
+$pdf->Output(getFileName("Kosten_Gewerke-GHG"), 'I');
 
-
-// close and output PDF document
-$pdf->Output('Kosten_Gewerke-GHG.pdf', 'I');
-
-//============================================================+
-// END OF FILE
-//============================================================+
 

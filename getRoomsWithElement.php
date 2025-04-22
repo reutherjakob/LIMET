@@ -1,5 +1,7 @@
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 session_start();
 check_login();
 ?>
@@ -14,21 +16,41 @@ check_login();
 <?php
 $mysqli = utils_connect_sql();
 
-$sql = "SELECT tabelle_räume_has_tabelle_elemente.id, tabelle_räume.idTABELLE_Räume, tabelle_varianten.Variante, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume_has_tabelle_elemente.Anzahl, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.Standort, tabelle_räume_has_tabelle_elemente.Verwendung, tabelle_räume_has_tabelle_elemente.Kurzbeschreibung, tabelle_räume.Geschoss
-                FROM (tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) INNER JOIN tabelle_varianten ON tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten = tabelle_varianten.idtabelle_Varianten
-                WHERE (((tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente)=" . filter_input(INPUT_GET, 'elementID') . ") AND ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
-                ORDER BY tabelle_räume.Raumnr;";
+$sql = "SELECT tabelle_räume_has_tabelle_elemente.id,
+       tabelle_räume.idTABELLE_Räume,
+       tabelle_varianten.Variante,
+       tabelle_räume.Raumnr,
+       tabelle_räume.Raumbezeichnung,
+       tabelle_räume.`Raumbereich Nutzer`,
+       tabelle_räume_has_tabelle_elemente.Anzahl,
+       tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
+       tabelle_räume_has_tabelle_elemente.Standort,
+       tabelle_räume_has_tabelle_elemente.Verwendung,
+       tabelle_räume_has_tabelle_elemente.Kurzbeschreibung,
+       tabelle_räume.Geschoss,
+       tabelle_räume.Bauabschnitt,
+       tabelle_räume.Bauetappe
+FROM (tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente
+      ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)
+         INNER JOIN tabelle_varianten ON tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten =
+                                         tabelle_varianten.idtabelle_Varianten
+WHERE (((tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) =
+        " . filter_input(INPUT_GET, 'elementID') . ") AND
+       ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["projectID"] . "))
+ORDER BY tabelle_räume.Raumnr;";
 
 $result = $mysqli->query($sql);
 echo "<table class='table table-striped table-responsive table-hover table-bordered border border-5 border-light table-sm py-0' id='tableRoomsWithElements'>
 	<thead><tr>
 	<th>ID</th>
-	<th>Var</th>
 	<th>Raum Nr</th>
 	<th>Raum</th>
-        <th>Ebene</th>
+    <th>Ebene</th>
+    <th>Bauabschnitt</th>
+    <th>Bauetappe</th>
 	<th>Bereich</th>
 	<th>Stk</th>
+	<th>Var</th>
 	<th>Bestand</th>
 	<th>Standort</th>
 	<th>Verw.</th>
@@ -38,45 +60,48 @@ echo "<table class='table table-striped table-responsive table-hover table-borde
 
 while ($row = $result->fetch_assoc()) {
     echo "<tr data-variant='" . $row["Variante"] . "' data-bestand='" . $row["Neu/Bestand"] . "' data-standort='" . $row["Standort"] . "' data-verwendung='" . $row["Verwendung"] . "'>";
-    echo "<td>" . $row["id"] . "</td>";
-    echo "<td>" . $row["Variante"] . "</td>";
-    echo "<td>" . $row["Raumnr"] . "</td>";
-    echo "<td>" . $row["Raumbezeichnung"] . "</td>";
-    echo "<td>" . $row["Geschoss"] . "</td>";
-    echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
-    echo "<td><input class='form-control form-control-sm' type='text' id='amount" . $row["id"] . "' value='" . $row["Anzahl"] . "' size='2'></input></td>";
-    echo "<td>";
+    echo "<td data-order='" . $row["id"] . "'>" . $row["id"] . "</td>";
+    echo "<td data-order='" . $row["Raumnr"] . "'>" . $row["Raumnr"] . "</td>";
+    echo "<td data-order='" . $row["Raumbezeichnung"] . "'>" . $row["Raumbezeichnung"] . "</td>";
+    echo "<td data-order='" . $row["Geschoss"] . "'>" . $row["Geschoss"] . "</td>";
+    echo "<td data-order='" . $row["Bauabschnitt"] . "'>" . $row["Bauabschnitt"] . "</td>";
+    echo "<td data-order='" . $row["Bauetappe"] . "'>" . $row["Bauetappe"] . "</td>";
+    echo "<td data-order='" . $row["Raumbereich Nutzer"] . "'>" . $row["Raumbereich Nutzer"] . "</td>";
+    echo "<td data-order='" . $row["Anzahl"] . "'><input class='form-control form-control-sm' type='text' id='amount" . $row["id"] . "' value='" . $row["Anzahl"] . "' size='2'></td>";
+    echo "<td data-order='" . $row["Variante"] . "'>" . $row["Variante"] . "</td>";
+    echo "<td data-order='" . ($row["Neu/Bestand"] == 1 ? "Nein" : "Ja") . "'>";
     if ($row["Neu/Bestand"] == 1) {
         echo "Nein";
     } else {
         echo "Ja";
     }
     echo "</td>";
-    echo "<td>";
+
+    echo "<td data-order='" . ($row["Standort"] == 1 ? "Ja" : "Nein") . "'>";
     if ($row["Standort"] == 1) {
         echo "Ja";
     } else {
         echo "Nein";
     }
     echo "</td>";
-    echo "<td>";
+
+    echo "<td data-order='" . ($row["Verwendung"] == 1 ? "Ja" : "Nein") . "'>";
     if ($row["Verwendung"] == 1) {
         echo "Ja";
     } else {
         echo "Nein";
     }
     echo "</td>";
+
     if (null != ($row["Kurzbeschreibung"])) {
-        echo "<td><button type='button' class='btn btn-sm btn-outline-dark comment-btn' id='" . $row["id"] . "' data-description='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment'></i></button></td>";
+        echo "<td><button type='button' class='btn btn-sm btn-outline-dark comment-btn' id='" . $row["id"] . "' data-description='" . htmlspecialchars($row["Kurzbeschreibung"], ENT_QUOTES) . "' title='Kommentar'><i class='fa fa-comment'></i></button></td>";
     } else {
-        echo "<td><button type='button' class='btn btn-sm btn-outline-dark comment-btn' id='" . $row["id"] . "' data-description='" . $row["Kurzbeschreibung"] . "' title='Kommentar'><i class='fa fa-comment-slash'></i></button></td>";
+        echo "<td><button type='button' class='btn btn-sm btn-outline-dark comment-btn' id='" . $row["id"] . "' data-description='' title='Kommentar'><i class='fa fa-comment-slash'></i></button></td>";
     }
     echo "<td><button type='button' id='" . $row["id"] . "' class='btn btn-warning btn-sm' value='saveElement'><i class='far fa-save'></i></button></td>";
     echo "</tr>";
 }
 echo "</tbody></table>";
-
-
 $mysqli->close();
 ?>
 
@@ -86,9 +111,7 @@ $mysqli->close();
 
     function translateVariant(variant) {
         const translationMap = {
-            'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7, 'H': 8, 'I': 9, 'J': 10,
-            'K': 11, 'L': 12, 'M': 13, 'N': 14, 'O': 15, 'P': 16, 'Q': 17, 'R': 18, 'S': 19,
-            'T': 20, 'U': 21, 'V': 22, 'W': 23, 'X': 24, 'Y': 25, 'Z': 26
+            'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6
         };
         return translationMap[variant] || variant;
     }
@@ -96,7 +119,7 @@ $mysqli->close();
 
     $(document).ready(function () {
         const tableRoomsWithElements = new DataTable('#tableRoomsWithElements', {
-            paging: true,
+            paging: false,
             searching: true,
             info: true,
             columnDefs: [
@@ -107,14 +130,35 @@ $mysqli->close();
                 }
             ],
             order: [[2, "asc"]],
-            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            // lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
             language: {
-                search: ""
+                search: "",
+                searchPlaceholder: "Suche...",
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
             },
             scrollY: '40vh',
             scrollCollapse: true
         });
 
+        // Element speichern
+        $("button[value='saveElement']").click(function () {
+            console.log("Saving Element Changes. ");
+            let id = this.id;
+            let comment = $("#buttonComment" + id).val();
+            let amount = Number($("#amount" + id).val());
+            if (!Number.isInteger(amount)) {
+                alert("Stückzahl ist keine Zahl!");
+            } else {
+                $.ajax({
+                    url: "saveRoombookEntry2.php",
+                    data: {"comment": comment, "id": id, "amount": amount},
+                    type: "GET",
+                    success: function (data) {
+                        makeToaster(data.trim(), true);
+                    }
+                });
+            }
+        });
 
         // Popover for Comment
         CustomPopover.init('.comment-btn', {
@@ -156,25 +200,6 @@ $mysqli->close();
             }
         });
 
-        // Element speichern
-        $("button[value='saveElement']").click(function () {
-            let id = this.id;
-            let comment = $("#buttonComment" + id).val();
-            let amount = Number($("#amount" + id).val());
-            if (!Number.isInteger(amount)) {
-                alert("Stückzahl ist keine Zahl!");
-            } else {
-                $.ajax({
-                    url: "saveRoombookEntry2.php",
-                    data: {"comment": comment, "id": id, "amount": amount},
-                    type: "GET",
-                    success: function (data) {
-                        // alert(data);  //location.reload();
-                        makeToaster(data.trim(), true);
-                    }
-                });
-            }
-        });
 
     });
 

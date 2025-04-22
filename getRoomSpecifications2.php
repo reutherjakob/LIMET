@@ -36,8 +36,8 @@ check_login();
         <?php
         $mysqli = utils_connect_sql();
         $sql = "SELECT `Anmerkung FunktionBO`, `Anmerkung Geräte`, `Anmerkung BauStatik`, `Anmerkung Elektro`, `Anmerkung MedGas`, `Anmerkung HKLS` 
-        FROM tabelle_räume 
-        WHERE idTABELLE_Räume = " . $_SESSION["roomID"];
+                FROM tabelle_räume 
+                WHERE idTABELLE_Räume = " . $_SESSION["roomID"];
         $result = $mysqli->query($sql);
         $row = $result->fetch_assoc();
         $mysqli->close();
@@ -85,7 +85,6 @@ check_login();
             </div>
           </div>
         </div>";
-        
         ?>
 
         <script>
@@ -110,7 +109,6 @@ check_login();
 
                     }
                 });
-
             });
 
             //Bauangaben kopieren

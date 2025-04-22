@@ -51,12 +51,12 @@ function get_project()
     echo '</script>';
 }
 
-function br2nl($string)
+function br2nl($string): array|string
 {
     if ($string != null) {
         $string = str_replace(array("<br/>"), "\n", $string);
-        $return = str_replace(array("<br>"), "\n", $string);
-        return $return;
+        $string = str_replace(array("</br>"), "\n", $string);
+        return str_replace(array("<br>"), "\n", $string);
     } else {
         return "";
     }

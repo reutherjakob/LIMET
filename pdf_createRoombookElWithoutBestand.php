@@ -1,170 +1,23 @@
 <?php
-require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+#2025done
 if (!function_exists('utils_connect_sql')) {
     include "_utils.php";
 }
 check_login();
-include "_pdf_utils.php";
-
-
-class MYPDF extends TCPDF
-{
-
-    public function Header()
-    {
-        if ($this->numpages > 1) {
-            if ($_SESSION["projectAusfuehrung"] === "MADER") {
-                $image_file = 'Mader_Logo_neu.jpg';
-                $this->Image($image_file, 15, 5, 40, 10, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-            } else {
-                if ($_SESSION["projectAusfuehrung"] === "LIMET") {
-                    $image_file = 'LIMET_web.png';
-                    $this->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                } else {
-                    $image_file = 'LIMET_web.png';
-                    $this->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                    $image_file = 'Mader_Logo_neu.jpg';
-                    $this->Image($image_file, 38, 5, 40, 10, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                }
-            }
-            $this->SetFont('helvetica', '', 8);
-            $this->Cell(0, 0, 'Medizintechnisches Raumbuch', 0, false, 'R', 0, '', 0, false, 'B', 'B');
-            $this->Ln();
-            $this->cell(0, 0, '', 'B', 0, 'L');
-        } else {
-            $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-            if (!$mysqli->set_charset("utf8")) {
-                printf("Error loading character set utf8: %s\n", $mysqli->error);
-                exit();
-            }
-            $roomIDs = filter_input(INPUT_GET, 'roomID');
-            $teile = explode(",", $roomIDs);
-
-            $sql = "SELECT tabelle_projekte.Projektname, tabelle_planungsphasen.Bezeichnung, tabelle_räume.`Raumbereich Nutzer`
-                    FROM tabelle_räume INNER JOIN (tabelle_planungsphasen INNER JOIN tabelle_projekte ON tabelle_planungsphasen.idTABELLE_Planungsphasen = tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen) ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte ";
-            $i = 0;
-            foreach ($teile as $valueOfRoomID) {
-                if ($i == 0) {
-                    $sql = $sql . "WHERE tabelle_räume.idTABELLE_Räume=" . $valueOfRoomID . " ";
-                } else {
-                    $sql = $sql . "OR tabelle_räume.idTABELLE_Räume=" . $valueOfRoomID . " ";
-                }
-                $i++;
-            }
-            $sql = $sql . "GROUP BY tabelle_projekte.Projektname, tabelle_planungsphasen.Bezeichnung, tabelle_räume.`Raumbereich Nutzer` ORDER BY tabelle_räume.`Raumbereich Nutzer`;";
-            $result = $mysqli->query($sql);
-            $raumInfos = array();
-            $raumInfosCounter = 0;
-            while ($row = $result->fetch_assoc()) {
-                $raumInfos[$raumInfosCounter]['Projektname'] = $row['Projektname'];
-                $raumInfos[$raumInfosCounter]['Planungsphase'] = $row['Bezeichnung'];
-                $raumInfos[$raumInfosCounter]['Raumbereich'] = $row['Raumbereich Nutzer'];
-                $raumInfosCounter = $raumInfosCounter + 1;
-            }
-            $mysqli->close();
-            $this->SetFont('helvetica', 'B', 15);
-            $this->SetY(50);
-            $this->Cell(0, 0, $raumInfos[0]['Projektname'], 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            $this->Ln();
-            $this->Cell(0, 0, $raumInfos[0]['Planungsphase'], 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            $this->Ln();
-            $this->Ln();
-            $this->Cell(0, 0, 'Medizintechnisches Raumbuch', 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            $this->Ln();
-            $this->Ln();
-            $this->Cell(0, 0, 'Funktionsstellen: ', 0, false, 'L', 0, '', 0, false, 'B', 'B');
-            $this->Ln();
-            $raumInfosCounter = 0;
-
-            $this->SetFont('helvetica', 'B', 12);
-
-            foreach ($raumInfos as $valueOfRaumInfos) {
-                $this->Cell(0, 0, $raumInfos[$raumInfosCounter]['Raumbereich'], 0, false, 'L', 0, '', 0, false, 'B', 'B');
-                $this->Ln();
-                $raumInfosCounter++;
-            }
-
-            $this->Cell(0, 0, "Stand: " . date('Y-m-d'), 0, false, 'L', 0, '', 0, false, 'T', 'M');
-            $this->SetFont('helvetica', '', 6);
-            if ($_SESSION["projectAusfuehrung"] === "MADER") {
-                $image_file = 'Mader_Logo_neu.jpg';
-                $this->Image($image_file, 145, 40, 50, 15, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-            } else {
-                if ($_SESSION["projectAusfuehrung"] === "LIMET") {
-                    $image_file = 'LIMET_web.png';
-                    $this->Image($image_file, 110, 40, 30, 15, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                } else {
-                    $image_file = 'LIMET_web.png';
-                    $this->Image($image_file, 110, 40, 30, 13, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                    $image_file = 'Mader_Logo_neu.jpg';
-                    $this->Image($image_file, 145, 41, 50, 13, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-                    $this->SetY(60);
-                    $this->SetX(110);
-                    $this->Cell(0, 0, "ARGE LIMET-MADER", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Cell(0, 0, "Zwerggase 6/1", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Cell(0, 0, "8010 Graz", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Ln();
-                    $this->Cell(0, 0, "Tel: +43 1 470 48 33 Dipl.-Ing. Jens Liebmann, MBA", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Cell(0, 0, "Tel: +43 650 523 27 38 Dipl.-Ing. Peter Mader", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Ln();
-                    $this->Cell(0, 0, "UID ATU 69334945", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Cell(0, 0, "IBAN AT90 2081 5208 0067 8128", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln();
-                    $this->Cell(0, 0, "BIC STSPAT2GXXX", 0, false, 'R', 0, '', 0, false, 'B', 'B');
-                }
-            }
-        }
-    }
-
-    public function Footer()
-    {
-        $this->SetY(-15);
-        $this->SetFont('helvetica', 'I', 8);
-        $this->cell(0, 0, '', 'T', 0, 'L');
-        $this->Ln();
-        $tDate = date('Y-m-d');
-        $this->Cell(0, 0, $tDate, 0, false, 'L', 0, '', 0, false, 'T', 'M');
-        $this->Cell(0, 0, 'Seite ' . $this->getAliasNumPage() . ' von ' . $this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
-    }
-}
-
+require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+include "_pdf_createBericht_utils.php";
+include "pdf_createBericht_MYPDFclass_A4_Raumbuch.php";
+$marginTop = 20; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/
+$marginBTM = 10;
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-$pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor('LIMET Consulting und Planung für Medizintechnik');
-$pdf->SetTitle('Raumbuch-MT');
-$pdf->SetSubject('Raumbuch-MT');
-$pdf->SetKeywords('Raumbuch-MT');
-$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING, array(0, 64, 255), array(0, 64, 128));
-$pdf->setFooterData(array(0, 64, 0), array(0, 64, 128));
-$pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-$pdf->SetMargins(PDF_MARGIN_LEFT, 20, PDF_MARGIN_RIGHT);
-$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
-    require_once(dirname(__FILE__) . '/lang/eng.php');
-    $pdf->setLanguageArray($l);
-}
+$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4", "Raumbuch-MT");
+
 $pdf->SetFont('helvetica', '', 10);
 $pdf->AddPage('P', 'A4');
-$pdf->AddPage('P', 'A4');
 $mysqli = utils_connect_sql();
-
-
-
 $roomIDs = filter_input(INPUT_GET, 'roomID');
 $teile = explode(",", $roomIDs);
 $widths = array(0, 20, 20, 20, 90, 10, 20);
-
 foreach ($teile as $valueOfRoomID) {
     // Elemente im Raum laden
     $sql3 = "SELECT tabelle_elemente.ElementID,
@@ -313,4 +166,8 @@ WHERE (((tabelle_räume.idTABELLE_Räume) = " . $valueOfRoomID . "));";
     $pdf->Ln();
 }
 
-$pdf->Output(getFileName( 'Raumbuch-Elementliste'), 'I');
+
+$mysqli->close();
+ob_end_clean();
+$pdf->Output(getFileName('Raumbuch-Elementliste'), 'I');
+$_SESSION["PDFHeaderSubtext"]="";

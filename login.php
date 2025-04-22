@@ -32,16 +32,16 @@ function fetch_permissions($mysqli, $username)
 }
 
 // Function to check rate limiting
-function checkRateLimit($username, $ip) {
-    if (!isset($_SESSION['login_attempts'])) {
-        $_SESSION['login_attempts'] = array();
+function checkRateLimit($ip) {
+    if (!isset($_SESSION['login_attempts_ip'])) {
+        $_SESSION['login_attempts_ip'] = array();
     }
-    if (!isset($_SESSION['last_attempt'])) {
-        $_SESSION['last_attempt'] = array();
+    if (!isset($_SESSION['last_attempt_ip'])) {
+        $_SESSION['last_attempt_ip'] = array();
     }
 
-    $attempts = isset($_SESSION['login_attempts'][$username]) ? $_SESSION['login_attempts'][$username] : 0;
-    $lastAttempt = isset($_SESSION['last_attempt'][$username]) ? $_SESSION['last_attempt'][$username] : 0;
+    $attempts = isset($_SESSION['login_attempts_ip'][$ip]) ? $_SESSION['login_attempts_ip'][$ip] : 0;
+    $lastAttempt = isset($_SESSION['last_attempt_ip'][$ip]) ? $_SESSION['last_attempt_ip'][$ip] : 0;
     $currentTime = time();
 
     // Reset attempts if last attempt was more than 15 minutes ago
@@ -49,15 +49,15 @@ function checkRateLimit($username, $ip) {
         $attempts = 0;
     }
 
-    if ($attempts >= 5) {
+    if ($attempts >= 3) {
         // Too many attempts, implement delay
         $waitTime = min(pow(2, $attempts - 5), 3600); // Exponential backoff, max 1 hour
         if ($currentTime - $lastAttempt < $waitTime) {
-            safeRedirect('index.php?error=too_many_attempts&wait=' . ($waitTime - ($currentTime - $lastAttempt)));
+            safeRedirect('index.php?error=too_many_attempts'.$_SERVER['REMOTE_ADDR'].'&wait=' . ($waitTime - ($currentTime - $lastAttempt)));
         }
     }
-    $_SESSION['login_attempts'][$username] = $attempts + 1;
-    $_SESSION['last_attempt'][$username] = $currentTime;
+    $_SESSION['login_attempts_ip'][$ip] = $attempts + 1;
+    $_SESSION['last_attempt_ip'][$ip] = $currentTime;
 }
 
 $username = isset($_POST["username"]) ? trim($_POST["username"]) : '';
@@ -68,7 +68,7 @@ if (empty($username) || empty($password)) {
 }
 
 // Check rate limit before processing login
-checkRateLimit($username, $_SERVER['REMOTE_ADDR']);
+checkRateLimit($_SERVER['REMOTE_ADDR']);
 
 $hashedPassword = md5($password); // Consider using password_hash() and password_verify() for better security
 try {

@@ -309,26 +309,32 @@ $row = $result->fetch_assoc(); ?>
 
 <!-- Variantenparameter übernehmen Modal -->
 <div class='modal fade' id='addVariantenParameterToElementModal' role='dialog'>
-    <div class='modal-dialog modal-sm'>
+    <div class='modal-dialog modal-md'>
         <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
-                <h4 class='modal-title'>Broken? </h4>
-                <!-- Elemtparameter übernehmen TODO-->
+                <h4 class='modal-title justify-content-center'>Variantenparameter übernehmen? </h4>
                 <button type='button' class='close' data-bs-dismiss='modal'>&times;
                 </button>
             </div>
             <div class='modal-body' id='mbody'>
-                Oder hat das je was gemacht? Wird das genutzt? Vermisst? Sags m Dev...<!-- Wollen Sie die Elementparameter wirklich
-                überschreiben? -->
+                Wollen Sie die Elementparameter wirklich
+                überschreiben? <br>
+                <strong> Sind Sie Hr. Reuther? </strong>
             </div>
-            <div class='modal-footer'>
-                <!-- button type='button' id='addVariantenParameterToElement'
-                       class='btn btn-success btn-sm' value='Ja'
-                       data-bs-dismiss='modal'> Ja </button -->
-                <button type='button' class='btn btn-danger btn-sm'
-                        data-bs-dismiss='modal'>Nein
-                </button>
+            <div class='modal-footer row'>
+                <div class="d-flex justify-content-center align-items-center">
+                    <div class="col-1"></div>
+                    <button type='button' id='addVariantenParameterToElement'
+                            class='btn btn-success btn-sm col-5 me-1 ms-1' value='Ja'
+                            data-bs-dismiss='modal'> Ja
+                    </button>
+
+                    <button type='button' class='btn btn-danger btn-sm col-5 me-1 ms-1'
+                            data-bs-dismiss='modal'>Nein
+                    </button>
+                </div>
+
             </div>
         </div>
 
@@ -336,7 +342,6 @@ $row = $result->fetch_assoc(); ?>
 </div>
 
 <script src="_utils.js"></script>
-
 <script>
     var tablePossibleElementParameters;
     document.getElementById('kosten').addEventListener('keydown', function (event) {
@@ -372,7 +377,7 @@ $row = $result->fetch_assoc(); ?>
             scrollX: true
         });
 
-        tablePossibleElementParameters=   $('#tablePossibleElementParameters').DataTable({
+        tablePossibleElementParameters = $('#tablePossibleElementParameters').DataTable({
             select: true,
             searching: true,
             info: false,
@@ -397,7 +402,6 @@ $row = $result->fetch_assoc(); ?>
             },
             scrollX: true,
             initComplete: function (settings, json) {
-
             }
         });
 
@@ -436,63 +440,60 @@ $row = $result->fetch_assoc(); ?>
             url: "setSessionVariables.php",
             data: {"variantenID": variantenID},
             type: "GET",
-            success: function () {
-                //console.log("JS:", variantenID);
+            success: function () {  //console.log("JS:", variantenID);
                 $.ajax({
                     url: "getSessionVariante.php",
                     type: "GET",
-                    success: function (data) {
-                    }
-                });
-                $.ajax({
-                    url: "getVariantePrice.php",
-                    data: {"variantenID": variantenID},
-                    type: "GET",
-                    success: function (data) {
-                        if (data.length === 2) {
-                            $("#error").html("Variante noch nicht vorhanden! Zum Anlegen Kosten eingeben und Speichern!");
-                            $('#alertModal').modal("show");
-                            $("#kosten").val("");
-                            $("#possibleVariantenParameter").hide();
-                            $("#variantenParameter").hide();
-                        } else {
-                            $("#kosten").val(data);
-                            $("#possibleVariantenParameter").show();
-                            $("#variantenParameter").show();
-                            $.ajax({
-                                url: "getVarianteParameters.php",
-                                data: {"variantenID": variantenID},
-                                type: "GET",
-                                success: function (data) {
-                                    $("#variantenParameter").html(data);
+                    success: function () {
+                        $.ajax({
+                            url: "getVariantePrice.php",
+                            data: {"variantenID": variantenID},
+                            type: "GET",
+                            success: function (data) {
+                                if (data.length === 2) {
+                                    $("#error").html("Variante noch nicht vorhanden! Zum Anlegen Kosten eingeben und Speichern!");
+                                    $('#alertModal').modal("show");
+                                    $("#kosten").val("");
+                                    $("#possibleVariantenParameter").hide();
+                                    $("#variantenParameter").hide();
+                                } else {
+                                    $("#kosten").val(data);
+                                    $("#possibleVariantenParameter").show();
+                                    $("#variantenParameter").show();
                                     $.ajax({
-                                        url: "getPossibleVarianteParameters.php",
+                                        url: "getVarianteParameters.php",
                                         data: {"variantenID": variantenID},
                                         type: "GET",
                                         success: function (data) {
-                                            $("#possibleVariantenParameter").html(data);
-                                            //console.log("0", data);
+                                            $("#variantenParameter").html(data);
+                                            $.ajax({
+                                                url: "getPossibleVarianteParameters.php",
+                                                data: {"variantenID": variantenID},
+                                                type: "GET",
+                                                success: function (data) {
+                                                    $("#possibleVariantenParameter").html(data);
+                                                    //console.log("0", data);
+                                                }
+                                            });
                                         }
                                     });
                                 }
-                            });
-                        }
+                            }
+                        });
                     }
                 });
             }
         });
     });
 
-    // Kosten für Variante speichern
-    $("#saveVariantePrice").click(function () {
+
+    $("#saveVariantePrice").click(function () {    // Kosten für Variante speichern
         if ($('#kosten').val() !== '') {
             let KostenFormatiert = $('#kosten').val();
             if (KostenFormatiert.toLowerCase().endsWith('k')) {
                 KostenFormatiert = KostenFormatiert.slice(0, -1) + '000';
-            }
-            //console.log(KostenFormatiert.toLowerCase());
-            KostenFormatiert = KostenFormatiert.replace(/,/g, '.').replace(/[^0-9.]/g, '');
-            //console.log(KostenFormatiert.toLowerCase());
+            } //console.log(KostenFormatiert.toLowerCase());
+            KostenFormatiert = KostenFormatiert.replace(/,/g, '.').replace(/[^0-9.]/g, ''); //console.log(KostenFormatiert.toLowerCase());
             let variantenID = $('#variante').val();
             $.ajax({
                 url: "saveVariantePrice.php",
@@ -502,7 +503,6 @@ $row = $result->fetch_assoc(); ?>
                     makeToaster(data.trim(), true);
                     $("#possibleVariantenParameter").show();
                     $("#variantenParameter").show();
-
                     $.ajax({
                         url: "getVarianteParameters.php",
                         data: {"variantenID": variantenID},
@@ -515,20 +515,18 @@ $row = $result->fetch_assoc(); ?>
                                 type: "GET",
                                 success: function (data) {
                                     $("#possibleVariantenParameter").html(data);
-                                    //console.log("4", data);
                                 }
                             });
                         }
                     });
                 }
-
             });
         } else {
             alert("Kosten eingeben!");
         }
     });
 
-    //Parameter zu Variante hinzufügen
+
     $("button[value='addParameter']").click(function () {
         let variantenID = $('#variante').val();
         let id = this.id;
@@ -552,20 +550,15 @@ $row = $result->fetch_assoc(); ?>
                                 data: {"variantenID": variantenID},
                                 type: "GET",
                                 success: function (data) {
-
-
                                     $("#possibleVariantenParameter").html(data);
                                     $('#tablePossibleElementParameters').DataTable().search(searchValue).draw();
                                 }
                             });
-
                         }
                     });
-
                 }
             });
         }
-
     });
 
     //Parameter von Variante entfernen
@@ -598,11 +591,9 @@ $row = $result->fetch_assoc(); ?>
 
                         }
                     });
-
                 }
             });
         }
-
     });
 
     // Parameter ändern bzw speichern
@@ -633,30 +624,31 @@ $row = $result->fetch_assoc(); ?>
 
     // Variantenparameter übernehmen in zentrales Element
     $("#addVariantenParameterToElement").click(function () {
-        const elementID = <?php echo $_SESSION["elementID"] ?>;
-        const variantenID = <?php echo $_SESSION["variantenID"] ?>;
-console.log(elementID);
+        const username = "  <?php echo $_SESSION["username"] ?>";
+        if (username.toLowerCase() === "reuther") {
+            const elementID = <?php echo $_SESSION["elementID"] ?>;
+            const variantenID = <?php echo $_SESSION["variantenID"] ?>;
+            console.log(elementID, variantenID);
 
-        $.ajax({
-            url: "setSessio.php",
-        })
-
-        $.ajax({
-            url: "addVariantenParameterToElement.php",
-            data: {"elementID": elementID, "variantenID": variantenID},
-            type: "GET",
-            success: function (data) {
-                makeToaster(data.trim(), true);  //alert(data);
-                $.ajax({
-                    url: "getStandardElementParameters.php",
-                    data: {"elementID": elementID},
-                    type: "GET",
-                    success: function (data) {
-                        $("#elementDBParameter").html(data);
-                    }
-                });
-            }
-        });
+            $.ajax({
+                url: "addVariantenParameterToElement.php",
+                data: {"elementID": elementID, "variantenID": variantenID},
+                type: "GET",
+                success: function (data) {
+                    makeToaster(data.trim(), true);  //alert(data);
+                    $.ajax({
+                        url: "getStandardElementParameters.php",
+                        data: {"elementID": elementID},
+                        type: "GET",
+                        success: function (data) {
+                            $("#elementDBParameter").html(data);
+                        }
+                    });
+                }
+            });
+        } else {
+            alert("Lügner!");
+        }
     });
 </script>
 </body>

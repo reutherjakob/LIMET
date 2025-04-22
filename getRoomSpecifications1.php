@@ -950,6 +950,7 @@ session_start();
                let medgas = $("#medgas").val();
                let baustatik = $("#baustatik").val();
                let hkls = $("#hkls").val();
+
                let abdunkelbarkeit = ($("#abdunkelbarkeit").prop('checked') === true) ? '1' : '0';
                let strahlenanwendung = ($("#strahlenanwendung").val() === 'Ja') ? '1' : ($("#strahlenanwendung").val() === 'Nein') ? '0' : '2';
                let laseranwendung = ($("#laseranwendung").prop('checked') === true) ? '1' : '0';
@@ -992,7 +993,6 @@ session_start();
                let gereateAbluftHT = $("#gereateAbluftHT").val();
                let kuehlwasserLeistungHT = $("#kuehlwasserLeistungHT").val();
                 console.log("getRSpec1: speichern ");
-
                 $.ajax({
                     url: "saveRoomSpecifications.php",
                     data: {"gereateAbluftHT": gereateAbluftHT, "kuehlwasserLeistungHT": kuehlwasserLeistungHT, "H2": H2, "He": He, "HeRF": HeRF, "Ar": Ar, "N2": N2, "raumTypBH": raumTypBH, "emv": emv, "leistungET": leistungET, "waermeHT": waermeHT, "lwr": lwr, "notdusche": notdusche, "bestandGeb": bestandGeb, "bestandNr": bestandNr, "schwingungsklasse": schwingungsklasse, "fussbodenklasse": fussbodenklasse, "it": it, "funktionBO": funktionBO, "Elektro": Elektro, "geraete": geraete, "medgas": medgas, "baustatik": baustatik, "hkls": hkls, "abdunkelbarkeit": abdunkelbarkeit, "strahlenanwendung": strahlenanwendung, "laseranwendung": laseranwendung, "awg": awg, "av": av, "sv": sv, "zsv": zsv, "usv": usv, "h6020": h6020, "iso": iso, "gmp": gmp, "hygieneklasse": hygieneklasse, "kreiso2_1": kreiso2_1, "kreiso2_2": kreiso2_2, "kreisva_1": kreisva_1, "kreisva_2": kreisva_2, "kreisdl5_1": kreisdl5_1, "kreisdl5_2": kreisdl5_2, "dl10": dl10, "dltech": dltech, "co2": co2, "nga": nga, "n2o": n2o},
