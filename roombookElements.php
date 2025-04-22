@@ -66,7 +66,7 @@ init_page_serversides();
 
         <div class="col-xxl-3">
             <div class="card mt-1">
-                <div class="card-header"> Hier könnte ihre Inhalt stehen.</div>
+                <div class="card-header"> Hier könnte ihr Inhalt stehen.</div>
                 <div class="card-body" id=""> Wenn Mensch hier weitere Informationen sehen will, sag Bescheid welche.
                 </div>
             </div>
