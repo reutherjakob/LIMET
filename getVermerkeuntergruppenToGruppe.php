@@ -1,6 +1,8 @@
 <!-- 13.2.25: Reworked -->
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 check_login();;
 ?>
 <!DOCTYPE html>
@@ -39,11 +41,11 @@ echo "</tbody></table>";
 $mysqli->close();
 ?>
 
-<!-- Modal zum Hinzufügen/Ändern einer UnterGruppe -->
-<div class='modal fade' id='changeUnterGroupModal' role='dialog'>
-    <div class='modal-dialog modal-md'>
+<body>
 
-        <!-- Modal content-->
+<!-- Modal zum Hinzufügen/Ändern einer UnterGruppe -->
+<div class='modal fade' id='changeUnterGroupModal' role='dialog' tabindex="-1">
+    <div class='modal-dialog modal-md'>
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Untergruppendaten</h4>
@@ -63,15 +65,16 @@ $mysqli->close();
             </div>
             <div class='modal-footer'>
                 <input type='button' id='addUnterGroup' class='btn btn-success btn-sm' value='Hinzufügen'
-                       data-bs-dismiss='modal'></input>
+                       data-bs-dismiss='modal'>
                 <input type='button' id='saveUnterGroup' class='btn btn-warning btn-sm' value='Speichern'
-                       data-bs-dismiss='modal'></input>
+                       data-bs-dismiss='modal'>
                 <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
             </div>
         </div>
-
     </div>
 </div>
+
+</body>
 
 <script>
     $(document).ready(function () {
@@ -94,16 +97,14 @@ $mysqli->close();
             info: true,
             order: [[1, "asc"]],
             select: true,
-            responsive:true,
+            responsive: true,
             language: {
                 'url': 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
-                search: "",     searchPlaceholder:"Suche..."
+                search: "", searchPlaceholder: "Suche..."
             }, initComplete: function () {
                 $('#topDivSearch label').remove();
                 $('#topDivSearch').removeClass("col-md-6").children().children().removeClass("form-control form-control-sm");
                 $('#topDivSearch').appendTo('#CardHeaderVermerkE').children().children().addClass("btn btn-sm btn-outline-dark");
-
-
             }
         });
 

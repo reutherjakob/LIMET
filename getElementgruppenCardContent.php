@@ -37,16 +37,35 @@ echo "<div class='form-group row mt-1'>
 </div>";
 
 $mysqli->close();
+echo " <script>
 
-echo "<script>     
-        let gewerkID =3;
+    $.ajax({
+        url: 'getElementGroupsByGewerk.php',
+        data: {'gewerkID': 3},
+        type: 'GET',
+        success: function (data) {
+            $('#elementGroups').html(data);
+        }
+    });
+    
+    $('#ResetElementGroups').on('click', function () {
         $.ajax({
             url: 'getElementGroupsByGewerk.php',
-            data: {'gewerkID': gewerkID},
+            data: {'gewerkID': 3},
             type: 'GET',
             success: function (data) {
                 $('#elementGroups').html(data);
+
+                $.ajax({
+                    url: 'getElementsInDbCardBodyContent.php',
+                    success: function (data) {
+                        $('#elementsInDB').html(data);
+                        init_table_elementsinDB();
+                    }
+                });
             }
         });
-    </script>";
+    });
+
+</script>";
 ?>

@@ -167,14 +167,18 @@ init_page_serversides();
             <div class="row mt-4">
                 <div class="col-xxl-6">
                     <div class="mt-4 card">
-                        <div class="card-header" id="CardHeaderElementGruppen" >Elementgruppen</div>
+                        <div class="card-header" id="CardHeaderElementGruppen">Elementgruppen
+                            <button type="reset" class="btn btn-sm float-end" title="Reset" id="ResetElementGroups">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
                         <div class="card-body" id="elementGroups">
-                            <?php include "getElementgruppenCardContent.php";?>
+                            <?php include "getElementgruppenCardContent.php"; ?>
                         </div>
                     </div>
                     <div class="mt-4 card">
-                        <div class="card-header">Elemente in DB</div>
-                        <div class="card-body" id=" ">
+                        <div class="card-header" id="CardHeaderELementesInDb">Elemente in DB</div>
+                        <div class="card-body" id="elementGroups">
                             <?php include "getElementsInDbCardBodyContent.php"; ?>
                         </div>
                     </div>
@@ -333,6 +337,12 @@ init_page_serversides();
             order: [[1, "asc"]],
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json', search: ""
+            },
+            initComplete: function () {
+                $('#CardHeaderELementesInDb .btn').remove();
+                $('.dt-search label').remove();
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeaderELementesInDb');
+
             }
         });
 
@@ -424,7 +434,6 @@ init_page_serversides();
             $("#DBElementData").hide();
         }
     });
-
 
 
     $("button[id='buttonBO']").click(function () {

@@ -271,7 +271,7 @@ include "_format.php";
                 search: "",
                 decimal: ",",
                 thousands: ".",
-                searchPlaceholder: "Suche"
+                searchPlaceholder: "Suche..."
             },
             stateSave: true,
             layout: {

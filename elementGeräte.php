@@ -186,7 +186,7 @@
             info: true,
             language: {
                 search: "_INPUT_",
-                searchPlaceholder: "Search...",
+                searchPlaceholder: "Suche...",
                 lengthMenu: "Show _MENU_ entries"
             },
             initComplete: function () {

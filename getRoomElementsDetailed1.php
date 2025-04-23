@@ -139,15 +139,15 @@ $mysqli->close();
 
 
     <?php if ($result_room_elements->num_rows > 0): ?>
-        <div id="room-action-buttons" class="d-inline-flex justify-content-end align-items-center text-nowrap">
-            <button type="button" class="btn btn-outline-dark me-1" id="<?php echo $_SESSION["roomID"]; ?>"
+        <div id="room-action-buttons" class="d-inline-flex justify-content-end align-items-center text-nowrap btn-group-sm">
+            <button type="button" class="btn btn-sm btn-outline-dark me-1" id="<?php echo $_SESSION["roomID"]; ?>"
                     data-bs-toggle="modal" data-bs-target="#copyRoomElementsModal" value="Rauminhalt kopieren">Inhalt
                 kopieren
             </button>
-            <button type="button" class="btn btn-outline-dark  me-1" id="<?php echo $_SESSION["roomID"]; ?>"
+            <button type="button" class="btn btn-sm btn-outline-dark  me-1" id="<?php echo $_SESSION["roomID"]; ?>"
                     value="createRoombookPDF"><i class="far fa-file-pdf"></i> RB-PDF
             </button>
-            <button type="button" class="btn btn-outline-dark  me-1" id="<?php echo $_SESSION["roomID"]; ?>"
+            <button type="button" class="btn btn-sm btn-outline-dark  me-1" id="<?php echo $_SESSION["roomID"]; ?>"
                     value="createRoombookPDFCosts"><i class="far fa-file-pdf"></i> RB-Kosten-PDF
             </button>
 
@@ -431,13 +431,19 @@ $mysqli->close();
             language: {
                 url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/de-DE.json",
                 search: "",
-                searchPlaceholder: "Search...",
+                searchPlaceholder: "Suche...",
             },
             layout: {
                 topStart: null,
                 topEnd: null,
                 bottomEnd: ['pageLength', 'paging'],
                 bottomStart: ["search", 'info']
+            },
+            initComplete: function () {
+             //   room-action-buttons
+                $('#room-action-buttons .xxx').remove();
+                $('#roomElements .dt-search label').remove();
+                $('#roomElements .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx  ms-1 me-1").appendTo('#room-action-buttons');
             }
         });
 

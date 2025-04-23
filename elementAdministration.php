@@ -21,8 +21,9 @@
 </head>
 <?php
 if (!function_exists('utils_connect_sql')) {
-include "_utils.php";
-} init_page_serversides("x"); ?>
+    include "_utils.php";
+}
+init_page_serversides("x"); ?>
 
 <body style="height:100%">
 <div id="limet-navbar"></div> <!-- Container für Navbar -->
@@ -33,7 +34,11 @@ include "_utils.php";
             <div class="row mt-1">
                 <div class='col-xxl-6'>
                     <div class='mt-1 card'>
-                        <div class='card-header' id="CardHeaderElementGruppen"><label>Elementgruppen</label></div>
+                        <div class='card-header' id="CardHeaderElementGruppen"><label>Elementgruppen</label>
+                            <button type="reset" class="btn btn-sm float-end" title="Reset" id="ResetElementGroups">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
                         <div class='card-body' id='elementGroups'>
                             <?php include "getElementgruppenCardContent.php"; ?>
                         </div>
@@ -127,7 +132,9 @@ include "_utils.php";
 
 <script charset="utf-8" type="text/javascript">
     var table1;
-    $(document).ready(function () {
+
+
+    function init_table_elementsinDB() {
         table1 = new DataTable('#tableElementsInDB', {
             paging: true,
             columnDefs: [
@@ -152,7 +159,7 @@ include "_utils.php";
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 search: "",
-                searchPlaceholder: "Suche"
+                searchPlaceholder: "Suche..."
             },
             layout: {
                 topStart: null,
@@ -161,6 +168,7 @@ include "_utils.php";
                 bottomEnd: ['paging'],
             },
             initComplete: function () {
+                $('#CardHeaderELementesInDb .btn').remove();
                 $('.dt-search label').remove();
                 $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeaderELementesInDb');
             }
@@ -210,6 +218,13 @@ include "_utils.php";
             });
 
         });
+
+    }
+
+    $(document).ready(function () {
+
+
+        init_table_elementsinDB();
     });
 
 

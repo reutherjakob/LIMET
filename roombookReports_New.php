@@ -52,7 +52,7 @@ init_page_serversides("", "x");
                            name="dateSelect"
                            class=" me-1"
                            data-bs-toggle="tooltip"
-                           data-bs-title="Dieses Datum wird im Bericht als aktuelelr Stand angeführt.
+                           data-bs-title="Dieses Datum wird im Bericht als aktueller Stand angeführt.
                            Wird dieser Wert geändert und dann ein Bericht (in anderem Tab) neu geladen, wird das Datum darauf ebenso aktualisiert. "
                            data-bs-custom-class="custom-tooltip">
                 </div>

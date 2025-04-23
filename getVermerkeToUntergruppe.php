@@ -56,6 +56,8 @@ while ($row = $result->fetch_assoc()) {
 echo "</tbody></table>";
 ?>
 
+<body>
+
 <!-- Modal zum Hinzufügen/Ändern eines Vermerks -->
 <div class='modal fade' id='changeVermerkModal' role='dialog'>
     <div class='modal-dialog modal-lg'>
@@ -144,7 +146,6 @@ echo "</tbody></table>";
                         <textarea class="form-control form-control-sm" rows="15" id="vermerkText"
                                   style="font-size:10pt"> </textarea>
 
-
                     </div>
                     <div class="form-group">
 
@@ -156,8 +157,7 @@ echo "</tbody></table>";
                        data-bs-dismiss='modal'>
                 <input type='button' id='saveVermerk' class='btn btn-warning btn-sm' value='Speichern'
                        data-bs-dismiss='modal'>
-                <input type='button' id='deleteVermerk' class='btn btn-danger btn-sm' value='Löschen'
-                       data-bs-dismiss='modal'>
+                <input type='button' id='deleteVermerk' class='btn btn-danger btn-sm' value='Löschen'>
                 <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
             </div>
         </div>
@@ -168,7 +168,6 @@ echo "</tbody></table>";
 <!-- Modal für Zustaendigkeit-->
 <div class='modal fade' id='showVermerkZustaendigkeitModal' role='dialog'>
     <div class='modal-dialog modal-lg'>
-
         <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
@@ -197,25 +196,25 @@ echo "</tbody></table>";
     </div>
 </div>
 
-<!-- Modal zum Löschen eines Vermerks-->
-<div class='modal fade' id='deleteVermerkModal' role='dialog'>
-    <div class='modal-dialog modal-sm'>
-        <div class='modal-content'>
-            <div class='modal-header'>
-                <h4 class='modal-title'>Vermerk löschen</h4>
-                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
+<div class="modal fade" id="deleteVermerkModal" tabindex="-1" aria-labelledby="deleteVermerkModalLabel"
+     aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="deleteVermerkModalLabel">Vermerk löschen</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class='modal-body' id='mbody'>Wollen Sie den Vermerk wirklich löschen? Sämtliche Informationen gehen
-                verloren.
+            <div class="modal-body" id="mbody">
+                Wollen Sie den Vermerk wirklich löschen? Sämtliche Informationen gehen verloren.
             </div>
-            <div class='modal-footer'>
-                <input type='button' id='deleteVermerkExecute' class='btn btn-danger btn-sm' value='Ja'
-                       data-bs-dismiss='modal'>
-                <button type='button' class='btn btn-success btn-sm' data-bs-dismiss='modal'>Nein</button>
+            <div class="modal-footer">
+                <button id="deleteVermerkExecute" class="btn btn-danger btn-sm" data-bs-dismiss="modal"> Ja</button>
+                <button class="btn btn-success btn-sm" data-bs-dismiss="modal">Nein</button>
             </div>
         </div>
     </div>
 </div>
+
 
 <!-- Modal für Bild-Upload -->
 <div class='modal fade' id='uploadImageModal' role='dialog'>
@@ -246,6 +245,7 @@ echo "</tbody></table>";
     </div>
 </div>
 
+</body>
 
 <script charset="utf-8 " type="text/javascript">
     vermerkGruppenID = <?php echo filter_input(INPUT_GET, 'vermerkGruppenID') ?>;
@@ -254,6 +254,7 @@ echo "</tbody></table>";
         document.getElementById("buttonNewVermerk").style.visibility = "visible";
         document.getElementById("buttonNewVermerkuntergruppe").style.visibility = "visible";
         $('#topDivSearch2').remove();
+
         tableVermerke = new DataTable('#tableVermerke', {
             columnDefs: [
                 {
@@ -263,8 +264,8 @@ echo "</tbody></table>";
                 },
                 {
                     targets: [1],
-                    ible: true,
-                    sevisarchable: false,
+                    visible: true,
+                    searchable: false,
                     orderable: false
                 }
             ], responsive: true,
@@ -297,35 +298,35 @@ echo "</tbody></table>";
                 $('#topDivSearch2 label').remove();
                 $('#topDivSearch2').removeClass("col-md-6").children().children().removeClass("form-control form-control-sm");
                 $('#topDivSearch2').appendTo('#CardHeaderVermerUntergruppen').children().children().addClass("btn btn-sm btn-outline-dark");
-            }
-        });
 
+                $('#tableVermerke tbody').on('click', 'tr', function () {
+                    vermerkID = tableVermerke.row($(this)).data()[0];
+                    document.getElementById("vermerkStatus").value = tableVermerke.row($(this)).data()[6];
+                    document.getElementById("vermerkText").value = tableVermerke.row($(this)).data()[2];
+                    document.getElementById("faelligkeit").value = tableVermerke.row($(this)).data()[4];
+                    document.getElementById("vermerkTyp").value = tableVermerke.row($(this)).data()[7];
 
-        $('#tableVermerke tbody').on('click', 'tr', function () {
-            vermerkID = tableVermerke.row($(this)).data()[0];
-            document.getElementById("vermerkStatus").value = tableVermerke.row($(this)).data()[6];
-            document.getElementById("vermerkText").value = tableVermerke.row($(this)).data()[2];
-            document.getElementById("faelligkeit").value = tableVermerke.row($(this)).data()[4];
-            document.getElementById("vermerkTyp").value = tableVermerke.row($(this)).data()[7];
+                    if (tableVermerke.row($(this)).data()[9] === '') {
+                        document.getElementById("los").value = 0;
+                    } else {
+                        document.getElementById("los").value = tableVermerke.row($(this)).data()[9];
+                    }
+                    if (tableVermerke.row($(this)).data()[10] === '') {
+                        document.getElementById("room").value = 0;
+                    } else {
+                        document.getElementById("room").value = tableVermerke.row($(this)).data()[10];
+                    }
+                    if (tableVermerke.row($(this)).data()[7] === "Bearbeitung") {
+                        $("#faelligkeit").prop('disabled', false);
+                    } else {
+                        $("#faelligkeit").prop('disabled', true);
+                    }
+                    const addImage = document.getElementById("addImage");
+                    if (addImage) {
+                        addImage.style.visibility = "visible";
+                    }
+                });
 
-            if (tableVermerke.row($(this)).data()[9] === '') {
-                document.getElementById("los").value = 0;
-            } else {
-                document.getElementById("los").value = tableVermerke.row($(this)).data()[9];
-            }
-            if (tableVermerke.row($(this)).data()[10] === '') {
-                document.getElementById("room").value = 0;
-            } else {
-                document.getElementById("room").value = tableVermerke.row($(this)).data()[10];
-            }
-            if (tableVermerke.row($(this)).data()[7] === "Bearbeitung") {
-                $("#faelligkeit").prop('disabled', false);
-            } else {
-                $("#faelligkeit").prop('disabled', true);
-            }
-            const addImage = document.getElementById("addImage");
-            if (addImage) {
-                addImage.style.visibility = "visible";
             }
         });
 
@@ -343,6 +344,7 @@ echo "</tbody></table>";
         document.getElementById("deleteVermerk").style.display = "none";
         $("#untergruppe").prop('disabled', true);
         document.getElementById("addVermerk").style.display = "inline";
+        $('#deleteVermerkModal').modal('hide');
         $('#changeVermerkModal').modal('show');
     });
 
@@ -357,6 +359,7 @@ echo "</tbody></table>";
             faelligkeitDatum = null;
         }
         let vermerkUntergruppenID = <?php echo filter_input(INPUT_GET, 'vermerkUntergruppenID') ?>;
+
         if (room !== "" && los !== "" && vermerkStatus !== "" && vermerkTyp !== "" && vermerkText !== "") {
             $('#changeVermerkModal').modal('hide');
             $.ajax({
@@ -386,6 +389,7 @@ echo "</tbody></table>";
             });
         } else {
             alert("Bitte alle Felder ausfüllen!");
+            $('#changeVermerkModal').modal('hide');
         }
     });
 
@@ -399,11 +403,11 @@ echo "</tbody></table>";
     });
 
     $("button[value='changeVermerk']").click(function () {
-        // Buttons ein/ausblenden!
         document.getElementById("saveVermerk").style.display = "inline";
         document.getElementById("deleteVermerk").style.display = "inline";
         $("#untergruppe").prop('disabled', false);
         document.getElementById("addVermerk").style.display = "none";
+        // $('#deleteVermerkModal').modal('hide');
         $('#changeVermerkModal').modal('show');
     });
 
@@ -455,18 +459,15 @@ echo "</tbody></table>";
         }
     });
 
-
-    // Vermerk löschen -> Modal öffnen
     $("#deleteVermerk").click(function () {
-        alert("Lol, hätteste gern.\nGeht aber nich... \nFrag den Jakob. \n");
-        //$('#deleteVermerkModal').modal('show');
+        $('#deleteVermerkModal').modal('show');
     });
 
-    // Vermerk löschen
     $("#deleteVermerkExecute").click(function () {
+        $('.modal-backdrop').remove();
+        $(document.body).removeClass('modal-open');
 
-        $('#deleteVermerkModal').modal('hide');
-        let vermerkUntergruppenID = <?php echo filter_input(INPUT_GET, 'vermerkUntergruppenID') ?>;
+        let vermerkUntergruppenID = <?php echo json_encode(filter_input(INPUT_GET, 'vermerkUntergruppenID')); ?>;
         $.ajax({
             url: "deleteVermerk.php",
             data: {"vermerkID": vermerkID},
@@ -478,9 +479,9 @@ echo "</tbody></table>";
                     data: {"vermerkUntergruppenID": vermerkUntergruppenID, "vermerkGruppenID": vermerkGruppenID},
                     type: "GET",
                     success: function (data) {
+
                         $("#vermerke").html(data);
                         document.getElementById('pdfPreview').src += '';                        // Neu laden der PDF-Vorschau
-
                     }
                 });
             },
@@ -572,7 +573,6 @@ echo "</tbody></table>";
                             alert(this.responseText);
                         }
                     };
-                    // Send request with data
                     xhttp.send(formData);
                 };
             };
