@@ -9,11 +9,8 @@
     $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
 
     /* change character set to utf8 */
-    if (!$mysqli->set_charset("utf8")) {
-        printf("Error loading character set utf8: %s\n", $mysqli->error);
-        exit();
-    } 
-    // Check connection
+
+
     if ($mysqli->connect_error) {
         die("Connection failed: " . $mysqli->connect_error);
     }
