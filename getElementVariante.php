@@ -23,65 +23,63 @@ $result = $mysqli->query($sql);
 $row = $result->fetch_assoc(); ?>
 <div class='col-xxl-12'>
     <div class='card'>
-        <div class='card-body'>
-            <div class='row'>
-                <div class="col-xxl-6">
-                    <div class='card'>
-                        <div class='card-body'>
-                            <div class='d-flex align-items-center'>
-                                <div class='form-group'>
-                                    <label for='variante'>Variante </label>
-                                    <select class='form-control form-control-sm' id='variante'>
-                                        <?php
-                                        $options = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-                                        $selectedID = $_SESSION["variantenID"];
-                                        foreach ($options as $key => $value) {
-                                            $optionValue = $key + 1;
-                                            $selected = ($optionValue == $selectedID) ? 'selected' : '';
-                                            echo "<option value='$optionValue' $selected>$value</option>";
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-                                &nbsp;
-                                <div class='form-group'>
-                                    <label for='kosten'>Kosten </label>
-                                    <input type='text' class='form-control form-control-sm' id='kosten'
-                                           value="<?php echo $row['Kosten']; ?>">
-                                </div>
-                                &nbsp;
-                                <div class='form-group'>
-                                    <label>&nbsp;</label>
-                                    <div>
-                                        <button type='button' id='saveVariantePrice'
-                                                class='btn btn-outline-dark btn-sm'>
-                                            <i class='far fa-save'></i> Kosten speichern
-                                        </button>
-                                        <button type='button' id='getElementPriceHistory'
-                                                class='btn btn-outline-dark btn-sm'
-                                                data-bs-toggle='modal' data-bs-target='#getElementPriceHistoryModal'>
-                                            <i class='far fa-clock'></i> Kosten Änderungsverlauf
-                                        </button>
+        <div class='card-body d-inline-flex'>
+            <div class=' d-flex align-items-center flex-wrap'>
+                <div class='form-group d-flex align-items-center mr-2'>
+                    <label for='variante'>Variante </label>
+                    <select class='form-control form-control-sm' id='variante'>
+                        <?php
+                        $options = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+                        $selectedID = $_SESSION["variantenID"];
+                        foreach ($options as $key => $value) {
+                            $optionValue = $key + 1;
+                            $selected = ($optionValue == $selectedID) ? 'selected' : '';
+                            echo "<option value='$optionValue' $selected>$value</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+                &nbsp;
+                <div class='form-group d-flex align-items-center mr-2'>
+                    <label for='kosten'>Kosten </label>
+                    <input type='text' class='form-control form-control-sm' id='kosten'
+                           value="<?php echo $row['Kosten']; ?>">
+                </div>
+                &nbsp;
+                <div class='form-group d-flex align-items-center mr-2'>
+                    <label>&nbsp;</label>
+                    <div>
+                        <button type='button' id='saveVariantePrice'
+                                class='btn btn-outline-dark btn-sm'>
+                            <i class='far fa-save'></i> Kosten speichern
+                        </button>
+                        <button type='button' id='getElementPriceHistory'
+                                class='btn btn-outline-dark btn-sm'
+                                data-bs-toggle='modal' data-bs-target='#getElementPriceHistoryModal'>
+                            <i class='far fa-clock'></i> Kosten Änderungsverlauf
+                        </button>
 
-                                        <button type='button' id='addVariantenParameters'
-                                                class='btn btn-outline-dark btn-sm m-1' value='addVariantenParameters'
-                                                data-bs-toggle='modal'
-                                                data-bs-target='#addVariantenParameterToElementModal'><i
-                                                    class='fas fa-upload'></i> Variantenparameter übernehmen
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <button type='button' id='addVariantenParameters'
+                                class='btn btn-outline-dark btn-sm m-1' value='addVariantenParameters'
+                                data-bs-toggle='modal'
+                                data-bs-target='#addVariantenParameterToElementModal'><i
+                                    class='fas fa-upload'></i> Variantenparameter übernehmen
+                        </button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <div class='card'>
-                        <div class='card-header'>
-                            Variantenparameter
-                        </div>
-                        <div class='card-body' id='variantenParameter'>
-                            <?php
-                            $sql = "SELECT tabelle_parameter.Bezeichnung, tabelle_projekt_elementparameter.Wert,
+    <div class='row'>
+        <div class="col-xxl-6">
+            <div class='card'>
+                <div class='card-header' id="variantenParameterCH">
+                    Variantenparameter
+                </div>
+                <div class='card-body py-0 px-0' id='variantenParameter'>
+                    <?php
+                    $sql = "SELECT tabelle_parameter.Bezeichnung, tabelle_projekt_elementparameter.Wert,
                                 tabelle_projekt_elementparameter.Einheit, tabelle_parameter_kategorie.Kategorie,
                                 tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter
                                 FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN
@@ -90,33 +88,33 @@ $row = $result->fetch_assoc(); ?>
                                 tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie =
                                 tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
                                 WHERE (((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" .
-                                $_SESSION["projectID"] . ") AND
+                        $_SESSION["projectID"] . ") AND
                                 ((tabelle_projekt_elementparameter.tabelle_elemente_idTABELLE_Elemente)=" .
-                                $_SESSION["elementID"] . ") AND
+                        $_SESSION["elementID"] . ") AND
                                 ((tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten)=" .
-                                $_SESSION["variantenID"] . "))
-                                ORDER BY tabelle_parameter_kategorie.Kategorie ASC, tabelle_parameter.Bezeichnung ASC;";
+                        $_SESSION["variantenID"] . "))
+                                ORDER BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung";
 
-                            $result = $mysqli->query($sql);
-                            ?>
-                            <table class='table table-striped table-sm' id='tableElementParameters'>
-                                <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Kategorie</th>
-                                    <th>Parameter</th>
-                                    <th>Wert</th>
-                                    <th>Einheit</th>
-                                    <th></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <?php
+                    $result = $mysqli->query($sql);
+                    ?>
+                    <table class='table table-striped table-sm table-hover table-bordered border border-light border-5' id='tableElementParameters'>
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>Kategorie</th>
+                            <th>Parameter</th>
+                            <th>Wert</th>
+                            <th>Einheit</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php
 
-                                while ($row = $result->fetch_assoc()) {
-                                    echo "
+                        while ($row = $result->fetch_assoc()) {
+                            echo "
                                     <tr>";
-                                    echo "
+                            echo "
                                         <td>
                                             <button type='button'
                                                     id='" . $row["tabelle_parameter_idTABELLE_Parameter"] . "'
@@ -124,23 +122,23 @@ $row = $result->fetch_assoc(); ?>
                                                         class='fas fa-minus'></i></button>
                                         </td>
                                         ";
-                                    echo "
+                            echo "
                                         <td>" . $row["Kategorie"] . "</td>
                                         ";
-                                    echo "
+                            echo "
                                         <td>" . $row["Bezeichnung"] . "</td>
                                         ";
-                                    echo "
+                            echo "
                                         <td><input type='text'
                                                    id='wert" . $row["tabelle_parameter_idTABELLE_Parameter"] . "'
-                                                   value='" . $row["Wert"] . "' size='20'></input></td>
+                                                   value='" . $row["Wert"] . "' size='25'>   </td>
                                         ";
-                                    echo "
+                            echo "
                                         <td><input type='text'
                                                    id='einheit" . $row["tabelle_parameter_idTABELLE_Parameter"] . "'
-                                                   value='" . $row["Einheit"] . "' size='45'></input></td>
+                                                   value='" . $row["Einheit"] . "' size='25'>  </td>
                                         ";
-                                    echo "
+                            echo "
                                         <td>
                                             <button type='button'
                                                     id='" . $row["tabelle_parameter_idTABELLE_Parameter"] . "'
@@ -148,26 +146,26 @@ $row = $result->fetch_assoc(); ?>
                                                         class='far fa-save'></i></button>
                                         </td>
                                         ";
-                                    echo "
+                            echo "
                                     </tr>
                                     ";
-                                } ?>
-                                </tbody>
-                            </table>
-
-                        </div>
-                    </div>
+                        } ?>
+                        </tbody>
+                    </table>
 
                 </div>
+            </div>
+
+        </div>
 
 
-                <div class='col-xxl-6'>
-                    <div class='card'>
-                        <div class='card-header d-flex justify-content-between' id='mglParameterCardHeader'>Mögliche
-                            Parameter
-                        </div>
-                        <div class='card-body' id='possibleVariantenParameter'>
-                            <?php $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung,
+        <div class='col-xxl-6'>
+            <div class='card'>
+                <div class='card-header d-flex justify-content-between' id='mglParameterCardHeader'>Mögliche
+                    Parameter
+                </div>
+                <div class='card-body py-0 px-0' id='possibleVariantenParameter'>
+                    <?php $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung,
                                 tabelle_parameter_kategorie.Kategorie
                                 FROM tabelle_parameter, tabelle_parameter_kategorie
                                 WHERE tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie =
@@ -178,15 +176,15 @@ $row = $result->fetch_assoc(); ?>
                                 tabelle_parameter.idTABELLE_Parameter =
                                 tabelle_projekt_elementparameter.TABELLE_Parameter_idTABELLE_Parameter
                                 WHERE tabelle_projekt_elementparameter.TABELLE_Elemente_idTABELLE_Elemente = " .
-                                $_SESSION["elementID"] . " AND
+                        $_SESSION["elementID"] . " AND
                                 tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte = " .
-                                $_SESSION["projectID"] . " AND
+                        $_SESSION["projectID"] . " AND
                                 tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten = " .
-                                $_SESSION["variantenID"] . ")
+                        $_SESSION["variantenID"] . ")
                                 ORDER BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung;";
 
-                            $result = $mysqli->query($sql);
-                            echo "
+                    $result = $mysqli->query($sql);
+                    echo "
                                 <table class='table table-striped table-sm table-hover table-bordered border border-5 border-light' id='tablePossibleElementParameters'                             >
                                     <thead>
                                     <tr>
@@ -196,34 +194,30 @@ $row = $result->fetch_assoc(); ?>
                                     </tr>
                                     </thead>
                                     <tbody>";
-                            while ($row = $result->fetch_assoc()) {
-                                echo "
+                    while ($row = $result->fetch_assoc()) {
+                        echo "
                                     <tr>";
-                                echo "
+                        echo "
                                         <td>
                                             <button type='button' id='" . $row["idTABELLE_Parameter"] . "'
                                                     class='btn btn-outline-success btn-sm' value='addParameter'><i
                                                         class='fas fa-plus'></i></button>
                                         </td>
                                         ";
-                                echo "
+                        echo "
                                         <td>" . $row["Kategorie"] . "</td>
                                         ";
-                                echo "
+                        echo "
                                         <td>" . $row["Bezeichnung"] . "</td>
                                         ";
-                                echo "
+                        echo "
                                     </tr>
                                     ";
-                            }
-                            echo "
+                    }
+                    echo "
                                     </tbody>
                                 </table> "; ?>
-                        </div>
-                    </div>
                 </div>
-                <div class='col-xxl-6'></div>
-
             </div>
         </div>
     </div>
@@ -233,8 +227,6 @@ $row = $result->fetch_assoc(); ?>
 <!-- Modal zum Zeigen der Kostenänderungen -->
 <div class='modal fade' id='getElementPriceHistoryModal' role='dialog'>
     <div class='modal-dialog modal-lg'>
-
-        <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Kostenänderungen</h4>
@@ -344,6 +336,7 @@ $row = $result->fetch_assoc(); ?>
 <script src="_utils.js"></script>
 <script>
     var tablePossibleElementParameters;
+
     document.getElementById('kosten').addEventListener('keydown', function (event) {
         if (event.key === 'Enter') { //avoid annoying reload of the page, when hitting enter and subsequently causing useless form submission
             event.preventDefault();
@@ -366,15 +359,22 @@ $row = $result->fetch_assoc(); ?>
             ],
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
-                search: ""
+                search: "",
+                searchPlaceholder: "Suche..."
             },
             layout: {
-                topStart: 'pageLength',
-                topEnd: 'search',
-                bottomStart: 'info',
-                bottomEnd: 'paging'
+                topStart: null,
+                topEnd: null,
+                bottomStart: ['info', 'search'],
+                bottomEnd: ['paging', 'pageLength']
             },
-            scrollX: true
+            scrollX: true,
+            initComplete: function ( ) {
+                $('#variantenParameterCh .xxx').remove();
+                $('#variantenParameter .dt-search label').remove();
+                $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#variantenParameterCH');
+            }
+
         });
 
         tablePossibleElementParameters = $('#tablePossibleElementParameters').DataTable({
@@ -392,16 +392,20 @@ $row = $result->fetch_assoc(); ?>
             ],
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
-                search: ""
+                search: "",
+                searchPlaceholder: "Suche..."
             },
             layout: {
-                topStart: 'pageLength',
-                topEnd: 'search',
-                bottomStart: 'info',
-                bottomEnd: 'paging'
+                topStart: null,
+                topEnd: null,
+                bottomStart: ['info', 'search'],
+                bottomEnd: ['paging', 'pageLength']
             },
             scrollX: true,
             initComplete: function (settings, json) {
+                $('#mglParameterCardHeader .xxx').remove();
+                $('#possibleVariantenParameter .dt-search label').remove();
+                $('#possibleVariantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#mglParameterCardHeader');
             }
         });
 
@@ -425,9 +429,9 @@ $row = $result->fetch_assoc(); ?>
             },
             layout: {
                 topStart: null,
-                topEnd: 'search',
-                bottomStart: null,
-                bottomEnd: 'paging'
+                topEnd: null,
+                bottomStart: ['info', 'search'],
+                bottomEnd: ['paging', 'pageLength']
             },
             scrollX: true
         });

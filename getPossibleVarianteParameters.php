@@ -5,30 +5,20 @@
     <title></title></head>
 <body>
 <?php
-session_start();
-if (!isset($_SESSION["username"])) {
-    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-    exit;
-}
-?>
+include "_utils.php";
+check_login();
 
-<?php
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-
-/* change character set to utf8 */
-if (!$mysqli->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $mysqli->error);
-    exit();
-}
+$mysqli =  utils_connect_sql();
 
 $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung, tabelle_parameter_kategorie.Kategorie 
-			  					FROM tabelle_parameter, tabelle_parameter_kategorie 
-			  					WHERE tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie 
-								AND tabelle_parameter.idTABELLE_Parameter NOT IN 
-								(SELECT tabelle_parameter.idTABELLE_Parameter 
-								FROM tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.TABELLE_Parameter_idTABELLE_Parameter 
-								WHERE tabelle_projekt_elementparameter.TABELLE_Elemente_idTABELLE_Elemente = " . $_SESSION["elementID"] . " AND tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte = " . $_SESSION["projectID"] . " AND tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten = " . $_GET["variantenID"] . ") 
-								ORDER BY tabelle_parameter_kategorie.Kategorie;";
+        FROM tabelle_parameter, tabelle_parameter_kategorie 
+        WHERE tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie 
+        AND tabelle_parameter.idTABELLE_Parameter NOT IN 
+        (SELECT tabelle_parameter.idTABELLE_Parameter 
+        FROM tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.TABELLE_Parameter_idTABELLE_Parameter 
+        WHERE tabelle_projekt_elementparameter.TABELLE_Elemente_idTABELLE_Elemente = " . $_SESSION["elementID"] . " AND tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte = " . $_SESSION["projectID"] . " 
+        AND tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten = " . $_GET["variantenID"] . ") 
+        ORDER BY tabelle_parameter_kategorie.Kategorie;";
 
 $result = $mysqli->query($sql);
 
@@ -78,7 +68,7 @@ $mysqli->close();
                 topEnd: "search",
                 topStart: null,
                 bottomStart: null,
-                bottomEnd: 'paging'
+                bottomEnd: ['paging', "pageLength"]
             },
             initComplete: function (settings, json) {
 
