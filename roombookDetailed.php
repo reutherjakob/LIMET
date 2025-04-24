@@ -177,8 +177,11 @@ init_page_serversides();
                         </div>
                     </div>
                     <div class="mt-4 card">
-                        <div class="card-header" id="CardHeaderELementesInDb">Elemente in DB</div>
-                        <div class="card-body" id="elementGroups">
+                        <div class="card-header d-flex justify-content-center align-items-center">
+                            <div class="col-10"> Elemente in DB</div>
+                            <div class="col-2" id="CardHeaderELementesInDb"></div>
+                        </div>
+                        <div class="card-body" id="elementsInDB">
                             <?php include "getElementsInDbCardBodyContent.php"; ?>
                         </div>
                     </div>
@@ -320,31 +323,6 @@ init_page_serversides();
             tableRooms.draw();
         });
 
-        tableElementsInDB = new DataTable('#tableElementsInDB', {
-            paging: {
-                type: 'simple',
-                numbers: 10
-            },
-            lengthChange: false,
-            columnDefs: [
-                {
-                    targets: [0],
-                    visible: false,
-                    searchable: false
-                }
-            ],
-            info: false,
-            order: [[1, "asc"]],
-            language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json', search: ""
-            },
-            initComplete: function () {
-                $('#CardHeaderELementesInDb .btn').remove();
-                $('.dt-search label').remove();
-                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeaderELementesInDb');
-
-            }
-        });
 
         $('#tableRooms tbody').on('click', 'tr', function () {
             $("#elementParameters").hide();
@@ -374,6 +352,66 @@ init_page_serversides();
                     });
                 }
             });
+        });
+
+        init_table_elementsinDB();
+    });
+
+    $("button[value='reloadBestand']").click(function () {
+        $("#elementBestand").html("");
+        $.ajax({
+            url: "getElementBestand.php",
+            type: "GET",
+            success: function (data) {
+                makeToaster("Reloaded!", true);
+                $("#elementBestand").html(data);
+            }
+        });
+    });
+
+    // DB Elemente einblenden
+    $("#showDBElementData").click(function () {
+        if ($("#DBElementData").is(':hidden')) {
+            $(this).html("<i class='fas fa-caret-down'></i>");
+            $("#DBElementData").show();
+        } else {
+            $(this).html("<i class='fas fa-caret-right'></i>");
+            $("#DBElementData").hide();
+        }
+    });
+
+
+    $("button[id='buttonBO']").click(function () {
+        $("#boModalBody").html(this.value);
+    });
+
+
+    function init_table_elementsinDB() {
+
+        tableElementsInDB = new DataTable('#tableElementsInDB', {
+            paging: {
+                type: 'simple',
+                numbers: 10
+            },
+            lengthChange: false,
+            columnDefs: [
+                {
+                    targets: [0],
+                    visible: false,
+                    searchable: false
+                }
+            ],
+            info: false,
+            order: [[1, "asc"]],
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json', search: "",
+                searchPlaceholder: "Suche..."
+            },
+            initComplete: function () {
+                $('#CardHeaderELementesInDb .xxx').remove();
+                $('.dt-search label').remove();
+                $('.dt-search').children().removeClass("form-control form-control-sm float-right").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderELementesInDb');
+            }
         });
 
         $('#tableElementsInDB tbody').on('click', 'tr', function () {
@@ -410,36 +448,7 @@ init_page_serversides();
                 }
             });
         });
-    });
-
-    $("button[value='reloadBestand']").click(function () {
-        $("#elementBestand").html("");
-        $.ajax({
-            url: "getElementBestand.php",
-            type: "GET",
-            success: function (data) {
-                makeToaster("Reloaded!", true);
-                $("#elementBestand").html(data);
-            }
-        });
-    });
-
-    // DB Elemente einblenden
-    $("#showDBElementData").click(function () {
-        if ($("#DBElementData").is(':hidden')) {
-            $(this).html("<i class='fas fa-caret-down'></i>");
-            $("#DBElementData").show();
-        } else {
-            $(this).html("<i class='fas fa-caret-right'></i>");
-            $("#DBElementData").hide();
-        }
-    });
-
-
-    $("button[id='buttonBO']").click(function () {
-        $("#boModalBody").html(this.value);
-    });
-
+    }
 </script>
 </body>
 </html>

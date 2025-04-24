@@ -119,7 +119,7 @@ $mysqli->close();
     // Element Gewerk Änderung
     $('#elementGruppe').change(function () {
         let gruppeID = this.value;
-        console.log(gruppeID);
+        console.log("GruppenID", gruppeID);
 
         if (gruppeID !== 0) {
             $.ajax({
