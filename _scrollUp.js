@@ -9,7 +9,7 @@ function initScrollButton() {
     scrollButton.id = 'scrollBtn';
     scrollButton.className = 'scrollBtn';
     scrollButton.title = 'Scroll to Top';
-    scrollButton.innerHTML = '<i class="fa fa-caret-up"></i>';
+    scrollButton.innerHTML = '<i class=" fa  fa-3x fa-caret-up"></i>';
     scrollButton.onclick = scrollToTop;
     document.body.appendChild(scrollButton);
 

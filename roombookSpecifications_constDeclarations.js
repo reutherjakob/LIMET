@@ -212,7 +212,7 @@ const columnsDefinition = [
     {data: 'H2_Sensor', title: 'H2_Sensor', visible: false, case: 'num'}, // 112
     {data: 'O2_Sensor', title: 'O2_Sensor', visible: false, case: 'num'}, // 113
     {data: 'Acetylen_Melder', title: 'Acetylen_Melder', visible: false, case: 'num'}, // 114
-    {data: 'Blitzleuchte', title: 'Blitzleuchte', visible: false, case: 'num'}, // 115
+     {data: 'Blitzleuchte', title: 'Blitzleuchte', visible: false, case: 'num'}, // 115
     {data: 'ET_PA_Stk', title: 'ET PA Stk', visible: false, case: "num"}, // 116
     {data: 'ET_16A_3Phasig_Einzelanschluss', title: '16A 3Ph Einzelanschluss', visible: false, case: "num"}, // 117
     {data: 'ET_32A_3Phasig_Einzelanschluss', title: '32A 3Ph Einzelanschluss', visible: false, case: "num"}, // 118

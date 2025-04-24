@@ -34,7 +34,9 @@
     <div class="mt-1 card">
 
         <?php
-        if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+        if (!function_exists('utils_connect_sql')) {
+            include "_utils.php";
+        }
         init_page_serversides();
         include "_format.php";
 
@@ -49,7 +51,7 @@
             $filters = [
                 '', '', '', '', '',
                 "<b>Stk >0 <input type='checkbox' id='filter_count'></b>",
-                '', '', '', '','',
+                '', '', '', '', '',
                 "<select id='filter_bestand'>
             <option value='2'></option> 
             <option value='1'>Ja</option>
@@ -128,18 +130,24 @@
                                                     INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON tabelle_lose_extern.idtabelle_Lose_Extern = tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) ON (tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte = tabelle_räume.tabelle_projekte_idTABELLE_Projekte) AND (tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) AND (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente)
                                                     LEFT JOIN tabelle_projekt_element_gewerk ON tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte=tabelle_räume.tabelle_projekte_idTABELLE_Projekte AND tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente=tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
                                                     LEFT JOIN tabelle_auftraggeber_gewerke ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke = tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
+                                          
                                                     LEFT JOIN tabelle_projektbudgets ON tabelle_räume_has_tabelle_elemente.tabelle_projektbudgets_idtabelle_projektbudgets = tabelle_projektbudgets.idtabelle_projektbudgets
                 WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume_has_tabelle_elemente.Standort)=1))
-                GROUP BY tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, 
-                tabelle_räume.`Raumbereich Nutzer`, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, 
-                tabelle_projekt_varianten_kosten.Kosten, tabelle_lose_extern.LosNr_Extern, 
-                tabelle_lose_extern.LosBezeichnung_Extern, tabelle_lose_extern.Ausführungsbeginn, 
-                tabelle_lose_extern.idtabelle_Lose_Extern, tabelle_varianten.idtabelle_Varianten, 
-                tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
+                GROUP BY 
+                tabelle_elemente.ElementID, 
+                tabelle_varianten.idtabelle_Varianten, 
+                tabelle_räume.`Raumbereich Nutzer`,
+                tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, 
+                tabelle_lose_extern.idtabelle_Lose_Extern,
                 tabelle_projektbudgets.Budgetnummer
                 ORDER BY tabelle_elemente.ElementID;";
-        $result = $mysqli->query($sql);
 
+        //GROUP BY       tabelle_lose_extern.LosNr_Extern,
+        //                tabelle_lose_extern.LosBezeichnung_Extern,
+        //                tabelle_lose_extern.Ausführungsbeginn,     tabelle_varianten.Variante,
+        // tabelle_elemente.Bezeichnung,   tabelle_projekt_varianten_kosten.Kosten,        tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
+
+        $result = $mysqli->query($sql);
         makeTable($result);
         $mysqli->close();
         ?>
@@ -150,8 +158,11 @@
 <div class="row">
     <div class="col-xxl-8">
         <div class="mt-4 card">
-            <div class="card-header" id="roomsWithElementCardHeader">Räume mit Element</div>
-            <div class="card-body" id="roomsWithElement"></div>
+            <div class="card-header d-flex align-items-center">
+                <div class="col-6">Räume mit Element</div>
+                <div class="col-6  d-flex align-items-center justify-content-end" id="roomsWithElementCardHeader"></div>
+            </div>
+            <div class="card-body px-1 py-1" id="roomsWithElement"></div>
         </div>
     </div>
     <div class="col-xxl-4">
@@ -171,7 +182,6 @@
 <script src="_utils.js"></script>
 <script>
     var tableElementsInProject;
-
     // Column configuration - update indexes here if columns change
     const COLUMNS = {
         BESTAND: 11,
@@ -179,7 +189,7 @@
         LOT: 14
     };
 
-    $.fn.dataTable.ext.search.push(function(settings, data) {
+    $.fn.dataTable.ext.search.push(function (settings, data) {
         if (settings.nTable.id !== 'tableElementsInProject') return true;
 
         const bestandVal = data[COLUMNS.BESTAND];
@@ -265,13 +275,13 @@
         $('.dt-buttons').children().children().remove();
 
 
-
         $('#tableElementsInProject tbody').on('click', 'tr', function () {
             let elementID = tableElementsInProject.row($(this)).data()[1];
             let variantenID = tableElementsInProject.row($(this)).data()[2];
             let losID = tableElementsInProject.row($(this)).data()[3];
             let bestand = tableElementsInProject.row($(this)).data()[4];
             let raumbereich = tableElementsInProject.row($(this)).data()[9];
+            let bauabschnitt = tableElementsInProject.row($(this)).data()[10];
             //console.log(variantenID, losID, bestand, raumbereich);
             $.ajax({
                 url: "getRoomsWithElementTenderLots.php",
@@ -280,7 +290,8 @@
                     "variantenID": variantenID,
                     "elementID": elementID,
                     "bestand": bestand,
-                    "raumbereich": raumbereich
+                    "raumbereich": raumbereich,
+                    "bauabschnitt": bauabschnitt
                 },
                 type: "GET",
                 success: function (data) {
