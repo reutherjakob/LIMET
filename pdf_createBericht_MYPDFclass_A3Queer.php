@@ -81,7 +81,7 @@ class MYPDF extends TCPDF
             $this->Ln();
             $this->SetFont('helvetica', '', 10);
             if (isset($_SESSION["PDFdatum"]) && $_SESSION["PDFdatum"] != null) {
-                $this->Cell(0, 0, "Stand: ", $_SESSION["PDFdatum"], 0, false, 'L', 0, '', 0, false, 'T', 'M');
+                $this->Cell(0, 0, "Stand: ". $_SESSION["PDFdatum"], 0, false, 'L', 0, '', 0, false, 'T', 'M');
             } else {
                 $this->Cell(0, 0, "Stand: " . date('Y-m-d'), 0, false, 'L', 0, '', 0, false, 'T', 'M');
             }
@@ -97,7 +97,7 @@ class MYPDF extends TCPDF
 
             $this->SetFont('helvetica', '', 6);
 
-            get_titelblatt_logo($this);
+            get_titelblatt_logo($this, "A3");
 
             $Vorentwurf = " Im Vorentwurf sind die raumweisen elektrischen Leitungsangaben je Netzart ohne Gleichzeitigkeit angegeben. Die Werte stellen die Summe der Nennleistungen der im Raum geplanten medizin- und labortechnischen Geräte inkl. einer Auslegungsreserve dar. Diese Auslegungsreserve ist erforderlich, um beispielsweise Geräte zu berücksichtigen, welche nicht im Raum verortet sind, aber dort genutzt werden können. Detailliertere Angaben zu Großgeräten (Röntgenanlagen, CT, MRT etc.) erfolgen stets gesondert.";
             $Entwurf = " Die elektrischen Leistungsangaben je Netzart, die aus der Verwendung der medizin- und labortechnischen Geräte resultiert, wird aus der Summe der einzelnen Geräte/Element-Nennleistungen unter Berücksichtigung der Gleichzeitigkeit je Element berechnet. Die Differenz der angeführten Leistungssumme zu den Vorbemessungsangaben aus  dem Vorentwurf ist die verbleibende Auslegungsreserve je Raum.";
@@ -110,7 +110,7 @@ class MYPDF extends TCPDF
             }
             $height = $this->getStringHeight(390, $Disclaimer, 0, 'J', 0, 6);
             $this->SetY(275 - $height);
-            $this->MultiCell(390, 6, $Disclaimer, 0, 'J', 0, 0);
+            $this->MultiCell(390, 6, $Disclaimer, 0, 'L', 0, 0);
         }
     }
 
