@@ -77,7 +77,7 @@ $row = $result->fetch_assoc(); ?>
                 <div class='card-header' id="variantenParameterCH">
                     Variantenparameter
                 </div>
-                <div class='card-body py-0 px-0' id='variantenParameter'>
+                <div class='card-body ' id='variantenParameter'>
                     <?php
                     $sql = "SELECT tabelle_parameter.Bezeichnung, tabelle_projekt_elementparameter.Wert,
                                 tabelle_projekt_elementparameter.Einheit, tabelle_parameter_kategorie.Kategorie,
@@ -97,7 +97,8 @@ $row = $result->fetch_assoc(); ?>
 
                     $result = $mysqli->query($sql);
                     ?>
-                    <table class='table table-striped table-sm table-hover table-bordered border border-light border-5' id='tableElementParameters'>
+                    <table class='table table-striped table-sm table-hover table-bordered border border-light border-5'
+                           id='tableElementParameters'>
                         <thead>
                         <tr>
                             <th></th>
@@ -164,7 +165,7 @@ $row = $result->fetch_assoc(); ?>
                 <div class='card-header d-flex justify-content-between' id='mglParameterCardHeader'>Mögliche
                     Parameter
                 </div>
-                <div class='card-body py-0 px-0' id='possibleVariantenParameter'>
+                <div class='card-body ' id='possibleVariantenParameter'>
                     <?php $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung,
                                 tabelle_parameter_kategorie.Kategorie
                                 FROM tabelle_parameter, tabelle_parameter_kategorie
@@ -188,7 +189,7 @@ $row = $result->fetch_assoc(); ?>
                                 <table class='table table-striped table-sm table-hover table-bordered border border-5 border-light' id='tablePossibleElementParameters'                             >
                                     <thead>
                                     <tr>
-                                        <th></th>
+                                        <th> <i class='fas fa-plus'></i> </th>
                                         <th>Kategorie</th>
                                         <th>Parameter</th>
                                     </tr>
@@ -369,12 +370,11 @@ $row = $result->fetch_assoc(); ?>
                 bottomEnd: ['paging', 'pageLength']
             },
             scrollX: true,
-            initComplete: function ( ) {
-                $('#variantenParameterCh .xxx').remove();
-                $('#variantenParameter .dt-search label').remove();
-                $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#variantenParameterCH');
+            initComplete: function () {
+              //   $('#variantenParameterCh .xxx').remove();
+              //   $('#variantenParameter .dt-search label').remove();
+              //   $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#variantenParameterCH');
             }
-
         });
 
         tablePossibleElementParameters = $('#tablePossibleElementParameters').DataTable({
@@ -532,10 +532,9 @@ $row = $result->fetch_assoc(); ?>
 
 
     $("button[value='addParameter']").click(function () {
+        $('#variantenParameterCh .xxx').remove();
         let variantenID = $('#variante').val();
         let id = this.id;
-        let searchValue = tablePossibleElementParameters.search();
-        console.log(searchValue);
         if (id !== "") {
             $.ajax({
                 url: "addParameterToVariante.php",
@@ -555,7 +554,7 @@ $row = $result->fetch_assoc(); ?>
                                 type: "GET",
                                 success: function (data) {
                                     $("#possibleVariantenParameter").html(data);
-                                    $('#tablePossibleElementParameters').DataTable().search(searchValue).draw();
+
                                 }
                             });
                         }

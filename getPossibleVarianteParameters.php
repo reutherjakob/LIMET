@@ -4,11 +4,13 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <title></title></head>
 <body>
+
 <?php
+
 include "_utils.php";
 check_login();
 
-$mysqli =  utils_connect_sql();
+$mysqli = utils_connect_sql();
 
 $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung, tabelle_parameter_kategorie.Kategorie 
         FROM tabelle_parameter, tabelle_parameter_kategorie 
@@ -22,9 +24,9 @@ $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichn
 
 $result = $mysqli->query($sql);
 
-echo "<table class='table table-striped table-sm' id='tablePossibleVarianteParameters'  >
+echo "<table class='table table-striped table-sm table-hover table-bordered border border-5 border-light' id='tablePossibleElementParameters'>
 						<thead><tr>
-						<th>ID</th>
+                        <th> <i class='fas fa-plus'></i> </th>
 						<th>Kategorie</th>
 						<th>Parameter</th>
 						</tr></thead>
@@ -43,35 +45,40 @@ echo "</tbody></table>";
 $mysqli->close();
 ?>
 <script src="_utils.js"></script>
-<script>
-    $(document).ready(function () {
 
-        tablePossibleElementParameters = $('#tablePossibleVarianteParameters').DataTable({
-            paging: true,
+<script>
+
+    $(document).ready(function () {
+        tablePossibleElementParameters = null;
+        tablePossibleElementParameters = $('#tablePossibleElementParameters').DataTable({
+            select: true,
             searching: true,
             info: false,
-            order: [[1, "asc"]],
+            order: [[1, 'asc']],
             columnDefs: [
                 {
                     targets: [0],
                     visible: true,
                     searchable: false,
-                    orderable: false
+                    sortable: false
                 }
             ],
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                search: "",
+                searchPlaceholder: "Suche..."
             },
-            scrollY: '20vh',
-            scrollCollapse: true,
             layout: {
-                topEnd: "search",
                 topStart: null,
-                bottomStart: null,
-                bottomEnd: ['paging', "pageLength"]
+                topEnd: null,
+                bottomStart: ['info', 'search'],
+                bottomEnd: ['paging', 'pageLength']
             },
-            initComplete: function (settings, json) {
-
+            scrollX: true,
+            initComplete: function () {
+                $('#mglParameterCardHeader .xxx').remove();
+                $('#possibleVariantenParameter .dt-search label').remove();
+                $('#possibleVariantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#mglParameterCardHeader');
             }
         });
     });
@@ -79,17 +86,15 @@ $mysqli->close();
 
     //Parameter zu Variante hinzufügen
     $("button[value='addParameter']").click(function () {
+        $('#variantenParameterCh .xxx').remove();
         let variantenID = $('#variante').val();
         let id = this.id;
-        let searchValue = $('#tablePossibleElementParameters').DataTable().search();
-        console.log("GetPossiblevarianteParameter: ", searchValue);
         if (id !== "") {
             $.ajax({
                 url: "addParameterToVariante.php",
                 data: {"parameterID": id, "variantenID": variantenID},
                 type: "GET",
                 success: function (data) {
-                    //		        	alert(data);
                     makeToaster(data, data.trim().substring(0, 4) === "Para");
                     $.ajax({
                         url: "getVarianteParameters.php",
@@ -102,21 +107,16 @@ $mysqli->close();
                                 data: {"variantenID": variantenID},
                                 type: "GET",
                                 success: function (data) {
-                                    //console.log("1.1", data);
                                     $("#possibleVariantenParameter").html(data);
-
                                 }
                             });
 
                         }
                     });
-
                 }
             });
         }
-
     });
-
 </script>
 
 </body>

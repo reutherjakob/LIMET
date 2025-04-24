@@ -17,7 +17,7 @@ $sql = "SELECT tabelle_parameter.Bezeichnung, tabelle_projekt_elementparameter.W
 
 $result = $mysqli->query($sql);
 
-echo "<table class='table table-striped table-sm' id='tableVarianteParameters'  >
+echo "<table class='table table-striped table-sm table-hover table-bordered border border-light border-5' id='tableElementParameters'>
 	<thead><tr>
 	<th></th>
 	<th>Kategorie</th>
@@ -47,29 +47,35 @@ $mysqli->close();
 <script>
 
     $(document).ready(function () {
-        let tableVarianteParameters = new DataTable('#tableVarianteParameters', {
-            paging: false,
-            searching: false,
-            info: false,
-            order: [[1, "asc"]],
+        $('#tableElementParameters').DataTable({
+            select: true,
+            searching: true,
+            info: true,
+            order: [[1, 'asc']],
             columnDefs: [
                 {
                     targets: [0],
                     visible: true,
                     searchable: false,
-                    orderable: false
+                    sortable: false
                 }
             ],
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                search: "",
+                searchPlaceholder: "Suche..."
             },
-            scrollY: '20vh',
-            scrollCollapse: true,
             layout: {
                 topStart: null,
                 topEnd: null,
-                bottomStart: null,
-                bottomEnd: null
+                bottomStart: ['info', 'search'],
+                bottomEnd: ['paging', 'pageLength']
+            },
+            scrollX: true,
+            initComplete: function () {
+              //  $('#variantenParameterCh .xxx').remove();
+              //  $('#variantenParameter .dt-search label').remove();
+              //  $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#variantenParameterCH');
             }
         });
     });

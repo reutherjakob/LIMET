@@ -279,7 +279,7 @@ ORDER BY tabelle_elemente.ElementID;";
                     //     value: 'Wert'
                     // }
                 },
-                stateSave: true,
+                stateSave: false,
                 layout: {
                     topStart: null,
                     topEnd: ['buttons', 'pageLength', 'search'],
@@ -328,10 +328,7 @@ ORDER BY tabelle_elemente.ElementID;";
                     data: {"elementID": elementID, "variantenID": variantenID, "bestand": bestand},
                     type: "GET",
                     success: function (data) {
-
                         $("#roomsWithAndWithoutElements").html(data);
-
-                        $("#resetAnzahl").prop('disabled', false); // Enable the buttons
                         $.ajax({
                             url: "getElementVariante.php",
                             data: {"elementID": elementID, "variantenID": variantenID},
@@ -343,7 +340,6 @@ ORDER BY tabelle_elemente.ElementID;";
                                     data: {"elementID": elementID},
                                     type: "GET",
                                     success: function (data) {
-
                                         $("#elementDBParameter").html(data);
                                         $.ajax({
                                             url: "getElementPricesInDifferentProjects.php",
@@ -363,7 +359,6 @@ ORDER BY tabelle_elemente.ElementID;";
                                                             type: "GET",
                                                             success: function (data) {
                                                                 $("#elementGewerk").html(data);
-                                                                //resetAnzahlBtn();
                                                             }
                                                         });
                                                     }
