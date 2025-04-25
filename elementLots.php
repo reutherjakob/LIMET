@@ -137,6 +137,7 @@
                 GROUP BY 
                 tabelle_elemente.ElementID, 
                 tabelle_varianten.idtabelle_Varianten, 
+                 tabelle_varianten.Variante,       
                 tabelle_räume.`Raumbereich Nutzer`,
                 tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, 
                 tabelle_lose_extern.idtabelle_Lose_Extern,
@@ -233,13 +234,13 @@
             paging: true,
             select: true,
             order: [[6, 'asc']],
-            columnDefs: [
-                {
-                    targets: [0, 1, 2, 3, 4],
-                    visible: false,
-                    searchable: false
-                }
-            ],
+            // columnDefs: [
+            //     {
+            //         targets: [0, 1, 2, 3, 4],
+            //         visible: false,
+            //         searchable: false
+            //     }
+            // ],
             orderCellsTop: true,
             pagingType: 'simple',
             lengthChange: true,

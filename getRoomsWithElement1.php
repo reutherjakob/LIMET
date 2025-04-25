@@ -213,7 +213,7 @@ $mysqli->close();
                 // $('#hide0Wrapper').appendTo('');
             }
         });
-   // TODO
+        // TODO
         $.fn.dataTable.ext.search.push(
             function (settings, data, dataIndex) {
                 if (settings.nTable.id !== 'tableRoomsWithElement') {
@@ -222,9 +222,9 @@ $mysqli->close();
                 let hideZero = $("#hideZeroRows").is(":checked");
                 let row = tableRoomsWithElement.row(dataIndex).node();
                 let amount = $(row).find('input[id^="amount"]').val();
-                console.log(amount);
+
                 amount = parseInt(amount) || 0;
-                console.log("Int:", amount);
+
                 return !(hideZero && (amount === 0));
             }
         );

@@ -85,10 +85,7 @@ $sql = "SELECT
     tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern
 FROM tabelle_varianten
 INNER JOIN (
-    tabelle_hersteller
-    RIGHT JOIN (
-        tabelle_geraete
-        RIGHT JOIN (
+ 
             tabelle_lose_extern
             RIGHT JOIN (
                 tabelle_räume
@@ -96,10 +93,9 @@ INNER JOIN (
                 ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
             )
             ON tabelle_lose_extern.idtabelle_Lose_Extern = tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern
-        )
-        ON tabelle_geraete.idTABELLE_Geraete = tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete
-    )
-    ON tabelle_hersteller.idtabelle_hersteller = tabelle_geraete.tabelle_hersteller_idtabelle_hersteller
+        
+    
+     
 )
 ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
 WHERE ";
@@ -150,10 +146,9 @@ $conditions[] = "tabelle_räume.Bauabschnitt LIKE ?";
 $params[] = $bauabschnitt;
 $types .= "s";
 
-// Bedingungen zusammenfügen
 $sql .= implode(" AND ", $conditions) . " ORDER BY tabelle_räume.Raumnr";
 
-// Prepared Statement
+
 $stmt = $mysqli->prepare($sql);
 if (!$stmt) {
     die("Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error);
