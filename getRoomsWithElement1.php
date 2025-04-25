@@ -173,107 +173,97 @@ $mysqli->close();
 <script charset="utf-8" type="module">
     import CustomPopover from './_popover.js';
 
-    var tableRoomsWithElement;
     $(document).ready(function () {
-            tableRoomsWithElement = new DataTable('#tableRoomsWithElement', {
-                columnDefs: [
-                    {
-                        targets: [0, 14, 15, 16, 17, 18, 19, 20, 21],
-                        visible: false,
-                        searchable: false
-                    }
-                ],
-                paging: false,
-                searching: true,
-                info: false,
-                order: [[1, 'asc']],
-                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
-                language: {
-                    url: 'https://cdn.datatables.net/plug-ins/2.0.0/i18n/de-DE.json',
-                    search: ""
-                },
-                layout: {
-                    topStart: null,
-                    topEnd: ['buttons', 'search'],
-                    bottomStart: [],
-                    bottomEnd: []
-                },
-                buttons: [
-                    {
-                        extend: 'excel',
-                        exportOptions: {
-                            columns: [3, 4, 5, 12, 13, 14, 15, 16, 17, 18, 19]
-                        },
-                        text: '<i class="fas fa-file-excel me-2"></i> Excel', // Add Font Awesome icon
-                        className: 'btn btn-sm btn-outline-success bg-white', // Bootstrap small
-                    }
-                ],
-                initComplete: function () {
-                    $('#roomsWithAndWithoutElements .dt-buttons').attr("id", "DtBtnGroup");
-                    $('#hide0Wrapper').appendTo('#DtBtnGroup');
-                }
-            });
 
 
-            function hideZeroFilter(settings, data, dataIndex) {
-                if (settings.nTable.id !== 'tableRoomsWithElement') {
-                    return true; // Don't filter other tables
+        tableRoomsWithElement = new DataTable('#tableRoomsWithElement', {
+            columnDefs: [
+                {
+                    targets: [0, 14, 15, 16, 17, 18, 19, 20, 21],
+                    visible: false,
+                    searchable: false
                 }
-                let hideZero = $("#hideZeroRows").is(":checked");
-                let row = tableRoomsWithElement.row(dataIndex).node();
-                let amount = $(row).find('input[id^="amount"]').val();
-                amount = parseInt(amount) || 0;
-                //console.log("Parsed: ", amount, hideZero, dataIndex, data);
-                return !(hideZero && (amount === 0));
+            ],
+            paging: false,
+            searching: true,
+            info: false,
+            order: [[1, 'asc']],
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.0.0/i18n/de-DE.json',
+                search: ""
+            },
+            layout: {
+                topStart: null,
+                topEnd: ['buttons', 'search'],
+                bottomStart: [],
+                bottomEnd: []
+            },
+            buttons: [
+                {
+                    extend: 'excel',
+                    exportOptions: {
+                        columns: [3, 4, 5, 12, 13, 14, 15, 16, 17, 18, 19]
+                    },
+                    text: '<i class="fas fa-file-excel me-2"></i> Excel', // Add Font Awesome icon
+                    className: 'btn btn-sm btn-outline-success bg-white', // Bootstrap small
+                }
+            ],
+            initComplete: function () {
+                $('#roomsWithAndWithoutElements .dt-buttons').attr("id", "DtBtnGroup");
+                $('#hide0Wrapper').appendTo('#DtBtnGroup');
             }
+        });
 
-            $.fn.dataTable.ext.search.push(hideZeroFilter);
-
-            $("#hideZeroRows").on("change", function () {
-                tableRoomsWithElement.draw();
-            });
-
-
-            CustomPopover.init('.comment-btn', {
-                onSave: function (trigger, newText) {
-                    trigger.dataset.description = newText;
-                    let row = tableRoomsWithElement.row($(trigger).closest('tr'));
-                    let data = row.data();
-                    data[17] = newText; // Update column 17 (0-indexed)
-                    row.data(data).draw(false); // Update the row data without redrawing the table
-                    // send an AJAX request to save the new text
-                    let id = trigger.id;   // = tabelle_räume_has_tabelle_elemente.id
-
-                    $.ajax({
-                        url: "saveRoomElementComment.php",
-                        data: {
-                            "comment": newText,
-                            "id": id
-                        },
-                        type: "GET",
-                        success: function (data) {
-
-                            makeToaster(data.trim(), true);
-                            $(".comment-btn[id='" + id + "']").attr('data-description', newText).data('description', newText);
-                            if (newText !== "") {
-                                $(".comment-btn[id='" + id + "']").removeClass('btn-outline-secondary');
-                                $(".comment-btn[id='" + id + "']").addClass('btn-outline-dark');
-                                $(".comment-btn[id='" + id + "']").find('i').removeClass('fa fa-comment-slash');
-                                $(".comment-btn[id='" + id + "']").find('i').addClass('fa fa-comment');
-                            } else {
-                                $(".comment-btn[id='" + id + "']").removeClass('btn-outline-dark');
-                                $(".comment-btn[id='" + id + "']").addClass('btn-outline-secondary');
-                                $(".comment-btn[id='" + id + "']").find('i').removeClass('fa fa-comment');
-                                $(".comment-btn[id='" + id + "']").find('i').addClass('fa fa-comment-slash');
-                            }
-                        }
-                    });
-                }
-            });
-
+        let filterIndex = $.fn.dataTable.ext.search.indexOf(hideZeroFilter);
+        if (filterIndex !== -1) {
+            $.fn.dataTable.ext.search.splice(filterIndex, 1);
         }
-    )
-    ;
+        $.fn.dataTable.ext.search.push(hideZeroFilter);
+
+
+        $("#hideZeroRows").on("change", function () {
+            tableRoomsWithElement.draw();
+        });
+
+
+        CustomPopover.init('.comment-btn', {
+            onSave: function (trigger, newText) {
+                trigger.dataset.description = newText;
+                let row = tableRoomsWithElement.row($(trigger).closest('tr'));
+                let data = row.data();
+                data[17] = newText; // Update column 17 (0-indexed)
+                row.data(data).draw(false); // Update the row data without redrawing the table
+                // send an AJAX request to save the new text
+                let id = trigger.id;   // = tabelle_räume_has_tabelle_elemente.id
+
+                $.ajax({
+                    url: "saveRoomElementComment.php",
+                    data: {
+                        "comment": newText,
+                        "id": id
+                    },
+                    type: "GET",
+                    success: function (data) {
+
+                        makeToaster(data.trim(), true);
+                        $(".comment-btn[id='" + id + "']").attr('data-description', newText).data('description', newText);
+                        if (newText !== "") {
+                            $(".comment-btn[id='" + id + "']").removeClass('btn-outline-secondary');
+                            $(".comment-btn[id='" + id + "']").addClass('btn-outline-dark');
+                            $(".comment-btn[id='" + id + "']").find('i').removeClass('fa fa-comment-slash');
+                            $(".comment-btn[id='" + id + "']").find('i').addClass('fa fa-comment');
+                        } else {
+                            $(".comment-btn[id='" + id + "']").removeClass('btn-outline-dark');
+                            $(".comment-btn[id='" + id + "']").addClass('btn-outline-secondary');
+                            $(".comment-btn[id='" + id + "']").find('i').removeClass('fa fa-comment');
+                            $(".comment-btn[id='" + id + "']").find('i').addClass('fa fa-comment-slash');
+                        }
+                    }
+                });
+            }
+        });
+    });
 
     $("button[value='saveElement']").click(function () {
         let id = this.id;
@@ -305,6 +295,20 @@ $mysqli->close();
             });
         }
     });
+
+
+    function hideZeroFilter(settings, data, dataIndex) {
+        if (settings.nTable.id !== 'tableRoomsWithElement') {
+            return true;
+        }
+        let hideZero = $("#hideZeroRows").is(":checked");
+        let row = tableRoomsWithElement.row(dataIndex).node();
+        let amount = $(row).find('input[id^="amount"]').val();
+        amount = parseInt(amount) || 0;
+        return !(hideZero && (amount === 0));
+    }
+
+
 </script>
 
 </body>

@@ -225,6 +225,7 @@ ORDER BY tabelle_elemente.ElementID;";
     <script charset="utf-8">
 
         var tableElementsInProject;
+        var tableRoomsWithElement;
         const searchbuilder = [
             {
                 extend: 'searchBuilder',
@@ -292,13 +293,16 @@ ORDER BY tabelle_elemente.ElementID;";
                 if (tableElementsInProject.row($(this)).data()[6] === "Ja") {
                     bestand = 0;
                 }
+
                 $.ajax({
                     url: "getRoomsWithElement1.php",
                     data: {"elementID": elementID, "variantenID": variantenID, "bestand": bestand},
                     type: "GET",
                     success: function (data) {
+                        if ($.fn.DataTable.isDataTable('#tableRoomsWithElement')) {
+                            tableRoomsWithElement.destroy();
+                        }
                         $("#roomsWithAndWithoutElements").html(data);
-
                         $.ajax({
                             url: "getElementVariante.php",
                             data: {"elementID": elementID, "variantenID": variantenID},

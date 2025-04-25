@@ -295,8 +295,7 @@ $mysqli->close();
 
 <script src="_utils.js"></script>
 <script charset="utf-8" type="module">                    // type="module"
-
-    var tableRoomElements;
+    var tableRoomElements ;
 
     function attachButtonListeners() {
         $("button[value='createRoombookPDF']").click(function () {
@@ -402,7 +401,9 @@ $mysqli->close();
     });
 
     $(document).ready(function () {
-        $.fn.dataTable.ext.search = [];
+        if ($.fn.dataTable.isDataTable('#tableRoomElements')) {
+            tableRoomElements.destroy(true); // true = remove table from DOM
+        }
 
         tableRoomElements = $("#tableRoomElements").DataTable({
             select: true,
