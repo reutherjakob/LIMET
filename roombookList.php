@@ -111,7 +111,7 @@ WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["pr
                                                             <th>Budget</th>                                                                
                                                             <th>Gewerk</th>
                                                             <th>GHG</th>
-                                                            <th>RAUM-ID</th>
+                                                            <!--th>RAUM-ID</th-->
                                                         </tr>
                                                         </thead>";
             echo "<tbody>";
@@ -139,7 +139,7 @@ WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["pr
                 echo "<td>" . $row["Budgetnummer"] . "</td>";
                 echo "<td>" . $row["Gewerke_Nr"] . "</td>";
                 echo "<td>" . $row["GHG"] . "</td>";
-                echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
+              //  echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
                 echo "</tr>";
             }
             echo "</tbody></table>";
@@ -163,7 +163,7 @@ WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["pr
             order: [[2, "asc"]],
             columnDefs: [
                 {
-                    targets: [11],
+                    targets: [13],
                     visible: false,
                     searchable: false
                 }

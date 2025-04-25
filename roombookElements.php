@@ -57,9 +57,13 @@ init_page_serversides();
 
         <div class="col-xxl-3">
             <div class="card mt-1">
-                <div class="card-header" id="CardHeaderElementGruppen">Elementgruppen</div>
+                <div class="card-header" id="CardHeaderElementGruppen">Elementgruppen
+                    <button type="reset" class="btn btn-sm float-end" title="Reset" id="ResetElementGroups">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
                 <div class="card-body" id="elementGroups">
-                    <?php include "getElementgruppenCardContent.php";?>
+                    <?php include "getElementgruppenCardContent.php"; ?>
                 </div>
             </div>
         </div>
@@ -120,9 +124,7 @@ init_page_serversides();
     var selectedRooms = [];
     var tableElementsInDB;
 
-    $(document).ready(function () {
-
-
+    function init_table_elementsinDB() {
         tableElementsInDB = new DataTable('#tableElementsInDB', {
             select: true,
             paging: true,
@@ -149,8 +151,10 @@ init_page_serversides();
                 topEnd: null
             },
             initComplete: function () {
+                $('#CardHeaderELementesInDb .xxx').remove();
                 $('.dt-search label').remove();
-                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeaderELementesInDb');
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderELementesInDb');
+
             }
         });
 
@@ -184,6 +188,13 @@ init_page_serversides();
                 }
             });
         });
+    }
+
+
+    $(document).ready(function () {
+
+
+        init_table_elementsinDB();
 
         $('#selectAllRows').click(function () {
             $('#roomsWithoutElement table tbody tr:visible').each(function () {

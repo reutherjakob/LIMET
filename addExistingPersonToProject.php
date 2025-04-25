@@ -23,7 +23,8 @@ if(!isset($_SESSION["username"]))
 	    die("Connection failed: " . $mysqli->connect_error);
 	}
 		
-	$sql = "INSERT INTO `tabelle_projekte_has_tabelle_ansprechpersonen` (`TABELLE_Projekte_idTABELLE_Projekte`,`TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen`,`TABELLE_Projektzuständigkeiten_idTABELLE_Projektzuständigkeiten`,`tabelle_organisation_idtabelle_organisation`)
+	$sql = "INSERT INTO `tabelle_projekte_has_tabelle_ansprechpersonen` 
+    (`TABELLE_Projekte_idTABELLE_Projekte`,`TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen`,`TABELLE_Projektzuständigkeiten_idTABELLE_Projektzuständigkeiten`,`tabelle_organisation_idtabelle_organisation`)
 			VALUES (".$_SESSION["projectID"].",".$_GET["personID"].",".$_GET["zustaendigkeit"].",".$_GET["organisation"].");";
 			
 	if ($mysqli->query($sql) === TRUE) {
