@@ -295,8 +295,7 @@ $mysqli->close();
 
 <script src="_utils.js"></script>
 <script charset="utf-8" type="module">                    // type="module"
-
-    var tableRoomElements;
+    var tableRoomElements ;
 
     function attachButtonListeners() {
         $("button[value='createRoombookPDF']").click(function () {
@@ -402,7 +401,9 @@ $mysqli->close();
     });
 
     $(document).ready(function () {
-        $.fn.dataTable.ext.search = [];
+        if ($.fn.dataTable.isDataTable('#tableRoomElements')) {
+            tableRoomElements.destroy(true); // true = remove table from DOM
+        }
 
         tableRoomElements = $("#tableRoomElements").DataTable({
             select: true,
@@ -447,7 +448,6 @@ $mysqli->close();
             }
         });
 
-        // Custom search function to hide rows with amount 0
 
 
         $('#tableRoomElements tbody').on('click', 'tr', function () {
@@ -510,14 +510,9 @@ $mysqli->close();
 
         $.fn.dataTable.ext.search.push(
             function (settings, data, dataIndex) {
-                // 'settings' is the DataTable settings object for the current table.
-                // You can check which table this is by looking at settings.nTable
-                // or settings.sTableId (the table DOM node or its ID).
-
                 if (settings.nTable.id !== 'tableRoomElements') {
                     return true; // Don't filter other tables
                 }
-
                 let hideZero = $("#hideZeroRows").is(":checked");
                 let row = tableRoomElements.row(dataIndex).node();
                 let amount = $(row).find('input[id^="amount"]').val();
@@ -525,7 +520,6 @@ $mysqli->close();
                 return !(hideZero && (amount === 0));
             }
         );
-
 
         $("#hideZeroRows").on("change", function () {
             tableRoomElements.draw();

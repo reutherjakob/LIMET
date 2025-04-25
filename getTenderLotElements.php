@@ -10,7 +10,7 @@ check_login();
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
 <html lang="de">
 <head>
-    <title></title></head>
+    <title>getTenderLotElements</title></head>
 <body>
 
 <?php
@@ -112,7 +112,7 @@ $mysqli->close();
 ?>
 
 <script src="_utils.js"></script>
-<script charset="utf-8" type="module" >
+<script charset="utf-8" type="module">
     import CustomPopover from './_popover.js'; //TODO: Find out why this doesnt work, but others witht he same code do work??
 
     CustomPopover.init('.comment-btn', {
@@ -167,33 +167,34 @@ $mysqli->close();
                 searchPlaceholder: "Suche..."
             },
             buttons: [
-                 {
-                     extend: 'excel',
-                    text: 'Excel',
-                     className:"btn btn-md bg-white btn-outline-secondary fas fa-file-excel",
-                 },
                 {
                     extend: 'excel',
-                    text: 'Verortungsliste',
+                    text: ' Excel',
+                    className: "btn btn-md bg-white btn-outline-secondary fas fa-file-excel me-1 ms-1",
+                },
+                {
+                    extend: 'excel',
+                    text: ' Verortungsliste',
                     exportOptions: {
                         columns: [3, 4, 5, 6, 7, 8, 9, 10, 11]
                     },
-                    className:"btn btn-md bg-white btn-outline-secondary fas fa-file-excel",
+                    className: "btn btn-md bg-white btn-outline-secondary fas fa-file-excel me-1 ms-1",
                     customize: function (xlsx) {
-                        const sheet = xlsx.xl.worksheets['sheet1.xml'];
-                        sheet.querySelector(".row:first-child").remove();
-                        sheet.querySelectorAll('.row').forEach(row => {
-                            const col3 = row.querySelector('c[r^="A"]');
-                            const col7 = row.querySelector('c[r^="E"]');
-                            if (col3.textContent === '0' || col7.textContent === 'Ja') {
-                                row.remove();
+                        var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                        $('row:first', sheet).remove();
+                        $('row', sheet).each(function () {
+                            var col3 = $('c[r^="A"]', this).text();
+                            var col7 = $('c[r^="E"]', this).text();
+                            if (col3 === '0' || col7 === 'Ja') {
+                                $(this).remove();
                             }
                         });
                     }
+
                 },
                 {
-                    text: 'Los Elementliste PDF',
-                    className: "btn btn-md bg-white btn-outline-secondary fas fa-file-pdf",
+                    text: ' Elementliste PDF',
+                    className: "btn btn-md bg-white btn-outline-secondary fas fa-file-pdf me-1 ms-1",
                     action: function () {
                         window.open('/pdf_createLotElementListPDF.php');
                     }

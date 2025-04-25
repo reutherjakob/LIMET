@@ -4,37 +4,29 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <title></title></head>
 <body>
-<?php
-session_start();
-if (!isset($_SESSION["username"])) {
-    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-    exit;
-}
-?>
 
 <?php
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
 
-/* change character set to utf8 */
-if (!$mysqli->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $mysqli->error);
-    exit();
-}
+include "_utils.php";
+check_login();
+
+$mysqli = utils_connect_sql();
 
 $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung, tabelle_parameter_kategorie.Kategorie 
-			  					FROM tabelle_parameter, tabelle_parameter_kategorie 
-			  					WHERE tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie 
-								AND tabelle_parameter.idTABELLE_Parameter NOT IN 
-								(SELECT tabelle_parameter.idTABELLE_Parameter 
-								FROM tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.TABELLE_Parameter_idTABELLE_Parameter 
-								WHERE tabelle_projekt_elementparameter.TABELLE_Elemente_idTABELLE_Elemente = " . $_SESSION["elementID"] . " AND tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte = " . $_SESSION["projectID"] . " AND tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten = " . $_GET["variantenID"] . ") 
-								ORDER BY tabelle_parameter_kategorie.Kategorie;";
+        FROM tabelle_parameter, tabelle_parameter_kategorie 
+        WHERE tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie 
+        AND tabelle_parameter.idTABELLE_Parameter NOT IN 
+        (SELECT tabelle_parameter.idTABELLE_Parameter 
+        FROM tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.TABELLE_Parameter_idTABELLE_Parameter 
+        WHERE tabelle_projekt_elementparameter.TABELLE_Elemente_idTABELLE_Elemente = " . $_SESSION["elementID"] . " AND tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte = " . $_SESSION["projectID"] . " 
+        AND tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten = " . $_GET["variantenID"] . ") 
+        ORDER BY tabelle_parameter_kategorie.Kategorie;";
 
 $result = $mysqli->query($sql);
 
-echo "<table class='table table-striped table-sm' id='tablePossibleVarianteParameters'  >
+echo "<table class='table table-striped table-sm table-hover table-bordered border border-5 border-light' id='tablePossibleElementParameters'>
 						<thead><tr>
-						<th>ID</th>
+                        <th> <i class='fas fa-plus'></i> </th>
 						<th>Kategorie</th>
 						<th>Parameter</th>
 						</tr></thead>
@@ -53,35 +45,40 @@ echo "</tbody></table>";
 $mysqli->close();
 ?>
 <script src="_utils.js"></script>
-<script>
-    $(document).ready(function () {
 
-        tablePossibleElementParameters = $('#tablePossibleVarianteParameters').DataTable({
-            paging: true,
+<script>
+
+    $(document).ready(function () {
+        tablePossibleElementParameters = null;
+        tablePossibleElementParameters = $('#tablePossibleElementParameters').DataTable({
+            select: true,
             searching: true,
             info: false,
-            order: [[1, "asc"]],
+            order: [[1, 'asc']],
             columnDefs: [
                 {
                     targets: [0],
                     visible: true,
                     searchable: false,
-                    orderable: false
+                    sortable: false
                 }
             ],
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                search: "",
+                searchPlaceholder: "Suche..."
             },
-            scrollY: '20vh',
-            scrollCollapse: true,
             layout: {
-                topEnd: "search",
                 topStart: null,
-                bottomStart: null,
-                bottomEnd: 'paging'
+                topEnd: null,
+                bottomStart: ['info', 'search'],
+                bottomEnd: ['paging', 'pageLength']
             },
-            initComplete: function (settings, json) {
-
+            scrollX: true,
+            initComplete: function () {
+                $('#mglParameterCardHeader .xxx').remove();
+                $('#possibleVariantenParameter .dt-search label').remove();
+                $('#possibleVariantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#mglParameterCardHeader');
             }
         });
     });
@@ -89,17 +86,15 @@ $mysqli->close();
 
     //Parameter zu Variante hinzufügen
     $("button[value='addParameter']").click(function () {
+        $('#variantenParameterCh .xxx').remove();
         let variantenID = $('#variante').val();
         let id = this.id;
-        let searchValue = $('#tablePossibleElementParameters').DataTable().search();
-        console.log("GetPossiblevarianteParameter: ", searchValue);
         if (id !== "") {
             $.ajax({
                 url: "addParameterToVariante.php",
                 data: {"parameterID": id, "variantenID": variantenID},
                 type: "GET",
                 success: function (data) {
-                    //		        	alert(data);
                     makeToaster(data, data.trim().substring(0, 4) === "Para");
                     $.ajax({
                         url: "getVarianteParameters.php",
@@ -112,21 +107,16 @@ $mysqli->close();
                                 data: {"variantenID": variantenID},
                                 type: "GET",
                                 success: function (data) {
-                                    //console.log("1.1", data);
                                     $("#possibleVariantenParameter").html(data);
-
                                 }
                             });
 
                         }
                     });
-
                 }
             });
         }
-
     });
-
 </script>
 
 </body>

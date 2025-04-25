@@ -78,7 +78,7 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
     <title>Element Gewerke</title>
 </head>
 <body>
-<div class='col-12'>
+<div class='col-xxl-12'>
     <div class='card'>
         <div class='card-body'>
             <form class='d-flex align-items-center flex-wrap'>
@@ -116,26 +116,25 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
                 </div>
 
                 <div class='form-group'>
-                    <label>&nbsp;</label>
+
                     <div>
                         <button type='button' id='saveElementGewerk' class='btn btn-outline-dark btn-sm me-1 ms-1'
                                 value='saveElementGewerk'>
                             <i class='far fa-save'></i> Gewerk speichern
                         </button>
 
-                        <button type='button' id='saveElementGewerk94' class='btn btn-outline-dark btn-sm me-1 ms-1'
+                        <button type='button' id='saveElementGewerk94' class='btn btn-outline-dark btn-sm me-1 ms-1 float-end'
                                 value='saveElementGewerk2'>
-                            <i class='far fa-save'></i> 94 speichern
+                            <i class='far fa-save'></i> 94
                         </button>
-                        <button type='button' id='saveElementGewerk93' class='btn btn-outline-dark btn-sm me-1 ms-1'
+                        <button type='button' id='saveElementGewerk93' class='btn btn-outline-dark btn-sm me-1 ms-1 float-end'
                                 value='saveElementGewerk1'>
-                            <i class='far fa-save'></i> 93 speichern
+                            <i class='far fa-save'></i> 93
                         </button>
-                        <button type='button' id='saveElementGewerk91' class='btn btn-outline-dark btn-sm me-1 ms-1'
+                        <button type='button' id='saveElementGewerk91' class='btn btn-outline-dark btn-sm me-1 ms-1 float-end'
                                 value='saveElementGewerk6'>
-                            <i class='far fa-save'></i> 91 speichern
+                            <i class='far fa-save'></i> 91
                         </button>
-
                     </div>
                 </div>
             </form>

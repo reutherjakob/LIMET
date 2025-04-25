@@ -79,9 +79,8 @@ $mysqli->close();
     });
 
     $('#elementHauptgruppe').change(function () {
-        console.log("Error was ehre");
+        console.log("Error was here");
         let hauptgruppeID = this.value;
-
         console.log(hauptgruppeID);
         let gewerkID = $("#elementGewerk").val();
         $.ajax({

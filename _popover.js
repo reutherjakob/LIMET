@@ -94,7 +94,7 @@ const CustomPopover = (function ($) {
 
     function init(selector, options = {}) {
         onSaveCallback = options.onSave || null;
-        console.log("Popover Inititaion... ");
+        //console.log("Popover Inititaion... ");
         $(document).on('click', function (e) {
             const trigger = $(e.target).closest(selector);
             if (trigger.length) {

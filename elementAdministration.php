@@ -168,9 +168,9 @@ init_page_serversides("x"); ?>
                 bottomEnd: ['paging'],
             },
             initComplete: function () {
-                $('#CardHeaderELementesInDb .btn').remove();
+                $('#CardHeaderELementesInDb .xxx').remove();
                 $('.dt-search label').remove();
-                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeaderELementesInDb');
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderELementesInDb');
             }
         });
 

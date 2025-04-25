@@ -30,8 +30,6 @@
                 <div class="col-2">Elemente im
                     Projekt
                 </div>
-
-
                 <div class="col-10 d-flex align-items-center justify-content-end" id="target_div">
                     <div class="me-4 d-flex " id="sbdiv"></div>
                     <div class="btn-group btn-group-sm" role="group" aria-label="PDF Generation Buttons">
@@ -225,7 +223,9 @@ ORDER BY tabelle_elemente.ElementID;";
 
     <script src="_utils.js"></script>
     <script charset="utf-8">
+
         var tableElementsInProject;
+        var tableRoomsWithElement;
         const searchbuilder = [
             {
                 extend: 'searchBuilder',
@@ -251,35 +251,13 @@ ORDER BY tabelle_elemente.ElementID;";
                     }
                 ],
                 language: {
-                    //  url: 'https://cdn.datatables.net/plug-ins/2.0.0/i18n/de-DE.json',
                     search: "",
                     searchPlaceholder: "Suche...",
                     searchBuilder: {
                         button: '(%d)'
                     }
-                    // searchBuilder: {
-                    //     button: {
-                    //         0: '  Filter',
-                    //         1: '  Filter (%d)',
-                    //         _: '  Filter (%d)'
-                    //     },
-                    //     title: {
-                    //         0: '',
-                    //         _: ''
-                    //     },
-                    //     clearAll: 'Alle löschen',
-                    //     add: '<i class="fas fa-search"> </i> Filter',
-                    //     condition: 'Bedingung',
-                    //     data: 'Spalte',
-                    //     deleteTitle: 'Löschen',
-                    //     leftTitle: 'Nach links',
-                    //     logicAnd: 'Und',
-                    //     logicOr: 'Oder',
-                    //     rightTitle: 'Nach rechts',
-                    //     value: 'Wert'
-                    // }
                 },
-                stateSave: true,
+                stateSave: false,
                 layout: {
                     topStart: null,
                     topEnd: ['buttons', 'pageLength', 'search'],
@@ -298,16 +276,8 @@ ORDER BY tabelle_elemente.ElementID;";
                 ],
                 compact: true,
                 initComplete: async function () {
-                    //var searchBuilderContainer = await this.api().searchBuilder.container();
-                    //
-                    //$('#target_div').append(searchBuilderContainer);
-                    //$('.dtsb-searchBuilder').children().children().addClass('bg-white btn-sm btn-outline-dark').appendTo('#sbdiv');
-                    //$('#target_div .dtsb-searchBuilder').remove();
-                    //$(' .dtsb-titleRow').remove();
-
                     $('.dt-search label').remove();
                     $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-dark").appendTo('#target_div');
-
                     setTimeout(function () {
                         tableElementsInProject.buttons().container().appendTo('#target_div .btn-group');
                         new $.fn.dataTable.Buttons(tableElementsInProject, {buttons: searchbuilder}).container().appendTo('#sbdiv');
@@ -323,15 +293,16 @@ ORDER BY tabelle_elemente.ElementID;";
                 if (tableElementsInProject.row($(this)).data()[6] === "Ja") {
                     bestand = 0;
                 }
+
                 $.ajax({
                     url: "getRoomsWithElement1.php",
                     data: {"elementID": elementID, "variantenID": variantenID, "bestand": bestand},
                     type: "GET",
                     success: function (data) {
-
+                        if ($.fn.DataTable.isDataTable('#tableRoomsWithElement')) {
+                            tableRoomsWithElement.destroy();
+                        }
                         $("#roomsWithAndWithoutElements").html(data);
-
-                        $("#resetAnzahl").prop('disabled', false); // Enable the buttons
                         $.ajax({
                             url: "getElementVariante.php",
                             data: {"elementID": elementID, "variantenID": variantenID},
@@ -343,7 +314,6 @@ ORDER BY tabelle_elemente.ElementID;";
                                     data: {"elementID": elementID},
                                     type: "GET",
                                     success: function (data) {
-
                                         $("#elementDBParameter").html(data);
                                         $.ajax({
                                             url: "getElementPricesInDifferentProjects.php",
@@ -363,7 +333,6 @@ ORDER BY tabelle_elemente.ElementID;";
                                                             type: "GET",
                                                             success: function (data) {
                                                                 $("#elementGewerk").html(data);
-                                                                //resetAnzahlBtn();
                                                             }
                                                         });
                                                     }

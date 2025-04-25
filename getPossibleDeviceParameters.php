@@ -82,6 +82,7 @@ if(!isset($_SESSION["username"]))
      
      //Parameter zu Gerät hinzufügen
     $("button[value='addParameter']").click(function(){
+        $('#variantenParameterCh .xxx').remove();
         var id = this.id;
         if(id !== ""){
             $.ajax({

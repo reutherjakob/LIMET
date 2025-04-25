@@ -48,7 +48,6 @@ $mysqli->close();
 <div class='modal fade' id='addRoomElementModal' role='dialog'>
     <div class='modal-dialog modal-sm'>
 
-        <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Element in Raum stellen</h4>
@@ -56,7 +55,6 @@ $mysqli->close();
             </div>
             <div class='modal-body' id='mbody'>Wollen Sie das Element <br>
                 <div id="elID"></div>
-                <!--- TODO: Infos, welches Element in welchen Raum in dieses Modal.... eig alle modale --->
                 in den Raum stellen?
             </div>
             <div class='modal-footer'>
@@ -118,8 +116,9 @@ $mysqli->close();
 </div>
 
 <script charset="utf-8">
+
     $(document).ready(function () {
-        $("#CardHeaderELementesInDb .btn").remove();  
+
         new DataTable('#tableElementsInDB', {
             paging: true,
             select: true,
@@ -146,10 +145,10 @@ $mysqli->close();
                 bottomStart: "pageLength",
                 bottomEnd: 'paging'
             },
-            initComplete: function (settings, json) {
-
+            initComplete: function () {
+                $("#CardHeaderELementesInDb .xxx").remove();
                 $('.dt-search label').remove();
-                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeaderELementesInDb');
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderELementesInDb');
             }
         });
 

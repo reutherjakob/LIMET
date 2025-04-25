@@ -68,3 +68,12 @@ function formatNum(newData) {
     newData = newData.replace(/,/g, '.'); // Replace ',' with '.'
     return newData;
 }
+
+
+// function letterToNumber(letter) {
+//     if (typeof letter !== 'string' || letter.length !== 1 || !/[a-zA-Z]/.test(letter)) {
+//         return null; // or throw an error if you prefer
+//     }
+//     let upper = letter.toUpperCase();
+//     return upper.charCodeAt(0) - 'A'.charCodeAt(0) + 1;
+// }

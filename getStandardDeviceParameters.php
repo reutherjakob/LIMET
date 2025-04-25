@@ -173,7 +173,7 @@ echo "<button type='button' id='" . $deviceID . "' class='btn btn-outline-succes
 
 
 <script>
-     deviceID = '<?php echo $deviceID; ?>';
+    deviceID = '<?php echo $deviceID; ?>';
     new DataTable('#tableStandardDeviceParameters', {
         paging: false,
         searching: false,
@@ -244,6 +244,7 @@ echo "<button type='button' id='" . $deviceID . "' class='btn btn-outline-succes
 
     //Parameter zu Gerät hinzufügen
     $("button[value='addParameter']").click(function () {
+        $('#variantenParameterCh .xxx').remove();
         let id = this.id;
         if (id !== "") {
             $.ajax({
