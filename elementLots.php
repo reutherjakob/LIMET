@@ -183,7 +183,7 @@
 <script src="_utils.js"></script>
 <script>
     var tableElementsInProject;
-    // Column configuration - update indexes here if columns change
+
     const COLUMNS = {
         BESTAND: 11,
         COUNT: 5,
@@ -272,18 +272,19 @@
                 titleAttr: "searchBuilder"
             }
         ];
+
         new $.fn.dataTable.Buttons(tableElementsInProject, {buttons: searchbuilder}).container().appendTo($('#ElInPrCardHeader'));
         $('.dt-buttons').children().children().remove();
 
-
         $('#tableElementsInProject tbody').on('click', 'tr', function () {
             let elementID = tableElementsInProject.row($(this)).data()[1];
-            let variantenID = tableElementsInProject.row($(this)).data()[2];
+            let variante = tableElementsInProject.row($(this)).data()[8];
+            let variantenID = letterToNumber(variante);
             let losID = tableElementsInProject.row($(this)).data()[3];
             let bestand = tableElementsInProject.row($(this)).data()[4];
-            let raumbereich = tableElementsInProject.row($(this)).data()[9];
+            let raumbereich = decodeHtmlEntities(tableElementsInProject.row($(this)).data()[9]);
             let bauabschnitt = tableElementsInProject.row($(this)).data()[10];
-            //console.log(variantenID, losID, bestand, raumbereich);
+            console.log(variantenID, losID, bestand, raumbereich);
             $.ajax({
                 url: "getRoomsWithElementTenderLots.php",
                 data: {
@@ -310,6 +311,21 @@
             });
         });
     });
+
+    function decodeHtmlEntities(str) {
+        let txt = document.createElement('textarea');
+        txt.innerHTML = str;
+        return txt.value;
+    }
+
+    function letterToNumber(letter) {
+        if (typeof letter !== 'string' || letter.length !== 1 || !/[a-zA-Z]/.test(letter)) {
+            return null;
+        }
+        let upper = letter.toUpperCase();
+        return upper.charCodeAt(0) - 'A'.charCodeAt(0) + 1;
+    }
+
 </script>
 </body>
 </html>

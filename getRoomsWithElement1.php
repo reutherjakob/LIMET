@@ -5,6 +5,15 @@
     <title> Get Rooms with Element </title>
 </head>
 <body>
+
+<div class="form-check mb-2" id="hide0Wrapper">
+    <input class="btn-check" type="checkbox" id="hideZeroRows">
+    <label class="btn btn-outline-secondary" for="hideZeroRows">
+        Hide 0
+    </label>
+</div>
+
+
 <?php
 if (!function_exists('utils_connect_sql')) {
     include "_utils.php";
@@ -72,20 +81,20 @@ echo "<table class='table table-striped table-bordered table-sm  table-hover bor
 while ($row = $result->fetch_assoc()) {
 
     echo "<tr>";
-    echo "<td>" . $row["id"] . "</td>";
+    echo "<td data-order='" . htmlspecialchars($row["id"], ENT_QUOTES, 'UTF-8') . "'>" . $row["id"] . "</td>";
     if ($_SESSION["projectName"] === "GCP") {
-        echo "<td>" . $row["Raumnummer_Nutzer"] . "</td>";
+        echo "<td data-order='" . htmlspecialchars($row["Raumnummer_Nutzer"], ENT_QUOTES, 'UTF-8') . "'>" . $row["Raumnummer_Nutzer"] . "</td>";
     } else {
-        echo "<td>" . $row["Raumnr"] . "</td>";
+        echo "<td data-order='" . htmlspecialchars($row["Raumnr"], ENT_QUOTES, 'UTF-8') . "'>" . $row["Raumnr"] . "</td>";
     }
 
-    echo "<td>" . $row["Raumbezeichnung"] . "</td>";
-    echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
-    echo "<td>" . $row["Geschoss"] . "</td>";
-    echo "<td>" . $row["Bauetappe"] . "</td>";
-    echo "<td>" . $row["Bauabschnitt"] . "</td>";
-    echo "<td><input class='form-control form-control-sm' type='text' id='amount" . $row["id"] . "' value='" . intval($row["Anzahl"]) . "' size='2'></input></td>";
-    echo "<td>
+    echo "<td data-order='" . htmlspecialchars($row["Raumbezeichnung"], ENT_QUOTES, 'UTF-8') . "'>" . $row["Raumbezeichnung"] . "</td>";
+    echo "<td data-order='" . htmlspecialchars($row["Raumbereich Nutzer"], ENT_QUOTES, 'UTF-8') . "'>" . $row["Raumbereich Nutzer"] . "</td>";
+    echo "<td data-order='" . htmlspecialchars($row["Geschoss"], ENT_QUOTES, 'UTF-8') . "'>" . $row["Geschoss"] . "</td>";
+    echo "<td data-order='" . htmlspecialchars($row["Bauetappe"], ENT_QUOTES, 'UTF-8') . "'>" . $row["Bauetappe"] . "</td>";
+    echo "<td data-order='" . htmlspecialchars($row["Bauabschnitt"], ENT_QUOTES, 'UTF-8') . "'>" . $row["Bauabschnitt"] . "</td>";
+    echo "<td data-order='" . intval($row["Anzahl"]) . "'><input class='form-control form-control-sm' type='text' id='amount" . $row["id"] . "' value='" . intval($row["Anzahl"]) . "' size='2'></input></td>";
+    echo "<td data-order='" . htmlspecialchars($row["tabelle_Varianten_idtabelle_Varianten"], ENT_QUOTES, 'UTF-8') . "'>
    	    	<select class='form-control form-control-sm'' id='variante" . $row["id"] . "'>";
 
     $options = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
@@ -98,7 +107,7 @@ while ($row = $result->fetch_assoc()) {
     }
 
     echo "</select></td>";
-    echo "<td>
+    echo "<td data-order='" . htmlspecialchars($row["Neu/Bestand"], ENT_QUOTES, 'UTF-8') . "'>
 	    	<select class='form-control form-control-sm'' id='bestand" . $row["id"] . "'>";
     if ($row["Neu/Bestand"] == "0") {
         echo "<option value=0 selected>Ja</option>";
@@ -108,7 +117,7 @@ while ($row = $result->fetch_assoc()) {
         echo "<option value=1 selected>Nein</option>";
     }
     echo "</select></td>";
-    echo "<td><select class='form-control form-control-sm'' id='Standort" . $row["id"] . "'>";
+    echo "<td data-order='" . htmlspecialchars($row["Standort"], ENT_QUOTES, 'UTF-8') . "'><select class='form-control form-control-sm'' id='Standort" . $row["id"] . "'>";
     if ($row["Standort"] == "0") {
         echo "<option value=0 selected>Nein</option>";
         echo "<option value=1>Ja</option>";
@@ -117,7 +126,7 @@ while ($row = $result->fetch_assoc()) {
         echo "<option value=1 selected>Ja</option>";
     }
     echo "</select></td>";
-    echo "<td>   	    	
+    echo "<td data-order='" . htmlspecialchars($row["Verwendung"], ENT_QUOTES, 'UTF-8') . "'>   	    	
                         <select class='form-control form-control-sm'' id='Verwendung" . $row["id"] . "'>";
     if ($row["Verwendung"] == "0") {
         echo "<option value=0 selected>Nein</option>";
@@ -134,7 +143,7 @@ while ($row = $result->fetch_assoc()) {
     $iconClass = $Kurzbeschreibung === "" ? "fa fa-comment-slash" : "fa fa-comment";
     $dataAttr = $Kurzbeschreibung === "" ? "data-description=''" : "data-description='" . htmlspecialchars($Kurzbeschreibung, ENT_QUOTES, 'UTF-8') . "'";
     echo " 
-    <td>
+    <td data-order='" . htmlspecialchars($Kurzbeschreibung, ENT_QUOTES, 'UTF-8') . "'>
         <button type='button'
                 class='btn btn-sm $buttonClass comment-btn' $dataAttr
                 id='" . htmlspecialchars($row["id"], ENT_QUOTES, 'UTF-8') . "' title='Kommentar'>
@@ -143,39 +152,22 @@ while ($row = $result->fetch_assoc()) {
     </td>";
 
 
-    echo "<td><button type='button' id='" . $row["id"] . "' class='btn btn-warning btn-sm' value='saveElement'><i class='far fa-save'></i></button></td>";
-    echo "<td>" . $row["tabelle_Varianten_idtabelle_Varianten"] . "</td>";
-    echo "<td>" . $row["Standort"] . "</td>";
-    echo "<td>" . $row["Verwendung"] . "</td>";
-    echo "<td>" . $row["Neu/Bestand"] . "</td>";
-    echo "<td>" . $row["Anzahl"] . "</td>";
-    echo "<td>" . $row["Kurzbeschreibung"] . "</td>";
-    echo "<td>" . $row["ElementID"] . "</td>";
-    echo "<td>" . $row["ElementName"] . "</td>";
+    echo "<td data-order=''><button type='button' id='" . $row["id"] . "' class='btn btn-warning btn-sm' value='saveElement'><i class='far fa-save'></i></button></td>";
+    echo "<td data-order='" . htmlspecialchars($row["tabelle_Varianten_idtabelle_Varianten"], ENT_QUOTES, 'UTF-8') . "'>" . $row["tabelle_Varianten_idtabelle_Varianten"] . "</td>";
+    echo "<td data-order='" . htmlspecialchars($row["Standort"], ENT_QUOTES, 'UTF-8') . "'>" . $row["Standort"] . "</td>";
+    echo "<td data-order='" . htmlspecialchars($row["Verwendung"], ENT_QUOTES, 'UTF-8') . "'>" . $row["Verwendung"] . "</td>";
+    echo "<td data-order='" . htmlspecialchars($row["Neu/Bestand"], ENT_QUOTES, 'UTF-8') . "'>" . $row["Neu/Bestand"] . "</td>";
+    echo "<td data-order='" . intval($row["Anzahl"]) . "'>" . $row["Anzahl"] . "</td>";
+    echo "<td data-order='" . htmlspecialchars($row["Kurzbeschreibung"] ?? "", ENT_QUOTES, 'UTF-8') . "'>" . $row["Kurzbeschreibung"] . "</td>";
+    echo "<td data-order='" . htmlspecialchars($row["ElementID"], ENT_QUOTES, 'UTF-8') . "'>" . $row["ElementID"] . "</td>";
+    echo "<td data-order='" . htmlspecialchars($row["ElementName"] ?? '', ENT_QUOTES, 'UTF-8') . "'>" . $row["ElementName"] . "</td>";
     echo "</tr>";
 }
+
 echo "</tbody></table>";
 $mysqli->close();
 ?>
 
-<div class='modal fade' id='myModal' role='dialog'>
-    <div class='modal-dialog'>
-
-        <div class='modal-content'>
-            <div class='modal-header'>
-                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
-                <h4 class='modal-title'>Kommentar</h4>
-            </div>
-            <div class='modal-body' id='mbody'>
-                <div class='modal-body-inner'></div>
-            </div>
-            <div class='modal-footer'>
-                <button type='button' class='btn btn-default' data-bs-dismiss='modal'>Close</button>
-            </div>
-        </div>
-        Fsave
-    </div>
-</div>
 
 <script src="_utils.js"></script>
 <script charset="utf-8" type="module">
@@ -216,12 +208,29 @@ $mysqli->close();
                     text: '<i class="fas fa-file-excel me-2"></i> Excel', // Add Font Awesome icon
                     className: 'btn btn-sm btn-outline-success bg-white', // Bootstrap small
                 }
-            ]
+            ],
+            initComplete: function () {
+                // $('#hide0Wrapper').appendTo('');
+            }
         });
+   // TODO
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+                if (settings.nTable.id !== 'tableRoomsWithElement') {
+                    return true; // Don't filter other tables
+                }
+                let hideZero = $("#hideZeroRows").is(":checked");
+                let row = tableRoomsWithElement.row(dataIndex).node();
+                let amount = $(row).find('input[id^="amount"]').val();
+                console.log(amount);
+                amount = parseInt(amount) || 0;
+                console.log("Int:", amount);
+                return !(hideZero && (amount === 0));
+            }
+        );
 
-        $('#tableRoomsWithElement tbody').on('click', 'tr', function () {
-            tableRoomsWithElement.$('tr.info').removeClass('info');
-            $(this).addClass('info');
+        $("#hideZeroRows").on("change", function () {
+            tableRoomsWithElement.draw();
         });
 
 
@@ -234,6 +243,7 @@ $mysqli->close();
                 row.data(data).draw(false); // Update the row data without redrawing the table
                 // send an AJAX request to save the new text
                 let id = trigger.id;   // = tabelle_räume_has_tabelle_elemente.id
+
                 $.ajax({
                     url: "saveRoomElementComment.php",
                     data: {
@@ -242,12 +252,20 @@ $mysqli->close();
                     },
                     type: "GET",
                     success: function (data) {
+
                         makeToaster(data.trim(), true);
-                        $(".comment-btn[id='" + id + "']").removeClass('btn-outline-secondary');
-                        $(".comment-btn[id='" + id + "']").addClass('btn-outline-dark');
-                        $(".comment-btn[id='" + id + "']").find('i').removeClass('fa fa-comment-slash');
-                        $(".comment-btn[id='" + id + "']").find('i').addClass('fa fa-comment');
                         $(".comment-btn[id='" + id + "']").attr('data-description', newText).data('description', newText);
+                        if (newText !== "") {
+                            $(".comment-btn[id='" + id + "']").removeClass('btn-outline-secondary');
+                            $(".comment-btn[id='" + id + "']").addClass('btn-outline-dark');
+                            $(".comment-btn[id='" + id + "']").find('i').removeClass('fa fa-comment-slash');
+                            $(".comment-btn[id='" + id + "']").find('i').addClass('fa fa-comment');
+                        } else {
+                            $(".comment-btn[id='" + id + "']").removeClass('btn-outline-dark');
+                            $(".comment-btn[id='" + id + "']").addClass('btn-outline-secondary');
+                            $(".comment-btn[id='" + id + "']").find('i').removeClass('fa fa-comment');
+                            $(".comment-btn[id='" + id + "']").find('i').addClass('fa fa-comment-slash');
+                        }
                     }
                 });
             }
