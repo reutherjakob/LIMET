@@ -85,7 +85,6 @@ $sql = "SELECT
     tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern
 FROM tabelle_varianten
 INNER JOIN (
- 
             tabelle_lose_extern
             RIGHT JOIN (
                 tabelle_räume
@@ -93,9 +92,6 @@ INNER JOIN (
                 ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
             )
             ON tabelle_lose_extern.idtabelle_Lose_Extern = tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern
-        
-    
-     
 )
 ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
 WHERE ";
@@ -283,13 +279,11 @@ $mysqli->close();
     var selectedRows = [];
 
     $(document).ready(function () {
-
         $('.batch-select').prop('checked', true)
         $('.batch-select').each(function () {
             var id = $(this).attr('id').replace('batchSelect', '');
             selectedRows.push(id);
-        });
-        // console.log(selectedRows);
+        });        // console.log(selectedRows);
         $("#saveSelected").click(function () {
             selectedRows.forEach(function (ID) {
                 saveElement(ID);
@@ -312,8 +306,6 @@ $mysqli->close();
             table.find('.batch-select').each(function () {
                 var id = $(this).attr('id').replace('batchSelect', '');
                 $(this).prop('checked', selectedRows.includes(id));
-
-                // Force update of Select2 dropdowns for invisible rows
                 var losExtern = $('#losExtern' + id);
                 if (typeof losExtern.attr('data-select2-id') !== 'undefined') {
                     losExtern.trigger('change.select2');
@@ -322,7 +314,6 @@ $mysqli->close();
         });
 
         $('#RemoveAllElementzFromBatch').click(function () {
-
             selectedRows = [];
             $('.batch-select').prop('checked', false);
             $('.form-control[id^="losExtern"]').val(0);
@@ -330,30 +321,10 @@ $mysqli->close();
 
         $("#globalLosExtern").change(function () {
             var selectedLot = $(this).val();
-            // Update ALL selected rows (across pages)
             selectedRows.forEach(function (id) {
                 $("#losExtern" + id).val(selectedLot);
             });
         });
-
-
-        // $("#globalLosExtern").change(function () {
-        //     var selectedLot = $(this).val();
-        //     $(".batch-select:checked").each(function () {
-        //         var id = $(this).attr('id').replace('batchSelect', '');
-        //         $("#losExtern" + id).val(selectedLot);
-        //     });
-        //     console.log(selectedLot);
-        // });
-
-
-        // $("#saveSelected").click(function () {
-        //     $(".batch-select:checked").each(function () {
-        //         var ID = $(this).attr('id').replace('batchSelect', '');
-        //         console.log("Selected LOT", ID);
-        //         saveElement(ID);
-        //     });
-        // });
 
 
         $('#roomsWithElementCardHeader .xxx').remove();
@@ -401,6 +372,7 @@ $mysqli->close();
                 bottomEnd: 'info'
             },
             initComplete: function () {
+                $('.dt-btn-group').attr('id', 'myDtBtnGroup');
                 $('#roomsWithElementCardHeader .xxx').remove();
                 $('#roomsWithElement .dt-search label').remove();
                 $('#roomsWithElement .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark float-right xxx").appendTo('#roomsWithElementCardHeader');

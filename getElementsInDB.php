@@ -98,10 +98,10 @@ $mysqli->close();
 
 <script type='text/javascript' src="_utils.js"></script>
 <script>
-
+    var tableElementsInDB;
     $(document).ready(function () {
 
-        new DataTable('#tableElementsInDB', {
+        tableElementsInDB =  new DataTable('#tableElementsInDB', {
             paging: true,
             info: true,
             pagingType: "simple",
@@ -132,22 +132,17 @@ $mysqli->close();
         });
 
 
-        let table1 = $('#tableElementsInDB').DataTable();
 
-        $('#tableElementsInDB tbody').on('click', 'tr', function () { //TODO
-
-            if ($(this).hasClass('info')) {
-                //$(this).removeClass('info');
-            } else {
+        $('#tableElementsInDB tbody').on('click', 'tr', function () {
                 $("#deviceParametersInDB").hide();
                 $("#devicePrices").hide();
                 $("#deviceLieferanten").hide();
-                document.getElementById("bezeichnung").value = table1.row($(this)).data()[3];
-                document.getElementById("kurzbeschreibungModal").value = table1.row($(this)).data()[4];
+                document.getElementById("bezeichnung").value = tableElementsInDB.row($(this)).data()[3];
+                document.getElementById("kurzbeschreibungModal").value = tableElementsInDB.row($(this)).data()[4];
 
-                table1.$('tr.info').removeClass('info');
+            tableElementsInDB.$('tr.info').removeClass('info');
                 $(this).addClass('info');
-                var elementID = table1.row($(this)).data()[0];
+                let elementID = tableElementsInDB.row($(this)).data()[0];
                 $.ajax({
                     url: "setSessionVariables.php",
                     data: {"elementID": elementID},
@@ -179,7 +174,7 @@ $mysqli->close();
                         });
                     }
                 });
-            }
+
         });
     });
 
@@ -218,8 +213,8 @@ $mysqli->close();
 
     //Element speichern
     $("#saveElement").click(function () {
-        var bezeichnung = $("#bezeichnung").val();
-        var kurzbeschreibung = $("#kurzbeschreibungModal").val();
+        let bezeichnung = $("#bezeichnung").val();
+        let kurzbeschreibung = $("#kurzbeschreibungModal").val();
         if (bezeichnung !== "" && kurzbeschreibung !== "") {
 
             $.ajax({

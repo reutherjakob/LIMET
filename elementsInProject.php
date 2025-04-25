@@ -30,8 +30,6 @@
                 <div class="col-2">Elemente im
                     Projekt
                 </div>
-
-
                 <div class="col-10 d-flex align-items-center justify-content-end" id="target_div">
                     <div class="me-4 d-flex " id="sbdiv"></div>
                     <div class="btn-group btn-group-sm" role="group" aria-label="PDF Generation Buttons">
@@ -225,6 +223,7 @@ ORDER BY tabelle_elemente.ElementID;";
 
     <script src="_utils.js"></script>
     <script charset="utf-8">
+
         var tableElementsInProject;
         const searchbuilder = [
             {
@@ -251,33 +250,11 @@ ORDER BY tabelle_elemente.ElementID;";
                     }
                 ],
                 language: {
-                    //  url: 'https://cdn.datatables.net/plug-ins/2.0.0/i18n/de-DE.json',
                     search: "",
                     searchPlaceholder: "Suche...",
                     searchBuilder: {
                         button: '(%d)'
                     }
-                    // searchBuilder: {
-                    //     button: {
-                    //         0: '  Filter',
-                    //         1: '  Filter (%d)',
-                    //         _: '  Filter (%d)'
-                    //     },
-                    //     title: {
-                    //         0: '',
-                    //         _: ''
-                    //     },
-                    //     clearAll: 'Alle löschen',
-                    //     add: '<i class="fas fa-search"> </i> Filter',
-                    //     condition: 'Bedingung',
-                    //     data: 'Spalte',
-                    //     deleteTitle: 'Löschen',
-                    //     leftTitle: 'Nach links',
-                    //     logicAnd: 'Und',
-                    //     logicOr: 'Oder',
-                    //     rightTitle: 'Nach rechts',
-                    //     value: 'Wert'
-                    // }
                 },
                 stateSave: false,
                 layout: {
@@ -298,16 +275,8 @@ ORDER BY tabelle_elemente.ElementID;";
                 ],
                 compact: true,
                 initComplete: async function () {
-                    //var searchBuilderContainer = await this.api().searchBuilder.container();
-                    //
-                    //$('#target_div').append(searchBuilderContainer);
-                    //$('.dtsb-searchBuilder').children().children().addClass('bg-white btn-sm btn-outline-dark').appendTo('#sbdiv');
-                    //$('#target_div .dtsb-searchBuilder').remove();
-                    //$(' .dtsb-titleRow').remove();
-
                     $('.dt-search label').remove();
                     $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-dark").appendTo('#target_div');
-
                     setTimeout(function () {
                         tableElementsInProject.buttons().container().appendTo('#target_div .btn-group');
                         new $.fn.dataTable.Buttons(tableElementsInProject, {buttons: searchbuilder}).container().appendTo('#sbdiv');
@@ -329,6 +298,7 @@ ORDER BY tabelle_elemente.ElementID;";
                     type: "GET",
                     success: function (data) {
                         $("#roomsWithAndWithoutElements").html(data);
+
                         $.ajax({
                             url: "getElementVariante.php",
                             data: {"elementID": elementID, "variantenID": variantenID},
