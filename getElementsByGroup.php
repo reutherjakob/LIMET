@@ -84,7 +84,8 @@ $mysqli->close();
                     </div>
                     <div class="form-group">
                         <label for="kurzbeschreibung">Kurzbeschreibung:</label>
-                        <label for="kurzbeschreibungModal"></label><textarea class="form-control" rows="5" id="kurzbeschreibungModal"></textarea>
+                        <label for="kurzbeschreibungModal"></label><textarea class="form-control" rows="5"
+                                                                             id="kurzbeschreibungModal"></textarea>
                     </div>
                 </form>
             </div>
@@ -118,7 +119,7 @@ $mysqli->close();
 <script charset="utf-8">
 
     $(document).ready(function () {
-
+        $("#CardHeaderElementesInDb .xxx").remove();
         new DataTable('#tableElementsInDB', {
             paging: true,
             select: true,
@@ -146,9 +147,9 @@ $mysqli->close();
                 bottomEnd: 'paging'
             },
             initComplete: function () {
-                $("#CardHeaderELementesInDb .xxx").remove();
+
                 $('.dt-search label').remove();
-                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderELementesInDb');
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
             }
         });
 
@@ -240,16 +241,16 @@ $mysqli->close();
             url: "addElementToRoom.php",
             type: "GET",
             success: function (data) {
-                alert(data);
-                //$("#infoBody").html(data1);
-                //$('#infoModal').modal('show');
-                $.ajax({
-                    url: "getRoomElementsDetailed1.php",
-                    type: "GET",
-                    success: function (data) {
-                        $("#roomElements").html(data);
-                    }
-                });
+                makeToaster(data, true);
+                setTimeout(function () {
+                    $.ajax({
+                        url: "getRoomElementsDetailed1.php",
+                        type: "GET",
+                        success: function (data) {
+                            $("#roomElements").html(data);
+                        }
+                    });
+                }, 100);
             }
         });
     });

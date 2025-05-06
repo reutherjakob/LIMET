@@ -66,7 +66,6 @@ $sql = "SELECT `tabelle_element_gruppe`.`idTABELLE_Element_Gruppe`,
 		WHERE `tabelle_element_gruppe`.`tabelle_element_hauptgruppe_idTABELLE_Element_Hauptgruppe` = " . $_GET["hauptgruppeID"] . "
 		ORDER BY `tabelle_element_gruppe`.`Nummer`;";
 
-
 $result = $mysqli->query($sql);
 echo "<div class='form-group row mt-1'>
  			<label class='control-label col-xxl-3' for='elementGruppe'>Gruppe</label>
@@ -79,15 +78,12 @@ while ($row = $result->fetch_assoc()) {
 echo "</select>	
 			</div>
 	</div>";
-
 $mysqli->close();
 ?>
 <script>
 
     $('#elementGewerk').change(function () {
         let gewerkID = this.value;
-       // console.log(gewerkID);
-
         $.ajax({
             url: "getElementGroupsByGewerk.php",
             data: {"gewerkID": gewerkID},
@@ -99,11 +95,9 @@ $mysqli->close();
 
     });
 
-    // Element Gewerk Änderung
     $('#elementHauptgruppe').change(function () {
         let hauptgruppeID = this.value;
-        console.log(hauptgruppeID);
-
+        console.log("HaupgruppernID:" ,hauptgruppeID);
         let gewerkID = $("#elementGewerk").val();
         $.ajax({
             url: "getElementGroupsByHauptgruppe.php",
@@ -113,14 +107,11 @@ $mysqli->close();
                 $("#elementGroups").html(data);
             }
         });
-
     });
 
-    // Element Gewerk Änderung
     $('#elementGruppe').change(function () {
         let gruppeID = this.value;
-        console.log("GruppenID", gruppeID);
-
+        console.log("GetElByHauptgr: GruppenID", gruppeID);
         if (gruppeID !== 0) {
             $.ajax({
                 url: "getElementsByGroup.php",

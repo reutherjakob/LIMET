@@ -49,22 +49,26 @@ echo " <script>
     });
     
     $('#ResetElementGroups').on('click', function () {
-        $.ajax({
-            url: 'getElementGroupsByGewerk.php',
-            data: {'gewerkID': 3},
-            type: 'GET',
-            success: function (data) {
-                $('#elementGroups').html(data);
-
-                $.ajax({
-                    url: 'getElementsInDbCardBodyContent.php',
-                    success: function (data) {
-                        $('#elementsInDB').html(data);
-                        init_table_elementsinDB();
-                    }
-                });
-            }
-        });
+        $('#elementsInDB').html('');
+        $('#elementGroups').html('');
+        setTimeout( function () { 
+            $.ajax({
+                url: 'getElementGroupsByGewerk.php',
+                data: {'gewerkID': 3},
+                type: 'GET',
+                success: function (data) {
+                    $('#elementGroups').html(data);
+    
+                    $.ajax({
+                        url: 'getElementsInDbCardBodyContent.php',
+                        success: function (data) {
+                            $('#elementsInDB').html(data);
+                            init_table_elementsinDB();
+                        }
+                    });
+                }
+            });
+        },100);
     });
 
 </script>";

@@ -80,6 +80,18 @@ init_page_serversides("x");
         fieldSelect.appendChild(option);
     });
 
+    var tableRoomElements;  // tableRoomElements  && hideZeroFilter required for: getRoomELmeentsDetailed1.php
+    const hideZeroFilter = function (settings, data, dataIndex) {
+        if (settings.nTable.id !== 'tableRoomElements') {
+            return true; // Don't filter other tables
+        }
+        let hideZero = $("#hideZeroRows").is(":checked");
+        let row = tableRoomElements.row(dataIndex).node();
+        let amount = $(row).find('input[id^="amount"]').val();
+        amount = parseInt(amount) || 0;
+        return !(hideZero && (amount === 0));
+    }
+
     document.getElementById('searchButton').addEventListener('click', function () {
         const selectedField = document.getElementById('fieldSelect').value;
         const searchString = document.getElementById('searchInput').value;
@@ -418,6 +430,7 @@ init_page_serversides("x");
 //    {data: 'Wasser Qual 2', title: 'H20 Q2', xvisible: false, case: "bit"},
 //    {data: 'Wasser Qual 1', title: 'H20 Q1', xvisible: false, case: "bit"}
     ];
+
 </script>
 </body>
 

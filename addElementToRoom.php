@@ -9,7 +9,7 @@ $sql = "SELECT tabelle_projekt_varianten_kosten.Kosten
 
 $result = $mysqli->query($sql);
 $row = $result->fetch_assoc();
-if ($row["Kosten"] === null) {
+if (($row["Kosten"] ?? null) === null) {
     $sql = "INSERT INTO `LIMET_RB`.`tabelle_projekt_varianten_kosten`
 				(`tabelle_projekte_idTABELLE_Projekte`,
 				`tabelle_elemente_idTABELLE_Elemente`,

@@ -30,6 +30,9 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+
 </head>
 <body style="height:100%">
 <div id="limet-navbar"></div> <!-- Container für Navbar -->
@@ -81,26 +84,27 @@
             while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
                 echo "<td></td>";
-                echo "<td>{$row['TABELLE_Elemente_idTABELLE_Elemente']}</td>";
-                echo "<td>{$row['idtabelle_Varianten']}</td>";
-                echo "<td>{$row['idtabelle_Lose_Extern']}</td>";
-                echo "<td>{$row['Neu/Bestand']}</td>";
-                echo "<td>{$row['SummevonAnzahl']}</td>";
-                echo "<td>{$row['ElementID']}</td>";
-                echo "<td>{$row['Bezeichnung']}</td>";
-                echo "<td>{$row['Variante']}</td>";
-                echo "<td>{$row['Raumbereich Nutzer']}</td>";
-                echo "<td>{$row['Bauabschnitt']}</td>";
-                echo "<td>" . ($row['Neu/Bestand'] == 1 ? 'Nein' : 'Ja') . "</td>";
-                echo "<td>" . format_money($row['Kosten']) . "</td>";
-                echo "<td>" . format_money($row['PP']) . "</td>";
-                echo "<td>{$row['LosNr_Extern']}</td>";
-                echo "<td>{$row['LosBezeichnung_Extern']}</td>";
-                echo "<td>{$row['Ausführungsbeginn']}</td>";
-                echo "<td>{$row['Gewerke_Nr']}</td>";
-                echo "<td>{$row['Budgetnummer']}</td>";
-                echo "<td>" . ($statusBadges[$row['Vergabe_abgeschlossen']] ?? '') . "</td>";
+                echo "<td>" . htmlspecialchars($row['TABELLE_Elemente_idTABELLE_Elemente'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars($row['idtabelle_Varianten'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars($row['idtabelle_Lose_Extern'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars($row['Neu/Bestand'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars($row['SummevonAnzahl'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars($row['ElementID'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars($row['Bezeichnung'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars($row['Variante'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars($row['Raumbereich Nutzer'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars($row['Bauabschnitt'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . (($row['Neu/Bestand'] ?? null) == 1 ? 'Nein' : 'Ja') . "</td>";
+                echo "<td>" . htmlspecialchars(format_money($row['Kosten'] ?? 0), ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars(format_money($row['PP'] ?? 0), ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars($row['LosNr_Extern'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars($row['LosBezeichnung_Extern'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars($row['Ausführungsbeginn'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars($row['Gewerke_Nr'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars($row['Budgetnummer'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" .  ($statusBadges[$row['Vergabe_abgeschlossen']] ?? '') ."</td>";
                 echo "</tr>";
+
             }
             echo "</tbody></table>";
         }
@@ -144,7 +148,8 @@
                 tabelle_räume.`Raumbereich Nutzer`,
                 tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, 
                 tabelle_lose_extern.idtabelle_Lose_Extern,
-                tabelle_projektbudgets.Budgetnummer
+                tabelle_projektbudgets.Budgetnummer,
+                   tabelle_räume.Bauabschnitt
                 ORDER BY tabelle_elemente.ElementID;";
 
         //GROUP BY       tabelle_lose_extern.LosNr_Extern,
@@ -172,7 +177,7 @@
     </div>
     <div class="col-xxl-4">
         <div class="mt-4 card">
-            <div class="card-header">Variantenparameter</div>
+            <div class="card-header" id="variantenParameterCH">Variantenparameter</div>
             <div class="card-body" id="variantenParameter"></div>
         </div>
         <div class="mt-4 card">
@@ -237,15 +242,15 @@
             paging: true,
             select: true,
             order: [[6, 'asc']],
-            // columnDefs: [
-            //     {
-            //         targets: [0, 1, 2, 3, 4],
-            //         visible: false,
-            //         searchable: false
-            //     }
-            // ],
+            columnDefs: [
+                {
+                    targets: [0, 1, 2, 3, 4],
+                    visible: false,
+                    searchable: false
+                }
+            ],
             orderCellsTop: true,
-            pagingType: 'simple',
+            pagingType: 'full',
             lengthChange: true,
             pageLength: 10,
             language: {
@@ -268,17 +273,51 @@
             }
         });
 
-        const searchbuilder = [
-            {
-                extend: 'searchBuilder',
-                text: " ",
-                className: "fa fa-search",
-                titleAttr: "searchBuilder"
-            }
-        ];
+        new $.fn.dataTable.Buttons(tableElementsInProject, {
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: 'Excel',
+                    className: 'fas fa-file-excel btn btn-outline-dark bg-white',
+                    action: function (e, dt, button, config) {
+                        if (confirm('Möchten Sie die Tabelle wirklich als Excel exportieren? Führt ggf. zu Chaos. Und wer will das überhaupt? Warum müssen wir da eine Excel liefern? ... Ahja und... wenn du ja drückst, hassen dich die excel Feinde!')) {
+                            $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, button, config);
+                        }
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: 'PDF',
+                    className: 'fas fa-file-pdf btn btn-outline-dark bg-white',
+                    orientation: 'landscape',
+                    pageSize: 'A3',
+                    exportOptions: {columns: ':visible'}, // <-- Exclude invisible columns
+                    customize: function (doc) {
+                        // Reduce base font size
+                        doc.defaultStyle.fontSize = 8;
 
-        new $.fn.dataTable.Buttons(tableElementsInProject, {buttons: searchbuilder}).container().appendTo($('#ElInPrCardHeader'));
-        $('.dt-buttons').children().children().remove();
+                        // Auto-adjust column widths
+                        var table = doc.content[1].table;
+                        var colCount = table.body[0].length+1;
+                        table.widths = new Array(colCount).fill('*');
+
+                        // Smaller header fonts
+                        doc.styles.tableHeader.fontSize = 9;
+
+                        // Reduce margins for more space
+                        doc.pageMargins = [10, 10, 10, 10];
+                    }
+                },
+                {
+                    extend: 'searchBuilder',
+                    text: " ",
+                    className: "fa fa-search btn  btn-outline-dark bg-white",
+                    titleAttr: "searchBuilder"
+                }
+            ]
+        }).container().appendTo($('#ElInPrCardHeader'));
+
+        // $('.dt-buttons').children().children().remove();
 
         $('#tableElementsInProject tbody').on('click', 'tr', function () {
             let elementID = tableElementsInProject.row($(this)).data()[1];

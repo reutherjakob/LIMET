@@ -179,7 +179,7 @@ init_page_serversides();
                     <div class="mt-4 card">
                         <div class="card-header d-flex justify-content-center align-items-center">
                             <div class="col-10"> Elemente in DB</div>
-                            <div class="col-2" id="CardHeaderELementesInDb"></div>
+                            <div class="col-2" id="CardHeaderElementesInDb"></div>
                         </div>
                         <div class="card-body" id="elementsInDB">
                             <?php include "getElementsInDbCardBodyContent.php"; ?>
@@ -248,6 +248,18 @@ init_page_serversides();
 <script>
 
     var tableRooms, tableElementsInDB;
+
+    var tableRoomElements;  // tableRoomElements  && hideZeroFilter required for: getRoomELmeentsDetailed1.php
+    const hideZeroFilter = function (settings, data, dataIndex) {
+        if (settings.nTable.id !== 'tableRoomElements') {
+            return true; // Don't filter other tables
+        }
+        let hideZero = $("#hideZeroRows").is(":checked");
+        let row = tableRoomElements.row(dataIndex).node();
+        let amount = $(row).find('input[id^="amount"]').val();
+        amount = parseInt(amount) || 0;
+        return !(hideZero && (amount === 0));
+    }
 
     $(document).ready(function () {
         $("#elementParameters").hide();
@@ -323,7 +335,6 @@ init_page_serversides();
             tableRooms.draw();
         });
 
-
         $('#tableRooms tbody').on('click', 'tr', function () {
             $("#elementParameters").hide();
             $("#elementBestand").hide();
@@ -348,6 +359,7 @@ init_page_serversides();
                                     $("#roomElements").html(data);
                                 }
                             });
+
                         }
                     });
                 }
@@ -355,6 +367,7 @@ init_page_serversides();
         });
 
         init_table_elementsinDB();
+
     });
 
     $("button[value='reloadBestand']").click(function () {
@@ -387,7 +400,7 @@ init_page_serversides();
 
 
     function init_table_elementsinDB() {
-
+        $('#CardHeaderElementesInDb .xxx').remove();
         tableElementsInDB = new DataTable('#tableElementsInDB', {
             paging: {
                 type: 'simple',
@@ -408,9 +421,8 @@ init_page_serversides();
                 searchPlaceholder: "Suche..."
             },
             initComplete: function () {
-                $('#CardHeaderELementesInDb .xxx').remove();
                 $('.dt-search label').remove();
-                $('.dt-search').children().removeClass("form-control form-control-sm float-right").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderELementesInDb');
+                $('.dt-search').children().removeClass("form-control form-control-sm float-right").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
             }
         });
 

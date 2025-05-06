@@ -101,7 +101,7 @@ $mysqli->close();
     var tableElementsInDB;
     $(document).ready(function () {
 
-        tableElementsInDB =  new DataTable('#tableElementsInDB', {
+        tableElementsInDB = new DataTable('#tableElementsInDB', {
             paging: true,
             info: true,
             pagingType: "simple",
@@ -132,48 +132,47 @@ $mysqli->close();
         });
 
 
-
         $('#tableElementsInDB tbody').on('click', 'tr', function () {
-                $("#deviceParametersInDB").hide();
-                $("#devicePrices").hide();
-                $("#deviceLieferanten").hide();
-                document.getElementById("bezeichnung").value = tableElementsInDB.row($(this)).data()[3];
-                document.getElementById("kurzbeschreibungModal").value = tableElementsInDB.row($(this)).data()[4];
+            $("#deviceParametersInDB").hide();
+            $("#devicePrices").hide();
+            $("#deviceLieferanten").hide();
+            document.getElementById("bezeichnung").value = tableElementsInDB.row($(this)).data()[3];
+            document.getElementById("kurzbeschreibungModal").value = tableElementsInDB.row($(this)).data()[4];
 
             tableElementsInDB.$('tr.info').removeClass('info');
-                $(this).addClass('info');
-                let elementID = tableElementsInDB.row($(this)).data()[0];
-                $.ajax({
-                    url: "setSessionVariables.php",
-                    data: {"elementID": elementID},
-                    type: "GET",
-                    success: function (data) {
-                        $.ajax({
-                            url: "getStandardElementParameters.php",
-                            data: {"elementID": elementID},
-                            type: "GET",
-                            success: function (data) {
-                                $("#elementParametersInDB").html(data);
-                                $.ajax({
-                                    url: "getElementPricesInDifferentProjects.php",
-                                    data: {"elementID": elementID},
-                                    type: "GET",
-                                    success: function (data) {
-                                        $("#elementPricesInOtherProjects").html(data);
-                                        $.ajax({
-                                            url: "getDevicesToElement.php",
-                                            data: {"elementID": elementID},
-                                            type: "GET",
-                                            success: function (data) {
-                                                $("#devicesInDB").html(data);
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
+            $(this).addClass('info');
+            let elementID = tableElementsInDB.row($(this)).data()[0];
+            $.ajax({
+                url: "setSessionVariables.php",
+                data: {"elementID": elementID},
+                type: "GET",
+                success: function (data) {
+                    $.ajax({
+                        url: "getStandardElementParameters.php",
+                        data: {"elementID": elementID},
+                        type: "GET",
+                        success: function (data) {
+                            $("#elementParametersInDB").html(data);
+                            $.ajax({
+                                url: "getElementPricesInDifferentProjects.php",
+                                data: {"elementID": elementID},
+                                type: "GET",
+                                success: function (data) {
+                                    $("#elementPricesInOtherProjects").html(data);
+                                    $.ajax({
+                                        url: "getDevicesToElement.php",
+                                        data: {"elementID": elementID},
+                                        type: "GET",
+                                        success: function (data) {
+                                            $("#devicesInDB").html(data);
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
 
         });
     });
@@ -200,13 +199,15 @@ $mysqli->close();
             type: "GET",
             success: function (data) {
                 makeToaster(data, true);
-                $.ajax({
-                    url: "getRoomElementsDetailed1.php",
-                    type: "GET",
-                    success: function (data) {
-                        $("#roomElements").html(data);
-                    }
-                });
+                setTimeout(function () {
+                    $.ajax({
+                        url: "getRoomElementsDetailed1.php",
+                        type: "GET",
+                        success: function (data) {
+                            $("#roomElements").html(data);
+                        }
+                    });
+                }, 500);
             }
         });
     });
@@ -224,7 +225,6 @@ $mysqli->close();
                 success: function (data) {
                     $('#changeElementModal').modal('hide');
                     alert(data);
-
                     $.ajax({
                         url: "getElementsInDB.php",
                         type: "GET",

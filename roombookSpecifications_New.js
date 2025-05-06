@@ -3,7 +3,6 @@ fetch('get_project_id.php')
     .then(response => response.json())
     .then(data => {
         projectID = data.projectID;
-        // Any code that needs to use projectID should be called here or in a function called from here
     })
     .catch(error => console.error('Error:', error));
 
@@ -20,6 +19,29 @@ let current_edit = false; //keeps track if the input field to edit the cells is 
 let Cookie_aktiv_tage = 90;
 let previous_room_session = 0;
 
+var tableRoomElements;  // tableRoomElements  && hideZeroFilter required for: getRoomELmeentsDetailed1.php
+
+var hideZeroFilter = function (settings, data, dataIndex) { // 06052025
+    if (settings.nTable.id !== 'tableRoomElements') {
+        return true; // Don't filter other tables
+    }
+    let hideZero = $("#hideZeroRows").is(":checked");
+    let row = tableRoomElements.row(dataIndex).node();
+    let amount = $(row).find('input[id^="amount"]').val();
+    amount = parseInt(amount) || 0;
+    return !(hideZero && (amount === 0));
+};
+
+$("#hideZeroRows").on("change", function () {  // 06052025
+    const icon = $("#hideZeroIcon");
+    if (this.checked) {
+        // 0 elements are hidden, show slashed eye
+        icon.removeClass("fa-eye").addClass("fa-eye-slash");
+    } else {
+        // 0 elements are visible, show open eye
+        icon.removeClass("fa-eye-slash").addClass("fa-eye");
+    }
+});
 
 $(document).ready(function () {
     loadSettings();
@@ -31,6 +53,7 @@ $(document).ready(function () {
     init_filter();
     handleCheckboxChange();
     add_room_modal();
+
 
 });
 
@@ -204,7 +227,7 @@ function init_btn_4_dt() {
         })), {
             text: '<i class="fa fa-paper-plane"></i> R',
             className: 'btn btn-light border-secondary',
-            action: () => toggleReportColumnsVisible
+            action: () => toggleReportColumnsVisible()
         }
     ];
     new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#TableCardHeader'));
@@ -247,7 +270,7 @@ function init_dt() {
         compact: true,
         initComplete: function () {
             $('.dt-search label').remove();
-            $('.dt-search').children().appendTo('#TableCardHeader');//removeClass('form-control form-control-sm')
+            $(' .dt-search').children().appendTo('#TableCardHeader');//removeClass('form-control form-control-sm')
 
         }
     });
@@ -563,11 +586,41 @@ function toggleReportColumnsVisible() {
 }
 
 function toggleColumns(table, startColumn, endColumn, button_name) {
-    const columns = table.columns().indexes();
-    let vis = !table.column(columns[endColumn]).visible();
-    for (let i = startColumn; i <= endColumn; i++) {
-        table.column(columns[i]).visible(vis);
+    //   console.time('toggleColumns'); // Start timer
+    // --- 2. Batch toggle columns with index validation ---
+    const columns = table.columns().indexes().toArray();
+    const maxIdx = columns.length - 1;
+    let vis = !table.column(columns[Math.min(endColumn, maxIdx)]).visible();
+
+    let colIndexes = [];
+    for (let i = Math.max(0, startColumn); i <= Math.min(endColumn, maxIdx); i++) {
+        if (columns[i] !== undefined) {
+            colIndexes.push(columns[i]);
+        }
     }
+    table.columns(colIndexes).visible(vis, false);
+    table.columns.adjust().draw(false);
+    // --- 4. Update button classes as before ---
+    toggle_btn_classes(button_name, vis);
+    //   console.timeEnd('toggleColumns');
+
+}
+
+// function toggleColumnsold(table, startColumn, endColumn, button_name) {
+//     console.time('toggleColumnsOld'); // Start timer for old version
+//
+//     const columns = table.columns().indexes();
+//     let vis = !table.column(columns[endColumn]).visible();
+//     for (let i = startColumn; i <= endColumn; i++) {
+//         table.column(columns[i]).visible(vis);
+//     }
+//     toggle_btn_classes(button_name, vis);
+//
+//     console.timeEnd('toggleColumnsOld'); // End timer for old version
+// }
+
+function toggle_btn_classes(button_name, vis) {
+
     if (button_name === 'All') {
         buttonRanges.forEach(button => {
             const btn = $(`.btn_vis:contains('${button.name}')`);
@@ -601,6 +654,7 @@ function toggleColumns(table, startColumn, endColumn, button_name) {
         }
     }
 }
+
 
 function init_showRoomElements_btn() {
     $("#showRoomElements").html("<i class='fa fa-caret-right'></i>");

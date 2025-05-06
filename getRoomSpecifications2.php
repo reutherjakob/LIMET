@@ -64,12 +64,12 @@ check_login();
         echo "
             <div class='well well-sm'>
                 <input type='button' id='saveBauangaben' class='btn btn-success btn-sm' value='Bauangaben speichern'>
-                <input type='button' class='btn btn-info btn-sm' value='Bauangaben kopieren exkl. BO' id='" . $_SESSION["roomID"] . "' data-bs-toggle='modal' data-bs-target='#myModal'>
+                <input type='button' class='btn btn-info btn-sm' value='Bauangaben kopieren exkl. BO' id='" . $_SESSION["roomID"] . "' data-bs-toggle='modal' data-bs-target='#BauangabenModal'>
             </div>      </form>";
 
         echo " <!-- Modal zum Kopieren der Bauangaben -->
-        <div class='modal fade' id='myModal' role='dialog'>
-          <div class='modal-dialog modal-lg'>
+        <div class='modal fade' id='BauangabenModal' role='dialog'>
+          <div class='modal-dialog modal-xl'>
             <!-- Modal content--> 
             <div class='modal-content'>
               <div class='modal-header'>                                  
@@ -122,7 +122,7 @@ check_login();
                     success: function (data) {
                         //console.log("Sucessfully opened getRoomsToCopy.php");
                         $("#mbody2").html(data);
-                        $('#myModal').modal('show');
+                        $('#BauangabenModal').modal('show');
                     }
                 });
             });
