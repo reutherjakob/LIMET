@@ -139,7 +139,8 @@ $mysqli->close();
 
 
     <?php if ($result_room_elements->num_rows > 0): ?>
-        <div id="room-action-buttons" class="d-inline-flex justify-content-end align-items-center text-nowrap btn-group-sm">
+        <div id="room-action-buttons"
+             class="d-inline-flex justify-content-end align-items-center text-nowrap btn-group-sm">
             <button type="button" class="btn btn-sm btn-outline-dark me-1" id="<?php echo $_SESSION["roomID"]; ?>"
                     data-bs-toggle="modal" data-bs-target="#copyRoomElementsModal" value="Rauminhalt kopieren">Inhalt
                 kopieren
@@ -152,8 +153,8 @@ $mysqli->close();
             </button>
 
             <input class="btn-check" type="checkbox" id="hideZeroRows" checked>
-            <label class="btn btn-outline-secondary" for="hideZeroRows">
-                Hide 0
+            <label class="btn btn-outline-dark" for="hideZeroRows">
+                <i id="hideZeroIcon" class="fa fa-eye-slash"></i> Hide 0
             </label>
 
         </div>
@@ -229,9 +230,8 @@ $mysqli->close();
                 $Kurzbeschreibung = trim($row["Kurzbeschreibung"] ?? "");
                 $buttonClass = $Kurzbeschreibung === "" ? "btn-outline-secondary" : "btn-outline-dark";
                 $iconClass = $Kurzbeschreibung === "" ? "fa fa-comment-slash" : "fa fa-comment";
-                $dataAttr = $Kurzbeschreibung === "" ? "data-description= '' " : "data-description='" . htmlspecialchars($Kurzbeschreibung, ENT_QUOTES, 'UTF-8') . "'";
+                $dataAttr = $Kurzbeschreibung === "" ? "data-description= '' " : "data-description='" . htmlspecialchars($Kurzbeschreibung ?? "", ENT_QUOTES, 'UTF-8') . "'";
                 ?>
-
                 <button type="button"
                         class="btn btn-sm <?php echo $buttonClass; ?> comment-btn" <?php echo $dataAttr; ?>
                         id="<?php echo $row["id"]; ?>" title="Kommentar"><i class="<?php echo $iconClass; ?>"></i>
@@ -294,8 +294,66 @@ $mysqli->close();
 </div>
 
 <script src="_utils.js"></script>
-<script charset="utf-8" type="module">                    // type="module"
-    var tableRoomElements ;
+<script charset="utf-8" type="module">
+    //  !! tableRoomElements: variable within importing file!
+    import CustomPopover from './_popover.js';
+
+    CustomPopover.init('.comment-btn', {
+        onSave: function (trigger, newText) {
+            trigger.dataset.description = newText;
+            // send an AJAX request to save the new text
+            let id = trigger.id;   // = tabelle_räume_has_tabelle_elemente.id
+            $.ajax({
+                url: "saveRoomElementComment.php",
+                data: {
+                    "comment": newText,
+                    "id": id
+                },
+                type: "GET",
+                success: function (data) {
+                    makeToaster(data.trim(), true);
+                    $(".comment-btn[id='" + id + "']").removeClass('btn-outline-secondary');
+                    $(".comment-btn[id='" + id + "']").addClass('btn-outline-dark');
+                    $(".comment-btn[id='" + id + "']").find('i').removeClass('fa fa-comment-slash');
+                    $(".comment-btn[id='" + id + "']").find('i').addClass('fa fa-comment');
+                    $(".comment-btn[id='" + id + "']").attr('data-description', newText).data('description', newText);
+                }
+            });
+        }
+    });
+
+    $(document).ready(function () {
+        init_hide_0();
+        init_DT();
+        attachButtonListeners();
+        $.fn.dataTable.ext.search.push(hideZeroFilter);
+        $("#hideZeroRows").on("change", function () {
+            tableRoomElements.draw();
+        });
+    });
+
+
+    function init_hide_0() {
+        // 2. Before initializing DataTable, clean up previous filters
+        $.fn.dataTable.ext.search = $.fn.dataTable.ext.search.filter(fn => fn !== hideZeroFilter);
+
+        // 3. Destroy table properly before reinitializing
+        if ($.fn.dataTable.isDataTable('#tableRoomElements')) {
+            $('#tableRoomElements').DataTable().destroy(true); // true = remove from DOM
+            $('#tableRoomElements').empty(); // Clear table contents
+        }
+
+        $("#hideZeroRows").on("change", function () {
+            const icon = $("#hideZeroIcon");
+            if (this.checked) {
+                // 0 elements are hidden, show slashed eye
+                icon.removeClass("fa-eye").addClass("fa-eye-slash");
+            } else {
+                // 0 elements are visible, show open eye
+                icon.removeClass("fa-eye-slash").addClass("fa-eye");
+            }
+        });
+    }
 
     function attachButtonListeners() {
         $("button[value='createRoombookPDF']").click(function () {
@@ -339,71 +397,40 @@ $mysqli->close();
                 }
             });
         });
+        $("button[value='saveElement']").click(function () {
+            let id = this.id;
+            //console.log(id)
+            let comment = $(".comment-btn[id='" + id + "']").attr('data-description');
+            // console.log(comment);
+            let amount = $("#amount" + id).val();
+            let variantenID = $("#variante" + id).val();
+            let bestand = $("#bestand" + id).val();
+            let standort = $("#Standort" + id).val();
+            let verwendung = $("#Verwendung" + id).val();
+            if (standort === '0' && verwendung === '0') {
+                alert("Standort und Verwendung kann nicht Nein sein!");
+            } else {
+                $.ajax({
+                    url: "saveRoombookEntry.php",
+                    data: {
+                        "comment": comment,
+                        "id": id,
+                        "amount": amount,
+                        "variantenID": variantenID,
+                        "bestand": bestand,
+                        "standort": standort,
+                        "verwendung": verwendung
+                    },
+                    type: "GET",
+                    success: function (data) {
+                        makeToaster(data.trim(), true);
+                    }
+                });
+            }
+        });
     }
 
-     import CustomPopover from './_popover.js';
-
-    CustomPopover.init('.comment-btn', {
-        onSave: function (trigger, newText) {
-            trigger.dataset.description = newText;
-            // send an AJAX request to save the new text
-            let id = trigger.id;   // = tabelle_räume_has_tabelle_elemente.id
-            $.ajax({
-                url: "saveRoomElementComment.php",
-                data: {
-                    "comment": newText,
-                    "id": id
-                },
-                type: "GET",
-                success: function (data) {
-                    makeToaster(data.trim(), true);
-                    $(".comment-btn[id='" + id + "']").removeClass('btn-outline-secondary');
-                    $(".comment-btn[id='" + id + "']").addClass('btn-outline-dark');
-                    $(".comment-btn[id='" + id + "']").find('i').removeClass('fa fa-comment-slash');
-                    $(".comment-btn[id='" + id + "']").find('i').addClass('fa fa-comment');
-                    $(".comment-btn[id='" + id + "']").attr('data-description', newText).data('description', newText);
-                }
-            });
-        }
-    });
-
-    // var tableRoomElements;
-    $("button[value='saveElement']").click(function () {
-        let id = this.id;
-        //console.log(id)
-        let comment = $(".comment-btn[id='" + id + "']").attr('data-description');
-        // console.log(comment);
-        let amount = $("#amount" + id).val();
-        let variantenID = $("#variante" + id).val();
-        let bestand = $("#bestand" + id).val();
-        let standort = $("#Standort" + id).val();
-        let verwendung = $("#Verwendung" + id).val();
-        if (standort === '0' && verwendung === '0') {
-            alert("Standort und Verwendung kann nicht Nein sein!");
-        } else {
-            $.ajax({
-                url: "saveRoombookEntry.php",
-                data: {
-                    "comment": comment,
-                    "id": id,
-                    "amount": amount,
-                    "variantenID": variantenID,
-                    "bestand": bestand,
-                    "standort": standort,
-                    "verwendung": verwendung
-                },
-                type: "GET",
-                success: function (data) {
-                    makeToaster(data.trim(), true);
-                }
-            });
-        }
-    });
-
-    $(document).ready(function () {
-        if ($.fn.dataTable.isDataTable('#tableRoomElements')) {
-            tableRoomElements.destroy(true); // true = remove table from DOM
-        }
+    function init_DT() {
 
         tableRoomElements = $("#tableRoomElements").DataTable({
             select: true,
@@ -441,13 +468,11 @@ $mysqli->close();
                 bottomStart: ["search", 'info']
             },
             initComplete: function () {
-             //   room-action-buttons
                 $('#room-action-buttons .xxx').remove();
                 $('#roomElements .dt-search label').remove();
                 $('#roomElements .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx  ms-1 me-1").appendTo('#room-action-buttons');
             }
         });
-
 
 
         $('#tableRoomElements tbody').on('click', 'tr', function () {
@@ -506,26 +531,8 @@ $mysqli->close();
                 }
             });
         });
-        attachButtonListeners();
 
-        $.fn.dataTable.ext.search.push(
-            function (settings, data, dataIndex) {
-                if (settings.nTable.id !== 'tableRoomElements') {
-                    return true; // Don't filter other tables
-                }
-                let hideZero = $("#hideZeroRows").is(":checked");
-                let row = tableRoomElements.row(dataIndex).node();
-                let amount = $(row).find('input[id^="amount"]').val();
-                amount = parseInt(amount) || 0;
-                return !(hideZero && (amount === 0));
-            }
-        );
-
-        $("#hideZeroRows").on("change", function () {
-            tableRoomElements.draw();
-        });
-
-    });
+    }
 
 </script>
 </body>

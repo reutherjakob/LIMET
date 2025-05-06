@@ -243,7 +243,6 @@ while ($row = $result->fetch_assoc()) {
     echo "</tr>";
 }
 echo "</tbody></table>";
-
 $mysqli->close();
 ?>
 
@@ -278,7 +277,11 @@ $mysqli->close();
     var tableRoomsWithElementTenderLots;
     var selectedRows = [];
 
+
+
     $(document).ready(function () {
+
+
         $('.batch-select').prop('checked', true)
         $('.batch-select').each(function () {
             var id = $(this).attr('id').replace('batchSelect', '');
@@ -289,6 +292,11 @@ $mysqli->close();
                 saveElement(ID);
             });
         });
+
+        $('#globalLosExtern').select2({
+            width: 'resolve' // or 'style' if you want it to match your existing CSS
+        });
+
 
         $(document).on('change', '.batch-select', function () {
             var id = $(this).attr('id').replace('batchSelect', '');

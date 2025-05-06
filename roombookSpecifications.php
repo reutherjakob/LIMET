@@ -1,11 +1,13 @@
 <!-- 13.2.25: Reworked -->
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 check_login();
 ?>
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <title>RB-Bauangaben</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
@@ -329,6 +331,18 @@ check_login();
 </div>
 
 <script>
+    var tableRoomElements;  // tableRoomElements  && hideZeroFilter required for: getRoomELmeentsDetailed1.php
+    const hideZeroFilter = function (settings, data, dataIndex) {
+        if (settings.nTable.id !== 'tableRoomElements') {
+            return true; // Don't filter other tables
+        }
+        let hideZero = $("#hideZeroRows").is(":checked");
+        let row = tableRoomElements.row(dataIndex).node();
+        let amount = $(row).find('input[id^="amount"]').val();
+        amount = parseInt(amount) || 0;
+        return !(hideZero && (amount === 0));
+    }
+
 
     function adaptResponseData(data) {
         // Replace Bootstrap 5 classes with their Bootstrap 4 equivalents
@@ -528,15 +542,15 @@ check_login();
     //Raum hinzufügen
     $("#addRoom").click(function () {
         console.log("Add btn click");
-      let nummer = $("#nummer").val();
-      let name = $("#name").val();
-      let flaeche = $("#flaeche").val();
-      let raumbereich = $("#raumbereich").val();
-      let geschoss = $("#geschoss").val();
-      let bauetappe = $("#bauetappe").val();
-      let bauteil = $("#bauteil").val();
-      let funktionsteilstelle = $("#funktionsstelle").val();
-      let MTrelevant = $("#mt-relevant").val();
+        let nummer = $("#nummer").val();
+        let name = $("#name").val();
+        let flaeche = $("#flaeche").val();
+        let raumbereich = $("#raumbereich").val();
+        let geschoss = $("#geschoss").val();
+        let bauetappe = $("#bauetappe").val();
+        let bauteil = $("#bauteil").val();
+        let funktionsteilstelle = $("#funktionsstelle").val();
+        let MTrelevant = $("#mt-relevant").val();
 
         if (nummer !== "" && name !== "" && flaeche !== "" && raumbereich !== "" && geschoss !== "" && bauetappe !== "" && bauteil !== "" && funktionsteilstelle !== 0 && MTrelevant !== "") {
 

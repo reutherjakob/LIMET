@@ -46,7 +46,7 @@ init_page_serversides();
                 <div class="card-header">
                     <div class="row">
                         <div class="col-xxl-6">Elemente in DB</div>
-                        <div class="col-xxl-6 d-flex justify-content-end" id="CardHeaderELementesInDb"></div>
+                        <div class="col-xxl-6 d-flex justify-content-end" id="CardHeaderElementesInDb"></div>
                     </div>
                 </div>
                 <div class="card-body" id="elementsInDB">
@@ -125,6 +125,7 @@ init_page_serversides();
     var tableElementsInDB;
 
     function init_table_elementsinDB() {
+        $('#CardHeaderElementesInDb .xxx').remove();
         tableElementsInDB = new DataTable('#tableElementsInDB', {
             select: true,
             paging: true,
@@ -151,9 +152,9 @@ init_page_serversides();
                 topEnd: null
             },
             initComplete: function () {
-                $('#CardHeaderELementesInDb .xxx').remove();
+
                 $('.dt-search label').remove();
-                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderELementesInDb');
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
 
             }
         });
