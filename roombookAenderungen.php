@@ -11,6 +11,14 @@
     <link href="https://cdn.datatables.net/v/bs5/dt-2.2.1/datatables.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 </head>
+<style>
+
+    .focusedRow {
+        background-color: rgba(100, 140, 25, 0.75) !important;
+        font-weight: bold;
+        color: #111;
+    }
+</style>
 <body>
 
 <div id="limet-navbar"></div>
@@ -62,10 +70,11 @@
                 ");
                 while ($room = $rooms->fetch_assoc()):
                     ?>
-                    <tr data-room-id="<?= htmlspecialchars($room['idTABELLE_Räume']) ?>">
+                    <tr data-room-id="<?= htmlspecialchars($room['idTABELLE_Räume']) ?>"
+                        data-room-nr=" <?= htmlspecialchars($room['Raumnr']) ?>"
+                        data-room-name="<?= htmlspecialchars($room['Raumbezeichnung']) ?>">
                         <td><?= htmlspecialchars($room['Raumnr']) ?></td>
                         <td><?= htmlspecialchars($room['Raumbezeichnung']) ?></td>
-
                         <td><?= $room['last_change'] ? date('d.m.Y H:i', strtotime($room['last_change'])) : 'Keine Änderungen' ?></td>
                         <td><?= htmlspecialchars($room['Raumnummer_Nutzer']) ?></td>
                     </tr>
@@ -76,14 +85,14 @@
     </div>
 
     <div class="card collapse" id="changesCard">
-        <div class="card-header bg-secondary text-white d-flex">
+        <div class="card-header bg-secondary text-white">
             <div class="row">
-                <h4 class="col-xxl-6"> Änderungshistorie </h4>
-                <div class=" col-xxl-6 d-flex align-items-center justify-content-end">
-                    <div class="d-flex align-items-center justify-content-end">
-                        <label for="start_date">Von </label><input type="date" id="start_date" name="start_date">
-                        <label for="end_date">Bis </label><input type="date" id="end_date" name="end_date">
-                    </div>
+                <div class="col-6 col-xxl-6"> Änderungshistorie
+                    <div id="PlaceholderForRoomIdentification"></div>
+                </div>
+                <div class="col-6 col-xxl-6 d-flex align-items-center justify-content-end">
+                    <label for="start_date">Von </label><input type="date" id="start_date" name="start_date">
+                    <label for="end_date">Bis </label><input type="date" id="end_date" name="end_date">
                 </div>
             </div>
         </div>
@@ -265,16 +274,24 @@
 
     <script>
         $(document).ready(function () {
+
+
             const roomTable = $('#roomTable').DataTable({
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/German.json'
                 },
                 order: [[2, 'asc']],
-                select: true
+                select: "single", mark: true
             });
 
             $('#roomTable tbody').on('click', 'tr', function () {
+                $('#roomTable tbody tr').removeClass('focusedRow');
+                $(this).addClass('focusedRow');
                 const roomId = $(this).data('room-id');
+                const roomName = $(this).data('room-name');
+                const roomNR = $(this).data('room-nr');
+                console.log(roomName, roomNR);
+                $('#PlaceholderForRoomIdentification').text(roomName + roomNR);
                 loadRoomChanges(roomId);
                 $('#changesCard').collapse('show');
             });

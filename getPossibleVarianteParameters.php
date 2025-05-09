@@ -101,6 +101,7 @@ $mysqli->close();
                         data: {"variantenID": variantenID},
                         type: "GET",
                         success: function (data) {
+                            $('#variantenParameterCh .xxx').remove();
                             $("#variantenParameter").html(data);
                             $.ajax({
                                 url: "getPossibleVarianteParameters.php",
@@ -118,6 +119,5 @@ $mysqli->close();
         }
     });
 </script>
-
 </body>
 </html>

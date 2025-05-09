@@ -52,7 +52,7 @@
         {
             $headers = [
                 '', 'ID-Element', 'ID-Variante', 'ID-Los', 'Bestand-Wert', 'Anzahl', 'ID', 'Element', 'Var', 'Raumbereich', 'Bauabschnitt',
-                'Bestand', 'EP', 'PP', 'Los-Nr', 'Los', 'Ausführungsbeginn', 'Gewerk', 'Budget', 'Abgeschlossen'
+                'Bestand', 'EP', 'PP', 'EP', 'PP', 'Los-Nr', 'Los', 'Ausführungsbeginn', 'Gewerk', 'Budget', 'Abgeschlossen'
             ];
 
             $filters = [
@@ -64,7 +64,7 @@
             <option value='1'>Ja</option>
             <option value='0'>Nein</option>
         </select>",
-                '', '',
+                '', '','', '',
                 "<input type='checkbox' id='filter_lot'>",
                 '', '', '', '', ''
             ];
@@ -97,12 +97,14 @@
                 echo "<td>" . (($row['Neu/Bestand'] ?? null) == 1 ? 'Nein' : 'Ja') . "</td>";
                 echo "<td>" . htmlspecialchars(format_money($row['Kosten'] ?? 0), ENT_QUOTES, 'UTF-8') . "</td>";
                 echo "<td>" . htmlspecialchars(format_money($row['PP'] ?? 0), ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars( ($row['Kosten'] ?? 0), ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars( ($row['PP'] ?? 0), ENT_QUOTES, 'UTF-8') . "</td>";
                 echo "<td>" . htmlspecialchars($row['LosNr_Extern'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                 echo "<td>" . htmlspecialchars($row['LosBezeichnung_Extern'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                 echo "<td>" . htmlspecialchars($row['Ausführungsbeginn'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                 echo "<td>" . htmlspecialchars($row['Gewerke_Nr'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                 echo "<td>" . htmlspecialchars($row['Budgetnummer'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
-                echo "<td>" .  ($statusBadges[$row['Vergabe_abgeschlossen']] ?? '') ."</td>";
+                echo "<td>" . ($statusBadges[$row['Vergabe_abgeschlossen']] ?? '') . "</td>";
                 echo "</tr>";
 
             }
@@ -196,8 +198,13 @@
     const COLUMNS = {
         BESTAND: 11,
         COUNT: 5,
-        LOT: 14
+        LOT: 16
     };
+
+
+    console.log($('#tableElementsInProject thead tr th').length); // Should print 22
+    console.log($('#tableElementsInProject tbody tr:first td').length); // Should print 22
+
 
     $.fn.dataTable.ext.search.push(function (settings, data) {
         if (settings.nTable.id !== 'tableElementsInProject') return true;
@@ -244,7 +251,7 @@
             order: [[6, 'asc']],
             columnDefs: [
                 {
-                    targets: [0, 1, 2, 3, 4],
+                    targets: [0, 1, 2, 3, 4, 14,15],
                     visible: false,
                     searchable: false
                 }
@@ -283,7 +290,7 @@
                         if (confirm('Möchten Sie die Tabelle wirklich als Excel exportieren? Führt ggf. zu Chaos. Und wer will das überhaupt? Warum müssen wir da eine Excel liefern? ... Ahja und... wenn du ja drückst, hassen dich die excel Feinde!')) {
                             $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, button, config);
                         }
-                    }
+                    }, exportOptions: {columns: [5,6,7,8,9,10,11,14,15,16,17,18,19,20,21]}
                 },
                 {
                     extend: 'pdfHtml5',
@@ -298,7 +305,7 @@
 
                         // Auto-adjust column widths
                         var table = doc.content[1].table;
-                        var colCount = table.body[0].length+1;
+                        var colCount = table.body[0].length + 1;
                         table.widths = new Array(colCount).fill('*');
 
                         // Smaller header fonts

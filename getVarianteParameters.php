@@ -82,34 +82,37 @@ $mysqli->close();
 
     //Parameter von Variante entfernen
     $("button[value='deleteParameter']").click(function () {
-        let variantenID = $('#variante').val();
-        let id = this.id;
-        if (id !== "") {
-            $.ajax({
-                url: "deleteParameterFromVariante.php",
-                data: {"parameterID": id, "variantenID": variantenID},
-                type: "GET",
-                success: function (data) {
-                    //  alert(data);
-                    makeToaster(data.trim(), true);
-                    $.ajax({
-                        url: "getVarianteParameters.php",
-                        data: {"variantenID": variantenID},
-                        type: "GET",
-                        success: function (data) {
-                            $("#variantenParameter").html(data);
-                            $.ajax({
-                                url: "getPossibleVarianteParameters.php",
-                                data: {"variantenID": variantenID},
-                                type: "GET",
-                                success: function (data) {
-                                    $("#possibleVariantenParameter").html(data);
-                                }
-                            });
-                        }
-                    });
-                }
-            });
+        if (confirm("Parameter wirklich löschen?")) {
+            let variantenID = $('#variante').val();
+            let id = this.id;
+            if (id !== "") {
+                $.ajax({
+                    url: "deleteParameterFromVariante.php",
+                    data: {"parameterID": id, "variantenID": variantenID},
+                    type: "GET",
+                    success: function (data) {
+                        //  alert(data);
+                        makeToaster(data.trim(), true);
+                        $.ajax({
+                            url: "getVarianteParameters.php",
+                            data: {"variantenID": variantenID},
+                            type: "GET",
+                            success: function (data) {
+                                $('#variantenParameterCh .xxx').remove();
+                                $("#variantenParameter").html(data);
+                                $.ajax({
+                                    url: "getPossibleVarianteParameters.php",
+                                    data: {"variantenID": variantenID},
+                                    type: "GET",
+                                    success: function (data) {
+                                        $("#possibleVariantenParameter").html(data);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
         }
     });
 

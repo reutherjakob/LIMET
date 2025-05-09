@@ -371,9 +371,9 @@ $row = $result->fetch_assoc(); ?>
             },
             scrollX: true,
             initComplete: function () {
-                 $('#variantenParameterCh .xxx').remove();
-                 $('#variantenParameter .dt-search label').remove();
-                 $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#variantenParameterCH');
+                $('#variantenParameterCh .xxx').remove();
+                $('#variantenParameter .dt-search label').remove();
+                $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#variantenParameterCH');
             }
         });
 
@@ -469,6 +469,7 @@ $row = $result->fetch_assoc(); ?>
                                         data: {"variantenID": variantenID},
                                         type: "GET",
                                         success: function (data) {
+                                            $('#variantenParameterCh .xxx').remove();
                                             $("#variantenParameter").html(data);
                                             $.ajax({
                                                 url: "getPossibleVarianteParameters.php",
@@ -512,6 +513,7 @@ $row = $result->fetch_assoc(); ?>
                         data: {"variantenID": variantenID},
                         type: "GET",
                         success: function (data) {
+                            $('#variantenParameterCh .xxx').remove();
                             $("#variantenParameter").html(data);
                             $.ajax({
                                 url: "getPossibleVarianteParameters.php",
@@ -547,6 +549,7 @@ $row = $result->fetch_assoc(); ?>
                         data: {"variantenID": variantenID},
                         type: "GET",
                         success: function (data) {
+                            $('#variantenParameterCh .xxx').remove();
                             $("#variantenParameter").html(data);
                             $.ajax({
                                 url: "getPossibleVarianteParameters.php",
@@ -566,36 +569,40 @@ $row = $result->fetch_assoc(); ?>
 
     //Parameter von Variante entfernen
     $("button[value='deleteParameter']").click(function () {
-        let variantenID = $('#variante').val();
-        let id = this.id;
-        if (id !== "") {
-            $.ajax({
-                url: "deleteParameterFromVariante.php",
-                data: {"parameterID": id, "variantenID": variantenID},
-                type: "GET",
-                success: function (data) {
-                    //		        	alert(data);
-                    makeToaster(data.trim(), false);
-                    $.ajax({
-                        url: "getVarianteParameters.php",
-                        data: {"variantenID": variantenID},
-                        type: "GET",
-                        success: function (data) {
-                            $("#variantenParameter").html(data);
-                            $.ajax({
-                                url: "getPossibleVarianteParameters.php",
-                                data: {"variantenID": variantenID},
-                                type: "GET",
-                                success: function (data) {
-                                    $("#possibleVariantenParameter").html(data);
-                                    //console.log("2", data);
-                                }
-                            });
+        if (confirm("Parameter wirklich löschen?")) {
+            $('#variantenParameterCh .xxx').remove();
+            let variantenID = $('#variante').val();
+            let id = this.id;
+            if (id !== "") {
+                $.ajax({
+                    url: "deleteParameterFromVariante.php",
+                    data: {"parameterID": id, "variantenID": variantenID},
+                    type: "GET",
+                    success: function (data) {
+                        //		        	alert(data);
+                        makeToaster(data.trim(), false);
+                        $.ajax({
+                            url: "getVarianteParameters.php",
+                            data: {"variantenID": variantenID},
+                            type: "GET",
+                            success: function (data) {
+                                $('#variantenParameterCh .xxx').remove();
+                                $("#variantenParameter").html(data);
+                                $.ajax({
+                                    url: "getPossibleVarianteParameters.php",
+                                    data: {"variantenID": variantenID},
+                                    type: "GET",
+                                    success: function (data) {
+                                        $("#possibleVariantenParameter").html(data);
+                                        //console.log("2", data);
+                                    }
+                                });
 
-                        }
-                    });
-                }
-            });
+                            }
+                        });
+                    }
+                });
+            }
         }
     });
 
@@ -628,11 +635,10 @@ $row = $result->fetch_assoc(); ?>
     // Variantenparameter übernehmen in zentrales Element
     $("#addVariantenParameterToElement").click(function () {
         const username = "  <?php echo $_SESSION["username"] ?>";
-        if (username.toLowerCase() === "reuther") {
+        console.log(username.trim());
+        if (username.toLowerCase().trim() === "reuther" || username.toLowerCase().trim() === "fuchs") {
             const elementID = <?php echo $_SESSION["elementID"] ?>;
             const variantenID = <?php echo $_SESSION["variantenID"] ?>;
-            console.log(elementID, variantenID);
-
             $.ajax({
                 url: "addVariantenParameterToElement.php",
                 data: {"elementID": elementID, "variantenID": variantenID},

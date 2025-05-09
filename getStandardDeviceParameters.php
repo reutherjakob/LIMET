@@ -257,6 +257,7 @@ echo "<button type='button' id='" . $deviceID . "' class='btn btn-outline-succes
                         url: "getDeviceParameters.php",
                         type: "GET",
                         success: function (data) {
+                            $('#variantenParameterCh .xxx').remove();
                             $("#deviceParameters").html(data);
                             $.ajax({
                                 url: "getPossibleDeviceParameters.php",
@@ -275,33 +276,35 @@ echo "<button type='button' id='" . $deviceID . "' class='btn btn-outline-succes
 
     //Parameter von Gerät entfernen
     $("button[value='deleteParameter']").click(function () {
-        let id = this.id;
-        if (id !== "") {
-            $.ajax({
-                url: "deleteParameterFromDevice.php",
-                data: {"parameterID": id},
-                type: "GET",
-                success: function (data) {
-                    alert(data);
-                    $.ajax({
-                        url: "getDeviceParameters.php",
-                        type: "GET",
-                        success: function (data) {
-                            $("#deviceParameters").html(data);
-                            $.ajax({
-                                url: "getPossibleDeviceParameters.php",
-                                type: "GET",
-                                success: function (data) {
-                                    $("#possibleDeviceParameters").html(data);
-                                }
-                            });
-                        }
-                    });
-                }
-            });
+        if (confirm("Parameter wirklich löschen?")) {
+            let id = this.id;
+            if (id !== "") {
+                $.ajax({
+                    url: "deleteParameterFromDevice.php",
+                    data: {"parameterID": id},
+                    type: "GET",
+                    success: function (data) {
+                        alert(data);
+                        $.ajax({
+                            url: "getDeviceParameters.php",
+                            type: "GET",
+                            success: function (data) {
+                                $("#deviceParameters").html(data);
+                                $.ajax({
+                                    url: "getPossibleDeviceParameters.php",
+                                    type: "GET",
+                                    success: function (data) {
+                                        $("#possibleDeviceParameters").html(data);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
 
-        } else {
-            alert("Fehler beim Löschen des Parameters!");
+            } else {
+                alert("Fehler beim Löschen des Parameters!");
+            }
         }
     });
 

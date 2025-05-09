@@ -256,7 +256,7 @@ function init_dt() {
             }
             //,url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
         },
-        select: "single",
+        select: "os",
         fixedColumns: {start: 2},
         fixedHeader: true,
         keys: true,
@@ -305,7 +305,7 @@ function restoreDefaults() {
     setCookie('settings_show_btn_grp_labels', "true", Cookie_aktiv_tage);
     setCookie('settings_save_state_4all_projects', "false", Cookie_aktiv_tage);
     setCookie('settings_save_state' + projectID, "false", Cookie_aktiv_tage);
-    setCookie('settings_save_edit_cbx', "false", Cookie_aktiv_tage);
+    setCookie('settings_save_edit_cbx', "true", Cookie_aktiv_tage);
     table.state.clear();
     location.reload();
 }
@@ -343,10 +343,10 @@ function loadSettings() {
     document.getElementById('settings_save_state_4all_projects').checked = getCookieValue('settings_save_state_4all_projects');
     document.getElementById('settings_save_state').checked = getCookieValue('settings_save_state' + projectID);
     document.getElementById('settings_save_edit_cbx').checked = getCookieValue('settings_save_edit_cbx');
+    document.getElementById('checkbox_EditableTable').checked = getCookieValue('settings_save_edit_cbx');
     $('#settings_show_btn_grp_labels').change(function () {
         change_top_label_visibility($(this).is(':checked'));
     });
-
 }
 
 function saveSettings() {
@@ -387,7 +387,7 @@ function check_angaben() {
 }
 
 
-/// EDIT TABLE
+/// --- --- EDIT TABLE --- ---
 function getCase(dataIdentifier) {
     const column = columnsDefinition.find(column => column.data === dataIdentifier);
     if (column && column.case) {
