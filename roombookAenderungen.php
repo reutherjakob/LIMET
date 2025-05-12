@@ -28,7 +28,7 @@
             <div class="row">
                 <h4 class="col-xxl-6">Räume </h4>
                 <div class=" col-xxl-6 d-flex align-items-center justify-content-end">
-                    <label for="start_date_raumänderungen">Von</label><input type="date" class="me-2 ms-2"
+                    <!-- label for="start_date_raumänderungen">Von</label><input type="date" class="me-2 ms-2"
                                                                              id="start_date_raumänderungen"
                                                                              name="start_date">
                     <label for="end_date_raumänderungen">Bis</label><input type="date" class="me-2 ms-2"
@@ -37,7 +37,7 @@
                     <button type="button" class="btn btn-info float-end" data-bs-toggle="modal"
                             data-bs-target="#infoModal">
                         <i class="fas fa-info-circle"></i>
-                    </button>
+                    </button -->
                 </div>
             </div>
 

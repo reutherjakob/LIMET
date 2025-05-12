@@ -64,7 +64,7 @@
             <option value='1'>Ja</option>
             <option value='0'>Nein</option>
         </select>",
-                '', '','', '',
+                '', '', '', '',
                 "<input type='checkbox' id='filter_lot'>",
                 '', '', '', '', ''
             ];
@@ -97,12 +97,12 @@
                 echo "<td>" . (($row['Neu/Bestand'] ?? null) == 1 ? 'Nein' : 'Ja') . "</td>";
                 echo "<td>" . htmlspecialchars(format_money($row['Kosten'] ?? 0), ENT_QUOTES, 'UTF-8') . "</td>";
                 echo "<td>" . htmlspecialchars(format_money($row['PP'] ?? 0), ENT_QUOTES, 'UTF-8') . "</td>";
-                echo "<td>" . htmlspecialchars( ($row['Kosten'] ?? 0), ENT_QUOTES, 'UTF-8') . "</td>";
-                echo "<td>" . htmlspecialchars( ($row['PP'] ?? 0), ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars(($row['Kosten'] ?? 0), ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars(($row['PP'] ?? 0), ENT_QUOTES, 'UTF-8') . "</td>";
                 echo "<td>" . htmlspecialchars($row['LosNr_Extern'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                 echo "<td>" . htmlspecialchars($row['LosBezeichnung_Extern'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                 echo "<td>" . htmlspecialchars($row['Ausführungsbeginn'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
-                echo "<td>" . htmlspecialchars($row['Gewerke_Nr'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars($row['Gewerke_Nr'] ?? "", ENT_QUOTES, 'UTF-8') ." " .  htmlspecialchars($row['GWBEZ'] ?? "", ENT_QUOTES, 'UTF-8'). "</td>";
                 echo "<td>" . htmlspecialchars($row['Budgetnummer'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                 echo "<td>" . ($statusBadges[$row['Vergabe_abgeschlossen']] ?? '') . "</td>";
                 echo "</tr>";
@@ -124,40 +124,66 @@
 
         echo '<div class="card-body" id="elementLots">';
 
-
         $mysqli = utils_connect_sql();
-        $sql = "SELECT SUM(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, 
-                tabelle_varianten.Variante, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_projekt_varianten_kosten.Kosten, 
-                tabelle_projekt_varianten_kosten.Kosten*Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS PP, tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern, 
-                tabelle_lose_extern.Ausführungsbeginn, tabelle_lose_extern.idtabelle_Lose_Extern, tabelle_lose_extern.Vergabe_abgeschlossen, 
-                tabelle_varianten.idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
-                tabelle_auftraggeber_gewerke.Gewerke_Nr, tabelle_projektbudgets.Budgetnummer, tabelle_räume.Bauabschnitt
-                FROM tabelle_projekt_varianten_kosten 
-                INNER JOIN (tabelle_varianten 
-                                        INNER JOIN (tabelle_lose_extern 
-                                                                RIGHT JOIN ((tabelle_räume_has_tabelle_elemente 
-                                                                                        INNER JOIN tabelle_räume ON tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = tabelle_räume.idTABELLE_Räume) 
-                                                    INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON tabelle_lose_extern.idtabelle_Lose_Extern = tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) ON (tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte = tabelle_räume.tabelle_projekte_idTABELLE_Projekte) AND (tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) AND (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente)
-                                                    LEFT JOIN tabelle_projekt_element_gewerk ON tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte=tabelle_räume.tabelle_projekte_idTABELLE_Projekte AND tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente=tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
-                                                    LEFT JOIN tabelle_auftraggeber_gewerke ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke = tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
-                                          
-                                                    LEFT JOIN tabelle_projektbudgets ON tabelle_räume_has_tabelle_elemente.tabelle_projektbudgets_idtabelle_projektbudgets = tabelle_projektbudgets.idtabelle_projektbudgets
-                WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume_has_tabelle_elemente.Standort)=1))
-                GROUP BY 
-                tabelle_elemente.ElementID, 
-                tabelle_varianten.idtabelle_Varianten, 
-                 tabelle_varianten.Variante,       
-                tabelle_räume.`Raumbereich Nutzer`,
-                tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, 
-                tabelle_lose_extern.idtabelle_Lose_Extern,
-                tabelle_projektbudgets.Budgetnummer,
-                   tabelle_räume.Bauabschnitt
-                ORDER BY tabelle_elemente.ElementID;";
+        $sql = "SELECT SUM(tabelle_räume_has_tabelle_elemente.Anzahl)                                           AS SummevonAnzahl,
+       tabelle_elemente.ElementID,
+       tabelle_elemente.Bezeichnung,
+       tabelle_varianten.Variante,
+       tabelle_räume.`Raumbereich Nutzer`,
+       tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
+       tabelle_projekt_varianten_kosten.Kosten,
+       tabelle_projekt_varianten_kosten.Kosten * Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS PP,
+       tabelle_lose_extern.LosNr_Extern,
+       tabelle_lose_extern.LosBezeichnung_Extern,
+       tabelle_lose_extern.Ausführungsbeginn,
+       tabelle_lose_extern.idtabelle_Lose_Extern,
+       tabelle_lose_extern.Vergabe_abgeschlossen,
+       tabelle_varianten.idtabelle_Varianten,
+       tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
+       tabelle_auftraggeber_gewerke.Gewerke_Nr,
+        tabelle_auftraggeber_gewerke.Bezeichnung AS GWBEZ,
+       tabelle_projektbudgets.Budgetnummer,
+       tabelle_räume.Bauabschnitt
+FROM tabelle_projekt_varianten_kosten
+         INNER JOIN (tabelle_varianten
+    INNER JOIN (tabelle_lose_extern
+        RIGHT JOIN ((tabelle_räume_has_tabelle_elemente
+            INNER JOIN tabelle_räume ON tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume =
+                                        tabelle_räume.idTABELLE_Räume)
+            INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente =
+                                           tabelle_elemente.idTABELLE_Elemente)
+                ON tabelle_lose_extern.idtabelle_Lose_Extern =
+                   tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern)
+                     ON tabelle_varianten.idtabelle_Varianten =
+                        tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten)
+                    ON (tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte =
+                        tabelle_räume.tabelle_projekte_idTABELLE_Projekte) AND
+                       (tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten =
+                        tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) AND
+                       (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente =
+                        tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente)
+         LEFT JOIN tabelle_projekt_element_gewerk
+                   ON tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte =
+                      tabelle_räume.tabelle_projekte_idTABELLE_Projekte AND
+                      tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente =
+                      tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
+         LEFT JOIN tabelle_auftraggeber_gewerke ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke =
+                                                   tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
 
-        //GROUP BY       tabelle_lose_extern.LosNr_Extern,
-        //                tabelle_lose_extern.LosBezeichnung_Extern,
-        //                tabelle_lose_extern.Ausführungsbeginn,     tabelle_varianten.Variante,
-        // tabelle_elemente.Bezeichnung,   tabelle_projekt_varianten_kosten.Kosten,        tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
+         LEFT JOIN tabelle_projektbudgets
+                   ON tabelle_räume_has_tabelle_elemente.tabelle_projektbudgets_idtabelle_projektbudgets =
+                      tabelle_projektbudgets.idtabelle_projektbudgets
+WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["projectID"] . ") AND
+       ((tabelle_räume_has_tabelle_elemente.Standort) = 1))
+GROUP BY tabelle_elemente.ElementID,
+         tabelle_varianten.idtabelle_Varianten,
+         tabelle_varianten.Variante,
+         tabelle_räume.`Raumbereich Nutzer`,
+         tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
+         tabelle_lose_extern.idtabelle_Lose_Extern,
+         tabelle_projektbudgets.Budgetnummer,
+         tabelle_räume.Bauabschnitt
+ORDER BY tabelle_elemente.ElementID;";
 
         $result = $mysqli->query($sql);
         makeTable($result);
@@ -165,7 +191,6 @@
         ?>
     </div>
 </div>
-<!-- Räume mit Element -->
 
 <div class="row">
     <div class="col-xxl-8">
@@ -222,7 +247,6 @@
 
         if (bestandFilter && bestandVal !== bestandFilter) return false;
 
-        // Conditional checks
         const countCheck = checkCount ? countVal > 0 :
             !checkLot && bestandFilter ? countVal > 0 : true;
 
@@ -236,22 +260,23 @@
     $('#filter_bestand').change(function () {
         tableElementsInProject.draw();
     });
+
     $('#filter_count').change(function () {
         tableElementsInProject.draw();
     });
+
     $('#filter_lot').change(function () {
         tableElementsInProject.draw();
     });
 
     $(document).ready(function () {
-
         tableElementsInProject = new DataTable('#tableElementsInProject', {
             paging: true,
             select: true,
             order: [[6, 'asc']],
             columnDefs: [
                 {
-                    targets: [0, 1, 2, 3, 4, 14,15],
+                    targets: [0, 1, 2, 3, 4, 14, 15],
                     visible: false,
                     searchable: false
                 }
@@ -290,7 +315,7 @@
                         if (confirm('Möchten Sie die Tabelle wirklich als Excel exportieren? Führt ggf. zu Chaos. Und wer will das überhaupt? Warum müssen wir da eine Excel liefern? ... Ahja und... wenn du ja drückst, hassen dich die excel Feinde!')) {
                             $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, button, config);
                         }
-                    }, exportOptions: {columns: [5,6,7,8,9,10,11,14,15,16,17,18,19,20,21]}
+                    }, exportOptions: {columns: [5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18, 19, 20, 21]}
                 },
                 {
                     extend: 'pdfHtml5',
@@ -298,20 +323,13 @@
                     className: 'fas fa-file-pdf btn btn-outline-dark bg-white',
                     orientation: 'landscape',
                     pageSize: 'A3',
-                    exportOptions: {columns: ':visible'}, // <-- Exclude invisible columns
+                    exportOptions: {columns: ':visible'},
                     customize: function (doc) {
-                        // Reduce base font size
                         doc.defaultStyle.fontSize = 8;
-
-                        // Auto-adjust column widths
                         var table = doc.content[1].table;
                         var colCount = table.body[0].length + 1;
                         table.widths = new Array(colCount).fill('*');
-
-                        // Smaller header fonts
                         doc.styles.tableHeader.fontSize = 9;
-
-                        // Reduce margins for more space
                         doc.pageMargins = [10, 10, 10, 10];
                     }
                 },
@@ -320,11 +338,8 @@
                     text: " ",
                     className: "fa fa-search btn  btn-outline-dark bg-white",
                     titleAttr: "searchBuilder"
-                }
-            ]
+                }]
         }).container().appendTo($('#ElInPrCardHeader'));
-
-        // $('.dt-buttons').children().children().remove();
 
         $('#tableElementsInProject tbody').on('click', 'tr', function () {
             let elementID = tableElementsInProject.row($(this)).data()[1];

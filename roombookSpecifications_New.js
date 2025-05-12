@@ -430,8 +430,8 @@ function html_2_plug_into_edit_cell(dataIdentifier) {
     } else if (getCase(dataIdentifier) === "abd") {
         return ` <select class="form-control form-control-sm" id="${dataIdentifier}_dropdowner">
                                         <option value="0"${cellText === '0' ? ' selected' : ''}> kein Anspruch </option>
-                                        <option value="1"${cellText === '1' ? ' selected' : ''}> abdunkelbar </option>
-                                        <option value="2"${cellText === '2' ? ' selected' : ''}> vollverdunkelbar </option>
+                                        <option value="1"${cellText === '1' ? ' selected' : ''}> vollverdunkelbar</option>
+                                        <option value="2"${cellText === '2' ? ' selected' : ''}> abdunkelbar</option>
                                     </select>   `;
     } else {
         return `<input class="form-control form-control-sm" id="CellInput" onclick="this.select()" type="text" value="${cellText}">`;

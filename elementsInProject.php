@@ -27,8 +27,7 @@
     <div class="mt-4 card">
         <div class="card-header">
             <div class="row d-flex align-items-center justify-content-between">
-                <div class="col-2">Elemente im
-                    Projekt
+                <div class="col-2"><strong> Elemente im Projekt</strong>
                 </div>
                 <div class="col-10 d-flex align-items-center justify-content-end" id="target_div">
                     <div class="me-4 d-flex " id="sbdiv"></div>
@@ -240,7 +239,7 @@ ORDER BY tabelle_elemente.ElementID;";
                 paging: true,
                 select: true,
                 pagingType: 'simple',
-                lengthChange: false,
+                lengthChange: true,
                 pageLength: 10,
                 order: [[2, 'asc']],
                 columnDefs: [

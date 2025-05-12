@@ -45,9 +45,9 @@ init_page_serversides("x"); ?>
                     </div>
                     <div class="mt-1 card">
                         <div class="card-header">
-                            <div class="row">
-                                <div class="col-xxl-6">Elemente in DB</div>
-                                <div class="col-xxl-6 d-flex justify-content-end" id="CardHeaderElementesInDb"></div>
+                            <div class="row d-flex align-items-center">
+                                <div class="col-xxl-6 col-6">Elemente in DB</div>
+                                <div class="col-xxl-6 col-6 d-flex justify-content-end" id="CardHeaderElementesInDb"></div>
                             </div>
                         </div>
                         <div class="card-body" id="elementsInDB">
