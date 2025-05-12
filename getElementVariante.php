@@ -649,10 +649,11 @@ $row = $result->fetch_assoc(); ?>
     // Variantenparameter übernehmen in zentrales Element
     $("#addVariantenParameterToElement").click(function () {
         const username = "  <?php echo $_SESSION["username"] ?>";
+        const elementID = <?php echo $_SESSION["elementID"] ?>;
+        const variantenID = <?php echo $_SESSION["variantenID"] ?>;
         console.log(username.trim());
         if (username.toLowerCase().trim() === "reuther") { // } || username.toLowerCase().trim() === "fuchs") {
-            const elementID = <?php echo $_SESSION["elementID"] ?>;
-            const variantenID = <?php echo $_SESSION["variantenID"] ?>;
+
             $.ajax({
                 url: "addVariantenParameterToElement.php",
                 data: {"elementID": elementID, "variantenID": variantenID},
