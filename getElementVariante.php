@@ -182,7 +182,14 @@ $row = $result->fetch_assoc(); ?>
                         $_SESSION["projectID"] . " AND
                                 tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten = " .
                         $_SESSION["variantenID"] . ")
-                                ORDER BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung;";
+                                ORDER BY 
+                                CASE 
+                                    WHEN tabelle_parameter.Bezeichnung = 'Nennleistung' 
+                                    AND tabelle_parameter_kategorie.Kategorie = 'Elektro' THEN 0 
+                                    ELSE 1 
+                                END,
+                                tabelle_parameter_kategorie.Kategorie,
+                                tabelle_parameter.Bezeichnung;";
 
                     $result = $mysqli->query($sql);
                     echo "
@@ -381,7 +388,6 @@ $row = $result->fetch_assoc(); ?>
             select: true,
             searching: true,
             info: false,
-            order: [[1, 'asc']],
             columnDefs: [
                 {
                     targets: [0],
@@ -402,10 +408,18 @@ $row = $result->fetch_assoc(); ?>
                 bottomEnd: ['paging', 'pageLength']
             },
             scrollX: true,
-            initComplete: function (settings, json) {
+            initComplete: function () {
                 $('#mglParameterCardHeader .xxx').remove();
                 $('#possibleVariantenParameter .dt-search label').remove();
                 $('#possibleVariantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#mglParameterCardHeader');
+            }
+        });
+
+        tablePossibleElementParameters.rows().every(function () {
+            var data = this.data();
+            console.log(data[1].trim() , data[2].trim());
+            if (data[1].trim() === 'Elektro' && data[2].trim() === 'Nennleistung') {
+                this.moveTo(0);
             }
         });
 
@@ -534,8 +548,8 @@ $row = $result->fetch_assoc(); ?>
 
 
     $("button[value='addParameter']").click(function () {
-        $('#variantenParameterCh .xxx').remove();
         let variantenID = $('#variante').val();
+        $('#variantenParameterCh .xxx').remove();
         let id = this.id;
         if (id !== "") {
             $.ajax({
@@ -636,7 +650,7 @@ $row = $result->fetch_assoc(); ?>
     $("#addVariantenParameterToElement").click(function () {
         const username = "  <?php echo $_SESSION["username"] ?>";
         console.log(username.trim());
-        if (username.toLowerCase().trim() === "reuther" || username.toLowerCase().trim() === "fuchs") {
+        if (username.toLowerCase().trim() === "reuther") { // } || username.toLowerCase().trim() === "fuchs") {
             const elementID = <?php echo $_SESSION["elementID"] ?>;
             const variantenID = <?php echo $_SESSION["variantenID"] ?>;
             $.ajax({

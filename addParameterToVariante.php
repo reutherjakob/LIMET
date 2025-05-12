@@ -1,57 +1,44 @@
 <?php
-session_start();
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
+check_login();
 
-function br2nl($string){
-$return= str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $string);
-return $return;
+$mysqli = utils_connect_sql();
+
+// Validate and cast inputs to integers
+$projectID = (int)$_SESSION["projectID"];
+$elementID = (int)$_SESSION["elementID"];
+$parameterID = (int)$_GET["parameterID"];
+$variantenID = (int)$_GET["variantenID"];
+
+// Define special parameters set
+$specialParams = [6, 9, 18, 82];
+
+// Parameter insertion function
+function insertParameter($mysqli, $projectID, $elementID, $paramID, $variantID) {
+    $stmt = $mysqli->prepare("INSERT INTO `LIMET_RB`.`tabelle_projekt_elementparameter` 
+        (`tabelle_projekte_idTABELLE_Projekte`, `tabelle_elemente_idTABELLE_Elemente`, 
+        `tabelle_parameter_idTABELLE_Parameter`, `tabelle_Varianten_idtabelle_Varianten`, 
+        `Wert`, `Einheit`, `tabelle_planungsphasen_idTABELLE_Planungsphasen`) 
+        VALUES (?, ?, ?, ?, '', '', 1)");
+    $stmt->bind_param("iiii", $projectID, $elementID, $paramID, $variantID);
+    $stmt->execute();
+    $stmt->close();
 }
 
-?>
+// Insert requested parameter
+insertParameter($mysqli, $projectID, $elementID, $parameterID, $variantenID);
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+// Handle special parameters
+if (in_array($parameterID, $specialParams)) {
+    foreach ($specialParams as $param) {
+        if ($param !== $parameterID) {
+            insertParameter($mysqli, $projectID, $elementID, $param, $variantenID);
+        }
+    }
+}
 
-<?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	if ($mysqli ->connect_error) {
-	    die("Connection failed: " . $mysqli->connect_error);
-	}
-	
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    echo "Error loading character set utf8: " . $mysqli->error;
-	    exit();
-	} 
-		
-
-	$sql = "INSERT INTO `LIMET_RB`.`tabelle_projekt_elementparameter`
-			(`tabelle_projekte_idTABELLE_Projekte`,
-			`tabelle_elemente_idTABELLE_Elemente`,
-			`tabelle_parameter_idTABELLE_Parameter`,
-			`tabelle_Varianten_idtabelle_Varianten`,
-			`Wert`,
-			`Einheit`,
-			`tabelle_planungsphasen_idTABELLE_Planungsphasen`)
-			VALUES
-			(".$_SESSION["projectID"].",
-			".$_SESSION["elementID"].",
-			".$_GET["parameterID"].",
-			".$_GET["variantenID"].",
-			'',
-			'',
-			1);";
-
-	if ($mysqli ->query($sql) === TRUE) {
-	    echo "Parameter hinzugefügt!";
-	} else {
-	    echo "Error: " . $sql . "<br>" . $mysqli->error;
-	}
-	
-	$mysqli ->close();	
-					
+echo "Parameter hinzugefügt!";
+$mysqli->close();
 ?>

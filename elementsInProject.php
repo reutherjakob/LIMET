@@ -397,6 +397,7 @@ ORDER BY tabelle_elemente.ElementID;";
         $('#createElementEinbringwegePDF2').click(function () {
             window.open('/pdf_createElementEinbringwegePDFschöner.php');
         });
+
     </script>
 </body>
 </html>
