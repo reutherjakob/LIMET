@@ -126,64 +126,64 @@
 
         $mysqli = utils_connect_sql();
         $sql = "SELECT SUM(tabelle_räume_has_tabelle_elemente.Anzahl)                                           AS SummevonAnzahl,
-       tabelle_elemente.ElementID,
-       tabelle_elemente.Bezeichnung,
-       tabelle_varianten.Variante,
-       tabelle_räume.`Raumbereich Nutzer`,
-       tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
-       tabelle_projekt_varianten_kosten.Kosten,
-       tabelle_projekt_varianten_kosten.Kosten * Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS PP,
-       tabelle_lose_extern.LosNr_Extern,
-       tabelle_lose_extern.LosBezeichnung_Extern,
-       tabelle_lose_extern.Ausführungsbeginn,
-       tabelle_lose_extern.idtabelle_Lose_Extern,
-       tabelle_lose_extern.Vergabe_abgeschlossen,
-       tabelle_varianten.idtabelle_Varianten,
-       tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
-       tabelle_auftraggeber_gewerke.Gewerke_Nr,
-        tabelle_auftraggeber_gewerke.Bezeichnung AS GWBEZ,
-       tabelle_projektbudgets.Budgetnummer,
-       tabelle_räume.Bauabschnitt
-FROM tabelle_projekt_varianten_kosten
-         INNER JOIN (tabelle_varianten
-    INNER JOIN (tabelle_lose_extern
-        RIGHT JOIN ((tabelle_räume_has_tabelle_elemente
-            INNER JOIN tabelle_räume ON tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume =
-                                        tabelle_räume.idTABELLE_Räume)
-            INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente =
-                                           tabelle_elemente.idTABELLE_Elemente)
-                ON tabelle_lose_extern.idtabelle_Lose_Extern =
-                   tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern)
-                     ON tabelle_varianten.idtabelle_Varianten =
-                        tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten)
-                    ON (tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte =
-                        tabelle_räume.tabelle_projekte_idTABELLE_Projekte) AND
-                       (tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten =
-                        tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) AND
-                       (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente =
-                        tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente)
-         LEFT JOIN tabelle_projekt_element_gewerk
-                   ON tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte =
-                      tabelle_räume.tabelle_projekte_idTABELLE_Projekte AND
-                      tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente =
-                      tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
-         LEFT JOIN tabelle_auftraggeber_gewerke ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke =
-                                                   tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
-
-         LEFT JOIN tabelle_projektbudgets
-                   ON tabelle_räume_has_tabelle_elemente.tabelle_projektbudgets_idtabelle_projektbudgets =
-                      tabelle_projektbudgets.idtabelle_projektbudgets
-WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["projectID"] . ") AND
-       ((tabelle_räume_has_tabelle_elemente.Standort) = 1))
-GROUP BY tabelle_elemente.ElementID,
-         tabelle_varianten.idtabelle_Varianten,
-         tabelle_varianten.Variante,
-         tabelle_räume.`Raumbereich Nutzer`,
-         tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
-         tabelle_lose_extern.idtabelle_Lose_Extern,
-         tabelle_projektbudgets.Budgetnummer,
-         tabelle_räume.Bauabschnitt
-ORDER BY tabelle_elemente.ElementID;";
+                       tabelle_elemente.ElementID,
+                       tabelle_elemente.Bezeichnung,
+                       tabelle_varianten.Variante,
+                       tabelle_räume.`Raumbereich Nutzer`,
+                       tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
+                       tabelle_projekt_varianten_kosten.Kosten,
+                       tabelle_projekt_varianten_kosten.Kosten * Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS PP,
+                       tabelle_lose_extern.LosNr_Extern,
+                       tabelle_lose_extern.LosBezeichnung_Extern,
+                       tabelle_lose_extern.Ausführungsbeginn,
+                       tabelle_lose_extern.idtabelle_Lose_Extern,
+                       tabelle_lose_extern.Vergabe_abgeschlossen,
+                       tabelle_varianten.idtabelle_Varianten,
+                       tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
+                       tabelle_auftraggeber_gewerke.Gewerke_Nr,
+                        tabelle_auftraggeber_gewerke.Bezeichnung AS GWBEZ,
+                       tabelle_projektbudgets.Budgetnummer,
+                       tabelle_räume.Bauabschnitt
+                FROM tabelle_projekt_varianten_kosten
+                         INNER JOIN (tabelle_varianten
+                    INNER JOIN (tabelle_lose_extern
+                        RIGHT JOIN ((tabelle_räume_has_tabelle_elemente
+                            INNER JOIN tabelle_räume ON tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume =
+                                                        tabelle_räume.idTABELLE_Räume)
+                            INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente =
+                                                           tabelle_elemente.idTABELLE_Elemente)
+                                ON tabelle_lose_extern.idtabelle_Lose_Extern =
+                                   tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern)
+                                     ON tabelle_varianten.idtabelle_Varianten =
+                                        tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten)
+                                    ON (tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte =
+                                        tabelle_räume.tabelle_projekte_idTABELLE_Projekte) AND
+                                       (tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten =
+                                        tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) AND
+                                       (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente =
+                                        tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente)
+                         LEFT JOIN tabelle_projekt_element_gewerk
+                                   ON tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte =
+                                      tabelle_räume.tabelle_projekte_idTABELLE_Projekte AND
+                                      tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente =
+                                      tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
+                         LEFT JOIN tabelle_auftraggeber_gewerke ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke =
+                                                                   tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
+                
+                         LEFT JOIN tabelle_projektbudgets
+                                   ON tabelle_räume_has_tabelle_elemente.tabelle_projektbudgets_idtabelle_projektbudgets =
+                                      tabelle_projektbudgets.idtabelle_projektbudgets
+                WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["projectID"] . ") AND
+                       ((tabelle_räume_has_tabelle_elemente.Standort) = 1))
+                GROUP BY tabelle_elemente.ElementID,
+                         tabelle_varianten.idtabelle_Varianten,
+                         tabelle_varianten.Variante,
+                         tabelle_räume.`Raumbereich Nutzer`,
+                         tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
+                         tabelle_lose_extern.idtabelle_Lose_Extern,
+                         tabelle_projektbudgets.Budgetnummer,
+                         tabelle_räume.Bauabschnitt
+                ORDER BY tabelle_elemente.ElementID;";
 
         $result = $mysqli->query($sql);
         makeTable($result);

@@ -33,7 +33,9 @@
         </div>
         <div class="card-body">
             <?php
-            if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+            if (!function_exists('utils_connect_sql')) {
+                include "_utils.php";
+            }
             init_page_serversides("x");
             $mysqli = utils_connect_sql();
             $sql = "SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen, tabelle_ansprechpersonen.Name, tabelle_ansprechpersonen.Vorname, tabelle_ansprechpersonen.Tel, tabelle_ansprechpersonen.Adresse, tabelle_ansprechpersonen.PLZ, tabelle_ansprechpersonen.Ort, tabelle_ansprechpersonen.Land, tabelle_ansprechpersonen.Mail, tabelle_lieferant.Lieferant, tabelle_abteilung.Abteilung,
@@ -41,7 +43,7 @@
                                 FROM tabelle_abteilung INNER JOIN (tabelle_lieferant INNER JOIN tabelle_ansprechpersonen ON tabelle_lieferant.idTABELLE_Lieferant = tabelle_ansprechpersonen.tabelle_lieferant_idTABELLE_Lieferant) ON tabelle_abteilung.idtabelle_abteilung = tabelle_ansprechpersonen.tabelle_abteilung_idtabelle_abteilung;";
             $result = $mysqli->query($sql);
 
-            echo "<table class='table table-striped table-bordered  table-sm' id='tableLieferanten'>
+            echo "<table class='table table-striped table-bordered  table-sm' id='tableLieferantenKontakte'>
                         <thead><tr>
                         <th>ID</th>
                         <th></th>
@@ -83,7 +85,6 @@
             }
             echo "</tbody></table>";
             ?>
-
         </div>
     </div>
     <div class='mt-1 row'>
@@ -101,22 +102,27 @@
                 <div class="card-body">
                     <?php
                     $mysqli = utils_connect_sql();
-
-                    // Abfrage der Lieferanten-
-                    $sql = "SELECT tabelle_lieferant.idTABELLE_Lieferant, tabelle_lieferant.Lieferant, tabelle_lieferant.Tel, tabelle_lieferant.Anschrift, tabelle_lieferant.PLZ, tabelle_lieferant.Ort, tabelle_lieferant.Land
+                    $sql = "SELECT  tabelle_lieferant.idTABELLE_Lieferant,
+                                    tabelle_lieferant.Lieferant,
+                                    tabelle_lieferant.Tel,
+                                    tabelle_lieferant.Anschrift,
+                                    tabelle_lieferant.PLZ,
+                                    tabelle_lieferant.Ort,
+                                    tabelle_lieferant.Land
                                 FROM tabelle_lieferant;";
                     $result = $mysqli->query($sql);
 
                     echo "<table class='table table-striped table-bordered nowrap table-sm' id='tableLieferantenUnternehmen'>
                         <thead><tr>
                         <th>ID</th>
-                        <th></th>
+                          <th> </th>
                         <th>Lieferant</th>
                         <th>Tel</th>
                         <th>Adresse</th>
                         <th>PLZ</th>
                         <th>Ort</th>
-                        <th>Land</th>                                   
+                        <th>Land</th>                                  
+                        <th></th>       
                         </tr></thead><tbody>";
 
                     while ($row = $result->fetch_assoc()) {
@@ -129,6 +135,7 @@
                         echo "<td>" . $row["PLZ"] . "</td>";
                         echo "<td>" . $row["Ort"] . "</td>";
                         echo "<td>" . $row["Land"] . "</td>";
+                        echo "<td><button type='button' id='" . $row["idTABELLE_Lieferant"] . "' class='btn btn-outline-dark btn-sm' value='changeLieferant' data-bs-toggle='modal' data-bs-target='#changeLieferantModal'><i class='fa fa-pencil-alt'></i></button></td>";
                         echo "</tr>";
                     }
                     echo "</tbody></table>";
@@ -185,35 +192,35 @@
                         <form role="form">
                             <div class='form-group'>
                                 <label for='lieferantenName'>Name</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantenName'> 
+                                <input type='text' class='form-control form-control-sm' id='lieferantenName'>
                             </div>
                             <div class='form-group'>
                                 <label for='lieferantenVorname'>Vorname</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantenVorname'> 
+                                <input type='text' class='form-control form-control-sm' id='lieferantenVorname'>
                             </div>
                             <div class='form-group'>
                                 <label class='control-label' for='lieferantenTel'>Tel</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantenTel'> 
+                                <input type='text' class='form-control form-control-sm' id='lieferantenTel'>
                             </div>
                             <div class='form-group'>
                                 <label class='control-label' for='lieferantenAdresse'>Adresse</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantenAdresse'> 
+                                <input type='text' class='form-control form-control-sm' id='lieferantenAdresse'>
                             </div>
                             <div class='form-group'>
                                 <label class='control-label' for='lieferantenPLZ'>PLZ</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantenPLZ'> 
+                                <input type='text' class='form-control form-control-sm' id='lieferantenPLZ'>
                             </div>
                             <div class='form-group'>
                                 <label class='control-label' for='lieferantenOrt'>Ort</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantenOrt'> 
+                                <input type='text' class='form-control form-control-sm' id='lieferantenOrt'>
                             </div>
                             <div class='form-group'>
                                 <label class='control-label' for='lieferantenLand'>Land</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantenLand'> 
+                                <input type='text' class='form-control form-control-sm' id='lieferantenLand'>
                             </div>
                             <div class='form-group'>
                                 <label class='control-label' for='lieferantenEmail'>Email</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantenEmail'> 
+                                <input type='text' class='form-control form-control-sm' id='lieferantenEmail'>
                             </div>
                             <?php
                             $sql = "SELECT `tabelle_lieferant`.`idTABELLE_Lieferant`,
@@ -247,15 +254,15 @@
                             ?>
                             <div class='form-group'>
                                 <label class='control-label' for='lieferantenGebiet'>Gebiet</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantenGebiet'> 
+                                <input type='text' class='form-control form-control-sm' id='lieferantenGebiet'>
                             </div>
                         </form>
                     </div>
                     <div class='modal-footer'>
                         <input type='button' id='addLieferantenKontakt' class='btn btn-success btn-sm'
-                               value='Hinzufügen'> 
+                               value='Hinzufügen'>
                         <input type='button' id='saveLieferantenKontakt' class='btn btn-warning btn-sm'
-                               value='Speichern'> 
+                               value='Speichern'>
                         <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
                     </div>
                 </div>
@@ -286,7 +293,6 @@
             </div>
         </div>
 
-
         <!-- Modal zum Anlegen eines Lieferante--------------------------------------- -->
         <div class='modal fade' id='changeLieferantModal' role='dialog'>
             <div class='modal-dialog modal-md'>
@@ -297,37 +303,45 @@
                         <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
                     </div>
                     <div class='modal-body' id='mbody'>
+
+                        <input type='hidden' id='lieferantID'>
                         <form role="form">
                             <div class='form-group'>
                                 <label for='firma'>Lieferant</label>
-                                <input type='text' class='form-control form-control-sm' id='firma'> 
+                                <input type='text' class='form-control form-control-sm' id='firma'>
                             </div>
                             <div class='form-group'>
                                 <label class='control-label' for='lieferantTel'>Tel</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantTel'> 
+                                <input type='text' class='form-control form-control-sm' id='lieferantTel'>
                             </div>
                             <div class='form-group'>
                                 <label class='control-label' for='lieferantAdresse'>Adresse</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantAdresse'> 
+                                <input type='text' class='form-control form-control-sm' id='lieferantAdresse'>
                             </div>
                             <div class='form-group'>
                                 <label class='control-label' for='lieferantPLZ'>PLZ</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantPLZ'> 
+                                <input type='text' class='form-control form-control-sm' id='lieferantPLZ'>
                             </div>
                             <div class='form-group'>
                                 <label class='control-label' for='lieferantOrt'>Ort</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantOrt'> 
+                                <input type='text' class='form-control form-control-sm' id='lieferantOrt'>
                             </div>
                             <div class='form-group'>
                                 <label class='control-label' for='lieferantLand'>Land</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantLand'> 
+                                <input type='text' class='form-control form-control-sm' id='lieferantLand'>
                             </div>
                         </form>
                     </div>
                     <div class='modal-footer'>
-                        <input type='button' id='addLieferant' class='btn btn-success btn-sm me-1'
-                               value='Hinzufügen'> 
-                        <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
+                        <div class='modal-footer'>
+                            <input type='button' id='addLieferant' class='btn btn-success btn-sm me-1'
+                                   value='Hinzufügen'>
+                            <input type='button' id='saveLieferant' class='btn btn-warning btn-sm me-1'
+                                   value='Speichern'>
+                            <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen
+                            </button>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -338,10 +352,10 @@
 
 <script charset="utf-8">
     var ansprechID;
-    var table1, table2;
+    var tableLieferantenKontakte, tableLieferantenUnternehmen;
 
     $(document).ready(function () {
-        table1 = $('#tableLieferanten').DataTable({
+        tableLieferantenKontakte = $('#tableLieferantenKontakte').DataTable({
             columnDefs: [
                 {
                     targets: [0, 14, 15],
@@ -374,12 +388,214 @@
             initComplete: function () {
                 $('#dt-search-0').appendTo("#cardHeader1");
                 $('.dt-buttons .btn').addClass("btn-sm me-1")
-                table1.buttons().container().removeClass("flex-wrap").prependTo("#cardHeader1");
+                tableLieferantenKontakte.buttons().container().removeClass("flex-wrap").prependTo("#cardHeader1");
             }
         });
 
 // Second DataTable
-        table2 = $('#tableLieferantenUnternehmen').DataTable({
+
+        $('#tableLieferantenKontakte tbody').on('click', 'tr', function () {
+            ansprechID = tableLieferantenKontakte.row($(this)).data()[0];
+            document.getElementById("lieferantenName").value = tableLieferantenKontakte.row($(this)).data()[2];
+            document.getElementById("lieferantenVorname").value = tableLieferantenKontakte.row($(this)).data()[3];
+            document.getElementById("lieferantenTel").value = tableLieferantenKontakte.row($(this)).data()[4];
+            document.getElementById("lieferantenAdresse").value = tableLieferantenKontakte.row($(this)).data()[6];
+            document.getElementById("lieferantenPLZ").value = tableLieferantenKontakte.row($(this)).data()[7];
+            document.getElementById("lieferantenOrt").value = tableLieferantenKontakte.row($(this)).data()[8];
+            document.getElementById("lieferantenLand").value = tableLieferantenKontakte.row($(this)).data()[9];
+            document.getElementById("lieferantenEmail").value = tableLieferantenKontakte.row($(this)).data()[5];
+            document.getElementById("lieferant").value = tableLieferantenKontakte.row($(this)).data()[14];
+            document.getElementById("abteilung").value = tableLieferantenKontakte.row($(this)).data()[15];
+            document.getElementById("lieferantenGebiet").value = tableLieferantenKontakte.row($(this)).data()[12];
+
+            //  Setzen der Visitenkarteninformation
+            document.getElementById("cardName").innerHTML = tableLieferantenKontakte.row($(this)).data()[2] + " " + tableLieferantenKontakte.row($(this)).data()[3];
+            document.getElementById("cardLieferant").innerHTML = tableLieferantenKontakte.row($(this)).data()[10];
+            document.getElementById("cardTel").innerHTML = tableLieferantenKontakte.row($(this)).data()[4];
+            document.getElementById("cardMail").innerHTML = tableLieferantenKontakte.row($(this)).data()[5];
+            document.getElementById("cardAddress").innerHTML = tableLieferantenKontakte.row($(this)).data()[6];
+            document.getElementById("cardPlace").innerHTML = tableLieferantenKontakte.row($(this)).data()[7] + ", " + tableLieferantenKontakte.row($(this)).data()[8];
+        });
+
+        $('#tableLieferantenUnternehmen tbody').on('click', 'tr', function () {
+            $.ajax({
+                url: "getLieferantenUmsaetze.php",
+                data: {"lieferantenID": tableLieferantenUnternehmen.row($(this)).data()[0]},
+                type: "GET",
+                success: function (data) {
+                    $("#lieferantenumsaetze").html(data);
+                }
+            });
+        });
+
+        $("#addLieferantenKontakt").click(function () {
+            let Name = $("#lieferantenName").val();
+            let Vorname = $("#lieferantenVorname").val();
+            let Tel = $("#lieferantenTel").val();
+            let Adresse = $("#lieferantenAdresse").val();
+            let PLZ = $("#lieferantenPLZ").val();
+            let Ort = $("#lieferantenOrt").val();
+            let Land = $("#lieferantenLand").val();
+            let Email = $("#lieferantenEmail").val();
+            let lieferant = $("#lieferant").val();
+            let abteilung = $("#abteilung").val();
+            let gebiet = $("#lieferantenGebiet").val();
+
+            if (Name.length > 0 && Vorname.length > 0 && Tel.length > 0) {
+                $('#addContactModal').modal('hide');
+                $.ajax({
+                    url: "addLieferant.php",
+                    data: {
+                        "Name": Name,
+                        "Vorname": Vorname,
+                        "Tel": Tel,
+                        "Adresse": Adresse,
+                        "PLZ": PLZ,
+                        "Ort": Ort,
+                        "Land": Land,
+                        "Email": Email,
+                        "lieferant": lieferant,
+                        "abteilung": abteilung,
+                        "gebiet": gebiet
+                    },
+                    type: "GET",
+                    success: function (data) {
+                        alert(data);
+                        $.ajax({
+                            url: "getLieferantenPersonen.php",
+                            data: {
+                                "ansprechID": ansprechID,
+                                "Name": Name,
+                                "Vorname": Vorname,
+                                "Tel": Tel,
+                                "Adresse": Adresse,
+                                "PLZ": PLZ,
+                                "Ort": Ort,
+                                "Land": Land,
+                                "Email": Email,
+                                "lieferant": lieferant,
+                                "abteilung": abteilung,
+                                "gebiet": gebiet
+                            },
+                            type: "GET",
+                            success: function (data) {
+                                $("#lieferanten").html(data);
+
+                            }
+                        });
+
+                    }
+                });
+            } else {
+                alert("Bitte überprüfen Sie Ihre Angaben! Name, Vorname und Tel ist Pflicht!");
+            }
+        });
+
+
+        $("#saveLieferantenKontakt").click(function () {
+            let Name = $("#lieferantenName").val();
+            let Vorname = $("#lieferantenVorname").val();
+            let Tel = $("#lieferantenTel").val();
+            let Adresse = $("#lieferantenAdresse").val();
+            let PLZ = $("#lieferantenPLZ").val();
+            let Ort = $("#lieferantenOrt").val();
+            let Land = $("#lieferantenLand").val();
+            let Email = $("#lieferantenEmail").val();
+            let lieferant = $("#lieferant").val();
+            let abteilung = $("#abteilung").val();
+            let gebiet = $("#lieferantenGebiet").val();
+
+            if (Name.length > 0 && Vorname.length > 0 && Tel.length > 0) {
+                $('#addContactModal').modal('hide');
+                $.ajax({
+                    url: "saveLieferantenKontakt.php",
+                    data: {
+                        "ansprechID": ansprechID,
+                        "Name": Name,
+                        "Vorname": Vorname,
+                        "Tel": Tel,
+                        "Adresse": Adresse,
+                        "PLZ": PLZ,
+                        "Ort": Ort,
+                        "Land": Land,
+                        "Email": Email,
+                        "lieferant": lieferant,
+                        "abteilung": abteilung,
+                        "gebiet": gebiet
+                    },
+                    type: "GET",
+                    success: function (data) {
+                        alert(data);
+                        $.ajax({
+                            url: "getLieferantenPersonen.php",
+                            type: "GET",
+                            success: function (data) {
+                                $("#lieferanten").html(data);
+
+                            }
+                        });
+
+                    }
+                });
+            } else {
+                alert("Bitte überprüfen Sie Ihre Angaben! Name, Vorname und Tel ist Pflicht!");
+            }
+        });
+
+        $("#addContactModalButton").click(function () {
+            document.getElementById("lieferantenName").value = "";
+            document.getElementById("lieferantenVorname").value = "";
+            document.getElementById("lieferantenTel").value = "";
+            document.getElementById("lieferantenAdresse").value = "";
+            document.getElementById("lieferantenPLZ").value = "";
+            document.getElementById("lieferantenOrt").value = "";
+            document.getElementById("lieferantenLand").value = "";
+            document.getElementById("lieferantenEmail").value = "";
+            document.getElementById("lieferantenGebiet").value = "";
+            // Buttons ein/ausblenden!
+            document.getElementById("saveLieferantenKontakt").style.display = "none";
+            document.getElementById("addLieferantenKontakt").style.display = "inline";
+        });
+
+        $("button[value='changeContact']").click(function () {
+            // Buttons ein/ausblenden!
+            document.getElementById("addLieferantenKontakt").style.display = "none";
+            document.getElementById("saveLieferantenKontakt").style.display = "inline";
+        });
+
+        $("#addLieferant").click(function () {
+            let firma = $("#firma").val();
+            let lieferantTel = $("#lieferantTel").val();
+            let lieferantAdresse = $("#lieferantAdresse").val();
+            let lieferantPLZ = $("#lieferantPLZ").val();
+            let lieferantOrt = $("#lieferantOrt").val();
+            let lieferantLand = $("#lieferantLand").val();
+            if (firma !== "" && lieferantTel !== "" && lieferantAdresse !== "" && lieferantPLZ !== "" && lieferantOrt !== "" && lieferantLand !== "") {
+                $('#changeLieferantModal').modal('hide');
+                $.ajax({
+                    url: "addFirma.php",
+                    data: {
+                        "firma": firma,
+                        "lieferantTel": lieferantTel,
+                        "lieferantAdresse": lieferantAdresse,
+                        "lieferantPLZ": lieferantPLZ,
+                        "lieferantOrt": lieferantOrt,
+                        "lieferantLand": lieferantLand
+                    },
+                    type: "GET",
+                    success: function (data) {
+                        alert(data);
+                        // Neu Laden der Seite
+                        location.reload();
+                    }
+                });
+            } else {
+                alert("Bitte alle Felder ausfüllen!");
+            }
+        });
+
+
+        tableLieferantenUnternehmen = $('#tableLieferantenUnternehmen').DataTable({
             columnDefs: [
                 {
                     targets: [0],
@@ -423,212 +639,69 @@
         });
 
 
-        $('#tableLieferanten tbody').on('click', 'tr', function () {
-            ansprechID = table1.row($(this)).data()[0];
-            document.getElementById("lieferantenName").value = table1.row($(this)).data()[2];
-            document.getElementById("lieferantenVorname").value = table1.row($(this)).data()[3];
-            document.getElementById("lieferantenTel").value = table1.row($(this)).data()[4];
-            document.getElementById("lieferantenAdresse").value = table1.row($(this)).data()[6];
-            document.getElementById("lieferantenPLZ").value = table1.row($(this)).data()[7];
-            document.getElementById("lieferantenOrt").value = table1.row($(this)).data()[8];
-            document.getElementById("lieferantenLand").value = table1.row($(this)).data()[9];
-            document.getElementById("lieferantenEmail").value = table1.row($(this)).data()[5];
-            document.getElementById("lieferant").value = table1.row($(this)).data()[14];
-            document.getElementById("abteilung").value = table1.row($(this)).data()[15];
-            document.getElementById("lieferantenGebiet").value = table1.row($(this)).data()[12];
+        $("button[value='changeLieferant']").click(function () {
+            document.getElementById("addLieferant").style.display = "none";
+            document.getElementById("saveLieferant").style.display = "inline";
 
-            //  Setzen der Visitenkarteninformation
-            document.getElementById("cardName").innerHTML = table1.row($(this)).data()[2] + " " + table1.row($(this)).data()[3];
-            document.getElementById("cardLieferant").innerHTML = table1.row($(this)).data()[10];
-            document.getElementById("cardTel").innerHTML = table1.row($(this)).data()[4];
-            document.getElementById("cardMail").innerHTML = table1.row($(this)).data()[5];
-            document.getElementById("cardAddress").innerHTML = table1.row($(this)).data()[6];
-            document.getElementById("cardPlace").innerHTML = table1.row($(this)).data()[7] + ", " + table1.row($(this)).data()[8];
+            let $tr = $(this).closest('tr');
+            let rowData = tableLieferantenUnternehmen.row($tr).data();
+
+            $("#lieferantID").val(rowData[0]);
+            $("#firma").val(rowData[2]);
+            $("#lieferantTel").val(rowData[3]);
+            $("#lieferantAdresse").val(rowData[4]);
+            $("#lieferantPLZ").val(rowData[5]);
+            $("#lieferantOrt").val(rowData[6]);
+            $("#lieferantLand").val(rowData[7]);
         });
 
-        $('#tableLieferantenUnternehmen tbody').on('click', 'tr', function () {
-            $.ajax({
-                url: "getLieferantenUmsaetze.php",
-                data: {"lieferantenID": table2.row($(this)).data()[0]},
-                type: "GET",
-                success: function (data) {
-                    $("#lieferantenumsaetze").html(data);
-                }
-            });
+        $("#addLieferantButton").click(function () {
+            $("#lieferantID").val("");
+            $("#firma").val("");
+            $("#lieferantTel").val("");
+            $("#lieferantAdresse").val("");
+            $("#lieferantPLZ").val("");
+            $("#lieferantOrt").val("");
+            $("#lieferantLand").val("");
+            document.getElementById("saveLieferant").style.display = "none";
+            document.getElementById("addLieferant").style.display = "inline";
         });
-    });
-    
-    $("#addLieferantenKontakt").click(function () {
-        let Name = $("#lieferantenName").val();
-        let Vorname = $("#lieferantenVorname").val();
-        let Tel = $("#lieferantenTel").val();
-        let Adresse = $("#lieferantenAdresse").val();
-        let PLZ = $("#lieferantenPLZ").val();
-        let Ort = $("#lieferantenOrt").val();
-        let Land = $("#lieferantenLand").val();
-        let Email = $("#lieferantenEmail").val();
-        let lieferant = $("#lieferant").val();
-        let abteilung = $("#abteilung").val();
-        let gebiet = $("#lieferantenGebiet").val();
 
-        if (Name.length > 0 && Vorname.length > 0 && Tel.length > 0) {
-            $('#addContactModal').modal('hide');
-            $.ajax({
-                url: "addLieferant.php",
-                data: {
-                    "Name": Name,
-                    "Vorname": Vorname,
-                    "Tel": Tel,
-                    "Adresse": Adresse,
-                    "PLZ": PLZ,
-                    "Ort": Ort,
-                    "Land": Land,
-                    "Email": Email,
-                    "lieferant": lieferant,
-                    "abteilung": abteilung,
-                    "gebiet": gebiet
-                },
-                type: "GET",
-                success: function (data) {
-                    alert(data);
-                    $.ajax({
-                        url: "getLieferantenPersonen.php",
-                        data: {
-                            "ansprechID": ansprechID,
-                            "Name": Name,
-                            "Vorname": Vorname,
-                            "Tel": Tel,
-                            "Adresse": Adresse,
-                            "PLZ": PLZ,
-                            "Ort": Ort,
-                            "Land": Land,
-                            "Email": Email,
-                            "lieferant": lieferant,
-                            "abteilung": abteilung,
-                            "gebiet": gebiet
-                        },
-                        type: "GET",
-                        success: function (data) {
-                            $("#lieferanten").html(data);
 
-                        }
-                    });
-
-                }
-            });
-        } else {
-            alert("Bitte überprüfen Sie Ihre Angaben! Name, Vorname und Tel ist Pflicht!");
-        }
-    });
-
-    $("#saveLieferantenKontakt").click(function () {
-        let Name = $("#lieferantenName").val();
-        let Vorname = $("#lieferantenVorname").val();
-        let Tel = $("#lieferantenTel").val();
-        let Adresse = $("#lieferantenAdresse").val();
-        let PLZ = $("#lieferantenPLZ").val();
-        let Ort = $("#lieferantenOrt").val();
-        let Land = $("#lieferantenLand").val();
-        let Email = $("#lieferantenEmail").val();
-        let lieferant = $("#lieferant").val();
-        let abteilung = $("#abteilung").val();
-        let gebiet = $("#lieferantenGebiet").val();
-
-        if (Name.length > 0 && Vorname.length > 0 && Tel.length > 0) {
-            $('#addContactModal').modal('hide');
-            $.ajax({
-                url: "saveLieferantenKontakt.php",
-                data: {
-                    "ansprechID": ansprechID,
-                    "Name": Name,
-                    "Vorname": Vorname,
-                    "Tel": Tel,
-                    "Adresse": Adresse,
-                    "PLZ": PLZ,
-                    "Ort": Ort,
-                    "Land": Land,
-                    "Email": Email,
-                    "lieferant": lieferant,
-                    "abteilung": abteilung,
-                    "gebiet": gebiet
-                },
-                type: "GET",
-                success: function (data) {
-                    alert(data);
-                    $.ajax({
-                        url: "getLieferantenPersonen.php",
-                        type: "GET",
-                        success: function (data) {
-                            $("#lieferanten").html(data);
-
-                        }
-                    });
-
-                }
-            });
-        } else {
-            alert("Bitte überprüfen Sie Ihre Angaben! Name, Vorname und Tel ist Pflicht!");
-        }
-    });
-
-    $("#addContactModalButton").click(function () {
-        document.getElementById("lieferantenName").value = "";
-        document.getElementById("lieferantenVorname").value = "";
-        document.getElementById("lieferantenTel").value = "";
-        document.getElementById("lieferantenAdresse").value = "";
-        document.getElementById("lieferantenPLZ").value = "";
-        document.getElementById("lieferantenOrt").value = "";
-        document.getElementById("lieferantenLand").value = "";
-        document.getElementById("lieferantenEmail").value = "";
-        document.getElementById("lieferantenGebiet").value = "";
-        // Buttons ein/ausblenden!
-        document.getElementById("saveLieferantenKontakt").style.display = "none";
-        document.getElementById("addLieferantenKontakt").style.display = "inline";
-    });
-
-    $("button[value='changeContact']").click(function () {
-        // Buttons ein/ausblenden!
-        document.getElementById("addLieferantenKontakt").style.display = "none";
-        document.getElementById("saveLieferantenKontakt").style.display = "inline";
-    });
-
-    function showAdressCard() {
-        alert("I am an alert box!");
-    }
-
-    $("#addLieferant").click(function () {
-        let firma = $("#firma").val();
-        let lieferantTel = $("#lieferantTel").val();
-        let lieferantAdresse = $("#lieferantAdresse").val();
-        let lieferantPLZ = $("#lieferantPLZ").val();
-        let lieferantOrt = $("#lieferantOrt").val();
-        let lieferantLand = $("#lieferantLand").val();
-
-        if (firma !== "" && lieferantTel !== "" && lieferantAdresse !== "" && lieferantPLZ !== "" && lieferantOrt !== "" && lieferantLand !== "") {
-            $('#changeLieferantModal').modal('hide');
-            $.ajax({
-                url: "addFirma.php",
-                data: {
-                    "firma": firma,
-                    "lieferantTel": lieferantTel,
-                    "lieferantAdresse": lieferantAdresse,
-                    "lieferantPLZ": lieferantPLZ,
-                    "lieferantOrt": lieferantOrt,
-                    "lieferantLand": lieferantLand
-                },
-                type: "GET",
-                success: function (data) {
-                    alert(data);
-                    // Neu Laden der Seite
-                    location.reload();
-                }
-            });
-        } else {
-            alert("Bitte alle Felder ausfüllen!");
-        }
+        $("#saveLieferant").click(function () {
+            let lieferantID = $("#lieferantID").val();
+            let firma = $("#firma").val();
+            let lieferantTel = $("#lieferantTel").val();
+            let lieferantAdresse = $("#lieferantAdresse").val();
+            let lieferantPLZ = $("#lieferantPLZ").val();
+            let lieferantOrt = $("#lieferantOrt").val();
+            let lieferantLand = $("#lieferantLand").val();
+            console.log(lieferantID);
+            if (firma && lieferantTel && lieferantAdresse && lieferantPLZ && lieferantOrt && lieferantLand) {
+                $('#changeLieferantModal').modal('hide');
+                $.ajax({
+                    url: "addFirma.php",
+                    data: {
+                        "lieferantID": lieferantID,
+                        "firma": firma,
+                        "lieferantTel": lieferantTel,
+                        "lieferantAdresse": lieferantAdresse,
+                        "lieferantPLZ": lieferantPLZ,
+                        "lieferantOrt": lieferantOrt,
+                        "lieferantLand": lieferantLand
+                    },
+                    type: "POST",
+                    success: function (data) {
+                        alert(data);
+                        location.reload(); // or refresh only the table if you prefer
+                    }
+                });
+            } else {
+                alert("Bitte alle Felder ausfüllen!");
+            }
+        });
     });
 
 
 </script>
-
 </html>

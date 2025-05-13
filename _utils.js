@@ -77,3 +77,4 @@ function formatNum(newData) {
 //     let upper = letter.toUpperCase();
 //     return upper.charCodeAt(0) - 'A'.charCodeAt(0) + 1;
 // }
+

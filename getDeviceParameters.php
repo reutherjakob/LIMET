@@ -1,31 +1,16 @@
-<?php
-session_start();
-?>
-
 <!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml">
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <title></title>
 </head>
 <body>
 <?php
-if (!isset($_SESSION["username"])) {
-    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-    exit;
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
 }
-?>
-
-<?php
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-
-
-/* change character set to utf8 */
-if (!$mysqli->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $mysqli->error);
-    exit();
-}
-
+check_login();
+$mysqli = utils_connect_sql();
 
 $sql = "SELECT tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung, tabelle_geraete_has_tabelle_parameter.Wert, tabelle_geraete_has_tabelle_parameter.Einheit, tabelle_geraete_has_tabelle_parameter.TABELLE_Parameter_idTABELLE_Parameter, tabelle_geraete_has_tabelle_parameter.tabelle_parameter_idTABELLE_Parameter
                     FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN tabelle_geraete_has_tabelle_parameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_geraete_has_tabelle_parameter.TABELLE_Parameter_idTABELLE_Parameter) ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie

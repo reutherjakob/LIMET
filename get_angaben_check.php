@@ -123,7 +123,7 @@ function check_4_room_paramz(&$messages, $roomParams, $theonetobechecked4, $the2
 
 function check4vorabsperr(&$messages, $roomParams, $elements_in_room)
 {
-    echorow( $roomParams);
+    //echorow( $roomParams);
     // stativ check > bREMSENß
     if (intval($roomParams["1 Kreis DL-5"]) == 0) {
         $messages[] = $roomParams['Raumbezeichnung'] . ": " . $roomParams['Raumnr'] . " --- " . $roomParams['idTABELLE_Räume'] . ":::Stativ ->  Stativ, braucht Druckluft! <br>";
@@ -496,7 +496,7 @@ foreach ($raumparameter as $roomID => $roomParams) {
 
                     if (stripos($row['Bezeichnung'], "stativ") && !$check4Vorabsperrkasten) {
                         $check4Vorabsperrkasten = true;
-                        echo "\n <br>" . $row['Bezeichnung'] . "\n <br>";
+                      // echo "\n <br>" . $row['Bezeichnung'] . "\n <br>";
                     }
                 }
             }

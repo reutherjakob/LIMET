@@ -274,7 +274,7 @@ ORDER BY tabelle_elemente.ElementID;";
                     }
                 ],
                 compact: true,
-                initComplete: async function () {
+                initComplete: function () {
                     $('.dt-search label').remove();
                     $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-dark").appendTo('#target_div');
                     setTimeout(function () {
