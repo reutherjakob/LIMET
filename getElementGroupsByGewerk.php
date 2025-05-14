@@ -45,7 +45,7 @@ $sql = "SELECT `tabelle_element_hauptgruppe`.`idTABELLE_Element_Hauptgruppe`,
 $result = $mysqli->query($sql);
 
 echo "<div class='form-group row  mt-1'>
- 			<label class='control-label col-xxl-3' for='elementHauptgruppe'>Hauptgruppe</label>
+ 			<label class='control-label col-xxl-3' for='elementHauptgruppe'>Hauptgr.</label>
 			<div class='col-xxl-9'>
 				<select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>";
 while ($row = $result->fetch_assoc()) {

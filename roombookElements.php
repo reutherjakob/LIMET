@@ -55,7 +55,7 @@ init_page_serversides();
             </div>
         </div>
 
-        <div class="col-xxl-3">
+        <div class="col-xxl-2">
             <div class="card mt-1">
                 <div class="card-header" id="CardHeaderElementGruppen">Elementgruppen
                     <button type="reset" class="btn btn-sm float-end" title="Reset" id="ResetElementGroups">
@@ -66,12 +66,16 @@ init_page_serversides();
                     <?php include "getElementgruppenCardContent.php"; ?>
                 </div>
             </div>
+
+
+
         </div>
 
-        <div class="col-xxl-3">
-            <div class="card mt-1">
-                <div class="card-header"> Hier könnte ihr Inhalt stehen.</div>
-                <div class="card-body" id=""> Wenn Mensch hier weitere Informationen sehen will, sag Bescheid welche.
+        <div class="col-xxl-4">
+            <div class="card mt-1" id="devicesInDBCard" style="max-height: 500px;overflow-y: scroll;">
+                <div class="card-header" id=""> Geräte zu Element
+                </div>
+                <div class="card-body" id="devicesInDB">
                 </div>
             </div>
         </div>
@@ -143,7 +147,7 @@ init_page_serversides();
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                 search: "",
-                searchPlaceholder: "Suche..."
+                searchPlaceholder: "Element Suche..."
             },
             layout: {
                 bottomStart: 'pageLength',
@@ -153,8 +157,8 @@ init_page_serversides();
             },
             initComplete: function () {
 
-                $('.dt-search label').remove();
-                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
+                $('#tableElementsInDB_wrapper .dt-search label').remove();
+                $('#tableElementsInDB_wrapper .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
 
             }
         });
@@ -162,7 +166,6 @@ init_page_serversides();
 
         $('#tableElementsInDB tbody').on('click', 'tr', function () {
             elementBezeichnung = tableElementsInDB.row($(this)).data()[2];
-
             $('#addElements').prop('disabled', true);
             let elementID = tableElementsInDB.row($(this)).data()[0];
             $.ajax({
@@ -182,6 +185,16 @@ init_page_serversides();
                                 type: "GET",
                                 success: function (data) {
                                     $("#roomsWithoutElement").html(data);
+
+                                    $.ajax({
+                                        url: "getDevicesToElement.php",
+                                        data: {"elementID": elementID},
+                                        type: "GET",
+                                        success: function (data) {
+                                            $("#devicesInDB").html(data);
+                                        }
+                                    });
+
                                 }
                             });
                         }
@@ -193,10 +206,7 @@ init_page_serversides();
 
 
     $(document).ready(function () {
-
-
         init_table_elementsinDB();
-
         $('#selectAllRows').click(function () {
             $('#roomsWithoutElement table tbody tr:visible').each(function () {
                 let row = tableRoomsWithoutElement.row(this);
@@ -219,6 +229,9 @@ init_page_serversides();
             });
             updateSelectedRoomsDisplay();
         });
+
+
+
     });
 </script>
 </body>

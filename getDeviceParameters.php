@@ -36,7 +36,7 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . $row["Kategorie"] . "</td>";
     echo "<td>" . $row["Bezeichnung"] . "</td>";
     echo "<td><input type='text' id='wert" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' value='" . $row["Wert"] . "'></td>";
-    echo "<td>< type='text' id='einheit" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' value='" . $row["Einheit"] . "'></td>";
+    echo "<td><input type='text' id='einheit" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' value='" . $row["Einheit"] . "'></td>";
     echo "<td><button type='button' id='" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' class='btn btn-warning btn-sm' value='saveParameter'><i class='far fa-save'></i></button></td>";
     echo "</tr>";
 
@@ -49,22 +49,36 @@ $mysqli->close();
 <script>
 
 
-    $('#tableDeviceParameters').DataTable({
-        "paging": false,
-        "searching": true,
-        "info": false,
-        "order": [[1, "asc"]],
-        "columnDefs": [
+    new DataTable('#tableDeviceParameters', {
+        paging: false,
+        searching: true,
+        info: false,
+        order: [[1, "asc"]],
+        columnDefs: [
             {
-                "targets": [0],
-                "visible": true,
-                "searchable": false
+                targets: [0],
+                visible: true,
+                searchable: false
             }
         ],
-        "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
-        "scrollY": '20vh',
-        "scrollCollapse": true
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+        },
+        scrollY: '20vh',
+        scrollCollapse: true,
+        layout: {
+            topStart: null,
+            topEnd: null,
+            bottomStart: null,
+            bottomEnd: 'search'
+        },
+        initComplete: function () {
+            $('#CardHeaderGeräteParameter .xxx').remove();
+            $('#GeräteparameterCard .dt-search label').remove();
+            $('#GeräteparameterCard .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderGeräteParameter');
+        }
     });
+
 
     //Parameter von Gerät entfernen
     $("button[value='deleteParameter']").click(function () {

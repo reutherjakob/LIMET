@@ -13,7 +13,9 @@ $parameterID = (int)$_GET["parameterID"];
 $variantenID = (int)$_GET["variantenID"];
 
 // Define special parameters set
-$specialParams = [6, 9, 18, 82];
+$CombinedParametersLeistung = [6, 9, 18, 82];
+
+$CombinedParametersGeometrie = [2, 3, 4, 7];
 
 // Parameter insertion function
 function insertParameter($mysqli, $projectID, $elementID, $paramID, $variantID) {
@@ -50,8 +52,16 @@ if (!in_array($parameterID, $existingParams)) {
 }
 
 // Step 3: Handle special parameters, insert only if missing
-if (in_array($parameterID, $specialParams)) {
-    foreach ($specialParams as $param) {
+if (in_array($parameterID, $CombinedParametersLeistung)) {
+    foreach ($CombinedParametersLeistung as $param) {
+        if ($param !== $parameterID && !in_array($param, $existingParams)) {
+            insertParameter($mysqli, $projectID, $elementID, $param, $variantenID);
+        }
+    }
+}
+
+if (in_array($parameterID, $CombinedParametersGeometrie)) {
+    foreach ($CombinedParametersGeometrie as $param) {
         if ($param !== $parameterID && !in_array($param, $existingParams)) {
             insertParameter($mysqli, $projectID, $elementID, $param, $variantenID);
         }

@@ -133,7 +133,6 @@ init_page_serversides("x"); ?>
 <script charset="utf-8" type="text/javascript">
     var table1;
 
-
     function init_table_elementsinDB() {
         $('#CardHeaderElementesInDb .xxx').remove();
         table1 = new DataTable('#tableElementsInDB', {
@@ -169,9 +168,8 @@ init_page_serversides("x"); ?>
                 bottomEnd: ['paging'],
             },
             initComplete: function () {
-
-                $('.dt-search label').remove();
-                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
+                $('#tableElementsInDB_wrapper .dt-search label').remove();
+                $('#tableElementsInDB_wrapper .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
             }
         });
 
@@ -182,6 +180,7 @@ init_page_serversides("x"); ?>
             $("#deviceLieferanten").hide();
             table1.$('tr.info').removeClass('info');
             $(this).addClass('info');
+
             let elementID = table1.row($(this)).data()[0];
             document.getElementById("bezeichnung").value = table1.row($(this)).data()[2];
             document.getElementById("kurzbeschreibungModal").value = table1.row($(this)).data()[3];

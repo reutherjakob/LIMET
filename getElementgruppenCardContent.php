@@ -19,7 +19,7 @@ while ($row = $result->fetch_assoc()) {
 }
 echo "</select></div></div>
 <div class='form-group row mt-1'>
-        <label class='control-label col-xxl-3' for='elementHauptgruppe'>Hauptgruppe</label>
+        <label class='control-label col-xxl-3' for='elementHauptgruppe'>Hauptgr.</label>
         <div class='col-xxl-9'>
             <select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>
                 <option selected>Gewerk auswählen</option>
@@ -58,7 +58,6 @@ echo " <script>
                 type: 'GET',
                 success: function (data) {
                     $('#elementGroups').html(data);
-    
                     $.ajax({
                         url: 'getElementsInDbCardBodyContent.php',
                         success: function (data) {

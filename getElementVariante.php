@@ -89,8 +89,8 @@ $row = $result->fetch_assoc(); ?>
 
         <div class='col-xxl-6'>
             <div class='card'>
-                <div class='card-header d-flex justify-content-between' id='mglParameterCardHeader'>Mögliche
-                    Parameter
+                <div class='card-header d-flex justify-content-between' id='mglParameterCardHeader'>
+                    Mögliche Parameter
                 </div>
                 <div class='card-body ' id='possibleVariantenParameter'>
                     <?php $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung,
@@ -330,7 +330,7 @@ $row = $result->fetch_assoc(); ?>
         });
 
         tablePossibleElementParameters.rows().every(function () {
-            var data = this.data();
+            let data = this.data();
             console.log(data[1].trim() , data[2].trim());
             if (data[1].trim() === 'Elektro' && data[2].trim() === 'Nennleistung') {
                 this.moveTo(0);

@@ -259,8 +259,8 @@ ORDER BY tabelle_elemente.ElementID;";
                 stateSave: false,
                 layout: {
                     topStart: null,
-                    topEnd: ['buttons', 'pageLength', 'search'],
-                    bottomStart: 'info',
+                    topEnd: ['buttons',  'search'],
+                    bottomStart: ['info','pageLength'],
                     bottomEnd: 'paging'
                 },
                 buttons: [

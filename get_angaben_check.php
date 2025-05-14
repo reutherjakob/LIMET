@@ -496,7 +496,7 @@ foreach ($raumparameter as $roomID => $roomParams) {
 
                     if (stripos($row['Bezeichnung'], "stativ") && !$check4Vorabsperrkasten) {
                         $check4Vorabsperrkasten = true;
-                      // echo "\n <br>" . $row['Bezeichnung'] . "\n <br>";
+                        // echo "\n <br>" . $row['Bezeichnung'] . "\n <br>";
                     }
                 }
             }
@@ -537,8 +537,6 @@ foreach ($raumparameter as $roomID => $roomParams) {
 $mysqli->close();
 
 foreach ($messages as $messages_out) {
-    echo "\n";
-    echo "<br>";
     echo br2nl($messages_out);
 }                 
 

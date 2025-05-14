@@ -421,8 +421,8 @@ init_page_serversides();
                 searchPlaceholder: "Suche..."
             },
             initComplete: function () {
-                $('.dt-search label').remove();
-                $('.dt-search').children().removeClass("form-control form-control-sm float-right").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
+                $('#tableElementsInDB_wrapper .dt-search label').remove();
+                $('#tableElementsInDB_wrapper .dt-search').children().removeClass("form-control form-control-sm float-right").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
             }
         });
 
