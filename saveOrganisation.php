@@ -13,13 +13,17 @@ if ($name === '') {
     exit;
 }
 
-// Check if organisation already exists (optional)
-$stmt = $mysqli->prepare("SELECT idtabelle_organisation FROM tabelle_organisation WHERE Organisation = ?");
-$stmt->bind_param("s", $name);
+// Prepare lower-case name for comparison
+$lowerName = mb_strtolower($name, 'UTF-8');
+
+// Check if organisation already exists (case-insensitive)
+$stmt = $mysqli->prepare("SELECT idtabelle_organisation, Organisation FROM tabelle_organisation WHERE LOWER(Organisation) = ?");
+$stmt->bind_param("s", $lowerName);
 $stmt->execute();
-$stmt->bind_result($existingId);
+$stmt->bind_result($existingId, $existingName);
 if ($stmt->fetch()) {
-    echo json_encode(['success' => true, 'id' => $existingId, 'name' => $name]);
+    // Return the existing name from DB to avoid case discrepancies
+    echo json_encode(['success' => true, 'id' => $existingId, 'name' => $existingName]);
     exit;
 }
 $stmt->close();
@@ -35,4 +39,4 @@ if ($stmt->execute()) {
 }
 $stmt->close();
 $mysqli->close();
-
+?>
