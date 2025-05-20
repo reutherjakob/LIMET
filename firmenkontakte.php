@@ -440,7 +440,7 @@
             let lieferant = $("#lieferant").val();
             let abteilung = $("#abteilung").val();
             let gebiet = $("#lieferantenGebiet").val();
-
+            console.log(Name);
             if (Name.length > 0 && Vorname.length > 0 && Tel.length > 0) {
                 $('#addContactModal').modal('hide');
                 $.ajax({
@@ -565,6 +565,7 @@
 
         $("#addLieferant").click(function () {
             let firma = $("#firma").val();
+            console.log(firma);
             let lieferantTel = $("#lieferantTel").val();
             let lieferantAdresse = $("#lieferantAdresse").val();
             let lieferantPLZ = $("#lieferantPLZ").val();

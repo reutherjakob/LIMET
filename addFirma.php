@@ -5,14 +5,14 @@ if (!function_exists('utils_connect_sql')) {
 check_login();
 
 // Collect all fields via POST only (more secure than GET)
-$id = filter_input(INPUT_POST, 'lieferantID');
-$firma = filter_input(INPUT_POST, 'firma');
-$tel = filter_input(INPUT_POST, 'lieferantTel');
-$adresse = filter_input(INPUT_POST, 'lieferantAdresse');
-$plz = filter_input(INPUT_POST, 'lieferantPLZ');
-$ort = filter_input(INPUT_POST, 'lieferantOrt');
-$land = filter_input(INPUT_POST, 'lieferantLand');
-
+$id = filter_input(INPUT_GET, 'lieferantID');
+$firma = filter_input(INPUT_GET, 'firma');
+$tel = filter_input(INPUT_GET, 'lieferantTel');
+$adresse = filter_input(INPUT_GET, 'lieferantAdresse');
+$plz = filter_input(INPUT_GET, 'lieferantPLZ');
+$ort = filter_input(INPUT_GET, 'lieferantOrt');
+$land = filter_input(INPUT_GET, 'lieferantLand');
+echo $firma;
 // Validate required fields
 $requiredFields = [$firma, $tel, $adresse, $plz, $ort, $land];
 if (in_array("", $requiredFields, true)) {

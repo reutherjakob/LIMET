@@ -153,11 +153,10 @@ WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["pr
     $(document).ready(function () {
         new DataTable('#tableRoombookList', {
             select: true,
-
             layout: {
                 topStart: 'buttons',
-                topEnd: 'search',
-                bottomStart: 'info',
+                topEnd: ['search','info'],
+                bottomStart: null,
                 bottomEnd: null
             },
             order: [[2, "asc"]],
@@ -172,8 +171,15 @@ WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["pr
                 url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                 search: ""
             },
-            buttons: ['excel', 'searchBuilder'],
-            pagelength: 2000,
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    exportOptions: {
+                        columns: ':not(:eq(12))' // Exclude column 12 (index 11)
+                    }
+                },
+                'searchBuilder'
+            ],
             paging: false
         });
     });

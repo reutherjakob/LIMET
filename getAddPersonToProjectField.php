@@ -125,27 +125,88 @@ $result = $mysqli->query($sql);
 
 echo "<div class='form-group row'>
 	 			<label class='control-label col-xxl-2' for='organisation'>Organisation</label>
-				<div class='col-xxl-8'>
+				<div class='col-xxl-7'>
 					<select class='form-control form-control-sm' id='organisation' name='organisation'>
 						<option value=0 selected>Bitte auswählen</option>";
 while ($row = $result->fetch_assoc()) {
     echo "<option value=" . $row["idtabelle_organisation"] . ">" . $row["Organisation"] . "</option>";
 }
 echo "</select>	
-				</div>
+      
+	            </div>
+	            <div class='col-xxl-1'>
+<button type='button' class='btn btn-outline-primary btn-sm form-control ' id='addOrganisationBtn' title='Organisation hinzufügen'>
+     +</button> </div>
 		</div>
 	 	<div class='form-group row'>
-			<input type='button' id='" . $_GET["personID"] . "' class='btn btn-success btn-sm' value='Person zu Projekt hinzufügen'></input>
+			<input type='button' id='" . $_GET["personID"] . "' class='btn btn-success btn-sm col-6 mt-2' value='Person zu Projekt hinzufügen'>
 	 	</div>			  
 	</form>";
 
 $mysqli->close();
 
-
-?>
+?>c
+<!-- Add Organisation Modal -->
+<div class="modal fade" id="addOrganisationModal" tabindex="-1" aria-labelledby="addOrganisationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addOrganisationModalLabel">Neue Organisation hinzufügen</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-control" id="newOrganisationName" placeholder="Organisationsname">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                <button type="button" class="btn btn-success" id="saveOrganisationBtn">Speichern</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
+    // Show modal on button click
+    $("#addOrganisationBtn").click(function () {
+        $("#newOrganisationName").val('');
+        $("#addOrganisationModal").modal('show');
+    });
 
+    // Save new organisation via AJAX
+    $("#saveOrganisationBtn").click(function () {
+        let orgName = $("#newOrganisationName").val().trim();
+        if (orgName === "") {
+            alert("Bitte geben Sie einen Organisationsnamen ein.");
+            return;
+        }
+        $.ajax({
+            url: "saveOrganisation.php",
+            type: "POST",
+            data: { name: orgName },
+            success: function (response) {
+                // Assuming response is the new organisation ID and name as JSON
+                try {
+                    var data = JSON.parse(response);
+                    if (data.success) {
+                        // Add new option to select and select it
+                        var newOption = $("<option>")
+                            .val(data.id)
+                            .text(data.name)
+                            .prop("selected", true);
+                        $("#organisation").append(newOption);
+                        $("#addOrganisationModal").modal('hide');
+                    } else {
+                        alert(data.error || "Fehler beim Hinzufügen der Organisation.");
+                    }
+                } catch (e) {
+                    alert("Fehler beim Verarbeiten der Antwort.");
+                }
+            },
+            error: function () {
+                alert("Fehler beim Speichern der Organisation.");
+            }
+        });
+    });
 
     // Person zu Projekt hinzufügen
     $("input[value='Person zu Projekt hinzufügen']").click(function () {

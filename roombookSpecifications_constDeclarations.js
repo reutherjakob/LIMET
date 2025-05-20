@@ -69,7 +69,7 @@ const columnsDefinition = [
     {data: 'Belichtungsfläche', title: 'Belichtungsfläche', visible: false, case: "num"}, // 22
     {data: 'Umfang', title: 'Umfang', visible: false, case: "num"}, // 23
     {data: 'Volumen', title: 'Volumen', visible: false, case: "num"}, // 24
-    {data: 'H6020', title: 'H6020', visible: false}, // 25
+    {data: 'H6020', title: 'Lüftungsnorm [H6020]', visible: false}, // 25
     {data: 'GMP', title: 'GMP', visible: false}, // 26
     {data: 'ISO', title: 'ISO', visible: false}, // 27
     {data: 'HT_Waermeabgabe_W', title: 'Wärmeabgabe[W]', visible: false, case: ""}, // 28
