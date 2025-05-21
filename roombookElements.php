@@ -165,6 +165,8 @@ init_page_serversides();
 
 
         $('#tableElementsInDB tbody').on('click', 'tr', function () {
+            document.getElementById("bezeichnung").value = tableElementsInDB.row($(this)).data()[2];
+            document.getElementById("kurzbeschreibungModal").value = tableElementsInDB.row($(this)).data()[3];
             elementBezeichnung = tableElementsInDB.row($(this)).data()[2];
             $('#addElements').prop('disabled', true);
             let elementID = tableElementsInDB.row($(this)).data()[0];
@@ -235,4 +237,8 @@ init_page_serversides();
     });
 </script>
 </body>
+
+
+
+
 </html>

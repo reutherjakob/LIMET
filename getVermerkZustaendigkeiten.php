@@ -18,7 +18,7 @@ $sql = "SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen, tabelle_ansp
                 WHERE (((tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_Vermerke_idtabelle_Vermerke)=" . filter_input(INPUT_GET, 'vermerkID') . "));";
 $result = $mysqli->query($sql);
 
-echo "<table class='table table-striped table-sm' id='tableVermerkZustaendigkeitMembers'  >
+echo "<table class='table table-striped table-sm' id='tableVermerkZustaendigkeitMembers'>
         <thead><tr>
         <th>ID</th>
         <th>Name</th>
@@ -76,7 +76,7 @@ $mysqli->close();
             }
         });
 
-        $('#ableVermerkZustaendigkeitMembers').DataTable({
+        $('#tableVermerkZustaendigkeitMembers').DataTable({
             paging: false,
             searching: true,
             info: false,

@@ -159,13 +159,12 @@ echo "</tbody></table>";
                 <input type='button' id='saveVermerk' class='btn btn-warning btn-sm' value='Speichern'
                        data-bs-dismiss='modal'>
                 <input type='button' id='deleteVermerk' class='btn btn-danger btn-sm' value='Löschen'>
-                <button type='button' class='btn btn-close btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
+                <button type='button' class='btn btn-close btn-sm' data-bs-dismiss='modal'> </button>
             </div>
 
         </div>
     </div>
 </div>
-
 
 
 <!-- Modal für Zustaendigkeit-->
@@ -181,19 +180,22 @@ echo "</tbody></table>";
             </div>
             <div class='modal-body' id='showZustaendigkeitenModalBody'>
                 <div class="mt-4 card">
-                    <div class="card-header"  id='vermerkZustaendigkeitCH'>Eingetragene Zuständigkeit:</div>
-                    <div class="card-body" id='vermerkZustaendigkeit'> </div>
+                    <div class="card-header d-flex align-items-center justify-content-between">Eingetragene Zuständigkeit
+                        <div class="d-flex justify-content-end" id='vermerkZustaendigkeitCH'></div>
+                    </div>
+                    <div class="card-body" id='vermerkZustaendigkeit'></div>
                 </div>
                 <div class="mt-4 card">
-                    <div class="card-header" id='possibleVermerkZustaendigkeitCH'>Mögliche Personen:
-                        <small style=" float: right; font-style: italic; font-family: cursive, 'Comic Sans MS', 'Brush Script MT', serif;">
-                            Fehlt eine Person? Bei Projektbeteiligte anlegen.
-                        </small>
+                    <div class="card-header d-flex align-items-center justify-content-between">Mögliche Personen
+                        <div class=" justify-content-end" id='possibleVermerkZustaendigkeitCH'></div>
                     </div>
-                    <div class="card-body" id='possibleVermerkZustaendigkeit'> </div>
+                    <div class="card-body" id='possibleVermerkZustaendigkeit'></div>
                 </div>
             </div>
             <div class='modal-footer'>
+                <small style=" float: right; font-style: italic; font-family: cursive, 'Comic Sans MS', 'Brush Script MT', serif;">
+                    Fehlt eine Person? Bei Projektbeteiligte anlegen.
+                </small>
                 <button type='button' class='btn btn-secondary btn-sm' value='closeModal' data-bs-dismiss='modal'>
                     Schließen
                 </button>
@@ -256,11 +258,22 @@ echo "</tbody></table>";
 <script charset="utf-8 " type="text/javascript">
     vermerkGruppenID = <?php echo filter_input(INPUT_GET, 'vermerkGruppenID') ?>;
     /* Inititation within DocumentationV2.php; also 4:  var vermerkID;*/
+
+
     $(document).ready(function () {
+        function decodeHtmlEntities(str) {
+            let txt = document.createElement('textarea');
+            txt.innerHTML = str;
+            return txt.value;
+        }
+
+
         document.getElementById("buttonNewVermerk").style.visibility = "visible";
         document.getElementById("buttonNewVermerkuntergruppe").style.visibility = "visible";
         $('#topDivSearch2').remove();
         $('#showVermerkZustaendigkeitModal').appendTo('body');
+
+
         tableVermerke = new DataTable('#tableVermerke', {
             columnDefs: [
                 {
@@ -308,7 +321,7 @@ echo "</tbody></table>";
                 $('#tableVermerke tbody').on('click', 'tr', function () {
                     vermerkID = tableVermerke.row($(this)).data()[0];
                     document.getElementById("vermerkStatus").value = tableVermerke.row($(this)).data()[6];
-                    document.getElementById("vermerkText").value = tableVermerke.row($(this)).data()[2];
+                    document.getElementById("vermerkText").value = decodeHtmlEntities(tableVermerke.row($(this)).data()[2]);
                     document.getElementById("faelligkeit").value = tableVermerke.row($(this)).data()[4];
                     document.getElementById("vermerkTyp").value = tableVermerke.row($(this)).data()[7];
 
@@ -336,28 +349,25 @@ echo "</tbody></table>";
             }
         });
 
-        $('#tableVermerke tbody').on('click', "button[value='showVermerkZustaendigkeit']", function (e)
+        $('#tableVermerke tbody').on('click', "button[value='showVermerkZustaendigkeit']", function () {
             let id = this.id;
-           $.ajax({
-               url: "getVermerkZustaendigkeiten.php",
-               type: "GET",
-               data: {"vermerkID": id},
-               success: function (data) {
-                   $("#vermerkZustaendigkeit").html(data);
-                   $.ajax({
-                       url: "getPossibleVermerkZustaendigkeiten.php",
-                       type: "GET",
-                       data: {"vermerkID": id},
-                       success: function (data) {
-                           $("#possibleVermerkZustaendigkeit").html(data);
-
-                       }
-                   });
-               }
-           });
-
+            $.ajax({
+                url: "getVermerkZustaendigkeiten.php",
+                type: "GET",
+                data: {"vermerkID": id},
+                success: function (data) {
+                    $("#vermerkZustaendigkeit").html(data);
+                    $.ajax({
+                        url: "getPossibleVermerkZustaendigkeiten.php",
+                        type: "GET",
+                        data: {"vermerkID": id},
+                        success: function (data) {
+                            $("#possibleVermerkZustaendigkeit").html(data);
+                        }
+                    });
+                }
+            });
         });
-
         $('#faelligkeit').datepicker({
             format: "yyyy-mm-dd",
             calendarWeeks: true,

@@ -676,7 +676,7 @@
             let lieferantPLZ = $("#lieferantPLZ").val();
             let lieferantOrt = $("#lieferantOrt").val();
             let lieferantLand = $("#lieferantLand").val();
-            console.log(lieferantID);
+
             if (firma && lieferantTel && lieferantAdresse && lieferantPLZ && lieferantOrt && lieferantLand) {
                 $('#changeLieferantModal').modal('hide');
                 $.ajax({

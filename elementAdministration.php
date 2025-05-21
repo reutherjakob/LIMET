@@ -126,13 +126,11 @@ init_page_serversides("x"); ?>
                 <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
             </div>
         </div>
-
     </div>
 </div>
 
 <script charset="utf-8" type="text/javascript">
     var table1;
-
     function init_table_elementsinDB() {
         $('#CardHeaderElementesInDb .xxx').remove();
         table1 = new DataTable('#tableElementsInDB', {
@@ -172,7 +170,6 @@ init_page_serversides("x"); ?>
                 $('#tableElementsInDB_wrapper .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
             }
         });
-
 
         $('#tableElementsInDB tbody').on('click', 'tr', function () {
             $("#deviceParametersInDB").hide();
@@ -222,8 +219,6 @@ init_page_serversides("x"); ?>
     }
 
     $(document).ready(function () {
-
-
         init_table_elementsinDB();
     });
 

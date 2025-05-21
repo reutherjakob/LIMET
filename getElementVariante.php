@@ -160,7 +160,7 @@ $row = $result->fetch_assoc(); ?>
                 $sql = "SELECT tabelle_varianten.Variante, tabelle_projekt_varianten_kosten_aenderung.kosten_alt, tabelle_projekt_varianten_kosten_aenderung.kosten_neu, tabelle_projekt_varianten_kosten_aenderung.timestamp, tabelle_projekt_varianten_kosten_aenderung.user
 							FROM tabelle_varianten INNER JOIN tabelle_projekt_varianten_kosten_aenderung ON tabelle_varianten.idtabelle_Varianten = tabelle_projekt_varianten_kosten_aenderung.variante
 							WHERE (((tabelle_projekt_varianten_kosten_aenderung.projekt)=" . $_SESSION["projectID"] . ") AND ((tabelle_projekt_varianten_kosten_aenderung.element)=" . $_SESSION["elementID"] . "))
-							ORDER BY tabelle_projekt_varianten_kosten_aenderung.timestamp DESC;";
+							ORDER BY tabelle_varianten.Variante, tabelle_projekt_varianten_kosten_aenderung.timestamp DESC;";
 
                 $result = $mysqli->query($sql);
                 echo "<table class='table table-striped table-sm' id='tableVariantenCostsOverTime'>
@@ -341,7 +341,6 @@ $row = $result->fetch_assoc(); ?>
             select: true,
             searching: true,
             info: false,
-            order: [[1, 'asc']],
             columnDefs: [
                 {
                     targets: [0],

@@ -67,10 +67,10 @@ $mysqli->close();
             scrollY: '20vh',
             scrollCollapse: true,
             initComplete: function () {
+                console.log("tablepossibleVermerkZustaendigkeitMembers initcomplete");
                 $('#possibleVermerkZustaendigkeitCH .xxx').remove();
                 $('#possibleVermerkZustaendigkeit .dt-search label').remove();
                 $('#possibleVermerkZustaendigkeit .dt-search').children().removeClass("form-control form-control-sm").addClass("xxx btn btn-sm btn-outline-dark").appendTo('#possibleVermerkZustaendigkeitCH');
-
             }
         });
 
@@ -108,7 +108,6 @@ $mysqli->close();
                 });
             }
         });
-
-    }
+    });
 </script>
 </html>
