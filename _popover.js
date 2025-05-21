@@ -86,8 +86,8 @@ const CustomPopover = (function ($) {
             const textareaElement = popoverElement.find('.popover-textarea');
 
             if (!isClickInsidePopover && !isClickOnTrigger && isClickFarAway(e, textareaElement)) {
-                //hidePopover();
-                handleSave();
+                hidePopover();
+               // handleSave();
             }
         }
     }

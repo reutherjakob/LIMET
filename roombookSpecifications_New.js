@@ -53,8 +53,6 @@ $(document).ready(function () {
     init_filter();
     handleCheckboxChange();
     add_room_modal();
-
-
 });
 
 function add_MT_rel_filter(location, table) {
@@ -73,7 +71,6 @@ function add_entfallen_filter(location, table) {
         let filterValue = $(this).val();
         table.column('Entfallen:name').search(filterValue).draw();
     });
-
 }
 
 function init_filter() {
@@ -606,19 +603,6 @@ function toggleColumns(table, startColumn, endColumn, button_name) {
 
 }
 
-// function toggleColumnsold(table, startColumn, endColumn, button_name) {
-//     console.time('toggleColumnsOld'); // Start timer for old version
-//
-//     const columns = table.columns().indexes();
-//     let vis = !table.column(columns[endColumn]).visible();
-//     for (let i = startColumn; i <= endColumn; i++) {
-//         table.column(columns[i]).visible(vis);
-//     }
-//     toggle_btn_classes(button_name, vis);
-//
-//     console.timeEnd('toggleColumnsOld'); // End timer for old version
-// }
-
 function toggle_btn_classes(button_name, vis) {
 
     if (button_name === 'All') {
@@ -655,7 +639,6 @@ function toggle_btn_classes(button_name, vis) {
     }
 }
 
-
 function init_showRoomElements_btn() {
     $("#showRoomElements").html("<i class='fa fa-caret-right'></i>");
     $("#showRoomElements").click(function () {
@@ -671,8 +654,6 @@ function init_showRoomElements_btn() {
     });
 }
 
-
-//SAVEING/CPYNG Rooms
 function save_changes(RaumID, ColumnName, newData, raumname) {
     $.ajax({
         url: "saveRoomProperties.php",
