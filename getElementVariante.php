@@ -27,7 +27,7 @@ $row = $result->fetch_assoc(); ?>
             <div class=' d-flex align-items-center flex-wrap'>
                 <div class='form-group d-flex align-items-center mr-2'>
                     <label for='variante'>Variante </label>
-                    <select class='form-control form-control-sm' id='variante'>
+                    <select class='form-control form-control-sm me-1 ms-1' id='variante'>
                         <?php
                         $options = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
                         $selectedID = $_SESSION["variantenID"];
@@ -74,8 +74,15 @@ $row = $result->fetch_assoc(); ?>
     <div class='row'>
         <div class="col-xxl-6">
             <div class='card'>
-                <div class='card-header' id="variantenParameterCH">
-                    Variantenparameter
+                <div class='card-header'>
+                    <div class='row'>
+                        <div class='col-xxl-10'>
+                            Variantenparameter
+                        </div>
+                        <div class="col-xxl-2 d-flex align-items-center justify-content-end "
+                             id="variantenParameterCH"></div>
+                    </div>
+
                 </div>
                 <div class='card-body ' id='variantenParameter'>
                     <?php
