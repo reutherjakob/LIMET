@@ -269,7 +269,7 @@ $row = $result->fetch_assoc(); ?>
         $('#tableElementParameters').DataTable({
             select: true,
             searching: true,
-            info: true,
+            pagingType: "simple",
             order: [[1, 'asc']],
             columnDefs: [
                 {
@@ -331,7 +331,6 @@ $row = $result->fetch_assoc(); ?>
 
         tablePossibleElementParameters.rows().every(function () {
             let data = this.data();
-            console.log(data[1].trim() , data[2].trim());
             if (data[1].trim() === 'Elektro' && data[2].trim() === 'Nennleistung') {
                 this.moveTo(0);
             }
