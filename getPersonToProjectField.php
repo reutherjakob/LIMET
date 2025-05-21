@@ -53,95 +53,49 @@ foreach ($formFields as $field) {
 
 echo "
 <div class='form-group row'><label class='control-label col-xxl-2' for='zustaendigkeit'> Zuständigkeit</label>
-    <div class='col-xxl-8'><select class='form-control form-control-sm' id='zustaendigkeit' name='zustaendigkeit'
+    <div class='col-xxl-7'><select class='form-control form-control-sm' id='zustaendigkeit' name='zustaendigkeit'
                                   required> $zustaendigkeitOptions</select></div>
+      <div class='col-xxl-1'>
+            <button type='button' 
+                    class='btn btn-outline-success ' 
+                    id='addZustaendigkeitBtn' title='Zuständigkeit hinzufügen'>
+                    <i class='fas fa-plus'></i>
+            </button> 
+      </div> 
 </div>
 <div class='form-group inline row'><label class='control-label col-xxl-2' for='organisation'> Organisation</label>
     <div class='col-xxl-7'>
     <select class='form-control form-control-sm' id='organisation' name='organisation' required>  $organisationOptions</select>  
     </div>
-      <div class='col-xxl-1'>
-<button type='button' class='btn btn-outline-primary btn-sm form-control ' id='addOrganisationBtn' title='Organisation hinzufügen'>
-     +</button> </div>
-<div class='form-group row'>
-    <div class='col-xxl-offset-2 col-xxl-8 mt-2'><input type='submit' id='addPersonToProjectButton'
-                                                 class='btn btn-success btn-sm' value='Person zu Projekt hinzufügen'>
-    </div></div></form > ";
-;
-
-$mysqli->close();
-?>
-
-<!-- Add Organisation Modal -->
-<div class="modal fade" id="addOrganisationModal" tabindex="-1" aria-labelledby="addOrganisationModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addOrganisationModalLabel">Neue Organisation hinzufügen</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
-            </div>
-            <div class="modal-body">
-                <input type="text" class="form-control" id="newOrganisationName" placeholder="Organisationsname">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-                <button type="button" class="btn btn-success" id="saveOrganisationBtn">Speichern</button>
-            </div>
+         <div class='col-xxl-1'>
+            <button type='button' 
+                    class='btn btn-outline-success' 
+                    id='addOrganisationBtn' title='Organisation hinzufügen'>
+                    <i class='fas fa-plus'></i>
+            </button> 
+        </div>
+    <div class='form-group row'>
+        <div class='col-xxl-2'></div>
+                <div class='col-xxl-8'>
+            <input type='submit' id='addPersonToProjectButton'
+             class='btn btn-success btn-sm mt-1 ms-1' value='Person zu Projekt hinzufügen'>
         </div>
     </div>
-</div>
+    </div>
+    </form> ";
+$mysqli->close();
 
+include "modal_addOrganisationAndZustaendigkeit.php";
+?>
+
+<script src="_utils.js"></script>
+<script src="createNewOrganisationAndZusändigkeit.js"></script>
 
 <script>
     $(document).ready(function () {
-
-        // Show modal on button click
-        $("#addOrganisationBtn").click(function () {
-            $("#newOrganisationName").val('');
-            $("#addOrganisationModal").modal('show');
-        });
-
-        // Save new organisation via AJAX
-        $("#saveOrganisationBtn").click(function () {
-            let orgName = $("#newOrganisationName").val().trim();
-            if (orgName === "") {
-                alert("Bitte geben Sie einen Organisationsnamen ein.");
-                return;
-            }
-            $.ajax({
-                url: "saveOrganisation.php",
-                type: "POST",
-                data: { name: orgName },
-                success: function (response) {
-                    // Assuming response is the new organisation ID and name as JSON
-                    try {
-                        var data = JSON.parse(response);
-                        if (data.success) {
-                            // Add new option to select and select it
-                            var newOption = $("<option>")
-                                .val(data.id)
-                                .text(data.name)
-                                .prop("selected", true);
-                            $("#organisation").append(newOption);
-                            $("#addOrganisationModal").modal('hide');
-                        } else {
-                            alert(data.error || "Fehler beim Hinzufügen der Organisation.");
-                        }
-                    } catch (e) {
-                        alert("Fehler beim Verarbeiten der Antwort.");
-                    }
-                },
-                error: function () {
-                    alert("Fehler beim Speichern der Organisation.");
-                }
-            });
-        });
-
         $("#addPersonForm").submit(function (e) {
             e.preventDefault();
-
             let formData = $(this).serialize();
-
             $.ajax({
                 url: "addPersonToProject.php",
                 data: formData,
@@ -156,4 +110,5 @@ $mysqli->close();
             });
         });
     });
+
 </script>

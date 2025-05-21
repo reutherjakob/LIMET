@@ -1,34 +1,18 @@
 <?php
-session_start();
+if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+check_login();
 ?>
 
 <!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml">
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang="">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <title></title>
 </head>
 <body>
-<?php
-if (!isset($_SESSION["username"])) {
-    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-    exit;
-}
-?>
-
 
 <?php
-
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-
-
-/* change character set to utf8 */
-if (!$mysqli->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $mysqli->error);
-    exit();
-}
-
-// Personendaten im Projekt laden
+$mysqli = utils_connect_sql();
 
 $sql = "SELECT `tabelle_ansprechpersonen`.`Name`,
 		    `tabelle_ansprechpersonen`.`Vorname`,
@@ -109,14 +93,21 @@ $result = $mysqli->query($sql);
 
 echo "<div class='form-group row'>
 	 			<label class='control-label col-xxl-2' for='zustaendigkeit'>Zuständigkeit</label>
-				<div class='col-xxl-8'>
+				<div class='col-xxl-7'>
 					<select class='form-control form-control-sm' id='zustaendigkeit' name='selectCategory'>
 						<option value=0 selected>Bitte auswählen</option>";
 while ($row = $result->fetch_assoc()) {
     echo "<option value=" . $row["idTABELLE_Projektzuständigkeiten"] . ">" . $row["Zuständigkeit"] . "</option>";
 }
 echo "</select>	
-				</div>
+		</div>
+        <div class='col-xxl-1'>
+            <button type='button' 
+                    class='btn btn-outline-success' 
+                    id='addZustaendigkeitBtn' title='Zustaendigkeit hinzufügen'>
+                    <i class='fas fa-plus'></i>
+            </button> 
+        </div> 
 		</div>";
 
 $sql = "SELECT tabelle_organisation.idtabelle_organisation, tabelle_organisation.Organisation FROM tabelle_organisation ORDER BY Organisation;";
@@ -131,84 +122,32 @@ echo "<div class='form-group row'>
 while ($row = $result->fetch_assoc()) {
     echo "<option value=" . $row["idtabelle_organisation"] . ">" . $row["Organisation"] . "</option>";
 }
-echo "</select>	
-      
-	            </div>
-	            <div class='col-xxl-1'>
-<button type='button' class='btn btn-outline-primary btn-sm form-control ' id='addOrganisationBtn' title='Organisation hinzufügen'>
-     +</button> </div>
+echo "</select> 
+        </div>
+        <div class='col-xxl-1'>
+            <button type='button' 
+                    class='btn btn-outline-success' 
+                    id='addOrganisationBtn' title='Organisation hinzufügen'>
+                    <i class='fas fa-plus'></i>
+            </button> 
+        </div> 
 		</div>
 	 	<div class='form-group row'>
-			<input type='button' id='" . $_GET["personID"] . "' class='btn btn-success btn-sm col-6 mt-2' value='Person zu Projekt hinzufügen'>
-	 	</div>			  
+            <div class='col-xxl-2'></div>
+              <div class='col-xxl-8'>
+                <input type='button' id='" . $_GET["personID"] . "' class='btn btn-success btn-sm mt-1' value='Person zu Projekt hinzufügen'>
+            </div>		
+	 	</div>
 	</form>";
 
 $mysqli->close();
 
-?>c
-<!-- Add Organisation Modal -->
-<div class="modal fade" id="addOrganisationModal" tabindex="-1" aria-labelledby="addOrganisationModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addOrganisationModalLabel">Neue Organisation hinzufügen</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
-            </div>
-            <div class="modal-body">
-                <input type="text" class="form-control" id="newOrganisationName" placeholder="Organisationsname">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-                <button type="button" class="btn btn-success" id="saveOrganisationBtn">Speichern</button>
-            </div>
-        </div>
-    </div>
-</div>
+include "modal_addOrganisationAndZustaendigkeit.php";
+?>
 
+<script src="_utils.js"></script>
+<script src="createNewOrganisationAndZusändigkeit.js"></script>
 <script>
-    // Show modal on button click
-    $("#addOrganisationBtn").click(function () {
-        $("#newOrganisationName").val('');
-        $("#addOrganisationModal").modal('show');
-    });
-
-    // Save new organisation via AJAX
-    $("#saveOrganisationBtn").click(function () {
-        let orgName = $("#newOrganisationName").val().trim();
-        if (orgName === "") {
-            alert("Bitte geben Sie einen Organisationsnamen ein.");
-            return;
-        }
-        $.ajax({
-            url: "saveOrganisation.php",
-            type: "POST",
-            data: { name: orgName },
-            success: function (response) {
-                // Assuming response is the new organisation ID and name as JSON
-                try {
-                    var data = JSON.parse(response);
-                    if (data.success) {
-                        // Add new option to select and select it
-                        var newOption = $("<option>")
-                            .val(data.id)
-                            .text(data.name)
-                            .prop("selected", true);
-                        $("#organisation").append(newOption);
-                        $("#addOrganisationModal").modal('hide');
-                    } else {
-                        alert(data.error || "Fehler beim Hinzufügen der Organisation.");
-                    }
-                } catch (e) {
-                    alert("Fehler beim Verarbeiten der Antwort.");
-                }
-            },
-            error: function () {
-                alert("Fehler beim Speichern der Organisation.");
-            }
-        });
-    });
-
-    // Person zu Projekt hinzufügen
     $("input[value='Person zu Projekt hinzufügen']").click(function () {
         let id = this.id;
         let zustaendigkeit = $("#zustaendigkeit").val();
@@ -245,11 +184,8 @@ $mysqli->close();
                 });
             }
         }
-
     });
 
-
 </script>
-
 </body>
 </html>

@@ -293,7 +293,6 @@
             </div>
         </div>
 
-        <!-- Modal zum Anlegen eines Lieferante--------------------------------------- -->
         <div class='modal fade' id='changeLieferantModal' role='dialog'>
             <div class='modal-dialog modal-md'>
                 <!-- Modal content-->

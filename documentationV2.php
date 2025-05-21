@@ -39,13 +39,13 @@ init_page_serversides();
         .card-body {
             overflow: auto;
         }
-
         .card-body iframe {
             top: 0;
             left: 0;
             width: 100%;
             height: 85vh;
         }
+
     </style>
 </head>
 <body>
@@ -173,9 +173,7 @@ init_page_serversides();
                                 Neu
                             </button>
                         </div>
-
                     </div>
-
                 </div>
                 <div class="card-body" id="vermerke"></div>
             </div>
