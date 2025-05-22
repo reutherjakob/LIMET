@@ -38,7 +38,7 @@ if(!isset($_SESSION["username"]))
 						
         $result = $mysqli->query($sql);
 
-        echo "<table class='table table-striped table-sm' id='tablePossibleDeviceParameters'  >
+        echo "<table class='table table-striped table-sm' id='tablePossibleDeviceParameters'>
         <thead><tr>
         <th>ID</th>
         <th>Kategorie</th>
@@ -48,7 +48,7 @@ if(!isset($_SESSION["username"]))
 
         while($row = $result->fetch_assoc()) {
             echo "<tr>";
-            echo "<td><button type='button' id='".$row["idTABELLE_Parameter"]."' class='btn btn-outline-success btn-sm' value='addParameter'><i class='fas fa-plus'></i></button></td>";
+            echo "<td><button type='button' id='".$row["idTABELLE_Parameter"]."' class='btn btn-outline-success btn-sm' value='addDEVICEParameter'><i class='fas fa-plus'></i></button></td>";
             echo "<td>".$row["Kategorie"]."</td>";
             echo "<td>".$row["Bezeichnung"]."</td>";
             echo "</tr>";
@@ -61,27 +61,35 @@ if(!isset($_SESSION["username"]))
 ?>
 	
 <script>
-    
-    
-    $('#tablePossibleDeviceParameters').DataTable( {
-            "paging": false,
-            "searching": true,
-            "info": false,
-            "order": [[ 1, "asc" ]],
-            "columnDefs": [
+
+
+    new DataTable('#tablePossibleDeviceParameters', {
+        paging: false,
+        searching: true,
+        info: false,
+        order: [[1, "asc"]],
+        columnDefs: [
             {
-                "targets": [ 0 ],
-                "visible": true,
-                "searchable": false
+                targets: [0],
+                visible: true,
+                searchable: false
             }
         ],
-        "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
-        "scrollY": '20vh',
-        "scrollCollapse": true   	 
-     } );  
-     
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+        },
+        scrollY: '20vh',
+        scrollCollapse: true,
+        layout: {
+            topStart: null,
+            topEnd: 'search',
+            bottomStart: null,
+            bottomEnd: null
+        }
+    });
+
      //Parameter zu Gerät hinzufügen
-    $("button[value='addParameter']").click(function(){
+    $("button[value='saveDEVICEParameter']").click(function(){
         $('#variantenParameterCh .xxx').remove();
         var id = this.id;
         if(id !== ""){

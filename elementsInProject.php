@@ -280,7 +280,7 @@ ORDER BY tabelle_elemente.ElementID;";
                     setTimeout(function () {
                         tableElementsInProject.buttons().container().appendTo('#target_div .btn-group');
                         new $.fn.dataTable.Buttons(tableElementsInProject, {buttons: searchbuilder}).container().appendTo('#sbdiv');
-                    }, 200);
+                    }, 100);
 
                 }
             });

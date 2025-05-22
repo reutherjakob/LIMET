@@ -25,6 +25,9 @@ class MYPDF extends TCPDF
             $this->Ln();
         }
         $this->Ln();
+       // if("Medizintechnische Elementliste"== $_SESSION["PDFTITEL"]) {
+       //     $this->SetY($this->GetY() + 20);
+       // }
     }
 
     // Page footer

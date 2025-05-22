@@ -19,8 +19,10 @@ if (!function_exists('utils_connect_sql')) {
     include "_utils.php";
 }
 check_login();
-$mysqli = utils_connect_sql();
 
+$_SESSION["variantenID"] = filter_input(INPUT_GET, 'variantenID');
+
+$mysqli = utils_connect_sql();
 $sql = "SELECT
     tabelle_räume_has_tabelle_elemente.id,
     tabelle_räume.idTABELLE_Räume,
@@ -201,7 +203,7 @@ $mysqli->close();
                 {
                     extend: 'excel',
                     exportOptions: {
-                        columns: [3, 4, 5, 12, 13, 14, 15, 16, 17, 18, 19]
+                        columns: [1, 2, 3, 4, 5, 6, 14, 15, 16, 17, 18, 19, 20, 21]// 12,
                     },
                     text: '<i class="fas fa-file-excel me-2"></i> Excel', // Add Font Awesome icon
                     className: 'btn btn-sm btn-outline-success bg-white', // Bootstrap small

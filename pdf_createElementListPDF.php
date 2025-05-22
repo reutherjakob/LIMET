@@ -35,7 +35,8 @@ while ($row = $result1->fetch_assoc()) {
 
 // Räume mit Element laden
 // AND tabelle_räume.`Raumbereich Nutzer` != 'E04 Feuerkeller'
-$sql = "SELECT tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.Anzahl, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`
+$sql = "SELECT tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, 
+       tabelle_räume_has_tabelle_elemente.Anzahl, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`
 FROM tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
 WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume_has_tabelle_elemente.Anzahl)>0));";
 
@@ -56,6 +57,8 @@ while ($row = $result2->fetch_assoc()) {
 //Kopfzeile
 $pdf->SetFont('helvetica', '', 10);
 $pdf->SetTextColor(0);
+
+$pdf->SetY($pdf->GetY() + 5);
 $rowHeightFirstLine = $pdf->getStringHeight(50, "ElementID", false, true, '', 1);
 $pdf->MultiCell(20, $rowHeightFirstLine, "Stk", 'B', 'C', 0, 0);
 $pdf->MultiCell(20, $rowHeightFirstLine, "ElementID", 'B', 'C', 0, 0);
@@ -118,6 +121,7 @@ while ($row = $result3->fetch_assoc()) {
 
     if (($y + $rowHeightFinal) >= 180) {
         $pdf->AddPage();
+        $pdf->SetY($pdf->GetY() + 3);
     }
 
 
