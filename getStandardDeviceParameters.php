@@ -1,9 +1,8 @@
 <!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title></title>
+    <title>getStandardDev</title>
 </head>
 <body>
 
@@ -74,7 +73,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
     <div class='modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable'>
         <div class='modal-content'>
             <div class='modal-header'>
-                <h4 class='modal-title'>Parameter bearbeiten</h4>
+                <h4 class='modal-title'> Geräteparameter bearbeiten</h4>
                 <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='mbody'>
@@ -105,12 +104,12 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
 
                                     while ($row = $result->fetch_assoc()) {
                                         echo "<tr>";
-                                        echo "<td><button type='button' id='" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' class='btn btn-outline-danger btn-sm' value='deleteParameter'><i class='fas fa-minus'></i></button></td>";
+                                        echo "<td><button type='button' id='" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' class='btn btn-outline-danger btn-sm' value='deleteDEVICEParameter'><i class='fas fa-minus'></i></button></td>";
                                         echo "<td>" . $row["Kategorie"] . "</td>";
                                         echo "<td>" . $row["Bezeichnung"] . "</td>";
                                         echo "<td><input type='text' id='wert" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' value='" . $row["Wert"] . "'></td>";
                                         echo "<td><input type='text' id='einheit" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' value='" . $row["Einheit"] . "'></td>";
-                                        echo "<td><button type='button' id='" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' class='btn btn-warning btn-sm' value='saveParameter'><i class='far fa-save'></i></button></td>";
+                                        echo "<td><button type='button' id='" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' class='btn btn-warning btn-sm' value='saveDEVICEParameter'><i class='far fa-save'></i></button></td>";
                                         echo "</tr>";
 
                                     }
@@ -124,7 +123,12 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
                     <div class="row">
                         <div class='col-xxl-12'>
                             <div class='mt-1 card'>
-                                <div class='card-header'><label>Mögliche Geräteparameter</label></div>
+                                <div class='card-header'>
+                                    <div class="row">
+                                        <div class="col-10 d-flex align-items-center">Mögliche Geräteparameter</div>
+                                        <div class="col-2 d-flex align-items-center justify-content-end" id='possibleDeviceParametersCH'></div>
+                                    </div>
+                                </div>
                                 <div class='card-body' id='possibleDeviceParameters'>
                                     <?php
                                     $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung, tabelle_parameter_kategorie.Kategorie 
@@ -139,15 +143,15 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
                                     $result = $mysqli->query($sql);
 
                                     echo "<table class='table table-striped table-sm' id='tablePossibleDeviceParameters'  >
-						<thead><tr>
-						<th>ID</th>
-						<th>Kategorie</th>
-						<th>Parameter</th>
-						</tr></thead>
-						<tbody>";
+                                        <thead><tr>
+                                        <th>ID</th>
+                                        <th>Kategorie</th>
+                                        <th>Parameter</th>
+                                        </tr></thead>
+                                        <tbody>";
                                     while ($row = $result->fetch_assoc()) {
                                         echo "<tr>";
-                                        echo "<td><button type='button' id='" . $row["idTABELLE_Parameter"] . "' class='btn btn-outline-success btn-sm' value='addParameter'><i class='fas fa-plus'></i></button></td>";
+                                        echo "<td><button type='button' id='" . $row["idTABELLE_Parameter"] . "' class='btn btn-outline-success btn-sm' value='addDEVICEParameter'><i class='fas fa-plus'></i></button></td>";
                                         echo "<td>" . $row["Kategorie"] . "</td>";
                                         echo "<td>" . $row["Bezeichnung"] . "</td>";
                                         echo "</tr>";
@@ -171,9 +175,6 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
 <script src="_utils.js"></script>
 <script>
 
-
-
-
     deviceID = '<?php echo $deviceID; ?>';
     new DataTable('#tableStandardDeviceParameters', {
         paging: false,
@@ -191,7 +192,6 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
             bottomEnd: null
         }
     });
-
 
     new DataTable('#tableDeviceParameters', {
         paging: false,
@@ -245,11 +245,17 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
             topEnd: 'search',
             bottomStart: null,
             bottomEnd: null
+        },
+        initComplete: function () {
+            $('#possibleDeviceParametersCH .xxx').remove();
+            $('#possibleDeviceParameters .dt-search label').remove();
+            $('#possibleDeviceParameters .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx float-right").appendTo('#possibleDeviceParametersCH');
         }
+
     });
 
     //Parameter zu Gerät hinzufügen
-    $("button[value='addParameter']").click(function () {
+    $("button[value='addDEVICEParameter']").click(function () {
         let id = this.id;
         if (id !== "") {
             $.ajax({
@@ -278,7 +284,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
     });
 
     //Parameter von Gerät entfernen
-    $("button[value='deleteParameter']").click(function () {
+    $("button[value='deleteDEVICEParameter']").click(function () {
         if (confirm("Parameter wirklich löschen?")) {
             let id = this.id;
             if (id !== "") {
@@ -312,7 +318,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
     });
 
     //Parameter ändern
-    $("button[value='saveParameter']").click(function () {
+    $("button[value='saveDEVICEParameter']").click(function () { //TODO find and rename btn
         let id = this.id;
         let wert = $("#wert" + id).val();
         let einheit = $("#einheit" + id).val();

@@ -82,7 +82,6 @@ $row = $result->fetch_assoc(); ?>
                         <div class="col-xxl-2 d-flex align-items-center justify-content-end "
                              id="variantenParameterCH"></div>
                     </div>
-
                 </div>
                 <div class='card-body ' id='variantenParameter'>
                     <?php
@@ -126,8 +125,7 @@ $row = $result->fetch_assoc(); ?>
                                 tabelle_parameter.Bezeichnung;";
 
                     $result = $mysqli->query($sql);
-                    echo "
-                                <table class='table table-striped table-sm table-hover table-bordered border border-5 border-light' id='tablePossibleElementParameters'                             >
+                    echo "<table class='table table-striped table-sm table-hover table-bordered border border-5 border-light' id='tablePossibleElementParameters'>
                                     <thead>
                                     <tr>
                                         <th> <i class='fas fa-plus'></i> </th>
@@ -136,6 +134,7 @@ $row = $result->fetch_assoc(); ?>
                                     </tr>
                                     </thead>
                                     <tbody>";
+
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr>";
                         echo "<td> <button type='button' id='" . $row["idTABELLE_Parameter"] . "'
@@ -145,6 +144,7 @@ $row = $result->fetch_assoc(); ?>
                         echo "<td>" . $row["Bezeichnung"] . "</td>";
                         echo "</tr> ";
                     }
+
                     echo " </tbody> </table> "; ?>
                 </div>
             </div>
