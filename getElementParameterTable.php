@@ -5,7 +5,7 @@ function generate_parameter_input($row, $type) {
 
     if ($row["Kategorie"] === "Elektro" && $row["Bezeichnung"] === "Netzart") {
         $options = ($type === "Wert")
-            ? ["AV", "SV", "ZSV", "USV", "AV/SV", "SV/ZSV", "ZSV/USV", "Batterie"]
+            ? ["",  "AV", "SV", "ZSV", "USV", "AV/SV", "SV/ZSV", "ZSV/USV", "Batterie"]
             : ["", " Akku"];
 
         $html = "<td><select class='form-select form-select-sm' id='{$type}_{$id}'>";
