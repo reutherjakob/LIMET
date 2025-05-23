@@ -45,9 +45,9 @@ init_page_serversides("x"); ?>
                     </div>
                     <div class="mt-1 card">
                         <div class="card-header">
-                            <div class="row">
-                                <div class="col-xxl-6">Elemente in DB</div>
-                                <div class="col-xxl-6 d-flex justify-content-end" id="CardHeaderElementesInDb"></div>
+                            <div class="row d-flex align-items-center">
+                                <div class="col-xxl-6 col-6">Elemente in DB</div>
+                                <div class="col-xxl-6 col-6 d-flex justify-content-end" id="CardHeaderElementesInDb"></div>
                             </div>
                         </div>
                         <div class="card-body" id="elementsInDB">
@@ -126,14 +126,11 @@ init_page_serversides("x"); ?>
                 <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
             </div>
         </div>
-
     </div>
 </div>
 
 <script charset="utf-8" type="text/javascript">
     var table1;
-
-
     function init_table_elementsinDB() {
         $('#CardHeaderElementesInDb .xxx').remove();
         table1 = new DataTable('#tableElementsInDB', {
@@ -169,12 +166,10 @@ init_page_serversides("x"); ?>
                 bottomEnd: ['paging'],
             },
             initComplete: function () {
-
-                $('.dt-search label').remove();
-                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
+                $('#tableElementsInDB_wrapper .dt-search label').remove();
+                $('#tableElementsInDB_wrapper .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
             }
         });
-
 
         $('#tableElementsInDB tbody').on('click', 'tr', function () {
             $("#deviceParametersInDB").hide();
@@ -182,6 +177,7 @@ init_page_serversides("x"); ?>
             $("#deviceLieferanten").hide();
             table1.$('tr.info').removeClass('info');
             $(this).addClass('info');
+
             let elementID = table1.row($(this)).data()[0];
             document.getElementById("bezeichnung").value = table1.row($(this)).data()[2];
             document.getElementById("kurzbeschreibungModal").value = table1.row($(this)).data()[3];
@@ -223,8 +219,6 @@ init_page_serversides("x"); ?>
     }
 
     $(document).ready(function () {
-
-
         init_table_elementsinDB();
     });
 

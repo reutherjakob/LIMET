@@ -30,6 +30,32 @@ while ($row = $result->fetch_assoc()) {
 }
 echo "</tbody></table>  ";
 $mysqli->close();
-
-
 ?>
+
+<!-- Modal zum Ändern eines Elements -->
+<div class='modal fade' id='changeElementModal' role='dialog'>
+    <div class='modal-dialog modal-md'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h4 class='modal-title'>Element ändern</h4>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
+            </div>
+            <div class='modal-body' id='mbody'>
+                <form role="form">
+                    <div class="form-group">
+                        <label for="bezeichnung">Bezeichnung:</label>
+                        <input type="text" class="form-control" id="bezeichnung" placeholder="Type"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="kurzbeschreibungModal">Kurzbeschreibung:</label>
+                        <textarea class="form-control" rows="5" id="kurzbeschreibungModal"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class='modal-footer'>
+                <input type='button' id='saveElement' class='btn btn-warning btn-sm' value='Speichern'>
+                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,44 +1,26 @@
-<?php
-session_start();
-?>
-
-<!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml">
-
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type" /></head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <title>getPossibleDevParams</title></head>
 <body>
 <?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+include "_utils.php";
+check_login();
+$mysqli = utils_connect_sql();
 
-<?php        
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	
-	
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    printf("Error loading character set utf8: %s\n", $mysqli->error);
-	    exit();
-	} 
-	    
-			
-	$sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung, tabelle_parameter_kategorie.Kategorie 
+$sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung, tabelle_parameter_kategorie.Kategorie 
 			  					FROM tabelle_parameter, tabelle_parameter_kategorie 
 			  					WHERE tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie 
 								AND tabelle_parameter.idTABELLE_Parameter NOT IN 
 								(SELECT tabelle_geraete_has_tabelle_parameter.TABELLE_Parameter_idTABELLE_Parameter
                                                                 FROM tabelle_geraete_has_tabelle_parameter
-                                                                WHERE (((tabelle_geraete_has_tabelle_parameter.TABELLE_Geraete_idTABELLE_Geraete)=".$_SESSION["deviceID"]."))) 
-								ORDER BY tabelle_parameter_kategorie.Kategorie;";	
-						
-        $result = $mysqli->query($sql);
+                                                                WHERE (((tabelle_geraete_has_tabelle_parameter.TABELLE_Geraete_idTABELLE_Geraete)=" . $_SESSION["deviceID"] . "))) 
+								ORDER BY tabelle_parameter_kategorie.Kategorie;";
 
-        echo "<table class='table table-striped table-sm' id='tablePossibleDeviceParameters'  >
+$result = $mysqli->query($sql);
+
+echo "<table class='table table-striped table-sm' id='tablePossibleDeviceParameters'>
         <thead><tr>
         <th>ID</th>
         <th>Kategorie</th>
@@ -46,71 +28,83 @@ if(!isset($_SESSION["username"]))
         </tr></thead>
         <tbody>";
 
-        while($row = $result->fetch_assoc()) {
-            echo "<tr>";
-            echo "<td><button type='button' id='".$row["idTABELLE_Parameter"]."' class='btn btn-outline-success btn-sm' value='addParameter'><i class='fas fa-plus'></i></button></td>";
-            echo "<td>".$row["Kategorie"]."</td>";
-            echo "<td>".$row["Bezeichnung"]."</td>";
-            echo "</tr>";
+while ($row = $result->fetch_assoc()) {
+    echo "<tr>";
+    echo "<td><button type='button' id='" . $row["idTABELLE_Parameter"] . "' class='btn btn-outline-success btn-sm' value='addDEVICEParameter'><i class='fas fa-plus'></i></button></td>";
+    echo "<td>" . $row["Kategorie"] . "</td>";
+    echo "<td>" . $row["Bezeichnung"] . "</td>";
+    echo "</tr>";
 
-        }
+}
 
-        echo "</tbody></table>";
+echo "</tbody></table>";
 
-        $mysqli ->close();
+$mysqli->close();
 ?>
-	
+
 <script>
-    
-    
-    $('#tablePossibleDeviceParameters').DataTable( {
-            "paging": false,
-            "searching": true,
-            "info": false,
-            "order": [[ 1, "asc" ]],
-            "columnDefs": [
+
+
+    new DataTable('#tablePossibleDeviceParameters', {
+        paging: false,
+        searching: true,
+        info: false,
+        order: [[1, "asc"]],
+        columnDefs: [
             {
-                "targets": [ 0 ],
-                "visible": true,
-                "searchable": false
+                targets: [0],
+                visible: true,
+                searchable: false
             }
         ],
-        "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
-        "scrollY": '20vh',
-        "scrollCollapse": true   	 
-     } );  
-     
-     //Parameter zu Gerät hinzufügen
-    $("button[value='addParameter']").click(function(){
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+        },
+        scrollY: '20vh',
+        scrollCollapse: true,
+        layout: {
+            topStart: null,
+            topEnd: 'search',
+            bottomStart: null,
+            bottomEnd: null
+        }, initComplete: function () {
+            $('#possibleDeviceParametersCH .xxx').remove();
+            $('#possibleDeviceParameters .dt-search label').remove();
+            $('#possibleDeviceParameters .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx float-right").appendTo('#possibleDeviceParametersCH');
+        }
+    });
+
+    //Parameter zu Gerät hinzufügen
+    $("button[value='addDEVICEParameter']").click(function () {
         $('#variantenParameterCh .xxx').remove();
-        var id = this.id;
-        if(id !== ""){
+        let id = this.id;
+        if (id !== "") {
             $.ajax({
-                url : "addParameterToDevice.php",
-                data:{"parameterID":id},
+                url: "addParameterToDevice.php",
+                data: {"parameterID": id},
                 type: "GET",
-                success: function(data){
-                    alert(data);
+                success: function (data) {
+                    makeToaster(data, true);
                     $.ajax({
-                        url : "getDeviceParameters.php",
+                        url: "getDeviceParameters.php",
                         type: "GET",
-                        success: function(data){
+                        success: function (data) {
                             $("#deviceParameters").html(data);
                             $.ajax({
-                                url : "getPossibleDeviceParameters.php",
+                                url: "getPossibleDeviceParameters.php",
                                 type: "GET",
-                                success: function(data){
-                                    $("#possibleDeviceParameters").html(data); 
-                                }                                 
-                            }); 
-                            
-                        } 
-                    }); 
-                } 
-            }); 
-        }		
-    });   
-     
+                                success: function (data) {
+                                    $("#possibleDeviceParameters").html(data);
+                                }
+                            });
+
+                        }
+                    });
+                }
+            });
+        }
+    });
+
 
 </script>
 

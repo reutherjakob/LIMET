@@ -53,8 +53,8 @@ check_login();
 <div id="limet-navbar"></div> <!-- Container für Navbar -->
 <div class="container-fluid">
     <div class="mt-4 card">
-        <div class="card-header" id="CardHEaderRäumeImProjekt">Räume im Projekt
-            <button type='button' id='addRoomButton' class='btn btn-success btn-sm mb-2' value='addRoom'
+        <div class="card-header" id="CardHEaderRäumeImProjekt">Räume im Projekt &ensp; [Diese Seite ist veraltet, bitte Bauangaben neu nutzen und mitteilen, dort ein feature fehlt.] &ensp;
+             <button type='button' id='addRoomButton' class='btn btn-success btn-sm mb-2' value='addRoom'
                     data-toggle='modal' data-target='#changeRoomModal'>Raum hinzufügen
                 <i class='far fa-plus-square'></i></button>
             <div id="dt-buttons" class="float-right"></div>

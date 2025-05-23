@@ -20,7 +20,14 @@ $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichn
         FROM tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.TABELLE_Parameter_idTABELLE_Parameter 
         WHERE tabelle_projekt_elementparameter.TABELLE_Elemente_idTABELLE_Elemente = " . $_SESSION["elementID"] . " AND tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte = " . $_SESSION["projectID"] . " 
         AND tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten = " . $_GET["variantenID"] . ") 
-        ORDER BY tabelle_parameter_kategorie.Kategorie;";
+         ORDER BY 
+            CASE 
+                WHEN tabelle_parameter.Bezeichnung = 'Nennleistung' 
+                AND tabelle_parameter_kategorie.Kategorie = 'Elektro' THEN 0 
+                ELSE 1 
+            END,
+            tabelle_parameter_kategorie.Kategorie,
+            tabelle_parameter.Bezeichnung;";
 
 $result = $mysqli->query($sql);
 
@@ -101,6 +108,7 @@ $mysqli->close();
                         data: {"variantenID": variantenID},
                         type: "GET",
                         success: function (data) {
+                            $('#variantenParameterCh .xxx').remove();
                             $("#variantenParameter").html(data);
                             $.ajax({
                                 url: "getPossibleVarianteParameters.php",
@@ -118,6 +126,5 @@ $mysqli->close();
         }
     });
 </script>
-
 </body>
 </html>

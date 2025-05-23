@@ -53,8 +53,6 @@ $(document).ready(function () {
     init_filter();
     handleCheckboxChange();
     add_room_modal();
-
-
 });
 
 function add_MT_rel_filter(location, table) {
@@ -73,7 +71,6 @@ function add_entfallen_filter(location, table) {
         let filterValue = $(this).val();
         table.column('Entfallen:name').search(filterValue).draw();
     });
-
 }
 
 function init_filter() {
@@ -256,7 +253,7 @@ function init_dt() {
             }
             //,url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
         },
-        select: "single",
+        select: "os",
         fixedColumns: {start: 2},
         fixedHeader: true,
         keys: true,
@@ -305,7 +302,7 @@ function restoreDefaults() {
     setCookie('settings_show_btn_grp_labels', "true", Cookie_aktiv_tage);
     setCookie('settings_save_state_4all_projects', "false", Cookie_aktiv_tage);
     setCookie('settings_save_state' + projectID, "false", Cookie_aktiv_tage);
-    setCookie('settings_save_edit_cbx', "false", Cookie_aktiv_tage);
+    setCookie('settings_save_edit_cbx', "true", Cookie_aktiv_tage);
     table.state.clear();
     location.reload();
 }
@@ -343,10 +340,10 @@ function loadSettings() {
     document.getElementById('settings_save_state_4all_projects').checked = getCookieValue('settings_save_state_4all_projects');
     document.getElementById('settings_save_state').checked = getCookieValue('settings_save_state' + projectID);
     document.getElementById('settings_save_edit_cbx').checked = getCookieValue('settings_save_edit_cbx');
+    document.getElementById('checkbox_EditableTable').checked = getCookieValue('settings_save_edit_cbx');
     $('#settings_show_btn_grp_labels').change(function () {
         change_top_label_visibility($(this).is(':checked'));
     });
-
 }
 
 function saveSettings() {
@@ -387,7 +384,7 @@ function check_angaben() {
 }
 
 
-/// EDIT TABLE
+/// --- --- EDIT TABLE --- ---
 function getCase(dataIdentifier) {
     const column = columnsDefinition.find(column => column.data === dataIdentifier);
     if (column && column.case) {
@@ -430,8 +427,8 @@ function html_2_plug_into_edit_cell(dataIdentifier) {
     } else if (getCase(dataIdentifier) === "abd") {
         return ` <select class="form-control form-control-sm" id="${dataIdentifier}_dropdowner">
                                         <option value="0"${cellText === '0' ? ' selected' : ''}> kein Anspruch </option>
-                                        <option value="1"${cellText === '1' ? ' selected' : ''}> abdunkelbar </option>
-                                        <option value="2"${cellText === '2' ? ' selected' : ''}> vollverdunkelbar </option>
+                                        <option value="1"${cellText === '1' ? ' selected' : ''}> vollverdunkelbar</option>
+                                        <option value="2"${cellText === '2' ? ' selected' : ''}> abdunkelbar</option>
                                     </select>   `;
     } else {
         return `<input class="form-control form-control-sm" id="CellInput" onclick="this.select()" type="text" value="${cellText}">`;
@@ -606,19 +603,6 @@ function toggleColumns(table, startColumn, endColumn, button_name) {
 
 }
 
-// function toggleColumnsold(table, startColumn, endColumn, button_name) {
-//     console.time('toggleColumnsOld'); // Start timer for old version
-//
-//     const columns = table.columns().indexes();
-//     let vis = !table.column(columns[endColumn]).visible();
-//     for (let i = startColumn; i <= endColumn; i++) {
-//         table.column(columns[i]).visible(vis);
-//     }
-//     toggle_btn_classes(button_name, vis);
-//
-//     console.timeEnd('toggleColumnsOld'); // End timer for old version
-// }
-
 function toggle_btn_classes(button_name, vis) {
 
     if (button_name === 'All') {
@@ -655,7 +639,6 @@ function toggle_btn_classes(button_name, vis) {
     }
 }
 
-
 function init_showRoomElements_btn() {
     $("#showRoomElements").html("<i class='fa fa-caret-right'></i>");
     $("#showRoomElements").click(function () {
@@ -671,8 +654,6 @@ function init_showRoomElements_btn() {
     });
 }
 
-
-//SAVEING/CPYNG Rooms
 function save_changes(RaumID, ColumnName, newData, raumname) {
     $.ajax({
         url: "saveRoomProperties.php",

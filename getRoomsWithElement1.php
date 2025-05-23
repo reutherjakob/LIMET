@@ -19,8 +19,10 @@ if (!function_exists('utils_connect_sql')) {
     include "_utils.php";
 }
 check_login();
-$mysqli = utils_connect_sql();
 
+$_SESSION["variantenID"] = filter_input(INPUT_GET, 'variantenID');
+
+$mysqli = utils_connect_sql();
 $sql = "SELECT
     tabelle_räume_has_tabelle_elemente.id,
     tabelle_räume.idTABELLE_Räume,
@@ -79,7 +81,6 @@ echo "<table class='table table-striped table-bordered table-sm  table-hover bor
 	</tr></thead><tbody>";
 
 while ($row = $result->fetch_assoc()) {
-
     echo "<tr>";
     echo "<td data-order='" . htmlspecialchars($row["id"], ENT_QUOTES, 'UTF-8') . "'>" . $row["id"] . "</td>";
     if ($_SESSION["projectName"] === "GCP") {
@@ -87,7 +88,6 @@ while ($row = $result->fetch_assoc()) {
     } else {
         echo "<td data-order='" . htmlspecialchars($row["Raumnr"] ?? "", ENT_QUOTES, 'UTF-8') . "'>" . $row["Raumnr"] . "</td>";
     }
-
     echo "<td data-order='" . htmlspecialchars($row["Raumbezeichnung"] ?? "", ENT_QUOTES, 'UTF-8') . "'>" . $row["Raumbezeichnung"] . "</td>";
     echo "<td data-order='" . htmlspecialchars($row["Raumbereich Nutzer"] ?? "", ENT_QUOTES, 'UTF-8') . "'>" . $row["Raumbereich Nutzer"] . "</td>";
     echo "<td data-order='" . htmlspecialchars($row["Geschoss"] ?? "", ENT_QUOTES, 'UTF-8') . "'>" . $row["Geschoss"] . "</td>";
@@ -203,7 +203,7 @@ $mysqli->close();
                 {
                     extend: 'excel',
                     exportOptions: {
-                        columns: [3, 4, 5, 12, 13, 14, 15, 16, 17, 18, 19]
+                        columns: [1, 2, 3, 4, 5, 6, 14, 15, 16, 17, 18, 19, 20, 21]// 12,
                     },
                     text: '<i class="fas fa-file-excel me-2"></i> Excel', // Add Font Awesome icon
                     className: 'btn btn-sm btn-outline-success bg-white', // Bootstrap small
@@ -221,22 +221,15 @@ $mysqli->close();
         }
         $.fn.dataTable.ext.search.push(hideZeroFilter);
 
-
         $("#hideZeroRows").on("change", function () {
             tableRoomsWithElement.draw();
         });
 
-
         CustomPopover.init('.comment-btn', {
             onSave: function (trigger, newText) {
+                console.log("Custompopover: ", newText);
                 trigger.dataset.description = newText;
-                let row = tableRoomsWithElement.row($(trigger).closest('tr'));
-                let data = row.data();
-                data[17] = newText; // Update column 17 (0-indexed)
-                row.data(data).draw(false); // Update the row data without redrawing the table
-                // send an AJAX request to save the new text
-                let id = trigger.id;   // = tabelle_räume_has_tabelle_elemente.id
-
+                let id = trigger.id;
                 $.ajax({
                     url: "saveRoomElementComment.php",
                     data: {
@@ -245,7 +238,6 @@ $mysqli->close();
                     },
                     type: "GET",
                     success: function (data) {
-
                         makeToaster(data.trim(), true);
                         $(".comment-btn[id='" + id + "']").attr('data-description', newText).data('description', newText);
                         if (newText !== "") {
@@ -296,7 +288,6 @@ $mysqli->close();
         }
     });
 
-
     function hideZeroFilter(settings, data, dataIndex) {
         if (settings.nTable.id !== 'tableRoomsWithElement') {
             return true;
@@ -308,9 +299,6 @@ $mysqli->close();
         amount = parseInt(amount) || 0;
         return !(hideZero && (amount === 0));
     }
-
-
 </script>
-
 </body>
 </html>

@@ -31,7 +31,7 @@ if(!isset($_SESSION["username"]))
             echo "Bild von Raum entfernt!";
 	} 
 	else {
-            echo "Error: " . $sql . "<br>" . $mysqli->error;
+            echo "Error: " . $sqlDelete . "<br>" . $mysqli->error;
 	}
 
 	$mysqli ->close();

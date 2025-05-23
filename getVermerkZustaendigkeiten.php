@@ -1,7 +1,8 @@
 <!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <title>getVermerkZustaendigkeiten</title>
 </head>
 <body>
 
@@ -17,7 +18,7 @@ $sql = "SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen, tabelle_ansp
                 WHERE (((tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_Vermerke_idtabelle_Vermerke)=" . filter_input(INPUT_GET, 'vermerkID') . "));";
 $result = $mysqli->query($sql);
 
-echo "<table class='table table-striped table-sm' id='tableVermerkZustaendigkeitMembers'  >
+echo "<table class='table table-striped table-sm' id='tableVermerkZustaendigkeitMembers'>
         <thead><tr>
         <th>ID</th>
         <th>Name</th>
@@ -38,58 +39,67 @@ echo "</tbody></table>";
 $mysqli->close();
 ?>
 
+</body>
 <script>
-    $('#tableVermerkZustaendigkeitMembers').DataTable({
-        "paging": false,
-        "searching": true,
-        "info": false,
-        "order": [[1, "asc"]],
-        "columnDefs": [
-            {
-                "targets": [0],
-                "visible": true,
-                "searchable": false
+    $(document).ready(function () {
+        $("button[value='deleteVermerkZustaendigkeit']").click(function () {
+            let id = this.id;
+            console.log("btn pressed");
+            let vermerkID = "<?php echo filter_input(INPUT_GET, 'vermerkID') ?>";
+            if (id !== "" && vermerkID !== "") {
+                $.ajax({
+                    url: "deletePersonFromVermerkZustaendigkeit.php",
+                    data: {"ansprechpersonenID": id, "vermerkID": vermerkID},
+                    type: "GET",
+                    success: function (data) {
+                        alert(data);
+                        $.ajax({
+                            url: "getVermerkZustaendigkeiten.php",
+                            type: "GET",
+                            data: {"vermerkID": vermerkID},
+                            success: function (data) {
+                                $("#vermerkZustaendigkeit").html(data);
+                                $.ajax({
+                                    url: "getPossibleVermerkZustaendigkeiten.php",
+                                    type: "GET",
+                                    data: {"vermerkID": vermerkID},
+                                    success: function (data) {
+                                        $("#possibleVermerkZustaendigkeit").html(data);
+                                        // Neu laden der PDF-Vorschau
+                                        document.getElementById('pdfPreview').src += '';
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
             }
-        ],
-        "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
-        "scrollY": '20vh',
-        "scrollCollapse": true
-    });
+        });
 
-    $("button[value='deleteVermerkZustaendigkeit']").click(function () {
-        let id = this.id;
-        let vermerkID = "<?php echo filter_input(INPUT_GET, 'vermerkID') ?>";
-        if (id !== "" && vermerkID !== "") {
-            $.ajax({
-                url: "deletePersonFromVermerkZustaendigkeit.php",
-                data: {"ansprechpersonenID": id, "vermerkID": vermerkID},
-                type: "GET",
-                success: function (data) {
-                    alert(data);
-                    $.ajax({
-                        url: "getVermerkZustaendigkeiten.php",
-                        type: "GET",
-                        data: {"vermerkID": vermerkID},
-                        success: function (data) {
-                            $("#vermerkZustaendigkeit").html(data);
-                            $.ajax({
-                                url: "getPossibleVermerkZustaendigkeiten.php",
-                                type: "GET",
-                                data: {"vermerkID": vermerkID},
-                                success: function (data) {
-                                    $("#possibleVermerkZustaendigkeit").html(data);
-                                    // Neu laden der PDF-Vorschau
-                                    document.getElementById('pdfPreview').src += '';
-                                }
-                            });
-
-                        }
-                    });
+        $('#tableVermerkZustaendigkeitMembers').DataTable({
+            paging: false,
+            searching: true,
+            info: false,
+            order: [[1, 'asc']],
+            columnDefs: [
+                {
+                    targets: [0],
+                    visible: true,
+                    searchable: false
                 }
-            });
-        }
+            ],
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.0.0/i18n/de-DE.json'
+            },
+            scrollY: '20vh',
+            scrollCollapse: true,
+            initComplete: function () {
+                $('#vermerkZustaendigkeitCH .xxx').remove();
+                $('#vermerkZustaendigkeit .dt-search label').remove();
+                $('#vermerkZustaendigkeit .dt-search').children().removeClass("form-control form-control-sm").addClass("xxx btn btn-sm btn-outline-dark").appendTo('#vermerkZustaendigkeitCH');
+            }
+        });
     });
 
 </script>
-</body>
 </html>

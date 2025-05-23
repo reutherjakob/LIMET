@@ -10,7 +10,9 @@
 </head>
 <body>
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 include "_format.php";
 check_login();
 
@@ -18,9 +20,20 @@ $mysqli = utils_connect_sql();
 if ($_GET["deviceID"] != "") {
     $_SESSION["deviceID"] = $_GET["deviceID"];
 }
-$sql = "SELECT tabelle_preise.Datum, tabelle_preise.Quelle, tabelle_preise.Menge, tabelle_preise.Preis, tabelle_preise.Nebenkosten, tabelle_projekte.Interne_Nr, tabelle_projekte.Projektname, tabelle_lieferant.Lieferant
-                    FROM tabelle_lieferant RIGHT JOIN (tabelle_preise LEFT JOIN tabelle_projekte ON tabelle_preise.TABELLE_Projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte) ON tabelle_lieferant.idTABELLE_Lieferant = tabelle_preise.tabelle_lieferant_idTABELLE_Lieferant
-                    WHERE (((tabelle_preise.TABELLE_Geraete_idTABELLE_Geraete)=" . $_SESSION["deviceID"] . "));";
+$sql = "SELECT tabelle_preise.Datum,
+       tabelle_preise.Quelle,
+       tabelle_preise.Menge,
+       tabelle_preise.Preis,
+       tabelle_preise.Nebenkosten,
+       tabelle_projekte.Interne_Nr,
+       tabelle_projekte.Projektname,
+       tabelle_projekte.Preisbasis,
+       tabelle_lieferant.Lieferant
+FROM tabelle_lieferant
+         RIGHT JOIN (tabelle_preise LEFT JOIN tabelle_projekte
+                     ON tabelle_preise.TABELLE_Projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte)
+                    ON tabelle_lieferant.idTABELLE_Lieferant = tabelle_preise.tabelle_lieferant_idTABELLE_Lieferant
+WHERE (((tabelle_preise.TABELLE_Geraete_idTABELLE_Geraete) = " . $_SESSION["deviceID"] . "));";
 
 $result = $mysqli->query($sql);
 echo "<table class='table table-striped table-sm' id='tableDevicePrices'>
@@ -32,6 +45,7 @@ echo "<th>Datum</th>
 		<th>NK/Stk</th>
                 <th>Projekt</th>
                 <th>Lieferant</th>
+                <th>Preisbasis</th>
 	</tr></thead><tbody>";
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
@@ -43,6 +57,7 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . format_money($row["Nebenkosten"]) . "</td>";
     echo "<td>" . $row["Projektname"] . "</td>";
     echo "<td>" . $row["Lieferant"] . "</td>";
+    echo "<td>" . $row["Preisbasis"] . "</td>";
     echo "</tr>";
 }
 echo "</tbody></table>";
@@ -146,7 +161,11 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
         "order": [[0, "desc"]],
         //"pagingType": "simple_numbers",
         //"lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
-        "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json", "decimal": ",", "thousands":"."},
+        "language": {
+            "url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
+            "decimal": ",",
+            "thousands": "."
+        },
         "scrollY": '20vh',
         "scrollCollapse": true
     });
@@ -160,7 +179,7 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
 
         var nk = $("#nk").val();
         if (nk.toLowerCase().endsWith('k')) {
-            nk= nk.slice(0, -1) + '000';
+            nk = nk.slice(0, -1) + '000';
         }
         nk.replace(/,/g, '.').replace(/[^0-9.]/g, '');
 
@@ -169,7 +188,7 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
 
         let ep = $("#ep").val();
         if (ep.toLowerCase().endsWith('k')) {
-            ep= ep.slice(0, -1) + '000';
+            ep = ep.slice(0, -1) + '000';
         }
         ep.replace(/,/g, '.').replace(/[^0-9.]/g, '');
 

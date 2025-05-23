@@ -1,5 +1,7 @@
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 check_login();
 $mysqli = utils_connect_sql();
 
@@ -51,29 +53,49 @@ foreach ($formFields as $field) {
 
 echo "
 <div class='form-group row'><label class='control-label col-xxl-2' for='zustaendigkeit'> Zuständigkeit</label>
-    <div class='col-xxl-8'><select class='form-control form-control-sm' id='zustaendigkeit' name='zustaendigkeit'
+    <div class='col-xxl-7'><select class='form-control form-control-sm' id='zustaendigkeit' name='zustaendigkeit'
                                   required> $zustaendigkeitOptions</select></div>
+      <div class='col-xxl-1'>
+            <button type='button' 
+                    class='btn btn-outline-success ' 
+                    id='addZustaendigkeitBtn' title='Zuständigkeit hinzufügen'>
+                    <i class='fas fa-plus'></i>
+            </button> 
+      </div> 
 </div>
-<div class='form-group row'><label class='control-label col-xxl-2' for='organisation'> Organisation</label>
-    <div class='col-xxl-8'><select class='form-control form-control-sm' id='organisation' name='organisation' required>
-            $organisationOptions</select></div>
-</div>
-<div class='form-group row'>
-    <div class='col-xxl-offset-2 col-xxl-8'><input type='submit' id='addPersonToProjectButton'
-                                                 class='btn btn-success btn-sm' value='Person zu Projekt hinzufügen'>
-    </div></div></form > ";
-
-
+<div class='form-group inline row'><label class='control-label col-xxl-2' for='organisation'> Organisation</label>
+    <div class='col-xxl-7'>
+    <select class='form-control form-control-sm' id='organisation' name='organisation' required>  $organisationOptions</select>  
+    </div>
+         <div class='col-xxl-1'>
+            <button type='button' 
+                    class='btn btn-outline-success' 
+                    id='addOrganisationBtn' title='Organisation hinzufügen'>
+                    <i class='fas fa-plus'></i>
+            </button> 
+        </div>
+    <div class='form-group row'>
+        <div class='col-xxl-2'></div>
+                <div class='col-xxl-8'>
+            <input type='submit' id='addPersonToProjectButton'
+             class='btn btn-success btn-sm mt-1 ms-1' value='Person zu Projekt hinzufügen'>
+        </div>
+    </div>
+    </div>
+    </form> ";
 $mysqli->close();
+
+include "modal_addOrganisationAndZustaendigkeit.php";
 ?>
+
+<script src="_utils.js"></script>
+<script src="createNewOrganisationAndZusändigkeit.js"></script>
 
 <script>
     $(document).ready(function () {
         $("#addPersonForm").submit(function (e) {
             e.preventDefault();
-
             let formData = $(this).serialize();
-
             $.ajax({
                 url: "addPersonToProject.php",
                 data: formData,
@@ -88,4 +110,5 @@ $mysqli->close();
             });
         });
     });
+
 </script>

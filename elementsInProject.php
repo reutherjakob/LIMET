@@ -27,8 +27,7 @@
     <div class="mt-4 card">
         <div class="card-header">
             <div class="row d-flex align-items-center justify-content-between">
-                <div class="col-2">Elemente im
-                    Projekt
+                <div class="col-2"><strong> Elemente im Projekt</strong>
                 </div>
                 <div class="col-10 d-flex align-items-center justify-content-end" id="target_div">
                     <div class="me-4 d-flex " id="sbdiv"></div>
@@ -240,7 +239,7 @@ ORDER BY tabelle_elemente.ElementID;";
                 paging: true,
                 select: true,
                 pagingType: 'simple',
-                lengthChange: false,
+                lengthChange: true,
                 pageLength: 10,
                 order: [[2, 'asc']],
                 columnDefs: [
@@ -260,8 +259,8 @@ ORDER BY tabelle_elemente.ElementID;";
                 stateSave: false,
                 layout: {
                     topStart: null,
-                    topEnd: ['buttons', 'pageLength', 'search'],
-                    bottomStart: 'info',
+                    topEnd: ['buttons',  'search'],
+                    bottomStart: ['info','pageLength'],
                     bottomEnd: 'paging'
                 },
                 buttons: [
@@ -275,13 +274,13 @@ ORDER BY tabelle_elemente.ElementID;";
                     }
                 ],
                 compact: true,
-                initComplete: async function () {
+                initComplete: function () {
                     $('.dt-search label').remove();
                     $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-dark").appendTo('#target_div');
                     setTimeout(function () {
                         tableElementsInProject.buttons().container().appendTo('#target_div .btn-group');
                         new $.fn.dataTable.Buttons(tableElementsInProject, {buttons: searchbuilder}).container().appendTo('#sbdiv');
-                    }, 200);
+                    }, 100);
 
                 }
             });
@@ -398,6 +397,7 @@ ORDER BY tabelle_elemente.ElementID;";
         $('#createElementEinbringwegePDF2').click(function () {
             window.open('/pdf_createElementEinbringwegePDFschöner.php');
         });
+
     </script>
 </body>
 </html>

@@ -27,7 +27,7 @@ $row = $result->fetch_assoc(); ?>
             <div class=' d-flex align-items-center flex-wrap'>
                 <div class='form-group d-flex align-items-center mr-2'>
                     <label for='variante'>Variante </label>
-                    <select class='form-control form-control-sm' id='variante'>
+                    <select class='form-control form-control-sm me-1 ms-1' id='variante'>
                         <?php
                         $options = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
                         $selectedID = $_SESSION["variantenID"];
@@ -74,96 +74,29 @@ $row = $result->fetch_assoc(); ?>
     <div class='row'>
         <div class="col-xxl-6">
             <div class='card'>
-                <div class='card-header' id="variantenParameterCH">
-                    Variantenparameter
+                <div class='card-header'>
+                    <div class='row'>
+                        <div class='col-xxl-10'>
+                            Variantenparameter
+                        </div>
+                        <div class="col-xxl-2 d-flex align-items-center justify-content-end "
+                             id="variantenParameterCH"></div>
+                    </div>
                 </div>
                 <div class='card-body ' id='variantenParameter'>
                     <?php
-                    $sql = "SELECT tabelle_parameter.Bezeichnung, tabelle_projekt_elementparameter.Wert,
-                                tabelle_projekt_elementparameter.Einheit, tabelle_parameter_kategorie.Kategorie,
-                                tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter
-                                FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN
-                                tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter =
-                                tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter) ON
-                                tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie =
-                                tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
-                                WHERE (((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" .
-                        $_SESSION["projectID"] . ") AND
-                                ((tabelle_projekt_elementparameter.tabelle_elemente_idTABELLE_Elemente)=" .
-                        $_SESSION["elementID"] . ") AND
-                                ((tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten)=" .
-                        $_SESSION["variantenID"] . "))
-                                ORDER BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung";
-
-                    $result = $mysqli->query($sql);
+                    include_once "getElementParameterTable.php";
+                    generate_variante_parameter_inputtable();
                     ?>
-                    <table class='table table-striped table-sm table-hover table-bordered border border-light border-5'
-                           id='tableElementParameters'>
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th>Kategorie</th>
-                            <th>Parameter</th>
-                            <th>Wert</th>
-                            <th>Einheit</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <?php
-
-                        while ($row = $result->fetch_assoc()) {
-                            echo "
-                                    <tr>";
-                            echo "
-                                        <td>
-                                            <button type='button'
-                                                    id='" . $row["tabelle_parameter_idTABELLE_Parameter"] . "'
-                                                    class='btn btn-outline-danger btn-sm' value='deleteParameter'><i
-                                                        class='fas fa-minus'></i></button>
-                                        </td>
-                                        ";
-                            echo "
-                                        <td>" . $row["Kategorie"] . "</td>
-                                        ";
-                            echo "
-                                        <td>" . $row["Bezeichnung"] . "</td>
-                                        ";
-                            echo "
-                                        <td><input type='text'
-                                                   id='wert" . $row["tabelle_parameter_idTABELLE_Parameter"] . "'
-                                                   value='" . $row["Wert"] . "' size='25'>   </td>
-                                        ";
-                            echo "
-                                        <td><input type='text'
-                                                   id='einheit" . $row["tabelle_parameter_idTABELLE_Parameter"] . "'
-                                                   value='" . $row["Einheit"] . "' size='25'>  </td>
-                                        ";
-                            echo "
-                                        <td>
-                                            <button type='button'
-                                                    id='" . $row["tabelle_parameter_idTABELLE_Parameter"] . "'
-                                                    class='btn btn-warning btn-sm' value='saveParameter'><i
-                                                        class='far fa-save'></i></button>
-                                        </td>
-                                        ";
-                            echo "
-                                    </tr>
-                                    ";
-                        } ?>
-                        </tbody>
-                    </table>
-
                 </div>
             </div>
-
         </div>
 
 
         <div class='col-xxl-6'>
             <div class='card'>
-                <div class='card-header d-flex justify-content-between' id='mglParameterCardHeader'>Mögliche
-                    Parameter
+                <div class='card-header d-flex justify-content-between' id='mglParameterCardHeader'>
+                    Mögliche Parameter
                 </div>
                 <div class='card-body ' id='possibleVariantenParameter'>
                     <?php $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung,
@@ -182,11 +115,17 @@ $row = $result->fetch_assoc(); ?>
                         $_SESSION["projectID"] . " AND
                                 tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten = " .
                         $_SESSION["variantenID"] . ")
-                                ORDER BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung;";
+                                ORDER BY 
+                                CASE 
+                                    WHEN tabelle_parameter.Bezeichnung = 'Nennleistung' 
+                                    AND tabelle_parameter_kategorie.Kategorie = 'Elektro' THEN 0 
+                                    ELSE 1 
+                                END,
+                                tabelle_parameter_kategorie.Kategorie,
+                                tabelle_parameter.Bezeichnung;";
 
                     $result = $mysqli->query($sql);
-                    echo "
-                                <table class='table table-striped table-sm table-hover table-bordered border border-5 border-light' id='tablePossibleElementParameters'                             >
+                    echo "<table class='table table-striped table-sm table-hover table-bordered border border-5 border-light' id='tablePossibleElementParameters'>
                                     <thead>
                                     <tr>
                                         <th> <i class='fas fa-plus'></i> </th>
@@ -195,29 +134,18 @@ $row = $result->fetch_assoc(); ?>
                                     </tr>
                                     </thead>
                                     <tbody>";
+
                     while ($row = $result->fetch_assoc()) {
-                        echo "
-                                    <tr>";
-                        echo "
-                                        <td>
-                                            <button type='button' id='" . $row["idTABELLE_Parameter"] . "'
-                                                    class='btn btn-outline-success btn-sm' value='addParameter'><i
-                                                        class='fas fa-plus'></i></button>
-                                        </td>
-                                        ";
-                        echo "
-                                        <td>" . $row["Kategorie"] . "</td>
-                                        ";
-                        echo "
-                                        <td>" . $row["Bezeichnung"] . "</td>
-                                        ";
-                        echo "
-                                    </tr>
-                                    ";
+                        echo "<tr>";
+                        echo "<td> <button type='button' id='" . $row["idTABELLE_Parameter"] . "'
+                              class='btn btn-outline-success btn-sm' value='addParameter'>
+                              <i class='fas fa-plus'></i></button></td>";
+                        echo "<td>" . $row["Kategorie"] . "</td> ";
+                        echo "<td>" . $row["Bezeichnung"] . "</td>";
+                        echo "</tr> ";
                     }
-                    echo "
-                                    </tbody>
-                                </table> "; ?>
+
+                    echo " </tbody> </table> "; ?>
                 </div>
             </div>
         </div>
@@ -239,10 +167,9 @@ $row = $result->fetch_assoc(); ?>
                 $sql = "SELECT tabelle_varianten.Variante, tabelle_projekt_varianten_kosten_aenderung.kosten_alt, tabelle_projekt_varianten_kosten_aenderung.kosten_neu, tabelle_projekt_varianten_kosten_aenderung.timestamp, tabelle_projekt_varianten_kosten_aenderung.user
 							FROM tabelle_varianten INNER JOIN tabelle_projekt_varianten_kosten_aenderung ON tabelle_varianten.idtabelle_Varianten = tabelle_projekt_varianten_kosten_aenderung.variante
 							WHERE (((tabelle_projekt_varianten_kosten_aenderung.projekt)=" . $_SESSION["projectID"] . ") AND ((tabelle_projekt_varianten_kosten_aenderung.element)=" . $_SESSION["elementID"] . "))
-							ORDER BY tabelle_projekt_varianten_kosten_aenderung.timestamp DESC;";
+							ORDER BY tabelle_varianten.Variante, tabelle_projekt_varianten_kosten_aenderung.timestamp DESC;";
 
                 $result = $mysqli->query($sql);
-
                 echo "<table class='table table-striped table-sm' id='tableVariantenCostsOverTime'>
 						<thead><tr>
 						<th>Variante</th>
@@ -335,6 +262,7 @@ $row = $result->fetch_assoc(); ?>
 </div>
 
 <script src="_utils.js"></script>
+<script src="saveElementParameters.js"></script>
 <script>
     var tablePossibleElementParameters;
 
@@ -348,7 +276,7 @@ $row = $result->fetch_assoc(); ?>
         $('#tableElementParameters').DataTable({
             select: true,
             searching: true,
-            info: true,
+            pagingType: "simple",
             order: [[1, 'asc']],
             columnDefs: [
                 {
@@ -371,9 +299,9 @@ $row = $result->fetch_assoc(); ?>
             },
             scrollX: true,
             initComplete: function () {
-                 $('#variantenParameterCh .xxx').remove();
-                 $('#variantenParameter .dt-search label').remove();
-                 $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#variantenParameterCH');
+                $('#variantenParameterCh .xxx').remove();
+                $('#variantenParameter .dt-search label').remove();
+                $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#variantenParameterCH');
             }
         });
 
@@ -381,7 +309,6 @@ $row = $result->fetch_assoc(); ?>
             select: true,
             searching: true,
             info: false,
-            order: [[1, 'asc']],
             columnDefs: [
                 {
                     targets: [0],
@@ -402,10 +329,17 @@ $row = $result->fetch_assoc(); ?>
                 bottomEnd: ['paging', 'pageLength']
             },
             scrollX: true,
-            initComplete: function (settings, json) {
+            initComplete: function () {
                 $('#mglParameterCardHeader .xxx').remove();
                 $('#possibleVariantenParameter .dt-search label').remove();
                 $('#possibleVariantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#mglParameterCardHeader');
+            }
+        });
+
+        tablePossibleElementParameters.rows().every(function () {
+            let data = this.data();
+            if (data[1].trim() === 'Elektro' && data[2].trim() === 'Nennleistung') {
+                this.moveTo(0);
             }
         });
 
@@ -413,7 +347,6 @@ $row = $result->fetch_assoc(); ?>
             select: true,
             searching: true,
             info: false,
-            order: [[1, 'asc']],
             columnDefs: [
                 {
                     targets: [0],
@@ -469,6 +402,7 @@ $row = $result->fetch_assoc(); ?>
                                         data: {"variantenID": variantenID},
                                         type: "GET",
                                         success: function (data) {
+                                            $('#variantenParameterCh .xxx').remove();
                                             $("#variantenParameter").html(data);
                                             $.ajax({
                                                 url: "getPossibleVarianteParameters.php",
@@ -512,6 +446,7 @@ $row = $result->fetch_assoc(); ?>
                         data: {"variantenID": variantenID},
                         type: "GET",
                         success: function (data) {
+                            $('#variantenParameterCh .xxx').remove();
                             $("#variantenParameter").html(data);
                             $.ajax({
                                 url: "getPossibleVarianteParameters.php",
@@ -532,8 +467,8 @@ $row = $result->fetch_assoc(); ?>
 
 
     $("button[value='addParameter']").click(function () {
-        $('#variantenParameterCh .xxx').remove();
         let variantenID = $('#variante').val();
+        $('#variantenParameterCh .xxx').remove();
         let id = this.id;
         if (id !== "") {
             $.ajax({
@@ -547,6 +482,7 @@ $row = $result->fetch_assoc(); ?>
                         data: {"variantenID": variantenID},
                         type: "GET",
                         success: function (data) {
+                            $('#variantenParameterCh .xxx').remove();
                             $("#variantenParameter").html(data);
                             $.ajax({
                                 url: "getPossibleVarianteParameters.php",
@@ -566,73 +502,51 @@ $row = $result->fetch_assoc(); ?>
 
     //Parameter von Variante entfernen
     $("button[value='deleteParameter']").click(function () {
-        let variantenID = $('#variante').val();
-        let id = this.id;
-        if (id !== "") {
-            $.ajax({
-                url: "deleteParameterFromVariante.php",
-                data: {"parameterID": id, "variantenID": variantenID},
-                type: "GET",
-                success: function (data) {
-                    //		        	alert(data);
-                    makeToaster(data.trim(), false);
-                    $.ajax({
-                        url: "getVarianteParameters.php",
-                        data: {"variantenID": variantenID},
-                        type: "GET",
-                        success: function (data) {
-                            $("#variantenParameter").html(data);
-                            $.ajax({
-                                url: "getPossibleVarianteParameters.php",
-                                data: {"variantenID": variantenID},
-                                type: "GET",
-                                success: function (data) {
-                                    $("#possibleVariantenParameter").html(data);
-                                    //console.log("2", data);
-                                }
-                            });
-
-                        }
-                    });
-                }
-            });
+        if (confirm("Parameter wirklich löschen?")) {
+            $('#variantenParameterCh .xxx').remove();
+            let variantenID = $('#variante').val();
+            let id = this.id;
+            if (id !== "") {
+                $.ajax({
+                    url: "deleteParameterFromVariante.php",
+                    data: {"parameterID": id, "variantenID": variantenID},
+                    type: "GET",
+                    success: function (data) {
+                        makeToaster(data.trim(), false);
+                        $.ajax({
+                            url: "getVarianteParameters.php",
+                            data: {"variantenID": variantenID},
+                            type: "GET",
+                            success: function (data) {
+                                $('#variantenParameterCh .xxx').remove();
+                                $("#variantenParameter").html(data);
+                                $.ajax({
+                                    url: "getPossibleVarianteParameters.php",
+                                    data: {"variantenID": variantenID},
+                                    type: "GET",
+                                    success: function (data) {
+                                        $("#possibleVariantenParameter").html(data);
+                                        //console.log("2", data);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
         }
     });
 
     // Parameter ändern bzw speichern
-    $("button[value='saveParameter']").click(function () {
-        let id = this.id;
-        let wert = $("#wert" + id).val();
-        let einheit = $("#einheit" + id).val();
-        let variantenID = $('#variante').val();
 
-        if (id !== "") {
-            $.ajax({
-                url: "updateParameter.php",
-                data: {
-                    "parameterID": id,
-                    "wert": wert,
-                    "einheit": einheit,
-                    "variantenID": variantenID
-                },
-                type: "GET",
-                success: function (data) {
-                    //alert(data);
-                    makeToaster(data.trim(), true);
-                }
-            });
-        }
-
-    });
 
     // Variantenparameter übernehmen in zentrales Element
     $("#addVariantenParameterToElement").click(function () {
         const username = "  <?php echo $_SESSION["username"] ?>";
-        if (username.toLowerCase() === "reuther") {
-            const elementID = <?php echo $_SESSION["elementID"] ?>;
-            const variantenID = <?php echo $_SESSION["variantenID"] ?>;
-            console.log(elementID, variantenID);
-
+        const elementID = <?php echo $_SESSION["elementID"] ?>;
+        const variantenID = <?php echo $_SESSION["variantenID"] ?>;
+        console.log(username.trim());
+        if (username.toLowerCase().trim() === "reuther") { // } || username.toLowerCase().trim() === "fuchs") {
             $.ajax({
                 url: "addVariantenParameterToElement.php",
                 data: {"elementID": elementID, "variantenID": variantenID},

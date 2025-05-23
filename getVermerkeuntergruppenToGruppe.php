@@ -41,7 +41,7 @@ echo "</tbody></table>";
 $mysqli->close();
 ?>
 
-<body>
+</body>
 
 <!-- Modal zum Hinzufügen/Ändern einer UnterGruppe -->
 <div class='modal fade' id='changeUnterGroupModal' role='dialog' tabindex="-1">
@@ -73,8 +73,6 @@ $mysqli->close();
         </div>
     </div>
 </div>
-
-</body>
 
 <script>
     $(document).ready(function () {
@@ -200,5 +198,5 @@ $mysqli->close();
         }
     });
 </script>
-</body>
+
 </html>

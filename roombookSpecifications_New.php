@@ -167,8 +167,8 @@ init_page_serversides();
                         Projekte)</label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="settings_save_edit_cbx">
-                    <label class="form-check-label" for="settings_save_edit_cbx">Tabelle editierbar initiieren</label>
+                    <input class="form-check-input" type="checkbox" id="settings_save_edit_cbx" checked>
+                    <label class="form-check-label" for="settings_save_edit_cbx">Tabelle bearbeitbar initiieren</label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="settings_show_btn_grp_labels" checked>

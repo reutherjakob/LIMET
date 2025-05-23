@@ -269,6 +269,7 @@ init_page_serversides();
                 const roomIssues = {};
                 lines.forEach(line => {
                     const parts = line.split(':::');
+                    console.log(parts);
                     const ROOM = parts[0].trim().split('---')[0].replace(/<br\s*\/?>/g, " ");   //  console.log(ROOM);
                     const R_ID = parts[0].trim().split('---')[1];                               //  console.log(R_ID);
                     const kathegorie = parts[1].split('->')[0].trim();                          //  console.log(kathegorie);

@@ -176,7 +176,7 @@ include "_format.php";
 										</div>";
 
                             echo "<div class='form-group row'>
-									 			<label class='control-label col-xxl-2' for='elementHauptgruppe'>Hauptgruppe</label>
+									 			<label class='control-label col-xxl-2' for='elementHauptgruppe'>Hauptgr.</label>
 												<div class='col-xxl-10'>
 													<select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>
 														<option selected>Gewerk auswählen</option>

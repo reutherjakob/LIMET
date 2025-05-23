@@ -1,5 +1,5 @@
 <!-- 13.2.25: Reworked -->
-
+<body>
 <?php
 if (!function_exists('utils_connect_sql')) {
     include "_utils.php";
@@ -47,6 +47,7 @@ while ($row = $result->fetch_assoc()) {
     echo "<td id='bearbeitungsstatus" . $row["idtabelle_Vermerke"] . "' value ='" . $row['Bearbeitungsstatus'] . "'>" . $row['Bearbeitungsstatus'] . "</td>";
     echo "<td id='vermerkTyp" . $row["idtabelle_Vermerke"] . "' value ='" . $row['Vermerkart'] . "'>" . $row['Vermerkart'] . "</td>";
     echo "<td><button type='button' id=" . $row['idtabelle_Vermerke'] . " class='btn btn-outline-dark btn-sm' value='showVermerkZustaendigkeit' data-bs-toggle='modal' data-bs-target='#showVermerkZustaendigkeitModal'><i class='fas fa-users'></i></button></td>";
+    //
     echo "<td id='lot" . $row["idtabelle_Vermerke"] . "' value ='" . $row['tabelle_lose_extern_idtabelle_Lose_Extern'] . "'>" . $row['tabelle_lose_extern_idtabelle_Lose_Extern'] . "</td>";
     echo "<td id='room" . $row["idtabelle_Vermerke"] . "' value ='" . $row['tabelle_räume_idTABELLE_Räume'] . "'>" . $row['tabelle_räume_idTABELLE_Räume'] . "</td>";
     echo "<td>" . $row['LosNr_Extern'] . "</td>";
@@ -55,16 +56,15 @@ while ($row = $result->fetch_assoc()) {
 }
 echo "</tbody></table>";
 ?>
-
-<body>
-
+</body>
 <!-- Modal zum Hinzufügen/Ändern eines Vermerks -->
 <div class='modal fade' id='changeVermerkModal' role='dialog'>
     <div class='modal-dialog modal-lg'>
         <div class='modal-content'>
+
             <div class='modal-header'>
                 <h4 class='modal-title'>Vermerkdaten</h4>
-                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
+                <button type='button' class='btn-close' data-bs-dismiss='modal'></button>
             </div>
             <div class='modal-body' id='vermerkMbody'>
                 <form role="form">
@@ -152,43 +152,51 @@ echo "</tbody></table>";
                     </div>
                 </form>
             </div>
+
             <div class='modal-footer'>
                 <input type='button' id='addVermerk' class='btn btn-success btn-sm' value='Hinzufügen'
                        data-bs-dismiss='modal'>
                 <input type='button' id='saveVermerk' class='btn btn-warning btn-sm' value='Speichern'
                        data-bs-dismiss='modal'>
                 <input type='button' id='deleteVermerk' class='btn btn-danger btn-sm' value='Löschen'>
-                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
+                <button type='button' class='btn btn-close btn-sm' data-bs-dismiss='modal'> </button>
             </div>
-        </div>
 
+        </div>
     </div>
 </div>
 
+
 <!-- Modal für Zustaendigkeit-->
-<div class='modal fade' id='showVermerkZustaendigkeitModal' role='dialog'>
-    <div class='modal-dialog modal-lg'>
-        <!-- Modal content-->
+<div class='modal fade' id='showVermerkZustaendigkeitModal' tabindex="-1"
+     aria-labelledby="showVermerkZustaendigkeitModallabel" aria-modal="true" role="dialog"
+     data-bs-keyboard="true">
+    <div class='modal-dialog modal-xl'>
         <div class='modal-content'>
             <div class='modal-header'>
-                <h4 class='modal-title'>Zustaendigkeiten:</h4>
-                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
-
+                <h4 class='modal-title'>Zustaendigkeiten</h4>
+                <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label="Close">
+                </button>
             </div>
             <div class='modal-body' id='showZustaendigkeitenModalBody'>
                 <div class="mt-4 card">
-                    <div class="card-header">Eingetragene Zuständigkeit:</div>
-                    <div class="card-body" id='vermerkZustaendigkeit'>
+                    <div class="card-header d-flex align-items-center justify-content-between">Eingetragene Zuständigkeit
+                        <div class="d-flex justify-content-end" id='vermerkZustaendigkeitCH'></div>
                     </div>
+                    <div class="card-body" id='vermerkZustaendigkeit'></div>
                 </div>
                 <div class="mt-4 card">
-                    <div class="card-header">Mögliche Personen:</div>
-                    <div class="card-body" id='possibleVermerkZustaendigkeit'>
+                    <div class="card-header d-flex align-items-center justify-content-between">Mögliche Personen
+                        <div class=" justify-content-end" id='possibleVermerkZustaendigkeitCH'></div>
                     </div>
+                    <div class="card-body" id='possibleVermerkZustaendigkeit'></div>
                 </div>
             </div>
             <div class='modal-footer'>
-                <button type='button' class='btn btn-default btn-sm' value='closeModal' data-bs-dismiss='modal'>
+                <small style=" float: right; font-style: italic; font-family: cursive, 'Comic Sans MS', 'Brush Script MT', serif;">
+                    Fehlt eine Person? Bei Projektbeteiligte anlegen.
+                </small>
+                <button type='button' class='btn btn-secondary btn-sm' value='closeModal' data-bs-dismiss='modal'>
                     Schließen
                 </button>
             </div>
@@ -197,6 +205,7 @@ echo "</tbody></table>";
 </div>
 
 <div class="modal fade" id="deleteVermerkModal" tabindex="-1" aria-labelledby="deleteVermerkModalLabel"
+     data-bs-keyboard="true"
      aria-modal="true" role="dialog">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -204,7 +213,7 @@ echo "</tbody></table>";
                 <h4 class="modal-title" id="deleteVermerkModalLabel">Vermerk löschen</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" id="mbody">
+            <div class="modal-body" id="Vmbody">
                 Wollen Sie den Vermerk wirklich löschen? Sämtliche Informationen gehen verloren.
             </div>
             <div class="modal-footer">
@@ -217,7 +226,7 @@ echo "</tbody></table>";
 
 
 <!-- Modal für Bild-Upload -->
-<div class='modal fade' id='uploadImageModal' role='dialog'>
+<div class='modal fade' id='uploadImageModal' role='dialog' tabindex="-1" data-bs-keyboard="true">
     <div class='modal-dialog modal-sm'>
         <!-- Modal content-->
         <div class='modal-content'>
@@ -245,15 +254,25 @@ echo "</tbody></table>";
     </div>
 </div>
 
-</body>
 
 <script charset="utf-8 " type="text/javascript">
     vermerkGruppenID = <?php echo filter_input(INPUT_GET, 'vermerkGruppenID') ?>;
     /* Inititation within DocumentationV2.php; also 4:  var vermerkID;*/
+
+
     $(document).ready(function () {
+        function decodeHtmlEntities(str) {
+            let txt = document.createElement('textarea');
+            txt.innerHTML = str;
+            return txt.value;
+        }
+
+
         document.getElementById("buttonNewVermerk").style.visibility = "visible";
         document.getElementById("buttonNewVermerkuntergruppe").style.visibility = "visible";
         $('#topDivSearch2').remove();
+        $('#showVermerkZustaendigkeitModal').appendTo('body');
+
 
         tableVermerke = new DataTable('#tableVermerke', {
             columnDefs: [
@@ -302,7 +321,7 @@ echo "</tbody></table>";
                 $('#tableVermerke tbody').on('click', 'tr', function () {
                     vermerkID = tableVermerke.row($(this)).data()[0];
                     document.getElementById("vermerkStatus").value = tableVermerke.row($(this)).data()[6];
-                    document.getElementById("vermerkText").value = tableVermerke.row($(this)).data()[2];
+                    document.getElementById("vermerkText").value = decodeHtmlEntities(tableVermerke.row($(this)).data()[2]);
                     document.getElementById("faelligkeit").value = tableVermerke.row($(this)).data()[4];
                     document.getElementById("vermerkTyp").value = tableVermerke.row($(this)).data()[7];
 
@@ -330,6 +349,25 @@ echo "</tbody></table>";
             }
         });
 
+        $('#tableVermerke tbody').on('click', "button[value='showVermerkZustaendigkeit']", function () {
+            let id = this.id;
+            $.ajax({
+                url: "getVermerkZustaendigkeiten.php",
+                type: "GET",
+                data: {"vermerkID": id},
+                success: function (data) {
+                    $("#vermerkZustaendigkeit").html(data);
+                    $.ajax({
+                        url: "getPossibleVermerkZustaendigkeiten.php",
+                        type: "GET",
+                        data: {"vermerkID": id},
+                        success: function (data) {
+                            $("#possibleVermerkZustaendigkeit").html(data);
+                        }
+                    });
+                }
+            });
+        });
         $('#faelligkeit').datepicker({
             format: "yyyy-mm-dd",
             calendarWeeks: true,
@@ -411,7 +449,6 @@ echo "</tbody></table>";
         $('#changeVermerkModal').modal('show');
     });
 
-    // Vermerk ändern/speichern
     $("#saveVermerk").click(function () {
         let room = $("#room").val();
         let los = $("#los").val();
@@ -466,7 +503,6 @@ echo "</tbody></table>";
     $("#deleteVermerkExecute").click(function () {
         $('.modal-backdrop').remove();
         $(document.body).removeClass('modal-open');
-
         let vermerkUntergruppenID = <?php echo json_encode(filter_input(INPUT_GET, 'vermerkUntergruppenID')); ?>;
         $.ajax({
             url: "deleteVermerk.php",
@@ -479,7 +515,6 @@ echo "</tbody></table>";
                     data: {"vermerkUntergruppenID": vermerkUntergruppenID, "vermerkGruppenID": vermerkGruppenID},
                     type: "GET",
                     success: function (data) {
-
                         $("#vermerke").html(data);
                         document.getElementById('pdfPreview').src += '';                        // Neu laden der PDF-Vorschau
                     }
@@ -491,26 +526,6 @@ echo "</tbody></table>";
         });
     });
 
-    $("button[value='showVermerkZustaendigkeit']").click(function () {
-        let id = this.id;
-        $.ajax({
-            url: "getVermerkZustaendigkeiten.php",
-            type: "GET",
-            data: {"vermerkID": id},
-            success: function (data) {
-                $("#vermerkZustaendigkeit").html(data);
-                $.ajax({
-                    url: "getPossibleVermerkZustaendigkeiten.php",
-                    type: "GET",
-                    data: {"vermerkID": id},
-                    success: function (data) {
-                        $("#possibleVermerkZustaendigkeit").html(data);
-                        $('#showVermerkZustaendigkeitModal').modal('show');
-                    }
-                });
-            }
-        });
-    });
 
     $("#addImage").click(function () {
         $('#uploadImageModal').modal('show');
@@ -549,7 +564,7 @@ echo "</tbody></table>";
                     ctx.drawImage(el.target, 0, 0, elem.width, elem.height);
                     //get the base64-encoded Data URI from the resize image
                     let srcEncoded = ctx.canvas.toDataURL('image/jpeg', 1);
-                    //assign it to thumb src 
+                    //assign it to thumb src
                     document.querySelector('#image').src = srcEncoded;
 
                     document.querySelector('#images_cb').src = srcEncoded;
@@ -557,7 +572,7 @@ echo "</tbody></table>";
                     convert it to a png o jpg. Also can send
                     "el.target.name" that is the file's name.*/
                     let resized = document.querySelector('#image').src;
-                    //let resized = document.getElementById("image").files; 
+                    //let resized = document.getElementById("image").files;
                     let formData = new FormData();
                     //formData.append("fileUpload", files[0]);
                     formData.append("fileUpload", resized);

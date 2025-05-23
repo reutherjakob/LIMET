@@ -38,12 +38,10 @@ check_login();
 	echo "<button id='" . $_GET["elementID"] . "' class='btn btn-outline-success' value='Elementparameter-Vergleich' data-bs-toggle='modal' data-bs-target='#elementParameterComparisonModal'> Element Parameter Vergleich</button>";
 	$mysqli ->close();
 	?>
-    
+
     <!-- Modal zum Zeigen des Parametervergleichs -->
 	  <div class='modal fade' id='elementParameterComparisonModal' role='dialog'>
 	    <div class='modal-dialog modal-lg'>
-	    
-	      <!-- Modal content-->
 	      <div class='modal-content'>
 	        <div class='modal-header'>
 	          <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
@@ -65,8 +63,6 @@ check_login();
 			paging: false,
 			searching: false,
 			info: false,
-	            //"pagingType": "simple_numbers",
-	            //"lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
 	        language: {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json", search: ""}
 	    } );
 	 } );

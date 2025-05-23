@@ -260,7 +260,7 @@ function balken($pdf, $horizontalSpacerLN, $SB)
 
 function block_label_queer($block_header_w, $pdf, $block_label, $upcoming_block_size, $block_height = 12, $SB = 390)
 {
-    $requires_newpage = $block_label != "Med.-tech." || ($block_label === "Med.-tech." && $upcoming_block_size < 275);
+    $requires_newpage = $block_label != "Med.-tech." || ($block_label === "Med.-tech." && $upcoming_block_size < 275 && $pdf->getY() > 130);
     if ($requires_newpage) {
         newpageA3($pdf, $upcoming_block_size, 275);
     }
