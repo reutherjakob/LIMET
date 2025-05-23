@@ -48,7 +48,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
 ?>
 
 <div class='modal' id='parameterOvertakeModal' role='dialog' aria-hidden="true" tabindex='-1'>
-    <div class='modal-dialog'>
+    <div class='modal-dialog modal-xxl'>
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Parameter übernehmen</h4>
@@ -328,7 +328,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
                 data: {"parameterID": id, "wert": wert, "einheit": einheit},
                 type: "GET",
                 success: function (data) {
-                    alert(data);
+                    makeToaster(data, true);
                 }
             });
         }
