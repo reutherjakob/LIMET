@@ -62,14 +62,15 @@ function generate_variante_parameter_inputtable(): void
 
     $result = $mysqli->query($sql);
 
-    echo "<table class='table table-striped table-sm table-hover table-bordered border border-light border-5' id='tableElementParameters'>
+    echo "
+    <table class='table table-striped table-sm table-hover table-bordered border border-light border-5' id='tableElementParameters'>
 	<thead><tr>
 	<th></th>
 	<th>Kategorie</th>
 	<th>Parameter</th>
 	<th>Wert</th>
 	<th>Einheit</th>
-	<th></th>
+	<th> </th>
 	</tr></thead>
 	<tbody>";
 
@@ -85,6 +86,7 @@ function generate_variante_parameter_inputtable(): void
         echo "<td><button type='button' id='" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' class='btn btn-warning btn-sm' value='saveParameter'><i class='far fa-save'></i></button></td>";
         echo "</tr>";
     }
+
 
     echo "</tbody></table>";
 

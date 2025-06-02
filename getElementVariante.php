@@ -79,8 +79,11 @@ $row = $result->fetch_assoc(); ?>
                         <div class='col-xxl-10'>
                             Variantenparameter
                         </div>
-                        <div class="col-xxl-2 d-flex align-items-center justify-content-end "
-                             id="variantenParameterCH"></div>
+                        <div class="col-xxl-2 d-flex align-items-center justify-content-end"
+                             id="variantenParameterCH">
+                            <button type='button' class='btn btn-warning btn-sm text-nowrap' value='saveAllParameter'><i
+                                        class='far fa-save'> Alle </i></button>
+                        </div>
                     </div>
                 </div>
                 <div class='card-body ' id='variantenParameter'>
@@ -275,7 +278,7 @@ $row = $result->fetch_assoc(); ?>
     });
 
     $(document).ready(function () {
-        $('#tableElementParameters').DataTable({
+        $('#tableElementParameters').DataTable({ //same as in getPossibleVarianteParameters.php
             select: true,
             searching: true,
             pagingType: "simple",
@@ -301,10 +304,11 @@ $row = $result->fetch_assoc(); ?>
             },
             scrollX: true,
             initComplete: function () {
-                $('#variantenParameterCh .xxx').remove();
-                $('#variantenParameter .dt-search label').remove();
-                $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#variantenParameterCH');
-            }
+
+                    $('#variantenParameterCH .xxx').remove();
+                    $('#variantenParameter .dt-search label').remove();
+                    $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#variantenParameterCH');
+
         });
 
         tablePossibleElementParameters = $('#tablePossibleElementParameters').DataTable({

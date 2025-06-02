@@ -17,7 +17,7 @@ generate_variante_parameter_inputtable();
 <script>
 
     $(document).ready(function () {
-        $('#tableElementParameters').DataTable({
+        $('#tableElementParameters').DataTable({ //same as in getElementVariante.php
             select: true,
             searching: true,
             info: true,
@@ -43,9 +43,11 @@ generate_variante_parameter_inputtable();
             },
             scrollX: true,
             initComplete: function () {
-                $('#variantenParameterCh .xxx').remove();
-                $('#variantenParameter .dt-search label').remove();
-                $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#variantenParameterCH');
+
+                    $('#variantenParameterCH .xxx').remove();
+                    $('#variantenParameter .dt-search label').remove();
+                    $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").prependTo('#variantenParameterCH');
+
             }
         });
     });

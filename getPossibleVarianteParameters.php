@@ -56,6 +56,7 @@ $mysqli->close();
 <script>
 
     $(document).ready(function () {
+
         tablePossibleElementParameters = null;
         tablePossibleElementParameters = $('#tablePossibleElementParameters').DataTable({
             select: true,

@@ -205,7 +205,9 @@
     <div class="col-xxl-4">
         <div class="mt-4 card">
             <div class="card-header" id="variantenParameterCH">Variantenparameter</div>
-            <div class="card-body" id="variantenParameter"></div>
+            <div class="card-body" id="variantenParameter">
+
+            </div>
         </div>
         <div class="mt-4 card">
             <div class="card-header">Bestandsdaten</div>
