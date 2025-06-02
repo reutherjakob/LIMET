@@ -1,49 +1,49 @@
 <?php
-session_start();
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
+check_login();
 
-function br2nl($string){
-$return= str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $string);
-return $return;
+$mysqli = utils_connect_sql();
+
+// Sanitize and validate inputs
+$projectID   = intval($_SESSION["projectID"]);
+$elementID   = intval($_SESSION["elementID"]);
+$parameterID = intval($_GET["parameterID"]);
+$variantenID = intval($_GET["variantenID"]);
+$wert        = $mysqli->real_escape_string($_GET["wert"] ?? '');
+$einheit     = $mysqli->real_escape_string($_GET["einheit"] ?? '');
+
+// Use prepared statements for security
+$sql = "UPDATE `LIMET_RB`.`tabelle_projekt_elementparameter`
+        SET `Wert` = ?, `Einheit` = ?
+        WHERE `tabelle_projekte_idTABELLE_Projekte` = ?
+        AND `tabelle_elemente_idTABELLE_Elemente` = ?
+        AND `tabelle_parameter_idTABELLE_Parameter` = ?
+        AND `tabelle_Varianten_idtabelle_Varianten` = ?";
+
+$stmt = $mysqli->prepare($sql);
+if (!$stmt) {
+    die("Error preparing statement: " . $mysqli->error);
 }
 
-?>
+$stmt->bind_param("ssiiii", $wert, $einheit, $projectID, $elementID, $parameterID, $variantenID);
+$success = $stmt->execute();
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+if ($success) {
+    // Fetch parameter Bezeichnung
+    $sqlBez = "SELECT `Bezeichnung` FROM `tabelle_parameter` WHERE `idTABELLE_Parameter` = ?";
+    $stmtBez = $mysqli->prepare($sqlBez);
+    $stmtBez->bind_param("i", $parameterID);
+    $stmtBez->execute();
+    $stmtBez->bind_result($bezeichnung);
+    $stmtBez->fetch();
+    $stmtBez->close();
 
-<?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	if ($mysqli ->connect_error) {
-	    die("Connection failed: " . $mysqli->connect_error);
-	}
-	
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    echo "Error loading character set utf8: " . $mysqli->error;
-	    exit();
-	} 
-		
-	
-	$sql = "UPDATE `LIMET_RB`.`tabelle_projekt_elementparameter`
-			SET
-			`Wert` = '".$_GET["wert"]."',
-			`Einheit` = '".$_GET["einheit"]."'
-			WHERE `tabelle_projekte_idTABELLE_Projekte`=".$_SESSION["projectID"]."
-			AND `tabelle_elemente_idTABELLE_Elemente`=".$_SESSION["elementID"]."
-			AND `tabelle_parameter_idTABELLE_Parameter`=".$_GET["parameterID"]."
-			AND `tabelle_Varianten_idtabelle_Varianten`=".$_GET["variantenID"].";";
+    echo "Parameter <strong>" . htmlspecialchars($bezeichnung) . "</strong> erfolgreich aktualisiert!";
+} else {
+    echo "Fehler beim Aktualisieren des Parameters: " . $stmt->error;
+}
 
-	if ($mysqli ->query($sql) === TRUE) {
-	    echo "Parameter erfolgreich aktualisiert!";
-	} else {
-	    echo "Error: " . $sql . "<br>" . $mysqli->error;
-	}
-	
-	$mysqli ->close();	
-					
-?>
+$stmt->close();
+$mysqli->close();
