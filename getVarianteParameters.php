@@ -44,48 +44,50 @@ generate_variante_parameter_inputtable();
             scrollX: true,
             initComplete: function () {
 
-                    $('#variantenParameterCH .xxx').remove();
-                    $('#variantenParameter .dt-search label').remove();
-                    $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").prependTo('#variantenParameterCH');
+                $('#variantenParameterCH .xxx').remove();
+                $('#variantenParameter .dt-search label').remove();
+                $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").prependTo('#variantenParameterCH');
 
             }
         });
-    });
 
-    //Parameter von Variante entfernen
-    $("button[value='deleteParameter']").click(function () {
-        if (confirm("Parameter wirklich löschen?")) {
-            let variantenID = $('#variante').val();
-            let id = this.id;
-            if (id !== "") {
-                $.ajax({
-                    url: "deleteParameterFromVariante.php",
-                    data: {"parameterID": id, "variantenID": variantenID},
-                    type: "GET",
-                    success: function (data) {
-                        //  alert(data);
-                        makeToaster(data.trim(), true);
-                        $.ajax({
-                            url: "getVarianteParameters.php",
-                            data: {"variantenID": variantenID},
-                            type: "GET",
-                            success: function (data) {
-                                $('#variantenParameterCh .xxx').remove();
-                                $("#variantenParameter").html(data);
-                                $.ajax({
-                                    url: "getPossibleVarianteParameters.php",
-                                    data: {"variantenID": variantenID},
-                                    type: "GET",
-                                    success: function (data) {
-                                        $("#possibleVariantenParameter").html(data);
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
+
+        //Parameter von Variante entfernen
+        $("button[value='deleteParameter']").click(function () {
+            if (confirm("Parameter wirklich löschen?")) {
+                let variantenID = $('#variante').val();
+                let id = this.id;
+                if (id !== "") {
+                    $.ajax({
+                        url: "deleteParameterFromVariante.php",
+                        data: {"parameterID": id, "variantenID": variantenID},
+                        type: "GET",
+                        success: function (data) {
+                            //  alert(data);
+                            makeToaster(data.trim(), true);
+                            $.ajax({
+                                url: "getVarianteParameters.php",
+                                data: {"variantenID": variantenID},
+                                type: "GET",
+                                success: function (data) {
+                                    $('#variantenParameterCh .xxx').remove();
+                                    $("#variantenParameter").html(data);
+                                    $.ajax({
+                                        url: "getPossibleVarianteParameters.php",
+                                        data: {"variantenID": variantenID},
+                                        type: "GET",
+                                        success: function (data) {
+                                            $("#possibleVariantenParameter").html(data);
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
             }
-        }
+        });
+
     });
 
 

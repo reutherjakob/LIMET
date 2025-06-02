@@ -2,8 +2,6 @@ $("button[value='saveParameter']").click(function () {
     let id = this.id;
     let wertElement = $("#Wert_" + id);  // Changed to underscore syntax
     let einheitElement = $("#Einheit_" + id);
-
-    // Proper select detection and value retrieval
     let wert = wertElement.is("select") ? wertElement.val() : wertElement.val();
     let einheit = einheitElement.is("select") ? einheitElement.val() : einheitElement.val();
 
@@ -27,11 +25,9 @@ $("button[value='saveAllParameter']").click(function () {
     const ids = Array.from(deleteBtns).map(btn => btn.id);
     let variantenID = $('#variante').val();
 
-    ids.forEach(function(id) {
+    ids.forEach(function (id) {
         let wertElement = $("#Wert_" + id);
         let einheitElement = $("#Einheit_" + id);
-
-        // Proper select detection and value retrieval
         let wert = wertElement.val();
         let einheit = einheitElement.val();
 

@@ -305,10 +305,10 @@ $row = $result->fetch_assoc(); ?>
             scrollX: true,
             initComplete: function () {
 
-                    $('#variantenParameterCH .xxx').remove();
-                    $('#variantenParameter .dt-search label').remove();
-                    $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#variantenParameterCH');
-
+                $('#variantenParameterCH .xxx').remove();
+                $('#variantenParameter .dt-search label').remove();
+                $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#variantenParameterCH');
+            }
         });
 
         tablePossibleElementParameters = $('#tablePossibleElementParameters').DataTable({
@@ -374,7 +374,7 @@ $row = $result->fetch_assoc(); ?>
             },
             scrollX: true
         });
-    });
+    })
 
     // Variante auswählen/geändert
     $('#variante').change(function () {
