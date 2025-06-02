@@ -21,6 +21,7 @@ $fields = [
     'Notiz' => 'lotNotice',
     'Kostenanschlag' => 'kostenanschlag',
     'Budget' => 'budget',
+    'tabelle_lieferant_idTABELLE_Lieferant' => 'lotAuftragnehmer'
 ];
 
 // Set lotID from GET request if provided

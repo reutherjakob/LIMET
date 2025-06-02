@@ -80,7 +80,7 @@ const columnsDefinition = [
     {data: 'HT_Notdusche', title: 'Notdusche', visible: false, case: "num"}, // 33
     {data: 'HT_Tempgradient_Ch', title: 'Tempgradient C/h', visible: false, case: "num"}, // 34
 
-    {data: 'Anwendungsgruppe', title: 'Raumgruppe', visible: false}, // 35
+    {data: 'Anwendungsgruppe', title: 'Raumgruppe 8101', visible: false}, // 35
     {data: 'Fussboden OENORM B5220', title: 'B5220', visible: false}, // 36
     {data: 'AV', title: 'AV', visible: false, defaultContent: '-', case: "bit"}, // 37
     {data: 'SV', title: 'SV', visible: false, defaultContent: '-', case: "bit"}, // 38

@@ -1,265 +1,267 @@
-<nav class="navbar navbar-expand-xxl navbar-light responsive border border-light border-3 rounded rounded-3"
+<nav class="navbar  navbar-expand navbar-light border border-light border-3 rounded rounded-3"
      id="LimetNavBar">
-    <div class="container-fluid">
-        <ul class="navbar-nav col-10 d-inline-flex align-items-center">
-            <li class="ms-2">
+    <div class="container-fluid flex-nowrap">
+
+            <div class="navbar-nav col-1 d-flex align-items-center ms-1">
                 <a href="/projects.php">
                     <img src="LIMET_logo.png" alt="LIMETLOGO" style="height:40px;">
                 </a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
-                   data-bs-toggle="dropdown"><i class="fa fa-list-alt"></i> Projekte</a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="projects.php"><i class="fa fa-list-alt"></i> Projektauswahl</a>
-                    </li>
-                    <li><a class="dropdown-item" href="projectParticipants.php"><i class="fa fa-users"></i>
-                        Projektbeteiligte</a></li>
-                    <li><a class="dropdown-item" href="documentationV2.php"><i class="fa fa-comments"></i> Dokumentation</a>
-                    </li>
-                    <li><a class="dropdown-item" href="dashboard.php"><i class="fa fa-tachometer-alt"></i> Dashboard</a>
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
-                   data-bs-toggle="dropdown"><i class="fa fa-book"></i> Raumbuch</a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="roombookSpecifications.php">
-                            <div class="col-2 text-center">
-                               <i class="fas fa-tools"></i>
-                            </div>
-                            <div class="col-10">
-                                Bauangaben alt
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="roombookSpecifications_New.php">
-                            <div class="col-2 text-center">
-                            </i> <i class="fas fa-tools"></i>
-                            </div>
-                            <div class="col-10">
-                                Bauangaben
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="roombookSpecificationsLab.php">
-                            <div class="col-2 text-center">
-                             <i class="fas fa-tools"></i>
-                            </div>
-                            <div class="col-10">
-                                Bauangaben Labor
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="roombookMeeting.php">
-                            <div class="col-2 text-center">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <div class="col-10">
-                                Meeting
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="roombookDetailed.php">
-                            <div class="col-2 text-center">
-                                <i class="fas fa-search-plus"></i>
-                            </div>
-                            <div class="col-10">
-                                Detail
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="roombookElements.php">
-                            <div class="col-2 text-center">
-                                <i class="fas fa-hospital-alt"></i>
-                            </div>
-                            <div class="col-10">
-                                Räume mit Element
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="roombookReports_New.php">
-                            <div class="col-2 text-center">
-                                <i class="fas fa-file-pdf"></i>
-                            </div>
-                            <div class="col-10">
-                                Berichte
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="elementsInProject.php">
-                            <div class="col-2 text-center">
-                                <i class="fas fa-briefcase-medical"></i>
-                            </div>
-                            <div class="col-10">
-                                Elemente im Projekt
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center"
-                           href="roombook_ElemetsInRoom_ParameterTable.php">
-                            <div class="col-2 text-center">
-                                <i class="fas fa-file-excel"></i>
-                            </div>
-                            <div class="col-10">
-                                Elementparameter
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="roombookList.php">
-                            <div class="col-2 text-center">
-                                <i class="fas fa-list-ul"></i>
-                            </div>
-                            <div class="col-10">
-                                Liste
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="roombook_vglAnsicht.php">
-                            <div class="col-2 text-center">
-                                <i class="fas fa-not-equal"></i>
-                            </div>
-                            <div class="col-10">
-                                Raumvergleich
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="roombookAenderungen.php">
-                            <div class="col-2 text-center">
-                                <i class="fas fa-history"></i>
-                            </div>
-                            <div class="col-10">
-                                Raum-Änderungen
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="roombook_search_rooms_with_string.php">
-                            <div class="col-2 text-center">
-                                <i class="fas fa-search"></i>
-                            </div>
-                            <div class="col-10">
-                                Raumsuche
-                            </div>
-                        </a>
-                    </li>
-                </ul>
+            </div>
 
-            </li>
-            <li class="nav-item dropdown">
-                <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
-                   data-bs-toggle="dropdown"><i class="fa fa-euro-sign"></i> Kosten</a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="costsOverall.php">Kosten - Berichte</a></li>
-                    <li><a class="dropdown-item" href="costsRoomArea.php">Kosten - Raumbereich</a></li>
-                    <li><a class="dropdown-item" href="costChanges.php">Kosten - Änderungen</a></li>
-                    <li><a class="dropdown-item" href="elementBudgets.php">Kosten - Budgets</a></li>
-                </ul>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
-                   data-bs-toggle="dropdown"><i class="fa fa-recycle"></i> Bestand</a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="roombookBestand.php"> Bestand - Raumbereich</a></li>
-                    <li><a class="dropdown-item" href="roombookBestandElements.php"> Bestand - Gesamt</a></li>
-                    <li><a class="dropdown-item" href="roombookBestandEintragen.php">Bestand - Gerätedaten eintragen</a>
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
-                   data-bs-toggle="dropdown"><i class="fa fa-tasks"></i> Ausschreibungen</a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="tenderLots.php">Los-Verwaltung</a></li>
-                    <li><a class="dropdown-item" href="tenderCalendar.php">Vergabekalender</a></li>
-                    <li><a class="dropdown-item" href="tenderCharts.php">Vergabe-Diagramme</a></li>
-                    <li><a class="dropdown-item" href="elementLots.php">Element-Verwaltung</a></li>
-                </ul>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
-                   data-bs-toggle="dropdown"><i class="fas fa-wrench"></i> Ausführung-ÖBA</a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item active" href="dashboardAusfuehrung.php"><i
-                            class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                    <li><a class="dropdown-item" href="roombookVorleistungen.php"><i class="fas fa-tasks"></i>
-                        Vorleistungen</a></li>
-                    <li><a class="dropdown-item" href="roombookAusfuehrung.php"><i class="fas fa-building"></i>
-                        Räume</a></li>
-                    <li><a class="dropdown-item" href="roombookAusfuehrungLiefertermine.php"><i
-                            class="far fa-calendar-alt"></i> Liefertermine</a></li>
-                    <li><a class="dropdown-item" href="roombookAbrechnung.php"><i class="fas fa-euro-sign"></i>
-                        Abrechnung</a></li>
-                </ul>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
-                   data-bs-toggle="dropdown"><i class="fa fa-database"></i> Datenbank Verwaltung</a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="elementAdministration.php"><i class="fas fa-toolbox"></i>
-                        Elemente-Verwaltung</a></li>
-                    <!-- li><a class="dropdown-item" href="elementeCAD.php"><i class="fas fa-microscope"></i>
-                        Elemente-CAD</a></li -->
-                    <li><a class="dropdown-item" href="elementGeräte.php"><i class="fas fa-laptop-medical"></i>
-                        Geräteliste</a></li>
-                </ul>
-            </li>
+            <ul  class="navbar-nav col-9 d-flex align-items-center flex-wrap">
+                <li class="nav-item dropdown">
+                    <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
+                       data-bs-toggle="dropdown"><i class="fa fa-list-alt"></i> Projekte</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="projects.php"><i class="fa fa-list-alt"></i> Projektauswahl</a>
+                        </li>
+                        <li><a class="dropdown-item" href="projectParticipants.php"><i class="fa fa-users"></i>
+                            Projektbeteiligte</a></li>
+                        <li><a class="dropdown-item" href="documentationV2.php"><i class="fa fa-comments"></i> Dokumentation</a>
+                        </li>
+                        <li><a class="dropdown-item" href="dashboard.php"><i class="fa fa-tachometer-alt"></i> Dashboard</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
+                       data-bs-toggle="dropdown"><i class="fa fa-book"></i> Raumbuch</a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="roombookSpecifications.php">
+                                <div class="col-2 text-center">
+                                    <i class="fas fa-tools"></i>
+                                </div>
+                                <div class="col-10">
+                                    Bauangaben alt
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="roombookSpecifications_New.php">
+                                <div class="col-2 text-center">
+                                    <i class="fas fa-tools"></i>
+                                </div>
+                                <div class="col-10">
+                                    Bauangaben
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="roombookSpecificationsLab.php">
+                                <div class="col-2 text-center">
+                                    <i class="fas fa-tools"></i>
+                                </div>
+                                <div class="col-10">
+                                    Bauangaben Labor
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="roombookMeeting.php">
+                                <div class="col-2 text-center">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="col-10">
+                                    Meeting
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="roombookDetailed.php">
+                                <div class="col-2 text-center">
+                                    <i class="fas fa-search-plus"></i>
+                                </div>
+                                <div class="col-10">
+                                    Detail
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="roombookElements.php">
+                                <div class="col-2 text-center">
+                                    <i class="fas fa-hospital-alt"></i>
+                                </div>
+                                <div class="col-10">
+                                    Räume mit Element
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="roombookReports_New.php">
+                                <div class="col-2 text-center">
+                                    <i class="fas fa-file-pdf"></i>
+                                </div>
+                                <div class="col-10">
+                                    Berichte
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="elementsInProject.php">
+                                <div class="col-2 text-center">
+                                    <i class="fas fa-briefcase-medical"></i>
+                                </div>
+                                <div class="col-10">
+                                    Elemente im Projekt
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center"
+                               href="roombook_ElemetsInRoom_ParameterTable.php">
+                                <div class="col-2 text-center">
+                                    <i class="fas fa-file-excel"></i>
+                                </div>
+                                <div class="col-10">
+                                    Elementparameter
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="roombookList.php">
+                                <div class="col-2 text-center">
+                                    <i class="fas fa-list-ul"></i>
+                                </div>
+                                <div class="col-10">
+                                    Liste
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="roombook_vglAnsicht.php">
+                                <div class="col-2 text-center">
+                                    <i class="fas fa-not-equal"></i>
+                                </div>
+                                <div class="col-10">
+                                    Raumvergleich
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="roombookAenderungen.php">
+                                <div class="col-2 text-center">
+                                    <i class="fas fa-history"></i>
+                                </div>
+                                <div class="col-10">
+                                    Raum-Änderungen
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="roombook_search_rooms_with_string.php">
+                                <div class="col-2 text-center">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <div class="col-10">
+                                    Raumsuche
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
 
-            <li class="nav-item">
-                <a class="py-0 nav-link dropdown-toggle" href="firmenkontakte.php" role="button"><i
-                        class="fas fa-user-tie"></i> Firmen Kontakte</a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
-                   data-bs-toggle="dropdown"><i class="fas fa-code"></i> Dev</a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="roombookSpecificationTextsForRoomsWithElement.php">
-                        <i class="fas fa-dragon"> </i>
-                        <i class="fas fa-user-astronaut"> </i>
-                        <i class="fas fa-jedi"> </i>
-                        <i class="fas fa-user-md"></i>
-                        <i class="fas fa-save"></i>
-                        <i class="fas fa-hospital-user"></i>
-                        SpecsTexts</a>
-                    </li>
-                    <li><a class="dropdown-item" href="roombook_IFC_viewer.php">
-                        <i class="fas fa-dice"> </i>
-                        <i class="fas fa-book-dead"> </i>
-                        <i class="fas fa-ethernet"> </i>
-                        <i class="fas fa-coffee"> </i>
-                        <i class="fas fa-skull-crossbones"> </i>
-                        <i class="fas fa-ring"> </i>
-                        <i class="fas fa-hospital-user"></i>
-                        ifc viewer - broke</a>
-                    </li>
-                    <li><a class="dropdown-item" href="_mt_inflation.php">
-                        <i class="fas fa-dice"> </i>
-                        <i class="fas fa-book-dead"> </i>
-                        <i class="fas fa-ethernet"> </i>
-                        <i class="fas fa-coffee"> </i>
-                        <i class="fas fa-skull-crossbones"> </i>
-                        <i class="fas fa-ring"> </i>
-                        <i class="fas fa-hospital-user"></i>
-                    Inflationsrechner
-                    </a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-        <ul class="navbar-nav col-2 d-inline-flex align-items-center justify-content-end text-nowrap">
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
+                       data-bs-toggle="dropdown"><i class="fa fa-euro-sign"></i> Kosten</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="costsOverall.php">Kosten - Berichte</a></li>
+                        <li><a class="dropdown-item" href="costsRoomArea.php">Kosten - Raumbereich</a></li>
+                        <li><a class="dropdown-item" href="costChanges.php">Kosten - Änderungen</a></li>
+                        <li><a class="dropdown-item" href="elementBudgets.php">Kosten - Budgets</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
+                       data-bs-toggle="dropdown"><i class="fa fa-recycle"></i> Bestand</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="roombookBestand.php"> Bestand - Raumbereich</a></li>
+                        <li><a class="dropdown-item" href="roombookBestandElements.php"> Bestand - Gesamt</a></li>
+                        <li><a class="dropdown-item" href="roombookBestandEintragen.php">Bestand - Gerätedaten eintragen</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
+                       data-bs-toggle="dropdown"><i class="fa fa-tasks"></i> Ausschreibungen</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="tenderLots.php">Los-Verwaltung</a></li>
+                        <li><a class="dropdown-item" href="tenderCalendar.php">Vergabekalender</a></li>
+                        <li><a class="dropdown-item" href="tenderCharts.php">Vergabe-Diagramme</a></li>
+                        <li><a class="dropdown-item" href="elementLots.php">Element-Verwaltung</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
+                       data-bs-toggle="dropdown"><i class="fas fa-wrench"></i> Ausführung-ÖBA</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item active" href="dashboardAusfuehrung.php"><i
+                                class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a class="dropdown-item" href="roombookVorleistungen.php"><i class="fas fa-tasks"></i>
+                            Vorleistungen</a></li>
+                        <li><a class="dropdown-item" href="roombookAusfuehrung.php"><i class="fas fa-building"></i>
+                            Räume</a></li>
+                        <li><a class="dropdown-item" href="roombookAusfuehrungLiefertermine.php"><i
+                                class="far fa-calendar-alt"></i> Liefertermine</a></li>
+                        <li><a class="dropdown-item" href="roombookAbrechnung.php"><i class="fas fa-euro-sign"></i>
+                            Abrechnung</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
+                       data-bs-toggle="dropdown"><i class="fa fa-database"></i> Datenbank Verwaltung</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="elementAdministration.php"><i class="fas fa-toolbox"></i>
+                            Elemente-Verwaltung</a></li>
+                        <!-- li><a class="dropdown-item" href="elementeCAD.php"><i class="fas fa-microscope"></i>
+                            Elemente-CAD</a></li -->
+                        <li><a class="dropdown-item" href="elementGeräte.php"><i class="fas fa-laptop-medical"></i>
+                            Geräteliste</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="py-0 nav-link  " href="firmenkontakte.php" role="button"><i
+                            class="fas fa-user-tie"></i> Firmen Kontakte</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
+                       data-bs-toggle="dropdown"><i class="fas fa-code"></i> Dev</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="roombookSpecificationTextsForRoomsWithElement.php">
+                            <i class="fas fa-dragon"> </i>
+                            <i class="fas fa-user-astronaut"> </i>
+                            <i class="fas fa-jedi"> </i>
+                            <i class="fas fa-user-md"></i>
+                            <i class="fas fa-save"></i>
+                            <i class="fas fa-hospital-user"></i>
+                            SpecsTexts</a>
+                        </li>
+                        <li><a class="dropdown-item" href="roombook_IFC_viewer.php">
+                            <i class="fas fa-dice"> </i>
+                            <i class="fas fa-book-dead"> </i>
+                            <i class="fas fa-ethernet"> </i>
+                            <i class="fas fa-coffee"> </i>
+                            <i class="fas fa-skull-crossbones"> </i>
+                            <i class="fas fa-ring"> </i>
+                            <i class="fas fa-hospital-user"></i>
+                            ifc viewer - broke</a>
+                        </li>
+                        <li><a class="dropdown-item" href="_mt_inflation.php">
+                            <i class="fas fa-dice"> </i>
+                            <i class="fas fa-book-dead"> </i>
+                            <i class="fas fa-ethernet"> </i>
+                            <i class="fas fa-coffee"> </i>
+                            <i class="fas fa-skull-crossbones"> </i>
+                            <i class="fas fa-ring"> </i>
+                            <i class="fas fa-hospital-user"></i>
+                            Inflationsrechner
+                        </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <ul  class="navbar-nav col-2 d-flex align-items-center justify-content-end flex-wrap">
             <li class="nav-item"><a class="py-0 nav-link text-success disabled" id="projectSelected"
                                     style="font-size:15px!important">Kein Projekttitel geladen</a></li>
             <li><a class="py-0 nav-link" href="logout.php"><i class="fa fa-sign-out-alt"></i>Logout</a></li>
@@ -268,3 +270,4 @@
     </div>
 
 </nav>
+

@@ -51,7 +51,7 @@ init_page_serversides();
                         <span> <strong>Lose im Projekt</strong>  &emsp;</span>
 
                         <button type='button' id='addTenderLotModalButton' class='btn btn-outline-success btn-sm me-2 ms-2 '
-                                value='Los hinzufügen' data-bs-toggle='modal' data-bs-target='#addTenderLotModal'>    <i class="fa fa-plus" aria-hidden="true"></i>Los hinzufügen </button>
+                                value='Los hinzufügen' data-bs-toggle='modal' data-bs-target='#addTenderLotModal'>    <i class="fa fa-plus" aria-hidden="true"></i> Los hinzufügen </button>
                     </div>
                     <div class="d-inline-flex align-items-center" id="LoseCardHeaderSub">
                         <button type='button' class='btn btn-outline-secondary btn-sm' id='createTenderListPDF'>
@@ -506,7 +506,7 @@ init_page_serversides();
 
             const htmlString = tableTenderLots.row($(this)).data()[8];
             const textContent = htmlString.replace(/<[^>]*>/g, '');
-            console.log(textContent);
+
             let selectedValue;
             switch (textContent) {
                 case 'Offen':
@@ -521,6 +521,7 @@ init_page_serversides();
                 default:
                     selectedValue = 0; // Default to 'Offen' if not recognized
             }
+
             document.getElementById("lotVergabe").value = selectedValue;
             const selectElement = document.getElementById("lotVergabe");
             for (let i = 0; i < selectElement.options.length; i++) {
@@ -644,6 +645,7 @@ init_page_serversides();
         let lotLVSend = $("#lotLVSend").val();
         let lotVerfahren = $("#lotVerfahren").val();
         let lotLVBearbeiter = $("#lotLVBearbeiter").val();
+        console.log(lotVerfahren);
 
         if ($("#lotMKF").prop('checked') === false) {
             console.log("$('#lotMKF').prop('checked') === false");
