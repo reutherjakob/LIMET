@@ -2,9 +2,14 @@
 
 function createRaumHeaderRaumbuch($pdf, $Raumdaten)
 {
+    $SB = 390;
+    $e_C = $SB / 8;
+    $e_C_3rd = ($e_C / 3) + 2;
+    $e_C_2_3rd = $e_C - $e_C_3rd;
     while ($row = $Raumdaten->fetch_assoc()) {
         $pdf->SetFont('helvetica', 'B', 10);
-        $pdf->MultiCell(100, 6, "Raum: " . $row['Raumbezeichnung'], 0, 'L', 0, 0);
+        $pdf->MultiCell(25, 6, "Raum:", 0, 'L', 0, 0);
+        $pdf->MultiCell(75, 6, $row['Raumbezeichnung'], 0, 'L4', 0, 0);
         $pdf->MultiCell(80, 6, "Nummer: " . $row['Raumnr'], 0, 'L', 0, 0);
         $pdf->Ln();
         $pdf->SetFont('helvetica', '', 10);
@@ -357,7 +362,7 @@ function separate_headerwdth_proportionally($output_pairs, $ln_spacer)
     return $result_widths;
 }
 
-function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $RaumbereichNutzer, $Geschoss, $Bauetappe, $Bauabschnitt, $format = "", $parameter_changes_t_räume = 0, $fstelle = "")
+function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $RaumbereichNutzer, $Geschoss, $Bauetappe, $Bauabschnitt, $format = "", $parameter_changes_t_räume = 0, $fstelle = "", $Flaeche = "")
 {
     $pdf->SetFont('helvetica', 'B', 10);
     if ($format == "") {
@@ -397,10 +402,11 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
             ["Raumnr", "Nummer: " . $Raumnr . $spacer],
             ["Raumbereich Nutzer", "Bereich: " . $RaumbereichNutzer . $spacer],
             ["Geschoss", "Geschoss: " . $Geschoss . $spacer],
-            ["Bauetappe", "Bauetappe: " . $Bauetappe . $spacer],
-            ["Bauabschnitt", "Bauteil: " . $Bauabschnitt . $spacer]
+            //["Bauetappe", "Bauetappe: " . $Bauetappe . $spacer],
+            ["Bauabschnitt", "Bauteil: " . $Bauabschnitt . $spacer],
+            //   ["Nutzfläche", "Fläche: " . $Flaeche . " m2"]
         ];
-        $qot = 1 / 6;
+        $qot = 1 / 5.5;
         $extraZeile = false;
         foreach ($output_pairs as $pair) {
             $Height = $pdf->getStringHeight($SB * $qot, $pair[1], false, true, '', 1);
@@ -413,6 +419,57 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
             $pdf->Ln($ln_spacer / 2);
         }
         $pdf->Ln(7);
+    } else if ($format == "A3X") {
+        $pdf->SetFont('helvetica', 'B', 10);
+        if (($pdf->GetY()) >= 180) {
+            $pdf->AddPage();
+        }
+        if (($pdf->GetY()) >= 18) {
+            balken($pdf, 1, $SB);
+        } else {
+            $pdf->Ln(1);
+        }
+        $pdf->SetFont('helvetica', 'B', 10);
+
+        $blockheaderwith = 25;
+        $raumbezeichnung_width = ($SB - $blockheaderwith - (($SB - $blockheaderwith) / 18)) / 4;
+
+
+        $output_pairs = [
+            ["Raumbezeichnung", "Raum", $Raumnr . " - " . $Raumbezeichnung],
+            ["Raumbereich Nutzer", "Bereich: ", $RaumbereichNutzer],
+            ["Geschoss", "Geschoss: ", $Geschoss],
+            ["Bauabschnitt", "Bauteil: ", $Bauabschnitt]
+        ];
+
+        $extraZeile = false;
+
+        foreach ($output_pairs as $i => $pair) {
+            if ($i == 0) {
+                $Height = $pdf->getStringHeight($raumbezeichnung_width, $pair[2], false, true, '', 1);
+                if ($Height > $ln_spacer) {
+                    $extraZeile = true;
+                }
+                $pdf->MultiCell($blockheaderwith, $ln_spacer, $pair[1], 0, "L", 1, 0);
+                $pdf->MultiCell($raumbezeichnung_width*2/3, $ln_spacer, $pair[2], 0, "L", 1, 0);
+            } else if ($i == 1) {
+                $Height = $pdf->getStringHeight($raumbezeichnung_width, $pair[1] . $pair[2], false, true, '', 1);
+                if ($Height > $ln_spacer) {
+                    $extraZeile = true;
+                }
+                $pdf->MultiCell($raumbezeichnung_width*4/3, $ln_spacer, $pair[1] . $pair[2], 0, "L", 1, 0);
+            } else {
+                $Height = $pdf->getStringHeight($raumbezeichnung_width, $pair[1] . $pair[2], false, true, '', 1);
+                if ($Height > $ln_spacer) {
+                    $extraZeile = true;
+                }
+                $pdf->MultiCell($raumbezeichnung_width, $ln_spacer, $pair[1] . $pair[2], 0, "L", 1, 0);
+            }
+        }
+        if ($extraZeile) {
+            $pdf->Ln($ln_spacer / 2);
+        }
+        $pdf->Ln(5);
     }
     $pdf->SetFont('helvetica', '', 10);
 }
@@ -497,7 +554,7 @@ function hackerlA3($pdf, $hackerl_schriftgr, $hackerlcellgröße, $param, $comp_
 {
     $originalFontSize = $pdf->getFontSizePt();
     $pdf->SetFont('zapfdingbats', '', 10);
-    if ($param == $comp_true || $param == "Ja" || $param == "ja" || 1 == $param || "1" === $param) {
+    if ($param == $comp_true || $param == "Ja" || $param == "ja" || 0 < $param || "1" === $param) {
         $pdf->MultiCell($hackerlcellgröße, $hackerl_schriftgr, TCPDF_FONTS::unichr(52), 0, 'L', 1, 0);
     } else {
         $pdf->MultiCell($hackerlcellgröße, $hackerl_schriftgr, TCPDF_FONTS::unichr(54), 0, 'L', 1, 0);

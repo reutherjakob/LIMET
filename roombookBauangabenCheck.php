@@ -1,5 +1,7 @@
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 init_page_serversides();
 ?>
 
@@ -26,12 +28,39 @@ init_page_serversides();
     <style>
         .checked {
             text-decoration: line-through;
+            background-color: #f8f9fa; /* Optional: light gray background for checked rows */
         }
+
+        /* Example: Assign distinct background colors for each category */
+        .kathegorie-ET,.kathegorie-Raumparameter---IT-Anbindung {
+            background-color: #6c76ff;
+        }
+
+        .kathegorie-HT {
+            background-color: #fff2e6;
+        }
+
+        .kathegorie-MED-GAS {
+            background-color: #e6ffe6;
+        }
+
+        .kathegorie-Laser {
+            background-color: #f0e6ff;
+        }
+
+        .kathegorie-Röntgen {
+            background-color: #ffe6e6;
+        }
+
+        .kathegorie-CEE {
+            background-color: #ffffe6;
+        }
+
     </style>
 </head>
 
 <body>
-<div class="container-fluid bg-light" >
+<div class="container-fluid bg-light">
     <div id="limet-navbar"></div>
     <div class="mt-4 card responsive">
         <div class="card-header">
@@ -257,6 +286,7 @@ init_page_serversides();
     }
 
     $(document).ready(function () {
+
         let ids = getRoomIdsFromCurrentUrl();
         // console.log(ids);
         $.ajax({
@@ -310,7 +340,15 @@ init_page_serversides();
                             $('.dt-search label').remove();
                             $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CH1');
 
+                        },
+                        createdRow: function(row, data, dataIndex) {
+                            const kathegorie = data[2] || data.kathegorie;
+                            if (kathegorie) {
+                                const cleanKathegorie = kathegorie.replace(/[^a-zA-Z0-9-]/g, '-');
+                                $(row).addClass('kathegorie-' + cleanKathegorie);
+                            }
                         }
+
                     });
                 } else {
                     document.getElementById('table1ID').style.display = 'none';
@@ -345,6 +383,15 @@ init_page_serversides();
                         }
                     }
                 });
+            }
+
+
+        });
+
+        $('#table1ID').on('click', 'tbody tr', function (event) {
+            if (!$(event.target).is('input[type="checkbox"], a')) {
+                const checkbox = $(this).find('input[type="checkbox"]');
+                checkbox.prop('checked', !checkbox.prop('checked')).trigger('change');
             }
         });
 

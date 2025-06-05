@@ -125,7 +125,7 @@ $mysqli->close();
                 data: {"parameterID": id, "wert": wert, "einheit": einheit},
                 type: "GET",
                 success: function (data) {
-                    alert(data);
+                    makeToaster(data, true);
 
                 }
             });

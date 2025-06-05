@@ -12,7 +12,9 @@ check_login();
 
 $mysqli = utils_connect_sql();
 
-$sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung, tabelle_parameter_kategorie.Kategorie 
+$sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung, 
+           tabelle_parameter_kategorie.Kategorie,
+           tabelle_parameter.Abkuerzung
         FROM tabelle_parameter, tabelle_parameter_kategorie 
         WHERE tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie 
         AND tabelle_parameter.idTABELLE_Parameter NOT IN 
@@ -36,6 +38,7 @@ echo "<table class='table table-striped table-sm table-hover table-bordered bord
                         <th> <i class='fas fa-plus'></i> </th>
 						<th>Kategorie</th>
 						<th>Parameter</th>
+						 <th>Abk</th>
 						</tr></thead>
 						<tbody>";
 
@@ -44,6 +47,7 @@ while ($row = $result->fetch_assoc()) {
     echo "<td><button type='button' id='" . $row["idTABELLE_Parameter"] . "' class='btn btn-outline-success btn-sm' value='addParameter'><i class='fas fa-plus'></i></button></td>";
     echo "<td>" . $row["Kategorie"] . "</td>";
     echo "<td>" . $row["Bezeichnung"] . "</td>";
+    echo "<td>" . $row["Abkuerzung"] . "</td>";
     echo "</tr>";
 }
 
@@ -56,8 +60,7 @@ $mysqli->close();
 <script>
 
     $(document).ready(function () {
-
-        tablePossibleElementParameters = null;
+        tablePossibleElementParameters = null; // global var
         tablePossibleElementParameters = $('#tablePossibleElementParameters').DataTable({
             select: true,
             searching: true,

@@ -88,7 +88,7 @@ $row = $result->fetch_assoc(); ?>
                 </div>
                 <div class='card-body ' id='variantenParameter'>
                     <?php
-                    include_once "getElementParameterTable.php";
+                    include "getElementParameterTable.php";
                     generate_variante_parameter_inputtable();
                     ?>
                 </div>
@@ -102,7 +102,8 @@ $row = $result->fetch_assoc(); ?>
                     Mögliche Parameter
                 </div>
                 <div class='card-body ' id='possibleVariantenParameter'>
-                    <?php $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung, tabelle_parameter.Abkuerzung, 
+                    <?php $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung, 
+                                tabelle_parameter.Abkuerzung, 
                                 tabelle_parameter_kategorie.Kategorie
                                 FROM tabelle_parameter, tabelle_parameter_kategorie
                                 WHERE tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie =
@@ -134,7 +135,7 @@ $row = $result->fetch_assoc(); ?>
                                         <th> <i class='fas fa-plus'></i> </th>
                                         <th>Kategorie</th>
                                         <th>Parameter</th>
-                                                         <th>Abk</th>
+                                        <th>Abk</th>
                                     </tr>
                                     </thead>
                                     <tbody>";

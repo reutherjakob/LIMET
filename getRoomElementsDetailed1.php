@@ -326,33 +326,42 @@ $mysqli->close();
         init_hide_0();
         init_DT();
         attachButtonListeners();
+
+
+        let hideZero = !!localStorage.getItem('hideZeroSetting');
+        //(console.log(localStorage.getItem('hideZeroSetting'));
+        $('#hideZeroToggle').prop('checked', hideZero);
+
+
         $.fn.dataTable.ext.search.push(hideZeroFilter);
-        $("#hideZeroRows").on("change", function () {
-            tableRoomElements.draw();
-        });
     });
 
 
     function init_hide_0() {
-        // 2. Before initializing DataTable, clean up previous filters
         $.fn.dataTable.ext.search = $.fn.dataTable.ext.search.filter(fn => fn !== hideZeroFilter);
-
-        // 3. Destroy table properly before reinitializing
         if ($.fn.dataTable.isDataTable('#tableRoomElements')) {
             $('#tableRoomElements').DataTable().destroy(true); // true = remove from DOM
             $('#tableRoomElements').empty(); // Clear table contents
         }
 
+        let hideZero = localStorage.getItem('hideZeroSetting') ==='true';
+        console.log("ähh", hideZero);
+        $('#hideZeroRows').prop('checked', hideZero);
+
+
         $("#hideZeroRows").on("change", function () {
+            localStorage.setItem('hideZeroSetting', this.checked ? 'true' : 'false');
+           console.log(this.checked, localStorage.getItem('hideZeroSetting'));
+
             const icon = $("#hideZeroIcon");
             if (this.checked) {
-                // 0 elements are hidden, show slashed eye
                 icon.removeClass("fa-eye").addClass("fa-eye-slash");
             } else {
-                // 0 elements are visible, show open eye
                 icon.removeClass("fa-eye-slash").addClass("fa-eye");
             }
+            tableRoomElements.draw();
         });
+
     }
 
     function attachButtonListeners() {
@@ -431,13 +440,13 @@ $mysqli->close();
     }
 
     function init_DT() {
-
+        let savedLength = localStorage.getItem('roomElementsPageLength');
         tableRoomElements = $("#tableRoomElements").DataTable({
             select: true,
             paging: true,
             pagingType: "simple",
             lengthChange: true,
-            pageLength: 25,
+            pageLength: savedLength ? Number(savedLength) : 25,
             searching: true,
             info: true,
             hover: true,
@@ -474,8 +483,14 @@ $mysqli->close();
             }
         });
 
+        $('#tableRoomElements').on('length.dt', function (e, settings, len) {
+            localStorage.setItem('roomElementsPageLength', len);
+        });
+
 
         $('#tableRoomElements tbody').on('click', 'tr', function () {
+
+
             let id = tableRoomElements.row($(this)).data()[0].display;
             let stk = $("#amount" + id).val();
             let standort = $("#Standort" + id).val();

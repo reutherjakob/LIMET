@@ -1,5 +1,5 @@
 <?php
-function generateSelectField($kategorie, $bezeichnung, $type, $options, $id, $currentValue, $row): string
+function generateEinheitField($kategorie, $bezeichnung, $type, $options, $id, $currentValue, $row): string
 {
     if (
         $row["Kategorie"] === $kategorie &&
@@ -16,26 +16,49 @@ function generateSelectField($kategorie, $bezeichnung, $type, $options, $id, $cu
     }
     return "";
 }
+function generateWertField($kategorie, $bezeichnung, $type, $options, $id, $currentValue, $row): string
+{
+    if (
+        $row["Kategorie"] === $kategorie &&
+        $row["Bezeichnung"] === $bezeichnung &&
+        $type === "Wert"
+    ) {
+        $html = "<td><select class='form-select form-select-sm' id='{$type}_{$id}'>";
+        foreach ($options as $option) {
+            $selected = $currentValue === $option ? "selected" : "";
+            $html .= "<option value='{$option}' {$selected}>{$option}</option>";
+        }
+        $html .= "</select></td>";
+        return $html;
+    }
+    return "";
+}
+
 
 function generate_parameter_input($row, $type): string
 {
     $id = $row["tabelle_parameter_idTABELLE_Parameter"];
     $currentValue = $row[$type];
 
-    // Try each select field, return if not empty
-    $html = generateSelectField("Elektro", "Spannung", $type, ["V", "kV"], $id, $currentValue, $row);
+    $html = generateWertField("Statik", "Wandverstärkung", $type, [  "50", "100", "150", "200", "Ja"], $id, $currentValue, $row);
     if ($html) return $html;
 
-    $html = generateSelectField("Elektro", "Nennleistung", $type, ["W", "kW", "VA", "kVA"], $id, $currentValue, $row);
+    $html = generateEinheitField("Statik", "Wandverstärkung", $type, ["kg/lfm", ""], $id, $currentValue, $row);
     if ($html) return $html;
 
-    $html = generateSelectField("HKLS", "Abwärme", $type, ["W", "kW"], $id, $currentValue, $row);
+    $html = generateEinheitField("Elektro", "Spannung", $type, ["V", "kV", "V DC"], $id, $currentValue, $row);
+    if ($html) return $html;
+
+    $html = generateEinheitField("Elektro", "Nennleistung", $type, ["W", "kW", "VA", "kVA"], $id, $currentValue, $row);
+    if ($html) return $html;
+
+    $html = generateEinheitField("HKLS", "Abwärme", $type, ["W", "kW"], $id, $currentValue, $row);
     if ($html) return $html;
 
     // Netzart special case
     if ($row["Kategorie"] === "Elektro" && $row["Bezeichnung"] === "Netzart") {
         $options = ($type === "Wert")
-            ? ["", "AV", "SV", "ZSV", "USV", "AV/SV", "SV/ZSV", "ZSV/USV", "Batterie"]
+            ? ["", "AV", "SV", "ZSV", "USV", "AV/SV", "SV/ZSV", "ZSV/USV", "Akku"]
             : ["", "/Akku"];
 
         $html = "<td><select class='form-select form-select-sm' id='{$type}_{$id}'>";
