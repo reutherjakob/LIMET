@@ -213,7 +213,7 @@ dateSelect4Report
             {text: "BAU A3", action: () => generateNewReports("BAUANGABEN A3", $("#dateSelect").val())},
             {text: "ohne Lab", action: () => generateNewReports("BAUANGABEN A3 3", $("#dateSelect").val())},
             {text: "ohne Änderungsmarkierungen", action: () => generateNewReports("BAUANGABEN A3 2", $("#dateSelect").val())},
-            {text: "Psy", action: () => generateNewReports("BAUANGABEN A3 4", $("#dateSelect").val())},
+            {text: "VE", action: () => generateNewReports("BAUANGABEN A3 4", $("#dateSelect").val())},
 
         ];
 

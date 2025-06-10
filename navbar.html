@@ -1,12 +1,11 @@
-<nav class="navbar navbar-expand-xxl navbar-light responsive border border-light border-3 rounded rounded-3"
-     id="LimetNavBar">
-    <div class="container-fluid">
-        <ul class="navbar-nav col-10 d-inline-flex align-items-center">
-            <li class="ms-2">
-                <a href="/projects.php">
-                    <img src="LIMET_logo.png" alt="LIMETLOGO" style="height:40px;">
-                </a>
-            </li>
+<nav class="navbar  navbar-expand navbar-light" id="LimetNavBar">
+    <div class="container-fluid border border-light border-3 rounded rounded-3">
+        <div class="navbar-nav col-2 d-flex align-items-center me-2 ms-2">
+            <a class="py-0 nav-link" href="/projects.php">
+                <img src="LIMET_logo.png" alt="LIMETLOGO" style="height:3.5vh;">
+            </a>
+        </div>
+        <ul class="navbar-nav col-8 d-flex align-items-center flex-wrap">
             <li class="nav-item dropdown">
                 <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
                    data-bs-toggle="dropdown"><i class="fa fa-list-alt"></i> Projekte</a>
@@ -28,7 +27,7 @@
                     <li>
                         <a class="dropdown-item d-flex align-items-center" href="roombookSpecifications.php">
                             <div class="col-2 text-center">
-                               <i class="fas fa-tools"></i>
+                                <i class="fas fa-tools"></i>
                             </div>
                             <div class="col-10">
                                 Bauangaben alt
@@ -38,7 +37,7 @@
                     <li>
                         <a class="dropdown-item d-flex align-items-center" href="roombookSpecifications_New.php">
                             <div class="col-2 text-center">
-                            </i> <i class="fas fa-tools"></i>
+                                <i class="fas fa-tools"></i>
                             </div>
                             <div class="col-10">
                                 Bauangaben
@@ -48,7 +47,7 @@
                     <li>
                         <a class="dropdown-item d-flex align-items-center" href="roombookSpecificationsLab.php">
                             <div class="col-2 text-center">
-                             <i class="fas fa-tools"></i>
+                                <i class="fas fa-tools"></i>
                             </div>
                             <div class="col-10">
                                 Bauangaben Labor
@@ -217,12 +216,11 @@
                         Geräteliste</a></li>
                 </ul>
             </li>
-
             <li class="nav-item">
-                <a class="py-0 nav-link dropdown-toggle" href="firmenkontakte.php" role="button"><i
+                <a class="py-0 nav-link  " href="firmenkontakte.php" role="button"><i
                         class="fas fa-user-tie"></i> Firmen Kontakte</a>
             </li>
-            <li class="nav-item dropdown">
+            <!---li class="nav-item dropdown">
                 <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
                    data-bs-toggle="dropdown"><i class="fas fa-code"></i> Dev</a>
                 <ul class="dropdown-menu">
@@ -253,18 +251,21 @@
                         <i class="fas fa-skull-crossbones"> </i>
                         <i class="fas fa-ring"> </i>
                         <i class="fas fa-hospital-user"></i>
-                    Inflationsrechner
+                        Inflationsrechner
                     </a>
                     </li>
                 </ul>
-            </li>
+            </li    --->
         </ul>
-        <ul class="navbar-nav col-2 d-inline-flex align-items-center justify-content-end text-nowrap">
+
+        <ul class="navbar-nav col-1 d-flex align-items-center justify-content-end me-2 ms-2">
             <li class="nav-item"><a class="py-0 nav-link text-success disabled" id="projectSelected"
-                                    style="font-size:15px!important">Kein Projekttitel geladen</a></li>
-            <li><a class="py-0 nav-link" href="logout.php"><i class="fa fa-sign-out-alt"></i>Logout</a></li>
+                                    style="font-size:1.5vh;">Kein Projekttitel geladen</a></li>
+            <li><a class="py-0 nav-link text-nowrap" href="logout.php" style="font-size:1.5vh"><i
+                    class="fa fa-sign-out-alt"></i>Logout</a></li>
         </ul>
 
     </div>
 
 </nav>
+

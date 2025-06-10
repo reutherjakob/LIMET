@@ -46,7 +46,7 @@ function get_project()
     if (isset($_SESSION["projectName"])) {
         echo 'var currentP = ' . json_encode($_SESSION["projectName"]) . ';';
     } else {
-        echo 'var currentP = ' . json_encode(" KEIN PROJEKT AUSGEWÄHLT ") . ';';
+        echo 'var currentP = ' . json_encode(" Kein Projekt ") . ';';
     }
     echo '</script>';
 }

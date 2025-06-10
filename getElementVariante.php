@@ -79,13 +79,16 @@ $row = $result->fetch_assoc(); ?>
                         <div class='col-xxl-10'>
                             Variantenparameter
                         </div>
-                        <div class="col-xxl-2 d-flex align-items-center justify-content-end "
-                             id="variantenParameterCH"></div>
+                        <div class="col-xxl-2 d-flex align-items-center justify-content-end"
+                             id="variantenParameterCH">
+                            <button type='button' class='btn btn-warning btn-sm text-nowrap' value='saveAllParameter'><i
+                                        class='far fa-save'> Alle </i></button>
+                        </div>
                     </div>
                 </div>
                 <div class='card-body ' id='variantenParameter'>
                     <?php
-                    include_once "getElementParameterTable.php";
+                    include "getElementParameterTable.php";
                     generate_variante_parameter_inputtable();
                     ?>
                 </div>
@@ -99,7 +102,8 @@ $row = $result->fetch_assoc(); ?>
                     Mögliche Parameter
                 </div>
                 <div class='card-body ' id='possibleVariantenParameter'>
-                    <?php $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung,
+                    <?php $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung, 
+                                tabelle_parameter.Abkuerzung, 
                                 tabelle_parameter_kategorie.Kategorie
                                 FROM tabelle_parameter, tabelle_parameter_kategorie
                                 WHERE tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie =
@@ -131,6 +135,7 @@ $row = $result->fetch_assoc(); ?>
                                         <th> <i class='fas fa-plus'></i> </th>
                                         <th>Kategorie</th>
                                         <th>Parameter</th>
+                                        <th>Abk</th>
                                     </tr>
                                     </thead>
                                     <tbody>";
@@ -142,6 +147,7 @@ $row = $result->fetch_assoc(); ?>
                               <i class='fas fa-plus'></i></button></td>";
                         echo "<td>" . $row["Kategorie"] . "</td> ";
                         echo "<td>" . $row["Bezeichnung"] . "</td>";
+                        echo "<td>" . $row["Abkuerzung"] . "</td>";
                         echo "</tr> ";
                     }
 
@@ -273,7 +279,7 @@ $row = $result->fetch_assoc(); ?>
     });
 
     $(document).ready(function () {
-        $('#tableElementParameters').DataTable({
+        $('#tableElementParameters').DataTable({ //same as in getPossibleVarianteParameters.php
             select: true,
             searching: true,
             pagingType: "simple",
@@ -299,7 +305,8 @@ $row = $result->fetch_assoc(); ?>
             },
             scrollX: true,
             initComplete: function () {
-                $('#variantenParameterCh .xxx').remove();
+
+                $('#variantenParameterCH .xxx').remove();
                 $('#variantenParameter .dt-search label').remove();
                 $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#variantenParameterCH');
             }
@@ -368,7 +375,7 @@ $row = $result->fetch_assoc(); ?>
             },
             scrollX: true
         });
-    });
+    })
 
     // Variante auswählen/geändert
     $('#variante').change(function () {
@@ -498,6 +505,35 @@ $row = $result->fetch_assoc(); ?>
                 }
             });
         }
+    });
+
+    $("button[value='saveAllParameter']").click(function () {
+        const deleteBtns = document.querySelectorAll('#tableElementParameters tbody button[value="deleteParameter"]');
+        const ids = Array.from(deleteBtns).map(btn => btn.id);
+        let variantenID = $('#variante').val();
+
+        ids.forEach(function (id) {
+            let wertElement = $("#Wert_" + id);
+            let einheitElement = $("#Einheit_" + id);
+            let wert = wertElement.val();
+            let einheit = einheitElement.val();
+
+            if (id !== "") {
+                $.ajax({
+                    url: "updateParameter.php",
+                    data: {
+                        "parameterID": id,
+                        "wert": wert,
+                        "einheit": einheit,
+                        "variantenID": variantenID
+                    },
+                    type: "GET",
+                    success: function (data) {
+                        makeToaster(data.trim(), true);
+                    }
+                });
+            }
+        });
     });
 
     //Parameter von Variante entfernen

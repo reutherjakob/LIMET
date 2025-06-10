@@ -235,6 +235,7 @@ ORDER BY tabelle_elemente.ElementID;";
         ];
 
         $(document).ready(function () {
+
             tableElementsInProject = new DataTable('#tableElementsInProject', {
                 paging: true,
                 select: true,

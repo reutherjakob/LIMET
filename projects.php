@@ -237,7 +237,7 @@
                 },
                 type: "GET",
                 success: function () {
-                    $("#projectSelected").text("Aktuelles Projekt: " + projectName);
+                    $("#projectSelected").text(projectName);
                     $.ajax({
                         url: "getPersonsOfProject.php",
                         type: "GET",

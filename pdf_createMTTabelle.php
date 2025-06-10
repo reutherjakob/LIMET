@@ -2,7 +2,8 @@
 session_start();
 check_login();
 
-function checkEntry($jsonArray, $elementId, $parameterId) {
+function checkEntry($jsonArray, $elementId, $parameterId)
+{
     foreach ($jsonArray as $entry) {
         if ($entry['element'] == $elementId && $entry['parameter'] == $parameterId) {
             return true;
@@ -11,15 +12,16 @@ function checkEntry($jsonArray, $elementId, $parameterId) {
     return false;
 }
 
-function checkAndManipulateString($input) {
-    // Check if the string contains '/min'
+function checkAndManipulateString($input)
+{
     if (strpos($input, '/min') !== false) {
         $input = ' ' . $input;
     }
     return $input;
 }
 
-function abk_vz($result4, $pdf, $f_size) {
+function abk_vz($result4, $pdf, $f_size)
+{
     $result4->data_seek(0);
     while ($row1 = $result4->fetch_assoc()) {
         $text_width = $pdf->GetStringWidth($row1['Abkuerzung'] . "-", 'courier', 'B', $f_size);
@@ -30,15 +32,17 @@ function abk_vz($result4, $pdf, $f_size) {
         $pdf->MultiCell($text_width + 3, $f_size, $row1['Abkuerzung'] . "-", 0, 'R', 0, 0, '', '', true, 0, false, false, 0);
 
         $text_width = $pdf->GetStringWidth($row1['Bezeichnung'] . ";", 'courier', '', $f_size);
-        if (( $pdf->GetX() + $text_width) >= 400) {
+        if (($pdf->GetX() + $text_width) >= 400) {
             $pdf->Ln($f_size / 2);
         }
         $pdf->SetFont('courier', '', $f_size);
         $pdf->MultiCell($text_width + 3, $f_size, $row1['Bezeichnung'] . ";", 0, 'L', 0, 0, '', '', true, 0, false, false, 0);
-    } $pdf->SetFont('courier', 'B', $f_size);
+    }
+    $pdf->SetFont('courier', 'B', $f_size);
 }
 
-function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dataChanges) {
+function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dataChanges)
+{
 
     // $result4 = Abkürzungen
     // -------------------------Elemente parameter -------------------------
@@ -117,7 +121,7 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dat
     while ($row = $result->fetch_assoc()) {
         //---------------- Prüfen ob Seitenende---------------------------------------------------------
         $y = $pdf->GetY();
-        if ($y >= $SH - 5) {
+        if ($y >= $SH + 5) {
             abk_vz($result1, $pdf, $f_size);
             $pdf->AddPage('L', 'A3');
             $lastXCoordinateHeader = $pdf->GetX();
