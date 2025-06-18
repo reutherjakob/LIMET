@@ -14,6 +14,12 @@ function checkEntry($jsonArray, $elementId, $parameterId)
 
 function checkAndManipulateString($input)
 {
+    if ($input === "\'\'" || $input === '\"' ) {
+        // Option 1: Use inch symbol
+        return '"';
+        // Option 2: Return empty string if you want no unit displayed
+        // return '';
+    }
     if (strpos($input, '/min') !== false) {
         $input = ' ' . $input;
     }
@@ -121,7 +127,7 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dat
     while ($row = $result->fetch_assoc()) {
         //---------------- Prüfen ob Seitenende---------------------------------------------------------
         $y = $pdf->GetY();
-        if ($y >= $SH + 5) {
+        if ($y >= $SH - 5) {
             abk_vz($result1, $pdf, $f_size);
             $pdf->AddPage('L', 'A3');
             $lastXCoordinateHeader = $pdf->GetX();

@@ -12,7 +12,7 @@ class MYPDF extends TCPDF
 {
     public function Header()
     {
-       get_header_logo($this);
+        get_header_logo($this);
         $this->SetFont('helvetica', '', 10);
         $mysqli = utils_connect_sql();
         $sql = "SELECT tabelle_Vermerkgruppe.Gruppenname, tabelle_Vermerkgruppe.Gruppenart, tabelle_Vermerkgruppe.Ort, tabelle_Vermerkgruppe.Verfasser, tabelle_Vermerkgruppe.Startzeit, tabelle_Vermerkgruppe.Endzeit, tabelle_Vermerkgruppe.Datum, tabelle_projekte.Projektname
@@ -124,13 +124,16 @@ class MYPDF extends TCPDF
                     $betreffText = $betreffText . 'Betrifft Raum: ' . $row['Raumnummer_Nutzer'] . " " . $row['Raumbezeichnung'] . "\n";
                 } else {
                     if (null != ($row['Raumnr'])) {
-                        $betreffText = $betreffText . 'Betrifft Raum: ' . " " . $row['Raumnr'] . " " . $row['Raumbezeichnung'] . "\n";
+                        if (preg_match('/\d/', $row['Raumnr'])) {
+                            $betreffText = $betreffText . 'Betrifft Raum: ' . $row['Raumnr'] . " " . $row['Raumbezeichnung'] . "\n";
+                        } else {
+                            $betreffText = $betreffText . 'Betrifft: ' . $row['Raumnr'] . " " . $row['Raumbezeichnung'] . "\n";
+                        }
                     }
                 }
                 if (null != ($row['LosNr_Extern'])) {
                     $betreffText = $betreffText . 'Betrifft Los: ' . $row['LosNr_Extern'] . " " . $row['LosBezeichnung_Extern'] . "\n";
                 }
-
                 if ($row['Vermerkart'] === 'Bearbeitung') {
                     $textNameFälligkeit = $row['Name'] . "\n" . $row['Faelligkeit'];
                     if ($row['Bearbeitungsstatus'] === "0") {
@@ -145,7 +148,6 @@ class MYPDF extends TCPDF
                 $rowHeight4 = $this->getStringHeight($w[0], $betreffText, false, true, '', 1);
                 $rowHeight2 = $this->getStringHeight($w[2], $textNameFälligkeit, false, true, '', 1);
                 $rowHeight3 = $this->getStringHeight($w[0], $row['Untergruppennummer'] . " " . $row['Untergruppenname'], false, true, '', 1);
-
                 if ($rowHeight1 + $rowHeight4 > $rowHeight2) {
                     $rowHeight = $rowHeight1 + $rowHeight4;
                 } else {
@@ -171,7 +173,6 @@ class MYPDF extends TCPDF
                     $untergruppenID = $row['idtabelle_Vermerkuntergruppe'];
                     $fill = 0;
                 }
-
                 $y = $this->GetY();
                 if (($y + $rowHeight1) >= 260) {
                     $this->AddPage();

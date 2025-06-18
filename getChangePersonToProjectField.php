@@ -1,283 +1,214 @@
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 check_login();
 
 $mysqli = utils_connect_sql();
-// Personendaten im Projekt laden
-$sql = "SELECT tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projekte_idTABELLE_Projekte, 
-			tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen, 
-			tabelle_ansprechpersonen.Name, 
-			tabelle_ansprechpersonen.Vorname, 
-			tabelle_ansprechpersonen.Tel, 
-			tabelle_ansprechpersonen.Adresse, 
-			tabelle_ansprechpersonen.PLZ, 
-			tabelle_ansprechpersonen.Ort, 
-			tabelle_ansprechpersonen.Land, 
-			tabelle_ansprechpersonen.Mail, 
-                        tabelle_ansprechpersonen.Raumnr,
-			tabelle_organisation.idtabelle_organisation, 
-			tabelle_projektzuständigkeiten.idTABELLE_Projektzuständigkeiten
-			FROM tabelle_ansprechpersonen INNER JOIN (tabelle_organisation INNER JOIN (tabelle_projektzuständigkeiten INNER JOIN tabelle_projekte_has_tabelle_ansprechpersonen ON tabelle_projektzuständigkeiten.idTABELLE_Projektzuständigkeiten = tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projektzuständigkeiten_idTABELLE_Projektzuständigkeiten) ON tabelle_organisation.idtabelle_organisation = tabelle_projekte_has_tabelle_ansprechpersonen.tabelle_organisation_idtabelle_organisation) ON tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen = tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen
-			WHERE (((tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen)=" . $_GET["personID"] . "));";
 
-$result = $mysqli->query($sql);
-$row = $result->fetch_assoc();
-
-$name = $row["Name"];
-$vorname = $row["Vorname"];
-$tel = $row["Tel"];
-$adresse = $row["Adresse"];
-$plz = $row["PLZ"];
-$ort = $row["Ort"];
-$land = $row["Land"];
-$mail = $row["Mail"];
-$id_organisation = $row["idtabelle_organisation"];
-$id_zustaendigkeit = $row["idTABELLE_Projektzuständigkeiten"];
-$raumNr = $row["Raumnr"];
-
-
-echo "<form class='form-horizontal' role='form'>
-		 <div class='form-group row'>
-	 			<label class='control-label col-xxl-2' for='Name'>Name</label>
-	 			<div class='col-xxl-8'>
-	 				<input type='text' class='form-control form-control-sm' id='Name' value='" . $name . "'></input>
-				</div>						  			 											 						 			
-	 	</div>		  			 		
-	 	<div class='form-group row'>
-	 			<label class='control-label col-xxl-2' for='Vorname'>Vorname</label>
-	 			<div class='col-xxl-8'>
-	 				<input type='text' class='form-control form-control-sm' id='Vorname' value='" . $vorname . "'></input>
-				</div>	
-		</div>
-		<div class='form-group row'>
-	 			<label class='control-label col-xxl-2' for='Tel'>Tel</label>
-	 			<div class='col-xxl-8'>
-	 				<input type='text' class='form-control form-control-sm' id='Tel' value='" . $tel . "'></input>
-				</div>	
-		</div>
-		<div class='form-group row'>
-	 			<label class='control-label col-xxl-2' for='Adresse'>Adresse</label>
-	 			<div class='col-xxl-8'>
-	 				<input type='text' class='form-control form-control-sm' id='Adresse' value='" . $adresse . "'></input>
-				</div>	
-		</div>
-		<div class='form-group row'>
-	 			<label class='control-label col-xxl-2' for='PLZ'>PLZ</label>
-	 			<div class='col-xxl-8'>
-	 				<input type='text' class='form-control form-control-sm' id='PLZ' value='" . $plz . "'></input>
-				</div>	
-		</div>
-		<div class='form-group row'>
-	 			<label class='control-label col-xxl-2' for='Ort'>Ort</label>
-	 			<div class='col-xxl-8'>
-	 				<input type='text' class='form-control form-control-sm' id='Ort' value='" . $ort . "'></input>
-				</div>	
-		</div>
-		<div class='form-group row'>
-	 			<label class='control-label col-xxl-2' for='Land'>Land</label>
-	 			<div class='col-xxl-8'>
-	 				<input type='text' class='form-control form-control-sm' id='Land' value='" . $land . "'></input>
-				</div>	
-		</div>
-		<div class='form-group row'>
-	 			<label class='control-label col-xxl-2' for='Email'>Email</label>
-	 			<div class='col-xxl-8'>
-	 				<input type='text' class='form-control form-control-sm' id='Email' value='" . $mail . "'></input>
-				</div>	
-		</div>";
-
-$sql = "SELECT tabelle_projektzuständigkeiten.idTABELLE_Projektzuständigkeiten, tabelle_projektzuständigkeiten.Zuständigkeit FROM tabelle_projektzuständigkeiten ORDER BY Zuständigkeit;";
-$result = $mysqli->query($sql);
-
-
-echo "<div class='form-group row'>
-	 			<label class='control-label col-xxl-2' for='zustaendigkeit'>Zuständigkeit</label>
-				<div class='col-xxl-8'>
-					<select class='form-control form-control-sm' id='zustaendigkeit' name='selectCategory'>";
-while ($row = $result->fetch_assoc()) {
-    if ($id_zustaendigkeit == $row["idTABELLE_Projektzuständigkeiten"]) {
-        echo "<option value=" . $row["idTABELLE_Projektzuständigkeiten"] . " selected>" . $row["Zuständigkeit"] . "</option>";
-    } else {
-        echo "<option value=" . $row["idTABELLE_Projektzuständigkeiten"] . ">" . $row["Zuständigkeit"] . "</option>";
+/**
+ * Fetches all options for a select dropdown.
+ */
+function getSelectOptions($mysqli, $sql, $valueField, $textField, $selectedValue = null)
+{
+    $result = $mysqli->query($sql);
+    $options = '';
+    while ($row = $result->fetch_assoc()) {
+        $selected = ($row[$valueField] == $selectedValue) ? 'selected' : '';
+        $options .= "<option value='" . htmlspecialchars($row[$valueField]) . "' $selected>" .
+            htmlspecialchars($row[$textField]) .
+            "</option>";
     }
+    return $options;
 }
-echo "</select></div></div>";
 
-$sql = "SELECT tabelle_organisation.idtabelle_organisation, tabelle_organisation.Organisation FROM tabelle_organisation ORDER BY Organisation;";
-$result = $mysqli->query($sql);
+// --- Fetch person data ---
+$personSql = <<<SQL
+SELECT
+    tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projekte_idTABELLE_Projekte,
+    tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen,
+    tabelle_ansprechpersonen.Name,
+    tabelle_ansprechpersonen.Vorname,
+    tabelle_ansprechpersonen.Tel,
+    tabelle_ansprechpersonen.Adresse,
+    tabelle_ansprechpersonen.PLZ,
+    tabelle_ansprechpersonen.Ort,
+    tabelle_ansprechpersonen.Land,
+    tabelle_ansprechpersonen.Mail,
+    tabelle_ansprechpersonen.Raumnr,
+    tabelle_organisation.idtabelle_organisation,
+    tabelle_projektzuständigkeiten.idTABELLE_Projektzuständigkeiten
+FROM tabelle_ansprechpersonen
+INNER JOIN (
+    tabelle_organisation
+    INNER JOIN (
+        tabelle_projektzuständigkeiten
+        INNER JOIN tabelle_projekte_has_tabelle_ansprechpersonen
+        ON tabelle_projektzuständigkeiten.idTABELLE_Projektzuständigkeiten = tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projektzuständigkeiten_idTABELLE_Projektzuständigkeiten
+    )
+    ON tabelle_organisation.idtabelle_organisation = tabelle_projekte_has_tabelle_ansprechpersonen.tabelle_organisation_idtabelle_organisation
+)
+ON tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen = tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen
+WHERE tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projekte_idTABELLE_Projekte = {$_SESSION["projectID"]}
+  AND tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen = {$_GET["personID"]}
+SQL;
 
-echo "<div class='form-group row'>
-	 			<label class='control-label col-xxl-2' for='organisation'>Organisation</label>
-				<div class='col-xxl-8'>
-					<select class='form-control form-control-sm' id='organisation' name='organisation'>";
-while ($row = $result->fetch_assoc()) {
-    if ($id_organisation == $row["idtabelle_organisation"]) {
-        echo "<option value=" . $row["idtabelle_organisation"] . " selected>" . $row["Organisation"] . "</option>";
-    } else {
-        echo "<option value=" . $row["idtabelle_organisation"] . ">" . $row["Organisation"] . "</option>";
-    }
-}
-echo "</select>	
-				</div>
-		</div>
-                <div class='form-group row'>
-	 			<label class='control-label col-xxl-2' for='Raumnr'>Raumnr</label>
-	 			<div class='col-xxl-8'>
-	 				<input type='text' class='form-control form-control-sm' id='Raumnr' value='" . $raumNr . "'>
-				</div>	
-		</div>
-	 	<div class='form-check-inline'>
-	 	<!-- <button type='button' id='" . $_GET["personID"] . "' class='btn btn-warning btn-sm' value='Personendaten ändern'> <i class='fas fa-save' ></i> </button>
-			<button type='button' id='addPersonToProjectButton' class='btn btn-success btn-sm' value='Person zu Projekt hinzufügen'> <i class='fas fa-plus'></i> </button>
-	 		<button type='button' id='" . $_GET["personID"] . "' class='btn btn-danger btn-sm' value='Person von Projekt entfernen'> <i class='fas fa-minus'></i> </button>
-	 		  <i class='fas fa-user-minus'></i> <i class='fas fa-user-slash'></i>   
-	 		  
-	 	<button type='button' id='addPersonToProjectButton' class='btn btn-success btn-sm' data-bs-toggle='tooltip' data-bs-placement='top' title='Person zu Projekt hinzufügen'>    <i class='fas fa-plus'></i>
-        </button>  	 -->
-	    <button type='button' id='" . $_GET["personID"] . "' class='btn btn-warning btn-sm' data-bs-toggle='tooltip' data-bs-placement='top' title='Personendaten ändern'>       <i class='fas fa-edit'></i>
+$personResult = $mysqli->query($personSql);
+$person = $personResult->fetch_assoc();
+
+// --- Prepare select options ---
+$zustaendigkeitOptions = getSelectOptions(
+    $mysqli,
+    "SELECT idTABELLE_Projektzuständigkeiten, Zuständigkeit FROM tabelle_projektzuständigkeiten ORDER BY Zuständigkeit",
+    "idTABELLE_Projektzuständigkeiten",
+    "Zuständigkeit",
+    $person["idTABELLE_Projektzuständigkeiten"] ?? null
+);
+
+$organisationOptions = getSelectOptions(
+    $mysqli,
+    "SELECT idtabelle_organisation, Organisation FROM tabelle_organisation ORDER BY Organisation",
+    "idtabelle_organisation",
+    "Organisation",
+    $person["idtabelle_organisation"] ?? null
+);
+
+// --- Define form fields ---
+$formFields = [
+    ['Name', 'text', $person['Name'] ?? ''],
+    ['Vorname', 'text', $person['Vorname'] ?? ''],
+    ['Tel', 'text', $person['Tel'] ?? ''],
+    ['Adresse', 'text', $person['Adresse'] ?? ''],
+    ['PLZ', 'text', $person['PLZ'] ?? ''],
+    ['Ort', 'text', $person['Ort'] ?? ''],
+    ['Land', 'text', $person['Land'] ?? ''],
+    ['Email', 'email', $person['Mail'] ?? ''],
+    ['Raumnr', 'text', $person['Raumnr'] ?? ''],
+];
+
+// --- Render form ---
+?>
+<form class="form-horizontal" role="form">
+    <?php foreach ($formFields as [$label, $type, $value]): ?>
+        <div class="form-group row">
+            <label class="control-label col-xxl-2" for="<?= $label ?>"><?= $label ?></label>
+            <div class="col-xxl-8">
+                <input type="<?= $type ?>" class="form-control form-control-sm" id="<?= $label ?>"
+                       value="<?= htmlspecialchars($value) ?>">
+            </div>
+        </div>
+    <?php endforeach; ?>
+
+    <!-- Zuständigkeit Select + Add Button -->
+    <div class="form-group row">
+        <label class="control-label col-xxl-2" for="zustaendigkeit">Zuständigkeit</label>
+        <div class="col-xxl-8">
+            <div class="input-group">
+                <select class="form-control form-control-sm" id="zustaendigkeit" name="zustaendigkeit">
+                    <?= $zustaendigkeitOptions ?>
+                </select>
+                <button type="button" class="btn btn-outline-success" id="addZustaendigkeitBtn"
+                        title="Zuständigkeit hinzufügen">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Organisation Select + Add Button -->
+    <div class="form-group row">
+        <label class="control-label col-xxl-2" for="organisation">Organisation</label>
+        <div class="col-xxl-8">
+            <div class="input-group">
+                <select class="form-control form-control-sm" id="organisation" name="organisation">
+                    <?= $organisationOptions ?>
+                </select>
+                <button type="button" class="btn btn-outline-success" id="addOrganisationBtn"
+                        title="Organisation hinzufügen">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="form-check-inline">
+        <button
+                type="button"
+                id="btn-edit"
+                class="btn btn-warning btn-sm mt-2"
+                data-person-id="<?= $_GET["personID"] ?>"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="Personendaten ändern">
+            Personendaten ändern <i class="fas fa-edit"></i>
         </button>
-        <button type='button' id='" . $_GET["personID"] . "' class='btn btn-danger btn-sm' data-bs-toggle='tooltip' data-bs-placement='top' title='Person von Projekt entfernen' >    <i class='fas fa-minus'></i>
+        <button
+                type="button"
+                id="btn-remove"
+                class="btn btn-danger btn-sm mt-2"
+                data-person-id="<?= $_GET["personID"] ?>"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="Person von Projekt entfernen">
+            Person von Projekt entfernen <i class="fas fa-minus"></i>
         </button>
-	 	</div>			  
-	</form>";
+    </div>
+
+</form>
+<?php
 $mysqli->close();
 ?>
 
-<script charset="utf-8">
-
-    document.addEventListener("DOMContentLoaded", function () {
-        let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
+<script src="_utils.js"></script>
+<script src="createNewOrganisationAndZusändigkeit.js"></script>
+<script>
+    $(function () {
+        $('[data-bs-toggle="tooltip"]').each(function () {
+            new bootstrap.Tooltip(this);
         });
-    });
 
+        // Save person data (delegated)
+        $(document).on('click', '#btn-edit', function () {
+            let personID = $(this).data("person-id");
+            let data = {
+                Name: $("#Name").val(),
+                Vorname: $("#Vorname").val(),
+                Tel: $("#Tel").val(),
+                Adresse: $("#Adresse").val(),
+                PLZ: $("#PLZ").val(),
+                Ort: $("#Ort").val(),
+                Land: $("#Land").val(),
+                Email: $("#Email").val(),
+                personID: personID,
+                zustaendigkeit: $("#zustaendigkeit").val(),
+                organisation: $("#organisation").val(),
+                Raumnr: $("#Raumnr").val()
+            };
+            console.log(JSON.stringify(data));
 
-    /* $("button[title='Person zu Projekt hinzufügen']").click(function () {
-       let Name = $("#Name").val();
-       let Vorname = $("#Vorname").val();
-       let Tel = $("#Tel").val();
-       let Adresse = $("#Adresse").val();
-       let PLZ = $("#PLZ").val();
-       let Ort = $("#Ort").val();
-       let Land = $("#Land").val();
-       let Email = $("#Email").val();
-       let zustaendigkeit = $("#zustaendigkeit").val();
-       let organisation = $("#organisation").val();
-       let Raumnr = $("#Raumnr").val();
+            if (data.Name && data.Vorname && data.Tel) {
+                $.get("savePersonProjectData.php", data, function (response) {
+                    makeToaster(response,true);
+                    $("#personsInProject").load("getPersonsOfProject.php");
+                });
+            } else {
+                alert("Bitte überprüfen Sie Ihre Angaben");
+            }
+        });
 
-       if (Name.length > 0 && Vorname.length > 0 && Tel.length > 0) {
-           $.ajax({
-               url: "addPersonToProject.php",
-               data: {
-                   "Name": Name,
-                   "Vorname": Vorname,
-                   "Tel": Tel,
-                   "Adresse": Adresse,
-                   "PLZ": PLZ,
-                   "Ort": Ort,
-                   "Land": Land,
-                   "Email": Email,
-                   "zustaendigkeit": zustaendigkeit,
-                   "organisation": organisation,
-                   "Raumnr": Raumnr
-               },
-               type: "GET",
-               success: function (data) {
-                   alert(data);
-                   $.ajax({
-                       url: "getPersonsOfProject.php",
-                       type: "GET",
-                       success: function (data) {
-                           $("#personsInProject").html(data);
-                       }
-                   });
-               }
-           });
-       } else {
-           alert("Bitte überprüfen Sie Ihre Angaben");
-       }
-   }); */
-
-    // Personendaten ändern
-    $("button[title='Personendaten ändern']").click(function () {
-        let Name = $("#Name").val();
-        let Vorname = $("#Vorname").val();
-        let Tel = $("#Tel").val();
-        let Adresse = $("#Adresse").val();
-        let PLZ = $("#PLZ").val();
-        let Ort = $("#Ort").val();
-        let Land = $("#Land").val();
-        let Email = $("#Email").val();
-        let zustaendigkeit = $("#zustaendigkeit").val();
-        let organisation = $("#organisation").val();
-        let Raumnr = $("#Raumnr").val();
-        let personID = this.id;
-
-        if (Name.length > 0 && Vorname.length > 0 && Tel.length > 0) {
-            $.ajax({
-                url: "savePersonProjectData.php",
-                data: {
-                    "Name": Name,
-                    "Vorname": Vorname,
-                    "Tel": Tel,
-                    "Adresse": Adresse,
-                    "PLZ": PLZ,
-                    "Ort": Ort,
-                    "Land": Land,
-                    "Email": Email,
-                    "personID": personID,
-                    "zustaendigkeit": zustaendigkeit,
-                    "organisation": organisation,
-                    "Raumnr": Raumnr
-                },
-                type: "GET",
-                success: function (data) {
-                    alert(data);
-                    $.ajax({
-                        url: "getPersonsOfProject.php",
-                        type: "GET",
-                        success: function (data) {
-                            $("#personsInProject").html(data);
-                        }
-                    });
-                }
+        // Remove person from project (delegated)
+        $(document).on('click', '#btn-remove', function () {
+            let personID = $(this).data("person-id");
+            $.get("deletePersonFromProject.php", {personID: personID}, function (response) {
+                alert(response);
+                $("#personsInProject").load("getPersonsOfProject.php", function () {
+                    $("#personsNotInProject").load("getPersonsNotInProject.php");
+                });
+            }).fail(function () {
+                alert("Fehler beim Entfernen der Person.");
             });
-        } else {
-            alert("Bitte überprüfen Sie Ihre Angaben");
-        }
-    });
-
-    // Person von Projekt entfernen
-    $("button[title='Person von Projekt entfernen']").click(function (message) {
-        let personID = this.id;
-            $.ajax({
-                url: "deletePersonFromProject.php",
-                data: {"personID": personID},
-                type: "GET",
-                success: function (data) {
-                    alert(data);
-                    $.ajax({
-                        url: "getPersonsOfProject.php",
-                        type: "GET",
-                        success: function (data) {
-                            $("#personsInProject").html(data);
-
-                            $.ajax({
-                                url: "getPersonsNotInProject.php",
-                                type: "GET",
-                                success: function (data) {
-                                    $("#personsNotInProject").html(data);
-                                }
-                            });
-
-                        }
-                    });
-                },
-                error: function (data) {
-                    alert("Lol, hätteste gern.\nGeht aber nich... \nFrag den Jakob. \n",  data);
-                }
-            });
+        });
     });
 
 

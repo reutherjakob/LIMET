@@ -18,7 +18,7 @@ let currentColInd = 0;
 let current_edit = false; //keeps track if the input field to edit the cells is open
 let Cookie_aktiv_tage = 90;
 let previous_room_session = 0;
-
+var currentSort = {column: 0, dir: 'asc'};
 var tableRoomElements;  // tableRoomElements  && hideZeroFilter required for: getRoomELmeentsDetailed1.php
 
 var hideZeroFilter = function (settings, data, dataIndex) { // 06052025
@@ -53,6 +53,7 @@ $(document).ready(function () {
     init_filter();
     handleCheckboxChange();
     add_room_modal();
+
 });
 
 function add_MT_rel_filter(location, table) {

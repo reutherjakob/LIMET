@@ -1,76 +1,36 @@
 <?php
-function generateEinheitField($kategorie, $bezeichnung, $type, $options, $id, $currentValue, $row): string
+
+include "ElementParameterDefinitions.php";
+
+function generateSelectField($type, $options, $id, $currentValue)
 {
-    if (
-        $row["Kategorie"] === $kategorie &&
-        $row["Bezeichnung"] === $bezeichnung &&
-        $type === "Einheit"
-    ) {
-        $html = "<td><select class='form-select form-select-sm' id='{$type}_{$id}'>";
-        foreach ($options as $option) {
-            $selected = $currentValue === $option ? "selected" : "";
-            $html .= "<option value='{$option}' {$selected}>{$option}</option>";
-        }
-        $html .= "</select></td>";
-        return $html;
+    $idAttr = htmlspecialchars("{$type}_{$id}");
+    $html = "<td><select class='form-select form-select-sm' id='{$idAttr}'>";
+    foreach ($options as $option) {
+        $optionEsc = htmlspecialchars($option);
+        $selected = ($currentValue === $option) ? " selected" : "";
+        $html .= "<option value='{$optionEsc}'{$selected}>{$optionEsc}</option>";
     }
-    return "";
-}
-function generateWertField($kategorie, $bezeichnung, $type, $options, $id, $currentValue, $row): string
-{
-    if (
-        $row["Kategorie"] === $kategorie &&
-        $row["Bezeichnung"] === $bezeichnung &&
-        $type === "Wert"
-    ) {
-        $html = "<td><select class='form-select form-select-sm' id='{$type}_{$id}'>";
-        foreach ($options as $option) {
-            $selected = $currentValue === $option ? "selected" : "";
-            $html .= "<option value='{$option}' {$selected}>{$option}</option>";
-        }
-        $html .= "</select></td>";
-        return $html;
-    }
-    return "";
+    $html .= "</select></td>";
+    return $html;
 }
 
-
-function generate_parameter_input($row, $type): string
+function generate_parameter_input($row, $type)
 {
+    global $parameterFieldConfig; // Or pass as parameter / use static
+
     $id = $row["tabelle_parameter_idTABELLE_Parameter"];
     $currentValue = $row[$type];
 
-    $html = generateWertField("Statik", "Wandverstärkung", $type, [  "50", "100", "150", "200", "Ja"], $id, $currentValue, $row);
-    if ($html) return $html;
-
-    $html = generateEinheitField("Statik", "Wandverstärkung", $type, ["kg/lfm", ""], $id, $currentValue, $row);
-    if ($html) return $html;
-
-    $html = generateEinheitField("Elektro", "Spannung", $type, ["V", "kV", "V DC"], $id, $currentValue, $row);
-    if ($html) return $html;
-
-    $html = generateEinheitField("Elektro", "Nennleistung", $type, ["W", "kW", "VA", "kVA"], $id, $currentValue, $row);
-    if ($html) return $html;
-
-    $html = generateEinheitField("HKLS", "Abwärme", $type, ["W", "kW"], $id, $currentValue, $row);
-    if ($html) return $html;
-
-    // Netzart special case
-    if ($row["Kategorie"] === "Elektro" && $row["Bezeichnung"] === "Netzart") {
-        $options = ($type === "Wert")
-            ? ["", "AV", "SV", "ZSV", "USV", "AV/SV", "SV/ZSV", "ZSV/USV", "Akku"]
-            : ["", "/Akku"];
-
-        $html = "<td><select class='form-select form-select-sm' id='{$type}_{$id}'>";
-        foreach ($options as $option) {
-            $selected = $currentValue === $option ? "selected" : "";
-            $html .= "<option value='{$option}' {$selected}>{$option}</option>";
-        }
-        $html .= "</select></td>";
-        return $html;
+    $key = "{$row['Kategorie']}|{$row['Bezeichnung']}|{$type}";
+    if (isset($parameterFieldConfig[$key])) {
+        return generateSelectField($type, $parameterFieldConfig[$key], $id, $currentValue);
     }
 
-    return "<td><input type='text' class='form-control form-control-sm' id='{$type}_{$id}' value='" . htmlspecialchars($currentValue) . "' size='30'></td>";
+    // Default: text input
+    $idAttr = htmlspecialchars("{$type}_{$id}");
+    $valueAttr = htmlspecialchars($currentValue);
+    return "<td><input type='text' class='form-control form-control-sm' id='{$idAttr}' value='{$valueAttr}' size='30'></td>";
 }
 
 

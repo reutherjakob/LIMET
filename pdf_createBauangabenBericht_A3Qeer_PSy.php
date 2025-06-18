@@ -189,7 +189,8 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $outsr = "";
 
         $powerItems = [
-            ['ET_Anschlussleistung_W', 'Raum: Anschlussl. ohne Glz:', $e_C],
+            ['ET_Anschlussleistung_W', 'Raum Anschlussleistung
+            :', $e_C],
             ['ET_Anschlussleistung_AV_W', 'AV[Raum]: ', $e_C_2_3rd],
             ['ET_Anschlussleistung_SV_W', 'SV[Raum]: ', $e_C_2_3rd],
             ['ET_Anschlussleistung_ZSV_W', 'ZSV[Raum]: ', $e_C_2_3rd],
@@ -354,7 +355,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $Block_height = 6 + $horizontalSpacerLN2 + getAnmHeight($pdf, $row['Anmerkung HKLS'], $SB);
         block_label_queer($block_header_w, $pdf, "Haustechnik", $Block_height, $block_header_height, $SB);
 
-        multicell_text_hightlight($pdf, $e_C, $font_size, "HT_Waermeabgabe_W", "Raum Abwärme ohne Glz: ", $parameter_changes_t_räume);
+        multicell_text_hightlight($pdf, $e_C, $font_size, "HT_Waermeabgabe_W", "Abwärme MT: ", $parameter_changes_t_räume);
         $abwrem_out = ($row['HT_Waermeabgabe_W'] === "0" || $row['HT_Waermeabgabe_W'] == 0 || $row['HT_Waermeabgabe_W'] == "-")
             ? "k.A."
             : kify($row['HT_Waermeabgabe_W']) . "W";
@@ -504,7 +505,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         } else {
             $pdf->Line(15, $pdf->GetY(), $SB + 15, $pdf->GetY(), $style_normal);
             block_label_queer($block_header_w, $pdf, "Med.-tech.", $upcmn_blck_size, $block_header_height, $SB); //el_in_room_html_table($pdf, $resultX, 1, "A3", $SB-$block_header_w);
-            $pdf->Multicell(0, 0, "Keine Medizintechnische Ausstattung.", "", "L", 0, 0);
+            $pdf->Multicell(0, 0, "Keine medizintechnische Ausstattung.", "", "L", 0, 0);
             $pdf->Ln();
         }
     } //sql:fetch-assoc

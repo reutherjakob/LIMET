@@ -52,7 +52,7 @@ foreach ($teile as $valueOfRoomID) {
                 WHERE (((tabelle_räume.idTABELLE_Räume)=" . $valueOfRoomID . "));";
 
     $result2 = $mysqli->query($sql);
-
+    $pdf->Ln(2);
     createRaumHeaderRaumbuch($pdf, $result2);
 
     $pdf->Ln();

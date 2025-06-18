@@ -44,7 +44,8 @@
                 <div class="card-header" id="PRCardHeader">
                     <div class="row">
                         <div class="col-xxl-6"><b>Projekte</b></div>
-                        <div class="col-xxl-6 d-inline-flex justify-content-end text-nowrap align-items-center" id="STH">
+                        <div class="col-xxl-6 d-inline-flex justify-content-end text-nowrap align-items-center"
+                             id="STH">
                             <div class="form-check form-check-inline align-items-center float-end">
                                 <input class="form-check-input" type="checkbox" id="filter_ActiveProjects" checked>
                                 <label class="form-check-label" for="filter_ActiveProjects">
@@ -89,7 +90,20 @@
                             echo "<td>" . $row["idTABELLE_Projekte"] . "</td>";
                             echo "<td> <button type='button' id='" . $row["idTABELLE_Projekte"] . "' class='btn btn-outline-dark btn-sm' value='changeProject' data-bs-toggle='modal' data-bs-target='#changeProjectModal'><i class='fas fa-pencil-alt'></i></button></td>";
                             echo "<td>" . $row["Interne_Nr"] . "</td>";
-                            echo "<td><b>" . $row["Projektname"] . "</b></td>";
+                            if ($row["Projektname"] == "BBE") {
+                                echo "<td><b> <i class='fas fa-pray me-2'></i>" . $row["Projektname"] . " </b></td>";
+                            } else if ($row["Projektname"] == "GCP") {
+                                echo "<td><b> <i class='fas fa-toilet-paper me-2'></i>" . $row["Projektname"] . " </b></td>";
+                            } else if ($row["Projektname"] == "Test") {
+                                echo "<td><b> <i class='fas fa-bug me-2'></i>" . $row["Projektname"] . " </b></td>";
+                            } else if ($row["Projektname"] == "VS Bertha von Suttner Zahnambulatorium") {
+                                echo "<td><b> <i class='fas fa-tooth me-2'></i>" . $row["Projektname"] . " </b></td>";
+                            } else if ($row["Projektname"] == "Cino 2.1") {
+                                echo "<td><b> <i class='fas fa-smoking me-2'></i>" . $row["Projektname"] . " </b></td>";
+                            }  else {
+                                echo "<td><b>" . $row["Projektname"] . "</b></td>";
+                            }
+
                             echo "<td>";
                             if ($row["Aktiv"] == 1) {
                                 echo "Ja";
@@ -115,7 +129,7 @@
                         } ?>
                         </tbody>
                     </table>
-                    
+
                 </div>
             </div>
         </div>
@@ -125,6 +139,15 @@
                 <div class='card-header'>Quick-Check
                 </div>
                 <div class='card-body' id='quickCheckDashboard'>
+                </div>
+            </div>
+            <div class='card mt-2'>
+                <div class='card-header'> Updates
+                </div>
+                <div class='card-body'>
+                    Falls Mensch ebenso ein Projekt Icon setzen will,
+                    <a href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free" target="_blank">hier</a>
+                    auswählen.
                 </div>
             </div>
         </div>

@@ -30,7 +30,18 @@ init_page_serversides();
 <div id="limet-navbar"></div> <!-- Container für Navbar -->
 <div class="container-fluid">
     <div class="mt-4 card">
-        <div class="card-header" id="CardHeaderRooms"></div>
+        <div class="card-header">
+            <div class="row ">
+                <div class="col-6"></div>
+                <div class="col-6 d-flex justify-content-end align-items-center" id="CardHeaderRooms">
+                    <select id="mtRelevantFilter" class="form-select form-select-sm mx-2" style="width:auto; display:inline-block;">
+                        <option value="">MT.-rel</option>
+                        <option value="1">Ja</option>
+                        <option value="0">Nein</option>
+                    </select>
+                </div>
+            </div>
+        </div>
         <div class="card-body">
             <?php
             $mysqli = utils_connect_sql();
@@ -114,13 +125,12 @@ init_page_serversides();
             });
         });
         var table = $('#tableRooms').DataTable({
-            //layout: {
-            //    topEnd: 'search',
-            //    topStart: 'buttons',
-            //    bottomEnd: 'paging',
-            //    bottomStart: 'info'
-            //},
-            dom: '<"#topDiv.top-container d-flex"<"col-md-6 justify-content-start"B><"col-md-6"f>>t<"bottom d-flex" <"col-md-6 justify-content-start"i><"col-md-6 d-flex justify-content-end"p>>',
+            layout: {
+                topEnd: ['buttons', 'search'],
+                topStart: null,
+                bottomEnd: 'paging',
+                bottomStart: 'info'
+            },
             columnDefs: [
                 {
                     targets: [0],
@@ -138,11 +148,28 @@ init_page_serversides();
                 numbers: 10
             },
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json', search: ""
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                search: "",
+                searchPlaceholder: "Suche..."
             },
             buttons: ["searchBuilder", "colvis"],
             initComplete: function () {
-                $('#topDiv').appendTo("#CardHeaderRooms");
+                $('.dt-search label').remove();
+                $('#tableRooms_wrapper .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-outline-dark").appendTo("#CardHeaderRooms");
+                $('#tableRooms_wrapper .dt-buttons').appendTo("#CardHeaderRooms");
+
+
+            }
+        });
+// After DataTable initialization
+        $('#mtRelevantFilter').on('change', function () {
+            var val = $(this).val();
+            if (val) {
+                // Filter for exact match in the MT-relevant column
+                table.column(8).search('^' + val + '$', true, false).draw();
+            } else {
+                // Clear filter
+                table.column(8).search('').draw();
             }
         });
 

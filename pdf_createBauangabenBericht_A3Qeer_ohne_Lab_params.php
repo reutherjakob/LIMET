@@ -420,7 +420,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         } else {
             $pdf->Line(15, $pdf->GetY(), $SB + 15, $pdf->GetY(), $style_normal);
             block_label_queer($block_header_w, $pdf, "Med.-tech.", $upcmn_blck_size, $block_header_height, $SB); //el_in_room_html_table($pdf, $resultX, 1, "A3", $SB-$block_header_w);
-            $pdf->Multicell(0, 0, "Keine Medizintechnische Ausstattung.", "", "L", 0, 0);
+            $pdf->Multicell(0, 0, "Keine medizintechnische Ausstattung.", "", "L", 0, 0);
             $pdf->Ln();
             $pdf->Ln();
         }

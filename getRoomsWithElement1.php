@@ -2,25 +2,42 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
 <head>
-    <title> Get Rooms with Element </title>
+    <title> Get Rooms with Element 1 </title>
 </head>
 <body>
 
 <div class="btn-group" id="hide0Wrapper">
-    <input class="btn-check" type="checkbox" id="hideZeroRows">
-    <label class="btn btn-outline-secondary" for="hideZeroRows">
+    <input class="btn-check btn-sm" type="checkbox" id="hideZeroRows">
+    <label class="btn btn-sm btn-outline-secondary" for="hideZeroRows">
         Hide 0
     </label>
 </div>
 
 
 <?php
+// Adapted to fill all the GetRoomSWithElement needs (12.6.25)
 if (!function_exists('utils_connect_sql')) {
     include "_utils.php";
 }
 check_login();
 
 $_SESSION["variantenID"] = filter_input(INPUT_GET, 'variantenID');
+$elementID = filter_input(INPUT_GET, 'elementID');
+$projectID = $_SESSION["projectID"];
+$variantenID = filter_input(INPUT_GET, 'variantenID');
+$bestand = filter_input(INPUT_GET, 'bestand');
+
+// Build dynamic WHERE clause
+$where = [];
+if ($bestand !== null && $bestand !== "") {
+    $where[] = "tabelle_räume_has_tabelle_elemente.`Neu/Bestand` = " . intval($bestand);
+}
+if ($variantenID !== null && $variantenID !== "") {
+    $where[] = "tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten = " . intval($variantenID);
+}
+$where[] = "tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = " . intval($elementID);
+$where[] = "tabelle_räume.tabelle_projekte_idTABELLE_Projekte = " . intval($projectID);
+$whereClause = implode(' AND ', $where);
 
 $mysqli = utils_connect_sql();
 $sql = "SELECT
@@ -41,129 +58,140 @@ $sql = "SELECT
     tabelle_räume.Bauabschnitt,
     tabelle_elemente.ElementID,
     tabelle_elemente.Bezeichnung AS ElementName
-FROM
-    tabelle_räume
-        INNER JOIN
-    tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
-        INNER JOIN
-    tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente
-WHERE ( ((tabelle_räume_has_tabelle_elemente.`Neu/Bestand`)=" . filter_input(INPUT_GET, 'bestand') . ") 
-AND ((tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten)=" . filter_input(INPUT_GET, 'variantenID') . ") 
-AND ((tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente)=" . filter_input(INPUT_GET, 'elementID') . ") AND ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
+FROM tabelle_räume
+INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
+INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente
+WHERE $whereClause
 ORDER BY tabelle_räume.Raumnr;";
 
 $result = $mysqli->query($sql);
-echo "<table class='table table-striped table-bordered table-sm  table-hover border border-light border-5' id='tableRoomsWithElement'>
-	<thead><tr>
-        <th>ID</th>
-	
-	<th>Raum Nr.</th>
-	<th>Raumbez.</th>
-	<th>Raumbereich</th>
-    <th>Geschoss</th>
-        <th>Bauetappe</th>
-            <th>Bauabschnitt</th>
-    <th>Anzahl</th>
-	<th>Variante</th>
-	<th>Bestand</th>
-	<th>Standort</th>
-	<th>Verwendung</th>
-	<th></th>
-        <th></th>
-        <th>MT-Variante</th>
-        <th>MT-Standort</th>
-        <th>MT-Verwendung</th>
-        <th>MT-Bestand</th>
-        <th>MT-Anzahl</th>
-        <th>MT-Kommentar</th>
-         <th>Element-ID</th>
-          <th>Element-Bezeichnung</th>
-	</tr></thead><tbody>";
+
+// Column definitions for maintainability
+$columns = [
+    ["id", "ID"],
+    ["Raumnr", "Raum Nr."],
+    ["Raumbezeichnung", "Raumbez."],
+    ["Raumbereich Nutzer", "Raumbereich"],
+    ["Geschoss", "<i class='fas fa-layer-group'><label style='display: none;'>Geschoss</label></i>"], // would like to have
+    ["Bauetappe", "Bauetappe"],
+    ["Bauabschnitt", "Bauabschnitt"],
+    ["Anzahl", "Anzahl"],
+    ["Variante", "Variante"],
+    ["Neu/Bestand", "Bestand"],
+    ["Standort", "Standort"],
+    ["Verwendung", "Verwendung"],
+    ["", ""],
+    ["", ""],
+    ["tabelle_Varianten_idtabelle_Varianten", "MT-Variante"],
+    ["Standort", "MT-Standort"],
+    ["Verwendung", "MT-Verwendung"],
+    ["Neu/Bestand", "MT-Bestand"],
+    ["Anzahl", "MT-Anzahl"],
+    ["Kurzbeschreibung", "MT-Kommentar"],
+    ["ElementID", "Element-ID"],
+    ["ElementName", "Element-Bezeichnung"]
+];
+
+// Helper for select options
+function selectOption($value, $selectedValue, $label)
+{
+    $selected = ($value == $selectedValue) ? ' selected' : '';
+    return "<option value='$value'$selected>$label</option>";
+}
+
+// Helper for safe output
+function safe($str)
+{
+    return htmlspecialchars($str ?? '', ENT_QUOTES, 'UTF-8');
+}
+
+echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableRoomsWithElement'><thead><tr>";
+foreach ($columns as [$key, $label]) {
+    if ($key === "Geschoss") {
+        echo "<th data-bs-toggle='tooltip' title='Geschoss'>$label</th>";
+    } else {
+        echo "<th>" . safe($label) . "</th>";
+    }
+}
+
+echo "</tr></thead><tbody>";
+
+$options = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
 
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
-    echo "<td data-order='" . htmlspecialchars($row["id"], ENT_QUOTES, 'UTF-8') . "'>" . $row["id"] . "</td>";
-    if ($_SESSION["projectName"] === "GCP") {
-        echo "<td data-order='" . htmlspecialchars($row["Raumnummer_Nutzer"] ?? "", ENT_QUOTES, 'UTF-8') . "'>" . $row["Raumnummer_Nutzer"] . "</td>";
-    } else {
-        echo "<td data-order='" . htmlspecialchars($row["Raumnr"] ?? "", ENT_QUOTES, 'UTF-8') . "'>" . $row["Raumnr"] . "</td>";
-    }
-    echo "<td data-order='" . htmlspecialchars($row["Raumbezeichnung"] ?? "", ENT_QUOTES, 'UTF-8') . "'>" . $row["Raumbezeichnung"] . "</td>";
-    echo "<td data-order='" . htmlspecialchars($row["Raumbereich Nutzer"] ?? "", ENT_QUOTES, 'UTF-8') . "'>" . $row["Raumbereich Nutzer"] . "</td>";
-    echo "<td data-order='" . htmlspecialchars($row["Geschoss"] ?? "", ENT_QUOTES, 'UTF-8') . "'>" . $row["Geschoss"] . "</td>";
-    echo "<td data-order='" . htmlspecialchars($row["Bauetappe"] ?? "", ENT_QUOTES, 'UTF-8') . "'>" . $row["Bauetappe"] . "</td>";
-    echo "<td data-order='" . htmlspecialchars($row["Bauabschnitt"] ?? "", ENT_QUOTES, 'UTF-8') . "'>" . $row["Bauabschnitt"] . "</td>";
-    echo "<td data-order='" . intval($row["Anzahl"]) . "'><input class='form-control form-control-sm' type='text' id='amount" . $row["id"] . "' value='" . intval($row["Anzahl"]) . "' size='2'></input></td>";
-    echo "<td data-order='" . htmlspecialchars($row["tabelle_Varianten_idtabelle_Varianten"] ?? "", ENT_QUOTES, 'UTF-8') . "'>
-   	    	<select class='form-control form-control-sm'' id='variante" . $row["id"] . "'>";
+    // ID
+    echo "<td data-order='" . safe($row["id"]) . "'>" . safe($row["id"]) . "</td>";
 
-    $options = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+    // Raum Nr. (GCP project uses Raumnummer_Nutzer)
+    $raumNr = ($_SESSION["projectName"] === "GCP") ? $row["Raumnummer_Nutzer"] : $row["Raumnr"];
+    echo "<td data-order='" . safe($raumNr) . "'>" . safe($raumNr) . "</td>";
+
+    // Raumbez.
+    echo "<td data-order='" . safe($row["Raumbezeichnung"]) . "'>" . safe($row["Raumbezeichnung"]) . "</td>";
+    // Raumbereich
+    echo "<td data-order='" . safe($row["Raumbereich Nutzer"]) . "'>" . safe($row["Raumbereich Nutzer"]) . "</td>";
+    // Geschoss
+    echo "<td data-order='" . safe($row["Geschoss"]) . "'>" . safe($row["Geschoss"]) . "</td>";
+    // Bauetappe
+    echo "<td data-order='" . safe($row["Bauetappe"]) . "'>" . safe($row["Bauetappe"]) . "</td>";
+    // Bauabschnitt
+    echo "<td data-order='" . safe($row["Bauabschnitt"]) . "'>" . safe($row["Bauabschnitt"]) . "</td>";
+
+    // Anzahl (editable)
+    echo "<td data-order='" . intval($row["Anzahl"]) . "'><input class='form-control form-control-sm' type='text' id='amount" . safe($row["id"]) . "' value='" . intval($row["Anzahl"]) . "' size='2'></td>";
+
+    // Variante (editable)
+    echo "<td data-order='" . safe($row["tabelle_Varianten_idtabelle_Varianten"]) . "'><select class='form-control form-control-sm' id='variante" . safe($row["id"]) . "'>";
     $selected = $row["tabelle_Varianten_idtabelle_Varianten"];
-
     foreach ($options as $index => $option) {
-        $value = $index + 1;
-        $isSelected = ($value == $selected) ? ' selected' : '';
-        echo "<option value='$value'$isSelected>$option</option>";
-    }
-
-    echo "</select></td>";
-    echo "<td data-order='" . htmlspecialchars($row["Neu/Bestand"] ?? "", ENT_QUOTES, 'UTF-8') . "'>
-	    	<select class='form-control form-control-sm'' id='bestand" . $row["id"] . "'>";
-    if ($row["Neu/Bestand"] == "0") {
-        echo "<option value=0 selected>Ja</option>";
-        echo "<option value=1>Nein</option>";
-    } else {
-        echo "<option value=0>Ja</option>";
-        echo "<option value=1 selected>Nein</option>";
-    }
-    echo "</select></td>";
-    echo "<td data-order='" . htmlspecialchars($row["Standort"] ?? "", ENT_QUOTES, 'UTF-8') . "'><select class='form-control form-control-sm'' id='Standort" . $row["id"] . "'>";
-    if ($row["Standort"] == "0") {
-        echo "<option value=0 selected>Nein</option>";
-        echo "<option value=1>Ja</option>";
-    } else {
-        echo "<option value=0>Nein</option>";
-        echo "<option value=1 selected>Ja</option>";
-    }
-    echo "</select></td>";
-    echo "<td data-order='" . htmlspecialchars($row["Verwendung"] ?? "", ENT_QUOTES, 'UTF-8') . "'>   	    	
-                        <select class='form-control form-control-sm'' id='Verwendung" . $row["id"] . "'>";
-    if ($row["Verwendung"] == "0") {
-        echo "<option value=0 selected>Nein</option>";
-        echo "<option value=1>Ja</option>";
-    } else {
-        echo "<option value=0>Nein</option>";
-        echo "<option value=1 selected>Ja</option>";
+        echo selectOption($index + 1, $selected, $option);
     }
     echo "</select></td>";
 
+    // Bestand (editable)
+    echo "<td data-order='" . safe($row["Neu/Bestand"]) . "'><select class='form-control form-control-sm' id='bestand" . safe($row["id"]) . "'>";
+    echo selectOption(0, $row["Neu/Bestand"], "Ja");
+    echo selectOption(1, $row["Neu/Bestand"], "Nein");
+    echo "</select></td>";
 
+    // Standort (editable)
+    echo "<td data-order='" . safe($row["Standort"]) . "'><select class='form-control form-control-sm' id='Standort" . safe($row["id"]) . "'>";
+    echo selectOption(0, $row["Standort"], "Nein");
+    echo selectOption(1, $row["Standort"], "Ja");
+    echo "</select></td>";
+
+    // Verwendung (editable)
+    echo "<td data-order='" . safe($row["Verwendung"]) . "'><select class='form-control form-control-sm' id='Verwendung" . safe($row["id"]) . "'>";
+    echo selectOption(0, $row["Verwendung"], "Nein");
+    echo selectOption(1, $row["Verwendung"], "Ja");
+    echo "</select></td>";
+
+    // Kommentar (popover)
     $Kurzbeschreibung = trim($row["Kurzbeschreibung"] ?? "");
     $buttonClass = $Kurzbeschreibung === "" ? "btn-outline-secondary" : "btn-outline-dark";
     $iconClass = $Kurzbeschreibung === "" ? "fa fa-comment-slash" : "fa fa-comment";
-    $dataAttr = $Kurzbeschreibung === "" ? "data-description=''" : "data-description='" . htmlspecialchars($Kurzbeschreibung, ENT_QUOTES, 'UTF-8') . "'";
-    echo " 
-    <td data-order='" . htmlspecialchars($Kurzbeschreibung ?? "", ENT_QUOTES, 'UTF-8') . "'>
-        <button type='button'
-                class='btn btn-sm $buttonClass comment-btn' $dataAttr
-                id='" . htmlspecialchars($row["id"] ?? "", ENT_QUOTES, 'UTF-8') . "' title='Kommentar'>
+    $dataAttr = "data-description='" . safe($Kurzbeschreibung) . "'";
+    echo "<td data-order='" . safe($Kurzbeschreibung) . "'>
+        <button type='button' class='btn btn-sm $buttonClass comment-btn' $dataAttr id='" . safe($row["id"]) . "' title='Kommentar'>
             <i class='$iconClass'></i>
         </button>
     </td>";
 
+    // Save button
+    echo "<td data-order=''><button type='button' id='" . safe($row["id"]) . "' class='btn btn-warning btn-sm' value='saveElement'><i class='far fa-save'></i></button></td>";
 
-    echo "<td data-order=''><button type='button' id='" . $row["id"] . "' class='btn btn-warning btn-sm' value='saveElement'><i class='far fa-save'></i></button></td>";
-    echo "<td data-order='" . htmlspecialchars($row["tabelle_Varianten_idtabelle_Varianten"] ?? "", ENT_QUOTES, 'UTF-8') . "'>" . $row["tabelle_Varianten_idtabelle_Varianten"] . "</td>";
-    echo "<td data-order='" . htmlspecialchars($row["Standort"] ?? "", ENT_QUOTES, 'UTF-8') . "'>" . $row["Standort"] . "</td>";
-    echo "<td data-order='" . htmlspecialchars($row["Verwendung"] ?? "", ENT_QUOTES, 'UTF-8') . "'>" . $row["Verwendung"] . "</td>";
-    echo "<td data-order='" . htmlspecialchars($row["Neu/Bestand"] ?? "", ENT_QUOTES, 'UTF-8') . "'>" . $row["Neu/Bestand"] . "</td>";
-    echo "<td data-order='" . intval($row["Anzahl"]) . "'>" . $row["Anzahl"] . "</td>";
-    echo "<td data-order='" . htmlspecialchars($row["Kurzbeschreibung"] ?? "", ENT_QUOTES, 'UTF-8') . "'>" . $row["Kurzbeschreibung"] . "</td>";
-    echo "<td data-order='" . htmlspecialchars($row["ElementID"] ?? "", ENT_QUOTES, 'UTF-8') . "'>" . $row["ElementID"] . "</td>";
-    echo "<td data-order='" . htmlspecialchars($row["ElementName"] ?? '', ENT_QUOTES, 'UTF-8') . "'>" . $row["ElementName"] . "</td>";
+    // Additional MT columns and element info
+    echo "<td data-order='" . safe($row["tabelle_Varianten_idtabelle_Varianten"]) . "'>" . safe($row["tabelle_Varianten_idtabelle_Varianten"]) . "</td>";
+    echo "<td data-order='" . safe($row["Standort"]) . "'>" . safe($row["Standort"]) . "</td>";
+    echo "<td data-order='" . safe($row["Verwendung"]) . "'>" . safe($row["Verwendung"]) . "</td>";
+    echo "<td data-order='" . safe($row["Neu/Bestand"]) . "'>" . safe($row["Neu/Bestand"]) . "</td>";
+    echo "<td data-order='" . intval($row["Anzahl"]) . "'>" . intval($row["Anzahl"]) . "</td>";
+    echo "<td data-order='" . safe($row["Kurzbeschreibung"]) . "'>" . safe($row["Kurzbeschreibung"]) . "</td>";
+    echo "<td data-order='" . safe($row["ElementID"]) . "'>" . safe($row["ElementID"]) . "</td>";
+    echo "<td data-order='" . safe($row["ElementName"]) . "'>" . safe($row["ElementName"]) . "</td>";
     echo "</tr>";
 }
-
 echo "</tbody></table>";
 $mysqli->close();
 ?>
@@ -175,7 +203,6 @@ $mysqli->close();
 
     $(document).ready(function () {
 
-
         tableRoomsWithElement = new DataTable('#tableRoomsWithElement', {
             columnDefs: [
                 {
@@ -186,7 +213,8 @@ $mysqli->close();
             ],
             paging: false,
             searching: true,
-            info: false,
+            info: true,
+            select: true,
             order: [[1, 'asc']],
             lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
             language: {
@@ -210,8 +238,11 @@ $mysqli->close();
                 }
             ],
             initComplete: function () {
-                $('#roomsWithAndWithoutElements .dt-buttons').attr("id", "DtBtnGroup");
-                $('#hide0Wrapper').appendTo('#DtBtnGroup');
+                $("#CHRME").html("");
+                $('#CHRME').append($('#hide0Wrapper'));
+                tableRoomsWithElement.buttons().container().appendTo($('#CHRME'));
+                $('#tableRoomsWithElement_wrapper .dt-search label').remove();
+                $('#tableRoomsWithElement_wrapper .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CHRME');
             }
         });
 
@@ -224,6 +255,19 @@ $mysqli->close();
         $("#hideZeroRows").on("change", function () {
             tableRoomsWithElement.draw();
         });
+        function hideZeroFilter(settings, data, dataIndex) {
+
+            if (settings.nTable.id !== 'tableRoomsWithElement') {
+                return true;
+            }        //console.log(data);
+            let hideZero = $("#hideZeroRows").is(":checked");
+            let row = tableRoomsWithElement.row(dataIndex).node();
+            let amount = $(row).find('input[id^="amount"]').val();
+            let name = $(row).find('span[id^="ElementName"').val();
+            amount = parseInt(amount) || 0;
+            return !(hideZero && (amount === 0));
+        }
+
 
         CustomPopover.init('.comment-btn', {
             onSave: function (trigger, newText) {
@@ -288,17 +332,7 @@ $mysqli->close();
         }
     });
 
-    function hideZeroFilter(settings, data, dataIndex) {
-        if (settings.nTable.id !== 'tableRoomsWithElement') {
-            return true;
-        }
-        let hideZero = $("#hideZeroRows").is(":checked");
-        let row = tableRoomsWithElement.row(dataIndex).node();
-        let amount = $(row).find('input[id^="amount"]').val();
-        let name = $(row).find('span[id^="ElementName"').val();
-        amount = parseInt(amount) || 0;
-        return !(hideZero && (amount === 0));
-    }
+
 </script>
 </body>
 </html>

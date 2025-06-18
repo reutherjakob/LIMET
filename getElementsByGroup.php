@@ -201,7 +201,7 @@ $mysqli->close();
                 });
 
                 $.ajax({
-                    url: "getRoomsWithElement.php",
+                    url: "getRoomsWithElement1.php",
                     data: {"elementID": elementID},
                     type: "GET",
                     success: function (data) {

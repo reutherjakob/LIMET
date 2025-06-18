@@ -123,6 +123,7 @@ $mysqli->close();
                 }
             ],
             paging: true,
+            pageLength:25,
             pagingType: 'numbers',
             searching: true,
             info: true,
@@ -219,10 +220,10 @@ $mysqli->close();
                     "comment": $("#comment").val()
                 },
                 success: function (data) {
-                    alert(data);
+                    makeToaster(data, true);
                     //$('#addElementsToRoomModal').modal('hide');
                     $.ajax({
-                        url: "getRoomsWithElement.php",
+                        url: "getRoomsWithElement1.php",
                         data: {"elementID": elementID},
                         type: "GET",
                         success: function (data) {

@@ -331,6 +331,7 @@ check_login();
 </div>
 
 <script>
+    var currentSort = {column: 0, dir: 'asc'};
     var tableRoomElements;  // tableRoomElements  && hideZeroFilter required for: getRoomELmeentsDetailed1.php
     const hideZeroFilter = function (settings, data, dataIndex) {
         if (settings.nTable.id !== 'tableRoomElements') {

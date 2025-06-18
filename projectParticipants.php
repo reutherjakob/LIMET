@@ -1,6 +1,8 @@
 <!-- 13.2.25: Reworked -->
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 init_page_serversides();
 ?>
 
@@ -40,7 +42,7 @@ init_page_serversides();
                 <div class="col-2" id="BeteiligtePersonenCardHeader"></div>
             </div>
         </div>
-        <div class="card-body" id='personsInProject'></div> 
+        <div class="card-body" id='personsInProject'></div>
     </div>
 
     <div class='mt-2 row'>
@@ -58,7 +60,15 @@ init_page_serversides();
         </div>
         <div class='col-xxl-4'>
             <div class="mt-2 card">
-                <div class="card-header">Person zu Projekt hinzufügen</div>
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-6">Person zu Projekt hinzufügen</div>
+                        <div class="col-6 d-flex justify-content-end">
+                            <button class="btn" title="Reset" id="resetAddPerson"><i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body" id='addPersonToProject'></div>
             </div>
         </div>
@@ -99,7 +109,6 @@ init_page_serversides();
                                             move_item("dt-search-0", "BeteiligtePersonenCardHeader");
                                             move_item("dt-search-1", "NichtBeteiligtePersonenCardHeader");
                                         }, 500);
-
                                     }
                                 });
                             }
@@ -109,7 +118,15 @@ init_page_serversides();
             }
         });
 
-
+        $("#resetAddPerson").click(function () {
+            $.ajax({
+                url: "getPersonToProjectField.php",
+                type: "GET",
+                success: function (data) {
+                    $("#addPersonToProject").html(data);
+                }
+            });
+        });
     });
 </script>
 </html>

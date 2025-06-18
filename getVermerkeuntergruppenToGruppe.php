@@ -74,6 +74,7 @@ $mysqli->close();
     </div>
 </div>
 
+<script src="_utils.js"></script>
 <script>
     $(document).ready(function () {
         $('#topDivSearch').remove();
@@ -148,7 +149,7 @@ $mysqli->close();
                 data: {"untergruppenName": untergruppenName, "untergruppenNummer": untergruppenNummer, "gruppenID": id},
                 type: "GET",
                 success: function (data) {
-                    alert(data);
+                    makeToaster(data,true);
                     $.ajax({
                         url: "getVermerkeuntergruppenToGruppe.php",
                         data: {"vermerkGruppenID": id},
@@ -162,7 +163,7 @@ $mysqli->close();
                 }
             });
         } else {
-            alert("Bitte alle Felder ausfüllen!");
+            makeToaster("Bitte alle Felder ausfüllen!", false);
         }
     });
 
@@ -180,7 +181,7 @@ $mysqli->close();
                 },
                 type: "GET",
                 success: function (data) {
-                    alert(data);
+                    makeToaster(data, true);
                     $.ajax({
                         url: "getVermerkeuntergruppenToGruppe.php",
                         data: {"vermerkGruppenID": id},
@@ -194,7 +195,7 @@ $mysqli->close();
                 }
             });
         } else {
-            alert("Bitte alle Felder ausfüllen!");
+            makeToaster("Bitte alle Felder ausfüllen!", false);
         }
     });
 </script>
