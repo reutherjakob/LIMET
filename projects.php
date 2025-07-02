@@ -27,8 +27,7 @@
 <div id="limet-navbar"></div>
 
 <div class="container-fluid bg-white">
-
-
+Hello
     <?php
     if (!function_exists('utils_connect_sql')) {
         include "_utils.php";
@@ -47,7 +46,8 @@
         "Chirurgie Graz BE3" => "fas fa-bone",
         "ZVZ Nord" => "fas fa-teeth-open",
         "KLU-ANGIO-RV-KABEG" => "fas fa-x-ray",
-        "Test1" => "fas fa-coffee"
+        "Test1" => "fas fa-coffee",
+        "KAGes Labor - LKH2 Süd" => "fas fa-vials"
     ];
     ?>
 
