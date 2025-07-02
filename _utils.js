@@ -43,38 +43,11 @@ function move_item(item2move_id, where2move_id) {
     }
 }
 
-function move_item_by_class(sourceClass, targetId) {
-    let sourceElements = document.getElementsByClassName(sourceClass);
-    let targetElement = document.getElementById(targetId);
-    Array.from(sourceElements).forEach(function (element) {
-        targetElement.appendChild(element);
-    });
-}
-
-function show_modal(modal_id){
-    $('#'+ modal_id).modal('show');
-}
-
-function format_data_input(newData, dataIdentifier) {
-    switch (getCase(dataIdentifier)) {
-        case "num":
-            newData = formatNum(newData);
-    }
-    return newData;
-}
-
-function formatNum(newData) {
-    newData = newData.replace(/[^0-9,.-]/g, ''); // Remove non-numeric characters (except for '.' and '-')
-    newData = newData.replace(/,/g, '.'); // Replace ',' with '.'
-    return newData;
-}
-
-
-// function letterToNumber(letter) {
-//     if (typeof letter !== 'string' || letter.length !== 1 || !/[a-zA-Z]/.test(letter)) {
-//         return null; // or throw an error if you prefer
-//     }
-//     let upper = letter.toUpperCase();
-//     return upper.charCodeAt(0) - 'A'.charCodeAt(0) + 1;
-// }
+//  function move_item_by_class(sourceClass, targetId) {
+//      let sourceElements = document.getElementsByClassName(sourceClass);
+//      let targetElement = document.getElementById(targetId);
+//      Array.from(sourceElements).forEach(function (element) {
+//          targetElement.appendChild(element);
+//      });
+//  }
 

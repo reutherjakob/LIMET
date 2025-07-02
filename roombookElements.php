@@ -101,7 +101,7 @@ init_page_serversides();
                 <div class="card-header" id="RäumeOhneElCardHeader ">
 
                     <div class="row">
-                        <div class="col-xxl-4 d-flex flex-nowrap align-items-center" id="CardHeaderRäumeOhneElement">
+                        <div class="col-xxl-4 d-flex flex-nowrap text-nowrap align-items-center" id="CardHeaderRäumeOhneElement">
                             <i class="fas fa-door-open  fa-lg me-2"></i> ohne Element
                         </div>
                         <div class="col-xxl-8 d-flex flex-nowrap justify-content-end align-items-center">

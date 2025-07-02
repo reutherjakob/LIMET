@@ -436,6 +436,19 @@ function html_2_plug_into_edit_cell(dataIdentifier) {
     }
 }
 
+function format_data_input(newData, dataIdentifier) {
+    switch (getCase(dataIdentifier)) {
+        case "num":
+            newData = formatNum(newData);
+    }
+    return newData;
+}
+
+function formatNum(newData) {
+    newData = newData.replace(/[^0-9,.-]/g, ''); // Remove non-numeric characters (except for '.' and '-')
+    newData = newData.replace(/,/g, '.'); // Replace ',' with '.'
+    return newData;
+}
 
 function table_click() {
     $(document).on('click', '#table_rooms tbody tr', function () {
@@ -475,7 +488,7 @@ function table_click() {
                 table.keys.disable();
                 cell.find('input, select').on('keydown blur', function (event) {
                     if ((event.keyCode === 13 || event.keyCode === 9) && current_edit) {
-                        let newData = format_data_input($(this).val(), dataIdentifier); //utils.js
+                        let newData = format_data_input($(this).val(), dataIdentifier);
                         if (newData.trim() !== "") {
                             cellText = newData;
                             cell.html(newData);

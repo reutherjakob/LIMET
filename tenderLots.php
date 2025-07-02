@@ -464,7 +464,12 @@ init_page_serversides();
                 bottomEnd: ['pageLength', 'paging', 'search', 'buttons']
             },
             initComplete: function () {
-                move_item_by_class("dt-buttons", "LoseCardHeaderSub");
+                let sourceElements = document.getElementsByClassName("dt-buttons");
+                let targetElement = document.getElementById("LoseCardHeaderSub");
+                Array.from(sourceElements).forEach(function (element) {
+                    targetElement.appendChild(element);
+                });
+
                 const button = document.querySelector(".dt-buttons");
                 if (button) {
                     button.classList.remove("dt-buttons");

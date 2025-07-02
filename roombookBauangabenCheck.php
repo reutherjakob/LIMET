@@ -275,6 +275,10 @@ init_page_serversides();
 
 <script src="_utils.js"></script>
 <script>
+    function show_modal(modal_id){
+        $('#'+ modal_id).modal('show');
+    }
+
     function getRoomIdsFromCurrentUrl() {
         let urlObj = new URL(window.location.href);
         let roomIDParam = urlObj.searchParams.get("roomID");
