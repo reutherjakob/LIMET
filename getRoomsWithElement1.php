@@ -271,7 +271,7 @@ $mysqli->close();
 
         CustomPopover.init('.comment-btn', {
             onSave: function (trigger, newText) {
-                console.log("Custompopover: ", newText);
+                // console.log("Custompopover: ", newText);
                 trigger.dataset.description = newText;
                 let id = trigger.id;
                 $.ajax({

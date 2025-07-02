@@ -199,6 +199,6 @@ foreach ($elements as $element => $data) {
 
 $mysqli->close();
 ob_end_clean();
-$pdf->Output('Einbringwege-MT.pdf', 'I');
+$pdf->Output(getFileName( 'Einbringwege'), 'I');
 
 ?>

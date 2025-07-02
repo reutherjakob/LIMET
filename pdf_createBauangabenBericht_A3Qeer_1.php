@@ -314,4 +314,4 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
 $mysqli->close();
 ob_end_clean();
-$pdf->Output('BAUANGABEN-MT.pdf', 'I');
+$pdf->Output(getFileName( 'BAUANGABEN'), 'I');

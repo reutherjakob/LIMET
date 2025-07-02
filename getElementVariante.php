@@ -245,8 +245,7 @@ $row = $result->fetch_assoc(); ?>
             </div>
             <div class='modal-body' id='mbody'>
                 Wollen Sie die Elementparameter wirklich
-                überschreiben? <br>
-                <strong> Sind Sie Hr. Reuther? </strong>
+                überschreiben? <br> Kann derzeit nur Hr. Reuther.
             </div>
             <div class='modal-footer row'>
                 <div class="d-flex justify-content-center align-items-center">
@@ -599,8 +598,6 @@ $row = $result->fetch_assoc(); ?>
                     });
                 }
             });
-        } else {
-            alert("Lügner!");
         }
     });
 </script>

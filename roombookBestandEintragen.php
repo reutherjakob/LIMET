@@ -33,7 +33,7 @@ include "_format.php";
     <div id="limet-navbar"></div>
     <div class="mt-4 card">
         <div class="card-header">
-            <div class="row d-flex flex-nowrap">
+            <div class="row d-flex">
                 <div class="col-xxl-4">
                     <strong> Elemente im Projekt </strong>
                 </div>
