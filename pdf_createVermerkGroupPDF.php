@@ -6,7 +6,7 @@ if (!function_exists('utils_connect_sql')) {
 check_login();
 include "pdf_createBericht_LOGO.php";
 require_once('TCPDF-main/TCPDF-main/tcpdf.php');
-
+include "_pdf_createBericht_utils.php";
 
 class MYPDF extends TCPDF
 {
@@ -194,7 +194,7 @@ class MYPDF extends TCPDF
     }
 }
 
-$document_out_title_components = $_SESSION['projectName'] . "_GPMT_";
+$document_out_title_components = "Vermerk_";
 
 // create new PDF document
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -233,7 +233,7 @@ while ($row = $result->fetch_assoc()) {
 
     $title = "Projekt: " . $row['Projektname'] . "\n" . "Thema: " . $row['Gruppenname'] . "\nDatum: " . $row['Datum'] . " von " . $row['Startzeit'] . " bis " . $row['Endzeit'] . "\nOrt: " . $row['Ort'];
     $verfasser = $row['Verfasser'];
-    $document_out_title_components = $document_out_title_components . "" . $row['Gruppenart'] . "_" . $row['Datum'] . "_" . $row['Gruppenname'] . "_";
+    $document_out_title_components = $document_out_title_components  . $row['Gruppenart'] . "_" . $row['Datum'] . "_" . $row['Gruppenname'] . "_";
     $rowHeight1 = $pdf->getStringHeight(180, $title, false, true, '', 1);
     $pdf->MultiCell(0, $rowHeight1, $title, 1, 'L', 0, 0, '', '', true);
 }
@@ -335,6 +335,5 @@ $pdf->Multicell(180, 5, $outstr, 0, 'L', 0, 1);
 //$pdf->Image('/var/www/vhosts/limet-rb.com/httpdocs/Dokumente_RB/Images/Image_Vermerk_2898_61e58a78cd4cf.jpeg', '', '', 40, 40, 'JPG', '', '', true, 150, '', false, false, 1, false, false, false);
 
 
-$document_out_title_components = $document_out_title_components . date('Y-m-d') . ".pdf";
-$pdf->Output($document_out_title_components, 'I');
+$pdf->Output(getFileName($document_out_title_components), 'I');
 

@@ -47,11 +47,14 @@ while ($row = $result->fetch_assoc()) {
     // Dynamic field comparison
     foreach ($row as $field => $value) {
         foreach ($suffixMapping as $suffix => $newSuffix) {
+
+
             if (str_ends_with($field, $suffix)) {
                 $baseField = substr($field, 0, -strlen($suffix)); // Remove the suffix
                 if ($newSuffix === '') { // For _copy1, use the base field as the old field
-                    $oldVal = $row[$field] ?? null;
-                    $newVal = $row[$baseField] ?? null;
+                    $oldVal = $row[$baseField] ?? null;
+                    $newVal = $row[$field] ?? null;
+
                 } else { // For _alt or alt, use the base field with _neu as the new field
                     $newField = $baseField . $newSuffix;
                     $oldVal = $row[$field] ?? null;
@@ -60,7 +63,8 @@ while ($row = $result->fetch_assoc()) {
 
                 if ($oldVal != $newVal) {
                     $changes[] = sprintf(
-                        "<strong>%s:</strong> %s →<br>  %s",
+                        "<strong>%s:</strong> %s →
+ %s",
                         htmlspecialchars(str_replace('_', ' ', $baseField)),
                         htmlspecialchars( br2nl($oldVal) ?? 'N/A'),
                         htmlspecialchars( br2nl($newVal) ?? 'N/A')

@@ -35,8 +35,21 @@
     }
     init_page_serversides("No Redirect");
     include 'projects_changeProjectModal.html';
+    $projectIcons = [
+        "BBE" => "fas fa-pray",
+        "GCP" => "fas fa-toilet-paper",
+        "Test" => "fas fa-bug",
+        "VS Bertha von Suttner Zahnambulatorium" => "fas fa-tooth",
+        "Cino 2.1" => "fas fa-smoking",
+        "KFN-ZNA" => "fas fa-book-dead",
+        "KFN-LAB" => "fas fa-skull-crossbones",
+        "Chirurgie Graz BE5" => "fas fa-bone",
+        "Chirurgie Graz BE3" => "fas fa-bone",
+        "ZVZ Nord" => "fas fa-teeth-open",
+        "KLU-ANGIO-RV-KABEG" => "fas fa-x-ray",
+        "Test1" => "fas fa-coffee"
+    ];
     ?>
-
 
     <div class='row'>
         <div class='col-xxl-10'>
@@ -65,6 +78,7 @@
                             <th>ID</th><!-- invis -->
                             <th></th>
                             <th>Interne_Nr</th>
+                            <th></th>
                             <th>Projektname</th>
                             <th>Aktiv</th>
                             <th>Neubau</th>
@@ -90,19 +104,15 @@
                             echo "<td>" . $row["idTABELLE_Projekte"] . "</td>";
                             echo "<td> <button type='button' id='" . $row["idTABELLE_Projekte"] . "' class='btn btn-outline-dark btn-sm' value='changeProject' data-bs-toggle='modal' data-bs-target='#changeProjectModal'><i class='fas fa-pencil-alt'></i></button></td>";
                             echo "<td>" . $row["Interne_Nr"] . "</td>";
-                            if ($row["Projektname"] == "BBE") {
-                                echo "<td><b> <i class='fas fa-pray me-2'></i>" . $row["Projektname"] . " </b></td>";
-                            } else if ($row["Projektname"] == "GCP") {
-                                echo "<td><b> <i class='fas fa-toilet-paper me-2'></i>" . $row["Projektname"] . " </b></td>";
-                            } else if ($row["Projektname"] == "Test") {
-                                echo "<td><b> <i class='fas fa-bug me-2'></i>" . $row["Projektname"] . " </b></td>";
-                            } else if ($row["Projektname"] == "VS Bertha von Suttner Zahnambulatorium") {
-                                echo "<td><b> <i class='fas fa-tooth me-2'></i>" . $row["Projektname"] . " </b></td>";
-                            } else if ($row["Projektname"] == "Cino 2.1") {
-                                echo "<td><b> <i class='fas fa-smoking me-2'></i>" . $row["Projektname"] . " </b></td>";
-                            }  else {
-                                echo "<td><b>" . $row["Projektname"] . "</b></td>";
+
+                            $projektname = $row["Projektname"];
+                            if (isset($projectIcons[$projektname])) {
+                                $iconClass = $projectIcons[$projektname];
+                                echo "<td><i class='{$iconClass} me-2'> </i></td>";
+                            } else {
+                                echo "<td><i class='far fa-hospital me-2'> </i></td>";
                             }
+                            echo "<td><strong>  {$projektname} </strong></td>";
 
                             echo "<td>";
                             if ($row["Aktiv"] == 1) {
@@ -145,9 +155,17 @@
                 <div class='card-header'> Updates
                 </div>
                 <div class='card-body'>
-                    Falls Mensch ebenso ein Projekt Icon setzen will,
-                    <a href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free" target="_blank">hier</a>
-                    auswählen.
+                    <p>
+                        Falls Mensch ebenso ein weiteres
+                        <a href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free" target="_blank">Projekt Icon </a>
+                        in dieser Tabelle sehen will.
+                    </p>
+                    <p>
+                        <a href="_tickets4developer.php" target="_blank">Bugreports</a>.
+                    </p>
+                    <p>
+                        <a href="_feature_wishlist.php" target="_blank"> Verbesserungsvorschläge oder Wünsche</a>.
+                    </p>
                 </div>
             </div>
         </div>
@@ -167,7 +185,6 @@
                             >
                                 <option value=0 selected>Alle Vermerke</option>
                                 <option value=1>Bearbeitung offen</option>
-
                             </select>
                         </form>
                     </div>
@@ -192,7 +209,7 @@
         table = $('#tableProjects').DataTable({
             columnDefs: [
                 {
-                    targets: [0, 11],
+                    targets: [0, 12],
                     visible: false,
                     searchable: false
                 },
@@ -201,6 +218,13 @@
                     visible: true,
                     searchable: false,
                     orderable: false
+                },
+                {
+                    targets: [2], // icon column
+//                     width: "20px", // small fixed width
+                    orderable: false,
+                    searchable: false,
+                    className: "text-center align-middle"
                 }
             ],
             hover: true,
@@ -218,7 +242,7 @@
             search: {
                 custom: function (data) {
                     if ($("#filter_ActiveProjects").is(':checked')) {
-                        return data[4] === "Ja";
+                        return data[5] === "Ja";
                     } else {
                         return true;
                     }
@@ -227,28 +251,28 @@
             initComplete: function () {
                 $('.dt-search label').remove();
                 $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#STH');
-                table.column(4).search($('#filter_ActiveProjects').is(':checked') ? 'Ja' : '').draw();
+                table.column(5).search($('#filter_ActiveProjects').is(':checked') ? 'Ja' : '').draw();
             }
         });
 
         $('#filter_ActiveProjects').change(function () {
-            table.column(4).search($(this).is(':checked') ? 'Ja' : '').draw();
+            table.column(5).search($(this).is(':checked') ? 'Ja' : '').draw();
         });
 
         $('#tableProjects tbody').on('click', 'tr', function () {
             let id = table.row($(this)).data()[0];
-            let projectName = $(table.row($(this)).data()[3]).text();
+            let projectName = $(table.row($(this)).data()[4]).text();
             let projectAusfuehrung = table.row($(this)).data()[9];
             let projectPlanungsphase = table.row($(this)).data()[10];
-            document.getElementById("betten").value = table.row($(this)).data()[6];
-            document.getElementById("bgf").value = table.row($(this)).data()[7];
-            document.getElementById("nf").value = table.row($(this)).data()[8];
-            document.getElementById("bearbeitung").value = table.row($(this)).data()[9];
-            document.getElementById("planungsphase").value = table.row($(this)).data()[11];
-            document.getElementById("dateSelect").value = table.row($(this)).data()[12]
+            document.getElementById("betten").value = table.row($(this)).data()[7];
+            document.getElementById("bgf").value = table.row($(this)).data()[8];
+            document.getElementById("nf").value = table.row($(this)).data()[9];
+            document.getElementById("bearbeitung").value = table.row($(this)).data()[10];
+            document.getElementById("planungsphase").value = table.row($(this)).data()[12];
+            document.getElementById("dateSelect").value = table.row($(this)).data()[13]
             document.getElementById("vermerkeFilter").value = 0;
-            document.getElementById("active").value = table.row($(this)).data()[4] === "Ja" ? 1 : 0;
-            document.getElementById("neubau").value = table.row($(this)).data()[5] === 'Ja' ? 1 : 0;
+            document.getElementById("active").value = table.row($(this)).data()[5] === "Ja" ? 1 : 0;
+            document.getElementById("neubau").value = table.row($(this)).data()[6] === 'Ja' ? 1 : 0;
 
             $.ajax({
                 url: "setSessionVariables.php",

@@ -42,20 +42,34 @@ while ($row = $result->fetch_assoc()) {
 }
 echo "</tbody></table>";
 
+
+$sql = "SELECT Raumnr, Raumbezeichnung, `Raumbereich Nutzer`, Geschoss
+        FROM tabelle_räume WHERE idTABELLE_Räume =" . $_SESSION["roomID"] . ";";
+$result = $mysqli->query($sql);
+$room = $result->fetch_assoc();
+
+
 $mysqli->close();
 ?>
 <!-- Modal zum Einfügen eines Elements -->
 <div class='modal fade' id='addRoomElementModal' role='dialog'>
-    <div class='modal-dialog modal-sm'>
+    <div class='modal-dialog'>
 
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Element in Raum stellen</h4>
+
                 <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
-            <div class='modal-body' id='mbody'>Wollen Sie das Element <br>
-                <div id="elID"></div>
-                in den Raum stellen?
+            <div class='modal-body' id='mbody'>
+                <p> Wollen Sie das Element in den Raum stellen? </p>
+                <strong> ELEMENT: </strong> <br>
+                <p id="elID"></p>
+                <br>
+                <strong>RAUM: </strong> <br>
+                <?php echo htmlspecialchars($room['Raumbezeichnung']) . " "
+                    . htmlspecialchars($room['Raumnr']) . " " . htmlspecialchars($room['Raumbereich Nutzer']) . " " .
+                    htmlspecialchars($room['Geschoss']); ?>
             </div>
             <div class='modal-footer'>
                 <input type='button' id='addElementToRoom' class='btn btn-success btn-sm' value='Ja'
@@ -70,7 +84,7 @@ $mysqli->close();
 
 <!-- Modal zum Ändern eines Elements -->
 <div class='modal fade' id='changeElementModal' role='dialog'>
-    <div class='modal-dialog modal-md'>
+    <div class='modal-dialog modal-lg'>
         <div class='modal-content'>
             <div class='modal-header'>
                 <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
