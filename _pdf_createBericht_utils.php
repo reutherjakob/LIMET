@@ -161,24 +161,22 @@ function kify($input)
     if (is_numeric($input)) {
         if ($input >= 1000) {
             $input = $input / 1000;
-            $input = ceil($input * 100) / 100; // Round up to 2 decimal places
-            $input = number_format($input, 2, ',', ''); // Format with 2 decimal places
-            $input = rtrim($input, '0'); // Remove trailing zeros
-            $input = rtrim($input, ','); // Remove trailing comma if present
-            if (substr($input, -1) != ',') {
-                $input .= ' k';
-            } else {
-                $input = rtrim($input, ',') . ' k';
-            }
+            $input = round($input, 2); // Use round instead of ceil
+            $input = number_format($input, 2, ',', '');
+            $input = rtrim($input, '0');
+            $input = rtrim($input, ',');
+            $input .= ' k';
         } else {
             $input = number_format($input, 2, ',', '');
             $input = rtrim($input, '0');
             $input = rtrim($input, ',');
-            $input = $input . " ";
+            $input .= " ";
         }
     }
     return $input;
 }
+
+
 
 
 function is_not_no_comment($str)
