@@ -61,8 +61,6 @@ function generate_variante_parameter_inputtable(): void
         echo "<td>" . $row["Bezeichnung"] . "</td>";
         echo generate_parameter_input($row, 'Wert');
         echo generate_parameter_input($row, 'Einheit');
-        // echo "<td>< type='text' id='wert" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' value='" . $row["Wert"] . "' size='30'></td>";
-        // echo "<td>< type='text' id='einheit" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' value='" . $row["Einheit"] . "' size='30'></td>";
         echo "<td><button type='button' id='" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' class='btn btn-warning btn-sm' value='saveParameter'><i class='far fa-save'></i></button></td>";
         echo "</tr>";
     }

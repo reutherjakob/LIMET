@@ -11,8 +11,9 @@ $projectID   = intval($_SESSION["projectID"]);
 $elementID   = intval($_SESSION["elementID"]);
 $parameterID = intval($_GET["parameterID"]);
 $variantenID = intval($_GET["variantenID"]);
-$wert        = $mysqli->real_escape_string($_GET["wert"] ?? '');
-$einheit     = $mysqli->real_escape_string($_GET["einheit"] ?? '');
+$wert    = $_GET["wert"] ?? '';
+$einheit = $_GET["einheit"] ?? '';
+
 
 // Use prepared statements for security
 $sql = "UPDATE `LIMET_RB`.`tabelle_projekt_elementparameter`
@@ -40,10 +41,12 @@ if ($success) {
     $stmtBez->fetch();
     $stmtBez->close();
 
-    echo "Parameter <strong>" . htmlspecialchars($bezeichnung) . "</strong> erfolgreich aktualisiert!";
+    echo "Parameter <strong>" . htmlspecialchars($bezeichnung) . "</strong> erfolgreich aktualisiert! " . $wert . " " . $einheit . " " . $projectID . " " . $elementID . " " . $parameterID . " " . $variantenID . " ";
 } else {
     echo "Fehler beim Aktualisieren des Parameters: " . $stmt->error;
 }
+
+
 
 $stmt->close();
 $mysqli->close();
