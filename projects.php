@@ -260,19 +260,37 @@
         });
 
         $('#tableProjects tbody').on('click', 'tr', function () {
-            let id = table.row($(this)).data()[0];
-            let projectName = $(table.row($(this)).data()[4]).text();
-            let projectAusfuehrung = table.row($(this)).data()[9];
-            let projectPlanungsphase = table.row($(this)).data()[10];
-            document.getElementById("betten").value = table.row($(this)).data()[7];
-            document.getElementById("bgf").value = table.row($(this)).data()[8];
-            document.getElementById("nf").value = table.row($(this)).data()[9];
-            document.getElementById("bearbeitung").value = table.row($(this)).data()[10];
-            document.getElementById("planungsphase").value = table.row($(this)).data()[12];
-            document.getElementById("dateSelect").value = table.row($(this)).data()[13]
+            let rowData = table.row($(this)).data();
+            let id = rowData[0];
+            let projectName = $(rowData[4]).text();
+            let projectAusfuehrung = rowData[10];
+            let projectPlanungsphase = rowData[11];
+
+            document.getElementById("betten").value = rowData[7];
+            document.getElementById("bgf").value = rowData[8];
+            document.getElementById("nf").value = rowData[9];
+            document.getElementById("bearbeitung").value = rowData[10];
+            document.getElementById("planungsphase").value = rowData[12];
+            document.getElementById("dateSelect").value = rowData[13];
             document.getElementById("vermerkeFilter").value = 0;
-            document.getElementById("active").value = table.row($(this)).data()[5] === "Ja" ? 1 : 0;
-            document.getElementById("neubau").value = table.row($(this)).data()[6] === 'Ja' ? 1 : 0;
+            document.getElementById("active").value = rowData[5] === "Ja" ? 1 : 0;
+            document.getElementById("neubau").value = rowData[6] === 'Ja' ? 1 : 0;
+
+            // console.log({
+            //     id,
+            //     projectName,
+            //     projectAusfuehrung,
+            //     projectPlanungsphase,
+            //     betten: rowData[7],
+            //     bgf: rowData[8],
+            //     nf: rowData[9],
+            //     bearbeitung: rowData[10],
+            //     planungsphase: rowData[12],
+            //     dateSelect: rowData[13],
+            //     active: rowData[5] === "Ja" ? 1 : 0,
+            //     neubau: rowData[6] === 'Ja' ? 1 : 0,
+            //     fullRow: rowData
+            // });
 
             $.ajax({
                 url: "setSessionVariables.php",

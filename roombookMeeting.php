@@ -29,7 +29,8 @@ init_page_serversides();
 ?>
 <div id="limet-navbar"></div> <!-- Container für Navbar -->
 <div class="container-fluid">
-    <div class="mt-4 card">
+    <div class="card">
+    <div class="card">
         <div class="card-header">
             <div class="row ">
                 <div class="col-6"></div>
@@ -112,7 +113,7 @@ init_page_serversides();
         </div>
     </div>
 </div>
-
+</div>
 </body>
 <!--suppress ES6ConvertVarToLetConst -->
 <script>
@@ -155,9 +156,9 @@ init_page_serversides();
             buttons: ["searchBuilder", "colvis"],
             initComplete: function () {
                 $('.dt-search label').remove();
-                $('#tableRooms_wrapper .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-outline-dark").appendTo("#CardHeaderRooms");
-                $('#tableRooms_wrapper .dt-buttons').appendTo("#CardHeaderRooms");
-
+                $('#tableRooms_wrapper .dt-search').children().removeClass("form-control form-control-sm").addClass("btn").appendTo("#CardHeaderRooms");
+                $('#tableRooms_wrapper .dt-buttons').appendTo("#CardHeaderRooms") ;
+                $('#CardHeaderRooms .btn').attr('class', 'btn btn-sm btn-outline-dark');
 
             }
         });

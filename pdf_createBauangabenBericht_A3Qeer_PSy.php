@@ -1,9 +1,10 @@
 <?php
-include 'pdf_createBericht_MYPDFclass_A3Queer.php'; //require_once('TCPDF-main/TCPDF-main/tcpdf.php'); is in class file
-include '_pdf_createBericht_utils.php';
+
 if (!function_exists('utils_connect_sql')) {
     include "_utils.php";
 }
+include 'pdf_createBericht_MYPDFclass_A3Queer.php'; //require_once('TCPDF-main/TCPDF-main/tcpdf.php'); is in class file
+include '_pdf_createBericht_utils.php';
 include 'pdf_createMTTabelle.php';
 
 check_login();
@@ -63,26 +64,6 @@ foreach ($roomIDsArray as $valueOfRoomID) {
     }
     $parameter_changes_t_räume = array();
 
-    // foreach ($mapping as $oldK => $newK) {
-    //     $entries = array();
-    //     foreach ($changeSqlResult as $changeKey => $entry) {
-    //         if ($entry[$oldK] !== $entry[$newK]) {
-    //             $entries[] = array(
-    //                 'timestamp' => $entry['Timestamp'],
-    //                 'oldValue' => $entry[$oldK],
-    //                 $mp2[$newK] => $entry[$newK]
-    //             );
-    //         }
-    //     }
-    //     if (!empty($entries)) {
-    //         usort($entries, function ($a, $b) {
-    //             return $a['timestamp'] <=> $b['timestamp'];
-    //         });
-    //         if (end($entries)[$mp2[$newK]] !== reset($entries)['oldValue']) {
-    //             $parameter_changes_t_räume[] = $mp2[$newK];
-    //         }
-    //     }
-    // }
 
     $sql = "SELECT tabelle_räume.idTABELLE_Räume, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, tabelle_räume.`Fussboden OENORM B5220`, 
     tabelle_räume.`Allgemeine Hygieneklasse`, tabelle_räume.Bauabschnitt, tabelle_räume.Nutzfläche, tabelle_räume.Abdunkelbarkeit, tabelle_räume.Strahlenanwendung, tabelle_räume.Laseranwendung, tabelle_räume.H6020, 
@@ -433,7 +414,6 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             anmA3($pdf, $row['Anmerkung BauStatik'], $SB, $block_header_w);
             $pdf->Ln($horizontalSpacerLN);
         }
-
 
 
 ////     ------- MT Tabelle  ---------
