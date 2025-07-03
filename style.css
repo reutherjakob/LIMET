@@ -14,13 +14,11 @@ a:hover {
 .bg-primary {
     background-color: rgba(100, 140, 25, 0.75) !important; /* Replace with your color */
 }
- tr.selected {
+
+tr.selected {
     background-color: rgba(100, 140, 25, 0.75)  !important;
     color: #222; /* Optional: Change text color */
 }
-
-
-
 
 
 
@@ -63,9 +61,9 @@ a:hover {
     z-index: 99;
 }
 
-.table > thead > tr > th {
+/*.table > thead > tr > th {
     background-color: rgba(100, 140, 25, 0.15);
-}
+}*/
 
 
 #scrollBtn {
@@ -147,7 +145,6 @@ a:hover {
 #table {
     border-spacing: 1px;
 }
-
 
 #data40 {
     width: 100%;

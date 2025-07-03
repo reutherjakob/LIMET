@@ -31,30 +31,71 @@ init_page_serversides();
             background-color: #f8f9fa; /* Optional: light gray background for checked rows */
         }
 
-        /* Example: Assign distinct background colors for each category */
-        .kathegorie-ET,.kathegorie-Raumparameter---IT-Anbindung {
-            background-color: #6c76ff;
-        }
-
-        .kathegorie-HT {
-            background-color: #fff2e6;
-        }
-
-        .kathegorie-MED-GAS {
-            background-color: #e6ffe6;
-        }
-
-        .kathegorie-Laser {
-            background-color: #f0e6ff;
-        }
-
-        .kathegorie-Röntgen {
-            background-color: #ffe6e6;
-        }
-
+        /* ET: Elektro-Technik */
+        .kathegorie-ET,
+        .kathegorie-Raumparameter---IT-Anbindung,
+        .kathegorie-Raumparameter---Leistung,
+        .kathegorie-Raumparameter---Netzarten,
+        .kathegorie-Raumparameter---ElementPort,
+        .kathegorie-Raumparameter---Leistung-,
+        .kathegorie-Raumparameter---Leistung-,
+        .kathegorie-Raumparameter---Leistung-,
+        .kathegorie-Raumparameter---Leistung--INKL--GLZ-,
+        .kathegorie-Raumparameter---Leistung--EXKL--GLZ-,
+        .kathegorie-Raumparameter---Elemente,
+        .kathegorie-Raumparameter---RG,
+        .kathegorie-Raumparameter---SummevonAnschlussleistung,
         .kathegorie-CEE {
-            background-color: #ffffe6;
+            background-color: #e6f0ff !important; /* Light blue */
         }
+
+        /* HT: Heizung, Lüftung, Klima, Sanitär */
+        .kathegorie-HT,
+        .kathegorie-Raumparameter---Abwärme,
+        .kathegorie-Raumparameter---Digestorium,
+        .kathegorie-Raumparameter---Sicherheitsschrank {
+            background-color: #fff5e6 !important; /* Light orange */
+        }
+
+        /* MED-GAS: Medizingase */
+        .kathegorie-MED-GAS,
+        .kathegorie-Raumparameter---MED-GAS,
+        .kathegorie-Raumparameter---Entnahmestelle,
+        .kathegorie-Raumparameter---Gasanschluss,
+        .kathegorie-Raumparameter---Stativ {
+            background-color: #eaffea !important; /* Light green */
+        }
+
+        /* Laser */
+        .kathegorie-Laser,
+        .kathegorie-Raumparameter---Laseranwendung {
+            background-color: #8d42dd !important; /* Light purple */
+        }
+
+        /* Röntgen */
+        .kathegorie-Röntgen,
+        .kathegorie-Raumparameter---Strahlenanwendung,
+        .kathegorie-Raumparameter---Röntgen {
+            background-color: #cd5e5e !important; /* Light red/pink */
+        }
+
+        /* CEE Anschluss */
+        .kathegorie-CEE,
+        .kathegorie-Raumparameter---CEE {
+            background-color: #ffffe6 !important; /* Light yellow */
+        }
+
+        /* Default/fallback for any other category */
+        [class^="kathegorie-"] {
+            background-color: #f9f9f9 !important;
+        }
+
+        /* Optional: style checked rows for clarity */
+        .checked {
+            text-decoration: line-through;
+            background-color: #e0e0e0 !important;
+        }
+
 
     </style>
 </head>
@@ -77,9 +118,8 @@ init_page_serversides();
         </div>
 
         <div id="CB_C1" class="table-responsive">
-            <table class="table compact table-striped table-bordered table-hover border border-5 border-light"
-                   id="table1ID"
-                   style="z-index: 1; ">
+            <table class="table compact"
+                   id="table1ID">
                 <thead>
                 <tr>
                     <th>-</th>
@@ -93,6 +133,7 @@ init_page_serversides();
             </table>
         </div>
     </div>
+
 </body>
 
 
@@ -275,8 +316,8 @@ init_page_serversides();
 
 <script src="_utils.js"></script>
 <script>
-    function show_modal(modal_id){
-        $('#'+ modal_id).modal('show');
+    function show_modal(modal_id) {
+        $('#' + modal_id).modal('show');
     }
 
     function getRoomIdsFromCurrentUrl() {
@@ -290,9 +331,7 @@ init_page_serversides();
     }
 
     $(document).ready(function () {
-
         let ids = getRoomIdsFromCurrentUrl();
-        // console.log(ids);
         $.ajax({
             url: "get_angaben_check.php",
             type: "GET",
@@ -316,8 +355,17 @@ init_page_serversides();
                 for (const id in roomIssues) {
                     const rows = roomIssues[id].map((item, index) => {
                         const isChecked = localStorage.getItem(`${id}-${index}`) === 'true';
-                        return `<tr class="${isChecked ? 'checked' : ''}" data-id="${id}"> <td><input class="form-check-input"  type='checkbox' ${isChecked ? 'checked' : ''}></td>  <td>${item.ROOM}</td>  <td>${item.kathegorie}</td><td>${item.issue}</td>   </tr>`;
+                        return `<tr class="${isChecked ? 'checked' : ''}" data-id="${id}">
+                            <td data-checked="${isChecked ? 1 : 0}">
+                                <span style="display:none">${isChecked ? 1 : 0}</span>
+                                <input class="form-check-input" type="checkbox" ${isChecked ? 'checked' : ''}>
+                            </td>
+                            <td>${item.ROOM}</td>
+                            <td>${item.kathegorie}</td>
+                            <td>${item.issue}</td>
+                        </tr>`;
                     });
+
                     tbody.innerHTML += rows.join('');
                 }
 
@@ -345,14 +393,13 @@ init_page_serversides();
                             $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CH1');
 
                         },
-                        createdRow: function(row, data, dataIndex) {
+                        createdRow: function (row, data) {
                             const kathegorie = data[2] || data.kathegorie;
                             if (kathegorie) {
                                 const cleanKathegorie = kathegorie.replace(/[^a-zA-Z0-9-]/g, '-');
                                 $(row).addClass('kathegorie-' + cleanKathegorie);
                             }
                         }
-
                     });
                 } else {
                     document.getElementById('table1ID').style.display = 'none';
@@ -388,8 +435,6 @@ init_page_serversides();
                     }
                 });
             }
-
-
         });
 
         $('#table1ID').on('click', 'tbody tr', function (event) {
@@ -398,7 +443,6 @@ init_page_serversides();
                 checkbox.prop('checked', !checkbox.prop('checked')).trigger('change');
             }
         });
-
         const deleteButton = document.getElementById('deleteButton');
         deleteButton.addEventListener('click', deleteLocalStorageItem);
     })

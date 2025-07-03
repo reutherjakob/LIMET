@@ -319,16 +319,16 @@ init_page_serversides();
                                    placeholder='Bearbeiter'/>
                         </div>
                         <div class='form-group'>
-                            <label for='kostenanschlag'>Kostenanschlag: (.)</label>
+                            <label for='kostenanschlag'>Kostenanschlag: (. oder ,)</label>
                             <input type='text' class='form-control form-control-sm' id='kostenanschlag'
                                    placeholder='0'/>
                         </div>
                         <div class='form-group'>
-                            <label for='budget'>Budget (valorisiert): (.)</label>
+                            <label for='budget'>Budget (valorisiert): (. oder ,)</label>
                             <input type='text' class='form-control form-control-sm' id='budget' placeholder='0'/>
                         </div>
                         <div class='form-group'>
-                            <label for='lotSum'>Vergabesumme: (.)</label>
+                            <label for='lotSum'>Vergabesumme: (. oder ,)</label>
                             <input type='text' class='form-control form-control-sm' id='lotSum' placeholder='Summe'/>
                         </div>
                         <div class='form-group'>
@@ -386,24 +386,6 @@ init_page_serversides();
 
 
 </body>
-<!-- Modal Info
-<div class='modal fade' id='infoModal' role='dialog'>
-    <div class='modal-dialog modal-dialog-centered modal-sm'>
-        <div class='modal-content'>
-            <div class='modal-header'>
-                <h4 class='modal-title'>Info</h4>
-                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
-            </div>
-            <div class='modal-body' id='infoBody'>
-            </div>
-            <div class='modal-footer'>
-                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>OK</button>
-            </div>
-        </div>
-
-    </div>
-</div>
--->
 
 <script src="_utils.js"></script>
 <!--suppress ES6ConvertVarToLetConst -->
@@ -504,9 +486,10 @@ init_page_serversides();
             document.getElementById("lotStart").value = tableTenderLots.row($(this)).data()[5];
             document.getElementById("lotVerfahren").value = tableTenderLots.row($(this)).data()[6];
             document.getElementById("lotLVBearbeiter").value = tableTenderLots.row($(this)).data()[7];
-            document.getElementById("kostenanschlag").value = tableTenderLots.row($(this)).data()[11];
-            document.getElementById("budget").value = tableTenderLots.row($(this)).data()[12];
-            document.getElementById("lotSum").value = tableTenderLots.row($(this)).data()[13];
+            document.getElementById("kostenanschlag").value = tableTenderLots.row($(this)).data()[11].replace(/\./g, '');
+
+            document.getElementById("budget").value = tableTenderLots.row($(this)).data()[12].replace(/\./g, '');
+            document.getElementById("lotSum").value = tableTenderLots.row($(this)).data()[13].replace(/\./g, '');
 
 
             const htmlString = tableTenderLots.row($(this)).data()[8];
@@ -650,7 +633,7 @@ init_page_serversides();
         let lotLVSend = $("#lotLVSend").val();
         let lotVerfahren = $("#lotVerfahren").val();
         let lotLVBearbeiter = $("#lotLVBearbeiter").val();
-        console.log(lotVerfahren);
+        //console.log(lotVerfahren);
 
         if ($("#lotMKF").prop('checked') === false) {
             console.log("$('#lotMKF').prop('checked') === false");
