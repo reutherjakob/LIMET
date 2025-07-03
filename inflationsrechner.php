@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Improved Inflation Calculator</title>
+    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -15,16 +16,21 @@
           href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/css/bootstrap-datepicker.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+          integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
 </head>
 <body>
+
+<div id="limet-navbar"></div>
 <div class="container-fluid my-3">
 
     <?php
     if (!function_exists('utils_connect_sql')) {
         include "_utils.php";
     }
-    init_page_serversides("x","");
+
+    init_page_serversides("x");
     $mysqli = utils_connect_sql();
 
     function fetch_data($mysqli, $query, $params = [], $types = '') {
@@ -313,7 +319,7 @@
         </div>
     </div>
 </div>
-
+<script src="_scrollUp.js"></script>
 <script>
     $(document).ready(function() {
         $('.select2').select2({

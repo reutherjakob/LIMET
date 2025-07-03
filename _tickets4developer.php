@@ -1,6 +1,7 @@
 <?php
 include "_utils.php";
 check_login();
+init_page_serversides("x","x");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,6 +18,7 @@ check_login();
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
 </head>
 <body>
+<div id="limet-navbar"></div>
 <div class="container py-5">
     <div class="row">
         <div class="col-lg-6 mx-auto">
