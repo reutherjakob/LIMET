@@ -177,8 +177,6 @@ function kify($input)
 }
 
 
-
-
 function is_not_no_comment($str)
 {
     if ($str == "keine Anmerkung" || $str == "keine Angaben" || $str == "") {
@@ -189,7 +187,7 @@ function is_not_no_comment($str)
 }
 
 function translateBestand($value)
-{
+{ 
     return ($value == 0) ? 'Ja' : 'Nein';
 }
 
