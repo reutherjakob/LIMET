@@ -93,6 +93,13 @@ $stmt->close();
                                 Elemente als Zeilen
                             </label>
                         </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="hideZeros" name="hideZeros">
+                            <label class="form-check-label" for="hideZeros">
+                                Nullen ausblenden
+                            </label>
+                        </div>
+
                         <button type="submit" class="btn  btn-success w-100">Anzeigen</button>
             </form>
 
@@ -165,6 +172,9 @@ $stmt->close();
                 $('#pivotTableContainer').html('<div class="alert alert-info">Bitte wählen Sie mindestens einen Raumbereich.</div>');
                 return;
             }
+            let hideZeros = $('#hideZeros').is(':checked');
+
+
             $.ajax({
                 url: 'pivot_table_ajax.php',
                 method: 'POST',
@@ -179,6 +189,26 @@ $stmt->close();
                 traditional: true, // Important for sending arrays with jQuery
                 success: function (data) {
                     $('#pivotTableContainer').html(data);
+
+                    let colCount = $('#pivotTable thead th').length;
+
+                    // Build columns definition for DataTables
+                    let columns = [];
+                    for (let i = 0; i < colCount; i++) {
+                        if (i === 0) {
+                            // First column: Element or Raum, don't change rendering
+                            columns.push(null);
+                        } else if (hideZeros) {
+                            // For all other columns, hide zeros
+                            columns.push({
+                                render: function (data, type, row, meta) {
+                                    return (data === "0" || data === 0) ? "" : data;
+                                }
+                            });
+                        } else {
+                            columns.push(null);
+                        }
+                    }
                     $('#pivotTable').DataTable({
                         language: {
                             url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
@@ -193,7 +223,8 @@ $stmt->close();
                         pageLength: 50,
                         lengthMenu: [[10, 20, 50, -1], ['10 rows', '20 rows', '50 rows', 'All']],
                         responsive: false,
-                        autoWidth: false,
+                        autoWidth: true,
+                        columns: columns,
                         layout: {
                             topStart: 'buttons',
                             topEnd: 'search',
