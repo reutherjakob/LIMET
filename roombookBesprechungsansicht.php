@@ -56,12 +56,13 @@ $stmt->close();
                 <div class="card">
                     <div class="card-header d-flex flex-nowrap">
                         <label for="raumbereich" class="form-label"></label>
-                        <select id="raumbereich" name="raumbereich" class="form-select" style="width:100%">
-                            <option value="">Raumbereich wählen</option>
+                        <select id="raumbereich" name="raumbereich[]" class="form-select" style="width:100%" multiple>
+
                             <?php foreach ($raumbereichOptions as $option): ?>
                                 <option value="<?= htmlspecialchars($option) ?>"><?= htmlspecialchars($option) ?></option>
                             <?php endforeach; ?>
                         </select>
+
 
                     </div>
                     <div class="card-body">
@@ -118,7 +119,7 @@ $stmt->close();
 
 <script>
     $(document).ready(function () {
-        $('#raumbereich').select2();
+        $('#raumbereich').select2({placeholder: "Raumbereich wählen"});
 
 
         function updateTransposeLabel() {
@@ -153,22 +154,29 @@ $stmt->close();
         });
 
         function loadPivotTable() {
-            let raumbereich = $('#raumbereich').val();
+            let raumbereich = $('#raumbereich').val(); // This is now an array
             let mtRelevant = $('#mtRelevant').is(':checked') ? 1 : 0;
             let entfallen = $('#entfallen').is(':checked') ? 1 : 0;
             let nurMitElementen = $('#nurMitElementen').is(':checked') ? 1 : 0;
             let ohneLeereElemente = $('#ohneLeereElemente').is(':checked') ? 1 : 0;
-
             let transponiert = $('#isTransposed').is(':checked') ? 1 : 0;
 
-            if (!raumbereich) {
-                $('#pivotTableContainer').html('<div class="alert alert-info">Bitte wählen Sie einen Raumbereich.</div>');
+            if (!raumbereich || raumbereich.length === 0) {
+                $('#pivotTableContainer').html('<div class="alert alert-info">Bitte wählen Sie mindestens einen Raumbereich.</div>');
                 return;
             }
             $.ajax({
                 url: 'pivot_table_ajax.php',
                 method: 'POST',
-                data: {raumbereich, mtRelevant, entfallen, nurMitElementen, ohneLeereElemente, transponiert},
+                data: {
+                    raumbereich: raumbereich, // This will be sent as an array
+                    mtRelevant,
+                    entfallen,
+                    nurMitElementen,
+                    ohneLeereElemente,
+                    transponiert
+                },
+                traditional: true, // Important for sending arrays with jQuery
                 success: function (data) {
                     $('#pivotTableContainer').html(data);
                     $('#pivotTable').DataTable({
@@ -184,7 +192,7 @@ $stmt->close();
                         lengthChange: true,
                         pageLength: 50,
                         lengthMenu: [[10, 20, 50, -1], ['10 rows', '20 rows', '50 rows', 'All']],
-                        responsive: true,
+                        responsive: false,
                         autoWidth: false,
                         layout: {
                             topStart: 'buttons',

@@ -5,28 +5,32 @@ $projectID = $_SESSION["projectID"] ?? 75;
 
 header("Content-Type: text/html; charset=UTF-8");
 
-$raumbereich = $_POST["raumbereich"] ?? "";
+// Accept multiple raumbereiche as array
+$raumbereiche = $_POST['raumbereich'] ?? [];
+if (!is_array($raumbereiche)) $raumbereiche = [$raumbereiche];
+
 $mtRelevant = isset($_POST["mtRelevant"]) ? intval($_POST["mtRelevant"]) : 0;
 $entfallen = isset($_POST["entfallen"]) ? intval($_POST["entfallen"]) : 0;
 $nurMitElementen = isset($_POST["nurMitElementen"]) ? intval($_POST["nurMitElementen"]) : 0;
 $ohneLeereElemente = isset($_POST["ohneLeereElemente"]) ? intval($_POST["ohneLeereElemente"]) : 1;
 $transponiert = isset($_POST["transponiert"]) ? intval($_POST["transponiert"]) : 0;
 
-if (empty($raumbereich)) {
+if (empty($raumbereiche)) {
     echo '<div class="alert alert-warning">Kein Raumbereich gewählt.</div>';
     exit;
 }
 
 $conn = utils_connect_sql();
 
-// Räume im Filterbereich und Projekt ermitteln, Filter anwenden
+// --- 1. Räume im Filterbereich und Projekt ermitteln, Filter anwenden ---
+$bereichPlaceholders = implode(',', array_fill(0, count($raumbereiche), '?'));
 $sqlRooms = "SELECT idTABELLE_Räume, Raumnr, Raumbezeichnung
              FROM tabelle_räume
              WHERE tabelle_projekte_idTABELLE_Projekte = ?
-               AND `Raumbereich Nutzer` = ?";
+               AND `Raumbereich Nutzer` IN ($bereichPlaceholders)";
 
-$params = [$projectID, $raumbereich];
-$types = "is";
+$params = array_merge([$projectID], $raumbereiche);
+$types = str_repeat('i', 1) . str_repeat('s', count($raumbereiche));
 
 if ($mtRelevant) {
     $sqlRooms .= " AND `MT-relevant` = 1";
@@ -65,8 +69,15 @@ if (empty($rooms)) {
     exit;
 }
 
-// Pivot-Daten abfragen
-$roomIDs = implode(",", array_map("intval", array_keys($rooms)));
+// --- 2. Pivot-Daten abfragen ---
+$roomIDs = array_keys($rooms);
+if (empty($roomIDs)) {
+    echo '<div class="alert alert-info">Keine Räume gefunden.</div>';
+    exit;
+}
+$bereichPlaceholders = implode(',', array_fill(0, count($raumbereiche), '?'));
+$roomPlaceholders = implode(',', array_fill(0, count($roomIDs), '?'));
+
 $sql = "
     SELECT
         e.ElementID,
@@ -77,14 +88,19 @@ $sql = "
     JOIN tabelle_räume_has_tabelle_elemente re ON e.idTABELLE_Elemente = re.TABELLE_Elemente_idTABELLE_Elemente
     JOIN tabelle_räume r ON re.TABELLE_Räume_idTABELLE_Räume = r.idTABELLE_Räume
     WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
-      AND r.`Raumbereich Nutzer` = ?
+      AND r.`Raumbereich Nutzer` IN ($bereichPlaceholders)
       AND re.Standort = 1
-      AND r.idTABELLE_Räume IN ($roomIDs)
+      AND r.idTABELLE_Räume IN ($roomPlaceholders)
     GROUP BY e.ElementID, e.Bezeichnung, r.idTABELLE_Räume
     ORDER BY e.ElementID, r.Raumnr
 ";
+
+// Build parameter types and values for the pivot query
+$allParams = array_merge([$projectID], $raumbereiche, $roomIDs);
+$allTypes = str_repeat('i', 1) . str_repeat('s', count($raumbereiche)) . str_repeat('i', count($roomIDs));
+
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("is", $projectID, $raumbereich);
+$stmt->bind_param($allTypes, ...$allParams);
 $stmt->execute();
 $res = $stmt->get_result();
 
@@ -104,8 +120,8 @@ while ($row = $res->fetch_assoc()) {
 }
 $stmt->close();
 
+// --- 3. Filter: Elemente mit nur Nullen/leer ausblenden ---
 if ($ohneLeereElemente) {
-// Elemente mit nur Nullen/leer ausblenden, falls Filter aktiv
     foreach ($pivot as $eid => $data) {
         $alleNull = true;
         foreach ($rooms as $rid => $rlabel) {
@@ -121,13 +137,11 @@ if ($ohneLeereElemente) {
     }
 }
 
-
-
+// --- 4. Ausgabe: Pivot-Tabelle ---
 if ($transponiert) {
     echo '<table class="table table-sm table-striped table-hover border border-light border-5" id="pivotTable">';
     echo '<thead><tr><th>Raum</th>';
     foreach ($pivot as $eid => $data) {
-        // ElementID und Bezeichnung in einer Spalte
         echo '<th>' . htmlspecialchars($eid . ' ' . $data["Bezeichnung"]) . '</th>';
     }
     echo '</tr></thead><tbody>';
@@ -141,9 +155,7 @@ if ($transponiert) {
         echo '</tr>';
     }
     echo '</tbody></table>';
-
 } else {
-
     echo '<table class="table table-sm table-striped table-hover border border-light border-5" id="pivotTable">';
     echo '<thead><tr><th>Element</th>';
     foreach ($rooms as $rid => $rlabel) {
@@ -152,7 +164,6 @@ if ($transponiert) {
     echo '</tr></thead><tbody>';
     foreach ($pivot as $eid => $data) {
         echo '<tr>';
-        // ElementID und Bezeichnung in einer Spalte
         echo '<td>' . htmlspecialchars($eid . ' ' . $data["Bezeichnung"]) . '</td>';
         foreach ($rooms as $rid => $rlabel) {
             $val = $data["Räume"][$rid] ?? "";
@@ -161,9 +172,5 @@ if ($transponiert) {
         echo '</tr>';
     }
     echo '</tbody></table>';
-
-
 }
-
-
 ?>
