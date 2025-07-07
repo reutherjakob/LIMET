@@ -47,7 +47,8 @@
         "ZVZ Nord" => "fas fa-teeth-open",
         "KLU-ANGIO-RV-KABEG" => "fas fa-x-ray",
         "Test1" => "fas fa-coffee",
-        "KAGes Labor - LKH2 Süd" => "fas fa-vials"
+        "KAGes Labor - LKH2 Süd" => "fas fa-vials",
+        "KHI" => "fas fa-ambulance"
     ];
     ?>
 
@@ -156,15 +157,11 @@
                 </div>
                 <div class='card-body'>
                     <p>
-                        Falls Mensch ebenso ein weiteres
-                        <a href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free" target="_blank">Projekt Icon </a>
-                        in dieser Tabelle sehen will.
+                        Auswahl eines
+                        <a href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free" target="_blank">Projekt Icons</a>.
                     </p>
                     <p>
-                        <a href="_tickets4developer.php" target="_blank">Bugreports</a>.
-                    </p>
-                    <p>
-                        <a href="_feature_wishlist.php" target="_blank"> Verbesserungsvorschläge oder Wünsche</a>.
+                        <a href="_feature_wishlist.php" target="_blank">Raumbuch Feedback</a>.
                     </p>
                 </div>
             </div>

@@ -1,6 +1,7 @@
 <?php
 include "_utils.php";
-check_login();init_page_serversides("x","x");
+check_login();
+init_page_serversides("x","x");
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -44,6 +44,27 @@ $stmt->close();
             background-color: #000;
             border-color: #000;
         }
+
+        /* Rotates header text by 90 degrees and aligns it nicely -> BROKEN
+        th.rotate > div {
+            transform: rotate(-90deg);
+            white-space: nowrap;
+            width: 20px;
+            height: 120px; /
+            margin: auto;
+            text-align: left;
+            vertical-align: bottom;
+
+            font-size: 0.85em;
+        }
+
+        th.rotate {
+            vertical-align: bottom !important;
+            height: 120px;
+            padding: 0;
+        }
+        */
+
     </style>
 
 </head>
@@ -54,7 +75,7 @@ $stmt->close();
         <div class="col-lg-2 mx-auto mb-4" id="filterCardCol">
             <form id="filterForm">
                 <div class="card">
-                    <div class="card-header d-flex flex-nowrap">
+                    <div class="card-header d-flex flex-nowrap"  style=" height: 55px; ">
                         <label for="raumbereich" class="form-label"></label>
                         <select id="raumbereich" name="raumbereich[]" class="form-select" style="width:100%" multiple>
 
@@ -109,13 +130,17 @@ $stmt->close();
 </div>
 
 <div class="col-lg-10 mx-auto" id="tableCardCol">
-    <div class="card">
-        <div class="card-header d-flex align-items-center">
-            <button class="btn btn-outline-dark fa fa-arrow-left" id="ToggleCard"></button>
-            <div class="d-flex align-items-center justify-content-end float-end"
-                 id="CardHeaderHoldingDatatableManipulators"></div>
-        </div>
 
+    <div class="card">
+        <div class="card-header d-flex align-items-start" style=" height: 55px; ">
+            <button class="btn btn-outline-dark fa fa-arrow-left" id="ToggleCard"></button>
+            <div class="row d-inline-flex align-items-start w-100">
+                <div class=" col-6   d-flex                   align-items-start"
+                     id="CardHeaderHoldingDatatableManipulators"></div>
+                <div class=" col-6 d-flex justify-content-end  align-items-start"
+                     id="CardHeaderHoldingDatatableManipulators2"></div>
+            </div>
+        </div>
         <div class="card-body p-0">
             <div id="pivotTableContainer">
                 <!-- Die Pivot-Tabelle wird hier per AJAX geladen -->
@@ -201,7 +226,7 @@ $stmt->close();
                         } else if (hideZeros) {
                             // For all other columns, hide zeros
                             columns.push({
-                                render: function (data, type, row, meta) {
+                                render: function (data) {
                                     return (data === "0" || data === 0) ? "" : data;
                                 }
                             });
@@ -214,13 +239,25 @@ $stmt->close();
                             url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                             search: "",
                             searchPlaceholder: "Suche...",
+                            lengthMenu: '_MENU_',
+                            info: "_START_-_END_ von _TOTAL_",
+                            infoEmpty: "Keine Einträge",
+                            infoFiltered: "(von _MAX_)",
                         },
+                        scrollX: true,
+                        scrollCollapse: true,
+                        fixedColumns: {start: 1},
+                        fixedHeader: true,
+
+
                         paging: true,
+                        pagingType: "simple",
+
                         searching: true,
                         ordering: true,
                         info: true,
                         lengthChange: true,
-                        pageLength: 50,
+                        pageLength: -1,
                         lengthMenu: [[10, 20, 50, -1], ['10 rows', '20 rows', '50 rows', 'All']],
                         responsive: false,
                         autoWidth: true,
@@ -238,12 +275,29 @@ $stmt->close();
                                 className: 'btn btn-success btn-sm'
                             }
                         ],
+                        //headerCallback: function (thead) {
+                        //    $(thead).find('th.rotate').each(function () {
+                        //        var $th = $(this);
+                        //        if (!$th.find('div').length) {
+                        //            $th.html('<div>' + $th.text() + '</div>');
+                        //        }
+                        //    });
+                        //},
                         initComplete: function () {
-                            let api = this.api();
+
+                            // Move all UI controls into the header container
                             $('#CardHeaderHoldingDatatableManipulators').empty();
-                            $(api.buttons().container()).appendTo($('#CardHeaderHoldingDatatableManipulators'));
+                            $('#CardHeaderHoldingDatatableManipulators2').empty();
+                            // Append all DataTables controls (buttons, search, info, pageLength, paging)
+                            $('#pivotTable_wrapper .dt-buttons').appendTo('#CardHeaderHoldingDatatableManipulators');
+                            $('#pivotTable_wrapper .dt-search').appendTo('#CardHeaderHoldingDatatableManipulators');
+
+                            $('#pivotTable_wrapper .dt-length').appendTo('#CardHeaderHoldingDatatableManipulators2');
+                            $('#pivotTable_wrapper .dt-info').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
+                            $('#pivotTable_wrapper .dt-paging').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
+
                             $('.dt-search label').remove();
-                            $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeaderHoldingDatatableManipulators');
+                            $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark");
                         }
                     });
 
