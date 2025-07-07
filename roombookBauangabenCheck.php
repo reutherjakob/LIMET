@@ -28,7 +28,7 @@ init_page_serversides();
     <style>
         .checked {
             text-decoration: line-through;
-            background-color: #f8f9fa; /* Optional: light gray background for checked rows */
+            background-color: #9f9a9a !important;
         }
 
         /* ET: Elektro-Technik */
@@ -37,24 +37,26 @@ init_page_serversides();
         .kathegorie-Raumparameter---Leistung,
         .kathegorie-Raumparameter---Netzarten,
         .kathegorie-Raumparameter---ElementPort,
-        .kathegorie-Raumparameter---Leistung-,
-        .kathegorie-Raumparameter---Leistung-,
-        .kathegorie-Raumparameter---Leistung-,
-        .kathegorie-Raumparameter---Leistung--INKL--GLZ-,
-        .kathegorie-Raumparameter---Leistung--EXKL--GLZ-,
+        .kathegorie-Leistung-Elemente-in-Raum--EXKL--GLZ-,
+        .kathegorie-Leistung-Elemente-in-Raum--INKL--GLZ-,
+        .kathegorie-Raumparameter---Leistung----INKL--GLZ-,
+        .kathegorie-Raumparameter---Leistung----EXKL--GLZ-,
         .kathegorie-Raumparameter---Elemente,
         .kathegorie-Raumparameter---RG,
         .kathegorie-Raumparameter---SummevonAnschlussleistung,
-        .kathegorie-CEE {
-            background-color: #e6f0ff !important; /* Light blue */
+        .kathegorie-Netzarten,
+        [class^="kathegorie-Raumparameter---Leistung"],
+        [class^="kathegorie-Raumparameter---ET-Anschlussleistung"] {
+            background-color: #deefff !important; /* Light blue */
         }
 
         /* HT: Heizung, Lüftung, Klima, Sanitär */
         .kathegorie-HT,
-        .kathegorie-Raumparameter---Abwärme,
+        .kathegorie-Raumparameter---Abw-rme--EXKL--GLZ-,
+        .kathegorie-Raumparameter---Abw-rme--INKL--GLZ-,
         .kathegorie-Raumparameter---Digestorium,
         .kathegorie-Raumparameter---Sicherheitsschrank {
-            background-color: #fff5e6 !important; /* Light orange */
+            background-color: #f2e5ff !important; /* Light orange */
         }
 
         /* MED-GAS: Medizingase */
@@ -63,39 +65,25 @@ init_page_serversides();
         .kathegorie-Raumparameter---Entnahmestelle,
         .kathegorie-Raumparameter---Gasanschluss,
         .kathegorie-Raumparameter---Stativ {
-            background-color: #eaffea !important; /* Light green */
+            background-color: #c0fac0 !important; /* Light green */
         }
 
         /* Laser */
         .kathegorie-Laser,
-        .kathegorie-Raumparameter---Laseranwendung {
-            background-color: #8d42dd !important; /* Light purple */
-        }
-
-        /* Röntgen */
+        .kathegorie-Raumparameter---Laseranwendung,
         .kathegorie-Röntgen,
         .kathegorie-Raumparameter---Strahlenanwendung,
-        .kathegorie-Raumparameter---Röntgen {
-            background-color: #cd5e5e !important; /* Light red/pink */
-        }
-
-        /* CEE Anschluss */
+        .kathegorie-Raumparameter---Röntgen,
         .kathegorie-CEE,
-        .kathegorie-Raumparameter---CEE {
-            background-color: #ffffe6 !important; /* Light yellow */
+        .kathegorie-Raumparameter---CEE,
+        .kathegorie-Raumparameter---Elemente,
+        .kathegorie-Raumparameter {
+            background-color: #f8dfb0 !important; /* Light yellow */
         }
 
-        /* Default/fallback for any other category */
         [class^="kathegorie-"] {
-            background-color: #f9f9f9 !important;
+            background-color: #f9f9f9;
         }
-
-        /* Optional: style checked rows for clarity */
-        .checked {
-            text-decoration: line-through;
-            background-color: #e0e0e0 !important;
-        }
-
 
     </style>
 </head>

@@ -43,13 +43,13 @@
             }
             init_page_serversides("x");
             $mysqli = utils_connect_sql();
-            $sql = "SELECT 
+            $sql = "SELECT   
+                tabelle_elemente.Bezeichnung as Elementbezeichnung,
                     tabelle_geraete.GeraeteID, 
                     tabelle_hersteller.Hersteller, 
                     tabelle_geraete.Typ, 
                     tabelle_geraete.Kurzbeschreibung, 
-                    tabelle_geraete.idTABELLE_Geraete,  
-                    tabelle_elemente.Bezeichnung as Elementbezeichnung
+                    tabelle_geraete.idTABELLE_Geraete
                 FROM 
                     tabelle_geraete
                 INNER JOIN 
@@ -177,7 +177,7 @@
             paging: true,
             pageLength: 25,
             columnDefs: [{
-                targets: [4],
+                targets: [5],
                 visible: false,
                 searchable: false
             }],
