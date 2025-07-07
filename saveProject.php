@@ -8,7 +8,7 @@ if(!isset($_SESSION["username"]))
    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
    exit;
    }
-?>
+?> 
 
 <?php
 	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
@@ -22,7 +22,7 @@ if(!isset($_SESSION["username"]))
 	if ($mysqli->connect_error) {
 	    die("Connection failed: " . $mysqli->connect_error);
 	}        
-        
+
         $sql = "UPDATE `LIMET_RB`.`tabelle_projekte`
                 SET
                 `Bettenanzahl` = '".filter_input(INPUT_GET, 'betten')."',

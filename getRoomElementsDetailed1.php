@@ -58,7 +58,7 @@ $sql_room_elements = "SELECT tabelle_räume_has_tabelle_elemente.id, tabelle_rä
        tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete
 FROM tabelle_varianten INNER JOIN (tabelle_hersteller RIGHT JOIN ((tabelle_räume_has_tabelle_elemente LEFT JOIN tabelle_geraete ON tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete = tabelle_geraete.idTABELLE_Geraete) INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON tabelle_hersteller.idtabelle_hersteller = tabelle_geraete.tabelle_hersteller_idtabelle_hersteller) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
 WHERE (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=?))
-ORDER BY   tabelle_räume_has_tabelle_elemente.Anzahl DESC ;";
+ORDER BY  tabelle_elemente.ElementID DESC;";
 
 // Function to execute query and calculate costs
 function calculateCosts($mysqli, $sql, $roomID, $projectID)
@@ -118,7 +118,7 @@ $mysqli->close();
     <title>Room Elements Detailed</title>
 </head>
 <body>
-<div class="d-flex align-items-center justify-content-between w-100">
+<div class="d-flex align-items-center w-100">
     <?php
     $cost_fields = [
         'kosten_gesamt' => ['label' => 'Raumkosten', 'value' => $formattedNumberGesamt],
@@ -140,7 +140,7 @@ $mysqli->close();
 
     <?php if ($result_room_elements->num_rows > 0): ?>
         <div id="room-action-buttons"
-             class="d-inline-flex justify-content-end align-items-center text-nowrap btn-group-sm">
+             class="d-inline-flex align-items-center text-nowrap btn-group-sm">
             <button type="button" class="btn btn-sm btn-outline-dark me-1" id="<?php echo $_SESSION["roomID"]; ?>"
                     data-bs-toggle="modal" data-bs-target="#copyRoomElementsModal" value="Rauminhalt kopieren">Inhalt
                 kopieren
@@ -295,6 +295,7 @@ $mysqli->close();
 
 <script src="_utils.js"></script>
 <script charset="utf-8" type="module">
+    // var currentSort = {column: 0, dir: 'asc'};   - within importing files
     //  !! tableRoomElements: variable within importing file!
     import CustomPopover from './_popover.js';
 
@@ -344,15 +345,14 @@ $mysqli->close();
             $('#tableRoomElements').empty(); // Clear table contents
         }
 
-        let hideZero = localStorage.getItem('hideZeroSetting') ==='true';
-        console.log("ähh", hideZero);
+        let hideZero = localStorage.getItem('hideZeroSetting') === 'true';
+
         $('#hideZeroRows').prop('checked', hideZero);
 
 
         $("#hideZeroRows").on("change", function () {
             localStorage.setItem('hideZeroSetting', this.checked ? 'true' : 'false');
-           console.log(this.checked, localStorage.getItem('hideZeroSetting'));
-
+            //console.log(this.checked, localStorage.getItem('hideZeroSetting'));
             const icon = $("#hideZeroIcon");
             if (this.checked) {
                 icon.removeClass("fa-eye").addClass("fa-eye-slash");
@@ -450,7 +450,7 @@ $mysqli->close();
             searching: true,
             info: true,
             hover: true,
-
+            order: [currentSort],
             columnDefs: [
                 {
                     targets: [0],
@@ -464,7 +464,6 @@ $mysqli->close();
                     orderable: true
                 }
             ],
-            order: [[3, "desc"]],
             language: {
                 url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/de-DE.json",
                 search: "",
@@ -480,11 +479,34 @@ $mysqli->close();
                 $('#room-action-buttons .xxx').remove();
                 $('#roomElements .dt-search label').remove();
                 $('#roomElements .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx  ms-1 me-1").appendTo('#room-action-buttons');
+                console.log(currentSort);
+                $('#tableRoomElements').DataTable().order([currentSort.column, currentSort.dir]).draw();
             }
         });
 
         $('#tableRoomElements').on('length.dt', function (e, settings, len) {
             localStorage.setItem('roomElementsPageLength', len);
+        });
+
+
+        $('#tableRoomElements').on('click', 'th', function() {
+            const colIndex = $(this).index() + 1;
+            if (currentSort.column !== colIndex) {
+                // New column clicked: start with ascending sort
+                currentSort.column = colIndex;
+                currentSort.dir = 'asc';
+            } else if (currentSort.dir === 'asc') {
+                currentSort.dir = 'desc';
+            } else if (currentSort.dir === 'desc') {
+                // Cycle to unsorted
+                currentSort.dir = null;
+                currentSort.column = null;
+            } else {
+                // Currently unsorted, go to ascending
+                currentSort.dir = 'asc';
+                currentSort.column = colIndex;
+            }
+            console.log(currentSort);
         });
 
 

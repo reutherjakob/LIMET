@@ -30,7 +30,13 @@
                 <div class="col-2"><strong> Elemente im Projekt</strong>
                 </div>
                 <div class="col-10 d-flex align-items-center justify-content-end" id="target_div">
-                    <div class="me-4 d-flex " id="sbdiv"></div>
+                    <div class="me-4 d-flex " id="hide0Wrapper">
+                        <input class="btn-check btn-sm" type="checkbox" id="hideZeroRows">
+                        <label class="btn btn-sm btn-outline-dark" for="hideZeroRows">
+                            Hide 0
+                        </label>
+                    </div>
+
                     <div class="btn-group btn-group-sm" role="group" aria-label="PDF Generation Buttons">
                         <button type='button' class='btn btn-outline-dark me-1' id='createElementListPDF'>
                             <i class='far fa-file-pdf'></i> Elementliste
@@ -44,7 +50,9 @@
                         <button type='button' class='btn btn-outline-dark  me-1' id='createElementEinbringwegePDF2'>
                             <i class='far fa-file-pdf'></i> Einbringwege2
                         </button>
+
                     </div>
+                    <div class="me-4 d-flex " id="sbdiv"></div>
                 </div>
             </div>
         </div>
@@ -128,7 +136,7 @@ ORDER BY tabelle_elemente.ElementID;";
             while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
                 echo "<td>" . $row["TABELLE_Elemente_idTABELLE_Elemente"] . "</td>";
-                echo "<td>" . $row["SummevonAnzahl"] . "</td>";
+                echo "<td id='amount " . $row['TABELLE_Elemente_idTABELLE_Elemente'] . " ' value='" . intval($row["SummevonAnzahl"]) . "' >" . $row["SummevonAnzahl"] . "</td>";
                 echo "<td>" . $row["ElementID"] . "</td>";
                 echo "<td>" . $row["Bezeichnung"] . "</td>";
                 echo "<td>" . $row["Variante"] . "</td>";
@@ -260,8 +268,8 @@ ORDER BY tabelle_elemente.ElementID;";
                 stateSave: false,
                 layout: {
                     topStart: null,
-                    topEnd: ['buttons',  'search'],
-                    bottomStart: ['info','pageLength'],
+                    topEnd: ['buttons', 'search'],
+                    bottomStart: ['info', 'pageLength'],
                     bottomEnd: 'paging'
                 },
                 buttons: [
@@ -347,6 +355,28 @@ ORDER BY tabelle_elemente.ElementID;";
                 });
 
             });
+
+            let filterIndex = $.fn.dataTable.ext.search.indexOf(hideZeroFilter);
+            if (filterIndex !== -1) {
+                $.fn.dataTable.ext.search.splice(filterIndex, 1);
+            }
+            $.fn.dataTable.ext.search.push(hideZeroFilter);
+
+            $("#hideZeroRows").on("change", function () {
+                tableElementsInProject.draw();
+            });
+
+            function hideZeroFilter(settings, data, dataIndex) {
+
+                if (settings.nTable.id !== 'tableElementsInProject') {
+                    return true;
+                }        //console.log(data);
+                let hideZero = $("#hideZeroRows").is(":checked");
+                let amount = parseInt(data[1]) || 0; // data[1] is the "Anzahl" column
+
+                return !(hideZero && (amount === 0));
+            }
+
         });
 
 
@@ -398,6 +428,7 @@ ORDER BY tabelle_elemente.ElementID;";
         $('#createElementEinbringwegePDF2').click(function () {
             window.open('/pdf_createElementEinbringwegePDFschöner.php');
         });
+
 
     </script>
 </body>

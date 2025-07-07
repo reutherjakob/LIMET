@@ -433,7 +433,7 @@ $mysqli->close();
 //$pdf->MultiCell(20, 6, "Geschoss",'B', 'C', 0, 0);
 ob_end_clean();
 // close and output PDF document
-$pdf->Output('Raumbuch-MT.pdf', 'I');
+$pdf->Output(getFileName( 'Raumbuch'), 'I');
 
 //============================================================+
 // END OF FILE

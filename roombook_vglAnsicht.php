@@ -206,6 +206,10 @@ init_page_serversides(); // checks LOGIN
 <script src="_utils.js"></script>
 <script>
 
+    function show_modal(modal_id) {
+        $('#' + modal_id).modal('show');
+    }
+
     $(document).ready(function () {
         addToggleFunctionality();
         init_t_rooms();

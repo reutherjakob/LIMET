@@ -248,7 +248,7 @@ init_page_serversides();
 <script>
 
     var tableRooms, tableElementsInDB;
-
+    var currentSort = {column: 0, dir: 'asc'};
     var tableRoomElements;  // tableRoomElements  && hideZeroFilter required for: getRoomELmeentsDetailed1.php
     const hideZeroFilter = function (settings, data, dataIndex) {
         if (settings.nTable.id !== 'tableRoomElements') {

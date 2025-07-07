@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JavaScriptLibraryMappings">
+    <file url="PROJECT" libraries="{@popperjs/core, Chart.js, FileSaver.js, all, bootstrap, bootstrap-datepicker, bootstrap-toggle, chart.js, chartjs-adapter-date-fns, dataTables.dataTables, datatables, datatables.mark, font-awesome, jquery, jquery-3.6.0, jquery-3.7.1, jquery.mark, pdfmake, popper.js, select2, select2-bootstrap-5-theme, xlsx, xlsx.full}" />
+  </component>
+</project>

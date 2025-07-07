@@ -31,7 +31,7 @@ init_page_serversides();
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <style>
         .card-header {
-            min-height: 4vh !important;
+            min-height: 3vh !important;
         }
     </style>
 </head>
@@ -68,7 +68,6 @@ init_page_serversides();
             </div>
 
 
-
         </div>
 
         <div class="col-xxl-4">
@@ -83,28 +82,35 @@ init_page_serversides();
     </div>
 
 
-    <div class='row'>
-        <div class='col-xxl-6'>
-            <div class="card mt-1">
-                <div class="card-header">Räume mit Element</div>
+    <div class='row align-items-stretch'>
+        <div class='col-xxl-7'>
+            <div class="card mt-1 h-auto">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-xxl-6 d-inline-flex justify-content-start align-items-center">
+                            <i class="fas fa-door-open fa-lg me-2"></i> mit Element
+                        </div>
+                        <div class="col-xxl-6 d-inline-flex justify-content-end align-items-center" id="CHRME"></div>
+                    </div>
+                </div>
                 <div class="card-body flex-xxl-grow-1 h-auto" id="roomsWithElement"></div>
             </div>
         </div>
-        <div class='col-xxl-6'>
-            <div class="card mt-1">
+        <div class='col-xxl-5'>
+            <div class="card mt-1 h-auto">
                 <div class="card-header" id="RäumeOhneElCardHeader ">
 
-                    <div class="row ">
-                        <div class="col-xxl-4 d-flex flex-nowrap align-items-center" id="CardHeaderRäumeOhneElement">
-                            Räume ohne Element
+                    <div class="row">
+                        <div class="col-xxl-4 d-flex flex-nowrap text-nowrap align-items-center" id="CardHeaderRäumeOhneElement">
+                            <i class="fas fa-door-open  fa-lg me-2"></i> ohne Element
                         </div>
-                        <div class="col-xxl-8 d-flex flex-nowrap justify-content-end">
+                        <div class="col-xxl-8 d-flex flex-nowrap justify-content-end align-items-center">
                             <button type='button' class='btn btn-outline-success btn-sm ' id='addElements'
                                     data-bs-toggle='modal' data-bs-target='#addElementsToRoomModal' disabled><i
-                                        class='fas fa-plus'></i> Element zu Raum hinzufügen
+                                        class='fas fa-plus'></i> Element hinzufügen
                             </button>
                             <button type='button' id="selectAllRows"
-                                    class="btn btn-outline-primary btn-sm me-2 ms-2 ">
+                                    class="btn btn-outline-primary btn-sm me-2 ms-4 ">
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                 Sichtbare auswählen
                             </button>
@@ -156,10 +162,8 @@ init_page_serversides();
                 topEnd: null
             },
             initComplete: function () {
-
                 $('#tableElementsInDB_wrapper .dt-search label').remove();
                 $('#tableElementsInDB_wrapper .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
-
             }
         });
 
@@ -176,7 +180,7 @@ init_page_serversides();
                 type: "GET",
                 success: function () {
                     $.ajax({
-                        url: "getRoomsWithElement.php",
+                        url: "getRoomsWithElement1.php",
                         data: {"elementID": elementID},
                         type: "GET",
                         success: function (data) {
@@ -233,12 +237,9 @@ init_page_serversides();
         });
 
 
-
     });
 </script>
 </body>
-
-
 
 
 </html>

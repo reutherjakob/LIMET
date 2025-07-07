@@ -9,9 +9,9 @@ $(document).ready(function () {
     });
 
     $('#zustaendigkeit').select2({
-        placeholder: 'Zuständigkeit wählen.'
+        placeholder: 'Zuständigkeit wählen.',
+        dropdownCssClass: 'select2-dropdown-long'
     });
-
 
     $("#saveZustaendigkeitBtn").click(function () {
         let Name = $("#newZustaendigkeitName").val().trim();
@@ -19,7 +19,6 @@ $(document).ready(function () {
             alert("Bitte geben Sie einene Zustaendigkeit ein.");
             return;
         }
-
         $.ajax({
             url: "saveZustaendigkeit.php",
             type: "POST",
@@ -68,10 +67,10 @@ $(document).ready(function () {
             data: {name: orgName},
             success: function (response) {
                 try {
-                    var data = JSON.parse(response);
+                    let data = JSON.parse(response);
                     if (data.success) {
                         // Add new option to select and select it
-                        var newOption = $("<option>")
+                        let newOption = $("<option>")
                             .val(data.id)
                             .text(data.name)
                             .prop("selected", true);
@@ -93,7 +92,8 @@ $(document).ready(function () {
     });
 
     $('#organisation').select2({
-        placeholder: 'Organistation wählen'
+        placeholder: 'Organistation wählen',
+        dropdownCssClass: 'select2-dropdown-long'
     });
 
 });

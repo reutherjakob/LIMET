@@ -8,27 +8,46 @@ function createRaumHeaderRaumbuch($pdf, $Raumdaten)
     $e_C_2_3rd = $e_C - $e_C_3rd;
     while ($row = $Raumdaten->fetch_assoc()) {
         $pdf->SetFont('helvetica', 'B', 10);
+
+        // Raumbezeichnung
         $pdf->MultiCell(25, 6, "Raum:", 0, 'L', 0, 0);
+        $raumbezHeight = $pdf->getStringHeight(75, $row['Raumbezeichnung']);
         $pdf->MultiCell(75, 6, $row['Raumbezeichnung'], 0, 'L4', 0, 0);
+
+        // Raumnummer
+        $raumnrHeight = $pdf->getStringHeight(80, "Nummer: " . $row['Raumnr']);
         $pdf->MultiCell(80, 6, "Nummer: " . $row['Raumnr'], 0, 'L', 0, 0);
+        if ($raumnrHeight > 6   || $raumbezHeight > 6) $pdf->Ln(4);
+
         $pdf->Ln();
         $pdf->SetFont('helvetica', '', 10);
-        $pdf->MultiCell(100, 6, "Bereich: " . $row['Raumbereich Nutzer'], 0, 'L', 0, 0);
+
+        // Bereich
+        $bereichText = "Bereich: " . $row['Raumbereich Nutzer'];
+        $bereichHeight = $pdf->getStringHeight(100, $bereichText);
+        $pdf->MultiCell(100, 6, $bereichText, 0, 'L', 0, 0);
+        if ($bereichHeight > 6) $pdf->Ln();
+
+        // Geschoss
+        $geschossHeight = $pdf->getStringHeight(80, "Geschoss: " . $row['Geschoss']);
         $pdf->MultiCell(80, 6, "Geschoss: " . $row['Geschoss'], 0, 'L', 0, 0);
-        if ($pdf->getStringHeight(100, "Bereich: " . $row['Raumbereich Nutzer'], false, true, "") > 8) {
-            $pdf->Ln();
-        }
+        if ($geschossHeight > 6) $pdf->Ln();
 
         $pdf->Ln();
+
+        // Raumfläche
+        $raumflaecheHeight = $pdf->getStringHeight(100, "Raumfläche: " . $row['Nutzfläche'] . " m2");
         $pdf->MultiCell(100, 6, "Raumfläche: " . $row['Nutzfläche'] . " m2", 'B', 'L', 0, 0);
-        //$pdf->Ln();
-        //ss$pdf->MultiCell(100, 6, "Projekt: " . $row['Projektname'], 0, 'L', 0, 0);
+        if ($raumflaecheHeight > 6) $pdf->Ln();
+
+        // Bauteil
+        $bauteilHeight = $pdf->getStringHeight(80, "Bauteil: " . $row['Bauabschnitt']);
         $pdf->MultiCell(80, 6, "Bauteil: " . $row['Bauabschnitt'], 'B', 'L', 0, 0);
-        // $pdf->Ln();
-        // $pdf->MultiCell(100, 6, "Projektstatus: " . $row['Bezeichnung'], 'B', 'L', 0, 0);
-        // $pdf->MultiCell(80, 6, "Bauetappe: " . $row['Bauetappe'], 'B', 'L', 0, 0);
+        if ($bauteilHeight > 6) $pdf->Ln();
 
         $pdf->SetFont('helvetica', '', 8);
+
+        // Anmerkung FunktionBO
         if (!empty(str_replace(' ', '', br2nl($row['Anmerkung FunktionBO'])))) {
             $pdf->Ln();
             $rowHeightComment = $pdf->getStringHeight(150, br2nl($row['Anmerkung FunktionBO']), false, true, '', 1);
@@ -40,8 +59,8 @@ function createRaumHeaderRaumbuch($pdf, $Raumdaten)
             $pdf->MultiCell(150, $rowHeightComment, br2nl($row['Anmerkung FunktionBO']), 'B', 'L', 0, 0);
         }
     }
-
 }
+
 
 
 function getFileName($topic)
@@ -142,20 +161,16 @@ function kify($input)
     if (is_numeric($input)) {
         if ($input >= 1000) {
             $input = $input / 1000;
-            $input = ceil($input * 100) / 100; // Round up to 2 decimal places
-            $input = number_format($input, 2, ',', ''); // Format with 2 decimal places
-            $input = rtrim($input, '0'); // Remove trailing zeros
-            $input = rtrim($input, ','); // Remove trailing comma if present
-            if (substr($input, -1) != ',') {
-                $input .= ' k';
-            } else {
-                $input = rtrim($input, ',') . ' k';
-            }
+            $input = round($input, 2); // Use round instead of ceil
+            $input = number_format($input, 2, ',', '');
+            $input = rtrim($input, '0');
+            $input = rtrim($input, ',');
+            $input .= ' k';
         } else {
             $input = number_format($input, 2, ',', '');
             $input = rtrim($input, '0');
             $input = rtrim($input, ',');
-            $input = $input . " ";
+            $input .= " ";
         }
     }
     return $input;
@@ -172,7 +187,7 @@ function is_not_no_comment($str)
 }
 
 function translateBestand($value)
-{
+{ 
     return ($value == 0) ? 'Ja' : 'Nein';
 }
 
@@ -446,18 +461,18 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
 
         foreach ($output_pairs as $i => $pair) {
             if ($i == 0) {
-                $Height = $pdf->getStringHeight($raumbezeichnung_width, $pair[2], false, true, '', 1);
+                $Height = $pdf->getStringHeight($raumbezeichnung_width *2 / 3, $pair[2], false, true, '', 1);
                 if ($Height > $ln_spacer) {
                     $extraZeile = true;
                 }
                 $pdf->MultiCell($blockheaderwith, $ln_spacer, $pair[1], 0, "L", 1, 0);
-                $pdf->MultiCell($raumbezeichnung_width*2/3, $ln_spacer, $pair[2], 0, "L", 1, 0);
+                $pdf->MultiCell($raumbezeichnung_width * 2 / 3, $ln_spacer, $pair[2], 0, "L", 1, 0);
             } else if ($i == 1) {
                 $Height = $pdf->getStringHeight($raumbezeichnung_width, $pair[1] . $pair[2], false, true, '', 1);
                 if ($Height > $ln_spacer) {
                     $extraZeile = true;
                 }
-                $pdf->MultiCell($raumbezeichnung_width*4/3, $ln_spacer, $pair[1] . $pair[2], 0, "L", 1, 0);
+                $pdf->MultiCell($raumbezeichnung_width * 4 / 3, $ln_spacer, $pair[1] . $pair[2], 0, "L", 1, 0);
             } else {
                 $Height = $pdf->getStringHeight($raumbezeichnung_width, $pair[1] . $pair[2], false, true, '', 1);
                 if ($Height > $ln_spacer) {
@@ -505,12 +520,15 @@ function init_pdf_attributes($pdf, $einzugLR, $marginTop, $marginBTM, $format = 
 
 function multicell_text_hightlight($pdf, $breite, $font_size, $parameter_sql_name, $pdf_text, $parameter_changes_t_räume, $side = "L"): void
 {
-    if (sizeof($parameter_changes_t_räume) > 0) {
-        if (in_array($parameter_sql_name, $parameter_changes_t_räume)) {
-            // echo "parameter_sql_name within: " . $parameter_sql_name . "\n";
-            $pdf->SetFillColor(220, 235, 190);
-        } else {
-            $pdf->SetFillColor(255, 255, 255);
+    if (trim($pdf_text ?? "") === "") {
+        $pdf->SetFillColor(255, 255, 255);
+    } else {
+        if (sizeof($parameter_changes_t_räume) > 0) {
+            if (in_array($parameter_sql_name, $parameter_changes_t_räume)) {
+                $pdf->SetFillColor(220, 235, 190);
+            } else {
+                $pdf->SetFillColor(255, 255, 255);
+            }
         }
     }
     $pdf->MultiCell($breite, $font_size, $pdf_text, 0, $side, true, 0);

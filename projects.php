@@ -28,15 +28,28 @@
 
 <div class="container-fluid bg-white">
 
-
     <?php
     if (!function_exists('utils_connect_sql')) {
         include "_utils.php";
     }
     init_page_serversides("No Redirect");
     include 'projects_changeProjectModal.html';
+    $projectIcons = [
+        "BBE" => "fas fa-pray",
+        "GCP" => "fas fa-toilet-paper",
+        "Test" => "fas fa-bug",
+        "VS Bertha von Suttner Zahnambulatorium" => "fas fa-tooth",
+        "Cino 2.1" => "fas fa-smoking",
+        "KFN-ZNA" => "fas fa-book-dead",
+        "KFN-LAB" => "fas fa-skull-crossbones",
+        "Chirurgie Graz BE5" => "fas fa-bone",
+        "Chirurgie Graz BE3" => "fas fa-bone",
+        "ZVZ Nord" => "fas fa-teeth-open",
+        "KLU-ANGIO-RV-KABEG" => "fas fa-x-ray",
+        "Test1" => "fas fa-coffee",
+        "KAGes Labor - LKH2 Süd" => "fas fa-vials"
+    ];
     ?>
-
 
     <div class='row'>
         <div class='col-xxl-10'>
@@ -44,7 +57,8 @@
                 <div class="card-header" id="PRCardHeader">
                     <div class="row">
                         <div class="col-xxl-6"><b>Projekte</b></div>
-                        <div class="col-xxl-6 d-inline-flex justify-content-end text-nowrap align-items-center" id="STH">
+                        <div class="col-xxl-6 d-inline-flex justify-content-end text-nowrap align-items-center"
+                             id="STH">
                             <div class="form-check form-check-inline align-items-center float-end">
                                 <input class="form-check-input" type="checkbox" id="filter_ActiveProjects" checked>
                                 <label class="form-check-label" for="filter_ActiveProjects">
@@ -64,6 +78,7 @@
                             <th>ID</th><!-- invis -->
                             <th></th>
                             <th>Interne_Nr</th>
+                            <th></th>
                             <th>Projektname</th>
                             <th>Aktiv</th>
                             <th>Neubau</th>
@@ -89,7 +104,16 @@
                             echo "<td>" . $row["idTABELLE_Projekte"] . "</td>";
                             echo "<td> <button type='button' id='" . $row["idTABELLE_Projekte"] . "' class='btn btn-outline-dark btn-sm' value='changeProject' data-bs-toggle='modal' data-bs-target='#changeProjectModal'><i class='fas fa-pencil-alt'></i></button></td>";
                             echo "<td>" . $row["Interne_Nr"] . "</td>";
-                            echo "<td><b>" . $row["Projektname"] . "</b></td>";
+
+                            $projektname = $row["Projektname"];
+                            if (isset($projectIcons[$projektname])) {
+                                $iconClass = $projectIcons[$projektname];
+                                echo "<td><i class='{$iconClass} me-2'> </i></td>";
+                            } else {
+                                echo "<td><i class='far fa-hospital me-2'> </i></td>";
+                            }
+                            echo "<td><strong>  {$projektname} </strong></td>";
+
                             echo "<td>";
                             if ($row["Aktiv"] == 1) {
                                 echo "Ja";
@@ -115,7 +139,7 @@
                         } ?>
                         </tbody>
                     </table>
-                    
+
                 </div>
             </div>
         </div>
@@ -125,6 +149,23 @@
                 <div class='card-header'>Quick-Check
                 </div>
                 <div class='card-body' id='quickCheckDashboard'>
+                </div>
+            </div>
+            <div class='card mt-2'>
+                <div class='card-header'> Updates
+                </div>
+                <div class='card-body'>
+                    <p>
+                        Falls Mensch ebenso ein weiteres
+                        <a href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free" target="_blank">Projekt Icon </a>
+                        in dieser Tabelle sehen will.
+                    </p>
+                    <p>
+                        <a href="_tickets4developer.php" target="_blank">Bugreports</a>.
+                    </p>
+                    <p>
+                        <a href="_feature_wishlist.php" target="_blank"> Verbesserungsvorschläge oder Wünsche</a>.
+                    </p>
                 </div>
             </div>
         </div>
@@ -144,7 +185,6 @@
                             >
                                 <option value=0 selected>Alle Vermerke</option>
                                 <option value=1>Bearbeitung offen</option>
-
                             </select>
                         </form>
                     </div>
@@ -169,7 +209,7 @@
         table = $('#tableProjects').DataTable({
             columnDefs: [
                 {
-                    targets: [0, 11],
+                    targets: [0, 12],
                     visible: false,
                     searchable: false
                 },
@@ -178,6 +218,13 @@
                     visible: true,
                     searchable: false,
                     orderable: false
+                },
+                {
+                    targets: [2], // icon column
+//                     width: "20px", // small fixed width
+                    orderable: false,
+                    searchable: false,
+                    className: "text-center align-middle"
                 }
             ],
             hover: true,
@@ -195,7 +242,7 @@
             search: {
                 custom: function (data) {
                     if ($("#filter_ActiveProjects").is(':checked')) {
-                        return data[4] === "Ja";
+                        return data[5] === "Ja";
                     } else {
                         return true;
                     }
@@ -204,28 +251,46 @@
             initComplete: function () {
                 $('.dt-search label').remove();
                 $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#STH');
-                table.column(4).search($('#filter_ActiveProjects').is(':checked') ? 'Ja' : '').draw();
+                table.column(5).search($('#filter_ActiveProjects').is(':checked') ? 'Ja' : '').draw();
             }
         });
 
         $('#filter_ActiveProjects').change(function () {
-            table.column(4).search($(this).is(':checked') ? 'Ja' : '').draw();
+            table.column(5).search($(this).is(':checked') ? 'Ja' : '').draw();
         });
 
         $('#tableProjects tbody').on('click', 'tr', function () {
-            let id = table.row($(this)).data()[0];
-            let projectName = $(table.row($(this)).data()[3]).text();
-            let projectAusfuehrung = table.row($(this)).data()[9];
-            let projectPlanungsphase = table.row($(this)).data()[10];
-            document.getElementById("betten").value = table.row($(this)).data()[6];
-            document.getElementById("bgf").value = table.row($(this)).data()[7];
-            document.getElementById("nf").value = table.row($(this)).data()[8];
-            document.getElementById("bearbeitung").value = table.row($(this)).data()[9];
-            document.getElementById("planungsphase").value = table.row($(this)).data()[11];
-            document.getElementById("dateSelect").value = table.row($(this)).data()[12]
+            let rowData = table.row($(this)).data();
+            let id = rowData[0];
+            let projectName = $(rowData[4]).text();
+            let projectAusfuehrung = rowData[10];
+            let projectPlanungsphase = rowData[11];
+
+            document.getElementById("betten").value = rowData[7];
+            document.getElementById("bgf").value = rowData[8];
+            document.getElementById("nf").value = rowData[9];
+            document.getElementById("bearbeitung").value = rowData[10];
+            document.getElementById("planungsphase").value = rowData[12];
+            document.getElementById("dateSelect").value = rowData[13];
             document.getElementById("vermerkeFilter").value = 0;
-            document.getElementById("active").value = table.row($(this)).data()[4] === "Ja" ? 1 : 0;
-            document.getElementById("neubau").value = table.row($(this)).data()[5] === 'Ja' ? 1 : 0;
+            document.getElementById("active").value = rowData[5] === "Ja" ? 1 : 0;
+            document.getElementById("neubau").value = rowData[6] === 'Ja' ? 1 : 0;
+
+            // console.log({
+            //     id,
+            //     projectName,
+            //     projectAusfuehrung,
+            //     projectPlanungsphase,
+            //     betten: rowData[7],
+            //     bgf: rowData[8],
+            //     nf: rowData[9],
+            //     bearbeitung: rowData[10],
+            //     planungsphase: rowData[12],
+            //     dateSelect: rowData[13],
+            //     active: rowData[5] === "Ja" ? 1 : 0,
+            //     neubau: rowData[6] === 'Ja' ? 1 : 0,
+            //     fullRow: rowData
+            // });
 
             $.ajax({
                 url: "setSessionVariables.php",

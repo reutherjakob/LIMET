@@ -61,7 +61,6 @@ echo "</tbody></table>";
 <div class='modal fade' id='changeVermerkModal' role='dialog'>
     <div class='modal-dialog modal-lg'>
         <div class='modal-content'>
-
             <div class='modal-header'>
                 <h4 class='modal-title'>Vermerkdaten</h4>
                 <button type='button' class='btn-close' data-bs-dismiss='modal'></button>
@@ -77,6 +76,9 @@ echo "</tbody></table>";
 
                     echo "<div class='form-group'>
                                         <label for='room'>Raum:</label>									
+                                        <!--select class='form-control form-control-sm' id='room' name='room[]' multiple>
+                                        <option value='0'>Kein Raum</option TODO: multiple room selection -->
+
                                         <select class='form-control form-control-sm' id='room' name='room'>
                                                 <option value=0>Kein Raum</option>";
                     while ($row = $result1->fetch_assoc()) {
@@ -159,7 +161,7 @@ echo "</tbody></table>";
                 <input type='button' id='saveVermerk' class='btn btn-warning btn-sm' value='Speichern'
                        data-bs-dismiss='modal'>
                 <input type='button' id='deleteVermerk' class='btn btn-danger btn-sm' value='Löschen'>
-                <button type='button' class='btn btn-close btn-sm' data-bs-dismiss='modal'> </button>
+                <button type='button' class='btn btn-close btn-sm' data-bs-dismiss='modal'></button>
             </div>
 
         </div>
@@ -180,7 +182,8 @@ echo "</tbody></table>";
             </div>
             <div class='modal-body' id='showZustaendigkeitenModalBody'>
                 <div class="mt-4 card">
-                    <div class="card-header d-flex align-items-center justify-content-between">Eingetragene Zuständigkeit
+                    <div class="card-header d-flex align-items-center justify-content-between">Eingetragene
+                        Zuständigkeit
                         <div class="d-flex justify-content-end" id='vermerkZustaendigkeitCH'></div>
                     </div>
                     <div class="card-body" id='vermerkZustaendigkeit'></div>
@@ -261,12 +264,27 @@ echo "</tbody></table>";
 
 
     $(document).ready(function () {
+
+        $('#changeVermerkModal select').select2({
+            width: '100%',
+            placeholder: 'Bitte auswählen...',
+            allowClear: true,
+            dropdownParent: $('#changeVermerkModal')
+        });
+
+        // $('#room').select2({  // TODO: multiple rooms, needs new table?
+        //     multiple: true,
+        //     width: '100%',
+        //     placeholder: 'Raum auswählen...',
+        //     allowClear: true,
+        //     dropdownParent: $('#changeVermerkModal')
+        // });
+
         function decodeHtmlEntities(str) {
             let txt = document.createElement('textarea');
             txt.innerHTML = str;
             return txt.value;
         }
-
 
         document.getElementById("buttonNewVermerk").style.visibility = "visible";
         document.getElementById("buttonNewVermerkuntergruppe").style.visibility = "visible";
@@ -318,33 +336,64 @@ echo "</tbody></table>";
                 $('#topDivSearch2').removeClass("col-md-6").children().children().removeClass("form-control form-control-sm");
                 $('#topDivSearch2').appendTo('#CardHeaderVermerUntergruppen').children().children().addClass("btn btn-sm btn-outline-dark");
 
-                $('#tableVermerke tbody').on('click', 'tr', function () {
-                    vermerkID = tableVermerke.row($(this)).data()[0];
-                    document.getElementById("vermerkStatus").value = tableVermerke.row($(this)).data()[6];
-                    document.getElementById("vermerkText").value = decodeHtmlEntities(tableVermerke.row($(this)).data()[2]);
-                    document.getElementById("faelligkeit").value = tableVermerke.row($(this)).data()[4];
-                    document.getElementById("vermerkTyp").value = tableVermerke.row($(this)).data()[7];
+                $("#tableVermerke tbody").on('click', "button[value='changeVermerk']", function () {
 
-                    if (tableVermerke.row($(this)).data()[9] === '') {
-                        document.getElementById("los").value = 0;
-                    } else {
-                        document.getElementById("los").value = tableVermerke.row($(this)).data()[9];
-                    }
-                    if (tableVermerke.row($(this)).data()[10] === '') {
-                        document.getElementById("room").value = 0;
-                    } else {
-                        document.getElementById("room").value = tableVermerke.row($(this)).data()[10];
-                    }
-                    if (tableVermerke.row($(this)).data()[7] === "Bearbeitung") {
+                    let rowData = tableVermerke.row($(this).closest('tr')).data();
+                     vermerkID = rowData[0]; // Assuming column 0 is the Vermerk ID
+
+                    // Set values and refresh Select2
+                    $('#vermerkStatus').val(rowData[6]).trigger('change'); // Assuming column 6 is status
+                    $('#vermerkText').val(decodeHtmlEntities(rowData[2])); // Assuming column 2 is text
+                    $('#faelligkeit').val(rowData[4]); // Assuming column 4 is fällig am
+
+                    // Set Vermerktyp and handle fälligkeit enabled/disabled
+                    $('#vermerkTyp').val(rowData[7]).trigger('change'); // Assuming column 7 is typ
+                    if (rowData[7] === "Bearbeitung") {
                         $("#faelligkeit").prop('disabled', false);
                     } else {
                         $("#faelligkeit").prop('disabled', true);
                     }
-                    const addImage = document.getElementById("addImage");
-                    if (addImage) {
-                        addImage.style.visibility = "visible";
-                    }
+
+                    // Set room and los (with Select2)
+                    let roomValue = rowData[10] || 0; // Assuming column 10 is room ID, fallback to 0
+                    let losValue = rowData[9] || 0;   // Assuming column 9 is los ID, fallback to 0
+                    $('#room').val(roomValue).trigger('change');
+                    $('#los').val(losValue).trigger('change');
+
+                    // If untergruppe is not disabled, set it as well (adjust column index as needed)
+                    // let untergruppeValue = rowData[8] || 0; // Example: column 8 is untergruppe ID
+                    // $('#untergruppe').val(untergruppeValue).trigger('change');
+
+                    $('#changeVermerkModal').modal('show');
                 });
+
+                //  $('#tableVermerke tbody').on('click', 'tr', function () {
+                //     vermerkID = tableVermerke.row($(this)).data()[0];
+                //     document.getElementById("vermerkStatus").value = tableVermerke.row($(this)).data()[6];
+                //     document.getElementById("vermerkText").value = decodeHtmlEntities(tableVermerke.row($(this)).data()[2]);
+                //     document.getElementById("faelligkeit").value = tableVermerke.row($(this)).data()[4];
+                //     document.getElementById("vermerkTyp").value = tableVermerke.row($(this)).data()[7];
+                //
+                //     if (tableVermerke.row($(this)).data()[9] === '') {
+                //         document.getElementById("los").value = 0;
+                //     } else {
+                //         document.getElementById("los").value = tableVermerke.row($(this)).data()[9];
+                //     }
+                //     if (tableVermerke.row($(this)).data()[10] === '') {
+                //         document.getElementById("room").value = 0;
+                //     } else {
+                //         document.getElementById("room").value = tableVermerke.row($(this)).data()[10];
+                //     }
+                //     if (tableVermerke.row($(this)).data()[7] === "Bearbeitung") {
+                //         $("#faelligkeit").prop('disabled', false);
+                //     } else {
+                //         $("#faelligkeit").prop('disabled', true);
+                //     }
+                //     const addImage = document.getElementById("addImage");
+                //     if (addImage) {
+                //         addImage.style.visibility = "visible";
+                //     }
+                // });
 
             }
         });
@@ -398,6 +447,8 @@ echo "</tbody></table>";
         }
         let vermerkUntergruppenID = <?php echo filter_input(INPUT_GET, 'vermerkUntergruppenID') ?>;
 
+        console.log("addVermerk:", room);
+
         if (room !== "" && los !== "" && vermerkStatus !== "" && vermerkTyp !== "" && vermerkText !== "") {
             $('#changeVermerkModal').modal('hide');
             $.ajax({
@@ -413,7 +464,7 @@ echo "</tbody></table>";
                 },
                 type: "GET",
                 success: function (data) {
-                    alert(data);
+                    makeToaster(data, true);
                     $.ajax({
                         url: "getVermerkeToUntergruppe.php",
                         data: {"vermerkUntergruppenID": vermerkUntergruppenID, "vermerkGruppenID": vermerkGruppenID},
@@ -426,7 +477,7 @@ echo "</tbody></table>";
                 }
             });
         } else {
-            alert("Bitte alle Felder ausfüllen!");
+            makeToaster("Bitte alle Felder ausfüllen!", false);
             $('#changeVermerkModal').modal('hide');
         }
     });
@@ -451,6 +502,7 @@ echo "</tbody></table>";
 
     $("#saveVermerk").click(function () {
         let room = $("#room").val();
+
         let los = $("#los").val();
         let vermerkStatus = $("#vermerkStatus").val();
         let vermerkTyp = $("#vermerkTyp").val();
@@ -461,6 +513,7 @@ echo "</tbody></table>";
             faelligkeitDatum = null;
         }
         let vermerkUntergruppenID = <?php echo filter_input(INPUT_GET, 'vermerkUntergruppenID') ?>;
+        console.log("saveVermerk:", room, los, vermerkStatus, vermerkTyp, vermerkText, faelligkeitDatum, untergruppenID,vermerkUntergruppenID) ;
         if (room !== "" && los !== "" && vermerkStatus !== "" && vermerkTyp !== "" && vermerkText !== "") {
             $('#changeVermerkModal').modal('hide');
             $.ajax({
@@ -477,7 +530,7 @@ echo "</tbody></table>";
                 },
                 type: "GET",
                 success: function (data) {
-                    alert(data);
+                    makeToaster(data, true);
                     console.log(vermerkStatus);
                     $.ajax({
                         url: "getVermerkeToUntergruppe.php",

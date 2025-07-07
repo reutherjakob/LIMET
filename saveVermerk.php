@@ -1,76 +1,68 @@
 <?php
-session_start();
-?>
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
+check_login();
+$mysqli = utils_connect_sql();// ... after connecting to DB ...
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+$roomID = filter_input(INPUT_GET, 'room');
+$roomID = ($roomID == '0') ? NULL : $roomID;
 
-<?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    printf("Error loading character set utf8: %s\n", $mysqli->error);
-	    exit();
-	} 
-	
-	// Check connection
-	if ($mysqli->connect_error) {
-	    die("Connection failed: " . $mysqli->connect_error);
-	}
-        
-        if(filter_input(INPUT_GET, 'room')=='0'){
-            $roomID = "NULL";
-        }
-        else{
-            $roomID = filter_input(INPUT_GET, 'room');
-        }
-        
-        
-        if(filter_input(INPUT_GET, 'los')=='0'){
-            $losID = "NULL";
-        }
-        else{
-            $losID = filter_input(INPUT_GET, 'los');
-        }  
-        
-        if(filter_input(INPUT_GET, 'room')=='0'){
-            $roomID = "NULL";
-        }
-        else{
-            $roomID = filter_input(INPUT_GET, 'room');
-        }
-        
-        
-        if(filter_input(INPUT_GET, 'los')=='0'){
-            $losID = "NULL";
-        }
-        else{
-            $losID = filter_input(INPUT_GET, 'los');
-        }
-        
-        $sql = "UPDATE `LIMET_RB`.`tabelle_Vermerke`
-            SET
-            `tabelle_räume_idTABELLE_Räume` = ".$roomID.",
-            `tabelle_lose_extern_idtabelle_Lose_Extern` = ".$losID.",       
-            `Vermerktext` = '".filter_input(INPUT_GET, 'vermerkText')."',
-            `Bearbeitungsstatus` = '".filter_input(INPUT_GET, 'vermerkStatus')."',
-            `Vermerkart` = '".filter_input(INPUT_GET, 'vermerkTyp')."',
-            `Faelligkeit` = '".filter_input(INPUT_GET, 'faelligkeitDatum')."',
-            `tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe` = '".filter_input(INPUT_GET, 'untergruppenID')."'
-            WHERE `idtabelle_Vermerke` = ".filter_input(INPUT_GET, 'vermerkID');
-        
-        
-	if ($mysqli->query($sql) === TRUE) {
-            echo "Vermerk aktualisiert!";
-	} 
-	else {
-            echo "Error: " . $sql . "<br>" . $mysqli->error;
-	}
+$losID = filter_input(INPUT_GET, 'los');
+$losID = ($losID == '0') ? NULL : $losID;
 
-	$mysqli ->close();
-?>
+$vermerkText = filter_input(INPUT_GET, 'vermerkText');
+$vermerkStatus = filter_input(INPUT_GET, 'vermerkStatus');
+$vermerkTyp = filter_input(INPUT_GET, 'vermerkTyp');
+$faelligkeitDatum = filter_input(INPUT_GET, 'faelligkeitDatum');
+if (empty($faelligkeitDatum) || $faelligkeitDatum == 'null' || $faelligkeitDatum == '0000-00-00') {
+    $faelligkeitDatum = NULL;
+}
+$untergruppenID = filter_input(INPUT_GET, 'untergruppenID');
+$vermerkID = filter_input(INPUT_GET, 'vermerkID');
+
+$sql = "UPDATE `LIMET_RB`.`tabelle_Vermerke`
+        SET
+        `tabelle_räume_idTABELLE_Räume` = ?,
+        `tabelle_lose_extern_idtabelle_Lose_Extern` = ?,
+        `Vermerktext` = ?,
+        `Bearbeitungsstatus` = ?,
+        `Vermerkart` = ?,
+        `Faelligkeit` = ?,
+        `tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe` = ?
+        WHERE `idtabelle_Vermerke` = ?";
+
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("iissssii",
+    $roomID,
+    $losID,
+    $vermerkText,
+    $vermerkStatus,
+    $vermerkTyp,
+    $faelligkeitDatum,
+    $untergruppenID,
+    $vermerkID
+);
+
+// echo '<pre>';
+// var_dump($stmt);
+// echo '</pre>';
+// echo "Prepared SQL: " . $sql . "<br>";
+// echo "With values:<br>";
+// echo "roomID: " . var_export($roomID, true) . "<br>";
+// echo "losID: " . var_export($losID, true) . "<br>";
+// echo "vermerkText: " . var_export($vermerkText, true) . "<br>";
+// echo "vermerkStatus: " . var_export($vermerkStatus, true) . "<br>";
+// echo "vermerkTyp: " . var_export($vermerkTyp, true) . "<br>";
+// echo "faelligkeitDatum: " . var_export($faelligkeitDatum, true) . "<br>";
+// echo "untergruppenID: " . var_export($untergruppenID, true) . "<br>";
+// echo "vermerkID: " . var_export($vermerkID, true) . "<br>";
+ 
+if ($stmt->execute()) {
+    echo "Vermerk aktualisiert!";
+} else {
+    echo "Error: " . $stmt->error;
+}
+
+$stmt->close();
+$mysqli->close();

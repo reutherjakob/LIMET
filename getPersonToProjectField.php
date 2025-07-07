@@ -1,4 +1,4 @@
-<?php
+ <?php
 if (!function_exists('utils_connect_sql')) {
     include "_utils.php";
 }

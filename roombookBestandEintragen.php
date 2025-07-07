@@ -1,5 +1,7 @@
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {
+    include "_utils.php";
+}
 init_page_serversides();
 include "_format.php";
 ?>
@@ -27,20 +29,20 @@ include "_format.php";
           rel="stylesheet">
 </head>
 <body>
-<div class="container-fluid bg-light" >
+<div class="container-fluid bg-light">
     <div id="limet-navbar"></div>
     <div class="mt-4 card">
         <div class="card-header">
-            <div class="row d-flex flex-nowrap">
+            <div class="row d-flex">
                 <div class="col-xxl-4">
                     <strong> Elemente im Projekt </strong>
                 </div>
 
                 <div class="col-xxl-8 d-flex justify-content-end" id="CH_EIP">
-                    <button type='button' class='btn h-75 btn-outline-dark ' id='createElementListPDF'>
+                    <button type='button' class='btn btn-outline-dark ' id='createElementListPDF'>
                         <i class='far fa-file-pdf'></i> Elementliste PDF
                     </button>
-                    <button type='button' class='btn h-75 btn-outline-dark ' id='createElementListWithPricePDF'>
+                    <button type='button' class='btn btn-outline-dark ' id='createElementListWithPricePDF'>
                         <i class='far fa-file-pdf'></i> inkl. Preis
                     </button>
                 </div>
@@ -60,7 +62,7 @@ include "_format.php";
 										GROUP BY tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_varianten.idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_projekt_varianten_kosten.Kosten, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke, tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG, tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
 										ORDER BY tabelle_elemente.ElementID;";
             $result = $mysqli->query($sql);
-            echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5'' id='tableElementsInProject'   >
+            echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableElementsInProject'>
 									<thead><tr>
 										<th>ID</th>
 										<th>Anzahl</th>
@@ -299,12 +301,26 @@ include "_format.php";
                 bestand = 0;
             }
             $.ajax({
-                url: "getRoomsWithElement_2.php",
+                url: "getRoomsWithElement1.php",
+
                 data: {"elementID": elementID, "variantenID": variantenID, "bestand": bestand},
                 type: "GET",
                 success: function (data) {
                     $("#roomsWithAndWithoutElements").html(data);
-
+                    setTimeout(function () {
+                        $('#tableRoomsWithElement tbody').on('click', 'tr', function () {
+                            let id = tableRoomsWithElement.row($(this)).data()[0].display;
+                            let stk = $("#amount" + id).val();
+                            $.ajax({
+                                url: "getElementBestand.php",
+                                data: {"id": id, "stk": stk},
+                                type: "GET",
+                                success: function (data) {
+                                    $("#elementBestand").html(data);
+                                }
+                            });
+                        });
+                    }, 100)
                 }
             });
         });
@@ -335,8 +351,8 @@ include "_format.php";
                 search: "", searchPlaceholder: "Suche..."
             },
             layout: {
-                topEnd : "search",
-                topStart : null,
+                topEnd: "search",
+                topStart: null,
                 bottomStart: 'info',
                 bottomEnd: ["pageLength", 'paging']
             },

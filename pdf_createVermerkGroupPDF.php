@@ -6,13 +6,13 @@ if (!function_exists('utils_connect_sql')) {
 check_login();
 include "pdf_createBericht_LOGO.php";
 require_once('TCPDF-main/TCPDF-main/tcpdf.php');
-
+include "_pdf_createBericht_utils.php";
 
 class MYPDF extends TCPDF
 {
     public function Header()
     {
-       get_header_logo($this);
+        get_header_logo($this);
         $this->SetFont('helvetica', '', 10);
         $mysqli = utils_connect_sql();
         $sql = "SELECT tabelle_Vermerkgruppe.Gruppenname, tabelle_Vermerkgruppe.Gruppenart, tabelle_Vermerkgruppe.Ort, tabelle_Vermerkgruppe.Verfasser, tabelle_Vermerkgruppe.Startzeit, tabelle_Vermerkgruppe.Endzeit, tabelle_Vermerkgruppe.Datum, tabelle_projekte.Projektname
@@ -124,13 +124,16 @@ class MYPDF extends TCPDF
                     $betreffText = $betreffText . 'Betrifft Raum: ' . $row['Raumnummer_Nutzer'] . " " . $row['Raumbezeichnung'] . "\n";
                 } else {
                     if (null != ($row['Raumnr'])) {
-                        $betreffText = $betreffText . 'Betrifft Raum: ' . " " . $row['Raumnr'] . " " . $row['Raumbezeichnung'] . "\n";
+                        if (preg_match('/\d/', $row['Raumnr'])) {
+                            $betreffText = $betreffText . 'Betrifft Raum: ' . $row['Raumnr'] . " " . $row['Raumbezeichnung'] . "\n";
+                        } else {
+                            $betreffText = $betreffText . 'Betrifft: ' . $row['Raumnr'] . " " . $row['Raumbezeichnung'] . "\n";
+                        }
                     }
                 }
                 if (null != ($row['LosNr_Extern'])) {
                     $betreffText = $betreffText . 'Betrifft Los: ' . $row['LosNr_Extern'] . " " . $row['LosBezeichnung_Extern'] . "\n";
                 }
-
                 if ($row['Vermerkart'] === 'Bearbeitung') {
                     $textNameFälligkeit = $row['Name'] . "\n" . $row['Faelligkeit'];
                     if ($row['Bearbeitungsstatus'] === "0") {
@@ -145,7 +148,6 @@ class MYPDF extends TCPDF
                 $rowHeight4 = $this->getStringHeight($w[0], $betreffText, false, true, '', 1);
                 $rowHeight2 = $this->getStringHeight($w[2], $textNameFälligkeit, false, true, '', 1);
                 $rowHeight3 = $this->getStringHeight($w[0], $row['Untergruppennummer'] . " " . $row['Untergruppenname'], false, true, '', 1);
-
                 if ($rowHeight1 + $rowHeight4 > $rowHeight2) {
                     $rowHeight = $rowHeight1 + $rowHeight4;
                 } else {
@@ -171,7 +173,6 @@ class MYPDF extends TCPDF
                     $untergruppenID = $row['idtabelle_Vermerkuntergruppe'];
                     $fill = 0;
                 }
-
                 $y = $this->GetY();
                 if (($y + $rowHeight1) >= 260) {
                     $this->AddPage();
@@ -193,7 +194,7 @@ class MYPDF extends TCPDF
     }
 }
 
-$document_out_title_components = $_SESSION['projectName'] . "_GPMT_";
+$document_out_title_components = "Vermerk_";
 
 // create new PDF document
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -232,7 +233,7 @@ while ($row = $result->fetch_assoc()) {
 
     $title = "Projekt: " . $row['Projektname'] . "\n" . "Thema: " . $row['Gruppenname'] . "\nDatum: " . $row['Datum'] . " von " . $row['Startzeit'] . " bis " . $row['Endzeit'] . "\nOrt: " . $row['Ort'];
     $verfasser = $row['Verfasser'];
-    $document_out_title_components = $document_out_title_components . "" . $row['Gruppenart'] . "_" . $row['Datum'] . "_" . $row['Gruppenname'] . "_";
+    $document_out_title_components = $document_out_title_components  . $row['Gruppenart'] . "_" . $row['Datum'] . "_" . $row['Gruppenname'] . "_";
     $rowHeight1 = $pdf->getStringHeight(180, $title, false, true, '', 1);
     $pdf->MultiCell(0, $rowHeight1, $title, 1, 'L', 0, 0, '', '', true);
 }
@@ -334,6 +335,5 @@ $pdf->Multicell(180, 5, $outstr, 0, 'L', 0, 1);
 //$pdf->Image('/var/www/vhosts/limet-rb.com/httpdocs/Dokumente_RB/Images/Image_Vermerk_2898_61e58a78cd4cf.jpeg', '', '', 40, 40, 'JPG', '', '', true, 150, '', false, false, 1, false, false, false);
 
 
-$document_out_title_components = $document_out_title_components . date('Y-m-d') . ".pdf";
-$pdf->Output($document_out_title_components, 'I');
+$pdf->Output(getFileName($document_out_title_components), 'I');
 

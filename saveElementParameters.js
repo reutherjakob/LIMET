@@ -6,6 +6,7 @@ $(document).ready(function () {
         let wert = wertElement.is("select") ? wertElement.val() : wertElement.val();
         let einheit = einheitElement.is("select") ? einheitElement.val() : einheitElement.val();
 
+
         console.log("Values:", wert, einheit, id); // Debugging
         let variantenID = $('#variante').val();
 
@@ -20,6 +21,4 @@ $(document).ready(function () {
             });
         }
     });
-
-
 });
