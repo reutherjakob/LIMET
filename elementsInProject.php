@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
+<html lang="de">
 <head>
     <title>RB-Elemente im Projekt</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
@@ -309,8 +309,11 @@ ORDER BY tabelle_elemente.ElementID;";
                     data: {"elementID": elementID, "variantenID": variantenID, "bestand": bestand},
                     type: "GET",
                     success: function (data) {
-                        if ($.fn.DataTable.isDataTable('#tableRoomsWithElement')) {
-                            tableRoomsWithElement.destroy();
+                        let $table = $('#tableRoomsWithElement');
+                        if ($table.length && $.fn.DataTable && $.fn.DataTable.isDataTable) {
+                            if ($.fn.DataTable.isDataTable($table)) {
+                                $table.DataTable().destroy();
+                            }
                         }
                         $("#roomsWithAndWithoutElements").html(data);
                         $.ajax({
@@ -368,16 +371,15 @@ ORDER BY tabelle_elemente.ElementID;";
                 tableElementsInProject.draw();
             });
 
-            function hideZeroFilter_ELiNpR(settings, data, dataIndex) {
-
+            function hideZeroFilter_ELiNpR(settings, data, ) {
                 if (settings.nTable.id !== 'tableElementsInProject') {
                     return true;
-                }        //console.log(data);
+                }
                 let hideZero = $("#hideZeroRows_ELiNpR").is(":checked");
-                let amount = parseInt(data[1]) || 0; // data[1] is the "Anzahl" column
-
+                let amount = parseInt(data[1]) || 0;
                 return !(hideZero && (amount === 0));
             }
+
 
         });
 

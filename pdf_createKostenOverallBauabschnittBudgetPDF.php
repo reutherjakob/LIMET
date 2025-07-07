@@ -79,7 +79,7 @@ $pdf->SetFont('helvetica', 'B', 7);
 $pdf->setXY($xPosition, $yPosition);
 $pdf->MultiCell(50, '', "", '', 'L', 0, 0);
 $pdf->MultiCell(50, '', "Budgets", '', 'L', 0, 0);
-$pdf->Ln();
+$pdf->Ln(10);
 $pdf->SetFont('helvetica', 'I', 7);
 // Projektbudgets laden ----------------------------------
 $sql = "SELECT tabelle_projektbudgets.tabelle_projekte_idTABELLE_Projekte, tabelle_projektbudgets.Budgetnummer, tabelle_projektbudgets.Budgetname, tabelle_projektbudgets.idtabelle_projektbudgets

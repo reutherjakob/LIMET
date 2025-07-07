@@ -8,7 +8,7 @@
 
 <div class="btn-group" id="hide0Wrapper_RwE">
     <input class="btn-check btn-sm" type="checkbox" id="hideZeroRows_RwE">
-    <label class="btn btn-sm btn-outline-secondary" for="hideZeroRows_RwE">
+    <label class="btn btn-sm btn-outline-dark" for="hideZeroRows_RwE">
         Hide 0
     </label>
 </div>

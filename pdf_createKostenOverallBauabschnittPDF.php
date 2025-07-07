@@ -17,10 +17,9 @@ if ($_SESSION["projectPlanungsphase"] == "Vorentwurf") {
 $marginTop = 17;
 $marginBTM = 10;
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4_queer", "Medizintechnische Gesamt Kosten");
+$pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4_queer", "Medizintechnische Kostenberechnung");
 check_login();
 $mysqli = utils_connect_sql();
-
 
 // TITELZEILE MIT PROJEKTINFOS--------------------------------------------------
 $sql = "SELECT tabelle_projekte.Projektname,tabelle_projekte.Preisbasis, tabelle_planungsphasen.Bezeichnung
@@ -30,13 +29,16 @@ $result = $mysqli->query($sql);
 $row = $result->fetch_assoc();
 
 $pdf->SetFont('helvetica', 'B', 10);
+$pdf->Ln(2);
 $pdf->MultiCell(177, 6, "Projekt: " . $row['Projektname'], '', 'L', 0, 0);
 $xPosition = $pdf->getX();
 $yPosition = $pdf->getY();
+
 $pdf->Ln();
 $pdf->MultiCell(177, 6, "Projektphase: " . $row['Bezeichnung'], '', 'L', 0, 0);
 $pdf->Ln();
 $pdf->MultiCell(177, 6, "Preisbasis: " . $row['Preisbasis'], '', 'L', 0, 0);
+$pdf->Ln(2);
 $pdf->Ln();
 
 $sql = "SELECT tabelle_projekte.idTABELLE_Projekte, tabelle_auftraggeber_gewerke.Gewerke_Nr, tabelle_auftraggeber_gewerke.Bezeichnung
@@ -65,7 +67,7 @@ while ($row = $result->fetch_assoc()) {
 $pdf->Ln();
 $pdf->SetFont('helvetica', 'B', 10);
 
-
+$pdf->Ln(10);
 // data loading for header ----------------------------------
 $sql = "SELECT tabelle_auftraggeber_gewerke.Gewerke_Nr, tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke
         FROM tabelle_auftraggeberg_gug RIGHT JOIN (tabelle_auftraggeber_ghg RIGHT JOIN (tabelle_auftraggeber_gewerke RIGHT JOIN ((tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) INNER JOIN tabelle_projekt_element_gewerk ON (tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) AND (tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte)) ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke = tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke) ON tabelle_auftraggeber_ghg.idtabelle_auftraggeber_GHG = tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG) ON tabelle_auftraggeberg_gug.idtabelle_auftraggeberg_GUG = tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
@@ -242,7 +244,6 @@ WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["pr
     $y = $pdf->GetY();
     if (($y + 4) >= 180) {
         $pdf->AddPage();
-        // $y = 0; // should be your top margin
     }
 }
 // ---------------------------------------------------------
@@ -283,7 +284,7 @@ $pdf->MultiCell(25, 4, format_money_report($sumGesamtBestand), 0, 'R', 0, 0);
 
 ob_end_clean();
 $mysqli->close();
-$pdf->Output(getFileName('GesammtKosten-Bauabschnitt'), 'I');
+$pdf->Output(getFileName('MT-Kosten-Bauabschnitt'), 'I');
 
 //============================================================+
 // END OF FILE

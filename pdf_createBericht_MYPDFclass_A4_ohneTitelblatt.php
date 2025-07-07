@@ -24,7 +24,7 @@ class MYPDF extends TCPDF
             $this->cell(0, 0, '', 'B', 0, 'L');
             $this->Ln();
         }
-        $this->Ln();
+        $this->Ln();  $this->Ln();  $this->Ln();
        // if("Medizintechnische Elementliste"== $_SESSION["PDFTITEL"]) {
        //     $this->SetY($this->GetY() + 20);
        // }

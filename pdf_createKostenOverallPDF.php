@@ -107,6 +107,7 @@ $sumRaumbereichBestand = 0;
 
 $fill = 0;
 foreach ($raumbereicheInProject as $rowData) {
+
     $sumRaumbereich = 0;
     $sumRaumbereichNeu = 0;
     $sumRaumbereichBestand = 0;

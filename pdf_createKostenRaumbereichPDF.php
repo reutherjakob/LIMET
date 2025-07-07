@@ -19,7 +19,7 @@ if ($_SESSION["projectPlanungsphase"] == "Vorentwurf") {
 
 $marginTop = 20; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/
 $marginBTM = 10;
-$pageHeight = 254;
+$pageHeight = 180;
 $w=array(45,10) ;
 
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false, true);
@@ -42,6 +42,60 @@ while ($row = $result->fetch_assoc()) {
     $gewerkeInProject[$row['idTABELLE_Auftraggeber_Gewerke']]['GewerkeSummeGesamtNeu'] = 0;
     $gewerkeInProject[$row['idTABELLE_Auftraggeber_Gewerke']]['GewerkeSummeGesamtBestand'] = 0;
 }
+
+
+
+$sql = "SELECT tabelle_projekte.Projektname,tabelle_projekte.Preisbasis, tabelle_planungsphasen.Bezeichnung
+    FROM tabelle_projekte INNER JOIN tabelle_planungsphasen ON tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen = tabelle_planungsphasen.idTABELLE_Planungsphasen
+    WHERE (((tabelle_projekte.idTABELLE_Projekte)=" . $_SESSION["projectID"] . "));";
+$result = $mysqli->query($sql);
+$row = $result->fetch_assoc();
+
+$pdf->SetFont('helvetica', 'B', 10);
+$pdf->Ln(2);
+$pdf->MultiCell(177, 6, "Projekt: " . $row['Projektname'], '', 'L', 0, 0);
+$xPosition = $pdf->getX();
+$yPosition = $pdf->getY();
+
+$pdf->Ln();
+$pdf->MultiCell(177, 6, "Projektphase: " . $row['Bezeichnung'], '', 'L', 0, 0);
+$pdf->Ln();
+$pdf->MultiCell(177, 6, "Preisbasis: " . $row['Preisbasis'], '', 'L', 0, 0);
+$pdf->Ln(2);
+$pdf->Ln();
+
+$sql = "SELECT tabelle_projekte.idTABELLE_Projekte, tabelle_auftraggeber_gewerke.Gewerke_Nr, tabelle_auftraggeber_gewerke.Bezeichnung
+FROM tabelle_auftraggeber_gewerke INNER JOIN (tabelle_projekte INNER JOIN tabelle_auftraggeber_codes ON tabelle_projekte.TABELLE_Auftraggeber_Codes_idTABELLE_Auftraggeber_Codes = tabelle_auftraggeber_codes.idTABELLE_Auftraggeber_Codes) ON tabelle_auftraggeber_gewerke.TABELLE_Auftraggeber_Codes_idTABELLE_Auftraggeber_Codes = tabelle_auftraggeber_codes.idTABELLE_Auftraggeber_Codes
+WHERE (((tabelle_projekte.idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
+ORDER BY tabelle_auftraggeber_gewerke.Gewerke_Nr;";
+
+$pdf->SetFont('helvetica', 'B', 7);
+$pdf->setXY($xPosition, $yPosition);
+$pdf->MultiCell(80, '', "Gewerke: ", '', 'L', 0, 0);
+$pdf->Ln();
+$pdf->SetFont('helvetica', 'I', 7);
+$result = $mysqli->query($sql);
+$modvar = 0;
+while ($row = $result->fetch_assoc()) {
+    $modvar = ($modvar + 1) % 2;
+    if ($modvar === 1) {
+        $pdf->MultiCell(177, '', "", '', 'L', 0, 0);
+        $pdf->MultiCell(50, '', $row['Gewerke_Nr'] . "-" . $row['Bezeichnung'], '', 'L', 0, 0);
+    } else {
+        $pdf->MultiCell(50, '', $row['Gewerke_Nr'] . "-" . $row['Bezeichnung'], '', 'L', 0, 0);
+        $pdf->Ln();
+    }
+
+}
+$pdf->Ln(10);
+$pdf->SetFont('helvetica', 'B', 10);
+
+
+
+
+
+
+
 
 $pdf->MultiCell($w[0]-5, 6, "Bereich", 'B', 'L', 0, 0);
 $pdf->MultiCell($w[1]+10, 6, "Geschoss", 'B', 'C', 0, 0);
@@ -90,11 +144,13 @@ $index = 0;
 foreach ($teile as $valueOfRaumBereiche) {
 
     foreach ($raumbereicheInProject as $rowData) {
-        $y = $pdf->GetY();
-        if ($y  >= $pageHeight) {
-            $pdf->AddPage();
-        }
+
         if ($rowData['Raumbereich Nutzer'] === $valueOfRaumBereiche && $rowData['Geschoss'] === $teileGeschosse[$index]) {
+            $y = $pdf->GetY();
+            if ($y  >= $pageHeight) {
+                $pdf->AddPage();
+            }
+
             $pdf->SetFont('helvetica', '', 8);
             $pdf->MultiCell($w[0], 4,  $rowData['Raumbereich Nutzer'], 0, 'L', $fill, 0);
             $pdf->MultiCell($w[1], 4, $rowData['Geschoss'], 0, 'C', $fill, 0);
@@ -164,7 +220,7 @@ foreach ($teile as $valueOfRaumBereiche) {
 
             if (($y) >= $pageHeight) {
                 $pdf->AddPage();
-                // $y = 0; // should be your top margin
+
             }
         }
     }
