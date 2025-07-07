@@ -6,9 +6,9 @@
 </head>
 <body>
 
-<div class="btn-group" id="hide0Wrapper">
-    <input class="btn-check btn-sm" type="checkbox" id="hideZeroRows">
-    <label class="btn btn-sm btn-outline-secondary" for="hideZeroRows">
+<div class="btn-group" id="hide0Wrapper_RwE">
+    <input class="btn-check btn-sm" type="checkbox" id="hideZeroRows_RwE">
+    <label class="btn btn-sm btn-outline-secondary" for="hideZeroRows_RwE">
         Hide 0
     </label>
 </div>
@@ -56,6 +56,7 @@ $sql = "SELECT
     tabelle_räume.Geschoss,
     tabelle_räume.Bauetappe,
     tabelle_räume.Bauabschnitt,
+
     tabelle_elemente.ElementID,
     tabelle_elemente.Bezeichnung AS ElementName
 FROM tabelle_räume
@@ -239,34 +240,36 @@ $mysqli->close();
             ],
             initComplete: function () {
                 $("#CHRME").html("");
-                $('#CHRME').append($('#hide0Wrapper'));
+                $('#CHRME').append($('#hide0Wrapper_RwE'));
                 tableRoomsWithElement.buttons().container().appendTo($('#CHRME'));
                 $('#tableRoomsWithElement_wrapper .dt-search label').remove();
                 $('#tableRoomsWithElement_wrapper .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CHRME');
+
+                let filterIndex = $.fn.dataTable.ext.search.indexOf(hideZeroFilter_RwE);
+                if (filterIndex !== -1) {
+                    $.fn.dataTable.ext.search.splice(filterIndex, 1);
+                }
+                $.fn.dataTable.ext.search.push(hideZeroFilter_RwE);
+
+                $("#hideZeroRows_RwE").on("change", function () {
+                    tableRoomsWithElement.draw();
+                });
+                function hideZeroFilter_RwE(settings, data, dataIndex) {
+
+                    if (settings.nTable.id !== 'tableRoomsWithElement') {
+                        return true;
+                    }        //console.log(data);
+                    let hideZero = $("#hideZeroRows_RwE").is(":checked");
+                    let row = tableRoomsWithElement.row(dataIndex).node();
+                    let amount = $(row).find('input[id^="amount"]').val();
+                    //  let name = $(row).find('span[id^="ElementName"').val();
+                    amount = parseInt(amount) || 0;
+                    return !(hideZero && (amount === 0));
+                }
             }
         });
 
-        let filterIndex = $.fn.dataTable.ext.search.indexOf(hideZeroFilter);
-        if (filterIndex !== -1) {
-            $.fn.dataTable.ext.search.splice(filterIndex, 1);
-        }
-        $.fn.dataTable.ext.search.push(hideZeroFilter);
 
-        $("#hideZeroRows").on("change", function () {
-            tableRoomsWithElement.draw();
-        });
-        function hideZeroFilter(settings, data, dataIndex) {
-
-            if (settings.nTable.id !== 'tableRoomsWithElement') {
-                return true;
-            }        //console.log(data);
-            let hideZero = $("#hideZeroRows").is(":checked");
-            let row = tableRoomsWithElement.row(dataIndex).node();
-            let amount = $(row).find('input[id^="amount"]').val();
-            let name = $(row).find('span[id^="ElementName"').val();
-            amount = parseInt(amount) || 0;
-            return !(hideZero && (amount === 0));
-        }
 
 
         CustomPopover.init('.comment-btn', {

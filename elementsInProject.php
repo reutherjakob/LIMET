@@ -30,9 +30,9 @@
                 <div class="col-2"><strong> Elemente im Projekt</strong>
                 </div>
                 <div class="col-10 d-flex align-items-center justify-content-end" id="target_div">
-                    <div class="me-4 d-flex " id="hide0Wrapper">
-                        <input class="btn-check btn-sm" type="checkbox" id="hideZeroRows">
-                        <label class="btn btn-sm btn-outline-dark" for="hideZeroRows">
+                    <div class="me-4 d-flex " id="hide0Wrapper_ELiNpR">
+                        <input class="btn-check btn-sm" type="checkbox" id="hideZeroRows_ELiNpR">
+                        <label class="btn btn-sm btn-outline-dark" for="hideZeroRows_ELiNpR">
                             Hide 0
                         </label>
                     </div>
@@ -214,13 +214,15 @@ ORDER BY tabelle_elemente.ElementID;";
     </div>
     <!-- Räume mit Element -->
     <div class="mt-1 card">
-        <div class="card-header ">
-            <div class="row">
-                <div class="col-xxl-8 d-flex justify-content-start align-items-center">
+        <div class="card-header"">
+            <div class="row  d-flex flex-nowrap text-nowrap">
+                <div class="col-xxl-8 col-8 d-flex justify-content-start align-items-center">
                     <button type="button" class="btn btn-outline-dark btn-sm me-2" id="showRoomsWithAndWithoutElement">
                         <i class="fas fa-caret-right"></i>
                     </button>
                     <label>Räume mit Element</label>
+                </div>
+                <div  class="col-4 d-flex justify-content-end" id="CHRME">
                 </div>
             </div>
         </div>
@@ -356,22 +358,22 @@ ORDER BY tabelle_elemente.ElementID;";
 
             });
 
-            let filterIndex = $.fn.dataTable.ext.search.indexOf(hideZeroFilter);
+            let filterIndex = $.fn.dataTable.ext.search.indexOf(hideZeroFilter_ELiNpR);
             if (filterIndex !== -1) {
                 $.fn.dataTable.ext.search.splice(filterIndex, 1);
             }
-            $.fn.dataTable.ext.search.push(hideZeroFilter);
+            $.fn.dataTable.ext.search.push(hideZeroFilter_ELiNpR);
 
-            $("#hideZeroRows").on("change", function () {
+            $("#hideZeroRows_ELiNpR").on("change", function () {
                 tableElementsInProject.draw();
             });
 
-            function hideZeroFilter(settings, data, dataIndex) {
+            function hideZeroFilter_ELiNpR(settings, data, dataIndex) {
 
                 if (settings.nTable.id !== 'tableElementsInProject') {
                     return true;
                 }        //console.log(data);
-                let hideZero = $("#hideZeroRows").is(":checked");
+                let hideZero = $("#hideZeroRows_ELiNpR").is(":checked");
                 let amount = parseInt(data[1]) || 0; // data[1] is the "Anzahl" column
 
                 return !(hideZero && (amount === 0));
