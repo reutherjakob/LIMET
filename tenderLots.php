@@ -264,7 +264,7 @@ init_page_serversides();
 </div>
 
 <!-- Modal zum Anlegen eines Loses-->
-<div class='modal fade' id='addTenderLotModal' role='dialog'>
+<div class='modal fade' id='addTenderLotModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
         <div class='modal-content'>
             <div class='modal-header'>
@@ -368,7 +368,7 @@ init_page_serversides();
 
 
 <!-- Modal zum Zeigen des Los-Workflows -->
-<div class='modal fade' id='workflowDataModal' role='dialog' data-bs-keyboard="true">
+<div class='modal fade' id='workflowDataModal' role='dialog' data-bs-keyboard="true" tabindex="-1">
     <div class='modal-dialog modal-lg'>
         <div class='modal-content'>
             <div class='modal-header'>

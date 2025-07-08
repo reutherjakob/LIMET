@@ -261,7 +261,7 @@ check_login();
 
 
 <!-- Modal zum Ändern des Raumes -->
-<div class='modal fade' id='changeRoomModal' role='dialog'>
+<div class='modal fade' id='changeRoomModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
 
         <!-- Modal content-->

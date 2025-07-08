@@ -69,7 +69,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
 
 
 <!-- Modal zum Ändern der Parameter -->
-<div class='modal fade' id='changeDeviceParameters' role='dialog'>
+<div class='modal fade' id='changeDeviceParameters' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable'>
         <div class='modal-content'>
             <div class='modal-header'>

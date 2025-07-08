@@ -203,7 +203,7 @@ init_page_serversides();
 
 
     <!-- Modal zum HinzufÃ¼gen/Ã„ndern einer Gruppe -->
-    <div class='modal fade' id='changeGroupModal' role='dialog'>
+    <div class='modal fade' id='changeGroupModal' role='dialog' tabindex="-1">
         <div class='modal-dialog modal-md'>
             <!-- Modal content-->
             <div class='modal-content'>
@@ -268,7 +268,7 @@ init_page_serversides();
 
 
     <!-- Modal fÃ¼r Gruppenmitglieder -->
-    <div class='modal fade' id='showGroupMembersModal' role='dialog'>
+    <div class='modal fade' id='showGroupMembersModal' role='dialog' tabindex="-1">
         <div class='modal-dialog modal-lg'>
             <div class='modal-content'>
                 <div class='modal-header'>
@@ -299,7 +299,7 @@ init_page_serversides();
     </div>
 
     <!-- Modal Vermerk-Suche -->
-    <div class='modal fade' id='showSearchModal' role='dialog'>
+    <div class='modal fade' id='showSearchModal' role='dialog' tabindex="-1">
         <div class='modal-dialog modal-lg'>
             <!-- Modal content-->
             <div class='modal-content'>

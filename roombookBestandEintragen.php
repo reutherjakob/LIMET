@@ -278,6 +278,7 @@ include "_format.php";
             });
         });
 
+
         tableElementsInDB = new DataTable('#tableElementsInDB', {
             paging: true,
             columnDefs: [
@@ -295,22 +296,25 @@ include "_format.php";
             ],
             select: true,
             info: true,
-            pagingType: "simple",
+            pagingType: 'simple',
             lengthChange: false,
             pageLength: 10,
-            order: [[1, "asc"]],
+            order: [[1, 'asc']],
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
-                search: "", searchPlaceholder: "Suche..."
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                search: "",
+                searchPlaceholder: "Suche..."
             },
             layout: {
-                topEnd: "search",
                 topStart: null,
-                bottomStart: 'info',
-                bottomEnd: ["pageLength", 'paging']
+                topEnd: null,
+                bottomStart: ['info', 'search'],
+                bottomEnd: ['paging'],
             },
-            initComplete: function (settings, json) {
-                // Your initComplete function here
+            initComplete: function () {
+                $('#CardHeaderElementesInDb .xxx').remove();
+                $('#tableElementsInDB_wrapper .dt-search label').remove();
+                $('#tableElementsInDB_wrapper .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
             }
         });
 
@@ -333,6 +337,47 @@ include "_format.php";
                 }
             });
         });
+
+        $("#reloadBestand").click(function () {
+            // Try to get the selected row from tableRoomsWithElement
+            let selectedRow = tableRoomsWithElement.row({selected: true});
+            console.log("Selected row object:", selectedRow);
+
+            if (!selectedRow.any()) {
+                console.log("No row selected in tableRoomsWithElement.");
+                makeToaster("Bitte wählen Sie einen Raum aus!", false);
+                return;
+            }
+
+            // Get the ID from the selected row
+            let rowData = selectedRow.data();
+            console.log("Selected row data:", rowData);
+
+            // Depending on your table structure, adjust this if necessary
+            let id = rowData[0].display || rowData[0];
+            console.log("Extracted ID:", id);
+
+            // Get the amount from the corresponding input
+            let stk = $("#amount" + id).val() || 1;
+            console.log("Extracted amount (stk):", stk);
+
+            // Log the data that will be sent
+            let requestData = {"id": id, "stk": stk};
+            console.log("AJAX request data:", requestData);
+
+            $.ajax({
+                url: "getElementBestand.php",
+                data: requestData,
+                type: "GET",
+                success: function (data) {
+                    $("#elementBestand").html(data);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    makeToaster("Fehler beim Nachladen der Bestandsdaten!", false);
+                }
+            });
+        });
+
 
     });
 

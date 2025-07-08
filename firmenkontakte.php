@@ -152,7 +152,7 @@
         </div>
 
         <!-- Modal zum Anzeigen der Visitenkarte -->
-        <div class='modal fade' id='showAddressCard' role='dialog'>
+        <div class='modal fade' id='showAddressCard' role='dialog' tabindex="-1">
             <div class='modal-dialog modal-sm'>
 
                 <!-- Modal content-->
@@ -179,7 +179,7 @@
 
 
         <!-- Modal zum Anlegen eines Firmenkontakts -->
-        <div class='modal fade' id='addContactModal' role='dialog'>
+        <div class='modal fade' id='addContactModal' role='dialog' tabindex="-1">
             <div class='modal-dialog modal-md'>
 
                 <!-- Modal content-->
@@ -270,7 +270,7 @@
         </div>
 
         <!-- Modal zum Anzeigen der Visitenkarte -->
-        <div class='modal fade' id='showAddressCard' role='dialog'>
+        <div class='modal fade' id='showAddressCard' role='dialog' tabindex="-1">
             <div class='modal-dialog modal-sm'>
                 <div class='modal-content'>
                     <div class='modal-header'>
@@ -293,7 +293,7 @@
             </div>
         </div>
 
-        <div class='modal fade' id='changeLieferantModal' role='dialog'>
+        <div class='modal fade' id='changeLieferantModal' role='dialog' tabindex="-1">
             <div class='modal-dialog modal-md'>
                 <!-- Modal content-->
                 <div class='modal-content'>

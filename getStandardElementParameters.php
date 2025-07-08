@@ -40,7 +40,7 @@ check_login();
 	?>
 
     <!-- Modal zum Zeigen des Parametervergleichs -->
-	  <div class='modal fade' id='elementParameterComparisonModal' role='dialog'>
+	  <div class='modal fade' id='elementParameterComparisonModal' role='dialog' tabindex="-1">
 	    <div class='modal-dialog modal-lg'>
 	      <div class='modal-content'>
 	        <div class='modal-header'>

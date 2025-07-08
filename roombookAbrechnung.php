@@ -182,7 +182,7 @@ if ($_SESSION["projectName"] == "") {
     </div>
 </div>
 <!-- Modal für PDF-Upload -->
-<div class='modal fade' id='uploadRechnungModal' role='dialog'>
+<div class='modal fade' id='uploadRechnungModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-sm'>
         <!-- Modal content-->
         <div class='modal-content'>

@@ -51,7 +51,7 @@ echo "<input type='button' id='addUmsatzModal' class='btn btn-success btn-sm' va
 ?>
 
 <!-- Modal zum Anlegen eines Umsatzes -->
-<div class='modal fade' id='addUmsatzToLieferantModal' role='dialog'>
+<div class='modal fade' id='addUmsatzToLieferantModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
 
         <!-- Modal content-->

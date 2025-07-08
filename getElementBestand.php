@@ -113,7 +113,7 @@ $mysqli->close();
 ?>
 
 <!-- Modal zum Anlegen eines Bestands -->
-<div class='modal fade' id='addBestandModal' role='dialog'>
+<div class='modal fade' id='addBestandModal'  tabindex="-1" role='dialog' >
     <div class='modal-dialog modal-md'>
         <!-- Modal content-->
         <div class='modal-content'>

@@ -92,7 +92,7 @@
 </div>
 
 <!-- Modal zum Anlegen eines Gerätes -->
-<div class='modal fade' id='changeDeviceModal' role='dialog'>
+<div class='modal fade' id='changeDeviceModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
         <div class='modal-content'>
             <div class='modal-header'>
@@ -144,7 +144,7 @@
 </div>
 
 <!-- Modal zum Anlegen eines Herstellers -->
-<div class='modal fade' id='addManufacturerModal' role='dialog'>
+<div class='modal fade' id='addManufacturerModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-sm'>
         <div class='modal-content'>
             <div class='modal-header'>

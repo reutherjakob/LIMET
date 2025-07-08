@@ -1,5 +1,5 @@
 <!-- Modal zum Ändern des Raumes -->
-<div class='modal fade' id='HelpModal' role='dialog'>
+<div class='modal fade' id='HelpModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-xl'>
         <!-- Modal content-->
         <div class='modal-content'>

@@ -68,7 +68,7 @@ check_login();
             </div>      </form>";
 
         echo " <!-- Modal zum Kopieren der Bauangaben -->
-        <div class='modal fade' id='BauangabenModal' role='dialog'>
+        <div class='modal fade' id='BauangabenModal' role='dialog' tabindex='-1'>
           <div class='modal-dialog modal-xl'>
             <!-- Modal content--> 
             <div class='modal-content'>

@@ -253,7 +253,7 @@ $mysqli->close();
 </table>
 
 <!-- Modal zum Kopieren des Rauminhalts -->
-<div class='modal fade' id='copyRoomElementsModal' tabindex='-1' aria-labelledby='copyRoomElementsModalLabel'
+<div class='modal fade' id='copyRoomElementsModal' tabindex='-1' aria-labelledby='copyRoomElementsModalLabel' tabindex="-1"
      aria-hidden='true'>
     <div class='modal-dialog modal-xl'>
         <div class='modal-content'>
@@ -275,7 +275,7 @@ $mysqli->close();
 </div>
 
 <!-- Modal zum Darstellen des Verlaufs -->
-<div class='modal fade' id='historyModal' role='dialog'>
+<div class='modal fade' id='historyModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-lg'>
         <!-- Modal content-->
         <div class='modal-content'>

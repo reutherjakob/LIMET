@@ -904,7 +904,7 @@ session_start();
         $mysqli->close();
 
         echo "<!-- Modal zum kopieren der Bauangaben -->
-                          <div class='modal fade' id='myModal' role='dialog'>
+                          <div class='modal fade' id='myModal' role='dialog' tabindex='-1' >
                             <div class='modal-dialog modal-lg'>
                               <!-- Modal content-->
                               <div class='modal-content'>

@@ -213,7 +213,7 @@ if(!isset($_SESSION["username"]))
 </div>
 <!-- MODALS SECTION -->
 <!-- Modal für Bild-Upload -->
-<div class='modal fade' id='uploadImageModal' role='dialog'>
+<div class='modal fade' id='uploadImageModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
         <!-- Modal content-->
         <div class='modal-content'>

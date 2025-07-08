@@ -227,7 +227,7 @@ init_page_serversides();
 </div>
 
 
-<div class='modal fade' id='boModal' role='dialog'>
+<div class='modal fade' id='boModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
         <!-- Modal content-->
         <div class='modal-content'>

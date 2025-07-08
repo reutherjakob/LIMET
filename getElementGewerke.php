@@ -189,7 +189,7 @@ $mysqli->close();
 
 
 <!-- Modal Info -->
-<div class='modal fade' id='infoModal' role='dialog'>
+<div class='modal fade' id='infoModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-dialog-centered modal-sm'>
         <!-- Modal content-->
         <div class='modal-content'>

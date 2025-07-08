@@ -52,7 +52,7 @@ $room = $result->fetch_assoc();
 $mysqli->close();
 ?>
 <!-- Modal zum Einfügen eines Elements -->
-<div class='modal fade' id='addRoomElementModal' role='dialog'>
+<div class='modal fade' id='addRoomElementModal' role='dialog' tabindex="-1">
     <div class='modal-dialog'>
 
         <div class='modal-content'>
@@ -83,7 +83,7 @@ $mysqli->close();
 
 
 <!-- Modal zum Ändern eines Elements -->
-<div class='modal fade' id='changeElementModal' role='dialog'>
+<div class='modal fade' id='changeElementModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-lg'>
         <div class='modal-content'>
             <div class='modal-header'>
@@ -113,7 +113,7 @@ $mysqli->close();
 </div>
 
 <!-- Modal Info -->
-<div class='modal fade' id='infoModal' role='dialog'>
+<div class='modal fade' id='infoModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-sm'>
         <!-- Modal content-->
         <div class='modal-content'>

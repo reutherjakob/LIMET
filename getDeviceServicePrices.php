@@ -62,7 +62,7 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
 ?>
 
 <!-- Modal zum Anlegen eines Preises -->
-<div class='modal fade' id='addServicePriceModal' role='dialog'>
+<div class='modal fade' id='addServicePriceModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
         <!-- Modal content-->
         <div class='modal-content'>
