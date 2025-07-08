@@ -30,6 +30,7 @@ $row = $result->fetch_assoc();
 
 //TITEL einfügen
 $pdf->SetFont('helvetica', 'B', 10);
+$pdf->Ln(5);
 $pdf->MultiCell(150, 6, "Projekt: " . $row['Projektname'], '', 'L', 0, 0);
 $xPosition = $pdf->getX();
 $yPosition = $pdf->getY();
