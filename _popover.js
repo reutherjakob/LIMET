@@ -27,10 +27,10 @@ const CustomPopover = (function ($) {
 
         if (prevPopover && prevTrigger) {
             // Save previous content before opening new one
-            const newText = prevPopover.find('.popover-textarea').val();
-            if (onSaveCallback) {
-                onSaveCallback(prevTrigger, newText);
-            }
+            //  const newText = prevPopover.find('.popover-textarea').val();
+            //  if (onSaveCallback) {
+            //      onSaveCallback(prevTrigger, newText);
+            //  }
             prevPopover.remove();
         }
 
@@ -86,8 +86,9 @@ const CustomPopover = (function ($) {
             const textareaElement = popoverElement.find('.popover-textarea');
 
             if (!isClickInsidePopover && !isClickOnTrigger && isClickFarAway(e, textareaElement)) {
+                handleSave();
                 hidePopover();
-               // handleSave();
+
             }
         }
     }

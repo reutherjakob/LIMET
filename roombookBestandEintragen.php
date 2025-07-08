@@ -105,25 +105,32 @@ include "_format.php";
         </div>
     </div>
 
-    <div class="mt-4 card">
+    <div class="card mt-1">
         <div class="row">
             <div class="col-xxl-8">
-                <div class="mt-1 card">
-                    <div class="card-header row">
-                        <div class="col-6">  <button type="button" class="btn btn-outline-dark btn-sm" id="showRoomsWithAndWithoutElement">
-                                <i class="fas fa-caret-up"></i>
-                            </button>
-                            <label>Räume mit Element</label></div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-6">
+                                <button type="button" class="btn btn-outline-dark btn-sm"
+                                        id="showRoomsWithAndWithoutElement">
+                                    <i class="fas fa-caret-up"></i>
+                                </button>
+                                <label>Räume mit Element</label></div>
 
-                        <div class="col-6 d-flex justify-content-end" id="CHRME"></div>
+                            <div class="col-6 d-flex justify-content-end" id="CHRME"></div>
+
+
+                        </div>
                     </div>
                     <div class="card-body" id="roomsWithAndWithoutElements">
                     </div>
                 </div>
             </div>
 
+
             <div class="col-xxl-4">
-                <div class="mt-1 card">
+                <div class="  card">
                     <div class="card-header " id="BestandsdatenCardHeader">
                         <div class="row">
                             <div class="col-xxl-6"><label>Bestandsdaten</label></div>
@@ -158,81 +165,26 @@ include "_format.php";
             <div class="row">
                 <div class="col-xxl-8">
                     <div class='mt-1 card'>
-                        <div class='card-header'><label>Elementgruppen</label></div>
+                        <div class='card-header'>
+                            <label>Elementgruppen</label>
+                            <button type="reset" class="btn btn-sm float-end" title="Reset" id="ResetElementGroups">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
                         <div class='card-body' id='elementGroups'>
-                            <?php
-                            $mysqli = utils_connect_sql();
-                            $sql = "SELECT tabelle_element_gewerke.idtabelle_element_gewerke, tabelle_element_gewerke.Nummer, tabelle_element_gewerke.Gewerk
-												FROM tabelle_element_gewerke
-												ORDER BY tabelle_element_gewerke.Nummer;";
-
-                            $result = $mysqli->query($sql);
-                            echo "<div class='form-group row'>
-									 			<label class='control-label col-xxl-2' for='elementGewerk'>Gewerk</label>
-												<div class='col-xxl-10'>
-													<select class='form-control form-control-sm' id='elementGewerk' name='elementGewerk'>";
-                            while ($row = $result->fetch_assoc()) {
-                                echo "<option value=" . $row["idtabelle_element_gewerke"] . ">" . $row["Nummer"] . " - " . $row["Gewerk"] . "</option>";
-                            }
-                            echo "</select>	
-												</div>
-										</div>";
-
-                            echo "<div class='form-group row'>
-									 			<label class='control-label col-xxl-2' for='elementHauptgruppe'>Hauptgr.</label>
-												<div class='col-xxl-10'>
-													<select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>
-														<option selected>Gewerk auswählen</option>
-													</select>	
-												</div>
-										</div>";
-
-                            echo "<div class='form-group row'>
-									 			<label class='control-label col-xxl-2' for='elementGruppe'>Gruppe</label>
-												<div class='col-xxl-10'>
-													<select class='form-control form-control-sm' id='elementGruppe' name='elementGruppe'>
-														<option selected>Gewerk auswählen</option>
-													</select>	
-												</div>
-										</div>";
-                            ?>
+                            <?php include "getElementgruppenCardContent.php"; ?>
                         </div>
                     </div>
                     <div class="mt-1 card">
-                        <div class="card-header ">
-                            <label>Elemente in DB</label>
-                            <div class="d-inline-flex float-right" id="CH_elementsInDB"></div>
+                        <div class="card-header">
+                            <div class="row d-flex align-items-center">
+                                <div class="col-xxl-6 col-6">Elemente in DB</div>
+                                <div class="col-xxl-6 col-6 d-flex justify-content-end"
+                                     id="CardHeaderElementesInDb"></div>
+                            </div>
                         </div>
                         <div class="card-body" id="elementsInDB">
-                            <?php
-                            $sql = "SELECT tabelle_elemente.idTABELLE_Elemente, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_elemente.Kurzbeschreibung
-											FROM tabelle_elemente
-											ORDER BY tabelle_elemente.ElementID;";
-
-                            $result = $mysqli->query($sql);
-
-                            echo "<table class='table table-striped table-sm table-hover border border-light border-5' id='tableElementsInDB' >
-									<thead><tr>
-									<th>ID</th>
-									<th>ElementID</th>
-									<th>Element</th>
-									<th>Beschreibung</th>
-                                                                        <th></th>
-									</tr></thead><tbody>";
-
-                            while ($row = $result->fetch_assoc()) {
-                                echo "<tr>";
-                                echo "<td>" . $row["idTABELLE_Elemente"] . "</td>";
-                                echo "<td>" . $row["ElementID"] . "</td>";
-                                echo "<td>" . $row["Bezeichnung"] . "</td>";
-                                echo "<td>" . $row["Kurzbeschreibung"] . "</td>";
-                                echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-dark btn-sm'' value='changeElement' data-bs-toggle='modal' data-bs-target='#changeElementModal'><i class='fas fa-pencil-alt'></i></button></td>";
-                                echo "</tr>";
-                            }
-                            echo "</tbody></table>";
-
-                            $mysqli->close();
-                            ?>
+                            <?php include "getElementsInDbCardBodyContent.php"; ?>
                         </div>
                     </div>
                 </div>
