@@ -109,15 +109,19 @@ include "_format.php";
         <div class="row">
             <div class="col-xxl-8">
                 <div class="mt-1 card">
-                    <div class="card-header row">
-                        <div class="col-6">  <button type="button" class="btn btn-outline-dark btn-sm" id="showRoomsWithAndWithoutElement">
-                                <i class="fas fa-caret-up"></i>
-                            </button>
-                            <label>Räume mit Element</label></div>
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-6">
+                                <button type="button" class="btn btn-outline-dark btn-sm"
+                                        id="showRoomsWithAndWithoutElement">
+                                    <i class="fas fa-caret-up"></i>
+                                </button>
+                                <label>Räume mit Element</label></div>
 
-                        <div class="col-6 d-flex justify-content-end" id="CHRME"></div>
-                    </div>
-                    <div class="card-body" id="roomsWithAndWithoutElements">
+                            <div class="col-6 d-flex justify-content-end" id="CHRME"></div>
+                        </div>
+                        <div class="card-body" id="roomsWithAndWithoutElements">
+                        </div>
                     </div>
                 </div>
             </div>
