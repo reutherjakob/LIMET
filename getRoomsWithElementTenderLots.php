@@ -167,7 +167,7 @@ echo "<table class='table table-striped table-bordered border border-light borde
 	<th>Raumnummer</th>
 	<th>Raumbezeichnung</th>
 	<th>Raumbereich</th>
-	<th>Best</th>
+	<th>Bestand</th>
 	<th>Stand</th>
 	<th>Verw</th>
 	<th>Komm</th>

@@ -12,11 +12,11 @@ a:hover {
 }
 */
 .bg-primary {
-    background-color: rgba(100, 140, 25, 0.75) !important; /* Replace with your color */
+    background-color: rgba(178, 230, 80, 0.75) !important; /* Replace with your color */
 }
 
 tr.selected {
-    background-color: rgba(100, 140, 25, 0.75)  !important;
+    background-color: rgba(176, 246, 50, 0.75) !important;
     color: #222; /* Optional: Change text color */
 }
 

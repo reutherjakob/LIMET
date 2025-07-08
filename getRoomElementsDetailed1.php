@@ -168,7 +168,7 @@ $mysqli->close();
         <th>Element</th>
         <th>Var</th>
         <th>Stk</th>
-        <th>Best</th>
+        <th>Bestand</th>
         <th>Stand</th>
         <th>Verw</th>
         <th>Kom</th>
@@ -253,7 +253,7 @@ $mysqli->close();
 </table>
 
 <!-- Modal zum Kopieren des Rauminhalts -->
-<div class='modal fade' id='copyRoomElementsModal' tabindex='-1' aria-labelledby='copyRoomElementsModalLabel' tabindex="-1"
+<div class='modal fade' id='copyRoomElementsModal'  aria-labelledby='copyRoomElementsModalLabel' tabindex="-1"
      aria-hidden='true'>
     <div class='modal-dialog modal-xl'>
         <div class='modal-content'>
