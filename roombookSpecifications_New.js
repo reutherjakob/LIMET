@@ -222,7 +222,8 @@ function init_btn_4_dt() {
                 toggleColumns(dt, button.start, button.end, button.name);
                 updateButtonClass(node, dt, button.start, button.end);
             }
-        })), {
+        }))
+        , {
             text: '<i class="fa fa-paper-plane"></i> R',
             className: 'btn btn-light border-secondary',
             action: () => toggleReportColumnsVisible()

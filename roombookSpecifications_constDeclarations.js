@@ -10,7 +10,7 @@ function title2data(columnsDefinition, title) {
 
 
 const buttonRanges = [
-    {name: 'All', start: 6, end: 148, longName: 'Alle Spalten'},
+    {name: 'All', start: 6, end: 168, longName: 'Alle Spalten'},
     {name: 'R', start: 7, end: 24, longName: 'Raum'},
     {name: 'HKLS', start: 25, end: 34, longName: 'HKLS'},
     {name: 'ET', start: 35, end: 55, longName: 'Elektro'},
@@ -40,7 +40,7 @@ const columnsDefinition = [
     {data: 'Raumbezeichnung', title: 'Raumbez'}, // 4
 
     {data: 'Raumnr', title: 'Raumnr'}, // 5
-    {data: "Bezeichnung", title: "Funktionsstelle", visible: true, case: "none-edit"}, // 6
+    {data: "Bezeichnung", title: "Funktionsstelle", visible: false, case: "none-edit"}, // 6
     {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'}, // 7
     {data: "Nummer", title: "DIN13080", visible: false, case: "none-edit"}, // 8
     {data: "Entfallen", title: "Entfallen", name: "Entfallen", visible: false, case: "bit"}, // 9
