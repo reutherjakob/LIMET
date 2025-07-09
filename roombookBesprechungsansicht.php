@@ -1,5 +1,5 @@
 <?php
-include "_utils.php";
+include "utils/_utils.php";
 check_login();
 init_page_serversides("", "x");
 $projectID = $_SESSION["projectID"] ?? 75; // Fallback für Demo
@@ -75,7 +75,7 @@ $stmt->close();
         <div class="col-lg-2 mx-auto mb-4" id="filterCardCol">
             <form id="filterForm">
                 <div class="card">
-                    <div class="card-header d-flex flex-nowrap"  style=" height: 55px; ">
+                    <div class="card-header d-flex flex-nowrap">
                         <label for="raumbereich" class="form-label"></label>
                         <select id="raumbereich" name="raumbereich[]" class="form-select" style="width:100%" multiple>
 
@@ -83,7 +83,6 @@ $stmt->close();
                                 <option value="<?= htmlspecialchars($option) ?>"><?= htmlspecialchars($option) ?></option>
                             <?php endforeach; ?>
                         </select>
-
 
                     </div>
                     <div class="card-body">
@@ -197,6 +196,7 @@ $stmt->close();
                 $('#pivotTableContainer').html('<div class="alert alert-info">Bitte wählen Sie mindestens einen Raumbereich.</div>');
                 return;
             }
+            console.log(raumbereich);
             let hideZeros = $('#hideZeros').is(':checked');
 
 
@@ -204,7 +204,7 @@ $stmt->close();
                 url: 'pivot_table_ajax.php',
                 method: 'POST',
                 data: {
-                    raumbereich: raumbereich, // This will be sent as an array
+                    'raumbereich[]': raumbereich, // This will be sent as an array
                     mtRelevant,
                     entfallen,
                     nurMitElementen,
@@ -272,9 +272,11 @@ $stmt->close();
                             {
                                 extend: 'excelHtml5',
                                 text: '<i class="fas fa-file-excel"></i> Excel',
-                                className: 'btn btn-success btn-sm'
+                                className: 'btn btn-success btn-sm',
+                                title: raumbereich.join('_') // Joins selected room areas with underscores
                             }
                         ],
+
                         //headerCallback: function (thead) {
                         //    $(thead).find('th.rotate').each(function () {
                         //        var $th = $(this);

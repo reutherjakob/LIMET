@@ -1,6 +1,6 @@
 <?php
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 init_page_serversides();
 ?>
@@ -11,7 +11,7 @@ init_page_serversides();
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bauangaben check</title>
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
 
     <!-- Rework 2025 CDNs -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -302,7 +302,7 @@ init_page_serversides();
 </div>
 
 
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 <script>
     function show_modal(modal_id) {
         $('#' + modal_id).modal('show');

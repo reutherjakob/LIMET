@@ -1,6 +1,6 @@
 <?php
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 check_login();
 
@@ -160,8 +160,8 @@ $formFields = [
 $mysqli->close();
 ?>
 
-<script src="_utils.js"></script>
-<script src="createNewOrganisationAndZusändigkeit.js"></script>
+<script src="utils/_utils.js"></script>
+<script src="addNewOrganisationAndZusändigkeit.js"></script>
 <script>
     $(function () {
         $('[data-bs-toggle="tooltip"]').each(function () {

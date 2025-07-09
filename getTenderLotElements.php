@@ -1,7 +1,7 @@
 <?php
 // reworked 25
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 check_login();
 ?>
@@ -111,9 +111,9 @@ echo "</tbody></table>";
 $mysqli->close();
 ?>
 
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 <script charset="utf-8" type="module">
-    import CustomPopover from './_popover.js'; //TODO: Find out why this doesnt work, but others witht he same code do work??
+    import CustomPopover from './utils/_popover.js'; //TODO: Find out why this doesnt work, but others witht he same code do work??
 
     CustomPopover.init('.comment-btn', {
         onSave: function (trigger, newText) {
@@ -196,7 +196,7 @@ $mysqli->close();
                     text: ' Elementliste PDF',
                     className: "btn btn-md bg-white btn-outline-secondary fas fa-file-pdf me-1 ms-1",
                     action: function () {
-                        window.open('/pdf_createLotElementListPDF.php');
+                        window.open('PDFs/pdf_createLotElementListPDF.php');
                     }
                 }
             ],
@@ -236,7 +236,7 @@ $mysqli->close();
     });
 
     $('#createLotElementListPDF').click(function () {
-        window.open('/pdf_createLotElementListPDF.php');
+        window.open('PDFs/pdf_createLotElementListPDF.php');
     });
 
 </script>

@@ -1,6 +1,6 @@
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
-include "_format.php";
+if (!function_exists('utils_connect_sql')) {  include "utils/_utils.php"; }
+include "utils/_format.php";
 init_page_serversides();
 $mysqli = utils_connect_sql();
 ?>
@@ -12,8 +12,8 @@ $mysqli = utils_connect_sql();
     <title>RB-Budgets</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="iphone_favicon.png">
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logo/iphone_favicon.png">
 
 
     <!-- Rework 2025 CDNs -->

@@ -4,8 +4,8 @@
     <title>RB-Elemente im Projekt</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="iphone_favicon.png"/>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logo/iphone_favicon.png"/>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -60,10 +60,10 @@
         <div class="card-body">
             <?php
             if (!function_exists('utils_connect_sql')) {
-                include "_utils.php";
+                include "utils/_utils.php";
             }
             init_page_serversides();
-            include "_format.php";
+            include "utils/_format.php";
             $mysqli = utils_connect_sql();
             $sql = "SELECT Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
                            tabelle_elemente.ElementID,
@@ -230,7 +230,7 @@ ORDER BY tabelle_elemente.ElementID;";
     </div>
 
 
-    <script src="_utils.js"></script>
+    <script src="utils/_utils.js"></script>
     <script charset="utf-8">
 
         var tableElementsInProject;
@@ -419,18 +419,18 @@ ORDER BY tabelle_elemente.ElementID;";
 
         // PDF erzeugen
         $('#createElementListPDF').click(function () {
-            window.open('/pdf_createElementListPDF.php');
+            window.open('PDFs/pdf_createElementListPDF.php');
         });
 
         $('#createElementListWithPricePDF').click(function () {
-            window.open('/pdf_createElementListWithPricePDF.php');
+            window.open('PDFs/pdf_createElementListWithPricePDF.php');
         });
 
         $('#createElementEinbringwegePDF').click(function () {
-            window.open('/pdf_createElementEinbringwegePDF.php');
+            window.open('PDFs/pdf_createElementEinbringwegePDF.php');
         });
         $('#createElementEinbringwegePDF2').click(function () {
-            window.open('/pdf_createElementEinbringwegePDFschöner.php');
+            window.open('PDFs/pdf_createElementEinbringwegePDFschöner.php');
         });
 
 

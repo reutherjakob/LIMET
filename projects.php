@@ -4,8 +4,8 @@
     <title>RB-Projekte</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="iphone_favicon.png"/>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logo/iphone_favicon.png"/>
     <!-- 13.2.25: Reworked -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
     <?php
     if (!function_exists('utils_connect_sql')) {
-        include "_utils.php";
+        include "utils/_utils.php";
     }
     init_page_serversides("No Redirect");
     include 'projects_changeProjectModal.html';
@@ -161,7 +161,10 @@
                         <a href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free" target="_blank">Projekt Icons</a>.
                     </p>
                     <p>
-                        <a href="_feature_wishlist.php" target="_blank">Raumbuch Feedback</a>.
+                        <a href="/FeedbackCenter/FeedbackIndex.php" target="_blank">Raumbuch Feedback und Bugreport</a>.
+                    </p>
+                    <p>
+                        <a href="roombookBesprechungsansicht.php" target="_blank"> Besprechungsansicht </a>.
                     </p>
                 </div>
             </div>

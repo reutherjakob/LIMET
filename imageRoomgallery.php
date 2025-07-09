@@ -9,8 +9,8 @@ session_start();
 <title>RB-Projekte</title>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
-<link rel="icon" href="iphone_favicon.png">
+<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+<link rel="icon" href="Logo/iphone_favicon.png">
  
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
@@ -59,7 +59,7 @@ if(!isset($_SESSION["username"]))
     
 <div class="container-fluid">
   <nav class="navbar navbar-expand-lg bg-light navbar-light">	
-      <a class="py-0 navbar-brand" href="#"><img src="LIMET_logo.png" alt="LIMETLOGO" height="40"/></a>
+      <a class="py-0 navbar-brand" href="#"><img src="Logo/LIMET_logo.png" alt="LIMETLOGO" height="40"/></a>
           <ul class="navbar-nav">
               <?php 
                     if($_SESSION["ext"]==0){
@@ -85,11 +85,10 @@ if(!isset($_SESSION["username"]))
                         echo "<li class='nav-item dropdown'>
                                 <a class=' py-0 nav-link dropdown-toggle' data-bs-toggle='dropdown' href='#'><i class='fa fa-book'></i> Raumbuch</a>              
                                 <ul class='dropdown-menu'>
-                                    <a class='dropdown-item' href='roombookSpecifications.php'>Raumbuch - Bauangaben</a>
+               
                                     <a class='dropdown-item' href='roombookMeeting.php'>Raumbuch - Meeting</a>
                                     <a class='dropdown-item' href='roombookDetailed.php'>Raumbuch - Detail</a>
-                                    <a class='dropdown-item' href='roombookBO.php'>Raumbuch - Betriebsorganisation</a>
-                                    <a class='dropdown-item' href='roombookReports.php'>Raumbuch - Berichte</a>
+
                                     <a class='dropdown-item' href='elementsInProject.php'>Elemente im Projekt</a>
                                 </ul>
                               </li>

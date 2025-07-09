@@ -1,5 +1,5 @@
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {  include "utils/_utils.php"; }
 check_login();
 ?>
 
@@ -149,7 +149,7 @@ $mysqli->close();
     });
 
     $("button[value='createLotVermerkePDF']").click(function () {
-        window.open('/pdf_createLotVermerkePDF.php?losID=' + this.id);
+        window.open('PDFs/pdf_createLotVermerkePDF.php?losID=' + this.id);
     });
 
 </script>

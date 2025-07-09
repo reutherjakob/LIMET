@@ -1,7 +1,7 @@
 <!-- 13.2.25: Reworked -->
 <?php
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 init_page_serversides();
  include 'roombookSpecifications_addRoomModal.php';
@@ -15,7 +15,7 @@ init_page_serversides();
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-    <link rel="icon" href="iphone_favicon.png"/>
+    <link rel="icon" href="Logo/iphone_favicon.png"/>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -31,7 +31,7 @@ init_page_serversides();
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
 
     <style>
         .btn_vis, .btn_invis {
@@ -192,5 +192,5 @@ init_page_serversides();
 </div>
 </body>
 <script src="roombookSpecifications_constDeclarations.js"></script>
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 <script src="roombookSpecifications_New.js" charset=utf-8></script>

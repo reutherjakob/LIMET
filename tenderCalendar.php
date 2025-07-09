@@ -4,8 +4,8 @@
     <title>RB-Ausschreibungskalender</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="iphone_favicon.png">
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logo/iphone_favicon.png">
 
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -50,7 +50,7 @@
 
 <?php
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 init_page_serversides();
 ?>
@@ -296,7 +296,7 @@ init_page_serversides();
 
 
 <!--suppress JSCheckFunctionSignatures -->
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         initializeDataTable();

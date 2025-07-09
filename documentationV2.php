@@ -1,7 +1,7 @@
 <!-- 13.2.25: Reworked -->
 <?php
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 init_page_serversides();
 ?>
@@ -11,8 +11,8 @@ init_page_serversides();
     <title>RB-Dokumentation</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="iphone_favicon.png">
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logo/iphone_favicon.png">
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -442,7 +442,7 @@ init_page_serversides();
                     $("#vermerkUntergruppen").html(data);
                 }
             });
-            $('#pdfPreview').attr('src', '/pdf_createVermerkGroupPDF.php?gruppenID=' + gruppenID);
+            $('#pdfPreview').attr('src', 'PDFs/pdf_createVermerkGroupPDF.php?gruppenID=' + gruppenID);
 
         });
     });
@@ -510,7 +510,7 @@ init_page_serversides();
 
 
     $("button[value='createGroupPDF']").click(function () {
-        window.open('/pdf_createVermerkGroupPDF.php?gruppenID=' + this.id + '&');//there are many ways to do this
+        window.open('PDFs/pdf_createVermerkGroupPDF.php?gruppenID=' + this.id + '&');//there are many ways to do this
     });
 
 

@@ -7,7 +7,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css">
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
 
     <!-- Rework 2025 CDNs -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -39,7 +39,7 @@
         <div id="CB1" class="card-body table-responsive">
             <?php
             if (!function_exists('utils_connect_sql')) {
-                include "_utils.php";
+                include "utils/_utils.php";
             }
             init_page_serversides("x");
             $mysqli = utils_connect_sql();
@@ -165,7 +165,7 @@
     </div>
 </div>
 
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 <script>
     let table;
     let deviceID;

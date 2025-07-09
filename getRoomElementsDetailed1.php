@@ -1,9 +1,9 @@
 <?php
 // V2.0: 2024-11-29, Reuther & Fux
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
-include "_format.php";
+include "utils/_format.php";
 check_login();
 
 $mysqli = utils_connect_sql();
@@ -293,11 +293,11 @@ $mysqli->close();
     </div>
 </div>
 
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 <script charset="utf-8" type="module">
     // var currentSort = {column: 0, dir: 'asc'};   - within importing files
     //  !! tableRoomElements: variable within importing file!
-    import CustomPopover from './_popover.js';
+    import CustomPopover from './utils/_popover.js';
 
     CustomPopover.init('.comment-btn', {
         onSave: function (trigger, newText) {
@@ -366,11 +366,11 @@ $mysqli->close();
 
     function attachButtonListeners() {
         $("button[value='createRoombookPDF']").click(function () {
-            window.open('/pdf_createRoombookPDF.php?roomID=' + this.id);//there are many ways to do this
+            window.open('PDFs/pdf_createRoombookPDF.php?roomID=' + this.id);//there are many ways to do this
         });
 
         $("button[value='createRoombookPDFCosts']").click(function () {
-            window.open('/pdf_createRoombookPDFwithCosts.php?roomID=' + this.id);//there are many ways to do this
+            window.open('PDFs/pdf_createRoombookPDFwithCosts.php?roomID=' + this.id);//there are many ways to do this
         });
 
         $("button[value='Rauminhalt kopieren']").click(function () {

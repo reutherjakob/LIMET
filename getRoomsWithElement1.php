@@ -17,7 +17,7 @@
 <?php
 // Adapted to fill all the GetRoomSWithElement needs (12.6.25)
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 check_login();
 
@@ -198,9 +198,9 @@ $mysqli->close();
 ?>
 
 
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 <script charset="utf-8" type="module">
-    import CustomPopover from './_popover.js';
+    import CustomPopover from './utils/_popover.js';
 
     $(document).ready(function () {
 

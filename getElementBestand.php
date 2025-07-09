@@ -1,8 +1,8 @@
 <?php
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
-include "_format.php";
+include "utils/_format.php";
 check_login();
 ?>
 <!DOCTYPE html >
@@ -167,7 +167,7 @@ $mysqli->close();
     </div>
 </div>
 
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 <script>
     var table;
     $(document).ready(function () {

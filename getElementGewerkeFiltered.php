@@ -1,6 +1,6 @@
 <?php
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 session_start();
 check_login();
@@ -141,7 +141,7 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
     </div>
 </div>
 
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 <script>
     $('#ghg').change(function () {
         let ghgid = $('#ghg').val();

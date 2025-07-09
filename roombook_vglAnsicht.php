@@ -4,8 +4,8 @@
     <title>RB-Raumvergleich</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="iphone_favicon.png"/>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logo/iphone_favicon.png"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
@@ -29,7 +29,7 @@
 
 <?php
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 } // CHECKS SESSION
 init_page_serversides(); // checks LOGIN
 ?>
@@ -203,7 +203,7 @@ init_page_serversides(); // checks LOGIN
 
 
 <script src="roombookSpecifications_constDeclarations.js"></script>
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 <script>
 
     function show_modal(modal_id) {

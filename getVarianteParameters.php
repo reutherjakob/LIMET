@@ -6,13 +6,13 @@
 </head>
 <body>
 <?php
-include "_utils.php";
+include "utils/_utils.php";
 include "getElementParameterTable.php";
 check_login();
 generate_variante_parameter_inputtable();
 ?>
 
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 <script src="saveElementParameters.js"></script>
 <script>
 

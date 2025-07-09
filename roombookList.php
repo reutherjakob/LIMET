@@ -2,9 +2,9 @@
 
 <?php
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
-include "_format.php";
+include "utils/_format.php";
 init_page_serversides();
 ?>
 
@@ -14,8 +14,8 @@ init_page_serversides();
     <title>RB-Liste</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="iphone_favicon.png">
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logo/iphone_favicon.png">
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -57,6 +57,7 @@ init_page_serversides();
        tabelle_varianten.Variante,
        tabelle_projektbudgets.Budgetnummer,
        tabelle_lose_extern.LosNr_Extern,
+       tabelle_lose_extern.LosBezeichnung_Extern,
        tabelle_auftraggeber_gewerke.Gewerke_Nr,
        tabelle_auftraggeber_ghg.GHG,
        tabelle_räume_has_tabelle_elemente.Kurzbeschreibung
@@ -111,6 +112,7 @@ WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["pr
                                                             <th>Budget</th>                                                                
                                                             <th>Gewerk</th>
                                                             <th>GHG</th>
+                                                            <th>Los Bezeichnung</th>
                                                             <!--th>RAUM-ID</th-->
                                                         </tr>
                                                         </thead>";
@@ -132,14 +134,15 @@ WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["pr
                 echo "<td>" . $row["Bezeichnung"] . "</td>";
                 echo "<td>" . $row["Variante"] . "</td>";
                 echo "<td>" . $row["Standort"] . "</td>";
-                echo "<td>" . $row["Neu/Bestand"] . "</td>";
-                echo "<td>" . format_money( $row["EP"]) . "</td>";
+                echo "<td>" . ($row["Neu/Bestand"] == 0 ? "Ja" : "Nein") . "</td>";
+                echo "<td>" . format_money($row["EP"]) . "</td>";
                 echo "<td>" . $row["EP"] . "</td>";
                 echo "<td>" . $row["LosNr_Extern"] . "</td>";
                 echo "<td>" . $row["Budgetnummer"] . "</td>";
                 echo "<td>" . $row["Gewerke_Nr"] . "</td>";
                 echo "<td>" . $row["GHG"] . "</td>";
-              //  echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
+                echo "<td>" . $row["LosBezeichnung_Extern"] . "</td>";
+                //  echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
                 echo "</tr>";
             }
             echo "</tbody></table>";
@@ -155,7 +158,7 @@ WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["pr
             select: true,
             layout: {
                 topStart: 'buttons',
-                topEnd: ['search','info'],
+                topEnd: ['search', 'info'],
                 bottomStart: null,
                 bottomEnd: null
             },
@@ -174,8 +177,19 @@ WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["pr
             buttons: [
                 {
                     extend: 'excelHtml5',
+                    text: 'Excel',
+                    className: 'fas fa-file-excel btn btn-outline-success bg-white',
                     exportOptions: {
-                        columns: ':not(:eq(12))' // Exclude column 12 (index 11)
+                        columns: ':not(:eq(12))', // Exclude column 12 (index 11)
+                         format: {
+                             body: function (data, row, column, node) {
+                                 // Beispiel: für die Los-Nr-Spalte (z.B. Spalte 14)
+                                 if (column === 14) {
+                                     return "'" + data ; // Apostroph voranstellen
+                                 }
+                                 return data;
+                             }
+                         }
                     }
                 },
                 'searchBuilder'

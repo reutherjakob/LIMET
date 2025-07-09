@@ -4,8 +4,8 @@
     <title>RB-Losverwaltung</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="iphone_favicon.png">
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logo/iphone_favicon.png">
     <!-- CDNz25 Rework -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -35,9 +35,9 @@
 <body id="bodyTenderLots">
 <?php
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
-include "_format.php";
+include "utils/_format.php";
 init_page_serversides();
 ?>
 <div id="limet-navbar"></div> <!-- Container für Navbar -->
@@ -387,7 +387,7 @@ init_page_serversides();
 
 </body>
 
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 <!--suppress ES6ConvertVarToLetConst -->
 <script charset="utf-8" type="module">
     var lotID;
@@ -747,15 +747,15 @@ init_page_serversides();
 
     // PDF erzeugen
     $('#createTenderListPDF').click(function () {
-        window.open('/pdf_createTenderLotElementListPDF.php');
+        window.open('PDFs/pdf_createTenderLotElementListPDF.php');
     });
 
     $('#createTenderListWithoutElementsPDF').click(function () {
-        window.open('/pdf_createTenderLotElementListWithoutElementsPDF.php');
+        window.open('PDFs/pdf_createTenderLotElementListWithoutElementsPDF.php');
     });
 
     $('#createTenderWorkflowPDF').click(function () {
-        window.open('/pdf_createTenderWorkflowPDF.php');
+        window.open('PDFs/pdf_createTenderWorkflowPDF.php');
     });
 
     $("button[value='LotWorkflow']").click(function () {

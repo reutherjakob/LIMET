@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Improved Inflation Calculator</title>
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -27,7 +27,7 @@
 
     <?php
     if (!function_exists('utils_connect_sql')) {
-        include "_utils.php";
+        include "utils/_utils.php";
     }
 
     init_page_serversides("x");
@@ -319,7 +319,7 @@
         </div>
     </div>
 </div>
-<script src="_scrollUp.js"></script>
+
 <script>
     $(document).ready(function() {
         $('.select2').select2({

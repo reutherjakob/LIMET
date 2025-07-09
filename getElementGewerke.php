@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 check_login();
 ?>
@@ -207,7 +207,7 @@ $mysqli->close();
     </div>
 </div>
 
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 <script charset="utf-8">
 
     //GHG geändert

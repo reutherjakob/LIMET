@@ -1,7 +1,7 @@
 <?php
 
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 check_login();
 ?>
@@ -96,7 +96,7 @@ $mysqli->close();
     </div>
 </div>
 
-<script type='text/javascript' src="_utils.js"></script>
+<script type='text/javascript' src="utils/_utils.js"></script>
 <script>
     var tableElementsInDB;
     $(document).ready(function () {

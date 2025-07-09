@@ -1,6 +1,6 @@
 <?php
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 init_page_serversides("", "x");
 ?>
@@ -11,8 +11,8 @@ init_page_serversides("", "x");
     <title>RB-Berichte</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="iphone_favicon.png"/>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logo/iphone_favicon.png"/>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -172,10 +172,9 @@ dateSelect4Report
     });
 
     function handleReproitDateSelctioN(){
-
         const dateInputr = document.getElementById('dateSelect4Report');
         console.log(dateInputr.value);
-        $.get('pdf_setSession.php', { PDFdatum: dateInputr.value });
+        $.get('PDFs/pdf_setSession.php', { PDFdatum: dateInputr.value });
     }
 
 
@@ -186,12 +185,12 @@ dateSelect4Report
         } else {
             const formattedDate = date || getDate("#dateSelect");
             const reportURLs = {
-                "BAUANGABEN A3": "/pdf_createBauangabenBericht_A3Qeer.php",
-                "BAUANGABEN A3 2": "/pdf_createBauangabenBericht_A3Qeer_1.php",
-                "BAUANGABEN A3 3": "/pdf_createBauangabenBericht_A3Qeer_ohne_Lab_params.php",
-                "BAUANGABEN A3 4": "/pdf_createBauangabenBericht_A3Qeer_PSy.php",
-                "Elem./Raum (w/Bestand)": "/pdf_createRoombookElWithoutBestand.php",
-                "inkl.Elem.Kommentar": "/pdf_createRoombookElWithoutBestandWithComments.php"
+                "BAUANGABEN A3": "/PDFs/pdf_createBauangabenBericht_A3Qeer.php",
+                "BAUANGABEN A3 2": "/PDFs/pdf_createBauangabenBericht_A3Qeer_1.php",
+                "BAUANGABEN A3 3": "/PDFs/pdf_createBauangabenBericht_A3Qeer_ohne_Lab_params.php",
+                "BAUANGABEN A3 4": "/PDFs/pdf_createBauangabenBericht_A3Qeer_PSy.php",
+                "Elem./Raum (w/Bestand)": "/PDFs/pdf_createRoombookElWithoutBestand.php",
+                "inkl.Elem.Kommentar": "/PDFs/pdf_createRoombookElWithoutBestandWithComments.php"
             };
 
             if (reportURLs[reportType]) {
@@ -333,7 +332,7 @@ dateSelect4Report
         if (roomIDs.length === 0) {
             alert("Kein Raum ausgewählt!");
         } else {
-            window.open(`/${link}.php?roomID=${roomIDs.join(',')}`);
+            window.open(`/PDFs/${link}.php?roomID=${roomIDs.join(',')}`);
         }
     }
 </script>
