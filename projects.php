@@ -156,49 +156,67 @@
                 <div class='card-header'> Updates
                 </div>
                 <div class='card-body'>
-                    <p>
-                        Auswahl eines
-                        <a href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free" target="_blank">Projekt Icons</a>.
-                    </p>
-                    <p>
-                        <a href="/FeedbackCenter/FeedbackIndex.php" target="_blank">Raumbuch Feedback und Bugreport</a>.
-                    </p>
-                    <p>
-                        <a href="roombookBesprechungsansicht.php" target="_blank"> Besprechungsansicht </a>.
-                    </p>
+                    <div class="row">
+                        <p>
+                            <i class="fas fa-american-sign-language-interpreting col-1"></i> Auswahl eines
+                            <a class="col-11" href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free"
+                               target="_blank">Projekt Icons</a>.
+                        </p>
+                        <!-- p><i class="fas fa-dice"> </i>
+                            <i class="fas fa-book-dead"> </i>
+                            <i class="fas fa-ring"> </i>
+                            <i class="fas fa-dove"></i>
+                            <i class="fab fa-jedi-order"></i>
+                            <i class="fas fa-award"></i>
+                            <i class="fas fa-bomb"></i>
+                            <i class="fas fa-pastafarianism"></i>
+                            </p-->
+                        <p>
+                            <i class="far fa-comments col-1"></i> Raumbuch <a class="col-11"
+                                                                              href="/FeedbackCenter/FeedbackIndex.php"
+                                                                              target="_blank">Feedback und Bugreport</a>.
+                        </p>
+                        <p>
+                            <i class="fas fa-user-md col-1"></i> <a class="col-11"
+                                                                    href="roombookBesprechungsansicht.php"
+                                                                    target="_blank"> Besprechungsansicht </a>.
+                        </p>
+                    </div>
+
                 </div>
             </div>
         </div>
 
-    </div>
-    <div class='mt-2 row'>
-        <div class='col-xxl-10'>
-            <div class='card'>
-                <div class='card-header d-inline-flex' id='vermerkPanelHead'>
-                    <div class='col-10'>
-                        <form class='form-check form-check-inline'>
-                            <label class='form-check-label' for='vermerkeFilter'>Vermerke im Projekt</label>
-                            <select class='form-check-inline' id='vermerkeFilter'
-                                <?php if ($_SESSION["projectName"] == "") {
-                                    echo " style='display:none'";
-                                } ?>
-                            >
-                                <option value=0 selected>Alle Vermerke</option>
-                                <option value=1>Bearbeitung offen</option>
-                            </select>
-                        </form>
+        </d
+        <iv>
+            <div class='mt-2 row'>
+                <div class='col-xxl-10'>
+                    <div class='card'>
+                        <div class='card-header d-inline-flex' id='vermerkPanelHead'>
+                            <div class='col-10'>
+                                <form class='form-check form-check-inline'>
+                                    <label class='form-check-label' for='vermerkeFilter'>Vermerke im Projekt</label>
+                                    <select class='form-check-inline' id='vermerkeFilter'
+                                        <?php if ($_SESSION["projectName"] == "") {
+                                            echo " style='display:none'";
+                                        } ?>
+                                    >
+                                        <option value=0 selected>Alle Vermerke</option>
+                                        <option value=1>Bearbeitung offen</option>
+                                    </select>
+                                </form>
+                            </div>
+                            <div class='col-2'>
+                                <div id='newSearchLocation' class='d-flex justify-content-end'></div>
+                            </div>
+                        </div>
+                        <div class='card-body px-1 py-1' id='vermerke'>
+                            <div class='row' id='projectVermerke'></div>
+                        </div>
                     </div>
-                    <div class='col-2'>
-                        <div id='newSearchLocation' class='d-flex justify-content-end'></div>
-                    </div>
-                </div>
-                <div class='card-body px-1 py-1' id='vermerke'>
-                    <div class='row' id='projectVermerke'></div>
                 </div>
             </div>
-        </div>
     </div>
-</div>
 </body>
 
 <!--suppress ES6ConvertVarToLetConst -->

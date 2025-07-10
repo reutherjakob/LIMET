@@ -1,21 +1,47 @@
 <?php
-if (!function_exists('utils_connect_sql')) {
-    include "../utils/_utils.php";
-}
-check_login();
-
-
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+require_once 'FeedbackModel.php';
 require_once 'FeedbackController.php';
 
-$action = $_GET['action'] ?? 'index';
 $controller = new FeedbackController();
 
-if (method_exists($controller, $action)) {
-    $controller->$action();
-} else {
-    $controller->index();
+$action = $_GET['action'] ?? null;
+
+switch ($action) {
+case 'addFeature':
+$controller->addFeature();
+break;
+case 'addBug':
+$controller->addBug();
+break;
+case 'voteFeature':
+$controller->voteFeature();
+break;
+case 'voteBug':
+$controller->voteBug();
+break;
+case 'deleteFeature':
+$controller->deleteFeature();
+break;
+case 'deleteBug':
+$controller->deleteBug();
+break;
+default:
+$controller->index();
+break;
 }
 
+/* Feature Request und Bug Report:
+
+    id (String)
+
+website (String, Pflichtfeld)
+
+    title (String, Pflichtfeld)
+
+    description (String, Pflichtfeld)
+
+    upvotes (Integer, Standard: 0)
+
+    downvotes (Integer, Standard: 0)
+
+    (Bug Report: optional screenshot, optional url) */
