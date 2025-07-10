@@ -149,6 +149,7 @@ class FeedbackModel {
     }
 
     public function deleteFeature($id) {
+
         if (!$id) return "Invalid feature ID.";
         if (file_exists($this->wishlistFile)) {
             $content = file_get_contents($this->wishlistFile);
@@ -168,6 +169,7 @@ class FeedbackModel {
     }
 
     public function deleteBug($id) {
+
         if (!$id) return "Invalid bug report ID.";
         if (file_exists($this->bugReportFile)) {
             $content = file_get_contents($this->bugReportFile);

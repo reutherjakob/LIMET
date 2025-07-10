@@ -105,6 +105,9 @@ init_page_serversides("x");
                                 <div class="accordion-body">
                                     <pre class="mb-2"
                                          style="white-space: pre-wrap; word-break: break-word;"><?= htmlspecialchars($entry['description']) ?></pre>
+                                    Example from your code
+
+                                    php
                                     <form method="post" action="/FeedbackCenter/FeedbackIndex.php?action=deleteFeature"
                                           onsubmit="return confirm('Are you sure you want to delete this feature request?');">
                                         <input type="hidden" name="delete_feature_id"
@@ -113,6 +116,7 @@ init_page_serversides("x");
                                             <i class="fas fa-trash-alt"></i> Delete
                                         </button>
                                     </form>
+
                                 </div>
                             </div>
                         </div>
