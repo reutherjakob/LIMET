@@ -92,9 +92,16 @@ init_page_serversides("x", "x");
 Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen?"></textarea>
                                 </div>
                                 <div class="mb-3 row align-items-center">
-                                    <label for="bug_severity" class="form-label col-3 mb-0"></label>
-                                    <div class="col-6 d-flex justify-content-between">
+                                    <label for="bug_severity" class="form-label col-3 mb-0"> </label>
+
+                                    <div class=" d-flex justify-content-between">
+
                                         <ul class="nav nav-pills" id="severityPills" role="tablist">
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link" disabled type="button">
+                                                    Schwere
+                                                </button>
+                                            </li>
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link " id="critical-pill" data-bs-toggle="pill"
                                                         type="button"
@@ -132,7 +139,7 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen?"></tex
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="bug_screenshot" class="form-label">Screenshot </label>
+                                    <label for="bug_screenshot" class="form-label" hidden>Screenshot </label>
                                     <input type="file" id="bug_screenshot" name="bug_screenshot" class="form-control"
                                            accept="image/*">
                                 </div>
