@@ -9,6 +9,7 @@ if (!isset($_SESSION['elementID']) || !isset($_SESSION['deviceID'])) {
     http_response_code(400);
     echo json_encode(['error' => 'Session variables not set']);
     exit();
+
 }
 
 $elementID = $_SESSION['elementID'];

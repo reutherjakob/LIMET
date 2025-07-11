@@ -31,7 +31,7 @@ class FeedbackController {
             $website = $_POST['bug_website'] ?? '';
             $title = $_POST['bug_title'] ?? '';
             $desc = $_POST['bug_description'] ?? '';
-            $url = $_POST['bug_url'] ?? '';
+            $url = $_POST['bug_severity'] ?? '';
             $file = $_FILES['bug_screenshot'] ?? null;
             $_SESSION['message'] = $this->model->addBug($website, $title, $desc, $file, $url);
             header('Location: FeedbackIndex.php');

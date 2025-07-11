@@ -3,7 +3,11 @@ if (!function_exists('utils_connect_sql')) {
     include "utils/_utils.php";
 }
 init_page_serversides("x");
+
+
+//TODO Fußboden
 ?>
+
 
 <html data-bs-theme="dark" xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
@@ -37,25 +41,26 @@ init_page_serversides("x");
     <div class="card">
         <div class="card-header d-flex align-items-center text-nowrap" id='searchDbCardHeader'>
             <strong>Raumsuche</strong> &emsp;&emsp;&emsp;
-            <!--label for="fieldSelect">Select
-                Field:</label-->
-            <select id="fieldSelect" class="form-select btn btn-outline-dark">
+            <label for="fieldSelect"></label>
+            <select id="fieldSelect" class="form-select w-25">
             </select>
-            <label for="searchInput"> Search String:</label>
-            <input type="text" id="searchInput" class=" form-control btn btn-outline-dark ">
-            <button id="searchButton" class="btn btn-sm btn-primary mt-1 ">Search</button>
+            <label for="searchInput"> </label>
+            <input type="text" id="searchInput" class=" btn bg-white border-secondary" placeholder="Suchbegriff">
+            <button id="searchButton" class="btn btn-sm btn-primary mt-1 ">Suchen</button>
+        </div>
+
+        <div class="card-body" id="cardx">
+            <table id="table_rooms" class="table table-striped table-hover border border-light border-5 display">
+
+            </table>
         </div>
     </div>
-    <div class="card-body" id="cardx">
-        <table id="table_rooms" class="table table-striped table-hover border border-light border-5 display">
-
-        </table>
-    </div>
-
     <div class="card">
         <div class="card d-inline-flex">
-            <header class="card-header">Elemente im Raum <br> <b>!ACHTUNG! Die Kostenberechnung basierend auf den Preisen
-                    des aktiven Projektes! Elemente, die im aktuell gewählten Projekt keinen Preis haben werden nicht abgebildet. Preisbasis ist die des aktive Projektes, etc....</b>
+            <header class="card-header">Elemente im Raum <br> <b>!ACHTUNG! Die Kostenberechnung basierend auf den
+                    Preisen
+                    des aktiven Projektes! Elemente, die im aktuell gewählten Projekt keinen Preis haben werden nicht
+                    abgebildet. Preisbasis ist die des aktive Projektes, etc....</b>
             </header>
             <div class="card-body" id="additionalInfo">
                 <p id="roomElements"></p>
@@ -234,7 +239,7 @@ init_page_serversides("x");
         {data: 'HT_Waermeabgabe_W', title: 'Wärmeabgabe[W]', xvisible: false, case: ""},
 //    //ET
         {data: 'Anwendungsgruppe', title: 'Raum Gruppe', xvisible: false},
-//    {data: 'Fussboden OENORM B5220', title: 'B5220', xvisible: false},
+        {data: 'Fussboden OENORM B5220', title: 'B5220', xvisible: false},
         {data: 'AV', title: 'AV', xvisible: false, case: "bit"},
         {data: 'SV', title: 'SV', xvisible: false, case: "bit"},
         {data: 'ZSV', title: 'ZSV', xvisible: false, case: "bit"},

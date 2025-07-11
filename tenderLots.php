@@ -25,6 +25,7 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker3.min.css">
     <script type='text/javascript'
             src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+
     <!--Bootstrap Toggle -->
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
@@ -40,7 +41,9 @@ if (!function_exists('utils_connect_sql')) {
 include "utils/_format.php";
 init_page_serversides();
 ?>
-<div id="limet-navbar"></div> <!-- Container für Navbar -->
+
+<div id="limet-navbar"></div>
+
 <div class="container-fluid">
 
     <div class='row'>
@@ -50,8 +53,11 @@ init_page_serversides();
                     <div class="d-inline-flex align-items-center">
                         <span> <strong>Lose im Projekt</strong>  &emsp;</span>
 
-                        <button type='button' id='addTenderLotModalButton' class='btn btn-outline-success btn-sm me-2 ms-2 '
-                                value='Los hinzufügen' data-bs-toggle='modal' data-bs-target='#addTenderLotModal'>    <i class="fa fa-plus" aria-hidden="true"></i> Los hinzufügen </button>
+                        <button type='button' id='addTenderLotModalButton'
+                                class='btn btn-outline-success btn-sm me-2 ms-2 '
+                                value='Los hinzufügen' data-bs-toggle='modal' data-bs-target='#addTenderLotModal'><i
+                                    class="fa fa-plus" aria-hidden="true"></i> Los hinzufügen
+                        </button>
                     </div>
                     <div class="d-inline-flex align-items-center" id="LoseCardHeaderSub">
                         <button type='button' class='btn btn-outline-secondary btn-sm' id='createTenderListPDF'>
@@ -61,7 +67,8 @@ init_page_serversides();
                                 id='createTenderListWithoutElementsPDF'>
                             <i class='far fa-file-pdf'></i> Losliste-PDF
                         </button>
-                        <button type='button' class='btn btn-outline-secondary btn-sm me-2 ms-2 ' id='createTenderWorkflowPDF'>
+                        <button type='button' class='btn btn-outline-secondary btn-sm me-2 ms-2 '
+                                id='createTenderWorkflowPDF'>
                             <i class='far fa-file-pdf'></i> Workflow-PDF
                         </button>
 
@@ -263,6 +270,7 @@ init_page_serversides();
     </div>
 </div>
 
+</body>
 <!-- Modal zum Anlegen eines Loses-->
 <div class='modal fade' id='addTenderLotModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
@@ -360,7 +368,8 @@ init_page_serversides();
             <div class='modal-footer'>
                 <input type='button' id='addTenderLot' class='btn btn-success btn-sm' value='Hinzufügen'>
                 <input type='button' id='saveTenderLot' class='btn btn-warning btn-sm' value='Speichern'>
-                <button type='button' class='btn btn-outline-secondary btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
+                <button type='button' class='btn btn-outline-secondary btn-sm' data-bs-dismiss='modal'>Abbrechen
+                </button>
             </div>
         </div>
     </div>
@@ -385,163 +394,169 @@ init_page_serversides();
 </div>
 
 
-</body>
-
 <script src="utils/_utils.js"></script>
 <!--suppress ES6ConvertVarToLetConst -->
-<script charset="utf-8" type="module">
+<script charset="utf-8">
+    let excelFilename;
     var lotID;
     var lotVerfahren;
     var tableTenderLots;
+
     $(document).ready(function () {
-        tableTenderLots = new DataTable('#tableTenderLots', {
-            columnDefs: [
-                {
-                    targets: [0, 14, 15, 16, 17, 18, 22, 23, 24],
-                    visible: false,
-                    searchable: false
-                }
-            ],
-            select: true,
-            search: {search: ''},
-            paging: true,
-            searching: true,
-            info: true,
-            order: [[2, 'asc']],
-            pagingType: 'simple',
-            lengthChange: true,
-            pageLength: 10,
-            language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
-                decimal: ',',
-                thousands: '.',
-                searchPlaceholder: 'Suche..',
-                search: ""
-            },
-            buttons: [
-                {
-                    extend: 'excel',
-                    className: "btn btn-outline-secondary bg-white fas fa-file-excel me-2 ms-2 ",
-                    exportOptions: {
-                        columns: function (idx) {
-                            return idx !== 0 &&
-                                idx !== 1 &&
-                                idx !== 9 &&
-                                idx !== 10 &&
-                                idx !== 11 &&
-                                idx !== 12 &&
-                                idx !== 13 &&
-                                idx !== 20 &&
-                                idx !== 22 &&
-                                idx !== 23 &&
-                                idx !== 24;
+
+        getExcelFilename("Lose-im_Projekt")
+            .then(filename => {
+                console.log('Generated filename:', filename);
+                excelFilename = filename;
+                tableTenderLots = new DataTable('#tableTenderLots', {
+                    columnDefs: [
+                        {
+                            targets: [0, 14, 15, 16, 17, 18, 22, 23, 24],
+                            visible: false,
+                            searchable: false
                         }
+                    ],
+                    select: true,
+                    search: {search: ''},
+                    paging: true,
+                    searching: true,
+                    info: true,
+                    order: [[2, 'asc']],
+                    pagingType: 'simple',
+                    lengthChange: true,
+                    pageLength: 10,
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                        decimal: ',',
+                        thousands: '.',
+                        searchPlaceholder: 'Suche..',
+                        search: ""
+                    },
+                    buttons: [
+                        {
+                            extend: 'excel',
+                            className: "btn btn-success fas fa-file-excel me-2 ms-2 ",
+                            title: excelFilename,
+                            exportOptions: {
+                                columns: function (idx) {
+                                    return idx !== 0 &&
+                                        idx !== 1 &&
+                                        idx !== 9 &&
+                                        idx !== 10 &&
+                                        idx !== 11 &&
+                                        idx !== 12 &&
+                                        idx !== 13 &&
+                                        idx !== 20 &&
+                                        idx !== 22 &&
+                                        idx !== 23 &&
+                                        idx !== 24;
+                                }
+                            }
+                        }
+                    ],
+                    layout: {
+                        topStart: null,
+                        topEnd: null,
+                        bottomStart: 'info',
+                        bottomEnd: ['pageLength', 'paging', 'search', 'buttons']
+                    },
+                    initComplete: function () {
+                        let sourceElements = document.getElementsByClassName("dt-buttons");
+                        let targetElement = document.getElementById("LoseCardHeaderSub");
+                        Array.from(sourceElements).forEach(function (element) {
+                            targetElement.appendChild(element);
+                        });
+
+                        const button = document.querySelector(".dt-buttons");
+                        if (button) {
+                            button.classList.remove("dt-buttons");
+                        }
+
+                        $('.dt-search label').remove();
+                        $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-secondary").appendTo('#LoseCardHeaderSub');
                     }
-                }
-            ],
-            layout: {
-                topStart: null,
-                topEnd: null,
-                bottomStart: 'info',
-                bottomEnd: ['pageLength', 'paging', 'search', 'buttons']
-            },
-            initComplete: function () {
-                let sourceElements = document.getElementsByClassName("dt-buttons");
-                let targetElement = document.getElementById("LoseCardHeaderSub");
-                Array.from(sourceElements).forEach(function (element) {
-                    targetElement.appendChild(element);
                 });
 
-                const button = document.querySelector(".dt-buttons");
-                if (button) {
-                    button.classList.remove("dt-buttons");
-                }
+                $('#tableTenderLots tbody').on('click', 'tr', function () {
+                    if ($.fn.DataTable.isDataTable('#tableLotElements1')) {
+                    }
+                    lotID = tableTenderLots.row($(this)).data()[0];
 
-                $('.dt-search label').remove();
-                $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-secondary").appendTo('#LoseCardHeaderSub');
-            }
-        });
+                    let lotVerfahren1 = tableTenderLots.row($(this)).data()[5];
 
-        $('#tableTenderLots tbody').on('click', 'tr', function () {
-            if ($.fn.DataTable.isDataTable('#tableLotElements1')) {
-            }
-            lotID = tableTenderLots.row($(this)).data()[0];
+                    if (lotVerfahren1 === "MKF") {
+                        $('#lotMKF').bootstrapToggle('enable');
+                        $('#lotMKF').bootstrapToggle('on');
+                        $('#lotMKF').bootstrapToggle('disable');
+                        $("#lotMKFOf").prop('disabled', true);
+                    } else {
+                        $('#lotMKF').bootstrapToggle('enable');
+                        $('#lotMKF').bootstrapToggle('off');
+                        $('#lotMKF').bootstrapToggle('disable');
+                    }
 
-            let lotVerfahren1 = tableTenderLots.row($(this)).data()[5];
+                    document.getElementById("lotNr").value = tableTenderLots.row($(this)).data()[2];
+                    document.getElementById("lotName").value = tableTenderLots.row($(this)).data()[3];
+                    document.getElementById("lotLVSend").value = tableTenderLots.row($(this)).data()[4];
+                    document.getElementById("lotStart").value = tableTenderLots.row($(this)).data()[5];
+                    document.getElementById("lotVerfahren").value = tableTenderLots.row($(this)).data()[6];
+                    document.getElementById("lotLVBearbeiter").value = tableTenderLots.row($(this)).data()[7];
+                    document.getElementById("kostenanschlag").value = tableTenderLots.row($(this)).data()[11].replace(/\./g, '');
 
-            if (lotVerfahren1 === "MKF") {
-                $('#lotMKF').bootstrapToggle('enable');
-                $('#lotMKF').bootstrapToggle('on');
-                $('#lotMKF').bootstrapToggle('disable');
-                $("#lotMKFOf").prop('disabled', true);
-            } else {
-                $('#lotMKF').bootstrapToggle('enable');
-                $('#lotMKF').bootstrapToggle('off');
-                $('#lotMKF').bootstrapToggle('disable');
-            }
-
-            document.getElementById("lotNr").value = tableTenderLots.row($(this)).data()[2];
-            document.getElementById("lotName").value = tableTenderLots.row($(this)).data()[3];
-            document.getElementById("lotLVSend").value = tableTenderLots.row($(this)).data()[4];
-            document.getElementById("lotStart").value = tableTenderLots.row($(this)).data()[5];
-            document.getElementById("lotVerfahren").value = tableTenderLots.row($(this)).data()[6];
-            document.getElementById("lotLVBearbeiter").value = tableTenderLots.row($(this)).data()[7];
-            document.getElementById("kostenanschlag").value = tableTenderLots.row($(this)).data()[11].replace(/\./g, '');
-
-            document.getElementById("budget").value = tableTenderLots.row($(this)).data()[12].replace(/\./g, '');
-            document.getElementById("lotSum").value = tableTenderLots.row($(this)).data()[13].replace(/\./g, '');
+                    document.getElementById("budget").value = tableTenderLots.row($(this)).data()[12].replace(/\./g, '');
+                    document.getElementById("lotSum").value = tableTenderLots.row($(this)).data()[13].replace(/\./g, '');
 
 
-            const htmlString = tableTenderLots.row($(this)).data()[8];
-            const textContent = htmlString.replace(/<[^>]*>/g, '');
+                    const htmlString = tableTenderLots.row($(this)).data()[8];
+                    const textContent = htmlString.replace(/<[^>]*>/g, '');
 
-            let selectedValue;
-            switch (textContent) {
-                case 'Offen':
-                    selectedValue = 0;
-                    break;
-                case 'Fertig':
-                    selectedValue = 1;
-                    break;
-                case 'Wartend':
-                    selectedValue = 2;
-                    break;
-                default:
-                    selectedValue = 0; // Default to 'Offen' if not recognized
-            }
+                    let selectedValue;
+                    switch (textContent) {
+                        case 'Offen':
+                            selectedValue = 0;
+                            break;
+                        case 'Fertig':
+                            selectedValue = 1;
+                            break;
+                        case 'Wartend':
+                            selectedValue = 2;
+                            break;
+                        default:
+                            selectedValue = 0; // Default to 'Offen' if not recognized
+                    }
 
-            document.getElementById("lotVergabe").value = selectedValue;
-            const selectElement = document.getElementById("lotVergabe");
-            for (let i = 0; i < selectElement.options.length; i++) {
-                if (selectElement.options[i].value === selectedValue) {
-                    selectElement.options[i].selected = true;
-                    break;
-                }
-            }
-            document.getElementById("lotAuftragnehmer").value = tableTenderLots.row($(this)).data()[18];
-            document.getElementById("lotNotice").value = tableTenderLots.row($(this)).data()[21];
+                    document.getElementById("lotVergabe").value = selectedValue;
+                    const selectElement = document.getElementById("lotVergabe");
+                    for (let i = 0; i < selectElement.options.length; i++) {
+                        if (selectElement.options[i].value === selectedValue) {
+                            selectElement.options[i].selected = true;
+                            break;
+                        }
+                    }
+                    document.getElementById("lotAuftragnehmer").value = tableTenderLots.row($(this)).data()[18];
+                    document.getElementById("lotNotice").value = tableTenderLots.row($(this)).data()[21];
 
-            document.getElementById("lotMKFOf").value = tableTenderLots.row($(this)).data()[24]; //TODO ??
-            $.ajax({
-                url: "getLotVermerke.php",
-                data: {"lotID": lotID},
-                type: "GET",
-                success: function (data) {
-                    $("#lotVermerke").html(data);
+                    document.getElementById("lotMKFOf").value = tableTenderLots.row($(this)).data()[24]; //TODO ??
                     $.ajax({
-                        url: "getTenderLotElements.php",
+                        url: "getLotVermerke.php",
                         data: {"lotID": lotID},
                         type: "GET",
                         success: function (data) {
-                            $("#elementsInLot").html(data);
-                            $("#elementBestand").hide();
-                            $("#elementsvariantenParameterInLot").hide();
+                            $("#lotVermerke").html(data);
+                            $.ajax({
+                                url: "getTenderLotElements.php",
+                                data: {"lotID": lotID},
+                                type: "GET",
+                                success: function (data) {
+                                    $("#elementsInLot").html(data);
+                                    $("#elementBestand").hide();
+                                    $("#elementsvariantenParameterInLot").hide();
+                                }
+                            });
                         }
                     });
-                }
+                });
             });
-
-        });
 
         $('#lotLVSend').datepicker({
             format: "yyyy-mm-dd",
@@ -615,7 +630,7 @@ init_page_serversides();
             .catch(error => {
                 console.error('Error:', error);
             });
-       // window.location.replace("tenderLots.php");
+        // window.location.replace("tenderLots.php");
     }
 
 
@@ -789,9 +804,5 @@ init_page_serversides();
         $('#lotVermerke').toggleClass('d-none');
         $(this).find('i').toggleClass('fa-chevron-right fa-chevron-left');
     });
-
-
 </script>
-
-
 </html>

@@ -43,11 +43,17 @@ function move_item(item2move_id, where2move_id) {
     }
 }
 
-//  function move_item_by_class(sourceClass, targetId) {
-//      let sourceElements = document.getElementsByClassName(sourceClass);
-//      let targetElement = document.getElementById(targetId);
-//      Array.from(sourceElements).forEach(function (element) {
-//          targetElement.appendChild(element);
-//      });
-//  }
 
+async function getExcelFilename(documentName, options = {}) {
+    // Prepare form data
+    const formData = new URLSearchParams({ documentName, ...options });
+
+    // Fetch filename from backend
+    const response = await fetch('get_excel_filename.php', {
+        method: 'POST',
+        body: formData
+    });
+    if (!response.ok) throw new Error('Network response was not ok');
+    const data = await response.json();
+    return data.filename;
+}

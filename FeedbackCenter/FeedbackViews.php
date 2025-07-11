@@ -21,14 +21,14 @@ init_page_serversides("x", "x");
 <div id="limet-navbar"></div>
 <div class="container py-5">
 
-            <div class="row">
-                <div class="col-lg-8 mx-auto">
-                    <h1 class="mb-4 text-center"><i class="fas fa-comments"></i> Feedback Center</h1>
-                    <?php if (!empty($message)): ?>
-                        <div class="alert alert-info"><?= htmlspecialchars($message) ?></div>
-                    <?php endif; ?>
-                    <div class="card">
-                        <div class="card-body">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <h1 class="mb-4 text-center"><i class="fas fa-comments"></i> Feedback Center</h1>
+            <?php if (!empty($message)): ?>
+                <div class="alert alert-info"><?= htmlspecialchars($message) ?></div>
+            <?php endif; ?>
+            <div class="card border-white">
+                <div class="card-body border-white">
                     <ul class="nav nav-tabs mb-4" role="tablist">
                         <li class="nav-item">
                             <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#feature-form"

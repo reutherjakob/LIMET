@@ -232,10 +232,9 @@ $mysqli->close();
                 $iconClass = $Kurzbeschreibung === "" ? "fa fa-comment-slash" : "fa fa-comment";
                 $dataAttr = $Kurzbeschreibung === "" ? "data-description= '' " : "data-description='" . htmlspecialchars($Kurzbeschreibung ?? "", ENT_QUOTES, 'UTF-8') . "'";
                 ?>
-                <button type="button"
-                        class="btn btn-sm <?php echo $buttonClass; ?> comment-btn" <?php echo $dataAttr; ?>
-                        id="<?php echo $row["id"]; ?>" title="Kommentar"><i class="<?php echo $iconClass; ?>"></i>
-                </button>
+                echo " <button type='button'
+                               class='btn btn-sm " . $buttonClass . "comment-btn'" . $dataAttr . " id='" . $row['id'] . "' title='Kommentar'><i class='" . $iconClass . " '></i> $Kurzbeschreibung
+                </button>";
             </td>
 
             <td data-order="history">
@@ -302,7 +301,6 @@ $mysqli->close();
     CustomPopover.init('.comment-btn', {
         onSave: function (trigger, newText) {
             trigger.dataset.description = newText;
-            // send an AJAX request to save the new text
             let id = trigger.id;   // = tabelle_räume_has_tabelle_elemente.id
             $.ajax({
                 url: "saveRoomElementComment.php",
@@ -479,7 +477,7 @@ $mysqli->close();
                 $('#room-action-buttons .xxx').remove();
                 $('#roomElements .dt-search label').remove();
                 $('#roomElements .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx  ms-1 me-1").appendTo('#room-action-buttons');
-                console.log(currentSort);
+
                 $('#tableRoomElements').DataTable().order([currentSort.column, currentSort.dir]).draw();
             }
         });
