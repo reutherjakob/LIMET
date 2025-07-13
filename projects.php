@@ -4,8 +4,8 @@
     <title>RB-Projekte</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="iphone_favicon.png"/>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logo/iphone_favicon.png"/>
     <!-- 13.2.25: Reworked -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
     <?php
     if (!function_exists('utils_connect_sql')) {
-        include "_utils.php";
+        include "utils/_utils.php";
     }
     init_page_serversides("No Redirect");
     include 'projects_changeProjectModal.html';
@@ -47,7 +47,8 @@
         "ZVZ Nord" => "fas fa-teeth-open",
         "KLU-ANGIO-RV-KABEG" => "fas fa-x-ray",
         "Test1" => "fas fa-coffee",
-        "KAGes Labor - LKH2 Süd" => "fas fa-vials"
+        "KAGes Labor - LKH2 Süd" => "fas fa-vials",
+        "KHI" => "fas fa-ambulance"
     ];
     ?>
 
@@ -155,50 +156,67 @@
                 <div class='card-header'> Updates
                 </div>
                 <div class='card-body'>
-                    <p>
-                        Falls Mensch ebenso ein weiteres
-                        <a href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free" target="_blank">Projekt Icon </a>
-                        in dieser Tabelle sehen will.
-                    </p>
-                    <p>
-                        <a href="_tickets4developer.php" target="_blank">Bugreports</a>.
-                    </p>
-                    <p>
-                        <a href="_feature_wishlist.php" target="_blank"> Verbesserungsvorschläge oder Wünsche</a>.
-                    </p>
+                    <div class="row">
+                        <p>
+                            <i class="fas fa-american-sign-language-interpreting col-1"></i> Auswahl eines
+                            <a class="col-11" href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free"
+                               target="_blank">Projekt Icons</a>.
+                        </p>
+                        <!-- p><i class="fas fa-dice"> </i>
+                            <i class="fas fa-book-dead"> </i>
+                            <i class="fas fa-ring"> </i>
+                            <i class="fas fa-dove"></i>
+                            <i class="fab fa-jedi-order"></i>
+                            <i class="fas fa-award"></i>
+                            <i class="fas fa-bomb"></i>
+                            <i class="fas fa-pastafarianism"></i>
+                            </p-->
+                        <p>
+                            <i class="far fa-comments col-1"></i> Raumbuch <a class="col-11"
+                                                                              href="/FeedbackCenter/FeedbackIndex.php"
+                                                                              target="_blank">Feedback und Bugreport</a>.
+                        </p>
+                        <p>
+                            <i class="fas fa-user-md col-1"></i> <a class="col-11"
+                                                                    href="roombookBesprechungsansicht.php"
+                                                                    target="_blank"> Besprechungsansicht </a>.
+                        </p>
+                    </div>
+
                 </div>
             </div>
         </div>
 
-    </div>
-    <div class='mt-2 row'>
-        <div class='col-xxl-10'>
-            <div class='card'>
-                <div class='card-header d-inline-flex' id='vermerkPanelHead'>
-                    <div class='col-10'>
-                        <form class='form-check form-check-inline'>
-                            <label class='form-check-label' for='vermerkeFilter'>Vermerke im Projekt</label>
-                            <select class='form-check-inline' id='vermerkeFilter'
-                                <?php if ($_SESSION["projectName"] == "") {
-                                    echo " style='display:none'";
-                                } ?>
-                            >
-                                <option value=0 selected>Alle Vermerke</option>
-                                <option value=1>Bearbeitung offen</option>
-                            </select>
-                        </form>
+        </d
+        <iv>
+            <div class='mt-2 row'>
+                <div class='col-xxl-10'>
+                    <div class='card'>
+                        <div class='card-header d-inline-flex' id='vermerkPanelHead'>
+                            <div class='col-10'>
+                                <form class='form-check form-check-inline'>
+                                    <label class='form-check-label' for='vermerkeFilter'>Vermerke im Projekt</label>
+                                    <select class='form-check-inline' id='vermerkeFilter'
+                                        <?php if ($_SESSION["projectName"] == "") {
+                                            echo " style='display:none'";
+                                        } ?>
+                                    >
+                                        <option value=0 selected>Alle Vermerke</option>
+                                        <option value=1>Bearbeitung offen</option>
+                                    </select>
+                                </form>
+                            </div>
+                            <div class='col-2'>
+                                <div id='newSearchLocation' class='d-flex justify-content-end'></div>
+                            </div>
+                        </div>
+                        <div class='card-body px-1 py-1' id='vermerke'>
+                            <div class='row' id='projectVermerke'></div>
+                        </div>
                     </div>
-                    <div class='col-2'>
-                        <div id='newSearchLocation' class='d-flex justify-content-end'></div>
-                    </div>
-                </div>
-                <div class='card-body px-1 py-1' id='vermerke'>
-                    <div class='row' id='projectVermerke'></div>
                 </div>
             </div>
-        </div>
     </div>
-</div>
 </body>
 
 <!--suppress ES6ConvertVarToLetConst -->

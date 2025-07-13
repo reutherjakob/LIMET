@@ -1,5 +1,5 @@
 <?php
-include "_utils.php";
+include "utils/_utils.php";
 check_login();
 $projectID = $_SESSION["projectID"] ?? 75;
 
@@ -7,6 +7,7 @@ header("Content-Type: text/html; charset=UTF-8");
 
 // Accept multiple raumbereiche as array
 $raumbereiche = $_POST['raumbereich'] ?? [];
+error_log(print_r($_POST['raumbereich'], true));
 if (!is_array($raumbereiche)) $raumbereiche = [$raumbereiche];
 
 $mtRelevant = isset($_POST["mtRelevant"]) ? intval($_POST["mtRelevant"]) : 0;
@@ -39,6 +40,9 @@ if ($entfallen) {
     $sqlRooms .= " AND (`Entfallen` IS NULL OR `Entfallen` = 0)";
 }
 $sqlRooms .= " ORDER BY Raumnr";
+
+error_log("Types: $types");
+error_log("Params: " . print_r($params, true));
 
 $stmt = $conn->prepare($sqlRooms);
 $stmt->bind_param($types, ...$params);
@@ -92,7 +96,7 @@ $sql = "
       AND re.Standort = 1
       AND r.idTABELLE_Räume IN ($roomPlaceholders)
     GROUP BY e.ElementID, e.Bezeichnung, r.idTABELLE_Räume
-    ORDER BY e.ElementID, r.Raumnr
+    ORDER BY e.ElementID 
 ";
 
 // Build parameter types and values for the pivot query
@@ -138,39 +142,58 @@ if ($ohneLeereElemente) {
 }
 
 // --- 4. Ausgabe: Pivot-Tabelle ---
+echo '<table class="table compact table-striped table-hover" id="pivotTable">';
+
 if ($transponiert) {
-    echo '<table class="table table-sm table-striped table-hover border border-light border-5" id="pivotTable">';
-    echo '<thead><tr><th>Raum</th>';
+    echo '<thead><tr><th>Raum</th><th>Summe</th>';
     foreach ($pivot as $eid => $data) {
-        echo '<th>' . htmlspecialchars($eid . ' ' . $data["Bezeichnung"]) . '</th>';
+        echo '<th class="rotate"><div> ' . htmlspecialchars($eid . ' ' . $data["Bezeichnung"]) . '</div></th>';
     }
     echo '</tr></thead><tbody>';
     foreach ($rooms as $rid => $rlabel) {
         echo '<tr>';
         echo '<td>' . htmlspecialchars($rlabel) . '</td>';
+
+        // Summe berechnen
+        $sum = 0;
+        foreach ($pivot as $eid => $data) {
+            $val = $data["Räume"][$rid] ?? 0;
+            $sum += intval($val);
+        }
+        echo '<td>' . $sum . '</td>';
+
         foreach ($pivot as $eid => $data) {
             $val = $data["Räume"][$rid] ?? "";
             echo '<td>' . htmlspecialchars($val) . '</td>';
         }
         echo '</tr>';
     }
-    echo '</tbody></table>';
+
 } else {
-    echo '<table class="table table-sm table-striped table-hover border border-light border-5" id="pivotTable">';
-    echo '<thead><tr><th>Element</th>';
+    echo '<thead><tr><th>Element</th><th>Summe</th>';
     foreach ($rooms as $rid => $rlabel) {
-        echo '<th>' . htmlspecialchars($rlabel) . '</th>';
+        echo '<th class="rotate"><div>' . htmlspecialchars($rlabel) . '</div></th>';
     }
     echo '</tr></thead><tbody>';
     foreach ($pivot as $eid => $data) {
         echo '<tr>';
         echo '<td>' . htmlspecialchars($eid . ' ' . $data["Bezeichnung"]) . '</td>';
+
+        // Summe berechnen
+        $sum = 0;
+        foreach ($rooms as $rid => $rlabel) {
+            $val = $data["Räume"][$rid] ?? 0;
+            $sum += intval($val);
+        }
+        echo '<td>' . $sum . '</td>';
+
         foreach ($rooms as $rid => $rlabel) {
             $val = $data["Räume"][$rid] ?? "";
             echo '<td>' . htmlspecialchars($val) . '</td>';
         }
         echo '</tr>';
     }
-    echo '</tbody></table>';
+
 }
+echo '</tbody></table>';
 ?>

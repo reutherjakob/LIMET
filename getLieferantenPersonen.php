@@ -84,7 +84,7 @@ if(!isset($_SESSION["username"]))
 	
 ?>
     <!-- Modal zum Anlegen eines Firmenkontakts -->
-	  <div class='modal fade' id='addContactModal' role='dialog'>
+	  <div class='modal fade' id='addContactModal' role='dialog' tabindex="-1">
 	    <div class='modal-dialog modal-md'>
 	    
 	      <!-- Modal content-->

@@ -1,6 +1,6 @@
 <?php
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 init_page_serversides();
 ?>
@@ -10,8 +10,8 @@ init_page_serversides();
     <title>RB-Kostenänderungen</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="iphone_favicon.png">
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logo/iphone_favicon.png">
     <!-- Rework 2025 CDNs -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -111,7 +111,7 @@ init_page_serversides();
     </div>
 
     <!-- Modal zum Zeigen der Kostenänderungen -->
-    <div class='modal fade' id='getElementPriceHistoryModal' role='dialog'>
+    <div class='modal fade' id='getElementPriceHistoryModal' role='dialog' tabindex="-1">
         <div class='modal-dialog modal-xl'>
             <div class='modal-content'>
                 <div class='modal-header'>

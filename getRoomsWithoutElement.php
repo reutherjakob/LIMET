@@ -1,7 +1,7 @@
 <!-- 17.2.25: Reworked -->
 <?php
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 check_login();
 ?>
@@ -60,7 +60,7 @@ $mysqli->close();
 ?>
 
 <!-- Modal zum Kopieren der Elemente -->
-<div class='modal fade' id='addElementsToRoomModal' role='dialog'>
+<div class='modal fade' id='addElementsToRoomModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-lg'>
 
         <div class='modal-content'>

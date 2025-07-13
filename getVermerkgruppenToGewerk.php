@@ -106,7 +106,7 @@ if(!isset($_SESSION["username"]))
             else {
                 table.$('tr.info').removeClass('info');
                 $(this).addClass('info');
-                $('#pdfPreview').attr('src','/pdf_createVermerkGroupPDF.php?gruppenID='+table.row( $(this) ).data()[0]);
+                $('#pdfPreview').attr('src','PDFs/pdf_createVermerkGroupPDF.php?gruppenID='+table.row( $(this) ).data()[0]);
             }
         });
     });  

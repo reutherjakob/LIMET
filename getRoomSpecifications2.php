@@ -1,7 +1,7 @@
 <?php
 // V2.0: 2024-11-29, Reuther & Fux
 session_start();
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {  include "utils/_utils.php"; }
 check_login();
 ?>
 
@@ -68,7 +68,7 @@ check_login();
             </div>      </form>";
 
         echo " <!-- Modal zum Kopieren der Bauangaben -->
-        <div class='modal fade' id='BauangabenModal' role='dialog'>
+        <div class='modal fade' id='BauangabenModal' role='dialog' tabindex='-1'>
           <div class='modal-dialog modal-xl'>
             <!-- Modal content--> 
             <div class='modal-content'>

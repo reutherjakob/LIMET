@@ -7,7 +7,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css">
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
 
     <!-- Rework 2025 CDNs -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -39,17 +39,17 @@
         <div id="CB1" class="card-body table-responsive">
             <?php
             if (!function_exists('utils_connect_sql')) {
-                include "_utils.php";
+                include "utils/_utils.php";
             }
             init_page_serversides("x");
             $mysqli = utils_connect_sql();
-            $sql = "SELECT 
+            $sql = "SELECT   
+                tabelle_elemente.Bezeichnung as Elementbezeichnung,
                     tabelle_geraete.GeraeteID, 
                     tabelle_hersteller.Hersteller, 
                     tabelle_geraete.Typ, 
                     tabelle_geraete.Kurzbeschreibung, 
-                    tabelle_geraete.idTABELLE_Geraete,  
-                    tabelle_elemente.Bezeichnung as Elementbezeichnung
+                    tabelle_geraete.idTABELLE_Geraete
                 FROM 
                     tabelle_geraete
                 INNER JOIN 
@@ -92,7 +92,7 @@
 </div>
 
 <!-- Modal zum Anlegen eines Gerätes -->
-<div class='modal fade' id='changeDeviceModal' role='dialog'>
+<div class='modal fade' id='changeDeviceModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
         <div class='modal-content'>
             <div class='modal-header'>
@@ -144,7 +144,7 @@
 </div>
 
 <!-- Modal zum Anlegen eines Herstellers -->
-<div class='modal fade' id='addManufacturerModal' role='dialog'>
+<div class='modal fade' id='addManufacturerModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-sm'>
         <div class='modal-content'>
             <div class='modal-header'>
@@ -165,7 +165,7 @@
     </div>
 </div>
 
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 <script>
     let table;
     let deviceID;
@@ -177,7 +177,7 @@
             paging: true,
             pageLength: 25,
             columnDefs: [{
-                targets: [4],
+                targets: [5],
                 visible: false,
                 searchable: false
             }],

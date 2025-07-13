@@ -1,5 +1,5 @@
 <?php
-include "_utils.php";
+include "utils/_utils.php";
 check_login();
 init_page_serversides("", "x");
 $projectID = $_SESSION["projectID"] ?? 75; // Fallback für Demo
@@ -44,6 +44,27 @@ $stmt->close();
             background-color: #000;
             border-color: #000;
         }
+
+        /* Rotates header text by 90 degrees and aligns it nicely -> BROKEN
+        th.rotate > div {
+            transform: rotate(-90deg);
+            white-space: nowrap;
+            width: 20px;
+            height: 120px; /
+            margin: auto;
+            text-align: left;
+            vertical-align: bottom;
+
+            font-size: 0.85em;
+        }
+
+        th.rotate {
+            vertical-align: bottom !important;
+            height: 120px;
+            padding: 0;
+        }
+        */
+
     </style>
 
 </head>
@@ -62,7 +83,6 @@ $stmt->close();
                                 <option value="<?= htmlspecialchars($option) ?>"><?= htmlspecialchars($option) ?></option>
                             <?php endforeach; ?>
                         </select>
-
 
                     </div>
                     <div class="card-body">
@@ -109,13 +129,17 @@ $stmt->close();
 </div>
 
 <div class="col-lg-10 mx-auto" id="tableCardCol">
-    <div class="card">
-        <div class="card-header d-flex align-items-center">
-            <button class="btn btn-outline-dark fa fa-arrow-left" id="ToggleCard"></button>
-            <div class="d-flex align-items-center justify-content-end float-end"
-                 id="CardHeaderHoldingDatatableManipulators"></div>
-        </div>
 
+    <div class="card">
+        <div class="card-header d-flex align-items-start" style=" height: 55px; ">
+            <button class="btn btn-outline-dark fa fa-arrow-left" id="ToggleCard"></button>
+            <div class="row d-inline-flex align-items-start w-100">
+                <div class=" col-6   d-flex                   align-items-start"
+                     id="CardHeaderHoldingDatatableManipulators"></div>
+                <div class=" col-6 d-flex justify-content-end  align-items-start"
+                     id="CardHeaderHoldingDatatableManipulators2"></div>
+            </div>
+        </div>
         <div class="card-body p-0">
             <div id="pivotTableContainer">
                 <!-- Die Pivot-Tabelle wird hier per AJAX geladen -->
@@ -123,9 +147,16 @@ $stmt->close();
         </div>
     </div>
 </div>
+<script src="utils/_utils.js">
 
+</script>
 <script>
     $(document).ready(function () {
+
+
+        let excelfilename;
+
+
         $('#raumbereich').select2({placeholder: "Raumbereich wählen"});
 
 
@@ -172,6 +203,7 @@ $stmt->close();
                 $('#pivotTableContainer').html('<div class="alert alert-info">Bitte wählen Sie mindestens einen Raumbereich.</div>');
                 return;
             }
+            console.log(raumbereich);
             let hideZeros = $('#hideZeros').is(':checked');
 
 
@@ -179,7 +211,7 @@ $stmt->close();
                 url: 'pivot_table_ajax.php',
                 method: 'POST',
                 data: {
-                    raumbereich: raumbereich, // This will be sent as an array
+                    'raumbereich[]': raumbereich, // This will be sent as an array
                     mtRelevant,
                     entfallen,
                     nurMitElementen,
@@ -188,64 +220,95 @@ $stmt->close();
                 },
                 traditional: true, // Important for sending arrays with jQuery
                 success: function (data) {
-                    $('#pivotTableContainer').html(data);
+                    let raumbereichJoined = raumbereich
+                        .map(r => r.replace(/ /g, '_'))
+                        .join('_');
+                    getExcelFilename('Elemente-je-Raumbereich_' + raumbereichJoined)
+                        .then(filename => {
+                            console.log('Generated filename:', filename);
+                            excelfilename = filename;
 
-                    let colCount = $('#pivotTable thead th').length;
 
-                    // Build columns definition for DataTables
-                    let columns = [];
-                    for (let i = 0; i < colCount; i++) {
-                        if (i === 0) {
-                            // First column: Element or Raum, don't change rendering
-                            columns.push(null);
-                        } else if (hideZeros) {
-                            // For all other columns, hide zeros
-                            columns.push({
-                                render: function (data, type, row, meta) {
-                                    return (data === "0" || data === 0) ? "" : data;
+                            $('#pivotTableContainer').html(data);
+                            let colCount = $('#pivotTable thead th').length;
+                            let columns = [];
+                            for (let i = 0; i < colCount; i++) {
+                                if (i === 0) {
+                                    // First column: Element or Raum, don't change rendering
+                                    columns.push(null);
+                                } else if (hideZeros) {
+                                    // For all other columns, hide zeros
+                                    columns.push({
+                                        render: function (data) {
+                                            return (data === "0" || data === 0) ? "" : data;
+                                        }
+                                    });
+                                } else {
+                                    columns.push(null);
+                                }
+                            }
+
+                            $('#pivotTable').DataTable({
+                                language: {
+                                    url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
+                                    search: "",
+                                    searchPlaceholder: "Suche...",
+                                    lengthMenu: '_MENU_',
+                                    info: "_START_-_END_ von _TOTAL_",
+                                    infoEmpty: "Keine Einträge",
+                                    infoFiltered: "(von _MAX_)",
+                                },
+                                scrollX: true,
+                                scrollCollapse: true,
+                                fixedColumns: {start: 1},
+                                fixedHeader: true,
+
+
+                                paging: true,
+                                pagingType: "simple",
+
+                                searching: true,
+                                ordering: true,
+                                info: true,
+                                lengthChange: true,
+                                pageLength: -1,
+                                lengthMenu: [[10, 20, 50, -1], ['10 rows', '20 rows', '50 rows', 'All']],
+                                responsive: false,
+                                autoWidth: true,
+                                columns: columns,
+                                layout: {
+                                    topStart: 'buttons',
+                                    topEnd: 'search',
+                                    bottomStart: 'info',
+                                    bottomEnd: ['pageLength', 'paging']
+                                },
+                                buttons: [
+                                    {
+                                        extend: 'excelHtml5',
+                                        text: '<i class="fas fa-file-excel"></i> Excel',
+                                        className: 'btn btn-success btn-sm',
+                                        title: excelfilename
+                                    }
+                                ],
+                                initComplete: function () {
+                                    $('#CardHeaderHoldingDatatableManipulators').empty();
+                                    $('#CardHeaderHoldingDatatableManipulators2').empty();
+                                    $('#pivotTable_wrapper .dt-buttons').appendTo('#CardHeaderHoldingDatatableManipulators');
+                                    $('#pivotTable_wrapper .dt-search').appendTo('#CardHeaderHoldingDatatableManipulators');
+                                    $('#pivotTable_wrapper .dt-length').appendTo('#CardHeaderHoldingDatatableManipulators2');
+                                    $('#pivotTable_wrapper .dt-info').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
+                                    $('#pivotTable_wrapper .dt-paging').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
+                                    $('.dt-search label').remove();
+                                    $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark");
                                 }
                             });
-                        } else {
-                            columns.push(null);
-                        }
-                    }
-                    $('#pivotTable').DataTable({
-                        language: {
-                            url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
-                            search: "",
-                            searchPlaceholder: "Suche...",
-                        },
-                        paging: true,
-                        searching: true,
-                        ordering: true,
-                        info: true,
-                        lengthChange: true,
-                        pageLength: 50,
-                        lengthMenu: [[10, 20, 50, -1], ['10 rows', '20 rows', '50 rows', 'All']],
-                        responsive: false,
-                        autoWidth: true,
-                        columns: columns,
-                        layout: {
-                            topStart: 'buttons',
-                            topEnd: 'search',
-                            bottomStart: 'info',
-                            bottomEnd: ['pageLength', 'paging']
-                        },
-                        buttons: [
-                            {
-                                extend: 'excelHtml5',
-                                text: '<i class="fas fa-file-excel"></i> Excel',
-                                className: 'btn btn-success btn-sm'
-                            }
-                        ],
-                        initComplete: function () {
-                            let api = this.api();
-                            $('#CardHeaderHoldingDatatableManipulators').empty();
-                            $(api.buttons().container()).appendTo($('#CardHeaderHoldingDatatableManipulators'));
-                            $('.dt-search label').remove();
-                            $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeaderHoldingDatatableManipulators');
-                        }
-                    });
+
+
+                        })
+                        .catch(error => {
+                            console.error('Failed to generate filename:', error);
+                        });
+
 
                 }
             });

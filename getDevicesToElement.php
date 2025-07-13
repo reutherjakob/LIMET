@@ -13,7 +13,7 @@
 <?php
 // V3.0: 2025 Rework: Reuther & Fux
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 check_login();
 $mysqli = utils_connect_sql();
@@ -67,7 +67,7 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
 ?>
 
 
-<div class='modal fade' id='addDeviceModal' role='dialog'>
+<div class='modal fade' id='addDeviceModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
         <!-- Modal content-->
         <div class='modal-content'>
@@ -115,7 +115,7 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
 </div>
 
 <!-- Modal zum Zeigen des Parametervergleichs -->
-<div class='modal fade' id='deviceComparisonModal' role='dialog'>
+<div class='modal fade' id='deviceComparisonModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-lg'>
 
         <!-- Modal content-->
@@ -134,7 +134,7 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
 </div>
 
 <!-- Modal zum Anlegen eines Herstellers -->
-<div class='modal fade' id='addManufacturerModal' role='dialog'>
+<div class='modal fade' id='addManufacturerModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-sm'>
         <!-- Modal content-->
         <div class='modal-content'>

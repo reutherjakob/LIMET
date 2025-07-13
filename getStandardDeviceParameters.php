@@ -8,7 +8,7 @@
 
 <?php
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 check_login();
 
@@ -69,7 +69,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
 
 
 <!-- Modal zum Ändern der Parameter -->
-<div class='modal fade' id='changeDeviceParameters' role='dialog'>
+<div class='modal fade' id='changeDeviceParameters' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable'>
         <div class='modal-content'>
             <div class='modal-header'>
@@ -172,7 +172,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
     </div>
 </div>
 
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 <script>
 
     deviceID = '<?php echo $deviceID; ?>';

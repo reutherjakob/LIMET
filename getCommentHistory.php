@@ -8,7 +8,7 @@
 <!-- Rework 2025 -->
 
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {  include "utils/_utils.php"; }
 check_login();
 $mysqli = utils_connect_sql();
 $sql = "SELECT tabelle_rb_aenderung.Kurzbeschreibung,

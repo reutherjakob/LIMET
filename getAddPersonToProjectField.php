@@ -1,5 +1,5 @@
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {  include "utils/_utils.php"; }
 check_login();
 ?>
 
@@ -145,8 +145,8 @@ $mysqli->close();
 include "modal_addOrganisationAndZustaendigkeit.php";
 ?>
 
-<script src="_utils.js"></script>
-<script src="createNewOrganisationAndZusändigkeit.js"></script>
+<script src="utils/_utils.js"></script>
+<script src="addNewOrganisationAndZusändigkeit.js"></script>
 <script>
     $("input[value='Person zu Projekt hinzufügen']").click(function () {
         let id = this.id;

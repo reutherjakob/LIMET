@@ -1,7 +1,7 @@
 <?php
 // V2.0: 2024-11-28, Reuther & Fux
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 init_page_serversides();
 ?>
@@ -12,8 +12,8 @@ init_page_serversides();
     <title>RB-Gesamtkosten</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="iphone_favicon.png">
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logo/iphone_favicon.png">
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -117,31 +117,31 @@ init_page_serversides();
     </div>
 </div>
 
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 <script>
     var roomBereiche = [];
     var roomBereichGeschosse = [];
     var table;
 
     $("button[value='createKostenOverallPDF']").click(function () {
-        window.open('/pdf_createKostenOverallPDF.php');//there are many ways to do this
+        window.open('PDFs/pdf_createKostenOverallPDF.php');//there are many ways to do this
     });
 
     $("button[value='createKostenOverallBauabschnittPDF']").click(function () {
-        window.open('/pdf_createKostenOverallBauabschnittPDF.php');//there are many ways to do this
+        window.open('PDFs/pdf_createKostenOverallBauabschnittPDF.php');//there are many ways to do this
     });
 
     $("button[value='createKostenOverallBauabschnittBudgetPDF']").click(function () {
-        window.open('/pdf_createKostenOverallBauabschnittBudgetPDF.php');//there are many ways to do this
+        window.open('PDFs/pdf_createKostenOverallBauabschnittBudgetPDF.php');//there are many ways to do this
     });
 
 
     $("button[value='createKostenInclGHGOverallPDF']").click(function () {
-        window.open('/pdf_createKostenOverallInclGHGPDF.php');//there are many ways to do this
+        window.open('PDFs/pdf_createKostenOverallInclGHGPDF.php');//there are many ways to do this
     });
 
     $("button[value='createKostenRaumbereichPDF']").click(function () {
-        window.open('/pdf_createKostenRaumbereichInclGHGPDF.php');//there are many ways to do this
+        window.open('PDFs/pdf_createKostenRaumbereichInclGHGPDF.php');//there are many ways to do this
     });
 
     $(document).ready(function () {
@@ -270,7 +270,7 @@ init_page_serversides();
         if (roomBereiche.length === 0) {
             alert("Kein Raumbereich ausgewählt!");
         } else {
-            window.open('/pdf_createKostenRaumbereichPDF.php?roomBereiche=' + roomBereiche + '&roomBereichGeschosse=' + roomBereichGeschosse);//there are many ways to do this
+            window.open('PDFs/pdf_createKostenRaumbereichPDF.php?roomBereiche=' + roomBereiche + '&roomBereichGeschosse=' + roomBereichGeschosse);//there are many ways to do this
         }
 
     });

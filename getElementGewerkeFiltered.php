@@ -1,6 +1,6 @@
 <?php
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 session_start();
 check_login();
@@ -80,16 +80,16 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
 <body>
 <div class='col-xxl-12'>
     <div class='card'>
-        <div class='card-body'>
-            <form class='d-flex align-items-center flex-wrap'>
-                <div class='form-group mr-2'>
+        <div class='card-body d-inline-flex'>
+            <form class='d-flex align-items-center flex-wrap mr-2'>
+                <div class='form-group  d-flex align-items-center mr-2'>
                     <label for='gewerk'>Gewerk</label>
                     <select class='form-control form-control-sm' id='gewerk'>
                         <?php echo getGewerkOptions($mysqli, $_SESSION["projectID"], $filterValueGewerke); ?>
                     </select>
                 </div>
 
-                <div class='form-group mr-2'>
+                <div class='form-group  d-flex align-items-center mr-2'>
                     <label for='ghg'>GHG</label>
                     <select class='form-control form-control-sm me-1 ms-1' id='ghg'>
                         <?php
@@ -102,7 +102,7 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
                     </select>
                 </div>
 
-                <div class='form-group mr-2'>
+                <div class='form-group  d-flex align-items-center mr-2'>
                     <label for='gug'>GUG</label>
                     <select class='form-control form-control-sm me-1 ms-1' id='gug'>
                         <?php
@@ -115,23 +115,22 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
                     </select>
                 </div>
 
-                <div class='form-group'>
-
+                <div class='form-group d-flex align-items-center mr-2'>
                     <div>
-                        <button type='button' id='saveElementGewerk' class='btn btn-outline-dark btn-sm me-1 ms-1'
+                        <button type='button' id='saveElementGewerk' class='btn btn-outline-dark btn-sm me-1 ms-1 '
                                 value='saveElementGewerk'>
                             <i class='far fa-save'></i> Gewerk speichern
                         </button>
 
-                        <button type='button' id='saveElementGewerk94' class='btn btn-outline-dark btn-sm me-1 ms-1 float-end'
+                        <button type='button' id='saveElementGewerk94' class='btn btn-outline-dark btn-sm me-1 ms-1 float-right'
                                 value='saveElementGewerk2'>
                             <i class='far fa-save'></i> 94
                         </button>
-                        <button type='button' id='saveElementGewerk93' class='btn btn-outline-dark btn-sm me-1 ms-1 float-end'
+                        <button type='button' id='saveElementGewerk93' class='btn btn-outline-dark btn-sm me-1 ms-1 float-right'
                                 value='saveElementGewerk1'>
                             <i class='far fa-save'></i> 93
                         </button>
-                        <button type='button' id='saveElementGewerk91' class='btn btn-outline-dark btn-sm me-1 ms-1 float-end'
+                        <button type='button' id='saveElementGewerk91' class='btn btn-outline-dark btn-sm me-1 ms-1 float-right'
                                 value='saveElementGewerk6'>
                             <i class='far fa-save'></i> 91
                         </button>
@@ -142,8 +141,7 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 <script>
     $('#ghg').change(function () {
         let ghgid = $('#ghg').val();

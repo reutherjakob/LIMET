@@ -1,4 +1,4 @@
-<div class='modal fade' id='addRoomModal' role='dialog'>
+<div class='modal fade' id='addRoomModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
         <div class='modal-content'>
             <div class='modal-header'>

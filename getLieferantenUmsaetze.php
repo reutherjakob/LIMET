@@ -12,8 +12,8 @@
 <body>
 <!-- Rework 2025 -->
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
-include "_format.php";
+if (!function_exists('utils_connect_sql')) {  include "utils/_utils.php"; }
+include "utils/_format.php";
 check_login();
 $mysqli = utils_connect_sql();
 
@@ -51,7 +51,7 @@ echo "<input type='button' id='addUmsatzModal' class='btn btn-success btn-sm' va
 ?>
 
 <!-- Modal zum Anlegen eines Umsatzes -->
-<div class='modal fade' id='addUmsatzToLieferantModal' role='dialog'>
+<div class='modal fade' id='addUmsatzToLieferantModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
 
         <!-- Modal content-->

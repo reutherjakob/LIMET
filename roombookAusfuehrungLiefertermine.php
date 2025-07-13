@@ -13,8 +13,8 @@ if (!isset($_SESSION["username"])) {
     <title>RB - Ausführung</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="iphone_favicon.png">
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logo/iphone_favicon.png">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
@@ -154,7 +154,7 @@ if (!isset($_SESSION["username"])) {
     </div>
 </div>
 
-<div class='modal fade' id='saveLieferdatumModal' role='dialog'>
+<div class='modal fade' id='saveLieferdatumModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-sm'>
         <div class='modal-content'>
             <div class='modal-header'>

@@ -2,7 +2,7 @@
 <body>
 <?php
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 check_login();
 
@@ -58,7 +58,7 @@ echo "</tbody></table>";
 ?>
 </body>
 <!-- Modal zum Hinzufügen/Ändern eines Vermerks -->
-<div class='modal fade' id='changeVermerkModal' role='dialog'>
+<div class='modal fade' id='changeVermerkModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-lg'>
         <div class='modal-content'>
             <div class='modal-header'>

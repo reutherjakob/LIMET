@@ -60,7 +60,7 @@ echo "<input type='button' id='addLieferantModalButton' class='btn btn-success b
 ?>
 
 <!-- Modal zum Hinzufügen eines Lieferanten -->
-<div class='modal fade' id='addLieferantModal' role='dialog'>
+<div class='modal fade' id='addLieferantModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
 
         <!-- Modal content-->
@@ -105,7 +105,7 @@ echo "<input type='button' id='addLieferantModalButton' class='btn btn-success b
 </div>
 
 <!-- Modal zum Anzeigen der Lieferantenmitarbeiter-->
-<div class='modal fade' id='showLieferantContactsModal' role='dialog'>
+<div class='modal fade' id='showLieferantContactsModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-lg'>
         <div class='modal-content'>
             <div class='modal-header'>

@@ -1,7 +1,7 @@
 <?php
 // reworked 25
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 check_login();
 ?>
@@ -53,7 +53,7 @@ ORDER BY
     tabelle_räume.Raumnr;";
 
 $result = $mysqli->query($sql);
-echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableLotElements1'>
+echo "<table class='table table-sm compact table-responsiv table-striped table-bordered table-sm table-hover border border-light border-5' id='tableLotElements1'>
             <thead><tr>
             <th>ID</th>
             <th>elementID</th>
@@ -101,25 +101,24 @@ while ($row = $result->fetch_assoc()) {
     $dataAttr = $Kurzbeschreibung === "" ? "data-description= '' " : "data-description='" . htmlspecialchars($Kurzbeschreibung, ENT_QUOTES, 'UTF-8') . "'";
 
     echo " <button type='button'
-        class='btn btn-sm " . $buttonClass . "comment-btn'" . $dataAttr . " id='" . $row['id'] . "' title='Kommentar'><i class='" . $iconClass . " '></i> $Kurzbeschreibung
+        class='btn btn-sm " . $buttonClass . "comment-btn'" . $dataAttr . " id='" . $row['id']
+        . "' title='Kommentar'><i class='" . $iconClass . " '></i>
+     $Kurzbeschreibung
         </button></td>";
-
-    //echo "<td><textarea id='comment" . $row["id"] . "' rows='1' style='width: 100%;'>" . $row["Kurzbeschreibung"] . "</textarea></td>";
     echo "</tr>";
 }
 echo "</tbody></table>";
 $mysqli->close();
 ?>
 
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 <script charset="utf-8" type="module">
-    import CustomPopover from './_popover.js'; //TODO: Find out why this doesnt work, but others witht he same code do work??
+    import CustomPopover from './utils/_popover.js';
 
-    CustomPopover.init('.comment-btn', {
+    CustomPopover.init('.comment-btn', {    //TODO: Tell my why this aint working. Same code as in getRoomElementsDetailed1
         onSave: function (trigger, newText) {
             trigger.dataset.description = newText;
-            // send an AJAX request to save the new text
-            let id = trigger.id;   // = tabelle_räume_has_tabelle_elemente.id
+            let id = trigger.id;// = tabelle_räume_has_tabelle_elemente.id
             $.ajax({
                 url: "saveRoomElementComment.php",
                 data: {
@@ -134,109 +133,121 @@ $mysqli->close();
                     $(".comment-btn[id='" + id + "']").find('i').removeClass('fa fa-comment-slash');
                     $(".comment-btn[id='" + id + "']").find('i').addClass('fa fa-comment');
                     $(".comment-btn[id='" + id + "']").attr('data-description', newText).data('description', newText);
+
                 }
             });
         }
     });
 
-
     var tableLotElements1;
+    let excelfilename2;
+    let excelfilename3;
+
     $(document).ready(function () {
 
+        getExcelFilename('Elemente-im-Los')
+            .then(filename => {
+                console.log('Generated filename:', filename);
+                excelfilename2 = filename;
 
-        tableLotElements1 = new DataTable('#tableLotElements1', {
-            dom: '<"#topDiv.top-container d-flex"<"col-md-6 justify-content-start"B><"#topDivSearch2.col-md-6"f>>t<"bottom d-flex" <"col-md-6 justify-content-start"i><"col-md-6 d-flex align-items-center justify-content-end"lp>>',
-            columnDefs: [
-                {
-                    targets: [0, 1, 2],
-                    visible: false,
-                    searchable: false
-                }
-            ],
-            searching: true,
-            info: true,
-            paging: true,
-            select: true,
-            order: [[3, 'asc']],
-            pagingType: 'simple',
-            lengthChange: false,
-            pageLength: 10,
-            language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
-                search: "",
-                searchPlaceholder: "Suche..."
-            },
-            buttons: [
-                {
-                    extend: 'excel',
-                    text: ' Excel',
-                    className: "btn btn-md bg-white btn-outline-secondary fas fa-file-excel me-1 ms-1",
-                },
-                {
-                    extend: 'excel',
-                    text: ' Verortungsliste',
-                    exportOptions: {
-                        columns: [3, 4, 5, 6, 7, 8, 9, 10, 11]
-                    },
-                    className: "btn btn-md bg-white btn-outline-secondary fas fa-file-excel me-1 ms-1",
-                    customize: function (xlsx) {
-                        var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                        $('row:first', sheet).remove();
-                        $('row', sheet).each(function () {
-                            var col3 = $('c[r^="A"]', this).text();
-                            var col7 = $('c[r^="E"]', this).text();
-                            if (col3 === '0' || col7 === 'Ja') {
-                                $(this).remove();
+                getExcelFilename('Verortungsliste' )
+                    .then(filename => {
+                        console.log('Generated filename:', filename);
+                        excelfilename3 = filename;
+
+                        tableLotElements1 = new DataTable('#tableLotElements1', {
+                            dom: '<"#topDiv.top-container d-flex"<"col-md-6 justify-content-start"B><"#topDivSearch2.col-md-6"f>>t<"bottom d-flex" <"col-md-6 justify-content-start"i><"col-md-6 d-flex align-items-center justify-content-end"lp>>',
+                            columnDefs: [
+                                {
+                                    targets: [0, 1, 2],
+                                    visible: false,
+                                    searchable: false
+                                }
+                            ],
+                            searching: true,
+                            info: true,
+                            paging: true,
+                            select: true,
+                            order: [[3, 'asc']],
+                            pagingType: 'simple',
+                            lengthChange: false,
+                            pageLength: 10,
+                            language: {
+                                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                                search: "",
+                                searchPlaceholder: "Suche..."
+                            },
+                            buttons: [
+                                {
+                                    extend: 'excel',
+                                    text: ' Excel',
+                                    className: "btn btn-success fas fa-file-excel me-1 ms-1",
+                                    title: excelfilename2
+                                },
+                                {
+                                    extend: 'excel',
+                                    title: excelfilename3,
+                                    text: ' Verortungsliste',
+                                    exportOptions: {
+                                        columns: [3, 4, 5, 6, 7, 8, 9, 10, 11]
+                                    },
+                                    className: "btn btn-success fas fa-file-excel me-1 ms-1",
+                                    customize: function (xlsx) {
+                                        var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                        $('row:first', sheet).remove();
+                                        $('row', sheet).each(function () {
+                                            var col3 = $('c[r^="A"]', this).text();
+                                            var col7 = $('c[r^="E"]', this).text();
+                                            if (col3 === '0' || col7 === 'Ja') {
+                                                $(this).remove();
+                                            }
+                                        });
+                                    }
+
+                                },
+                                {
+                                    text: ' Elementliste PDF',
+                                    className: "btn btn-md bg-white btn-outline-secondary fas fa-file-pdf me-1 ms-1",
+                                    action: function () {
+                                        window.open('PDFs/pdf_createLotElementListPDF.php');
+                                    }
+                                }
+                            ],
+                            initComplete: function () {
                             }
                         });
-                    }
 
-                },
-                {
-                    text: ' Elementliste PDF',
-                    className: "btn btn-md bg-white btn-outline-secondary fas fa-file-pdf me-1 ms-1",
-                    action: function () {
-                        window.open('/pdf_createLotElementListPDF.php');
-                    }
-                }
-            ],
-            initComplete: function () {
+                        $('#tableLotElements1 tbody').on('click', 'tr', function () {
+                            let elementID = tableLotElements1.row($(this)).data()[1];
+                            let variantenID = tableLotElements1.row($(this)).data()[2];
+                            let id = tableLotElements1.row($(this)).data()[0];
+                            let stk = tableLotElements1.row($(this)).data()[3];
+                            //console.log("elementID, variantenID, id, stk: ", elementID, variantenID, id, stk);
+                            $.ajax({
+                                url: "getVariantenParameters.php",
+                                data: {"variantenID": variantenID, "elementID": elementID},
+                                type: "GET",
+                                success: function (data) {
+                                    $("#elementsvariantenParameterInLot").html(data);
+                                    $("#elementsvariantenParameterInLot").show();
+                                    $.ajax({
+                                        url: "getElementBestand.php",
+                                        data: {"id": id, "stk": stk},
+                                        type: "GET",
+                                        success: function (data) {
+                                            $("#elementBestand").html(data);
+                                            $("#elementBestand").show();
+                                        }
+                                    });
+                                }
+                            });
+                        });
 
-            }
-        });
-
-
-        $('#tableLotElements1 tbody').on('click', 'tr', function () {
-            let elementID = tableLotElements1.row($(this)).data()[1];
-            let variantenID = tableLotElements1.row($(this)).data()[2];
-            let id = tableLotElements1.row($(this)).data()[0];
-            let stk = tableLotElements1.row($(this)).data()[3];
-            //console.log("elementID, variantenID, id, stk: ", elementID, variantenID, id, stk);
-            $.ajax({
-                url: "getVariantenParameters.php",
-                data: {"variantenID": variantenID, "elementID": elementID},
-                type: "GET",
-                success: function (data) {
-                    $("#elementsvariantenParameterInLot").html(data);
-                    $("#elementsvariantenParameterInLot").show();
-                    $.ajax({
-                        url: "getElementBestand.php",
-                        data: {"id": id, "stk": stk},
-                        type: "GET",
-                        success: function (data) {
-                            $("#elementBestand").html(data);
-                            $("#elementBestand").show();
-                        }
                     });
-                }
             });
-        });
-
-
     });
-
     $('#createLotElementListPDF').click(function () {
-        window.open('/pdf_createLotElementListPDF.php');
+        window.open('PDFs/pdf_createLotElementListPDF.php');
     });
 
 </script>

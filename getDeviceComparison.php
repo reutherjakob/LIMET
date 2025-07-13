@@ -1,5 +1,5 @@
 <?php
-require_once "_utils.php";
+require_once "utils/_utils.php";
 check_login();
 $mysqli = utils_connect_sql();
 
@@ -35,7 +35,7 @@ if (empty($columns)) {
 
 // Prepare and execute the final query
 $finalQuery = "
-    SELECT tabelle_geraete.Typ, " .  $mysqli->real_escape_string($columns)  ."  
+    SELECT tabelle_geraete.Typ, $columns
     FROM tabelle_hersteller
     INNER JOIN tabelle_geraete ON tabelle_hersteller.idtabelle_hersteller = tabelle_geraete.tabelle_hersteller_idtabelle_hersteller
     LEFT JOIN tabelle_geraete_has_tabelle_parameter ON tabelle_geraete.idTABELLE_Geraete = tabelle_geraete_has_tabelle_parameter.TABELLE_Geraete_idTABELLE_Geraete

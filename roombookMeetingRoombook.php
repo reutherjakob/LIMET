@@ -1,6 +1,6 @@
 <?php
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 init_page_serversides();
 ?>
@@ -79,7 +79,7 @@ echo "<table class='table overflow-hidden table-responsive table-striped table-b
                                 <thead><tr> 
                                 <th>Element</th>
                                 <th>Stk</th>
-                                <th>Best</th>
+                                <th>Bestand</th>
                                 <th>Kom.</th>    
                                 </tr></thead>
                                 <tbody>";
@@ -127,7 +127,7 @@ echo "<table class='table overflow-hidden table-responsive table-striped table-b
                                 <thead><tr> 
                                 <th>Element</th>
                                 <th>Stk</th>
-                                <th>Best</th>
+                                <th>Bestand</th>
                                 <th>Kom.</th>    
                                 </tr></thead>
                                 <tbody>";
@@ -176,7 +176,7 @@ echo "<table class='table overflow-hidden table-responsive table-striped table-b
                                 <thead><tr> 
                                 <th>Element</th>
                                 <th>Stk</th>
-                                <th>Best</th>
+                                <th>Bestand</th>
                                 <th>Kom.</th>    
                                 </tr></thead>
                                 <tbody>";
@@ -225,7 +225,7 @@ echo "<table class='table overflow-hidden table-responsive table-striped table-b
                                 <thead><tr> 
                                 <th>Element</th>
                                 <th>Stk</th>
-                                <th>Best</th> 
+                                <th>Bestand</th> 
                                 <th>Kom.</th>    
                                 </tr></thead>
                                 <tbody>";
@@ -277,7 +277,7 @@ echo "<table class='table overflow-hidden table-responsive table-striped table-b
                                 <thead><tr> 
                                 <th>Element</th>
                                 <th>Stk</th>
-                                <th>Best</th>
+                                <th>Bestand</th>
                                 <th>Kom.</th>    
                                 </tr></thead>
                                 <tbody>";

@@ -1,6 +1,6 @@
 <?php
 // V2.0
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {  include "utils/_utils.php"; }
 check_login();
 ?>
 
@@ -62,7 +62,7 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
 ?>
 
 <!-- Modal zum Anlegen eines Preises -->
-<div class='modal fade' id='addServicePriceModal' role='dialog'>
+<div class='modal fade' id='addServicePriceModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
         <!-- Modal content-->
         <div class='modal-content'>

@@ -6,7 +6,7 @@
 <body>
 
 <?php
-if (!function_exists('utils_connect_sql')) {  include "_utils.php"; }
+if (!function_exists('utils_connect_sql')) {  include "utils/_utils.php"; }
 check_login();
 if (isset($_GET["projectID"]) && $_GET["projectID"] != "") {
     $_SESSION["projectID"] = $_GET["projectID"];
@@ -29,8 +29,7 @@ if (isset($_GET["projectPlanungsphase"]) && $_GET["projectPlanungsphase"] != "")
 if (isset($_GET["variantenID"]) &&$_GET["variantenID"] != "") {
     $_SESSION["variantenID"] = $_GET["variantenID"];
 }
-
 ?>
-
+g
 </body>
 </html>

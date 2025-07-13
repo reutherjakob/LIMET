@@ -1,9 +1,9 @@
 <?php
 // V2.0: 2024-11-29, Reuther & Fux
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
-include "_format.php";
+include "utils/_format.php";
 check_login();
 
 $mysqli = utils_connect_sql();
@@ -168,7 +168,7 @@ $mysqli->close();
         <th>Element</th>
         <th>Var</th>
         <th>Stk</th>
-        <th>Best</th>
+        <th>Bestand</th>
         <th>Stand</th>
         <th>Verw</th>
         <th>Kom</th>
@@ -232,10 +232,9 @@ $mysqli->close();
                 $iconClass = $Kurzbeschreibung === "" ? "fa fa-comment-slash" : "fa fa-comment";
                 $dataAttr = $Kurzbeschreibung === "" ? "data-description= '' " : "data-description='" . htmlspecialchars($Kurzbeschreibung ?? "", ENT_QUOTES, 'UTF-8') . "'";
                 ?>
-                <button type="button"
-                        class="btn btn-sm <?php echo $buttonClass; ?> comment-btn" <?php echo $dataAttr; ?>
-                        id="<?php echo $row["id"]; ?>" title="Kommentar"><i class="<?php echo $iconClass; ?>"></i>
-                </button>
+                echo " <button type='button'
+                               class='btn btn-sm " . $buttonClass . "comment-btn'" . $dataAttr . " id='" . $row['id'] . "' title='Kommentar'><i class='" . $iconClass . " '></i> $Kurzbeschreibung
+                </button>";
             </td>
 
             <td data-order="history">
@@ -253,7 +252,7 @@ $mysqli->close();
 </table>
 
 <!-- Modal zum Kopieren des Rauminhalts -->
-<div class='modal fade' id='copyRoomElementsModal' tabindex='-1' aria-labelledby='copyRoomElementsModalLabel'
+<div class='modal fade' id='copyRoomElementsModal'  aria-labelledby='copyRoomElementsModalLabel' tabindex="-1"
      aria-hidden='true'>
     <div class='modal-dialog modal-xl'>
         <div class='modal-content'>
@@ -275,7 +274,7 @@ $mysqli->close();
 </div>
 
 <!-- Modal zum Darstellen des Verlaufs -->
-<div class='modal fade' id='historyModal' role='dialog'>
+<div class='modal fade' id='historyModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-lg'>
         <!-- Modal content-->
         <div class='modal-content'>
@@ -293,16 +292,15 @@ $mysqli->close();
     </div>
 </div>
 
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 <script charset="utf-8" type="module">
     // var currentSort = {column: 0, dir: 'asc'};   - within importing files
     //  !! tableRoomElements: variable within importing file!
-    import CustomPopover from './_popover.js';
+    import CustomPopover from './utils/_popover.js';
 
     CustomPopover.init('.comment-btn', {
         onSave: function (trigger, newText) {
             trigger.dataset.description = newText;
-            // send an AJAX request to save the new text
             let id = trigger.id;   // = tabelle_räume_has_tabelle_elemente.id
             $.ajax({
                 url: "saveRoomElementComment.php",
@@ -366,11 +364,11 @@ $mysqli->close();
 
     function attachButtonListeners() {
         $("button[value='createRoombookPDF']").click(function () {
-            window.open('/pdf_createRoombookPDF.php?roomID=' + this.id);//there are many ways to do this
+            window.open('PDFs/pdf_createRoombookPDF.php?roomID=' + this.id);//there are many ways to do this
         });
 
         $("button[value='createRoombookPDFCosts']").click(function () {
-            window.open('/pdf_createRoombookPDFwithCosts.php?roomID=' + this.id);//there are many ways to do this
+            window.open('PDFs/pdf_createRoombookPDFwithCosts.php?roomID=' + this.id);//there are many ways to do this
         });
 
         $("button[value='Rauminhalt kopieren']").click(function () {
@@ -479,7 +477,7 @@ $mysqli->close();
                 $('#room-action-buttons .xxx').remove();
                 $('#roomElements .dt-search label').remove();
                 $('#roomElements .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx  ms-1 me-1").appendTo('#room-action-buttons');
-                console.log(currentSort);
+
                 $('#tableRoomElements').DataTable().order([currentSort.column, currentSort.dir]).draw();
             }
         });

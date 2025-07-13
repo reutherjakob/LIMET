@@ -7,7 +7,7 @@
 
 <?php
 
-include "_utils.php";
+include "utils/_utils.php";
 check_login();
 
 $mysqli = utils_connect_sql();
@@ -55,7 +55,7 @@ echo "</tbody></table>";
 
 $mysqli->close();
 ?>
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 
 <script>
 

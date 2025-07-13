@@ -165,7 +165,7 @@ echo "</tbody></table>";
 $mysqli->close();
 ?>
 
-<div class='modal fade' id='claculateDatesModal' role='dialog'>
+<div class='modal fade' id='claculateDatesModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
         <div class='modal-content'>
             <div class='modal-header'>

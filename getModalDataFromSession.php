@@ -1,5 +1,5 @@
 <?php
-include "_utils.php";
+include "utils/_utils.php";
 check_login();
 $conn = utils_connect_sql();
 
@@ -9,6 +9,7 @@ if (!isset($_SESSION['elementID']) || !isset($_SESSION['deviceID'])) {
     http_response_code(400);
     echo json_encode(['error' => 'Session variables not set']);
     exit();
+
 }
 
 $elementID = $_SESSION['elementID'];

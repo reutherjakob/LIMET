@@ -1,6 +1,6 @@
 <?php
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 
 $mysqli = utils_connect_sql();
@@ -33,7 +33,7 @@ $mysqli->close();
 ?>
 
 <!-- Modal zum Ändern eines Elements -->
-<div class='modal fade' id='changeElementModal' role='dialog'>
+<div class='modal fade' id='changeElementModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
         <div class='modal-content'>
             <div class='modal-header'>

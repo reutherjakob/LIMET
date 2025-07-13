@@ -6,8 +6,8 @@
     <title>LIMET - Login</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="iphone_favicon.png"/>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logo/iphone_favicon.png"/>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
@@ -30,7 +30,7 @@ if (isset($_SESSION['username'])) {
         <div class='col-xxl-2 col-xl-2 col-lg-4 col-md-8 col-sm-10' id='login'>
             <div class='card mx-auto my-4'  style="outline: 2px solid white;">
                 <div class='card-header d-flex align-items-center justify-content-center'>
-                    <img src="LIMET_logo.png" alt="LIMETLOGO">
+                    <img src="Logo/LIMET_logo.png" alt="LIMETLOGO">
                 </div>
                 <form class='form' action='login.php' method='post'>
                     <div class='card-body'>

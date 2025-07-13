@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
+<html lang="de">
 <head>
     <title>RB-Elemente im Projekt</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="iphone_favicon.png"/>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logo/iphone_favicon.png"/>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
                 <div class="col-2"><strong> Elemente im Projekt</strong>
                 </div>
                 <div class="col-10 d-flex align-items-center justify-content-end" id="target_div">
-                    <div class="me-4 d-flex " id="hide0Wrapper">
-                        <input class="btn-check btn-sm" type="checkbox" id="hideZeroRows">
-                        <label class="btn btn-sm btn-outline-dark" for="hideZeroRows">
+                    <div class="me-4 d-flex " id="hide0Wrapper_ELiNpR">
+                        <input class="btn-check btn-sm" type="checkbox" id="hideZeroRows_ELiNpR">
+                        <label class="btn btn-sm btn-outline-dark" for="hideZeroRows_ELiNpR">
                             Hide 0
                         </label>
                     </div>
@@ -60,10 +60,10 @@
         <div class="card-body">
             <?php
             if (!function_exists('utils_connect_sql')) {
-                include "_utils.php";
+                include "utils/_utils.php";
             }
             init_page_serversides();
-            include "_format.php";
+            include "utils/_format.php";
             $mysqli = utils_connect_sql();
             $sql = "SELECT Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
                            tabelle_elemente.ElementID,
@@ -214,13 +214,15 @@ ORDER BY tabelle_elemente.ElementID;";
     </div>
     <!-- Räume mit Element -->
     <div class="mt-1 card">
-        <div class="card-header ">
-            <div class="row">
-                <div class="col-xxl-8 d-flex justify-content-start align-items-center">
+        <div class="card-header"">
+            <div class="row  d-flex flex-nowrap text-nowrap">
+                <div class="col-xxl-8 col-8 d-flex justify-content-start align-items-center">
                     <button type="button" class="btn btn-outline-dark btn-sm me-2" id="showRoomsWithAndWithoutElement">
                         <i class="fas fa-caret-right"></i>
                     </button>
                     <label>Räume mit Element</label>
+                </div>
+                <div  class="col-4 d-flex justify-content-end" id="CHRME">
                 </div>
             </div>
         </div>
@@ -228,7 +230,7 @@ ORDER BY tabelle_elemente.ElementID;";
     </div>
 
 
-    <script src="_utils.js"></script>
+    <script src="utils/_utils.js"></script>
     <script charset="utf-8">
 
         var tableElementsInProject;
@@ -307,8 +309,11 @@ ORDER BY tabelle_elemente.ElementID;";
                     data: {"elementID": elementID, "variantenID": variantenID, "bestand": bestand},
                     type: "GET",
                     success: function (data) {
-                        if ($.fn.DataTable.isDataTable('#tableRoomsWithElement')) {
-                            tableRoomsWithElement.destroy();
+                        let $table = $('#tableRoomsWithElement');
+                        if ($table.length && $.fn.DataTable && $.fn.DataTable.isDataTable) {
+                            if ($.fn.DataTable.isDataTable($table)) {
+                                $table.DataTable().destroy();
+                            }
                         }
                         $("#roomsWithAndWithoutElements").html(data);
                         $.ajax({
@@ -356,26 +361,25 @@ ORDER BY tabelle_elemente.ElementID;";
 
             });
 
-            let filterIndex = $.fn.dataTable.ext.search.indexOf(hideZeroFilter);
+            let filterIndex = $.fn.dataTable.ext.search.indexOf(hideZeroFilter_ELiNpR);
             if (filterIndex !== -1) {
                 $.fn.dataTable.ext.search.splice(filterIndex, 1);
             }
-            $.fn.dataTable.ext.search.push(hideZeroFilter);
+            $.fn.dataTable.ext.search.push(hideZeroFilter_ELiNpR);
 
-            $("#hideZeroRows").on("change", function () {
+            $("#hideZeroRows_ELiNpR").on("change", function () {
                 tableElementsInProject.draw();
             });
 
-            function hideZeroFilter(settings, data, dataIndex) {
-
+            function hideZeroFilter_ELiNpR(settings, data, ) {
                 if (settings.nTable.id !== 'tableElementsInProject') {
                     return true;
-                }        //console.log(data);
-                let hideZero = $("#hideZeroRows").is(":checked");
-                let amount = parseInt(data[1]) || 0; // data[1] is the "Anzahl" column
-
+                }
+                let hideZero = $("#hideZeroRows_ELiNpR").is(":checked");
+                let amount = parseInt(data[1]) || 0;
                 return !(hideZero && (amount === 0));
             }
+
 
         });
 
@@ -415,18 +419,18 @@ ORDER BY tabelle_elemente.ElementID;";
 
         // PDF erzeugen
         $('#createElementListPDF').click(function () {
-            window.open('/pdf_createElementListPDF.php');
+            window.open('PDFs/pdf_createElementListPDF.php');
         });
 
         $('#createElementListWithPricePDF').click(function () {
-            window.open('/pdf_createElementListWithPricePDF.php');
+            window.open('PDFs/pdf_createElementListWithPricePDF.php');
         });
 
         $('#createElementEinbringwegePDF').click(function () {
-            window.open('/pdf_createElementEinbringwegePDF.php');
+            window.open('PDFs/pdf_createElementEinbringwegePDF.php');
         });
         $('#createElementEinbringwegePDF2').click(function () {
-            window.open('/pdf_createElementEinbringwegePDFschöner.php');
+            window.open('PDFs/pdf_createElementEinbringwegePDFschöner.php');
         });
 
 

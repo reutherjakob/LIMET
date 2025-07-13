@@ -61,7 +61,7 @@ if(!isset($_SESSION["username"]))
         
         ?>
         <!-- Modal zum Hinzufügen eines Standortelements -->
-	  <div class='modal fade' id='addStandortElementModal' role='dialog'>
+	  <div class='modal fade' id='addStandortElementModal' role='dialog' tabindex="-1">
 	    <div class='modal-dialog modal-md'>
 	    
 	      <!-- Modal content-->

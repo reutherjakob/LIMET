@@ -11,9 +11,9 @@
 <body>
 <?php
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
-include "_format.php";
+include "utils/_format.php";
 check_login();
 
 $mysqli = utils_connect_sql();
@@ -64,7 +64,7 @@ echo "</tbody></table>";
 echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Preis hinzufügen' data-bs-toggle='modal' data-bs-target='#addPriceToElementModal'> Preis hinzufügen</button>";
 ?>
 
-<div class='modal fade' id='addPriceToElementModal' role='dialog'>
+<div class='modal fade' id='addPriceToElementModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
         <div class='modal-content'>
             <div class='modal-header'>

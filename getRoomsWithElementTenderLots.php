@@ -9,7 +9,7 @@
 <?php
 // --> REWORKED 25 <--
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 check_login();
 
@@ -167,7 +167,7 @@ echo "<table class='table table-striped table-bordered border border-light borde
 	<th>Raumnummer</th>
 	<th>Raumbezeichnung</th>
 	<th>Raumbereich</th>
-	<th>Best</th>
+	<th>Bestand</th>
 	<th>Stand</th>
 	<th>Verw</th>
 	<th>Komm</th>
@@ -247,7 +247,7 @@ $mysqli->close();
 ?>
 
 <!-- Modal zum Anzeigen bzw Speichern des Kommentars -->
-<div class='modal fade' id='commentModal' role='dialog'>
+<div class='modal fade' id='commentModal' role='dialog' tabindex="-1" >
     <div class='modal-dialog modal-md'>
         <div class='modal-content'>
             <div class='modal-header'>

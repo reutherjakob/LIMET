@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 check_login();
 ?>
@@ -106,7 +106,7 @@ $gugOptions = $gewerkeData['ghg'] ? fetchGUGOptions($mysqli, $gewerkeData['ghg']
 <div class='col-xxl-12'>
     <div class='card'>
         <div class='card-body d-inline-flex'>
-            <form class='d-flex align-items-center flex-wrap'>
+            <form class='d-flex align-items-center flex-wrap mr-2'>
                 <div class='form-group d-flex align-items-center mr-2'>
                     <label for='gewerk' class="mb-0">Gewerk:</label>
                     <select class='form-control form-control-sm me-1 ms-1' id='gewerk'>
@@ -157,7 +157,6 @@ $gugOptions = $gewerkeData['ghg'] ? fetchGUGOptions($mysqli, $gewerkeData['ghg']
                 </div>
 
                 <div class='form-group d-flex align-items-center mr-2'>
-
                     <div>
                         <button type='button' id='saveElementGewerk' class='btn btn-outline-dark btn-sm me-1 ms-1 '
                                 value='saveElementGewerk'>
@@ -178,6 +177,7 @@ $gugOptions = $gewerkeData['ghg'] ? fetchGUGOptions($mysqli, $gewerkeData['ghg']
                         </button>
                     </div>
                 </div>
+
             </form>
         </div>
     </div>
@@ -189,7 +189,7 @@ $mysqli->close();
 
 
 <!-- Modal Info -->
-<div class='modal fade' id='infoModal' role='dialog'>
+<div class='modal fade' id='infoModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-dialog-centered modal-sm'>
         <!-- Modal content-->
         <div class='modal-content'>
@@ -207,7 +207,7 @@ $mysqli->close();
     </div>
 </div>
 
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 <script charset="utf-8">
 
     //GHG geändert

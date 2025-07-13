@@ -7,7 +7,7 @@
 
 <?php
 if (!function_exists('utils_connect_sql')) {
-    include "_utils.php";
+    include "utils/_utils.php";
 }
 if (filter_input(INPUT_GET, 'elementID') != "") {
     $_SESSION["elementID"] = filter_input(INPUT_GET, 'elementID');
@@ -160,7 +160,7 @@ $row = $result->fetch_assoc(); ?>
 
 
 <!-- Modal zum Zeigen der Kostenänderungen -->
-<div class='modal fade' id='getElementPriceHistoryModal' role='dialog'>
+<div class='modal fade' id='getElementPriceHistoryModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-lg'>
         <div class='modal-content'>
             <div class='modal-header'>
@@ -234,7 +234,7 @@ $row = $result->fetch_assoc(); ?>
 </div>
 
 <!-- Variantenparameter übernehmen Modal -->
-<div class='modal fade' id='addVariantenParameterToElementModal' role='dialog'>
+<div class='modal fade' id='addVariantenParameterToElementModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
         <!-- Modal content-->
         <div class='modal-content'>
@@ -266,7 +266,7 @@ $row = $result->fetch_assoc(); ?>
     </div>
 </div>
 
-<script src="_utils.js"></script>
+<script src="utils/_utils.js"></script>
 <script src="saveElementParameters.js"></script>
 <script>
     var tablePossibleElementParameters;
