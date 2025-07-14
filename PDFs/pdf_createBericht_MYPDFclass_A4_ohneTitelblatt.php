@@ -1,6 +1,10 @@
 <?php
 session_start();
-require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+if (!function_exists('utils_connect_sql')) {
+    include "../utils/_utils.php";
+}
+check_login();
+require_once('../TCPDF-main/TCPDF-main/tcpdf.php');
 include "pdf_createBericht_LOGO.php";
 
 class MYPDF extends TCPDF
@@ -11,23 +15,21 @@ class MYPDF extends TCPDF
         $this->SetFont('helvetica', '', 8);
         $this->cell(0, 0, '', 0, 0, 'L');
         $this->Ln();
-        if ($_SESSION["PDFTITEL"] != null) {
+        if (isset($_SESSION["PDFTITEL"]) && $_SESSION["PDFTITEL"] != null) {
             $this->Cell(0, 0, $_SESSION["PDFTITEL"], 0, false, 'R', 0, '', 0, false, 'B', 'B');
         } else {
             $this->Cell(0, 0, '', 0, false, 'R', 0, '', 0, false, 'B', 'B');
         }
         $this->Ln(1);//
-        if (!empty(str_replace(" ", "", $_SESSION["PDFHeaderSubtext"] ?? ""))) {
+        if (isset($_SESSION["PDFHeaderSubtext"])) {
             $this->Cell(0, 0, $_SESSION["PDFHeaderSubtext"], 'B', false, 'R', 0, '', 0, false, 'B', 'B');
-            $this->Ln();
         } else {
             $this->cell(0, 0, '', 'B', 0, 'L');
-            $this->Ln();
         }
-        $this->Ln();  $this->Ln();  $this->Ln();
-       // if("Medizintechnische Elementliste"== $_SESSION["PDFTITEL"]) {
-       //     $this->SetY($this->GetY() + 20);
-       // }
+
+        $this->Ln();
+        $this->Ln();
+        $this->Ln();
     }
 
     // Page footer

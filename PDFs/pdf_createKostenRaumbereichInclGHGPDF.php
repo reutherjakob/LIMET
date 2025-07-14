@@ -5,7 +5,7 @@ if (!function_exists('utils_connect_sql')) {
 }
 check_login();
 
-require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+require_once('../TCPDF-main/TCPDF-main/tcpdf.php');
 include "pdf_createBericht_MYPDFclass_A4_ohneTitelblatt.php";
 include "_pdf_createBericht_utils.php";
 include "../utils/_format.php";

@@ -300,6 +300,7 @@ $mysqli->close();
 <script charset="utf-8" type="module">
     // var currentSort = {column: 0, dir: 'asc'};   - within importing files
     //  !! tableRoomElements: variable within importing file!
+
     import CustomPopover from './utils/_popover.js';
 
     CustomPopover.init('.comment-btn', {
@@ -335,8 +336,28 @@ $mysqli->close();
         //(console.log(localStorage.getItem('hideZeroSetting'));
         $('#hideZeroToggle').prop('checked', hideZero);
 
-
         $.fn.dataTable.ext.search.push(hideZeroFilter);
+
+
+        //Rauminhalt kopieren  für getRoomsToCopy.php
+        $("#copyRoomElements").click(function () {
+            console.log(roomIDs);
+            roomIDs = [...new Set(roomIDs)];
+            console.log("Letzte log vorm kopieren", roomIDs);
+            if (roomIDs.length === 0) {
+                alert("Kein Raum ausgewählt!");
+            } else {
+                $.ajax({
+                    url: "copyRoomElements.php",
+                    type: "GET",
+                    data: {"rooms": roomIDs},
+                    success: function (data) {
+                        makeToaster(data, true);
+                        $("#mbodyCRE").modal('hide');
+                    }
+                });
+            }
+        });
     });
 
 
@@ -388,7 +409,11 @@ $mysqli->close();
                     "originRoomID": originRoomID
                 },
                 success: function (data) {
+                    console.log("Success opening the modal");
+
                     $("#mbodyCRE").html(data);
+
+
                 }
             });
         });
@@ -412,7 +437,7 @@ $mysqli->close();
             let id = this.id;
             //console.log(id)
             let comment = $(".comment-btn[id='" + id + "']").attr('data-description');
-            // console.log(comment);
+            console.log(comment);
             let amount = $("#amount" + id).val();
             let variantenID = $("#variante" + id).val();
             let bestand = $("#bestand" + id).val();

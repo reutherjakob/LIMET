@@ -5,7 +5,7 @@ if (!function_exists('utils_connect_sql')) {
 }
 check_login();
 include "pdf_createBericht_LOGO.php";
-require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+require_once('../TCPDF-main/TCPDF-main/tcpdf.php');
 include "_pdf_createBericht_utils.php";
 
 class MYPDF extends TCPDF

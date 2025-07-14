@@ -152,7 +152,7 @@ init_page_serversides();
                 null, // Column 8
                 null, // Column 9
                 null, // Column 10
-                null, // Column 
+                {visible: false, searchable: false}, // Column 11, // Column
                 null
             ],
             paging: true,

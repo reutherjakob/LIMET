@@ -4,12 +4,13 @@ if (!function_exists('utils_connect_sql')) {
     include "../utils/_utils.php";
 }
 check_login();
-require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+require_once('../TCPDF-main/TCPDF-main/tcpdf.php');
 include "pdf_createBericht_MYPDFclass_A4_Raumbuch.php";
 include "_pdf_createBericht_utils.php";
 
 $hackerl_schriftgröße= 10;
 $block_label_size = 13;
+$block_spacerx = 10;
 $ln_spacer1 = 4;
 $ln_spacer2 = 6; //bigger than 1
 $einzugLR=15;               // standard einzug L/R
@@ -17,6 +18,7 @@ $SB = 210 - 2* $einzugLR ;  // A4: seitenbreite minus die lr einzüge
 $einzugC1 = 40;             // C: Seite dritteln
 $einzugC2 = 60 - $einzugC1;
 $einzugE = 30;              // E: Einzug vor erster Unterkathegorie von Et
+$hackerl_Zellgröße=10;
 $einzugF = $SB/6 - $hackerl_Zellgröße  ;  // F: Seite sexteln, zb Medgas
 $manual_offset = 5;
 $abzug_ersterC_einzug= $einzugC1- $einzugE-$manual_offset; //rückt erstes element je gedritteltem segment nach links
@@ -151,7 +153,7 @@ foreach ($teile as $valueOfRoomID) {
         
         newpage_or_spacer($pdf, $SizeElektroSegement, $block_spacerx);
         block_label($pdf, "Elektro");
-        $hackerl_Zellgröße=10; 
+
         
         
         $restspace = (($SB - $einzugE - $hackerl_Zellgröße) / 5) - $hackerl_Zellgröße - 1;

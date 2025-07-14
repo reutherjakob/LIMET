@@ -79,7 +79,31 @@ $mysqli->close();
 <input type='button' id='copyBauangaben' class='btn btn-info btn-sm' value='Bauangaben kopieren' -->
 
 <script charset="utf-8">
-    var roomIDs = []; // Array to store selected room IDs
+
+    // ALL THE COMMENTED PARTS ARE NOW WITHIN THE FILE IMPORTING THIS GetRoomsToCopy
+   var roomIDs = []; // Array to store selected room IDs
+    // //Bauangaben kopieren
+
+    //
+    // //Rauminhalt kopieren
+    // $("#copyRoomElements").click(function () {
+    //     console.log(roomIDs);
+    //     roomIDs = [...new Set(roomIDs)];
+    //     console.log("Letzte log vorm kopieren", roomIDs);
+    //     if (roomIDs.length === 0) {
+    //         alert("Kein Raum ausgewählt!");
+    //     } else {
+    //         $.ajax({
+    //             url: "copyRoomElements.php",
+    //             type: "GET",
+    //             data: {"rooms": roomIDs},
+    //             success: function (data) {
+    //                 makeToaster(data, true);
+    //                 $("#mbodyCRE").modal('hide');
+    //             }
+    //         });
+    //     }
+    // });
     var tableRoomsToCopy;
 
     function add_MT_rel_filter(location, table) {
@@ -99,7 +123,7 @@ $mysqli->close();
         if (typeof columnsDefinition === 'undefined') { // TO GUArantee function of old Bauanagaben page
             const script = document.createElement('script');
             script.src = 'roombookSpecifications_constDeclarations.js';
-            script.onload = () => console.log('columnsDefinition loaded');
+            //script.onload = () => console.log('columnsDefinition loaded');
             document.head.appendChild(script);
         }
 
@@ -167,44 +191,6 @@ $mysqli->close();
             console.log("Deselect All Rows ", roomIDs);
         });
 
-        //Bauangaben kopieren
-        $("#copySpecifications").click(function () {
-            console.log("getRoomsToCopy.php -> Bauang. Kopieren Btn. IDS:", roomIDs);
-            if (roomIDs.length === 0) {
-                alert("Kein Raum ausgewählt!");
-            } else {
-                $.ajax({
-                    url: "copyRoomSpecifications_1.php",
-                    type: "POST",
-                    data: {
-                        rooms: JSON.stringify(roomIDs),
-                        columns: JSON.stringify(columnsDefinition)
-                    },
-                    success: function (data) {
-                        console.log(data);
-                        alert(data);
-                        location.reload(true); // if(confirm("Raum erfolgreich Aktualisiert! :) \nUm Änderungen anzuzeigen, muss Seite Neu laden. Jetzt neu laden? \n",data)) { location.reload(true);}
-                    }
-                });
-            }
-        });
-
-        //Rauminhalt kopieren
-        $("#copyRoomElements").click(function () {
-            if (roomIDs.length === 0) {
-                alert("Kein Raum ausgewählt!");
-            } else {
-                $.ajax({
-                    url: "copyRoomElements.php",
-                    type: "GET",
-                    data: {"rooms": roomIDs},
-                    success: function (data) {
-                        makeToaster(data, true);
-                        $("#mbodyCRE").modal('hide');
-                    }
-                });
-            }
-        });
 
         add_MT_rel_filter('#mtrelevantfilter', tableRoomsToCopy);
     });
