@@ -227,14 +227,18 @@ $mysqli->close();
             <td>
 
                 <?php
+
                 $Kurzbeschreibung = trim($row["Kurzbeschreibung"] ?? "");
                 $buttonClass = $Kurzbeschreibung === "" ? "btn-outline-secondary" : "btn-outline-dark";
                 $iconClass = $Kurzbeschreibung === "" ? "fa fa-comment-slash" : "fa fa-comment";
                 $dataAttr = $Kurzbeschreibung === "" ? "data-description= '' " : "data-description='" . htmlspecialchars($Kurzbeschreibung ?? "", ENT_QUOTES, 'UTF-8') . "'";
+
+
                 ?>
-                echo " <button type='button'
-                               class='btn btn-sm " . $buttonClass . "comment-btn'" . $dataAttr . " id='" . $row['id'] . "' title='Kommentar'><i class='" . $iconClass . " '></i> $Kurzbeschreibung
-                </button>";
+                <button type="button"
+                        class="btn btn-sm <?php echo $buttonClass; ?> comment-btn" <?php echo $dataAttr; ?>
+                        id="<?php echo $row["id"]; ?>" title="Kommentar"><i class="<?php echo $iconClass; ?>"></i>
+                </button>
             </td>
 
             <td data-order="history">
@@ -252,7 +256,7 @@ $mysqli->close();
 </table>
 
 <!-- Modal zum Kopieren des Rauminhalts -->
-<div class='modal fade' id='copyRoomElementsModal'  aria-labelledby='copyRoomElementsModalLabel' tabindex="-1"
+<div class='modal fade' id='copyRoomElementsModal' aria-labelledby='copyRoomElementsModalLabel' tabindex="-1"
      aria-hidden='true'>
     <div class='modal-dialog modal-xl'>
         <div class='modal-content'>
@@ -487,7 +491,7 @@ $mysqli->close();
         });
 
 
-        $('#tableRoomElements').on('click', 'th', function() {
+        $('#tableRoomElements').on('click', 'th', function () {
             const colIndex = $(this).index() + 1;
             if (currentSort.column !== colIndex) {
                 // New column clicked: start with ascending sort

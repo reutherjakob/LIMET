@@ -166,18 +166,21 @@ while ($row = $result->fetch_assoc()) {
     echo "<td data-order='" . safe($row["Verwendung"]) . "'><select class='form-control form-control-sm' id='Verwendung" . safe($row["id"]) . "'>";
     echo selectOption(0, $row["Verwendung"], "Nein");
     echo selectOption(1, $row["Verwendung"], "Ja");
-    echo "</select></td>";
+    echo "</select>";
 
     // Kommentar (popover)
     $Kurzbeschreibung = trim($row["Kurzbeschreibung"] ?? "");
     $buttonClass = $Kurzbeschreibung === "" ? "btn-outline-secondary" : "btn-outline-dark";
     $iconClass = $Kurzbeschreibung === "" ? "fa fa-comment-slash" : "fa fa-comment";
     $dataAttr = "data-description='" . safe($Kurzbeschreibung) . "'";
-    echo "<td data-order='" . safe($Kurzbeschreibung) . "'>
-        <button type='button' class='btn btn-sm $buttonClass comment-btn' $dataAttr id='" . safe($row["id"]) . "' title='Kommentar'>
-            <i class='$iconClass'></i>
+    ?>
+    <td>
+        <button type="button"
+                class="btn btn-sm <?php echo $buttonClass; ?> comment-btn" <?php echo $dataAttr; ?>
+                id="<?php echo $row["id"]; ?>" title="Kommentar"><i class="<?php echo $iconClass; ?>"></i>
         </button>
-    </td>";
+    </td>
+    <?php
 
     // Save button
     echo "<td data-order=''><button type='button' id='" . safe($row["id"]) . "' class='btn btn-warning btn-sm' value='saveElement'><i class='far fa-save'></i></button></td>";
@@ -254,6 +257,7 @@ $mysqli->close();
                 $("#hideZeroRows_RwE").on("change", function () {
                     tableRoomsWithElement.draw();
                 });
+
                 function hideZeroFilter_RwE(settings, data, dataIndex) {
 
                     if (settings.nTable.id !== 'tableRoomsWithElement') {
@@ -268,8 +272,6 @@ $mysqli->close();
                 }
             }
         });
-
-
 
 
         CustomPopover.init('.comment-btn', {

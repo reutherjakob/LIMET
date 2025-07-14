@@ -30,7 +30,7 @@ const columnsDefinition = [
         data: 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen',
         title: 'Funktionsstellen ID',
         visible: false,
-        searchable: false
+        searchable: true
     }, // 2
     {
         data: 'MT-relevant', title: 'MT-rel.', name: 'MT-relevant', case: "bit", render: function (data) {
