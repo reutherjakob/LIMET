@@ -98,7 +98,7 @@ class MYPDF extends TCPDF
             // GET LOGO
             get_titelblatt_logo($this);
 
-            if ($_SESSION["DisclaimerText"] != null) {
+            if (isset($_SESSION["DisclaimerText"]) && $_SESSION["DisclaimerText"] != null) {
                 $this->SetFont('helvetica', '', 9);
                 $Disclaimer_txt = $_SESSION["DisclaimerText"];
                 $this->SetY(280 - ($this->getStringHeight(180, $Disclaimer_txt, 0, false, 'L', 0, '', 0, false, '', '')));

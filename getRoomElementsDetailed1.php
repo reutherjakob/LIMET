@@ -533,8 +533,6 @@ $mysqli->close();
 
 
         $('#tableRoomElements tbody').on('click', 'tr', function () {
-
-
             let id = tableRoomElements.row($(this)).data()[0].display;
             let stk = $("#amount" + id).val();
             let standort = $("#Standort" + id).val();
