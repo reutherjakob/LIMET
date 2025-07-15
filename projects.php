@@ -34,6 +34,9 @@
     }
     init_page_serversides("No Redirect");
     include 'projects_changeProjectModal.html';
+    unset($_SESSION["login_attempts_ip"]);
+    unset($_SESSION["last_attempt_ip"]);
+
     $projectIcons = [
         "BBE" => "fas fa-church",
         "GCP" => "fas fa-toilet-paper",
@@ -190,7 +193,7 @@
                                 <form class='form-check form-check-inline'>
                                     <label class='form-check-label' for='vermerkeFilter'>Vermerke im Projekt</label>
                                     <select class='form-check-inline' id='vermerkeFilter'
-                                        <?php if ($_SESSION["projectName"] == "") {
+                                        <?php if (!isset($_SESSION["projectName"])) {
                                             echo " style='display:none'";
                                         } ?>
                                     >

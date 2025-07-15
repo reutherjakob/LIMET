@@ -115,7 +115,7 @@ class FeedbackModel
         $entry .= "Description: " . htmlspecialchars($desc) . "\n";
         $entry .= "Upvotes: 0\n";
         $entry .= "Downvotes: 0\n";
-        $entry .= $_SESSION["username"]. "\n";
+        $entry .= $_SESSION["username"] . "\n";
         $entry .= "------------------------\n";
         file_put_contents($this->wishlistFile, $entry, FILE_APPEND | LOCK_EX);
         return "Danke für deinen Vorschlag!";
@@ -161,7 +161,7 @@ class FeedbackModel
         if ($screenshotFilename) $entry .= "Screenshot: " . $screenshotFilename . "\n";
         $entry .= "Upvotes: 0\n";
         $entry .= "Downvotes: 0\n";
-        $entry .= $_SESSION["username"]. "\n";
+        $entry .= $_SESSION["username"] . "\n";
         $entry .= "------------------------\n";
         file_put_contents($this->bugReportFile, $entry, FILE_APPEND | LOCK_EX);
         return "Danke für deinen Bug-Report!";
@@ -226,7 +226,7 @@ class FeedbackModel
     public function deleteFeature($id): string
     {
         if (!$id) return "Ungültige Feature-ID.";
-        if (file_exists($this->wishlistFile) && $_SESSION["username"]==="fuchs") {
+        if (file_exists($this->wishlistFile) && strpos($_SESSION["username"], "fuchs") == 0) {
             $content = file_get_contents($this->wishlistFile);
             $rawEntries = explode('------------------------', $content);
             $rawEntries = array_filter(array_map('trim', $rawEntries));
@@ -246,7 +246,7 @@ class FeedbackModel
     public function deleteBug($id): string
     {
         if (!$id) return "Ungültige Bug-Report-ID.";
-        if (file_exists($this->bugReportFile) && $_SESSION["username"]==="fuchs") {
+        if (file_exists($this->bugReportFile) && strpos($_SESSION["username"], "fuchs") == 0) {
             $content = file_get_contents($this->bugReportFile);
             $rawEntries = explode('------------------------', $content);
             $rawEntries = array_filter(array_map('trim', $rawEntries));

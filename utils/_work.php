@@ -37,21 +37,36 @@ init_page_serversides("No Redirect");
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class="card">
-        <div class="card-header">
+        <div class="card-header d-flex justify-content-center">
+            <i class="me-2 ms-2 fas fa-dice"> </i>
+            <i class="me-2 ms-2 fas fa-book-dead"> </i>
+            <i class="me-2 ms-2 fas fa-ring"> </i>
+            <i class="me-2 ms-2 fab fa-jedi-order"></i>
+            <i class="me-2 ms-2 fas fa-award"></i>
+            <i class="me-2 ms-2 fas fa-bomb"></i>
+            <i class="me-2 ms-2 fas fa-pastafarianism"></i>
+            <i class="me-2 ms-2 fas fa-ankh"></i>
 
         </div>
 
         <div class="card-body">
-            <p><i class="fas fa-dice"> </i>
-                <i class="fas fa-book-dead"> </i>
-                <i class="fas fa-ring"> </i>
-                <i class="fas fa-dove"></i>
-                <i class="fab fa-jedi-order"></i>
-                <i class="fas fa-award"></i>
-                <i class="fas fa-bomb"></i>
-                <i class="fas fa-pastafarianism"></i>
-                <i class="fas fa-ankh"></i>
-            </p>
+            <?php
+
+            echo '<div class="container">';
+            echo '<h2>Session-Variablen</h2>';
+            if (!empty($_SESSION)) {
+                echo '<table class="table table-bordered"><thead><tr><th>Schlüssel</th><th>Wert</th></tr></thead><tbody>';
+                foreach ($_SESSION as $key => $value) {
+                    echo '<tr><td>' . htmlspecialchars($key) . '</td><td>' . htmlspecialchars(print_r($value, true)) . '</td></tr>';
+                }
+                echo '</tbody></table>';
+            } else {
+                echo '<p>Keine Sessions gefunden.</p>';
+            }
+            echo '</div>';
+ echo  ;
+            ?>
+
         </div>
 
         <div class="card-footer">

@@ -45,28 +45,9 @@ $stmt->close();
             border-color: #000;
         }
 
-        /* Rotates header text by 90 degrees and aligns it nicely -> BROKEN
-        th.rotate > div {
-            transform: rotate(-90deg);
-            white-space: nowrap;
-            width: 20px;
-            height: 120px; /
-            margin: auto;
-            text-align: left;
-            vertical-align: bottom;
 
-            font-size: 0.85em;
-        }
-
-        th.rotate {
-            vertical-align: bottom !important;
-            height: 120px;
-            padding: 0;
-        }
-        */
 
     </style>
-
 </head>
 <body>
 <div id="limet-navbar"></div>
@@ -141,6 +122,7 @@ $stmt->close();
             </div>
         </div>
         <div class="card-body p-0">
+
             <div id="pivotTableContainer">
                 <!-- Die Pivot-Tabelle wird hier per AJAX geladen -->
             </div>
@@ -265,13 +247,13 @@ $stmt->close();
 
 
                                 paging: true,
-                                pagingType: "simple",
+                                pagingType: "full",
 
                                 searching: true,
                                 ordering: true,
                                 info: true,
                                 lengthChange: true,
-                                pageLength: -1,
+                                pageLength: 10,
                                 lengthMenu: [[10, 20, 50, -1], ['10 rows', '20 rows', '50 rows', 'All']],
                                 responsive: false,
                                 autoWidth: true,
@@ -300,6 +282,7 @@ $stmt->close();
                                     $('#pivotTable_wrapper .dt-paging').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
                                     $('.dt-search label').remove();
                                     $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark");
+
                                 }
                             });
 

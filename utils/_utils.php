@@ -4,12 +4,12 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-//function echorow($row): void
-//{
-//   echo '<pre>';
-//   print_r($row);
-//   echo '</pre>';
-//}
+function echorow($row): void
+{
+   echo '<pre>';
+   print_r($row);
+   echo '</pre>';
+}
 
 function init_page_serversides($ommit_redirect = "", $noscroll = ""): void
 {
