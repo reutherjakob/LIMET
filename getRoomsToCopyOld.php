@@ -104,7 +104,7 @@ if (!function_exists('utils_connect_sql')) {  include "utils/_utils.php"; }
                         return value !== id;
                     });
                 }
-                console.log("Tbody Click ", roomIDs);
+
             });
 
             $("#selectAllRows").click(function () {

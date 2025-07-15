@@ -341,9 +341,7 @@ $mysqli->close();
 
         //Rauminhalt kopieren  für getRoomsToCopy.php
         $("#copyRoomElements").click(function () {
-            console.log(roomIDs);
             roomIDs = [...new Set(roomIDs)];
-            console.log("Letzte log vorm kopieren", roomIDs);
             if (roomIDs.length === 0) {
                 alert("Kein Raum ausgewählt!");
             } else {
@@ -409,11 +407,8 @@ $mysqli->close();
                     "originRoomID": originRoomID
                 },
                 success: function (data) {
-                    console.log("Success opening the modal");
-
+                    //   console.log("Success opening the modal");
                     $("#mbodyCRE").html(data);
-
-
                 }
             });
         });

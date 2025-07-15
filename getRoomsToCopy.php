@@ -167,7 +167,7 @@ $mysqli->close();
                     return value !== id;
                 });
             }
-            console.log("Tbody Click ", roomIDs);
+
         });
 
         $("#selectAllRows").click(function () {
