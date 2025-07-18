@@ -2,7 +2,7 @@
 
  <?php
 session_start();
-if (!function_exists('utils_connect_sql')) {  include "utils/_utils.php"; }
+require_once 'utils/_utils.php';
 init_page_serversides();
 ?>
 
@@ -35,16 +35,13 @@ init_page_serversides();
     });
 
     function make_table() {
-        let K2Return = [1, 2, 3, 12, 17];
+
         <?php
-        //$K2R = filter_input(INPUT_GET, 'K2Return');
-        //$K2Ret = explode(",", $K2R);  //WORKS
         $K2Return = $_GET['K2Return'];
         $K2Ret = json_decode($K2Return);
         ?>
         let K2R = <?php echo json_encode($K2Ret); ?>;
-        //  console.log(K2R);
-
+        ^//console.log(K2R);
         $.ajax({
             url: 'getRoomElementsParameterData.php',
             method: 'GET',

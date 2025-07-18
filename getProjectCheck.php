@@ -2,30 +2,41 @@
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
 <html>
 <head>
-
 </head>
 <body>
 
-
 <?php
-if (!function_exists('utils_connect_sql')) {  include "utils/_utils.php"; }
+require_once 'utils/_utils.php';
 init_page_serversides();
 
 $mysqli = utils_connect_sql();
 
-//Abfrage der Gewerke
-$sql = "SELECT tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
-                FROM tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
-                WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND
-                    TABELLE_Elemente_idTABELLE_Elemente NOT IN(
-                                                                SELECT tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente
-                                                                FROM tabelle_projekt_element_gewerk
-                                                                WHERE (((tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
-                )
-                )
-                GROUP BY tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente;";
+$projectID = $_SESSION["projectID"] ?? null;
+$projectID = intval($projectID);
 
-$result = $mysqli->query($sql);
+if (!$projectID) {
+    echo "<div class='alert alert-danger'>Projekt-ID fehlt oder ungültig.</div>";
+    exit;
+}
+
+// Abfrage: Gewerke zugewiesen
+$stmt = $mysqli->prepare("
+    SELECT reh.TABELLE_Elemente_idTABELLE_Elemente
+    FROM tabelle_räume r
+    INNER JOIN tabelle_räume_has_tabelle_elemente reh ON r.idTABELLE_Räume = reh.TABELLE_Räume_idTABELLE_Räume
+    WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
+      AND reh.TABELLE_Elemente_idTABELLE_Elemente NOT IN (
+          SELECT tabelle_elemente_idTABELLE_Elemente
+          FROM tabelle_projekt_element_gewerk
+          WHERE tabelle_projekte_idTABELLE_Projekte = ?
+      )
+    GROUP BY reh.TABELLE_Elemente_idTABELLE_Elemente
+");
+
+$stmt->bind_param("ii", $projectID, $projectID);
+$stmt->execute();
+$result = $stmt->get_result();
+
 echo "<div class='m-1 row' id='checkGewerke'>";
 if ($result->num_rows > 0) {
     echo "<span class='badge bg-danger'>Gewerke zugeteilt</span>";
@@ -33,13 +44,27 @@ if ($result->num_rows > 0) {
     echo "<span class='badge bg-success'>Gewerke zugeteilt</span>";
 }
 echo "</div>";
+$stmt->close();
 
-$sql = "SELECT tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
-                        FROM tabelle_projekt_varianten_kosten INNER JOIN (tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) ON (tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) AND (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente)
-                        WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_projekt_varianten_kosten.Kosten)='0') AND ((tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
-                        GROUP BY tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten;
-                        ";
-$result = $mysqli->query($sql);
+
+// Abfrage: Kosten zugewiesen
+$stmt = $mysqli->prepare("
+    SELECT reh.TABELLE_Elemente_idTABELLE_Elemente, reh.tabelle_Varianten_idtabelle_Varianten
+    FROM tabelle_räume r
+    INNER JOIN tabelle_räume_has_tabelle_elemente reh ON r.idTABELLE_Räume = reh.TABELLE_Räume_idTABELLE_Räume
+    INNER JOIN tabelle_projekt_varianten_kosten pk ON 
+        pk.tabelle_Varianten_idtabelle_Varianten = reh.tabelle_Varianten_idtabelle_Varianten
+        AND pk.tabelle_elemente_idTABELLE_Elemente = reh.TABELLE_Elemente_idTABELLE_Elemente
+    WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
+      AND pk.Kosten = '0'
+      AND pk.tabelle_projekte_idTABELLE_Projekte = ?
+    GROUP BY reh.TABELLE_Elemente_idTABELLE_Elemente, reh.tabelle_Varianten_idtabelle_Varianten
+");
+
+$stmt->bind_param("ii", $projectID, $projectID);
+$stmt->execute();
+$result = $stmt->get_result();
+
 echo "<div class='m-1 row' id='checkCosts'>";
 if ($result->num_rows > 0) {
     echo "<span class='badge bg-danger'>Kosten zugeordnet</span>";
@@ -47,14 +72,24 @@ if ($result->num_rows > 0) {
     echo "<span class='badge bg-success'>Kosten zugeordnet</span>";
 }
 echo "</div>";
+$stmt->close();
 
 
-// Offene Protokollpunkte
-$sql = "SELECT tabelle_Vermerke.idtabelle_Vermerke
-                FROM (tabelle_Vermerkuntergruppe INNER JOIN tabelle_Vermerkgruppe ON tabelle_Vermerkuntergruppe.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe = tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe) INNER JOIN tabelle_Vermerke ON tabelle_Vermerkuntergruppe.idtabelle_Vermerkuntergruppe = tabelle_Vermerke.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe
-                WHERE (((tabelle_Vermerkgruppe.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_Vermerke.Vermerkart)='Bearbeitung') AND ((tabelle_Vermerke.Bearbeitungsstatus)=0));
-                ";
-$result = $mysqli->query($sql);
+// Abfrage: Offene Protokollpunkte
+$stmt = $mysqli->prepare("
+    SELECT v.idtabelle_Vermerke
+    FROM tabelle_Vermerkuntergruppe ug
+    INNER JOIN tabelle_Vermerkgruppe g ON ug.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe = g.idtabelle_Vermerkgruppe
+    INNER JOIN tabelle_Vermerke v ON ug.idtabelle_Vermerkuntergruppe = v.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe
+    WHERE g.tabelle_projekte_idTABELLE_Projekte = ?
+      AND v.Vermerkart = 'Bearbeitung'
+      AND v.Bearbeitungsstatus = 0
+");
+
+$stmt->bind_param("i", $projectID);
+$stmt->execute();
+$result = $stmt->get_result();
+
 echo "<div class='m-1 row' id='checkProtocols'>";
 if ($result->num_rows > 0) {
     echo "<span class='badge bg-danger'>Offene Protokollpunkte</span>";
@@ -62,12 +97,21 @@ if ($result->num_rows > 0) {
     echo "<span class='badge bg-success'>Offene Protokollpunkte</span>";
 }
 echo "</div>";
+$stmt->close();
 
-// Elemente Losen zugeteilt?
-$sql = "SELECT tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern
-                FROM tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
-                WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern) Is Null));";
-$result = $mysqli->query($sql);
+
+// Abfrage: Lose Zuordnung
+$stmt = $mysqli->prepare("
+    SELECT reh.tabelle_Lose_Extern_idtabelle_Lose_Extern
+    FROM tabelle_räume r
+    INNER JOIN tabelle_räume_has_tabelle_elemente reh ON r.idTABELLE_Räume = reh.TABELLE_Räume_idTABELLE_Räume
+    WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
+      AND reh.tabelle_Lose_Extern_idtabelle_Lose_Extern IS NULL
+");
+$stmt->bind_param("i", $projectID);
+$stmt->execute();
+$result = $stmt->get_result();
+
 echo "<div class='m-1 row' id='checkLots'>";
 if ($result->num_rows > 0) {
     echo "<span class='badge bg-danger'>Elemente Losen zugeordnet</span>";
@@ -75,12 +119,12 @@ if ($result->num_rows > 0) {
     echo "<span class='badge bg-success'>Elemente Losen zugeordnet</span>";
 }
 echo "</div>";
-
+$stmt->close();
 $mysqli->close();
 
 ?>
+
 <script>
 </script>
-
 </body>
 </html>

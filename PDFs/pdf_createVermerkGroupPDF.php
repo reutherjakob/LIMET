@@ -1,12 +1,16 @@
 <?php
 #2025done
-if (!function_exists('utils_connect_sql')) {
-    include "../utils/_utils.php";
+require_once '../utils/_utils.php';
+require_once 'pdf_createBericht_LOGO.php';
+require_once '../TCPDF-main/TCPDF-main/tcpdf.php';
+require_once '_pdf_createBericht_utils.php';
+
+
+$gruppenID = filter_input(INPUT_GET, 'gruppenID', FILTER_VALIDATE_INT);
+$projectID = isset($_SESSION["projectID"]) ? (int)$_SESSION["projectID"] : null;
+if (!$gruppenID || !$projectID) {
+    die('Ungültige Eingabe.');
 }
-check_login();
-include "pdf_createBericht_LOGO.php";
-require_once('../TCPDF-main/TCPDF-main/tcpdf.php');
-include "_pdf_createBericht_utils.php";
 
 class MYPDF extends TCPDF
 {
@@ -15,13 +19,17 @@ class MYPDF extends TCPDF
         get_header_logo($this);
         $this->SetFont('helvetica', '', 10);
         $mysqli = utils_connect_sql();
-        $sql = "SELECT tabelle_Vermerkgruppe.Gruppenname, tabelle_Vermerkgruppe.Gruppenart, tabelle_Vermerkgruppe.Ort, tabelle_Vermerkgruppe.Verfasser, tabelle_Vermerkgruppe.Startzeit, tabelle_Vermerkgruppe.Endzeit, tabelle_Vermerkgruppe.Datum, tabelle_projekte.Projektname
-                    FROM tabelle_Vermerkgruppe INNER JOIN tabelle_projekte ON tabelle_Vermerkgruppe.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
-                    WHERE (((tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe)=" . filter_input(INPUT_GET, 'gruppenID') . "));";
-        $result = $mysqli->query($sql);
-        while ($row = $result->fetch_assoc()) {
-            $title = $row['Gruppenname'];
-        }
+        $gruppenID = filter_input(INPUT_GET, 'gruppenID', FILTER_VALIDATE_INT);
+        $stmt = $mysqli->prepare(
+            "SELECT tabelle_Vermerkgruppe.Gruppenname
+             FROM tabelle_Vermerkgruppe
+             WHERE tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe=?"
+        );
+        $stmt->bind_param("i", $gruppenID);
+        $stmt->execute();
+        $stmt->bind_result($title);
+        $stmt->fetch();
+        $stmt->close();
         $mysqli->close();
         $this->Cell(0, 0, $title, 0, false, 'R', 0, '', 0, false, 'B', 'B');
         $this->Ln();
@@ -39,7 +47,6 @@ class MYPDF extends TCPDF
     // Load table data from file
     public function LoadData($file)
     {
-        // Read file lines
         $lines = file($file);
         $data = array();
         foreach ($lines as $line) {
@@ -48,16 +55,13 @@ class MYPDF extends TCPDF
         return $data;
     }
 
-    // Colored table
     public function verteilerTable($header, $data)
     {
-        // Colors, line width and bold font
         $this->SetFillColor(255, 0, 0);
         $this->SetTextColor(0);
         $this->SetDrawColor(0, 0, 0);
         $this->SetLineWidth(0.1);
         $this->SetFont('', '', '9');
-        // Header
         $w = array(40, 50, 35, 35, 10, 10);
         $num_headers = count($header);
         $this->Cell(0, 6, 'Teilnehmer/Verteiler:', 0, 0, 'L', 0);
@@ -66,12 +70,9 @@ class MYPDF extends TCPDF
             $this->Cell($w[$i], 6, $header[$i], 1, 0, 'L', 0);
         }
         $this->Ln();
-        // Color and font restoration
         $this->SetFillColor(244, 244, 244);
         $this->SetTextColor(0);
         $this->SetFont('', '', '8');
-
-        // Data
         $fill = 0;
         foreach ($data as $row) {
             $rowHeight = 5;
@@ -81,66 +82,45 @@ class MYPDF extends TCPDF
             $this->Cell($w[3], $rowHeight, $row['Zuständigkeit'], 1, 0, 'L', $fill, '', 3);
 
             $this->SetFont('zapfdingbats', '', 8);
-            if ($row['Anwesenheit'] == '0') {
-                $this->Cell($w[4], $rowHeight, TCPDF_FONTS::unichr(54), 1, 0, 'C', $fill, '', 0);
-            } else {
-                $this->Cell($w[4], $rowHeight, TCPDF_FONTS::unichr(52), 1, 0, 'C', $fill, '', 0);
-            }
-            if ($row['Verteiler'] == '0') {
-                $this->Cell($w[5], $rowHeight, TCPDF_FONTS::unichr(54), 1, 0, 'C', $fill, '', 0);
-            } else {
-                $this->Cell($w[5], $rowHeight, TCPDF_FONTS::unichr(52), 1, 0, 'C', $fill, '', 0);
-            }
+            $this->Cell($w[4], $rowHeight, $row['Anwesenheit'] == '0' ? TCPDF_FONTS::unichr(54) : TCPDF_FONTS::unichr(52), 1, 0, 'C', $fill, '', 0);
+            $this->Cell($w[5], $rowHeight, $row['Verteiler'] == '0' ? TCPDF_FONTS::unichr(54) : TCPDF_FONTS::unichr(52), 1, 0, 'C', $fill, '', 0);
             $this->SetFont('helvetica', '', '8');
             $this->Ln();
             $fill = !$fill;
         }
-
         $this->Cell(array_sum($w), 0, '', 'T');
     }
 
-    // Topics table
     public function topicsTable($header, $data)
     {
-        // Colors, line width and bold font
         $this->SetFillColor(255, 0, 0);
         $this->SetTextColor(0);
         $this->SetDrawColor(0, 0, 0);
         $this->SetLineWidth(0.1);
         $this->SetFont('', '', '9');
-        // Header
         $w = array(140, 15, 25);
         $num_headers = count($header);
         $this->SetFillColor(244, 244, 244);
         $this->SetTextColor(0);
-        // Data
         $fill = 0;
         $untergruppenID = 0;
         foreach ($data as $row) {
             if (trim($row['Vermerktext']) !== "") {
                 $this->SetFont('helvetica', '', '8');
                 $betreffText = "";
-                if ($_SESSION["projectName"] === "GCP" && null != $row['Raumnummer_Nutzer']) {
-                    $betreffText = $betreffText . 'Betrifft Raum: ' . $row['Raumnummer_Nutzer'] . " " . $row['Raumbezeichnung'] . "\n";
-                } else {
-                    if (null != ($row['Raumnr'])) {
-                        if (preg_match('/\d/', $row['Raumnr'])) {
-                            $betreffText = $betreffText . 'Betrifft Raum: ' . $row['Raumnr'] . " " . $row['Raumbezeichnung'] . "\n";
-                        } else {
-                            $betreffText = $betreffText . 'Betrifft: ' . $row['Raumnr'] . " " . $row['Raumbezeichnung'] . "\n";
-                        }
-                    }
+                if (!empty($row['Räume'])) {
+                    $raeumeArray = array_filter(array_map('trim', explode(',', $row['Räume'])));
+                    $anzahl = count($raeumeArray);
+                    $label = $anzahl > 1 ? 'Räume' : 'Raum';
+                    $betreffText .= "Betrifft $label: " . $row['Räume'] . "\n";
                 }
-                if (null != ($row['LosNr_Extern'])) {
-                    $betreffText = $betreffText . 'Betrifft Los: ' . $row['LosNr_Extern'] . " " . $row['LosBezeichnung_Extern'] . "\n";
+
+                if (!empty($row['LosNr_Extern'])) {
+                    $betreffText .= 'Betrifft Los: ' . $row['LosNr_Extern'] . " " . $row['LosBezeichnung_Extern'] . "\n";
                 }
                 if ($row['Vermerkart'] === 'Bearbeitung') {
                     $textNameFälligkeit = $row['Name'] . "\n" . $row['Faelligkeit'];
-                    if ($row['Bearbeitungsstatus'] === "0") {
-                        $textNameFälligkeit = $textNameFälligkeit . "\n" . "Offen";
-                    } else {
-                        $textNameFälligkeit = $textNameFälligkeit . "\n" . "Erledigt";
-                    }
+                    $textNameFälligkeit .= ($row['Bearbeitungsstatus'] === "0") ? "\nOffen" : "\nErledigt";
                 } else {
                     $textNameFälligkeit = "";
                 }
@@ -148,12 +128,7 @@ class MYPDF extends TCPDF
                 $rowHeight4 = $this->getStringHeight($w[0], $betreffText, false, true, '', 1);
                 $rowHeight2 = $this->getStringHeight($w[2], $textNameFälligkeit, false, true, '', 1);
                 $rowHeight3 = $this->getStringHeight($w[0], $row['Untergruppennummer'] . " " . $row['Untergruppenname'], false, true, '', 1);
-                if ($rowHeight1 + $rowHeight4 > $rowHeight2) {
-                    $rowHeight = $rowHeight1 + $rowHeight4;
-                } else {
-                    $rowHeight = $rowHeight2;
-                    $rowHeight1 = $rowHeight - $rowHeight4;
-                }
+                $rowHeight = max($rowHeight1 + $rowHeight4, $rowHeight2);
                 if ($untergruppenID != $row['idtabelle_Vermerkuntergruppe']) {
                     $y = $this->GetY();
                     if (($y + 2 * $rowHeight3 + $rowHeight) >= 270) {
@@ -180,15 +155,24 @@ class MYPDF extends TCPDF
                 $this->SetFont('', 'I', '7');
                 $this->MultiCell($w[0], $rowHeight4, $betreffText, 'LTR', 'L', $fill, 0, '', '');
                 $this->SetFont('', '', '8');
-                $this->MultiCell($w[1], $rowHeight, $row['Vermerkart'], 1, 'L', $fill, 0, '', '');
+
+
+                $softHyphen = "\xC2\xAD";
+                if ($row['Vermerkart'] === "Bearbeitung") {
+                    $prettyText = "Bearbei" . $softHyphen . "tung";
+                } else {
+                    $prettyText = $row['Vermerkart'];
+                }
+                $this->MultiCell($w[1], $rowHeight, $prettyText, 1, 'L', $fill, 0, '', '');
+
+
                 if ($row['Vermerkart'] == 'Bearbeitung') {
                     $this->MultiCell($w[2], $rowHeight, $textNameFälligkeit, 1, 'L', $fill, 0, '', '');
-                    //$this->SetFont('helvetica','','8');
                 } else {
                     $this->MultiCell($w[2], $rowHeight, '', 1, 'L', $fill, 0, '', '');
                 }
                 $this->Ln($rowHeight4);
-                $this->MultiCell($w[0], $rowHeight1, $row['Vermerktext'], 'LRB', 'L', $fill, 1, '', '');
+                $this->MultiCell($w[0], $rowHeight - $rowHeight4, $row['Vermerktext'], 'LRB', 'L', $fill, 1, '', '');
             }
         }
     }
@@ -214,64 +198,63 @@ $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 $pdf->SetAutoPageBreak(false, PDF_MARGIN_BOTTOM);
 $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
-if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {// set some language-dependent strings (optional)
+if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
     require_once(dirname(__FILE__) . '/lang/eng.php');
     $pdf->setLanguageArray($l);
 }
 
-// ---------------------------------------------------------
 $pdf->SetFont('helvetica', '', 10);
 $pdf->AddPage();
+$pdf->SetY(21);
 $mysqli = utils_connect_sql();
-$sql = "SELECT tabelle_Vermerkgruppe.Gruppenname, tabelle_Vermerkgruppe.Gruppenart, tabelle_Vermerkgruppe.Ort, tabelle_Vermerkgruppe.Verfasser,  DATE_FORMAT(tabelle_Vermerkgruppe.Startzeit, '%H:%i') AS Startzeit, DATE_FORMAT(tabelle_Vermerkgruppe.Endzeit, '%H:%i') AS Endzeit, tabelle_Vermerkgruppe.Datum, tabelle_projekte.Projektname
-            FROM tabelle_Vermerkgruppe INNER JOIN tabelle_projekte ON tabelle_Vermerkgruppe.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
-            WHERE (((tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe)=" . filter_input(INPUT_GET, 'gruppenID') . "));";
 
-$result = $mysqli->query($sql);
-
-while ($row = $result->fetch_assoc()) {
-
-    $title = "Projekt: " . $row['Projektname'] . "\n" . "Thema: " . $row['Gruppenname'] . "\nDatum: " . $row['Datum'] . " von " . $row['Startzeit'] . " bis " . $row['Endzeit'] . "\nOrt: " . $row['Ort'];
-    $verfasser = $row['Verfasser'];
-    $document_out_title_components = $document_out_title_components  . $row['Gruppenart'] . "_" . $row['Datum'] . "_" . $row['Gruppenname'] . "_";
+$stmt = $mysqli->prepare(
+    "SELECT tabelle_Vermerkgruppe.Gruppenname, tabelle_Vermerkgruppe.Gruppenart, tabelle_Vermerkgruppe.Ort, tabelle_Vermerkgruppe.Verfasser, 
+        DATE_FORMAT(tabelle_Vermerkgruppe.Startzeit, '%H:%i') AS Startzeit, DATE_FORMAT(tabelle_Vermerkgruppe.Endzeit, '%H:%i') AS Endzeit,
+        tabelle_Vermerkgruppe.Datum, tabelle_projekte.Projektname
+     FROM tabelle_Vermerkgruppe INNER JOIN tabelle_projekte
+        ON tabelle_Vermerkgruppe.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
+     WHERE tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe = ?"
+);
+$stmt->bind_param("i", $gruppenID);
+$stmt->execute();
+$stmt->bind_result($gruppenname, $gruppenart, $ort, $verfasser, $startzeit, $endzeit, $datum, $projektname);
+while ($stmt->fetch()) {
+    $title = "Projekt: $projektname\nThema: $gruppenname\nDatum: $datum von $startzeit bis $endzeit\nOrt: $ort";
+    $document_out_title_components .= $gruppenart . "_" . $datum . "_" . $gruppenname . "_";
     $rowHeight1 = $pdf->getStringHeight(180, $title, false, true, '', 1);
     $pdf->MultiCell(0, $rowHeight1, $title, 1, 'L', 0, 0, '', '', true);
 }
-$pdf->Ln(5);
-// column titles
+$stmt->close();
+$pdf->Ln(1);
+
 $verteiler_table_header = array('Name', 'Mail', 'Organisation', 'Rolle', 'Anw.', 'Vert.');
 
-// data loading Ansprechpersonentabelle
-/*
-$sql = "SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen, tabelle_ansprechpersonen.Name, tabelle_ansprechpersonen.Vorname, tabelle_ansprechpersonen.Mail, tabelle_organisation.Organisation, tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.Anwesenheit, tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.Verteiler
-FROM tabelle_organisation INNER JOIN (tabelle_projekte_has_tabelle_ansprechpersonen INNER JOIN (tabelle_ansprechpersonen INNER JOIN tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen ON tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen = tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen) ON tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen = tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen) ON tabelle_organisation.idtabelle_organisation = tabelle_projekte_has_tabelle_ansprechpersonen.tabelle_organisation_idtabelle_organisation
-WHERE (((tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe)=" . filter_input(INPUT_GET, 'gruppenID') . ") AND ((tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ")) ORDER BY Organisation;";
-*/
-$sql = "
-SELECT
-    tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen,
-    tabelle_ansprechpersonen.Name,
-    tabelle_ansprechpersonen.Vorname,
-    tabelle_ansprechpersonen.Mail,
-    tabelle_organisation.Organisation,
-    tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.Anwesenheit,
-    tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.Verteiler, 
-    tabelle_projektzuständigkeiten.Zuständigkeit
-FROM
-    tabelle_organisation
+$stmt = $mysqli->prepare(
+    "SELECT
+        tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen,
+        tabelle_ansprechpersonen.Name,
+        tabelle_ansprechpersonen.Vorname,
+        tabelle_ansprechpersonen.Mail,
+        tabelle_organisation.Organisation,
+        tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.Anwesenheit,
+        tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.Verteiler,
+        tabelle_projektzuständigkeiten.Zuständigkeit
+     FROM tabelle_organisation
         INNER JOIN tabelle_projekte_has_tabelle_ansprechpersonen
-                   ON tabelle_organisation.idtabelle_organisation = tabelle_projekte_has_tabelle_ansprechpersonen.tabelle_organisation_idtabelle_organisation
+            ON tabelle_organisation.idtabelle_organisation = tabelle_projekte_has_tabelle_ansprechpersonen.tabelle_organisation_idtabelle_organisation
         INNER JOIN tabelle_ansprechpersonen
-                   ON tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen = tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen
+            ON tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen = tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen
         INNER JOIN tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen
-                   ON tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen = tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen
+            ON tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen = tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen
         INNER JOIN tabelle_projektzuständigkeiten
-                   ON tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projektzuständigkeiten_idTABELLE_Projektzuständigkeiten = tabelle_projektzuständigkeiten.idTABELLE_Projektzuständigkeiten
-WHERE
-    tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe = " . filter_input(INPUT_GET, 'gruppenID') . "
-  AND tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projekte_idTABELLE_Projekte = " . $_SESSION["projectID"] . "";
-
-$result = $mysqli->query($sql);
+            ON tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projektzuständigkeiten_idTABELLE_Projektzuständigkeiten = tabelle_projektzuständigkeiten.idTABELLE_Projektzuständigkeiten
+     WHERE tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe = ?
+       AND tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projekte_idTABELLE_Projekte = ?"
+);
+$stmt->bind_param("ii", $gruppenID, $projectID);
+$stmt->execute();
+$result = $stmt->get_result();
 $gruppenTeilnehmer = array();
 while ($row = $result->fetch_assoc()) {
     $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Name'] = $row['Name'];
@@ -281,48 +264,62 @@ while ($row = $result->fetch_assoc()) {
     $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Anwesenheit'] = $row['Anwesenheit'];
     $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Verteiler'] = $row['Verteiler'];
     $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Zuständigkeit'] = $row['Zuständigkeit'];
-
-
 }
-
-// print colored table
+$stmt->close();
 $pdf->Ln();
 $pdf->verteilerTable($verteiler_table_header, $gruppenTeilnehmer);
 
-// ---------------------------------------------------------
-// print topics
-$pdf->Ln();
+$pdf->Ln(2);
 $topics_table_header = array('Text', 'Typ', 'Wer/Bis wann');
 
-// data loading
+$stmt = $mysqli->prepare(
+    "SELECT
+        v.idtabelle_Vermerke,
+        v.Vermerktext,
+        v.Vermerkart,
+        v.Bearbeitungsstatus,
+        v.Faelligkeit,
+        u.Untergruppennummer,
+        u.Untergruppenname,
+        GROUP_CONCAT(DISTINCT CONCAT_WS(' ', r.Raumnr, r.Raumbezeichnung) SEPARATOR ', ') AS Räume,
+        GROUP_CONCAT(DISTINCT a.Name SEPARATOR ', ') AS Name,
+        v.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe,
+        le.LosNr_Extern,
+        le.LosBezeichnung_Extern
+    FROM tabelle_Vermerke v
+    INNER JOIN tabelle_Vermerkuntergruppe u ON u.idtabelle_Vermerkuntergruppe = v.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe
+    LEFT JOIN tabelle_vermerke_has_tabelle_räume vr ON v.idtabelle_Vermerke = vr.tabelle_vermerke_idTabelle_vermerke
+    LEFT JOIN tabelle_räume r ON vr.tabelle_räume_idTabelle_räume = r.idTABELLE_Räume
+    LEFT JOIN tabelle_Vermerke_has_tabelle_ansprechpersonen va ON v.idtabelle_Vermerke = va.tabelle_Vermerke_idtabelle_Vermerke
+    LEFT JOIN tabelle_ansprechpersonen a ON va.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen = a.idTABELLE_Ansprechpersonen
+    LEFT JOIN tabelle_lose_extern le ON v.tabelle_lose_extern_idtabelle_Lose_Extern = le.idtabelle_Lose_Extern
+    WHERE u.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe = ?
+    GROUP BY v.idtabelle_Vermerke
+    ORDER BY u.Untergruppennummer"
+);
+$stmt->bind_param("i", $gruppenID);
+$stmt->execute();
+$result = $stmt->get_result();
 
-$sql = "SELECT tabelle_Vermerkuntergruppe.Untergruppennummer, tabelle_Vermerkuntergruppe.Untergruppenname, tabelle_Vermerke.Faelligkeit, tabelle_Vermerke.Vermerkart, tabelle_Vermerke.Vermerktext, tabelle_Vermerke.Bearbeitungsstatus, GROUP_CONCAT(tabelle_ansprechpersonen.Name SEPARATOR ', ') AS Name, tabelle_Vermerke.idtabelle_Vermerke, tabelle_Vermerkuntergruppe.idtabelle_Vermerkuntergruppe, tabelle_räume.Raumnr, tabelle_räume.Raumnummer_Nutzer, tabelle_räume.Raumbezeichnung, tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern
-FROM ((tabelle_ansprechpersonen RIGHT JOIN (tabelle_Vermerke_has_tabelle_ansprechpersonen RIGHT JOIN (tabelle_Vermerkuntergruppe INNER JOIN tabelle_Vermerke ON tabelle_Vermerkuntergruppe.idtabelle_Vermerkuntergruppe = tabelle_Vermerke.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe) ON tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_Vermerke_idtabelle_Vermerke = tabelle_Vermerke.idtabelle_Vermerke) ON tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen = tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen) LEFT JOIN tabelle_räume ON tabelle_Vermerke.tabelle_räume_idTABELLE_Räume = tabelle_räume.idTABELLE_Räume) LEFT JOIN tabelle_lose_extern ON tabelle_Vermerke.tabelle_lose_extern_idtabelle_Lose_Extern = tabelle_lose_extern.idtabelle_Lose_Extern
-WHERE (((tabelle_Vermerkuntergruppe.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe)=" . filter_input(INPUT_GET, 'gruppenID') . "))
-GROUP BY idtabelle_Vermerke
-ORDER BY tabelle_Vermerkuntergruppe.Untergruppennummer;";
-
-$result = $mysqli->query($sql);
-$dataVermerke = array();
+$dataVermerke = [];
 while ($row = $result->fetch_assoc()) {
-    $dataVermerke[$row['idtabelle_Vermerke']]['idtabelle_Vermerkuntergruppe'] = $row['idtabelle_Vermerkuntergruppe'];
-    $dataVermerke[$row['idtabelle_Vermerke']]['Untergruppennummer'] = $row['Untergruppennummer'];
-    $dataVermerke[$row['idtabelle_Vermerke']]['Untergruppenname'] = $row['Untergruppenname'];
-    $dataVermerke[$row['idtabelle_Vermerke']]['Vermerktext'] = $row['Vermerktext'];
-    $dataVermerke[$row['idtabelle_Vermerke']]['Bearbeitungsstatus'] = $row['Bearbeitungsstatus'];
-    $dataVermerke[$row['idtabelle_Vermerke']]['Name'] = $row['Name'];
-    $dataVermerke[$row['idtabelle_Vermerke']]['Faelligkeit'] = $row['Faelligkeit'];
-    $dataVermerke[$row['idtabelle_Vermerke']]['Vermerkart'] = $row['Vermerkart'];
-    $dataVermerke[$row['idtabelle_Vermerke']]['Raumnummer_Nutzer'] = $row['Raumnummer_Nutzer'];
-    $dataVermerke[$row['idtabelle_Vermerke']]['Raumnr'] = $row['Raumnr'];
-    $dataVermerke[$row['idtabelle_Vermerke']]['Raumbezeichnung'] = $row['Raumbezeichnung'];
-    $dataVermerke[$row['idtabelle_Vermerke']]['LosNr_Extern'] = $row['LosNr_Extern'];
-    $dataVermerke[$row['idtabelle_Vermerke']]['LosBezeichnung_Extern'] = $row['LosBezeichnung_Extern'];
-
+    $vermerkID = $row['idtabelle_Vermerke'];
+    $dataVermerke[$vermerkID]['idtabelle_Vermerkuntergruppe'] = $row['tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe'];
+    $dataVermerke[$vermerkID]['Untergruppennummer'] = $row['Untergruppennummer'];
+    $dataVermerke[$vermerkID]['Untergruppenname'] = $row['Untergruppenname'];
+    $dataVermerke[$vermerkID]['Vermerktext'] = $row['Vermerktext'];
+    $dataVermerke[$vermerkID]['Bearbeitungsstatus'] = $row['Bearbeitungsstatus'];
+    $dataVermerke[$vermerkID]['Name'] = $row['Name'];
+    $dataVermerke[$vermerkID]['Faelligkeit'] = $row['Faelligkeit'];
+    $dataVermerke[$vermerkID]['Vermerkart'] = $row['Vermerkart'];
+    $dataVermerke[$vermerkID]['Räume'] = $row['Räume'];
+    $dataVermerke[$vermerkID]['LosNr_Extern'] = $row['LosNr_Extern'];
+    $dataVermerke[$vermerkID]['LosBezeichnung_Extern'] = $row['LosBezeichnung_Extern'];
 }
+$stmt->close();
+
 $pdf->topicsTable($topics_table_header, $dataVermerke);
 
-// -----------------------Abschlusstext anpassen----------------------------
 $pdf->SetFont('helvetica', '', '6');
 $pdf->Ln(2);
 $outstr = "Hinweis: Sollten Einwände gegen Inhalte dieses Protokolls bestehen, so werden die Empfänger ersucht, diese Einwände im Rahmen der nächsten Besprechung mündlich oder bis spätestens 10 Tage nach Erhalt des Protokolls schriftlich vorzubringen, andernfalls wird allgemeines Einverständnis angenommen. \nDie Verteilung erfolgt ausschließlich über Email. \n  " . $verfasser;
@@ -331,9 +328,7 @@ $y = $pdf->GetY();
 if (($y + $height) >= 275) {
     $pdf->AddPage();
 }
-$pdf->Multicell(180, 5, $outstr, 0, 'L', 0, 1);
-//$pdf->Image('/var/www/vhosts/limet-rb.com/httpdocs/Dokumente_RB/Images/Image_Vermerk_2898_61e58a78cd4cf.jpeg', '', '', 40, 40, 'JPG', '', '', true, 150, '', false, false, 1, false, false, false);
-
-
+$pdf->MultiCell(180, 5, $outstr, 0, 'L', 0, 1);
+ob_end_clean();
 $pdf->Output(getFileName($document_out_title_components), 'I');
-
+?>

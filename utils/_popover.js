@@ -86,7 +86,7 @@ const CustomPopover = (function ($) {
             const textareaElement = popoverElement.find('.popover-textarea');
 
             if (!isClickInsidePopover && !isClickOnTrigger && isClickFarAway(e, textareaElement)) {
-                handleSave();
+              //  handleSave();  //SAVE IF USER CLICKS AWAY?? Faster & unsaver
                 hidePopover();
 
             }

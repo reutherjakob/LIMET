@@ -1,7 +1,5 @@
 <?php
-if (!function_exists('utils_connect_sql')) {
-    include "utils/_utils.php";
-}
+require_once 'utils/_utils.php';
 check_login();
 
 // Collect all fields via POST only (more secure than GET)

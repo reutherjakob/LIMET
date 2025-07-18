@@ -2,9 +2,7 @@
 
 include 'pdf_createBericht_MYPDFclass_A3Queer.php'; //require_once('../TCPDF-main/TCPDF-main/tcpdf.php'); is in class file
 include '_pdf_createBericht_utils.php';
-if (!function_exists('utils_connect_sql')) {
-    include "../utils/_utils.php";
-}
+require_once '../utils/_utils.php';
 include 'pdf_createMTTabelle.php';
 include 'pdf_createBauangabenBericht_constDefinitions.php';
 

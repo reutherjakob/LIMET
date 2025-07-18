@@ -9,13 +9,13 @@ function safeRedirect($url)
 }
 
 // Function for logging errors
-function logError($message)
+function logError($message): void
 {
     error_log($message);
 }
 
 // Function to fetch user permissions
-function fetch_permissions($mysqli, $username)
+function fetch_permissions($mysqli, $username): int
 {
     $stmt = $mysqli->prepare("SELECT permission FROM tabelle_user_permission WHERE user = ?");
     if (!$stmt) {
@@ -32,7 +32,8 @@ function fetch_permissions($mysqli, $username)
 }
 
 // Function to check rate limiting
-function checkRateLimit($ip) {
+function checkRateLimit($ip): void
+{
     if (!isset($_SESSION['login_attempts_ip'])) {
         $_SESSION['login_attempts_ip'] = array();
     }
@@ -40,8 +41,8 @@ function checkRateLimit($ip) {
         $_SESSION['last_attempt_ip'] = array();
     }
 
-    $attempts = isset($_SESSION['login_attempts_ip'][$ip]) ? $_SESSION['login_attempts_ip'][$ip] : 0;
-    $lastAttempt = isset($_SESSION['last_attempt_ip'][$ip]) ? $_SESSION['last_attempt_ip'][$ip] : 0;
+    $attempts = $_SESSION['login_attempts_ip'][$ip] ?? 0;
+    $lastAttempt = $_SESSION['last_attempt_ip'][$ip] ?? 0;
     $currentTime = time();
 
     // Reset attempts if last attempt was more than 15 minutes ago
@@ -61,7 +62,7 @@ function checkRateLimit($ip) {
 }
 
 $username = isset($_POST["username"]) ? trim($_POST["username"]) : '';
-$password = isset($_POST["password"]) ? $_POST["password"] : '';
+$password = $_POST["password"] ?? '';
 
 if (empty($username) || empty($password)) {
     safeRedirect('index.php?error=empty_fields');

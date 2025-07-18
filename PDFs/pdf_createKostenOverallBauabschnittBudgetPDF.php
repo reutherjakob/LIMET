@@ -1,8 +1,6 @@
 <?php
 #2025done
-if (!function_exists('utils_connect_sql')) {
-    include "../utils/_utils.php";
-}
+require_once '../utils/_utils.php';
 include "../utils/_format.php";
 include "pdf_createBericht_MYPDFclass_A4_ohneTitelblatt.php";
 require_once('../TCPDF-main/TCPDF-main/tcpdf.php');

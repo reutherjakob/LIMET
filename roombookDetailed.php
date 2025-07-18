@@ -22,9 +22,7 @@
 
 </head>
 <?php
-if (!function_exists('utils_connect_sql')) {
-    include "utils/_utils.php";
-}
+require_once 'utils/_utils.php';
 init_page_serversides();
 ?>
 
@@ -53,18 +51,30 @@ init_page_serversides();
                 <div class="card-body" style="overflow: auto; ">
                     <?php
                     $mysqli = utils_connect_sql();
+                    $projectID = $_SESSION["projectID"] ?? null;
 
-                    $sql = "SELECT tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.Nutzfläche,
-                                                    tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, 
-                                                    tabelle_räume.Bauabschnitt,  tabelle_räume.Raumnummer_Nutzer,
-                                                    tabelle_räume.`Anmerkung allgemein`, tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, 
-                                                    tabelle_räume.idTABELLE_Räume, tabelle_räume.`MT-relevant`, `tabelle_räume`.`Anmerkung FunktionBO`, tabelle_räume.Entfallen
-                                                FROM tabelle_räume INNER JOIN tabelle_projekte ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
-                                                WHERE (((tabelle_projekte.idTABELLE_Projekte)=" . $_SESSION["projectID"] . "));";
+                    if (!is_numeric($projectID)) {
+                        die("Ungültige Projekt-ID");
+                    }
 
-                    $result = $mysqli->query($sql);
+                    $stmt = $mysqli->prepare("
+                        SELECT 
+                            r.Raumnr, r.Raumbezeichnung, r.Nutzfläche,
+                            r.`Raumbereich Nutzer`, r.Geschoss, r.Bauetappe, 
+                            r.Bauabschnitt, r.Raumnummer_Nutzer,
+                            r.`Anmerkung allgemein`, r.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, 
+                            r.idTABELLE_Räume, r.`MT-relevant`, 
+                            r.`Anmerkung FunktionBO`, r.Entfallen
+                        FROM tabelle_räume r
+                        INNER JOIN tabelle_projekte p 
+                            ON r.tabelle_projekte_idTABELLE_Projekte = p.idTABELLE_Projekte
+                        WHERE p.idTABELLE_Projekte = ?
+                    ");
 
-                    /** @noinspection HtmlDeprecatedAttribute */
+                    $stmt->bind_param("i", $projectID);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+
                     echo "<table class='table table-striped table-sm table-hover table-bordered border border-light border-5' id='tableRooms'   >
 						<thead><tr>
 						<th>ID</th>
@@ -347,7 +357,7 @@ init_page_serversides();
                 success: function () {
                     $("#RoomID").text(id);
                     $.ajax({
-                        url: "getRoomVermerke.php",
+                        url: "getRoomVermerke2.php",
                         type: "GET",
                         success: function (data) {
                             $("#roomVermerke").html(data);

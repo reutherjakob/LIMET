@@ -1,5 +1,5 @@
 <?php
-if (!function_exists('utils_connect_sql')) {  include "utils/_utils.php"; }
+require_once 'utils/_utils.php';
 check_login();
 ?>
 
@@ -144,8 +144,30 @@ $mysqli->close();
         });
 
         $(function () {
-            $('[data-bs-toggle="popover"]').popover();
+            // Enable all popovers
+            const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+            const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                return new bootstrap.Popover(popoverTriggerEl, {
+                    container: 'body',
+                    trigger: 'focus', // ensures popover closes when focus is lost
+                    placement: 'left' // optional
+                });
+            });
+
+            // Close any open popover when clicking outside
+            $(document).on('click', function (e) {
+                $('[data-bs-toggle="popover"]').each(function () {
+                    if (
+                        !$(this).is(e.target) &&                              // Not the clicked element
+                        $(this).has(e.target).length === 0 &&                // Not inside the clicked element
+                        $('.popover').has(e.target).length === 0             // Not inside the actual popover
+                    ) {
+                        $(this).popover('hide');                             // Hide it
+                    }
+                });
+            });
         });
+
     });
 
     $("button[value='createLotVermerkePDF']").click(function () {

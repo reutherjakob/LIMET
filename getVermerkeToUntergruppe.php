@@ -1,16 +1,30 @@
 <!-- 13.2.25: Reworked -->
 <body>
 <?php
-if (!function_exists('utils_connect_sql')) {
-    include "utils/_utils.php";
-}
+require_once 'utils/_utils.php';
 check_login();
 
 $mysqli = utils_connect_sql();
-$sql = "SELECT tabelle_Vermerke.idtabelle_Vermerke, tabelle_Vermerke.tabelle_räume_idTABELLE_Räume, tabelle_Vermerke.tabelle_lose_extern_idtabelle_Lose_Extern, tabelle_Vermerke.Ersteller, tabelle_Vermerke.Erstellungszeit, tabelle_Vermerke.Vermerktext, tabelle_Vermerke.Bearbeitungsstatus, tabelle_Vermerke.Vermerkart, tabelle_Vermerke.Faelligkeit, tabelle_räume.Raumnr, tabelle_lose_extern.LosNr_Extern
-                FROM tabelle_lose_extern RIGHT JOIN (tabelle_räume RIGHT JOIN tabelle_Vermerke ON tabelle_räume.idTABELLE_Räume = tabelle_Vermerke.tabelle_räume_idTABELLE_Räume) ON tabelle_lose_extern.idtabelle_Lose_Extern = tabelle_Vermerke.tabelle_lose_extern_idtabelle_Lose_Extern
-                WHERE (((tabelle_Vermerke.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe)=" . filter_input(INPUT_GET, 'vermerkUntergruppenID') . "))
-                ORDER BY tabelle_Vermerke.Erstellungszeit;";
+$sql = "SELECT 
+    v.idtabelle_Vermerke, 
+    v.tabelle_lose_extern_idtabelle_Lose_Extern, 
+    v.Ersteller,
+    v.Erstellungszeit,
+    v.Vermerktext,
+    v.Bearbeitungsstatus,
+    v.Vermerkart,
+    v.Faelligkeit,
+    GROUP_CONCAT(r.idTABELLE_Räume ORDER BY r.Raumnr SEPARATOR ', ') as RaumIDs,
+    GROUP_CONCAT(r.Raumnr ORDER BY r.Raumnr SEPARATOR ', ') as Raumnummern,
+    le.LosNr_Extern
+FROM tabelle_Vermerke v
+LEFT JOIN tabelle_vermerke_has_tabelle_räume v2r ON v.idtabelle_Vermerke = v2r.tabelle_vermerke_idTabelle_vermerke
+LEFT JOIN tabelle_räume r ON v2r.tabelle_räume_idTabelle_räume = r.idTABELLE_Räume
+LEFT JOIN tabelle_lose_extern le ON v.tabelle_lose_extern_idtabelle_Lose_Extern = le.idtabelle_Lose_Extern
+WHERE v.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe = " . filter_input(INPUT_GET, 'vermerkUntergruppenID') . "
+GROUP BY v.idtabelle_Vermerke
+ORDER BY v.Erstellungszeit";
+
 
 $result = $mysqli->query($sql);
 
@@ -27,8 +41,8 @@ echo "<table class='table table-striped table-bordered table-responsive border b
                 <th>Zuständigkeit</th>
                 <th>LosID</th>
                 <th>RaumID</th>
-                <th>Los</th>
-                <th>Raum</th>
+                <th>Los</th> 
+                <th>RaumNr</th>
                 </tr></thead><tbody>";
 
 while ($row = $result->fetch_assoc()) {
@@ -49,9 +63,11 @@ while ($row = $result->fetch_assoc()) {
     echo "<td><button type='button' id=" . $row['idtabelle_Vermerke'] . " class='btn btn-outline-dark btn-sm' value='showVermerkZustaendigkeit' data-bs-toggle='modal' data-bs-target='#showVermerkZustaendigkeitModal'><i class='fas fa-users'></i></button></td>";
     //
     echo "<td id='lot" . $row["idtabelle_Vermerke"] . "' value ='" . $row['tabelle_lose_extern_idtabelle_Lose_Extern'] . "'>" . $row['tabelle_lose_extern_idtabelle_Lose_Extern'] . "</td>";
-    echo "<td id='room" . $row["idtabelle_Vermerke"] . "' value ='" . $row['tabelle_räume_idTABELLE_Räume'] . "'>" . $row['tabelle_räume_idTABELLE_Räume'] . "</td>";
+
+    echo "<td id='rooms" . $row["idtabelle_Vermerke"] . "'>" . htmlspecialchars($row['RaumIDs'] ?? '') . "</td>";
+
     echo "<td>" . $row['LosNr_Extern'] . "</td>";
-    echo "<td>" . $row['Raumnr'] . "</td>";
+    echo "<td>" . htmlspecialchars($row['Raumnummern'] ?? '') . "</td>";
     echo "</tr>";
 }
 echo "</tbody></table>";
@@ -75,11 +91,8 @@ echo "</tbody></table>";
                     $result1 = $mysqli->query($sql);
 
                     echo "<div class='form-group'>
-                                        <label for='room'>Raum:</label>									
-                                        <!--select class='form-control form-control-sm' id='room' name='room[]' multiple>
-                                        <option value='0'>Kein Raum</option TODO: multiple room selection -->
-
-                                        <select class='form-control form-control-sm' id='room' name='room'>
+                                        <label for='room'>Raum:</label>							                            
+                                        <select class='form-control form-control-sm' id='room' name='room[]' multiple>
                                                 <option value=0>Kein Raum</option>";
                     while ($row = $result1->fetch_assoc()) {
                         echo "<option value=" . $row["idTABELLE_Räume"] . ">" . $row["Raumnr"] . " - " . $row["Raumbereich Nutzer"] . " - " . $row["Raumbezeichnung"] . "</option>";
@@ -272,13 +285,13 @@ echo "</tbody></table>";
             dropdownParent: $('#changeVermerkModal')
         });
 
-        // $('#room').select2({  // TODO: multiple rooms, needs new table?
-        //     multiple: true,
-        //     width: '100%',
-        //     placeholder: 'Raum auswählen...',
-        //     allowClear: true,
-        //     dropdownParent: $('#changeVermerkModal')
-        // });
+        $('#room').select2({
+            multiple: true,
+            width: '100%',
+            placeholder: 'Raum auswählen...',
+            allowClear: true,
+            dropdownParent: $('#changeVermerkModal')
+        });
 
         function decodeHtmlEntities(str) {
             let txt = document.createElement('textarea');
@@ -321,7 +334,7 @@ echo "</tbody></table>";
             },
             dom: '<"#topDiv.top-container d-flex"<"col-md-6 justify-content-start"><"#topDivSearch2.col-md-6"f>>t<"bottom d-flex" <"col-md-6 justify-content-start"i><"col-md-6 d-flex align-items-center justify-content-end"lp>>',
 
-            rowCallback: function (row, data, displayNum, displayIndex, dataIndex) {
+            rowCallback: function (row, data) {
                 if (data[7] === "Bearbeitung") {
                     if (data[6] === "0") {
                         row.style.backgroundColor = '#ff8080';
@@ -337,64 +350,25 @@ echo "</tbody></table>";
                 $('#topDivSearch2').appendTo('#CardHeaderVermerUntergruppen').children().children().addClass("btn btn-sm btn-outline-dark");
 
                 $("#tableVermerke tbody").on('click', "button[value='changeVermerk']", function () {
-
                     let rowData = tableVermerke.row($(this).closest('tr')).data();
-                     vermerkID = rowData[0]; // Assuming column 0 is the Vermerk ID
-
-                    // Set values and refresh Select2
-                    $('#vermerkStatus').val(rowData[6]).trigger('change'); // Assuming column 6 is status
-                    $('#vermerkText').val(decodeHtmlEntities(rowData[2])); // Assuming column 2 is text
-                    $('#faelligkeit').val(rowData[4]); // Assuming column 4 is fällig am
-
-                    // Set Vermerktyp and handle fälligkeit enabled/disabled
-                    $('#vermerkTyp').val(rowData[7]).trigger('change'); // Assuming column 7 is typ
+                    vermerkID = rowData[0];
+                    $('#vermerkStatus').val(rowData[6]).trigger('change');
+                    $('#vermerkText').val(decodeHtmlEntities(rowData[2]));
+                    $('#faelligkeit').val(rowData[4]);
+                    $('#vermerkTyp').val(rowData[7]).trigger('change');
                     if (rowData[7] === "Bearbeitung") {
                         $("#faelligkeit").prop('disabled', false);
                     } else {
                         $("#faelligkeit").prop('disabled', true);
                     }
-
-                    // Set room and los (with Select2)
-                    let roomValue = rowData[10] || 0; // Assuming column 10 is room ID, fallback to 0
-                    let losValue = rowData[9] || 0;   // Assuming column 9 is los ID, fallback to 0
-                    $('#room').val(roomValue).trigger('change');
+                    let losValue = rowData[9] || 0;
                     $('#los').val(losValue).trigger('change');
-
-                    // If untergruppe is not disabled, set it as well (adjust column index as needed)
-                    // let untergruppeValue = rowData[8] || 0; // Example: column 8 is untergruppe ID
-                    // $('#untergruppe').val(untergruppeValue).trigger('change');
+                    let raumIDs = rowData[10];
+                    let roomArray = raumIDs.split(',').map(id => id.trim());
+                    $('#room').val(roomArray).trigger('change');
 
                     $('#changeVermerkModal').modal('show');
                 });
-
-                //  $('#tableVermerke tbody').on('click', 'tr', function () {
-                //     vermerkID = tableVermerke.row($(this)).data()[0];
-                //     document.getElementById("vermerkStatus").value = tableVermerke.row($(this)).data()[6];
-                //     document.getElementById("vermerkText").value = decodeHtmlEntities(tableVermerke.row($(this)).data()[2]);
-                //     document.getElementById("faelligkeit").value = tableVermerke.row($(this)).data()[4];
-                //     document.getElementById("vermerkTyp").value = tableVermerke.row($(this)).data()[7];
-                //
-                //     if (tableVermerke.row($(this)).data()[9] === '') {
-                //         document.getElementById("los").value = 0;
-                //     } else {
-                //         document.getElementById("los").value = tableVermerke.row($(this)).data()[9];
-                //     }
-                //     if (tableVermerke.row($(this)).data()[10] === '') {
-                //         document.getElementById("room").value = 0;
-                //     } else {
-                //         document.getElementById("room").value = tableVermerke.row($(this)).data()[10];
-                //     }
-                //     if (tableVermerke.row($(this)).data()[7] === "Bearbeitung") {
-                //         $("#faelligkeit").prop('disabled', false);
-                //     } else {
-                //         $("#faelligkeit").prop('disabled', true);
-                //     }
-                //     const addImage = document.getElementById("addImage");
-                //     if (addImage) {
-                //         addImage.style.visibility = "visible";
-                //     }
-                // });
-
             }
         });
 
@@ -436,7 +410,8 @@ echo "</tbody></table>";
     });
 
     $("#addVermerk").click(function () {
-        let room = $("#room").val();
+        let rooms = $("#room").val(); // rooms is an array of selected IDs
+        console.log("AddVermerk. Rooms:", rooms);
         let los = $("#los").val();
         let vermerkStatus = $("#vermerkStatus").val();
         let vermerkTyp = $("#vermerkTyp").val();
@@ -447,7 +422,6 @@ echo "</tbody></table>";
         }
         let vermerkUntergruppenID = <?php echo filter_input(INPUT_GET, 'vermerkUntergruppenID') ?>;
 
-        console.log("addVermerk:", room);
 
         if (room !== "" && los !== "" && vermerkStatus !== "" && vermerkTyp !== "" && vermerkText !== "") {
             $('#changeVermerkModal').modal('hide');
@@ -455,7 +429,7 @@ echo "</tbody></table>";
                 url: "addVermerk.php",
                 data: {
                     "untergruppenID": vermerkUntergruppenID,
-                    "room": room,
+                    "room": rooms,
                     "los": los,
                     "vermerkStatus": vermerkStatus,
                     "vermerkTyp": vermerkTyp,
@@ -501,8 +475,7 @@ echo "</tbody></table>";
     });
 
     $("#saveVermerk").click(function () {
-        let room = $("#room").val();
-
+        let rooms = $("#room").val();
         let los = $("#los").val();
         let vermerkStatus = $("#vermerkStatus").val();
         let vermerkTyp = $("#vermerkTyp").val();
@@ -513,14 +486,13 @@ echo "</tbody></table>";
             faelligkeitDatum = null;
         }
         let vermerkUntergruppenID = <?php echo filter_input(INPUT_GET, 'vermerkUntergruppenID') ?>;
-        console.log("saveVermerk:", room, los, vermerkStatus, vermerkTyp, vermerkText, faelligkeitDatum, untergruppenID,vermerkUntergruppenID) ;
         if (room !== "" && los !== "" && vermerkStatus !== "" && vermerkTyp !== "" && vermerkText !== "") {
             $('#changeVermerkModal').modal('hide');
             $.ajax({
                 url: "saveVermerk.php",
                 data: {
                     "vermerkID": vermerkID,
-                    "room": room,
+                    "room": rooms,
                     "los": los,
                     "vermerkStatus": vermerkStatus,
                     "vermerkTyp": vermerkTyp,
@@ -531,7 +503,7 @@ echo "</tbody></table>";
                 type: "GET",
                 success: function (data) {
                     makeToaster(data, true);
-                    console.log(vermerkStatus);
+
                     $.ajax({
                         url: "getVermerkeToUntergruppe.php",
                         data: {"vermerkUntergruppenID": vermerkUntergruppenID, "vermerkGruppenID": vermerkGruppenID},
@@ -646,5 +618,7 @@ echo "</tbody></table>";
             };
         }
     });
+
+
 </script>
 
