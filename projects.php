@@ -34,10 +34,12 @@
     }
     init_page_serversides("No Redirect");
     include 'projects_changeProjectModal.html';
+    unset($_SESSION["login_attempts_ip"]);
+    unset($_SESSION["last_attempt_ip"]);
+
     $projectIcons = [
-        "BBE" => "fas fa-pray",
+        "BBE" => "fas fa-church",
         "GCP" => "fas fa-toilet-paper",
-        "Test" => "fas fa-bug",
         "VS Bertha von Suttner Zahnambulatorium" => "fas fa-tooth",
         "Cino 2.1" => "fas fa-smoking",
         "KFN-ZNA" => "fas fa-book-dead",
@@ -46,9 +48,11 @@
         "Chirurgie Graz BE3" => "fas fa-bone",
         "ZVZ Nord" => "fas fa-teeth-open",
         "KLU-ANGIO-RV-KABEG" => "fas fa-x-ray",
-        "Test1" => "fas fa-coffee",
+        "Test1" => "fas fa-bong",
         "KAGes Labor - LKH2 Süd" => "fas fa-vials",
-        "KHI" => "fas fa-ambulance"
+        "KHI" => "fas fa-ambulance",
+        "KFN-PSY-NB" => "fas fa-unlock-alt",
+        "KFN-ARIO" => "fas fa-bomb"
     ];
     ?>
 
@@ -162,15 +166,7 @@
                             <a class="col-11" href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free"
                                target="_blank">Projekt Icons</a>.
                         </p>
-                        <!-- p><i class="fas fa-dice"> </i>
-                            <i class="fas fa-book-dead"> </i>
-                            <i class="fas fa-ring"> </i>
-                            <i class="fas fa-dove"></i>
-                            <i class="fab fa-jedi-order"></i>
-                            <i class="fas fa-award"></i>
-                            <i class="fas fa-bomb"></i>
-                            <i class="fas fa-pastafarianism"></i>
-                            </p-->
+
                         <p>
                             <i class="far fa-comments col-1"></i> Raumbuch <a class="col-11"
                                                                               href="/FeedbackCenter/FeedbackIndex.php"
@@ -197,7 +193,7 @@
                                 <form class='form-check form-check-inline'>
                                     <label class='form-check-label' for='vermerkeFilter'>Vermerke im Projekt</label>
                                     <select class='form-check-inline' id='vermerkeFilter'
-                                        <?php if ($_SESSION["projectName"] == "") {
+                                        <?php if (!isset($_SESSION["projectName"])) {
                                             echo " style='display:none'";
                                         } ?>
                                     >

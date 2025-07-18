@@ -3,7 +3,7 @@
 if (!function_exists('utils_connect_sql')) {
     include "../utils/_utils.php";
 }
-include 'pdf_createBericht_MYPDFclass_A3Queer.php'; //require_once('TCPDF-main/TCPDF-main/tcpdf.php'); is in class file
+include 'pdf_createBericht_MYPDFclass_A3Queer.php'; //require_once('../TCPDF-main/TCPDF-main/tcpdf.php'); is in class file
 include '_pdf_createBericht_utils.php';
 include 'pdf_createMTTabelle.php';
 
@@ -170,8 +170,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $outsr = "";
 
         $powerItems = [
-            ['ET_Anschlussleistung_W', 'Raum Anschlussleistung
-            :', $e_C],
+            ['ET_Anschlussleistung_W', 'Raum Anschlussleistung:', $e_C],
             ['ET_Anschlussleistung_AV_W', 'AV[Raum]: ', $e_C_2_3rd],
             ['ET_Anschlussleistung_SV_W', 'SV[Raum]: ', $e_C_2_3rd],
             ['ET_Anschlussleistung_ZSV_W', 'ZSV[Raum]: ', $e_C_2_3rd],
@@ -189,22 +188,12 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             multicell_with_str($pdf, $outsr, $space, "");
         }
 
-        // if ($isnotVorentwurf) {
-        //     multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'ET_RJ45-Ports', "RJ45-Ports: ", $parameter_changes_t_räume);
-        //     multicell_with_nr($pdf, $row['ET_RJ45-Ports'], "Stk", $pdf->getFontSizePt(), $e_C_3rd);
-        //
-        //     multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'EL_Laser 16A CEE Stk', "CEE16A Laser: ", $parameter_changes_t_räume);
-        //     multicell_with_str($pdf, $row['EL_Laser 16A CEE Stk'], $e_C_3rd, "Stk");
-        //     $pdf->Ln($horizontalSpacerLN);
-        // } else {
-        //     $pdf->MultiCell($e_C * 2, $block_header_height, "", 0, 'L', 0, 0);
-        //     $pdf->Ln($horizontalSpacerLN);
-        // }
 
 
         $pdf->MultiCell($block_header_w, $block_header_height, "", 0, 'L', 0, 0);
         if ($isnotVorentwurf) {
             //TODO: FIX ELEMNT POWER CONSUMPTION INCLUDING GLZ
+            //
             // $SQL = "SELECT tpep.Wert,
             //            tpep.Einheit,
             //            tpep.tabelle_Varianten_idtabelle_Varianten,

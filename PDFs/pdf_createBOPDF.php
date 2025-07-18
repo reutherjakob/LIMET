@@ -6,7 +6,7 @@ if (!function_exists('utils_connect_sql')) {
 check_login();
 
 include "pdf_createBericht_MYPDFclass_A4_Raumbuch.php";
-require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+require_once('../TCPDF-main/TCPDF-main/tcpdf.php');
 include "_pdf_createBericht_utils.php";
 
 $marginTop = 20; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/

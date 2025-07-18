@@ -1,6 +1,11 @@
 <?php
+
 session_start();
-require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+if (!function_exists('utils_connect_sql')) {
+    include "../utils/_utils.php";
+}
+check_login();
+require_once('../TCPDF-main/TCPDF-main/tcpdf.php');
 include "pdf_createBericht_LOGO.php";
 
 class MYPDF extends TCPDF
@@ -20,11 +25,7 @@ class MYPDF extends TCPDF
 
         } else {
 
-            $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-            if (!$mysqli->set_charset("utf8")) {
-                printf("Error loading character set utf8: %s\n or Login timed out", $mysqli->error);
-                exit();
-            }
+            $mysqli = utils_connect_sql();
             $roomIDs = filter_input(INPUT_GET, 'roomID');
             $teile = explode(",", $roomIDs);
             $sql = "SELECT tabelle_projekte.Projektname, tabelle_planungsphasen.Bezeichnung, tabelle_räume.`Raumbereich Nutzer`

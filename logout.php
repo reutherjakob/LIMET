@@ -26,7 +26,7 @@ session_destroy();
                     <img src="Logo/LIMET_logo.png" alt="LIMETLOGO">
                 </div>
                 <div class='card-body d-flex align-items-center justify-content-center'>
-                    <p class="text-md-center fs-4" >   <br>  Chiao! :) <br></p>
+                    <p class="text-md-center fs-4" >   <br>  Chiao! <br>                 <i class="fas fa-dove"></i> </p>
                 </div>
                 <div class='card-footer'>
                     <div class='d-flex align-items-center justify-content-center'>

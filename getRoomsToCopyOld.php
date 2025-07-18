@@ -71,7 +71,7 @@ if (!function_exists('utils_connect_sql')) {  include "utils/_utils.php"; }
             if (typeof columnsDefinition === 'undefined') { // TO GUArantee function of old Bauanagaben page
                 const script = document.createElement('script');
                 script.src = 'roombookSpecifications_constDeclarations.js';
-                script.onload = () => console.log('columnsDefinition loaded');
+                //script.onload = () => console.log('columnsDefinition loaded');
                 document.head.appendChild(script);
             }
 
@@ -104,7 +104,7 @@ if (!function_exists('utils_connect_sql')) {  include "utils/_utils.php"; }
                         return value !== id;
                     });
                 }
-                console.log("Tbody Click ", roomIDs);
+
             });
 
             $("#selectAllRows").click(function () {

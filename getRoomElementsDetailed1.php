@@ -227,14 +227,18 @@ $mysqli->close();
             <td>
 
                 <?php
+
                 $Kurzbeschreibung = trim($row["Kurzbeschreibung"] ?? "");
                 $buttonClass = $Kurzbeschreibung === "" ? "btn-outline-secondary" : "btn-outline-dark";
                 $iconClass = $Kurzbeschreibung === "" ? "fa fa-comment-slash" : "fa fa-comment";
                 $dataAttr = $Kurzbeschreibung === "" ? "data-description= '' " : "data-description='" . htmlspecialchars($Kurzbeschreibung ?? "", ENT_QUOTES, 'UTF-8') . "'";
+
+
                 ?>
-                echo " <button type='button'
-                               class='btn btn-sm " . $buttonClass . "comment-btn'" . $dataAttr . " id='" . $row['id'] . "' title='Kommentar'><i class='" . $iconClass . " '></i> $Kurzbeschreibung
-                </button>";
+                <button type="button"
+                        class="btn btn-sm <?php echo $buttonClass; ?> comment-btn" <?php echo $dataAttr; ?>
+                        id="<?php echo $row["id"]; ?>" title="Kommentar"><i class="<?php echo $iconClass; ?>"></i>
+                </button>
             </td>
 
             <td data-order="history">
@@ -252,7 +256,7 @@ $mysqli->close();
 </table>
 
 <!-- Modal zum Kopieren des Rauminhalts -->
-<div class='modal fade' id='copyRoomElementsModal'  aria-labelledby='copyRoomElementsModalLabel' tabindex="-1"
+<div class='modal fade' id='copyRoomElementsModal' aria-labelledby='copyRoomElementsModalLabel' tabindex="-1"
      aria-hidden='true'>
     <div class='modal-dialog modal-xl'>
         <div class='modal-content'>
@@ -296,6 +300,7 @@ $mysqli->close();
 <script charset="utf-8" type="module">
     // var currentSort = {column: 0, dir: 'asc'};   - within importing files
     //  !! tableRoomElements: variable within importing file!
+
     import CustomPopover from './utils/_popover.js';
 
     CustomPopover.init('.comment-btn', {
@@ -331,8 +336,26 @@ $mysqli->close();
         //(console.log(localStorage.getItem('hideZeroSetting'));
         $('#hideZeroToggle').prop('checked', hideZero);
 
-
         $.fn.dataTable.ext.search.push(hideZeroFilter);
+
+
+        //Rauminhalt kopieren  für getRoomsToCopy.php
+        $("#copyRoomElements").click(function () {
+            roomIDs = [...new Set(roomIDs)];
+            if (roomIDs.length === 0) {
+                alert("Kein Raum ausgewählt!");
+            } else {
+                $.ajax({
+                    url: "copyRoomElements.php",
+                    type: "GET",
+                    data: {"rooms": roomIDs},
+                    success: function (data) {
+                        makeToaster(data, true);
+                        $("#mbodyCRE").modal('hide');
+                    }
+                });
+            }
+        });
     });
 
 
@@ -384,6 +407,7 @@ $mysqli->close();
                     "originRoomID": originRoomID
                 },
                 success: function (data) {
+                    //   console.log("Success opening the modal");
                     $("#mbodyCRE").html(data);
                 }
             });
@@ -408,7 +432,7 @@ $mysqli->close();
             let id = this.id;
             //console.log(id)
             let comment = $(".comment-btn[id='" + id + "']").attr('data-description');
-            // console.log(comment);
+            console.log(comment);
             let amount = $("#amount" + id).val();
             let variantenID = $("#variante" + id).val();
             let bestand = $("#bestand" + id).val();
@@ -487,7 +511,7 @@ $mysqli->close();
         });
 
 
-        $('#tableRoomElements').on('click', 'th', function() {
+        $('#tableRoomElements').on('click', 'th', function () {
             const colIndex = $(this).index() + 1;
             if (currentSort.column !== colIndex) {
                 // New column clicked: start with ascending sort
@@ -509,8 +533,6 @@ $mysqli->close();
 
 
         $('#tableRoomElements tbody').on('click', 'tr', function () {
-
-
             let id = tableRoomElements.row($(this)).data()[0].display;
             let stk = $("#amount" + id).val();
             let standort = $("#Standort" + id).val();

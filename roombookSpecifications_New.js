@@ -57,7 +57,7 @@ $(document).ready(function () {
 });
 
 function add_MT_rel_filter(location, table) {
-    let dropdownHtml = '<select class=" fix_size" id="columnFilter">' + '<option value="">MT</option><option value="Ja">Ja</option>' + '<option value="Nein">Nein</option></select>';
+    let dropdownHtml = '<select class=" fix_size" id="columnFilter">' + '<option value="">MT</option><option value="Ja" selected>Ja</option>' + '<option value="Nein">Nein</option></select>';
     $(location).append(dropdownHtml);
     $('#columnFilter').change(function () {
         let filterValue = $(this).val();

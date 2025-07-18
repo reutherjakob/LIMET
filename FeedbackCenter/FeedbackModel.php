@@ -66,7 +66,7 @@ class FeedbackModel
         return $wishlist;
     }
 
-    public function getBugReports()
+    public function getBugReports(): array
     {
         $bugReports = [];
         if (file_exists($this->bugReportFile)) {
@@ -101,7 +101,7 @@ class FeedbackModel
         return $bugReports;
     }
 
-    public function addFeature($website, $title, $desc)
+    public function addFeature($website, $title, $desc): string
     {
         $website = trim($website);
         $title = trim($title);
@@ -115,12 +115,13 @@ class FeedbackModel
         $entry .= "Description: " . htmlspecialchars($desc) . "\n";
         $entry .= "Upvotes: 0\n";
         $entry .= "Downvotes: 0\n";
+        $entry .= $_SESSION["username"] . "\n";
         $entry .= "------------------------\n";
         file_put_contents($this->wishlistFile, $entry, FILE_APPEND | LOCK_EX);
         return "Danke für deinen Vorschlag!";
     }
 
-    public function addBug($website, $title, $desc, $file, $url = '')
+    public function addBug($website, $title, $desc, $file, $url = ''): string
     {
         $website = trim($website);
         $title = trim($title);
@@ -160,12 +161,13 @@ class FeedbackModel
         if ($screenshotFilename) $entry .= "Screenshot: " . $screenshotFilename . "\n";
         $entry .= "Upvotes: 0\n";
         $entry .= "Downvotes: 0\n";
+        $entry .= $_SESSION["username"] . "\n";
         $entry .= "------------------------\n";
         file_put_contents($this->bugReportFile, $entry, FILE_APPEND | LOCK_EX);
         return "Danke für deinen Bug-Report!";
     }
 
-    public function voteFeature($id, $direction)
+    public function voteFeature($id, $direction): string
     {
         if (!$id || !in_array($direction, ['up', 'down'])) return "Ungültige Abstimmung.";
         if (!file_exists($this->wishlistFile)) return "Feature-Liste nicht gefunden.";
@@ -193,7 +195,7 @@ class FeedbackModel
         return "Abstimmung gespeichert.";
     }
 
-    public function voteBug($id, $direction)
+    public function voteBug($id, $direction): string
     {
         if (!$id || !in_array($direction, ['up', 'down'])) return "Ungültige Abstimmung.";
         if (!file_exists($this->bugReportFile)) return "Bug-Liste nicht gefunden.";
@@ -221,10 +223,10 @@ class FeedbackModel
         return "Abstimmung gespeichert.";
     }
 
-    public function deleteFeature($id)
+    public function deleteFeature($id): string
     {
         if (!$id) return "Ungültige Feature-ID.";
-        if (file_exists($this->wishlistFile)) {
+        if (file_exists($this->wishlistFile) && strpos($_SESSION["username"], "fuchs") == 0) {
             $content = file_get_contents($this->wishlistFile);
             $rawEntries = explode('------------------------', $content);
             $rawEntries = array_filter(array_map('trim', $rawEntries));
@@ -238,13 +240,13 @@ class FeedbackModel
             file_put_contents($this->wishlistFile, $newContent);
             return "Feature request deleted.";
         }
-        return "Feature file not found.";
+        return "Deleting feature request not possible. Ask a Dev.";
     }
 
-    public function deleteBug($id)
+    public function deleteBug($id): string
     {
         if (!$id) return "Ungültige Bug-Report-ID.";
-        if (file_exists($this->bugReportFile)) {
+        if (file_exists($this->bugReportFile) && strpos($_SESSION["username"], "fuchs") == 0) {
             $content = file_get_contents($this->bugReportFile);
             $rawEntries = explode('------------------------', $content);
             $rawEntries = array_filter(array_map('trim', $rawEntries));
@@ -265,6 +267,6 @@ class FeedbackModel
             file_put_contents($this->bugReportFile, $newContent);
             return "Bug report deleted.";
         }
-        return "Bug report file not found.";
+        return "Deleting Bug report file not possible. Ask a dev.";
     }
 }

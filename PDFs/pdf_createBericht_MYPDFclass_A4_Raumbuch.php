@@ -1,8 +1,10 @@
 <?php
 session_start();
-include "utils/_utils.php";
+if (!function_exists('utils_connect_sql')) {
+    include "../utils/_utils.php";
+}
 check_login();
-require_once('TCPDF-main/TCPDF-main/tcpdf.php');
+require_once('../TCPDF-main/TCPDF-main/tcpdf.php');
 include "pdf_createBericht_LOGO.php";
 
 class MYPDF extends TCPDF
@@ -20,8 +22,10 @@ class MYPDF extends TCPDF
                 $this->Cell(0, 0, 'Raumbuch', 0, false, 'R', 0, '', 0, false, 'B', 'B');
             }
             $this->Ln();
-            if (!empty(str_replace(" ", "", $_SESSION["PDFHeaderSubtext"]))) {
-                $this->Cell(0, 0, $_SESSION["PDFHeaderSubtext"], '', false, 'R', 0, '', 0, false, 'B', 'B');
+            if (isset($_SESSION["PDFHeaderSubtext"])) {
+                if (!empty(str_replace(" ", "", $_SESSION["PDFHeaderSubtext"]))) {
+                    $this->Cell(0, 0, $_SESSION["PDFHeaderSubtext"], '', false, 'R', 0, '', 0, false, 'B', 'B');
+                }
             }
             $this->Ln(0.1);
             $this->cell(0, 0, '', 'B', 0, 'L');
@@ -62,12 +66,12 @@ class MYPDF extends TCPDF
             $this->SetFont('helvetica', 'B', 15);
             $this->SetY(50);
 
-            $this->Cell(0, 0, str_replace(' ', '',  $_SESSION["projectName"]), 0, false, 'L', 0, '', 0, false, 'B', 'B'); // "" . $raumInfos[0]['Projektname'],  $raumInfos[0]['Planungsphase']
+            $this->Cell(0, 0, str_replace(' ', '', $_SESSION["projectName"]), 0, false, 'L', 0, '', 0, false, 'B', 'B'); // "" . $raumInfos[0]['Projektname'],  $raumInfos[0]['Planungsphase']
             $this->Ln();
             $this->Cell(0, 0, $_SESSION["projectPlanungsphase"], 0, false, 'L', 0, '', 0, false, 'B', 'B');
             $this->Ln();
             $this->Ln();
-            if ($_SESSION["PDFTITEL"] != null) {
+            if (isset($_SESSION["PDFTITEL"]) && $_SESSION["PDFTITEL"] != null) {
                 $this->Cell(80, 0, $_SESSION["PDFTITEL"], 0, false, 'L', 0, '', 0, false, 'B', 'B');
             } else {
                 $this->Cell(0, 0, 'Medizintechnisches Raumbuch', 0, false, 'L', 0, '', 0, false, 'B', 'B');
@@ -94,7 +98,7 @@ class MYPDF extends TCPDF
             // GET LOGO
             get_titelblatt_logo($this);
 
-            if ($_SESSION["DisclaimerText"] != null) {
+            if (isset($_SESSION["DisclaimerText"]) && $_SESSION["DisclaimerText"] != null) {
                 $this->SetFont('helvetica', '', 9);
                 $Disclaimer_txt = $_SESSION["DisclaimerText"];
                 $this->SetY(280 - ($this->getStringHeight(180, $Disclaimer_txt, 0, false, 'L', 0, '', 0, false, '', '')));
