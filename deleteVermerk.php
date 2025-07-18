@@ -1,36 +1,26 @@
 <?php
-session_start();
-?>
+require_once "utils/_utils.php";
+check_login();
 
-<?php
-if (!isset($_SESSION["username"])) {
-    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-    exit;
-}
-?>
+$mysqli = utils_connect_sql();
 
-<?php
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-if (!$mysqli->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $mysqli->error);
-    exit();
-}
+$vermerkID = filter_input(INPUT_GET, 'vermerkID', FILTER_VALIDATE_INT);
 
-// Check connection
-if ($mysqli->connect_error) {
-    die("Connection failed: " . $mysqli->connect_error);
-}
+if ($vermerkID) {
+    $stmt = $mysqli->prepare("DELETE FROM `LIMET_RB`.`tabelle_Vermerke` WHERE `idtabelle_Vermerke` = ?");
+    $stmt->bind_param("i", $vermerkID);
 
-if (filter_input(INPUT_GET, 'vermerkID') != '') {
-    $sql = "DELETE FROM `LIMET_RB`.`tabelle_Vermerke`
-                    WHERE `idtabelle_Vermerke`=" . filter_input(INPUT_GET, 'vermerkID') . ";";
-}
+    if ($stmt->execute()) {
+        echo "Vermerk gelöscht!";
+    } else {
+        echo "Fehler beim Löschen: " . $stmt->error;
+    }
 
-if ($mysqli->query($sql) === TRUE) {
-    echo "Vermerk gelöscht!";
+    $stmt->close();
 } else {
-    echo "Error: " . $sql . "<br>" . $mysqli->error;
+    echo "Ungültige oder fehlende Vermerk-ID.";
 }
 
 $mysqli->close();
+
 ?>

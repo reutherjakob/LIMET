@@ -256,7 +256,7 @@ const columnsDefinition = [
     }, // 135                                      +1
     {data: 'HT_Abwasser_Stk', title: 'Abwasser Stk', visible: false, case: "num"}, // 136     +1
     {data: 'HT_Abluft_Geraete', title: 'Abluft Geräte', visible: false, case: "num"}, // 137  +1
-    {data: 'VE_Wasser', title: 'VE_Wasser', visible: false, case: 'num'}, // 138              +1
+    {data: 'VE_Wasser', title: 'VE_Wasser', visible: false, case: 'bit'}, // 138              +1
     {data: 'HT_Warmwasser', title: 'Warmwasser', visible: false, case: "num"}, // 139         +1
     {data: 'HT_Kaltwasser', title: 'Kaltwasser', visible: false, case: "num"}, // 140         +1
     {data: 'Wasser Qual 1 l/Tag', title: 'H20_Q1 l/Tag', visible: false, case: "num"}, // 141 +1

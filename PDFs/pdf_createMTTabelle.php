@@ -2,7 +2,7 @@
 session_start();
 check_login();
 
-function checkEntry($jsonArray, $elementId, $parameterId)
+function checkEntry($jsonArray, $elementId, $parameterId): bool
 {
     foreach ($jsonArray as $entry) {
         if ($entry['element'] == $elementId && $entry['parameter'] == $parameterId) {
@@ -20,13 +20,13 @@ function checkAndManipulateString($input)
         // Option 2: Return empty string if you want no unit displayed
         // return '';
     }
-    if (strpos($input, '/min') !== false) {
+    if (str_contains($input, '/min')) {
         $input = ' ' . $input;
     }
     return $input;
 }
 
-function abk_vz($result4, $pdf, $f_size)
+function abk_vz($result4, $pdf, $f_size): void
 {
     $result4->data_seek(0);
     while ($row1 = $result4->fetch_assoc()) {
@@ -47,7 +47,7 @@ function abk_vz($result4, $pdf, $f_size)
     $pdf->SetFont('courier', 'B', $f_size);
 }
 
-function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dataChanges)
+function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dataChanges): void
 {
 
     // $result4 = Abkürzungen

@@ -1,7 +1,5 @@
 <?php
-if (!function_exists('utils_connect_sql')) {
-    include "utils/_utils.php";
-}
+require_once 'utils/_utils.php';
 $mysqli = utils_connect_sql();
 $sql = "SELECT tabelle_element_gewerke.idtabelle_element_gewerke, tabelle_element_gewerke.Nummer, tabelle_element_gewerke.Gewerk
 												FROM tabelle_element_gewerke

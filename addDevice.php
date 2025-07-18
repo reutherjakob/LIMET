@@ -1,6 +1,6 @@
 <?php
 // REWORK 25
-if (!function_exists('utils_connect_sql')) {  include "utils/_utils.php"; }
+require_once 'utils/_utils.php';
 check_login();
 
 $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');

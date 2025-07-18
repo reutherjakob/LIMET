@@ -166,7 +166,6 @@
                             <a class="col-11" href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free"
                                target="_blank">Projekt Icons</a>.
                         </p>
-
                         <p>
                             <i class="far fa-comments col-1"></i> Raumbuch <a class="col-11"
                                                                               href="/FeedbackCenter/FeedbackIndex.php"

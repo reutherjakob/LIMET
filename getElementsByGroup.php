@@ -1,7 +1,5 @@
 <?php
-if (!function_exists('utils_connect_sql')) {
-    include "utils/_utils.php";
-}
+require_once 'utils/_utils.php';
 check_login();
 ?>
 
@@ -14,26 +12,63 @@ check_login();
 <body>
 <?php
 $mysqli = utils_connect_sql();
-$sql = "SELECT tabelle_elemente.idTABELLE_Elemente, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_elemente.Kurzbeschreibung
-											FROM tabelle_elemente
-											WHERE tabelle_element_gruppe_idTABELLE_Element_Gruppe = " . $_GET["gruppeID"] . "
-											ORDER BY tabelle_elemente.ElementID;";
-$result = $mysqli->query($sql);
+// Safely get the 'gruppeID'
+$gruppeID = isset($_GET['gruppeID']) ? (int)$_GET['gruppeID'] : 0;
+
+// Prepare the SQL statement with a placeholder '?'
+$stmt = $mysqli->prepare(
+    "SELECT tabelle_elemente.idTABELLE_Elemente, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_elemente.Kurzbeschreibung
+     FROM tabelle_elemente
+     WHERE tabelle_element_gruppe_idTABELLE_Element_Gruppe = ?
+     ORDER BY tabelle_elemente.ElementID;"
+);
+
+// Bind the parameter (integer)
+$stmt->bind_param("i", $gruppeID);
+$stmt->execute();
+$result_el = $stmt->get_result();
+
+
+$showAddButton = false;
+if (isset($_SESSION['roomID'])) {
+    $roomID = (int)$_SESSION['roomID'];
+    // Prepare and bind the room query
+    $stmt = $mysqli->prepare(
+        "SELECT Raumnr, Raumbezeichnung, `Raumbereich Nutzer`, Geschoss
+         FROM tabelle_räume
+         WHERE idTABELLE_Räume = ?;"
+    );
+    $stmt->bind_param("i", $roomID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result && $result->num_rows > 0) {
+        $room = $result->fetch_assoc();
+        $showAddButton = true;
+    }
+    $stmt->close();
+}
+
 
 echo "<table class='table table-striped table-sm table-bordered border border-light border-5' id='tableElementsInDB'   >
 	<thead><tr>
 	<th>ID</th>
-    <th></th>
-    <th>ElementID</th>
+	<th></th>  
+   <th>ElementID</th>
 	<th>Element</th>
 	<th>Beschreibung</th>
     <th></th>
 	</tr></thead><tbody>";
 
-while ($row = $result->fetch_assoc()) {
+while ($row = $result_el->fetch_assoc()) {
     echo "<tr>";
     echo "<td>" . $row["idTABELLE_Elemente"] . "</td>";
-    echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-success btn-sm' value='addElement' data-bs-toggle='modal' data-bs-target='#addRoomElementModal'><i class='fa fa-plus'></i></button></td>";
+    if ($showAddButton) {
+        echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-success btn-sm' value='addElement' data-bs-toggle='modal' data-bs-target='#addRoomElementModal'><i class='fa fa-plus'></i></button></td>";
+    } else {
+        echo "<td> </td>";
+    }
+
     echo "<td>" . $row["ElementID"] . "</td>";
     echo "<td>" . $row["Bezeichnung"] . "</td>";
     echo "<td>" . $row["Kurzbeschreibung"] . "</td>";
@@ -41,12 +76,6 @@ while ($row = $result->fetch_assoc()) {
     echo "</tr>";
 }
 echo "</tbody></table>";
-
-
-$sql = "SELECT Raumnr, Raumbezeichnung, `Raumbereich Nutzer`, Geschoss
-        FROM tabelle_räume WHERE idTABELLE_Räume =" . $_SESSION["roomID"] . ";";
-$result = $mysqli->query($sql);
-$room = $result->fetch_assoc();
 
 
 $mysqli->close();
@@ -161,7 +190,7 @@ $mysqli->close();
                 bottomEnd: 'paging'
             },
             initComplete: function () {
-
+                $("#CardHeaderElementesInDb .xxx").remove();
                 $('.dt-search label').remove();
                 $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
             }

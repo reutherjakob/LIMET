@@ -1,12 +1,8 @@
 <?php
-if (!function_exists('utils_connect_sql')) {
-    include "utils/_utils.php";
-}
+require_once 'utils/_utils.php';
 check_login();
-$mysqli = utils_connect_sql();// ... after connecting to DB ...
 
-$roomID = filter_input(INPUT_GET, 'room');
-$roomID = ($roomID == '0') ? NULL : $roomID;
+$mysqli = utils_connect_sql();
 
 $losID = filter_input(INPUT_GET, 'los');
 $losID = ($losID == '0') ? NULL : $losID;
@@ -23,7 +19,6 @@ $vermerkID = filter_input(INPUT_GET, 'vermerkID');
 
 $sql = "UPDATE `LIMET_RB`.`tabelle_Vermerke`
         SET
-        `tabelle_räume_idTABELLE_Räume` = ?,
         `tabelle_lose_extern_idtabelle_Lose_Extern` = ?,
         `Vermerktext` = ?,
         `Bearbeitungsstatus` = ?,
@@ -33,8 +28,7 @@ $sql = "UPDATE `LIMET_RB`.`tabelle_Vermerke`
         WHERE `idtabelle_Vermerke` = ?";
 
 $stmt = $mysqli->prepare($sql);
-$stmt->bind_param("iissssii",
-    $roomID,
+$stmt->bind_param("issssii",
     $losID,
     $vermerkText,
     $vermerkStatus,
@@ -44,21 +38,19 @@ $stmt->bind_param("iissssii",
     $vermerkID
 );
 
-// echo '<pre>';
-// var_dump($stmt);
-// echo '</pre>';
-// echo "Prepared SQL: " . $sql . "<br>";
-// echo "With values:<br>";
-// echo "roomID: " . var_export($roomID, true) . "<br>";
-// echo "losID: " . var_export($losID, true) . "<br>";
-// echo "vermerkText: " . var_export($vermerkText, true) . "<br>";
-// echo "vermerkStatus: " . var_export($vermerkStatus, true) . "<br>";
-// echo "vermerkTyp: " . var_export($vermerkTyp, true) . "<br>";
-// echo "faelligkeitDatum: " . var_export($faelligkeitDatum, true) . "<br>";
-// echo "untergruppenID: " . var_export($untergruppenID, true) . "<br>";
-// echo "vermerkID: " . var_export($vermerkID, true) . "<br>";
- 
 if ($stmt->execute()) {
+    // Remove previous room links
+    $mysqli->query("DELETE FROM tabelle_vermerke_has_tabelle_räume WHERE tabelle_vermerke_idTabelle_vermerke = $vermerkID");
+    // Add new links
+    $roomArray = $_GET['room'] ?? [];
+    foreach ($roomArray as $roomID) {
+        if ($roomID != "0" && $roomID != "") {
+            $sql_room = "INSERT INTO tabelle_vermerke_has_tabelle_räume
+                         (tabelle_vermerke_idTabelle_vermerke, tabelle_räume_idTabelle_räume)
+                         VALUES ($vermerkID, $roomID)";
+            $mysqli->query($sql_room);
+        }
+    }
     echo "Vermerk aktualisiert!";
 } else {
     echo "Error: " . $stmt->error;
@@ -66,3 +58,4 @@ if ($stmt->execute()) {
 
 $stmt->close();
 $mysqli->close();
+?>

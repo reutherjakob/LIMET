@@ -1,152 +1,215 @@
 <?php
-if (!function_exists('utils_connect_sql')) {  include "utils/_utils.php"; }
+require_once 'utils/_utils.php';
 check_login();
 ?>
 
 <!DOCTYPE html>
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-<html>
+<html lang="de">
 <head>
-    <style>
-
-
-    </style>
+    <meta charset="UTF-8">
+    <title>Raumvermerke Übersicht</title>
 </head>
 <body>
+
 <?php
+$projectID = $_SESSION["projectID"] ?? null;
+$roomID = $_SESSION["roomID"] ?? null;
+
+if (!$projectID || !$roomID) {
+    die("Projekt oder Raum nicht ausgewählt.");
+}
 
 $mysqli = utils_connect_sql();
 
+$sql = "SELECT 
+            vg.Gruppenname, 
+            vg.Gruppenart, 
+            vg.Ort, 
+            vg.Datum, 
+            le.LosNr_Extern, 
+            le.LosBezeichnung_Extern, 
+            ap.Name, 
+            ap.Vorname, 
+            v.Faelligkeit, 
+            v.Vermerkart, 
+            v.Bearbeitungsstatus, 
+            v.Vermerktext, 
+            v.Erstellungszeit, 
+            v.idtabelle_Vermerke
+        FROM tabelle_Vermerke v
+        LEFT JOIN tabelle_Vermerke_has_tabelle_ansprechpersonen va
+            ON v.idtabelle_Vermerke = va.tabelle_Vermerke_idtabelle_Vermerke
+        LEFT JOIN tabelle_ansprechpersonen ap 
+            ON ap.idTABELLE_Ansprechpersonen = va.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen
+        INNER JOIN tabelle_Vermerkuntergruppe vu 
+            ON vu.idtabelle_Vermerkuntergruppe = v.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe
+        INNER JOIN tabelle_Vermerkgruppe vg 
+            ON vu.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe = vg.idtabelle_Vermerkgruppe
+        LEFT JOIN tabelle_lose_extern le 
+            ON v.tabelle_lose_extern_idtabelle_Lose_Extern = le.idtabelle_Lose_Extern
+        INNER JOIN tabelle_vermerke_has_tabelle_räume vr
+            ON v.idtabelle_Vermerke = vr.tabelle_vermerke_idTabelle_vermerke
+        INNER JOIN tabelle_räume r
+            ON vr.tabelle_räume_idTabelle_räume = r.idTABELLE_Räume
+        WHERE vg.tabelle_projekte_idTABELLE_Projekte = ?
+          AND r.idTABELLE_Räume = ?
+        ORDER BY vg.Datum DESC, v.Erstellungszeit DESC";
 
-$sql = "SELECT tabelle_Vermerkgruppe.Gruppenname, tabelle_Vermerkgruppe.Gruppenart, tabelle_Vermerkgruppe.Ort, tabelle_Vermerkgruppe.Datum, tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern, tabelle_ansprechpersonen.Name, tabelle_ansprechpersonen.Vorname, tabelle_Vermerke.Faelligkeit, tabelle_Vermerke.Vermerkart, tabelle_Vermerke.Bearbeitungsstatus, tabelle_Vermerke.Vermerktext, tabelle_Vermerke.Erstellungszeit, tabelle_Vermerke.idtabelle_Vermerke
-                FROM (((tabelle_Vermerke LEFT JOIN (tabelle_ansprechpersonen RIGHT JOIN tabelle_Vermerke_has_tabelle_ansprechpersonen ON tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen = tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen) ON tabelle_Vermerke.idtabelle_Vermerke = tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_Vermerke_idtabelle_Vermerke) INNER JOIN (tabelle_Vermerkgruppe INNER JOIN tabelle_Vermerkuntergruppe ON tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe = tabelle_Vermerkuntergruppe.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe) ON tabelle_Vermerke.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe = tabelle_Vermerkuntergruppe.idtabelle_Vermerkuntergruppe) LEFT JOIN tabelle_räume ON tabelle_Vermerke.tabelle_räume_idTABELLE_Räume = tabelle_räume.idTABELLE_Räume) LEFT JOIN tabelle_lose_extern ON tabelle_Vermerke.tabelle_lose_extern_idtabelle_Lose_Extern = tabelle_lose_extern.idtabelle_Lose_Extern
-                WHERE (((tabelle_Vermerkgruppe.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_Vermerke.tabelle_räume_idTABELLE_Räume)=" . $_SESSION["roomID"] . "))
-                ORDER BY tabelle_Vermerkgruppe.Datum DESC , tabelle_Vermerke.Erstellungszeit DESC;";
+$stmt = $mysqli->prepare($sql);
 
-$result = $mysqli->query($sql);
+if (!$stmt) die("Prepare failed: " . $mysqli->error);
 
-echo "<div class='table-responsive'><table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableRoomVermerke'  >
-	<thead><tr>
-	<th>ID</th> 
-        <th>Art</th>
-        <th>Name</th>	
-        <th>Status</th>
-        <th>Datum</th>
-        <th>Vermerk</th>
-	<th>Typ</th>
-	<th>Zuständig</th>
-	<th>Fälligkeit</th>        
-	<th>Los</th>	        
-        <th>Status</th>        
-	</tr></thead><tbody>";
-
-
-while ($row = $result->fetch_assoc()) {
-    echo "<tr>";
-    echo "<td>" . $row["idtabelle_Vermerke"] . "</td>";
-    echo "<td>" . $row["Gruppenart"] . "</td>";
-    echo "<td>" . $row["Gruppenname"] . "</td>";
-    echo "<td>";
-    if ($row["Vermerkart"] != "Info") {
-        if ($row["Bearbeitungsstatus"] == "0") {
-            echo "<div class='form-check form-check-inline'><label class='form-check-label' for='" . $row["idtabelle_Vermerke"] . "'><input type='checkbox' class='form-check-input' id='" . $row["idtabelle_Vermerke"] . "' value='statusCheck'></label></div>";
-        } else {
-            echo "<div class='form-check form-check-inline'><label class='form-check-label' for='" . $row["idtabelle_Vermerke"] . "'><input type='checkbox' class='form-check-input' id='" . $row["idtabelle_Vermerke"] . "' value='statusCheck' checked='true'></label></div>";
-        }
-    }
-    echo "</td>";
-    echo "<td>" . $row["Datum"] . "</td>";
-    echo "<td><button type='button' class='btn btn-sm btn-outline-dark' data-bs-toggle='popover' title='Vermerk' data-placement='left' data-bs-content='" . $row["Vermerktext"] . "'><i class='fa fa-comment'></i></button></td>";
-    echo "<td>" . $row["Vermerkart"] . "</td>";
-    echo "<td>" . $row["Name"] . "</td>";
-    echo "<td>";
-    if ($row["Vermerkart"] != "Info") {
-        echo $row["Faelligkeit"];
-    }
-    echo "</td>";
-    echo "<td>" . $row["LosNr_Extern"] . "</td>";
-    echo "<td>" . $row["Bearbeitungsstatus"] . "</td>";
-
-    echo "</tr>";
-}
-echo "</tbody></table></div>";
+$stmt->bind_param("ii", $projectID, $roomID);
+$stmt->execute();
+$result = $stmt->get_result();
 $mysqli->close();
 ?>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-sm table-hover border border-light border-5"
+           id="tableRoomVermerke">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Art</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Datum</th>
+            <th>Vermerk</th>
+            <th>Typ</th>
+            <th>Zuständig</th>
+            <th>Fälligkeit</th>
+            <th>Los</th>
+            <th>Status-Wert</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php while ($row = $result->fetch_assoc()): ?>
+            <tr>
+                <td><?= $row['idtabelle_Vermerke'] ?></td>
+                <td><?= htmlspecialchars($row['Gruppenart'] ?? '') ?></td>
+                <td><?= htmlspecialchars($row['Gruppenname'] ?? '') ?></td>
+                <td>
+                    <?php if ($row['Vermerkart'] !== 'Info'): ?>
+                        <div class="form-check form-check-inline">
+                            <label for="<?= $row['idtabelle_Vermerke'] ?>">
+
+                            </label><input type="checkbox" class="form-check-input"
+                                           id="<?= $row['idtabelle_Vermerke'] ?>"
+                                           value="statusCheck"
+                                <?= $row["Bearbeitungsstatus"] == "1" ? "checked" : "" ?>>
+                        </div>
+                    <?php endif; ?>
+                </td>
+                <td><?= htmlspecialchars($row['Datum'] ?? '') ?></td>
+                <td>
+                    <?php
+                    $vermerktextSafe = htmlspecialchars($row['Vermerktext'] ?? '', ENT_QUOTES | ENT_HTML5);
+                    ?>
+                    <button type="button"
+                            class="btn btn-sm btn-outline-dark"
+                            data-bs-toggle="popover"
+                            data-bs-placement="left"
+                            data-bs-html="true"
+                            title="Vermerk"
+                            data-bs-content="<?= $vermerktextSafe ?>">
+                        <i class="fa fa-comment"></i>
+                    </button>
+                </td>
+                <td><?= htmlspecialchars($row['Vermerkart'] ?? '') ?></td>
+                <td><?= htmlspecialchars($row['Name'] ?? '') ?></td>
+                <td><?= $row['Vermerkart'] !== 'Info' ? htmlspecialchars($row['Faelligkeit'] ?? '') : "" ?></td>
+                <td><?= htmlspecialchars($row['LosNr_Extern'] ?? '') ?></td>
+                <td><?= $row['Bearbeitungsstatus'] ?></td>
+            </tr>
+        <?php endwhile; ?>
+        </tbody>
+    </table>
+</div>
+
+
 <script>
-
     $(document).ready(function () {
-        $('#tableRoomVermerke').DataTable({
-            "columnDefs": [
-                {
-                    "targets": [0, 6, 9, 10],
-                    "visible": false,
-                    "searchable": false
-                }
-            ],
-            "paging": true,
-            "pagingType": "simple",
-            "lengthChange": false,
-            "pageLength": 10,
-            "searching": true,
-            "info": true,
-            "order": [[4, "desc"]],
-            'language': {'url': 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'},
-            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-                //Farbe bestimmen
-                if (aData[6] === "Bearbeitung") {
-                    if (aData[10] === "0") {
-                        $('td', nRow).css('background-color', '#ff8080');
-                    } else {
-                        $('td', nRow).css('background-color', '#b8dc6f');
-                    }
-                } else {
 
-                    $('td', nRow).css('background-color', '#d3edf8');
-                }
-            }
-        });
+        $(function () {
+            const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+            const popoverList = popoverTriggerList.map(function (el) {
+                return new bootstrap.Popover(el, {
+                    container: 'body',
+                    trigger: 'focus',
+                    html: true,
+                    placement: 'left'
+                });
+            });
 
-
-        $("input[value='statusCheck']").change(function () {
-
-            if ($(this).prop('checked') === true) {
-                var vermerkStatus = 1;
-            } else {
-                var vermerkStatus = 0;
-            }
-            var vermerkID = this.id;
-
-            if (vermerkStatus !== "" && vermerkID !== "") {
-                $.ajax({
-                    url: "saveVermerkStatus.php",
-                    data: {"vermerkID": vermerkID, "vermerkStatus": vermerkStatus},
-                    type: "GET",
-                    success: function (data) {
-                        alert(data);
-                        $.ajax({
-                            url: "getRoomVermerke.php",
-                            type: "GET",
-                            success: function (data) {
-                                $("#roomVermerke").html(data);
-                            }
-                        });
+            // Hide popovers when clicking outside
+            $(document).on('click', function (e) {
+                $('[data-bs-toggle="popover"]').each(function () {
+                    if (
+                        !$(this).is(e.target) &&                           // Clicked element is NOT the trigger
+                        $(this).has(e.target).length === 0 &&             // Not inside the trigger
+                        $('.popover').has(e.target).length === 0          // Not inside the popover
+                    ) {
+                        $(this).popover('hide');
                     }
                 });
-            } else {
-                alert("Vermerkstatus nicht lesbar!");
+            });
+        });
+
+
+
+        $('#tableRoomVermerke').DataTable({
+            columnDefs: [
+                {targets: [0, 6, 9, 10], visible: false, searchable: false}
+            ],
+            paging: true,
+            pagingType: "simple",
+            lengthChange: false,
+            pageLength: 10,
+            searching: true,
+            info: true,
+            order: [[4, 'desc']],
+            language: {url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'},
+            rowCallback: function (row, data) {
+                var vermerkTyp = data[6];
+                var status = data[10];
+                if (vermerkTyp === "Bearbeitung") {
+                    row.style.backgroundColor = status === "0" ? '#ff8080' : '#b8dc6f';
+                } else {
+                    row.style.backgroundColor = '#d3edf8';
+                }
             }
-
-        });
-        // Popover for Vermerk	TODO
-        $(function () {
-            $('[data-bs-toggle="popover"]').popover();
         });
 
-
+        document.querySelectorAll("input[value='statusCheck']").forEach(function (input) {
+            input.addEventListener("change", function () {
+                var vermerkID = this.id;
+                var status = this.checked ? 1 : 0;
+                if (vermerkID) {
+                    $.ajax({
+                        url: "saveVermerkStatus.php",
+                        method: "GET",
+                        data: {vermerkID: vermerkID, vermerkStatus: status},
+                        success: function (data) {
+                            // You can replace with a user feedback system or toaster here
+                            alert(data);
+                            $.ajax({
+                                url: "getRoomVermerke2.php",
+                                method: "GET",
+                                success: function (html) {
+                                    $("#roomVermerke").html(html);
+                                }
+                            });
+                        },
+                        error: function () {
+                            alert("Fehler beim Aktualisieren des Vermerkstatus.");
+                        }
+                    });
+                }
+            });
+        });
     });
 
-
 </script>
-
 </body>
 </html>

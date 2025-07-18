@@ -1,6 +1,6 @@
 <?php
-// UNUSED
-if (!function_exists('utils_connect_sql')) {  include "utils/_utils.php"; }
+// UNUSED ?
+require_once 'utils/_utils.php';
 init_page_serversides("x", ".");
 $mysqli = utils_connect_sql();
 
