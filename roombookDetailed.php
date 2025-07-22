@@ -410,7 +410,7 @@ init_page_serversides();
 
 
     function init_table_elementsinDB() {
-        $('#CardHeaderElementesInDb .xxx').remove();
+
         tableElementsInDB = new DataTable('#tableElementsInDB', {
             paging: {
                 type: 'simple',
@@ -431,6 +431,7 @@ init_page_serversides();
                 searchPlaceholder: "Suche..."
             },
             initComplete: function () {
+                 $('#CardHeaderElementesInDb .xxx').remove();
                 $('#tableElementsInDB_wrapper .dt-search label').remove();
                 $('#tableElementsInDB_wrapper .dt-search').children().removeClass("form-control form-control-sm float-right").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
             }

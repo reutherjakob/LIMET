@@ -51,7 +51,7 @@ echo "<th>Datum</th>
 		<th>NK/Stk</th>
                 <th>Projekt</th>
                 <th>Lieferant</th>
-                <th>Preisbasis</th>
+               
 	</tr></thead><tbody>";
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
@@ -63,7 +63,7 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . format_money($row["Nebenkosten"]) . "</td>";
     echo "<td>" . $row["Projektname"] . "</td>";
     echo "<td>" . $row["Lieferant"] . "</td>";
-    echo "<td>" . $row["Preisbasis"] . "</td>";
+
     echo "</tr>";
 }
 echo "</tbody></table>";
