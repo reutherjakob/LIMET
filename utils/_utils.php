@@ -22,7 +22,7 @@ function check_login(): void
 {
     if (!isset($_SESSION["username"])) {
         echo '
-        <div class="container-fluid bg-white py-5">
+        <div class="container-fluid bg-white py-5"> 
             <div class="row justify-content-center">
                 <div class="col-12 col-md-6">
                     <div class="card shadow">
