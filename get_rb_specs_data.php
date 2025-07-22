@@ -189,8 +189,8 @@ tabelle_räume.`HT_Heizung`,
 tabelle_räume.`HT_Waermeabgabe_Typ`,  
 tabelle_räume.`HT_Belueftung`,        
 tabelle_räume.`HT_Entlueftung`,       
-tabelle_räume.`PHY_Akustik_Schallgrad`
-
+tabelle_räume.`PHY_Akustik_Schallgrad`,
+tabelle_räume.`EL_Laser 32A Stk`
 FROM tabelle_räume
 INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
 WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))

@@ -1,53 +1,41 @@
 <?php
-session_start();
+include "utils/_format.php";
+check_login();
+$mysqli = utils_connect_sql();
+// Validate and sanitize inputs
+$umsatz = filter_input(INPUT_GET, 'umsatz', FILTER_VALIDATE_FLOAT);
+$bereich_raw = filter_input(INPUT_GET, 'bereich', FILTER_SANITIZE_STRING);
+$bereich = trim($bereich_raw);
+$jahr = filter_input(INPUT_GET, 'jahr', FILTER_VALIDATE_INT);
 
-function br2nl($string){
-$return= str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $string);
-return $return;
+$lieferantenID = isset($_SESSION["lieferantenID"]) ? intval($_SESSION["lieferantenID"]) : 0;
+
+// Simple input checks
+if ($umsatz === false || $umsatz < 0) {
+    exit("Ungültiger Umsatzwert.");
+}
+if (empty($bereich) || !preg_match('/^[a-zA-ZäöüÄÖÜß\s]{1,50}$/u', $bereich)) {
+    exit("Ungültiger Geschäftsbereich.");
+}
+if ($jahr === false || $jahr < 1900 || $jahr > 2100) {
+    exit("Ungültiges Jahr.");
+}
+if ($lieferantenID <= 0) {
+    exit("Ungültige Lieferanten-ID.");
 }
 
-?>
+// Prepare statement to prevent SQL injection
+$stmt = $mysqli->prepare("INSERT INTO LIMET_RB.tabelle_umsaetze (umsatz, geschaeftsbereich, jahr, tabelle_lieferant_idTABELLE_Lieferant) VALUES (?, ?, ?, ?)");
+if (!$stmt) {
+    exit("Prepare failed: " . $mysqli->error);
+}
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+$stmt->bind_param("dsii", $umsatz, $bereich, $jahr, $lieferantenID);
 
-<?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	if ($mysqli ->connect_error) {
-	    die("Connection failed: " . $mysqli->connect_error);
-	}
-	
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    echo "Error loading character set utf8: " . $mysqli->error;
-	    exit();
-	} 
-	
-	
-			
-	$sql = "INSERT INTO `LIMET_RB`.`tabelle_umsaetze`
-                        (`umsatz`,
-                        `geschaeftsbereich`,
-                        `jahr`,
-                        `tabelle_lieferant_idTABELLE_Lieferant`)
-                        VALUES
-                        ('".filter_input(INPUT_GET, 'umsatz')."',
-                        '".filter_input(INPUT_GET, 'bereich')."',
-                        '".filter_input(INPUT_GET, 'jahr')."',
-                        ".$_SESSION["lieferantenID"].");";
+if ($stmt->execute()) {
+    echo "Umsatz hinzugefügt!";
+} else {
+    echo "Error: " . $stmt->error;
+}
 
-	if ($mysqli ->query($sql) === TRUE) {
-	    echo "Umsatz hinzugefügt!";
-	} else {
-	    echo "Error: " . $sql . "<br>" . $mysqli->error;
-	}
-	
-	
-	$mysqli ->close();	
-					
-?>
+$stmt->close();
