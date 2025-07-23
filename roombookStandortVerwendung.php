@@ -11,10 +11,11 @@ if ($projectID <= 0) {
 $sql = "
 SELECT 
     te.idTABELLE_Elemente,
+    te.ElementID,
     te.Bezeichnung AS Element_Name,
     st.Raumnr AS Standort_Raumnr,
     st.Raumbezeichnung AS Standort_Raum,
-    GROUP_CONCAT(DISTINCT v.Raumbezeichnung ORDER BY v.Raumbezeichnung SEPARATOR ', ') AS Verwendung_Raeume
+    GROUP_CONCAT(DISTINCT CONCAT(v.Raumbezeichnung, ' (', v.Raumnr, ')') ORDER BY v.Raumbezeichnung SEPARATOR ', ') AS Verwendung_Raeume
 FROM tabelle_elemente te
 
 INNER JOIN tabelle_räume_has_tabelle_elemente trhe_standort 
@@ -25,7 +26,10 @@ INNER JOIN tabelle_räume st
   ON trhe_standort.TABELLE_Räume_idTABELLE_Räume = st.idTABELLE_Räume
 
 LEFT JOIN (
-    SELECT DISTINCT trhe_verw.TABELLE_Elemente_idTABELLE_Elemente, tre_verw.Raumbezeichnung 
+    SELECT DISTINCT 
+        trhe_verw.TABELLE_Elemente_idTABELLE_Elemente, 
+        tre_verw.Raumbezeichnung, 
+        tre_verw.Raumnr
     FROM tabelle_verwendungselemente ve 
     INNER JOIN tabelle_räume_has_tabelle_elemente trhe_st 
       ON ve.id_Standortelement = trhe_st.id
@@ -48,6 +52,7 @@ HAVING
 
 ORDER BY te.Bezeichnung
 ";
+
 
 $stmt = $mysqli->prepare($sql);
 $stmt->bind_param("ii", $projectID, $projectID);
@@ -83,31 +88,42 @@ $mysqli->close();
           rel="stylesheet">
 
 </head>
-<body class="p-4">
+<body>
 <div class="container-fluid bg-light">
     <div id="limet-navbar"></div>
-
-    <h1 class="mb-4">Elementübersicht: Standort und Verwendung</h1>
     <div class="card shadow-sm">
         <div class="card-header">
-            <h5 class="mb-0">Alle Elemente mit Standort- und Verwendungsräumen</h5>
+            <div class="row flex-nowrap">
+                <div class="col-6">Elemente: Standort- und Verwendungsräume</div>
+                <div class="col-6 d-inline-flex justify-content-end" id="cardHeader"></div>
+            </div>
         </div>
         <div class="card-body p-0">
             <table id="elements-table" class="table table-striped table-sm mb-0" style="width:100%">
                 <thead class="table-light">
                 <tr>
-                    <th>Element</th>
-                    <th>Standort Raum</th>
-                    <th>Standort Raumnr</th>
+                    <th>ID</th>
+                    <th>Bezeichnung</th>
+                    <th>
+                        <div class="float-end"> Standort f</div>
+                    </th>
+                    <th>
+                        <div class="float-start"> Standort Raumnr</div>
+                    </th>
                     <th>Verwendung in Räumen</th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php foreach ($elements as $el): ?>
                     <tr>
+                        <td><?= htmlspecialchars($el['ElementID'] ?? '-') ?></td>
                         <td><?= htmlspecialchars($el['Element_Name'] ?? '-') ?></td>
-                        <td><?= htmlspecialchars($el['Standort_Raum'] ?? '-') ?></td>
-                        <td><?= htmlspecialchars($el['Standort_Raumnr'] ?? '-') ?></td>
+                        <td>
+                            <div class="float-end">    <?= htmlspecialchars($el['Standort_Raum'] ?? '-') ?></div>
+                        </td>
+                        <td>
+                            <div class="float-start">    <?= htmlspecialchars($el['Standort_Raumnr'] ?? '-') ?></div>
+                        </td>
                         <td><?= htmlspecialchars($el['Verwendung_Raeume'] ?? '-') ?></td>
                     </tr>
                 <?php endforeach; ?>
@@ -121,10 +137,22 @@ $mysqli->close();
     $(document).ready(function () {
         $('#elements-table').DataTable({
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.13.5/i18n/de-DE.json"
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                search: "",
+                searchPlaceholder: "Suche...",
+                lengthMenu: '_MENU_',
+                info: "_START_-_END_ von _TOTAL_",
+                infoEmpty: "Keine Einträge",
+                infoFiltered: "(von _MAX_)",
             },
-            pageLength: 25,
-            lengthChange: true
+            pageLength: 50,
+            lengthChange: true,
+            initComplete: function () {
+                $('.dt-length').appendTo('#cardHeader');
+                $('.dt-search label').remove();
+                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#cardHeader');
+                $('.dt-buttons').children().addClass("btn-sm ms-1 me-1");
+            }
         });
     });
 </script>

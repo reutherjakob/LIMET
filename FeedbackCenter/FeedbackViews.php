@@ -15,18 +15,28 @@ init_page_serversides("x", "x");
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 </head>
 
-<body>
-<div id="limet-navbar"></div>
-<div class="container py-5">
+<style>
+    .Done {
+        color: #aaa;
+        opacity: 0.6;
+        text-decoration: line-through;
+        background: #f6f6f6;
+    }
 
+</style>
+
+<body>
+<div class="container-fluid">
+
+    <div id="limet-navbar"></div>
     <div class="row">
-        <div class="col-lg-10 mx-auto">
-            <h1 class="mb-4 text-center"><i class="fas fa-comments"></i> Feedback Center</h1>
+        <div class="col-2"></div>
+        <div class="col-8">
             <?php if (!empty($message)): ?>
                 <div class="alert alert-info"><?= htmlspecialchars($message) ?></div>
             <?php endif; ?>
-            <div class="card border-white">
-                <div class="card-body border-white">
+            <div class="card">
+                <div class="card-body">
                     <ul class="nav nav-tabs mb-4" role="tablist">
                         <li class="nav-item">
                             <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#feature-form"
@@ -42,7 +52,7 @@ init_page_serversides("x", "x");
                             </button>
                         </li>
                     </ul>
-                    <div class="tab-content mb-5">
+                    <div class="tab-content">
                         <div class="tab-pane fade show active" id="feature-form" role="tabpanel">
                             <form method="post" action="/FeedbackCenter/FeedbackIndex.php?action=addFeature"
                                   class="needs-validation" novalidate>
@@ -61,9 +71,9 @@ init_page_serversides("x", "x");
                                     <label for="feature_description" class="form-label" hidden></label>
                                     <textarea id="feature_description" name="feature_description" class="form-control"
                                               rows="7"
-                                              required placeholder="Beschreibung"></textarea>
+                                              required placeholder="Möglichst Detaillierte Beschreibung"></textarea>
                                 </div>
-                                <button type="submit" class="btn btn-success w-100">Submit Feature Request</button>
+                                <button type="submit" class="btn btn-primary w-100 mt-1">Submit Feature Request</button>
                             </form>
                         </div>
                         <div class="tab-pane fade" id="bug-form" role="tabpanel">
@@ -87,7 +97,7 @@ init_page_serversides("x", "x");
                                     <textarea id="bug_description" name="bug_description" class="form-control" rows="7"
                                               required
                                               placeholder="Bug Beschreibung:
-Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen?"></textarea>
+Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen? Möglichst viele Details bitte..."></textarea>
                                 </div>
                                 <div class="mb-3 row align-items-center">
                                     <label for="bug_severity" class="form-label col-3 mb-0"> </label>
@@ -136,12 +146,12 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen?"></tex
                                     </div>
                                 </div>
 
-                                <div class="mb-3">
+                                <div class="">
                                     <label for="bug_screenshot" class="form-label" hidden>Screenshot </label>
                                     <input type="file" id="bug_screenshot" name="bug_screenshot" class="form-control"
                                            accept="image/*">
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100">Submit Bug Report</button>
+                                <button type="submit" class="btn btn-primary w-100 mt-1">Submit Bug Report</button>
                             </form>
                         </div>
                     </div>
@@ -150,19 +160,23 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen?"></tex
             <!-- Lists Section -->
             <div class="row">
                 <div class="col-lg-6">
-                    <h2 class="mb-3 text-center"><i class="fas fa-list"></i> Feature Wishlist</h2>
+                    <h5 class="mb-2 mt-4 text-center"><i class="fas fa-list"></i> Feature Wishlist</h5>
                     <?php if (empty($wishlist)): ?>
                         <div class="alert alert-light text-center">No feature requests yet.</div>
                     <?php else: ?>
                         <div class="accordion" id="wishlistAccordion">
-                            <?php foreach (array_reverse($wishlist, true) as $idx => $entry): ?>
-                                <div class="accordion-item">
+                            <?php
+                            usort($wishlist, function($a, $b) {
+                                return (intval($b['Done']) ?? 0) <=> intval(($a['Done']) ?? 0);
+                            });
+                            foreach (array_reverse($wishlist, true) as $idx => $entry): ?>
+                                <div class="accordion-item <?= $entry['Done'] == 1 ? 'Done' : '' ?>">
                                     <h2 class="accordion-header" id="wishHeading<?= $idx ?>">
                                         <button class="accordion-button collapsed" type="button"
                                                 data-bs-toggle="collapse"
                                                 data-bs-target="#wishCollapse<?= $idx ?>" aria-expanded="false"
                                                 aria-controls="wishCollapse<?= $idx ?>">
-                                            <span class="badge bg-info me-2"><?= htmlspecialchars($entry['id']) ?></span>
+                                            <span class="badge bg-secondary me-2"><?= htmlspecialchars($entry['id']) ?></span>
                                             <strong><?= htmlspecialchars($entry['title']) ?></strong>
                                             <span class="ms-2 text-muted small"><i
                                                         class="fas fa-calendar-alt"></i> <?= htmlspecialchars($entry['date']) ?></span>
@@ -186,7 +200,14 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen?"></tex
                                                 <button name="vote" value="down" class="btn btn-link p-0"><i
                                                             class="fas fa-arrow-down"></i></button>
                                             </form>
-                                            <form method="post"
+                                            <form method="post" action="FeedbackIndex.php?action=markFeatureDone">
+                                                <input type="hidden" name="feature_id" value="<?= htmlspecialchars($entry['id']) ?>">
+                                                <input type="checkbox" name="Done"
+                                                       onchange="this.form.submit();"
+                                                    <?= ($entry['Done'] == 1 ? 'checked' : '') ?>>
+                                                Erledigt
+                                            </form>
+                                            <!--form method="post"
                                                   action="/FeedbackCenter/FeedbackIndex.php?action=deleteFeature"
                                                   style="display:inline;"
                                                   onsubmit="return confirm('Are you sure you want to delete this feature request?');">
@@ -195,7 +216,7 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen?"></tex
                                                 <button type="submit" class="btn btn-danger btn-sm">
                                                     <i class="fas fa-trash-alt"></i> Delete
                                                 </button>
-                                            </form>
+                                            </form-->
                                         </div>
                                     </div>
                                 </div>
@@ -204,13 +225,20 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen?"></tex
                     <?php endif; ?>
                 </div>
                 <div class="col-lg-6">
-                    <h2 class="mb-3 text-center"><i class="fas fa-list"></i> Reported Bugs</h2>
+                    <h5 class="mb-2 mt-4 text-center"><i class="fas fa-list"></i> Reported Bugs</h5>
                     <?php if (empty($bugReports)): ?>
                         <div class="alert alert-light text-center">No bugs have been reported yet.</div>
                     <?php else: ?>
+
                         <div class="accordion" id="bugAccordion">
-                            <?php foreach (array_reverse($bugReports, true) as $idx => $report): ?>
-                                <div class="accordion-item">
+                            <?php
+
+                            usort($bugReports, function($a, $b) {
+                                return ($b['Done'] ?? 0) <=> ($a['Done'] ?? 0);
+                            });
+
+                            foreach (array_reverse($bugReports, true) as $idx => $report): ?>
+                                <div class="accordion-item <?= $report['Done'] == 1 ? 'Done' : '' ?>">
                                     <h2 class="accordion-header" id="heading<?= $idx ?>">
                                         <button class="accordion-button collapsed" type="button"
                                                 data-bs-toggle="collapse"
@@ -218,7 +246,7 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen?"></tex
                                                 aria-controls="collapse<?= $idx ?>">
                                             <span class="badge bg-secondary me-2"><?= htmlspecialchars($report['id']) ?></span>
                                             <strong><?= htmlspecialchars($report['title']) ?></strong>
-                                            <span class="ms-2 text-muted small"><i
+                                            <span class="ms-2 text-muted small  "><i
                                                         class="fas fa-calendar-alt"></i> <?= htmlspecialchars($report['date']) ?></span>
                                         </button>
                                     </h2>
@@ -226,16 +254,16 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen?"></tex
                                          aria-labelledby="heading<?= $idx ?>" data-bs-parent="#bugAccordion">
                                         <div class="accordion-body">
                                             <strong>Website:</strong> <?= htmlspecialchars($report['website']) ?><br>
-                                            <?php if (!empty($report['url'])): ?>
-                                                <strong>URL:</strong> <?= htmlspecialchars($report['url']) ?><br>
+                                            <?php if (!empty($report['Severity'])): ?>
+                                                <strong>Severity:</strong> <?= htmlspecialchars($report['Severity']) ?><br>
                                             <?php endif; ?>
                                             <pre class="mb-2"
                                                  style="white-space: pre-wrap; word-break: break-word;"><?= htmlspecialchars($report['description']) ?></pre>
                                             <?php if ($report['screenshot']): ?>
                                                 <div class="mb-3">
-                                                    <a href="/FeedbackCenter/txt/bug_screenshots/<?= urlencode($report['screenshot']) ?>"
+                                                    <a href="/FeedbackCenter/uploads/<?= urlencode($report['screenshot']) ?>"
                                                        target="_blank">
-                                                        <img src="/FeedbackCenter/txt/bug_screenshots/<?= urlencode($report['screenshot']) ?>"
+                                                        <img src="/FeedbackCenter/uploads/<?= urlencode($report['screenshot']) ?>"
                                                              alt="Screenshot" class="img-thumbnail"
                                                              style="max-width:300px;">
                                                     </a>
@@ -243,7 +271,8 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen?"></tex
                                                         Screenshot: <?= htmlspecialchars($report['screenshot']) ?></div>
                                                 </div>
                                             <?php endif; ?>
-                                            <strong>Upvotes:</strong> <?= (int)$report['upvotes'] ?> |
+
+                                            <!--- strong>Upvotes:</strong> <?= (int)$report['upvotes'] ?> |
                                             <strong>Downvotes:</strong> <?= (int)$report['downvotes'] ?>
                                             <form method="post"
                                                   action="/FeedbackCenter/FeedbackIndex.php?action=voteBug"
@@ -254,8 +283,19 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen?"></tex
                                                             class="fas fa-arrow-up"></i></button>
                                                 <button name="vote" value="down" class="btn btn-link p-0"><i
                                                             class="fas fa-arrow-down"></i></button>
+                                            </form -->
+
+                                            <form method="post" action="FeedbackIndex.php?action=markBugDone">
+                                                <input type="hidden" name="bug_id" value="<?= htmlspecialchars($report['id']) ?>">
+                                                <input type="checkbox" name="Done"
+                                                       onchange="this.form.submit();"
+                                                    <?= ($report['Done'] == 1 ? 'checked' : '') ?>>
+                                                Erledigt
                                             </form>
-                                            <form method="post"
+
+
+
+                                            <!--form method="post"
                                                   action="/FeedbackCenter/FeedbackIndex.php?action=deleteBug"
                                                   style="display:inline;"
                                                   onsubmit="return confirm('Are you sure you want to delete this bug report and its screenshot?');">
@@ -264,7 +304,8 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen?"></tex
                                                 <button type="submit" class="btn btn-danger btn-sm">
                                                     <i class="fas fa-trash-alt"></i> Delete
                                                 </button>
-                                            </form>
+                                            </form-->
+
                                         </div>
                                     </div>
                                 </div>

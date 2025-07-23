@@ -31,6 +31,7 @@ if (!function_exists('utils_connect_sql')) {
     include "_utils.php";
 }
 init_page_serversides("No Redirect");
+
 ?>
 
 <body>
@@ -64,7 +65,7 @@ init_page_serversides("No Redirect");
                 echo '<p>Keine Sessions gefunden.</p>';
             }
             echo '</div>';
- echo  ;
+
             ?>
 
         </div>

@@ -44,12 +44,12 @@
                         <button type='button' class='btn btn-outline-dark  me-1' id='createElementListWithPricePDF'>
                             <i class='far fa-file-pdf'></i> El.liste & Preis
                         </button>
-                        <button type='button' class='btn btn-outline-dark  me-1' id='createElementEinbringwegePDF'>
+                        <!--button type='button' class='btn btn-outline-dark  me-1' id='createElementEinbringwegePDF'>
                             <i class='far fa-file-pdf'></i> Einbringwege
                         </button>
                         <button type='button' class='btn btn-outline-dark  me-1' id='createElementEinbringwegePDF2'>
                             <i class='far fa-file-pdf'></i> Einbringwege2
-                        </button>
+                        </button-->
 
                     </div>
                     <div class="me-4 d-flex " id="sbdiv"></div>

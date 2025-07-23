@@ -7,7 +7,8 @@ class FeedbackController {
         $this->model = new FeedbackModel();
     }
 
-    public function index() {
+    public function index(): void
+    {
         $wishlist = $this->model->getWishlist();
         $bugReports = $this->model->getBugReports();
         $message = $_SESSION['message'] ?? '';
@@ -15,7 +16,8 @@ class FeedbackController {
         require __DIR__ . '/FeedbackViews.php';
     }
 
-    public function addFeature() {
+    public function addFeature(): void
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $website = $_POST['feature_website'] ?? '';
             $title = $_POST['feature_title'] ?? '';
@@ -26,20 +28,22 @@ class FeedbackController {
         }
     }
 
-    public function addBug() {
+    public function addBug(): void
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $website = $_POST['bug_website'] ?? '';
             $title = $_POST['bug_title'] ?? '';
             $desc = $_POST['bug_description'] ?? '';
-            $url = $_POST['bug_severity'] ?? '';
+            $Severity = $_POST['bug_severity'] ?? '';
             $file = $_FILES['bug_screenshot'] ?? null;
-            $_SESSION['message'] = $this->model->addBug($website, $title, $desc, $file, $url);
+            $_SESSION['message'] = $this->model->addBug($website, $title, $desc, $file, $Severity);
             header('Location: FeedbackIndex.php');
             exit;
         }
     }
 
-    public function voteFeature() {
+    public function voteFeature(): void
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['vote_feature_id'] ?? '';
             $direction = $_POST['vote'] ?? '';
@@ -49,7 +53,8 @@ class FeedbackController {
         }
     }
 
-    public function voteBug() {
+    public function voteBug(): void
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['vote_bug_id'] ?? '';
             $direction = $_POST['vote'] ?? '';
@@ -59,7 +64,8 @@ class FeedbackController {
         }
     }
 
-    public function deleteFeature() {
+    public function deleteFeature(): void
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['delete_feature_id'] ?? '';
             $_SESSION['message'] = $this->model->deleteFeature($id);
@@ -68,7 +74,8 @@ class FeedbackController {
         }
     }
 
-    public function deleteBug() {
+    public function deleteBug(): void
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['delete_bug_id'] ?? '';
             $_SESSION['message'] = $this->model->deleteBug($id);
@@ -76,4 +83,29 @@ class FeedbackController {
             exit;
         }
     }
+
+    public function markFeatureDone(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['feature_id'] ?? '';
+            $done = isset($_POST['Done']) ? 1 : 0;
+            $_SESSION['message'] = $this->model->markFeatureDone($id, $done);
+            header('Location: FeedbackIndex.php');
+            exit;
+        }
+    }
+
+    public function markBugDone(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['bug_id'] ?? '';
+            $done = isset($_POST['Done']) ? 1 : 0;
+            $_SESSION['message'] = $this->model->markBugDone($id, $done);
+            header('Location: FeedbackIndex.php');
+            exit;
+        }
+    }
+
+
+
 }
