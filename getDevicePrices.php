@@ -26,7 +26,6 @@ $sql = "SELECT tabelle_preise.Datum,
                tabelle_preise.Nebenkosten,
                tabelle_projekte.Interne_Nr,
                tabelle_projekte.Projektname,
-               tabelle_projekte.Preisbasis,
                tabelle_lieferant.Lieferant
         FROM tabelle_lieferant
         RIGHT JOIN (tabelle_preise LEFT JOIN tabelle_projekte

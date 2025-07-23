@@ -131,44 +131,49 @@ init_page_serversides("", "x");
         {value: "", text: "-- Berichtkathegorie auswählen --", disabled: true, selected: true},
         {value: "bauangaben", text: "Bauangaben"},
         {value: "elementReports", text: "Element-/Raum Berichte"},
-        {value: "oldReports", text: "Alte Berichte"},
+        {value: "einbringwege", text: "Einbringwege"},
+        {value: "oldReports", text: "Historische Berichte"},
 
     ];
 
     const reportCategories = {
         bauangaben: [
-            {text: "PDF V1", link: "pdf_createBauangabenPDF"},
-            {text: "PDF V2", link: "pdf_createBauangabenV2PDF"},
-            {text: "ohne Elemente-PDF", link: "pdf_createBauangabenWithoutElementsPDF"},
-            {text: "Detail-PDF", link: "pdf_createBauangabenDetailPDF"},
-            {text: "Lab-PDF", link: "pdf_createBauangabenLabPDF"},
-            {text: "Lab-Kurz-PDF'", link: "pdf_createBauangabenLabKompaktPDF"},
-            {text: "Lab-ENT-PDF", link: "pdf_createBauangabenLabEntPDF"},
-            {text: "Lab-EIN-PDF", link: "pdf_createBauangabenLabEinrPDF_1"},
-            {text: "BAU A3", reportType: "BAUANGABEN A3"},
-            {text: "ohne Lab", reportType: "BAUANGABEN A3 3"},
-            {text: "ohne Änderungsmarkierungen", reportType: "BAUANGABEN A3 2"},
-            {text: "VE", reportType: "BAUANGABEN A3 4"}
+            {text: "PDF V1", url: "pdf_createBauangabenPDF"},
+            {text: "PDF V2", url: "pdf_createBauangabenV2PDF"},
+            {text: "ohne Elemente-PDF", url: "pdf_createBauangabenWithoutElementsPDF"},
+            {text: "Detail-PDF", url: "pdf_createBauangabenDetailPDF"},
+            {text: "Lab-PDF", url: "pdf_createBauangabenLabPDF"},
+            {text: "Lab-Kurz-PDF'", url: "pdf_createBauangabenLabKompaktPDF"},
+            {text: "Lab-ENT-PDF", url: "pdf_createBauangabenLabEntPDF"},
+            {text: "Lab-EIN-PDF", url: "pdf_createBauangabenLabEinrPDF_1"},
+            {text: "", url: " "},
+            {text: "BAU A3", url: "pdf_createBauangabenBericht_A3Qeer"},
+            {text: "ohne Lab", url: "pdf_createBauangabenBericht_A3Qeer_ohne_Lab_params"},
+            {text: "ohne Änderungsmarkierungen", url: "pdf_createBauangabenBericht_A3Qeer_1"},
+            {text: "VE", url: "pdf_createBauangabenBericht_A3Qeer_PSy"}
         ],
-
         elementReports: [
-            {text: "Elem./Raum (w/Bestand)", reportType: "Elem./Raum (w/Bestand)"},
-            {text: "inkl.Elem.Kommentar", reportType: "inkl.Elem.Kommentar"}
+            {text: "Elem./Raum (w/Bestand)", url: "pdf_createRoombookElWithoutBestand"},
+            {text: "inkl.Elem.Kommentar", url: "pdf_createRoombookElWithoutBestandWithComments"},
+        ],
+        einbringwege: [
+            {text: "Einbringwege Größgeräte", url: "pdf_createElementEinbringwegePDF"},
+            {text: "Einbringwege Größgeräte", url: "pdf_createElementEinbringwegePDFschöner"},
         ],
         oldReports: [
-            {text: "PDF", link: "pdf_createRoombookPDF"},
-            {text: "0-PDF", link: "pdf_createRoombookWithout0PDF"},
-            {text: "ohne Bestand-PDF", link: "pdf_createRoombookWithoutBestandPDF"},
-            {text: "0-ohne Bestand-PDF", link: "pdf_createRoombookWithout0WothoutBestandPDF"},
-            {text: "Bauangaben-0-PDF", link: "pdf_createRoombookWithBauangabenWithout0PDF"},
-            {text: "Bauang. Großgeräte", link: "pdf_createVBM_Bericht"}
-            {text: "BO-PDF", link: "pdf_createBOPDF"},
-            {text: "VE-Gesamt-PDF", link: "pdf_createBericht_VE_PDF"},
-            {text: "ENT-Gesamt-PDF", link: "pdf_createBericht_ENT_PDF"},
-            {text: "Nutzer Formular", link: "pdf_createUserFormPDF"}
-        ],
-
+            {text: "RB PDF", url: "pdf_createRoombookPDF"},
+            {text: "0-PDF", url: "pdf_createRoombookWithout0PDF"},
+            {text: "ohne Bestand-PDF", url: "pdf_createRoombookWithoutBestandPDF"},
+            {text: "0-ohne Bestand-PDF", url: "pdf_createRoombookWithout0WothoutBestandPDF"},
+            {text: "Bauangaben-0-PDF", url: "pdf_createRoombookWithBauangabenWithout0PDF"},
+            {text: "Bauang. Großgeräte", url: "pdf_createVBM_Bericht"},
+            {text: "BO-PDF", url: "pdf_createBOPDF"},
+            {text: "VE-Gesamt-PDF", url: "pdf_createBericht_VE_PDF"},
+            {text: "ENT-Gesamt-PDF", url: "pdf_createBericht_ENT_PDF"},
+            {text: "Nutzer Formular", url: "pdf_createUserFormPDF"}
+        ]
     };
+
 
     $(document).ready(function () {
         $('#dateSelect').val(new Date().toISOString().split('T')[0]);
@@ -232,11 +237,11 @@ init_page_serversides("", "x");
                     action: () => table.rows().select()
                 },
                 {
-                    text: 'Visible',              className: "btn btn-sm btn-outline-dark bg-white",
+                    text: 'Visible', className: "btn btn-sm btn-outline-dark bg-white",
                     action: () => table.rows({search: 'applied'}).select()
                 },
                 {
-                    text: 'None',               className: "btn btn-sm btn-outline-dark bg-white",
+                    text: 'None', className: "btn btn-sm btn-outline-dark bg-white",
                     action: () => table.rows().deselect()
                 }
             ]
@@ -253,49 +258,40 @@ init_page_serversides("", "x");
 
         if (!category || !reportCategories[category]) return;
 
-        const btns = reportCategories[category];
         const btnGroup = $('<div class="btn-group" role="group" aria-label="Berichtsbuttons"></div>');
 
-        btns.forEach(btn => {
-            const button = $('<button type="button" class="btn btn-light border-dark btn-sm"></button>').text(btn.text);
-            button.on('click', () => generateReport({reportType: btn.reportType, link: btn.link}, $('#dateSelect').val()));
+        reportCategories[category].forEach(report => {
+            const button = $('<button type="button" class="btn btn-light border-dark btn-sm"></button>').text(report.text);
+            button.on('click', () => generateReport(report, $('#dateSelect').val()));
             btnGroup.append(button);
         });
+
         container.append(btnGroup);
     }
 
-    function generateReport({reportType = null, link = null}, date) {
+    function generateReport(report, date) {
         const roomIDs = table.rows({selected: true}).data().toArray().map(row => row[0]);
-        if (!roomIDs.length) {
-            alert("Kein Raum ausgewählt!");
-            return;
-        }
         const formattedDate = date || getDate("#dateSelect");
 
-        if (reportType) {
-            const reportMap = {
-                "BAUANGABEN A3": "/PDFs/pdf_createBauangabenBericht_A3Qeer.php",
-                "BAUANGABEN A3 2": "/PDFs/pdf_createBauangabenBericht_A3Qeer_1.php",
-                "BAUANGABEN A3 3": "/PDFs/pdf_createBauangabenBericht_A3Qeer_ohne_Lab_params.php",
-                "BAUANGABEN A3 4": "/PDFs/pdf_createBauangabenBericht_A3Qeer_PSy.php",
-                "Elem./Raum (w/Bestand)": "/PDFs/pdf_createRoombookElWithoutBestand.php",
-                "inkl.Elem.Kommentar": "/PDFs/pdf_createRoombookElWithoutBestandWithComments.php"
-            };
-            if (reportMap[reportType]) {
-                window.open(`${reportMap[reportType]}?roomID=${roomIDs.join(',')}&date=${formattedDate}`);
-            } else {
-                alert("Unbekannter Berichtstyp!");
-            }
-        } else if (link) {
-            window.open(`/PDFs/${link}.php?roomID=${roomIDs.join(',')}&date=${formattedDate}`);
+        if (report.url.startsWith("pdf_createElementEinbringwegePDF")) {
+            // For einbringwege PDFs, no room selection required:
+            const url = `/PDFs/${report.url}.php?date=${formattedDate}`; // no roomID param
+            window.open(url);
         } else {
-            alert("Berichtstyp oder Link fehlt!");
+            // Other reports require room selection:
+            if (!roomIDs.length) {
+                alert("Kein Raum ausgewählt!");
+                return;
+            }
+            const url = `/PDFs/${report.url}.php?roomID=${roomIDs.join(',')}&date=${formattedDate}`;
+            window.open(url);
         }
     }
 
+
     function addMTFilter(location) {
         const select = $('<select class="form-select form-select-sm ms-1 me-1" aria-label="MT Filter">' +
-            '<option value="">MT</option>' +
+            '<option value="">MT-relevant</option>' +
             '<option selected value="Ja">Ja</option>' +
             '<option value="Nein">Nein</option>' +
             '</select>');
@@ -308,7 +304,7 @@ init_page_serversides("", "x");
 
     function addEntfallenFilter(location) {
         const select = $('<select class="form-select form-select-sm me-1 ms-1" aria-label="Entfallen Filter">' +
-            '<option value="">Entf</option>' +
+            '<option value="">Entfallen</option>' +
             '<option value="1">1</option>' +
             '<option selected value="0">0</option>' +
             '</select>');

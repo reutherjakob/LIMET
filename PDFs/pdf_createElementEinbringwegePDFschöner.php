@@ -45,21 +45,66 @@ function parseBezeichnung($bezeichnung)
 }
 
 $parameters_order = ['Einbringweg_Breite', 'Einbringweg_Tiefe', 'Einbringweg_Höhe', 'Einbringweg_Gewicht', 'Einbringweg_Flächenlast'];
-//GET DATA
+
+
 $mysqli = utils_connect_sql();
-$stmt = "SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte, tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie,
-    tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte, tabelle_räume.Raumnr, 
-    tabelle_räume.Raumbezeichnung, tabelle_elemente.ElementID, tabelle_varianten.Variante,
-    tabelle_elemente.Bezeichnung as el_Bez, tabelle_parameter.Bezeichnung, tabelle_projekt_elementparameter.Wert, tabelle_projekt_elementparameter.Einheit
-    FROM (tabelle_projekt_elementparameter INNER JOIN (tabelle_varianten INNER JOIN (tabelle_räume INNER JOIN (tabelle_elemente INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_elemente.idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) ON (tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) AND (tabelle_projekt_elementparameter.tabelle_elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente)) INNER JOIN tabelle_parameter ON tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter = tabelle_parameter.idTABELLE_Parameter
-    WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ")  "
-    . " AND ((tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie)=18) "
-    . "AND ((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))"
-    . "ORDER BY el_Bez, Raumnr, Bezeichnung DESC";
-$result_Einbring_elemente = $mysqli->query($stmt);
+$projectID = (int)$_SESSION["projectID"];  // Sanitize input
+$sql = "
+    SELECT 
+        r.tabelle_projekte_idTABELLE_Projekte,
+       par.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie,
+        pep.tabelle_projekte_idTABELLE_Projekte,
+        r.Raumnr, 
+        r.Raumbezeichnung, 
+        e.ElementID, 
+        v.Variante,
+        e.Bezeichnung AS el_Bez, 
+        par.Bezeichnung, 
+        pep.Wert, 
+        pep.Einheit
+    FROM 
+        tabelle_projekt_elementparameter AS pep
+    INNER JOIN 
+        tabelle_parameter AS par ON pep.tabelle_parameter_idTABELLE_Parameter = par.idTABELLE_Parameter
+    INNER JOIN  
+        (
+            tabelle_varianten AS v
+        INNER JOIN 
+            (
+                tabelle_räume AS r
+            INNER JOIN 
+                (
+                    tabelle_elemente AS e 
+                    INNER JOIN tabelle_räume_has_tabelle_elemente AS re 
+                    ON e.idTABELLE_Elemente = re.TABELLE_Elemente_idTABELLE_Elemente
+                )
+                ON r.idTABELLE_Räume = re.TABELLE_Räume_idTABELLE_Räume
+            ) 
+            ON v.idtabelle_Varianten = re.tabelle_Varianten_idtabelle_Varianten
+        ) 
+        ON pep.tabelle_Varianten_idtabelle_Varianten = re.tabelle_Varianten_idtabelle_Varianten 
+        AND pep.tabelle_elemente_idTABELLE_Elemente = e.idTABELLE_Elemente
+    WHERE 
+        r.tabelle_projekte_idTABELLE_Projekte = ?
+        AND par.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie = 18
+        AND re.Anzahl <> 0
+        AND pep.tabelle_projekte_idTABELLE_Projekte = ?
+    ORDER BY 
+        r.Raumbezeichnung, 
+        e.ElementID, 
+        par.Bezeichnung DESC
+";
+if ($stmt = $mysqli->prepare($sql)) {
+    $stmt->bind_param("ii", $projectID, $projectID);
+    $stmt->execute();
+    $result_Einbring_elemente = $stmt->get_result();
+} else {
+    die("Prepare failed: " . $mysqli->error);
+}
+$mysqli->close();
+$stmt->close();
 
 
-// Organisiere Daten nach Elementen
 $elements = array();
 while ($row = $result_Einbring_elemente->fetch_assoc()) {
     if (!isset($elements[$row['el_Bez']])) {
@@ -163,7 +208,7 @@ foreach ($elements as $element => $data) {
         if ($parameterIndex < count($sorted_parameters)) {
             $parameter = $sorted_parameters[$parameterIndex];
             $pdf->SetXY($pdf->GetX(), $y);
-            if (str_replace(' ', '',  $data['values'][$parameter]['Wert'] . $data['values'][$parameter]['Einheit']) === "") {
+            if (str_replace(' ', '', $data['values'][$parameter]['Wert'] . $data['values'][$parameter]['Einheit']) === "") {
                 $pdf->MultiCell($spaces[0], $rowHeight, "", 0, 'L', 0, 0);
             } else {
                 $pdf->MultiCell($spaces[0] * $proportions[1], $rowHeight, parseBezeichnung($parameter), 0, 'L', 0, 0);
@@ -195,8 +240,7 @@ foreach ($elements as $element => $data) {
     $pdf->Ln(10);
 }
 
-$mysqli->close();
 ob_end_clean();
-$pdf->Output(getFileName( 'Einbringwege'), 'I');
+$pdf->Output(getFileName('Einbringwege'), 'I');
 
 ?>

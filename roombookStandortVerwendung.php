@@ -13,44 +13,28 @@ SELECT
     te.idTABELLE_Elemente,
     te.ElementID,
     te.Bezeichnung AS Element_Name,
-    st.Raumnr AS Standort_Raumnr,
-    st.Raumbezeichnung AS Standort_Raum,
-    GROUP_CONCAT(DISTINCT CONCAT(v.Raumbezeichnung, ' (', v.Raumnr, ')') ORDER BY v.Raumbezeichnung SEPARATOR ', ') AS Verwendung_Raeume
-FROM tabelle_elemente te
-
-INNER JOIN tabelle_räume_has_tabelle_elemente trhe_standort 
-  ON trhe_standort.TABELLE_Elemente_idTABELLE_Elemente = te.idTABELLE_Elemente 
-  AND trhe_standort.Standort = 1
-
-INNER JOIN tabelle_räume st 
-  ON trhe_standort.TABELLE_Räume_idTABELLE_Räume = st.idTABELLE_Räume
-
-LEFT JOIN (
-    SELECT DISTINCT 
-        trhe_verw.TABELLE_Elemente_idTABELLE_Elemente, 
-        tre_verw.Raumbezeichnung, 
-        tre_verw.Raumnr
-    FROM tabelle_verwendungselemente ve 
-    INNER JOIN tabelle_räume_has_tabelle_elemente trhe_st 
-      ON ve.id_Standortelement = trhe_st.id
-    INNER JOIN tabelle_räume tre_st 
-      ON trhe_st.TABELLE_Räume_idTABELLE_Räume = tre_st.idTABELLE_Räume
-    INNER JOIN tabelle_räume_has_tabelle_elemente trhe_verw 
-      ON ve.id_Verwendungselement = trhe_verw.id AND trhe_verw.Standort = 0
-    INNER JOIN tabelle_räume tre_verw 
-      ON trhe_verw.TABELLE_Räume_idTABELLE_Räume = tre_verw.idTABELLE_Räume
-    WHERE tre_st.tabelle_projekte_idTABELLE_Projekte = ?
-) v ON v.TABELLE_Elemente_idTABELLE_Elemente = te.idTABELLE_Elemente
-
-WHERE st.tabelle_projekte_idTABELLE_Projekte = ?
-
-GROUP BY te.idTABELLE_Elemente, te.Bezeichnung, st.Raumnr, st.Raumbezeichnung
-
-HAVING 
-    Verwendung_Raeume IS NOT NULL
-    AND FIND_IN_SET(Standort_Raum, REPLACE(Verwendung_Raeume, ', ', ',')) = 0
-
-ORDER BY te.Bezeichnung
+    raum_verw.Raumnr AS Verwendung_Raumnr,
+    raum_verw.Raumbezeichnung AS Verwendung_Raum,
+    raum_standort.Raumnr AS Standort_Raumnr,
+    raum_standort.Raumbezeichnung AS Standort_Raum
+FROM tabelle_räume_has_tabelle_elemente trhe_verw
+INNER JOIN tabelle_elemente te 
+    ON trhe_verw.TABELLE_Elemente_idTABELLE_Elemente = te.idTABELLE_Elemente
+INNER JOIN tabelle_räume raum_verw
+    ON trhe_verw.TABELLE_Räume_idTABELLE_Räume = raum_verw.idTABELLE_Räume
+INNER JOIN tabelle_verwendungselemente ve 
+    ON ve.id_Verwendungselement = trhe_verw.id
+INNER JOIN tabelle_räume_has_tabelle_elemente trhe_standort
+    ON ve.id_Standortelement = trhe_standort.id
+    AND trhe_standort.Standort = 1
+INNER JOIN tabelle_räume raum_standort
+    ON trhe_standort.TABELLE_Räume_idTABELLE_Räume = raum_standort.idTABELLE_Räume
+WHERE 
+    trhe_verw.Verwendung = 1
+    AND trhe_verw.Standort = 0
+    AND raum_verw.tabelle_projekte_idTABELLE_Projekte = ?
+    AND raum_standort.tabelle_projekte_idTABELLE_Projekte = ?
+ORDER BY te.Bezeichnung, Verwendung_Raum
 ";
 
 
@@ -67,14 +51,14 @@ $mysqli->close();
 <html lang="de">
 <head>
     <meta charset="utf-8"/>
-    <title>Projektübersicht: Elemente mit Standort & Verwendung</title>
+    <title>Projektübersicht: Elemente mit Verwendung aber ohne Standort</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
     <link rel="icon" href="Logo/iphone_favicon.png">
 
-    <!-- Your provided CDNs -->
+    <!-- CDN und Libraries -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -86,7 +70,6 @@ $mysqli->close();
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
-
 </head>
 <body>
 <div class="container-fluid bg-light">
@@ -94,7 +77,9 @@ $mysqli->close();
     <div class="card shadow-sm">
         <div class="card-header">
             <div class="row flex-nowrap">
-                <div class="col-6">Elemente: Standort- und Verwendungsräume</div>
+                <div class="col-6">
+                    Elemente: Verwendung (ja) ohne Standort (nein)
+                </div>
                 <div class="col-6 d-inline-flex justify-content-end" id="cardHeader"></div>
             </div>
         </div>
@@ -104,27 +89,21 @@ $mysqli->close();
                 <tr>
                     <th>ID</th>
                     <th>Bezeichnung</th>
-                    <th>
-                        <div class="float-end"> Standort f</div>
-                    </th>
-                    <th>
-                        <div class="float-start"> Standort Raumnr</div>
-                    </th>
-                    <th>Verwendung in Räumen</th>
+                    <th>Verwendungsraum</th>
+                    <th>Verwendungsraumnr</th>
+                    <th>Standortraum</th>
+                    <th>Standortraumnr</th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php foreach ($elements as $el): ?>
                     <tr>
-                        <td><?= htmlspecialchars($el['ElementID'] ?? '-') ?></td>
-                        <td><?= htmlspecialchars($el['Element_Name'] ?? '-') ?></td>
-                        <td>
-                            <div class="float-end">    <?= htmlspecialchars($el['Standort_Raum'] ?? '-') ?></div>
-                        </td>
-                        <td>
-                            <div class="float-start">    <?= htmlspecialchars($el['Standort_Raumnr'] ?? '-') ?></div>
-                        </td>
-                        <td><?= htmlspecialchars($el['Verwendung_Raeume'] ?? '-') ?></td>
+                        <td><?= htmlspecialchars($el['ElementID']) ?></td>
+                        <td><?= htmlspecialchars($el['Element_Name']) ?></td>
+                        <td><?= htmlspecialchars($el['Verwendung_Raum']) ?></td>
+                        <td><?= htmlspecialchars($el['Verwendung_Raumnr']) ?></td>
+                        <td><?= htmlspecialchars($el['Standort_Raum']) ?></td>
+                        <td><?= htmlspecialchars($el['Standort_Raumnr']) ?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
