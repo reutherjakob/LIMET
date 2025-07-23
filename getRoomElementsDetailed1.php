@@ -72,7 +72,7 @@ function calculateCosts($mysqli, $sql, $roomID, $projectID)
     while ($row = $result->fetch_assoc()) {
         $summe = isset($row["Summe_Neu"]) ? (float)$row["Summe_Neu"] : (float)$row["Summe_Bestand"];
         $sum += $summe;
-        if (str_starts_with($row["ElementID"] ?? '', '1') || str_starts_with($row["ElementID"] ?? '', '4')) {
+        if (str_starts_with($row["ElementID"] ?? '', '1') || str_starts_with($row["ElementID"] ?? '', '3')|| str_starts_with($row["ElementID"] ?? '', '4')|| str_starts_with($row["ElementID"] ?? '', '5')) {
             $costs['ortsfest'] += $summe;
         } else {
             $costs['ortsveränderlich'] += $summe;
@@ -133,6 +133,13 @@ $mysqli->close();
         <span class="fw-bold"><?php echo $field['value']; ?></span>
     </span>
         <?php endforeach; ?>
+        <span class="badge rounded-pill bg-light text-dark m-1 p-2"
+              data-bs-toggle="popover"
+              title="Kostenberechnung Info"
+              data-bs-content="Alle Elemente, deren ID mit 1, 3, 4 oder 5 beginnen, sind als ortsfest erfasst. Andere sind ortsveränderlich">
+  <i class="fas fa-info-circle"></i>
+</span>
+
     </div>
 
 
@@ -330,6 +337,17 @@ $mysqli->close();
         attachButtonListeners();
 
 
+        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+        popoverTriggerList.forEach(function (popoverTriggerEl) {
+            new bootstrap.Popover(popoverTriggerEl);
+        });
+
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+
         let hideZero = !!localStorage.getItem('hideZeroSetting');
         //(console.log(localStorage.getItem('hideZeroSetting'));
         $('#hideZeroToggle').prop('checked', hideZero);
@@ -354,6 +372,8 @@ $mysqli->close();
                 });
             }
         });
+
+
     });
 
 

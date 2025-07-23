@@ -179,7 +179,7 @@
                                target="_blank"> Besprechungsansicht </a>
                         </p>
                         <p>
-                            <i class="fas fa-map-pin col-1"></i>
+                            <i class="fas fa-map col-1"></i>
                             <a class="col-11" href="roombookStandortVerwendung.php"
                                target="_blank"> Standort/Verwendung </a>
                         </p>
