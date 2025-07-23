@@ -1,8 +1,6 @@
 <?php
 // V2.0: 2024-11-28, Reuther & Fux
-if (!function_exists('utils_connect_sql')) {
-    include "utils/_utils.php";
-}
+require_once 'utils/_utils.php';
 init_page_serversides();
 ?>
 

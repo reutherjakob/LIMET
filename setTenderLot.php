@@ -1,9 +1,7 @@
 <?php
 
 // Include necessary utility functions
-if (!function_exists('utils_connect_sql')) {
-    include "utils/_utils.php";
-}
+require_once 'utils/_utils.php';
 
 // Establish database connection
 $mysqli = utils_connect_sql();

@@ -1,96 +1,146 @@
 <?php
-
 session_start();
-if (!function_exists('utils_connect_sql')) {  include "utils/_utils.php"; }
+
+require_once 'utils/_utils.php';
 check_login();
 
-$roomID = filter_input(INPUT_GET, 'roomID');
-//$K2R = filter_input(INPUT_GET, 'K2Return');
-//$K2Ret = explode(",", $K2R);  //WORKS if not json.stringify
+// 🔐 Input Validation
+$roomID = filter_input(INPUT_GET, 'roomID', FILTER_VALIDATE_INT);
+$K2Return = $_GET['K2Return'] ?? '[]';
+$K2Ret = json_decode($K2Return, true); // true = associative array
 
-$K2Return = $_GET['K2Return'];
-$K2Ret = json_decode($K2Return); 
+$projectID = $_SESSION["projectID"] ?? null;
+
+if (!$roomID || !$projectID || !is_array($K2Ret)) {
+    http_response_code(400);
+    die(json_encode(["error" => "Ungültige Eingabeparameter."]));
+}
 
 $mysqli = utils_connect_sql();
-$sql = "SELECT tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
-            tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
-            FROM tabelle_varianten INNER JOIN (tabelle_räume_has_tabelle_elemente INNER JOIN tabelle_elemente ON 
-            tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON
-            tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
-            WHERE (((tabelle_räume_has_tabelle_elemente.Verwendung)=1))
-            GROUP BY tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, 
-            tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
-            HAVING (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=" . $roomID . ") AND SummevonAnzahl > 0)
-            ORDER BY tabelle_elemente.ElementID, tabelle_varianten.Variante;";
-$tabelle_elemente = $mysqli->query($sql);
-// -----------------Projekt Elementparameter/Variantenparameter laden----------------------------
-$sql = "SELECT tabelle_parameter_kategorie.Kategorie,tabelle_parameter.Abkuerzung, tabelle_parameter.Bezeichnung, tabelle_parameter.idTABELLE_Parameter, tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie, tabelle_parameter.Abkuerzung
-            FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter) 
-            ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
-            WHERE (((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND tabelle_parameter.`Bauangaben relevant` = 1)
-            GROUP BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung
-            ORDER BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung;";
-$tabelle_parameter_kategorie = $mysqli->query($sql);  
-$paramInfos = array();
-while ($row = $tabelle_parameter_kategorie->fetch_assoc()) { 
-    $CheckKategorie = $row['idTABELLE_Parameter_Kategorie'];
-    if (in_array($CheckKategorie, $K2Ret) || $K2Ret == "") {
-        $paramInfos[$row['idTABELLE_Parameter']]['ParamID'] = $row['idTABELLE_Parameter'];
-        $paramInfos[$row['idTABELLE_Parameter']]['KategorieID'] = $CheckKategorie; 
-        $paramInfos[$row['idTABELLE_Parameter']]['Bezeichnung'] = $row['Abkuerzung'];
-        $paramInfos[$row['idTABELLE_Parameter']]['Kategorie'] = $row['Kategorie'];
+
+// 1️⃣ Elemente im Raum abrufen
+$stmt = $mysqli->prepare("
+    SELECT 
+        e.ElementID, e.Bezeichnung, v.Variante, 
+        SUM(rhe.Anzahl) AS SummevonAnzahl,
+        rhe.`Neu/Bestand`, 
+        rhe.TABELLE_Elemente_idTABELLE_Elemente, 
+        rhe.tabelle_Varianten_idtabelle_Varianten
+    FROM tabelle_varianten v
+    INNER JOIN (
+        tabelle_räume_has_tabelle_elemente rhe
+        INNER JOIN tabelle_elemente e 
+        ON rhe.TABELLE_Elemente_idTABELLE_Elemente = e.idTABELLE_Elemente
+    ) ON v.idtabelle_Varianten = rhe.tabelle_Varianten_idtabelle_Varianten
+    WHERE rhe.Verwendung = 1
+    GROUP BY 
+        e.ElementID, e.Bezeichnung, v.Variante, 
+        rhe.`Neu/Bestand`, 
+        rhe.TABELLE_Elemente_idTABELLE_Elemente, 
+        rhe.tabelle_Varianten_idtabelle_Varianten, 
+        rhe.TABELLE_Räume_idTABELLE_Räume
+    HAVING rhe.TABELLE_Räume_idTABELLE_Räume = ? AND SummevonAnzahl > 0
+    ORDER BY e.ElementID, v.Variante
+");
+$stmt->bind_param("i", $roomID);
+$stmt->execute();
+$tabelle_elemente = $stmt->get_result();
+
+// 2️⃣ Projektparameter + zugehörige Kategorien laden (falls K2Return leer => alles verwenden)
+$stmt = $mysqli->prepare("
+    SELECT 
+        k.idTABELLE_Parameter_Kategorie AS KategorieID,
+        k.Kategorie,
+        p.Abkuerzung AS Bezeichnung,
+        p.idTABELLE_Parameter AS ParamID
+    FROM tabelle_parameter_kategorie k
+    INNER JOIN tabelle_parameter p 
+        ON k.idTABELLE_Parameter_Kategorie = p.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
+    INNER JOIN tabelle_projekt_elementparameter pep 
+        ON p.idTABELLE_Parameter = pep.tabelle_parameter_idTABELLE_Parameter
+    WHERE pep.tabelle_projekte_idTABELLE_Projekte = ? 
+        AND p.`Bauangaben relevant` = 1
+    GROUP BY k.Kategorie, p.Bezeichnung
+    ORDER BY k.Kategorie, p.Bezeichnung
+");
+$stmt->bind_param("i", $projectID);
+$stmt->execute();
+$kategorieResult = $stmt->get_result();
+
+$paramInfos = [];
+while ($row = $kategorieResult->fetch_assoc()) {
+    if (empty($K2Ret) || in_array($row['KategorieID'], $K2Ret)) {
+        $paramInfos[$row['ParamID']] = [
+            'KategorieID' => $row['KategorieID'],
+            'ParamID'     => $row['ParamID'],
+            'Bezeichnung' => $row['Bezeichnung'],
+            'Kategorie'   => $row['Kategorie'],
+        ];
     }
 }
-// -------------------------Elemente parameter ------------------------- 
-$sql = "SELECT tabelle_projekt_elementparameter.tabelle_elemente_idTABELLE_Elemente, tabelle_projekt_elementparameter.Wert, tabelle_projekt_elementparameter.Einheit, tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten, 
-            tabelle_parameter.Bezeichnung, tabelle_parameter_kategorie.Kategorie, tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie, tabelle_parameter.idTABELLE_Parameter 
-            FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter) 
-            ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
-            WHERE (((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND tabelle_parameter.`Bauangaben relevant` = 1)
-            ORDER BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung;";
-$tabelle_projekt_elementparameter = $mysqli->query($sql);   // $elementParamInfos
+
+// 3️⃣ Elementparameter + Variantenparameter laden
+$stmt = $mysqli->prepare("
+    SELECT 
+        pep.tabelle_elemente_idTABELLE_Elemente, 
+        pep.Wert, 
+        pep.Einheit, 
+        pep.tabelle_Varianten_idtabelle_Varianten,
+        p.idTABELLE_Parameter AS ParamID,
+        k.idTABELLE_Parameter_Kategorie AS KategorieID
+    FROM tabelle_parameter_kategorie k
+    INNER JOIN tabelle_parameter p 
+        ON k.idTABELLE_Parameter_Kategorie = p.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
+    INNER JOIN tabelle_projekt_elementparameter pep 
+        ON p.idTABELLE_Parameter = pep.tabelle_parameter_idTABELLE_Parameter
+    WHERE pep.tabelle_projekte_idTABELLE_Projekte = ? 
+        AND p.`Bauangaben relevant` = 1
+    ORDER BY k.Kategorie, p.Bezeichnung
+");
+$stmt->bind_param("i", $projectID);
+$stmt->execute();
+$tabelle_projekt_elementparameter = $stmt->get_result();
+
+$elementParamInfos = [];
+while ($row = $tabelle_projekt_elementparameter->fetch_assoc()) {
+    $elementParamInfos[] = [
+        'KategorieID' => $row['KategorieID'],
+        'ParamID'     => $row['ParamID'],
+        'elementID'   => $row['tabelle_elemente_idTABELLE_Elemente'],
+        'variantenID' => $row['tabelle_Varianten_idtabelle_Varianten'],
+        'Wert'        => $row['Wert'],
+        'Einheit'     => $row['Einheit'],
+    ];
+}
+
 $mysqli->close();
 
-$elementParamInfos = array();
-$elementParamInfosCounter = 0;
-while ($row = $tabelle_projekt_elementparameter->fetch_assoc()) {
-    $elementParamInfos[$elementParamInfosCounter]['KategorieID'] = $row['idTABELLE_Parameter_Kategorie'];
-    $elementParamInfos[$elementParamInfosCounter]['ParamID'] = $row['idTABELLE_Parameter'];
-    $elementParamInfos[$elementParamInfosCounter]['elementID'] = $row['tabelle_elemente_idTABELLE_Elemente'];
-    $elementParamInfos[$elementParamInfosCounter]['variantenID'] = $row['tabelle_Varianten_idtabelle_Varianten'];
-    $elementParamInfos[$elementParamInfosCounter]['Wert'] = $row['Wert'];
-    $elementParamInfos[$elementParamInfosCounter]['Einheit'] = $row['Einheit'];
-    $elementParamInfosCounter = $elementParamInfosCounter + 1;
-}
-
-$result = array();
+// 4️⃣ Kombination aus den Daten aufbauen
+$result = [];
 while ($row = $tabelle_elemente->fetch_assoc()) {
-    $elementData = array();
-    foreach ($row as $key => $value) {
-        $elementData[$key] = $value;
-    }
+    $elementData = $row;
+
     foreach ($paramInfos as $paramInfo) {
-        $values = array();
+        $values = [];
+
         foreach ($elementParamInfos as $elementParamInfo) {
-            if ($elementParamInfo['ParamID'] == $paramInfo['ParamID'] && $elementParamInfo['elementID'] == $row['TABELLE_Elemente_idTABELLE_Elemente'] && $elementParamInfo['variantenID'] == $row['tabelle_Varianten_idtabelle_Varianten']) {
-                $values[] = $elementParamInfo['Wert'] . "" . $elementParamInfo['Einheit'];
+            if (
+                $elementParamInfo['ParamID'] == $paramInfo['ParamID'] &&
+                $elementParamInfo['elementID'] == $row['TABELLE_Elemente_idTABELLE_Elemente'] &&
+                $elementParamInfo['variantenID'] == $row['tabelle_Varianten_idtabelle_Varianten']
+            ) {
+                $values[] = $elementParamInfo['Wert'] . $elementParamInfo['Einheit'];
             }
         }
-        // If the values array is empty, replace it with an empty string
-        // If the values array contains a single value, replace it with that value
-        // If the values array contains multiple values, replace it with the last value
-        if (empty($values)) {
-            $values = "";
-        } elseif (count($values) == 1) {
-            $values = $values[0];
-        } else {
-            $values = end($values);
-        }
-        $elementData[$paramInfo['Bezeichnung']] = $values;
+
+        $elementData[$paramInfo['Bezeichnung']] = empty($values)
+            ? ''
+            : (count($values) === 1 ? $values[0] : end($values));
     }
+
     $result[] = $elementData;
 }
-$json_result = json_encode($result, JSON_PRETTY_PRINT);
-header('Content-Type: application/json');
-echo $json_result;
 
+// 5️⃣ ZIP it to JSON
+header('Content-Type: application/json');
+echo json_encode($result, JSON_PRETTY_PRINT);

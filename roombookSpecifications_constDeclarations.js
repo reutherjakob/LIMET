@@ -13,16 +13,17 @@ const buttonRanges = [
     {name: 'All', start: 6, end: 168, longName: 'Alle Spalten'},
     {name: 'R', start: 7, end: 24, longName: 'Raum'},
     {name: 'HKLS', start: 25, end: 34, longName: 'HKLS'},
-    {name: 'ET', start: 35, end: 55, longName: 'Elektro'},
-    {name: 'AR', start: 56, end: 61, longName: 'Architektur'},
-    {name: 'MG', start: 62, end: 74, longName: 'Medgas'},
-    {name: 'LAB', start: 65, end: 147, longName: 'Labor'},
-    {name: '-GAS', start: 75, end: 116, longName: 'Labor-GAS'},
-    {name: '-ET', start: 117, end: 128, longName: 'Labor-ET'},
-    {name: '-HT', start: 129, end: 139, longName: 'Labor-HT'},
-    {name: '-H2O', start: 140, end: 148, longName: 'Labor-H2O'},
-    {name: 'GCP', start: 148, end: 168, longName: ''}
+    {name: 'ET', start: 35, end: 56+1, longName: 'Elektro'},
+    {name: 'AR', start: 56+1, end: 61+1, longName: 'Architektur'},
+    {name: 'MG', start: 62+1, end: 74+1, longName: 'Medgas'},
+    {name: 'LAB', start: 65+1, end: 147+1, longName: 'Labor'},
+    {name: '-GAS', start: 75+1, end: 116+1, longName: 'Labor-GAS'},
+    {name: '-ET', start: 117+1, end: 128+1, longName: 'Labor-ET'},
+    {name: '-HT', start: 129+1, end: 139+1, longName: 'Labor-HT'},
+    {name: '-H2O', start: 140+1, end: 148+1, longName: 'Labor-H2O'},
+    {name: 'GCP', start: 148+1, end: 168+1, longName: ''}
 ];
+
 const columnsDefinition = [
     {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projek ID', visible: false, searchable: false}, // 0
     {data: 'idTABELLE_Räume', title: 'Raum ID', visible: false, searchable: false}, // 1
@@ -91,7 +92,10 @@ const columnsDefinition = [
     {data: 'EL_ZSV Steckdosen Stk', defaultContent: '-', title: 'ZSV #SSD', visible: false, case: "num"}, // 43
     {data: 'EL_USV Steckdosen Stk', defaultContent: '-', title: 'USV #SSD', visible: false, case: "num"}, // 44
     {data: 'EL_Roentgen 16A CEE Stk', title: 'CEE16A Röntgen', visible: false, case: "num"}, // 45
+
+
     {data: 'EL_Laser 16A CEE Stk', defaultContent: '-', title: 'CEE16A Laser', visible: false, case: "num"}, // 46
+    {data: 'EL_Laser 32A Stk', title: '32A Laser', visible: false, case: "num"}, // 47 anb hier alle +1
     {
         data: 'ET_Anschlussleistung_W',
         defaultContent: '-',
@@ -256,7 +260,7 @@ const columnsDefinition = [
     }, // 135                                      +1
     {data: 'HT_Abwasser_Stk', title: 'Abwasser Stk', visible: false, case: "num"}, // 136     +1
     {data: 'HT_Abluft_Geraete', title: 'Abluft Geräte', visible: false, case: "num"}, // 137  +1
-    {data: 'VE_Wasser', title: 'VE_Wasser', visible: false, case: 'num'}, // 138              +1
+    {data: 'VE_Wasser', title: 'VE_Wasser', visible: false, case: 'bit'}, // 138              +1
     {data: 'HT_Warmwasser', title: 'Warmwasser', visible: false, case: "num"}, // 139         +1
     {data: 'HT_Kaltwasser', title: 'Kaltwasser', visible: false, case: "num"}, // 140         +1
     {data: 'Wasser Qual 1 l/Tag', title: 'H20_Q1 l/Tag', visible: false, case: "num"}, // 141 +1

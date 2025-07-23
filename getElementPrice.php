@@ -5,7 +5,7 @@
     <title></title></head>
 <body>
 <?php
-if (!function_exists('utils_connect_sql')) {  include "utils/_utils.php"; }
+require_once 'utils/_utils.php';
 include "utils/_format.php";
 check_login();
 $mysqli = utils_connect_sql();

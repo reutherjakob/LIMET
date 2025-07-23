@@ -1,7 +1,5 @@
 <?php
-if (!function_exists('utils_connect_sql')) {
-    include "utils/_utils.php";
-}
+require_once 'utils/_utils.php';
 
 if (!isset($_POST['roomId']) || empty($_POST['roomId'])) {
     die("Ungültige Raum-ID");

@@ -7,16 +7,35 @@
 <body>
 
 <?php
-if (!function_exists('utils_connect_sql')) {
-    include "utils/_utils.php";
-}
+require_once 'utils/_utils.php';
 check_login();
 
 $mysqli = utils_connect_sql();
-$sql = "SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen, tabelle_ansprechpersonen.Name, tabelle_ansprechpersonen.Vorname
-                FROM tabelle_Vermerke_has_tabelle_ansprechpersonen INNER JOIN tabelle_ansprechpersonen ON tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen = tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen
-                WHERE (((tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_Vermerke_idtabelle_Vermerke)=" . filter_input(INPUT_GET, 'vermerkID') . "));";
-$result = $mysqli->query($sql);
+
+$vermerkID = filter_input(INPUT_GET, 'vermerkID', FILTER_VALIDATE_INT);
+
+if (!$vermerkID) {
+    echo "Ungültige Vermerk-ID.";
+    exit;
+}
+
+$stmt = $mysqli->prepare("
+    SELECT 
+        a.idTABELLE_Ansprechpersonen, 
+        a.Name, 
+        a.Vorname
+    FROM 
+        tabelle_Vermerke_has_tabelle_ansprechpersonen vhtap
+    INNER JOIN 
+        tabelle_ansprechpersonen a 
+        ON vhtap.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen = a.idTABELLE_Ansprechpersonen
+    WHERE 
+        vhtap.tabelle_Vermerke_idtabelle_Vermerke = ?
+");
+
+$stmt->bind_param('i', $vermerkID);
+$stmt->execute();
+$result = $stmt->get_result();
 
 echo "<table class='table table-striped table-sm' id='tableVermerkZustaendigkeitMembers'>
         <thead><tr>

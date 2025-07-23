@@ -10,32 +10,38 @@
 </head>
 <body>
 <?php
-if (!function_exists('utils_connect_sql')) {
-    include "utils/_utils.php";
-}
+require_once 'utils/_utils.php';
 include "utils/_format.php";
 check_login();
 
 $mysqli = utils_connect_sql();
-if ($_GET["deviceID"] != "") {
+if (isset($_GET["deviceID"])) {
     $_SESSION["deviceID"] = $_GET["deviceID"];
 }
+$deviceID = isset($_SESSION["deviceID"]) ? intval($_SESSION["deviceID"]) : 0;
 $sql = "SELECT tabelle_preise.Datum,
-       tabelle_preise.Quelle,
-       tabelle_preise.Menge,
-       tabelle_preise.Preis,
-       tabelle_preise.Nebenkosten,
-       tabelle_projekte.Interne_Nr,
-       tabelle_projekte.Projektname,
-       tabelle_projekte.Preisbasis,
-       tabelle_lieferant.Lieferant
-FROM tabelle_lieferant
-         RIGHT JOIN (tabelle_preise LEFT JOIN tabelle_projekte
-                     ON tabelle_preise.TABELLE_Projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte)
-                    ON tabelle_lieferant.idTABELLE_Lieferant = tabelle_preise.tabelle_lieferant_idTABELLE_Lieferant
-WHERE (((tabelle_preise.TABELLE_Geraete_idTABELLE_Geraete) = " . $_SESSION["deviceID"] . "));";
+               tabelle_preise.Quelle,
+               tabelle_preise.Menge,
+               tabelle_preise.Preis,
+               tabelle_preise.Nebenkosten,
+               tabelle_projekte.Interne_Nr,
+               tabelle_projekte.Projektname,
+               tabelle_projekte.Preisbasis,
+               tabelle_lieferant.Lieferant
+        FROM tabelle_lieferant
+        RIGHT JOIN (tabelle_preise LEFT JOIN tabelle_projekte
+                   ON tabelle_preise.TABELLE_Projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte)
+                  ON tabelle_lieferant.idTABELLE_Lieferant = tabelle_preise.tabelle_lieferant_idTABELLE_Lieferant
+        WHERE tabelle_preise.TABELLE_Geraete_idTABELLE_Geraete = ?";
+$stmt = $mysqli->prepare($sql);
+if (!$stmt) {
+    exit("Prepare failed: " . $mysqli->error);
+}
+$stmt->bind_param("i", $deviceID);
+$stmt->execute();
+$result = $stmt->get_result();
+$stmt->close();
 
-$result = $mysqli->query($sql);
 echo "<table class='table table-striped table-sm' id='tableDevicePrices'>
 	<thead><tr>";
 echo "<th>Datum</th>
@@ -45,7 +51,7 @@ echo "<th>Datum</th>
 		<th>NK/Stk</th>
                 <th>Projekt</th>
                 <th>Lieferant</th>
-                <th>Preisbasis</th>
+               
 	</tr></thead><tbody>";
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
@@ -57,7 +63,7 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . format_money($row["Nebenkosten"]) . "</td>";
     echo "<td>" . $row["Projektname"] . "</td>";
     echo "<td>" . $row["Lieferant"] . "</td>";
-    echo "<td>" . $row["Preisbasis"] . "</td>";
+
     echo "</tr>";
 }
 echo "</tbody></table>";
@@ -154,20 +160,21 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
     });
 
 
-    $("#tableDevicePrices").DataTable({
-        "paging": false,
-        "searching": false,
-        "info": false,
-        "order": [[0, "desc"]],
-        //"pagingType": "simple_numbers",
-        //"lengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
-        "language": {
-            "url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
-            "decimal": ",",
-            "thousands": "."
+    const tableDevicePrices = new DataTable('#tableDevicePrices', {
+        paging: false,
+        searching: false,
+        info: false,
+        order: [[0, 'desc']],
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+            decimal: ',',
+            thousands: '.'
         },
-        "scrollY": '20vh',
-        "scrollCollapse": true
+        scrollY: '20vh',
+        scrollCollapse: true,
+        //deferRender: true,           // improves performance with large data sets
+        //pagingType: 'simple_numbers',  // uncomment if needed
+        //lengthMenu: [[5,10,25,50,-1], [5,10,25,50,'All']]  // uncomment if needed
     });
 
 

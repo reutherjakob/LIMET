@@ -1,41 +1,32 @@
 <?php
-session_start();
-?>
+require_once "utils/_utils.php";
+check_login();
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+$mysqli = utils_connect_sql();
 
-<?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    printf("Error loading character set utf8: %s\n", $mysqli->error);
-	    exit();
-	} 
-	
-	// Check connection
-	if ($mysqli->connect_error) {
-	    die("Connection failed: " . $mysqli->connect_error);
-	}
-        
-        
-        $sql = "UPDATE `LIMET_RB`.`tabelle_Vermerke`
-            SET            
-            `Bearbeitungsstatus` = '".filter_input(INPUT_GET, 'vermerkStatus')."'            
-            WHERE `idtabelle_Vermerke` = ".filter_input(INPUT_GET, 'vermerkID');
-        
-        
-	if ($mysqli->query($sql) === TRUE) {
-            echo "Vermerk aktualisiert!";
-	} 
-	else {
-            echo "Error: " . $sql . "<br>" . $mysqli->error;
-	}
+$vermerkID = filter_input(INPUT_GET, 'vermerkID', FILTER_VALIDATE_INT);
+$vermerkStatus = filter_input(INPUT_GET, 'vermerkStatus', FILTER_UNSAFE_RAW);
+$vermerkStatus = trim($vermerkStatus);
 
-	$mysqli ->close();
-?>
+if (!$vermerkID || $vermerkStatus === null) {
+	echo "Ungültige Eingaben.";
+	$mysqli->close();
+	exit;
+}
+
+$stmt = $mysqli->prepare("
+    UPDATE `LIMET_RB`.`tabelle_Vermerke`
+    SET `Bearbeitungsstatus` = ?
+    WHERE `idtabelle_Vermerke` = ?
+");
+
+$stmt->bind_param("si", $vermerkStatus, $vermerkID);
+
+if ($stmt->execute()) {
+	echo "Vermerk aktualisiert!";
+} else {
+	echo "Error: " . $stmt->error;
+}
+
+$stmt->close();
+$mysqli->close();

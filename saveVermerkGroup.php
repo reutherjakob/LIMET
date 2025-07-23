@@ -1,51 +1,65 @@
 <?php
-session_start();
-?>
+require_once 'utils/_utils.php';
+check_login();
+$mysqli = utils_connect_sql();
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
 
-<?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    printf("Error loading character set utf8: %s\n", $mysqli->error);
-	    exit();
-	} 
-	
-	// Check connection
-	if ($mysqli->connect_error) {
-	    die("Connection failed: " . $mysqli->connect_error);
-	}
-	
-        if(filter_input(INPUT_GET, 'gruppenFortsetzung') != 0){
-            echo "Gruppenfortsetzung gewählt!";
-        }
-        else{
-            $sql = "UPDATE `LIMET_RB`.`tabelle_Vermerkgruppe`
-                    SET
-                    `Gruppenname` = '".filter_input(INPUT_GET, 'gruppenName')."',
-                    `Gruppenart` = '".filter_input(INPUT_GET, 'gruppenart')."',
-                    `Ort` = '".filter_input(INPUT_GET, 'gruppenOrt')."',
-                    `Verfasser` = '".filter_input(INPUT_GET, 'gruppenVerfasser')."',
-                    `Startzeit` = '".filter_input(INPUT_GET, 'gruppenStart')."',
-                    `Endzeit` = '".filter_input(INPUT_GET, 'gruppenEnde')."',
-                    `Datum` = '".filter_input(INPUT_GET, 'gruppenDatum')."'
-                    WHERE `idtabelle_Vermerkgruppe` = '".filter_input(INPUT_GET, 'gruppenID')."';";
-            
-        }        
-        
-	if ($mysqli->query($sql) === TRUE) {
-            echo "Vermerkgruppe aktualisiert!";
-	} 
-	else {
-            echo "Error: " . $sql . "<br>" . $mysqli->error;
-	}
+$gruppenFortsetzung = filter_input(INPUT_GET, 'gruppenFortsetzung', FILTER_VALIDATE_INT);
 
-	$mysqli ->close();
+if ($gruppenFortsetzung !== 0) {
+    echo "Gruppenfortsetzung gewählt!";
+} else {
+
+    $gruppenName = filter_input(INPUT_GET, 'gruppenName', FILTER_SANITIZE_STRING);
+    $gruppenArt = filter_input(INPUT_GET, 'gruppenart', FILTER_SANITIZE_STRING);
+    $gruppenOrt = filter_input(INPUT_GET, 'gruppenOrt', FILTER_SANITIZE_STRING);
+    $gruppenVerfasser = filter_input(INPUT_GET, 'gruppenVerfasser', FILTER_SANITIZE_STRING);
+    $gruppenStart = filter_input(INPUT_GET, 'gruppenStart', FILTER_SANITIZE_STRING); // could validate datetime format
+    $gruppenEnde = filter_input(INPUT_GET, 'gruppenEnde', FILTER_SANITIZE_STRING);
+    $gruppenDatum = filter_input(INPUT_GET, 'gruppenDatum', FILTER_SANITIZE_STRING);
+    $gruppenID = filter_input(INPUT_GET, 'gruppenID', FILTER_VALIDATE_INT);
+
+    if ($gruppenID === false || $gruppenID === null) {
+        die("Ungültige Gruppen-ID.");
+    }
+
+    // Use prepared statement
+    $stmt = $mysqli->prepare("
+        UPDATE tabelle_Vermerkgruppe
+        SET Gruppenname = ?, 
+            Gruppenart = ?, 
+            Ort = ?, 
+            Verfasser = ?, 
+            Startzeit = ?, 
+            Endzeit = ?, 
+            Datum = ?
+        WHERE idtabelle_Vermerkgruppe = ?
+    ");
+
+    if (!$stmt) {
+        die("Prepare failed: " . $mysqli->error);
+    }
+
+    $stmt->bind_param("sssssssi",
+        $gruppenName,
+        $gruppenArt,
+        $gruppenOrt,
+        $gruppenVerfasser,
+        $gruppenStart,
+        $gruppenEnde,
+        $gruppenDatum,
+        $gruppenID
+    );
+
+    if ($stmt->execute()) {
+        echo "Vermerkgruppe aktualisiert!";
+    } else {
+        echo "Fehler beim Aktualisieren: " . $stmt->error;
+    }
+
+    $stmt->close();
+}
+
+
+$mysqli->close();
 ?>

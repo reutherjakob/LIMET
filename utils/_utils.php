@@ -4,13 +4,6 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-function echorow($row): void
-{
-   echo '<pre>';
-   print_r($row);
-   echo '</pre>';
-}
-
 function init_page_serversides($ommit_redirect = "", $noscroll = ""): void
 {
     check_login();
@@ -25,18 +18,18 @@ function init_page_serversides($ommit_redirect = "", $noscroll = ""): void
     }
 }
 
-function check_login()
+function check_login(): void
 {
     if (!isset($_SESSION["username"])) {
         echo '
-        <div class="container-fluid bg-white py-5">
+        <div class="container-fluid bg-white py-5"> 
             <div class="row justify-content-center">
                 <div class="col-12 col-md-6">
                     <div class="card shadow">
                         <div class="card-body text-center">
                             <h5 class="card-title mb-3">Nicht eingeloggt</h5>
                             <p class="card-text">
-                                Bitte erst <a href="index.php">einloggen</a>
+                                Bitte erst <a href="/index.php">einloggen</a>
                             </p>
                         </div>
                     </div>
@@ -48,15 +41,16 @@ function check_login()
     }
 }
 
-function check_if_project_selected_else_redirect()
+function check_if_project_selected_else_redirect(): void
 {
-    if ($_SESSION["projectName"] == "") {
+    if (!isset($_SESSION['projectID']) || !is_numeric($_SESSION['projectID'])) {
         header("Location: /projects.php");
         exit;
     }
+
 }
 
-function get_project()
+function get_project(): void
 {
     echo '<script>';
     if (isset($_SESSION["projectName"])) {
@@ -94,7 +88,7 @@ function utils_connect_sql()
     return $mysqli;
 }
 
-function load_nav_bar()
+function load_nav_bar(): void
 {
     echo '<script>';
     echo '    window.onload = function () {';
