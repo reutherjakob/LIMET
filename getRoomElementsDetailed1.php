@@ -180,7 +180,7 @@ $mysqli->close();
         <tr>
             <td data-order="<?php echo $row["id"]; ?>"><?php echo $row["id"]; ?></td>
             <td data-order="<?php echo $row["ElementID"] . " " . $row["Bezeichnung"]; ?>">
-                <span id="ElementName<?php echo $row["id"]; ?>"><?php echo $row["ElementID"] . " " . $row["Bezeichnung"]; ?></span>
+                <span id="ElementName<?php echo $row["TABELLE_Elemente_idTABELLE_Elemente"]; ?>"><?php echo $row["ElementID"] . " " . $row["Bezeichnung"]; ?></span>
             </td>
             <td data-order="<?php echo $row["tabelle_Varianten_idtabelle_Varianten"]; ?>">
                 <label for="variante<?php echo $row["id"]; ?>" style="display: none;"></label><select
@@ -430,7 +430,7 @@ $mysqli->close();
             let id = this.id;
             //console.log(id)
             let comment = $(".comment-btn[id='" + id + "']").attr('data-description');
-            console.log(comment);
+//            console.log(comment);
             let amount = $("#amount" + id).val();
             let variantenID = $("#variante" + id).val();
             let bestand = $("#bestand" + id).val();
@@ -535,8 +535,12 @@ $mysqli->close();
             let stk = $("#amount" + id).val();
             let standort = $("#Standort" + id).val();
             let verwendung = $("#Verwendung" + id).val();
-            let elementID = tableRoomElements.row($(this)).data()[0]['display'];
-            //console.log("ELID", elementID);
+
+            let xxx = tableRoomElements.row($(this)).data()[1]['display'];
+            //console.log("ELID", xxx); //  ELID <span id="ElementName187">1.41.14.3 Bedienkonsole - Röntgensystem</span>
+            let elementID = (xxx.match(/id="ElementName(\d+)"/) || [])[1];
+            //console.log(elementID);
+
             $.ajax({
                 url: "getElementParameters.php",
                 data: {"id": id},

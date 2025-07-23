@@ -207,7 +207,8 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen? Mögli
                                                     <?= ($entry['Done'] == 1 ? 'checked' : '') ?>>
                                                 Erledigt
                                             </form>
-                                            <!--form method="post"
+
+                                            <form method="post"
                                                   action="/FeedbackCenter/FeedbackIndex.php?action=deleteFeature"
                                                   style="display:inline;"
                                                   onsubmit="return confirm('Are you sure you want to delete this feature request?');">
@@ -216,7 +217,8 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen? Mögli
                                                 <button type="submit" class="btn btn-danger btn-sm">
                                                     <i class="fas fa-trash-alt"></i> Delete
                                                 </button>
-                                            </form-->
+                                            </form>
+
                                         </div>
                                     </div>
                                 </div>
@@ -295,7 +297,7 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen? Mögli
 
 
 
-                                            <!--form method="post"
+                                            <form method="post"
                                                   action="/FeedbackCenter/FeedbackIndex.php?action=deleteBug"
                                                   style="display:inline;"
                                                   onsubmit="return confirm('Are you sure you want to delete this bug report and its screenshot?');">
@@ -304,7 +306,7 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen? Mögli
                                                 <button type="submit" class="btn btn-danger btn-sm">
                                                     <i class="fas fa-trash-alt"></i> Delete
                                                 </button>
-                                            </form-->
+                                            </form>
 
                                         </div>
                                     </div>
