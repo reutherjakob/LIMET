@@ -83,9 +83,10 @@ $mysqli->close();
                 <div class="col-6 d-inline-flex justify-content-end" id="cardHeader"></div>
             </div>
         </div>
-        <div class="card-body p-0">
+        <div class="card-body py-0">
+
             <table id="elements-table" class="table table-striped table-sm px-2 py-2" style="width:100%">
-                <thead class="table table-striped-columns table-responsive ">
+                <thead class="table table-striped table-sm table-hover table-bordered border border-light border-5">
                 <tr>
                     <th>ID</th>
                     <th>Bezeichnung</th>

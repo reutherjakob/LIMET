@@ -103,7 +103,7 @@ init_page_serversides();
                         echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
                         echo "<td>" . $row["Geschoss"] . "</td>";
                         echo "<td>";
-                        if ($row["MT-relevant"] === '0') {
+                        if ((int)$row["MT-relevant"] === 0) {
                             echo "Nein";
                         } else {
                             echo "Ja";
@@ -362,7 +362,7 @@ init_page_serversides();
                 success: function () {
                     $("#RoomID").text(id);
                     $.ajax({
-                        url: "getRoomVermerke2.php",
+                        url: "getRoomVermerke.php",
                         type: "GET",
                         success: function (data) {
                             $("#roomVermerke").html(data);

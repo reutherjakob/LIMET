@@ -30,12 +30,15 @@ init_page_serversides("x", "x");
 
     <div id="limet-navbar"></div>
     <div class="row">
-        <div class="col-2"></div>
-        <div class="col-8">
+        <div class="col-3"></div>
+        <div class="col-6">
             <?php if (!empty($message)): ?>
                 <div class="alert alert-info"><?= htmlspecialchars($message) ?></div>
             <?php endif; ?>
-            <div class="card">
+            <div class="card border-white">
+                <div class="card-header d-inline-flex justify-content-center border-white bg-white">
+                    <h5><i class="fas fa-comments me-1"></i> Feedback Center </h5>
+                </div>
                 <div class="card-body">
                     <ul class="nav nav-tabs mb-4" role="tablist">
                         <li class="nav-item">
@@ -166,7 +169,7 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen? Mögli
                     <?php else: ?>
                         <div class="accordion" id="wishlistAccordion">
                             <?php
-                            usort($wishlist, function($a, $b) {
+                            usort($wishlist, function ($a, $b) {
                                 return (intval($b['Done']) ?? 0) <=> intval(($a['Done']) ?? 0);
                             });
                             foreach (array_reverse($wishlist, true) as $idx => $entry): ?>
@@ -182,44 +185,51 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen? Mögli
                                                         class="fas fa-calendar-alt"></i> <?= htmlspecialchars($entry['date']) ?></span>
                                         </button>
                                     </h2>
+
                                     <div id="wishCollapse<?= $idx ?>" class="accordion-collapse collapse"
                                          aria-labelledby="wishHeading<?= $idx ?>" data-bs-parent="#wishlistAccordion">
+
                                         <div class="accordion-body">
                                             <strong>Website:</strong> <?= htmlspecialchars($entry['website']) ?><br>
                                             <pre class="mb-2"
                                                  style="white-space: pre-wrap; word-break: break-word;"><?= htmlspecialchars($entry['description']) ?></pre>
-                                            <strong>Upvotes:</strong> <?= (int)$entry['upvotes'] ?> |
-                                            <strong>Downvotes:</strong> <?= (int)$entry['downvotes'] ?>
-                                            <form method="post"
-                                                  action="/FeedbackCenter/FeedbackIndex.php?action=voteFeature"
-                                                  style="display:inline;">
-                                                <input type="hidden" name="vote_feature_id"
-                                                       value="<?= htmlspecialchars($entry['id']) ?>">
-                                                <button name="vote" value="up" class="btn btn-link p-0 ms-2"><i
-                                                            class="fas fa-arrow-up"></i></button>
-                                                <button name="vote" value="down" class="btn btn-link p-0"><i
-                                                            class="fas fa-arrow-down"></i></button>
-                                            </form>
-                                            <form method="post" action="FeedbackIndex.php?action=markFeatureDone">
-                                                <input type="hidden" name="feature_id" value="<?= htmlspecialchars($entry['id']) ?>">
-                                                <input type="checkbox" name="Done"
-                                                       onchange="this.form.submit();"
-                                                    <?= ($entry['Done'] == 1 ? 'checked' : '') ?>>
-                                                Erledigt
-                                            </form>
 
-                                            <form method="post"
-                                                  action="/FeedbackCenter/FeedbackIndex.php?action=deleteFeature"
-                                                  style="display:inline;"
-                                                  onsubmit="return confirm('Are you sure you want to delete this feature request?');">
-                                                <input type="hidden" name="delete_feature_id"
-                                                       value="<?= htmlspecialchars($entry['id']) ?>">
-                                                <button type="submit" class="btn btn-danger btn-sm">
-                                                    <i class="fas fa-trash-alt"></i> Delete
-                                                </button>
-                                            </form>
+                                            <div class="d-inline-flex align-items-baseline justify-content-between flex-nowrap">
+                                                <strong>Upvotes:</strong> <?= (int)$entry['upvotes'] ?> |
+                                                <strong>Downvotes:</strong> <?= (int)$entry['downvotes'] ?>
+                                                <form method="post"
+                                                      action="/FeedbackCenter/FeedbackIndex.php?action=voteFeature"
+                                                      style="display:inline;">
+                                                    <input type="hidden" name="vote_feature_id"
+                                                           value="<?= htmlspecialchars($entry['id']) ?>">
+                                                    <button name="vote" value="up" class="btn btn-link p-0 ms-2"><i
+                                                                class="fas fa-arrow-up"></i></button>
+                                                    <button name="vote" value="down" class="btn btn-link p-0 me-5"><i
+                                                                class="fas fa-arrow-down"></i></button>
+                                                </form>
+                                                <form method="post" action="FeedbackIndex.php?action=markFeatureDone">
+                                                    <input type="hidden" name="feature_id"
+                                                           value="<?= htmlspecialchars($entry['id']) ?>">
+                                                    <input type="checkbox" name="Done"
+                                                           onchange="this.form.submit();"
+                                                        <?= ($entry['Done'] == 1 ? 'checked' : '') ?>>
+                                                    Abgeharkt
+                                                </form>
 
+                                                <form method="post"
+                                                      action="/FeedbackCenter/FeedbackIndex.php?action=deleteFeature"
+                                                      style="display:inline;"
+                                                      onsubmit="return confirm('Are you sure you want to delete this feature request?');">
+                                                    <input type="hidden" name="delete_feature_id"
+                                                           value="<?= htmlspecialchars($entry['id']) ?>">
+                                                    <button type="submit" class="btn btn-danger btn-sm ms-2 me-5">
+                                                        <i class="fas fa-trash-alt"></i> Delete
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </div>
+
+
                                     </div>
                                 </div>
                             <?php endforeach; ?>
@@ -235,7 +245,7 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen? Mögli
                         <div class="accordion" id="bugAccordion">
                             <?php
 
-                            usort($bugReports, function($a, $b) {
+                            usort($bugReports, function ($a, $b) {
                                 return ($b['Done'] ?? 0) <=> ($a['Done'] ?? 0);
                             });
 
@@ -257,7 +267,8 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen? Mögli
                                         <div class="accordion-body">
                                             <strong>Website:</strong> <?= htmlspecialchars($report['website']) ?><br>
                                             <?php if (!empty($report['Severity'])): ?>
-                                                <strong>Severity:</strong> <?= htmlspecialchars($report['Severity']) ?><br>
+                                                <strong>Severity:</strong> <?= htmlspecialchars($report['Severity']) ?>
+                                                <br>
                                             <?php endif; ?>
                                             <pre class="mb-2"
                                                  style="white-space: pre-wrap; word-break: break-word;"><?= htmlspecialchars($report['description']) ?></pre>
@@ -288,13 +299,13 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen? Mögli
                                             </form -->
 
                                             <form method="post" action="FeedbackIndex.php?action=markBugDone">
-                                                <input type="hidden" name="bug_id" value="<?= htmlspecialchars($report['id']) ?>">
+                                                <input type="hidden" name="bug_id"
+                                                       value="<?= htmlspecialchars($report['id']) ?>">
                                                 <input type="checkbox" name="Done"
                                                        onchange="this.form.submit();"
                                                     <?= ($report['Done'] == 1 ? 'checked' : '') ?>>
-                                                Erledigt
+                                                Abgeharkt
                                             </form>
-
 
 
                                             <form method="post"
