@@ -101,85 +101,86 @@ $gugOptions = $gewerkeData['ghg'] ? fetchGUGOptions($mysqli, $gewerkeData['ghg']
 // Start HTML output
 ?>
 
-<div class='col-xxl-12'>
-    <div class='card'>
-        <div class='card-body d-inline-flex'>
-            <form class='d-flex align-items-center flex-wrap mr-2'>
-                <div class='form-group d-flex align-items-center mr-2'>
-                    <label for='gewerk' class="mb-0">Gewerk:</label>
-                    <select class='form-control form-control-sm me-1 ms-1' id='gewerk'>
+<div class='card'>
+    <div class='card-header d-inline-flex customCardx'>
+        <form class='d-flex align-items-center flex-wrap mr-2'>
+            <div class='form-group d-flex align-items-center mr-2'>
+                <label for='gewerk' class="mb-0">Gewerk:</label>
+                <select class='form-control form-control-sm me-4 ms-1' id='gewerk'>
+                    <option value='0'>Bitte auswählen</option>
+                    <?php while ($row = $gewerkOptions->fetch_assoc()): ?>
+                        <option value="<?= $row['idTABELLE_Auftraggeber_Gewerke'] ?>"
+                            <?= ($gewerkeData['gewerk'] == $row['idTABELLE_Auftraggeber_Gewerke']) ? 'selected' : '' ?>>
+                            <?= $row['Gewerke_Nr'] . ' - ' . $row['Bezeichnung'] ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
+            </div>
+
+            <div class='form-group d-flex align-items-center mr-2'>
+                <label class="mb-0" for='ghg'>GHG:</label>
+                <select class='form-control form-control-sm me-4 ms-1' id='ghg'>
+                    <?php if ($ghgOptions): ?>
                         <option value='0'>Bitte auswählen</option>
-                        <?php while ($row = $gewerkOptions->fetch_assoc()): ?>
-                            <option value="<?= $row['idTABELLE_Auftraggeber_Gewerke'] ?>"
-                                <?= ($gewerkeData['gewerk'] == $row['idTABELLE_Auftraggeber_Gewerke']) ? 'selected' : '' ?>>
-                                <?= $row['Gewerke_Nr'] . ' - ' . $row['Bezeichnung'] ?>
+                        <?php while ($row = $ghgOptions->fetch_assoc()): ?>
+                            <option value="<?= $row['idtabelle_auftraggeber_GHG'] ?>"
+                                <?= ($gewerkeData['ghg'] == $row['idtabelle_auftraggeber_GHG']) ? 'selected' : '' ?>>
+                                <?= $row['GHG'] . ' - ' . $row['Bezeichnung'] ?>
                             </option>
                         <?php endwhile; ?>
-                    </select>
+                    <?php else: ?>
+                        <option value='0'>Bitte Gewerk auswählen</option>
+                    <?php endif; ?>
+                </select>
+            </div>
+
+            <div class='form-group d-flex align-items-center mr-2'>
+                <label class="mb-0" for='gug'>GUG:</label>
+                <select class='form-control form-control-sm me-4 ms-1' id='gug'>
+                    <?php if ($gugOptions): ?>
+                        <option value='0'>Bitte auswählen</option>
+                        <?php while ($row = $gugOptions->fetch_assoc()): ?>
+                            <option value="<?= $row['idtabelle_auftraggeberg_GUG'] ?>"
+                                <?= ($gewerkeData['gug'] == $row['idtabelle_auftraggeberg_GUG']) ? 'selected' : '' ?>>
+                                <?= $row['GUG'] . ' - ' . $row['Bezeichnung'] ?>
+                            </option>
+                        <?php endwhile; ?>
+                    <?php elseif ($gewerkeData['gewerk']): ?>
+                        <option value='0'>Bitte GHG auswählen</option>
+                    <?php else: ?>
+                        <option value='0'>Bitte Gewerk auswählen</option>
+                    <?php endif; ?>
+                </select>
+            </div>
+
+            <!--div class='form-group d-flex align-items-center mr-2'>
+                <div>
+                    <button type='button' id='saveElementGewerk' class='btn btn-outline-dark btn-sm me-1 '
+                            value='saveElementGewerk'>
+                        <i class='far fa-save'></i> Gewerk speichern
+                    </button>
+
+                    <button type='button' id='saveElementGewerk94'
+                            class='btn btn-outline-dark btn-sm me-1'
+                            value='saveElementGewerk2'>
+                        <i class='far fa-save'></i> 94
+                    </button>
+                    <button type='button' id='saveElementGewerk93'
+                            class='btn btn-outline-dark btn-sm me-1'
+                            value='saveElementGewerk1'>
+                        <i class='far fa-save'></i> 93
+                    </button>
+                    <button type='button' id='saveElementGewerk91' class='btn btn-outline-dark btn-sm'
+                            value='saveElementGewerk6'>
+                        <i class='far fa-save'></i> 91
+                    </button>
                 </div>
+            </div--->
 
-                <div class='form-group d-flex align-items-center mr-2'>
-                    <label class="mb-0" for='ghg'>GHG:</label>
-                    <select class='form-control form-control-sm me-1 ms-1' id='ghg'>
-                        <?php if ($ghgOptions): ?>
-                            <option value='0'>Bitte auswählen</option>
-                            <?php while ($row = $ghgOptions->fetch_assoc()): ?>
-                                <option value="<?= $row['idtabelle_auftraggeber_GHG'] ?>"
-                                    <?= ($gewerkeData['ghg'] == $row['idtabelle_auftraggeber_GHG']) ? 'selected' : '' ?>>
-                                    <?= $row['GHG'] . ' - ' . $row['Bezeichnung'] ?>
-                                </option>
-                            <?php endwhile; ?>
-                        <?php else: ?>
-                            <option value='0'>Bitte Gewerk auswählen</option>
-                        <?php endif; ?>
-                    </select>
-                </div>
-
-                <div class='form-group d-flex align-items-center mr-2'>
-                    <label class="mb-0" for='gug'>GUG:</label>
-                    <select class='form-control form-control-sm me-1 ms-1' id='gug'>
-                        <?php if ($gugOptions): ?>
-                            <option value='0'>Bitte auswählen</option>
-                            <?php while ($row = $gugOptions->fetch_assoc()): ?>
-                                <option value="<?= $row['idtabelle_auftraggeberg_GUG'] ?>"
-                                    <?= ($gewerkeData['gug'] == $row['idtabelle_auftraggeberg_GUG']) ? 'selected' : '' ?>>
-                                    <?= $row['GUG'] . ' - ' . $row['Bezeichnung'] ?>
-                                </option>
-                            <?php endwhile; ?>
-                        <?php elseif ($gewerkeData['gewerk']): ?>
-                            <option value='0'>Bitte GHG auswählen</option>
-                        <?php else: ?>
-                            <option value='0'>Bitte Gewerk auswählen</option>
-                        <?php endif; ?>
-                    </select>
-                </div>
-
-                <div class='form-group d-flex align-items-center mr-2'>
-                    <div>
-                        <button type='button' id='saveElementGewerk' class='btn btn-outline-dark btn-sm me-1 ms-1 '
-                                value='saveElementGewerk'>
-                            <i class='far fa-save'></i> Gewerk speichern
-                        </button>
-
-                        <button type='button' id='saveElementGewerk94' class='btn btn-outline-dark btn-sm me-1 ms-1 float-right'
-                                value='saveElementGewerk2'>
-                            <i class='far fa-save'></i> 94
-                        </button>
-                        <button type='button' id='saveElementGewerk93' class='btn btn-outline-dark btn-sm me-1 ms-1 float-right'
-                                value='saveElementGewerk1'>
-                            <i class='far fa-save'></i> 93
-                        </button>
-                        <button type='button' id='saveElementGewerk91' class='btn btn-outline-dark btn-sm me-1 ms-1 float-right'
-                                value='saveElementGewerk6'>
-                            <i class='far fa-save'></i> 91
-                        </button>
-                    </div>
-                </div>
-
-            </form>
-        </div>
+        </form>
     </div>
 </div>
+
 
 <?php
 $mysqli->close();

@@ -7,6 +7,7 @@ class FeedbackModel
     private $bugReportFile = __DIR__ . '/bugreports.txt';
     private $uploadDir = __DIR__ . '/uploads/';
     private $maxFileSize = 5 * 1024 * 1024; // 5 MB
+    private string $reportFile = __DIR__ . '/reports.txt';
 
     public function __construct()
     {
@@ -199,6 +200,15 @@ class FeedbackModel
         file_put_contents($this->wishlistFile, $newContent);
         return "Abstimmung gespeichert.";
     }
+    public function reportEntry($desc): string {
+        $report = "Eintrag gemeldet:\n" . trim($desc)
+            . "\nUser: " . ($_SESSION["username"] ?? "Unbekannt")
+            . "\nDate: " . date('Y-m-d H:i:s')
+            . "\n------------------------\n";
+        file_put_contents($this->reportFile, $report, FILE_APPEND | LOCK_EX);
+        return "Danke für deinen Report! Ein Admin wird informiert.";
+    }
+
 
     public function voteBug($id, $direction): string
     {

@@ -116,6 +116,7 @@ $mysqli->close();
 <script>
     $(document).ready(function () {
         $('#elements-table').DataTable({
+            select:true,
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 search: "",
@@ -140,7 +141,7 @@ $mysqli->close();
                 $('.dt-length').appendTo('#cardHeader');
                 $('.dt-search label').remove();
                 $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#cardHeader');
-                $('.dt-buttons').children().addClass("btn-sm ms-1 me-1");
+                $('.dt-buttons').children().addClass("btn-sm ms-1 me-1").appendTo('#cardHeader');
             }
         });
     });

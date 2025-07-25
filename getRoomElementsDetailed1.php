@@ -72,7 +72,7 @@ function calculateCosts($mysqli, $sql, $roomID, $projectID)
     while ($row = $result->fetch_assoc()) {
         $summe = isset($row["Summe_Neu"]) ? (float)$row["Summe_Neu"] : (float)$row["Summe_Bestand"];
         $sum += $summe;
-        if (str_starts_with($row["ElementID"] ?? '', '1') || str_starts_with($row["ElementID"] ?? '', '3')|| str_starts_with($row["ElementID"] ?? '', '4')|| str_starts_with($row["ElementID"] ?? '', '5')) {
+        if (str_starts_with($row["ElementID"] ?? '', '1') || str_starts_with($row["ElementID"] ?? '', '3') || str_starts_with($row["ElementID"] ?? '', '4') || str_starts_with($row["ElementID"] ?? '', '5')) {
             $costs['ortsfest'] += $summe;
         } else {
             $costs['ortsveränderlich'] += $summe;
@@ -137,7 +137,7 @@ $mysqli->close();
               data-bs-toggle="popover"
               title="Kostenberechnung Info"
               data-bs-content="Alle Elemente, deren ID mit 1, 3, 4 oder 5 beginnen, sind als ortsfest erfasst. Andere sind ortsveränderlich">
-  <i class="fas fa-info-circle"></i>
+  <i class="fas fa-info-circle"></i><i class="fas fa-exclamation"></i>
 </span>
 
     </div>
@@ -342,11 +342,19 @@ $mysqli->close();
             new bootstrap.Popover(popoverTriggerEl);
         });
 
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-            new bootstrap.Tooltip(tooltipTriggerEl);
-        });
 
+        document.addEventListener('click', function (e) {
+            // Close all popovers except if click was inside the popover or the trigger
+            document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function (pop) {
+                const popover = bootstrap.Popover.getInstance(pop);
+                if (popover) {
+                    // If the click was not inside the popover or the trigger, hide it
+                    if (!pop.contains(e.target) && !(popover.tip && popover.tip.contains(e.target))) {
+                        popover.hide();
+                    }
+                }
+            });
+        }, true);
 
         let hideZero = !!localStorage.getItem('hideZeroSetting');
         //(console.log(localStorage.getItem('hideZeroSetting'));
@@ -505,7 +513,7 @@ $mysqli->close();
                 }
             ],
             language: {
-                url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/de-DE.json",
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 search: "",
                 searchPlaceholder: "Suche...",
             },

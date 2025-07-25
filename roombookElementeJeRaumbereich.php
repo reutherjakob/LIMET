@@ -25,7 +25,7 @@ $stmt->close();
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Besprechungsansicht</title>
+    <title>Elemente_je_Raumbereich</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
@@ -190,7 +190,7 @@ $stmt->close();
 
 
             $.ajax({
-                url: 'pivot_table_ajax.php',
+                url: 'getElementeJeRäumePivotTable.php',
                 method: 'POST',
                 data: {
                     'raumbereich[]': raumbereich, // This will be sent as an array

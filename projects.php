@@ -175,13 +175,18 @@
                         </p>
                         <p>
                             <i class="fas fa-user-md col-1"></i>
-                            <a class="col-11" href="roombookBesprechungsansicht.php"
-                               target="_blank"> Besprechungsansicht </a>
+                            <a class="col-11" href="roombookElementeJeRaumbereich.php"
+                               target="_blank"> Elemente je Raumbereich </a>
                         </p>
                         <p>
                             <i class="fas fa-map col-1"></i>
                             <a class="col-11" href="roombookStandortVerwendung.php"
                                target="_blank"> Standort/Verwendung </a>
+                        </p>
+                        <p>
+                            <i class="far fa-handshake col-1"></i>
+                            <a class="col-11" href="/Besprechungsansicht/roombookBesprechungsansicht.php"
+                               target="_blank"> Besprechungsansicht </a>
                         </p>
                     </div>
 

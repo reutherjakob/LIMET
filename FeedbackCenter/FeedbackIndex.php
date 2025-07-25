@@ -32,6 +32,9 @@ switch ($action) {
         $controller->markBugDone();
         break;
 
+    case 'reportEntry':
+        $controller->reportEntry();
+        break;
 
     default:
         $controller->index();

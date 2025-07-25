@@ -15,7 +15,6 @@
 
 
 <?php
-// Adapted to fill all the GetRoomSWithElement needs (12.6.25)
 require_once 'utils/_utils.php';
 check_login();
 
@@ -92,14 +91,14 @@ $columns = [
 ];
 
 // Helper for select options
-function selectOption($value, $selectedValue, $label)
+function selectOption($value, $selectedValue, $label): string
 {
     $selected = ($value == $selectedValue) ? ' selected' : '';
     return "<option value='$value'$selected>$label</option>";
 }
 
 // Helper for safe output
-function safe($str)
+function safe($str): string
 {
     return htmlspecialchars($str ?? '', ENT_QUOTES, 'UTF-8');
 }
@@ -220,7 +219,7 @@ $mysqli->close();
             order: [[1, 'asc']],
             lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/2.0.0/i18n/de-DE.json',
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 search: ""
             },
             layout: {

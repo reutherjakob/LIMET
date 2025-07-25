@@ -27,6 +27,15 @@ class FeedbackController {
             exit;
         }
     }
+    public function reportEntry(): void {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $desc = $_POST['report_description'] ?? '';
+            $_SESSION['message'] = $this->model->reportEntry($desc);
+            header('Location: FeedbackIndex.php');
+            exit;
+        }
+    }
+
 
     public function addBug(): void
     {

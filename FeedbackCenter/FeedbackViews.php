@@ -54,8 +54,15 @@ init_page_serversides("x", "x");
                                 <i class="fas fa-bug"></i> Bug melden
                             </button>
                         </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#reports-form" type="button"
+                                    role="tab">
+                                <i class="fas fa-eraser"></i> Daten zur Löschung melden
+                            </button>
+                        </li>
                     </ul>
                     <div class="tab-content">
+
                         <div class="tab-pane fade show active" id="feature-form" role="tabpanel">
                             <form method="post" action="/FeedbackCenter/FeedbackIndex.php?action=addFeature"
                                   class="needs-validation" novalidate>
@@ -99,8 +106,7 @@ init_page_serversides("x", "x");
                                     <label for="bug_description" class="form-label" hidden="">Bug Beschreibung</label>
                                     <textarea id="bug_description" name="bug_description" class="form-control" rows="7"
                                               required
-                                              placeholder="Bug Beschreibung:
-Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen? Möglichst viele Details bitte..."></textarea>
+                                              placeholder="Bug Beschreibung: Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen? Möglichst viele Details bitte..."></textarea>
                                 </div>
                                 <div class="mb-3 row align-items-center">
                                     <label for="bug_severity" class="form-label col-3 mb-0"> </label>
@@ -157,6 +163,17 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen? Mögli
                                 <button type="submit" class="btn btn-primary w-100 mt-1">Submit Bug Report</button>
                             </form>
                         </div>
+                        <div class="tab-pane fade" id="reports-form" role="tabpanel">
+                            <form method="post" action="/FeedbackCenter/FeedbackIndex.php?action=reportEntry" class="needs-validation" novalidate>
+                                <div class="mb-3">
+                                    <label for="report_description" class="form-label" hidden></label>
+                                    <textarea id="report_description" name="report_description" class="form-control" rows="5" required placeholder="Beschreibe das Problem oder den fehlerhaften Eintrag..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-warning w-100 mt-1">Report absenden</button>
+                            </form>
+                        </div>
+
+
                     </div>
                 </div>
             </div>
@@ -297,28 +314,28 @@ Welches Verhalten wurde erwartet? Wie kann man Fehlverhalten nachstellen? Mögli
                                                 <button name="vote" value="down" class="btn btn-link p-0"><i
                                                             class="fas fa-arrow-down"></i></button>
                                             </form -->
+                                            <div class="d-inline-flex align-items-baseline justify-content-between flex-nowrap">
+                                                <form method="post" action="FeedbackIndex.php?action=markBugDone">
+                                                    <input type="hidden" name="bug_id"
+                                                           value="<?= htmlspecialchars($report['id']) ?>">
+                                                    <input type="checkbox" name="Done"
+                                                           onchange="this.form.submit();"
+                                                        <?= ($report['Done'] == 1 ? 'checked' : '') ?>>
+                                                    Abgeharkt
+                                                </form>
 
-                                            <form method="post" action="FeedbackIndex.php?action=markBugDone">
-                                                <input type="hidden" name="bug_id"
-                                                       value="<?= htmlspecialchars($report['id']) ?>">
-                                                <input type="checkbox" name="Done"
-                                                       onchange="this.form.submit();"
-                                                    <?= ($report['Done'] == 1 ? 'checked' : '') ?>>
-                                                Abgeharkt
-                                            </form>
 
-
-                                            <form method="post"
-                                                  action="/FeedbackCenter/FeedbackIndex.php?action=deleteBug"
-                                                  style="display:inline;"
-                                                  onsubmit="return confirm('Are you sure you want to delete this bug report and its screenshot?');">
-                                                <input type="hidden" name="delete_bug_id"
-                                                       value="<?= htmlspecialchars($report['id']) ?>">
-                                                <button type="submit" class="btn btn-danger btn-sm">
-                                                    <i class="fas fa-trash-alt"></i> Delete
-                                                </button>
-                                            </form>
-
+                                                <form method="post"
+                                                      action="/FeedbackCenter/FeedbackIndex.php?action=deleteBug"
+                                                      style="display:inline;"
+                                                      onsubmit="return confirm('Are you sure you want to delete this bug report and its screenshot?');">
+                                                    <input type="hidden" name="delete_bug_id"
+                                                           value="<?= htmlspecialchars($report['id']) ?>">
+                                                    <button type="submit" class="btn btn-danger btn-sm ms-2 me-5">
+                                                        <i class="fas fa-trash-alt"></i> Delete
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
