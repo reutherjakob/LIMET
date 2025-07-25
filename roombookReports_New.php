@@ -1,4 +1,4 @@
-<?php
+require_once '../utils/_utils.php';<?php
 require_once 'utils/_utils.php';
 init_page_serversides("", "x");
 ?>
@@ -32,56 +32,49 @@ init_page_serversides("", "x");
             font-size: 1rem;
             padding: 1rem;
         }
+
+        #reportButtonsContainer > .btn-group {
+            margin-top: 0.5rem;
+        }
     </style>
 </head>
 <body>
 <div class="container-fluid bg-light">
     <div id="limet-navbar"></div>
+
     <div class="card">
-        <div class="card-header px-1 py-1 text-nowrap" id="HeaderTabelleCard">
-            <div class="row">
-                <div class="col-xxl-1 d-flex justify-content-start  align-items-center  customClass" id="Select">
-                    Select
+        <div class="card-header px-1 py-1" id="HeaderTabelleCard">
+            <div class="row align-items-center justify-content-end">
+                <div class="col-xxl-11 flex-nowrap text-nowrap">
+                    <div class="d-inline-flex " id="filtersContainer"></div>
+                    <div class="d-inline-flex" id="sub1"></div>
                 </div>
-                <div class="col-xxl-11 d-flex justify-content-start  align-items-center" id="sub1">
-                    <label for="dateSelect4Report"></label>
-                    <input type="date"
-                           id="dateSelect4Report"
-                           name="dateSelect"
-                           class=" me-1"
-                           data-bs-toggle="tooltip"
-                           data-bs-title="Dieses Datum wird im Bericht als aktueller Stand angeführt.
-                           Wird dieser Wert geändert und dann ein Bericht (in anderem Tab) neu geladen, wird das Datum darauf ebenso aktualisiert. "
-                           data-bs-custom-class="custom-tooltip">
+
+                <div class="col-xxl-1" id="dateSelect4ReportContainer">
+                    <label for="dateSelect4Report" class="visually-hidden">Report Datum</label>
+                    <input type="date" id="dateSelect4Report" name="dateSelect"
+                           class="form-control form-control-sm me-2" data-bs-toggle="tooltip"
+                           data-bs-title="Dieses Datum wird im Bericht als aktueller Stand angeführt. Wird dieser Wert geändert und dann ein Bericht (in anderem Tab) neu geladen, wird das Datum darauf ebenso aktualisiert."
+                           data-bs-custom-class="custom-tooltip"/>
                 </div>
             </div>
         </div>
 
         <div class="card-header px-1 py-1" id="HeaderTabelleCard2">
-            <div class="row">
-                <div class="col-xxl-1 d-flex justify-content-start align-items-center" id="Bauangaben">Bauangaben</div>
-                <div class="col-xxl-5 d-flex justify-content-start align-items-center" id="sub23"></div>
-                <div class="col-xxl-5 d-flex justify-content-start align-items-center" id="sub2">
+            <div class="row align-items-center">
+                <div class="col-xxl-2 d-flex justify-content-start align-items-center" id="reportCategoryContainer">
+                    <label for="reportCategorySelect" class="fw-semibold"></label>
+                    <select id="reportCategorySelect" class="form-select form-select-sm"
+                            aria-label="Berichtskategorie auswählen"></select>
                 </div>
-                <div class="col-xxl-1 d-flex justify-content-end align-items-center" id="">
-                    <label for="dateSelect"></label>
-                    <input type="date"
-                           id="dateSelect"
-                           name="dateSelect"
-                           class="ms-1 me-1"
+                <div class="col-xxl-9" id="reportButtonsContainer" aria-live="polite"></div>
+
+                <div class="col-xxl-1" id="dateSelectContainer">
+                    <label for="dateSelect" class="visually-hidden">Änderungsdatum</label>
+                    <input type="date" id="dateSelect" name="dateSelect" class="form-control form-control-sm"
                            data-bs-toggle="tooltip"
                            data-bs-title="Bis zu welchem Datum Änderungen markiert werden sollen"
-                           data-bs-custom-class="custom-tooltip">
-                </div>
-            </div>
-        </div>
-
-        <div class="card-header px-1 py-1 ">
-            <div class="row">
-                <div class="col-xxl-1 d-flex justify-content-start align-items-center" id="Raumbuch">Raumbuch</div>
-                <div class="col-xxl-5 d-flex justify-content-start align-items-center" id="sub21"></div>
-                <div class="col-xxl-6 d-flex justify-content-start align-items-center" id="sub22">
-
+                           data-bs-custom-class="custom-tooltip"/>
                 </div>
             </div>
         </div>
@@ -99,16 +92,16 @@ init_page_serversides("", "x");
                     return "r.`$col`";
                 }, $columns)) .
                 " FROM tabelle_räume r 
-                                INNER JOIN tabelle_projekte p  
-                                ON r.tabelle_projekte_idTABELLE_Projekte = p.idTABELLE_Projekte 
-                                WHERE p.idTABELLE_Projekte=" . $_SESSION["projectID"];
+                 INNER JOIN tabelle_projekte p  
+                 ON r.tabelle_projekte_idTABELLE_Projekte = p.idTABELLE_Projekte 
+                 WHERE p.idTABELLE_Projekte=" . $_SESSION["projectID"];
 
             $result = $mysqli->query($sql);
             if (!$result) {
                 die("Query failed: " . $mysqli->error);
             }
-            echo "<table class='table display compact table-striped table-bordered table-sm' id='tableRooms' >
-                        <thead><tr>";
+            echo "<table class='table display compact table-striped table-bordered table-sm' id='tableRooms'>
+                    <thead><tr>";
             foreach ($columns as $col) {
                 echo "<th>" . str_replace('_', ' ', $col) . "</th>";
             }
@@ -117,8 +110,8 @@ init_page_serversides("", "x");
                 echo "<tr>";
                 foreach ($columns as $col) {
                     $value = $row[$col];
-                    if ($col == 'MT-relevant') {
-                        $value = $value == '0' ? 'Nein' : 'Ja';
+                    if ($col === 'MT-relevant') {
+                        $value = $value === '0' ? 'Nein' : 'Ja';
                     }
                     echo "<td>$value</td>";
                 }
@@ -131,147 +124,96 @@ init_page_serversides("", "x");
     </div>
 </div>
 
-dateSelect4Report
+<script>
+    let table;
 
-<script charset="utf-8">
+    const reportCategoryOptions = [
+        {value: "", text: "-- Berichtkathegorie auswählen --", disabled: true, selected: true},
+        {value: "bauangaben", text: "Bauangaben"},
+        {value: "elementReports", text: "Element-/Raum Berichte"},
+        {value: "einbringwege", text: "Einbringwege"},
+        {value: "oldReports", text: "Historische Berichte"},
+
+    ];
+
+    const reportCategories = {
+        bauangaben: [
+            {text: "PDF V1", url: "pdf_createBauangabenPDF"},
+            {text: "PDF V2", url: "pdf_createBauangabenV2PDF"},
+            {text: "ohne Elemente-PDF", url: "pdf_createBauangabenWithoutElementsPDF"},
+            {text: "Detail-PDF", url: "pdf_createBauangabenDetailPDF"},
+            {text: "Lab-PDF", url: "pdf_createBauangabenLabPDF"},
+            {text: "Lab-Kurz-PDF'", url: "pdf_createBauangabenLabKompaktPDF"},
+            {text: "Lab-ENT-PDF", url: "pdf_createBauangabenLabEntPDF"},
+            {text: "Lab-EIN-PDF", url: "pdf_createBauangabenLabEinrPDF_1"},
+            {text: "", url: " "},
+            {text: "BAU A3", url: "pdf_createBauangabenBericht_A3Qeer"},
+            {text: "ohne Lab", url: "pdf_createBauangabenBericht_A3Qeer_ohne_Lab_params"},
+            {text: "ohne Änderungsmarkierungen", url: "pdf_createBauangabenBericht_A3Qeer_1"},
+            {text: "VE", url: "pdf_createBauangabenBericht_A3Qeer_PSy"}
+        ],
+        elementReports: [
+            {text: "Elem./Raum (w/Bestand)", url: "pdf_createRoombookElWithoutBestand"},
+            {text: "inkl.Elem.Kommentar", url: "pdf_createRoombookElWithoutBestandWithComments"},
+        ],
+        einbringwege: [
+            {text: "Einbringwege Größgeräte", url: "pdf_createElementEinbringwegePDF"},
+            {text: "Einbringwege Größgeräte", url: "pdf_createElementEinbringwegePDFschöner"},
+        ],
+        oldReports: [
+            {text: "RB PDF", url: "pdf_createRoombookPDF"},
+            {text: "0-PDF", url: "pdf_createRoombookWithout0PDF"},
+            {text: "ohne Bestand-PDF", url: "pdf_createRoombookWithoutBestandPDF"},
+            {text: "0-ohne Bestand-PDF", url: "pdf_createRoombookWithout0WothoutBestandPDF"},
+            {text: "Bauangaben-0-PDF", url: "pdf_createRoombookWithBauangabenWithout0PDF"},
+            {text: "Bauang. Großgeräte", url: "pdf_createVBM_Bericht"},
+            {text: "BO-PDF", url: "pdf_createBOPDF"},
+            {text: "VE-Gesamt-PDF", url: "pdf_createBericht_VE_PDF"},
+            {text: "ENT-Gesamt-PDF", url: "pdf_createBericht_ENT_PDF"},
+            {text: "Nutzer Formular", url: "pdf_createUserFormPDF"}
+        ]
+    };
+
+
     $(document).ready(function () {
-        const dateInput = document.getElementById('dateSelect');
-        dateInput.value = new Date().toISOString().split('T')[0];
-        const dateSelect4Report = document.getElementById('dateSelect4Report');
-        dateSelect4Report.value = new Date().toISOString().split('T')[0];
-
+        $('#dateSelect').val(new Date().toISOString().split('T')[0]);
+        $('#dateSelect4Report').val(new Date().toISOString().split('T')[0]);
         initDataTable();
-        initButtons();
-        setTimeout(() => {
+        addMTFilter('#filtersContainer');
+        addEntfallenFilter('#filtersContainer');
 
-            let searchbuilder = [{
+
+        setTimeout(() => {
+            const searchbuilderBtns = [{
                 extend: 'searchBuilder',
-                className: "btn fas fa-search me-1 ms-1",
-                text: " ",
+                className: "btn btn-sm btn-outline-dark bg-light fas fa-search me-1 ms-1",
+                text: "",
                 titleAttr: "Suche konfigurieren"
             }];
-            new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#sub1'));
+            new $.fn.dataTable.Buttons(table, {buttons: searchbuilderBtns}).container().appendTo($('#sub1'));
             moveSearchBox('sub1');
-        }, 200);
-        addMTFilter('#sub1');
-        add_entfallen_filter('#sub1');
+            initTooltips();
+        }, 100);
 
-        const tooltip = new bootstrap.Tooltip(document.getElementById('dateSelect'), {
-            delay: {show: 0, hide: 200} // show instantly, hide after 200ms
+        $('#dateSelect4Report').change(handleReportDateSelection);
+        handleReportDateSelection();
 
-        });  const tooltipR = new bootstrap.Tooltip(document.getElementById('dateSelect4Report'), {
-            delay: {show: 0, hide: 200} // show instantly, hide after 200ms
+        const categorySelect = $('#reportCategorySelect');
+        reportCategoryOptions.forEach(opt => {
+            categorySelect.append(
+                $('<option>', {
+                    value: opt.value,
+                    text: opt.text,
+                    disabled: opt.disabled || false,
+                    selected: opt.selected || false
+                })
+            );
+        });
+        categorySelect.on('change', function () {
+            displayReportsForCategory(this.value);
         });
 
-        handleReproitDateSelctioN();
-        $('#dateSelect4Report').change(function() {
-            handleReproitDateSelctioN();
-        });
     });
-
-    function handleReproitDateSelctioN(){
-        const dateInputr = document.getElementById('dateSelect4Report');
-        console.log(dateInputr.value);
-        $.get('PDFs/pdf_setSession.php', { PDFdatum: dateInputr.value });
-    }
-
-
-    function generateNewReports(reportType, date) {
-        const roomIDs = table.rows({selected: true}).data().toArray().map(row => row[0]);
-        if (roomIDs.length === 0) {
-            alert("Kein Raum ausgewählt!");
-        } else {
-            const formattedDate = date || getDate("#dateSelect");
-            const reportURLs = {
-                "BAUANGABEN A3": "/PDFs/pdf_createBauangabenBericht_A3Qeer.php",
-                "BAUANGABEN A3 2": "/PDFs/pdf_createBauangabenBericht_A3Qeer_1.php",
-                "BAUANGABEN A3 3": "/PDFs/pdf_createBauangabenBericht_A3Qeer_ohne_Lab_params.php",
-                "BAUANGABEN A3 4": "/PDFs/pdf_createBauangabenBericht_A3Qeer_PSy.php",
-                "Elem./Raum (w/Bestand)": "/PDFs/pdf_createRoombookElWithoutBestand.php",
-                "inkl.Elem.Kommentar": "/PDFs/pdf_createRoombookElWithoutBestandWithComments.php"
-            };
-
-            if (reportURLs[reportType]) {
-                window.open(`${reportURLs[reportType]}?roomID=${roomIDs.join(',')}&date=${formattedDate}`);
-            } else {
-                alert("Unbekannter Berichtstyp!");
-            }
-        }
-    }
-
-    function initButtons() {
-        const buttons = [
-            {text: 'All', action: () => table.rows().select()},
-            {text: 'Visible', action: () => table.rows(':visible').select()},
-            {text: 'None', action: () => table.rows().deselect()}
-        ];
-
-        const buttonNewReports = [
-            {text: "BAU A3", action: () => generateNewReports("BAUANGABEN A3", $("#dateSelect").val())},
-            {text: "ohne Lab", action: () => generateNewReports("BAUANGABEN A3 3", $("#dateSelect").val())},
-            {text: "ohne Änderungsmarkierungen", action: () => generateNewReports("BAUANGABEN A3 2", $("#dateSelect").val())},
-            {text: "VE", action: () => generateNewReports("BAUANGABEN A3 4", $("#dateSelect").val())},
-
-        ];
-
-        const ElementListe = [
-            {
-                text: "Elem./Raum (w/Bestand)",
-                action: () => generateNewReports("Elem./Raum (w/Bestand)", $("#dateSelect").val())
-            },
-            {
-                text: "inkl.Elem.Kommentar",
-                action: () => generateNewReports("inkl.Elem.Kommentar", $("#dateSelect").val())
-            }
-        ];
-
-        const oldButtons = [
-            {text: "PDF", link: "pdf_createRoombookPDF"},
-            {text: "0-PDF", link: "pdf_createRoombookWithout0PDF"},
-            {text: "ohne Bestand-PDF", link: "pdf_createRoombookWithoutBestandPDF"},
-            {text: "0-ohne Bestand-PDF", link: "pdf_createRoombookWithout0WothoutBestandPDF"},
-            {text: "Bauangaben-0-PDF", link: "pdf_createRoombookWithBauangabenWithout0PDF"},
-            {text: "Bauang. Großgeräte", link: "pdf_createVBM_Bericht"}
-
-        ];
-
-        const ButtonsBauangaben = [
-            {text: "PDF V1", link: "pdf_createBauangabenPDF"},
-            {text: "PDF V2", link: "pdf_createBauangabenV2PDF"},
-            {text: "ohne Elemente-PDF", link: "pdf_createBauangabenWithoutElementsPDF"},
-            {text: "Detail-PDF", link: "pdf_createBauangabenDetailPDF"},
-            {text: "Lab-PDF", link: "pdf_createBauangabenLabPDF"},
-            {text: "Lab-Kurz-PDF'", link: "pdf_createBauangabenLabKompaktPDF"},
-            {text: "Lab-ENT-PDF", link: "pdf_createBauangabenLabEntPDF"},
-            {text: "Lab-EIN-PDF", link: "pdf_createBauangabenLabEinrPDF_1"}
-        ];
-
-        const oldButtons2 = [
-            {text: "BO-PDF", link: "pdf_createBOPDF"},
-            {text: "VE-Gesamt-PDF", link: "pdf_createBericht_VE_PDF"},
-            {text: "ENT-Gesamt-PDF", link: "pdf_createBericht_ENT_PDF"},
-            {text: "Nutzer Formular", link: "pdf_createUserFormPDF"}
-        ];
-
-        const createButtonGroup = (buttons, buttonClass) => {
-            const buttonGroup = $('<div class="btn-group" role="group"></div>');
-            buttons.forEach(btn => {
-                const button = $('<button type="button" class="btn btn-sm ' + buttonClass + '"></button>').text(btn.text);
-                button.on('click', btn.action || (() => generateOldReport(btn.link)));
-                buttonGroup.append(button);
-            });
-            return buttonGroup;
-        };
-
-        $('#sub1').append(createButtonGroup(buttons, 'btn-sm btn-outline-success'));
-
-        $('#sub2').append(createButtonGroup(buttonNewReports, 'btn-light border-dark'));
-        $('#sub22').append(createButtonGroup(ElementListe, 'btn-light border-dark me-1'));
-        $('#sub21').append(createButtonGroup(oldButtons, 'btn-light border-dark'));
-        $('#sub22').append(createButtonGroup(oldButtons2, 'btn-light border-dark'));
-        $('#sub23').append(createButtonGroup(ButtonsBauangaben, 'btn-light  border-dark'));
-
-    }
 
     function initDataTable() {
         table = $('#tableRooms').DataTable({
@@ -287,51 +229,116 @@ dateSelect4Report
                 search: "",
                 searchBuilder: {label: "", depthLimit: 3}
             },
-            keys: true
+            keys: true,
+            buttons: [
+                {
+                    text: 'All',
+                    className: "btn btn-sm btn-outline-dark bg-white",
+                    action: () => table.rows().select()
+                },
+                {
+                    text: 'Visible', className: "btn btn-sm btn-outline-dark bg-white",
+                    action: () => table.rows({search: 'applied'}).select()
+                },
+                {
+                    text: 'None', className: "btn btn-sm btn-outline-dark bg-white",
+                    action: () => table.rows().deselect()
+                }
+            ]
         });
+
+        let btnsContainer = $('<div class="btn-group d-inline-flex flex-nowrap"></div>');
+        table.buttons().container().children().appendTo(btnsContainer);
+        $('#sub1').empty().append(btnsContainer);
     }
 
+    function displayReportsForCategory(category) {
+        const container = $('#reportButtonsContainer');
+        container.empty();
+
+        if (!category || !reportCategories[category]) return;
+
+        const btnGroup = $('<div class="btn-group" role="group" aria-label="Berichtsbuttons"></div>');
+
+        reportCategories[category].forEach(report => {
+            const button = $('<button type="button" class="btn btn-light border-dark btn-sm"></button>').text(report.text);
+            button.on('click', () => generateReport(report, $('#dateSelect').val()));
+            btnGroup.append(button);
+        });
+
+        container.append(btnGroup);
+    }
+
+    function generateReport(report, date) {
+        const roomIDs = table.rows({selected: true}).data().toArray().map(row => row[0]);
+        const formattedDate = date || getDate("#dateSelect");
+
+        if (report.url.startsWith("pdf_createElementEinbringwegePDF")) {
+            // For einbringwege PDFs, no room selection required:
+            const url = `/PDFs/${report.url}.php?date=${formattedDate}`; // no roomID param
+            window.open(url);
+        } else {
+            // Other reports require room selection:
+            if (!roomIDs.length) {
+                alert("Kein Raum ausgewählt!");
+                return;
+            }
+            const url = `/PDFs/${report.url}.php?roomID=${roomIDs.join(',')}&date=${formattedDate}`;
+            window.open(url);
+        }
+    }
+
+
     function addMTFilter(location) {
-        $(location).append('<select class="form-control-sm ms-1 me-1" id="columnFilter"><option value="">MT</option><option selected="true"  value="Ja">Ja</option><option value="Nein">Nein</option></select>');
-        $('#columnFilter').change(function () {
+        const select = $('<select class="form-select form-select-sm ms-1 me-1" aria-label="MT Filter">' +
+            '<option value="">MT-relevant</option>' +
+            '<option selected value="Ja">Ja</option>' +
+            '<option value="Nein">Nein</option>' +
+            '</select>');
+        $(location).append(select);
+        select.change(function () {
             table.column(1).search($(this).val()).draw();
         });
         table.column(1).search("Ja").draw();
     }
 
-    function add_entfallen_filter(location) {
-        var dropdownHtml2 = '<select class="form-control-sm me-1 ms-1 " id="EntfallenFilter">' + '<option value="">Entf</option><option value="1">1</option>' + '<option selected ="true" value="0">0</option></select>';
-        $(location).append(dropdownHtml2);
-
-        $('#EntfallenFilter').change(function () {
-            var filterValue = $(this).val();
-            table.column(11).search(filterValue).draw();
+    function addEntfallenFilter(location) {
+        const select = $('<select class="form-select form-select-sm me-1 ms-1" aria-label="Entfallen Filter">' +
+            '<option value="">Entfallen</option>' +
+            '<option value="1">1</option>' +
+            '<option selected value="0">0</option>' +
+            '</select>');
+        $(location).append(select);
+        select.change(function () {
+            table.column(11).search($(this).val()).draw();
         });
-        table.column(11).search(0).draw();
+        table.column(11).search("0").draw();
+    }
+
+    function initTooltips() {
+        const opts = {delay: {show: 0, hide: 200}};
+        let el;
+
+        el = document.getElementById('dateSelect');
+        if (el) new bootstrap.Tooltip(el, opts);
+
+        el = document.getElementById('dateSelect4Report');
+        if (el) new bootstrap.Tooltip(el, opts);
+    }
+
+    function handleReportDateSelection() {
+        const val = $('#dateSelect4Report').val();
+        $.get('PDFs/pdf_setSession.php', {PDFdatum: val});
     }
 
 
-    function getDate(dateSelectID) {
-        let date = new Date($(dateSelectID).val() || Date.now());
-        return `${('0' + date.getDate()).slice(-2)}-${('0' + (date.getMonth() + 1)).slice(-2)}-${date.getFullYear()}`;
-    }
-
-    function addCheckbox(location, name, callback) {
-        $(location).append(`<input type="checkbox" id="CBX${name}" class="form-check-input" ><label for="CBX${name}" class="form-check-label">${name}</label>`);
-        $(`#CBX${name}`).change(callback);
+    function getDate(selector) {
+        const d = new Date($(selector).val() || Date.now());
+        return `${('0' + d.getDate()).slice(-2)}-${('0' + (d.getMonth() + 1)).slice(-2)}-${d.getFullYear()}`;
     }
 
     function moveSearchBox(location) {
         $('#dt-search-0').appendTo(`#${location}`).addClass("btn-sm");
-    }
-
-    function generateOldReport(link) {
-        const roomIDs = table.rows({selected: true}).data().toArray().map(row => row[0]);
-        if (roomIDs.length === 0) {
-            alert("Kein Raum ausgewählt!");
-        } else {
-            window.open(`/PDFs/${link}.php?roomID=${roomIDs.join(',')}`);
-        }
     }
 </script>
 </body>
