@@ -159,7 +159,7 @@
                 </div>
             </div>
             <div class='card mt-2'>
-                <div class='card-header'> Updates
+                <div class='card-header'> <strong> Updates</strong>
                 </div>
                 <div class='card-body'>
                     <div class="row">
@@ -187,6 +187,11 @@
                             <i class="far fa-handshake col-1"></i>
                             <a class="col-11" href="/Besprechungsansicht/roombookBesprechungsansicht.php"
                                target="_blank"> Besprechungsansicht </a>
+                        </p>
+                        <p>
+                            <i class="fab fa-jedi-order col-1"></i>
+                            <a class="col-11" href="roombookElementAnzahlAenderungen.php"
+                               target="_blank"> Element Änderungen </a>
                         </p>
                     </div>
 
