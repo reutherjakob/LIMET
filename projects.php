@@ -185,7 +185,7 @@
                         </p>
                         <p>
                             <i class="far fa-handshake col-1"></i>
-                            <a class="col-11" href="/Besprechungsansicht/roombookBesprechungsansicht.php"
+                            <a class="col-11" href="/Besprechungsansicht/views/roombookBesprechungsansicht.php"
                                target="_blank"> Besprechungsansicht </a>
                         </p>
                         <p>

@@ -566,10 +566,12 @@ function multicell_text_hightlight($pdf, $breite, $font_size, $parameter_sql_nam
             }
         }
     }
+
     $pdf->MultiCell($breite, $font_size, $pdf_text, 0, $side, true, 0);
+
 }
 
-function multicell_with_stk($pdf, $NR, $einzug)
+function multicell_with_stk($pdf, $NR, $einzug): void
 {
     if ($NR > 0) {
         $pdf->MultiCell($einzug, 6, $NR . " Stk", 0, 'L', 1, 0);

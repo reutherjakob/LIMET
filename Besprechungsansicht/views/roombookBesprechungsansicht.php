@@ -1,7 +1,7 @@
 <?php
-include "../utils/_utils.php";
-check_login();
+include "../../utils/_utils.php";
 init_page_serversides("", "x");
+
 $projectID = $_SESSION["projectID"];
 $conn = utils_connect_sql();
 $raumbereichOptions = [];
@@ -21,7 +21,7 @@ $stmt->close();
 $sql = "SELECT idTABELLE_Räume AS id, 
                CONCAT(Raumnr, ' - ', Raumbezeichnung, ' - ', `Raumbereich Nutzer`) AS text
           FROM tabelle_räume
-         WHERE tabelle_projekte_idTABELLE_Projekte = ? 
+         WHERE tabelle_projekte_idTABELLE_Projekte = ? AND Entfallen =0
          
       ORDER BY Raumnr";
 $stmt = $conn->prepare($sql);
@@ -35,15 +35,12 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
-
 $sql = "SELECT tabelle_elemente.idTABELLE_Elemente as id,  
             CONCAT(ElementID,' ', Bezeichnung) as Bez
-  		    FROM tabelle_elemente
-  	         WHERE idTABELLE_Elemente = ?";
-
+  		    FROM tabelle_elemente";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $projectID);
+$stmt->execute();
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -73,6 +70,11 @@ $conn->close();
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker3.min.css">
+    <script type='text/javascript'
+            src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
     <style>
         .form-switch .form-check-input:checked {
             background-color: #000;
@@ -93,12 +95,15 @@ $conn->close();
                 <div class="card-header d-inline-flex align-items-center justify-content-between">
 
 
-                    <div>
-                        <button type="button" class="btn btn-outline-success" id="createMeetingBtn"
-                                data-bs-toggle="modal" data-bs-target="#createMeetingModal">
-                            <i class="fa fa-plus"></i> Besprechung anlegen
-                        </button>
-                    </div>
+                    <button type="button" class="btn btn-outline-success" id="createMeetingBtn"
+                            data-bs-toggle="modal" data-bs-target="#createMeetingModal">
+                        <i class="fa fa-plus me-1"></i> Neue Besprechung
+                    </button>
+                    <button type="button" class="btn btn-outline-success" id="openMeetingBtn"
+                            data-bs-toggle="modal" data-bs-target="#" disabled>
+                        <i class="fas fa-folder-open me-1"></i> Öffnen
+                    </button>
+
 
                 </div>
 
@@ -149,8 +154,8 @@ $conn->close();
                             </select>
                             <span class="badge rounded-pill bg-light text-dark p-2  "
                                   data-bs-toggle="popover"
-                                  data-bs-content="Hier werden ALLE Räume des Projektes angezeigt.
-                                                    Sollten diese dann in der Tabelle fehlen, sind die gewählten Räume ggf. durch unten angeführte Filter ausgeschieden.">
+                                  data-bs-content="Hier werden ALLE Elemente des Projektes angezeigt.
+                                                    Sollten diese dann in der Tabelle fehlen, sind  ggf. Elemente Stk<1 ausgeblendet. ">
                                 <i class="fas fa-info-circle"></i>
                             </span>
                         </div>
@@ -235,15 +240,13 @@ $conn->close();
                 </div>
             </div>
         </div>
-
-
     </div>
 </div>
 
 
 <!-- Besprechung anlegen Modal -->
 <div class="modal fade" id="createMeetingModal" tabindex="-1" aria-labelledby="createMeetingLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-dialog modal-md modal-dialog-scrollable">
         <div class="modal-content">
             <form id="createMeetingForm">
                 <div class="modal-header">
@@ -251,48 +254,46 @@ $conn->close();
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
                 </div>
                 <div class="modal-body">
-
-                    <div class="mb-2  ">
+                    <div class="mb-2">
+                        <label for="meetingName" class="form-label">Besprechungsname (=Protokollname) </label>
+                        <input type="text" class="form-control" id="meetingName" name="name" required>
+                    </div>
+                    <div class="mb-2">
                         <label for="meetingDatum" class="form-label">Datum</label>
                         <input type="date" class="form-control" id="meetingDatum" name="datum" required
                                placeholder="*required">
                     </div>
-                    <div class="mb-2  ">
+                    <div class="mb-2">
                         <label for="meetingUhrzeitStart" class="form-label">Uhrzeit [Start] </label>
                         <input type="time" class="form-control" id="meetingUhrzeitStart" name="uhrzeit" required>
                     </div>
-                    <div class="mb-2  ">
+                    <div class="mb-2">
                         <label for="meetingUhrzeitEnde" class="form-label">Uhrzeit [Ende] </label>
                         <input type="time" class="form-control" id="meetingUhrzeitEnde" name="uhrzeit">
                     </div>
-                    <div class="mb-2  ">
+                    <div class="mb-2">
                         <label for="meetingOrt" class="form-label">Ort</label>
                         <input type="text" class="form-control" id="meetingOrt" name="ort">
                     </div>
-                    <div class="mb-2  ">
-                        <label for="meetingName" class="form-label">Besprechungsname</label>
-                        <input type="text" class="form-control" id="meetingName" name="name" required>
-                    </div>
-                    <div class="mb-2  ">
+
+                    <div class="mb-2">
                         <label for="meetingVerfasser" class="form-label">Verfasser</label>
                         <input type="text" class="form-control" id="meetingVerfasser" name="verfasser" required>
                     </div>
-                    <div class="mb-2  ">
-                        <label for="meetingKommentar" class="form-label">Kommentar</label>
-                        <textarea class="form-control" id="meetingKommentar" name="kommentar" rfows="2"></textarea>
-                    </div>
-                    <div class="mb-2  ">
+
+                    <!--- div class="mb-2">
                         <div class="badge rounded-pill bg-light text-dark m-1 p-2 float-end"
                              data-bs-toggle="popover"
                              title="INFO"
-                             data-bs-content="Vorerst können hier nur Pfade als txt gespeichertt werden.">
+                             data-bs-content="Vorerst können hier nur Pfade als txt gespeichert werden.">
                             <i class="fas fa-info-circle"></i>
                         </div>
                         <label for="meetingDokumente" class="form-label">relevante Dokumente</label>
-                        <input type="text" class="form-control" id="meetingDokumente" name="name">
+                        <input type="text" class="form-control" id="meetingDokumente" name="name" disabled
+                               placeholder="TODO">
                     </div>
 
-                    <!--- div class="mb-3"> TODO 4 later: Get Projektbeteiligte  & use exisiting structure for saving files
+                    <div class="mb-3"> TODO 4 later: Get Projektbeteiligte  & use exisiting structure for saving files
                         <label for="meetingBeteiligte" class="form-label">Beteiligte</label>
                         <input type="text" class="form-control" id="meetingBeteiligte" name="beteiligte" placeholder="Namen kommasepariert">
                     </div>
@@ -303,19 +304,31 @@ $conn->close();
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-                    <button type="submit" class="btn btn-success">Besprechung anlegen</button>
+                    <button type="submit" class="btn btn-success" id="BesprechungAnlegenBtn">Besprechung anlegen
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-
-<script src="../utils/_utils.js"></script>
+<script src="../js/Besprechung.js"></script>
+<script src="../../utils/_utils.js"></script>
 <script>
+
+
     $(document).ready(function () {
         let excelfilename;
         let filterVisible = true;
+
+        $('#meetingDatum').datepicker({
+            format: "yyyy-mm-dd",
+            calendarWeeks: true,
+            autoclose: true,
+            todayBtn: "linked",
+            language: "de"
+        });
+
 
         $('#raumbereich').select2({placeholder: "Raumbereich wählen"});
         $('#zusatzRaeume').select2({placeholder: "Zusätzliche Räume wählen"});
@@ -349,22 +362,45 @@ $conn->close();
         });
 
 
-        $('#createMeetingForm').on('submit', function (e) {
+        $('#createMeetingForm').on('submit', function(e) {
             e.preventDefault();
-            // Sammle Daten oder sende per AJAX ab
-            const formData = new FormData(this);
-            // Beispiel-Logik:
-            alert('Besprechung wird angelegt!\n\n' +
-                'Titel: ' + formData.get('name') + '\n' +
-                'Datum: ' + formData.get('datum') + '\n' +
-                'Uhrzeit: ' + formData.get('uhrzeit'));
-            // Modal schließen (optional):
-            $('#createMeetingModal').modal('hide');
-            // TODO: Send to backend & handle UI update
+
+            const besprechung = new Besprechung({
+                name: $("#meetingName").val(),
+                datum: $("#meetingDatum").val(),
+                startzeit: $("#meetingUhrzeitStart").val(),
+                endzeit: $("#meetingUhrzeitEnde").val(),
+                ort: $("#meetingOrt").val(),
+                verfasser: $("#meetingVerfasser").val(),
+                art: "Protokoll Besprechung"
+            });
+
+            if (besprechung.name && besprechung.verfasser && besprechung.datum && besprechung.startzeit) {
+                $.ajax({
+                    url: "../controllers/BesprechungController.php", // Controller endpoint
+                    type: "POST",                  // Change from GET to POST
+                    data: besprechung.toPayload(),// Send data in POST body
+                    success: function(response) {
+                        if (response.success) {
+                            makeToaster("Besprechung erfolgreich angelegt!", true);
+                            $('#createMeetingModal').modal('hide');
+                            $('#createMeetingForm')[0].reset();
+                        } else {
+                            makeToaster("Fehler: " + (response.message || "Unbekannter Fehler"), false);
+                        }
+                    },
+                    error: function(xhr) {
+                        const errorMsg = xhr.responseJSON?.errors?.join(', ') || xhr.responseText || "Fehler beim Anlegen";
+                        makeToaster(errorMsg, false);
+                    }
+                });
+            } else {
+                alert("Bitte alle Pflichtfelder ausfüllen!");
+            }
         });
 
-
     });
+
 
     function table_click() {
         $('#pivotTable').off('click', 'td').on('click', 'td', function () {
@@ -419,20 +455,16 @@ $conn->close();
         let nurMitElementen = $('#nurMitElementen').is(':checked') ? 1 : 0;
         let ohneLeereElemente = $('#ohneLeereElemente').is(':checked') ? 1 : 0;
         let transponiert = $('#isTransposed').is(':checked') ? 1 : 0;
-
         if (!raumbereich || raumbereich.length === 0) {
             $('#pivotTableContainer').html('<div class="alert alert-info">Bitte wählen Sie mindestens einen Raumbereich.</div>');
             return;
-        }             // console.log(raumbereich);
+        }
         let hideZeros = $('#hideZeros').is(':checked');
-
         let zusatzRaeume = $('#zusatzRaeume').val();
-
         let zusatzElemente = $('#zusatzElemente').val();
-        console.log(zusatzElemente);
 
         $.ajax({
-            url: '../getElementeJeRäumePivotTable.php',
+            url: '../controllers/PivotTableController.php',
             method: 'POST',
             data: {
                 'raumbereich[]': raumbereich, // This will be sent as an array
@@ -444,15 +476,18 @@ $conn->close();
                 ohneLeereElemente,
                 transponiert
             },
-            traditional: true, // Important for sending arrays with jQuery
+            traditional: true,
             success: function (data) {
+
                 let raumbereichJoined = raumbereich
                     .map(r => r.replace(/ /g, '_'))
                     .join('_');
-                getExcelFilename('Elemente-je-Raumbereich_' + raumbereichJoined)
+                getExcelFilename('Elemente-je-Raumbereich_' + raumbereichJoined)    // so that the datatable is initited with the correct filename
                     .then(filename => {
-                        //console.log('Generated filename:', filename);
+
                         $('#pivotTableContainer').html(data);
+
+
                         let colCount = $('#pivotTable thead th').length;
                         let columns = [];
                         for (let i = 0; i < colCount; i++) {
@@ -476,10 +511,10 @@ $conn->close();
                                 url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                                 search: "",
                                 searchPlaceholder: "Suche...",
-                                lengthMenu: '_MENU_',
-                                info: "_START_-_END_ von _TOTAL_",
+                                lengthMenu: '_MENU_ ',
+                                info: "_START_-_END_ von _TOTAL_ ",
                                 infoEmpty: "Keine Einträge",
-                                infoFiltered: "(von _MAX_)",
+                                infoFiltered: "(von _MAX_) ",
                             },
                             scrollX: true,
                             scrollCollapse: true,
@@ -526,8 +561,6 @@ $conn->close();
                                 table_click();
                             }
                         });
-
-
                     })
                     .catch(error => {
                         console.error('Failed to generate filename:', error);

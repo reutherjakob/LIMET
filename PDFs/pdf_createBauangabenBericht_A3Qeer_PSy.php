@@ -187,7 +187,6 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         }
 
 
-
         $pdf->MultiCell($block_header_w, $block_header_height, "", 0, 'L', 0, 0);
         if ($isnotVorentwurf) {
             //TODO: FIX ELEMNT POWER CONSUMPTION INCLUDING GLZ
@@ -323,11 +322,11 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $Block_height = 6 + $horizontalSpacerLN2 + getAnmHeight($pdf, $row['Anmerkung HKLS'], $SB);
         block_label_queer($block_header_w, $pdf, "Haustechnik", $Block_height, $block_header_height, $SB);
 
-        multicell_text_hightlight($pdf, $e_C, $font_size, "HT_Waermeabgabe_W", "Abwärme MT: ", $parameter_changes_t_räume);
+        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "HT_Waermeabgabe_W", "Abwärme MT: ", $parameter_changes_t_räume);
         $abwrem_out = ($row['HT_Waermeabgabe_W'] === "0" || $row['HT_Waermeabgabe_W'] == 0 || $row['HT_Waermeabgabe_W'] == "-")
             ? "k.A."
             : kify($row['HT_Waermeabgabe_W']) . "W";
-        multicell_with_str($pdf, $abwrem_out, $e_C_3rd + +$einzugPlus, "");
+        multicell_with_str($pdf, $abwrem_out, $e_C_3rd , "");
 
         $haustechnikItems = [
             ['H6020', 'ÖNORM H6020: ', ''],
@@ -344,8 +343,14 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             } else {
                 multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, $item[0], $item[1], $parameter_changes_t_räume);
             }
+
             $value = ($item[0] === 'VE_Wasser') ? translate_1_to_yes($row[$item[0]]) : $row[$item[0]];
-            multicell_with_str($pdf, $value, $e_C_3rd, $item[2]);
+
+            if ($item[0] === "H6020") {
+                multicell_with_str($pdf, $value, $e_C, $item[2]);
+            } else {
+                multicell_with_str($pdf, $value, $e_C_3rd, $item[2]);
+            }
         }
 
         // $pdf->Ln($horizontalSpacerLN2);
@@ -375,10 +380,9 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             '1 Kreis O2', '1 Kreis Va', '1 Kreis DL-5', //'NGA', 'N2O', 'CO2', 'DL-10',
             '2 Kreis O2', '2 Kreis Va', '2 Kreis DL-5', //'DL-tech'
         ];
-        $x = $e_C_3rd;
         foreach ($medGasItems as $item) {
             $label = str_replace(['1 Kreis ', '2 Kreis ', '-'], ['1 Kreis ', '2 Kreise ', ''], $item);
-            multicell_text_hightlight($pdf, $e_C_2_3rd + $x, $font_size, $item, "$label: ", $parameter_changes_t_räume);
+            multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, $item, "$label: ", $parameter_changes_t_räume);
             hackerlA3($pdf, $font_size, $e_C_3rd, $row[$item], 1);
             $x = 0;
             //if ($item === 'DL-10') {

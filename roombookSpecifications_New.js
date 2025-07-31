@@ -57,7 +57,7 @@ $(document).ready(function () {
 });
 
 function add_MT_rel_filter(location, table) {
-    let dropdownHtml = '<select class=" fix_size" id="columnFilter">' + '<option value="">MT</option><option value="Ja" selected>Ja</option>' + '<option value="Nein">Nein</option></select>';
+    let dropdownHtml = '<select class=" fix_size" id="columnFilter">' + '<option value="" selected>MT-relevant</option><option value="Ja" >Ja</option>' + '<option value="Nein">Nein</option></select>';
     $(location).append(dropdownHtml);
     $('#columnFilter').change(function () {
         let filterValue = $(this).val();
@@ -66,7 +66,7 @@ function add_MT_rel_filter(location, table) {
 }
 
 function add_entfallen_filter(location, table) {
-    let dropdownHtml2 = '<select class="fix_size" id="EntfallenFilter">' + '<option value="">Entf</option><option value="1">1</option>' + '<option selected ="selected" value="0">0</option></select>';
+    let dropdownHtml2 = '<select class="fix_size" id="EntfallenFilter">' + '<option value="">Entfallen</option><option value="1">1</option>' + '<option selected ="selected" value="0">0</option></select>';
     $(location).append(dropdownHtml2);
     $('#EntfallenFilter').change(function () {
         let filterValue = $(this).val();

@@ -137,8 +137,7 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
                 </form>
             </div>
             <div class='modal-footer'>
-                <input type='button' id='addPrice' class='btn btn-success btn-sm' value='Speichern'
-                       data-bs-dismiss='modal'></input>
+                <input type='button' id='addPrice' class='btn btn-success btn-sm' value='Speichern' data-bs-dismiss='modal'>
                 <button type='button' class='btn btn-danger btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
             </div>
         </div>
@@ -146,7 +145,7 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
     </div>
 </div>
 
-
+<script src="utils/_utils.js"></script>
 <script>
     $(document).ready(function () {
         $('#date').datepicker({
@@ -212,7 +211,7 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
                 },
                 type: "GET",
                 success: function (data) {
-                    alert(data);
+                    makeToaster(data, true);
                     $.ajax({
                         url: "getDevicePrices.php",
                         type: "GET",
@@ -224,7 +223,10 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
             });
 
         } else {
-            alert("Bitte alle Felder ausfüllen!");
+            makeToaster("Bitte alle Felder ausfüllen!", false);
+            let myModal = new bootstrap.Modal(document.getElementById('addPriceToElementModal'));
+            myModal.show();
+
         }
     });
 
