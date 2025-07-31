@@ -39,6 +39,7 @@ $mysqli->close();
 ?>
 <script charset="utf-8">
     $("#tableVariantenParameters").DataTable({
+        savestate:true,
         paging: false,
         searching: true,
         info: false,
