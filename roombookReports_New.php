@@ -1,4 +1,4 @@
-require_once '../utils/_utils.php';<?php
+<?php
 require_once 'utils/_utils.php';
 init_page_serversides("", "x");
 ?>
