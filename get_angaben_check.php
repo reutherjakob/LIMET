@@ -1,5 +1,6 @@
 <?php
 // ------------------- ERROR MESSAGES -------------------
+
 const ERROR_MESSAGES = [
     'dependency_non_zero' => '%s: %s --- %s:::Raumparameter - %s -> %s ist %s, aber %s ist %s<br>',
     'max_value'           => '%s: %s --- %s:::Raumparameter - LeistungZSV-> %s...%s übersteigt max=%s.<br>',
@@ -19,6 +20,8 @@ const ERROR_MESSAGES = [
     'leistung_zero_na'    => '%s: %s --- %s:::Leistung Elemente in Raum%s -> P[Elemente][%s]=0, aber Raumparameter=1? Element parametrisieren oder NA aus Raum hinterfragen <br>',
     'leistung_sum'        => '%s: %s --- %s:::Raumparameter - Leistung ∑%s-> ∑P[%s](Elemente) =%s > %s_W=%s <br>',
     'leistung_8kW'        => '%s: %s --- %s:::Raumparameter - Leistung ∑%s-> P[%s](Elemente) > 8kW! <br>',
+    'no_errors'           => '%s: %s --- %s:::INFO  ->  Keine Fehler gefunden.<br>',
+
 ];
 
 // ------------------- UTILITY FUNCTIONS -------------------
@@ -343,5 +346,9 @@ foreach ($raumparameter as $roomID => $roomParams) {
     check_room_Leistungssumme($messages, $roomParams, $LeistungImRaumExkl, " (EXKL. GLZ)");
 }
 $mysqli->close();
-foreach ($messages as $msg) echo br2nl($msg);
+if (empty($messages)) {
+    echo sprintf(ERROR_MESSAGES['no_errors'], 'Alle', 'ausgewählten', 'n/a');
+} else {
+    foreach ($messages as $msg) echo br2nl($msg);
+}
 ?>
