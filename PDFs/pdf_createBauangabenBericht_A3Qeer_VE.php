@@ -322,15 +322,16 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $Block_height = 6 + $horizontalSpacerLN2 + getAnmHeight($pdf, $row['Anmerkung HKLS'], $SB);
         block_label_queer($block_header_w, $pdf, "Haustechnik", $Block_height, $block_header_height, $SB);
 
-        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "HT_Waermeabgabe_W", "Abwärme MT: ", $parameter_changes_t_räume);
+        multicell_text_hightlight($pdf, $e_C, $font_size, "HT_Waermeabgabe_W", "Abwärme MT: ", $parameter_changes_t_räume);
         $abwrem_out = ($row['HT_Waermeabgabe_W'] === "0" || $row['HT_Waermeabgabe_W'] == 0 || $row['HT_Waermeabgabe_W'] == "-")
             ? "k.A."
             : kify($row['HT_Waermeabgabe_W']) . "W";
         multicell_with_str($pdf, $abwrem_out, $e_C_3rd , "");
 
         $haustechnikItems = [
-            ['H6020', 'ÖNORM H6020: ', ''],
-            ["HT_Raumtemp Sommer °C", "max. Raumtemp.:", " °C"]
+            ["HT_Raumtemp Sommer °C", "max. Raumtemp.:", " °C"],
+            ['H6020', 'ÖNORM H6020: ', '']
+
             //['HT_Abluft_Digestorium_Stk', 'Abluft Digestorium:', 'Stk'],
             //['HT_Punktabsaugung_Stk', 'Punktabsaugung:', 'Stk'],
             //['HT_Abluft_Sicherheitsschrank_Stk', 'Abluft Sicherheitsschrank:', 'Stk'],

@@ -1,9 +1,5 @@
 <!--  18.2.25: Reworked -->
-<?php
-session_start();
-require_once 'utils/_utils.php';
-init_page_serversides();
-?>
+
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
@@ -28,6 +24,14 @@ init_page_serversides();
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
 </head>
+
+<?php
+
+require_once 'utils/_utils.php';
+init_page_serversides("", "x");
+?>
+
+
 <body>
 <div class="container-fluid">
     <div id="limet-navbar" class=' '></div>
@@ -52,7 +56,7 @@ init_page_serversides();
         </div>
 
         <div class="mt-2 card col-4">
-            <div class="card-header d-flex align-items-center justify-content-center"><b>  &ensp; </b>
+            <div class="card-header d-flex align-items-center justify-content-center"><b> &ensp; </b>
                 <button class="btn btn-success responsive" id="addSheet">Add Sheet</button> &ensp;
                 <button class="btn btn-link border-dark" id="download">Download Excel</button> &ensp;
                 <button class="btn btn-danger" style="margin-right: 20px;" id="reset">Reset Excel</button>
@@ -200,6 +204,7 @@ init_page_serversides();
 
         $('#download').click(function () {
             let wbout = XLSX.write(wb, {bookType: 'xlsx', type: 'binary'});
+
             function s2ab(s) {
                 let buf = new ArrayBuffer(s.length);
                 let view = new Uint8Array(buf);
@@ -207,6 +212,7 @@ init_page_serversides();
                     view[i] = s.charCodeAt(i) & 0xFF;
                 return buf;
             }
+
             saveAs(new Blob([s2ab(wbout)], {type: "application/octet-stream"}), 'Elemetparameter' + " <?php echo $_SESSION["projectName"]; ?> " + '.xlsx');
         });
 
@@ -257,6 +263,7 @@ init_page_serversides();
                         data: {"roomID": RaumID, "K2Return": JSON.stringify(K2R)},
                         type: "GET",
                         success: function (data) {
+                            console.log(data);
                             $("#elemetsParamsTable").html(data);
                         }
                     });
@@ -270,6 +277,7 @@ init_page_serversides();
             RaumID = table.row($(this)).data()['idTABELLE_Räume'];
             getElementsParamTable(RaumID);
         });
+
     }
 
     function init_dt() {
