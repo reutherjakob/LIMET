@@ -32,6 +32,33 @@ if (!function_exists('utils_connect_sql')) {
 }
 init_page_serversides("No Redirect");
 
+function getSubDirectories($dir)
+{
+    $subDirs = [];
+    // Get directories in $dir
+    foreach (glob($dir . '/*', GLOB_ONLYDIR) as $directory) {
+        $subDirs[] = $directory;
+        // Recursively add subdirectories
+        $subDirs = array_merge($subDirs, getSubDirectories($directory));
+    }
+    return $subDirs;
+}
+
+function listDirs($dir)
+{
+    $result = [];
+    $handle = opendir($dir);
+    while (false !== ($entry = readdir($handle))) {
+        if ($entry != '.' && $entry != '..' && is_dir($dir . '/' . $entry)) {
+            $result[] = $dir . '/' . $entry;
+            $result = array_merge($result, listDirs($dir . '/' . $entry));
+        }
+    }
+    closedir($handle);
+    return $result;
+}
+
+
 ?>
 
 <body>
@@ -71,7 +98,25 @@ init_page_serversides("No Redirect");
         </div>
 
         <div class="card-footer">
+            <?php
+            echo $_SERVER['DOCUMENT_ROOT'] . "<br>";
+            echo __DIR__ . "<br>";
+            echo preg_replace("!{$_SERVER['SCRIPT_NAME']}$!", '', $_SERVER['SCRIPT_FILENAME']) . "<br>";
 
+
+            $docRoot = $_SERVER['DOCUMENT_ROOT'];
+            $subDirs = listDirs($docRoot);
+
+            echo '<pre>' . print_r($subDirs, true) . '</pre>';
+
+
+            $docRoot = $_SERVER['DOCUMENT_ROOT'];
+            $subPaths = getSubDirectories($docRoot);
+            echo "Get Subs: <br>";
+            echo '<pre>' . print_r($docRoot, true) . '</pre>';
+
+
+            ?>
 
         </div>
     </div>
