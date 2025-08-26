@@ -208,8 +208,10 @@ init_page_serversides();
                                 <option value="Mailverkehr">Mailverkehr</option>
                                 <option value="Telefonnotiz">Telefonnotiz</option>
                                 <option value="AV">AV</option>
-                                <!--<option value="Wandabwicklung">Wandabwicklung</option>-->
+
                                 <option value="Protokoll">Protokoll</option>
+
+                                <option value="Protokoll Besprechung">Protokoll Besprechung</option>
                                 <option value="ÖBA-Protokoll">ÖBA-Protokoll</option>
                             </select>
                         </div>
@@ -544,7 +546,7 @@ init_page_serversides();
         var gruppenDatum = $("#gruppenDatum").val();
         var gruppenStart = $("#gruppenStart").val();
         var gruppenEnde = $("#gruppenEnde").val();
-        //var gruppenFortsetzung  = $("#gruppenFortsetzung").val();
+        console.log(gruppenart);
         if (gruppenart !== "" && gruppenName !== "" && gruppenOrt !== "" && gruppenVerfasser !== "" && gruppenDatum !== "" && gruppenStart !== "" && gruppenEnde !== "" && gruppenID !== "") {
             // $('#addDeviceModal').modal('hide');
             $.ajax({

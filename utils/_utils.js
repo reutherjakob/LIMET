@@ -49,7 +49,7 @@ async function getExcelFilename(documentName, options = {}) {
     const formData = new URLSearchParams({ documentName, ...options });
 
     // Fetch filename from backend
-    const response = await fetch('/get_excel_filename.php', {
+    const response = await fetch('/utils/get_excel_filename.php', {
         method: 'POST',
         body: formData
     });

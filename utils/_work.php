@@ -98,6 +98,7 @@ function listDirs($dir)
         </div>
 
         <div class="card-footer">
+
             <?php
             echo $_SERVER['DOCUMENT_ROOT'] . "<br>";
             echo __DIR__ . "<br>";
