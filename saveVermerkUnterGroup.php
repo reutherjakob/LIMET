@@ -1,41 +1,48 @@
 <?php
-session_start();
-?>
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+require_once "utils/_utils.php";
+check_login();
 
-<?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    printf("Error loading character set utf8: %s\n", $mysqli->error);
-	    exit();
-	} 
-	
-	// Check connection
-	if ($mysqli->connect_error) {
-	    die("Connection failed: " . $mysqli->connect_error);
-	}
-        
-        $sql = "UPDATE `LIMET_RB`.`tabelle_Vermerkuntergruppe`
-                SET
-                `Untergruppenname` = '".filter_input(INPUT_GET, 'untergruppenName')."',
-                `Untergruppennummer` = '".filter_input(INPUT_GET, 'untergruppenNummer')."'
-                WHERE `idtabelle_Vermerkuntergruppe` = ".filter_input(INPUT_GET, 'untergruppenID').";";
-        
-        
-	if ($mysqli->query($sql) === TRUE) {
-            echo "Vermerkuntergruppe aktualisiert!";
-	} 
-	else {
-            echo "Error: " . $sql . "<br>" . $mysqli->error;
-	}
+$mysqli = utils_connect_sql();
 
-	$mysqli ->close();
+// Check connection
+if ($mysqli->connect_error) {
+    die("Connection failed: " . $mysqli->connect_error);
+}
+
+// GET-Parameter sicher abholen
+$untergruppenName = filter_input(INPUT_GET, 'untergruppenName', FILTER_SANITIZE_STRING);
+$untergruppenNummer = filter_input(INPUT_GET, 'untergruppenNummer', FILTER_SANITIZE_STRING);
+$untergruppenID = filter_input(INPUT_GET, 'untergruppenID', FILTER_VALIDATE_INT);
+
+// Parameter validieren
+if ($untergruppenID === false || $untergruppenID === null) {
+    die("Ungültige ID!");
+}
+
+// Prepared Statement nutzen
+$stmt = $mysqli->prepare("
+    UPDATE `LIMET_RB`.`tabelle_Vermerkuntergruppe`
+    SET 
+        `Untergruppenname` = ?,
+        `Untergruppennummer` = ?
+    WHERE `idtabelle_Vermerkuntergruppe` = ?
+");
+
+if (!$stmt) {
+    die("Prepare failed: " . $mysqli->error);
+}
+
+// Parameter binden
+$stmt->bind_param("ssi", $untergruppenName, $untergruppenNummer, $untergruppenID);
+
+// Statement ausführen
+if ($stmt->execute()) {
+    echo "Vermerkuntergruppe aktualisiert!";
+} else {
+    echo "Error: " . $stmt->error;
+}
+
+$stmt->close();
+$mysqli->close();
 ?>

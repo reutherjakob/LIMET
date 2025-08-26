@@ -18,292 +18,252 @@ class PivotTable
      * @param array $raumbereiche Array of raumbereich strings/filter text
      * @param array $zusatzRaeume Additional room IDs (ints)
      * @param array $zusatzElemente Additional element IDs (ints)
-     * @param bool $mtRelevant Filter MT-relevant rooms
-     * @param bool $entfallen Filter out "entfallen" rooms
-     * @param bool $nurMitElementen Only show rooms that have elements
-     * @param bool $ohneLeereElemente Filter out elements with all zero sum
+     * @param bool $mtRelevant Filter MT-relevant
+     * @param bool $entfallen Filter out "entfallen"
+     * @param bool $nurMitElementen Only show rooms with elements
+     * @param bool $ohneLeere Filter out elements with zero total
      * @param bool $transponiert Whether to transpose rows/columns
-     * @return string HTML
+     * @return string HTML of pivot table
      * @throws Exception on SQL errors
      */
-
-// Inside your PivotTable.php model class
-
-    public function getElementeJeRaeumePivotTable(
+    public function getElementeJeRaeume(
         array $raumbereiche,
         array $zusatzRaeume,
         array $zusatzElemente,
-        bool  $mtRelevant,
-        bool  $entfallen,
-        bool  $nurMitElementen,
-        bool  $ohneLeereElemente,
-        bool  $transponiert
-    ): string
-    {
+        bool $mtRelevant,
+        bool $entfallen,
+        bool $nurMitElementen,
+        bool $ohneLeere,
+        bool $transponiert
+    ): string {
         $conn = $this->conn;
         $projectID = $this->projectID;
 
-        // --- 1. Rooms filter ---
+        // === 1. Load rooms with filters ===
         $rooms = [];
         if (!empty($raumbereiche)) {
-            $bereichPlaceholders = implode(',', array_fill(0, count($raumbereiche), '?'));
-            $sqlRooms = "SELECT idTABELLE_Räume, Raumnr, Raumbezeichnung
-                     FROM tabelle_räume
-                     WHERE tabelle_projekte_idTABELLE_Projekte = ? 
-                       AND `Raumbereich Nutzer` IN ($bereichPlaceholders)";
-            if ($mtRelevant) $sqlRooms .= " AND `MT-relevant` = 1";
-            if ($entfallen) $sqlRooms .= " AND (`Entfallen` IS NULL OR `Entfallen` = 0)";
-            $sqlRooms .= " ORDER BY Raumnr";
+            $placeholders = implode(',', array_fill(0, count($raumbereiche), '?'));
+            $sql = "SELECT idTABELLE_Räume, Raumnr, Raumbezeichnung 
+                    FROM tabelle_räume 
+                    WHERE tabelle_projekte_idTABELLE_Projekte = ? 
+                      AND `Raumbereich Nutzer` IN ($placeholders)";
+            if ($mtRelevant) $sql .= " AND `MT-relevant`=1";
+            if ($entfallen) $sql .= " AND (Entfallen IS NULL OR Entfallen=0)";
+            $sql .= " ORDER BY Raumnr";
 
             $params = array_merge([$projectID], $raumbereiche);
             $types = 'i' . str_repeat('s', count($raumbereiche));
-            $stmt = $conn->prepare($sqlRooms);
+            $stmt = $conn->prepare($sql);
             if (!$stmt) throw new Exception("Prepare failed rooms: " . $conn->error);
             $stmt->bind_param($types, ...$params);
             $stmt->execute();
-            $resRooms = $stmt->get_result();
-            while ($row = $resRooms->fetch_assoc()) {
-                $rooms[$row["idTABELLE_Räume"]] = $row["Raumnr"] . " " . $row["Raumbezeichnung"];
+            $res = $stmt->get_result();
+            while ($r = $res->fetch_assoc()) {
+                $rooms[$r['idTABELLE_Räume']] = $r['Raumnr'] . ' ' . $r['Raumbezeichnung'];
             }
             $stmt->close();
         }
-
-        // Add zusatz rooms not already in rooms
+        // Add additional rooms by IDs
         if (!empty($zusatzRaeume)) {
             $toAdd = array_diff($zusatzRaeume, array_keys($rooms));
             if (!empty($toAdd)) {
                 $placeholders = implode(',', array_fill(0, count($toAdd), '?'));
-                $sqlAdd = "SELECT idTABELLE_Räume, Raumnr, Raumbezeichnung FROM tabelle_räume WHERE idTABELLE_Räume IN ($placeholders)";
-                if ($mtRelevant) $sqlAdd .= " AND `MT-relevant` = 1";
-                if ($entfallen) $sqlAdd .= " AND (`Entfallen` IS NULL OR `Entfallen` = 0)";
-                $stmt2 = $conn->prepare($sqlAdd);
-                if (!$stmt2) throw new Exception("Prepare failed zusatz rooms: " . $conn->error);
-                $types2 = str_repeat('i', count($toAdd));
-                $stmt2->bind_param($types2, ...$toAdd);
-                $stmt2->execute();
-                $res2 = $stmt2->get_result();
-                while ($row = $res2->fetch_assoc()) {
-                    $rooms[$row["idTABELLE_Räume"]] = $row["Raumnr"] . " " . $row["Raumbezeichnung"];
+                $sql = "SELECT idTABELLE_Räume, Raumnr, Raumbezeichnung FROM tabelle_räume WHERE idTABELLE_Räume IN ($placeholders)";
+                if ($mtRelevant) $sql .= " AND `MT-relevant`=1";
+                if ($entfallen) $sql .= " AND (Entfallen IS NULL OR Entfallen=0)";
+                $stmt = $conn->prepare($sql);
+                if (!$stmt) throw new Exception("Prepare failed rooms add: " . $conn->error);
+                $types = str_repeat('i', count($toAdd));
+                $stmt->bind_param($types, ...$toAdd);
+                $stmt->execute();
+                $res = $stmt->get_result();
+                while ($r = $res->fetch_assoc()) {
+                    $rooms[$r['idTABELLE_Räume']] = $r['Raumnr'] . ' ' . $r['Raumbezeichnung'];
                 }
-                $stmt2->close();
+                $stmt->close();
             }
         }
-
-        // Filter rooms with elements only if requested
+        // Filter rooms by element presence if requested
         if ($nurMitElementen) {
-            $sqlRmWithElem = "SELECT DISTINCT TABELLE_Räume_idTABELLE_Räume FROM tabelle_räume_has_tabelle_elemente WHERE Standort = 1";
-            $resRm = $conn->query($sqlRmWithElem);
-            $roomIDsWithElements = [];
-            while ($row = $resRm->fetch_assoc()) {
-                $roomIDsWithElements[] = $row['TABELLE_Räume_idTABELLE_Räume'];
+            $sql = "SELECT DISTINCT TABELLE_Räume_idTABELLE_Räume FROM tabelle_räume_has_tabelle_elemente WHERE Standort=1";
+            $res = $conn->query($sql);
+            $validRooms = [];
+            while ($row = $res->fetch_assoc()) {
+                $validRooms[] = $row['TABELLE_Räume_idTABELLE_Räume'];
             }
-            $rooms = array_filter($rooms, function ($id) use ($roomIDsWithElements) {
-                return in_array($id, $roomIDsWithElements);
-            }, ARRAY_FILTER_USE_KEY);
+            $rooms = array_filter($rooms, fn($k) => in_array($k, $validRooms), ARRAY_FILTER_USE_KEY);
         }
 
         if (empty($rooms)) {
-            return '<div class="alert alert-info">Keine Räume im gewählten Bereich oder unter den Zusatzräumen gefunden.</div>';
+            return '<div class="alert alert-info">Keine Räume gefunden</div>';
         }
 
-        $roomIDs = array_keys($rooms);
-        $roomPlaceholders = implode(',', array_fill(0, count($roomIDs), '?'));
+        $roomIds = array_keys($rooms);
+        $roomPlaceholders = implode(',', array_fill(0, count($roomIds), '?'));
 
-        // --- 2. Find elements with variants assigned in rooms ---
-        $sqlElemIDs = "
-        SELECT DISTINCT e.idTABELLE_Elemente, re.tabelle_Varianten_idtabelle_Varianten
-        FROM tabelle_elemente e
-        JOIN tabelle_räume_has_tabelle_elemente re ON e.idTABELLE_Elemente = re.TABELLE_Elemente_idTABELLE_Elemente
-        JOIN tabelle_räume r ON re.TABELLE_Räume_idTABELLE_Räume = r.idTABELLE_Räume
-        WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
-          AND re.Standort = 1
-          AND r.idTABELLE_Räume IN ($roomPlaceholders)";
-
-        $elemParams = array_merge([$projectID], $roomIDs);
-        $elemTypes = str_repeat('i', 1 + count($roomIDs));
-        $stmt = $conn->prepare($sqlElemIDs);
-        if (!$stmt) throw new Exception("Prepare failed elemIDs: " . $conn->error);
-        $stmt->bind_param($elemTypes, ...$elemParams);
+        // === 2. Find element+variant combos assigned to these rooms ===
+        $sqlElem = "SELECT DISTINCT e.idTABELLE_Elemente, re.tabelle_Varianten_idtabelle_Varianten
+                    FROM tabelle_elemente e
+                    JOIN tabelle_räume_has_tabelle_elemente re ON e.idTABELLE_Elemente=re.TABELLE_Elemente_idTABELLE_Elemente
+                    JOIN tabelle_räume r ON re.TABELLE_Räume_idTABELLE_Räume=r.idTABELLE_Räume
+                    WHERE r.tabelle_projekte_idTABELLE_Projekte=?
+                      AND re.Standort=1
+                      AND r.idTABELLE_Räume IN ($roomPlaceholders)";
+        $params = array_merge([$projectID], $roomIds);
+        $types = 'i' . str_repeat('i', count($roomIds));
+        $stmt = $conn->prepare($sqlElem);
+        if (!$stmt) throw new Exception("Prepare failed elem lookup: " . $conn->error);
+        $stmt->bind_param($types, ...$params);
         $stmt->execute();
-        $resElemIDs = $stmt->get_result();
-        $foundElementIDs = [];
-        while ($row = $resElemIDs->fetch_assoc()) {
-            $eid = intval($row["idTABELLE_Elemente"]);
-            $var = $row["tabelle_Varianten_idtabelle_Varianten"] === null ? null : intval($row["tabelle_Varianten_idtabelle_Varianten"]);
-            $foundElementIDs[] = ['id' => $eid, 'variante' => $var];
+        $res = $stmt->get_result();
+        $elementVariants = [];
+        while ($row = $res->fetch_assoc()) {
+            $elementVariants[] = [
+                'elementId' => (int)$row['idTABELLE_Elemente'],
+                'variantId' => $row['tabelle_Varianten_idtabelle_Varianten'] === null ? 0 : (int)$row['tabelle_Varianten_idtabelle_Varianten']
+            ];
         }
         $stmt->close();
 
-        // Add zusatz elements with variante=null
-        foreach ($zusatzElemente as $zusatzEIDraw) {
-            $foundElementIDs[] = ['id' => intval($zusatzEIDraw), 'variante' => null];
+        // Add additional elements without variant
+        foreach ($zusatzElemente as $ae) {
+            $elementVariants[] = ['elementId' => (int)$ae, 'variantId' => 0];
         }
 
-        // --- 3. Build filter for pivot query ---
-        $elementFilterArr = [];
-        if (!empty($foundElementIDs)) {
-            foreach ($foundElementIDs as $feid) {
-                if (!isset($feid['id'])) continue;
-                $eid = intval($feid['id']);
-                if ($feid['variante'] === null) {
-                    $elementFilterArr[] = "(e.idTABELLE_Elemente = $eid)";
-                } else {
-                    $variante = intval($feid['variante']);
-                    $elementFilterArr[] = "(e.idTABELLE_Elemente = $eid AND (re.tabelle_Varianten_idtabelle_Varianten = $variante OR re.tabelle_Varianten_idtabelle_Varianten IS NULL))";
-                }
+        // Build filter for element + variant combos
+        $filters = [];
+        foreach ($elementVariants as $ev) {
+            $e = $ev['elementId'];
+            $v = $ev['variantId'];
+            if ($v === 0) {
+                $filters[] = "(e.idTABELLE_Elemente=$e)";
+            } else {
+                $filters[] = "(e.idTABELLE_Elemente=$e AND (re.tabelle_Varianten_idtabelle_Varianten=$v OR re.tabelle_Varianten_idtabelle_Varianten IS NULL))";
             }
         }
-        $elementFilterSQL = count($elementFilterArr) ? " AND (" . implode(" OR ", $elementFilterArr) . ")" : "";
+        $elemFilter = $filters ? "AND (" . implode(' OR ', $filters) . ")" : '';
 
-        // --- 4. Pivot data query ---
-        $sqlPivot = "
-        SELECT
-            e.ElementID,
-            e.Bezeichnung,
-            e.idTABELLE_Elemente,
-            COALESCE(v.idtabelle_Varianten, 0) AS idtabelle_Varianten,
-            COALESCE(v.Variante, '-') AS VarianteName,
-            r.idTABELLE_Räume,
-            SUM(re.Anzahl) AS Summe
-        FROM tabelle_elemente e
-        JOIN tabelle_räume_has_tabelle_elemente re ON e.idTABELLE_Elemente = re.TABELLE_Elemente_idTABELLE_Elemente
-        JOIN tabelle_räume r ON re.TABELLE_Räume_idTABELLE_Räume = r.idTABELLE_Räume
-        LEFT JOIN tabelle_varianten v ON re.tabelle_Varianten_idtabelle_Varianten = v.idtabelle_Varianten
-        WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
-          AND re.Standort = 1
-          AND r.idTABELLE_Räume IN ($roomPlaceholders)
-          $elementFilterSQL
-        GROUP BY e.ElementID, e.Bezeichnung, e.idTABELLE_Elemente, v.idtabelle_Varianten, r.idTABELLE_Räume
-        ORDER BY e.ElementID
-    ";
-        $allParams = array_merge([$projectID], $roomIDs);
-        $allTypes = str_repeat('i', 1 + count($roomIDs));
+        // === 3. Query sums per element+variant per room + relation ID ===
+        $sqlPivot = "SELECT 
+                        re.id AS relationId,
+                        e.idTABELLE_Elemente AS elementId,
+                        re.tabelle_Varianten_idtabelle_Varianten AS variantId,
+                        e.ElementID,
+                        e.Bezeichnung,
+                        COALESCE(v.Variante, '-') AS variantName,
+                        r.idTABELLE_Räume AS roomId,
+                        SUM(re.Anzahl) AS total
+                    FROM tabelle_elemente e
+                    JOIN tabelle_räume_has_tabelle_elemente re ON e.idTABELLE_Elemente=re.TABELLE_Elemente_idTABELLE_Elemente
+                    JOIN tabelle_räume r ON re.TABELLE_Räume_idTABELLE_Räume=r.idTABELLE_Räume
+                    LEFT JOIN tabelle_varianten v ON re.tabelle_Varianten_idtabelle_Varianten=v.idtabelle_Varianten
+                    WHERE r.tabelle_projekte_idTABELLE_Projekte=?
+                      AND re.Standort=1
+                      AND r.idTABELLE_Räume IN ($roomPlaceholders)
+                      $elemFilter
+                    GROUP BY e.idTABELLE_Elemente, re.tabelle_Varianten_idtabelle_Varianten, r.idTABELLE_Räume, re.id
+                    ORDER BY e.ElementID, variantName ASC, r.Raumnr";
+
+        $params = array_merge([$projectID], $roomIds);
+        $types = 'i' . str_repeat('i', count($roomIds));
         $stmt = $conn->prepare($sqlPivot);
         if (!$stmt) throw new Exception("Prepare failed pivot: " . $conn->error);
-        $stmt->bind_param($allTypes, ...$allParams);
+        $stmt->bind_param($types, ...$params);
         $stmt->execute();
-        $resPivot = $stmt->get_result();
+        $res = $stmt->get_result();
 
+        // Aggregate pivot data
         $pivot = [];
-        while ($row = $resPivot->fetch_assoc()) {
-            $key = $row["idTABELLE_Elemente"] . "_" . $row["idtabelle_Varianten"];
-            $label = $row["ElementID"] . ' ' . $row["Bezeichnung"] . ' (' . $row["VarianteName"] . ')';
+        while ($row = $res->fetch_assoc()) {
+            $key = $row['elementId'] . '_' . ($row['variantId'] ?? 0);
             if (!isset($pivot[$key])) {
+                $label = $row['ElementID'] . ' ' . $row['Bezeichnung'] . ' (' . ($row['variantName'] ?: '-') . ')';
                 $pivot[$key] = [
-                    "ElementLabel" => $label,
-                    "Räume" => []
+                    'label' => $label,
+                    'elementId' => (int)$row['elementId'],
+                    'variantId' => $row['variantId'] ?? 0,
+                    'values' => array_fill_keys($roomIds, 0),
+                    'relationIds' => []
                 ];
             }
-            $pivot[$key]["Räume"][$row["idTABELLE_Räume"]] = intval($row["Summe"]);
+            $pivot[$key]['values'][(int)$row['roomId']] = (int)$row['total'];
+            $pivot[$key]['relationIds'][(int)$row['roomId']] = $row['relationId']; // include relation ID per room+element
         }
         $stmt->close();
 
-        // --- 5. Helper: get element + variant label ---
-        $getElementLabel = function (int $elementID, ?int $variantID) use ($conn): string {
-            $sqlElem = "SELECT ElementID, Bezeichnung FROM tabelle_elemente WHERE idTABELLE_Elemente = ?";
-            $stmt = $conn->prepare($sqlElem);
-            $stmt->bind_param("i", $elementID);
-            $stmt->execute();
-            $res = $stmt->get_result();
-            $elem = $res->fetch_assoc();
-            $stmt->close();
+        // Add missing elements from $elementVariants with zeros
+        foreach ($elementVariants as $ev) {
+            $key = $ev['elementId'] . '_' . $ev['variantId'];
+            if (!isset($pivot[$key])) {
+                $stmtE = $conn->prepare("SELECT ElementID, Bezeichnung FROM tabelle_elemente WHERE idTABELLE_Elemente=?");
+                $stmtE->bind_param('i', $ev['elementId']);
+                $stmtE->execute();
+                $elem = $stmtE->get_result()->fetch_assoc() ?: null;
+                $stmtE->close();
 
-            if (!$elem) {
-                return "Unbekanntes Element #$elementID";
-            }
-
-            $variantName = '-';
-            if ($variantID !== null && $variantID !== 0) {
-                $sqlVar = "SELECT Variante FROM tabelle_varianten WHERE idtabelle_Varianten = ?";
-                $stmt = $conn->prepare($sqlVar);
-                $stmt->bind_param("i", $variantID);
-                $stmt->execute();
-                $res = $stmt->get_result();
-                $varRow = $res->fetch_assoc();
-                $stmt->close();
-                if ($varRow && !empty($varRow['Variante'])) {
-                    $variantName = $varRow['Variante'];
-                }
-            }
-
-            return $elem['ElementID'] . ' ' . $elem['Bezeichnung'] . ' (' . $variantName . ')';
-        };
-
-        // --- 6. Add missing zusatzElemente to pivot with zero sums ---
-        $existingKeys = array_keys($pivot);
-        foreach ($foundElementIDs as $fe) {
-            $elementID = intval($fe['id']);
-            $variantID = $fe['variante'] ?? 0;
-            $key = $elementID . "_" . $variantID;
-            if (!in_array($key, $existingKeys, true)) {
-                $label = $getElementLabel($elementID, $variantID);
-
-                $raumSums = [];
-                foreach ($rooms as $roomID => $roomLabel) {
-                    $raumSums[$roomID] = 0;
-                }
-                $pivot[$key] = ["ElementLabel" => $label, "Räume" => $raumSums];
-            }
-        }
-
-        // --- 7. Filter empty elements if requested ---
-        if ($ohneLeereElemente) {
-            foreach ($pivot as $key => $data) {
-                $alleNull = true;
-                foreach ($rooms as $rid => $rlabel) {
-                    $val = $data["Räume"][$rid] ?? null;
-                    if (!empty($val) && intval($val) > 0) {
-                        $alleNull = false;
-                        break;
+                $variantName = '-';
+                if ($ev['variantId'] && $ev['variantId'] !== 0) {
+                    $stmtV = $conn->prepare("SELECT Variante FROM tabelle_varianten WHERE idtabelle_Varianten=?");
+                    $stmtV->bind_param('i', $ev['variantId']);
+                    $stmtV->execute();
+                    $vres = $stmtV->get_result()->fetch_assoc() ?: null;
+                    $stmtV->close();
+                    if ($vres && !empty($vres['Variante'])) {
+                        $variantName = $vres['Variante'];
                     }
                 }
-                if ($alleNull) unset($pivot[$key]);
+
+                $label = ($elem ? $elem['ElementID'] . ' ' . $elem['Bezeichnung'] : 'Unbekannt') . ' (' . $variantName . ')';
+
+                $pivot[$key] = [
+                    'label' => $label,
+                    'elementId' => $ev['elementId'],
+                    'variantId' => $ev['variantId'],
+                    'values' => array_fill_keys($roomIds, 0),
+                    'relationIds' => []
+                ];
             }
         }
 
-        // --- 8. Generate HTML output ---
+        // Filter elements with zero sums if needed
+        if ($ohneLeere) {
+            foreach ($pivot as $key => $data) {
+                if (array_sum($data['values']) === 0) {
+                    unset($pivot[$key]);
+                }
+            }
+        }
+
+        // === 4. Generate HTML ===
         ob_start();
+        echo '<table id="pivotTable" class="table table-bordered table-sm">';
 
-        echo '<table class="table compact table-striped table-hover" id="pivotTable">';
-        if ($transponiert) {
-            echo '<thead><tr><th>Raum</th><th>Summe</th>';
-            foreach ($pivot as $key => $data) {
-                echo '<th>' . htmlspecialchars($data["ElementLabel"]) . '</th>';
-            }
-            echo '</tr></thead><tbody>';
-            foreach ($rooms as $rid => $rlabel) {
-                echo '<tr><td>' . htmlspecialchars($rlabel) . '</td>';
-                $sum = 0;
-                foreach ($pivot as $data) {
-                    $sum += $data["Räume"][$rid] ?? 0;
-                }
-                echo "<td>$sum</td>";
-                foreach ($pivot as $data) {
-                    $val = $data["Räume"][$rid] ?? "";
-                    echo '<td>' . htmlspecialchars($val) . '</td>';
-                }
-                echo '</tr>';
-            }
-        } else {
-            echo '<thead><tr><th>Element (Variante)</th><th>Summe</th>';
-            foreach ($rooms as $rid => $rlabel) {
-                echo '<th>' . htmlspecialchars($rlabel) . '</th>';
-            }
-            echo '</tr></thead><tbody>';
-            foreach ($pivot as $key => $data) {
-                echo '<tr><td>' . htmlspecialchars($data["ElementLabel"]) . '</td>';
-                $sum = 0;
-                foreach ($rooms as $rid => $rlabel) {
-                    $sum += $data["Räume"][$rid] ?? 0;
-                }
-                echo "<td>$sum</td>";
-                foreach ($rooms as $rid => $rlabel) {
-                    $val = $data["Räume"][$rid] ?? "";
-                    echo '<td>' . htmlspecialchars($val) . '</td>';
-                }
-                echo '</tr>';
-            }
+        // Header
+        echo '<thead><tr><th>Element (Variante)</th><th>Summe</th>';
+        foreach ($rooms as $rId => $rLabel) {
+            echo '<th>' . htmlspecialchars($rLabel) . '</th>';
         }
+        echo '</tr></thead><tbody>';
+
+        foreach ($pivot as $key => $data) {
+            echo '<tr>';
+            echo '<td>' . htmlspecialchars($data['label']) . '</td>';
+            $total = array_sum($data['values']);
+            echo '<td>' . $total . '</td>';
+            foreach ($rooms as $rId => $rLabel) {
+                $val = $data['values'][$rId] ?? 0;
+                $relId = $data['relationIds'][$rId] ?? '';
+                echo '<td class="editable-cell" tabindex="0" '.
+                    'data-room-id="'.htmlspecialchars($rId).'" '.
+                    'data-element-id="'.htmlspecialchars($data['elementId']).'" '.
+                    'data-variant-id="'.htmlspecialchars($data['variantId']).'" '.
+                    'data-relation-id="'.htmlspecialchars($data['relationIds'][$rId] ?? '').'">'.
+                    htmlspecialchars($val).
+                    '</td>';
+            }
+            echo '</tr>';
+        }
+
         echo '</tbody></table>';
 
         return ob_get_clean();

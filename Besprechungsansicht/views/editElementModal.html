@@ -1,0 +1,49 @@
+<div class="modal fade" id="editElementModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Element bearbeiten</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="edit-raum-info" class="form-label">Raum</label>
+                        <input type="text" id="edit-raum-info" class="form-control" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="edit-element-info" class="form-label">Element</label>
+                        <input type="text" id="edit-element-info" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="edit-current-amount" class="form-label">Aktuelle Anzahl</label>
+                        <input type="number" id="edit-current-amount" class="form-control" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="edit-new-amount" class="form-label">Neue Anzahl *</label>
+                        <input type="number" id="edit-new-amount" min="0" class="form-control" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label for="edit-change-comment" class="form-label">Kommentar zur Änderung *</label>
+                        <textarea id="edit-change-comment" class="form-control" rows="3" required
+                                  placeholder="Bitte Grund für die Änderung angeben..."></textarea>
+                    </div>
+                </div>
+                <div class="form-check mb-3">
+                    <input type="checkbox" class="form-check-input" id="edit-confirm" required>
+                    <label class="form-check-label" for="edit-confirm">
+                        Ich bestätige, dass diese Änderung korrekt ist und durchgeführt werden soll.
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                <button type="button" class="btn btn-primary" id="save-element-change" disabled>Änderung speichern</button>
+            </div>
+        </div>
+    </div>
+</div>

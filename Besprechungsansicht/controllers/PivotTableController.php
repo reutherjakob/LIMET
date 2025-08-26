@@ -1,7 +1,4 @@
 <?php
-// controllers/PivotTableController.php
-session_start();
-
 include_once '../../utils/_utils.php';
 include_once '../models/PivotTable.php';
 
@@ -36,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         $pivotModel = new PivotTable($conn, $projectID);
-        $html = $pivotModel->getElementeJeRaeumePivotTable(
+        $html = $pivotModel->getElementeJeRaeume(
             $raumbereiche,
             $zusatzRaeume,
             $zusatzElemente,

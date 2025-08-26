@@ -1,6 +1,8 @@
 // Besprechung.js
 class Besprechung {
-    constructor({ name, datum, startzeit, endzeit, ort, verfasser, art, projektID = null }) {
+    constructor({id, action, name, datum, startzeit, endzeit, ort, verfasser, art, projektID = null }) {
+        this.id = id; // id der Vermerkgruppe
+        this.action = action;
         this.name = name;           // string: Name der Besprechung
         this.datum = datum;         // string (YYYY-MM-DD)
         this.startzeit = startzeit; // string (HH:MM)

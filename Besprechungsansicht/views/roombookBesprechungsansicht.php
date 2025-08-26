@@ -41,7 +41,6 @@ $sql = "SELECT tabelle_elemente.idTABELLE_Elemente as id,
 
 $stmt = $conn->prepare($sql);
 $stmt->execute();
-$stmt->execute();
 $result = $stmt->get_result();
 
 $elemente = [];
@@ -81,6 +80,14 @@ $conn->close();
             border-color: #000;
         }
 
+        .embed-responsive-item {
+            width: 100% !important;
+            height: 100% !important;
+            border: none;
+            display: block;
+        }
+
+
     </style>
 </head>
 
@@ -92,19 +99,23 @@ $conn->close();
 
         <div class="col-lg-2 mx-auto mb-4" id="filterCardCol">
             <div class="card mb-2">
-                <div class="card-header d-inline-flex align-items-center justify-content-between">
+                <div class="card-header d-inline-flex align-items-center ">
 
 
                     <button type="button" class="btn btn-outline-success" id="createMeetingBtn"
                             data-bs-toggle="modal" data-bs-target="#createMeetingModal">
-                        <i class="fa fa-plus me-1"></i> Neue Besprechung
+                        <i class="fa fa-plus me-1"></i> Neu
                     </button>
                     <button type="button" class="btn btn-outline-success" id="openMeetingBtn"
-                            data-bs-toggle="modal" data-bs-target="#" disabled>
+                            data-bs-toggle="modal" data-bs-target="#besprechungSelectModal">
                         <i class="fas fa-folder-open me-1"></i> Öffnen
                     </button>
 
+                    <span id="currentMeetingName" class="ms-2 me-2 fw-bold btn-success"></span>
 
+                    <button type="reset" class="btn btn-outline-dark" title="Reset" id="ResetBesprechung">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
                 </div>
 
             </div>
@@ -131,8 +142,9 @@ $conn->close();
                             <select id="zusatzRaeume" name="zusatzRaeume[]" class="form-select" style="width:95%"
                                     multiple>
                                 <?php foreach ($raeume as $raum): ?>
-                                    <option value="<?= htmlspecialchars($raum['id']) ?>">
-                                        <?= htmlspecialchars($raum['text']) ?>
+                                    <option value="<?= htmlspecialchars($raum['id'] ?? ''
+                                    ) ?>">
+                                        <?= htmlspecialchars($raum['text'] ?? '') ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -192,35 +204,13 @@ $conn->close();
                                 Nullen ausblenden
                             </label>
                         </div>
-
-
                         <div>
                             <button type="submit" class="btn btn-success w-100">Anzeigen</button>
                         </div>
                     </div>
-
                 </form>
             </div>
-
-
-            <div class="card mb-2">
-                <div class="card-header d-inline-flex align-items-center justify-content-between">
-                    Protokoll
-                    <span class="badge rounded-pill bg-light text-dark m-1 p-2 float-end"
-                          data-bs-toggle="popover"
-                          title="Info"
-                          data-bs-content="">
-                    <i class="fas fa-info-circle"></i>
-                       </span>
-                </div>
-                <div class="card-body">
-                    Automatisch generiertes Protokoll. Hier soll man aber Vermerke noch Zusätzliches annotieren können
-                </div>
-            </div>
-
-
         </div>
-
 
         <div class="col-lg-10 mx-auto" id="tableCardCol">
             <div class="card">
@@ -232,95 +222,68 @@ $conn->close();
                         <div class=" col-6 d-flex justify-content-end  align-items-start"
                              id="CardHeaderHoldingDatatableManipulators2"></div>
                     </div>
+                    <button class="btn btn-outline-dark fa fa-arrow-left" id="PDFframebtn"></button>
                 </div>
-                <div class="card-body p-0">
+                <div class="card-body p-1">
                     <div id="pivotTableContainer">
                         <!-- Die Pivot-Tabelle wird hier per AJAX geladen -->
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-
-<!-- Besprechung anlegen Modal -->
-<div class="modal fade" id="createMeetingModal" tabindex="-1" aria-labelledby="createMeetingLabel" aria-hidden="true">
-    <div class="modal-dialog modal-md modal-dialog-scrollable">
-        <div class="modal-content">
-            <form id="createMeetingForm">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="createMeetingLabel">Neue Besprechung anlegen</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-2">
-                        <label for="meetingName" class="form-label">Besprechungsname (=Protokollname) </label>
-                        <input type="text" class="form-control" id="meetingName" name="name" required>
-                    </div>
-                    <div class="mb-2">
-                        <label for="meetingDatum" class="form-label">Datum</label>
-                        <input type="date" class="form-control" id="meetingDatum" name="datum" required
-                               placeholder="*required">
-                    </div>
-                    <div class="mb-2">
-                        <label for="meetingUhrzeitStart" class="form-label">Uhrzeit [Start] </label>
-                        <input type="time" class="form-control" id="meetingUhrzeitStart" name="uhrzeit" required>
-                    </div>
-                    <div class="mb-2">
-                        <label for="meetingUhrzeitEnde" class="form-label">Uhrzeit [Ende] </label>
-                        <input type="time" class="form-control" id="meetingUhrzeitEnde" name="uhrzeit">
-                    </div>
-                    <div class="mb-2">
-                        <label for="meetingOrt" class="form-label">Ort</label>
-                        <input type="text" class="form-control" id="meetingOrt" name="ort">
-                    </div>
-
-                    <div class="mb-2">
-                        <label for="meetingVerfasser" class="form-label">Verfasser</label>
-                        <input type="text" class="form-control" id="meetingVerfasser" name="verfasser" required>
-                    </div>
-
-                    <!--- div class="mb-2">
-                        <div class="badge rounded-pill bg-light text-dark m-1 p-2 float-end"
-                             data-bs-toggle="popover"
-                             title="INFO"
-                             data-bs-content="Vorerst können hier nur Pfade als txt gespeichert werden.">
-                            <i class="fas fa-info-circle"></i>
-                        </div>
-                        <label for="meetingDokumente" class="form-label">relevante Dokumente</label>
-                        <input type="text" class="form-control" id="meetingDokumente" name="name" disabled
-                               placeholder="TODO">
-                    </div>
-
-                    <div class="mb-3"> TODO 4 later: Get Projektbeteiligte  & use exisiting structure for saving files
-                        <label for="meetingBeteiligte" class="form-label">Beteiligte</label>
-                        <input type="text" class="form-control" id="meetingBeteiligte" name="beteiligte" placeholder="Namen kommasepariert">
-                    </div>
-                    <div class="mb-3">
-                        <label for="meetingDokumente" class="form-label">Relevante Dokumente</label>
-                        <input type="file" class="form-control" id="meetingDokumente" name="dokumente[]" multiple>
-                    </div --->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-                    <button type="submit" class="btn btn-success" id="BesprechungAnlegenBtn">Besprechung anlegen
-                    </button>
-                </div>
-            </form>
+        <div class="col-lg-4 card-body p-1" id="PDFframe" style="display: none; height: 70vh; ">
+            <iframe class="embed-responsive-item" id="pdfPreview"></iframe>
         </div>
+
     </div>
 </div>
+
+<?php
+include "newBesprechungModal.html";
+include "openBesprechungModal.html";
+include "editElementModal.html";
+?>
 
 <script src="../js/Besprechung.js"></script>
 <script src="../../utils/_utils.js"></script>
+<script src="../js/editablePivot.js"></script>
 <script>
+    let besprechung = new Besprechung({});
+    let excelfilename;
+
+    function consolidateMultipleElementsperRoom() {
+             let selectedRaumbereiche = $('#raumbereich').val();
+             if (!selectedRaumbereiche || selectedRaumbereiche.length === 0) {
+                 alert("Bitte mindestens einen Raumbereich wählen.");
+                 return;
+             }
+
+        $.ajax({
+            url: '../controllers/consolidateMultipleElementsperRoomsperRoomarea.php', // Pfad zum Backend-Skript für Konsolidierung
+            method: 'POST',
+            data: {
+                raumbereiche: selectedRaumbereiche
+            },
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    console.log("Konsolidierung erfolgreich:", response.message);
+                } else {
+                    alert("Fehler bei Konsolidierung: " + (response.message || "Unbekannter Fehler"));
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX-Fehler bei Konsolidierung:", status, error);
+                alert("Serverfehler bei der Konsolidierung der Elemente.");
+            }
+        });
+    }
+
+
 
 
     $(document).ready(function () {
-        let excelfilename;
-        let filterVisible = true;
-
         $('#meetingDatum').datepicker({
             format: "yyyy-mm-dd",
             calendarWeeks: true,
@@ -329,31 +292,165 @@ $conn->close();
             language: "de"
         });
 
-
         $('#raumbereich').select2({placeholder: "Raumbereich wählen"});
         $('#zusatzRaeume').select2({placeholder: "Zusätzliche Räume wählen"});
         $('#zusatzElemente').select2({placeholder: "Zusätzliche Elemente wählen"});
-
-
         $('#isTransposed').on('change', updateTransposeLabel);
+        $('#filterForm :input').prop('disabled', true);
+
         $('#filterForm').on('submit', function (e) {
             e.preventDefault();
-
+            consolidateMultipleElementsperRoom();
             loadPivotTable();
+            addUntergruppePerRaumbereich();
+            addDefaultVermerkeForRaumbereiche(besprechung.id, $('#raumbereich').val());
+            $('#pdfPreview').attr('src', '../../PDFs/pdf_createVermerkGroupPDF.php?gruppenID=' + besprechung.id);
         });
 
+        $('#createMeetingForm').on('submit', function (e) {
+                e.preventDefault();
+                besprechung.id = 1;
+                besprechung.action = "new";
+                besprechung.name = $("#meetingName").val();
+                besprechung.datum = $("#meetingDatum").val();
+                besprechung.startzeit = $("#meetingUhrzeitStart").val();
+                besprechung.endzeit = $("#meetingUhrzeitEnde").val();
+                besprechung.ort = $("#meetingOrt").val();
+                besprechung.verfasser = $("#meetingVerfasser").val();
+                besprechung.art = "Protokoll Besprechung";
+
+                if (besprechung.name && besprechung.verfasser && besprechung.datum && besprechung.startzeit) {
+                    $.ajax({
+                        url: "../controllers/BesprechungController.php", // Controller endpoint
+                        type: "POST",                  // Change from GET to POST
+                        data: besprechung.toPayload(),// Send data in POST body
+                        success: function (response) {
+                            if (response.success) {
+                                besprechung.id = response.insertId;
+                                console.log("Besprechung angelegt", besprechung.toPayload());
+
+                                $('#createMeetingModal').modal('hide');
+                                $('#createMeetingForm')[0].reset();
+                                $('#pdfPreview').attr('src', '../../PDFs/pdf_createVermerkGroupPDF.php?gruppenID=' + besprechung.id);
+
+                                makeToaster("Besprechung erfolgreich angelegt! - ID:" + besprechung.id, true);
+                                updateFilterFormState();
+                            } else {
+                                makeToaster("Fehler: " + (response.message || "Unbekannter Fehler"), false);
+                            }
+                        },
+                        error: function (xhr) {
+                            const errorMsg = xhr.responseJSON?.errors?.join(', ') || xhr.responseText || "Fehler beim Anlegen";
+                            alert(errorMsg);
+                        }
+                    });
+                } else {
+                    makeToaster("Bitte alle Pflichtfelder ausfüllen!", false);
+                }
+            }
+        );
+
+        $('#besprechungSelectModal').on('shown.bs.modal', function (e) {
+            if ($.fn.DataTable.isDataTable('#besprechungTable')) {
+                $('#besprechungTable').DataTable().destroy();
+            }
+            let table = $('#besprechungTable').DataTable({
+                ajax: {
+                    url: '../controllers/BesprechungController.php',
+                    type: 'POST',
+                    data: {action: 'getProtokollBesprechungen'},
+                    dataSrc: function (json) {
+                        if (!json.success) {
+                            $('#besprechungLoading').text('Fehler: ' + json.message);
+                            return [];
+                        }
+                        $('#besprechungLoading').text('');
+                        return json.data;
+                    },
+                    error: function (xhr, error, thrown) {
+                        $('#besprechungLoading').text('Serverfehler: ' + thrown);
+                    }
+                },
+                columns: [
+                    {data: 'idtabelle_Vermerkgruppe', title: "id", visible: false},
+                    {data: 'Gruppenname', title: "Name"},
+                    {data: 'Gruppenart', title: "Art"},
+                    {data: 'Ort', title: "Ort"},
+                    {data: 'Verfasser', title: "Verfasser"},
+                    {data: 'Startzeit', title: "Startzeit"},
+                    {data: 'Endzeit', title: "Endzeit"},
+                    {data: 'Datum', title: "Datum"}
+                ],
+                searching: true,
+                paging: true,
+                info: false,
+                lengthChange: false,
+                language: {url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'},
+                rowId: 'id',
+                createdRow: function (row, data) {
+                    $(row).off('click').on('click', function () {
+                        $('#besprechungTable tbody tr').removeClass('selected');
+                        $(this).addClass('selected');
+
+                        besprechung.id = data.idtabelle_Vermerkgruppe;
+                        besprechung.action = "opened";
+                        besprechung.name = data.Gruppenname;
+                        besprechung.datum = data.Datum;
+                        besprechung.startzeit = data.Startzeit;
+                        besprechung.endzeit = data.Endzeit;
+                        besprechung.ort = data.Ort;
+                        besprechung.verfasser = data.Verfasser;
+                        besprechung.art = "Protokoll Besprechung";
+                        besprechung.projektID = data.tabelle_projekte_idTABELLE_Projekte;
+
+                        console.log("Raw: ", data);
+                        console.log(besprechung.toPayload());
+
+                        $('#pdfPreview').attr('src', '../../PDFs/pdf_createVermerkGroupPDF.php?gruppenID=' + data.idtabelle_Vermerkgruppe);
+
+                        setTimeout(() => {
+                            updateFilterFormState();
+                            $('#besprechungSelectModal').modal("hide");
+                            $('#besprechungTable').DataTable().destroy();
+                            makeToaster("Besprechung geöffnet " + besprechung.id, true);
+                            loadRaumbereiche(besprechung.id);
+                        }, 100);
+
+                    });
+                }
+            });
+        });
+
+        $('#ResetBesprechung').on('click', function () {
+            $('#filterForm')[0].reset();
+            $('#raumbereich').val(null).trigger('change');
+            $('#zusatzRaeume').val(null).trigger('change');
+            $('#zusatzElemente').val(null).trigger('change');
+            $('#mtRelevant').prop('checked', true);
+            $('#entfallen').prop('checked', true);
+            $('#nurMitElementen').prop('checked', true);
+            $('#ohneLeereElemente').prop('checked', true);
+            $('#isTransposed').prop('checked', false);
+            $('#hideZeros').prop('checked', false);
+            $('#pivotTableContainer').empty();
+            $('#pdfPreview').attr('src', '');
+            besprechung = new Besprechung({});
+            updateFilterFormState();
+            setTimeout(() => {
+                makeToaster("Besprechung Geschlossen", true);
+                updateFilterFormState();
+            }, 100)
+
+        });
+
+        $('#PDFframebtn').on('click', function () {
+            $('#PDFframe').toggle();             // toggle right PDF card
+            updateTableCardColClass();
+        });
 
         $('#ToggleCard').on('click', function () {
-            if (filterVisible) {                // Filter-Card ausblenden, Tabellen-Card auf volle Breite
-                $('#filterCardCol').hide();
-                $('#tableCardCol').removeClass('col-lg-10').addClass('col-12');
-                $(this).removeClass('fa-arrow-left').addClass('fa-arrow-right');
-            } else {                // Filter-Card einblenden, Tabellen-Card wieder schmal
-                $('#filterCardCol').show();
-                $('#tableCardCol').removeClass('col-12').addClass('col-lg-10');
-                $(this).removeClass('fa-arrow-right').addClass('fa-arrow-left');
-            }
-            filterVisible = !filterVisible;
+            $('#filterCardCol').toggle();        // toggle left card
+            updateTableCardColClass();
         });
 
         let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
@@ -361,75 +458,145 @@ $conn->close();
             new bootstrap.Popover(popoverTriggerEl);
         });
 
+    }); // doc ready
 
-        $('#createMeetingForm').on('submit', function(e) {
-            e.preventDefault();
 
-            const besprechung = new Besprechung({
-                name: $("#meetingName").val(),
-                datum: $("#meetingDatum").val(),
-                startzeit: $("#meetingUhrzeitStart").val(),
-                endzeit: $("#meetingUhrzeitEnde").val(),
-                ort: $("#meetingOrt").val(),
-                verfasser: $("#meetingVerfasser").val(),
-                art: "Protokoll Besprechung"
-            });
-
-            if (besprechung.name && besprechung.verfasser && besprechung.datum && besprechung.startzeit) {
-                $.ajax({
-                    url: "../controllers/BesprechungController.php", // Controller endpoint
-                    type: "POST",                  // Change from GET to POST
-                    data: besprechung.toPayload(),// Send data in POST body
-                    success: function(response) {
-                        if (response.success) {
-                            makeToaster("Besprechung erfolgreich angelegt!", true);
-                            $('#createMeetingModal').modal('hide');
-                            $('#createMeetingForm')[0].reset();
-                        } else {
-                            makeToaster("Fehler: " + (response.message || "Unbekannter Fehler"), false);
-                        }
-                    },
-                    error: function(xhr) {
-                        const errorMsg = xhr.responseJSON?.errors?.join(', ') || xhr.responseText || "Fehler beim Anlegen";
-                        makeToaster(errorMsg, false);
-                    }
-                });
-            } else {
-                alert("Bitte alle Pflichtfelder ausfüllen!");
+    function loadRaumbereiche(vermerkgruppeId) {        //console.log("ID ", vermerkgruppeId);
+        $.ajax({
+            url: '../controllers/VermerkuntergruppeController.php',
+            method: 'POST',
+            data: {action: 'getRaumbereiche', vermerkgruppe_id: vermerkgruppeId},
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    console.log(response);
+                    $('#raumbereich').val(response.data).trigger('change.select2');
+                } else {
+                    console.error('Fehler:', response.message);
+                }
+            },
+            error: function () {
+                console.error('Ajax Fehler beim Laden der Raumbereiche');
             }
         });
+    }
 
-    });
+    function updateTableCardColClass() {
+        const filterVisible = $('#filterCardCol').is(':visible');
+        const PDFVisible = $('#PDFframe').is(':visible');
+        $('#tableCardCol').removeClass('col-12 col-lg-10 col-lg-8 col-lg-6');
+        if (!filterVisible && !PDFVisible) {
+            $('#tableCardCol').addClass('col-12');
+        } else if (filterVisible && !PDFVisible) {
+            $('#tableCardCol').addClass('col-lg-10');
+        } else if (!filterVisible && PDFVisible) {
+            $('#tableCardCol').addClass('col-lg-8');
+        } else if (filterVisible && PDFVisible) {
+            $('#tableCardCol').addClass('col-lg-6');
+        }
+        const leftBtn = $('#ToggleCard');
+        leftBtn.removeClass('fa-arrow-left fa-arrow-right');
+        leftBtn.addClass(filterVisible ? 'fa-arrow-left' : 'fa-arrow-right');
+        const rightBtn = $('#PDFframebtn');
+        rightBtn.removeClass('fa-arrow-left fa-arrow-right');
+        rightBtn.addClass(PDFVisible ? 'fa-arrow-right' : 'fa-arrow-left');
+    }
 
+    function addUntergruppePerRaumbereich() {
+        const selectedRaumbereiche = $('#raumbereich').val();
+        if (!selectedRaumbereiche || selectedRaumbereiche.length === 0 || besprechung.id === 0) return;
+        console.log("Besprechung ist geöffnet", selectedRaumbereiche, besprechung.id);
+        $.ajax({
+            url: '../controllers/VermerkuntergruppeController.php',
+            method: 'POST',
+            data: {
+                vermerkgruppe_id: besprechung.id, // pass only vermerkgruppe ID as needed
+                raumbereiche: selectedRaumbereiche,  // array of names
+                action: "addUntergruppen"
+            },
+            success: function (response) {
+                if (response.success) {
+                    if (response.created.length > 0) {
+                        makeToaster("Neue Untergruppe(n) erstellt: " + response.created.map(c => c.name).join(", "), true);
+                    }
+                    if (response.skipped.length > 0) {
+                        if (response.created.length === 0) {
+                            makeToaster("Gruppe(n) '" + response.skipped.join(", ") + "' existiert/ieren bereits. Erstelle keine Duplikate.", true);
+                        } else {
+                            console.log("Einige Gruppen existierten bereits und wurden nicht dupliziert:", response.skipped);
+                        }
+                    }
+                } else {
+                    alert("Fehler beim Erstellen der Untergruppe: " + (response.message || "Unbekannter Fehler"));
+                }
+            },
+            error: function () {
+                alert("Serverfehler bei der Untergruppenerstellung.");
+            }
+        });
+    }
+
+    function addDefaultVermerkeForRaumbereiche(vermerkgruppeId, raumbereiche) {
+        if (!besprechung.id || !Array.isArray(raumbereiche) || raumbereiche.length === 0) {
+            makeToaster("Bitte Vermerkgruppe und mindestens einen Raumbereich wählen .  " + besprechung.id + "   " + raumbereiche, true);
+            return;
+        }
+
+        $.ajax({
+            url: '../controllers/createVermerkeForEachRoom.php',
+            method: 'POST',
+            data: {
+                vermerkgruppe_id: besprechung.id,
+                raumbereiche: raumbereiche
+            },
+            success: function (response) {
+                if (response.success) {
+                    if (response.addedVermerke.length > 0) {
+                        alert("Vermerke wurden für Raumbereiche erstellt:\n" +
+                            [...new Set(response.addedVermerke.map(v => v.raumbereich))].join(", "));
+                    }
+                    if (response.errors.length > 0) {
+                        console.warn("Fehler:", response.errors.join("\n"));
+                    }
+                } else {
+                    alert("Fehler: " + (response.message || "Unbekannter Fehler"));
+                }
+            },
+            error: function () {
+                alert("Serverfehler beim Erstellen der Vermerke.");
+            }
+        });
+    }
+
+    function updateFilterFormState() {
+        if (typeof besprechung === "object" && besprechung !== null && besprechung.id && besprechung.id > 0) {
+            $('#filterForm :input').prop('disabled', false);
+            $('#openMeetingBtn').prop('disabled', true);
+            $('#createMeetingBtn').prop('disabled', true);
+            $("#currentMeetingName").text(besprechung.name);
+        } else {
+            $('#filterForm :input').prop('disabled', true);
+            $("#currentMeetingName").text("");
+            $('#openMeetingBtn').prop('disabled', false);
+            $('#createMeetingBtn').prop('disabled', false);
+        }
+    }
 
     function table_click() {
         $('#pivotTable').off('click', 'td').on('click', 'td', function () {
             const cell = $(this);
-            const table = $('#pivotTable').DataTable();
-
-            // DataTable cell/row/col index
-            const cellIdx = table.cell(this).index();
-
-            // Row and column indices (zero-based)
+            const table = $('#pivotTable').DataTable();            // DataTable cell/row/col index
+            const cellIdx = table.cell(this).index();            // Row and column indices (zero-based)
             const rowIdx = cellIdx.row;
-            const colIdx = cellIdx.column;
-
-            // Get raw data for this row and column
+            const colIdx = cellIdx.column;            // Get raw data for this row and column
             const cellData = table.cell(cell).data();
-
-            const rowData = table.row(rowIdx).data();
-
-            // Get the header text for this column
+            const rowData = table.row(rowIdx).data();            // Get the header text for this column
             const headerText = $(table.column(colIdx).header()).text().trim();
 
-            // Log all relevant info
             console.log('Cell Value:', cellData);
             console.log('Column:', colIdx, '(', headerText, ')');
             console.log('Row:', rowIdx, rowData);
 
-
-            // Optionally: log any IDs stored as data attributes, e.g.
-            // <td data-roomid="123" data-elementid="55">
             const dataRoomId = cell.data('roomid');
             const dataElementId = cell.data('elementid');
             const idTABELLE_Räume_has_tabelle_Elemente = cell.data('roomhaselementid')
@@ -478,98 +645,139 @@ $conn->close();
             },
             traditional: true,
             success: function (data) {
-
-                let raumbereichJoined = raumbereich
-                    .map(r => r.replace(/ /g, '_'))
-                    .join('_');
-                getExcelFilename('Elemente-je-Raumbereich_' + raumbereichJoined)    // so that the datatable is initited with the correct filename
-                    .then(filename => {
-
-                        $('#pivotTableContainer').html(data);
-
-
-                        let colCount = $('#pivotTable thead th').length;
-                        let columns = [];
-                        for (let i = 0; i < colCount; i++) {
-                            if (i === 0) {
-                                // First column: Element or Raum, don't change rendering
-                                columns.push(null);
-                            } else if (hideZeros) {
-                                // For all other columns, hide zeros
-                                columns.push({
-                                    render: function (data) {
-                                        return (data === "0" || data === 0) ? "" : data;
-                                    }
-                                });
-                            } else {
-                                columns.push(null);
-                            }
-                        }
-
-                        $('#pivotTable').DataTable({
-                            language: {
-                                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
-                                search: "",
-                                searchPlaceholder: "Suche...",
-                                lengthMenu: '_MENU_ ',
-                                info: "_START_-_END_ von _TOTAL_ ",
-                                infoEmpty: "Keine Einträge",
-                                infoFiltered: "(von _MAX_) ",
-                            },
-                            scrollX: true,
-                            scrollCollapse: true,
-                            fixedColumns: {start: 1},
-                            fixedHeader: true,
-                            select: true,
-
-                            paging: true,
-                            pagingType: "full",
-
-                            searching: true,
-                            ordering: true,
-                            info: true,
-                            lengthChange: true,
-                            pageLength: 10,
-                            lengthMenu: [[10, 20, 50, -1], ['10 rows', '20 rows', '50 rows', 'All']],
-                            responsive: false,
-                            autoWidth: true,
-                            columns: columns,
-                            layout: {
-                                topStart: 'buttons',
-                                topEnd: 'search',
-                                bottomStart: 'info',
-                                bottomEnd: ['pageLength', 'paging']
-                            },
-                            buttons: [
-                                {
-                                    extend: 'excelHtml5',
-                                    text: '<i class="fas fa-file-excel"></i> Excel',
-                                    className: 'btn btn-success btn-sm',
-                                    title: filename
-                                }
-                            ],
-                            initComplete: function () {
-                                $('#CardHeaderHoldingDatatableManipulators').empty();
-                                $('#CardHeaderHoldingDatatableManipulators2').empty();
-                                $('#pivotTable_wrapper .dt-buttons').appendTo('#CardHeaderHoldingDatatableManipulators');
-                                $('#pivotTable_wrapper .dt-search').appendTo('#CardHeaderHoldingDatatableManipulators');
-                                $('#pivotTable_wrapper .dt-length').appendTo('#CardHeaderHoldingDatatableManipulators2');
-                                $('#pivotTable_wrapper .dt-info').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
-                                $('#pivotTable_wrapper .dt-paging').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
-                                $('.dt-search label').remove();
-                                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark");
-                                table_click();
+                //let raumbereichJoined = raumbereich
+                //    .map(r => r.replace(/ /g, '_'))
+                //    .join('_');
+                //  getExcelFilename('Elemente-je-Raumbereich_' + raumbereichJoined)    // so that the datatable is initited with the correct filename
+                //   .then(filename => {
+                $('#pivotTableContainer').html(data);
+                let colCount = $('#pivotTable thead th').length;
+                let columns = [];
+                for (let i = 0; i < colCount; i++) {
+                    if (i === 0) {   // First column: Element or Raum, don't change rendering
+                        columns.push(null);
+                    } else if (hideZeros) {
+                        columns.push({              // For all other columns, hide zeros
+                            render: function (data) {
+                                return (data === "0" || data === 0) ? "" : data;
                             }
                         });
-                    })
-                    .catch(error => {
-                        console.error('Failed to generate filename:', error);
-                    });
+                    } else {
+                        columns.push(null);
+                    }
+                }
 
+                $('#pivotTable').DataTable({
+                    language: {
+                        url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
+                        search: "",
+                        searchPlaceholder: "Suche...",
+                        lengthMenu: '_MENU_ ',
+                        info: "_START_-_END_ von _TOTAL_ ",
+                        infoEmpty: "Keine Einträge",
+                        infoFiltered: "(von _MAX_) ",
+                    },
+                    scrollX: true,
+                    scrollCollapse: true,
+                    fixedColumns: {start: 1},
+                    fixedHeader: true,
+                    select: true,
 
+                    paging: true,
+                    pagingType: "full",
+
+                    searching: true,
+                    ordering: true,
+                    info: true,
+                    lengthChange: true,
+                    pageLength: 10,
+                    lengthMenu: [[10, 20, 50, -1], ['10 rows', '20 rows', '50 rows', 'All']],
+                    responsive: false,
+                    autoWidth: true,
+                    columns: columns,
+                    layout: {
+                        topStart: 'buttons',
+                        topEnd: 'search',
+                        bottomStart: 'info',
+                        bottomEnd: ['pageLength', 'paging']
+                    },
+                    buttons: [
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fas fa-file-excel"></i> Excel',
+                            className: 'btn btn-success btn-sm',
+                            title: "whatever" //filename
+                        }
+                    ],
+                    initComplete: function () {
+                        $('#CardHeaderHoldingDatatableManipulators').empty();
+                        $('#CardHeaderHoldingDatatableManipulators2').empty();
+                        $('#pivotTable_wrapper .dt-buttons').appendTo('#CardHeaderHoldingDatatableManipulators');
+                        $('#pivotTable_wrapper .dt-search').appendTo('#CardHeaderHoldingDatatableManipulators');
+                        $('#pivotTable_wrapper .dt-length').appendTo('#CardHeaderHoldingDatatableManipulators2');
+                        $('#pivotTable_wrapper .dt-info').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
+                        $('#pivotTable_wrapper .dt-paging').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
+                        $('.dt-search label').remove();
+                        $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark");
+                        table_click();
+                    }
+                });
+                //})´.            catch                (error => {
+                //    console.error('Failed to generate filename:', error);
+                // });
             }
         });
     }
+
+
+
+    //   <!-- div id="raumListe" class=" card mt-3 col-2">
+    //                <div class="card-body">
+    //                    <button class="btn btn-primary" onclick="loadRoomsByRaumbereiche()">Räume laden</button>
+    //                </div>
+    //            </div-->
+    //
+    // function loadRoomsByRaumbereiche() {
+    //     let selectedRaumbereiche = $('#raumbereich').val();
+    //     if (!selectedRaumbereiche || selectedRaumbereiche.length === 0) {
+    //         alert("Bitte mindestens einen Raumbereich wählen.");
+    //         return;
+    //     }
+    //
+    //     $.ajax({
+    //         url: '../controllers/getRoomsByRaumbereiche.php',  // Pfad zum Backend-Skript
+    //         method: 'POST',
+    //         data: { raumbereiche: selectedRaumbereiche },
+    //         dataType: 'json',
+    //         success: function(response) {
+    //             if (response.success) {
+    //                 console.log("Gefundene Räume:", response.data);
+    //
+    //                 // Beispielausgabe in einer Tabelle unter einem Container mit id="raumListe"
+    //                 let html = '<table class="table table-sm table-bordered"><thead><tr><th>ID</th><th>Raumnr</th><th>Bezeichnung</th><th>Raumbereich</th></tr></thead><tbody>';
+    //                 response.data.forEach(room => {
+    //                     html += `<tr>
+    //                             <td>${room.id}</td>
+    //                             <td>${room.Raumnr}</td>
+    //                             <td>${room.Raumbezeichnung}</td>
+    //                             <td>${room["Raumbereich Nutzer"]}</td>
+    //                          </tr>`;
+    //                 });
+    //                 html += '</tbody></table>';
+    //                 $('#raumListe').html(html);
+    //
+    //             } else {
+    //                 alert("Fehler: " + (response.message || "Keine Räume gefunden"));
+    //             }
+    //         },
+    //         error: function(xhr, status, error) {
+    //             alert("Serverfehler: " + error);
+    //         }
+    //     });
+    // }
+
+
+
 
 
 </script>

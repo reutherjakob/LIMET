@@ -95,4 +95,7 @@ class Besprechung {
         $stmt->close();
         return $list;
     }
+
+
 }
+

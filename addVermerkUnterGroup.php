@@ -1,43 +1,38 @@
 <?php
-session_start();
-?>
+require_once "utils/_utils.php";
+check_login();
+/* change character set to utf8 */
+$mysqli = utils_connect_sql();
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+// GET-Parameter sicher abholen
+$untergruppenName   = filter_input(INPUT_GET, 'untergruppenName', FILTER_SANITIZE_STRING);
+$untergruppenNummer = filter_input(INPUT_GET, 'untergruppenNummer', FILTER_SANITIZE_STRING);
+$gruppenID          = filter_input(INPUT_GET, 'gruppenID', FILTER_VALIDATE_INT);
 
-<?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    printf("Error loading character set utf8: %s\n", $mysqli->error);
-	    exit();
-	} 
-	
-	// Check connection
-	if ($mysqli->connect_error) {
-	    die("Connection failed: " . $mysqli->connect_error);
-	}
-        
-        $sql = "INSERT INTO `LIMET_RB`.`tabelle_Vermerkuntergruppe`
-                (`Untergruppenname`,
-                `Untergruppennummer`,
-                `tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe`)
-                VALUES
-                ('".filter_input(INPUT_GET, 'untergruppenName')."',
-                '".filter_input(INPUT_GET, 'untergruppenNummer')."',
-                ".filter_input(INPUT_GET, 'gruppenID').");";
-        
-	if ($mysqli->query($sql) === TRUE) {
-            echo "Vermerkuntergruppe hinzugefügt!";
-	} 
-	else {
-            echo "Error: " . $sql . "<br>" . $mysqli->error;
-	}
+// Validierung
+if ($gruppenID === false || $gruppenID === null) {
+    die("Ungültige Gruppen-ID!");
+}
 
-	$mysqli ->close();
-?>
+// Prepared Statement
+$stmt = $mysqli->prepare("
+    INSERT INTO `LIMET_RB`.`tabelle_Vermerkuntergruppe`
+        (`Untergruppenname`, `Untergruppennummer`, `tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe`)
+    VALUES (?, ?, ?)
+");
+
+if (!$stmt) {
+    die("Prepare failed: " . $mysqli->error);
+}
+
+// Typbindung: "ssi" → string, string, integer
+$stmt->bind_param("ssi", $untergruppenName, $untergruppenNummer, $gruppenID);
+
+if ($stmt->execute()) {
+    echo "Vermerkuntergruppe hinzugefügt!";
+} else {
+    echo "Error: " . $stmt->error;
+}
+
+$stmt->close();
+$mysqli->close();
