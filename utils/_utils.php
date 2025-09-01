@@ -92,7 +92,7 @@ function load_nav_bar(): void
 {
     echo '<script>';
     echo '    window.onload = function () {';
-    echo '        jQuery.get("../utils/navbar.html", function (data) {';
+    echo '        jQuery.get("/utils/navbar.html", function (data) {';
     echo '            jQuery("#limet-navbar").html(data);';
     echo '           jQuery(".navbar-nav").find("li:nth-child(3)")';
     echo '                    .addClass("active");';

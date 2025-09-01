@@ -102,25 +102,15 @@ init_page_serversides();
                         echo "<td>" . $row['Datum'] . "</td>";
                         echo "<td>" . $row['Gruppenart'] . "</td>";
                         echo "<td align='center'>";
-                        switch ($row["Gruppenart"]) {
-                            case "Mailverkehr":
-                                echo "<span class='badge rounded-pill bg-info'> Mailverkehr </span>";
-                                break;
-                            case "Telefonnotiz":
-                                echo "<span class='badge rounded-pill bg-dark'> Telefonnotiz </span>";
-                                break;
-                            case "AV":
-                                echo "<span class='badge rounded-pill bg-warning text-dark'> AV </span>";
-                                break;
-                            case "Protokoll":
-                                echo "<span class='badge rounded-pill bg-primary'> Protokoll </span>";
-                                break;
-                            case "ÖBA-Protokoll":
-                                echo "<span class='badge rounded-pill bg-success'> ÖBA-Protokoll </span>";
-                                break;
-                            default:
-                                echo $row['Gruppenart'];
-                        }
+                        echo match ($row["Gruppenart"]) {
+                            "Mailverkehr" => "<span class='badge rounded-pill bg-info'> Mailverkehr </span>",
+                            "Telefonnotiz" => "<span class='badge rounded-pill bg-dark'> Telefonnotiz </span>",
+                            "AV" => "<span class='badge rounded-pill bg-warning text-dark'> AV </span>",
+                            "Protokoll" => "<span class='badge rounded-pill bg-primary'> Protokoll </span>",
+                            "ÖBA-Protokoll" => "<span class='badge rounded-pill bg-success'> ÖBA-Protokoll </span>",
+                            "Protokoll Besprechung" => "<span class='badge rounded-pill bg-secondary'> Protokoll Besprechung</span>",
+                            default => $row['Gruppenart'],
+                        };
                         echo "</td>";
                         echo "<td>" . $row['Ort'] . "</td>";
                         echo "<td>" . $row['Verfasser'] . "</td>";
@@ -218,8 +208,10 @@ init_page_serversides();
                                 <option value="Mailverkehr">Mailverkehr</option>
                                 <option value="Telefonnotiz">Telefonnotiz</option>
                                 <option value="AV">AV</option>
-                                <!--<option value="Wandabwicklung">Wandabwicklung</option>-->
+
                                 <option value="Protokoll">Protokoll</option>
+
+                                <option value="Protokoll Besprechung">Protokoll Besprechung</option>
                                 <option value="ÖBA-Protokoll">ÖBA-Protokoll</option>
                             </select>
                         </div>
@@ -554,7 +546,7 @@ init_page_serversides();
         var gruppenDatum = $("#gruppenDatum").val();
         var gruppenStart = $("#gruppenStart").val();
         var gruppenEnde = $("#gruppenEnde").val();
-        //var gruppenFortsetzung  = $("#gruppenFortsetzung").val();
+        console.log(gruppenart);
         if (gruppenart !== "" && gruppenName !== "" && gruppenOrt !== "" && gruppenVerfasser !== "" && gruppenDatum !== "" && gruppenStart !== "" && gruppenEnde !== "" && gruppenID !== "") {
             // $('#addDeviceModal').modal('hide');
             $.ajax({

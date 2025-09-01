@@ -149,6 +149,7 @@ echo "</tbody></table>";
                         <select class='form-control form-control-sm' id='vermerkTyp' name='vermerkTyp'>
                             <option value='Info' selected>Info</option>
                             <option value='Bearbeitung'>Bearbeitung</option>
+                            <option value='Bearbeitung'>Bespr</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -411,7 +412,7 @@ echo "</tbody></table>";
 
     $("#addVermerk").click(function () {
         let rooms = $("#room").val(); // rooms is an array of selected IDs
-        console.log("AddVermerk. Rooms:", rooms);
+        //   console.log("AddVermerk. Rooms:", rooms);
         let los = $("#los").val();
         let vermerkStatus = $("#vermerkStatus").val();
         let vermerkTyp = $("#vermerkTyp").val();

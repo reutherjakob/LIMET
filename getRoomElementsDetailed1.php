@@ -72,7 +72,7 @@ function calculateCosts($mysqli, $sql, $roomID, $projectID)
     while ($row = $result->fetch_assoc()) {
         $summe = isset($row["Summe_Neu"]) ? (float)$row["Summe_Neu"] : (float)$row["Summe_Bestand"];
         $sum += $summe;
-        if (str_starts_with($row["ElementID"] ?? '', '1') || str_starts_with($row["ElementID"] ?? '', '4')) {
+        if (str_starts_with($row["ElementID"] ?? '', '1') || str_starts_with($row["ElementID"] ?? '', '3') || str_starts_with($row["ElementID"] ?? '', '4') || str_starts_with($row["ElementID"] ?? '', '5')) {
             $costs['ortsfest'] += $summe;
         } else {
             $costs['ortsveränderlich'] += $summe;
@@ -133,6 +133,12 @@ $mysqli->close();
         <span class="fw-bold"><?php echo $field['value']; ?></span>
     </span>
         <?php endforeach; ?>
+        <span class="badge rounded-pill bg-light text-dark m-1 p-2"
+              data-bs-toggle="popover"
+              title="Kostenberechnung Info"
+              data-bs-content="Alle Elemente, deren ID mit 1, 3, 4 oder 5 beginnen, sind als ortsfest erfasst. Andere sind ortsveränderlich">
+            <i class="fas fa-info-circle"></i><i class="fas fa-exclamation"></i>
+        </span>
     </div>
 
 
@@ -180,7 +186,7 @@ $mysqli->close();
         <tr>
             <td data-order="<?php echo $row["id"]; ?>"><?php echo $row["id"]; ?></td>
             <td data-order="<?php echo $row["ElementID"] . " " . $row["Bezeichnung"]; ?>">
-                <span id="ElementName<?php echo $row["id"]; ?>"><?php echo $row["ElementID"] . " " . $row["Bezeichnung"]; ?></span>
+                <span id="ElementName<?php echo $row["TABELLE_Elemente_idTABELLE_Elemente"]; ?>"><?php echo $row["ElementID"] . " " . $row["Bezeichnung"]; ?></span>
             </td>
             <td data-order="<?php echo $row["tabelle_Varianten_idtabelle_Varianten"]; ?>">
                 <label for="variante<?php echo $row["id"]; ?>" style="display: none;"></label><select
@@ -296,298 +302,327 @@ $mysqli->close();
 
 <script src="utils/_utils.js"></script>
 <script charset="utf-8" type="module">
-    // var currentSort = {column: 0, dir: 'asc'};   - within importing files
-    //  !! tableRoomElements: variable within importing file!
-
     import CustomPopover from './utils/_popover.js';
 
-    CustomPopover.init('.comment-btn', {
-        onSave: function (trigger, newText) {
-            trigger.dataset.description = newText;
-            let id = trigger.id;   // = tabelle_räume_has_tabelle_elemente.id
-            $.ajax({
-                url: "saveRoomElementComment.php",
-                data: {
-                    "comment": newText,
-                    "id": id
-                },
-                type: "GET",
-                success: function (data) {
-                    makeToaster(data.trim(), true);
-                    $(".comment-btn[id='" + id + "']").removeClass('btn-outline-secondary');
-                    $(".comment-btn[id='" + id + "']").addClass('btn-outline-dark');
-                    $(".comment-btn[id='" + id + "']").find('i').removeClass('fa fa-comment-slash');
-                    $(".comment-btn[id='" + id + "']").find('i').addClass('fa fa-comment');
-                    $(".comment-btn[id='" + id + "']").attr('data-description', newText).data('description', newText);
-                }
-            });
+    let rememberSorting = localStorage.getItem('rememberSorting') === 'true';
+    let savedSort = null;
+    if (rememberSorting) {
+        try {
+            savedSort = JSON.parse(localStorage.getItem('roomElementsSort'));
+        } catch {
+            savedSort = null;
         }
+    }
+    let currentSort = savedSort && typeof savedSort === 'object' && savedSort.column != null && savedSort.dir
+        ? savedSort
+        : {column: 1, dir: 'asc'};
+    let tableRoomElements;
+    CustomPopover.init('.comment-btn', {
+        onSave: (trigger, newText) => {
+            trigger.dataset.description = newText;
+            const id = trigger.id;
+            $.ajax({
+                url: 'saveRoomElementComment.php',
+                data: {comment: newText, id},
+                type: 'GET',
+                success(data) {
+                    makeToaster(data.trim(), true);
+                    const btn = $(`.comment-btn[id='${id}']`);
+                    btn.removeClass('btn-outline-secondary').addClass('btn-outline-dark');
+                    btn.find('i').removeClass('fa fa-comment-slash').addClass('fa fa-comment');
+                    btn.attr('data-description', newText).data('description', newText);
+                },
+            });
+        },
     });
 
-    $(document).ready(function () {
-        init_hide_0();
-        init_DT();
+    $(document).ready(() => {
+        initHideZero();
+        initDataTable();
         attachButtonListeners();
+        initPopoverTips();
+    });
 
+    function initPopoverTips() {
+        const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+        popoverTriggerList.forEach(el => new bootstrap.Popover(el));
 
-        let hideZero = !!localStorage.getItem('hideZeroSetting');
-        //(console.log(localStorage.getItem('hideZeroSetting'));
-        $('#hideZeroToggle').prop('checked', hideZero);
-
-        $.fn.dataTable.ext.search.push(hideZeroFilter);
-
-
-        //Rauminhalt kopieren  für getRoomsToCopy.php
-        $("#copyRoomElements").click(function () {
-            roomIDs = [...new Set(roomIDs)];
-            if (roomIDs.length === 0) {
-                alert("Kein Raum ausgewählt!");
-            } else {
-                $.ajax({
-                    url: "copyRoomElements.php",
-                    type: "GET",
-                    data: {"rooms": roomIDs},
-                    success: function (data) {
-                        makeToaster(data, true);
-                        $("#mbodyCRE").modal('hide');
+        document.addEventListener(
+            'click',
+            e => {
+                document.querySelectorAll('[data-bs-toggle="popover"]').forEach(pop => {
+                    const popover = bootstrap.Popover.getInstance(pop);
+                    if (popover) {
+                        if (!pop.contains(e.target) && !(popover.tip && popover.tip.contains(e.target))) {
+                            popover.hide();
+                        }
                     }
                 });
-            }
-        });
-    });
+            },
+            true
+        );
+    }
 
-
-    function init_hide_0() {
+    function initHideZero() {
         $.fn.dataTable.ext.search = $.fn.dataTable.ext.search.filter(fn => fn !== hideZeroFilter);
         if ($.fn.dataTable.isDataTable('#tableRoomElements')) {
-            $('#tableRoomElements').DataTable().destroy(true); // true = remove from DOM
-            $('#tableRoomElements').empty(); // Clear table contents
+            $('#tableRoomElements').DataTable().destroy(true);
+            $('#tableRoomElements').empty();
         }
-
-        let hideZero = localStorage.getItem('hideZeroSetting') === 'true';
-
+        const hideZero = localStorage.getItem('hideZeroSetting') === 'true';
         $('#hideZeroRows').prop('checked', hideZero);
-
-
-        $("#hideZeroRows").on("change", function () {
+        toggleHideZeroIcon(hideZero);
+        $('#hideZeroRows').on('change', function () {
             localStorage.setItem('hideZeroSetting', this.checked ? 'true' : 'false');
-            //console.log(this.checked, localStorage.getItem('hideZeroSetting'));
-            const icon = $("#hideZeroIcon");
-            if (this.checked) {
-                icon.removeClass("fa-eye").addClass("fa-eye-slash");
-            } else {
-                icon.removeClass("fa-eye-slash").addClass("fa-eye");
-            }
-            tableRoomElements.draw();
-        });
-
-    }
-
-    function attachButtonListeners() {
-        $("button[value='createRoombookPDF']").click(function () {
-            window.open('PDFs/pdf_createRoombookPDF.php?roomID=' + this.id);//there are many ways to do this
-        });
-
-        $("button[value='createRoombookPDFCosts']").click(function () {
-            window.open('PDFs/pdf_createRoombookPDFwithCosts.php?roomID=' + this.id);//there are many ways to do this
-        });
-
-        $("button[value='Rauminhalt kopieren']").click(function () {
-            $("#copyRoomElementsModal").modal('show');
-            if (typeof dt_search_counter !== 'undefined' && dt_search_counter !== null) {
-                dt_search_counter = dt_search_counter + 1;  // Or dt_search_counter++;
-            }
-            let originRoomID = this.id;  // The ID of the current room
-            $.ajax({
-                url: "getRoomsToCopy.php",
-                type: "GET",
-                data: {
-                    "originRoomID": originRoomID
-                },
-                success: function (data) {
-                    //   console.log("Success opening the modal");
-                    $("#mbodyCRE").html(data);
-                }
-            });
-        });
-
-        $("button[value='history']").click(function () {
-            let roombookID = this.id;
-            let elementName = $("#ElementName" + roombookID).text();
-            $.ajax({
-                url: "getCommentHistory.php",
-                type: "GET",
-                data: {"roombookID": roombookID},
-                success: function (data) {
-                    $('#ElementName4Header').text(elementName);
-                    $("#mbodyHistory").html(data);
-                    $("#historyModal").modal('show');
-
-                }
-            });
-        });
-        $("button[value='saveElement']").click(function () {
-            let id = this.id;
-            //console.log(id)
-            let comment = $(".comment-btn[id='" + id + "']").attr('data-description');
-            console.log(comment);
-            let amount = $("#amount" + id).val();
-            let variantenID = $("#variante" + id).val();
-            let bestand = $("#bestand" + id).val();
-            let standort = $("#Standort" + id).val();
-            let verwendung = $("#Verwendung" + id).val();
-            if (standort === '0' && verwendung === '0') {
-                alert("Standort und Verwendung kann nicht Nein sein!");
-            } else {
-                $.ajax({
-                    url: "saveRoombookEntry.php",
-                    data: {
-                        "comment": comment,
-                        "id": id,
-                        "amount": amount,
-                        "variantenID": variantenID,
-                        "bestand": bestand,
-                        "standort": standort,
-                        "verwendung": verwendung
-                    },
-                    type: "GET",
-                    success: function (data) {
-                        makeToaster(data.trim(), true);
-                    }
-                });
-            }
+            toggleHideZeroIcon(this.checked);
+            if (tableRoomElements) tableRoomElements.draw();
         });
     }
 
-    function init_DT() {
+    function toggleHideZeroIcon(hidden) {
+        const icon = $('#hideZeroIcon');
+        if (hidden) {
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    }
+
+    function initDataTable() {
         let savedLength = localStorage.getItem('roomElementsPageLength');
-        tableRoomElements = $("#tableRoomElements").DataTable({
+        let orderOption = (rememberSorting && currentSort.column !== null && currentSort.dir)
+            ? [[currentSort.column, currentSort.dir]]  // gespeicherte Sortierung
+            : [[1, 'asc']]; // 3 = Stückzahl-Spalte (0-ID, 1-Element, 2-Var,
+
+        console.log("ORDER ", orderOption);
+
+        tableRoomElements = $('#tableRoomElements').DataTable({
             select: true,
             paging: true,
-            pagingType: "simple",
+            pagingType: 'simple',
             lengthChange: true,
             pageLength: savedLength ? Number(savedLength) : 25,
             searching: true,
             info: true,
             hover: true,
-            order: [currentSort],
+            order: orderOption,
             columnDefs: [
                 {
                     targets: [0],
                     visible: false,
                     searchable: false,
-                    orderable: false
+                    orderable: false,
                 },
                 {
                     targets: [3, 4, 5, 6, 7, 8, 9],
                     searchable: true,
-                    orderable: true
-                }
+                    orderable: true,
+                },
             ],
             language: {
-                url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/de-DE.json",
-                search: "",
-                searchPlaceholder: "Suche...",
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                search: '',
+                searchPlaceholder: 'Suche...',
             },
             layout: {
                 topStart: null,
                 topEnd: null,
                 bottomEnd: ['pageLength', 'paging'],
-                bottomStart: ["search", 'info']
+                bottomStart: ['search', 'info'],
             },
-            initComplete: function () {
+            initComplete() {
                 $('#room-action-buttons .xxx').remove();
                 $('#roomElements .dt-search label').remove();
-                $('#roomElements .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx  ms-1 me-1").appendTo('#room-action-buttons');
-
-                $('#tableRoomElements').DataTable().order([currentSort.column, currentSort.dir]).draw();
-            }
+                $('#roomElements .dt-search')
+                    .children()
+                    .removeClass('form-control form-control-sm')
+                    .addClass('btn btn-sm btn-outline-dark xxx ms-1 me-1')
+                    .appendTo('#room-action-buttons');
+            },
         });
 
-        $('#tableRoomElements').on('length.dt', function (e, settings, len) {
+        $('#tableRoomElements').on('length.dt', (e, settings, len) => {
             localStorage.setItem('roomElementsPageLength', len);
         });
 
-
-        $('#tableRoomElements').on('click', 'th', function () {
-            const colIndex = $(this).index() + 1;
-            if (currentSort.column !== colIndex) {
-                // New column clicked: start with ascending sort
-                currentSort.column = colIndex;
-                currentSort.dir = 'asc';
-            } else if (currentSort.dir === 'asc') {
-                currentSort.dir = 'desc';
-            } else if (currentSort.dir === 'desc') {
-                // Cycle to unsorted
-                currentSort.dir = null;
-                currentSort.column = null;
-            } else {
-                // Currently unsorted, go to ascending
-                currentSort.dir = 'asc';
-                currentSort.column = colIndex;
+        tableRoomElements.on('order.dt', function () {
+            if (rememberSorting) {
+                const order = tableRoomElements.order(); // z.B. [[3, "asc"]]
+                if (order.length > 0) {
+                    currentSort = { column: order[0][0], dir: order[0][1] };
+                    localStorage.setItem('roomElementsSort', JSON.stringify(currentSort));
+                }
             }
-            console.log(currentSort);
         });
 
-
+        // Row click ajax cascade
         $('#tableRoomElements tbody').on('click', 'tr', function () {
-            let id = tableRoomElements.row($(this)).data()[0].display;
-            let stk = $("#amount" + id).val();
-            let standort = $("#Standort" + id).val();
-            let verwendung = $("#Verwendung" + id).val();
-            let elementID = tableRoomElements.row($(this)).data()[0]['display'];
-            //console.log("ELID", elementID);
+            const data = tableRoomElements.row(this).data();
+            if (!data) return;
+
+            // data[0] is id (hidden)
+            const id = data[0];
+            const stk = $(`#amount${id}`).val();
+            const standort = $(`#Standort${id}`).val();
+            const verwendung = $(`#Verwendung${id}`).val();
+
+            // data[1] is HTML string with span id="ElementNameXXX"
+            const elementID = (data[1].match(/id="ElementName(\d+)"/) || [])[1];
+
             $.ajax({
-                url: "getElementParameters.php",
-                data: {"id": id},
-                type: "GET",
-                success: function (data) {
-                    $("#elementParameters").html(data);
-                    $("#elementParameters").show();
+                url: 'getElementParameters.php',
+                data: {id},
+                type: 'GET',
+                success(data) {
+                    $('#elementParameters').html(data).show();
+
                     $.ajax({
-                        url: "getElementPrice.php",
-                        data: {"id": id},
-                        type: "GET",
-                        success: function (data) {
-                            $("#price").html(data);
+                        url: 'getElementPrice.php',
+                        data: {id},
+                        type: 'GET',
+                        success(data) {
+                            $('#price').html(data);
+
                             $.ajax({
-                                url: "getElementBestand.php",
-                                data: {"id": id, "stk": stk},
-                                type: "GET",
-                                success: function (data) {
-                                    $("#elementBestand").html(data);
-                                    $("#elementBestand").show();
+                                url: 'getElementBestand.php',
+                                data: {id, stk},
+                                type: 'GET',
+                                success(data) {
+                                    $('#elementBestand').html(data).show();
+
                                     if (verwendung === '1' && standort === '0') {
                                         $.ajax({
-                                            url: "getElementStandort.php",
-                                            data: {"id": id, "elementID": elementID},
-                                            type: "GET",
-                                            success: function (data) {
-                                                $("#elementVerwendung").html(data);
-                                                $("#elementVerwendung").show();
-                                            }
+                                            url: 'getElementStandort.php',
+                                            data: {id, elementID},
+                                            type: 'GET',
+                                            success(data) {
+                                                $('#elementVerwendung').html(data).show();
+                                            },
                                         });
                                     } else {
-                                        $("#elementBestand").show();
+                                        $('#elementBestand').show();
                                         $.ajax({
-                                            url: "getElementVerwendung.php",
-                                            data: {"id": id},
-                                            type: "GET",
-                                            success: function (data) {
-                                                $("#elementVerwendung").html(data);
-                                                $("#elementVerwendung").show();
-                                            }
+                                            url: 'getElementVerwendung.php',
+                                            data: {id},
+                                            type: 'GET',
+                                            success(data) {
+                                                $('#elementVerwendung').html(data).show();
+                                            },
                                         });
                                     }
-                                }
+                                },
                             });
-                        }
+                        },
                     });
-                }
+                },
+            });
+        });
+    }
+
+    function attachButtonListeners() {
+        $("button[value='createRoombookPDF']").click(function () {
+            window.open('PDFs/pdf_createRoombookPDF.php?roomID=' + this.id);
+        });
+
+        $("button[value='createRoombookPDFCosts']").click(function () {
+            window.open('PDFs/pdf_createRoombookPDFwithCosts.php?roomID=' + this.id);
+        });
+
+        $("button[value='Rauminhalt kopieren']").click(function () {
+            $('#copyRoomElementsModal').modal('show');
+            if (typeof dt_search_counter !== 'undefined' && dt_search_counter !== null) {
+                dt_search_counter++;
+            }
+            const originRoomID = this.id;
+            $.ajax({
+                url: 'getRoomsToCopy.php',
+                type: 'GET',
+                data: {originRoomID},
+                success(data) {
+                    $('#mbodyCRE').html(data);
+                },
             });
         });
 
+        $("button[value='history']").click(function () {
+            const roombookID = this.id;
+            const elementName = $(`#ElementName${roombookID}`).text();
+            $.ajax({
+                url: 'getCommentHistory.php',
+                type: 'GET',
+                data: {roombookID},
+                success(data) {
+                    $('#ElementName4Header').text(elementName);
+                    $('#mbodyHistory').html(data);
+                    $('#historyModal').modal('show');
+                },
+            });
+        });
+
+        $("button[value='saveElement']").click(function () {
+            const id = this.id;
+            const comment = $(`.comment-btn[id='${id}']`).attr('data-description');
+            const amount = $(`#amount${id}`).val();
+            const variantenID = $(`#variante${id}`).val();
+            const bestand = $(`#bestand${id}`).val();
+            const standort = $(`#Standort${id}`).val();
+            const verwendung = $(`#Verwendung${id}`).val();
+
+            if (standort === '0' && verwendung === '0') {
+                alert('Standort und Verwendung kann nicht Nein sein!');
+                return;
+            }
+
+            $.ajax({
+                url: 'saveRoombookEntry.php',
+                type: 'GET',
+                data: {comment, id, amount, variantenID, bestand, standort, verwendung},
+                success(data) {
+                    makeToaster(data.trim(), true);
+                },
+            });
+        });
+
+        // Add toggle checkbox to enable/disable remembering sorting state
+        addRememberSortingControl();
     }
 
+    function addRememberSortingControl() {
+        const container = $(
+            '<span class="badge rounded-pill bg-light text-dark m-1 p-2"></span>'
+        ).appendTo($('.d-flex.flex-wrap.justify-content-between').first());
+
+        const checkboxId = 'rememberSortingToggle';
+        container.append(
+            `<label for="${checkboxId}" class="me-1 fw-normal" style="user-select:none; cursor:pointer;">Sortierung merken</label>`
+        );
+        const checkbox = $(
+            `<input type="checkbox" id="${checkboxId}" style="vertical-align:middle; cursor:pointer;">`
+        ).appendTo(container);
+
+        checkbox.prop('checked', rememberSorting);
+
+        checkbox.on('change', function () {
+            rememberSorting = this.checked;
+            localStorage.setItem('rememberSorting', rememberSorting ? 'true' : 'false');
+
+            // If disabled clear stored sorting, else save current if valid
+            if (!rememberSorting) {
+                localStorage.removeItem('roomElementsSort');
+            } else if (currentSort.column !== null && currentSort.dir !== null) {
+                localStorage.setItem('roomElementsSort', JSON.stringify(currentSort));
+            }
+        });
+    }
+
+    // Filter function for hide zero rows (assuming column 3 = Menge/Stk)
+    function hideZeroFilter(settings, data, dataIndex) {
+        if ($('#hideZeroRows').prop('checked')) {
+            return parseInt(data[3], 10) !== 0;
+        }
+        return true;
+    }
 </script>
+
+
 </body>

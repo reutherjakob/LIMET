@@ -357,7 +357,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $haustechnikItems = [
             ['H6020', 'H6020: ', ''],
             ['HT_Abluft_Digestorium_Stk', 'Abluft Digestorium:', 'Stk'],
-            ['HT_Punktabsaugung_Stk', 'Punktabsaugung:', 'Stk'],
+
             ['HT_Abluft_Sicherheitsschrank_Stk', 'Abluft Sicherheitsschrank:', 'Stk'],
             ['HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'Abluft Sicherheitsschrank Unterbau:', 'Stk']
         ];
@@ -374,7 +374,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             }
             $value = ($item[0] === 'VE_Wasser') ? translate_1_to_yes($row[$item[0]]) : $row[$item[0]];
 
-            multicell_with_str($pdf, $value, $e_C_3rd, $item[2]);
+            multicell_with_str($pdf, $value, $e_C_2_3rd, $item[2]);
         }
 
         $pdf->Ln($horizontalSpacerLN2);
@@ -384,16 +384,17 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $abwrem_out = ($row['HT_Waermeabgabe_W'] === "0" || $row['HT_Waermeabgabe_W'] == 0 || $row['HT_Waermeabgabe_W'] == "-")
             ? "keine Angabe"
             : kify($row['HT_Waermeabgabe_W']) . "W";
-        multicell_with_str($pdf, $abwrem_out, $e_C_3rd, "");
+        multicell_with_str($pdf, $abwrem_out, $e_C_2_3rd, "");
 
         $additionalItems = [
             ['VE_Wasser', 'Voll entsalztes Wasser:', ''],
-            ['HT_Notdusche', 'Notdusche:', '']
+            ['HT_Notdusche', 'Notdusche:', ''],
+            ['HT_Punktabsaugung_Stk', 'Punktabsaugung:', 'Stk']
         ];
 
         foreach ($additionalItems as $item) {
             multicell_text_hightlight($pdf, $e_C, $font_size, $item[0], $item[1], $parameter_changes_t_räume);
-            multicell_with_str($pdf, $row[$item[0]], $e_C_3rd, $item[2]);
+            multicell_with_str($pdf, $row[$item[0]], $e_C_2_3rd, $item[2]);
         }
 
         $pdf->Ln($horizontalSpacerLN2);

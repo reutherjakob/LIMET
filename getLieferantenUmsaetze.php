@@ -113,6 +113,11 @@ echo "<input type='button' id='addUmsatzModal' class='btn btn-success btn-sm' va
         ]
     });
 
+    function showModal(){
+        let myModal = new bootstrap.Modal(document.getElementById('addUmsatzToLieferantModal'));
+        myModal.show();
+    }
+
     //Preis zu Geraet hinzufügen
     $("#addUmsatz").click(function () {
         let umsatz = parseFloat($("#umsatz").val());
@@ -120,16 +125,19 @@ echo "<input type='button' id='addUmsatzModal' class='btn btn-success btn-sm' va
         let jahr = parseInt($("#jahr").val());
         const bereichRegex = /^[a-zA-ZäöüÄÖÜß\s]{1,50}$/;
 
-        if (isNaN(umsatz) || umsatz <= 0) {
-            alert("Bitte einen gültigen Umsatz eingeben (positiver Dezimalwert).");
+        if (isNaN(umsatz) || umsatz <= 0) {v
+            makeToaster("Bitte einen gültigen Umsatz eingeben (positiver Dezimalwert).",false);
+            showModal();
             return;
         }
         if (!bereichRegex.test(bereich)) {
-            alert("Bitte geben Sie einen gültigen Geschäftsbereich ein (nur Buchstaben).");
+            makeToaster("Bitte geben Sie einen gültigen Geschäftsbereich ein (nur Buchstaben).",false);
+            showModal();
             return;
         }
         if (isNaN(jahr) || jahr < 1900 || jahr > 2100) {
-            alert("Bitte geben Sie ein gültiges Jahr ein (zwischen 1900 und 2100).");
+            makeToaster("Bitte geben Sie ein gültiges Jahr ein (zwischen 1900 und 2100).",false);
+            showModal();
             return;
         }
 

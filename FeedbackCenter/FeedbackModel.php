@@ -1,11 +1,13 @@
 <?php
 
+
 class FeedbackModel
 {
     private $wishlistFile = __DIR__ . '/wishlist.txt';
     private $bugReportFile = __DIR__ . '/bugreports.txt';
     private $uploadDir = __DIR__ . '/uploads/';
     private $maxFileSize = 5 * 1024 * 1024; // 5 MB
+    private string $reportFile = __DIR__ . '/reports.txt';
 
     public function __construct()
     {
@@ -15,7 +17,7 @@ class FeedbackModel
     }
 
 // Generate unique IDs
-    private function generateId($prefix, $file)
+    private function generateId($prefix, $file): string
     {
         $date = date('Ymd');
         $counter = 1;
@@ -34,7 +36,7 @@ class FeedbackModel
         return $id;
     }
 
-    public function getWishlist()
+    public function getWishlist(): array
     {
         $wishlist = [];
         if (file_exists($this->wishlistFile)) {
@@ -56,6 +58,7 @@ class FeedbackModel
                         elseif (strpos($line, 'Description: ') === 0) $data['description'] = substr($line, 13);
                         elseif (strpos($line, 'Upvotes: ') === 0) $data['upvotes'] = (int)substr($line, 9);
                         elseif (strpos($line, 'Downvotes: ') === 0) $data['downvotes'] = (int)substr($line, 11);
+                        elseif (strpos($line, 'Done: ') === 0) $data['Done'] = (int)substr($line, 6);
                         elseif (trim($line) !== '') $data['description'] .= "\n" . trim($line);
                     }
                     $wishlist[] = $data;
@@ -88,9 +91,10 @@ class FeedbackModel
                         elseif (strpos($line, 'Title: ') === 0) $data['title'] = substr($line, 7);
                         elseif (strpos($line, 'Bug Description: ') === 0) $data['description'] = substr($line, 17);
                         elseif (strpos($line, 'Screenshot: ') === 0) $data['screenshot'] = trim(substr($line, 11));
-                        elseif (strpos($line, 'URL: ') === 0) $data['url'] = trim(substr($line, 5));
+                        elseif (strpos($line, 'Severity: ') === 0) $data['Severity'] = trim(substr($line, 9));
                         elseif (strpos($line, 'Upvotes: ') === 0) $data['upvotes'] = (int)substr($line, 9);
                         elseif (strpos($line, 'Downvotes: ') === 0) $data['downvotes'] = (int)substr($line, 11);
+                        elseif (strpos($line, 'Done: ') === 0) $data['Done'] = (int)substr($line, 6);
                         elseif (trim($line) !== '') $data['description'] .= "\n" . trim($line);
                     }
                     $bugReports[] = $data;
@@ -115,18 +119,19 @@ class FeedbackModel
         $entry .= "Description: " . htmlspecialchars($desc) . "\n";
         $entry .= "Upvotes: 0\n";
         $entry .= "Downvotes: 0\n";
+        $entry .= "Done: 0\n";
         $entry .= $_SESSION["username"] . "\n";
         $entry .= "------------------------\n";
         file_put_contents($this->wishlistFile, $entry, FILE_APPEND | LOCK_EX);
         return "Danke für deinen Vorschlag!";
     }
 
-    public function addBug($website, $title, $desc, $file, $url = ''): string
+    public function addBug($website, $title, $desc, $file, $Severity = ''): string
     {
         $website = trim($website);
         $title = trim($title);
         $desc = trim($desc);
-        $url = trim($url);
+        $Severity = trim($Severity);
         $screenshotFilename = '';
         if (!$website || !$title || !$desc) return "Bitte Website, Titel und Beschreibung angeben.";
 // Handle file upload
@@ -157,10 +162,11 @@ class FeedbackModel
         $entry .= "Website: " . htmlspecialchars($website) . "\n";
         $entry .= "Title: " . htmlspecialchars($title) . "\n";
         $entry .= "Bug Description: " . htmlspecialchars($desc) . "\n";
-        if ($url) $entry .= "URL: " . htmlspecialchars($url) . "\n";
+        if ($Severity) $entry .= "Severity: " . htmlspecialchars($Severity) . "\n";
         if ($screenshotFilename) $entry .= "Screenshot: " . $screenshotFilename . "\n";
         $entry .= "Upvotes: 0\n";
         $entry .= "Downvotes: 0\n";
+        $entry .= "Done: 0\n";
         $entry .= $_SESSION["username"] . "\n";
         $entry .= "------------------------\n";
         file_put_contents($this->bugReportFile, $entry, FILE_APPEND | LOCK_EX);
@@ -194,6 +200,15 @@ class FeedbackModel
         file_put_contents($this->wishlistFile, $newContent);
         return "Abstimmung gespeichert.";
     }
+    public function reportEntry($desc): string {
+        $report = "Eintrag gemeldet:\n" . trim($desc)
+            . "\nUser: " . ($_SESSION["username"] ?? "Unbekannt")
+            . "\nDate: " . date('Y-m-d H:i:s')
+            . "\n------------------------\n";
+        file_put_contents($this->reportFile, $report, FILE_APPEND | LOCK_EX);
+        return "Danke für deinen Report! Ein Admin wird informiert.";
+    }
+
 
     public function voteBug($id, $direction): string
     {
@@ -269,4 +284,65 @@ class FeedbackModel
         }
         return "Deleting Bug report file not possible. Ask a dev.";
     }
+
+
+    public function markFeatureDone($id, $status = 1): string {
+        if (!file_exists($this->wishlistFile)) return "Feature-Liste nicht gefunden.";
+
+        $content = file_get_contents($this->wishlistFile);
+        $entries = explode('------------------------', $content);
+        $newContent = "";
+
+        foreach ($entries as $entry) {
+            if (strpos($entry, "ID: $id") !== false) {
+                $lines = explode("\n", trim($entry));
+                $foundDone = false;
+                foreach ($lines as &$line) {
+                    if (strpos($line, 'Done: ') === 0) {
+                        $line = "Done: $status";
+                        $foundDone = true;
+                    }
+                }
+                if (!$foundDone) {
+                    $lines[] = "Done: $status";
+                }
+                $entry = implode("\n", $lines);
+            }
+            if (trim($entry)) $newContent .= trim($entry) . "\n------------------------\n";
+        }
+
+        file_put_contents($this->wishlistFile, $newContent);
+        return "Feature-Status aktualisiert.";
+    }
+
+    public function markBugDone($id, $status = 1): string {
+        if (!file_exists($this->bugReportFile)) return "Bug-Liste nicht gefunden.";
+
+        $content = file_get_contents($this->bugReportFile);
+        $entries = explode('------------------------', $content);
+        $newContent = "";
+
+        foreach ($entries as $entry) {
+            if (strpos($entry, "ID: $id") !== false) {
+                $lines = explode("\n", trim($entry));
+                $foundDone = false;
+                foreach ($lines as &$line) {
+                    if (strpos($line, 'Done: ') === 0) {
+                        $line = "Done: $status";
+                        $foundDone = true;
+                    }
+                }
+                if (!$foundDone) {
+                    $lines[] = "Done: $status";
+                }
+                $entry = implode("\n", $lines);
+            }
+            if (trim($entry)) $newContent .= trim($entry) . "\n------------------------\n";
+        }
+
+        file_put_contents($this->bugReportFile, $newContent);
+        return "Bug-Status aktualisiert.";
+    }
+
+
 }

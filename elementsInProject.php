@@ -20,6 +20,12 @@
           rel="stylesheet">
 </head>
 
+<style>
+    .customCardx{
+        height: 6vh;
+    }
+</style>
+
 <body>
 <!-- Rework 2025 -->
 <div class="container-fluid bg-light">
@@ -44,12 +50,12 @@
                         <button type='button' class='btn btn-outline-dark  me-1' id='createElementListWithPricePDF'>
                             <i class='far fa-file-pdf'></i> El.liste & Preis
                         </button>
-                        <button type='button' class='btn btn-outline-dark  me-1' id='createElementEinbringwegePDF'>
+                        <!--button type='button' class='btn btn-outline-dark  me-1' id='createElementEinbringwegePDF'>
                             <i class='far fa-file-pdf'></i> Einbringwege
                         </button>
                         <button type='button' class='btn btn-outline-dark  me-1' id='createElementEinbringwegePDF2'>
                             <i class='far fa-file-pdf'></i> Einbringwege2
-                        </button>
+                        </button-->
 
                     </div>
                     <div class="me-4 d-flex " id="sbdiv"></div>
@@ -164,9 +170,11 @@ ORDER BY tabelle_elemente.ElementID;";
             <button type="button" class="btn btn-outline-dark btn-sm me-2" id="showElementVariante"><i
                         class="fas fa-caret-right"></i></button>
             <label>Elementvarianten</label></div>
-        <div class="card-body" id="elementInfo" style="display:none">
-            <div class="mt-1 row" id="elementGewerk"></div>
-            <div class="mt-1 row" id="elementVarianten"></div>
+        <div class="card-body" id="elementInfo">
+
+                <!-- div class="" id="elementGewerk"> within getElementVariante.php </div--->
+                <div class="row" id="elementVarianten"></div>
+
         </div>
     </div>
     <div class="mt-1 card">
@@ -214,226 +222,227 @@ ORDER BY tabelle_elemente.ElementID;";
     </div>
     <!-- Räume mit Element -->
     <div class="mt-1 card">
-        <div class="card-header"">
-            <div class="row  d-flex flex-nowrap text-nowrap">
-                <div class="col-xxl-8 col-8 d-flex justify-content-start align-items-center">
-                    <button type="button" class="btn btn-outline-dark btn-sm me-2" id="showRoomsWithAndWithoutElement">
-                        <i class="fas fa-caret-right"></i>
-                    </button>
-                    <label>Räume mit Element</label>
-                </div>
-                <div  class="col-4 d-flex justify-content-end" id="CHRME">
-                </div>
+        <div class="card-header"
+        ">
+        <div class="row  d-flex flex-nowrap text-nowrap">
+            <div class="col-xxl-8 col-8 d-flex justify-content-start align-items-center">
+                <button type="button" class="btn btn-outline-dark btn-sm me-2" id="showRoomsWithAndWithoutElement">
+                    <i class="fas fa-caret-right"></i>
+                </button>
+                <label>Räume mit Element</label>
+            </div>
+            <div class="col-4 d-flex justify-content-end" id="CHRME">
             </div>
         </div>
-        <div class="card-body" id="roomsWithAndWithoutElements" style="display:none"></div>
     </div>
+    <div class="card-body" id="roomsWithAndWithoutElements" style="display:none"></div>
+</div>
 
 
-    <script src="utils/_utils.js"></script>
-    <script charset="utf-8">
+<script src="utils/_utils.js"></script>
+<script charset="utf-8">
 
-        var tableElementsInProject;
-        var tableRoomsWithElement;
-        const searchbuilder = [
-            {
-                extend: 'searchBuilder',
-                text: "Filter",
-                className: "btn btn-light btn-outline-secondary fas fa-search ",
-                titleAttr: "Filter",
+    var tableElementsInProject;
+    var tableRoomsWithElement;
+    const searchbuilder = [
+        {
+            extend: 'searchBuilder',
+            text: "Filter",
+            className: "btn btn-light btn-outline-secondary fas fa-search ",
+            titleAttr: "Filter",
+        }
+    ];
+
+    $(document).ready(function () {
+
+        tableElementsInProject = new DataTable('#tableElementsInProject', {
+            paging: true,
+            select: true,
+            pagingType: 'simple',
+            lengthChange: true,
+            pageLength: 10,
+            order: [[2, 'asc']],
+            columnDefs: [
+                {
+                    targets: [0, 5, 7],
+                    visible: false,
+                    searchable: false
+                }
+            ],
+            language: {
+                search: "",
+                searchPlaceholder: "Suche...",
+                searchBuilder: {
+                    button: '(%d)'
+                }
+            },
+            stateSave: false,
+            layout: {
+                topStart: null,
+                topEnd: ['buttons', 'search'],
+                bottomStart: ['info', 'pageLength'],
+                bottomEnd: 'paging'
+            },
+            buttons: [
+                {
+                    extend: 'excel',
+                    exportOptions: {
+                        columns: ':not(:nth-child(6)):not(:nth-child(9))'
+                    },
+                    text: '<i class="fas fa-file-excel"></i> Excel',
+                    className: 'btn-sm btn-light btn-outline-dark me-2'
+                }
+            ],
+            compact: true,
+            initComplete: function () {
+                $('.dt-search label').remove();
+                $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-dark").appendTo('#target_div');
+                setTimeout(function () {
+                    tableElementsInProject.buttons().container().appendTo('#target_div .btn-group');
+                    new $.fn.dataTable.Buttons(tableElementsInProject, {buttons: searchbuilder}).container().appendTo('#sbdiv');
+                }, 100);
+
             }
-        ];
+        });
 
-        $(document).ready(function () {
+        $('#tableElementsInProject tbody').on('click', 'tr', function () {
+            let elementID = tableElementsInProject.row($(this)).data()[0];
+            let variantenID = tableElementsInProject.row($(this)).data()[5];
+            let bestand = 1;
+            if (tableElementsInProject.row($(this)).data()[6] === "Ja") {
+                bestand = 0;
+            }
 
-            tableElementsInProject = new DataTable('#tableElementsInProject', {
-                paging: true,
-                select: true,
-                pagingType: 'simple',
-                lengthChange: true,
-                pageLength: 10,
-                order: [[2, 'asc']],
-                columnDefs: [
-                    {
-                        targets: [0, 5, 7],
-                        visible: false,
-                        searchable: false
-                    }
-                ],
-                language: {
-                    search: "",
-                    searchPlaceholder: "Suche...",
-                    searchBuilder: {
-                        button: '(%d)'
-                    }
-                },
-                stateSave: false,
-                layout: {
-                    topStart: null,
-                    topEnd: ['buttons', 'search'],
-                    bottomStart: ['info', 'pageLength'],
-                    bottomEnd: 'paging'
-                },
-                buttons: [
-                    {
-                        extend: 'excel',
-                        exportOptions: {
-                            columns: ':not(:nth-child(6)):not(:nth-child(9))'
-                        },
-                        text: '<i class="fas fa-file-excel"></i> Excel',
-                        className: 'btn-sm btn-light btn-outline-dark me-2'
-                    }
-                ],
-                compact: true,
-                initComplete: function () {
-                    $('.dt-search label').remove();
-                    $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-dark").appendTo('#target_div');
-                    setTimeout(function () {
-                        tableElementsInProject.buttons().container().appendTo('#target_div .btn-group');
-                        new $.fn.dataTable.Buttons(tableElementsInProject, {buttons: searchbuilder}).container().appendTo('#sbdiv');
-                    }, 100);
-
-                }
-            });
-
-            $('#tableElementsInProject tbody').on('click', 'tr', function () {
-                let elementID = tableElementsInProject.row($(this)).data()[0];
-                let variantenID = tableElementsInProject.row($(this)).data()[5];
-                let bestand = 1;
-                if (tableElementsInProject.row($(this)).data()[6] === "Ja") {
-                    bestand = 0;
-                }
-
-                $.ajax({
-                    url: "getRoomsWithElement1.php",
-                    data: {"elementID": elementID, "variantenID": variantenID, "bestand": bestand},
-                    type: "GET",
-                    success: function (data) {
-                        let $table = $('#tableRoomsWithElement');
-                        if ($table.length && $.fn.DataTable && $.fn.DataTable.isDataTable) {
-                            if ($.fn.DataTable.isDataTable($table)) {
-                                $table.DataTable().destroy();
-                            }
+            $.ajax({
+                url: "getRoomsWithElement1.php",
+                data: {"elementID": elementID, "variantenID": variantenID, "bestand": bestand},
+                type: "GET",
+                success: function (data) {
+                    let $table = $('#tableRoomsWithElement');
+                    if ($table.length && $.fn.DataTable && $.fn.DataTable.isDataTable) {
+                        if ($.fn.DataTable.isDataTable($table)) {
+                            $table.DataTable().destroy();
                         }
-                        $("#roomsWithAndWithoutElements").html(data);
-                        $.ajax({
-                            url: "getElementVariante.php",
-                            data: {"elementID": elementID, "variantenID": variantenID},
-                            type: "GET",
-                            success: function (data) {
-                                $("#elementVarianten").html(data);
-                                $.ajax({
-                                    url: "getStandardElementParameters.php",
-                                    data: {"elementID": elementID},
-                                    type: "GET",
-                                    success: function (data) {
-                                        $("#elementDBParameter").html(data);
-                                        $.ajax({
-                                            url: "getElementPricesInDifferentProjects.php",
-                                            data: {"elementID": elementID},
-                                            type: "GET",
-                                            success: function (data) {
-                                                $("#elementPricesInOtherProjects").html(data);
-                                                $.ajax({
-                                                    url: "getDevicesToElement.php",
-                                                    data: {"elementID": elementID},
-                                                    type: "GET",
-                                                    success: function (data) {
-                                                        $("#devicesToElement").html(data);
-                                                        $.ajax({
-                                                            url: "getElementGewerke.php",
-                                                            data: {"elementID": elementID},
-                                                            type: "GET",
-                                                            success: function (data) {
-                                                                $("#elementGewerk").html(data);
-                                                            }
-                                                        });
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        });
                     }
-                });
-
-            });
-
-            let filterIndex = $.fn.dataTable.ext.search.indexOf(hideZeroFilter_ELiNpR);
-            if (filterIndex !== -1) {
-                $.fn.dataTable.ext.search.splice(filterIndex, 1);
-            }
-            $.fn.dataTable.ext.search.push(hideZeroFilter_ELiNpR);
-
-            $("#hideZeroRows_ELiNpR").on("change", function () {
-                tableElementsInProject.draw();
-            });
-
-            function hideZeroFilter_ELiNpR(settings, data, ) {
-                if (settings.nTable.id !== 'tableElementsInProject') {
-                    return true;
+                    $("#roomsWithAndWithoutElements").html(data);
+                    $.ajax({
+                        url: "getElementVariante.php",
+                        data: {"elementID": elementID, "variantenID": variantenID},
+                        type: "GET",
+                        success: function (data) {
+                            $("#elementVarianten").html(data);
+                            $.ajax({
+                                url: "getStandardElementParameters.php",
+                                data: {"elementID": elementID},
+                                type: "GET",
+                                success: function (data) {
+                                    $("#elementDBParameter").html(data);
+                                    $.ajax({
+                                        url: "getElementPricesInDifferentProjects.php",
+                                        data: {"elementID": elementID},
+                                        type: "GET",
+                                        success: function (data) {
+                                            $("#elementPricesInOtherProjects").html(data);
+                                            $.ajax({
+                                                url: "getDevicesToElement.php",
+                                                data: {"elementID": elementID},
+                                                type: "GET",
+                                                success: function (data) {
+                                                    $("#devicesToElement").html(data);
+                                                    $.ajax({
+                                                        url: "getElementGewerke.php",
+                                                        data: {"elementID": elementID},
+                                                        type: "GET",
+                                                        success: function (data) {
+                                                            $("#elementGewerk").html(data);
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
                 }
-                let hideZero = $("#hideZeroRows_ELiNpR").is(":checked");
-                let amount = parseInt(data[1]) || 0;
-                return !(hideZero && (amount === 0));
+            });
+
+        });
+
+        let filterIndex = $.fn.dataTable.ext.search.indexOf(hideZeroFilter_ELiNpR);
+        if (filterIndex !== -1) {
+            $.fn.dataTable.ext.search.splice(filterIndex, 1);
+        }
+        $.fn.dataTable.ext.search.push(hideZeroFilter_ELiNpR);
+
+        $("#hideZeroRows_ELiNpR").on("change", function () {
+            tableElementsInProject.draw();
+        });
+
+        function hideZeroFilter_ELiNpR(settings, data,) {
+            if (settings.nTable.id !== 'tableElementsInProject') {
+                return true;
             }
+            let hideZero = $("#hideZeroRows_ELiNpR").is(":checked");
+            let amount = parseInt(data[1]) || 0;
+            return !(hideZero && (amount === 0));
+        }
 
 
-        });
+    });
 
 
-        // ElementVariantenPanel einblenden
-        $("#showElementVariante").click(function () {
-            if ($("#elementInfo").is(':hidden')) {
-                $(this).html("<i class='fas fa-caret-down'></i>");
-                $("#elementInfo").show();
-            } else {
-                $(this).html("<i class='fas fa-caret-right'></i>");
-                $("#elementInfo").hide();
-            }
-        });
+    // ElementVariantenPanel einblenden
+    $("#showElementVariante").click(function () {
+        if ($("#elementInfo").is(':hidden')) {
+            $(this).html("<i class='fas fa-caret-down'></i>");
+            $("#elementInfo").show();
+        } else {
+            $(this).html("<i class='fas fa-caret-right'></i>");
+            $("#elementInfo").hide();
+        }
+    });
 
-        // DB Element/Gerätedaten einblenden
-        $("#showDBData").click(function () {
-            if ($("#dbData").is(':hidden')) {
-                $(this).html("<i class='fas fa-caret-down'></i>");
-                $("#dbData").show();
-            } else {
-                $(this).html("<i class='fas fa-caret-right'></i>");
-                $("#dbData").hide();
-            }
-        });
+    // DB Element/Gerätedaten einblenden
+    $("#showDBData").click(function () {
+        if ($("#dbData").is(':hidden')) {
+            $(this).html("<i class='fas fa-caret-down'></i>");
+            $("#dbData").show();
+        } else {
+            $(this).html("<i class='fas fa-caret-right'></i>");
+            $("#dbData").hide();
+        }
+    });
 
-        // Räume mit und ohne Element einblenden
-        $("#showRoomsWithAndWithoutElement").click(function () {
-            if ($("#roomsWithAndWithoutElements").is(':hidden')) {
-                $(this).html("<i class='fas fa-caret-down'></i>");
-                $("#roomsWithAndWithoutElements").show();
-            } else {
-                $(this).html("<i class='fas fa-caret-right'></i>");
-                $("#roomsWithAndWithoutElements").hide();
-            }
-        });
+    // Räume mit und ohne Element einblenden
+    $("#showRoomsWithAndWithoutElement").click(function () {
+        if ($("#roomsWithAndWithoutElements").is(':hidden')) {
+            $(this).html("<i class='fas fa-caret-down'></i>");
+            $("#roomsWithAndWithoutElements").show();
+        } else {
+            $(this).html("<i class='fas fa-caret-right'></i>");
+            $("#roomsWithAndWithoutElements").hide();
+        }
+    });
 
-        // PDF erzeugen
-        $('#createElementListPDF').click(function () {
-            window.open('PDFs/pdf_createElementListPDF.php');
-        });
+    // PDF erzeugen
+    $('#createElementListPDF').click(function () {
+        window.open('PDFs/pdf_createElementListPDF.php');
+    });
 
-        $('#createElementListWithPricePDF').click(function () {
-            window.open('PDFs/pdf_createElementListWithPricePDF.php');
-        });
+    $('#createElementListWithPricePDF').click(function () {
+        window.open('PDFs/pdf_createElementListWithPricePDF.php');
+    });
 
-        $('#createElementEinbringwegePDF').click(function () {
-            window.open('PDFs/pdf_createElementEinbringwegePDF.php');
-        });
-        $('#createElementEinbringwegePDF2').click(function () {
-            window.open('PDFs/pdf_createElementEinbringwegePDFschöner.php');
-        });
+    $('#createElementEinbringwegePDF').click(function () {
+        window.open('PDFs/pdf_createElementEinbringwegePDF.php');
+    });
+    $('#createElementEinbringwegePDF2').click(function () {
+        window.open('PDFs/pdf_createElementEinbringwegePDFschöner.php');
+    });
 
 
-    </script>
+</script>
 </body>
 </html>

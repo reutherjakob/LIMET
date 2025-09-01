@@ -52,7 +52,9 @@
         "KAGes Labor - LKH2 Süd" => "fas fa-vials",
         "KHI" => "fas fa-ambulance",
         "KFN-PSY-NB" => "fas fa-unlock-alt",
-        "KFN-ARIO" => "fas fa-bomb"
+        "KFN-ARIO" => "fas fa-bomb",
+        "KOR-ZNB"=> "fas fa-briefcase-medical",
+        "KOR-MB-Sectio-OP" => "fas fa-briefcase-medical"
     ];
     ?>
 
@@ -157,24 +159,39 @@
                 </div>
             </div>
             <div class='card mt-2'>
-                <div class='card-header'> Updates
+                <div class='card-header'> <strong> Updates</strong>
                 </div>
                 <div class='card-body'>
                     <div class="row">
                         <p>
                             <i class="fas fa-american-sign-language-interpreting col-1"></i> Auswahl eines
                             <a class="col-11" href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free"
-                               target="_blank">Projekt Icons</a>.
+                               target="_blank">Projekt Icons</a>
                         </p>
                         <p>
-                            <i class="far fa-comments col-1"></i> Raumbuch <a class="col-11"
-                                                                              href="/FeedbackCenter/FeedbackIndex.php"
-                                                                              target="_blank">Feedback und Bugreport</a>.
+                            <i class="far fa-comments col-1"></i>
+                            <a class="col-11" href="/FeedbackCenter/FeedbackIndex.php" target="_blank">Feedback und
+                                Bugreport</a>.
                         </p>
                         <p>
-                            <i class="fas fa-user-md col-1"></i> <a class="col-11"
-                                                                    href="roombookBesprechungsansicht.php"
-                                                                    target="_blank"> Besprechungsansicht </a>.
+                            <i class="fas fa-user-md col-1"></i>
+                            <a class="col-11" href="roombookElementeJeRaumbereich.php"
+                               target="_blank"> Elemente je Raumbereich </a>
+                        </p>
+                        <p>
+                            <i class="fas fa-map col-1"></i>
+                            <a class="col-11" href="roombookStandortVerwendung.php"
+                               target="_blank"> Standort/Verwendung </a>
+                        </p>
+                        <p>
+                            <i class="far fa-handshake col-1"></i>
+                            <a class="col-11" href="/Besprechungsansicht/views/roombookBesprechungsansicht.php"
+                               target="_blank"> Besprechungsansicht </a>
+                        </p>
+                        <p>
+                            <i class="fab fa-jedi-order col-1"></i>
+                            <a class="col-11" href="roombookElementAnzahlAenderungen.php"
+                               target="_blank"> Element Änderungen </a>
                         </p>
                     </div>
 
@@ -182,8 +199,7 @@
             </div>
         </div>
 
-        </d
-        <iv>
+        </div>
             <div class='mt-2 row'>
                 <div class='col-xxl-10'>
                     <div class='card'>

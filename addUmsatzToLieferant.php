@@ -1,10 +1,11 @@
 <?php
 include "utils/_format.php";
+include_once "utils/_utils.php";
 check_login();
 $mysqli = utils_connect_sql();
 // Validate and sanitize inputs
 $umsatz = filter_input(INPUT_GET, 'umsatz', FILTER_VALIDATE_FLOAT);
-$bereich_raw = filter_input(INPUT_GET, 'bereich', FILTER_SANITIZE_STRING);
+$bereich_raw = filter_input(INPUT_GET, 'bereich', FILTER_UNSAFE_RAW);
 $bereich = trim($bereich_raw);
 $jahr = filter_input(INPUT_GET, 'jahr', FILTER_VALIDATE_INT);
 

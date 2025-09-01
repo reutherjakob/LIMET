@@ -46,9 +46,9 @@ $mysqli->close();
 <script>
     $('#tableElementParameters').DataTable({
         select: true,
-        searching: true,
+        paging: false,
         info: true,
-        order: [[1, 'asc']],
+        order: [[2, 'asc']],
         columnDefs: [
             {
                 targets: [0],
@@ -70,9 +70,9 @@ $mysqli->close();
         },
         scrollX: true,
         initComplete: function () {
-           $('#variantenParameterCh .xxx').remove();
-           $('#variantenParameter .dt-search label').remove();
-           $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#variantenParameterCH');
+            $('#variantenParameterCh .xxx').remove();
+            $('#variantenParameter .dt-search label').remove();
+            $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#variantenParameterCH');
         }
     });
 

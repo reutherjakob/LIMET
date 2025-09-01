@@ -1,9 +1,7 @@
 <!--  18.2.25: Reworked -->
 
  <?php
-session_start();
-require_once 'utils/_utils.php';
-init_page_serversides();
+require_once 'utils/_utils.php';check_login();
 ?>
 
 <!DOCTYPE html>
@@ -41,7 +39,7 @@ init_page_serversides();
         $K2Ret = json_decode($K2Return);
         ?>
         let K2R = <?php echo json_encode($K2Ret); ?>;
-        ^//console.log(K2R);
+        //console.log(K2R);
         $.ajax({
             url: 'getRoomElementsParameterData.php',
             method: 'GET',

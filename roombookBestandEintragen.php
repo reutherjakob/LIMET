@@ -34,9 +34,16 @@ include "utils/_format.php";
             <div class="row d-flex">
                 <div class="col-xxl-4">
                     <strong> Elemente im Projekt </strong>
+
                 </div>
 
                 <div class="col-xxl-8 d-flex justify-content-end" id="CH_EIP">
+                    <div class="me-4 d-flex " id="hide0Wrapper_ELiNpR">
+                        <input class="btn-check btn-sm" type="checkbox" id="hideZeroRows_ELiNpR">
+                        <label class="btn btn-sm btn-outline-dark" for="hideZeroRows_ELiNpR">
+                            Hide 0
+                        </label>
+                    </div>
                     <button type='button' class='btn btn-outline-dark ' id='createElementListPDF'>
                         <i class='far fa-file-pdf'></i> Elementliste PDF
                     </button>
@@ -239,6 +246,26 @@ include "utils/_format.php";
 
             }
         });
+
+
+        let filterIndex = $.fn.dataTable.ext.search.indexOf(hideZeroFilter_ELiNpR);
+        if (filterIndex !== -1) {
+            $.fn.dataTable.ext.search.splice(filterIndex, 1);
+        }
+        $.fn.dataTable.ext.search.push(hideZeroFilter_ELiNpR);
+
+        $("#hideZeroRows_ELiNpR").on("change", function () {
+            tableElementsInProject.draw();
+        });
+
+        function hideZeroFilter_ELiNpR(settings, data,) {
+            if (settings.nTable.id !== 'tableElementsInProject') {
+                return true;
+            }
+            let hideZero = $("#hideZeroRows_ELiNpR").is(":checked");
+            let amount = parseInt(data[1]) || 0;
+            return !(hideZero && (amount === 0));
+        }
 
 
         $('#tableElementsInProject tbody').on('click', 'tr', function () {

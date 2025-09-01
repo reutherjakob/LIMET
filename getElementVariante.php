@@ -19,88 +19,92 @@ $sql = "SELECT tabelle_projekt_varianten_kosten.Kosten
 			WHERE (((tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)=" . $_SESSION["variantenID"] . ") AND ((tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente)=" . $_SESSION["elementID"] . ") AND ((tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "));";
 $result = $mysqli->query($sql);
 $row = $result->fetch_assoc(); ?>
-<div class='col-xxl-12'>
-    <div class='card'>
-        <div class='card-body d-inline-flex'>
-            <div class=' d-flex align-items-center flex-wrap'>
-                <div class='form-group d-flex align-items-center mr-2'>
-                    <label for='variante'>Variante </label>
-                    <select class='form-control form-control-sm me-1 ms-1' id='variante'>
-                        <?php
-                        $options = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-                        $selectedID = $_SESSION["variantenID"];
-                        foreach ($options as $key => $value) {
-                            $optionValue = $key + 1;
-                            $selected = ($optionValue == $selectedID) ? 'selected' : '';
-                            echo "<option value='$optionValue' $selected>$value</option>";
-                        }
-                        ?>
-                    </select>
-                </div>
-                &nbsp;
-                <div class='form-group d-flex align-items-center mr-2'>
-                    <label for='kosten'>Kosten </label>
-                    <input type='text' class='form-control form-control-sm' id='kosten'
-                           value="<?php echo $row['Kosten']; ?>">
-                </div>
-                &nbsp;
-                <div class='form-group d-flex align-items-center mr-2'>
-                    <label>&nbsp;</label>
-                    <div>
-                        <button type='button' id='saveVariantePrice'
-                                class='btn btn-outline-dark btn-sm'>
-                            <i class='far fa-save'></i> Kosten speichern
-                        </button>
-                        <button type='button' id='getElementPriceHistory'
-                                class='btn btn-outline-dark btn-sm'
-                                data-bs-toggle='modal' data-bs-target='#getElementPriceHistoryModal'>
-                            <i class='far fa-clock'></i> Kosten Änderungsverlauf
-                        </button>
 
-                        <button type='button' id='addVariantenParameters'
-                                class='btn btn-outline-dark btn-sm m-1' value='addVariantenParameters'
-                                data-bs-toggle='modal'
-                                data-bs-target='#addVariantenParameterToElementModal'><i
-                                    class='fas fa-upload'></i> Variantenparameter übernehmen
-                        </button>
+<div class='row'>
+    <div class='col-xxl-6' id="elementGewerk"></div>
+    <!--- for the import of getElementGewerke.php on elementsInProject.php --->
+    <div class='col-xxl-6'>
+        <div class="card">
+            <div class='card-header d-inline-flex customCardx'>
+                <div class=' d-flex align-items-center flex-wrap'>
+                    <div class='form-group d-flex align-items-center mr-2'>
+                        <label for='variante'>Variante </label>
+                        <select class='form-control form-control-sm me-1 ms-1' id='variante'>
+                            <?php
+                            $options = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+                            $selectedID = $_SESSION["variantenID"];
+                            foreach ($options as $key => $value) {
+                                $optionValue = $key + 1;
+                                $selected = ($optionValue == $selectedID) ? 'selected' : '';
+                                echo "<option value='$optionValue' $selected>$value</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class='form-group d-flex align-items-center mr-2'>
+                        <label for='kosten'>Kosten </label>
+                        <input type='text' class='form-control form-control-sm' id='kosten'
+                               value="<?php echo $row['Kosten']; ?>">
+                    </div>
+                    <div class='form-group d-flex align-items-center mr-2'>
+                        <label>&nbsp;</label>
+                        <div>
+                            <button type='button' id='saveVariantePrice'
+                                    class='btn btn-outline-dark btn-sm'>
+                                <i class='far fa-save'></i> Kosten speichern
+                            </button>
+                            <button type='button' id='getElementPriceHistory'
+                                    class='btn btn-outline-dark btn-sm'
+                                    data-bs-toggle='modal' data-bs-target='#getElementPriceHistoryModal'>
+                                <i class='far fa-clock'></i> Kosten Änderungsverlauf
+                            </button>
+
+                            <button type='button' id='addVariantenParameters'
+                                    class='btn btn-outline-dark btn-sm m-1' value='addVariantenParameters'
+                                    data-bs-toggle='modal'
+                                    data-bs-target='#addVariantenParameterToElementModal'><i
+                                        class='fas fa-upload'></i> Variantenparameter übernehmen
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class='row'>
-        <div class="col-xxl-6">
-            <div class='card'>
-                <div class='card-header'>
-                    <div class='row'>
-                        <div class='col-xxl-10'>
-                            Variantenparameter
-                        </div>
-                        <div class="col-xxl-2 d-flex align-items-center justify-content-end"
-                             id="variantenParameterCH">
-                            <button type='button' class='btn btn-warning btn-sm text-nowrap' value='saveAllParameter'><i
-                                        class='far fa-save'> Alle </i></button>
-                        </div>
+
+    <div class="col-xxl-6">
+        <div class='card mt-1'>
+            <div class='card-header'>
+                <div class='row'>
+                    <div class='col-xxl-10'>
+                        Variantenparameter
+                    </div>
+                    <div class="col-xxl-2 d-flex align-items-center justify-content-end"
+                         id="variantenParameterCH">
+                        <button type='button' class='btn btn-warning btn-sm text-nowrap'
+                                value='saveAllParameter'><i
+                                    class='far fa-save'> Alle </i></button>
                     </div>
                 </div>
-                <div class='card-body ' id='variantenParameter'>
-                    <?php
-                    include "getElementParameterTable.php";
-                    generate_variante_parameter_inputtable();
-                    ?>
-                </div>
+            </div>
+            <div class='card-body ' id='variantenParameter'>
+                <?php
+                include "getElementParameterTable.php";
+                generate_variante_parameter_inputtable();
+                ?>
             </div>
         </div>
+    </div>
 
 
-        <div class='col-xxl-6'>
-            <div class='card'>
-                <div class='card-header d-flex justify-content-between' id='mglParameterCardHeader'>
-                    Mögliche Parameter
-                </div>
-                <div class='card-body ' id='possibleVariantenParameter'>
-                    <?php $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung, 
+    <div class='col-xxl-6'>
+        <div class='card mt-1'>
+            <div class='card-header d-flex justify-content-between' id='mglParameterCardHeader'>
+                Mögliche Parameter
+            </div>
+            <div class='card-body ' id='possibleVariantenParameter'>
+                <?php $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung, 
                                 tabelle_parameter.Abkuerzung, 
                                 tabelle_parameter_kategorie.Kategorie
                                 FROM tabelle_parameter, tabelle_parameter_kategorie
@@ -112,11 +116,11 @@ $row = $result->fetch_assoc(); ?>
                                 tabelle_parameter.idTABELLE_Parameter =
                                 tabelle_projekt_elementparameter.TABELLE_Parameter_idTABELLE_Parameter
                                 WHERE tabelle_projekt_elementparameter.TABELLE_Elemente_idTABELLE_Elemente = " .
-                        $_SESSION["elementID"] . " AND
+                    $_SESSION["elementID"] . " AND
                                 tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte = " .
-                        $_SESSION["projectID"] . " AND
+                    $_SESSION["projectID"] . " AND
                                 tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten = " .
-                        $_SESSION["variantenID"] . ")
+                    $_SESSION["variantenID"] . ")
                                 ORDER BY 
                                 CASE 
                                     WHEN tabelle_parameter.Bezeichnung = 'Nennleistung' 
@@ -126,8 +130,8 @@ $row = $result->fetch_assoc(); ?>
                                 tabelle_parameter_kategorie.Kategorie,
                                 tabelle_parameter.Bezeichnung;";
 
-                    $result = $mysqli->query($sql);
-                    echo "<table class='table table-striped table-sm table-hover table-bordered border border-5 border-light' id='tablePossibleElementParameters'>
+                $result = $mysqli->query($sql);
+                echo "<table class='table table-striped table-sm table-hover table-bordered border border-5 border-light' id='tablePossibleElementParameters'>
                                     <thead>
                                     <tr>
                                         <th> <i class='fas fa-plus'></i> </th>
@@ -138,19 +142,18 @@ $row = $result->fetch_assoc(); ?>
                                     </thead>
                                     <tbody>";
 
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<tr>";
-                        echo "<td> <button type='button' id='" . $row["idTABELLE_Parameter"] . "'
+                while ($row = $result->fetch_assoc()) {
+                    echo "<tr>";
+                    echo "<td> <button type='button' id='" . $row["idTABELLE_Parameter"] . "'
                               class='btn btn-outline-success btn-sm' value='addParameter'>
                               <i class='fas fa-plus'></i></button></td>";
-                        echo "<td>" . $row["Kategorie"] . "</td> ";
-                        echo "<td>" . $row["Bezeichnung"] . "</td>";
-                        echo "<td>" . $row["Abkuerzung"] . "</td>";
-                        echo "</tr> ";
-                    }
+                    echo "<td>" . $row["Kategorie"] . "</td> ";
+                    echo "<td>" . $row["Bezeichnung"] . "</td>";
+                    echo "<td>" . $row["Abkuerzung"] . "</td>";
+                    echo "</tr> ";
+                }
 
-                    echo " </tbody> </table> "; ?>
-                </div>
+                echo " </tbody> </table> "; ?>
             </div>
         </div>
     </div>

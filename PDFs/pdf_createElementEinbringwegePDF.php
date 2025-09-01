@@ -28,11 +28,23 @@ function cheat($str)
 
 function tabelle_header($pdf, $fill, $spaces, $rowHeight)
 {
+    // Draw transparent fill rectangles for header background
+    $pdf->SetFillColor(104, 140, 3); // your header fill color
+    $pdf->SetAlpha(0.1);
+    $x = $pdf->GetX();
+    $y = $pdf->GetY() + 5; // to match the Ln(5) offset
+    $pdf->Rect($x, $y, $spaces[0], $rowHeight, 'F');
+    $pdf->Rect($x + $spaces[0], $y, $spaces[1], $rowHeight, 'F');
+    $pdf->Rect($x + $spaces[0] + $spaces[1], $y, $spaces[2], $rowHeight, 'F');
+    $pdf->Rect($x + $spaces[0] + $spaces[1] + $spaces[2], $y, $spaces[3], $rowHeight, 'F');
+    $pdf->SetAlpha(1); // reset for solid header text
+
     $pdf->SetFont('helvetica', 'B', 10);
-    $pdf->MultiCell($spaces[0], $rowHeight, 'Raumnr./-name', 'RB', 'L', $fill, 0);
-    $pdf->MultiCell($spaces[1], $rowHeight, 'Element', 'BRL', 'L', $fill, 0);
-    $pdf->MultiCell($spaces[2], $rowHeight, 'Größtes Paket', 'BL', 'L', $fill, 0);
-    $pdf->MultiCell($spaces[3], $rowHeight, 'Wert' . " & " . "Einheit", 'B', 'L', $fill, 1);
+    $pdf->Ln(5);
+    $pdf->MultiCell($spaces[0], $rowHeight, 'Raumnr./-name', 'RB', 'L', 0, 0);
+    $pdf->MultiCell($spaces[1], $rowHeight, 'Element', 'BRL', 'L', 0, 0);
+    $pdf->MultiCell($spaces[2], $rowHeight, 'Größtes Paket', 'BL', 'L', 0, 0);
+    $pdf->MultiCell($spaces[3], $rowHeight, 'Wert' . " & " . "Einheit", 'B', 'L', 0, 1);
     $pdf->SetFont('helvetica', '', 8);
 }
 
@@ -51,22 +63,65 @@ function parseBezeichnung($bezeichnung)
     return $mapping[$bezeichnung] ?? $bezeichnung;
 }
 
-//GET DATA 
+
 $mysqli = utils_connect_sql();
-$stmt = "SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte, tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie,
-    tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte, tabelle_räume.Raumnr, 
-    tabelle_räume.Raumbezeichnung, tabelle_elemente.ElementID, tabelle_varianten.Variante,
-    tabelle_elemente.Bezeichnung as el_Bez, tabelle_parameter.Bezeichnung, tabelle_projekt_elementparameter.Wert, tabelle_projekt_elementparameter.Einheit
-    FROM (tabelle_projekt_elementparameter INNER JOIN (tabelle_varianten INNER JOIN (tabelle_räume INNER JOIN (tabelle_elemente INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_elemente.idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) ON (tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) AND (tabelle_projekt_elementparameter.tabelle_elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente)) INNER JOIN tabelle_parameter ON tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter = tabelle_parameter.idTABELLE_Parameter
-    WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ")"
-    . " AND ((tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie)=18) "
-    . " AND ((tabelle_räume_has_tabelle_elemente.Anzahl)<>0) "
+$projectID = (int)$_SESSION["projectID"];  // Sanitize input
+$sql = "
+    SELECT 
+        r.tabelle_projekte_idTABELLE_Projekte,
+       par.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie,
+        pep.tabelle_projekte_idTABELLE_Projekte,
+        r.Raumnr, 
+        r.Raumbezeichnung, 
+        e.ElementID, 
+        v.Variante,
+        e.Bezeichnung AS el_Bez, 
+        par.Bezeichnung, 
+        pep.Wert, 
+        pep.Einheit
+    FROM 
+        tabelle_projekt_elementparameter AS pep
+    INNER JOIN 
+        tabelle_parameter AS par ON pep.tabelle_parameter_idTABELLE_Parameter = par.idTABELLE_Parameter
+    INNER JOIN 
+        (
+            tabelle_varianten AS v
+        INNER JOIN 
+            (
+                tabelle_räume AS r
+            INNER JOIN 
+                (
+                    tabelle_elemente AS e 
+                    INNER JOIN tabelle_räume_has_tabelle_elemente AS re 
+                    ON e.idTABELLE_Elemente = re.TABELLE_Elemente_idTABELLE_Elemente
+                )
+                ON r.idTABELLE_Räume = re.TABELLE_Räume_idTABELLE_Räume
+            ) 
+            ON v.idtabelle_Varianten = re.tabelle_Varianten_idtabelle_Varianten
+        ) 
+        ON pep.tabelle_Varianten_idtabelle_Varianten = re.tabelle_Varianten_idtabelle_Varianten 
+        AND pep.tabelle_elemente_idTABELLE_Elemente = e.idTABELLE_Elemente
+    WHERE 
+        r.tabelle_projekte_idTABELLE_Projekte = ?
+        AND par.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie = 18
+        AND re.Anzahl <> 0
+        AND pep.tabelle_projekte_idTABELLE_Projekte = ?
+    ORDER BY 
+        r.Raumbezeichnung, 
+        e.ElementID, 
+        par.Bezeichnung DESC
+";
 
-    . "AND ((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))"
-    . "ORDER BY Raumbezeichnung, ElementID, Bezeichnung DESC";
+if ($stmt = $mysqli->prepare($sql)) {
+    $stmt->bind_param("ii", $projectID, $projectID);
+    $stmt->execute();
+    $result_Einbring_elemente = $stmt->get_result();
+} else {
+    die("Prepare failed: " . $mysqli->error);
+}
+$mysqli->close();
+$stmt->close();
 
-
-$result_Einbring_elemente = $mysqli->query($stmt);
 
 $rooms = array();
 while ($row = $result_Einbring_elemente->fetch_assoc()) {
@@ -77,7 +132,7 @@ while ($row = $result_Einbring_elemente->fetch_assoc()) {
 }
 
 
-//     -----   FORMATTING VARIABLES    -----     
+//     -----   FORMATTING VARIABLES    -----
 $marginTop = 17; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/
 $marginBTM = 10;
 $SB = 210 - 2 * PDF_MARGIN_LEFT;  // A4: 210 x 297 // A3: 297 x 420
@@ -113,8 +168,10 @@ $pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4", 
 $pdf->AddPage('P', 'A4');
 $pdf->SetFont('helvetica', '', $font_size);
 $pdf->SetLineStyle($style_dashed);
-$pdf->SetFillColor(220, 230, 210);
+$pdf->SetFillColor(100, 140, 0);
+$pdf->SetAlpha(0.1);
 $pdf->SetLineStyle($style_normal);
+
 
 tabelle_header($pdf, $fill, $spaces, $rowHeight);
 foreach ($rooms as $roomnr) {
@@ -132,6 +189,17 @@ foreach ($rooms as $roomnr) {
                     tabelle_header($pdf, $fill, $spaces, $rowHeight);
                 }
 
+                // --- Calculate X and Y for the row ---
+                $rowX = $pdf->GetX();
+                $rowY = $pdf->GetY();
+
+                // --- Draw row fill if $fill is true (alternating rows) ---
+                if ($fill) {
+                    $pdf->SetAlpha(0.15); // your desired opacity (0=transparent; 1=opaque)
+                    $pdf->SetFillColor(100, 140, 0);
+                    $pdf->Rect($rowX, $rowY, $SB, $rowHeight, 'F');
+                    $pdf->SetAlpha(1); // reset alpha for text
+                }
 
                 if ($last_el_id != $entry['el_Bez']) {
                     $pdf->MultiCell($spaces[0], 1, "", 0, 'L', 0, 0);
@@ -152,13 +220,13 @@ foreach ($rooms as $roomnr) {
 
                 $outstr = cheat($entry['el_Bez']);
                 if ($last_el_id != $entry['el_Bez']) {
-                    $pdf->MultiCell($spaces[1], $rowHeight, $outstr, 'L', 'LT', $fill, 0); // $entry['ElementID'] . " " . 
+                    $pdf->MultiCell($spaces[1], $rowHeight, $outstr, 'L', 'LT', 0, 0); // fill=0: never transparent text!
                 } else {
-                    $pdf->MultiCell($spaces[1], $rowHeight, "", 'L', 'L', $fill, 0);
+                    $pdf->MultiCell($spaces[1], $rowHeight, "", 'L', 'L', 0, 0);
                 }
                 if ($entry['Wert'] <> "") {
-                    $pdf->MultiCell($spaces[2], $rowHeight, parseBezeichnung($entry['Bezeichnung']) . ": ", "L", 'L', $fill, 0);
-                    $pdf->MultiCell($spaces[3], $rowHeight, $entry['Wert'] . " " . $entry["Einheit"], 0, 'L', $fill, 1);
+                    $pdf->MultiCell($spaces[2], $rowHeight, parseBezeichnung($entry['Bezeichnung']) . ": ", "L", 'L', 0, 0);
+                    $pdf->MultiCell($spaces[3], $rowHeight, $entry['Wert'] . " " . $entry["Einheit"], 0, 'L', 0, 1);
                 }
 
                 $first_data_entry = false;
@@ -167,10 +235,11 @@ foreach ($rooms as $roomnr) {
             }
         }
     }
+
 }
-$mysqli->close();
-ob_end_clean(); // brauchts irgendwie.... ?  
+
+
+ob_end_clean(); // brauchts irgendwie.... ?
 $pdf->Output(getFileName('Einbringwege'), 'I');
 $_SESSION["PDFHeaderSubtext"] = "";
-
 

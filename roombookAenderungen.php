@@ -11,14 +11,6 @@
     <link href="https://cdn.datatables.net/v/bs5/dt-2.2.1/datatables.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 </head>
-<style>
-
-    .focusedRow {
-        background-color: rgba(100, 140, 25, 0.75) !important;
-        font-weight: bold;
-        color: #111;
-    }
-</style>
 <body>
 
 <div id="limet-navbar"></div>
@@ -278,7 +270,7 @@
 
             const roomTable = $('#roomTable').DataTable({
                 language: {
-                    url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/German.json'
+                    url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
                 },
                 order: [[2, 'asc']],
                 select: "single", mark: true
