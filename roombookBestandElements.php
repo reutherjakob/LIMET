@@ -211,8 +211,11 @@ init_page_serversides();
         });
 
         $("button[value='createBestandsPDF']").click(function () {
-            window.open('PDFs/pdf_createBestandPDF.php');//there are many ways to do this
+            var datum = new Date().toISOString().slice(0,10); // aktuelles Datum im Format YYYY-MM-DD
+            var url = "PDFs/pdf_createBestandPDF.php?datum=" + encodeURIComponent(datum);
+            window.open(url);
         });
+
     });
 
 

@@ -139,6 +139,7 @@ init_page_serversides();
             <div class="card-body" id="additionalInfo">
                 <p id="roomElements"></p>
                 <p id="elementParameters"></p>
+
             </div>
 
         </div>

@@ -321,8 +321,7 @@ $stmt->close();
 $pdf->topicsTable($topics_table_header, $dataVermerke);
 
 $pdf->SetFont('helvetica', '', '6');
-$pdf->Ln(2);
-$outstr = "Hinweis: Sollten Einwände gegen Inhalte dieses Protokolls bestehen, so werden die Empfänger ersucht, diese Einwände im Rahmen der nächsten Besprechung mündlich oder bis spätestens 10 Tage nach Erhalt des Protokolls schriftlich vorzubringen, andernfalls wird allgemeines Einverständnis angenommen. \nDie Verteilung erfolgt ausschließlich über Email. \n  " . $verfasser;
+$pdf->Ln(2); $outstr = "Hinweis: Sollten Einwände gegen Inhalte dieses Protokolls bestehen, so werden die Empfänger ersucht, diese Einwände im Rahmen der nächsten Besprechung mündlich oder bis spätestens 10 Tage nach Erhalt des Protokolls schriftlich vorzubringen, andernfalls wird allgemeines Einverständnis angenommen. \nDie Verteilung erfolgt ausschließlich über Email. \nVermerk Typ Legende: I - Info; B - Bearbeitung; N - Anforderung der Nutzenden \nVerfasst von:" . $verfasser;
 $height = $pdf->getStringHeight(180, $outstr, false, true, '', 1);
 $y = $pdf->GetY();
 if (($y + $height) >= 275) {

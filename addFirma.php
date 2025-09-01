@@ -10,8 +10,7 @@ $adresse = filter_input(INPUT_GET, 'lieferantAdresse');
 $plz = filter_input(INPUT_GET, 'lieferantPLZ');
 $ort = filter_input(INPUT_GET, 'lieferantOrt');
 $land = filter_input(INPUT_GET, 'lieferantLand');
-echo $firma;
-// Validate required fields
+
 $requiredFields = [$firma, $tel, $adresse, $plz, $ort, $land];
 if (in_array("", $requiredFields, true)) {
     die("Fehler: Bitte alle Felder ausfüllen!");
@@ -49,4 +48,3 @@ if ($stmt->execute()) {
 
 $stmt->close();
 $mysqli->close();
-?>

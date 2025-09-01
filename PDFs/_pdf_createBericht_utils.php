@@ -481,10 +481,10 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
 
 // Determine widths
         $widths = [
-            [$blockheaderwith, $raumbezeichnung_width * 4 / 3 ],
-            [$raumbezeichnung_width * 4 / 3],
-            [$raumbezeichnung_width* 2 / 3],
-            [$raumbezeichnung_width* 2 / 3]
+            [$blockheaderwith, $raumbezeichnung_width  ],
+            [$raumbezeichnung_width ],
+            [$raumbezeichnung_width],
+            [$raumbezeichnung_width]
         ];
 
 // Measure heights

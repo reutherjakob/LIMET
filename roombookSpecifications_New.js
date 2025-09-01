@@ -530,6 +530,7 @@ function table_click() {
                                 url: "getRoomElementsDetailed1.php",
                                 type: "GET",
                                 success: function (data) {
+
                                     $('#elementParameters').empty();
                                     if (!data || data.trim() === "") {
                                         $("#roomElements").empty();

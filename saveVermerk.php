@@ -7,15 +7,17 @@ $mysqli = utils_connect_sql();
 $losID = filter_input(INPUT_GET, 'los');
 $losID = ($losID == '0') ? NULL : $losID;
 
-$vermerkText = filter_input(INPUT_GET, 'vermerkText');
-$vermerkStatus = filter_input(INPUT_GET, 'vermerkStatus');
-$vermerkTyp = filter_input(INPUT_GET, 'vermerkTyp');
-$faelligkeitDatum = filter_input(INPUT_GET, 'faelligkeitDatum');
-if (empty($faelligkeitDatum) || $faelligkeitDatum == 'null' || $faelligkeitDatum == '0000-00-00') {
+$vermerkText = getPostString('vermerkText');
+$vermerkStatus = getPostString('vermerkStatus');
+$vermerkTyp = getPostString('vermerkTyp');
+
+$faelligkeitDatum = getPostString('faelligkeitDatum', '');
+if (empty($faelligkeitDatum) || $faelligkeitDatum === 'null' || $faelligkeitDatum === '0000-00-00') {
     $faelligkeitDatum = NULL;
 }
-$untergruppenID = filter_input(INPUT_GET, 'untergruppenID');
-$vermerkID = filter_input(INPUT_GET, 'vermerkID');
+
+$untergruppenID = getPostInt('untergruppenID');
+$vermerkID = getPostInt('vermerkID');
 
 $sql = "UPDATE `LIMET_RB`.`tabelle_Vermerke`
         SET

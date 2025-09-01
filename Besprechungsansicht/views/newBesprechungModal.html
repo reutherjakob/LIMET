@@ -1,4 +1,3 @@
-
 <!-- Besprechung anlegen Modal -->
 <div class="modal fade" id="createMeetingModal" tabindex="-1" aria-labelledby="createMeetingLabel" aria-hidden="true">
     <div class="modal-dialog modal-md modal-dialog-scrollable">
@@ -18,22 +17,33 @@
                         <input type="date" class="form-control" id="meetingDatum" name="datum" required
                                placeholder="*required">
                     </div>
-                    <div class="mb-2">
-                        <label for="meetingUhrzeitStart" class="form-label">Uhrzeit [Start] </label>
-                        <input type="time" class="form-control" id="meetingUhrzeitStart" name="uhrzeit" required>
+                    <div class="row">
+                        <div class="mb-2 col-lg-6">
+                            <label for="meetingUhrzeitStart" class="form-label">Beginn</label>
+                            <input type="time" class="form-control" id="meetingUhrzeitStart" name="uhrzeitStart" required>
+                        </div>
+                        <div class="mb-2 col-lg-6">
+                            <label for="meetingUhrzeitEnde" class="form-label">Ende</label>
+                            <input type="time" class="form-control" id="meetingUhrzeitEnde" name="uhrzeitEnde">
+                        </div>
+
                     </div>
                     <div class="mb-2">
-                        <label for="meetingUhrzeitEnde" class="form-label">Uhrzeit [Ende] </label>
-                        <input type="time" class="form-control" id="meetingUhrzeitEnde" name="uhrzeit">
-                    </div>
-                    <div class="mb-2">
-                        <label for="meetingOrt" class="form-label">Ort</label>
-                        <input type="text" class="form-control" id="meetingOrt" name="ort">
+                        <label for="meetingOrt" class="sr-only">Ort</label>
+                        <input type="text" class="form-control" id="meetingOrt" name="ort" placeholder="Ort">
                     </div>
 
                     <div class="mb-2">
-                        <label for="meetingVerfasser" class="form-label">Verfasser</label>
-                        <input type="text" class="form-control" id="meetingVerfasser" name="verfasser" required>
+
+                        <label for="meetingVerfasser" class="sr-only">Verfasser</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">@</div>
+                            </div>
+                            <input type="text" class="form-control" id="meetingVerfasser" autocapitalize="sentences"
+                                   name="verfasser"
+                                   value="<?php echo isset($_SESSION['username']) ? ucfirst($_SESSION['username']) : ''; ?>">
+                        </div>
                     </div>
 
                     <!--- div class="mb-2">

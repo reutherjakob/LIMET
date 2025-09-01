@@ -102,3 +102,13 @@ function load_nav_bar(): void
 }
 
 
+function getPostInt(string $key, int $default = 0): int  //TODO: Make use of these everywhere
+{
+    return isset($_POST[$key]) ? filter_var($_POST[$key], FILTER_VALIDATE_INT) ?? $default : $default;
+}
+
+function getPostString(string $key, string $default = ''): string
+{
+    return isset($_POST[$key]) ? htmlspecialchars(trim($_POST[$key]), ENT_QUOTES, 'UTF-8') : $default;
+}
+

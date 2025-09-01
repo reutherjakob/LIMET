@@ -1,59 +1,52 @@
 <?php
+// addElementToRoom
 require_once 'utils/_utils.php';
 check_login();
 
 $mysqli = utils_connect_sql();
-$sql = "SELECT tabelle_projekt_varianten_kosten.Kosten
-			FROM tabelle_projekt_varianten_kosten
-			WHERE (((tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)=1) AND ((tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente)=" . $_SESSION["elementID"] . ") AND ((tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "));";
 
-$result = $mysqli->query($sql);
+// Cast session values to int to ensure they are numbers
+$projectID = (int)$_SESSION["projectID"];
+$elementID = (int)$_SESSION["elementID"];
+$roomID = (int)$_SESSION["roomID"];
+
+// Prepare SELECT statement with placeholders
+$stmt = $mysqli->prepare("SELECT Kosten FROM tabelle_projekt_varianten_kosten WHERE tabelle_Varianten_idtabelle_Varianten = 1 AND tabelle_elemente_idTABELLE_Elemente = ? AND tabelle_projekte_idTABELLE_Projekte = ?");
+$stmt->bind_param("ii", $elementID, $projectID);
+$stmt->execute();
+$result = $stmt->get_result();
 $row = $result->fetch_assoc();
-if (($row["Kosten"] ?? null) === null) {
-    $sql = "INSERT INTO `LIMET_RB`.`tabelle_projekt_varianten_kosten`
-				(`tabelle_projekte_idTABELLE_Projekte`,
-				`tabelle_elemente_idTABELLE_Elemente`,
-				`tabelle_Varianten_idtabelle_Varianten`,
-				`Kosten`)
-				VALUES
-				(" . $_SESSION["projectID"] . ",
-				" . $_SESSION["elementID"] . ",
-				1,
-				'0');";
+$stmt->close();
 
-    if ($mysqli->query($sql) === TRUE) {
+if (($row["Kosten"] ?? null) === null) {
+    // Prepare INSERT statement
+    $stmt = $mysqli->prepare("INSERT INTO tabelle_projekt_varianten_kosten (tabelle_projekte_idTABELLE_Projekte, tabelle_elemente_idTABELLE_Elemente, tabelle_Varianten_idtabelle_Varianten, Kosten) VALUES (?, ?, 1, '0')");
+    $stmt->bind_param("ii", $projectID, $elementID);
+
+    if ($stmt->execute()) {
         echo "Variante erfolgreich angelegt! \n";
     } else {
-        echo "Error: " . $sql . "<br>" . $mysqli->error;
+        echo "Error: " . $stmt->error;
     }
+    $stmt->close();
 }
 
-$sql = "INSERT INTO `LIMET_RB`.`tabelle_räume_has_tabelle_elemente`
-			(`TABELLE_Räume_idTABELLE_Räume`,
-			`TABELLE_Elemente_idTABELLE_Elemente`,
-			`Neu/Bestand`,
-			`Anzahl`,
-			`Standort`,
-			`Verwendung`,
-			`Timestamp`,
-			`tabelle_Varianten_idtabelle_Varianten`)
-			VALUES
-			(" . $_SESSION["roomID"] . ",
-			" . $_SESSION["elementID"] . ",
-			'1',
-			'1',
-			'1',
-			'1',
-			'" . date("Y-m-d H:i:s") . "',
-			1);";
+// Prepare defaults for INSERT statement for adding element to room
+$timestamp = date("Y-m-d H:i:s");
+$neuBestand = 1;
+$anzahl = 1;
+$standort = 1;
+$verwendung = 1;
+$variante = 1;
 
+$stmt = $mysqli->prepare("INSERT INTO tabelle_räume_has_tabelle_elemente (TABELLE_Räume_idTABELLE_Räume, TABELLE_Elemente_idTABELLE_Elemente, `Neu/Bestand`, Anzahl, Standort, Verwendung, Timestamp, tabelle_Varianten_idtabelle_Varianten) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt->bind_param("iiiiissi", $roomID, $elementID, $neuBestand, $anzahl, $standort, $verwendung, $timestamp, $variante);
 
-if ($mysqli->query($sql) === TRUE) {
+if ($stmt->execute()) {
     echo "Element zu Raum hinzugefügt!";
 } else {
-    echo "Error: " . $sql . "<br>" . $mysqli->error;
+    echo "Error: " . $stmt->error;
 }
+$stmt->close();
 
 $mysqli->close();
-
-?>

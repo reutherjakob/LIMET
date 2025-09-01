@@ -415,7 +415,7 @@ echo "</tbody></table>";
         //   console.log("AddVermerk. Rooms:", rooms);
         let los = $("#los").val();
         let vermerkStatus = $("#vermerkStatus").val();
-        let vermerkTyp = $("#vermerkTyp").val();
+        let vermerkTyp = $("#vermerkTyp").val().charAt(0);
         let vermerkText = $("#vermerkText").val();
         let faelligkeitDatum = $("#faelligkeit").val();
         if (vermerkTyp === "Info") {
@@ -479,7 +479,7 @@ echo "</tbody></table>";
         let rooms = $("#room").val();
         let los = $("#los").val();
         let vermerkStatus = $("#vermerkStatus").val();
-        let vermerkTyp = $("#vermerkTyp").val();
+        let vermerkTyp = $("#vermerkTyp").val().charAt(0);
         let vermerkText = $("#vermerkText").val();
         let faelligkeitDatum = $("#faelligkeit").val();
         let untergruppenID = $("#untergruppe").val();
@@ -501,7 +501,7 @@ echo "</tbody></table>";
                     "faelligkeitDatum": faelligkeitDatum,
                     "untergruppenID": untergruppenID
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data, true);
 
