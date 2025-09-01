@@ -11,6 +11,7 @@ class Besprechung {
         this.verfasser = verfasser; // string
         this.art = art;             // string (z.B. "Protokoll Besprechung")
         this.projektID = projektID; // int or null
+        this.trhteID =0;            // ID der letzten Änderung (tabelle_räume_has_elemente) in der Besprechung
     }
 
     // Serialize object to a plain payload object for AJAX submission

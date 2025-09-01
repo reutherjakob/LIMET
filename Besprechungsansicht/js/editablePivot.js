@@ -61,18 +61,25 @@ class EditablePivot {
             .then(data => {
                 if (!data.success) throw new Error(data.message || 'Fehler beim Laden der Daten.');
                 const d = data.data;
-
+                // Existing fields
                 document.getElementById('edit-raum-info').value = `${d.Raumnr} - ${d.Raumbezeichnung}`;
                 document.getElementById('edit-element-info').value = `${d.ElementID} ${d.Bezeichnung}`;
                 document.getElementById('edit-current-amount').value = d.Anzahl ?? this.currentCellData.currentAmount;
                 document.getElementById('edit-new-amount').value = d.Anzahl ?? this.currentCellData.currentAmount;
+                // New fields - create corresponding input/textarea elements in modal
+                document.getElementById('edit-element-comments').value = d.element_comments || '';
+                // document.getElementById('edit-standort').value = d.standort ?? '1';
+                document.getElementById('edit-neuBestand').value = d.neuBestand ?? '1';
+                // document.getElementById('edit-room-comments').value = d.room_comments || '';
+                document.getElementById('edit-variant-name').value = d.Variante || 'A';
+                // Reset others as before
                 document.getElementById('edit-change-comment').value = '';
-                document.getElementById('edit-confirm').checked = false;
+                document.getElementById('edit-confirm').checked = true; // TODO set to false when finished coding
                 document.getElementById('save-element-change').disabled = true;
-
-                // Speichere relationId für spätere Verwendung
+                // Save relationId for later use
                 this.currentCellData.relationId = d.relationId;
             })
+
             .catch(err => alert(err.message));
         new bootstrap.Modal(document.getElementById('editElementModal')).show();
     }
@@ -87,30 +94,36 @@ class EditablePivot {
     }
 
     saveChanges() {
-        if (!confirm('Änderung wirklich speichern?')) return;
-
+        //if (!confirm('Änderung wirklich speichern?')) return; TODO uncomment
         const newAmount = document.getElementById('edit-new-amount').value.trim();
         const changeComment = document.getElementById('edit-change-comment').value.trim();
         const confirmChecked = document.getElementById('edit-confirm').checked;
-
+        const elementkommentar = document.getElementById('edit-element-comments').value.trim();
+        // WORKS: console.log("Elementkomemntar: ", elementkommentar);
         if (!newAmount || !changeComment || !confirmChecked) {
             alert('Bitte alle Pflichtfelder ausfüllen und bestätigen.');
             return;
         }
 
+        const varID = this.currentCellData.variantId === "0" ? "1" : this.currentCellData.variantId;
+        console.log(varID);
+        const statuss = document.getElementById('edit-status').value;
+        const bestand = document.getElementById("edit-neuBestand").value;
+
         const formData = new URLSearchParams({
             relationId: this.currentCellData.relationId || '',
             roomId: this.currentCellData.roomId,
             elementId: this.currentCellData.elementId,
-            variantId: this.currentCellData.variantId,
+            variantId: varID,
             newAmount: newAmount,
             changeComment: changeComment,
-            status: 0,
-            standort: 0,
-            neuBestand: 1
-        });
+            status: statuss,
+            neuBestand: bestand,
+            elementKommentar: elementkommentar,
+            besprechungsid: besprechung.id
+        });            // standort: 1,
 
-        fetch('../controllers/updateElementAmount.php', {
+        fetch('../controllers/updateElementinRoom.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: formData.toString()
@@ -118,8 +131,9 @@ class EditablePivot {
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    alert('Änderung erfolgreich gespeichert');
+                    makeToaster('Änderung erfolgreich gespeichert', true);
                     bootstrap.Modal.getInstance(document.getElementById('editElementModal')).hide();
+                    besprechung.trhteID = data.relationId;
                     this.reloadPivotTable();
                 } else {
                     alert('Fehler: ' + data.message);
@@ -128,27 +142,11 @@ class EditablePivot {
             .catch(() => alert('Fehler beim Speichern der Änderung'));
     }
 
-    reloadPivotTable() {
-        // Hier je nach Projekt-Setup Pivot neu laden, bspw. mit AJAX oder Neuladen der Seite
-        // Beispiel mit AJAX:
-        const container = document.getElementById('pivot-container');
-        if (!container) return;
-        container.innerHTML = '<div class="spinner-border" role="status"></div>';
 
-        const form = document.getElementById('pivot-filter-form') ?? null;
-        let params = '';
-        if (form) {
-            params = new URLSearchParams(new FormData(form)).toString();
-        }
-        fetch('../controllers/PivotTableController.php', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: params
-        })
-            .then(res => res.text())
-            .then(html => container.innerHTML = html)
-            .catch(() => container.innerHTML = '<div class="alert alert-danger">Fehler beim Laden der Pivot-Tabelle</div>');
+    reloadPivotTable() {
+        loadPivotTable();
     }
+
 }
 
 // Init

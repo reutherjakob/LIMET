@@ -30,12 +30,13 @@ class PivotTable
         array $raumbereiche,
         array $zusatzRaeume,
         array $zusatzElemente,
-        bool $mtRelevant,
-        bool $entfallen,
-        bool $nurMitElementen,
-        bool $ohneLeere,
-        bool $transponiert
-    ): string {
+        bool  $mtRelevant,
+        bool  $entfallen,
+        bool  $nurMitElementen,
+        bool  $ohneLeere,
+        bool  $transponiert
+    ): string
+    {
         $conn = $this->conn;
         $projectID = $this->projectID;
 
@@ -109,6 +110,7 @@ class PivotTable
                     WHERE r.tabelle_projekte_idTABELLE_Projekte=?
                       AND re.Standort=1
                       AND r.idTABELLE_Räume IN ($roomPlaceholders)";
+
         $params = array_merge([$projectID], $roomIds);
         $types = 'i' . str_repeat('i', count($roomIds));
         $stmt = $conn->prepare($sqlElem);
@@ -123,6 +125,7 @@ class PivotTable
                 'variantId' => $row['tabelle_Varianten_idtabelle_Varianten'] === null ? 0 : (int)$row['tabelle_Varianten_idtabelle_Varianten']
             ];
         }
+        // file_put_contents(__DIR__ . '/pivot_debug.log', print_r($elementVariants, true) );
         $stmt->close();
 
         // Add additional elements without variant
@@ -130,6 +133,7 @@ class PivotTable
             $elementVariants[] = ['elementId' => (int)$ae, 'variantId' => 0];
         }
 
+        // file_put_contents(__DIR__ . '/pivot_debug.log', print_r($elementVariants, true), FILE_APPEND );
         // Build filter for element + variant combos
         $filters = [];
         foreach ($elementVariants as $ev) {
@@ -142,15 +146,15 @@ class PivotTable
             }
         }
         $elemFilter = $filters ? "AND (" . implode(' OR ', $filters) . ")" : '';
-
         // === 3. Query sums per element+variant per room + relation ID ===
         $sqlPivot = "SELECT 
                         re.id AS relationId,
+                        re.status,
                         e.idTABELLE_Elemente AS elementId,
                         re.tabelle_Varianten_idtabelle_Varianten AS variantId,
                         e.ElementID,
                         e.Bezeichnung,
-                        COALESCE(v.Variante, '-') AS variantName,
+                        COALESCE(v.Variante, 'A') AS variantName,
                         r.idTABELLE_Räume AS roomId,
                         SUM(re.Anzahl) AS total
                     FROM tabelle_elemente e
@@ -161,7 +165,7 @@ class PivotTable
                       AND re.Standort=1
                       AND r.idTABELLE_Räume IN ($roomPlaceholders)
                       $elemFilter
-                    GROUP BY e.idTABELLE_Elemente, re.tabelle_Varianten_idtabelle_Varianten, r.idTABELLE_Räume, re.id
+                    GROUP BY e.idTABELLE_Elemente, re.tabelle_Varianten_idtabelle_Varianten, r.idTABELLE_Räume
                     ORDER BY e.ElementID, variantName ASC, r.Raumnr";
 
         $params = array_merge([$projectID], $roomIds);
@@ -171,6 +175,9 @@ class PivotTable
         $stmt->bind_param($types, ...$params);
         $stmt->execute();
         $res = $stmt->get_result();
+
+        // file_put_contents(__DIR__ . '/pivot_debug.log', print_r($sqlPivot, true),FILE_APPEND );
+        // file_put_contents(__DIR__ . '/pivot_debug.log', print_r($res, true),FILE_APPEND );
 
         // Aggregate pivot data
         $pivot = [];
@@ -188,9 +195,12 @@ class PivotTable
             }
             $pivot[$key]['values'][(int)$row['roomId']] = (int)$row['total'];
             $pivot[$key]['relationIds'][(int)$row['roomId']] = $row['relationId']; // include relation ID per room+element
+            $pivot[$key]['statuses'][(int)$row['roomId']] = $row['status'];
+
         }
         $stmt->close();
 
+        // file_put_contents(__DIR__ . '/pivot_debug.log', print_r($elementVariants, true), FILE_APPEND);
         // Add missing elements from $elementVariants with zeros
         foreach ($elementVariants as $ev) {
             $key = $ev['elementId'] . '_' . $ev['variantId'];
@@ -233,10 +243,11 @@ class PivotTable
                 }
             }
         }
+        // file_put_contents(__DIR__ . '/pivot_debug.log', print_r($pivot, true), FILE_APPEND);
 
         // === 4. Generate HTML ===
         ob_start();
-        echo '<table id="pivotTable" class="table table-bordered table-sm">';
+        echo '<table id="pivotTable" class="table table-bordered table-sm table-striped">';
 
         // Header
         echo '<thead><tr><th>Element (Variante)</th><th>Summe</th>';
@@ -253,12 +264,32 @@ class PivotTable
             foreach ($rooms as $rId => $rLabel) {
                 $val = $data['values'][$rId] ?? 0;
                 $relId = $data['relationIds'][$rId] ?? '';
-                echo '<td class="editable-cell" tabindex="0" '.
-                    'data-room-id="'.htmlspecialchars($rId).'" '.
-                    'data-element-id="'.htmlspecialchars($data['elementId']).'" '.
-                    'data-variant-id="'.htmlspecialchars($data['variantId']).'" '.
-                    'data-relation-id="'.htmlspecialchars($data['relationIds'][$rId] ?? '').'">'.
-                    htmlspecialchars($val).
+                $status = $data['statuses'][$rId] ?? null;
+                file_put_contents(__DIR__ . '/pivot_debug.log', print_r($status, true), FILE_APPEND);
+
+                $class = 'editable-cell';
+                switch ($status) {
+                    case 1:
+                        $class .= ' status-green';
+                        break;
+                    case 2:
+                        $class .= ' status-blue';
+                        break;
+                    case 3:
+                        $class .= ' status-yellow';
+                        break;
+                    case 4:
+                        $class .= ' status-red';
+                        break;
+                    default:
+                        // keine zusätzliche Klasse, Standard-Ausgabe
+                }
+                echo '<td class="' . $class . '" tabindex="0" ' .
+                    'data-room-id="' . htmlspecialchars($rId) . '" ' .
+                    'data-element-id="' . htmlspecialchars($data['elementId']) . '" ' .
+                    'data-variant-id="' . htmlspecialchars($data['variantId'] ?? '1') . '" ' .
+                    'data-relation-id="' . htmlspecialchars($data['relationIds'][$rId] ?? '0') . '">' .
+                    htmlspecialchars($val) .
                     '</td>';
             }
             echo '</tr>';

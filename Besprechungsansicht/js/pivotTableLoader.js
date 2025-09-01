@@ -1,0 +1,104 @@
+// pivotTableLoader.js
+
+function loadPivotTable(params = {}) {
+    let raumbereich = $('#raumbereich').val() || [];
+    if (raumbereich.length === 0) {
+        $('#pivotTableContainer').html('<div class="alert alert-info">Bitte wählen Sie mindestens einen Raumbereich.</div>');
+        return;
+    }
+
+    // Assemble all parameters for the AJAX call (filters and additions)
+    let data = {
+        'raumbereich[]': raumbereich,
+        'zusatzRaeume[]': $('#zusatzRaeume').val() || [],
+        'zusatzElemente[]': $('#zusatzElemente').val() || [],
+        mtRelevant: $('#mtRelevant').is(':checked') ? 1 : 0,
+        entfallen: $('#entfallen').is(':checked') ? 1 : 0,
+        nurMitElementen: $('#nurMitElementen').is(':checked') ? 1 : 0,
+        ohneLeereElemente: $('#ohneLeereElemente').is(':checked') ? 1 : 0,
+        transponiert: $('#isTransposed').is(':checked') ? 1 : 0,
+        ...params // allow override or extra params
+    };
+
+    // Optional hideZeros toggle for DataTable render
+    let hideZeros = $('#hideZeros').is(':checked');
+
+    $.ajax({
+        url: '../controllers/PivotTableController.php',
+        method: 'POST',
+        data: data,
+        traditional: true,
+        success: function (html) {
+            $('#pivotTableContainer').html(html);
+
+            let colCount = $('#pivotTable thead th').length;
+            let columns = [];
+            for (let i = 0; i < colCount; i++) {
+                if (i === 0) columns.push(null);
+                else if (hideZeros) {
+                    columns.push({
+                        render: function (data) {
+                            return (data === "0" || data === 0) ? "" : data;
+                        }
+                    });
+                } else {
+                    columns.push(null);
+                }
+            }
+
+            $('#pivotTable').DataTable({
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
+                    searchPlaceholder: "Suche...",
+                },
+                scrollX: true,
+                fixedColumns: {start: 1},
+                fixedHeader: true,
+                paging: true,
+                pagingType: "full",
+                searching: true,
+                ordering: true,
+                info: true,
+                lengthChange: true,
+                pageLength: 10,
+                lengthMenu: [[10, 20, 50, -1], ['10 rows', '20 rows', '50 rows', 'All']],
+                responsive: false,
+                autoWidth: true,
+                columns: columns,
+                layout: {
+                    topStart: 'buttons',
+                    topEnd: 'search',
+                    bottomStart: 'info',
+                    bottomEnd: ['pageLength', 'paging']
+                },
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fas fa-file-excel"></i> Excel',
+                        className: 'btn btn-success btn-sm',
+                        title: "PivotTableExport"
+                    }
+                ],
+                initComplete: function () {
+                    $('#CardHeaderHoldingDatatableManipulators').empty();
+                    $('#CardHeaderHoldingDatatableManipulators2').empty();
+                    $('#pivotTable_wrapper .dt-buttons').appendTo('#CardHeaderHoldingDatatableManipulators');
+                    $('#pivotTable_wrapper .dt-search').appendTo('#CardHeaderHoldingDatatableManipulators');
+                    $('#pivotTable_wrapper .dt-length').appendTo('#CardHeaderHoldingDatatableManipulators2');
+                    $('#pivotTable_wrapper .dt-info').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
+                    $('#pivotTable_wrapper .dt-paging').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
+                    $('.dt-search label').remove();
+                    $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark");
+
+                    // Rebind pivot table specific events or custom handlers:
+                    if (typeof table_click === 'function') {
+                        table_click();
+                    }
+                }
+            });
+        },
+        error: function () {
+            $('#pivotTableContainer').html('<div class="alert alert-danger">Fehler beim Laden der Tabelle</div>');
+        }
+    });
+}
