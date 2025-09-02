@@ -74,7 +74,7 @@ class EditablePivot {
                 document.getElementById('edit-variant-name').value = d.variantId || '1';
                 // Reset others as before
                 document.getElementById('edit-change-comment').value = '';
-                document.getElementById('edit-confirm').checked = true; // TODO set to false when finished coding
+                document.getElementById('edit-confirm').checked = false;
                 document.getElementById('save-element-change').disabled = true;
                 // Save relationId for later use
                 this.currentCellData.relationId = d.relationId;
@@ -90,7 +90,7 @@ class EditablePivot {
         const confirmed = document.getElementById('edit-confirm').checked;
         const btnSave = document.getElementById('save-element-change');
 
-        btnSave.disabled = (!newAmount || !comment || !confirmed);
+        btnSave.disabled = (!newAmount || !confirmed); //|| !comment
     }
 
     saveChanges() {
@@ -100,7 +100,7 @@ class EditablePivot {
         const confirmChecked = document.getElementById('edit-confirm').checked;
         const elementkommentar = document.getElementById('edit-element-comments').value.trim();
         // WORKS: console.log("Elementkomemntar: ", elementkommentar);
-        if (!newAmount || !changeComment || !confirmChecked) {
+        if (!newAmount ||  !confirmChecked) { // !changeComment ||
             alert('Bitte alle Pflichtfelder ausfüllen und bestätigen.');
             return;
         }

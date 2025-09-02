@@ -297,6 +297,7 @@ include "editElementModal.html";
     let besprechung;
     $(document).ready(function () {
         besprechung = new Besprechung({});
+
         besprechung.create(
             '#createMeetingForm',
             '#createMeetingModal',
@@ -304,11 +305,11 @@ include "editElementModal.html";
             makeToaster,
             updateFilterFormState
         );
+
         besprechung.bindModalShowHandler(
             '#besprechungSelectModal',
             '#besprechungTable',
             makeToaster,
-            updateFilterFormState,
             loadRaumbereiche
         );
 
@@ -341,6 +342,7 @@ include "editElementModal.html";
 
         $('#ResetBesprechung').on('click', function () {
             $('#filterForm')[0].reset();
+
             $('#raumbereich').val(null).trigger('change');
             $('#zusatzRaeume').val(null).trigger('change');
             $('#zusatzElemente').val(null).trigger('change');
@@ -353,12 +355,9 @@ include "editElementModal.html";
             $('#pivotTableContainer').empty();
             $('#pdfPreview').attr('src', '');
 
-            besprechung = new Besprechung({});
+            besprechung.reset();
+            makeToaster("Besprechung Geschlossen", true);
             updateFilterFormState();
-            setTimeout(() => {
-                makeToaster("Besprechung Geschlossen", true);
-                updateFilterFormState();
-            }, 100)
 
         });
 
@@ -423,7 +422,8 @@ include "editElementModal.html";
 
 
     function updateFilterFormState() {
-        if (typeof besprechung === "object" && besprechung !== null && besprechung.id && besprechung.id > 0) {
+        console.log("updateFilterFormState: ", besprechung.id);
+        if (besprechung.id > 0) {
             $('#filterForm :input').prop('disabled', false);
             $('#openMeetingBtn').prop('disabled', true);
             $('#createMeetingBtn').prop('disabled', true);

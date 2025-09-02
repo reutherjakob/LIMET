@@ -19,12 +19,12 @@
 
 
                 <div class="mb-3 row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label for="edit-current-amount" class="form-label">Aktuelle Anzahl</label>
                         <input type="number" id="edit-current-amount" class="form-control" readonly>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label for="edit-variant-name" class="form-label">Variante</label>
                         <select id="edit-variant-name" class="form-select">
                             <option value="0">-</option>
@@ -37,7 +37,7 @@
                         </select>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label for="edit-neuBestand" class="form-label">Neu/Bestand</label>
                         <select id="edit-neuBestand" class="form-select">
                             <option value="">-</option>
@@ -45,34 +45,24 @@
                             <option value="0">Nein</option>
                         </select>
                     </div>
-                </div>
 
-                <div class="mb-3 row">
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <label for="edit-new-amount" class="form-label">Neue Anzahl *</label>
                         <input type="number" id="edit-new-amount" min="0" class="form-control" required>
                     </div>
 
-                    <div class="col-md-6">
-                        <label for="edit-status" class="form-label">Status</label>
-                        <select id="edit-status" class="form-select">
-                            <option value="0">-</option>
-                            <option value="1">Nutzer Anforderung</option>
-                            <option value="2">Freigegeben</option>
-                        </select>
-                    </div>
                 </div>
 
 
                 <div class="mb-3 row">
                     <div class="col-md-12">
                         <label for="edit-element-comments" class="form-label">Element Kommentare</label>
-                        <textarea id="edit-element-comments" class="form-control" rows="1"></textarea>
+                        <textarea id="edit-element-comments" class="form-control" rows="2"></textarea>
                     </div>
                 </div>
 
-                <!div class="mb-3">
-                    <div class="col-md-6">
+                <div class="mb-3">
+                    <div class="col-md-12">
                         <label for="edit-room-comments" class="form-label">Raum Kommentar</label>
                         <textarea id="edit-room-comments" class="form-control" rows="2"></textarea>
                     </div>
@@ -80,10 +70,18 @@
 
                 <div class="mb-3 row">
                     <div class="col-md-12">
-                        <label for="edit-change-comment" class="form-label">Kommentar zur Änderung (wird im Protokoll
-                            stehen) </label>
+                        <label for="edit-change-comment" class="form-label">Kommentar/Status für Änderung
+                            (=Protokolltext) </label>
                         <textarea id="edit-change-comment" class="form-control" rows="3"
-                                  placeholder="Grund für die Änderung angeben..."></textarea>
+                                  placeholder="Grund für die Änderung angeben. Dies wird im Protokoll vermerkt. "></textarea>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="edit-status" class="sr-only">Status</label>
+                        <select id="edit-status" class="form-select" >
+                            <option value="0"> - </option>
+                            <option value="1" selected>Nutzer Anforderung</option>
+                            <option value="2">Freigegeben</option>
+                        </select>
                     </div>
                 </div>
 
@@ -96,6 +94,7 @@
                 </div>
 
             </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
                 <button type="button" class="btn btn-primary" id="save-element-change" disabled>Änderung speichern
