@@ -3,17 +3,16 @@ require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
 
+$gruppenName      = getPostString('gruppenName');
+$gruppenArt       = getPostString('gruppenart');
+$gruppenOrt       = getPostString('gruppenOrt');
+$gruppenVerfasser = getPostString('gruppenVerfasser');
+$gruppenStart     = getPostString('gruppenStart');
+$gruppenEnde      = getPostString('gruppenEnde');
+$gruppenDatum     = getPostString('gruppenDatum');
+$gruppenID        = getPostInt('gruppenID');
 
-$gruppenName      = trim(filter_input(INPUT_GET, 'gruppenName', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
-$gruppenArt       = trim(filter_input(INPUT_GET, 'gruppenart', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
-$gruppenOrt       = trim(filter_input(INPUT_GET, 'gruppenOrt', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
-$gruppenVerfasser = trim(filter_input(INPUT_GET, 'gruppenVerfasser', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
-$gruppenStart     = trim(filter_input(INPUT_GET, 'gruppenStart', FILTER_UNSAFE_RAW));
-$gruppenEnde      = trim(filter_input(INPUT_GET, 'gruppenEnde', FILTER_UNSAFE_RAW));
-$gruppenDatum     = trim(filter_input(INPUT_GET, 'gruppenDatum', FILTER_UNSAFE_RAW));
-$gruppenID        = filter_input(INPUT_GET, 'gruppenID', FILTER_VALIDATE_INT);
-
-if ($gruppenID === false || $gruppenID === null) {
+if ($gruppenID === null) {
     die("Ungültige Gruppen-ID.");
 }
 

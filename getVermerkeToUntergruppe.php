@@ -147,9 +147,9 @@ echo "</tbody></table>";
                     <div class='form-group'>
                         <label for='vermerkTyp'>Vermerktyp:</label>
                         <select class='form-control form-control-sm' id='vermerkTyp' name='vermerkTyp'>
-                            <option value='Info' selected>Info</option>
-                            <option value='Bearbeitung'>Bearbeitung</option>
-                            <option value='Bearbeitung'>Bespr</option>
+                            <option value='I' selected>Info</option>
+                            <option value='B'>Bearbeitung</option>
+                            <option value='N'>Nutzerwunsch</option>
                         </select>
                     </div>
                     <div class="form-group">

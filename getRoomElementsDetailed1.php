@@ -267,7 +267,7 @@ $mysqli->close();
         <div class='modal-content'>
 
             <div class='modal-header'>
-                <h5 class='modal-title' id='copyRoomElementsModalLabel'>Rauminhalt kopieren</h5>
+                <h5 class='modal-title' id='copyRoomElementsModalLabel'>Elemente dieses Raums kopieren</h5>
                 <p class='mb-0 ms-3'>(Bisher im Raum verortete Elemente werden hierdurch NICHT verändert!)</p>
                 <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
             </div>

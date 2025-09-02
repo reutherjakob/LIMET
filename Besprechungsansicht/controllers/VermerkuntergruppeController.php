@@ -9,7 +9,7 @@ if ($conn->connect_error) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'getRaumbereiche') {
-    $vermerkgruppe_id = filter_input(INPUT_POST, 'vermerkgruppe_id', FILTER_VALIDATE_INT);
+    $vermerkgruppe_id = getPostInt("vermerkgruppe_id");
     if (!$vermerkgruppe_id) {
         echo json_encode(["success" => false, "message" => "Ungültige oder fehlende Vermerkgruppe-ID"]);
         exit;

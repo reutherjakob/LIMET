@@ -59,6 +59,8 @@ $conn->close();
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
+    <link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen"/>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"/>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
@@ -75,10 +77,10 @@ $conn->close();
     <script type='text/javascript'
             src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
     <style>
-        .form-switch .form-check-input:checked {
+        /*.form-switch .form-check-input:checked {
             background-color: #000;
             border-color: #000;
-        }
+        }*/
 
         .embed-responsive-item {
             width: 100% !important;
@@ -91,23 +93,17 @@ $conn->close();
             background-color: #d4edda !important;
         }
 
-        /* hellgrün */
         .status-blue {
             background-color: #cce5ff !important;
         }
 
-        /* hellblau */
         .status-yellow {
             background-color: #fff3cd !important;
         }
 
-        /* hellgelb */
         .status-red {
             background-color: #f8d7da !important;
         }
-
-        /* hellrot */
-
 
     </style>
 </head>
@@ -117,6 +113,7 @@ $conn->close();
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class="row row-cols-2">
+
         <div class="col-lg-2 mx-auto mb-4" id="filterCardCol">
             <div class="card mb-2">
                 <div class="card-header d-inline-flex align-items-center ">
@@ -140,6 +137,7 @@ $conn->close();
                                             Mehrere Einträge desselben Elments je Raum werden vor der Tabellen Anzeige konsolidiert.">
 
                         <i class="fas fa-info-circle"></i>
+
                     </span>
                 </div>
             </div>
@@ -191,7 +189,7 @@ $conn->close();
                             <span class="badge rounded-pill bg-light text-dark p-2  "
                                   data-bs-toggle="popover"
                                   data-bs-content="Hier werden ALLE Elemente des Projektes angezeigt.
-                                                    Sollten diese dann in der Tabelle fehlen, sind  ggf. Elemente Stk<1 ausgeblendet. ">
+                                                    Sollten diese dann in der Tabelle fehlen, sind  ggf. Elemente Stk<1 ausgeblendet. - Abgesehen der Zusätzlichen nur jenen Elemente angezeigt, die Ihenen Standort im Raum haben">
                                 <i class="fas fa-info-circle"></i>
                             </span>
                         </div>
@@ -234,30 +232,26 @@ $conn->close();
                     </div>
                 </form>
             </div>
-            <div class="card mb-2">
-                <div class="card-header">Ideen</div>
-                <div class="card-body">
-                    <button class="btn btn-sm btn-outline-dark"> Alle Nutzerwünsche Freigben</button>
-                </div>
-            </div>
+
+
         </div>
+        <!-- TODO button class="btn btn-sm btn-outline-dark"> IDEE:: Alle Nutzerwünsche Freigben</button-->
 
         <div class="col-lg-10 mx-auto" id="tableCardCol">
             <div class="card">
-                <div class="card-header d-flex align-items-start" style=" height: 55px; ">
+                <div class="card-header d-flex align-items-center" style=" height: 60px; ">
                     <button class="btn btn-outline-dark fa fa-arrow-left" id="ToggleCard"></button>
-                    <div class="row d-inline-flex align-items-start w-100">
-                        <div class=" col-6   d-flex                   align-items-start"
+
+                    <div class="row d-inline-flex align-items-center w-100">
+                        <div class=" col-6 d-flex"
                              id="CardHeaderHoldingDatatableManipulators"></div>
-                        <div class=" col-6 d-flex justify-content-end  align-items-start"
+                        <div class=" col-6 d-flex justify-content-end"
                              id="CardHeaderHoldingDatatableManipulators2"></div>
                     </div>
-                    <span class="badge rounded-pill bg-light text-dark p-2 "
-                          data-bs-toggle="popover"
-                          data-bs-content="Es werden vorerst nur jenen Elemente angezeigt, die Ihenen Standort im Raum haben.">
-                        <i class="fas fa-info-circle"></i>
-                    </span>
-                    <button class="btn btn-outline-dark fa fa-arrow-left" id="PDFframebtn"></button>
+
+
+                    <button class="btn btn-outline-dark fa fa-arrow-left" id="PDFframebtn"
+                            style="z-index: 100;"></button>
                 </div>
                 <div class="card-body p-1">
                     <div id="pivotTableContainer">
@@ -277,6 +271,22 @@ $conn->close();
                     <iframe class="embed-responsive-item" id="pdfPreview"></iframe>
                 </div>
             </div>
+
+            <div class="card mb-2">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-xxl-6">
+                            <b>Vermerke</b>
+                        </div>
+                        <div class="col-xxl-6 d-flex justify-content-end align-items-center" id="CardHeaderVermerkE">
+                            <button type='button' id='buttonNewVermerk' class='btn btn-outline-success btn-sm me-2'
+                                    value='Neuer Vermerk' style='visibility:hidden'><i class='fas fa-plus'></i> Neu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body" id="vermerke"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -285,6 +295,7 @@ $conn->close();
 include "newBesprechungModal.html";
 include "openBesprechungModal.html";
 include "editElementModal.html";
+include "editVermerktextModal.html";
 ?>
 
 <script src="../../utils/_utils.js"></script>
@@ -292,11 +303,13 @@ include "editElementModal.html";
 <script src="../js/editablePivot.js"></script>
 <script src="../js/Besprechung.js"></script>
 <script src="../js/Vermerke.js"></script>
+
 <script>
     // let excelfilename;
     let besprechung;
     $(document).ready(function () {
         besprechung = new Besprechung({});
+
         besprechung.create(
             '#createMeetingForm',
             '#createMeetingModal',
@@ -304,11 +317,11 @@ include "editElementModal.html";
             makeToaster,
             updateFilterFormState
         );
+
         besprechung.bindModalShowHandler(
             '#besprechungSelectModal',
             '#besprechungTable',
             makeToaster,
-            updateFilterFormState,
             loadRaumbereiche
         );
 
@@ -331,16 +344,22 @@ include "editElementModal.html";
         $('#filterForm').on('submit', function (e) {
             e.preventDefault();
             besprechung.consolidateMultipleElementsperRoom($('#raumbereich').val());
-            loadPivotTable(); //pivotLoader.js
+            if (!loadPivotTable()) {
+                return;
+            }  //pivotLoader.js
             addUntergruppePerRaumbereich(); //vermerke.js
+            console.log("FitlerFormSubmit: ", besprechung.toPayload());
             addDefaultVermerkeForEachRommInArea(besprechung.id, $('#raumbereich').val()); //vermerke.js
             refreshPDF();
+            getVermerke();
 
         });
 
 
         $('#ResetBesprechung').on('click', function () {
-            $('#filterForm')[0].reset();
+            // ('#filterForm')[0].reset();
+            $('#vermerke').html('');
+
             $('#raumbereich').val(null).trigger('change');
             $('#zusatzRaeume').val(null).trigger('change');
             $('#zusatzElemente').val(null).trigger('change');
@@ -353,12 +372,9 @@ include "editElementModal.html";
             $('#pivotTableContainer').empty();
             $('#pdfPreview').attr('src', '');
 
-            besprechung = new Besprechung({});
+            besprechung.reset();
+            makeToaster("Besprechung Geschlossen", true);
             updateFilterFormState();
-            setTimeout(() => {
-                makeToaster("Besprechung Geschlossen", true);
-                updateFilterFormState();
-            }, 100)
 
         });
 
@@ -378,6 +394,68 @@ include "editElementModal.html";
         });
 
     }); // doc ready
+
+    function getVermerke() { // TODO
+        console.log("GetVErmerke:", besprechung.id);
+        if ($.fn.dataTable.isDataTable('#vermerkeTable')) {
+            // If already initialized, just reload ajax data
+            vermerkeTable.ajax.reload();
+        } else {
+            vermerkeTable = $('#vermerke').html('<table id="vermerkeTable" class="table table-striped table-bordered" style="width:100%"></table>').find('table').DataTable({
+                ajax: {
+                    url: "../controllers/VermerkeController.php",
+                    type: "POST",
+                    data: {
+                        action: "getVermerkeToGruppe",
+                        vermerkgruppe_id: besprechung.id
+                    },
+                    dataSrc: 'data'
+                },
+                columns: [
+                    {title: "ID", data: "ID", visible: false},
+                    {title: "R.Bez.", data: "RBZ"},
+                    {
+                        title: "Vermerktext",
+                        data: "Vermerktext",
+                        render: function (data) {
+                            return data ? data.replace(/\n/g, '<br>') : '';
+                        }
+                    },
+                    {
+                        title: "Edit",
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row) {
+                            return `<button class="btn btn-sm btn-outline-primary editVermerkBtn" data-id="${row.ID}" data-text="${row.Vermerktext}"><i class="fas fa-edit"></i></button>`;
+                        }
+                    }
+                ],
+                responsive: true,
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
+                },
+                lengthChange: false,
+                pageLength: -1,
+
+                searching: false,
+                info: false,
+                initComplete: function () {
+                    setTimeout(() => {
+
+                        $(document).on('click', '.editVermerkBtn', function () {
+                            console.log("ataching editVermerkBtn bnt listener");
+                            const id = $(this).data('id');
+                            let text = $(this).data('text');
+                            text = text ? text.replace(/<br\s*\/?>/gi, "\n") : '';
+                            $('#editVermerkID').val(id);
+                            $('#editVermerkText').val(text);
+                            $('#editVermerkModal').modal('show');
+                        });
+                    }, 1000);
+                }
+            });
+        }
+    }
 
 
     function loadRaumbereiche(vermerkgruppeId) {        //console.log("ID ", vermerkgruppeId);
@@ -423,7 +501,8 @@ include "editElementModal.html";
 
 
     function updateFilterFormState() {
-        if (typeof besprechung === "object" && besprechung !== null && besprechung.id && besprechung.id > 0) {
+        console.log("updateFilterFormState: ", besprechung.id);
+        if (besprechung.id > 0) {
             $('#filterForm :input').prop('disabled', false);
             $('#openMeetingBtn').prop('disabled', true);
             $('#createMeetingBtn').prop('disabled', true);

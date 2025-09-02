@@ -177,7 +177,7 @@ $mysqli->close();
                     "untergruppenNummer": untergruppenNummer,
                     "untergruppenID": untergruppenID
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data, true);
                     $.ajax({

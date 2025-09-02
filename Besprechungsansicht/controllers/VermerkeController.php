@@ -6,26 +6,49 @@ header('Content-Type: application/json; charset=utf-8');
 $projectID = $_SESSION["projectID"] ?? null;
 $username = $_SESSION['username'] ?? 'unknown';
 $timestamp = date("Y-m-d H:i:s");
+
 $response = ["success" => true, "addedVermerke" => [], "skipped" => [], "errors" => []];
 
-$vermerkgruppe_id = filter_input(INPUT_POST, 'vermerkgruppe_id', FILTER_VALIDATE_INT);
+$vermerkgruppe_id = getPostInt("vermerkgruppe_id");
+
 $raumbereiche = $_POST['raumbereiche'] ?? [];
-$action = $_POST['action'] ?? "";
+$action = getPostString("action", "");
 
 $conn = utils_connect_sql();
 
 
-if (!$vermerkgruppe_id) {
-    echo json_encode(["success" => false, "message" => "Ungültige oder fehlende Vermerkgruppe-ID"]);
-    exit;
+if ($action === 'updateVermerkText') {
+    $id = getPostInt("idtabelle_Vermerke", 0);
+    $text = getPostString("Vermerktext");
+
+    if ($id > 0 && $text !== '') {
+        $stmt = $conn->prepare("UPDATE tabelle_Vermerke SET Vermerktext = ? WHERE idtabelle_Vermerke = ?");
+        $stmt->bind_param("si", $text, $id);
+        if ($stmt->execute()) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Fehler bei Datenbankaktualisierung']);
+        }
+        $stmt->close();
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Ungültige Eingaben' . $id . " " . $text]);
+    }
+    $conn->close();
+    exit();
 }
 
-if (!is_array($raumbereiche) || count($raumbereiche) === 0) {
-    echo json_encode(["success" => false, "message" => "Keine Raumbereiche übermittelt"]);
-    exit;
-}
 
 if ($action === "addVermerkforEachRoom") {
+    if (!$vermerkgruppe_id) {
+        echo json_encode(["success" => false, "message" => "Ungültige oder fehlende Vermerkgruppe-ID"]);
+        exit;
+    }
+
+    if (!is_array($raumbereiche) || count($raumbereiche) === 0) {
+        echo json_encode(["success" => false, "message" => "Keine Raumbereiche übermittelt"]);
+        exit;
+    }
+
     $stmtUntergruppe = $conn->prepare("
     SELECT idtabelle_Vermerkuntergruppe 
     FROM tabelle_Vermerkuntergruppe 
@@ -163,4 +186,75 @@ if ($action === "addVermerkforEachRoom") {
     $stmtInsertVermerkRaum->close();
     $conn->close();
     echo json_encode($response);
+
+} else if ($action === "getVermerkeToGruppe") {
+
+    if (!$vermerkgruppe_id) {
+        echo json_encode(["success" => false, "message" => "Ungültige oder fehlende Vermerkgruppe-ID"]);
+        exit;
+    }
+
+    $stmt = $conn->prepare("SELECT idtabelle_Vermerkuntergruppe 
+                        FROM tabelle_Vermerkuntergruppe 
+                        WHERE tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe = ?");
+    $stmt->bind_param("i", $vermerkgruppe_id);  // 'i' for integer type
+    $stmt->execute();
+    $resultUntergruppen = $stmt->get_result();
+
+    $untergruppenIDs = [];
+    while ($row = $resultUntergruppen->fetch_assoc()) {
+        $untergruppenIDs[] = $row['idtabelle_Vermerkuntergruppe'];
+    }
+
+    if (empty($untergruppenIDs)) {
+        echo "<p>Keine Vermerkuntergruppen für diese Gruppe gefunden.</p>";
+        exit;
+    }
+
+
+// Step 2: Select all Vermerke linked to those Untergruppen
+    // Prepare dynamic placeholders for IN clause
+    $placeholders = implode(',', array_fill(0, count($untergruppenIDs), '?'));
+
+// Prepare SQL with parameter placeholders
+    $sqlVermerke = "SELECT
+    v.idtabelle_Vermerke,
+    r.Raumbezeichnung,
+    r.Raumnr,
+    v.Vermerktext
+FROM tabelle_Vermerke v
+         LEFT JOIN tabelle_vermerke_has_tabelle_räume vr
+                   ON v.idtabelle_Vermerke = vr.tabelle_vermerke_idTabelle_vermerke
+         LEFT JOIN tabelle_räume r
+                   ON vr.tabelle_räume_idTabelle_räume = r.idTABELLE_Räume
+WHERE v.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe IN ($placeholders);;
+";
+
+    $stmtVermerke = $conn->prepare($sqlVermerke);
+    $types = str_repeat('i', count($untergruppenIDs));
+    $stmtVermerke->bind_param($types, ...$untergruppenIDs);
+
+    $stmtVermerke->execute();
+    $resultVermerke = $stmtVermerke->get_result();
+    $stmtVermerke->close();
+    $conn->close();
+
+    $vermerkeData = [];
+    while ($row = $resultVermerke->fetch_assoc()) {
+        if (trim($row['Vermerktext']) !== '') {
+
+            $vermerkeData[] = [
+                'ID' => (int)$row['idtabelle_Vermerke'],
+                "RBZ" => $row["Raumnr"] . " " . $row['Raumbezeichnung'],
+                'Vermerktext' => $row['Vermerktext'],
+            ];
+        }
+    }
+
+// Send as JSON with UTF-8 header
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode([
+        'data' => $vermerkeData
+    ]);
+    exit;
 }

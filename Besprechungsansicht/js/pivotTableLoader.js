@@ -4,7 +4,7 @@ function loadPivotTable(params = {}) {
     let raumbereich = $('#raumbereich').val() || [];
     if (raumbereich.length === 0) {
         $('#pivotTableContainer').html('<div class="alert alert-info">Bitte wählen Sie mindestens einen Raumbereich.</div>');
-        return;
+        return false;
     }
 
     // Assemble all parameters for the AJAX call (filters and additions)
@@ -50,12 +50,16 @@ function loadPivotTable(params = {}) {
                 language: {
                     url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                     searchPlaceholder: "Suche...",
+                    lengthMenu: "_MENU_" , // show only the select dropdown without 'Zeilen anzeigen'
+                    info: "von _MAX_ Einträgen",
+                    infoEmpty: "Keine Daten vorhanden",
+                    infoFiltered: ""  // hides the "(gefiltert von ...)" text
                 },
                 scrollX: true,
                 fixedColumns: {start: 1},
                 fixedHeader: true,
                 paging: true,
-                pagingType: "full",
+                pagingType: "numbers",
                 searching: true,
                 ordering: true,
                 info: true,

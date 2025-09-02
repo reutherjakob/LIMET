@@ -98,7 +98,7 @@ class MYPDF extends TCPDF
         $this->SetDrawColor(0, 0, 0);
         $this->SetLineWidth(0.1);
         $this->SetFont('', '', '9');
-        $w = array(140, 15, 25);
+        $w = array(145, 10, 25);
         $num_headers = count($header);
         $this->SetFillColor(244, 244, 244);
         $this->SetTextColor(0);

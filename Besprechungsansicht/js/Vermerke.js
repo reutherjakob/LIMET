@@ -1,3 +1,5 @@
+let vermerkeTable;
+
 function addUntergruppePerRaumbereich() {
     const selectedRaumbereiche = $('#raumbereich').val();
     if (!selectedRaumbereiche || selectedRaumbereiche.length === 0 || besprechung.id === 0) return;
@@ -48,11 +50,9 @@ function addDefaultVermerkeForEachRommInArea(vermerkgruppeId, raumbereiche) {
         },
         success: function (response) {
             console.log("AJAX success callback triggered", response);
-
             if (response.success) {
                 besprechung.roomVermerkMap = {};
                 console.log("Initialized roomVermerkMap");
-
                 if (response.addedVermerke && response.addedVermerke.length > 0) {
                     console.log("Processing addedVermerke", response.addedVermerke);
                     response.addedVermerke.forEach(item => {
@@ -64,11 +64,10 @@ function addDefaultVermerkeForEachRommInArea(vermerkgruppeId, raumbereiche) {
                         besprechung.roomVermerkMap[roomID].push(vermerkID);
                     });
                 } else {
-                    console.log("No addedVermerke found");
+                    //console.log("No addedVermerke found");
                 }
-
                 if (response.skipped && response.skipped.length > 0) {
-                    console.log("Processing skipped", response.skipped);
+                    //     console.log("Processing" , response.skipped);
                     response.skipped.forEach(item => {
                         const roomID = item.raumID;
                         const vermerkID = item.vermerkID;
@@ -81,14 +80,14 @@ function addDefaultVermerkeForEachRommInArea(vermerkgruppeId, raumbereiche) {
                             }
                         }
                     });
-                } else {
-                    console.log("No skipped entries found");
                 }
-
-                console.log("Final roomVermerkMap contents:");
-                for (const [roomID, vermerkIDs] of Object.entries(besprechung.roomVermerkMap)) {
-                    console.log(`Room ID: ${roomID}, Vermerk ID: [${vermerkIDs.join(", ")}]`);
-                }
+                //else {
+                //console.log("No skipped entries found");
+                //}
+                //console.log("Final roomVermerkMap contents:");
+                //for (const [roomID, vermerkIDs] of Object.entries(besprechung.roomVermerkMap)) {
+                // console.log(`Room ID: ${roomID}, Vermerk ID: [${vermerkIDs.join(", ")}]`);
+                // }
             } else {
                 console.log("Response success false:", response);
             }
@@ -99,3 +98,36 @@ function addDefaultVermerkeForEachRommInArea(vermerkgruppeId, raumbereiche) {
 
     });
 }
+
+
+
+
+$('#editVermerkForm').on('submit', function (e) {
+    e.preventDefault();
+
+    const id = $('#editVermerkID').val();
+    const newText = $('#editVermerkText').val();
+
+    $.ajax({
+        url: '../controllers/VermerkeController.php',
+        type: 'POST',
+        data: {
+            action: 'updateVermerkText',
+            idtabelle_Vermerke: id,
+            Vermerktext: newText
+        },
+        success: function (response) {
+            if (response.success) {
+                $('#editVermerkModal').modal('hide');
+                // reload table data
+                $('#vermerkeTable').DataTable().ajax.reload(null, false);
+                alert('Vermerk erfolgreich aktualisiert!');
+            } else {
+                alert('Fehler beim Aktualisieren des Vermerks: ' + response.message);
+            }
+        },
+        error: function () {
+            alert('Ajax Fehler beim Aktualisieren des VermePivotTableController.phprks.');
+        }
+    });
+});
