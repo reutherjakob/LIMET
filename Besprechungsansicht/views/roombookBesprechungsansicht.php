@@ -249,7 +249,9 @@ $conn->close();
                              id="CardHeaderHoldingDatatableManipulators2"></div>
                     </div>
 
-
+                    <button type="reset" class="btn btn-outline-dark" title="ResetPivot" id="ResetPivot">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
                     <button class="btn btn-outline-dark fa fa-arrow-left" id="PDFframebtn"
                             style="z-index: 100;"></button>
                 </div>
@@ -296,6 +298,7 @@ include "newBesprechungModal.html";
 include "openBesprechungModal.html";
 include "editElementModal.html";
 include "editVermerktextModal.html";
+include "../../modal_elementHistory.html";
 ?>
 
 <script src="../../utils/_utils.js"></script>
@@ -340,18 +343,20 @@ include "editVermerktextModal.html";
         $('#filterForm :input').prop('disabled', true);
         $('#meetingDatum').val(new Date().toISOString().substring(0, 10));
 
+        $('#createMeetingModal').on('close', function () {
+            $('#createMeetingForm').reset();
+        });
+
 
         $('#filterForm').on('submit', function (e) {
             e.preventDefault();
             besprechung.consolidateMultipleElementsperRoom($('#raumbereich').val());
-            if (!loadPivotTable()) {
-                return;
-            }  //pivotLoader.js
+            loadPivotTable();              //pivotLoader.js
             addUntergruppePerRaumbereich(); //vermerke.js
             console.log("FitlerFormSubmit: ", besprechung.toPayload());
             addDefaultVermerkeForEachRommInArea(besprechung.id, $('#raumbereich').val()); //vermerke.js
             refreshPDF();
-            getVermerke();
+            //getVermerke();   TODO!!!
 
         });
 
@@ -378,6 +383,13 @@ include "editVermerktextModal.html";
 
         });
 
+        $('#ResetPDF').on("click", function () {
+            refreshPDF();//
+        });
+        $('#ResetPivot').on("click", function () {
+           editablePivot.reloadPivotTable();
+        });
+
         $('#PDFframebtn').on('click', function () {
             $('#PDFframe').toggle();             // toggle right PDF card
             updateTableCardColClass();
@@ -395,65 +407,69 @@ include "editVermerktextModal.html";
 
     }); // doc ready
 
-    function getVermerke() { // TODO
-        console.log("GetVErmerke:", besprechung.id);
-        if ($.fn.dataTable.isDataTable('#vermerkeTable')) {
-            // If already initialized, just reload ajax data
-            vermerkeTable.ajax.reload();
-        } else {
-            vermerkeTable = $('#vermerke').html('<table id="vermerkeTable" class="table table-striped table-bordered" style="width:100%"></table>').find('table').DataTable({
-                ajax: {
-                    url: "../controllers/VermerkeController.php",
-                    type: "POST",
-                    data: {
-                        action: "getVermerkeToGruppe",
-                        vermerkgruppe_id: besprechung.id
+    function getVermerke() {
+        try {
+
+
+            if ($.fn.dataTable.isDataTable('#vermerkeTable')) {
+                vermerkeTable.ajax.reload();
+            } else {
+                vermerkeTable = $('#vermerke').html('<table id="vermerkeTable" class="table table-striped table-bordered" style="width:100%"></table>').find('table').DataTable({
+                    ajax: {
+                        url: "../controllers/VermerkeController.php",
+                        type: "POST",
+                        data: {
+                            action: "getVermerkeToGruppe",
+                            vermerkgruppe_id: besprechung.id
+                        },
+                        dataSrc: 'data'
                     },
-                    dataSrc: 'data'
-                },
-                columns: [
-                    {title: "ID", data: "ID", visible: false},
-                    {title: "R.Bez.", data: "RBZ"},
-                    {
-                        title: "Vermerktext",
-                        data: "Vermerktext",
-                        render: function (data) {
-                            return data ? data.replace(/\n/g, '<br>') : '';
+                    columns: [
+                        {title: "ID", data: "ID", visible: false},
+                        {title: "R.Bez.", data: "RBZ"},
+                        {
+                            title: "Vermerktext",
+                            data: "Vermerktext",
+                            render: function (data) {
+                                return data ? data.replace(/\n/g, '<br>') : '';
+                            }
+                        },
+                        {
+                            title: "Edit",
+                            data: null,
+                            orderable: false,
+                            render: function (data, type, row) {
+                                return `<button class="btn btn-sm btn-outline-primary editVermerkBtn" data-id="${row.ID}" data-text="${row.Vermerktext}"><i class="fas fa-edit"></i></button>`;
+                            }
                         }
+                    ],
+                    responsive: true,
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
                     },
-                    {
-                        title: "Edit",
-                        data: null,
-                        orderable: false,
-                        render: function (data, type, row) {
-                            return `<button class="btn btn-sm btn-outline-primary editVermerkBtn" data-id="${row.ID}" data-text="${row.Vermerktext}"><i class="fas fa-edit"></i></button>`;
-                        }
+                    lengthChange: false,
+                    pageLength: -1,
+
+                    searching: false,
+                    info: false,
+                    initComplete: function () {
+                        setTimeout(() => {
+
+                            $(document).on('click', '.editVermerkBtn', function () {
+                                console.log("ataching editVermerkBtn bnt listener");
+                                const id = $(this).data('id');
+                                let text = $(this).data('text');
+                                text = text ? text.replace(/<br\s*\/?>/gi, "\n") : '';
+                                $('#editVermerkID').val(id);
+                                $('#editVermerkText').val(text);
+                                $('#editVermerkModal').modal('show');
+                            });
+                        }, 1000);
                     }
-                ],
-                responsive: true,
-                language: {
-                    url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
-                },
-                lengthChange: false,
-                pageLength: -1,
-
-                searching: false,
-                info: false,
-                initComplete: function () {
-                    setTimeout(() => {
-
-                        $(document).on('click', '.editVermerkBtn', function () {
-                            console.log("ataching editVermerkBtn bnt listener");
-                            const id = $(this).data('id');
-                            let text = $(this).data('text');
-                            text = text ? text.replace(/<br\s*\/?>/gi, "\n") : '';
-                            $('#editVermerkID').val(id);
-                            $('#editVermerkText').val(text);
-                            $('#editVermerkModal').modal('show');
-                        });
-                    }, 1000);
-                }
-            });
+                });
+            }
+        } catch (e) {
+            console.log("GetVermerke(): ", e);
         }
     }
 

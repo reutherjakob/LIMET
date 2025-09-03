@@ -67,7 +67,8 @@ class Besprechung {
                         if (response.success) {
                             self.id = response.insertId;
                             $(modalSelector).modal('hide');
-                            $(formSelector).reset();
+                            //  $(formSelector).reset();  TODO ::: is not a function??
+                            // $('#createMeetingForm').reset();
                             $(pdfSelector).attr('src', '../../PDFs/pdf_createVermerkGroupPDF.php?gruppenID=' + self.id);
                             if (typeof toasterFn === "function") toasterFn("Besprechung erfolgreich angelegt! - ID:" + self.id, true);
                             if (typeof updateFilterFn === "function") updateFilterFn();
@@ -157,7 +158,7 @@ class Besprechung {
                         $(row).off('click').on('click', function () {
                             $('#besprechungTable tbody tr').removeClass('selected');
                             $(this).addClass('selected');
-                            
+
                             self.id = data.idtabelle_Vermerkgruppe;
                             self.action = "opened";
                             self.name = data.Gruppenname;

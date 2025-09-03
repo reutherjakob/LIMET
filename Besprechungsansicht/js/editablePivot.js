@@ -76,6 +76,8 @@ class EditablePivot {
                 document.getElementById('edit-change-comment').value = '';
                 document.getElementById('edit-confirm').checked = false;
                 document.getElementById('save-element-change').disabled = true;
+
+                // document.getElementById("show-history-btn").value = d.Raumnr;
                 // Save relationId for later use
                 this.currentCellData.relationId = d.relationId;
             })
@@ -100,7 +102,7 @@ class EditablePivot {
         const confirmChecked = document.getElementById('edit-confirm').checked;
         const elementkommentar = document.getElementById('edit-element-comments').value.trim();
         // WORKS: console.log("Elementkomemntar: ", elementkommentar);
-        if (!newAmount ||  !confirmChecked) { // !changeComment ||
+        if (!newAmount || !confirmChecked) { // !changeComment ||
             alert('Bitte alle Pflichtfelder ausfüllen und bestätigen.');
             return;
         }
@@ -141,7 +143,7 @@ class EditablePivot {
                     this.reloadPivotTable();
                     if (typeof (refreshPDF) === "function") {
                         refreshPDF();
-                        getVermerke();
+                        //getVermerke();
                     }
                 } else {
                     alert('Fehler: ' + data.message);

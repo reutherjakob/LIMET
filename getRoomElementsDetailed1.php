@@ -283,23 +283,9 @@ $mysqli->close();
 </div>
 
 <!-- Modal zum Darstellen des Verlaufs -->
-<div class='modal fade' id='historyModal' role='dialog' tabindex="-1">
-    <div class='modal-dialog modal-lg'>
-        <!-- Modal content-->
-        <div class='modal-content'>
-            <div class='modal-header'>
-                <h4 class='modal-title'>Verlauf </h4>
-                <div class='' id="ElementName4Header"></div>
-                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
-            </div>
-            <div class='modal-body' id='mbodyHistory'>
-            </div>
-            <div class='modal-footer'>
-                <button type='button' class='btn btn-default' data-bs-dismiss='modal'>Close</button>
-            </div>
-        </div>
-    </div>
-</div>
+<?php
+include "modal_elementHistory.html";
+?>
 
 <script src="utils/_utils.js"></script>
 <script charset="utf-8" type="module">
@@ -371,22 +357,21 @@ $mysqli->close();
         var inputVal = $input.val();
         var parsedVal = parseInt(inputVal, 10);
 
-      // console.log("=== Filter Call ===");
-      // console.log("settings:", settings);
-      // console.log("data:", data);
-      // console.log("dataIndex:", dataIndex);
-      // console.log("row node:", row);
-      // console.log("input element:", $input.length ? $input[0] : "not found");
-      // console.log("input value (string):", inputVal);
-      // console.log("parsed value (int):", parsedVal);
-      // console.log("checkbox checked:", $('#hideZeroRows').prop('checked'));
+        // console.log("=== Filter Call ===");
+        // console.log("settings:", settings);
+        // console.log("data:", data);
+        // console.log("dataIndex:", dataIndex);
+        // console.log("row node:", row);
+        // console.log("input element:", $input.length ? $input[0] : "not found");
+        // console.log("input value (string):", inputVal);
+        // console.log("parsed value (int):", parsedVal);
+        // console.log("checkbox checked:", $('#hideZeroRows').prop('checked'));
 
         if ($('#hideZeroRows').prop('checked')) {
             return parsedVal !== 0;
         }
         return true;
     }
-
 
 
     function initHideZero() {

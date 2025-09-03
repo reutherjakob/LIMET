@@ -104,7 +104,6 @@ function addDefaultVermerkeForEachRommInArea(vermerkgruppeId, raumbereiche) {
 
 $('#editVermerkForm').on('submit', function (e) {
     e.preventDefault();
-
     const id = $('#editVermerkID').val();
     const newText = $('#editVermerkText').val();
 

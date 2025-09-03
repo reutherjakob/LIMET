@@ -4,7 +4,7 @@ function loadPivotTable(params = {}) {
     let raumbereich = $('#raumbereich').val() || [];
     if (raumbereich.length === 0) {
         $('#pivotTableContainer').html('<div class="alert alert-info">Bitte wählen Sie mindestens einen Raumbereich.</div>');
-        return false;
+        return;
     }
 
     // Assemble all parameters for the AJAX call (filters and additions)

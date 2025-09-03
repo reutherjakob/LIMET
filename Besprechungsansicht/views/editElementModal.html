@@ -1,5 +1,5 @@
 <div class="modal fade" id="editElementModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Element bearbeiten</h5>
@@ -13,6 +13,10 @@
                     </div>
                     <div class="col-md-6">
                         <label for="edit-element-info" class="form-label">Element</label>
+                        <button type="button" id="show-history-btn" class="btn btn-sm btn-outline-dark float-end" value="0"
+                                data-bs-toggle="modal" data-bs-target="#historyModal">
+                            <i class="fas fa-history"></i>  TODO
+                        </button>
                         <input type="text" id="edit-element-info" class="form-control" readonly>
                     </div>
                 </div>
@@ -51,6 +55,7 @@
                         <input type="number" id="edit-new-amount" min="0" class="form-control" required>
                     </div>
 
+
                 </div>
 
 
@@ -77,8 +82,8 @@
                     </div>
                     <div class="col-md-12">
                         <label for="edit-status" class="sr-only">Status</label>
-                        <select id="edit-status" class="form-select" >
-                            <option value="0"> - </option>
+                        <select id="edit-status" class="form-select">
+                            <option value="0"> -</option>
                             <option value="1" selected>Nutzer Anforderung</option>
                             <option value="2">Freigegeben</option>
                         </select>
