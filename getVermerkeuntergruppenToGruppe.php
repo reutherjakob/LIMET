@@ -74,6 +74,7 @@ $mysqli->close();
 
 <script src="utils/_utils.js"></script>
 <script>
+
     $(document).ready(function () {
         $('#topDivSearch').remove();
         document.getElementById("buttonNewVermerkuntergruppe").style.visibility = "visible";
@@ -147,7 +148,7 @@ $mysqli->close();
                 data: {"untergruppenName": untergruppenName, "untergruppenNummer": untergruppenNummer, "gruppenID": id},
                 type: "GET",
                 success: function (data) {
-                    makeToaster(data,true);
+                    makeToaster(data, true);
                     $.ajax({
                         url: "getVermerkeuntergruppenToGruppe.php",
                         data: {"vermerkGruppenID": id},

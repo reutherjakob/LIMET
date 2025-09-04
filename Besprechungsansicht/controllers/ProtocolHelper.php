@@ -112,13 +112,13 @@ class ProtocolHelper
         // Update remark text
         switch (self::$lastStatus) {
             case 1:
-                $vermerkart = "N";
+                $vermerkart = "Nutzerwunsch";
                 break;
             case 2:
-                $vermerkart = "F";
+                $vermerkart = "Freigegeben";
                 break;
             default:
-                $vermerkart = "I"; // Fallback
+                $vermerkart = "Info"; // Fallback
         }
         self::$lastStatus = 0;
 

@@ -73,8 +73,8 @@ foreach ($roomIDsArray as $valueOfRoomID) {
     tabelle_räume.ET_Anschlussleistung_SV_W, tabelle_räume.ET_Anschlussleistung_ZSV_W, tabelle_räume.ET_Anschlussleistung_USV_W, tabelle_räume.`EL_AV Steckdosen Stk`, tabelle_räume.`EL_SV Steckdosen Stk`, tabelle_räume.`EL_ZSV Steckdosen Stk`, 
     tabelle_räume.`EL_USV Steckdosen Stk`, tabelle_räume.`ET_RJ45-Ports`, "
         . "tabelle_räume.`EL_Roentgen 16A CEE Stk`,tabelle_räume.GMP, tabelle_räume.HT_Abluft_Digestorium_Stk,tabelle_räume.HT_Notdusche, tabelle_räume.VE_Wasser, tabelle_räume.ET_16A_3Phasig_Einzelanschluss, "
-        . "tabelle_räume.HT_Punktabsaugung_Stk, tabelle_räume.HT_Abluft_Sicherheitsschrank_Unterbau_Stk , tabelle_räume.HT_Abluft_Sicherheitsschrank_Stk, "
-        . " tabelle_räume.`EL_Laser 16A CEE Stk`, tabelle_räume.`EL_Einzel-Datendose Stk`, tabelle_räume.`EL_Doppeldatendose Stk`, tabelle_räume.`EL_Bodendose Typ`, tabelle_räume.`EL_Bodendose Stk`, tabelle_räume.`EL_Beleuchtung 1 Typ`, tabelle_räume.`EL_Beleuchtung 2 Typ`, tabelle_räume.`EL_Beleuchtung 3 Typ`, tabelle_räume.`EL_Beleuchtung 4 Typ`, tabelle_räume.`EL_Beleuchtung 5 Typ`, tabelle_räume.`EL_Beleuchtung 1 Stk`, tabelle_räume.`EL_Beleuchtung 2 Stk`, tabelle_räume.`EL_Beleuchtung 3 Stk`, tabelle_räume.`EL_Beleuchtung 4 Stk`, tabelle_räume.`EL_Beleuchtung 5 Stk`, tabelle_räume.`EL_Lichtschaltung BWM JA/NEIN`, tabelle_räume.`EL_Beleuchtung dimmbar JA/NEIN`, tabelle_räume.`EL_Brandmelder Decke JA/NEIN`, tabelle_räume.`EL_Brandmelder ZwDecke JA/NEIN`, tabelle_räume.`EL_Kamera Stk`, tabelle_räume.`EL_Lautsprecher Stk`, tabelle_räume.`EL_Uhr - Wand Stk`, tabelle_räume.`EL_Uhr - Decke Stk`, tabelle_räume.`EL_Lichtruf - Terminal Stk`, tabelle_räume.`EL_Lichtruf - Steckmodul Stk`, tabelle_räume.`EL_Lichtfarbe K`, tabelle_räume.`EL_Notlicht RZL Stk`, tabelle_räume.`EL_Notlicht SL Stk`, tabelle_räume.`EL_Jalousie JA/NEIN`, tabelle_räume.`HT_Luftmenge m3/h`, CAST(REPLACE(tabelle_räume.`HT_Luftwechsel 1/h`,',','.') as decimal(10,2)) AS `HT_Luftwechsel`, tabelle_räume.`HT_Kühlung Lueftung W`, tabelle_räume.`HT_Heizlast W`, tabelle_räume.`HT_Kühllast W`, tabelle_räume.`HT_Fussbodenkühlung W`, tabelle_räume.`HT_Kühldecke W`, tabelle_räume.`HT_Fancoil W`, tabelle_räume.`HT_Summe Kühlung W`, tabelle_räume.`HT_Raumtemp Sommer °C`, tabelle_räume.`HT_Raumtemp Winter °C`, tabelle_räume.`AR_Ausstattung`, tabelle_räume.`Aufenthaltsraum` "
+        . "tabelle_räume.HT_Punktabsaugung_Stk, tabelle_räume.HT_Abluft_Sicherheitsschrank_Unterbau_Stk , tabelle_räume.HT_Abluft_Sicherheitsschrank_Stk, tabelle_räume.HT_Abluft_Vakuumpumpe,"
+        . " tabelle_räume.`EL_Laser 16A CEE Stk`, tabelle_räume.`EL_Einzel-Datendose Stk`, tabelle_räume.`EL_Doppeldatendose Stk`, tabelle_räume.`EL_Bodendose Typ`, tabelle_räume.`EL_Bodendose Stk`, tabelle_räume.`EL_Beleuchtung 1 Typ`,tabelle_räume.`EL_Beleuchtung 2 Typ`, tabelle_räume.`EL_Beleuchtung 3 Typ`, tabelle_räume.`EL_Beleuchtung 4 Typ`, tabelle_räume.`EL_Beleuchtung 5 Typ`, tabelle_räume.`EL_Beleuchtung 1 Stk`, tabelle_räume.`EL_Beleuchtung 2 Stk`, tabelle_räume.`EL_Beleuchtung 3 Stk`, tabelle_räume.`EL_Beleuchtung 4 Stk`, tabelle_räume.`EL_Beleuchtung 5 Stk`, tabelle_räume.`EL_Lichtschaltung BWM JA/NEIN`, tabelle_räume.`EL_Beleuchtung dimmbar JA/NEIN`, tabelle_räume.`EL_Brandmelder Decke JA/NEIN`, tabelle_räume.`EL_Brandmelder ZwDecke JA/NEIN`, tabelle_räume.`EL_Kamera Stk`, tabelle_räume.`EL_Lautsprecher Stk`, tabelle_räume.`EL_Uhr - Wand Stk`, tabelle_räume.`EL_Uhr - Decke Stk`, tabelle_räume.`EL_Lichtruf - Terminal Stk`, tabelle_räume.`EL_Lichtruf - Steckmodul Stk`, tabelle_räume.`EL_Lichtfarbe K`, tabelle_räume.`EL_Notlicht RZL Stk`, tabelle_räume.`EL_Notlicht SL Stk`, tabelle_räume.`EL_Jalousie JA/NEIN`, tabelle_räume.`HT_Luftmenge m3/h`, CAST(REPLACE(tabelle_räume.`HT_Luftwechsel 1/h`,',','.') as decimal(10,2)) AS `HT_Luftwechsel`, tabelle_räume.`HT_Kühlung Lueftung W`, tabelle_räume.`HT_Heizlast W`, tabelle_räume.`HT_Kühllast W`, tabelle_räume.`HT_Fussbodenkühlung W`, tabelle_räume.`HT_Kühldecke W`, tabelle_räume.`HT_Fancoil W`, tabelle_räume.`HT_Summe Kühlung W`, tabelle_räume.`HT_Raumtemp Sommer °C`, tabelle_räume.`HT_Raumtemp Winter °C`, tabelle_räume.`AR_Ausstattung`, tabelle_räume.`Aufenthaltsraum` "
         . "FROM tabelle_planungsphasen INNER JOIN (tabelle_projekte INNER JOIN tabelle_räume ON tabelle_projekte.idTABELLE_Projekte = tabelle_räume.tabelle_projekte_idTABELLE_Projekte) ON tabelle_planungsphasen.idTABELLE_Planungsphasen = tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen WHERE (((tabelle_räume.idTABELLE_Räume)=" . $valueOfRoomID . "))";
 
     $result_rooms = $mysqli->query($sql);
@@ -148,8 +148,8 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $electricalItems = [
             ['AV', 'AV: '],
             ['SV', 'SV: '],
-            ['ZSV', 'ZSV: '],
-            ['USV', 'USV: '],
+            //   ['ZSV', 'ZSV: '],
+            //      ['USV', 'USV: '],
             ['IT Anbindung', 'IT Anschl.: ']
         ];
 
@@ -293,8 +293,8 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                 ['ET_Anschlussleistung_W', 'Raum Anschlussleistung:'],
                 ['EL_AV Steckdosen Stk', 'AV SSD: '],
                 ['EL_SV Steckdosen Stk', 'SV SSD: '],
-                ['EL_ZSV Steckdosen Stk', 'ZSV SSD: '],
-                ['EL_USV Steckdosen Stk', 'USV SSD: '],
+                //      ['EL_ZSV Steckdosen Stk', 'ZSV SSD: '],
+                //      ['EL_USV Steckdosen Stk', 'USV SSD: '],
                 ['ET_RJ45-Ports', 'RJ45-Ports: ']
 
             ];
@@ -308,7 +308,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                 if ($item[0] === 'EL_AV Steckdosen Stk') {
                     multicell_with_nr($pdf, $row[$item[0]], "Stk", $font_size, $e_C_3rd);
                 } else if ($item[0] === "ET_Anschlussleistung_W") {
-                    multicell_with_nr($pdf, kify($row[$item[0]]), "kW", $font_size, $e_C_3rd);
+                    multicell_with_nr($pdf, kify($row[$item[0]]), "W", $font_size, $e_C_3rd);
                 } else {
                     multicell_with_str($pdf, $row[$item[0]], $e_C_3rd, "Stk");
                 }
@@ -329,7 +329,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $Block_height = 6 + $horizontalSpacerLN2 + getAnmHeight($pdf, $row['Anmerkung HKLS'], $SB);
         block_label_queer($block_header_w, $pdf, "Haustechnik", $Block_height, $block_header_height, $SB);
 
-        multicell_text_hightlight($pdf, $e_C, $font_size, "HT_Waermeabgabe_W", "Abwärme MT: ", $parameter_changes_t_räume);
+        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "HT_Waermeabgabe_W", "Abwärme MT: ", $parameter_changes_t_räume);
         $abwrem_out = ($row['HT_Waermeabgabe_W'] === "0" || $row['HT_Waermeabgabe_W'] == 0 || $row['HT_Waermeabgabe_W'] == "-")
             ? "k.A."
             : kify($row['HT_Waermeabgabe_W']) . "W";
@@ -340,17 +340,20 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             ['H6020', 'ÖNORM H6020: ', ''],
             ['HT_Abluft_Digestorium_Stk', 'Abluft Digestorium:', 'Stk'],
             ['HT_Punktabsaugung_Stk', 'Punktabsaugung:', 'Stk'],
-            ['HT_Abluft_Sicherheitsschrank_Stk', 'Abluft Sicherheitsschrank:', 'Stk'],
-            ['HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'Abluft Sicherheitsschrank Unterbau:', 'Stk']
+            ['HT_Abluft_Vakuumpumpe', 'Abluft Vakuumpumpe:', 'Stk'],
+            ['VE_Wasser', 'Voll entsalztes Wasser:', '']
+
         ];
 
         foreach ($haustechnikItems as $item) {
-            if ($pdf->GetX() > 350) {
+            if ($item[0] === 'HT_Abluft_Digestorium_Stk') {
                 $pdf->Ln($horizontalSpacerLN2);
                 $pdf->MultiCell($block_header_w + $einzugPlus, $block_header_height, "", 0, 'L', 0, 0);
             }
             if ($item[0] === 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk' || $item[0] === 'HT_Abluft_Sicherheitsschrank_Stk') {
                 multicell_text_hightlight($pdf, $e_C + $e_C_3rd, $font_size, $item[0], $item[1], $parameter_changes_t_räume);
+            } else if ($item[0] === "VE_Wasser") {
+                multicell_text_hightlight($pdf, $e_C, $font_size, $item[0], $item[1], $parameter_changes_t_räume);
             } else {
                 multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, $item[0], $item[1], $parameter_changes_t_räume);
             }
@@ -359,23 +362,13 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
             if ($item[0] === "H6020") {
                 multicell_with_str($pdf, $value, $e_C, $item[2]);
+            } else if ($item[0] === "HT_Abluft_Vakuumpumpe") {
+                multicell_with_str($pdf, $value, $e_C_2_3rd, $item[2]);
             } else {
                 multicell_with_str($pdf, $value, $e_C_3rd, $item[2]);
             }
         }
 
-        //$pdf->Ln($horizontalSpacerLN2);
-        // $pdf->Multicell($block_header_w, 1, "", 0, 0, 0, 0);
-
-        $additionalItems = [
-            // ['VE_Wasser', 'Voll entsalztes Wasser:', ''],
-            // ['HT_Notdusche', 'Notdusche:', '']
-        ];
-
-        foreach ($additionalItems as $item) {
-            multicell_text_hightlight($pdf, $e_C, $font_size, $item[0], $item[1], $parameter_changes_t_räume);
-            multicell_with_str($pdf, $row[$item[0]], $e_C_3rd, $item[2]);
-        }
 
         $pdf->Ln($horizontalSpacerLN2);
         if (trim($row['Anmerkung HKLS'] ?? "") !== "") {

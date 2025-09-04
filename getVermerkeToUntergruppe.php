@@ -61,7 +61,6 @@ while ($row = $result->fetch_assoc()) {
     echo "<td id='bearbeitungsstatus" . $row["idtabelle_Vermerke"] . "' value ='" . $row['Bearbeitungsstatus'] . "'>" . $row['Bearbeitungsstatus'] . "</td>";
     echo "<td id='vermerkTyp" . $row["idtabelle_Vermerke"] . "' value ='" . $row['Vermerkart'] . "'>" . $row['Vermerkart'] . "</td>";
     echo "<td><button type='button' id=" . $row['idtabelle_Vermerke'] . " class='btn btn-outline-dark btn-sm' value='showVermerkZustaendigkeit' data-bs-toggle='modal' data-bs-target='#showVermerkZustaendigkeitModal'><i class='fas fa-users'></i></button></td>";
-    //
     echo "<td id='lot" . $row["idtabelle_Vermerke"] . "' value ='" . $row['tabelle_lose_extern_idtabelle_Lose_Extern'] . "'>" . $row['tabelle_lose_extern_idtabelle_Lose_Extern'] . "</td>";
 
     echo "<td id='rooms" . $row["idtabelle_Vermerke"] . "'>" . htmlspecialchars($row['RaumIDs'] ?? '') . "</td>";
@@ -126,6 +125,7 @@ echo "</tbody></table>";
                     echo "<div class='form-group'>
                                         <label for='untergruppe'>Untergruppe:</label>									
                                         <select class='form-control form-control-sm' id='untergruppe' name='untergruppe'>";
+
                     while ($row = $result1->fetch_assoc()) {
                         if ($row["idtabelle_Vermerkuntergruppe"] == filter_input(INPUT_GET, 'vermerkUntergruppenID')) {
                             echo "<option value=" . $row["idtabelle_Vermerkuntergruppe"] . " selected>" . $row["Untergruppennummer"] . " - " . $row["Untergruppenname"] . "</option>";
@@ -147,9 +147,11 @@ echo "</tbody></table>";
                     <div class='form-group'>
                         <label for='vermerkTyp'>Vermerktyp:</label>
                         <select class='form-control form-control-sm' id='vermerkTyp' name='vermerkTyp'>
-                            <option value='I' selected>Info</option>
-                            <option value='B'>Bearbeitung</option>
-                            <option value='N'>Nutzerwunsch</option>
+                            <option value='Info'>Info</option>
+                            <option value='Bearbeitung'>Bearbeitung</option>
+                            <option value='Nutzerwunsch'>Nutzerwunsch</option>
+                            <option value='Freigegeben'>Freigegeben</option>
+
                         </select>
                     </div>
                     <div class="form-group">
@@ -349,24 +351,30 @@ echo "</tbody></table>";
                 $('#topDivSearch2 label').remove();
                 $('#topDivSearch2').removeClass("col-md-6").children().children().removeClass("form-control form-control-sm");
                 $('#topDivSearch2').appendTo('#CardHeaderVermerUntergruppen').children().children().addClass("btn btn-sm btn-outline-dark");
-
                 $("#tableVermerke tbody").on('click', "button[value='changeVermerk']", function () {
                     let rowData = tableVermerke.row($(this).closest('tr')).data();
                     vermerkID = rowData[0];
                     $('#vermerkStatus').val(rowData[6]).trigger('change');
                     $('#vermerkText').val(decodeHtmlEntities(rowData[2]));
                     $('#faelligkeit').val(rowData[4]);
-                    $('#vermerkTyp').val(rowData[7]).trigger('change');
-                    if (rowData[7] === "Bearbeitung") {
+
+                    let temp = rowData[7];
+                    $("#vermerkTyp").val(temp).trigger('change');
+
+
+                    if (rowData[7] === "Bearbeitung" || rowData[7] === "B") {
                         $("#faelligkeit").prop('disabled', false);
                     } else {
                         $("#faelligkeit").prop('disabled', true);
                     }
                     let losValue = rowData[9] || 0;
                     $('#los').val(losValue).trigger('change');
+
                     let raumIDs = rowData[10];
                     let roomArray = raumIDs.split(',').map(id => id.trim());
                     $('#room').val(roomArray).trigger('change');
+
+                    console.log("Debug table Click:", raumIDs, roomArray, $('#room').val())
 
                     $('#changeVermerkModal').modal('show');
                 });
@@ -415,7 +423,7 @@ echo "</tbody></table>";
         //   console.log("AddVermerk. Rooms:", rooms);
         let los = $("#los").val();
         let vermerkStatus = $("#vermerkStatus").val();
-        let vermerkTyp = $("#vermerkTyp").val().charAt(0);
+        let vermerkTyp = $("#vermerkTyp").val();
         let vermerkText = $("#vermerkText").val();
         let faelligkeitDatum = $("#faelligkeit").val();
         if (vermerkTyp === "Info") {
@@ -423,6 +431,7 @@ echo "</tbody></table>";
         }
         let vermerkUntergruppenID = <?php echo filter_input(INPUT_GET, 'vermerkUntergruppenID') ?>;
 
+       //  console.log("Debug addV: ", vermerkUntergruppenID, vermerkTyp);
 
         if (room !== "" && los !== "" && vermerkStatus !== "" && vermerkTyp !== "" && vermerkText !== "") {
             $('#changeVermerkModal').modal('hide');
@@ -479,7 +488,7 @@ echo "</tbody></table>";
         let rooms = $("#room").val();
         let los = $("#los").val();
         let vermerkStatus = $("#vermerkStatus").val();
-        let vermerkTyp = $("#vermerkTyp").val().charAt(0);
+        let vermerkTyp = $("#vermerkTyp").val();
         let vermerkText = $("#vermerkText").val();
         let faelligkeitDatum = $("#faelligkeit").val();
         let untergruppenID = $("#untergruppe").val();
@@ -487,7 +496,10 @@ echo "</tbody></table>";
             faelligkeitDatum = null;
         }
         let vermerkUntergruppenID = <?php echo filter_input(INPUT_GET, 'vermerkUntergruppenID') ?>;
-        if (room !== "" && los !== "" && vermerkStatus !== "" && vermerkTyp !== "" && vermerkText !== "") {
+
+        console.log("Debug saveV: ", rooms);
+
+        if (room !== "" && los !== "" && vermerkStatus !== "" && vermerkTyp !== "" && vermerkText !== "" && vermerkTyp !== null) {
             $('#changeVermerkModal').modal('hide');
             $.ajax({
                 url: "saveVermerk.php",

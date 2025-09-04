@@ -44,7 +44,7 @@ if ($stmt->execute()) {
     // Remove previous room links
     $mysqli->query("DELETE FROM tabelle_vermerke_has_tabelle_räume WHERE tabelle_vermerke_idTabelle_vermerke = $vermerkID");
     // Add new links
-    $roomArray = $_GET['room'] ?? [];
+    $roomArray = $_POST['room'] ?? [];
     foreach ($roomArray as $roomID) {
         if ($roomID != "0" && $roomID != "") {
             $sql_room = "INSERT INTO tabelle_vermerke_has_tabelle_räume

@@ -357,7 +357,6 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $haustechnikItems = [
             ['H6020', 'H6020: ', ''],
             ['HT_Abluft_Digestorium_Stk', 'Abluft Digestorium:', 'Stk'],
-
             ['HT_Abluft_Sicherheitsschrank_Stk', 'Abluft Sicherheitsschrank:', 'Stk'],
             ['HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'Abluft Sicherheitsschrank Unterbau:', 'Stk']
         ];
@@ -389,13 +388,21 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $additionalItems = [
             ['VE_Wasser', 'Voll entsalztes Wasser:', ''],
             ['HT_Notdusche', 'Notdusche:', ''],
-            ['HT_Punktabsaugung_Stk', 'Punktabsaugung:', 'Stk']
+            ['HT_Punktabsaugung_Stk', 'Punktabsaugung:', 'Stk'],
+            ["HT_Raumtemp Sommer °C", "Max. Raumtemp.", "°C"]
         ];
 
         foreach ($additionalItems as $item) {
-            multicell_text_hightlight($pdf, $e_C, $font_size, $item[0], $item[1], $parameter_changes_t_räume);
-            multicell_with_str($pdf, $row[$item[0]], $e_C_2_3rd, $item[2]);
+
+            if ($item[0] === 'HT_Punktabsaugung_Stk' || $item[0] === 'HT_Raumtemp Sommer °C') {
+                multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, $item[0], $item[1], $parameter_changes_t_räume);
+                multicell_with_str($pdf, $row[$item[0]], $e_C_2_3rd, $item[2]);
+            } else {
+                multicell_text_hightlight($pdf, $e_C, $font_size, $item[0], $item[1], $parameter_changes_t_räume);
+                multicell_with_str($pdf, $row[$item[0]], $e_C_2_3rd, $item[2]);
+            }
         }
+
 
         $pdf->Ln($horizontalSpacerLN2);
         anmA3($pdf, $row['Anmerkung HKLS'], $SB, $block_header_w);

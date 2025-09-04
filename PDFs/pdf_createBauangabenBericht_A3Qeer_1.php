@@ -262,6 +262,10 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         multicell_with_str($pdf, translate_1_to_yes($row['HT_Warmwasser']), $e_C_3rd, "");
 
 
+
+
+
+
         $pdf->Ln($horizontalSpacerLN2);
         anmA3($pdf, $row['Anmerkung HKLS'], $SB, $block_header_w);
 
