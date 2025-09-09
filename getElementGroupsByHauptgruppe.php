@@ -95,7 +95,7 @@ $mysqli->close();
 
     $('#elementHauptgruppe').change(function () {
         let hauptgruppeID = this.value;
-        console.log("HaupgruppernID:" ,hauptgruppeID);
+        console.log("HaupgruppernID:", hauptgruppeID);
         let gewerkID = $("#elementGewerk").val();
         $.ajax({
             url: "getElementGroupsByHauptgruppe.php",
@@ -109,7 +109,7 @@ $mysqli->close();
 
     $('#elementGruppe').change(function () {
         let gruppeID = this.value;
-        console.log("GetElByHauptgr: GruppenID", gruppeID);
+        // console.log("GetElByHauptgr: GruppenID", gruppeID);
         if (gruppeID !== 0) {
             $.ajax({
                 url: "getElementsByGroup.php",

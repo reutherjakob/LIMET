@@ -49,10 +49,10 @@ function addDefaultVermerkeForEachRommInArea(vermerkgruppeId, raumbereiche) {
             action: "addVermerkforEachRoom"
         },
         success: function (response) {
-            console.log("AJAX success callback triggered", response);
+            //console.log("AJAX success callback triggered", response);
             if (response.success) {
                 besprechung.roomVermerkMap = {};
-                console.log("Initialized roomVermerkMap");
+                //  console.log("Initialized roomVermerkMap");
                 if (response.addedVermerke && response.addedVermerke.length > 0) {
                     console.log("Processing addedVermerke", response.addedVermerke);
                     response.addedVermerke.forEach(item => {
@@ -81,13 +81,6 @@ function addDefaultVermerkeForEachRommInArea(vermerkgruppeId, raumbereiche) {
                         }
                     });
                 }
-                //else {
-                //console.log("No skipped entries found");
-                //}
-                //console.log("Final roomVermerkMap contents:");
-                //for (const [roomID, vermerkIDs] of Object.entries(besprechung.roomVermerkMap)) {
-                // console.log(`Room ID: ${roomID}, Vermerk ID: [${vermerkIDs.join(", ")}]`);
-                // }
             } else {
                 console.log("Response success false:", response);
             }
@@ -98,8 +91,6 @@ function addDefaultVermerkeForEachRommInArea(vermerkgruppeId, raumbereiche) {
 
     });
 }
-
-
 
 
 $('#editVermerkForm').on('submit', function (e) {
@@ -118,9 +109,12 @@ $('#editVermerkForm').on('submit', function (e) {
         success: function (response) {
             if (response.success) {
                 $('#editVermerkModal').modal('hide');
-                // reload table data
                 $('#vermerkeTable').DataTable().ajax.reload(null, false);
                 alert('Vermerk erfolgreich aktualisiert!');
+                setTimeout(function () {
+                    refreshPDF();
+                }, 500)
+
             } else {
                 alert('Fehler beim Aktualisieren des Vermerks: ' + response.message);
             }

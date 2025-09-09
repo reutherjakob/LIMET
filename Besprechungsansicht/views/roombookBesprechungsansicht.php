@@ -239,10 +239,10 @@ $conn->close();
 
         <div class="col-lg-10 mx-auto" id="tableCardCol">
             <div class="card">
-                <div class="card-header d-flex align-items-center" style=" height: 60px; ">
+                <div class="card-header d-inline-flex align-items-baseline" style=" height: 60px; ">
                     <button class="btn btn-outline-dark fa fa-arrow-left" id="ToggleCard"></button>
 
-                    <div class="row d-inline-flex align-items-center w-100">
+                    <div class="row d-inline-flex align-items-baseline w-100 border-light">
                         <div class=" col-6 d-flex"
                              id="CardHeaderHoldingDatatableManipulators"></div>
                         <div class=" col-6 d-flex justify-content-end"
@@ -311,6 +311,7 @@ include "../../modal_elementHistory.html";
     // let excelfilename;
     let besprechung;
     $(document).ready(function () {
+
         besprechung = new Besprechung({});
 
         besprechung.create(
@@ -353,18 +354,15 @@ include "../../modal_elementHistory.html";
             besprechung.consolidateMultipleElementsperRoom($('#raumbereich').val());
             loadPivotTable();              //pivotLoader.js
             addUntergruppePerRaumbereich(); //vermerke.js
-            console.log("FitlerFormSubmit: ", besprechung.toPayload());
+            //console.log("FitlerFormSubmit: ", besprechung.toPayload());
             addDefaultVermerkeForEachRommInArea(besprechung.id, $('#raumbereich').val()); //vermerke.js
             refreshPDF();
-            //getVermerke();   TODO!!!
-
+            getVermerke();
         });
 
 
         $('#ResetBesprechung').on('click', function () {
-            // ('#filterForm')[0].reset();
             $('#vermerke').html('');
-
             $('#raumbereich').val(null).trigger('change');
             $('#zusatzRaeume').val(null).trigger('change');
             $('#zusatzElemente').val(null).trigger('change');
@@ -385,9 +383,10 @@ include "../../modal_elementHistory.html";
 
         $('#ResetPDF').on("click", function () {
             refreshPDF();//
+            getVermerke();
         });
         $('#ResetPivot').on("click", function () {
-           editablePivot.reloadPivotTable();
+            editablePivot.reloadPivotTable();
         });
 
         $('#PDFframebtn').on('click', function () {
@@ -405,12 +404,26 @@ include "../../modal_elementHistory.html";
             new bootstrap.Popover(popoverTriggerEl);
         });
 
+
+        $("#show-history-btn").click(function () {
+            const roombookID = this.value;
+            $.ajax({
+                url: '../../getCommentHistory.php',
+                type: 'POST',
+                data: {"roombookID": roombookID},
+                success(data) {
+
+                    $('#mbodyHistory').html(data);
+                },
+            });
+        });
+
+
     }); // doc ready
 
     function getVermerke() {
+        console.log("Getting Vermerke.");
         try {
-
-
             if ($.fn.dataTable.isDataTable('#vermerkeTable')) {
                 vermerkeTable.ajax.reload();
             } else {
@@ -454,7 +467,6 @@ include "../../modal_elementHistory.html";
                     info: false,
                     initComplete: function () {
                         setTimeout(() => {
-
                             $(document).on('click', '.editVermerkBtn', function () {
                                 console.log("ataching editVermerkBtn bnt listener");
                                 const id = $(this).data('id');
@@ -464,7 +476,7 @@ include "../../modal_elementHistory.html";
                                 $('#editVermerkText').val(text);
                                 $('#editVermerkModal').modal('show');
                             });
-                        }, 1000);
+                        }, 500);
                     }
                 });
             }
@@ -517,7 +529,7 @@ include "../../modal_elementHistory.html";
 
 
     function updateFilterFormState() {
-        console.log("updateFilterFormState: ", besprechung.id);
+        //  console.log("updateFilterFormState: ", besprechung.id);
         if (besprechung.id > 0) {
             $('#filterForm :input').prop('disabled', false);
             $('#openMeetingBtn').prop('disabled', true);

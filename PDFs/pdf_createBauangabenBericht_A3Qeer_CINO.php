@@ -7,6 +7,44 @@ include 'pdf_createMTTabelle.php';
 
 check_login();
 
+
+function renderElectricalItems($pdf, $items, $parameter_changes, $row, $font_size, $col_map, $horizontalSpacerLN2, $block_header_w): void
+{
+    foreach ($items as $item) {
+        if ($pdf->GetX() > 300) {
+            $pdf->Ln($horizontalSpacerLN2);
+            $pdf->MultiCell($block_header_w, 10, "", 0, 'L', 0, 0);
+        }
+
+        multicell_text_hightlight(
+            $pdf,
+            $item['col'],
+            $font_size,
+            $item['field'],
+            $item['label'],
+            $parameter_changes
+        );
+        if (!empty($item['show_checkbox'])) {
+            hackerlA3($pdf, $font_size, $col_map['checkbox'], $row[$item['field']], "JA");
+        } else {
+            switch ($item['format'] ?? '') {
+                case 'kify':
+                    multicell_with_nr($pdf, kify($row[$item['field']]), $item['unit'], $font_size, $col_map['value']);
+                    break;
+                case 'number':
+                    multicell_with_nr($pdf, $row[$item['field']], $item['unit'], $font_size, $col_map['value']);
+                    break;
+                case 'string':
+                    multicell_with_str($pdf, $row[$item['field']], $col_map['value'], $item['unit']);
+                    break;
+                default:
+                    // fallback
+                    multicell_with_str($pdf, $row[$item['field']], $col_map['value'], $item['unit'] ?? '');
+            }
+        }
+    }
+}
+
 $roomIDs = filter_input(INPUT_GET, 'roomID');
 $roomIDsArray = explode(",", $roomIDs);
 $Änderungsdatum = getValidatedDateFromURL();
@@ -81,7 +119,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
     while ($row = $result_rooms->fetch_assoc()) {
         $raumbereich = $row['Raumbereich Nutzer'];
         $pdf->SetFillColor(255, 255, 255);
-        raum_header($pdf, $horizontalSpacerLN3, $SB, $row['Raumbezeichnung'], $row['Raumnr'], $row['Raumbereich Nutzer'], $row['Geschoss'], $row['Bauetappe'], $row['Bauabschnitt'], "A3X", $parameter_changes_t_räume, "", $row['Nutzfläche']); //utils function
+        raum_header($pdf, $horizontalSpacerLN3, $SB, $row['Raumbezeichnung'], $row['Raumnr'], $row['Raumbereich Nutzer'], $row['Geschoss'], $row['Bauetappe'], $row['Nutzfläche'], "A3XC", $parameter_changes_t_räume, "", $row['Nutzfläche']); //utils function
 
         if (null != ($row['Anmerkung FunktionBO'])) {
             $outstr = format_text(clean_string(br2nl($row['Anmerkung FunktionBO'])));
@@ -95,44 +133,6 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         }
 
 //   ---------- ALLGEMEIN   ----------
-//
-        block_label_queer($block_header_w, $pdf, "Allgemein", $horizontalSpacerLN3 + 6, $block_header_height, $SB);
-
-        // multicell_text_hightlight($pdf, $e_C, $font_size, 'Fussboden OENORM B5220', "ÖNORM B5220: ", $parameter_changes_t_räume);
-        // multicell_with_str($pdf, $row['Fussboden OENORM B5220'], $e_C_3rd + $einzugPlus, "");
-        //
-        //
-        // $heightExceeds = false;
-        // multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "Allgemeine Hygieneklasse", "Hygieneklasse: ", $parameter_changes_t_räume);
-        // if ($row['Allgemeine Hygieneklasse'] != "") {
-        //
-        //     $heightExceeds = $pdf->getStringHeight($e_C_3rd * 4, $row['Allgemeine Hygieneklasse'], false, true, '', 1) > 6 ? true : false;
-        //     multicell_with_str($pdf, $row['Allgemeine Hygieneklasse'], $e_C_3rd * 4, "");
-        //
-        // } else {
-        //     multicell_with_str($pdf, " - ", $e_C_3rd, "");
-        // }
-        //
-        // multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'Strahlenanwendung', "Strahlenanw.: ", $parameter_changes_t_räume);
-        // if (($pdf->getStringHeight($e_C_3rd, $row['Strahlenanwendung'])) > 6) {
-        //     strahlenanw($pdf, $row['Strahlenanwendung'], 4 * $e_C_3rd, $font_size);
-        // } else {
-        //     strahlenanw($pdf, $row['Strahlenanwendung'], $e_C_3rd, $font_size);
-        // }
-        //
-        // multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "Laseranwendung", "Laseranw.: ", $parameter_changes_t_räume);
-        // hackerlA3($pdf, $font_size, $e_C_3rd, $row['Laseranwendung'], "JA");
-        //
-        // multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "Abdunkelbarkeit", "Abdunkelbarkeit: ", $parameter_changes_t_räume);
-        // hackerlA3($pdf, $font_size, $e_C_3rd, $row['Abdunkelbarkeit'], "JA");
-
-        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "Nutzfläche", "Fläche: ", $parameter_changes_t_räume);
-        multicell_with_nr($pdf, $row['Nutzfläche'], "m2", 10, 4 * $e_C_3rd);
-
-        $pdf->Ln($horizontalSpacerLN2);
-        // if ($heightExceeds) {
-        //     $pdf->Ln($horizontalSpacerLN);
-        // }
 
 //       ---------- ELEKTRO -----------
 
@@ -140,184 +140,84 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
         $Block_height = 6 + $horizontalSpacerLN + getAnmHeight($pdf, $row['Anmerkung Elektro'], $SB) + $i;
         block_label_queer($block_header_w, $pdf, "Elektro", $Block_height, $block_header_height, $SB);
-
-        multicell_text_hightlight($pdf, $e_C, $font_size, "Anwendungsgruppe", "ÖVE E8101:", $parameter_changes_t_räume);
-        multicell_with_str($pdf, $row['Anwendungsgruppe'], $e_C_3rd + $einzugPlus, "");
-
-
         $electricalItems = [
-            ['AV', 'AV: '],
-            ['SV', 'SV: '],
-            //   ['ZSV', 'ZSV: '],
-            //      ['USV', 'USV: '],
-            ['IT Anbindung', 'IT Anschl.: ']
+            [
+                'field' => 'ET_Anschlussleistung_W',
+                'label' => 'Raum Anschlussleistung: ca.',
+                'cell_type' => 'highlight',
+                'col' => $e_C,
+                'show_checkbox' => false,
+                'unit' => 'W',
+                'format' => 'kify'
+            ],
+            [
+                'field' => 'AV',
+                'label' => 'AV: ',
+                'cell_type' => 'highlight',
+                'col' => $e_C_2_3rd,
+                'show_checkbox' => true,
+                'unit' => null,
+            ],
+            [
+                'field' => 'SV',
+                'label' => 'SV: ',
+                'cell_type' => 'highlight',
+                'col' => $e_C_2_3rd,
+                'show_checkbox' => true,
+                'unit' => null,
+            ],
+            [
+                'field' => 'IT Anbindung',
+                'label' => 'IT Anschl.: ',
+                'cell_type' => 'highlight',
+                'col' => $e_C_2_3rd,
+                'show_checkbox' => true,
+                'unit' => null,
+            ],
+            [
+                'field' => 'ET_RJ45-Ports',
+                'label' => 'RJ45-Ports: ',
+                'cell_type' => 'highlight',
+                'col' => $e_C_2_3rd,
+                'show_checkbox' => true,
+                'unit' => null,
+            ],
+            [
+                'field' => ' ',
+                'label' => ' ',
+                'cell_type' => '',
+                'col' => $e_C,
+                'show_checkbox' => false,
+                'unit' => '',
+                'format' => ''
+            ],
+            [
+                'field' => 'EL_AV Steckdosen Stk',
+                'label' => 'AV SSD: ',
+                'cell_type' => 'highlight',
+                'col' => $e_C_2_3rd,
+                'show_checkbox' => false,
+                'unit' => 'Stk',
+                'format' => 'number'
+            ],
+            [
+                'field' => 'EL_SV Steckdosen Stk',
+                'label' => 'SV SSD: ',
+                'cell_type' => 'highlight',
+                'col' => $e_C_2_3rd,
+                'show_checkbox' => false,
+                'unit' => 'Stk',
+                'format' => 'string'
+            ]
         ];
 
-        foreach ($electricalItems as $item) {
-            multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, $item[0], $item[1], $parameter_changes_t_räume);
-            hackerlA3($pdf, $font_size, $e_C_3rd, $row[$item[0]], "JA");
-        }
+        $col_map = [
+            'checkbox' => $e_C_3rd,
+            'value' => $e_C_3rd
+        ];
 
-        if ($isnotVorentwurf && false) {
-            multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'EL_Roentgen 16A CEE Stk', "CEE16A Röntgen", $parameter_changes_t_räume);
-            multicell_with_str($pdf, $row['EL_Roentgen 16A CEE Stk'], $e_C_3rd, "Stk");
-        }
-
-        // $pdf->Ln($horizontalSpacerLN);
-        // $pdf->MultiCell($block_header_w, $block_header_height, "", 0, 'L', 0, 0);
-        // $outsr = "";
-        //
-        // $powerItems = [
-        //     ['ET_Anschlussleistung_W', 'Raum Anschlussleistung:', $e_C],
-        //     ['ET_Anschlussleistung_AV_W', 'AV[Raum]: ', $e_C_2_3rd],
-        //     ['ET_Anschlussleistung_SV_W', 'SV[Raum]: ', $e_C_2_3rd],
-        //     ['ET_Anschlussleistung_ZSV_W', 'ZSV[Raum]: ', $e_C_2_3rd],
-        //     ['ET_Anschlussleistung_USV_W', 'USV[Raum]: ', $e_C_2_3rd]
-        // ];
-        //
-        // foreach ($powerItems as $item) {
-        //     multicell_text_hightlight($pdf, $item[2], $font_size, $item[0], $item[1], $parameter_changes_t_räume);
-        //
-        //     $outsr = ($row[$item[0]] != "0") ? kify($row[$item[0]]) . "W" : "-";
-        //     $space = $e_C_3rd;
-        //     if ($item[2] == $e_C) {
-        //         $space = $e_C_3rd + $einzugPlus;
-        //     }
-        //     multicell_with_str($pdf, $outsr, $space, "");
-        // }
-
-
-        $pdf->MultiCell($block_header_w, $block_header_height, "", 0, 'L', 0, 0);
-        if ($isnotVorentwurf) {
-            //TODO: FIX ELEMNT POWER CONSUMPTION INCLUDING GLZ
-            //
-            // $SQL = "SELECT tpep.Wert,
-            //            tpep.Einheit,
-            //            tpep.tabelle_Varianten_idtabelle_Varianten,
-            //            tpep.tabelle_elemente_idTABELLE_Elemente,
-            //            tp.Bezeichnung,
-            //            tpk.Kategorie,
-            //            tpk.idTABELLE_Parameter_Kategorie,
-            //            tp.idTABELLE_Parameter,
-            //            tre.Anzahl
-            //     FROM tabelle_parameter_kategorie tpk
-            //              INNER JOIN
-            //          tabelle_parameter tp
-            //          ON tpk.idTABELLE_Parameter_Kategorie = tp.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
-            //              INNER JOIN
-            //          tabelle_projekt_elementparameter tpep ON tp.idTABELLE_Parameter = tpep.tabelle_parameter_idTABELLE_Parameter
-            //              INNER JOIN
-            //          tabelle_räume_has_tabelle_elemente tre
-            //          ON tpep.tabelle_elemente_idTABELLE_Elemente = tre.tabelle_elemente_idTABELLE_Elemente
-            //     WHERE tpep.tabelle_projekte_idTABELLE_Projekte =  " . $_SESSION['projectID'] . "
-            //       AND tp.`Bauangaben relevant` = 1
-            //       AND tre.tabelle_räume_idTABELLE_Räume = " . $valueOfRoomID . "
-            //       AND tpk.Kategorie = 'Elektro'
-            //       AND tpep.tabelle_Varianten_idtabelle_Varianten = tre.tabelle_Varianten_idtabelle_Varianten
-            //     ORDER BY tp.idTABELLE_Parameter DESC;";
-            // 
-            // $resultE = $mysqli->query($SQL);
-            // $netzart_options = ["AV", "SV", "ZSV", "USV"];
-            // $netzart_dict = [];
-            // $leistung_dict = array_fill_keys($netzart_options, 0);
-            // $gleichzeitigkeit = [];
-            // $errors = [];
-
-            // foreach ($resultE as $key => $rowE) {
-            //
-            //     $wert = $rowE['Wert'];
-            //     $einheit = $rowE['Einheit'];
-            //     $variante_id = $rowE['tabelle_Varianten_idtabelle_Varianten'];
-            //     $element_id = $rowE['tabelle_elemente_idTABELLE_Elemente'];
-            //     $bezeichnung = $rowE['Bezeichnung'];
-            //     $kategorie = $rowE['Kategorie'];
-            //     $parameter_kategorie_id = $rowE['idTABELLE_Parameter_Kategorie'];
-            //     $parameter_id = $rowE['idTABELLE_Parameter'];
-            //     $anzahl = $rowE['Anzahl'];
-            //     //echo "Parameter " . $bezeichnung . ";<br>";
-            //     // Check for empty values in parameters 118 and 82
-            //     if (($parameter_id == 118 || $parameter_id == 82) && $wert === "") {
-            //         $errors[] = "Error: Parameter ID $parameter_id is empty for Element ID $element_id";
-            //     }
-            //     // Process Netzart
-            //     // echo "parameterID: " . $parameter_id . "<br>";
-            //     if ($parameter_id == 82) {
-            //         if (!in_array($wert, $netzart_options)) {
-            //             $errors[] = "Error: Invalid Netzart for Element ID $element_id: $wert";
-            //         } else {
-            //             $netzart_dict[$element_id] = $wert;
-            //         }
-            //     }
-            //     // Store Gleichzeitigkeit and Leistung
-            //     if ($parameter_id == 133) {
-            //         $gleichzeitigkeit[$element_id] = $wert === ( "" || null)  ? 1 : floatval(str_replace(',', '.', $wert));
-            //          echo "Wert: " .  $wert . "<br>" ."Gleichzeitigkeit: ". $gleichzeitigkeit[$element_id]. "<br>";
-            //
-            //     } elseif ($parameter_id == 18) {
-            //         $leistung = floatval($wert) * getUnitMultiplier($einheit) * $anzahl;
-            //         //echo $leistung . "<br> ";
-            //         if (isset($netzart_dict[$element_id]) && isset($gleichzeitigkeit[$element_id])) {
-            //             $netzart = $netzart_dict[$element_id];
-            //             $gleichzeitigkeit_wert = (!isset($gleichzeitigkeit[$element_id]) || $gleichzeitigkeit[$element_id] === 0 || $gleichzeitigkeit[$element_id] === null)
-            //                 ? 1
-            //                 : $gleichzeitigkeit[$element_id];
-            //
-            //             echo $gleichzeitigkeit_wert; echo "\n <br>";
-            //             $leistung_dict[$netzart] += $gleichzeitigkeit_wert * $leistung;
-            //         }
-            //     }
-            // }
-            // $total_sum = array_sum($leistung_dict);
-            //
-            //
-            // $pdf->MultiCell($e_C, $block_header_height, "Elemente Leistung inkl. Glz:", 0, 'L', 0, 0);
-            // multicell_with_nr($pdf, kify($total_sum), "W", $font_size, $e_C_3rd + $einzugPlus);
-            // foreach ($netzart_options as $NA) {
-            //     $pdf->MultiCell($e_C_2_3rd, $block_header_height, $NA . "(El.& Glz.):", 0, 'L', 0, 0);
-            //     if ($leistung_dict[$NA] != 0) {
-            //         $outsr = kify($leistung_dict[$NA]) . "W";
-            //     } else {
-            //         $outsr = "-";
-            //     }
-            //     multicell_with_str($pdf, $outsr, $e_C_3rd, "");
-            // }
-
-
-            // $pdf->MultiCell($e_C, $block_header_height, "", 0, 'L', 0, 0);
-            // multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'ET_16A_3Phasig_Einzelanschluss', "Einzelanschl. 16A: ", $parameter_changes_t_räume);
-            // multicell_with_str($pdf, $row['ET_16A_3Phasig_Einzelanschluss'], $e_C_3rd, "Stk");
-
-            $pdf->Ln($horizontalSpacerLN);
-            $pdf->MultiCell($block_header_w + $einzugPlus, $block_header_height, "", 0, 'L', 0, 0);
-            $electricalItems = [
-                ['ET_Anschlussleistung_W', 'Raum Anschlussleistung:'],
-                ['EL_AV Steckdosen Stk', 'AV SSD: '],
-                ['EL_SV Steckdosen Stk', 'SV SSD: '],
-                //      ['EL_ZSV Steckdosen Stk', 'ZSV SSD: '],
-                //      ['EL_USV Steckdosen Stk', 'USV SSD: '],
-                ['ET_RJ45-Ports', 'RJ45-Ports: ']
-
-            ];
-
-            foreach ($electricalItems as $item) {
-                if ($item[0] === "ET_Anschlussleistung_W") {
-                    multicell_text_hightlight($pdf, $e_C, $font_size, $item[0], $item[1], $parameter_changes_t_räume);
-                } else {
-                    multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, $item[0], $item[1], $parameter_changes_t_räume);
-                }
-                if ($item[0] === 'EL_AV Steckdosen Stk') {
-                    multicell_with_nr($pdf, $row[$item[0]], "Stk", $font_size, $e_C_3rd);
-                } else if ($item[0] === "ET_Anschlussleistung_W") {
-                    multicell_with_nr($pdf, kify($row[$item[0]]), "W", $font_size, $e_C_3rd);
-                } else {
-                    multicell_with_str($pdf, $row[$item[0]], $e_C_3rd, "Stk");
-                }
-            }
-            $pdf->Ln($horizontalSpacerLN2);
-
-        }
-
-        //$pdf->Ln($horizontalSpacerLN2);
+        renderElectricalItems($pdf, $electricalItems, $parameter_changes_t_räume, $row, $font_size, $col_map, $horizontalSpacerLN2, $block_header_w);
+        $pdf->Ln($horizontalSpacerLN2);
         if ("" !== trim($row['Anmerkung Elektro'] ?? "")) {
             anmA3($pdf, $row['Anmerkung Elektro'], $SB, $block_header_w);
         }
@@ -329,24 +229,23 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $Block_height = 6 + $horizontalSpacerLN2 + getAnmHeight($pdf, $row['Anmerkung HKLS'], $SB);
         block_label_queer($block_header_w, $pdf, "Haustechnik", $Block_height, $block_header_height, $SB);
 
-        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "HT_Waermeabgabe_W", "Abwärme MT: ", $parameter_changes_t_räume);
+        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "HT_Waermeabgabe_W", "Abwärme: ca.", $parameter_changes_t_räume);
         $abwrem_out = ($row['HT_Waermeabgabe_W'] === "0" || $row['HT_Waermeabgabe_W'] == 0 || $row['HT_Waermeabgabe_W'] == "-")
             ? "k.A."
             : kify($row['HT_Waermeabgabe_W']) . "W";
         multicell_with_str($pdf, $abwrem_out, $e_C_3rd, "");
 
         $haustechnikItems = [
-            ["HT_Raumtemp Sommer °C", "max. Raumtemp.:", " °C"],
-            ['H6020', 'ÖNORM H6020: ', ''],
+            ['H6020', ': ', 'Norm'],
+            ['VE_Wasser', 'Voll entsalztes Wasser:', ''],
             ['HT_Abluft_Digestorium_Stk', 'Abluft Digestorium:', 'Stk'],
             ['HT_Punktabsaugung_Stk', 'Punktabsaugung:', 'Stk'],
-            ['HT_Abluft_Vakuumpumpe', 'Abluft Vakuumpumpe:', 'Stk'],
-            ['VE_Wasser', 'Voll entsalztes Wasser:', '']
+            ['HT_Abluft_Vakuumpumpe', 'Abluft Vakuumpumpe:', 'Stk']
 
         ];
 
         foreach ($haustechnikItems as $item) {
-            if ($item[0] === 'HT_Abluft_Digestorium_Stk') {
+            if ($item[0] === 'VE_Wasser') {
                 $pdf->Ln($horizontalSpacerLN2);
                 $pdf->MultiCell($block_header_w + $einzugPlus, $block_header_height, "", 0, 'L', 0, 0);
             }
@@ -369,19 +268,18 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             }
         }
 
-
         $pdf->Ln($horizontalSpacerLN2);
         if (trim($row['Anmerkung HKLS'] ?? "") !== "") {
             anmA3($pdf, $row['Anmerkung HKLS'], $SB, $block_header_w);
         }
 
-/// ----------- MEDGAS -----------
-//
+        /// ----------- MEDGAS -----------
+
         $Block_height = 12 + $horizontalSpacerLN + getAnmHeight($pdf, $row['Anmerkung MedGas'], $SB);
         block_label_queer($block_header_w, $pdf, "Med.-Gas", $Block_height, $block_header_height, $SB);
 
         $medGasItems = [
-            '1 Kreis O2', 'CO2', 'DL-tech', 'N2' //,    '2 Kreis O2',
+            '1 Kreis O2', 'CO2', 'DL-10', 'N2' //,    '2 Kreis O2',
         ];
         foreach ($medGasItems as $item) {
             $label = str_replace(['1 Kreis ', '2 Kreis ', '-'], ['1 Kreis ', '2 Kreise ', ''], $item);
@@ -400,18 +298,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             anmA3($pdf, $row['Anmerkung MedGas'], $SB, $block_header_w);
         }
 
-////     ------- BauStatik ---------
-//        if ("" !== trim($row['Anmerkung BauStatik'] ?? "")) {
-//            $Block_height = getAnmHeight($pdf, $row['Anmerkung BauStatik'], $SB);
-//            block_label_queer($block_header_w, $pdf, "Baustatik", $Block_height, $block_header_height, $SB);
-//            $pdf->Ln(1);
-//            anmA3($pdf, $row['Anmerkung BauStatik'], $SB, $block_header_w);
-//            $pdf->Ln($horizontalSpacerLN);
-//        }
-//
-//
-////     ------- MT Tabelle  ---------
-//
+        ////     ------- MT Tabelle  ---------
         // -------------------------Elemente im Raum laden--------------------------
         $sql = "SELECT tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
             tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten

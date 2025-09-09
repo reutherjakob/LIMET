@@ -2,20 +2,46 @@
 
 include "ElementParameterDefinitions.php";
 
-function generateSelectField($type, $options, $id, $currentValue)
+
+
+
+function generateSelectField($type, $options, $id, $currentValue): string
 {
     $idAttr = htmlspecialchars("{$type}_{$id}");
-    $html = "<td><select class='form-select form-select-sm' id='{$idAttr}'>";
+    $html = "<td>";
+    $html .= "<select class='form-select form-select-sm' id='{$idAttr}' name='{$idAttr}'>";
+    $found = false;
     foreach ($options as $option) {
         $optionEsc = htmlspecialchars($option);
-        $selected = ($currentValue === $option) ? " selected" : "";
+        if ($currentValue === $option) {
+            $selected = " selected";
+            $found = true;
+        } else {
+            $selected = "";
+        }
         $html .= "<option value='{$optionEsc}'{$selected}>{$optionEsc}</option>";
     }
-    $html .= "</select></td>";
+
+    // Add free text option
+    $freeTextOption = "Freitext";
+    // Selected if currentValue not found in predefined options
+    $selectedFreeText = (!$found) ? " selected" : "";
+    $html .= "<option value='__freetext__'{$selectedFreeText}>{$freeTextOption}</option>";
+    $html .= "</select>";
+
+    // Add hidden or visible input for free text (show only if free text selected)
+    $freeTextValue = (!$found) ? $currentValue : '';
+    $textInputStyle = (!$found) ? "" : "style='display:none;'";
+    $textInputId = htmlspecialchars("{$type}_{$id}_freetext");
+    $textInputValue = htmlspecialchars($freeTextValue);
+    $html .= "<input type='text' class='form-control form-control-sm mt-1' id='{$textInputId}' name='{$textInputId}' value='{$textInputValue}' size='30' {$textInputStyle} placeholder='Freitext eingeben...'>";
+
+    $html .= "</td>";
     return $html;
 }
 
-function generate_parameter_input($row, $type)
+
+function generate_parameter_input($row, $type): string
 {
     global $parameterFieldConfig; // Or pass as parameter / use static
 

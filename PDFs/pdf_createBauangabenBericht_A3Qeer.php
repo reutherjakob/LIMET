@@ -353,53 +353,40 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 //
         $Block_height = 6 + $horizontalSpacerLN2 + getAnmHeight($pdf, $row['Anmerkung HKLS'], $SB);
         block_label_queer($block_header_w, $pdf, "Haustechnik", $Block_height, $block_header_height, $SB);
+        $haustechnikParams = [
+            ['key' => 'H6020', 'label' => 'H6020: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+            ['key' => 'HT_Abluft_Digestorium_Stk', 'label' => 'Abluft Digestorium:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
+            ['key' => 'HT_Abluft_Sicherheitsschrank_Stk', 'label' => 'Abluft Sicherheitsschrank:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
+            ['key' => 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'label' => 'Abluft Sicherheitsschrank Unterbau:', 'unit' => 'Stk', 'cell' => $e_C + $e_C_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => false],
+            ['key' => 'HT_Punktabsaugung_Stk', 'label' => 'Punktabsaugung:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => true], // Line break after this
 
-        $haustechnikItems = [
-            ['H6020', 'H6020: ', ''],
-            ['HT_Abluft_Digestorium_Stk', 'Abluft Digestorium:', 'Stk'],
-            ['HT_Abluft_Sicherheitsschrank_Stk', 'Abluft Sicherheitsschrank:', 'Stk'],
-            ['HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'Abluft Sicherheitsschrank Unterbau:', 'Stk']
+            ['key' => 'HT_Waermeabgabe_W', 'label' => 'Abwärme MT: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false], // Line break after
+            ['key' => 'VE_Wasser', 'label' => 'VE Wasser:', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+            ['key' => 'HT_Notdusche', 'label' => 'Notdusche:', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+            ['key' => 'HT_Raumtemp Sommer °C', 'label' => 'Max. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+            ['key' => 'HT_Raumtemp Winter °C', 'label' => 'Min. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
         ];
 
-        foreach ($haustechnikItems as $item) {
-            if ($item[0] === 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk') {
-                multicell_text_hightlight($pdf, $e_C + $e_C_3rd, $font_size, $item[0], $item[1], $parameter_changes_t_räume);
-            } else if ($item[0] === 'H6020') {
+        foreach ($haustechnikParams as $param) {
+            multicell_text_hightlight($pdf, $param['cell'], $font_size, $param['key'], $param['label'], $parameter_changes_t_räume);
 
-                multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, $item[0], $item[1], $parameter_changes_t_räume);
-
+            if ($param['key'] === 'HT_Waermeabgabe_W') {
+                $value = (
+                    $row['HT_Waermeabgabe_W'] === "0" ||
+                    $row['HT_Waermeabgabe_W'] == 0 ||
+                    $row['HT_Waermeabgabe_W'] == "-"
+                ) ? "keine Angabe" : kify($row['HT_Waermeabgabe_W']) . "W";
+            } elseif ($param['key'] === 'VE_Wasser') {
+                $value = translate_1_to_yes($row['VE_Wasser']);
             } else {
-                multicell_text_hightlight($pdf, $e_C, $font_size, $item[0], $item[1], $parameter_changes_t_räume);
+                $value = $row[$param['key']];
             }
-            $value = ($item[0] === 'VE_Wasser') ? translate_1_to_yes($row[$item[0]]) : $row[$item[0]];
 
-            multicell_with_str($pdf, $value, $e_C_2_3rd, $item[2]);
-        }
+            multicell_with_str($pdf, $value, $param['str_cell'], $param['unit']);
 
-        $pdf->Ln($horizontalSpacerLN2);
-        $pdf->Multicell($block_header_w, 1, "", 0, 0, 0, 0);
-
-        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "HT_Waermeabgabe_W", "Abwärme MT: ", $parameter_changes_t_räume);
-        $abwrem_out = ($row['HT_Waermeabgabe_W'] === "0" || $row['HT_Waermeabgabe_W'] == 0 || $row['HT_Waermeabgabe_W'] == "-")
-            ? "keine Angabe"
-            : kify($row['HT_Waermeabgabe_W']) . "W";
-        multicell_with_str($pdf, $abwrem_out, $e_C_2_3rd, "");
-
-        $additionalItems = [
-            ['VE_Wasser', 'Voll entsalztes Wasser:', ''],
-            ['HT_Notdusche', 'Notdusche:', ''],
-            ['HT_Punktabsaugung_Stk', 'Punktabsaugung:', 'Stk'],
-            ["HT_Raumtemp Sommer °C", "Max. Raumtemp.", "°C"]
-        ];
-
-        foreach ($additionalItems as $item) {
-
-            if ($item[0] === 'HT_Punktabsaugung_Stk' || $item[0] === 'HT_Raumtemp Sommer °C') {
-                multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, $item[0], $item[1], $parameter_changes_t_räume);
-                multicell_with_str($pdf, $row[$item[0]], $e_C_2_3rd, $item[2]);
-            } else {
-                multicell_text_hightlight($pdf, $e_C, $font_size, $item[0], $item[1], $parameter_changes_t_räume);
-                multicell_with_str($pdf, $row[$item[0]], $e_C_2_3rd, $item[2]);
+            if (!empty($param['ln_after'])) {
+                $pdf->Ln($horizontalSpacerLN2);
+                $pdf->Multicell($block_header_w, 1, "", 0, 0, 0, 0);
             }
         }
 

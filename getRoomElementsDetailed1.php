@@ -333,10 +333,7 @@ include "modal_elementHistory.html";
     function initPopoverTips() {
         const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
         popoverTriggerList.forEach(el => new bootstrap.Popover(el));
-
-        document.addEventListener(
-            'click',
-            e => {
+        document.addEventListener('click', e => {
                 document.querySelectorAll('[data-bs-toggle="popover"]').forEach(pop => {
                     const popover = bootstrap.Popover.getInstance(pop);
                     if (popover) {
@@ -351,11 +348,11 @@ include "modal_elementHistory.html";
     }
 
     function hideZeroFilter(settings, data, dataIndex) {
-        var api = new $.fn.dataTable.Api(settings);
-        var row = api.row(dataIndex).node();
-        var $input = $(row).find("input[id^='amount']");
-        var inputVal = $input.val();
-        var parsedVal = parseInt(inputVal, 10);
+        let api = new $.fn.dataTable.Api(settings);
+        let row = api.row(dataIndex).node();
+        let $input = $(row).find("input[id^='amount']");
+        let inputVal = $input.val();
+        let parsedVal = parseInt(inputVal, 10);
 
         // console.log("=== Filter Call ===");
         // console.log("settings:", settings);
@@ -568,8 +565,8 @@ include "modal_elementHistory.html";
             const elementName = $(`#ElementName${roombookID}`).text();
             $.ajax({
                 url: 'getCommentHistory.php',
-                type: 'GET',
-                data: {roombookID},
+                type: 'POST',
+                data: {"roombookID": roombookID},
                 success(data) {
                     $('#ElementName4Header').text(elementName);
                     $('#mbodyHistory').html(data);

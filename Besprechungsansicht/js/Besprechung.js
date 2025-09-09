@@ -10,6 +10,7 @@ class Besprechung {
         this.ort = ort;             // string
         this.verfasser = verfasser; // string
         this.art = art;             // string (z.B. "Protokoll Besprechung")
+        this.relevanteDokumente = "";
         this.roomVermerkMap = {}; // key: roomID, value: array of vermerkIDs
     }
 
@@ -58,6 +59,7 @@ class Besprechung {
             self.ort = $("#meetingOrt").val();
             self.verfasser = $("#meetingVerfasser").val();
             self.art = "Protokoll Besprechung";
+            self.relevanteDokumente = $('#meetingDokumente').val();
             if (self.name && self.verfasser && self.datum && self.startzeit) {
                 $.ajax({
                     url: "../controllers/BesprechungController.php",
@@ -67,8 +69,6 @@ class Besprechung {
                         if (response.success) {
                             self.id = response.insertId;
                             $(modalSelector).modal('hide');
-                            //  $(formSelector).reset();  TODO ::: is not a function??
-                            // $('#createMeetingForm').reset();
                             $(pdfSelector).attr('src', '../../PDFs/pdf_createVermerkGroupPDF.php?gruppenID=' + self.id);
                             if (typeof toasterFn === "function") toasterFn("Besprechung erfolgreich angelegt! - ID:" + self.id, true);
                             if (typeof updateFilterFn === "function") updateFilterFn();
@@ -149,9 +149,10 @@ class Besprechung {
                         {data: 'Datum', title: "Datum"}
                     ],
                     searching: true,
-                    paging: true,
+                    paging: false,
                     info: false,
                     lengthChange: false,
+                    pagelength: 20,
                     language: {url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'},
                     rowId: 'id',
                     createdRow: function (row, data) {

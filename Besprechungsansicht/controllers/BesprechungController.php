@@ -13,6 +13,7 @@ $gruppenVerfasser = getPostString('verfasser');
 $gruppenStart = getPostString('startzeit');
 $gruppenEnde = getPostString('endzeit');
 $gruppenDatum = getPostString('datum');
+$relevanteDokumente = getPostString('relevanteDokumente');
 
 $projectID = (int)($_SESSION["projectID"] ?? 0);
 $insertId = 0;
@@ -54,12 +55,59 @@ if ($action === "new") {
     }
 
     $insertId = $mysqli->insert_id;
+
+    if ($relevanteDokumente != "") {
+        // Insert into tabelle_Vermerkuntergruppe
+        $sqlUG = "INSERT INTO LIMET_RB.tabelle_Vermerkuntergruppe 
+        (Untergruppennummer, Untergruppenname, tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe) 
+        VALUES (?, ?, ?)";
+        $stmtUG = $mysqli->prepare($sqlUG);
+        if (!$stmtUG) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => 'Vermerkuntergruppe Prepare failed: ' . $mysqli->error]);
+            exit;
+        }
+        $untergruppennummer = 0;
+        $untergruppenname = 'Allgemeines';
+        $stmtUG->bind_param('isi', $untergruppennummer, $untergruppenname, $insertId);
+        if (!$stmtUG->execute()) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => 'Vermerkuntergruppe Insert failed: ' . $stmtUG->error]);
+            $stmtUG->close();
+            exit;
+        }
+        $untergruppenId = $mysqli->insert_id;
+        $stmtUG->close();
+
+        $sqlV = "INSERT INTO LIMET_RB.tabelle_Vermerke 
+        (tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe, Ersteller, Erstellungszeit, Vermerktext, Bearbeitungsstatus, Vermerkart) 
+        VALUES (?, ?, NOW(), ?, 0, ?)";
+        $stmtV = $mysqli->prepare($sqlV);
+        if (!$stmtV) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => 'Vermerk Prepare failed: ' . $mysqli->error]);
+            exit;
+        }
+        $relevanteDokumente = "Relevante Dokumente: ". $relevanteDokumente;
+        $vermerkart = 'Info';
+        $stmtV->bind_param('isss', $untergruppenId, $gruppenVerfasser, $relevanteDokumente, $vermerkart);
+        if (!$stmtV->execute()) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => 'Vermerk Insert failed: ' . $stmtV->error]);
+            $stmtV->close();
+            exit;
+        }
+        $stmtV->close();
+    }
+
+
     echo json_encode(['success' => true, 'insertId' => $insertId]);
     $stmt->close();
     $mysqli->close();
     exit;
-}
 
+
+}
 
 
 if ($action === "getProtokollBesprechungen") {
@@ -85,7 +133,6 @@ if ($action === "getProtokollBesprechungen") {
     echo json_encode(['success' => true, 'data' => $list]);
     exit;
 }
-
 
 
 $mysqli->close();

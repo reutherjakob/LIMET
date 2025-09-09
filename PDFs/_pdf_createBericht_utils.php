@@ -521,6 +521,71 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
         $pdf->Ln(5); // regular vertical space after that row
 
     }
+    else if ($format == "A3XC") {$pdf->SetFont('helvetica', 'B', 10);
+        if (($pdf->GetY()) >= 180) {
+            $pdf->AddPage();
+        }
+
+        if (($pdf->GetY()) >= 18) {
+            balken($pdf, 1, $SB);
+        } else {
+            $pdf->Ln(1);
+        }
+
+        $pdf->SetFont('helvetica', 'B', 10);
+
+        $blockheaderwith = 25;
+        $raumbezeichnung_width = ($SB - $blockheaderwith - (($SB - $blockheaderwith) / 18)) / 6;
+
+        $output_pairs = [
+            ["Raumbezeichnung", "Raum", $Raumnr . " - " . $Raumbezeichnung],
+            ["Raumbereich Nutzer", "Bereich: ", $RaumbereichNutzer],
+            ["Geschoss", "Geschoss: ", $Geschoss],
+            ["Nutzfläche", "Nutzfläche [m2]: ", $Bauabschnitt]
+        ];
+
+// Determine widths
+        $widths = [
+            [$blockheaderwith, $raumbezeichnung_width  ],
+            [$raumbezeichnung_width ],
+            [$raumbezeichnung_width],
+            [$raumbezeichnung_width]
+        ];
+
+// Measure heights
+        $heights = [];
+        foreach ($output_pairs as $i => $pair) {
+            if ($i == 0) {
+                $h1 = $pdf->getStringHeight($widths[$i][0], $pair[1], false, true);
+                $h2 = $pdf->getStringHeight($widths[$i][1], $pair[2], false, true);
+                $heights[] = max($h1, $h2);
+            } else {
+                $text = $pair[1] . $pair[2];
+                $h = $pdf->getStringHeight($widths[$i][0], $text, false, true);
+                $heights[] = $h;
+            }
+        }
+
+        $maxHeight = max($heights);
+        if ($maxHeight > $ln_spacer) {
+            $extraZeile = true;
+        }
+
+// Now draw with normalized height
+        foreach ($output_pairs as $i => $pair) {
+            if ($i == 0) {
+                $pdf->MultiCell($widths[$i][0], $maxHeight, $pair[1], 0, "L", 1, 0);
+                $pdf->MultiCell($widths[$i][1], $maxHeight, $pair[2], 0, "L", 1, 0);
+            } else {
+                $text = $pair[1] . $pair[2];
+                $pdf->MultiCell($widths[$i][0], $maxHeight, $text, 0, "L", 1, 0);
+            }
+        }
+
+        $pdf->Ln($maxHeight > $ln_spacer ? $ln_spacer : 0); // spacing row padding
+        $pdf->Ln(5); // regular vertical space after that row
+
+    }
     $pdf->SetFont('helvetica', '', 10);
 }
 

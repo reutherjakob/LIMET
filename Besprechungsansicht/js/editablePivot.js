@@ -18,20 +18,15 @@ class EditablePivot {
 
 
     bindEvents() {
-        // Klick auf eine bearbeitbare Zelle öffnet das Modal
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('editable-cell')) {
                 this.openEditModal(e.target);
             }
         });
-
-        // Eingaben prüfen und Speichern-Button aktivieren/deaktivieren
-        ['edit-new-amount', 'edit-change-comment', 'edit-confirm'].forEach(id => {
+        ['edit-new-amount', 'edit-change-comment', 'edit-confirm'].forEach(id => {            // Eingaben prüfen und Speichern-Button aktivieren/deaktivieren
             document.getElementById(id).addEventListener('input', () => this.validateInputs());
             document.getElementById(id).addEventListener('change', () => this.validateInputs());
         });
-
-        // Änderungen speichern
         document.getElementById('save-element-change').addEventListener('click', () => this.saveChanges());
     }
 
@@ -70,18 +65,23 @@ class EditablePivot {
                 document.getElementById('edit-element-comments').value = d.element_comments || '';
                 // document.getElementById('edit-standort').value = d.standort ?? '1';
                 document.getElementById('edit-neuBestand').value = d.neuBestand ?? '1';
-                document.getElementById('edit-room-comments').value = d.room_comments || '';
+                // document.getElementById('edit-room-comments').value = d.room_comments || '';
                 document.getElementById('edit-variant-name').value = d.variantId || '1';
-                // Reset others as before
+
                 document.getElementById('edit-change-comment').value = '';
                 document.getElementById('edit-confirm').checked = false;
                 document.getElementById('save-element-change').disabled = true;
 
-                // document.getElementById("show-history-btn").value = d.Raumnr;
-                // Save relationId for later use
+                if (d.relationId === 0) {  //History Modal
+                    document.getElementById("show-history-btn").style.display = "none";
+                } else {
+                    document.getElementById("show-history-btn").style.display = "block";
+                    document.getElementById("show-history-btn").value = d.relationId;
+                    document.getElementById('ElementName4Header').innerHTML = `${d.ElementID} ${d.Bezeichnung}`;
+                   //console.log("History 4: ", document.getElementById("show-history-btn").value);
+                }
                 this.currentCellData.relationId = d.relationId;
             })
-
             .catch(err => alert(err.message));
         new bootstrap.Modal(document.getElementById('editElementModal')).show();
     }
@@ -91,12 +91,10 @@ class EditablePivot {
         const comment = document.getElementById('edit-change-comment').value.trim();
         const confirmed = document.getElementById('edit-confirm').checked;
         const btnSave = document.getElementById('save-element-change');
-
         btnSave.disabled = (!newAmount || !confirmed); //|| !comment
     }
 
     saveChanges() {
-        //if (!confirm('Änderung wirklich speichern?')) return; TODO uncomment
         const newAmount = document.getElementById('edit-new-amount').value.trim();
         const changeComment = document.getElementById('edit-change-comment').value.trim();
         const confirmChecked = document.getElementById('edit-confirm').checked;
@@ -110,7 +108,7 @@ class EditablePivot {
         const varID = document.getElementById('edit-variant-name').value;
         const statuss = document.getElementById('edit-status').value;
         const bestand = document.getElementById("edit-neuBestand").value;
-        const raumkommentar = document.getElementById("edit-raum-info").value.trim();
+        //const raumkommentar = document.getElementById("edit-room-comments").value.trim();
         // console.log("RaUM: ", this.currentCellData.roomId, "VermerkID Des Raumes:", besprechung.roomVermerkMap[this.currentCellData.roomId], " Var: ", varID);
 
         const formData = new URLSearchParams({
@@ -125,7 +123,7 @@ class EditablePivot {
             elementKommentar: elementkommentar,
             besprechungsid: besprechung.id,
             vermerkID: besprechung.roomVermerkMap[this.currentCellData.roomId],
-            raumkomemntar: raumkommentar
+            //raumkomemntar: raumkommentar
             // standort: 1,
         });
         console.log("EditTable Form Data: ", formData);
@@ -143,7 +141,9 @@ class EditablePivot {
                     this.reloadPivotTable();
                     if (typeof (refreshPDF) === "function") {
                         refreshPDF();
-                        //getVermerke();
+                        if (typeof (getVermerke) === "function") {
+                            getVermerke();
+                        }
                     }
                 } else {
                     alert('Fehler: ' + data.message);

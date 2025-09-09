@@ -30,6 +30,6 @@ if (isset($_GET["variantenID"]) &&$_GET["variantenID"] != "") {
     $_SESSION["variantenID"] = $_GET["variantenID"];
 }
 ?>
-g
+
 </body>
 </html>
