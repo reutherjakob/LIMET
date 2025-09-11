@@ -35,8 +35,7 @@ function check_login(): void
                     </div>
                 </div>
             </div>
-        </div>
-        ';
+        </div>        ';
         exit;
     }
 }
@@ -102,7 +101,7 @@ function load_nav_bar(): void
 }
 
 
-function getPostInt(string $key, int $default = 0): int  //TODO: Make use of these everywhere
+function getPostInt(string $key, int $default = 0): int
 {
     return isset($_POST[$key]) ? filter_var($_POST[$key], FILTER_VALIDATE_INT) ?? $default : $default;
 }

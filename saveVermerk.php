@@ -4,20 +4,17 @@ check_login();
 
 $mysqli = utils_connect_sql();
 
-$losID = filter_input(INPUT_GET, 'los');
-$losID = ($losID == '0') ? NULL : $losID;
-
+$losID = getPostInt('losID');
 $vermerkText = getPostString('vermerkText');
 $vermerkStatus = getPostString('vermerkStatus');
 $vermerkTyp = getPostString('vermerkTyp');
-
+$untergruppenID = getPostInt('untergruppenID');
+$vermerkID = getPostInt('vermerkID');
 $faelligkeitDatum = getPostString('faelligkeitDatum', '');
 if (empty($faelligkeitDatum) || $faelligkeitDatum === 'null' || $faelligkeitDatum === '0000-00-00') {
     $faelligkeitDatum = NULL;
 }
 
-$untergruppenID = getPostInt('untergruppenID');
-$vermerkID = getPostInt('vermerkID');
 
 $sql = "UPDATE `LIMET_RB`.`tabelle_Vermerke`
         SET
@@ -41,9 +38,7 @@ $stmt->bind_param("issssii",
 );
 
 if ($stmt->execute()) {
-    // Remove previous room links
     $mysqli->query("DELETE FROM tabelle_vermerke_has_tabelle_räume WHERE tabelle_vermerke_idTabelle_vermerke = $vermerkID");
-    // Add new links
     $roomArray = $_POST['room'] ?? [];
     foreach ($roomArray as $roomID) {
         if ($roomID != "0" && $roomID != "") {

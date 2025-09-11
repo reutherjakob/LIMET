@@ -3,7 +3,6 @@ include "utils/_format.php";
 include_once "utils/_utils.php";
 check_login();
 $mysqli = utils_connect_sql();
-// Validate and sanitize inputs
 $umsatz = filter_input(INPUT_GET, 'umsatz', FILTER_VALIDATE_FLOAT);
 $bereich_raw = filter_input(INPUT_GET, 'bereich', FILTER_UNSAFE_RAW);
 $bereich = trim($bereich_raw);
@@ -25,7 +24,6 @@ if ($lieferantenID <= 0) {
     exit("Ungültige Lieferanten-ID.");
 }
 
-// Prepare statement to prevent SQL injection
 $stmt = $mysqli->prepare("INSERT INTO LIMET_RB.tabelle_umsaetze (umsatz, geschaeftsbereich, jahr, tabelle_lieferant_idTABELLE_Lieferant) VALUES (?, ?, ?, ?)");
 if (!$stmt) {
     exit("Prepare failed: " . $mysqli->error);

@@ -357,11 +357,8 @@ echo "</tbody></table>";
                     $('#vermerkStatus').val(rowData[6]).trigger('change');
                     $('#vermerkText').val(decodeHtmlEntities(rowData[2]));
                     $('#faelligkeit').val(rowData[4]);
-
                     let temp = rowData[7];
                     $("#vermerkTyp").val(temp).trigger('change');
-
-
                     if (rowData[7] === "Bearbeitung" || rowData[7] === "B") {
                         $("#faelligkeit").prop('disabled', false);
                     } else {
@@ -369,13 +366,10 @@ echo "</tbody></table>";
                     }
                     let losValue = rowData[9] || 0;
                     $('#los').val(losValue).trigger('change');
-
                     let raumIDs = rowData[10];
                     let roomArray = raumIDs.split(',').map(id => id.trim());
                     $('#room').val(roomArray).trigger('change');
-
-                    console.log("Debug table Click:", raumIDs, roomArray, $('#room').val())
-
+                    //console.log("Debug table Click:", raumIDs, roomArray, $('#room').val())
                     $('#changeVermerkModal').modal('show');
                 });
             }
@@ -419,8 +413,7 @@ echo "</tbody></table>";
     });
 
     $("#addVermerk").click(function () {
-        let rooms = $("#room").val(); // rooms is an array of selected IDs
-        //   console.log("AddVermerk. Rooms:", rooms);
+        let rooms = $("#room").val();
         let los = $("#los").val();
         let vermerkStatus = $("#vermerkStatus").val();
         let vermerkTyp = $("#vermerkTyp").val();
@@ -429,10 +422,7 @@ echo "</tbody></table>";
         if (vermerkTyp === "Info") {
             faelligkeitDatum = null;
         }
-        let vermerkUntergruppenID = <?php echo filter_input(INPUT_GET, 'vermerkUntergruppenID') ?>;
-
-       //  console.log("Debug addV: ", vermerkUntergruppenID, vermerkTyp);
-
+        let vermerkUntergruppenID = vermerkGruppenID;
         if (room !== "" && los !== "" && vermerkStatus !== "" && vermerkTyp !== "" && vermerkText !== "") {
             $('#changeVermerkModal').modal('hide');
             $.ajax({
@@ -478,9 +468,12 @@ echo "</tbody></table>";
     $("button[value='changeVermerk']").click(function () {
         document.getElementById("saveVermerk").style.display = "inline";
         document.getElementById("deleteVermerk").style.display = "inline";
-        $("#untergruppe").prop('disabled', false);
         document.getElementById("addVermerk").style.display = "none";
-        // $('#deleteVermerkModal').modal('hide');
+        $("#untergruppe").prop('disabled', false);
+
+        let rowData = tableVermerke.row($(this).closest('tr')).data();
+        console.log(rowData[6]);
+        $('#vermerkStatus').val(rowData[6]).trigger('change');
         $('#changeVermerkModal').modal('show');
     });
 
@@ -497,7 +490,7 @@ echo "</tbody></table>";
         }
         let vermerkUntergruppenID = <?php echo filter_input(INPUT_GET, 'vermerkUntergruppenID') ?>;
 
-        console.log("Debug saveV: ", rooms);
+        console.log(" $(saveVermerk).click(", vermerkUntergruppenID, untergruppenID);
 
         if (room !== "" && los !== "" && vermerkStatus !== "" && vermerkTyp !== "" && vermerkText !== "" && vermerkTyp !== null) {
             $('#changeVermerkModal').modal('hide');
@@ -534,9 +527,11 @@ echo "</tbody></table>";
         }
     });
 
+
     $("#deleteVermerk").click(function () {
         $('#deleteVermerkModal').modal('show');
     });
+
 
     $("#deleteVermerkExecute").click(function () {
         $('.modal-backdrop').remove();
@@ -565,72 +560,69 @@ echo "</tbody></table>";
     });
 
 
-    $("#addImage").click(function () {
-        $('#uploadImageModal').modal('show');
-    });
-
-    $("#uploadImageButton").click(function () {
-        // get selected Image
-        //let input = document.getElementById("imageUpload").files;
-        let file = document.querySelector('#imageUpload').files[0];
-        if (!file) {
-            alert("Bitte Datei auswählen");
-        } else {
-            //define the width to resize -> 1000px
-            let resize_width = 800;//without px
-            //create a FileReader
-            let reader = new FileReader();
-            //image turned to base64-encoded Data URI.
-            reader.readAsDataURL(file);
-            reader.name = file.name;//get the image's name
-            reader.size = file.size; //get the image's size
-
-            //Resize the image
-            reader.onload = function (event) {
-                let imageResized = new Image();//create a image
-                imageResized.src = event.target.result;//result is base64-encoded Data URI
-                imageResized.name = event.target.name;//set name (optional)
-                imageResized.size = event.target.size;//set size (optional)
-                imageResized.onload = function (el) {
-                    let elem = document.createElement('canvas');//create a canvas
-                    //scale the image and keep aspect ratio
-                    let scaleFactor = resize_width / el.target.width;
-                    elem.width = resize_width;
-                    elem.height = el.target.height * scaleFactor;
-                    //draw in canvas
-                    let ctx = elem.getContext('2d');
-                    ctx.drawImage(el.target, 0, 0, elem.width, elem.height);
-                    //get the base64-encoded Data URI from the resize image
-                    let srcEncoded = ctx.canvas.toDataURL('image/jpeg', 1);
-                    //assign it to thumb src
-                    document.querySelector('#image').src = srcEncoded;
-
-                    document.querySelector('#images_cb').src = srcEncoded;
-                    /*Now you can send "srcEncoded" to the server and
-                    convert it to a png o jpg. Also can send
-                    "el.target.name" that is the file's name.*/
-                    let resized = document.querySelector('#image').src;
-                    //let resized = document.getElementById("image").files;
-                    let formData = new FormData();
-                    //formData.append("fileUpload", files[0]);
-                    formData.append("fileUpload", resized);
-                    formData.append("vermerkID", vermerkID);
-                    let xhttp = new XMLHttpRequest();
-
-                    // Set POST method and ajax file path
-                    xhttp.open("POST", "uploadFileImage.php", true);
-
-                    // call on request changes state
-                    xhttp.onreadystatechange = function () {
-                        if (this.readyState == 4 && this.status == 200) {
-                            alert(this.responseText);
-                        }
-                    };
-                    xhttp.send(formData);
-                };
-            };
-        }
-    });
+    // $("#addImage").click(function () {
+    //     $('#uploadImageModal').modal('show');
+    // });
+    //$("#uploadImageButton").click(function () {
+    //    let file = document.querySelector('#imageUpload').files[0];
+    //    if (!file) {
+    //        alert("Bitte Datei auswählen");
+    //    } else {
+    //        //define the width to resize -> 1000px
+    //        let resize_width = 800;//without px
+    //        //create a FileReader
+    //        let reader = new FileReader();
+    //        //image turned to base64-encoded Data URI.
+    //        reader.readAsDataURL(file);
+    //        reader.name = file.name;//get the image's name
+    //        reader.size = file.size; //get the image's size
+    //
+    //        //Resize the image
+    //        reader.onload = function (event) {
+    //            let imageResized = new Image();//create a image
+    //            imageResized.src = event.target.result;//result is base64-encoded Data URI
+    //            imageResized.name = event.target.name;//set name (optional)
+    //            imageResized.size = event.target.size;//set size (optional)
+    //            imageResized.onload = function (el) {
+    //                let elem = document.createElement('canvas');//create a canvas
+    //                //scale the image and keep aspect ratio
+    //                let scaleFactor = resize_width / el.target.width;
+    //                elem.width = resize_width;
+    //                elem.height = el.target.height * scaleFactor;
+    //                //draw in canvas
+    //                let ctx = elem.getContext('2d');
+    //                ctx.drawImage(el.target, 0, 0, elem.width, elem.height);
+    //                //get the base64-encoded Data URI from the resize image
+    //                let srcEncoded = ctx.canvas.toDataURL('image/jpeg', 1);
+    //                //assign it to thumb src
+    //                document.querySelector('#image').src = srcEncoded;
+    //
+    //                document.querySelector('#images_cb').src = srcEncoded;
+    //                /*Now you can send "srcEncoded" to the server and
+    //                convert it to a png o jpg. Also can send
+    //                "el.target.name" that is the file's name.*/
+    //                let resized = document.querySelector('#image').src;
+    //                //let resized = document.getElementById("image").files;
+    //                let formData = new FormData();
+    //                //formData.append("fileUpload", files[0]);
+    //                formData.append("fileUpload", resized);
+    //                formData.append("vermerkID", vermerkID);
+    //                let xhttp = new XMLHttpRequest();
+    //
+    //                // Set POST method and ajax file path
+    //                xhttp.open("POST", "uploadFileImage.php", true);
+    //
+    //                // call on request changes state
+    //                xhttp.onreadystatechange = function () {
+    //                    if (this.readyState == 4 && this.status == 200) {
+    //                        alert(this.responseText);
+    //                    }
+    //                };
+    //                xhttp.send(formData);
+    //            };
+    //        };
+    //    }
+    //});
 
 
 </script>

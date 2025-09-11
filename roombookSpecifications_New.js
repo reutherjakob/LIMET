@@ -163,21 +163,32 @@ function init_btn_4_dt() {
         },
         {
             extend: 'excelHtml5',
-            exportOptions: {columns: ':visible'},
             className: 'btn btn-light border-secondary fa fa-download',
             text: "",
             titleAttr: "Download as Excel",
-            action: function (e, dt, node, config) {
-                if (table_edited) {
-                    if (confirm(Reload_string)) {
-                        location.reload();
+            exportOptions: {
+                columns: function (idx, data, node) {
+                    // Export all visible columns + the ID column even if hidden
+                    const idIndex = columnsDefinition.findIndex(col => col.data === 'idTABELLE_Räume');
+                    return table.column(idx).visible() || idx === idIndex;
+                },
+                // Provide a custom header label to ensure it's printed
+                format: {
+                    header: (data, columnIdx) => {
+                        const idIndex = columnsDefinition.findIndex(col => col.data === 'idTABELLE_Räume');
+                        if (columnIdx === idIndex) {
+                            return "Raum ID"; // Or your desired header
+                        }
+                        // Default header text from the table
+                        return data;
                     }
-                } else {
-                    $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, node, config);
                 }
+            },
+            action: function (e, dt, node, config) {
+                $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, node, config);
             }
-        }
-    ];
+        }];
+
     const btn_grp_settings = [
         {
             text: "",
@@ -587,16 +598,29 @@ function updateButtonClass(button, table, startColumn, endColumn) {
 }
 
 function toggleReportColumnsVisible() {
-    const columns = table.columns().indexes();
-    for (let i = 5; i <= 146; i++) {
-        table.column(columns[i]).visible(false);
-    }
-    const reportColumns = [4, 5, 11, 12, 13, 14, 15, 16, 17, 18, 19, 25, 28, 35, 36, 37, 38, 39, 40,
-        46, 47, 48, 49, 50, 51, 52, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 129, 133, 134, 135, 138]
-    for (let i = 0; i < reportColumns.length; i++) {
-        table.column(columns[reportColumns[i]]).visible(true);
-    }
+    const reportParams = [
+        'Raumbezeichnung', 'Raumnr', 'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt', 'Nutzfläche',
+        'Abdunkelbarkeit', 'Strahlenanwendung', 'Laseranwendung', 'Allgemeine Hygieneklasse',
+        'H6020', 'HT_Waermeabgabe_W', 'Anwendungsgruppe', 'Fussboden OENORM B5220',
+        'AV', 'SV', 'ZSV', 'USV', 'EL_Laser 16A CEE Stk', 'ET_Anschlussleistung_W', 'ET_Anschlussleistung_AV_W',
+        'ET_Anschlussleistung_SV_W', 'ET_Anschlussleistung_ZSV_W', 'ET_Anschlussleistung_USV_W', 'IT Anbindung',
+        '1 Kreis O2', '2 Kreis O2', 'CO2', '1 Kreis Va', '2 Kreis Va', '1 Kreis DL-5', '2 Kreis DL-5',
+        'DL-10', 'DL-tech', 'NGA', 'N2O', 'HT_Abluft_Sicherheitsschrank_Stk', 'HT_Abluft_Digestorium_Stk',
+        'HT_Punktabsaugung_Stk', 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'VE_Wasser'
+    ];
+
+// Calculate the indices from columnsDefinition
+    const reportColumnIndexes = reportParams
+        .map(param => columnsDefinition.findIndex(col => col.data === param))
+        .filter(i => i !== -1); // remove not found, if any
+
+    const columns = table.columns().indexes().toArray();
+    const showSet = new Set(reportColumnIndexes);
+    columns.forEach(index => {
+        table.column(index).visible(showSet.has(index));
+    });
 }
+
 
 function toggleColumns(table, startColumn, endColumn, button_name) {
     //   console.time('toggleColumns'); // Start timer

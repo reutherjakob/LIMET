@@ -102,8 +102,8 @@ class PivotTable
         $roomIds = array_keys($rooms);
         $roomPlaceholders = implode(',', array_fill(0, count($roomIds), '?'));
 
-        // === 2. Find element+variant combos assigned to these rooms ===
-        $sqlElem = "SELECT DISTINCT e.idTABELLE_Elemente, re.tabelle_Varianten_idtabelle_Varianten
+        // === 2. Find element+variant+bestand combos assigned to these rooms ===https://work.limet-rb.com/Besprechungsansicht/views/roombookBesprechungsansicht.php
+        $sqlElem = "SELECT  e.idTABELLE_Elemente, re.tabelle_Varianten_idtabelle_Varianten, re.`Neu/Bestand` as Bestand 
                     FROM tabelle_elemente e
                     JOIN tabelle_räume_has_tabelle_elemente re ON e.idTABELLE_Elemente=re.TABELLE_Elemente_idTABELLE_Elemente
                     JOIN tabelle_räume r ON re.TABELLE_Räume_idTABELLE_Räume=r.idTABELLE_Räume
@@ -122,15 +122,14 @@ class PivotTable
         while ($row = $res->fetch_assoc()) {
             $elementVariants[] = [
                 'elementId' => (int)$row['idTABELLE_Elemente'],
-                'variantId' => $row['tabelle_Varianten_idtabelle_Varianten'] === null ? 0 : (int)$row['tabelle_Varianten_idtabelle_Varianten']
+                'variantId' => $row['tabelle_Varianten_idtabelle_Varianten'] === null ? 0 : (int)$row['tabelle_Varianten_idtabelle_Varianten'],
+                'Bestand' => $row['Bestand']
             ];
         }
-        // file_put_contents(__DIR__ . '/pivot_debug.log', print_r($elementVariants, true) );
         $stmt->close();
 
-        // Add additional elements without variant
         foreach ($zusatzElemente as $ae) {
-            $elementVariants[] = ['elementId' => (int)$ae, 'variantId' => 0];
+            $elementVariants[] = ['elementId' => (int)$ae, 'variantId' => 0, 'Bestand' => 1];
         }
 
         // file_put_contents(__DIR__ . '/pivot_debug.log', print_r($elementVariants, true), FILE_APPEND );
@@ -139,24 +138,28 @@ class PivotTable
         foreach ($elementVariants as $ev) {
             $e = $ev['elementId'];
             $v = $ev['variantId'];
+            $bestand = $ev['Bestand'];
+
             if ($v === 0) {
-                $filters[] = "(e.idTABELLE_Elemente=$e)";
+                $filters[] = "(e.idTABELLE_Elemente=$e AND re.`Neu/Bestand` = $bestand)";
             } else {
-                $filters[] = "(e.idTABELLE_Elemente=$e AND (re.tabelle_Varianten_idtabelle_Varianten=$v OR re.tabelle_Varianten_idtabelle_Varianten IS NULL))";
+                $filters[] = "(e.idTABELLE_Elemente=$e AND (re.tabelle_Varianten_idtabelle_Varianten=$v OR re.tabelle_Varianten_idtabelle_Varianten IS NULL) AND re.`Neu/Bestand` = $bestand)";
             }
         }
+
         $elemFilter = $filters ? "AND (" . implode(' OR ', $filters) . ")" : '';
         // === 3. Query sums per element+variant per room + relation ID ===
         $sqlPivot = "SELECT 
                         re.id AS relationId,
                         re.status,
+                        re.`Neu/Bestand` as Bestand,
                         e.idTABELLE_Elemente AS elementId,
                         re.tabelle_Varianten_idtabelle_Varianten AS variantId,
                         e.ElementID,
                         e.Bezeichnung,
                         COALESCE(v.Variante, 'A') AS variantName,
                         r.idTABELLE_Räume AS roomId,
-                        SUM(re.Anzahl) AS total
+                        re.Anzahl AS total
                     FROM tabelle_elemente e
                     JOIN tabelle_räume_has_tabelle_elemente re ON e.idTABELLE_Elemente=re.TABELLE_Elemente_idTABELLE_Elemente
                     JOIN tabelle_räume r ON re.TABELLE_Räume_idTABELLE_Räume=r.idTABELLE_Räume
@@ -165,52 +168,53 @@ class PivotTable
                       AND re.Standort=1
                       AND r.idTABELLE_Räume IN ($roomPlaceholders)
                       $elemFilter
-                    GROUP BY e.idTABELLE_Elemente, re.tabelle_Varianten_idtabelle_Varianten, r.idTABELLE_Räume
-                    ORDER BY e.ElementID, variantName ASC, r.Raumnr";
+                 
+                    ORDER BY e.ElementID, variantName ASC, r.Raumnr"; //    GROUP BY e.idTABELLE_Elemente, re.tabelle_Varianten_idtabelle_Varianten, r.idTABELLE_Räume, Bestand
 
         $params = array_merge([$projectID], $roomIds);
+        $types = "";
         $types = 'i' . str_repeat('i', count($roomIds));
         $stmt = $conn->prepare($sqlPivot);
         if (!$stmt) throw new Exception("Prepare failed pivot: " . $conn->error);
         $stmt->bind_param($types, ...$params);
         $stmt->execute();
         $res = $stmt->get_result();
-
         // file_put_contents(__DIR__ . '/pivot_debug.log', print_r($sqlPivot, true),FILE_APPEND );
         // file_put_contents(__DIR__ . '/pivot_debug.log', print_r($res, true),FILE_APPEND );
 
-        // Aggregate pivot data
+
+        // used to be: Aggregate pivot data 17-9-2025
+
+
         $pivot = [];
         while ($row = $res->fetch_assoc()) {
-            $key = $row['elementId'] . '_' . ($row['variantId'] ?? 0);
-            if (!isset($pivot[$key])) {
-                $label = $row['ElementID'] . ' ' . $row['Bezeichnung'] . ' (' . ($row['variantName'] ?: '-') . ')';
-                $pivot[$key] = [
-                    'label' => $label,
-                    'elementId' => (int)$row['elementId'],
-                    'variantId' => $row['variantId'] ?? 0,
-                    'values' => array_fill_keys($roomIds, 0),
-                    'relationIds' => []
-                ];
+            $key = $row['relationId'];
+            $label = $row['ElementID'] . ' ' . $row['Bezeichnung'] . ' (' . ($row['variantName'] ?: '-') . ')';
+            if ($row['Bestand'] === 0) {
+                $label .= "(Best)";
             }
-            $pivot[$key]['values'][(int)$row['roomId']] = (int)$row['total'];
-            $pivot[$key]['relationIds'][(int)$row['roomId']] = $row['relationId']; // include relation ID per room+element
-            $pivot[$key]['statuses'][(int)$row['roomId']] = $row['status'];
-
+            $pivot[$key] = [
+                'label' => $label,
+                'elementId' => (int)$row['elementId'],
+                'variantId' => $row['variantId'] ?? 0,
+                'values' => [(int)$row['roomId'] => (int)$row['total']], // single room with amount
+                'relationIds' => [(int)$row['roomId'] => $row['relationId']],
+                'Bestand' => $row['Bestand'],
+                'statuses' => [(int)$row['roomId'] => $row['status']]
+            ];
         }
         $stmt->close();
 
         // file_put_contents(__DIR__ . '/pivot_debug.log', print_r($elementVariants, true), FILE_APPEND);
         // Add missing elements from $elementVariants with zeros
         foreach ($elementVariants as $ev) {
-            $key = $ev['elementId'] . '_' . $ev['variantId'];
+            $key = $ev['elementId'] . '_' . $ev['variantId'] . '_' . $ev['Bestand'];
             if (!isset($pivot[$key])) {
                 $stmtE = $conn->prepare("SELECT ElementID, Bezeichnung FROM tabelle_elemente WHERE idTABELLE_Elemente=?");
                 $stmtE->bind_param('i', $ev['elementId']);
                 $stmtE->execute();
                 $elem = $stmtE->get_result()->fetch_assoc() ?: null;
                 $stmtE->close();
-
                 $variantName = '-';
                 if ($ev['variantId'] && $ev['variantId'] !== 0) {
                     $stmtV = $conn->prepare("SELECT Variante FROM tabelle_varianten WHERE idtabelle_Varianten=?");
@@ -222,19 +226,17 @@ class PivotTable
                         $variantName = $vres['Variante'];
                     }
                 }
-
-                $label = ($elem ? $elem['ElementID'] . ' ' . $elem['Bezeichnung'] : 'Unbekannt') . ' (' . $variantName . ')';
-
+                $label = ($elem ? $elem['ElementID'] . ' ' . $elem['Bezeichnung'] : 'Unbekannt') . ' (' . $variantName . ')(' . $ev['Bestand'] . ')';
                 $pivot[$key] = [
                     'label' => $label,
                     'elementId' => $ev['elementId'],
                     'variantId' => $ev['variantId'],
                     'values' => array_fill_keys($roomIds, 0),
-                    'relationIds' => []
+                    'relationIds' => [],
+                    'Bestand' => $ev['Bestand']
                 ];
             }
         }
-
         // Filter elements with zero sums if needed
         if ($ohneLeere) {
             foreach ($pivot as $key => $data) {
@@ -244,18 +246,14 @@ class PivotTable
             }
         }
         // file_put_contents(__DIR__ . '/pivot_debug.log', print_r($pivot, true), FILE_APPEND);
-
         // === 4. Generate HTML ===
         ob_start();
         echo '<table id="pivotTable" class="table table-bordered table-sm table-striped">';
-
-        // Header
         echo '<thead><tr><th>Element (Variante)</th><th>Summe</th>';
         foreach ($rooms as $rId => $rLabel) {
             echo '<th>' . htmlspecialchars($rLabel) . '</th>';
         }
         echo '</tr></thead><tbody>';
-
         foreach ($pivot as $key => $data) {
             echo '<tr>';
             echo '<td>' . htmlspecialchars($data['label']) . '</td>';
@@ -288,15 +286,14 @@ class PivotTable
                     'data-room-id="' . htmlspecialchars($rId) . '" ' .
                     'data-element-id="' . htmlspecialchars($data['elementId']) . '" ' .
                     'data-variant-id="' . htmlspecialchars($data['variantId'] ?? '1') . '" ' .
+                    'data-bestand="' . htmlspecialchars($data['Bestand']) . '" ' .
                     'data-relation-id="' . htmlspecialchars($data['relationIds'][$rId] ?? '0') . '">' .
                     htmlspecialchars($val) .
                     '</td>';
             }
             echo '</tr>';
         }
-
         echo '</tbody></table>';
-
         return ob_get_clean();
     }
 }

@@ -12,7 +12,7 @@ $projectID = intval($_SESSION['projectID']);
 $roomId = getPostInt('roomId');
 $elementId = getPostInt('elementId');
 $variantId =getPostInt('variantId');
-
+$bestand = getPostInt('bestand');
 if (!$roomId || !$elementId) {
     echo json_encode(['success' => false, 'message' => 'Fehlende Parameter']);
     exit;
@@ -43,15 +43,17 @@ try {
         WHERE rhe.TABELLE_Räume_idTABELLE_Räume = ?
           AND rhe.Standort = 1 
           AND rhe.TABELLE_Elemente_idTABELLE_Elemente = ?
+          AND rhe.`Neu/Bestand` = ?
           AND (
-              (rhe.tabelle_Varianten_idtabelle_Varianten = ?) OR (rhe.tabelle_Varianten_idtabelle_Varianten IS NULL AND ? = 0)
+              (rhe.tabelle_Varianten_idtabelle_Varianten = ?) OR 
+              (rhe.tabelle_Varianten_idtabelle_Varianten IS NULL AND ? = 0)
           )
           AND r.tabelle_projekte_idTABELLE_Projekte = ?
         ORDER BY (rhe.Anzahl > 0) DESC, rhe.Anzahl DESC
         LIMIT 1
     ";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iiiii", $roomId, $elementId, $variantId, $variantId, $projectID);
+    $stmt->bind_param("iiiiii", $roomId, $elementId, $bestand, $variantId, $variantId, $projectID);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -59,6 +61,8 @@ try {
         $row['roomId'] = $roomId;
         $row['elementId'] = $elementId;
         $row['variantId'] = $variantId;
+
+
         echo json_encode(['success' => true, 'data' => $row]);
         $stmt->close();
         $conn->close();
@@ -105,7 +109,7 @@ try {
             'status' => null,
             'element_comments' => '',
             'standort' => null,
-            'neuBestand' => null,
+            'neuBestand' => 0 ,
             'room_comments' => $roomData['Anmerkung allgemein'],
             'Raumnr' => $roomData['Raumnr'],
             'Raumbezeichnung' => $roomData['Raumbezeichnung'],

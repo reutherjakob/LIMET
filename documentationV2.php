@@ -405,8 +405,16 @@ init_page_serversides();
         }, 500);
 
         $('#tableVermerkGruppe tbody').on('click', 'tr', function () {
+
             gruppenID = tableVermerkGruppe.row($(this)).data()[0];
-            document.getElementById("gruppenart").value = tableVermerkGruppe.row($(this)).data()[4];
+
+            let art = tableVermerkGruppe.row($(this)).data()[4];
+
+            console.log("tableVermerkGruppe tbody').on('click:: Gruppenart: ", art);
+
+            document.getElementById("buttonNewVermerkuntergruppe").disabled = art === "Protokoll Besprechung";
+
+            document.getElementById("gruppenart").value = art;
             document.getElementById("gruppenName").value = tableVermerkGruppe.row($(this)).data()[2];
             document.getElementById("gruppenOrt").value = tableVermerkGruppe.row($(this)).data()[6];
             document.getElementById("gruppenVerfasser").value = tableVermerkGruppe.row($(this)).data()[7];
@@ -415,10 +423,14 @@ init_page_serversides();
             document.getElementById("gruppenEnde").value = tableVermerkGruppe.row($(this)).data()[11];
             $("#vermerke").hide();
 
+
             $.ajax({
                 url: "getVermerkeuntergruppenToGruppe.php",
-                data: {"vermerkGruppenID": gruppenID},
-                type: "GET",
+                data: {
+                    "vermerkGruppenID": gruppenID,
+                    "art": art
+                },
+                type: "POST",
                 success: function (data) {
                     $("#vermerkUntergruppen").html(data);
                 }

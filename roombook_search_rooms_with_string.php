@@ -98,74 +98,72 @@ init_page_serversides("x");
         return !(hideZero && (amount === 0));
     }
 
+
     document.getElementById('searchButton').addEventListener('click', function () {
-        const selectedField = document.getElementById('fieldSelect').value;
-        const searchString = document.getElementById('searchInput').value;
+        const selectedField = fieldSelect.value;
+        const tempsearchString = document.getElementById('searchInput').value;
+        // Umlaut replacement
+        const umlautMap = {
+            'Ü': 'u', 'ü': 'u', 'Ö': 'o', 'ö': 'o', 'Ä': 'a', 'ä': 'a'
+        };
+        const searchString = tempsearchString.replace(/[ÜüÖöÄäß]/g, m => umlautMap[m]);
+
         if ($.fn.DataTable.isDataTable('#table_rooms')) {
             $('#table_rooms').DataTable().destroy();
             $('#table_rooms tbody').empty();
         }
-        $("#roomElements").empty();
+        $("#roomElements, #elementParameters").empty();
+
         $.ajax({
             url: 'get_rooms_via_namesearch.php',
             type: 'GET',
-            data: {
-                field: selectedField,
-                search: searchString
-            },
+            dataType: 'json',
+            data: {field: selectedField, search: searchString},
             success: function (response) {
                 table = $('#table_rooms').DataTable({
                     data: response,
                     columns: columnsDefinition,
-                    layout: {
-                        topStart: {
-                            buttons: ['colvis', "searchBuilder"]
-
-                        },
-                        topEnd: "search",
-                        bottomStart: 'info',
-                        bottomEnd: {
-                            paging: 'simple_numbers'
-                        }
-                    },
                     scrollX: true,
                     scrollCollapse: true,
                     select: "os",
-                    fixedColumns: {
-                        start: 2
-                    },
+                    fixedColumns: {start: 2},
                     language: {
                         search: "",
                         searchPlaceholder: "Suche...",
-                        url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                        url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
                     },
                     keys: true,
                     order: [[3, 'asc']],
-                    stateSave: false,
                     info: true,
                     paging: true,
-                    pageLength: 10,
-                    lengthMenu: [
-                        [5, 10, 20, 50],
-                        ['5 Zeilen', '10 Zeilen', '20 Zeilen', '50 Zeilen']
-                    ],
-                    compact: true,
+                    pageLength: 20,
+                    lengthMenu: [[5, 10, 20, 50], ['5 Zeilen', '10 Zeilen', '20 Zeilen', '50 Zeilen']],
                     responsive: true,
+                    buttons: ['colvis', 'searchBuilder'],
+                    layout: {
+                        topStart: ['pageLength', 'buttons'],
+                        topEnd: ['paging' , 'search','info'],
+                        bottomStart: null,
+                        bottomEnd: null
+                    },
                     initComplete: function () {
+                        table.buttons().container().appendTo('#table_rooms_wrapper .col-md-6:eq(0)');
 
+                        $(document).on('click', '#table_rooms tbody tr', function () {
+                            if (!table) return;
+                            const rowData = table.row(this).data();
+                            if (!rowData) return;
+                            const temp = parseInt(rowData['idTABELLE_Räume'], 10);
+                            if (temp !== parseInt(RaumID, 10)) {
+                                RaumID = temp;
+                                call_elements_table(RaumID);
+                            }
+                        });
                     }
                 });
             },
             error: function (xhr, status, error) {
-                console.error('Error: ' + error);
-            }
-        });
-
-        $(document).on('click', '#table_rooms tbody tr', function () {
-            let temp = parseInt(table.row($(this)).data()['idTABELLE_Räume'], 10);
-            if (temp !== parseInt(RaumID, 10)) {
-                RaumID = table.row($(this)).data()['idTABELLE_Räume'];
-                call_elements_table(RaumID);
+                console.error('Error loading rooms: ' + error);
             }
         });
     });
@@ -205,8 +203,8 @@ init_page_serversides("x");
         });
     }
 
-    const columnsDefinition = [// NEW FIEL? - ADD Here, In get_rb_specs_data.php and the CPY/save methods
-        {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projek ID', xvisible: false, searchable: false},
+    const columnsDefinition = [
+        {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projek ID',  searchable: false},
         {data: 'idTABELLE_Räume', title: 'Raum ID', visible: false, searchable: false},
         {
             data: 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen',
@@ -222,79 +220,74 @@ init_page_serversides("x");
         {data: 'Raumbezeichnung', title: 'Raumbez.'},
         {data: 'Raumnr', title: 'Raumnr'},
         {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'},
-        {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer', xvisible: false},
-        {data: 'Raumbereich Nutzer', title: 'Raumbereich', xvisible: false},
-        {data: 'Geschoss', title: 'Geschoss', xvisible: false},
-        {data: 'Bauetappe', title: 'Bauetappe', xvisible: false},
-        {data: 'Bauabschnitt', title: 'Bauabschnitt', xvisible: false},
-
-        {data: 'Nutzfläche', title: 'Nutzfläche', xvisible: false, case: "num"},
-        {data: 'Strahlenanwendung', title: 'Strahlenanw.', xvisible: false, case: "bit"},
-//    //HKLS
-        {data: 'H6020', title: 'H6020', xvisible: false},
-//    {data: 'GMP', title: 'GMP', xvisible: false},
-//    {data: 'ISO', title: 'ISO', xvisible: false},
-        {data: 'HT_Waermeabgabe_W', title: 'Wärmeabgabe[W]', xvisible: false, case: ""},
-//    //ET
-        {data: 'Anwendungsgruppe', title: 'Raum Gruppe', xvisible: false},
-        {data: 'Fussboden OENORM B5220', title: 'B5220', xvisible: false},
-        {data: 'AV', title: 'AV', xvisible: false, case: "bit"},
-        {data: 'SV', title: 'SV', xvisible: false, case: "bit"},
-        {data: 'ZSV', title: 'ZSV', xvisible: false, case: "bit"},
-        {data: 'USV', title: 'USV', xvisible: false, case: "bit"},
+        {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer', visible: false},
+        {data: 'Raumbereich Nutzer', title: 'Raumbereich', visible: false},
+        {data: 'Geschoss', title: 'Geschoss', visible: false},
+        {data: 'Bauetappe', title: 'Bauetappe', visible: false},
+        {data: 'Bauabschnitt', title: 'Bauabschnitt', visible: false},
+        {data: 'Nutzfläche', title: 'Nutzfläche', visible: false, case: "num"},
+        {data: 'Allgemeine Hygieneklasse', title: 'Allg. Hygieneklasse', visible: false},
+        {data: 'Strahlenanwendung', title: 'Strahlenanw.', visible: false, case: "bit"},
+        {data: 'H6020', title: 'H6020', visible: true},
+        {data: 'HT_Waermeabgabe_W', title: 'Wärmeabgabe[W]', visible: true, case: ""},
+        {data: 'Anwendungsgruppe', title: 'Raum Gruppe', visible: true},
+        {data: 'Fussboden OENORM B5220', title: 'B5220', visible: false},
+        {data: 'AV', title: 'AV', visible: false, case: "bit"},
+        {data: 'SV', title: 'SV', visible: false, case: "bit"},
+        {data: 'ZSV', title: 'ZSV', visible: false, case: "bit"},
+        {data: 'USV', title: 'USV', visible: false, case: "bit"},
         {
             data: 'ET_Anschlussleistung_W',
             defaultContent: '-',
             title: 'Anschlussleistung Summe[W]',
-            xvisible: false,
+            visible: true,
             case: "num"
         },
         {
             data: 'ET_Anschlussleistung_AV_W',
             defaultContent: '-',
             title: 'Anschlussleistung AV[W]',
-            xvisible: false,
+            visible: false,
             case: "num"
         },
         {
             data: 'ET_Anschlussleistung_SV_W',
             defaultContent: '-',
             title: 'Anschlussleistung SV[W]',
-            xvisible: false,
+            visible: false,
             case: "num"
         },
         {
             data: 'ET_Anschlussleistung_ZSV_W',
             defaultContent: '-',
             title: 'Anschlussleistung ZSV[W]',
-            xvisible: false,
+            visible: false,
             case: "num"
         },
         {
             data: 'ET_Anschlussleistung_USV_W',
             defaultContent: '-',
             title: 'Anschlussleistung USV[W]',
-            xvisible: false,
+            visible: false,
             case: "num"
         },
         {
             data: 'AR_Statik_relevant',
             title: 'AR Statik relevant',
             name: 'AR Statik relevant',
-            xvisible: false,
+            visible: false,
             case: "bit",
             render: function (data) {
                 return data === '1' ? 'relevant' : 'nicht rel.';
             }
         },
-//    //MEDGASE
-        {data: '1 Kreis O2', title: '1_K O2', xvisible: false, case: "bit"},
-        {data: '2 Kreis O2', title: '2_K O2', xvisible: false, case: "bit"},
-        {data: 'CO2', title: 'CO2', xvisible: false, case: "bit"},
-        {data: '1 Kreis Va', title: '1_K Va', xvisible: false, case: "bit"},
-        {data: '2 Kreis Va', title: '2_K Va', xvisible: false, case: "bit"},
-        {data: '1 Kreis DL-5', title: '1_K DL5', xvisible: false, case: "bit"},
-        {data: '2 Kreis DL-5', title: '2_K DL5', xvisible: false, case: "bit"}
+        {data: '1 Kreis O2', title: '1_K O2', visible: false, case: "bit"},
+        {data: '2 Kreis O2', title: '2_K O2', visible: false, case: "bit"},
+        {data: 'CO2', title: 'CO2', visible: false, case: "bit"},
+        {data: '1 Kreis Va', title: '1_K Va', visible: false, case: "bit"},
+        {data: '2 Kreis Va', title: '2_K Va', visible: false, case: "bit"},
+        {data: '1 Kreis DL-5', title: '1_K DL5', visible: false, case: "bit"},
+        {data: '2 Kreis DL-5', title: '2_K DL5', visible: false, case: "bit"}
     ];
 
 </script>

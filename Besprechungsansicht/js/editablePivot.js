@@ -36,38 +36,35 @@ class EditablePivot {
             elementId: cell.dataset.elementId,
             variantId: cell.dataset.variantId,
             relationId: cell.dataset.relationId || null,
-            currentAmount: cell.textContent.trim()
+            currentAmount: cell.textContent.trim(),
+            bestand: cell.dataset.bestand
         };
-
         this.loadDetails();
     }
 
     loadDetails() {
+        // consolidateMultipleElementsperRoom();
         fetch('../controllers/getElementDetails.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: new URLSearchParams({
                 roomId: this.currentCellData.roomId,
                 elementId: this.currentCellData.elementId,
-                variantId: this.currentCellData.variantId
+                variantId: this.currentCellData.variantId,
+                bestand:this.currentCellData.bestand
             })
         })
             .then(res => res.json())
             .then(data => {
                 if (!data.success) throw new Error(data.message || 'Fehler beim Laden der Daten.');
                 const d = data.data;
-                // Existing fields
                 document.getElementById('edit-raum-info').value = `${d.Raumnr} - ${d.Raumbezeichnung}`;
                 document.getElementById('edit-element-info').value = `${d.ElementID} ${d.Bezeichnung}`;
                 document.getElementById('edit-current-amount').value = d.Anzahl ?? this.currentCellData.currentAmount;
                 document.getElementById('edit-new-amount').value = d.Anzahl ?? this.currentCellData.currentAmount;
-                // New fields - create corresponding input/textarea elements in modal
                 document.getElementById('edit-element-comments').value = d.element_comments || '';
-                // document.getElementById('edit-standort').value = d.standort ?? '1';
                 document.getElementById('edit-neuBestand').value = d.neuBestand ?? '1';
-                // document.getElementById('edit-room-comments').value = d.room_comments || '';
                 document.getElementById('edit-variant-name').value = d.variantId || '1';
-
                 document.getElementById('edit-change-comment').value = '';
                 document.getElementById('edit-confirm').checked = false;
                 document.getElementById('save-element-change').disabled = true;
@@ -78,7 +75,7 @@ class EditablePivot {
                     document.getElementById("show-history-btn").style.display = "block";
                     document.getElementById("show-history-btn").value = d.relationId;
                     document.getElementById('ElementName4Header').innerHTML = `${d.ElementID} ${d.Bezeichnung}`;
-                   //console.log("History 4: ", document.getElementById("show-history-btn").value);
+
                 }
                 this.currentCellData.relationId = d.relationId;
             })
@@ -120,6 +117,7 @@ class EditablePivot {
             changeComment: changeComment,
             status: statuss,
             neuBestand: bestand,
+            bestand_alt: this.currentCellData.bestand,
             elementKommentar: elementkommentar,
             besprechungsid: besprechung.id,
             vermerkID: besprechung.roomVermerkMap[this.currentCellData.roomId],
@@ -137,7 +135,7 @@ class EditablePivot {
                 if (data.success) {
                     makeToaster('Änderung erfolgreich gespeichert', true);
                     bootstrap.Modal.getInstance(document.getElementById('editElementModal')).hide();
-                    // console.log("Updated", data);
+
                     this.reloadPivotTable();
                     if (typeof (refreshPDF) === "function") {
                         refreshPDF();

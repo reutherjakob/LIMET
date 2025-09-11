@@ -68,7 +68,7 @@ if ($action === "new") {
             exit;
         }
         $untergruppennummer = 0;
-        $untergruppenname = 'Allgemeines';
+        $untergruppenname = 'Allgemein';
         $stmtUG->bind_param('isi', $untergruppennummer, $untergruppenname, $insertId);
         if (!$stmtUG->execute()) {
             http_response_code(500);
@@ -88,7 +88,7 @@ if ($action === "new") {
             echo json_encode(['success' => false, 'message' => 'Vermerk Prepare failed: ' . $mysqli->error]);
             exit;
         }
-        $relevanteDokumente = "Relevante Dokumente: ". $relevanteDokumente;
+        $relevanteDokumente = "Relevante Dokumente: \n ". $relevanteDokumente;
         $vermerkart = 'Info';
         $stmtV->bind_param('isss', $untergruppenId, $gruppenVerfasser, $relevanteDokumente, $vermerkart);
         if (!$stmtV->execute()) {

@@ -5,7 +5,10 @@ init_page_serversides("", "x");
 $projectID = $_SESSION["projectID"];
 $conn = utils_connect_sql();
 $raumbereichOptions = [];
-$sql = "SELECT DISTINCT `Raumbereich Nutzer` FROM tabelle_räume WHERE tabelle_projekte_idTABELLE_Projekte = ?";
+$sql = "SELECT DISTINCT `Raumbereich Nutzer` 
+        FROM tabelle_räume 
+        WHERE tabelle_projekte_idTABELLE_Projekte = ? 
+        ORDER BY `Raumbereich Nutzer`";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $projectID);
 $stmt->execute();
@@ -17,13 +20,10 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
-
-$sql = "SELECT idTABELLE_Räume AS id, 
-               CONCAT(Raumnr, ' - ', Raumbezeichnung, ' - ', `Raumbereich Nutzer`) AS text
-          FROM tabelle_räume
-         WHERE tabelle_projekte_idTABELLE_Projekte = ? AND Entfallen =0
-         
-      ORDER BY Raumnr";
+$sql = "    SELECT idTABELLE_Räume AS id,  CONCAT(Raumnr, ' - ', Raumbezeichnung, ' - ', `Raumbereich Nutzer`) AS text
+            FROM tabelle_räume
+            WHERE tabelle_projekte_idTABELLE_Projekte = ? AND Entfallen =0 
+            ORDER BY Raumnr";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $projectID);
 $stmt->execute();
@@ -35,9 +35,9 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
-$sql = "SELECT tabelle_elemente.idTABELLE_Elemente as id,  
-            CONCAT(ElementID,' ', Bezeichnung) as Bez
-  		    FROM tabelle_elemente";
+$sql = "SELECT tabelle_elemente.idTABELLE_Elemente as id, CONCAT(ElementID,' ', Bezeichnung) as Bez
+  		FROM tabelle_elemente 
+  		ORDER BY Bez";
 
 $stmt = $conn->prepare($sql);
 $stmt->execute();
@@ -77,11 +77,6 @@ $conn->close();
     <script type='text/javascript'
             src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
     <style>
-        /*.form-switch .form-check-input:checked {
-            background-color: #000;
-            border-color: #000;
-        }*/
-
         .embed-responsive-item {
             width: 100% !important;
             height: 100% !important;
@@ -104,10 +99,8 @@ $conn->close();
         .status-red {
             background-color: #f8d7da !important;
         }
-
     </style>
 </head>
-
 <body>
 
 <div id="limet-navbar"></div>
@@ -178,7 +171,11 @@ $conn->close();
                             </span>
                         </div>
                         <div class=" d-flex flex-nowrap mb-2">
-                            <select id="zusatzElemente" name="zusatzElemente[]" class="form-select" style="width:95%"
+                            <label for="zusatzElemente" class="sr-only"></label>
+                            <select id="zusatzElemente"
+                                    name="zusatzElemente[]"
+                                    class="form-select"
+                                    style="width:95%"
                                     multiple>
                                 <?php foreach ($elemente as $element): ?>
                                     <option value="<?= htmlspecialchars($element['id']) ?>">
@@ -215,7 +212,8 @@ $conn->close();
                             </label>
                         </div>
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="isTransposed" name="isTransposed">
+                            <input class="form-check-input" type="checkbox" id="isTransposed" name="isTransposed"
+                                   disabled>
                             <label class="form-check-label" for="isTransposed" id="isTransposedLabel">
                                 Elemente als Zeilen
                             </label>
@@ -235,7 +233,7 @@ $conn->close();
 
 
         </div>
-        <!-- TODO button class="btn btn-sm btn-outline-dark"> IDEE:: Alle Nutzerwünsche Freigben</button-->
+
 
         <div class="col-lg-10 mx-auto" id="tableCardCol">
             <div class="card">
@@ -268,6 +266,7 @@ $conn->close();
                     <button type="reset" class="btn btn-outline-dark" title="ResetPDF" id="ResetPDF">
                         <i class="fas fa-sync-alt"></i>
                     </button>
+                    <button class="btn btn-sm btn-outline-dark"> IDEE:: Alle Nutzerwünsche Freigben</button>
                 </div>
                 <div class="card-body">
                     <iframe class="embed-responsive-item" id="pdfPreview"></iframe>
@@ -351,7 +350,7 @@ include "../../modal_elementHistory.html";
 
         $('#filterForm').on('submit', function (e) {
             e.preventDefault();
-            besprechung.consolidateMultipleElementsperRoom($('#raumbereich').val());
+            //besprechung.consolidateMultipleElementsperRoom($('#raumbereich').val());
             loadPivotTable();              //pivotLoader.js
             addUntergruppePerRaumbereich(); //vermerke.js
             //console.log("FitlerFormSubmit: ", besprechung.toPayload());
@@ -422,7 +421,7 @@ include "../../modal_elementHistory.html";
     }); // doc ready
 
     function getVermerke() {
-        console.log("Getting Vermerke.");
+        //console.log("Getting Vermerke.");
         try {
             if ($.fn.dataTable.isDataTable('#vermerkeTable')) {
                 vermerkeTable.ajax.reload();

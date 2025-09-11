@@ -92,11 +92,14 @@ init_page_serversides();
     <div class="mt-4 card responsive">
         <div class="card-header">
             <div class="row ">
-                <div class="col-xxl-6"><b>BAUANGABEN CHECK</b></div>
-                <div class="col-xxl-6 d-inline-flex justify-content-end" id="CH1">
+                <div class="col-xxl-4"><b>BAUANGABEN CHECK</b></div>
+                <div class="col-xxl-8 d-inline-flex justify-content-end" id="CH1">
 
-                    <button id="deleteButton" class="btn btn-sm btn-outline-dark me-1"> Markierungen löschen</button>
-                    <button type="button" class="btn btn-sm btn-info me-1" onclick="show_modal('InfoModal')">
+                    <button id="deleteButton" class="btn btn-sm btn-outline-dark me-1 text-nowrap"> Markierungen
+                        löschen
+                    </button>
+                    <button type="button" class="btn btn-sm btn-info me-1 text-nowrap"
+                            onclick="show_modal('InfoModal')">
                         <i class="fas fa-question-circle"></i>
                     </button>
                 </div>
@@ -368,17 +371,103 @@ init_page_serversides();
                         compact: true,
                         savestate: true,
                         select: 'os',
+                        initComplete: function () {
+                            $('.dt-search label').remove();
+                            $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CH1');
+
+                            // Count problem occurrences
+                            const problemCounts = {};
+                            // Count kathegorie occurrences
+                            const kathegorieCounts = {};
+
+                            this.api().rows().every(function () {
+                                const data = this.data();
+                                const problemText = data[3];     // Problem column index 3
+                                const kathegorieText = data[2];  // Kathegorie column index 2
+
+                                problemCounts[problemText] = (problemCounts[problemText] || 0) + 1;
+                                kathegorieCounts[kathegorieText] = (kathegorieCounts[kathegorieText] || 0) + 1;
+                            });
+
+                            // Filter problems with count > 1
+                            const repeatedProblems = Object.entries(problemCounts)
+                                .filter(([problem, count]) => count > 1)
+                                .map(([problem]) => problem);
+
+                            // Filter kathegories with count > 1 (optional: or remove threshold to show all)
+                            const repeatedKathegories = Object.entries(kathegorieCounts)
+                                .filter(([kathe, count]) => count > 1)
+                                .map(([kathe]) => kathe);
+
+                            // Create problems dropdown
+                            const $problemDropdown = $('<select class="form-select form-select-sm me-2" aria-label="Select problem"></select>');
+                            $problemDropdown.append('<option value="" disabled selected>Problem wählen...</option>');
+                            repeatedProblems.forEach(problem => {
+                                $problemDropdown.append(`<option value="${problem}">${problem}</option>`);
+                            });
+
+                            // Create kathegorie dropdown
+                            const $kathegorieDropdown = $('<select class="form-select form-select-sm me-2" aria-label="Select kathegorie"></select>');
+                            $kathegorieDropdown.append('<option value="" disabled selected>Kathegorie wählen...</option>');
+                            repeatedKathegories.forEach(kathe => {
+                                $kathegorieDropdown.append(`<option value="${kathe}">${kathe}</option>`);
+                            });
+
+                            // Create cross-all buttons for problems and kathegories
+                            const $btnCrossAllProblems = $('<button class="btn btn-sm btn-outline-primary me-2 text-nowrap" type="button">Alle Probleme abhaken</button>');
+                            const $btnCrossAllKathegories = $('<button class="btn btn-sm btn-outline-success me-2 text-nowrap" type="button">Alle Kathegorien abhaken</button>');
+
+                            // Prepend the new controls to header area (#CH1)
+                            $('#CH1').prepend($btnCrossAllKathegories).prepend($kathegorieDropdown).prepend($btnCrossAllProblems).prepend($problemDropdown);
+
+                            // Button click handler to check all matching problems
+                            $btnCrossAllProblems.on('click', function () {
+                                const selectedProblem = $problemDropdown.val();
+                                if (!selectedProblem) {
+                                    alert("Bitte wählen Sie ein Problem aus der Liste.");
+                                    return;
+                                }
+
+                                $('#tableBody tr').each(function () {
+                                    const $row = $(this);
+                                    const problemText = $row.find('td').eq(3).text().trim();
+                                    if (problemText === selectedProblem) {
+                                        const $checkbox = $row.find('input.form-check-input').first();
+                                        if (!$checkbox.prop('checked')) {
+                                            $checkbox.prop('checked', true).trigger('change');
+                                        }
+                                    }
+                                });
+                            });
+
+                            // Button click handler to check all matching kathegories
+                            $btnCrossAllKathegories.on('click', function () {
+                                const selectedKathe = $kathegorieDropdown.val();
+                                if (!selectedKathe) {
+                                    alert("Bitte wählen Sie eine Kathegorie aus der Liste.");
+                                    return;
+                                }
+
+                                $('#tableBody tr').each(function () {
+                                    const $row = $(this);
+                                    const katheText = $row.find('td').eq(2).text().trim();
+                                    if (katheText === selectedKathe) {
+                                        const $checkbox = $row.find('input.form-check-input').first();
+                                        if (!$checkbox.prop('checked')) {
+                                            $checkbox.prop('checked', true).trigger('change');
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                        ,
                         columns: [
                             {width: '2%'},
                             {width: '25%'},
                             {width: '20%'},
                             {width: '50%'}
                         ],
-                        initComplete: function () {
-                            $('.dt-search label').remove();
-                            $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CH1');
 
-                        },
                         createdRow: function (row, data) {
                             const kathegorie = data[2] || data.kathegorie;
                             if (kathegorie) {

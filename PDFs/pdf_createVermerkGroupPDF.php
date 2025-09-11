@@ -120,7 +120,7 @@ class MYPDF extends TCPDF
                 }
                 if ($row['Vermerkart'] === 'Bearbeitung') {
                     $textNameFälligkeit = $row['Name'] . "\n" . $row['Faelligkeit'];
-                    $textNameFälligkeit .= ($row['Bearbeitungsstatus'] === "0") ? "\nOffen" : "\nErledigt";
+                    $textNameFälligkeit .= ($row['Bearbeitungsstatus'] === 0) ? "\nOffen" : "\nErledigt";
                 } else {
                     $textNameFälligkeit = "";
                 }
@@ -312,7 +312,7 @@ while ($row = $result->fetch_assoc()) {
     $dataVermerke[$vermerkID]['Untergruppennummer'] = $row['Untergruppennummer'];
     $dataVermerke[$vermerkID]['Untergruppenname'] = $row['Untergruppenname'];
     $dataVermerke[$vermerkID]['Vermerktext'] = $row['Vermerktext'];
-    $dataVermerke[$vermerkID]['Bearbeitungsstatus'] = $row['Bearbeitungsstatus'];
+    $dataVermerke[$vermerkID]['Bearbeitungsstatus'] = (int)$row['Bearbeitungsstatus'];
     $dataVermerke[$vermerkID]['Name'] = $row['Name'];
     $dataVermerke[$vermerkID]['Faelligkeit'] = $row['Faelligkeit'];
     $dataVermerke[$vermerkID]['Vermerkart'] = $row['Vermerkart'];

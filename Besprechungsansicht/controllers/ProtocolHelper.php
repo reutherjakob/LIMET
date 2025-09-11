@@ -3,6 +3,7 @@
 class ProtocolHelper
 {
     public static $lastStatus;
+
     /**
      * Generate a change protocol text comparing old and new data.
      *
@@ -15,9 +16,21 @@ class ProtocolHelper
     public static function generateProtocolText(array $old, array $new, string $changeComment, string $elementName): string
     {
         self::$lastStatus = $new["status"] ?? null;
+        $varianteLabels = [
+            0 => '-',
+            1 => 'A',
+            2 => 'B',
+            3 => 'C',
+            4 => 'D',
+            5 => 'E',
+            6 => 'F',
+            7 => 'G',
+        ];
+        $bestandNeu  = ($new['Neu/Bestand'] ?? null);
 
+        $elementName = $elementName . " (" . $varianteLabels[$new['variant'] ?? 0] . ")";
         if (empty($old)) {
-            return "Element {$elementName} neu hinzugefügt.";
+            return "{$elementName} wurde {$new['Anzahl']} mal neu hinzugefügt. (Bestand: {$bestandNeu})";
         }
 
         $changes = [];
@@ -28,24 +41,30 @@ class ProtocolHelper
         }
 
         if (($old['variant'] ?? null) !== ($new['variant'] ?? null)) {
-            $oldVar = $old['variant'] ?? '(keine)';
-            $newVar = $new['variant'] ?? '(keine)';
+            $oldVar = $varianteLabels[$old['variant'] ?? 0];
+            $newVar = $varianteLabels[$new['variant'] ?? 0];
             $changes[] = "Variante von {$elementName} von '{$oldVar}' auf '{$newVar}' geändert";
         }
 
         if (($old['status'] ?? null) !== ($new['status'] ?? null)) {
-            $oldStatus = $old['status'] ?? '(unbekannt)';
-            $newStatus = $new['status'] ?? '(unbekannt)';
-            $changes[] = "Status von {$elementName} von '{$oldStatus}' auf '{$newStatus}' geändert";
+            $statusLabels = [
+                0 => 'nichts',
+                1 => 'Nutzeranforderung',
+                2 => 'Freigegeben'
+            ];
+            $newStatusCode = $new['status'] ?? null;
+            $newStatusLabel = $statusLabels[$newStatusCode] ?? '(unbekannt)';
+            if (($old['status'] ?? null) !== $newStatusCode) {
+                $changes[] = "Status von {$elementName} auf '{$newStatusLabel}' geändert";
+            }
         }
 
-        if (($old['Neu/Bestand'] ?? null) !== ($new['Neu/Bestand'] ?? null)) {
+        if (($old['Neu/Bestand'] ?? null) !== $bestandNeu) {
             $newText = ($new['Neu/Bestand'] == 1) ? 'neu zu beschaffen' : 'im Bestand';
-            $changes[] = "Änderung des Bestand-Status von {$elementName}: ist '{$newText}'.";
-
+            $changes[] = "Änderung Bestand-Status von {$elementName}: ist '{$newText}'";
         }
 
-        // Kommentar
+
         if (!empty($changeComment)) {
             $changes[] = "Anmerkung: {$changeComment}";
         }
@@ -72,7 +91,6 @@ class ProtocolHelper
             return;
         }
 
-        // Update link in tabelle_rb_aenderung
         $sqlVermerkUpdate = "
         UPDATE tabelle_rb_aenderung 
         SET vermerk_ID = ?
@@ -106,7 +124,7 @@ class ProtocolHelper
         $stmtSelect->close();
 
         // Append new text
-        $separator = (!empty($oldVermerk)) ? "\n\n" : '';
+        $separator = (!empty($oldVermerk)) ? "\n" : '';
         $newVermerkText = $oldVermerk . $separator . $protokollText;
 
         // Update remark text
@@ -118,7 +136,7 @@ class ProtocolHelper
                 $vermerkart = "Freigegeben";
                 break;
             default:
-                $vermerkart = "Info"; // Fallback
+                $vermerkart = "Info";
         }
         self::$lastStatus = 0;
 
@@ -127,7 +145,7 @@ class ProtocolHelper
         if (!$stmtUpdate) {
             throw new Exception("Prepare fehlgeschlagen: " . $conn->error);
         }
-        $stmtUpdate->bind_param('ssi', $newVermerkText, $vermerkart , $vermerkID);
+        $stmtUpdate->bind_param('ssi', $newVermerkText, $vermerkart, $vermerkID);
         if (!$stmtUpdate->execute()) {
             $stmtUpdate->close();
             error_log("Fehler beim Anhängen des Vermerktextes: " . $stmtUpdate->error);
