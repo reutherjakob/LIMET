@@ -15,6 +15,16 @@ class ProtocolHelper
      */
     public static function generateProtocolText(array $old, array $new, string $changeComment, string $elementName): string
     {
+        $logData = sprintf(
+            "[%s] OLD: %s | NEW: %s | COMMENT: %s | ELEMENT: %s\n",
+            date('Y-m-d H:i:s'),
+            json_encode($old, JSON_UNESCAPED_UNICODE),
+            json_encode($new, JSON_UNESCAPED_UNICODE),
+            $changeComment,
+            $elementName
+        );
+        file_put_contents(__DIR__ . '/protocol.log', $logData, FILE_APPEND);
+
         self::$lastStatus = $new["status"] ?? null;
         $varianteLabels = [
             0 => '-',
@@ -26,27 +36,28 @@ class ProtocolHelper
             6 => 'F',
             7 => 'G',
         ];
-        $bestandNeu  = ($new['Neu/Bestand'] ?? null);
+        $bestandNeu = ($new['Neu/Bestand'] ?? null);
+        $bestandstext = $bestandNeu === 0 ? "Ja" : "Nein";
 
-        $elementName = $elementName . " (" . $varianteLabels[$new['variant'] ?? 0] . ")";
         if (empty($old)) {
-            return "{$elementName} wurde {$new['Anzahl']} mal neu hinzugefügt. (Bestand: {$bestandNeu})";
+            $elementName = $elementName . " (Var: " . $varianteLabels[$new['variant'] ?? 0] . ", Best.: " . $bestandstext . " )";
+            return "{$elementName} wurde {$new['Anzahl']} mal hinzugefügt.";// Neue Stückzahl: {$new['Anzahl']}";
         }
 
-        $changes = [];
 
+        $changes = [];
         if (isset($old['Anzahl'], $new['Anzahl']) && $old['Anzahl'] !== $new['Anzahl']) {
+            $elementName = $elementName . " (Var: " . $varianteLabels[$new['variant'] ?? 0] . ", Best.: " . $bestandstext . " )";
             $verb = ($new['Anzahl'] > $old['Anzahl']) ? 'erhöht' : 'reduziert';
             $changes[] = "Anzahl von {$elementName} von {$old['Anzahl']} auf {$new['Anzahl']} {$verb}";
         }
-
         if (($old['variant'] ?? null) !== ($new['variant'] ?? null)) {
             $oldVar = $varianteLabels[$old['variant'] ?? 0];
             $newVar = $varianteLabels[$new['variant'] ?? 0];
             $changes[] = "Variante von {$elementName} von '{$oldVar}' auf '{$newVar}' geändert";
         }
-
         if (($old['status'] ?? null) !== ($new['status'] ?? null)) {
+            $elementName = $elementName . " (Var: " . $varianteLabels[$new['variant'] ?? 0] . ", Best.: " . $bestandstext . " )";
             $statusLabels = [
                 0 => 'nichts',
                 1 => 'Nutzeranforderung',
@@ -58,17 +69,14 @@ class ProtocolHelper
                 $changes[] = "Status von {$elementName} auf '{$newStatusLabel}' geändert";
             }
         }
-
         if (($old['Neu/Bestand'] ?? null) !== $bestandNeu) {
+            $elementName = $elementName . " (Var: " . $varianteLabels[$new['variant'] ?? 0] . ")";
             $newText = ($new['Neu/Bestand'] == 1) ? 'neu zu beschaffen' : 'im Bestand';
             $changes[] = "Änderung Bestand-Status von {$elementName}: ist '{$newText}'";
         }
-
-
         if (!empty($changeComment)) {
             $changes[] = "Anmerkung: {$changeComment}";
         }
-
         if (empty($changes)) {
             return "Keine Änderungen an {$elementName}.";
         }

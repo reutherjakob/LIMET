@@ -33,6 +33,7 @@ function loadVermerkuntergruppenIntoSession(int $projectID, int $vermerkgruppeId
     }
 }
 
+
 $projectID = intval($_SESSION['projectID']);
 $username = $_SESSION['username'] ?? 'unknown';
 $standort = 1; // fest auf 1 gesetzt
@@ -99,7 +100,6 @@ try {
         }
         $stmtUpdate->close();
     } else {// Neue Relation anlegen Prüfen, ob Raum und Element zum Projekt gehören
-
         $sqlCheck = "SELECT r.idTABELLE_Räume, e.idTABELLE_Elemente
                      FROM tabelle_räume r, tabelle_elemente e
                      WHERE r.idTABELLE_Räume = ? AND e.idTABELLE_Elemente = ? AND r.tabelle_projekte_idTABELLE_Projekte = ?";
@@ -123,12 +123,10 @@ try {
         if (!$stmtInsert->execute()) {
             throw new Exception('Insert Fehler: ' . $stmtInsert->error);
         }
-
         $relationId = $stmtInsert->insert_id;
         $stmtInsert->close();
         $isNewRelation = true;
     }
-
     $conn->commit();
 
     echo json_encode([
@@ -136,97 +134,6 @@ try {
         'message' => $isNewRelation ? 'Neue Relation erstellt' : 'Änderung gespeichert',
         'relationId' => $relationId
     ]);
-
-    // // ------ TODO -----
-    // $logFile = __DIR__ . '/updateElementinRoom_debug.log';
-    // $vermerkId = null;
-    //
-    // try {
-    //     $vermerkText = '';
-    //     $vermerkArt = '';
-    //
-    //     if ($oldData) {
-    //         $elementName = $oldData['ElementID'] . ' ' . $oldData['Bezeichnung'];
-    //         $oldAnzahl = intval($oldData['Anzahl']);
-    //         $newAnzahl = $newAmount;
-    //
-    //         if ($oldAnzahl > 0 && $newAnzahl === 0) {
-    //             $vermerkText = "$elementName entfällt.";
-    //             $vermerkArt = "Element entfällt";
-    //         } else if ($oldAnzahl !== $newAnzahl) {
-    //             $vermerkText = "Anzahl des Elements $elementName von $oldAnzahl auf $newAnzahl geändert.";
-    //             $vermerkArt = "Element geändert";
-    //         } else {
-    //             $vermerkText = "Element $elementName wurde geändert.";
-    //             $vermerkArt = "Element geändert";
-    //         }
-    //     } else {
-    //         $vermerkText = "Neues Element hinzugefügt.";
-    //         $vermerkArt = "Element hinzugefügt";
-    //     }
-    //
-    //     $raumbereichName = $oldData['Raumbereich Nutzer'] ?? '';
-    //     $besprechungsId = $_SESSION['besprechung_id'] ?? 0;
-    //
-    //     // Log: vor der Ermittlung der UntergruppenId
-    //     file_put_contents($logFile, "DEBUG: oldData vorhanden: " . var_export($oldData, true) . "\n", FILE_APPEND);
-    //     file_put_contents($logFile, "DEBUG: Raumbereich: $raumbereichName, Besprechungs-ID: $besprechungsId\n", FILE_APPEND);
-    //
-    //     $vermerkUntergruppeId = $_SESSION['vermerkgruppen'][$besprechungsId][$raumbereichName] ?? null;
-    //
-    //     if (!$vermerkUntergruppeId) {
-    //         // Fallback auf BesprechungsId wenn kein passender Eintrag
-    //         $vermerkUntergruppeId = $besprechungsId;
-    //         file_put_contents($logFile, "WARNUNG: verbinde Vermerk mit Fallback UntergruppenId: $vermerkUntergruppeId\n", FILE_APPEND);
-    //     } else {
-    //         file_put_contents($logFile, "INFO: gefundene UntergruppenId: $vermerkUntergruppeId\n", FILE_APPEND);
-    //     }
-    //
-    //     $sql = "INSERT INTO tabelle_Vermerke (
-    //             tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe,
-    //             Ersteller,
-    //             Erstellungszeit,
-    //             Vermerktext,
-    //             Vermerkart
-    //         ) VALUES (?, ?, NOW(), ?, ?)";
-    //     $stmt = $conn->prepare($sql);
-    //     $stmt->bind_param("isss", $vermerkUntergruppeId, $username, $vermerkText, $vermerkArt);
-    //
-    //     if (!$stmt->execute()) {
-    //         file_put_contents($logFile, "FEHLER BEIM VERKERT ANLEGEN: " . $stmt->error . "\n", FILE_APPEND);
-    //         throw new Exception("Fehler beim Anlegen von Vermerk: " . $stmt->error);
-    //     }
-    //
-    //     $vermerkId = $stmt->insert_id;
-    //     $stmt->close();
-    //
-    //     file_put_contents($logFile, "INFO: Vermerk erzeugt mit ID: $vermerkId\n", FILE_APPEND);
-    //
-    //     $sqlUpdate = "UPDATE tabelle_rb_aenderung SET vermerk_ID = ? WHERE id = ?";
-    //     $stmtUpdate = $conn->prepare($sqlUpdate);
-    //     $stmtUpdate->bind_param("ii", $vermerkId, $relationId);
-    //
-    //     if (!$stmtUpdate->execute()) {
-    //         file_put_contents($logFile, "FEHLER BEIM VERKNÜPFEN VEREMRK: " . $stmtUpdate->error . "\n", FILE_APPEND);
-    //         throw new Exception("Fehler beim Verknüpfen von Vermerk und Änderung: " . $stmtUpdate->error);
-    //     }
-    //
-    //     $stmtUpdate->close();
-    //
-    //     file_put_contents($logFile, "INFO: Vermerk erfolgreich mit Änderung verknüpft (RelationID: $relationId)\n", FILE_APPEND);
-    //
-    //     // Commit in der aufrufenden Transaktion abschließen
-    //
-    // } catch (Exception $e) {
-    //     file_put_contents($logFile, "EXCEPTION: " . $e->getMessage() . "\n", FILE_APPEND);
-    //     $conn->rollback();
-    //     $conn->close();
-    //     echo json_encode(['success' => false, 'message' => $e->getMessage()]);
-    //     exit;
-    // }
-
-
-
 } catch (Exception $e) {
     $conn->rollback();
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);

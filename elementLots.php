@@ -46,13 +46,12 @@
         }
         init_page_serversides();
         include "utils/_format.php";
-
-
+        
         function makeTable($result): void
         {
             $headers = [
                 '', 'ID-Element', 'ID-Variante', 'ID-Los', 'Bestand-Wert', 'Anzahl', 'ID', 'Element', 'Var', 'Raumbereich', 'Bauabschnitt',
-                'Bestand', 'EP', 'PP', 'EP', 'PP', 'Los-Nr', 'Los', 'Ausführungsbeginn', 'Gewerk', 'Budget', 'Abgeschlossen'
+                'Bestand', 'EP', 'PP', 'EP', 'PP', 'Los-Nr', 'Los', 'Ausführungsbeginn', 'Gewerk', 'Budget', 'Abgeschlossen'// , "Geschoss"
             ];
 
             $filters = [
@@ -60,13 +59,13 @@
                 "<b>Stk >0 <input type='checkbox' id='filter_count'></b>",
                 '', '', '', '', '',
                 "<select id='filter_bestand'>
-            <option value='2'></option> 
-            <option value='1'>Ja</option>
-            <option value='0'>Nein</option>
-        </select>",
+                    <option value='2'></option> 
+                    <option value='1'>Ja</option>
+                    <option value='0'>Nein</option>
+                </select>",
                 '', '', '', '',
                 "<input type='checkbox' id='filter_lot'>",
-                '', '', '', '', ''
+                '', '', '', '', '' // ,''
             ];
 
             $statusBadges = [
@@ -105,6 +104,7 @@
                 echo "<td>" . htmlspecialchars($row['Gewerke_Nr'] ?? "", ENT_QUOTES, 'UTF-8') ." " .  htmlspecialchars($row['GWBEZ'] ?? "", ENT_QUOTES, 'UTF-8'). "</td>";
                 echo "<td>" . htmlspecialchars($row['Budgetnummer'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                 echo "<td>" . ($statusBadges[$row['Vergabe_abgeschlossen']] ?? '') . "</td>";
+                // echo "<td>" . htmlspecialchars($row['Geschoss'] ?? "", ENT_QUOTES, 'UTF-8')  . "</td>";
                 echo "</tr>";
 
             }
@@ -130,6 +130,7 @@
                        tabelle_elemente.Bezeichnung,
                        tabelle_varianten.Variante,
                        tabelle_räume.`Raumbereich Nutzer`,
+                      
                        tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
                        tabelle_projekt_varianten_kosten.Kosten,
                        tabelle_projekt_varianten_kosten.Kosten * Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS PP,

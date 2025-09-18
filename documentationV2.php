@@ -75,7 +75,7 @@ init_page_serversides();
                 <div class="card-body">
                     <?php
                     $mysqli = utils_connect_sql();
-                    $sql = "SELECT tabelle_Vermerkgruppe.Gruppenname, tabelle_Vermerkgruppe.Gruppenart, tabelle_Vermerkgruppe.Ort, date_format(tabelle_Vermerkgruppe.Startzeit, '%h:%i') Startzeit, date_format(tabelle_Vermerkgruppe.Endzeit, '%h:%i') Endzeit, tabelle_Vermerkgruppe.Datum, tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe, tabelle_Vermerkgruppe.Verfasser
+                    $sql = "SELECT tabelle_Vermerkgruppe.Gruppenname, tabelle_Vermerkgruppe.Gruppenart, tabelle_Vermerkgruppe.Ort, date_format(tabelle_Vermerkgruppe.Startzeit, '%H:%i') as Startzeit, date_format(tabelle_Vermerkgruppe.Endzeit, '%H:%i') as Endzeit, tabelle_Vermerkgruppe.Datum, tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe, tabelle_Vermerkgruppe.Verfasser
                                                         FROM tabelle_Vermerkgruppe
                                                         WHERE (((tabelle_Vermerkgruppe.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
                                                         ORDER BY tabelle_Vermerkgruppe.Datum DESC;";
@@ -420,6 +420,7 @@ init_page_serversides();
             document.getElementById("gruppenVerfasser").value = tableVermerkGruppe.row($(this)).data()[7];
             document.getElementById("gruppenDatum").value = tableVermerkGruppe.row($(this)).data()[3];
             document.getElementById("gruppenStart").value = tableVermerkGruppe.row($(this)).data()[10];
+            console.log("gruppenStart: ",tableVermerkGruppe.row($(this)).data()[10]);
             document.getElementById("gruppenEnde").value = tableVermerkGruppe.row($(this)).data()[11];
             $("#vermerke").hide();
 
@@ -557,7 +558,7 @@ init_page_serversides();
         var gruppenDatum = $("#gruppenDatum").val();
         var gruppenStart = $("#gruppenStart").val();
         var gruppenEnde = $("#gruppenEnde").val();
-        //onsole.log(gruppenart);
+        console.log("gruppenName:", gruppenName);
 
         if (gruppenart !== "" && gruppenName !== "" && gruppenOrt !== "" && gruppenVerfasser !== "" && gruppenDatum !== "" && gruppenStart !== "" && gruppenEnde !== "" && gruppenID !== "") {
             // $('#addDeviceModal').modal('hide');

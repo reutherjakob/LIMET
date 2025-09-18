@@ -88,7 +88,7 @@ function getFileName($topic)
 {
     $date = $_SESSION["PDFdatum"] ?? date('Y-m-d');
     $projectname = $_SESSION['projectName'];
-    return $projectname . "__GPMT__" . $topic . "__" . $date . ".pdf";
+    return $projectname . "_GPMT_" . $topic . "_" . $date . ".pdf";
 }
 
 function check4newpage($pdf, $rowHeightComment)
@@ -174,7 +174,7 @@ function format_text($string)
 function clean_string($dirty_str)
 {
     //DEFINE ALLOWED CHARACTERS
-    $clean_string = preg_replace('/[^äüößÄÜÖ\n(\x20-\x7F)]*/u', '', $dirty_str);
+    $clean_string = preg_replace('/[^äüößÄÜÖ°\n(\x20-\x7F)]*/u', '', $dirty_str);
     return $clean_string;
 }
 

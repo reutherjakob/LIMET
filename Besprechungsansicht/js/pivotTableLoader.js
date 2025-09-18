@@ -6,9 +6,8 @@ function loadPivotTable(params = {}) {
         $('#pivotTableContainer').html('<div class="alert alert-info">Bitte wählen Sie mindestens einen Raumbereich.</div>');
         return;
     }
-
-    // Assemble all parameters for the AJAX call (filters and additions)
     let data = {
+        action: "loadTable",
         'raumbereich[]': raumbereich,
         'zusatzRaeume[]': $('#zusatzRaeume').val() || [],
         'zusatzElemente[]': $('#zusatzElemente').val() || [],
@@ -20,7 +19,6 @@ function loadPivotTable(params = {}) {
         ...params // allow override or extra params
     };
 
-    // Optional hideZeros toggle for DataTable render
     let hideZeros = $('#hideZeros').is(':checked');
 
     $.ajax({
@@ -29,8 +27,8 @@ function loadPivotTable(params = {}) {
         data: data,
         traditional: true,
         success: function (html) {
+            console.log("Success loading Table");
             $('#pivotTableContainer').html(html);
-
             let colCount = $('#pivotTable thead th').length;
             let columns = [];
             for (let i = 0; i < colCount; i++) {
