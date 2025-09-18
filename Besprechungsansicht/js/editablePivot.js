@@ -44,10 +44,11 @@ class EditablePivot {
 
     loadDetails() {
         // consolidateMultipleElementsperRoom();
-        fetch('../controllers/getElementDetails.php', {
+        fetch('../controllers/PivotTableController.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: new URLSearchParams({
+                action: "getElementDetails",
                 roomId: this.currentCellData.roomId,
                 elementId: this.currentCellData.elementId,
                 variantId: this.currentCellData.variantId,

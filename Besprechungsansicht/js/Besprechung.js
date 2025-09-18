@@ -96,10 +96,11 @@ class Besprechung {
             return false;
         }
         $.ajax({
-            url: '../controllers/consolidateMultipleElementsperRoomsperRoomarea.php',
+            url: '../controllers/BesprechungController.php',
             method: 'POST',
             data: {
-                raumbereiche: selectedRaumbereiche
+                raumbereiche: selectedRaumbereiche,
+                action: "Consolidate"
             },
             dataType: 'json',
             success: function (response) {
@@ -114,12 +115,45 @@ class Besprechung {
         });
     }
 
+    getVermerkIDs(id) {
+        const self = this;
+        $.ajax({
+            url: '../controllers/BesprechungController.php',
+            type: 'POST',
+            data: {
+                action: 'getVermerkeByVermerkgruppe',
+                vermerkgruppeID: id
+            },
+            success: function (response) {
+                if (response.success) {
+                    self.roomVermerkMap = response.data;
+                    console.log("GetVermerkeIDs", id, " Response:", response.data);
+                    console.log("VermerkIDs geladen: ", self.roomVermerkMap);
+
+                    if (typeof toasterFn === "function") {
+                        toasterFn('Vermerke geladen: ' + Object.keys(self.roomVermerkMap).length + ' Räume', true);
+
+                    }
+                } else {
+                    if (typeof toasterFn === "function") {
+                        toasterFn('Fehler beim Laden der Vermerke: ' + response.message, false);
+                    }
+                }
+            },
+            error: function () {
+                if (typeof toasterFn === "function") {
+                    toasterFn('Serverfehler beim Laden der Vermerke', false);
+                }
+            }
+        });
+
+    }
+
     bindModalShowHandler(modalSelector, tableSelector, toasterFn, loadRaumbereicheFn) {
         const self = this;
 
         $(modalSelector).on('shown.bs.modal', function () {
             if (!$.fn.DataTable.isDataTable(tableSelector)) {
-
 
                 $(tableSelector).DataTable({
                     ajax: {
@@ -170,9 +204,15 @@ class Besprechung {
                             self.verfasser = data.Verfasser;
                             self.art = "Protokoll Besprechung";
                             self.projektID = data.tabelle_projekte_idTABELLE_Projekte;
-                            // console.log(self.toPayload());
-                            $('#pdfPreview').attr('src', '../../PDFs/pdf_createVermerkGroupPDF.php?gruppenID=' + data.idtabelle_Vermerkgruppe);
 
+                            self.getVermerkIDs(data.idtabelle_Vermerkgruppe);
+
+                            // setTimeout(function () {
+                            //    console.log("Besprechung geöffnet: ", besprechung.toPayload(), besprechung.roomVermerkMap);
+                            //}, 1000)
+
+
+                            $('#pdfPreview').attr('src', '../../PDFs/pdf_createVermerkGroupPDF.php?gruppenID=' + data.idtabelle_Vermerkgruppe);
                             setTimeout(() => {
                                 //console.log("Update FilterForm - Load Raumbereiche");
                                 $(modalSelector).modal("hide");

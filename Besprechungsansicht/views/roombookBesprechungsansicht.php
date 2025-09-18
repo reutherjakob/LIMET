@@ -266,7 +266,8 @@ $conn->close();
                     <button type="reset" class="btn btn-outline-dark" title="ResetPDF" id="ResetPDF">
                         <i class="fas fa-sync-alt"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-dark"> IDEE:: Alle Nutzerwünsche Freigben</button>
+                    <button type="button" class="btn btn-success" id="freigebenAlleBtn">Alle freigeben</button>
+
                 </div>
                 <div class="card-body">
                     <iframe class="embed-responsive-item" id="pdfPreview"></iframe>
@@ -417,6 +418,25 @@ include "../../modal_elementHistory.html";
             });
         });
 
+        $('#freigebenAlleBtn').click(function () {
+            let vermerkIDs = []; // Mit der aktuellen Besprechung alle relevanten VermerkIDs aus roomVermerkMap sammeln
+            Object.values(besprechung.roomVermerkMap).forEach(ids => vermerkIDs.push(...ids));
+            //console.log("Handing over:", vermerkIDs);
+            $.ajax({
+                url: '../controllers/BesprechungController.php',
+                type: 'POST',
+                data: {
+                    action: 'freigabeAlle',
+                    vermerkIDs: vermerkIDs
+                },
+                success: function (response) {
+                    // console.log(response);
+                    refreshPDF();
+                    editablePivot.reloadPivotTable();
+                }
+
+            });
+        });
 
     }); // doc ready
 

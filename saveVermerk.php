@@ -4,9 +4,9 @@ check_login();
 
 $mysqli = utils_connect_sql();
 
-$losID = getPostInt('losID');
+$losID = getPostInt('los');
 $vermerkText = getPostString('vermerkText');
-$vermerkStatus = getPostString('vermerkStatus');
+$vermerkStatus = getPostInt('vermerkStatus');
 $vermerkTyp = getPostString('vermerkTyp');
 $untergruppenID = getPostInt('untergruppenID');
 $vermerkID = getPostInt('vermerkID');
@@ -15,6 +15,25 @@ if (empty($faelligkeitDatum) || $faelligkeitDatum === 'null' || $faelligkeitDatu
     $faelligkeitDatum = NULL;
 }
 
+
+if ($losID === 0) {
+    $losID = NULL; // or handle as appropriate if FK allows NULLs
+}
+
+// function writeLog($message)
+// {
+//     global $logFile;
+//     file_put_contents($logFile, date('Y-m-d H:i:s') . " - $message\n", FILE_APPEND);
+// }
+// 
+// // Log input values and types
+// writeLog("losID: $losID (type: " . gettype($losID) . ")");
+// writeLog("vermerkText: $vermerkText (type: " . gettype($vermerkText) . ")");
+// writeLog("vermerkStatus: $vermerkStatus (type: " . gettype($vermerkStatus) . ")");
+// writeLog("vermerkTyp: $vermerkTyp (type: " . gettype($vermerkTyp) . ")");
+// writeLog("faelligkeitDatum: " . var_export($faelligkeitDatum, true) . " (type: " . gettype($faelligkeitDatum) . ")");
+// writeLog("untergruppenID: $untergruppenID (type: " . gettype($untergruppenID) . ")");
+// writeLog("vermerkID: $vermerkID (type: " . gettype($vermerkID) . ")");
 
 $sql = "UPDATE `LIMET_RB`.`tabelle_Vermerke`
         SET
@@ -27,7 +46,12 @@ $sql = "UPDATE `LIMET_RB`.`tabelle_Vermerke`
         WHERE `idtabelle_Vermerke` = ?";
 
 $stmt = $mysqli->prepare($sql);
-$stmt->bind_param("issssii",
+if (!$stmt) {
+    //writeLog("Prepare failed: " . $mysqli->error);
+    die("Prepare failed: " . $mysqli->error);
+}
+
+$stmt->bind_param("isissii",
     $losID,
     $vermerkText,
     $vermerkStatus,
@@ -38,6 +62,7 @@ $stmt->bind_param("issssii",
 );
 
 if ($stmt->execute()) {
+    // writeLog("Update executed successfully for vermerkID: $vermerkID");
     $mysqli->query("DELETE FROM tabelle_vermerke_has_tabelle_räume WHERE tabelle_vermerke_idTabelle_vermerke = $vermerkID");
     $roomArray = $_POST['room'] ?? [];
     foreach ($roomArray as $roomID) {
@@ -45,11 +70,14 @@ if ($stmt->execute()) {
             $sql_room = "INSERT INTO tabelle_vermerke_has_tabelle_räume
                          (tabelle_vermerke_idTabelle_vermerke, tabelle_räume_idTabelle_räume)
                          VALUES ($vermerkID, $roomID)";
-            $mysqli->query($sql_room);
+            if (!$mysqli->query($sql_room)) {
+                //  writeLog("Room insert failed: " . $mysqli->error);
+            }
         }
     }
     echo "Vermerk aktualisiert!";
 } else {
+    //writeLog("Execute failed: " . $stmt->error);
     echo "Error: " . $stmt->error;
 }
 

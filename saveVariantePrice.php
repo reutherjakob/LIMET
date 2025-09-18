@@ -8,7 +8,7 @@ $kosten = filter_input(INPUT_GET, 'kosten', FILTER_VALIDATE_FLOAT);
 $projectID = $_SESSION['projectID'];
 $elementID = $_SESSION['elementID'];
 
-if (!$variantenID || !$kosten || !$projectID || !$elementID) {
+if (!$variantenID || !isset($kosten) || !$projectID || !$elementID) {
     die("Invalid input data");
 }
 

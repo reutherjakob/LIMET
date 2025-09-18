@@ -174,7 +174,7 @@ function format_text($string)
 function clean_string($dirty_str)
 {
     //DEFINE ALLOWED CHARACTERS
-    $clean_string = preg_replace('/[^äüößÄÜÖ\n(\x20-\x7F)]*/u', '', $dirty_str);
+    $clean_string = preg_replace('/[^äüößÄÜÖ°\n(\x20-\x7F)]*/u', '', $dirty_str);
     return $clean_string;
 }
 
