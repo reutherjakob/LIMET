@@ -19,76 +19,47 @@ $status = getPostInt('status', 1);
 $neuBestand = getPostInt('neuBestand', 1);
 $bestand_alt = getPostInt('bestand_alt', 1);
 $elementKommentar = getPostString('elementKommentar', '');
-//$raumkommentar = getPostString('raumkommentar', '');
-// if (trim($raumkommentar) !== '') {
-//     // Fetch existing room comment before update (or reuse if already fetched)
-//     $sqlRoomComment = "SELECT `Anmerkung allgemein` FROM tabelle_räume WHERE idTABELLE_Räume = ?";
-//     $stmtRoomComment = $conn->prepare($sqlRoomComment);
-//     $stmtRoomComment->bind_param('i', $roomId);
-//     $stmtRoomComment->execute();
-//     $existingCommentRow = $stmtRoomComment->get_result()->fetch_assoc();
-//     $stmtRoomComment->close();
-//
-//     $existingComment = $existingCommentRow['Anmerkung allgemein'] ?? '';
-//
-//     // Append new comment with line break if the existing comment is not empty
-//     $newRoomComment = $existingComment;
-//     if (strlen(trim($existingComment)) > 0) {
-//         $newRoomComment .= "\n";
-//     }
-//     $newRoomComment .= $raumkommentar;
-//     // Update room comment in database
-//     $sqlUpdateRoom = "UPDATE tabelle_räume SET `Anmerkung allgemein` = ? WHERE idTABELLE_Räume = ?";
-//     $stmtUpdateRoom = $conn->prepare($sqlUpdateRoom);
-//     $stmtUpdateRoom->bind_param('si', $newRoomComment, $roomId);
-//     if (!$stmtUpdateRoom->execute()) {
-//         // Log or handle failure to update room comment, but do not fail the main transaction since it is committed already
-//         error_log('Failed to update room comment: ' . $stmtUpdateRoom->error);
-//     }
-//     $stmtUpdateRoom->close();
-// }
 
 $conn = utils_connect_sql();
 $oldData = [];
-
-// --- ÄNDERUNG SPEICHERN ---
-
 $bezeichnung = "";
 try {
     $conn->begin_transaction();
+
+    $oldData = [];
     $isNewRelation = false;
-    // Bestehende Relation holen (inkl. Variante prüfen)
+
     if ($relationId > 0) {
+        // If relation ID is given: fetch old data for protocol, then update
         $sqlOld = "SELECT rhe.*, e.Bezeichnung AS elementName, rhe.tabelle_varianten_idtabelle_varianten AS variant
                    FROM LIMET_RB.tabelle_räume_has_tabelle_elemente rhe
                    JOIN tabelle_elemente e ON e.idTABELLE_Elemente = rhe.TABELLE_Elemente_idTABELLE_Elemente
-                   WHERE rhe.id = ? 
-                     AND rhe.tabelle_varianten_idtabelle_varianten = ? 
-                   AND  `Neu/Bestand` = ? ";
+                   WHERE rhe.id = ? ";
         $stmtOld = $conn->prepare($sqlOld);
-        $stmtOld->bind_param('iii', $relationId, $variantId, $neuBestand);
+        $stmtOld->bind_param('i', $relationId);
         $stmtOld->execute();
         $oldData = $stmtOld->get_result()->fetch_assoc();
         $stmtOld->close();
-        if (!$oldData) {
-            $relationId = 0;
-        }
-    }
 
-    if ($relationId > 0) { // Update
+        if (!$oldData) {
+            throw new Exception('Relation ID existiert nicht');
+        }
+
+        // Update existing relation
         $sqlUpdate = "UPDATE tabelle_räume_has_tabelle_elemente
-                      SET Anzahl = ?, status = ?, `Neu/Bestand` = ?, Timestamp = NOW(), Kurzbeschreibung = ?
+                      SET Anzahl = ?, status = ?, `Neu/Bestand` = ?, Timestamp = NOW(), Kurzbeschreibung = ?, tabelle_Varianten_idtabelle_Varianten = ?
                       WHERE id = ?";
         $stmtUpdate = $conn->prepare($sqlUpdate);
-        $stmtUpdate->bind_param('iiisi', $newAmount, $status, $neuBestand, $elementKommentar, $relationId);
+        $stmtUpdate->bind_param('iiisii', $newAmount, $status, $neuBestand, $elementKommentar,$variantId,  $relationId);
         if (!$stmtUpdate->execute()) {
             throw new Exception('Update Fehler: ' . $stmtUpdate->error);
         }
         $stmtUpdate->close();
 
-    } else { // Insert prüfen & anlegen
+    } else {
+        // If no relation ID: Create new entry
 
-        // Check if room and element exist for project
+        // Check room and element existence
         $sqlCheck = "SELECT r.idTABELLE_Räume, e.idTABELLE_Elemente, e.Bezeichnung
                  FROM tabelle_räume r, tabelle_elemente e
                  WHERE r.idTABELLE_Räume = ? AND e.idTABELLE_Elemente = ? AND r.tabelle_projekte_idTABELLE_Projekte = ?";
@@ -102,13 +73,13 @@ try {
         }
         $bezeichnung = $checkRes['Bezeichnung'];
 
-        // New: Check if relation for this room, element, and variant already exists
+        // Check if a relation with the same room, element, variant, and status exists to update count instead of new insert
         $sqlExistingRelation = "SELECT id, Anzahl FROM tabelle_räume_has_tabelle_elemente
                                 WHERE TABELLE_Räume_idTABELLE_Räume = ? 
                                 AND TABELLE_Elemente_idTABELLE_Elemente = ? 
                                 AND tabelle_varianten_idtabelle_varianten = ?
                                 AND `Neu/Bestand` = ? 
-                                AND Standort =? ";
+                                AND Standort = ?";
         $stmtExisting = $conn->prepare($sqlExistingRelation);
         $stmtExisting->bind_param('iiiii', $roomId, $elementId, $variantId, $neuBestand, $standort);
         $stmtExisting->execute();
@@ -129,7 +100,7 @@ try {
             $relationId = $existingRelation['id'];
             $isNewRelation = false;
         } else {
-            // Relation does not exist - insert new
+            // Insert a new relation
             $sqlInsert = "INSERT INTO tabelle_räume_has_tabelle_elemente
                       (TABELLE_Räume_idTABELLE_Räume, TABELLE_Elemente_idTABELLE_Elemente, tabelle_varianten_idtabelle_varianten,
                        Anzahl, status, Standort, `Neu/Bestand`, Verwendung, Kurzbeschreibung, Timestamp)
@@ -144,40 +115,38 @@ try {
             $isNewRelation = true;
         }
     }
+
     $conn->commit();
+
+    // Prepare new data for protocol text
+    $neuData = [
+        'Anzahl' => $newAmount,
+        'status' => $status,
+        'Neu/Bestand' => $neuBestand,
+        'variant' => $variantId,
+        'elementKommentar' => $elementKommentar,
+    ];
+
+    // Generate protocol text after commit
+    require_once 'ProtocolHelper.php';
+    $protokollText = ProtocolHelper::generateProtocolText(
+        $oldData ?? [],
+        $neuData,
+        $changeComment,
+        $oldData['elementName'] ?? $bezeichnung,
+    );
+
+    ProtocolHelper::updateRemarkAndLink($conn, $vermerkID, $relationId, $protokollText);
 
     echo json_encode([
         'success' => true,
         'message' => $isNewRelation ? 'Neue Relation erstellt' : 'Änderung gespeichert',
         'relationId' => $relationId,
     ]);
+    $conn->close();
+
 } catch (Exception $e) {
     $conn->rollback();
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }
-
-$neuData = [
-    'Anzahl' => $newAmount,
-    'status' => $status,
-    'Neu/Bestand' => $neuBestand,
-    'variant' => $variantId,
-    'elementKommentar' => $elementKommentar,
-];
-
-// --- PROTOKOLL ---
-require_once 'ProtocolHelper.php';
-$protokollText = ProtocolHelper::generateProtocolText(
-    $oldData ?? [],
-    $neuData,
-    $changeComment,
-    $oldData['elementName'] ?? $bezeichnung,
-);
-try {
-    ProtocolHelper::updateRemarkAndLink($conn, $vermerkID, $relationId, $protokollText);
-} catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
-}
-
-
-$conn->close();
 

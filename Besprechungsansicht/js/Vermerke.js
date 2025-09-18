@@ -39,7 +39,6 @@ function addDefaultVermerkeForEachRommInArea(vermerkgruppeId, raumbereiche) {
         makeToaster("Bitte Vermerkgruppe und mindestens einen Raumbereich wählen .  " + besprechung.id + "   " + raumbereiche, true);
         return;
     }
-
     $.ajax({
         url: '../controllers/VermerkeController.php',
         method: 'POST',
@@ -49,12 +48,12 @@ function addDefaultVermerkeForEachRommInArea(vermerkgruppeId, raumbereiche) {
             action: "addVermerkforEachRoom"
         },
         success: function (response) {
-            //console.log("AJAX success callback triggered", response);
+            console.log("addVermerkforEachRoom Sucess:", besprechung.roomVermerkMap);
             if (response.success) {
-                besprechung.roomVermerkMap = {};
-                //  console.log("Initialized roomVermerkMap");
+                if (!besprechung.roomVermerkMap) {
+                    besprechung.roomVermerkMap = {};
+                }
                 if (response.addedVermerke && response.addedVermerke.length > 0) {
-                    console.log("Processing addedVermerke", response.addedVermerke);
                     response.addedVermerke.forEach(item => {
                         const roomID = item.raumID;
                         const vermerkID = item.vermerkID;
@@ -63,11 +62,8 @@ function addDefaultVermerkeForEachRommInArea(vermerkgruppeId, raumbereiche) {
                         }
                         besprechung.roomVermerkMap[roomID].push(vermerkID);
                     });
-                } else {
-                    //console.log("No addedVermerke found");
                 }
                 if (response.skipped && response.skipped.length > 0) {
-                    //     console.log("Processing" , response.skipped);
                     response.skipped.forEach(item => {
                         const roomID = item.raumID;
                         const vermerkID = item.vermerkID;
@@ -81,14 +77,12 @@ function addDefaultVermerkeForEachRommInArea(vermerkgruppeId, raumbereiche) {
                         }
                     });
                 }
-            } else {
-                console.log("Response success false:", response);
+                console.log("addVermerkforEachRoom Sucess:", besprechung.roomVermerkMap);
             }
         },
         error: function (xhr, status, error) {
             console.error("AJAX error:", status, error);
         }
-
     });
 }
 

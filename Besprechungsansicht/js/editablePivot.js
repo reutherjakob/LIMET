@@ -35,19 +35,22 @@ class EditablePivot {
             roomId: cell.dataset.roomId,
             elementId: cell.dataset.elementId,
             variantId: cell.dataset.variantId,
-            relationId: cell.dataset.relationId || null,
+            relationId: cell.dataset.relationId ,
             currentAmount: cell.textContent.trim(),
             bestand: cell.dataset.bestand
         };
+        console.log("open Modal:", this.currentCellData);
         this.loadDetails();
     }
 
     loadDetails() {
         // consolidateMultipleElementsperRoom();
-        fetch('../controllers/getElementDetails.php', {
+        fetch('../controllers/PivotTableController.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: new URLSearchParams({
+                action: "getElementDetails",
+                relationId: this.currentCellData.relationId,
                 roomId: this.currentCellData.roomId,
                 elementId: this.currentCellData.elementId,
                 variantId: this.currentCellData.variantId,
@@ -109,7 +112,7 @@ class EditablePivot {
         // console.log("RaUM: ", this.currentCellData.roomId, "VermerkID Des Raumes:", besprechung.roomVermerkMap[this.currentCellData.roomId], " Var: ", varID);
 
         const formData = new URLSearchParams({
-            relationId: this.currentCellData.relationId || '',
+            relationId: this.currentCellData.relationId,
             roomId: this.currentCellData.roomId,
             elementId: this.currentCellData.elementId,
             variantId: varID,
@@ -121,8 +124,7 @@ class EditablePivot {
             elementKommentar: elementkommentar,
             besprechungsid: besprechung.id,
             vermerkID: besprechung.roomVermerkMap[this.currentCellData.roomId],
-            //raumkomemntar: raumkommentar
-            // standort: 1,
+
         });
         console.log("EditTable Form Data: ", formData);
         fetch('../controllers/updateElementRoomVermerk.php', {

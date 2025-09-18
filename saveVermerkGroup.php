@@ -12,6 +12,7 @@ $gruppenEnde      = getPostString('gruppenEnde');
 $gruppenDatum     = getPostString('gruppenDatum');
 $gruppenID        = getPostInt('gruppenID');
 
+
 if ($gruppenID === null) {
     die("Ungültige Gruppen-ID.");
 }

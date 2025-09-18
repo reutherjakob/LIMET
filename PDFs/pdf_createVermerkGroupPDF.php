@@ -6,6 +6,7 @@ require_once '../TCPDF-main/TCPDF-main/tcpdf.php';
 require_once '_pdf_createBericht_utils.php';
 
 
+$document_out_title_components = "";
 $gruppenID = filter_input(INPUT_GET, 'gruppenID', FILTER_VALIDATE_INT);
 $projectID = isset($_SESSION["projectID"]) ? (int)$_SESSION["projectID"] : null;
 if (!$gruppenID || !$projectID) {
@@ -182,7 +183,7 @@ class MYPDF extends TCPDF
     }
 }
 
-$document_out_title_components = "Vermerk_";
+
 
 // create new PDF document
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -225,7 +226,7 @@ $stmt->execute();
 $stmt->bind_result($gruppenname, $gruppenart, $ort, $verfasser, $startzeit, $endzeit, $datum, $projektname);
 while ($stmt->fetch()) {
     $title = "Projekt: $projektname\nThema: $gruppenname\nDatum: $datum von $startzeit bis $endzeit\nOrt: $ort";
-    $document_out_title_components .= $gruppenart . "_" . $datum . "_" . $gruppenname . "_";
+    $document_out_title_components .= $gruppenart . "_" . $gruppenname . "_";
     $rowHeight1 = $pdf->getStringHeight(180, $title, false, true, '', 1);
     $pdf->MultiCell(0, $rowHeight1, $title, 1, 'L', 0, 0, '', '', true);
 }
