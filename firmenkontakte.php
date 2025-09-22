@@ -671,6 +671,7 @@
         $("#saveLieferant").click(function () {
             let lieferantID = $("#lieferantID").val();
             let firma = $("#firma").val();
+            console.log("FIRMA: ", firma);
             let lieferantTel = $("#lieferantTel").val();
             let lieferantAdresse = $("#lieferantAdresse").val();
             let lieferantPLZ = $("#lieferantPLZ").val();
@@ -690,7 +691,7 @@
                         "lieferantOrt": lieferantOrt,
                         "lieferantLand": lieferantLand
                     },
-                    type: "POST",
+                    type: "GET",
                     success: function (data) {
                         alert(data);
                         location.reload(); // or refresh only the table if you prefer

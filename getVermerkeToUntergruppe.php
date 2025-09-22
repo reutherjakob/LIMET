@@ -61,7 +61,6 @@ while ($row = $result->fetch_assoc()) {
     echo "<td id='bearbeitungsstatus" . $row["idtabelle_Vermerke"] . "' value ='" . $row['Bearbeitungsstatus'] . "'>" . $row['Bearbeitungsstatus'] . "</td>";
     echo "<td id='vermerkTyp" . $row["idtabelle_Vermerke"] . "' value ='" . $row['Vermerkart'] . "'>" . $row['Vermerkart'] . "</td>";
     echo "<td><button type='button' id=" . $row['idtabelle_Vermerke'] . " class='btn btn-outline-dark btn-sm' value='showVermerkZustaendigkeit' data-bs-toggle='modal' data-bs-target='#showVermerkZustaendigkeitModal'><i class='fas fa-users'></i></button></td>";
-    //
     echo "<td id='lot" . $row["idtabelle_Vermerke"] . "' value ='" . $row['tabelle_lose_extern_idtabelle_Lose_Extern'] . "'>" . $row['tabelle_lose_extern_idtabelle_Lose_Extern'] . "</td>";
 
     echo "<td id='rooms" . $row["idtabelle_Vermerke"] . "'>" . htmlspecialchars($row['RaumIDs'] ?? '') . "</td>";
@@ -126,6 +125,7 @@ echo "</tbody></table>";
                     echo "<div class='form-group'>
                                         <label for='untergruppe'>Untergruppe:</label>									
                                         <select class='form-control form-control-sm' id='untergruppe' name='untergruppe'>";
+
                     while ($row = $result1->fetch_assoc()) {
                         if ($row["idtabelle_Vermerkuntergruppe"] == filter_input(INPUT_GET, 'vermerkUntergruppenID')) {
                             echo "<option value=" . $row["idtabelle_Vermerkuntergruppe"] . " selected>" . $row["Untergruppennummer"] . " - " . $row["Untergruppenname"] . "</option>";
@@ -147,9 +147,11 @@ echo "</tbody></table>";
                     <div class='form-group'>
                         <label for='vermerkTyp'>Vermerktyp:</label>
                         <select class='form-control form-control-sm' id='vermerkTyp' name='vermerkTyp'>
-                            <option value='Info' selected>Info</option>
+                            <option value='Info'>Info</option>
                             <option value='Bearbeitung'>Bearbeitung</option>
-                            <option value='Bearbeitung'>Bespr</option>
+                            <option value='Nutzerwunsch'>Nutzerwunsch</option>
+                            <option value='Freigegeben'>Freigegeben</option>
+
                         </select>
                     </div>
                     <div class="form-group">
@@ -349,15 +351,15 @@ echo "</tbody></table>";
                 $('#topDivSearch2 label').remove();
                 $('#topDivSearch2').removeClass("col-md-6").children().children().removeClass("form-control form-control-sm");
                 $('#topDivSearch2').appendTo('#CardHeaderVermerUntergruppen').children().children().addClass("btn btn-sm btn-outline-dark");
-
                 $("#tableVermerke tbody").on('click', "button[value='changeVermerk']", function () {
                     let rowData = tableVermerke.row($(this).closest('tr')).data();
                     vermerkID = rowData[0];
                     $('#vermerkStatus').val(rowData[6]).trigger('change');
                     $('#vermerkText').val(decodeHtmlEntities(rowData[2]));
                     $('#faelligkeit').val(rowData[4]);
-                    $('#vermerkTyp').val(rowData[7]).trigger('change');
-                    if (rowData[7] === "Bearbeitung") {
+                    let temp = rowData[7];
+                    $("#vermerkTyp").val(temp).trigger('change');
+                    if (rowData[7] === "Bearbeitung" || rowData[7] === "B") {
                         $("#faelligkeit").prop('disabled', false);
                     } else {
                         $("#faelligkeit").prop('disabled', true);
@@ -367,7 +369,7 @@ echo "</tbody></table>";
                     let raumIDs = rowData[10];
                     let roomArray = raumIDs.split(',').map(id => id.trim());
                     $('#room').val(roomArray).trigger('change');
-
+                    //console.log("Debug table Click:", raumIDs, roomArray, $('#room').val())
                     $('#changeVermerkModal').modal('show');
                 });
             }
@@ -411,8 +413,7 @@ echo "</tbody></table>";
     });
 
     $("#addVermerk").click(function () {
-        let rooms = $("#room").val(); // rooms is an array of selected IDs
-        //   console.log("AddVermerk. Rooms:", rooms);
+        let rooms = $("#room").val();
         let los = $("#los").val();
         let vermerkStatus = $("#vermerkStatus").val();
         let vermerkTyp = $("#vermerkTyp").val();
@@ -421,9 +422,7 @@ echo "</tbody></table>";
         if (vermerkTyp === "Info") {
             faelligkeitDatum = null;
         }
-        let vermerkUntergruppenID = <?php echo filter_input(INPUT_GET, 'vermerkUntergruppenID') ?>;
-
-
+        let vermerkUntergruppenID = vermerkGruppenID;
         if (room !== "" && los !== "" && vermerkStatus !== "" && vermerkTyp !== "" && vermerkText !== "") {
             $('#changeVermerkModal').modal('hide');
             $.ajax({
@@ -469,9 +468,12 @@ echo "</tbody></table>";
     $("button[value='changeVermerk']").click(function () {
         document.getElementById("saveVermerk").style.display = "inline";
         document.getElementById("deleteVermerk").style.display = "inline";
-        $("#untergruppe").prop('disabled', false);
         document.getElementById("addVermerk").style.display = "none";
-        // $('#deleteVermerkModal').modal('hide');
+        $("#untergruppe").prop('disabled', false);
+
+        let rowData = tableVermerke.row($(this).closest('tr')).data();
+        console.log(rowData[6]);
+        $('#vermerkStatus').val(rowData[6]).trigger('change');
         $('#changeVermerkModal').modal('show');
     });
 
@@ -487,7 +489,10 @@ echo "</tbody></table>";
             faelligkeitDatum = null;
         }
         let vermerkUntergruppenID = <?php echo filter_input(INPUT_GET, 'vermerkUntergruppenID') ?>;
-        if (room !== "" && los !== "" && vermerkStatus !== "" && vermerkTyp !== "" && vermerkText !== "") {
+
+        console.log(" $(saveVermerk).click(", vermerkUntergruppenID, untergruppenID);
+
+        if (room !== "" && los !== "" && vermerkStatus !== "" && vermerkTyp !== "" && vermerkText !== "" && vermerkTyp !== null) {
             $('#changeVermerkModal').modal('hide');
             $.ajax({
                 url: "saveVermerk.php",
@@ -501,7 +506,7 @@ echo "</tbody></table>";
                     "faelligkeitDatum": faelligkeitDatum,
                     "untergruppenID": untergruppenID
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data, true);
 
@@ -522,9 +527,11 @@ echo "</tbody></table>";
         }
     });
 
+
     $("#deleteVermerk").click(function () {
         $('#deleteVermerkModal').modal('show');
     });
+
 
     $("#deleteVermerkExecute").click(function () {
         $('.modal-backdrop').remove();
@@ -553,72 +560,69 @@ echo "</tbody></table>";
     });
 
 
-    $("#addImage").click(function () {
-        $('#uploadImageModal').modal('show');
-    });
-
-    $("#uploadImageButton").click(function () {
-        // get selected Image
-        //let input = document.getElementById("imageUpload").files;
-        let file = document.querySelector('#imageUpload').files[0];
-        if (!file) {
-            alert("Bitte Datei auswählen");
-        } else {
-            //define the width to resize -> 1000px
-            let resize_width = 800;//without px
-            //create a FileReader
-            let reader = new FileReader();
-            //image turned to base64-encoded Data URI.
-            reader.readAsDataURL(file);
-            reader.name = file.name;//get the image's name
-            reader.size = file.size; //get the image's size
-
-            //Resize the image
-            reader.onload = function (event) {
-                let imageResized = new Image();//create a image
-                imageResized.src = event.target.result;//result is base64-encoded Data URI
-                imageResized.name = event.target.name;//set name (optional)
-                imageResized.size = event.target.size;//set size (optional)
-                imageResized.onload = function (el) {
-                    let elem = document.createElement('canvas');//create a canvas
-                    //scale the image and keep aspect ratio
-                    let scaleFactor = resize_width / el.target.width;
-                    elem.width = resize_width;
-                    elem.height = el.target.height * scaleFactor;
-                    //draw in canvas
-                    let ctx = elem.getContext('2d');
-                    ctx.drawImage(el.target, 0, 0, elem.width, elem.height);
-                    //get the base64-encoded Data URI from the resize image
-                    let srcEncoded = ctx.canvas.toDataURL('image/jpeg', 1);
-                    //assign it to thumb src
-                    document.querySelector('#image').src = srcEncoded;
-
-                    document.querySelector('#images_cb').src = srcEncoded;
-                    /*Now you can send "srcEncoded" to the server and
-                    convert it to a png o jpg. Also can send
-                    "el.target.name" that is the file's name.*/
-                    let resized = document.querySelector('#image').src;
-                    //let resized = document.getElementById("image").files;
-                    let formData = new FormData();
-                    //formData.append("fileUpload", files[0]);
-                    formData.append("fileUpload", resized);
-                    formData.append("vermerkID", vermerkID);
-                    let xhttp = new XMLHttpRequest();
-
-                    // Set POST method and ajax file path
-                    xhttp.open("POST", "uploadFileImage.php", true);
-
-                    // call on request changes state
-                    xhttp.onreadystatechange = function () {
-                        if (this.readyState == 4 && this.status == 200) {
-                            alert(this.responseText);
-                        }
-                    };
-                    xhttp.send(formData);
-                };
-            };
-        }
-    });
+    // $("#addImage").click(function () {
+    //     $('#uploadImageModal').modal('show');
+    // });
+    //$("#uploadImageButton").click(function () {
+    //    let file = document.querySelector('#imageUpload').files[0];
+    //    if (!file) {
+    //        alert("Bitte Datei auswählen");
+    //    } else {
+    //        //define the width to resize -> 1000px
+    //        let resize_width = 800;//without px
+    //        //create a FileReader
+    //        let reader = new FileReader();
+    //        //image turned to base64-encoded Data URI.
+    //        reader.readAsDataURL(file);
+    //        reader.name = file.name;//get the image's name
+    //        reader.size = file.size; //get the image's size
+    //
+    //        //Resize the image
+    //        reader.onload = function (event) {
+    //            let imageResized = new Image();//create a image
+    //            imageResized.src = event.target.result;//result is base64-encoded Data URI
+    //            imageResized.name = event.target.name;//set name (optional)
+    //            imageResized.size = event.target.size;//set size (optional)
+    //            imageResized.onload = function (el) {
+    //                let elem = document.createElement('canvas');//create a canvas
+    //                //scale the image and keep aspect ratio
+    //                let scaleFactor = resize_width / el.target.width;
+    //                elem.width = resize_width;
+    //                elem.height = el.target.height * scaleFactor;
+    //                //draw in canvas
+    //                let ctx = elem.getContext('2d');
+    //                ctx.drawImage(el.target, 0, 0, elem.width, elem.height);
+    //                //get the base64-encoded Data URI from the resize image
+    //                let srcEncoded = ctx.canvas.toDataURL('image/jpeg', 1);
+    //                //assign it to thumb src
+    //                document.querySelector('#image').src = srcEncoded;
+    //
+    //                document.querySelector('#images_cb').src = srcEncoded;
+    //                /*Now you can send "srcEncoded" to the server and
+    //                convert it to a png o jpg. Also can send
+    //                "el.target.name" that is the file's name.*/
+    //                let resized = document.querySelector('#image').src;
+    //                //let resized = document.getElementById("image").files;
+    //                let formData = new FormData();
+    //                //formData.append("fileUpload", files[0]);
+    //                formData.append("fileUpload", resized);
+    //                formData.append("vermerkID", vermerkID);
+    //                let xhttp = new XMLHttpRequest();
+    //
+    //                // Set POST method and ajax file path
+    //                xhttp.open("POST", "uploadFileImage.php", true);
+    //
+    //                // call on request changes state
+    //                xhttp.onreadystatechange = function () {
+    //                    if (this.readyState == 4 && this.status == 200) {
+    //                        alert(this.responseText);
+    //                    }
+    //                };
+    //                xhttp.send(formData);
+    //            };
+    //        };
+    //    }
+    //});
 
 
 </script>

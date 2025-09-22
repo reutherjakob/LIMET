@@ -22,9 +22,9 @@ $changes = $mysqli->query("
     rb.Kurzbeschreibung_copy1,
     rb.user,
     rb.Timestamp,
-    r_alt.Raumnr AS raumnr_alt,
-    r_alt.Raumbezeichnung AS raumname_alt,
+ 
     r_neu.Raumnr AS raumnr_neu,
+    r_neu.tabelle_projekte_idTABELLE_Projekte,
     r_neu.Raumbezeichnung AS raumname_neu,
     e.Bezeichnung AS elementname_neu, 
     e.ElementID as elementnr_neu,
@@ -33,10 +33,10 @@ $changes = $mysqli->query("
     rb.lieferdatum_alt,
     rb.lieferdatum_neu
 FROM tabelle_rb_aenderung rb
-LEFT JOIN tabelle_räume r_alt ON rb.raumID_alt = r_alt.idTABELLE_Räume
+ 
 LEFT JOIN tabelle_räume r_neu ON rb.raumID_neu = r_neu.idTABELLE_Räume
 LEFT JOIN tabelle_elemente e ON rb.elementID_neu = e.idTABELLE_Elemente 
-WHERE rb.Timestamp >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
+WHERE r_neu.tabelle_projekte_idTABELLE_Projekte = " . $_SESSION["projectID"] . "
 ORDER BY rb.Timestamp DESC
 ");
 
@@ -50,7 +50,7 @@ if (!function_exists('h')) {
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <title>Raumänderungen</title>
+    <title>Element Anzahl Änderungen</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
@@ -64,7 +64,7 @@ if (!function_exists('h')) {
 
 <div id="limet-navbar"></div>
 <div class="card">
-    <div class="card-header"> RB Änderungen (Aller Projekte)</div>
+    <div class="card-header"> RB Änderungen </div>
     <div class="card-body">
         <table id="rbChangeTable" class="table table-striped table-hover border border-5">
             <thead>
@@ -78,12 +78,12 @@ if (!function_exists('h')) {
                 <th>Kurzbeschreibung</th>
                 <th>User</th>
                 <th>Timestamp</th>
-                <th>Raum ID (alt)</th>
-                <th>Raum ID (neu)</th>
+
+                <th>Raum ID</th>
                 <th>Element ID</th>
                 <th>Bezeichnung</th>
-                <th>Projekt Budget (alt)</th>
-                <th>PB (neu)</th>
+                <th>Budget (alt)</th>
+                <th>Budget (neu)</th>
                 <th>Lieferdatum (alt)</th>
                 <th>Lieferdatum (neu)</th>
             </tr>
@@ -140,7 +140,6 @@ if (!function_exists('h')) {
                     <td><?= h($change['Kurzbeschreibung']) ?></td>
                     <td><?= h($change['user']) ?></td>
                     <td><?= date('d.m.Y H:i', strtotime($change['Timestamp'])) ?></td>
-                    <td><?= h($change['raumnr_alt']) ?> <?= h($change['raumname_alt']) ?></td>
                     <td><?= h($change['raumnr_neu']) ?> <?= h($change['raumname_neu']) ?></td>
                     <td><?= h($change['elementnr_neu']) ?></td>
                     <td><?= h($change['elementname_neu']) ?></td>

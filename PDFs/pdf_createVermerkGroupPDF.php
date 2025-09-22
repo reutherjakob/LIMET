@@ -6,6 +6,7 @@ require_once '../TCPDF-main/TCPDF-main/tcpdf.php';
 require_once '_pdf_createBericht_utils.php';
 
 
+$document_out_title_components = "";
 $gruppenID = filter_input(INPUT_GET, 'gruppenID', FILTER_VALIDATE_INT);
 $projectID = isset($_SESSION["projectID"]) ? (int)$_SESSION["projectID"] : null;
 if (!$gruppenID || !$projectID) {
@@ -98,7 +99,7 @@ class MYPDF extends TCPDF
         $this->SetDrawColor(0, 0, 0);
         $this->SetLineWidth(0.1);
         $this->SetFont('', '', '9');
-        $w = array(140, 15, 25);
+        $w = array(145, 10, 25);
         $num_headers = count($header);
         $this->SetFillColor(244, 244, 244);
         $this->SetTextColor(0);
@@ -120,7 +121,7 @@ class MYPDF extends TCPDF
                 }
                 if ($row['Vermerkart'] === 'Bearbeitung') {
                     $textNameFälligkeit = $row['Name'] . "\n" . $row['Faelligkeit'];
-                    $textNameFälligkeit .= ($row['Bearbeitungsstatus'] === "0") ? "\nOffen" : "\nErledigt";
+                    $textNameFälligkeit .= ($row['Bearbeitungsstatus'] === 0) ? "\nOffen" : "\nErledigt";
                 } else {
                     $textNameFälligkeit = "";
                 }
@@ -159,11 +160,15 @@ class MYPDF extends TCPDF
 
                 $softHyphen = "\xC2\xAD";
                 if ($row['Vermerkart'] === "Bearbeitung") {
-                    $prettyText = "Bearbei" . $softHyphen . "tung";
-                } else {
-                    $prettyText = $row['Vermerkart'];
+                    $prettyText = "B";
+                } else if ($row['Vermerkart'] === "Info") {
+                    $prettyText = "I";
+                } else if ($row['Vermerkart'] === "Freigegeben") {
+                    $prettyText = "F";
+                } else if ($row['Vermerkart'] === "Nutzerwunsch") {
+                    $prettyText = "N";
                 }
-                $this->MultiCell($w[1], $rowHeight, $prettyText, 1, 'L', $fill, 0, '', '');
+                $this->MultiCell($w[1], $rowHeight, $prettyText, 1, 'C', $fill, 0, '', '');
 
 
                 if ($row['Vermerkart'] == 'Bearbeitung') {
@@ -178,7 +183,7 @@ class MYPDF extends TCPDF
     }
 }
 
-$document_out_title_components = "Vermerk_";
+
 
 // create new PDF document
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -221,7 +226,7 @@ $stmt->execute();
 $stmt->bind_result($gruppenname, $gruppenart, $ort, $verfasser, $startzeit, $endzeit, $datum, $projektname);
 while ($stmt->fetch()) {
     $title = "Projekt: $projektname\nThema: $gruppenname\nDatum: $datum von $startzeit bis $endzeit\nOrt: $ort";
-    $document_out_title_components .= $gruppenart . "_" . $datum . "_" . $gruppenname . "_";
+    $document_out_title_components .= $gruppenart . "_" . $gruppenname . "_";
     $rowHeight1 = $pdf->getStringHeight(180, $title, false, true, '', 1);
     $pdf->MultiCell(0, $rowHeight1, $title, 1, 'L', 0, 0, '', '', true);
 }
@@ -308,7 +313,7 @@ while ($row = $result->fetch_assoc()) {
     $dataVermerke[$vermerkID]['Untergruppennummer'] = $row['Untergruppennummer'];
     $dataVermerke[$vermerkID]['Untergruppenname'] = $row['Untergruppenname'];
     $dataVermerke[$vermerkID]['Vermerktext'] = $row['Vermerktext'];
-    $dataVermerke[$vermerkID]['Bearbeitungsstatus'] = $row['Bearbeitungsstatus'];
+    $dataVermerke[$vermerkID]['Bearbeitungsstatus'] = (int)$row['Bearbeitungsstatus'];
     $dataVermerke[$vermerkID]['Name'] = $row['Name'];
     $dataVermerke[$vermerkID]['Faelligkeit'] = $row['Faelligkeit'];
     $dataVermerke[$vermerkID]['Vermerkart'] = $row['Vermerkart'];
@@ -322,7 +327,7 @@ $pdf->topicsTable($topics_table_header, $dataVermerke);
 
 $pdf->SetFont('helvetica', '', '6');
 $pdf->Ln(2);
-$outstr = "Hinweis: Sollten Einwände gegen Inhalte dieses Protokolls bestehen, so werden die Empfänger ersucht, diese Einwände im Rahmen der nächsten Besprechung mündlich oder bis spätestens 10 Tage nach Erhalt des Protokolls schriftlich vorzubringen, andernfalls wird allgemeines Einverständnis angenommen. \nDie Verteilung erfolgt ausschließlich über Email. \n  " . $verfasser;
+$outstr = "Hinweis: Sollten Einwände gegen Inhalte dieses Protokolls bestehen, so werden die Empfänger ersucht, diese Einwände im Rahmen der nächsten Besprechung mündlich oder bis spätestens 10 Tage nach Erhalt des Protokolls schriftlich vorzubringen, andernfalls wird allgemeines Einverständnis angenommen. \nDie Verteilung erfolgt ausschließlich über Email. \nVermerk Typ Legende: I - Info; B - Bearbeitung; N - Anforderung der Nutzenden \nVerfasst von:" . $verfasser;
 $height = $pdf->getStringHeight(180, $outstr, false, true, '', 1);
 $y = $pdf->GetY();
 if (($y + $height) >= 275) {

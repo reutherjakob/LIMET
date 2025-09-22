@@ -38,6 +38,7 @@ init_page_serversides();
         .card-body {
             overflow: auto;
         }
+
         .card-body iframe {
             top: 0;
             left: 0;
@@ -48,7 +49,7 @@ init_page_serversides();
     </style>
 </head>
 <body>
-<div class="container-fluid bg-light" >
+<div class="container-fluid bg-light">
     <div id="limet-navbar"></div>
     <div class="row">
         <div class="col-xxl-8">
@@ -135,16 +136,12 @@ init_page_serversides();
                             <button type='button' id='buttonNewVermerkuntergruppe'
                                     class='btn  btn-sm btn-outline-success me-2'
                                     value='Neue Vermerkuntergruppe' style='visibility:hidden'><i
-                                        class='fas fa-plus'></i>
-                                Neu
+                                        class='fas fa-plus'></i>Neu
                             </button>
-
                         </div>
-
                     </div>
                 </div>
                 <div class="card-body" id="vermerkUntergruppen"></div>
-
             </div>
 
             <div class="mt-1 card">
@@ -208,9 +205,7 @@ init_page_serversides();
                                 <option value="Mailverkehr">Mailverkehr</option>
                                 <option value="Telefonnotiz">Telefonnotiz</option>
                                 <option value="AV">AV</option>
-
                                 <option value="Protokoll">Protokoll</option>
-
                                 <option value="Protokoll Besprechung">Protokoll Besprechung</option>
                                 <option value="ÖBA-Protokoll">ÖBA-Protokoll</option>
                             </select>
@@ -232,22 +227,22 @@ init_page_serversides();
                             <input type="text" class="form-control form-control-sm" id="gruppenDatum"
                                    placeholder="jjjj.mm.tt"/>
                         </div>
-                        <div class="form-group">
-                            <label for="gruppenStart">Startzeit:</label>
-                            <input type="text" class="form-control form-control-sm" id="gruppenStart"
-                                   placeholder="hh:mm"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="gruppenEnde">Endzeit:</label>
-                            <input type="text" class="form-control form-control-sm" id="gruppenEnde"
-                                   placeholder="hh:mm"/>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label for="gruppenStart">Startzeit:</label>
+                                <input type="time" class="form-control form-control-sm" id="gruppenStart"/>
+                            </div>
+                            <div class="form-group col-6">
+                                <label for="gruppenEnde">Endzeit:</label>
+                                <input type="time" class="form-control form-control-sm" id="gruppenEnde"/>
+                            </div>
                         </div>
                 </div>
                 <div class='modal-footer'>
-                    <input type='button' id='addGroup' class='btn btn-success btn-sm' value='HinzufÃ¼gen'
-                           data-bs-dismiss='modal'></input>
+                    <input type='button' id='addGroup' class='btn btn-success btn-sm' value='Erstellen'
+                           data-bs-dismiss='modal'>
                     <input type='button' id='saveGroup' class='btn btn-warning btn-sm' value='Speichern'
-                           data-bs-dismiss='modal'></input>
+                           data-bs-dismiss='modal'>
                     <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen
                     </button>
                 </div>
@@ -348,7 +343,6 @@ init_page_serversides();
     //       for getVermerkToUntergruppe.php
     var tableVermerkGruppe, gruppenID, vermerkID, tableVermerke, untergruppenID, vermerkGruppenID; //  for getVermerkUntergruppeToGruppe.php
 
-
     $(document).ready(function () {
         tableVermerkGruppe = new DataTable('#tableVermerkGruppe', {
             columnDefs: [
@@ -370,15 +364,12 @@ init_page_serversides();
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                 search: "",
-                searchPlaceholder:"Suche..."
+                searchPlaceholder: "Suche..."
             },
             mark: true,
             initComplete: function () {
-
                 $('.dt-search label').remove();
                 $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeaderVermerkGruppen');
-
-
             }
         });
         setTimeout(function () {
@@ -414,8 +405,16 @@ init_page_serversides();
         }, 500);
 
         $('#tableVermerkGruppe tbody').on('click', 'tr', function () {
+
             gruppenID = tableVermerkGruppe.row($(this)).data()[0];
-            document.getElementById("gruppenart").value = tableVermerkGruppe.row($(this)).data()[4];
+
+            let art = tableVermerkGruppe.row($(this)).data()[4];
+
+            console.log("tableVermerkGruppe tbody').on('click:: Gruppenart: ", art);
+
+            document.getElementById("buttonNewVermerkuntergruppe").disabled = art === "Protokoll Besprechung";
+
+            document.getElementById("gruppenart").value = art;
             document.getElementById("gruppenName").value = tableVermerkGruppe.row($(this)).data()[2];
             document.getElementById("gruppenOrt").value = tableVermerkGruppe.row($(this)).data()[6];
             document.getElementById("gruppenVerfasser").value = tableVermerkGruppe.row($(this)).data()[7];
@@ -424,10 +423,14 @@ init_page_serversides();
             document.getElementById("gruppenEnde").value = tableVermerkGruppe.row($(this)).data()[11];
             $("#vermerke").hide();
 
+
             $.ajax({
                 url: "getVermerkeuntergruppenToGruppe.php",
-                data: {"vermerkGruppenID": gruppenID},
-                type: "GET",
+                data: {
+                    "vermerkGruppenID": gruppenID,
+                    "art": art
+                },
+                type: "POST",
                 success: function (data) {
                     $("#vermerkUntergruppen").html(data);
                 }
@@ -492,12 +495,23 @@ init_page_serversides();
     });
 
     $("button[value='Neue Vermerkgruppe']").click(function () {
-        var id = this.id;
+        resetChangeGroupModalFields();
         document.getElementById("saveGroup").style.display = "none";
         document.getElementById("addGroup").style.display = "inline";
         $('#changeGroupModal').modal('show');
     });
 
+    function resetChangeGroupModalFields() {
+        const modal = document.getElementById('changeGroupModal');
+        if (!modal) return;
+        modal.querySelectorAll('input.form-control, select.form-control').forEach(input => {
+            if (input.tagName.toLowerCase() === 'select') {
+                input.selectedIndex = 0; // reset select dropdown to first option
+            } else {
+                input.value = ''; // clear text input
+            }
+        });
+    }
 
     $("button[value='createGroupPDF']").click(function () {
         window.open('PDFs/pdf_createVermerkGroupPDF.php?gruppenID=' + this.id + '&');//there are many ways to do this
@@ -509,12 +523,9 @@ init_page_serversides();
         var gruppenName = $("#gruppenName").val();
         var gruppenOrt = $("#gruppenOrt").val();
         var gruppenVerfasser = $("#gruppenVerfasser").val();
-        var gruppenDatum = $("#gruppenDatum").val();
-        console.log(gruppenDatum);
-        var gruppenStart = $("#gruppenStart").val();
-        console.log(gruppenStart);
-        var gruppenEnde = $("#gruppenEnde").val();
-        console.log(gruppenEnde);
+        var gruppenDatum = $("#gruppenDatum").val();//        console.log(gruppenDatum);
+        var gruppenStart = $("#gruppenStart").val();       //     console.log(gruppenStart);
+        var gruppenEnde = $("#gruppenEnde").val();  //      console.log(gruppenEnde);
         if (gruppenart !== "" && gruppenName !== "" && gruppenOrt !== "" && gruppenVerfasser !== "" && gruppenDatum !== "" && gruppenStart !== "" && gruppenEnde !== "") {
             $.ajax({
                 url: "addVermerkGroup.php",
@@ -527,7 +538,7 @@ init_page_serversides();
                     "gruppenStart": gruppenStart,
                     "gruppenEnde": gruppenEnde
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     alert(data);
                     location.reload();
@@ -546,7 +557,8 @@ init_page_serversides();
         var gruppenDatum = $("#gruppenDatum").val();
         var gruppenStart = $("#gruppenStart").val();
         var gruppenEnde = $("#gruppenEnde").val();
-        console.log(gruppenart);
+        //onsole.log(gruppenart);
+
         if (gruppenart !== "" && gruppenName !== "" && gruppenOrt !== "" && gruppenVerfasser !== "" && gruppenDatum !== "" && gruppenStart !== "" && gruppenEnde !== "" && gruppenID !== "") {
             // $('#addDeviceModal').modal('hide');
             $.ajax({
@@ -561,7 +573,7 @@ init_page_serversides();
                     "gruppenEnde": gruppenEnde,
                     "gruppenID": gruppenID
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     alert(data);
                     location.reload();

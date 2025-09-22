@@ -5,7 +5,10 @@ init_page_serversides("", "x");
 $projectID = $_SESSION["projectID"];
 $conn = utils_connect_sql();
 $raumbereichOptions = [];
-$sql = "SELECT DISTINCT `Raumbereich Nutzer` FROM tabelle_räume WHERE tabelle_projekte_idTABELLE_Projekte = ?";
+$sql = "SELECT DISTINCT `Raumbereich Nutzer` 
+        FROM tabelle_räume 
+        WHERE tabelle_projekte_idTABELLE_Projekte = ? 
+        ORDER BY `Raumbereich Nutzer`";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $projectID);
 $stmt->execute();
@@ -17,13 +20,10 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
-
-$sql = "SELECT idTABELLE_Räume AS id, 
-               CONCAT(Raumnr, ' - ', Raumbezeichnung, ' - ', `Raumbereich Nutzer`) AS text
-          FROM tabelle_räume
-         WHERE tabelle_projekte_idTABELLE_Projekte = ? AND Entfallen =0
-         
-      ORDER BY Raumnr";
+$sql = "    SELECT idTABELLE_Räume AS id,  CONCAT(Raumnr, ' - ', Raumbezeichnung, ' - ', `Raumbereich Nutzer`) AS text
+            FROM tabelle_räume
+            WHERE tabelle_projekte_idTABELLE_Projekte = ? AND Entfallen =0 
+            ORDER BY Raumnr";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $projectID);
 $stmt->execute();
@@ -35,9 +35,9 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
-$sql = "SELECT tabelle_elemente.idTABELLE_Elemente as id,  
-            CONCAT(ElementID,' ', Bezeichnung) as Bez
-  		    FROM tabelle_elemente";
+$sql = "SELECT tabelle_elemente.idTABELLE_Elemente as id, CONCAT(ElementID,' ', Bezeichnung) as Bez
+  		FROM tabelle_elemente 
+  		ORDER BY Bez";
 
 $stmt = $conn->prepare($sql);
 $stmt->execute();
@@ -59,6 +59,8 @@ $conn->close();
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
+    <link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen"/>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"/>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
@@ -75,11 +77,6 @@ $conn->close();
     <script type='text/javascript'
             src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
     <style>
-        .form-switch .form-check-input:checked {
-            background-color: #000;
-            border-color: #000;
-        }
-
         .embed-responsive-item {
             width: 100% !important;
             height: 100% !important;
@@ -87,10 +84,23 @@ $conn->close();
             display: block;
         }
 
+        .status-green {
+            background-color: #d4edda !important;
+        }
 
+        .status-blue {
+            background-color: #cce5ff !important;
+        }
+
+        .status-yellow {
+            background-color: #fff3cd !important;
+        }
+
+        .status-red {
+            background-color: #f8d7da !important;
+        }
     </style>
 </head>
-
 <body>
 
 <div id="limet-navbar"></div>
@@ -101,23 +111,28 @@ $conn->close();
             <div class="card mb-2">
                 <div class="card-header d-inline-flex align-items-center ">
 
-
                     <button type="button" class="btn btn-outline-success" id="createMeetingBtn"
                             data-bs-toggle="modal" data-bs-target="#createMeetingModal">
-                        <i class="fa fa-plus me-1"></i> Neu
+                        <i class="fa fa-plus me-1"></i>
                     </button>
                     <button type="button" class="btn btn-outline-success" id="openMeetingBtn"
                             data-bs-toggle="modal" data-bs-target="#besprechungSelectModal">
-                        <i class="fas fa-folder-open me-1"></i> Öffnen
+                        <i class="fas fa-folder-open me-1"></i>
                     </button>
-
-                    <span id="currentMeetingName" class="ms-2 me-2 fw-bold btn-success"></span>
-
                     <button type="reset" class="btn btn-outline-dark" title="Reset" id="ResetBesprechung">
                         <i class="fas fa-sync-alt"></i>
                     </button>
-                </div>
+                    <span id="currentMeetingName" class="ms-2 me-2 fw-bold btn-success"></span>
 
+                    <span class="badge rounded-pill bg-light text-dark p-2 "
+                          data-bs-toggle="popover"
+                          data-bs-content="Jede Besprechung generiert ein eigenes Protokoll.
+                                            Mehrere Einträge desselben Elments je Raum werden vor der Tabellen Anzeige konsolidiert.">
+
+                        <i class="fas fa-info-circle"></i>
+
+                    </span>
+                </div>
             </div>
 
 
@@ -156,7 +171,11 @@ $conn->close();
                             </span>
                         </div>
                         <div class=" d-flex flex-nowrap mb-2">
-                            <select id="zusatzElemente" name="zusatzElemente[]" class="form-select" style="width:95%"
+                            <label for="zusatzElemente" class="sr-only"></label>
+                            <select id="zusatzElemente"
+                                    name="zusatzElemente[]"
+                                    class="form-select"
+                                    style="width:95%"
                                     multiple>
                                 <?php foreach ($elemente as $element): ?>
                                     <option value="<?= htmlspecialchars($element['id']) ?>">
@@ -167,7 +186,7 @@ $conn->close();
                             <span class="badge rounded-pill bg-light text-dark p-2  "
                                   data-bs-toggle="popover"
                                   data-bs-content="Hier werden ALLE Elemente des Projektes angezeigt.
-                                                    Sollten diese dann in der Tabelle fehlen, sind  ggf. Elemente Stk<1 ausgeblendet. ">
+                                                    Sollten diese dann in der Tabelle fehlen, sind  ggf. Elemente Stk<1 ausgeblendet. - Abgesehen der Zusätzlichen nur jenen Elemente angezeigt, die Ihenen Standort im Raum haben">
                                 <i class="fas fa-info-circle"></i>
                             </span>
                         </div>
@@ -193,7 +212,8 @@ $conn->close();
                             </label>
                         </div>
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="isTransposed" name="isTransposed">
+                            <input class="form-check-input" type="checkbox" id="isTransposed" name="isTransposed"
+                                   disabled>
                             <label class="form-check-label" for="isTransposed" id="isTransposedLabel">
                                 Elemente als Zeilen
                             </label>
@@ -210,19 +230,28 @@ $conn->close();
                     </div>
                 </form>
             </div>
+
+
         </div>
+
 
         <div class="col-lg-10 mx-auto" id="tableCardCol">
             <div class="card">
-                <div class="card-header d-flex align-items-start" style=" height: 55px; ">
+                <div class="card-header d-inline-flex align-items-baseline" style=" height: 60px; ">
                     <button class="btn btn-outline-dark fa fa-arrow-left" id="ToggleCard"></button>
-                    <div class="row d-inline-flex align-items-start w-100">
-                        <div class=" col-6   d-flex                   align-items-start"
+
+                    <div class="row d-inline-flex align-items-baseline w-100 border-light">
+                        <div class=" col-6 d-flex"
                              id="CardHeaderHoldingDatatableManipulators"></div>
-                        <div class=" col-6 d-flex justify-content-end  align-items-start"
+                        <div class=" col-6 d-flex justify-content-end"
                              id="CardHeaderHoldingDatatableManipulators2"></div>
                     </div>
-                    <button class="btn btn-outline-dark fa fa-arrow-left" id="PDFframebtn"></button>
+
+                    <button type="reset" class="btn btn-outline-dark" title="ResetPivot" id="ResetPivot">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="btn btn-outline-dark fa fa-arrow-left" id="PDFframebtn"
+                            style="z-index: 100;"></button>
                 </div>
                 <div class="card-body p-1">
                     <div id="pivotTableContainer">
@@ -231,11 +260,36 @@ $conn->close();
                 </div>
             </div>
         </div>
+        <div class="col-lg-4" id="PDFframe" style="display: none;">
+            <div class="card" style="height: 70vh;">
+                <div class="card-header">
+                    <button type="reset" class="btn btn-outline-dark" title="ResetPDF" id="ResetPDF">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button type="button" class="btn btn-success" id="freigebenAlleBtn">Alle freigeben</button>
 
-        <div class="col-lg-4 card-body p-1" id="PDFframe" style="display: none; height: 70vh; ">
-            <iframe class="embed-responsive-item" id="pdfPreview"></iframe>
+                </div>
+                <div class="card-body">
+                    <iframe class="embed-responsive-item" id="pdfPreview"></iframe>
+                </div>
+            </div>
+
+            <div class="card mb-2">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-xxl-6">
+                            <b>Vermerke</b>
+                        </div>
+                        <div class="col-xxl-6 d-flex justify-content-end align-items-center" id="CardHeaderVermerkE">
+                            <button type='button' id='buttonNewVermerk' class='btn btn-outline-success btn-sm me-2'
+                                    value='Neuer Vermerk' style='visibility:hidden'><i class='fas fa-plus'></i> Neu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body" id="vermerke"></div>
+            </div>
         </div>
-
     </div>
 </div>
 
@@ -243,47 +297,38 @@ $conn->close();
 include "newBesprechungModal.html";
 include "openBesprechungModal.html";
 include "editElementModal.html";
+include "editVermerktextModal.html";
+include "../../modal_elementHistory.html";
 ?>
 
-<script src="../js/Besprechung.js"></script>
 <script src="../../utils/_utils.js"></script>
+<script src="../js/pivotTableLoader.js"></script>
 <script src="../js/editablePivot.js"></script>
+<script src="../js/Besprechung.js"></script>
+<script src="../js/Vermerke.js"></script>
+
 <script>
-    let besprechung = new Besprechung({});
-    let excelfilename;
-
-    function consolidateMultipleElementsperRoom() {
-             let selectedRaumbereiche = $('#raumbereich').val();
-             if (!selectedRaumbereiche || selectedRaumbereiche.length === 0) {
-                 alert("Bitte mindestens einen Raumbereich wählen.");
-                 return;
-             }
-
-        $.ajax({
-            url: '../controllers/consolidateMultipleElementsperRoomsperRoomarea.php', // Pfad zum Backend-Skript für Konsolidierung
-            method: 'POST',
-            data: {
-                raumbereiche: selectedRaumbereiche
-            },
-            dataType: 'json',
-            success: function (response) {
-                if (response.success) {
-                    console.log("Konsolidierung erfolgreich:", response.message);
-                } else {
-                    alert("Fehler bei Konsolidierung: " + (response.message || "Unbekannter Fehler"));
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("AJAX-Fehler bei Konsolidierung:", status, error);
-                alert("Serverfehler bei der Konsolidierung der Elemente.");
-            }
-        });
-    }
-
-
-
-
+    // let excelfilename;
+    let besprechung;
     $(document).ready(function () {
+
+        besprechung = new Besprechung({});
+
+        besprechung.create(
+            '#createMeetingForm',
+            '#createMeetingModal',
+            '#pdfPreview',
+            makeToaster,
+            updateFilterFormState
+        );
+
+        besprechung.bindModalShowHandler(
+            '#besprechungSelectModal',
+            '#besprechungTable',
+            makeToaster,
+            loadRaumbereiche
+        );
+
         $('#meetingDatum').datepicker({
             format: "yyyy-mm-dd",
             calendarWeeks: true,
@@ -297,132 +342,27 @@ include "editElementModal.html";
         $('#zusatzElemente').select2({placeholder: "Zusätzliche Elemente wählen"});
         $('#isTransposed').on('change', updateTransposeLabel);
         $('#filterForm :input').prop('disabled', true);
+        $('#meetingDatum').val(new Date().toISOString().substring(0, 10));
+
+        $('#createMeetingModal').on('close', function () {
+            $('#createMeetingForm').reset();
+        });
+
 
         $('#filterForm').on('submit', function (e) {
             e.preventDefault();
-            consolidateMultipleElementsperRoom();
-            loadPivotTable();
-            addUntergruppePerRaumbereich();
-            addDefaultVermerkeForRaumbereiche(besprechung.id, $('#raumbereich').val());
-            $('#pdfPreview').attr('src', '../../PDFs/pdf_createVermerkGroupPDF.php?gruppenID=' + besprechung.id);
+            //besprechung.consolidateMultipleElementsperRoom($('#raumbereich').val());
+            loadPivotTable();              //pivotLoader.js
+            addUntergruppePerRaumbereich(); //vermerke.js
+            //console.log("FitlerFormSubmit: ", besprechung.toPayload());
+            addDefaultVermerkeForEachRommInArea(besprechung.id, $('#raumbereich').val()); //vermerke.js
+            refreshPDF();
+            getVermerke();
         });
 
-        $('#createMeetingForm').on('submit', function (e) {
-                e.preventDefault();
-                besprechung.id = 1;
-                besprechung.action = "new";
-                besprechung.name = $("#meetingName").val();
-                besprechung.datum = $("#meetingDatum").val();
-                besprechung.startzeit = $("#meetingUhrzeitStart").val();
-                besprechung.endzeit = $("#meetingUhrzeitEnde").val();
-                besprechung.ort = $("#meetingOrt").val();
-                besprechung.verfasser = $("#meetingVerfasser").val();
-                besprechung.art = "Protokoll Besprechung";
-
-                if (besprechung.name && besprechung.verfasser && besprechung.datum && besprechung.startzeit) {
-                    $.ajax({
-                        url: "../controllers/BesprechungController.php", // Controller endpoint
-                        type: "POST",                  // Change from GET to POST
-                        data: besprechung.toPayload(),// Send data in POST body
-                        success: function (response) {
-                            if (response.success) {
-                                besprechung.id = response.insertId;
-                                console.log("Besprechung angelegt", besprechung.toPayload());
-
-                                $('#createMeetingModal').modal('hide');
-                                $('#createMeetingForm')[0].reset();
-                                $('#pdfPreview').attr('src', '../../PDFs/pdf_createVermerkGroupPDF.php?gruppenID=' + besprechung.id);
-
-                                makeToaster("Besprechung erfolgreich angelegt! - ID:" + besprechung.id, true);
-                                updateFilterFormState();
-                            } else {
-                                makeToaster("Fehler: " + (response.message || "Unbekannter Fehler"), false);
-                            }
-                        },
-                        error: function (xhr) {
-                            const errorMsg = xhr.responseJSON?.errors?.join(', ') || xhr.responseText || "Fehler beim Anlegen";
-                            alert(errorMsg);
-                        }
-                    });
-                } else {
-                    makeToaster("Bitte alle Pflichtfelder ausfüllen!", false);
-                }
-            }
-        );
-
-        $('#besprechungSelectModal').on('shown.bs.modal', function (e) {
-            if ($.fn.DataTable.isDataTable('#besprechungTable')) {
-                $('#besprechungTable').DataTable().destroy();
-            }
-            let table = $('#besprechungTable').DataTable({
-                ajax: {
-                    url: '../controllers/BesprechungController.php',
-                    type: 'POST',
-                    data: {action: 'getProtokollBesprechungen'},
-                    dataSrc: function (json) {
-                        if (!json.success) {
-                            $('#besprechungLoading').text('Fehler: ' + json.message);
-                            return [];
-                        }
-                        $('#besprechungLoading').text('');
-                        return json.data;
-                    },
-                    error: function (xhr, error, thrown) {
-                        $('#besprechungLoading').text('Serverfehler: ' + thrown);
-                    }
-                },
-                columns: [
-                    {data: 'idtabelle_Vermerkgruppe', title: "id", visible: false},
-                    {data: 'Gruppenname', title: "Name"},
-                    {data: 'Gruppenart', title: "Art"},
-                    {data: 'Ort', title: "Ort"},
-                    {data: 'Verfasser', title: "Verfasser"},
-                    {data: 'Startzeit', title: "Startzeit"},
-                    {data: 'Endzeit', title: "Endzeit"},
-                    {data: 'Datum', title: "Datum"}
-                ],
-                searching: true,
-                paging: true,
-                info: false,
-                lengthChange: false,
-                language: {url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'},
-                rowId: 'id',
-                createdRow: function (row, data) {
-                    $(row).off('click').on('click', function () {
-                        $('#besprechungTable tbody tr').removeClass('selected');
-                        $(this).addClass('selected');
-
-                        besprechung.id = data.idtabelle_Vermerkgruppe;
-                        besprechung.action = "opened";
-                        besprechung.name = data.Gruppenname;
-                        besprechung.datum = data.Datum;
-                        besprechung.startzeit = data.Startzeit;
-                        besprechung.endzeit = data.Endzeit;
-                        besprechung.ort = data.Ort;
-                        besprechung.verfasser = data.Verfasser;
-                        besprechung.art = "Protokoll Besprechung";
-                        besprechung.projektID = data.tabelle_projekte_idTABELLE_Projekte;
-
-                        console.log("Raw: ", data);
-                        console.log(besprechung.toPayload());
-
-                        $('#pdfPreview').attr('src', '../../PDFs/pdf_createVermerkGroupPDF.php?gruppenID=' + data.idtabelle_Vermerkgruppe);
-
-                        setTimeout(() => {
-                            updateFilterFormState();
-                            $('#besprechungSelectModal').modal("hide");
-                            $('#besprechungTable').DataTable().destroy();
-                            makeToaster("Besprechung geöffnet " + besprechung.id, true);
-                            loadRaumbereiche(besprechung.id);
-                        }, 100);
-
-                    });
-                }
-            });
-        });
 
         $('#ResetBesprechung').on('click', function () {
-            $('#filterForm')[0].reset();
+            $('#vermerke').html('');
             $('#raumbereich').val(null).trigger('change');
             $('#zusatzRaeume').val(null).trigger('change');
             $('#zusatzElemente').val(null).trigger('change');
@@ -434,13 +374,19 @@ include "editElementModal.html";
             $('#hideZeros').prop('checked', false);
             $('#pivotTableContainer').empty();
             $('#pdfPreview').attr('src', '');
-            besprechung = new Besprechung({});
-            updateFilterFormState();
-            setTimeout(() => {
-                makeToaster("Besprechung Geschlossen", true);
-                updateFilterFormState();
-            }, 100)
 
+            besprechung.reset();
+            makeToaster("Besprechung Geschlossen", true);
+            updateFilterFormState();
+
+        });
+
+        $('#ResetPDF').on("click", function () {
+            refreshPDF();//
+            getVermerke();
+        });
+        $('#ResetPivot').on("click", function () {
+            editablePivot.reloadPivotTable();
         });
 
         $('#PDFframebtn').on('click', function () {
@@ -458,7 +404,105 @@ include "editElementModal.html";
             new bootstrap.Popover(popoverTriggerEl);
         });
 
+
+        $("#show-history-btn").click(function () {
+            const roombookID = this.value;
+            $.ajax({
+                url: '../../getCommentHistory.php',
+                type: 'POST',
+                data: {"roombookID": roombookID},
+                success(data) {
+
+                    $('#mbodyHistory').html(data);
+                },
+            });
+        });
+
+        $('#freigebenAlleBtn').click(function () {
+            let vermerkIDs = []; // Mit der aktuellen Besprechung alle relevanten VermerkIDs aus roomVermerkMap sammeln
+            Object.values(besprechung.roomVermerkMap).forEach(ids => vermerkIDs.push(...ids));
+            //console.log("Handing over:", vermerkIDs);
+            $.ajax({
+                url: '../controllers/BesprechungController.php',
+                type: 'POST',
+                data: {
+                    action: 'freigabeAlle',
+                    vermerkIDs: vermerkIDs
+                },
+                success: function (response) {
+                    // console.log(response);
+                    refreshPDF();
+                    editablePivot.reloadPivotTable();
+                }
+
+            });
+        });
+
     }); // doc ready
+
+    function getVermerke() {
+        //console.log("Getting Vermerke.");
+        try {
+            if ($.fn.dataTable.isDataTable('#vermerkeTable')) {
+                vermerkeTable.ajax.reload();
+            } else {
+                vermerkeTable = $('#vermerke').html('<table id="vermerkeTable" class="table table-striped table-bordered" style="width:100%"></table>').find('table').DataTable({
+                    ajax: {
+                        url: "../controllers/VermerkeController.php",
+                        type: "POST",
+                        data: {
+                            action: "getVermerkeToGruppe",
+                            vermerkgruppe_id: besprechung.id
+                        },
+                        dataSrc: 'data'
+                    },
+                    columns: [
+                        {title: "ID", data: "ID", visible: false},
+                        {title: "R.Bez.", data: "RBZ"},
+                        {
+                            title: "Vermerktext",
+                            data: "Vermerktext",
+                            render: function (data) {
+                                return data ? data.replace(/\n/g, '<br>') : '';
+                            }
+                        },
+                        {
+                            title: "Edit",
+                            data: null,
+                            orderable: false,
+                            render: function (data, type, row) {
+                                return `<button class="btn btn-sm btn-outline-primary editVermerkBtn" data-id="${row.ID}" data-text="${row.Vermerktext}"><i class="fas fa-edit"></i></button>`;
+                            }
+                        }
+                    ],
+                    responsive: true,
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
+                    },
+                    lengthChange: false,
+                    pageLength: -1,
+
+                    searching: false,
+                    info: false,
+                    initComplete: function () {
+                        setTimeout(() => {
+                            $(document).on('click', '.editVermerkBtn', function () {
+                                console.log("ataching editVermerkBtn bnt listener");
+                                const id = $(this).data('id');
+                                let text = $(this).data('text');
+                                text = text ? text.replace(/<br\s*\/?>/gi, "\n") : '';
+                                $('#editVermerkID').val(id);
+                                $('#editVermerkText').val(text);
+                                $('#editVermerkModal').modal('show');
+                            });
+                        }, 500);
+                    }
+                });
+            }
+        } catch (e) {
+            console.log("GetVermerke(): ", e);
+        }
+    }
 
 
     function loadRaumbereiche(vermerkgruppeId) {        //console.log("ID ", vermerkgruppeId);
@@ -502,74 +546,10 @@ include "editElementModal.html";
         rightBtn.addClass(PDFVisible ? 'fa-arrow-right' : 'fa-arrow-left');
     }
 
-    function addUntergruppePerRaumbereich() {
-        const selectedRaumbereiche = $('#raumbereich').val();
-        if (!selectedRaumbereiche || selectedRaumbereiche.length === 0 || besprechung.id === 0) return;
-        console.log("Besprechung ist geöffnet", selectedRaumbereiche, besprechung.id);
-        $.ajax({
-            url: '../controllers/VermerkuntergruppeController.php',
-            method: 'POST',
-            data: {
-                vermerkgruppe_id: besprechung.id, // pass only vermerkgruppe ID as needed
-                raumbereiche: selectedRaumbereiche,  // array of names
-                action: "addUntergruppen"
-            },
-            success: function (response) {
-                if (response.success) {
-                    if (response.created.length > 0) {
-                        makeToaster("Neue Untergruppe(n) erstellt: " + response.created.map(c => c.name).join(", "), true);
-                    }
-                    if (response.skipped.length > 0) {
-                        if (response.created.length === 0) {
-                            makeToaster("Gruppe(n) '" + response.skipped.join(", ") + "' existiert/ieren bereits. Erstelle keine Duplikate.", true);
-                        } else {
-                            console.log("Einige Gruppen existierten bereits und wurden nicht dupliziert:", response.skipped);
-                        }
-                    }
-                } else {
-                    alert("Fehler beim Erstellen der Untergruppe: " + (response.message || "Unbekannter Fehler"));
-                }
-            },
-            error: function () {
-                alert("Serverfehler bei der Untergruppenerstellung.");
-            }
-        });
-    }
-
-    function addDefaultVermerkeForRaumbereiche(vermerkgruppeId, raumbereiche) {
-        if (!besprechung.id || !Array.isArray(raumbereiche) || raumbereiche.length === 0) {
-            makeToaster("Bitte Vermerkgruppe und mindestens einen Raumbereich wählen .  " + besprechung.id + "   " + raumbereiche, true);
-            return;
-        }
-
-        $.ajax({
-            url: '../controllers/createVermerkeForEachRoom.php',
-            method: 'POST',
-            data: {
-                vermerkgruppe_id: besprechung.id,
-                raumbereiche: raumbereiche
-            },
-            success: function (response) {
-                if (response.success) {
-                    if (response.addedVermerke.length > 0) {
-                        alert("Vermerke wurden für Raumbereiche erstellt:\n" +
-                            [...new Set(response.addedVermerke.map(v => v.raumbereich))].join(", "));
-                    }
-                    if (response.errors.length > 0) {
-                        console.warn("Fehler:", response.errors.join("\n"));
-                    }
-                } else {
-                    alert("Fehler: " + (response.message || "Unbekannter Fehler"));
-                }
-            },
-            error: function () {
-                alert("Serverfehler beim Erstellen der Vermerke.");
-            }
-        });
-    }
 
     function updateFilterFormState() {
-        if (typeof besprechung === "object" && besprechung !== null && besprechung.id && besprechung.id > 0) {
+        //  console.log("updateFilterFormState: ", besprechung.id);
+        if (besprechung.id > 0) {
             $('#filterForm :input').prop('disabled', false);
             $('#openMeetingBtn').prop('disabled', true);
             $('#createMeetingBtn').prop('disabled', true);
@@ -582,202 +562,18 @@ include "editElementModal.html";
         }
     }
 
-    function table_click() {
-        $('#pivotTable').off('click', 'td').on('click', 'td', function () {
-            const cell = $(this);
-            const table = $('#pivotTable').DataTable();            // DataTable cell/row/col index
-            const cellIdx = table.cell(this).index();            // Row and column indices (zero-based)
-            const rowIdx = cellIdx.row;
-            const colIdx = cellIdx.column;            // Get raw data for this row and column
-            const cellData = table.cell(cell).data();
-            const rowData = table.row(rowIdx).data();            // Get the header text for this column
-            const headerText = $(table.column(colIdx).header()).text().trim();
-
-            console.log('Cell Value:', cellData);
-            console.log('Column:', colIdx, '(', headerText, ')');
-            console.log('Row:', rowIdx, rowData);
-
-            const dataRoomId = cell.data('roomid');
-            const dataElementId = cell.data('elementid');
-            const idTABELLE_Räume_has_tabelle_Elemente = cell.data('roomhaselementid')
-
-            if (dataRoomId) console.log('Room ID:', dataRoomId);
-            if (dataElementId) console.log('Element ID:', dataElementId);
-            if (idTABELLE_Räume_has_tabelle_Elemente) console.log('Element ID:', idTABELLE_Räume_has_tabelle_Elemente); //TODO validate
-        });
-
-
-    }
-
     function updateTransposeLabel() {
         $('#isTransposedLabel').text(
             $('#isTransposed').is(':checked') ? 'Räume als Zeilen' : 'Elemente als Zeilen'
         );
     }
 
-    function loadPivotTable() {
-        let raumbereich = $('#raumbereich').val(); // This is now an array
-        let mtRelevant = $('#mtRelevant').is(':checked') ? 1 : 0;
-        let entfallen = $('#entfallen').is(':checked') ? 1 : 0;
-        let nurMitElementen = $('#nurMitElementen').is(':checked') ? 1 : 0;
-        let ohneLeereElemente = $('#ohneLeereElemente').is(':checked') ? 1 : 0;
-        let transponiert = $('#isTransposed').is(':checked') ? 1 : 0;
-        if (!raumbereich || raumbereich.length === 0) {
-            $('#pivotTableContainer').html('<div class="alert alert-info">Bitte wählen Sie mindestens einen Raumbereich.</div>');
-            return;
-        }
-        let hideZeros = $('#hideZeros').is(':checked');
-        let zusatzRaeume = $('#zusatzRaeume').val();
-        let zusatzElemente = $('#zusatzElemente').val();
-
-        $.ajax({
-            url: '../controllers/PivotTableController.php',
-            method: 'POST',
-            data: {
-                'raumbereich[]': raumbereich, // This will be sent as an array
-                'zusatzRaeume[]': zusatzRaeume,
-                'zusatzElemente[]': zusatzElemente,
-                mtRelevant,
-                entfallen,
-                nurMitElementen,
-                ohneLeereElemente,
-                transponiert
-            },
-            traditional: true,
-            success: function (data) {
-                //let raumbereichJoined = raumbereich
-                //    .map(r => r.replace(/ /g, '_'))
-                //    .join('_');
-                //  getExcelFilename('Elemente-je-Raumbereich_' + raumbereichJoined)    // so that the datatable is initited with the correct filename
-                //   .then(filename => {
-                $('#pivotTableContainer').html(data);
-                let colCount = $('#pivotTable thead th').length;
-                let columns = [];
-                for (let i = 0; i < colCount; i++) {
-                    if (i === 0) {   // First column: Element or Raum, don't change rendering
-                        columns.push(null);
-                    } else if (hideZeros) {
-                        columns.push({              // For all other columns, hide zeros
-                            render: function (data) {
-                                return (data === "0" || data === 0) ? "" : data;
-                            }
-                        });
-                    } else {
-                        columns.push(null);
-                    }
-                }
-
-                $('#pivotTable').DataTable({
-                    language: {
-                        url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
-                        search: "",
-                        searchPlaceholder: "Suche...",
-                        lengthMenu: '_MENU_ ',
-                        info: "_START_-_END_ von _TOTAL_ ",
-                        infoEmpty: "Keine Einträge",
-                        infoFiltered: "(von _MAX_) ",
-                    },
-                    scrollX: true,
-                    scrollCollapse: true,
-                    fixedColumns: {start: 1},
-                    fixedHeader: true,
-                    select: true,
-
-                    paging: true,
-                    pagingType: "full",
-
-                    searching: true,
-                    ordering: true,
-                    info: true,
-                    lengthChange: true,
-                    pageLength: 10,
-                    lengthMenu: [[10, 20, 50, -1], ['10 rows', '20 rows', '50 rows', 'All']],
-                    responsive: false,
-                    autoWidth: true,
-                    columns: columns,
-                    layout: {
-                        topStart: 'buttons',
-                        topEnd: 'search',
-                        bottomStart: 'info',
-                        bottomEnd: ['pageLength', 'paging']
-                    },
-                    buttons: [
-                        {
-                            extend: 'excelHtml5',
-                            text: '<i class="fas fa-file-excel"></i> Excel',
-                            className: 'btn btn-success btn-sm',
-                            title: "whatever" //filename
-                        }
-                    ],
-                    initComplete: function () {
-                        $('#CardHeaderHoldingDatatableManipulators').empty();
-                        $('#CardHeaderHoldingDatatableManipulators2').empty();
-                        $('#pivotTable_wrapper .dt-buttons').appendTo('#CardHeaderHoldingDatatableManipulators');
-                        $('#pivotTable_wrapper .dt-search').appendTo('#CardHeaderHoldingDatatableManipulators');
-                        $('#pivotTable_wrapper .dt-length').appendTo('#CardHeaderHoldingDatatableManipulators2');
-                        $('#pivotTable_wrapper .dt-info').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
-                        $('#pivotTable_wrapper .dt-paging').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
-                        $('.dt-search label').remove();
-                        $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark");
-                        table_click();
-                    }
-                });
-                //})´.            catch                (error => {
-                //    console.error('Failed to generate filename:', error);
-                // });
-            }
-        });
+    function refreshPDF() {
+        $('#pdfPreview').attr('src', '');
+        setTimeout(() => {
+            $('#pdfPreview').attr('src', '../../PDFs/pdf_createVermerkGroupPDF.php?gruppenID=' + besprechung.id);
+        }, 100);
     }
-
-
-
-    //   <!-- div id="raumListe" class=" card mt-3 col-2">
-    //                <div class="card-body">
-    //                    <button class="btn btn-primary" onclick="loadRoomsByRaumbereiche()">Räume laden</button>
-    //                </div>
-    //            </div-->
-    //
-    // function loadRoomsByRaumbereiche() {
-    //     let selectedRaumbereiche = $('#raumbereich').val();
-    //     if (!selectedRaumbereiche || selectedRaumbereiche.length === 0) {
-    //         alert("Bitte mindestens einen Raumbereich wählen.");
-    //         return;
-    //     }
-    //
-    //     $.ajax({
-    //         url: '../controllers/getRoomsByRaumbereiche.php',  // Pfad zum Backend-Skript
-    //         method: 'POST',
-    //         data: { raumbereiche: selectedRaumbereiche },
-    //         dataType: 'json',
-    //         success: function(response) {
-    //             if (response.success) {
-    //                 console.log("Gefundene Räume:", response.data);
-    //
-    //                 // Beispielausgabe in einer Tabelle unter einem Container mit id="raumListe"
-    //                 let html = '<table class="table table-sm table-bordered"><thead><tr><th>ID</th><th>Raumnr</th><th>Bezeichnung</th><th>Raumbereich</th></tr></thead><tbody>';
-    //                 response.data.forEach(room => {
-    //                     html += `<tr>
-    //                             <td>${room.id}</td>
-    //                             <td>${room.Raumnr}</td>
-    //                             <td>${room.Raumbezeichnung}</td>
-    //                             <td>${room["Raumbereich Nutzer"]}</td>
-    //                          </tr>`;
-    //                 });
-    //                 html += '</tbody></table>';
-    //                 $('#raumListe').html(html);
-    //
-    //             } else {
-    //                 alert("Fehler: " + (response.message || "Keine Räume gefunden"));
-    //             }
-    //         },
-    //         error: function(xhr, status, error) {
-    //             alert("Serverfehler: " + error);
-    //         }
-    //     });
-    // }
-
-
-
 
 
 </script>

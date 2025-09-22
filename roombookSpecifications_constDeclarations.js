@@ -39,7 +39,6 @@ const columnsDefinition = [
         }
     }, // 3
     {data: 'Raumbezeichnung', title: 'Raumbez'}, // 4
-
     {data: 'Raumnr', title: 'Raumnr'}, // 5
     {data: "Bezeichnung", title: "Funktionsstelle", visible: false, case: "none-edit"}, // 6
     {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'}, // 7

@@ -150,7 +150,8 @@ init_page_serversides("", "x");
             {text: "BAU A3", url: "pdf_createBauangabenBericht_A3Qeer"},
             {text: "ohne Lab", url: "pdf_createBauangabenBericht_A3Qeer_ohne_Lab_params"},
             {text: "ohne Änderungsmarkierungen", url: "pdf_createBauangabenBericht_A3Qeer_1"},
-            {text: "VE", url: "pdf_createBauangabenBericht_A3Qeer_PSy"}
+            {text: "VE", url: "pdf_createBauangabenBericht_A3Qeer_VE"},
+            {text: "CINO", url: "pdf_createBauangabenBericht_A3Qeer_CINO"}
         ],
         elementReports: [
             {text: "Elem./Raum (w/Bestand)", url: "pdf_createRoombookElWithoutBestand"},
@@ -158,7 +159,7 @@ init_page_serversides("", "x");
         ],
         einbringwege: [
             {text: "Einbringwege Größgeräte", url: "pdf_createElementEinbringwegePDF"},
-            {text: "Einbringwege Größgeräte", url: "pdf_createElementEinbringwegePDFschöner"},
+            {text: "Einbringwege Größgeräte", url: "pdf_createElementEinbringwegePDF2"},
         ],
         oldReports: [
             {text: "RB PDF", url: "pdf_createRoombookPDF"},

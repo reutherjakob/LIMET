@@ -279,6 +279,19 @@ $row = $result->fetch_assoc(); ?>
     });
 
     $(document).ready(function () {
+        document.querySelectorAll('select[id^="Wert_"], select[id^="Einheit_"]').forEach(function (select) {
+            select.addEventListener('change', function () {
+                const freetextInput = document.getElementById(this.id + '_freetext');
+                if (this.value === '__freetext__') {
+                    freetextInput.style.display = 'block';
+                } else {
+                    freetextInput.style.display = 'none';
+                    freetextInput.value = '';
+                }
+            });
+        });
+
+
         $('#tableElementParameters').DataTable({ //same as in getPossibleVarianteParameters.php
             select: true,
             searching: true,
@@ -497,7 +510,6 @@ $row = $result->fetch_assoc(); ?>
                                 type: "GET",
                                 success: function (data) {
                                     $("#possibleVariantenParameter").html(data);
-
                                 }
                             });
                         }
@@ -506,75 +518,6 @@ $row = $result->fetch_assoc(); ?>
             });
         }
     });
-
-    $("button[value='saveAllParameter']").click(function () {
-        const deleteBtns = document.querySelectorAll('#tableElementParameters tbody button[value="deleteParameter"]');
-        const ids = Array.from(deleteBtns).map(btn => btn.id);
-        let variantenID = $('#variante').val();
-
-        ids.forEach(function (id) {
-            let wertElement = $("#Wert_" + id);
-            let einheitElement = $("#Einheit_" + id);
-            let wert = wertElement.val();
-            let einheit = einheitElement.val();
-
-            if (id !== "") {
-                $.ajax({
-                    url: "updateParameter.php",
-                    data: {
-                        "parameterID": id,
-                        "wert": wert,
-                        "einheit": einheit,
-                        "variantenID": variantenID
-                    },
-                    type: "GET",
-                    success: function (data) {
-                        makeToaster(data.trim(), true);
-                    }
-                });
-            }
-        });
-    });
-
-    //Parameter von Variante entfernen
-    $("button[value='deleteParameter']").click(function () {
-        if (confirm("Parameter wirklich löschen?")) {
-            $('#variantenParameterCh .xxx').remove();
-            let variantenID = $('#variante').val();
-            let id = this.id;
-            if (id !== "") {
-                $.ajax({
-                    url: "deleteParameterFromVariante.php",
-                    data: {"parameterID": id, "variantenID": variantenID},
-                    type: "GET",
-                    success: function (data) {
-                        makeToaster(data.trim(), false);
-                        $.ajax({
-                            url: "getVarianteParameters.php",
-                            data: {"variantenID": variantenID},
-                            type: "GET",
-                            success: function (data) {
-                                $('#variantenParameterCh .xxx').remove();
-                                $("#variantenParameter").html(data);
-                                $.ajax({
-                                    url: "getPossibleVarianteParameters.php",
-                                    data: {"variantenID": variantenID},
-                                    type: "GET",
-                                    success: function (data) {
-                                        $("#possibleVariantenParameter").html(data);
-                                        //console.log("2", data);
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-            }
-        }
-    });
-
-    // Parameter ändern bzw speichern
-
 
     // Variantenparameter übernehmen in zentrales Element
     $("#addVariantenParameterToElement").click(function () {

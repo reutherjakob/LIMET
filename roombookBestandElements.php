@@ -98,10 +98,11 @@ init_page_serversides();
             <th>Gerät</th>
             <th>Raumnr</th>
             <th>Raum</th>
+              <th>Raumbereich</th>
             <th>Standort aktuell</th>
-            <th>Kosten</th>
+            <th><i class='fas fa-euro-sign'> <i class='fas fa-euro-sign'</i></th>
             <th>Kosten</th><!-- unformatiert -->
-            <th>Kommentar</th>                                                    
+            <th><i class='far fa-comments'></i></th>                                                    
             </tr></thead>
             <tbody>";
 
@@ -116,16 +117,18 @@ init_page_serversides();
             echo "<td>" . $row["Hersteller"] . "-" . $row["Typ"] . "</td>";
             echo "<td>" . $row["Raumnr"] . "</td>";
             echo "<td>" . $row["Raumbezeichnung"] . "</td>";
+            // 10th
+            echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
             echo "<td>" . $row["Aktueller Ort"] . "</td>";
             echo "<td>" . format_money($row["Kosten"]) . "</td>";
             echo "<td>" . (float)$row["Kosten"] . "</td>";
             if (null != ($row["Kurzbeschreibung"])) {
                 echo "<td><button type='button' class='btn btn-sm btn-outline-dark' 
-    data-bs-toggle='popover' 
-    data-bs-placement='top' 
-    data-bs-content='" . htmlspecialchars($row["Kurzbeschreibung"]) . "' 
-    title='Kommentar'>
-    <i class='fa fa-comment'></i></button></td>";
+                    data-bs-toggle='popover' 
+                    data-bs-placement='top' 
+                    data-bs-content='" . htmlspecialchars($row["Kurzbeschreibung"]) . "' 
+                    title='Kommentar'>
+                    <i class='fa fa-comment'></i></button></td>";
             } else {
                 echo "<td> </td>";
             }
@@ -152,7 +155,8 @@ init_page_serversides();
                 null, // Column 8
                 null, // Column 9
                 null, // Column 10
-                {visible: false, searchable: false}, // Column 11, // Column
+                null, // Column 11
+                {visible: false, searchable: false}, // Column 12, // Column
                 null
             ],
             paging: true,
@@ -174,7 +178,7 @@ init_page_serversides();
                     extend: 'excel',
                     exportOptions: {
                         columns: function (idx) {
-                            return idx !== 0 && idx !== 10;
+                            return idx !== 0 && idx !== 11;
                         }
                     }
                 }
@@ -211,8 +215,11 @@ init_page_serversides();
         });
 
         $("button[value='createBestandsPDF']").click(function () {
-            window.open('PDFs/pdf_createBestandPDF.php');//there are many ways to do this
+            var datum = new Date().toISOString().slice(0,10); // aktuelles Datum im Format YYYY-MM-DD
+            var url = "PDFs/pdf_createBestandPDF.php?datum=" + encodeURIComponent(datum);
+            window.open(url);
         });
+
     });
 
 

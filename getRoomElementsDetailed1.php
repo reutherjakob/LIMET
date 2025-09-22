@@ -1,5 +1,6 @@
 <?php
 // V2.0: 2024-11-29, Reuther & Fux
+
 require_once 'utils/_utils.php';
 include "utils/_format.php";
 check_login();
@@ -266,7 +267,7 @@ $mysqli->close();
         <div class='modal-content'>
 
             <div class='modal-header'>
-                <h5 class='modal-title' id='copyRoomElementsModalLabel'>Rauminhalt kopieren</h5>
+                <h5 class='modal-title' id='copyRoomElementsModalLabel'>Elemente dieses Raums kopieren</h5>
                 <p class='mb-0 ms-3'>(Bisher im Raum verortete Elemente werden hierdurch NICHT verändert!)</p>
                 <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
             </div>
@@ -282,23 +283,9 @@ $mysqli->close();
 </div>
 
 <!-- Modal zum Darstellen des Verlaufs -->
-<div class='modal fade' id='historyModal' role='dialog' tabindex="-1">
-    <div class='modal-dialog modal-lg'>
-        <!-- Modal content-->
-        <div class='modal-content'>
-            <div class='modal-header'>
-                <h4 class='modal-title'>Verlauf </h4>
-                <div class='' id="ElementName4Header"></div>
-                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
-            </div>
-            <div class='modal-body' id='mbodyHistory'>
-            </div>
-            <div class='modal-footer'>
-                <button type='button' class='btn btn-default' data-bs-dismiss='modal'>Close</button>
-            </div>
-        </div>
-    </div>
-</div>
+<?php
+include "modal_elementHistory.html";
+?>
 
 <script src="utils/_utils.js"></script>
 <script charset="utf-8" type="module">
@@ -346,10 +333,7 @@ $mysqli->close();
     function initPopoverTips() {
         const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
         popoverTriggerList.forEach(el => new bootstrap.Popover(el));
-
-        document.addEventListener(
-            'click',
-            e => {
+        document.addEventListener('click', e => {
                 document.querySelectorAll('[data-bs-toggle="popover"]').forEach(pop => {
                     const popover = bootstrap.Popover.getInstance(pop);
                     if (popover) {
@@ -363,19 +347,46 @@ $mysqli->close();
         );
     }
 
+    function hideZeroFilter(settings, data, dataIndex) {
+        let api = new $.fn.dataTable.Api(settings);
+        let row = api.row(dataIndex).node();
+        let $input = $(row).find("input[id^='amount']");
+        let inputVal = $input.val();
+        let parsedVal = parseInt(inputVal, 10);
+
+        // console.log("=== Filter Call ===");
+        // console.log("settings:", settings);
+        // console.log("data:", data);
+        // console.log("dataIndex:", dataIndex);
+        // console.log("row node:", row);
+        // console.log("input element:", $input.length ? $input[0] : "not found");
+        // console.log("input value (string):", inputVal);
+        // console.log("parsed value (int):", parsedVal);
+        // console.log("checkbox checked:", $('#hideZeroRows').prop('checked'));
+
+        if ($('#hideZeroRows').prop('checked')) {
+            return parsedVal !== 0;
+        }
+        return true;
+    }
+
+
     function initHideZero() {
         $.fn.dataTable.ext.search = $.fn.dataTable.ext.search.filter(fn => fn !== hideZeroFilter);
         if ($.fn.dataTable.isDataTable('#tableRoomElements')) {
             $('#tableRoomElements').DataTable().destroy(true);
             $('#tableRoomElements').empty();
         }
+        $.fn.dataTable.ext.search.push(hideZeroFilter);
         const hideZero = localStorage.getItem('hideZeroSetting') === 'true';
         $('#hideZeroRows').prop('checked', hideZero);
         toggleHideZeroIcon(hideZero);
         $('#hideZeroRows').on('change', function () {
             localStorage.setItem('hideZeroSetting', this.checked ? 'true' : 'false');
             toggleHideZeroIcon(this.checked);
-            if (tableRoomElements) tableRoomElements.draw();
+            if (tableRoomElements) {
+                tableRoomElements.draw();
+            }
         });
     }
 
@@ -388,13 +399,12 @@ $mysqli->close();
         }
     }
 
+
     function initDataTable() {
         let savedLength = localStorage.getItem('roomElementsPageLength');
         let orderOption = (rememberSorting && currentSort.column !== null && currentSort.dir)
             ? [[currentSort.column, currentSort.dir]]  // gespeicherte Sortierung
             : [[1, 'asc']]; // 3 = Stückzahl-Spalte (0-ID, 1-Element, 2-Var,
-
-        console.log("ORDER ", orderOption);
 
         tableRoomElements = $('#tableRoomElements').DataTable({
             select: true,
@@ -438,6 +448,72 @@ $mysqli->close();
                     .removeClass('form-control form-control-sm')
                     .addClass('btn btn-sm btn-outline-dark xxx ms-1 me-1')
                     .appendTo('#room-action-buttons');
+
+
+                $('#tableRoomElements tbody').on('click', 'tr', function () {
+                    const data = tableRoomElements.row(this).data();
+                    if (!data) return;
+
+                    // data[0] is id (hidden)
+                    const id = data[0].display;
+                    console.log(data, id);
+                    const stk = $(`#amount${id}`).val();
+                    const standort = $(`#Standort${id}`).val();
+                    const verwendung = $(`#Verwendung${id}`).val();
+
+                    const elementHTML = data[1].display;
+                    const elementID = (elementHTML.match(/id="ElementName(\d+)"/) || [])[1];
+//                     console.log("tableRoomElements Klick");
+
+                    $.ajax({
+                        url: 'getElementParameters.php',
+                        data: {id},
+                        type: 'GET',
+                        success(data) {
+                            $('#elementParameters').html(data).show();
+
+                            $.ajax({
+                                url: 'getElementPrice.php',
+                                data: {id},
+                                type: 'GET',
+                                success(data) {
+                                    $('#price').html(data);
+
+                                    $.ajax({
+                                        url: 'getElementBestand.php',
+                                        data: {id, stk},
+                                        type: 'GET',
+                                        success(data) {
+                                            $('#elementBestand').html(data).show();
+
+                                            if (verwendung === '1' && standort === '0') {
+                                                $.ajax({
+                                                    url: 'getElementStandort.php',
+                                                    data: {id, elementID},
+                                                    type: 'GET',
+                                                    success(data) {
+                                                        $('#elementVerwendung').html(data).show();
+                                                    },
+                                                });
+                                            } else {
+                                                $('#elementBestand').show();
+                                                $.ajax({
+                                                    url: 'getElementVerwendung.php',
+                                                    data: {id},
+                                                    type: 'GET',
+                                                    success(data) {
+                                                        $('#elementVerwendung').html(data).show();
+                                                    },
+                                                });
+                                            }
+                                        },
+                                    });
+                                },
+                            });
+                        },
+                    });
+                });
+
             },
         });
 
@@ -449,74 +525,14 @@ $mysqli->close();
             if (rememberSorting) {
                 const order = tableRoomElements.order(); // z.B. [[3, "asc"]]
                 if (order.length > 0) {
-                    currentSort = { column: order[0][0], dir: order[0][1] };
+                    currentSort = {column: order[0][0], dir: order[0][1]};
                     localStorage.setItem('roomElementsSort', JSON.stringify(currentSort));
                 }
             }
         });
 
         // Row click ajax cascade
-        $('#tableRoomElements tbody').on('click', 'tr', function () {
-            const data = tableRoomElements.row(this).data();
-            if (!data) return;
 
-            // data[0] is id (hidden)
-            const id = data[0];
-            const stk = $(`#amount${id}`).val();
-            const standort = $(`#Standort${id}`).val();
-            const verwendung = $(`#Verwendung${id}`).val();
-
-            // data[1] is HTML string with span id="ElementNameXXX"
-            const elementID = (data[1].match(/id="ElementName(\d+)"/) || [])[1];
-
-            $.ajax({
-                url: 'getElementParameters.php',
-                data: {id},
-                type: 'GET',
-                success(data) {
-                    $('#elementParameters').html(data).show();
-
-                    $.ajax({
-                        url: 'getElementPrice.php',
-                        data: {id},
-                        type: 'GET',
-                        success(data) {
-                            $('#price').html(data);
-
-                            $.ajax({
-                                url: 'getElementBestand.php',
-                                data: {id, stk},
-                                type: 'GET',
-                                success(data) {
-                                    $('#elementBestand').html(data).show();
-
-                                    if (verwendung === '1' && standort === '0') {
-                                        $.ajax({
-                                            url: 'getElementStandort.php',
-                                            data: {id, elementID},
-                                            type: 'GET',
-                                            success(data) {
-                                                $('#elementVerwendung').html(data).show();
-                                            },
-                                        });
-                                    } else {
-                                        $('#elementBestand').show();
-                                        $.ajax({
-                                            url: 'getElementVerwendung.php',
-                                            data: {id},
-                                            type: 'GET',
-                                            success(data) {
-                                                $('#elementVerwendung').html(data).show();
-                                            },
-                                        });
-                                    }
-                                },
-                            });
-                        },
-                    });
-                },
-            });
-        });
     }
 
     function attachButtonListeners() {
@@ -549,8 +565,8 @@ $mysqli->close();
             const elementName = $(`#ElementName${roombookID}`).text();
             $.ajax({
                 url: 'getCommentHistory.php',
-                type: 'GET',
-                data: {roombookID},
+                type: 'POST',
+                data: {"roombookID": roombookID},
                 success(data) {
                     $('#ElementName4Header').text(elementName);
                     $('#mbodyHistory').html(data);
@@ -615,13 +631,7 @@ $mysqli->close();
         });
     }
 
-    // Filter function for hide zero rows (assuming column 3 = Menge/Stk)
-    function hideZeroFilter(settings, data, dataIndex) {
-        if ($('#hideZeroRows').prop('checked')) {
-            return parseInt(data[3], 10) !== 0;
-        }
-        return true;
-    }
+
 </script>
 
 

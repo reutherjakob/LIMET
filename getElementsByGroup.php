@@ -50,6 +50,7 @@ if (isset($_SESSION['roomID'])) {
 }
 
 
+
 echo "<table class='table table-striped table-sm table-bordered border border-light border-5' id='tableElementsInDB'   >
 	<thead><tr>
 	<th>ID</th>
@@ -76,70 +77,11 @@ while ($row = $result_el->fetch_assoc()) {
     echo "</tr>";
 }
 echo "</tbody></table>";
-
-
 $mysqli->close();
+
+include "addRoomElementModal.html";
 ?>
-<!-- Modal zum Einfügen eines Elements -->
-<div class='modal fade' id='addRoomElementModal' role='dialog' tabindex="-1">
-    <div class='modal-dialog'>
 
-        <div class='modal-content'>
-            <div class='modal-header'>
-                <h4 class='modal-title'>Element in Raum stellen</h4>
-
-                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
-            </div>
-            <div class='modal-body' id='mbody'>
-                <p> Wollen Sie das Element in den Raum stellen? </p>
-                <strong> ELEMENT: </strong> <br>
-                <p id="elID"></p>
-                <br>
-                <strong>RAUM: </strong> <br>
-                <?php echo htmlspecialchars($room['Raumbezeichnung']) . " "
-                    . htmlspecialchars($room['Raumnr']) . " " . htmlspecialchars($room['Raumbereich Nutzer']) . " " .
-                    htmlspecialchars($room['Geschoss']); ?>
-            </div>
-            <div class='modal-footer'>
-                <input type='button' id='addElementToRoom' class='btn btn-success btn-sm' value='Ja'
-                       data-bs-dismiss='modal'>
-                <button type='button' class='btn btn-danger btn-sm' data-bs-dismiss='modal'>Nein</button>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-
-<!-- Modal zum Ändern eines Elements -->
-<div class='modal fade' id='changeElementModal' role='dialog' tabindex="-1">
-    <div class='modal-dialog modal-lg'>
-        <div class='modal-content'>
-            <div class='modal-header'>
-                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
-                <h4 class='modal-title'>Element ändern</h4>
-            </div>
-            <div class='modal-body' id='mbody'>
-                <form role="form">
-                    <div class="form-group">
-                        <label for="bezeichnung">Bezeichnung:</label>
-                        <input type="text" class="form-control" id="bezeichnung" placeholder="Type"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="kurzbeschreibung">Kurzbeschreibung:</label>
-                        <label for="kurzbeschreibungModal"></label><textarea class="form-control" rows="5"
-                                                                             id="kurzbeschreibungModal"></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class='modal-footer'>
-                <input type='button' id='saveElement' class='btn btn-warning btn-sm' value='Speichern'></input>
-                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
-            </div>
-        </div>
-
-    </div>
-</div>
 
 <!-- Modal Info -->
 <div class='modal fade' id='infoModal' role='dialog' tabindex="-1">
@@ -159,6 +101,7 @@ $mysqli->close();
     </div>
 </div>
 
+<script src="addElementToRoom.js"> </script>
 <script charset="utf-8">
 
     $(document).ready(function () {
@@ -242,7 +185,6 @@ $mysqli->close();
                         });
                     }
                 });
-
                 $.ajax({
                     url: "getRoomsWithElement1.php",
                     data: {"elementID": elementID},
@@ -263,66 +205,10 @@ $mysqli->close();
         });
     });
 
-    //Element in Raum stellen= Dialog
-    $("button[value='addElement']").click(function () {
-        let elementID = this.id;
-        if (elementID !== "") {
-            $.ajax({
-                url: "getElementToElementID.php",
-                data: {"elementID": elementID},
-                type: "GET",
-                success: function (data) {
-                    $("#elID").html(data);
-                }
-            });
-        }
-    });
 
-    //Element in Raum stellen
-    $("#addElementToRoom").click(function () {
-        $.ajax({
-            url: "addElementToRoom.php",
-            type: "GET",
-            success: function (data) {
-                makeToaster(data, true);
-                setTimeout(function () {
-                    $.ajax({
-                        url: "getRoomElementsDetailed1.php",
-                        type: "GET",
-                        success: function (data) {
-                            $("#roomElements").html(data);
-                        }
-                    });
-                }, 100);
-            }
-        });
-    });
 
-    //Element speichern
-    $("#saveElement").click(function () {
-        let bezeichnung = $("#bezeichnung").val();
-        let kurzbeschreibung = $("#kurzbeschreibungModal").val();
-        if (bezeichnung !== "" && kurzbeschreibung !== "") {
-            $.ajax({
-                url: "saveElement.php",
-                data: {"bezeichnung": bezeichnung, "kurzbeschreibung": kurzbeschreibung},
-                type: "GET",
-                success: function (data) {
-                    $('#changeElementModal').modal('hide');
-                    alert(data);
-                    $.ajax({
-                        url: "getElementsInDB.php",
-                        type: "GET",
-                        success: function (data) {
-                            $("#elementsInDB").html(data);
-                        }
-                    });
-                }
-            });
-        } else {
-            alert("Bitte alle Felder ausfüllen!");
-        }
-    });
+
+
 </script>
 </body>
 </html>

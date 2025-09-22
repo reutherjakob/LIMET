@@ -18,11 +18,13 @@ class MYPDF extends TCPDF
         } else {
             $this->Cell(0, 0, '', 0, false, 'R', 0, '', 0, false, 'B', 'B');
         }
-        $this->Ln(1);//
+        $this->Ln(5);//
         if (isset($_SESSION["PDFHeaderSubtext"])) {
             $this->Cell(0, 0, $_SESSION["PDFHeaderSubtext"], 'B', false, 'R', 0, '', 0, false, 'B', 'B');
         } else {
-            $this->cell(0, 0, '', 'B', 0, 'L');
+            $this-> Ln();
+            $this->cell(0, 0, '', 'B', 0, 'L');;
+
         }
 
         $this->Ln();

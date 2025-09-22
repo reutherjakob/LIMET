@@ -1,7 +1,7 @@
 <!-- 13.2.25: Reworked -->
 <?php
 require_once 'utils/_utils.php';
-check_login();;
+check_login();
 ?>
 <!DOCTYPE html>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
@@ -11,11 +11,20 @@ check_login();;
 <body>
 <?php
 $mysqli = utils_connect_sql();
-$sql = "SELECT tabelle_Vermerkuntergruppe.idtabelle_Vermerkuntergruppe, tabelle_Vermerkuntergruppe.Untergruppenname, tabelle_Vermerkuntergruppe.Untergruppennummer
-                FROM tabelle_Vermerkuntergruppe
-                WHERE (((tabelle_Vermerkuntergruppe.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe)=" . filter_input(INPUT_GET, 'vermerkGruppenID') . "))
-                ORDER BY Untergruppennummer;";
-$result = $mysqli->query($sql);
+$stmt = $mysqli->prepare(
+    "SELECT tabelle_Vermerkuntergruppe.idtabelle_Vermerkuntergruppe, 
+            tabelle_Vermerkuntergruppe.Untergruppenname, 
+            tabelle_Vermerkuntergruppe.Untergruppennummer
+     FROM tabelle_Vermerkuntergruppe
+     WHERE tabelle_Vermerkuntergruppe.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe = ?
+     ORDER BY Untergruppennummer;"
+);
+$vermerkGruppenID = getPostInt('vermerkGruppenID');
+$stmt->bind_param("i", $vermerkGruppenID);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$art =  getPostString("art") != "Protokoll Besprechung";
 
 echo "<table class='table responsive compact table-striped table-bordered table-sm table-hover  border border-light border-5' id='tableVermerkUnterGruppe'>
                 <thead><tr>
@@ -29,10 +38,14 @@ echo "<table class='table responsive compact table-striped table-bordered table-
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
     echo "<td>" . $row['idtabelle_Vermerkuntergruppe'] . "</td>";
-    echo "<td><button type='button' id='" . $row['idtabelle_Vermerkuntergruppe'] . "' class='btn btn-outline-dark btn-sm' value='changeVermerkuntergruppe'><i class='fas fa-pencil-alt'></i></button></td>";
+    if ($art ){//|| $row['Untergruppennummer'] === 0 ) {
+        echo "<td> <button type='button' id='" . $row['idtabelle_Vermerkuntergruppe'] . "' class='btn btn-outline-dark btn-sm' value='changeVermerkuntergruppe'><i class='fas fa-pencil-alt'></i></button></td>";
+    } else {
+        echo "<td></td>";
+    }
     echo "<td>" . $row['Untergruppennummer'] . "</td>";
     echo "<td>" . $row['Untergruppenname'] . "</td>";
-    echo "<td>" . filter_input(INPUT_GET, 'vermerkGruppenID') . "</td>";
+    echo "<td>" . $vermerkGruppenID . "</td>";
     echo "</tr>";
 }
 echo "</tbody></table>";
@@ -74,6 +87,7 @@ $mysqli->close();
 
 <script src="utils/_utils.js"></script>
 <script>
+
     $(document).ready(function () {
         $('#topDivSearch').remove();
         document.getElementById("buttonNewVermerkuntergruppe").style.visibility = "visible";
@@ -140,21 +154,21 @@ $mysqli->close();
     $("#addUnterGroup").click(function () {
         var untergruppenName = $("#unterGruppenName").val();
         var untergruppenNummer = $("#unterGruppenNummer").val();
-        var id = <?php echo filter_input(INPUT_GET, 'vermerkGruppenID') ?>;
+        var id = <?php echo getPostInt('vermerkGruppenID') ?>;
+        console.log(" $(#addUnterGroup).click(function () {", id);
         if (untergruppenName !== "" && untergruppenNummer !== "") {
             $.ajax({
                 url: "addVermerkUnterGroup.php",
                 data: {"untergruppenName": untergruppenName, "untergruppenNummer": untergruppenNummer, "gruppenID": id},
                 type: "GET",
                 success: function (data) {
-                    makeToaster(data,true);
+                    makeToaster(data, true);
                     $.ajax({
                         url: "getVermerkeuntergruppenToGruppe.php",
                         data: {"vermerkGruppenID": id},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#vermerkUntergruppen").html(data);
-                            // Neu laden der PDF-Vorschau
                             document.getElementById('pdfPreview').src += '';
                         }
                     });
@@ -168,7 +182,7 @@ $mysqli->close();
     $("#saveUnterGroup").click(function () {
         var untergruppenName = $("#unterGruppenName").val();
         var untergruppenNummer = $("#unterGruppenNummer").val();
-        var id = <?php echo filter_input(INPUT_GET, 'vermerkGruppenID') ?>;
+        var id = <?php echo getPostInt('vermerkGruppenID') ?>;
         if (untergruppenName !== "" && untergruppenNummer !== "") {
             $.ajax({
                 url: "saveVermerkUnterGroup.php",
@@ -177,13 +191,13 @@ $mysqli->close();
                     "untergruppenNummer": untergruppenNummer,
                     "untergruppenID": untergruppenID
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data, true);
                     $.ajax({
                         url: "getVermerkeuntergruppenToGruppe.php",
                         data: {"vermerkGruppenID": id},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#vermerkUntergruppen").html(data);
                             // Neu laden der PDF-Vorschau

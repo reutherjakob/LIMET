@@ -19,9 +19,10 @@ $mysqli = utils_connect_sql();
 // 1️⃣ Elemente im Raum abrufen
 $stmt = $mysqli->prepare("
     SELECT 
-        e.ElementID, e.Bezeichnung, v.Variante, 
+        e.ElementID, e.Bezeichnung, v.Variante,
         SUM(rhe.Anzahl) AS SummevonAnzahl,
         rhe.`Neu/Bestand`, 
+        rhe.Standort,
         rhe.TABELLE_Elemente_idTABELLE_Elemente, 
         rhe.tabelle_Varianten_idtabelle_Varianten
     FROM tabelle_varianten v

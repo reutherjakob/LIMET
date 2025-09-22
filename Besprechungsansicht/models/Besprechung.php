@@ -1,7 +1,8 @@
 <?php
 // models/Besprechung.php
 
-class Besprechung {
+class Besprechung
+{
     public int $id;
     public string $name;
     public string $datum;
@@ -14,7 +15,8 @@ class Besprechung {
 
     private $mysqli;
 
-    public function __construct(mysqli $mysqli, array $data) {
+    public function __construct(mysqli $mysqli, array $data)
+    {
         $this->mysqli = $mysqli;
         $this->id = $data['id'] ?? 0;
         $this->name = $data['name'] ?? '';
@@ -27,7 +29,8 @@ class Besprechung {
         $this->projektID = $data['projektID'] ?? 0;
     }
 
-    public function validate(): array {
+    public function validate(): array
+    {
         $errors = [];
         if (empty($this->name)) $errors[] = "Name darf nicht leer sein.";
         if (empty($this->datum)) $errors[] = "Datum muss angegeben werden.";
@@ -37,7 +40,8 @@ class Besprechung {
         return $errors;
     }
 
-    public function save(): bool {
+    public function save(): bool
+    {
         if ($this->id > 0) {
             // Update existing if needed in the future
             return false;
@@ -72,14 +76,15 @@ class Besprechung {
         return $res;
     }
 
-    public static function fetchAllByProjekt(mysqli $mysqli, int $projektID): array {
+    public static function fetchAllByProjekt(mysqli $mysqli, int $projektID): array
+    {
         $sql = "SELECT * FROM LIMET_RB.tabelle_Vermerkgruppe WHERE tabelle_projekte_idTABELLE_Projekte = ? ORDER BY Datum DESC, Startzeit DESC";
         $stmt = $mysqli->prepare($sql);
         $stmt->bind_param("i", $projektID);
         $stmt->execute();
         $result = $stmt->get_result();
         $list = [];
-        while($row = $result->fetch_assoc()) {
+        while ($row = $result->fetch_assoc()) {
             $list[] = new Besprechung($mysqli, [
                 'id' => $row['id'], // Adjust columns names based on your schema
                 'name' => $row['Gruppenname'],

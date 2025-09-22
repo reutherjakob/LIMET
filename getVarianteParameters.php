@@ -17,6 +17,20 @@ generate_variante_parameter_inputtable();
 <script>
 
     $(document).ready(function () {
+
+        document.querySelectorAll('select[id^="Wert_"], select[id^="Einheit_"]').forEach(function (select) {
+            select.addEventListener('change', function () {
+                const freetextInput = document.getElementById(this.id + '_freetext');
+                if (this.value === '__freetext__') {
+                    freetextInput.style.display = 'block';
+                } else {
+                    freetextInput.style.display = 'none';
+                    freetextInput.value = '';
+                }
+            });
+        });
+
+
         $('#tableElementParameters').DataTable({ //same as in getElementVariante.php
             select: true,
             searching: true,
@@ -49,72 +63,6 @@ generate_variante_parameter_inputtable();
                 $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").prependTo('#variantenParameterCH');
 
             }
-        });
-
-
-        //Parameter von Variante entfernen
-        $("button[value='deleteParameter']").click(function () {
-            if (confirm("Parameter wirklich löschen?")) {
-                let variantenID = $('#variante').val();
-                let id = this.id;
-                if (id !== "") {
-                    $.ajax({
-                        url: "deleteParameterFromVariante.php",
-                        data: {"parameterID": id, "variantenID": variantenID},
-                        type: "GET",
-                        success: function (data) {
-                            //  alert(data);
-                            makeToaster(data.trim(), true);
-                            $.ajax({
-                                url: "getVarianteParameters.php",
-                                data: {"variantenID": variantenID},
-                                type: "GET",
-                                success: function (data) {
-                                    $('#variantenParameterCh .xxx').remove();
-                                    $("#variantenParameter").html(data);
-                                    $.ajax({
-                                        url: "getPossibleVarianteParameters.php",
-                                        data: {"variantenID": variantenID},
-                                        type: "GET",
-                                        success: function (data) {
-                                            $("#possibleVariantenParameter").html(data);
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
-            }
-        });
-
-        $("button[value='saveAllParameter']").click(function () {
-            const deleteBtns = document.querySelectorAll('#tableElementParameters tbody button[value="deleteParameter"]');
-            const ids = Array.from(deleteBtns).map(btn => btn.id);
-            let variantenID = $('#variante').val();
-
-            ids.forEach(function (id) { s
-                let wertElement = $("#Wert_" + id);
-                let einheitElement = $("#Einheit_" + id);
-                let wert = wertElement.val();
-                let einheit = einheitElement.val();
-
-                if (id !== "") {
-                    $.ajax({
-                        url: "updateParameter.php",
-                        data: {
-                            "parameterID": id,
-                            "wert": wert,
-                            "einheit": einheit,
-                            "variantenID": variantenID
-                        },
-                        type: "GET",
-                        success: function (data) {
-                            makeToaster(data.trim(), true);
-                        }
-                    });
-                }
-            });
         });
 
 

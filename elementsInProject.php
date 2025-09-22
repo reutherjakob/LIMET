@@ -439,7 +439,7 @@ ORDER BY tabelle_elemente.ElementID;";
         window.open('PDFs/pdf_createElementEinbringwegePDF.php');
     });
     $('#createElementEinbringwegePDF2').click(function () {
-        window.open('PDFs/pdf_createElementEinbringwegePDFschöner.php');
+        window.open('PDFs/pdf_createElementEinbringwegePDF2.php');
     });
 
 

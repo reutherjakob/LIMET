@@ -84,24 +84,8 @@ $mysqli->close();
 
     //
     // //Rauminhalt kopieren
-    // $("#copyRoomElements").click(function () {
-    //     console.log(roomIDs);
-    //     roomIDs = [...new Set(roomIDs)];
-    //     console.log("Letzte log vorm kopieren", roomIDs);
-    //     if (roomIDs.length === 0) {
-    //         alert("Kein Raum ausgewählt!");
-    //     } else {
-    //         $.ajax({
-    //             url: "copyRoomElements.php",
-    //             type: "GET",
-    //             data: {"rooms": roomIDs},
-    //             success: function (data) {
-    //                 makeToaster(data, true);
-    //                 $("#mbodyCRE").modal('hide');
-    //             }
-    //         });
-    //     }
-    // });
+
+
     var tableRoomsToCopy;
 
     function add_MT_rel_filter(location, table) {
@@ -191,6 +175,29 @@ $mysqli->close();
 
 
         add_MT_rel_filter('#mtrelevantfilter', tableRoomsToCopy);
+
+        $("#copyRoomElements").click(function () {
+
+            console.log("copyRoomElements btn click funcction", roomIDs);
+            roomIDs = [...new Set(roomIDs)];
+            console.log("Letzte log vorm kopieren", roomIDs);
+            if (roomIDs.length === 0) {
+                alert("Kein Raum ausgewählt!");
+            } else {
+                $.ajax({
+                    url: "copyRoomElements.php",
+                    type: "GET",
+                    data: {"rooms": roomIDs},
+                    success: function (data) {
+                        makeToaster(data, true);
+                        $("#mbodyCRE").modal('hide');
+                        $("#copyRoomElementsModal").modal('hide');
+
+                    }
+                });
+            }
+        });
+
     });
 
 </script>

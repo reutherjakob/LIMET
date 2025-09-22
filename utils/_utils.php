@@ -35,8 +35,7 @@ function check_login(): void
                     </div>
                 </div>
             </div>
-        </div>
-        ';
+        </div>        ';
         exit;
     }
 }
@@ -101,4 +100,14 @@ function load_nav_bar(): void
     echo '     };    </script>';
 }
 
+
+function getPostInt(string $key, int $default = 0): int
+{
+    return isset($_POST[$key]) ? filter_var($_POST[$key], FILTER_VALIDATE_INT) ?? $default : $default;
+}
+
+function getPostString(string $key, string $default = ''): string
+{
+    return isset($_POST[$key]) ? htmlspecialchars(trim($_POST[$key]), ENT_QUOTES, 'UTF-8') : $default;
+}
 
