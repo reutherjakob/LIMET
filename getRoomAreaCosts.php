@@ -135,9 +135,10 @@ $mysqli->close();
             buttons: [
                 {
                     extend: 'excelHtml5',
+                    filename: 'Kostenübersicht_Raumbereich_' + '<?php echo $roomArea; ?>' + '_' + new Date().toISOString().slice(0, 10),
                     footer: false,
                     exportOptions: {
-                        columns: [1, 2, 5, 6, 7, 8, 9],
+                        columns: [0, 1, 2, 5, 6, 7, 8, 9],
                     }, text: '<i class="fas fa-file-excel"></i> Excel', // Add Font Awesome icon
                     className: 'btn btn-sm btn-light btn-outline-success' // Bootstrap small
                 }
