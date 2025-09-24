@@ -277,6 +277,9 @@ echo "</tbody></table>";
 <script charset="utf-8 " type="text/javascript">
     vermerkGruppenID = <?php echo filter_input(INPUT_GET, 'vermerkGruppenID') ?>;
     /* Inititation within DocumentationV2.php; also 4:  var vermerkID;*/
+    vermerkUntergruppenID = <?php echo filter_input(INPUT_GET, 'vermerkUntergruppenID') ?>;
+
+    console.log("Get Vermerke To Untergruppe: ", vermerkUntergruppenID, untergruppenID);
 
 
     $(document).ready(function () {
@@ -412,7 +415,9 @@ echo "</tbody></table>";
         $('#changeVermerkModal').modal('show');
     });
 
+
     $("#addVermerk").click(function () {
+        console.log("Doku addV: ", gruppenID, vermerkID, tableVermerke, untergruppenID, vermerkGruppenID);
         let rooms = $("#room").val();
         let los = $("#los").val();
         let vermerkStatus = $("#vermerkStatus").val();
@@ -422,7 +427,6 @@ echo "</tbody></table>";
         if (vermerkTyp === "Info") {
             faelligkeitDatum = null;
         }
-        let vermerkUntergruppenID = vermerkGruppenID;
         if (room !== "" && los !== "" && vermerkStatus !== "" && vermerkTyp !== "" && vermerkText !== "") {
             $('#changeVermerkModal').modal('hide');
             $.ajax({
@@ -478,20 +482,17 @@ echo "</tbody></table>";
     });
 
     $("#saveVermerk").click(function () {
+        console.log("Doku saveV: ", gruppenID, vermerkID, tableVermerke, untergruppenID, vermerkGruppenID);
         let rooms = $("#room").val();
         let los = $("#los").val();
         let vermerkStatus = $("#vermerkStatus").val();
         let vermerkTyp = $("#vermerkTyp").val();
         let vermerkText = $("#vermerkText").val();
         let faelligkeitDatum = $("#faelligkeit").val();
-        let untergruppenID = $("#untergruppe").val();
+        //let untergruppenID = $("#untergruppe").val();
         if (vermerkTyp === "Info") {
             faelligkeitDatum = null;
         }
-        let vermerkUntergruppenID = <?php echo filter_input(INPUT_GET, 'vermerkUntergruppenID') ?>;
-
-        console.log(" $(saveVermerk).click(", vermerkUntergruppenID, untergruppenID);
-
         if (room !== "" && los !== "" && vermerkStatus !== "" && vermerkTyp !== "" && vermerkText !== "" && vermerkTyp !== null) {
             $('#changeVermerkModal').modal('hide');
             $.ajax({
@@ -504,19 +505,17 @@ echo "</tbody></table>";
                     "vermerkTyp": vermerkTyp,
                     "vermerkText": vermerkText,
                     "faelligkeitDatum": faelligkeitDatum,
-                    "untergruppenID": untergruppenID
+                    "untergruppenID": vermerkUntergruppenID
                 },
                 type: "POST",
                 success: function (data) {
                     makeToaster(data, true);
-
                     $.ajax({
                         url: "getVermerkeToUntergruppe.php",
                         data: {"vermerkUntergruppenID": vermerkUntergruppenID, "vermerkGruppenID": vermerkGruppenID},
                         type: "GET",
                         success: function (data) {
                             $("#vermerke").html(data);
-                            // Neu laden der PDF-Vorschau
                             document.getElementById('pdfPreview').src += '';
                         }
                     });
@@ -527,16 +526,13 @@ echo "</tbody></table>";
         }
     });
 
-
     $("#deleteVermerk").click(function () {
         $('#deleteVermerkModal').modal('show');
     });
 
-
     $("#deleteVermerkExecute").click(function () {
         $('.modal-backdrop').remove();
         $(document.body).removeClass('modal-open');
-        let vermerkUntergruppenID = <?php echo json_encode(filter_input(INPUT_GET, 'vermerkUntergruppenID')); ?>;
         $.ajax({
             url: "deleteVermerk.php",
             data: {"vermerkID": vermerkID},

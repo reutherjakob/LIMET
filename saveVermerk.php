@@ -4,6 +4,7 @@ check_login();
 
 $mysqli = utils_connect_sql();
 
+
 $losID = getPostInt('los');
 $vermerkText = getPostString('vermerkText');
 $vermerkStatus = getPostInt('vermerkStatus');
@@ -17,24 +18,26 @@ if (empty($faelligkeitDatum) || $faelligkeitDatum === 'null' || $faelligkeitDatu
 
 
 if ($losID === 0) {
-    $losID = NULL; // or handle as appropriate if FK allows NULLs
+    $losID = NULL;
 }
 
-// function writeLog($message)
-// {
-//     global $logFile;
-//     file_put_contents($logFile, date('Y-m-d H:i:s') . " - $message\n", FILE_APPEND);
-// }
-// 
-// // Log input values and types
-// writeLog("losID: $losID (type: " . gettype($losID) . ")");
-// writeLog("vermerkText: $vermerkText (type: " . gettype($vermerkText) . ")");
-// writeLog("vermerkStatus: $vermerkStatus (type: " . gettype($vermerkStatus) . ")");
-// writeLog("vermerkTyp: $vermerkTyp (type: " . gettype($vermerkTyp) . ")");
-// writeLog("faelligkeitDatum: " . var_export($faelligkeitDatum, true) . " (type: " . gettype($faelligkeitDatum) . ")");
-// writeLog("untergruppenID: $untergruppenID (type: " . gettype($untergruppenID) . ")");
-// writeLog("vermerkID: $vermerkID (type: " . gettype($vermerkID) . ")");
+//$logFile = __DIR__ . '/log.log'; // Definiere logFile ganz oben!
 
+//function writeLog($message)
+//{
+//    global $logFile;
+//    file_put_contents($logFile, date('Y-m-d H:i:s') . " - $message\n", FILE_APPEND);
+//}
+//
+//// Log input values and types
+//writeLog("losID: $losID (type: " . gettype($losID) . ")");
+//writeLog("vermerkText: $vermerkText (type: " . gettype($vermerkText) . ")");
+//writeLog("vermerkStatus: $vermerkStatus (type: " . gettype($vermerkStatus) . ")");
+//writeLog("vermerkTyp: $vermerkTyp (type: " . gettype($vermerkTyp) . ")");
+//writeLog("faelligkeitDatum: " . var_export($faelligkeitDatum, true) . " (type: " . gettype($faelligkeitDatum) . ")");
+//writeLog("untergruppenID: $untergruppenID (type: " . gettype($untergruppenID) . ")");
+//writeLog("vermerkID: $vermerkID (type: " . gettype($vermerkID) . ")");
+//
 $sql = "UPDATE `LIMET_RB`.`tabelle_Vermerke`
         SET
         `tabelle_lose_extern_idtabelle_Lose_Extern` = ?,
