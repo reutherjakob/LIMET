@@ -25,7 +25,8 @@ init_page_serversides();
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
 
-
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 </head>
 <body style="height:100%">
@@ -38,6 +39,7 @@ init_page_serversides();
             <form class="form-inline d-flex text-nowrap col-xxl-6 align-items-center">
                 <label class="mr-sm-2 me-2" for="selectRoomArea">Raumbereich</label>
                 <select class="form-control form-control-sm mr-sm-2 w-25 " id="selectRoomArea" name="selectRoomArea">
+                    <option></option>
                     <?php
                     $mysqli = utils_connect_sql();
                     $sql = "SELECT tabelle_räume.`Raumbereich Nutzer`
@@ -67,21 +69,28 @@ init_page_serversides();
     </div>
 </div>
 <script>
+    $(function () {
+        $('#selectRoomArea').select2({
+            width: 'resolve',
+            dropdownAutoWidth: true,
+            placeholder: "Raumbereich auswählen"
+        });
 
-    // Kosten berechnen
-    $("button[id='calculateCostsRoomArea']").click(function () {
-        let bestandInkl = $('#selectBestand').val();
-        let x = document.getElementById("selectRoomArea").selectedIndex;
-        let y = document.getElementById("selectRoomArea").options;
-        let roomArea = y[x].text;
+        // Kosten berechnen
+        $("button[id='calculateCostsRoomArea']").click(function () {
+            let bestandInkl = $('#selectBestand').val();
+            let x = document.getElementById("selectRoomArea").selectedIndex;
+            let y = document.getElementById("selectRoomArea").options;
+            let roomArea = y[x].text;
 
-        $.ajax({
-            url: "getRoomAreaCosts.php",
-            data: {"roomArea": roomArea, "bestandInkl": bestandInkl},
-            type: "GET",
-            success: function (data) {
-                $('#costsRoomArea').html(data);
-            }
+            $.ajax({
+                url: "getRoomAreaCosts.php",
+                data: {"roomArea": roomArea, "bestandInkl": bestandInkl},
+                type: "GET",
+                success: function (data) {
+                    $('#costsRoomArea').html(data);
+                }
+            });
         });
     });
 </script>

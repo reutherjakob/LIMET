@@ -287,7 +287,7 @@ ORDER BY tabelle_elemente.ElementID;";
                 {
                     extend: 'excel',
                     exportOptions: {
-                        columns: ':not(:nth-child(6)):not(:nth-child(9))'
+                        columns: ':not(:nth-child(0)):not(:nth-child(6)):not(:nth-child(9))'
                     },
                     text: '<i class="fas fa-file-excel"></i> Excel',
                     className: 'btn-sm btn-light btn-outline-dark me-2'
