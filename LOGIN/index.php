@@ -15,7 +15,7 @@
 <div class="row justify-content-center">
     <div class="col-md-6">
         <h2>Login</h2>
-        <form id="loginForm" autocomplete="off">
+        <form id="loginForm" autocomplete="off" method="POST">
             <div class="mb-3">
                 <input class="form-control" name="username" placeholder="Username" required autocomplete="off">
             </div>
@@ -32,18 +32,31 @@
     </div>
 </div>
 <script>
-    $('#loginForm').submit(function (e) {
+    async function hashPassword(password) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    $('#loginForm').submit(async function (e) {
         e.preventDefault();
+
+        const passwordInput = this.querySelector('input[name="password"]');
+        passwordInput.value = await hashPassword(passwordInput.value);
+
         $.post('login.php', $(this).serialize(), function (data) {
             if (data === "success") {
-                window.location = 'dashboard.php';
+                window.location = '../Nutzerumfrage/dashboard.php';
             } else if (data === "change_pw") {
                 window.location = 'change_pw.php';
             } else {
-                $('#loginMsg').html('<span class="text-danger">' + data + '</span>');
+                $('#loginMsg').html('<span class="text-danger">Login failed. Please try again.</span>');
             }
         });
     });
 </script>
+
 </body>
 </html>

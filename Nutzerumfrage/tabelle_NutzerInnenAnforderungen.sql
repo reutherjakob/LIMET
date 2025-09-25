@@ -61,7 +61,6 @@ CREATE TABLE room_requirements
     ln_comment                        TEXT,
 
     spezialgas                        TINYINT,
-    spezialgas_comment                TEXT,
 
     sv_geraete                        TINYINT,
     sv_geraete_comment                TEXT,
@@ -75,20 +74,13 @@ CREATE TABLE room_requirements
     kuehlwasser                       TINYINT,
     kuehlwasser_comment               TEXT,
 
-    wasserq3                          TINYINT,#def?
-    wasserq3_comment                  TEXT,
-
-    wasserq2                          TINYINT,#def?
-    wasserq2_comment                  TEXT,
-
-    wasserq1                          TINYINT, #def?
-    wasserq1_comment                  TEXT,
+    VE_Wasser                         TINYINT,
+    VE_Wasser_comment                 TEXT,
 
     geraete_wasser_abfluss            TINYINT,
     geraete_wasser_abfluss_comment    TEXT,
 
     punktabsaugung                    TINYINT,
-    punktabsaugung_comment            TEXT,
 
     abluft_sicherheitsschrank         TINYINT,
     abluft_sicherheitsschrank_comment TEXT,

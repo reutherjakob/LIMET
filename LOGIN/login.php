@@ -79,10 +79,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        if (password_verify($password, $hash)) {
+        if ($password=== $hash) {
 
             session_regenerate_id(true);
             $_SESSION['user_id'] = $id;
+            $_SESSION['username'] = $username;
             // Reset attempts after successful login
             $reset = $mysqli->prepare("UPDATE users SET attempts = 0 WHERE id = ?");
             $reset->bind_param("i", $id);

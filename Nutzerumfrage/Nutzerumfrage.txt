@@ -20,9 +20,10 @@ Je nach Rolle sind bestimmte Seiten aufrufbar und Aktionen ausführbar.
 - Verschiedene NutzerInenngruppen je Bereich bekommen dann jeweils einen Account angelegt. Account Name = Bereichsname.
 Die table_users wird also auf Basis der Nutzergruppen befüllt, die Accounts bekommen alle Rolle 3 und können nur die Umfrage sehen und bearbeiten.
 
-Im Zuge dessen soll auch das interne Login System aktualisiert werden.
-Der derzeitige Vorschlag, die Nutzer Logins zu implementieren, könnte aber bis zur internen Umstellung bereits genutzt werden.
-
+Im Zuge dessen kann auch das interne Login System aktualisiert werden.
+Der derzeitige Vorschlag, die Nutzer Logins zu implementieren, kann aber auch so bereits genutzt werden.
+Dafür notwendig wäre nur die Erstellung der Tabellen (user, login_attemps, NutzerInnenAnforderung), sowie das Anlegen eine sql user accounts mit read/write Rechten nur für diese Tabellen.
+Diese Accountzugangsdaten wird in einer.env Datei hinterlegt, um die DB verbindung herzustellen.
 
 
 2) Informations Einholung
@@ -35,5 +36,5 @@ Der derzeitige Vorschlag, die Nutzer Logins zu implementieren, könnte aber bis 
 - Es soll default Werte im Formular geben. Das Überschreiben dieser erfragt eien Begründung  -> Mit Aleks erarbeiten
 - Es soll ein möglicher Raumbezug abgefragt werden, sprich welcher Raumsiedelt ggf. wohin.
 - Kommentar Freifeld
--
+
 
