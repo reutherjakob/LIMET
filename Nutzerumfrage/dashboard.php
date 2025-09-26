@@ -86,13 +86,17 @@ $mysqli->close();
         <div class="col-6">
             <div class="card">
                 <div class="card-header bg-success text-white">
-                    <strong>Räume des Projekts </strong>
+                    <div class="row">
+                        <div class="col-9">
+                            <strong>Räume des Projekts </strong>
+                        </div>
+                        <div class="col-3 d-flex justify-content-end" id="RDPTCH"></div>
+                    </div>
                 </div>
                 <div class="card-body p-0">
                     <table class="table table-sm table-hover mb-0" id="raeumeTable">
                         <thead class="table-light">
                         <tr>
-
                             <th>Nummer</th>
                             <th>Raumname</th>
                             <th>Bereich</th>
@@ -174,7 +178,8 @@ $mysqli->close();
                     last: "Letzter",
                     next: "Nächster",
                     previous: "Vorheriger"
-                }
+                },
+                searchPlaceholder: "Raumsuche..."
             },
             layout: {
                 topStart: null,
@@ -190,43 +195,50 @@ $mysqli->close();
                     sortable: false
                 }
             ],
-            select: true
+            select: true,
+            initComplete: function (){
+                setTimeout(function () {
+                    $('.dt-search input').addClass("btn btn-sm btn-outline-dark bg-white text-dark");
+                    $('.dt-search label').remove();
+                    $('.dt-search').children().removeClass('form-control form-control-sm').addClass("d-flex align-items-center").appendTo('#RDPTCH');
+                }, 300);
+            }
         });
 
-        $("#raeumeTable tbody tr").on("click", function() {
+        $("#raeumeTable tbody tr").on("click", function () {
             let raumId = $(this).data("id");
             $.ajax({
-                url: "spargelfeld_nutzerabfrage_1.php",
+                url: "spargelfeld_nutzerabfrage_0.php",
                 method: "GET",
-                data: { raumid: raumId },
-                success: function(response) {
+                data: {raumid: raumId},
+                success: function (response) {
                     $("#formContainer").html(response);
+
                 },
-                error: function() {
+                error: function () {
                     $("#formContainer").html("<p class='text-danger'>Formular konnte nicht geladen werden.</p>");
                 }
             });
         });
 
 
-        $('#roomParameterForm').submit(function(e) {
+        $('#roomParameterForm').submit(function (e) {
             e.preventDefault(); // prevent normal form submit
             $.ajax({
                 url: 'spargelfeld_save.php',
                 type: 'POST',
                 data: $(this).serialize(),
                 dataType: 'json',
-                success: function(response) {
+                success: function (response) {
                     alert(response.message);
                     if (response.status === 'success') {
                     }
                 },
-                error: function() {
+                error: function () {
                     alert('Error saving room data.');
                 }
             });
         });
-
 
 
     });
