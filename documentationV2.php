@@ -283,7 +283,7 @@ init_page_serversides();
         </div>
     </div>
 
-    <!-- Modal Vermerk-Suche -->
+    <!-- Modal Vermerk Suche -->
     <div class='modal fade' id='showSearchModal' role='dialog' tabindex="-1">
         <div class='modal-dialog modal-lg'>
             <!-- Modal content-->
@@ -340,8 +340,8 @@ init_page_serversides();
 
 <!--suppress ES6ConvertVarToLetConst -->
 <script>
-    //       for getVermerkToUntergruppe.php
-    var tableVermerkGruppe, gruppenID, vermerkID, tableVermerke, untergruppenID, vermerkGruppenID; //  for getVermerkUntergruppeToGruppe.php
+
+    var tableVermerkGruppe, gruppenID, vermerkID, tableVermerke, untergruppenID, vermerkGruppenID;     // for getVermerkToUntergruppe.php and getVermerkUntergruppeToGruppe.php
 
     $(document).ready(function () {
         tableVermerkGruppe = new DataTable('#tableVermerkGruppe', {
@@ -405,15 +405,10 @@ init_page_serversides();
         }, 500);
 
         $('#tableVermerkGruppe tbody').on('click', 'tr', function () {
-
             gruppenID = tableVermerkGruppe.row($(this)).data()[0];
-
             let art = tableVermerkGruppe.row($(this)).data()[4];
-
-            console.log("tableVermerkGruppe tbody').on('click:: Gruppenart: ", art);
-
+            //   console.log("tableVermerkGruppe tbody').on('click:: Gruppenart: ", art);
             document.getElementById("buttonNewVermerkuntergruppe").disabled = art === "Protokoll Besprechung";
-
             document.getElementById("gruppenart").value = art;
             document.getElementById("gruppenName").value = tableVermerkGruppe.row($(this)).data()[2];
             document.getElementById("gruppenOrt").value = tableVermerkGruppe.row($(this)).data()[6];
@@ -422,8 +417,6 @@ init_page_serversides();
             document.getElementById("gruppenStart").value = tableVermerkGruppe.row($(this)).data()[10];
             document.getElementById("gruppenEnde").value = tableVermerkGruppe.row($(this)).data()[11];
             $("#vermerke").hide();
-
-
             $.ajax({
                 url: "getVermerkeuntergruppenToGruppe.php",
                 data: {
@@ -436,7 +429,6 @@ init_page_serversides();
                 }
             });
             $('#pdfPreview').attr('src', 'PDFs/pdf_createVermerkGroupPDF.php?gruppenID=' + gruppenID);
-
         });
     });
 
@@ -481,14 +473,11 @@ init_page_serversides();
                         $("#possibleVermerkGroupMembers").html(data);
                     }
                 });
-
             }
         });
-        //$('#showGroupMembersModal').modal('show');
     });
 
     $("button[value='changeVermerkgruppe']").click(function () {
-        // Buttons ein/ausblenden!
         document.getElementById("saveGroup").style.display = "inline";
         document.getElementById("addGroup").style.display = "none";
         $('#changeGroupModal').modal('show');
@@ -557,8 +546,6 @@ init_page_serversides();
         var gruppenDatum = $("#gruppenDatum").val();
         var gruppenStart = $("#gruppenStart").val();
         var gruppenEnde = $("#gruppenEnde").val();
-        //onsole.log(gruppenart);
-
         if (gruppenart !== "" && gruppenName !== "" && gruppenOrt !== "" && gruppenVerfasser !== "" && gruppenDatum !== "" && gruppenStart !== "" && gruppenEnde !== "" && gruppenID !== "") {
             // $('#addDeviceModal').modal('hide');
             $.ajax({
@@ -580,12 +567,10 @@ init_page_serversides();
                     document.getElementById('pdfPreview').contentWindow.location.reload();
                 }
             });
-
         } else {
             alert("Bitte alle Felder ausfüllen!");
         }
     });
-
 </script>
 </body>
 </html>
