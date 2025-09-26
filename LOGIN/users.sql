@@ -1,7 +1,7 @@
 CREATE TABLE users (
                        id INT AUTO_INCREMENT PRIMARY KEY,
                        username VARCHAR(50) NOT NULL UNIQUE,
-                       password VARCHAR(255) NOT NULL,
+                       password VARCHAR(255) NOT NULL, #hash pw
                        attempts INT DEFAULT 0,
                        last_attempt DATETIME DEFAULT NULL,
                        must_change_pw TINYINT(1) DEFAULT 1,

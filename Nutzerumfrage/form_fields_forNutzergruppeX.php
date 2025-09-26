@@ -6,10 +6,10 @@ $formFields = [
     ["type" => "yesno", "kathegorie" =>"Raum", "name" => "fussboden_onorm_b5220", "label" => "Fußboden ÖNORM B5220"],
     ["type" => "yesno", "kathegorie" =>"Raum", "name" => "verdunkelung", "label" => "Verdunkelung"],
     ["type" => "yesno", "kathegorie" =>"Raum", "name" => "schallschutzanforderung", "label" => "Erhöhte Schallschutzanforderung"],
-   ["type" => "select", "kathegorie" =>"Raum", "name" => "vc_klasse", "label" => "VC-Klassen", "options" => ["0" => "keine Anforderung", "1" => "Klasse 1", "2" => "Klasse 2", "3" => "Klasse 3"]],
+    ["type" => "select", "kathegorie" =>"Raum", "name" => "vc_klasse", "label" => "VC-Klassen", "options" => ["0" => "keine Anforderung", "1" => "Klasse 1", "2" => "Klasse 2", "3" => "Klasse 3"]],
     ["type" => "yesno", "kathegorie" =>"Raum", "name" => "chemikalienliste", "label" => "Chemikalienliste"],
-   ["type" => "select", "kathegorie" =>"Raum", "name" => "vexat_zone", "label" => "VEXAT Zone", "options" => ["0" => "Zone 0", "1" => "Zone 1", "2" => "Zone 2"]],
-   ["type" => "select", "kathegorie" =>"Raum", "name" => "bsl_level", "label" => "Biosafety Level (BSL)", "options" => ["0" => "Nein", "1" => "Ja"]],
+    ["type" => "select", "kathegorie" =>"Raum", "name" => "vexat_zone", "label" => "VEXAT Zone", "options" => ["0" => "Zone 0", "1" => "Zone 1", "2" => "Zone 2"]],
+    ["type" => "select", "kathegorie" =>"Raum", "name" => "bsl_level", "label" => "Biosafety Level (BSL)", "options" => ["0" => "Nein", "1" => "Ja"]],
     ["type" => "yesno", "kathegorie" =>"Raum", "name" => "laser", "label" => "Laser"],
 
     ["type" => "yesno", "kathegorie" => "Gas", "name" => "o2", "label" => "O2"],

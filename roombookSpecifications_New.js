@@ -598,7 +598,7 @@ function updateButtonClass(button, table, startColumn, endColumn) {
 }
 
 function toggleReportColumnsVisible() {
-    const reportParams = [
+    const reportParams = ["MT-relevant",
         'Raumbezeichnung', 'Raumnr', 'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt', 'Nutzfläche',
         'Abdunkelbarkeit', 'Strahlenanwendung', 'Laseranwendung', 'Allgemeine Hygieneklasse',
         'H6020', 'HT_Waermeabgabe_W', 'Anwendungsgruppe', 'Fussboden OENORM B5220',

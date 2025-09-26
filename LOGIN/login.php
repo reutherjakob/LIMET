@@ -13,14 +13,14 @@ header("Content-Security-Policy: default-src 'self'; style-src 'self' https://cd
 
 define('MAX_ATTEMPTS', 5);
 define('LOCKOUT_TIME', 15 * 60); // 15 minutes
-define('RATE_LIMIT', 10); // max 10 login attempts per IP per 10 minutes
+define('RATE_LIMIT', 5); // max 10 login attempts per IP per 10 minutes
 define('RATE_LIMIT_WINDOW', 600);
 
 function clean($str) {
     return htmlspecialchars(trim($str), ENT_QUOTES, 'UTF-8');
 }
 
-// Check rate limit by IP
+
 function rate_limit_check($mysqli, $ip) {
     $window_start = date('Y-m-d H:i:s', time() - RATE_LIMIT_WINDOW);
     $stmt = $mysqli->prepare("SELECT COUNT(*) FROM login_attempts WHERE ip = ? AND attempt_time > ?");
@@ -32,7 +32,8 @@ function rate_limit_check($mysqli, $ip) {
     return $count < RATE_LIMIT;
 }
 
-// Log login attempt (for audit and rate limiting)
+
+
 function log_attempt($mysqli, $ip, $success) {
     $stmt = $mysqli->prepare("INSERT INTO login_attempts (ip, attempt_time, success) VALUES (?, NOW(), ?)");
     $stmt->bind_param("si", $ip, $success);
@@ -57,8 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Basic input validation
-    if (!preg_match('/^[A-Za-z0-9_]{3,50}$/', $username) || strlen($password) < 6) {
+    if (!preg_match('/^[A-Za-z0-9_]{3,50}$/', $username) || strlen($password) < 12) {
         log_attempt($mysqli, $ip, 0);
         echo "Invalid credentials.";
         exit;
@@ -80,7 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($password=== $hash) {
-
             session_regenerate_id(true);
             $_SESSION['user_id'] = $id;
             $_SESSION['username'] = $username;

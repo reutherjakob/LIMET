@@ -1,7 +1,7 @@
 <?php
 
 require_once "../LOGIN/_utils.php";
-// init_page(["user", "spargefeld_ext_users"]);
+init_page(["user", "spargefeld_ext_users"]);
 header('X-Frame-Options: DENY');
 header('X-Content-Type-Options: nosniff');
 

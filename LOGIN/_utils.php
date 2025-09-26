@@ -6,6 +6,8 @@ function init_page($allowed_roles)
     check_login_new();
     include "db.php";
     check_role_based_access($allowed_roles);
+    // close db - LOGIN USer out
+    // enable DB connection with group user Acc
 
 }
 
