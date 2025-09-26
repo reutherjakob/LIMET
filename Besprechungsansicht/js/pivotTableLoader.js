@@ -48,7 +48,7 @@ function loadPivotTable(params = {}) {
                 language: {
                     url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                     searchPlaceholder: "Suche...",
-                    lengthMenu: "_MENU_" , // show only the select dropdown without 'Zeilen anzeigen'
+                    lengthMenu: "_MENU_", // show only the select dropdown without 'Zeilen anzeigen'
                     info: "von _MAX_ Einträgen",
                     infoEmpty: "Keine Daten vorhanden",
                     infoFiltered: ""  // hides the "(gefiltert von ...)" text
@@ -84,33 +84,32 @@ function loadPivotTable(params = {}) {
                 initComplete: function () {
                     $('#CardHeaderHoldingDatatableManipulators').empty();
                     $('#CardHeaderHoldingDatatableManipulators2').empty();
-                    $('#pivotTable_wrapper .dt-buttons').appendTo('#CardHeaderHoldingDatatableManipulators');
-                    $('#pivotTable_wrapper .dt-search').appendTo('#CardHeaderHoldingDatatableManipulators');
-                    $('#pivotTable_wrapper .dt-length').appendTo('#CardHeaderHoldingDatatableManipulators2');
-                    $('#pivotTable_wrapper .dt-info').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
+                    $('#pivotTable_wrapper .dt-buttons').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators');
+                    $('#pivotTable_wrapper .dt-length').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
+                    $('#pivotTable_wrapper .dt-info').addClass("btn btn-sm").addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
                     $('#pivotTable_wrapper .dt-paging').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
-                    $('.dt-search label').remove();
-                    $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark");
+                    $('#pivotTable_wrapper .dt-search label').remove();
+                    $('#pivotTable_wrapper  .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeaderHoldingDatatableManipulators');
 
 
                     //For debugging
-                   // $('#pivotTable').off('click', 'td').on('click', 'td', function () {
-                   //     const cell = $(this);
-                   //     const table = $('#pivotTable').DataTable();            // DataTable cell/row/col index
-                   //     const cellIdx = table.cell(this).index();            // Row and column indices (zero-based)
-                   //     const rowIdx = cellIdx.row;
-                   //     const colIdx = cellIdx.column;                          // Get raw data for this row and column
-                   //     const cellData = table.cell(cell).data();
-                   //     const rowData = table.row(rowIdx).data();            // Get the header text for this column
-                   //     const headerText = $(table.column(colIdx).header()).text().trim();
-                   //     const dataRoomId = cell.data('room-id');
-                   //     const dataElementId = cell.data('element-id');
-                   //     const idTABELLE_Räume_has_tabelle_Elemente = cell.data('relation-id')
-                   //     console.log(' --- PIVOT CLICK --- \n Cell Value:', cellData, 'Column:', colIdx, '(', headerText, ')', 'Row:', rowIdx, rowData);
-                   //     if (dataRoomId && dataElementId && idTABELLE_Räume_has_tabelle_Elemente) {
-                   //         console.log('Room ID:', dataRoomId, 'Element ID:', dataElementId, 'relation ID:', idTABELLE_Räume_has_tabelle_Elemente);
-                   //     }
-                   // });
+                    // $('#pivotTable').off('click', 'td').on('click', 'td', function () {
+                    //     const cell = $(this);
+                    //     const table = $('#pivotTable').DataTable();            // DataTable cell/row/col index
+                    //     const cellIdx = table.cell(this).index();            // Row and column indices (zero-based)
+                    //     const rowIdx = cellIdx.row;
+                    //     const colIdx = cellIdx.column;                          // Get raw data for this row and column
+                    //     const cellData = table.cell(cell).data();
+                    //     const rowData = table.row(rowIdx).data();            // Get the header text for this column
+                    //     const headerText = $(table.column(colIdx).header()).text().trim();
+                    //     const dataRoomId = cell.data('room-id');
+                    //     const dataElementId = cell.data('element-id');
+                    //     const idTABELLE_Räume_has_tabelle_Elemente = cell.data('relation-id')
+                    //     console.log(' --- PIVOT CLICK --- \n Cell Value:', cellData, 'Column:', colIdx, '(', headerText, ')', 'Row:', rowIdx, rowData);
+                    //     if (dataRoomId && dataElementId && idTABELLE_Räume_has_tabelle_Elemente) {
+                    //         console.log('Room ID:', dataRoomId, 'Element ID:', dataElementId, 'relation ID:', idTABELLE_Räume_has_tabelle_Elemente);
+                    //     }
+                    // });
                 }
             });
         },

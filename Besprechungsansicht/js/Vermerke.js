@@ -1,5 +1,68 @@
 let vermerkeTable;
 
+
+function getVermerke() {
+    //console.log("Getting Vermerke.");
+    try {
+        if ($.fn.dataTable.isDataTable('#vermerkeTable')) {
+            vermerkeTable.ajax.reload();
+        } else {
+            vermerkeTable = $('#vermerke').html('<table id="vermerkeTable" class="table table-striped table-bordered" style="width:100%"></table>').find('table').DataTable({
+                ajax: {
+                    url: "../controllers/VermerkeController.php",
+                    type: "POST",
+                    data: {
+                        action: "getVermerkeToGruppe",
+                        vermerkgruppe_id: besprechung.id
+                    },
+                    dataSrc: 'data'
+                },
+                columns: [
+                    {title: "ID", data: "ID", visible: false},
+                    {title: "R.Bez.", data: "RBZ"},
+                    {
+                        title: "Vermerktext",
+                        data: "Vermerktext",
+                        render: function (data) {
+                            return data ? data.replace(/\n/g, '<br>') : '';
+                        }
+                    },
+                    {
+                        title: "Edit",
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row) {
+                            return `<button class="btn btn-sm btn-outline-primary editVermerkBtn" data-id="${row.ID}" data-text="${row.Vermerktext}"><i class="fas fa-edit"></i></button>`;
+                        }
+                    }
+                ],
+                responsive: true,
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
+                },
+                lengthChange: false,
+                pageLength: -1,
+                searching: false,
+                info: false,
+                initComplete: function () {
+                    setTimeout(() => {
+                        $(document).on('click', '.editVermerkBtn', function () {
+                            const id = $(this).data('id');
+                            let text = $(this).data('text');
+                            text = text ? text.replace(/<br\s*\/?>/gi, "\n") : '';
+                            $('#editVermerkID').val(id);
+                            $('#editVermerkText').val(text);
+                            $('#editVermerkModal').modal('show');
+                        });
+                    }, 300);
+                }
+            });
+        }
+    } catch (e) {
+        console.log("GetVermerke(): ", e);
+    }
+}
+
 function addUntergruppePerRaumbereich() {
     const selectedRaumbereiche = $('#raumbereich').val();
     if (!selectedRaumbereiche || selectedRaumbereiche.length === 0 || besprechung.id === 0) return;

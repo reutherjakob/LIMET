@@ -285,7 +285,7 @@ class PivotTable
         // === 4. Generate HTML ===
         ob_start();
         echo '<table id="pivotTable" class="table table-bordered table-sm table-striped">';
-        echo '<thead><tr><th>Element (Variante)</th><th>Summe</th>';
+        echo '<thead><tr><th>Element (Variante)</th><th><i class="fas fa-plus"></i></th>';
         foreach ($rooms as $rId => $rLabel) {
             echo '<th>' . htmlspecialchars($rLabel) . '</th>';
         }

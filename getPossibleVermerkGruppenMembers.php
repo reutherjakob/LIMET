@@ -68,20 +68,20 @@ $mysqli->close();
         let groupID = "<?php echo filter_input(INPUT_GET, 'gruppenID') ?>";
         if (id !== "") {
             $.ajax({
-                url: "addPersonToVermerkGroup.php",
+                url: "/addPersonToVermerkGroup.php",
                 data: {"ansprechpersonenID": id, "groupID": groupID},
                 type: "GET",
                 success: function (data) {
                     makeToaster(data,true);
                     document.getElementById('pdfPreview').src += '';
                     $.ajax({
-                        url: "getVermerkgruppenMembers.php",
+                        url: "/getVermerkgruppenMembers.php",
                         type: "GET",
                         data: {"gruppenID": groupID},
                         success: function (data) {
                             $("#vermerkGroupMembers").html(data);
                             $.ajax({
-                                url: "getPossibleVermerkGruppenMembers.php",
+                                url: "/getPossibleVermerkGruppenMembers.php",
                                 type: "GET",
                                 data: {"gruppenID": groupID},
                                 success: function (data) {

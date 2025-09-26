@@ -221,7 +221,8 @@ $conn->close();
                                         als Zeilen</label>
                                 </div-->
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="hideZeros" name="hideZeros" checked>
+                                    <input class="form-check-input" type="checkbox" id="hideZeros" name="hideZeros"
+                                           checked>
                                     <label class="form-check-label" for="hideZeros">Nullen ausblenden</label>
                                 </div>
                                 <div>
@@ -267,11 +268,16 @@ $conn->close();
                 <div class="col-lg-6" id="PDFframe">
                     <div class="card" style="height: 90vh; ">
                         <div class="card-header d-flex justify-content-end">
+                            <button type='button' id='ProjektbeteiligteModalÖffnen' class='btn btn-outline-dark btn-sm'
+                                    value='showGroupMembers' data-bs-toggle='modal'
+                                    data-bs-target='#showGroupMembersModal'><i class='fas fa-users'></i></button>
                             <button type="reset" class="btn btn-outline-dark" title="ResetPDF" id="ResetPDF">
                                 <i class="fas fa-sync-alt"></i>
                             </button>
-                            <button type="button" class="btn btn-light text-dark p-2"
-                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                            <button type="button" class="btn btn-sm btn-success text-light p-2"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    id="freigebenAlleBtn"
                                     title="Dieser Button setzt alle Nutzeranforderungen aus dieser Besprechung auf Freigegeben.">
                                 Freigeben
                             </button>
@@ -306,6 +312,7 @@ include "openBesprechungModal.html";
 include "editElementModal.html";
 include "editVermerktextModal.html";
 include "../../modal_elementHistory.html";
+include "GroupMembersModal.html";
 ?>
 
 <script src="../../utils/_utils.js"></script>
@@ -435,70 +442,63 @@ include "../../modal_elementHistory.html";
                 }
             });
         });
-    }); // doc ready
 
-    function getVermerke() {
-        //console.log("Getting Vermerke.");
-        try {
-            if ($.fn.dataTable.isDataTable('#vermerkeTable')) {
-                vermerkeTable.ajax.reload();
-            } else {
-                vermerkeTable = $('#vermerke').html('<table id="vermerkeTable" class="table table-striped table-bordered" style="width:100%"></table>').find('table').DataTable({
-                    ajax: {
-                        url: "../controllers/VermerkeController.php",
-                        type: "POST",
-                        data: {
-                            action: "getVermerkeToGruppe",
-                            vermerkgruppe_id: besprechung.id
-                        },
-                        dataSrc: 'data'
-                    },
-                    columns: [
-                        {title: "ID", data: "ID", visible: false},
-                        {title: "R.Bez.", data: "RBZ"},
-                        {
-                            title: "Vermerktext",
-                            data: "Vermerktext",
-                            render: function (data) {
-                                return data ? data.replace(/\n/g, '<br>') : '';
-                            }
-                        },
-                        {
-                            title: "Edit",
-                            data: null,
-                            orderable: false,
-                            render: function (data, type, row) {
-                                return `<button class="btn btn-sm btn-outline-primary editVermerkBtn" data-id="${row.ID}" data-text="${row.Vermerktext}"><i class="fas fa-edit"></i></button>`;
-                            }
+
+        //Projektbeteiligte
+        $("button[value='showGroupMembers']").click(function () {
+            var id = besprechung.id;
+            $.ajax({
+                url: "../../getVermerkgruppenMembers.php",
+                type: "GET",
+                data: {"gruppenID": id},
+                success: function (data) {
+                    $("#vermerkGroupMembers").html(data);
+                    $.ajax({
+                        url: "../../getPossibleVermerkGruppenMembers.php",
+                        type: "GET",
+                        data: {"gruppenID": id},
+                        success: function (data) {
+                            $("#possibleVermerkGroupMembers").html(data);
                         }
-                    ],
-                    responsive: true,
-                    language: {
-                        url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
-                    },
-                    lengthChange: false,
-                    pageLength: -1,
-                    searching: false,
-                    info: false,
-                    initComplete: function () {
-                        setTimeout(() => {
-                            $(document).on('click', '.editVermerkBtn', function () {
-                                console.log("ataching editVermerkBtn bnt listener");
-                                const id = $(this).data('id');
-                                let text = $(this).data('text');
-                                text = text ? text.replace(/<br\s*\/?>/gi, "\n") : '';
-                                $('#editVermerkID').val(id);
-                                $('#editVermerkText').val(text);
-                                $('#editVermerkModal').modal('show');
-                            });
-                        }, 500);
+                    });
+                }
+            });
+        });
+
+        $("button[value='addVermerkGroupMember']").click(function () {
+            let id = this.id;
+            let groupID = besprechung.id;
+            if (id !== "") {
+                $.ajax({
+                    url: "/addPersonToVermerkGroup.php",
+                    data: {"ansprechpersonenID": id, "groupID": groupID},
+                    type: "GET",
+                    success: function (data) {
+                        makeToaster(data, true);
+                        document.getElementById('pdfPreview').src += '';
+                        $.ajax({
+                            url: "/getVermerkgruppenMembers.php",
+                            type: "GET",
+                            data: {"gruppenID": groupID},
+                            success: function (data) {
+                                $("#vermerkGroupMembers").html(data);
+                                $.ajax({
+                                    url: "/getPossibleVermerkGruppenMembers.php",
+                                    type: "GET",
+                                    data: {"gruppenID": groupID},
+                                    success: function (data) {
+                                        $("#possibleVermerkGroupMembers").html(data);
+                                    }
+                                });
+                            }
+                        });
                     }
                 });
             }
-        } catch (e) {
-            console.log("GetVermerke(): ", e);
-        }
-    }
+        });
+
+    }); // doc ready
+
 
     function loadRaumbereiche(vermerkgruppeId) {        //console.log("ID ", vermerkgruppeId);
         $.ajax({
