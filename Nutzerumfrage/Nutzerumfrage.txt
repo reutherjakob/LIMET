@@ -7,6 +7,22 @@ soll eine Webseite entstehen.
 === Anforderungen an Website ===
 
 1) Login System und Rollen
+<<<<<<<<< Temporary merge branch 1
+-> Nutzer sollen sich einloggen können. Daf+ür werden neue Accounts und ein Login System erschaffen.
+Siehe Tabelle users.
+
+Limet-RB Subseite soll den Labor NutzerInenn zugänglich gemacht werden, restliches RB nicht.
+Dies wird über die zugewiesenen Rollen je Account umgesetzt. Je nach Rolle sind bestimmte Seiten aufrufbar und Aktuionen ausführbar
+# 0: admin, 1: internal_rb_user, 2: external_rb_user, 3: spargefeld_ext_users (Z.B. Nutzergruppen)
+
+- Verschiedene NutzerInenngruppen je Bereich bekommen dann jeweils einen Account angelegt.
+Die table_users wird also auf Basis der Nutzergruppen befüllt, die Accounts bekommen alle Rolle 3 und können nr die Umfrage
+
+
+
+Im Zuge dessen soll auch das interne Login System auf den aktuellen Stand der Technik gebracht werden.
+Der derzeitige Vorschlag, die Nutzer Logins zu implementieren, könnte bis zur internen Umstellung bereits genutzt werden.
+=========
 
 -> Nutzer sollen sich einloggen können. Dafür wird ein Login System erschaffen.
 Siehe Tabelle users.sql
@@ -19,14 +35,17 @@ Je nach Rolle sind bestimmte Seiten aufrufbar und Aktionen ausführbar.
 
 - Verschiedene NutzerInenngruppen je Bereich bekommen dann jeweils einen Account angelegt. Account Name = Bereichsname.
 Die table_users wird also auf Basis der Nutzergruppen befüllt, die Accounts bekommen alle Rolle 3 und können nur die Umfrage sehen und bearbeiten.
+>>>>>>>>> Temporary merge branch 2
 
-Im Zuge dessen kann auch das interne Login System aktualisiert werden.
-Der derzeitige Vorschlag, die Nutzer Logins zu implementieren, kann aber auch so bereits genutzt werden.
-Dafür notwendig wäre nur die Erstellung der Tabellen (user, login_attemps, NutzerInnenAnforderung), sowie das Anlegen eine sql user accounts mit read/write Rechten nur für diese Tabellen.
-Diese Accountzugangsdaten wird in einer.env Datei hinterlegt, um die DB verbindung herzustellen.
+Im Zuge dessen soll auch das interne Login System aktualisiert werden.
+Der derzeitige Vorschlag, die Nutzer Logins zu implementieren, könnte aber bis zur internen Umstellung bereits genutzt werden.
+
 
 
 2) Informations Einholung
+<<<<<<<<< Temporary merge branch 1
+- Abhängig von der Nutzergruppe ist das entsprechende Formular dargestellt.
+=========
 - Raumbuch basierend auf RUF anlegen.
 - Festelegen, welche Nutzergruppe zu welchen Raumbereichen korrespondiert.
 
@@ -36,5 +55,6 @@ Diese Accountzugangsdaten wird in einer.env Datei hinterlegt, um die DB verbindu
 - Es soll default Werte im Formular geben. Das Überschreiben dieser erfragt eien Begründung  -> Mit Aleks erarbeiten
 - Es soll ein möglicher Raumbezug abgefragt werden, sprich welcher Raumsiedelt ggf. wohin.
 - Kommentar Freifeld
+-
 
-
+>>>>>>>>> Temporary merge branch 2
