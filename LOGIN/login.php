@@ -20,7 +20,7 @@ function clean($str) {
     return htmlspecialchars(trim($str), ENT_QUOTES, 'UTF-8');
 }
 
-
+// Check rate limit by IP
 function rate_limit_check($mysqli, $ip) {
     $window_start = date('Y-m-d H:i:s', time() - RATE_LIMIT_WINDOW);
     $stmt = $mysqli->prepare("SELECT COUNT(*) FROM login_attempts WHERE ip = ? AND attempt_time > ?");
@@ -32,8 +32,7 @@ function rate_limit_check($mysqli, $ip) {
     return $count < RATE_LIMIT;
 }
 
-
-
+// Log login attempt (for audit and rate limiting)
 function log_attempt($mysqli, $ip, $success) {
     $stmt = $mysqli->prepare("INSERT INTO login_attempts (ip, attempt_time, success) VALUES (?, NOW(), ?)");
     $stmt->bind_param("si", $ip, $success);
