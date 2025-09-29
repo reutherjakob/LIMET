@@ -1,7 +1,7 @@
 <?php
 
-// TODO: Ideen: Standartisierte Texte für best. El.; Standartisierte Syntax;  je El. könnte dann Text geladen und bearbeitet. werden.
-
+// TODO (Ideas)
+//  -> Standartisierte Texte für best. El.; Standartisierte Syntax;  je El. könnte dann Text geladen und bearbeitet. werden.
 
 //function validateInput($input, $maxLen = 255): array|string|null
 //{
@@ -25,12 +25,10 @@ $defaultAnmerkungFeld = '';
 $defaultTextToAdd = '';
 
 $anmerkungFields = [
-    'Anmerkung BauStatik',
+    'Anmerkung Bau/Statik',
     'Anmerkung Elektro',
-    'Anmerkung Gerte',
-    'Anmerkung HKLS',
-    'Anmerkung allgemein'
-];
+    'Anmerkung Geräte',
+    'Anmerkung HKLS'];
 
 // Hole Element-Optionen
 $elementOptions = [];
@@ -211,7 +209,7 @@ $textToAddVal = $_POST['textToAdd'] ?? $defaultTextToAdd;
                             <label for="anmerkungFeld" class="sr-only"> Anmerkung zum Aktualisieren</label>
                             <select class="form-select" id="anmerkungFeld" name="anmerkungFeld" required>
                                 <?php foreach ($anmerkungFields as $field): ?>
-                                    <option value="<?= htmlspecialchars($field) ?>" <?= ($anmerkungFieldVal === $field) ? 'selected' : '' ?>><?= htmlspecialchars($field) ?></option>
+                                    <option value="<?= ($field) ?>" <?= ($anmerkungFieldVal === $field) ? 'selected' : '' ?>><?=  ($field) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -227,6 +225,7 @@ $textToAddVal = $_POST['textToAdd'] ?? $defaultTextToAdd;
                         <div class="mb-3">
                             <label for="raumbereich">Raumbereich auswählen</label>
                             <select id="raumbereich" name="raumbereich[]" class="form-select select2" required>
+                                <option value="">Bitte wählen...</option>
                                 <?php foreach ($raumbereichOptions as $option): ?>
                                     <?php if ($option): // only output if not empty/not false?>
                                         <option value="<?= htmlspecialchars($option) ?>"
@@ -315,7 +314,7 @@ $textToAddVal = $_POST['textToAdd'] ?? $defaultTextToAdd;
     $(document).ready(function () {
         $('#roomsTable').DataTable({
             language: {url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/de-DE.json"},
-            pageLength: 5,
+            pageLength: 20,
             lengthMenu: [5, 10, 25],
             layout: {
                 bottomStart: ['pageLength', 'search'],
@@ -324,6 +323,8 @@ $textToAddVal = $_POST['textToAdd'] ?? $defaultTextToAdd;
                 topEnd: null
             }
         });
+
+
         $('.select2').select2({
             placeholder: function () {
                 if (this[0].hasAttribute('multiple')) {
