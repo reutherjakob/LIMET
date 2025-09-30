@@ -26,23 +26,40 @@ function clean($str): string
 
 function rate_limit_check($mysqli, $ip, $username)
 {
-    // $window_start = date('Y-m-d H:i:s', time() - RATE_LIMIT_WINDOW);
-    // $stmt = $mysqli->prepare("SELECT COUNT(*) FROM tabelle_login_attempts WHERE ip = ? AND username = ? AND attempt_time > ?");
-    // $stmt->bind_param("sss", $ip, $username, $window_start);
-    // $stmt->execute();
-    // $stmt->bind_result($count);
-    // $stmt->fetch();
-    // $stmt->close();
-    // return $count < RATE_LIMIT;
-    return false;
+    $window_start = date('Y-m-d H:i:s', time() - RATE_LIMIT_WINDOW);
+
+    $stmt_ip = $mysqli->prepare("SELECT COUNT(*) FROM tabelle_login_attempts WHERE ip = ? AND attempt_time > ?");
+    $stmt_ip->bind_param("ss", $ip, $window_start);
+    $stmt_ip->execute();
+    $stmt_ip->bind_result($count_ip);
+    $stmt_ip->fetch();
+    $stmt_ip->close();
+
+    if ($count_ip >= RATE_LIMIT) {
+        return false;
+    }
++
+    $stmt_user = $mysqli->prepare("SELECT COUNT(*) FROM tabelle_login_attempts WHERE username = ? AND attempt_time > ?");
+    $stmt_user->bind_param("ss", $username, $window_start);
+    $stmt_user->execute();
+    $stmt_user->bind_result($count_user);
+    $stmt_user->fetch();
+    $stmt_user->close();
+
+    if ($count_user >= RATE_LIMIT) {
+        return false;
+    }
+
+    return true;
 }
+
 
 function log_attempt($mysqli, $ip, $username, $success): void
 {
-    // $stmt = $mysqli->prepare("INSERT INTO tabelle_login_attempts (ip, username, attempt_time, success) VALUES (?, ?, NOW(), ?)");
-    // $stmt->bind_param("ssi", $ip, $username, $success);
-    // $stmt->execute();
-    // $stmt->close();
+    $stmt = $mysqli->prepare("INSERT INTO tabelle_login_attempts (ip, username, attempt_time, success) VALUES (?, ?, NOW(), ?)");
+    $stmt->bind_param("ssi", $ip, $username, $success);
+    $stmt->execute();
+    $stmt->close();
 
 }
 
@@ -53,19 +70,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $csrf = $_POST['csrf'] ?? '';
 
     if (!csrf_check($csrf)) {
-        //   log_attempt($mysqli, $ip, $username, 0);
+        log_attempt($mysqli, $ip, $username, 0);
         echo "Ungültige Zugangsdaten.";
         exit;
     }
 
-    //if (!rate_limit_check($mysqli, $ip, $username)) {
-    //   log_attempt($mysqli, $ip, $username, 0);
-    //    echo "Ungültige Zugangsdaten.";
-    //exit;
-    // }
+    if (!rate_limit_check($mysqli, $ip, $username)) {
+        log_attempt($mysqli, $ip, $username, 0);
+        echo "Ungültige Zugangsdaten.";
+        exit;
+    }
 
     if (!preg_match('/^[A-Za-z0-9_]{3,50}$/', $username)) {
-        //   log_attempt($mysqli, $ip, $username, 0);
+        log_attempt($mysqli, $ip, $username, 0);
         echo "Ungültige Zugangsdaten.";
         exit;
     }
@@ -81,6 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->fetch();
 
         if ($attempts >= MAX_ATTEMPTS && (time() - strtotime($last_attempt)) < LOCKOUT_TIME) { // Works
+            log_attempt($mysqli, $ip, $username, 0);
             echo "Zu viele Versuche. Probieren Sie es später erneut. ";
             exit;
         }
@@ -92,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $reset = $mysqli->prepare("UPDATE tabelle_users SET attempts = 0 WHERE id = ?");
             $reset->bind_param("i", $id);
             $reset->execute();
-            //  log_attempt($mysqli, $ip, $username, 1);
+            log_attempt($mysqli, $ip, $username, 1);
             if ($must_change_pw) {
                 echo "change_pw";
             } else {
@@ -103,12 +121,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $update = $mysqli->prepare("UPDATE tabelle_users SET attempts = ?, last_attempt = NOW() WHERE id = ?");
             $update->bind_param("ii", $attempts, $id);
             $update->execute();
-            // log_attempt($mysqli, $ip, $username, 0);
+            log_attempt($mysqli, $ip, $username, 0);
             echo "Ungültige Zugangsdaten.";
         }
         $mysqli->close();
     } else {
-        //  log_attempt($mysqli, $ip, $username, 0);
+        log_attempt($mysqli, $ip, $username, 0);
         echo "Ungültige Zugangsdaten.";
     }
     exit;

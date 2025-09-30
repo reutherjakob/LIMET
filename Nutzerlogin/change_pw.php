@@ -19,22 +19,23 @@ $msg = '';
 $stmt = $mysqli->prepare("SELECT password, must_change_pw FROM tabelle_users WHERE id = ?");
 $stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
-$stmt->bind_result($current_hashl,$must_change_pw );
+$stmt->bind_result($current_hashl, $must_change_pw);
 $stmt->fetch();
 $stmt->close();
 if ($must_change_pw == 0) {
     header("Location: index.php");
     exit;
 }
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $new_pw_hashed = $_POST['hashed_password'] ?? '';
-
     if (strlen($new_pw_hashed) !== 64 || !ctype_xdigit($new_pw_hashed)) {
         $msg = "Ungültiges Passwort.";
-    } elseif ($new_pw_hashed === $current_hash) {
+    } elseif ($new_pw_hashed === $current_hashl) {
         $msg = "Ungültiges Passwort.";
-    } else {
-        // Store hashed password directly
+    }
+    if (!$msg) {        // Store hashed password directly
         $stmt = $mysqli->prepare("UPDATE tabelle_users SET password = ?, must_change_pw = 0 WHERE id = ?");
         $stmt->bind_param("si", $new_pw_hashed, $_SESSION['user_id']);
         $stmt->execute();
@@ -42,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -97,6 +99,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 <script>
+    let topPasswords = [];
+
+
+    async function loadTopPasswords() {
+        try {
+            const response = await fetch('top_passwords.txt');
+            const text = await response.text();
+            topPasswords = text.split('\n').map(pw => pw.trim()).filter(pw => pw.length > 0);
+        } catch (e) {
+            console.error('Failed to load top passwords list', e);
+        }
+    }
+
     async function hashPassword(password) {
         const encoder = new TextEncoder();
         const data = encoder.encode(password);
@@ -109,10 +124,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         e.preventDefault();
         const pwField = this.querySelector('input[name="new_pw"]');
         const hashedField = this.querySelector('#hashed_password');
-        hashedField.value = await hashPassword(pwField.value);
+        const enteredPassword = pwField.value;
+
+        // Check if entered password is in the top password list
+        if (topPasswords.includes(enteredPassword)) {
+            alert("Dieses Passwort ist viel zu leicht zu erraten, bitte wählen Sie ein anderes.");
+            return;
+        }
+
+        hashedField.value = await hashPassword(enteredPassword);
         pwField.value = '';
         this.submit();
     });
+
+
+    window.addEventListener('load', loadTopPasswords);
 </script>
 
 </body>
