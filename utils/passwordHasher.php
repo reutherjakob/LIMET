@@ -22,8 +22,7 @@ async function hashPassword() {
     const data = encoder.encode(password);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            document.getElementById('output').value = hashHex;
+    document.getElementById('output').value = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
     </script>
 </body>

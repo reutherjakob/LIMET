@@ -1,9 +1,9 @@
 <?php
 
-//require_once "../LOGIN/utils.php";
+//require_once "../Nutzerlogin/utils.php";
 //initPageUser();
 header('Content-Type: application/json');
-require_once "../LOGIN/db.php";
+require_once "../Nutzerlogin/db.php";
 
 $roomId = filter_input(INPUT_POST, 'raumid', FILTER_VALIDATE_INT);
 if (!$roomId) {
