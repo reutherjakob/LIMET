@@ -87,7 +87,7 @@
         $.post('login.php', $(this).serialize(), function (data) {
 
             if (data === "success") {
-                window.location = '../Nutzerumfrage/dashboard.php';
+                window.location = 'forward.php';
             } else if (data === "change_pw") {
                 window.location = 'change_pw.php';
             } else {

@@ -38,7 +38,7 @@ function rate_limit_check($mysqli, $ip, $username)
     if ($count_ip >= RATE_LIMIT) {
         return false;
     }
-+
+
     $stmt_user = $mysqli->prepare("SELECT COUNT(*) FROM tabelle_login_attempts WHERE username = ? AND attempt_time > ?");
     $stmt_user->bind_param("ss", $username, $window_start);
     $stmt_user->execute();
@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($password === $hash) {
             session_regenerate_id(true);
             $_SESSION['user_id'] = $id;
-            $_SESSION['username'] = $username;
+            $_SESSION['user_name'] = $username;
             $reset = $mysqli->prepare("UPDATE tabelle_users SET attempts = 0 WHERE id = ?");
             $reset->bind_param("i", $id);
             $reset->execute();
