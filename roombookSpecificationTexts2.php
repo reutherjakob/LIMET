@@ -162,12 +162,12 @@ $textToAddVal = $_POST['textToAdd'] ?? $defaultTextToAdd;
 <div id="limet-navbar"></div>
 <div class="container-fluid mt-3">
     <div class="row">
-        <div class="col-4">
+        <div class="col-3">
             <div class="card h-100">
                 <div class="card-header">
                     <strong>Anmerkung bei Raumsuche via Freitext eintragen.</strong>
                     <i class="fa fa-info-circle float-end" data-bs-toggle="tooltip" data-bs-placement="top"
-                       title="Suche mit beliebigen Textteilen für Raumbereich, Element oder Raumbezeichnung."></i>
+                       title="Suche mit beliebigen Textteilen für Raumbereich, Element oder Raumbezeichnung. Daraufhin werden alle zutreffenden Anmerkungen der Räume aufgelistet. Anschließend ist die Auswahl bestimmter Räume möglich, die den Anmerkungstext angehängt bekommen, wenn man bestätigt."></i>
                 </div>
                 <div class="card-body">
                     <?php if ($updateMessage !== ''): ?>
@@ -175,7 +175,7 @@ $textToAddVal = $_POST['textToAdd'] ?? $defaultTextToAdd;
                     <?php endif; ?>
                     <form method="post" autocomplete="off" id="confirmUpdateForm">
                         <div class="mb-3">
-                            <label for="anmerkungFeld" class="form-label">Anmerkungsfeld</label>
+                            <label for="anmerkungFeld" class="form-label sr-only">Anmerkungsfeld</label>
                             <select class="form-select" id="anmerkungFeld" name="anmerkungFeld" required>
                                 <?php foreach ($anmerkungFields as $field): ?>
                                     <option value="<?= $field ?>" <?= ($anmerkungFieldVal === $field) ? 'selected' : '' ?>><?= $field ?></option>
@@ -188,27 +188,34 @@ $textToAddVal = $_POST['textToAdd'] ?? $defaultTextToAdd;
                                    value="<?= htmlspecialchars($raumbereichVal) ?>">
                         </div>
                         <div class="mb-3">
-                            <label for="elementKeyword" class="form-label">Element (Schlüsselwort/Teilwort, Name oder Nummer)</label>
+                            <label for="elementKeyword" class="form-label">Element (Schlüsselwort/Teilwort, Name oder
+                                Nummer)</label>
                             <input type="text" class="form-control" id="elementKeyword" name="elementKeyword"
                                    value="<?= htmlspecialchars($elementKeywordVal) ?>">
                         </div>
                         <div class="mb-3">
-                            <label for="raumbezeichnung" class="form-label">Raumbezeichnung (Schlüsselwort/Teilwort)</label>
+                            <label for="raumbezeichnung" class="form-label">Raumbezeichnung
+                                (Schlüsselwort/Teilwort)</label>
                             <input type="text" class="form-control" id="raumbezeichnung" name="raumbezeichnung"
                                    value="<?= htmlspecialchars($raumbezeichnungVal) ?>">
                         </div>
                         <div class="mb-3">
                             <label for="textToAdd" class="form-label">Text zur bestehenden Anmerkung hinzufügen</label>
-                            <textarea class="form-control" id="textToAdd" name="textToAdd" rows="3" required <?= !empty($_SESSION['to_update']) ? 'disabled' : '' ?>><?= htmlspecialchars($textToAddVal) ?></textarea>
+                            <textarea class="form-control" id="textToAdd" name="textToAdd" rows="3"
+                                      required <?= !empty($_SESSION['to_update']) ? 'disabled' : '' ?>><?= htmlspecialchars($textToAddVal) ?></textarea>
                         </div>
                         <?php if (!empty($_SESSION['to_update'])): ?>
                             <div class="alert alert-warning">
                                 Bitte bestätigen Sie, dass Sie die Anmerkung in den gefundenen Räumen ändern möchten.
                             </div>
-                            <button type="submit" name="confirm_update" class="btn btn-danger">Änderung bestätigen und ausführen</button>
+                            <button type="submit" name="confirm_update" class="btn btn-danger">Änderung bestätigen und
+                                ausführen
+                            </button>
                             <button type="submit" name="cancel_update" class="btn btn-secondary ms-2">Abbrechen</button>
                         <?php else: ?>
-                            <button type="submit" name="preview_rooms" class="btn btn-primary">Räume prüfen und anzeigen</button>
+                            <button type="submit" name="preview_rooms" class="btn btn-primary">Räume prüfen und
+                                anzeigen
+                            </button>
                         <?php endif; ?>
                         <?php if (!empty($_SESSION['to_update']['rooms'])): ?>
                             <input type="hidden" name="selectedRooms" id="selectedRoomsInput">
@@ -224,15 +231,16 @@ $textToAddVal = $_POST['textToAdd'] ?? $defaultTextToAdd;
                 </div>
             </div>
         </div>
-        <div class="col-8">
+        <div class="col-9">
             <div class="card h-100">
                 <div class="card-header">
                     Übersicht der betroffenen Räume und bestehende Anmerkungen
-                    <i class="fa fa-info-circle float-end" data-bs-toggle="tooltip" data-bs-placement="top"
-                       title="Diese Übersicht zeigt alle Räume, für die die Anmerkung hinzugefügt wird. Neben den Elementen sind hier auch die bestehenden Texte des ausgewählten Anmerkungsfeldes sichtbar."></i>
-                    <div class="float-end">
+                    <div class="float-end border-light">
                         <label for="toggle-all-rooms">Alle Räume</label>
                         <input type="checkbox" id="toggle-all-rooms">
+                        <i class="fa fa-info-circle ms-4" data-bs-toggle="tooltip" data-bs-placement="top"
+                           title="Diese Übersicht zeigt alle Räume, für die die Anmerkung hinzugefügt wird. Neben den Elementen sind hier auch die bestehenden Texte des ausgewählten Anmerkungsfeldes sichtbar."></i>
+
                     </div>
                 </div>
                 <div class="card-body">
@@ -243,7 +251,7 @@ $textToAddVal = $_POST['textToAdd'] ?? $defaultTextToAdd;
                                 <th>Raumbezeichnung</th>
                                 <th>Element(e)</th>
                                 <th>Bestehende Anmerkungen</th>
-                                <th>Aktualisieren</th>
+                                <th><i class="fas fa-edit"></i></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -256,7 +264,7 @@ $textToAddVal = $_POST['textToAdd'] ?? $defaultTextToAdd;
                                     </td>
                                     <td>
                                         <input type="checkbox" class="update-room-checkbox"
-                                               data-roomid="<?= (int)$roomId ?>" checked>
+                                               data-roomid="<?= (int)$roomId ?>">
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -312,6 +320,10 @@ $textToAddVal = $_POST['textToAdd'] ?? $defaultTextToAdd;
                 }
             });
             $('#selectedRoomsInput').val(selected.join(','));
+        });
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl)
         });
     });
 </script>
