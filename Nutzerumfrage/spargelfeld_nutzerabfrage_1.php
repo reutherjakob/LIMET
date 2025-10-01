@@ -1,189 +1,162 @@
 <?php
+global $mysqli, $formFields;
+include "../Nutzerlogin/db.php";
 require_once "../Nutzerlogin/_utils.php";
-// init_page(["users", "spargefeld_ext_users"]);
-//header('X-Frame-Options: DENY');
-//header('X-Content-Type-Options: nosniff');
-require_once("form_fields_forNutzergruppeX.php"); // Array mit Formfeldern, Typen, Labels usw.
+init_page(["internal_rb_user", "spargefeld_ext_users"]);
+require_once("form_fields_forNutzergruppeX.php"); // Array $formFields
+require_once("../Nutzerlogin/csrf.php");
 
-$roomId = $_GET['raumid'] ?? $_POST['raumid'] ?? null;
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-$savedData = [];
-if ($roomId !== null) {
-    $stmt = $mysqli->prepare("SELECT fieldname, fieldvalue FROM your_table WHERE raumid = ?");
-    $stmt->bind_param("i", $roomId);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    // assuming table is structured with rows of fieldname, fieldvalue per room
-    while ($row = $result->fetch_assoc()) {
-        $savedData[$row['fieldname']] = $row['fieldvalue'];
-    }
-    $stmt->close();
-}
+$roomId = $_POST['raumid'] ?? null;
+error_log("Received roomId: " . var_export($roomId, true));
 
-
-function renderRow($field, $postVal)
+// Funktion um Formular zu rendern aus vorheriger Antwort:
+function renderForm(array $formFields, array $userData = []): void
 {
-    $name = $field['name'];
-    $label = htmlspecialchars($field['label']);
-    $type = $field['type'];
-    $required = $field['required'] ?? false;
+    echo '<form method="post" action="">';
+    echo '<div class="col-12 d-flex justify-content-end "> <button type="submit" class="btn btn-success">Alle Anforderungen speichern</button> </div>';
+    echo '<input type="hidden" name="csrf_token" value="' . csrf_token() . '">';
 
+    foreach ($formFields as $field) {
+        $name = $field['name'];
+        $label = $field['label'];
+        $type = $field['type'];
+        $kathegorie = $field['kathegorie'] ?? '';
+        $defaultValue = $field['default_value'] ?? '';
+        $options = $field['options'] ?? [];
 
-    $value = htmlspecialchars($postVal ?? '');
+        $value = $userData[$name] ?? $defaultValue;
 
+        switch ($type) {
+            case 'text':
+                echo "<div class='mb-1 {$kathegorie} d-flex align-items-center'>";
+                echo "<label for='{$name}' class='form-label'><strong>{$label}</strong></label>";
+                echo "<input class='form-control flex-grow-1' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'>";
+                break;
 
-    // ID für das optionale Zusatzfeld
-    $extraId = $name . "_extra";
+            case 'texthidden':
+                echo "<div class='{$kathegorie}'>";
+                echo "<label for='{$name}' class='sr-only'>{$label}:</label>";
+                echo "<input class='form-control' type='hidden' name='{$name}' id='{$name}' rows='1'  value='" . htmlspecialchars($value) . "'>";
+                break;
 
-    echo "<tr>";
-    echo "<td><label for='{$name}'>{$label}</label></td>";
-    echo "<td>";
+            case 'textarea':
+                echo "<div class='mb-1 {$kathegorie} row align-items-start'>";
+                echo "<label for='{$name}' class='form-label col-auto text-nowrap'>{$label}:</label>";
+                echo "<div class='col'>";
+                echo "<textarea class='form-control' name='{$name}' id='{$name}' rows='1' placeholder='{$label}'>" . htmlspecialchars($value) . "</textarea>";
+                echo "</div>";
+                break;
 
-    // Hauptfeld rendern
-    switch ($type) {
-        case 'yesno':
-            $yesSelected = ($postVal === "1") ? "selected" : "";
-            $noSelected = ($postVal === "0") ? "selected" : "";
-            echo "<select id='{$name}' name='{$name}' class='form-select form-select-sm'>";
-            echo "<option value='0' $noSelected>Nein</option>";
-            echo "<option value='1' $yesSelected>Ja</option>";
-            echo "</select>";
-            break;
+            case 'yesno':
+                echo "<div class=' mb-1  {$kathegorie} d-flex justify-content-start '>";
+                echo "<label for='{$name}' class='form-label text-nowrap me-2'> <strong> {$label}</strong></label>";
+                $checked = ($value == "1" || $value === 1) ? "checked" : "";
+                echo "<div class='form-check'>";
+                echo "<input class='form-check-input' type='checkbox' name='{$name}' id='{$name}' value='1' {$checked}>";
+                echo "<label class='sr-only' for='{$name}'></label>";
+                echo "</div>";
+                break;
 
-        case 'select':
-            echo "<select id='{$name}' name='{$name}' class='form-select  form-select-sm'>";
-            foreach ($field['options'] as $val => $display) {
-                $sel = ($postVal !== null && $postVal == $val) ? "selected" : "";
-                echo "<option value='" . htmlspecialchars($val) . "' $sel>" . htmlspecialchars($display) . "</option>";
-            }
-            echo "</select>";
-            break;
+            case 'select':
+                echo "<div class='mb-1 {$kathegorie} d-flex justify-content-start'>";
+                echo "<label for='{$name}' class='form-label text-nowrap me-2'><strong> {$label}</strong></label>";
+                echo "<select class='form-select' name='{$name}' id='{$name}'>";
+                foreach ($options as $optValue => $optLabel) {
+                    $selected = ($optValue == $value) ? "selected" : "";
+                    echo "<option value='" . htmlspecialchars($optValue) . "' {$selected}>" . htmlspecialchars($optLabel) . "</option>";
+                }
+                echo "</select>";
+                break;
 
-        case 'text':
-        default:
-            $req = $required ? "required" : "";
-            echo "<input type='text' id='{$name}' name='{$name}' class='form-control  form-control-sm' value='{$value}' $req>";
-            break;
+            default:
+                echo "<input class='form-control' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'>";
+        }
+        echo "</div>";
     }
 
-    echo "</td>";
-    echo "<td>";
-    echo "<input type='text' id='{$extraId}' name='{$extraId}' class='form-control  form-control-sm d-none' placeholder='Kommentar'>";
-    echo "</td>";
-    echo "</tr>";
+
+    echo '</form>';
 }
 
+$userValues = [];
+if ($roomId) {
+    $stmt = $mysqli->prepare("SELECT * FROM tabelle_room_requirements_from_user WHERE roomID = ?");
+    if ($stmt) {
+        $stmt->bind_param('i', $roomId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $userValues = $result->fetch_assoc() ?: [];
+        $stmt->close();
+    }
+}
 
 ?>
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <title>Raumanforderungen Formular</title>
-    <script>
-        $(function () {
-            // Für jedes Hauptfeld prüfen, ob Eingabewert vom Default abweicht,
-            // dann Zusatzfeld einblenden. Definition der Defaultwerte (anpassen je Feldtyp)
-            <?php foreach ($formFields as $field):
-            $name = $field['name'];
-            $type = $field['type'];
-            // Defaultwerte
-            if ($type === "yesno" || $type === "select") {
-                $default = "0";
-            } else {
-                $default = "";
-            }
-            ?>
-            $('#<?= $name ?>').on('change input', function () {
-                var val = $(this).val();
-                if (val !== '<?= $default ?>') {
-                    $('#<?= $name ?>_extra').removeClass('d-none');
-                } else {
-                    $('#<?= $name ?>_extra').addClass('d-none').val('');
-                }
-            });
-            <?php endforeach; ?>
-        });
-    </script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
+          rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
 </head>
-<body class="">
-<form name="raumForm" method="post" onsubmit="return validateForm();">
-    <table class="table table-sm compact table-borderless table-striped px-1 py-1" id="tableNutzeranforderungen">
-        <thead>
-        <tr>
-            <th>Raumparameter</th>
-            <th>Wert</th>
-            <th>Kommentar</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php
+<body class="container mt-4">
 
-        foreach ($formFields as $field) {
-            $postVal = $_POST[$field['name']] ?? $savedData[$field['name']] ?? null;
-            renderRow($field, $postVal);
-        }
-        ?>
-        ?>
-        </tbody>
-    </table>
 
-    <button id="submitAnforderungen" type="submit" value="Raumanforderung Absenden"
-            class="btn btn-primary btn-sm text-nowrap"><i
-                class="fas fa-share-square"></i> Raumanforderung Absenden
-    </button>
-</form>
-
+<?php renderForm($formFields, $userValues); ?>
+</body>
 <script>
-    $(document).ready(function () {
-        var tableId = '#tableNutzeranforderungen';
+    function loadFormData(roomId) {
+        $.post('load_room_data.php', {roomId: roomId}, function (response) {
+            if (response.error) {
+                alert('Fehler: ' + response.error);
+                return;
+            }
+            const data = response.data;
 
-        // Check if DataTable is already initialized on this element
-        if ($.fn.dataTable.isDataTable(tableId)) {
-            // If initialized, destroy it first before re-initializing
-            $(tableId).DataTable().clear().destroy();
-        }
+            const skipFields = ['raumnr', 'roomname', 'raumbereich_nutzer', 'ebene', 'nf'];
 
-        $(tableId).DataTable({
-            paging: false,
+            // Für jedes Feld im empfangenen Datenobjekt den Wert im Formular setzen,
+            // außer wenn dieses Feld in skipFields ist
+            for (const key in data) {
+                if (skipFields.includes(key)) continue;
 
-            autoWidth: false, // disable automatic width calculation
-            layout: {
-                topStart: null,
-                topEnd: null,
-                bottomStart: null,
-                bottomEnd: null
-            }, ordering: false,
-            columnDefs: [
-                {targets: '_all', width: '33.33%'} // equal width for all columns (3 columns)
-            ]
+                const el = $('[name="' + key + '"]');
+                if (!el.length) continue;
+                const value = data[key];
+
+                if (el.is(':checkbox')) {
+                    el.prop('checked', value === 1);
+                } else if (el.is('select')) {
+                    el.val(value);
+                } else {
+                    el.val(value);
+                }
+            }
+        }, 'json');
+    }
+
+
+    $('form').on('submit', function (e) {
+        e.preventDefault();
+        let formData = $(this).serialize();
+        $.post('save_room_data.php', formData, function (response) {
+            alert(response); // z.B. "Data successfully updated."
+        }).fail(function () {
+            alert('Fehler beim Speichern.');
         });
-
-        $('#cardHeaderRaumanforderungen').append($('#submitAnforderungen').show());
     });
 
 
-    function validateForm() {
-        let requiredFields = <?php
-            $reqFields = [];
-            foreach ($formFields as $f) {
-                if (!empty($f['required'])) {
-                    $reqFields[] = $f['name'];
-                }
-            }
-            echo json_encode($reqFields);
-            ?>;
-        for (let field of requiredFields) {
-            let el = document.forms["raumForm"][field];
-            if (!el.value.trim()) {
-                alert("Bitte füllen Sie das Feld '" + field + "' aus.");
-                el.focus();
-                return false;
-            }
-        }
-        return true;
-    }
 </script>
-</body>
 </html>

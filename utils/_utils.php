@@ -108,6 +108,6 @@ function getPostInt(string $key, int $default = 0): int
 
 function getPostString(string $key, string $default = ''): string
 {
-    return isset($_POST[$key]) ? htmlspecialchars(trim($_POST[$key]), ENT_QUOTES, 'UTF-8') : $default;
+    return isset($_POST[$key]) ? trim($_POST[$key]) : $default;
 }
 

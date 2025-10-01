@@ -128,7 +128,7 @@ $mapping = array("raum_nr_alt" => "raum_nr_neu",
     "RaumnrBestand alt" => "RaumnrBestand neu",
     "GebaeudeBestand alt" => "GebaeudeBestand neu");
 
-$mp2 = array(//tabelle änderunge => tabelle_räume
+$mp2 = array(//tabelle.txt änderunge => tabelle_räume
     "funktionelle_raum_nr_neu" => "Funktionelle Raum Nr",
     "funktionsteilstelle_neu" => "Bezeichnung",
     "anmerkung_allg_neu" => "",

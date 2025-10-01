@@ -64,7 +64,7 @@ if(!isset($_SESSION["username"]))
               <?php 
                     if($_SESSION["ext"]==0){
                         echo "<ul class='navbar-nav'>
-                              <li class='nav-item'><a class='py-0 nav-link' href='dashboard.php'><i class='fa fa-tachometer-alt'></i> Dashboard</a></li>
+                              <li class='nav-item'><a class='py-0 nav-link' href='Nutzerabfrage.php'><i class='fa fa-tachometer-alt'></i> Dashboard</a></li>
                             </ul>";
                     }
                   ?>
