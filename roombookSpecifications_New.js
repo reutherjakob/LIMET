@@ -599,6 +599,7 @@ function updateButtonClass(button, table, startColumn, endColumn) {
 
 function toggleReportColumnsVisible() {
     const reportParams = [
+        'MT-relevant',
         'Raumbezeichnung', 'Raumnr', 'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt', 'Nutzfläche',
         'Abdunkelbarkeit', 'Strahlenanwendung', 'Laseranwendung', 'Allgemeine Hygieneklasse',
         'H6020', 'HT_Waermeabgabe_W', 'Anwendungsgruppe', 'Fussboden OENORM B5220',
@@ -606,7 +607,7 @@ function toggleReportColumnsVisible() {
         'ET_Anschlussleistung_SV_W', 'ET_Anschlussleistung_ZSV_W', 'ET_Anschlussleistung_USV_W', 'IT Anbindung',
         '1 Kreis O2', '2 Kreis O2', 'CO2', '1 Kreis Va', '2 Kreis Va', '1 Kreis DL-5', '2 Kreis DL-5',
         'DL-10', 'DL-tech', 'NGA', 'N2O', 'HT_Abluft_Sicherheitsschrank_Stk', 'HT_Abluft_Digestorium_Stk',
-        'HT_Punktabsaugung_Stk', 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'VE_Wasser'
+        'HT_Punktabsaugung_Stk', 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'VE_Wasser', 'HT_Raumtemp Sommer °C'
     ];
 
 // Calculate the indices from columnsDefinition

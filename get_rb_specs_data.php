@@ -194,7 +194,7 @@ tabelle_räume.`EL_Laser 32A Stk`
 FROM tabelle_räume
 INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
 WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
-ORDER BY tabelle_räume.Raumnr";
+ORDER BY tabelle_räume.Raumnr, tabelle_räume.`Raumbereich Nutzer`";
 
 if (!$mysqli->query($sql)) {
     echo "Error executing query: " . $mysqli->error;
