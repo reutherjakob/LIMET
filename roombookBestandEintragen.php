@@ -1,7 +1,8 @@
 <?php
+// 10-2025 FX
 require_once 'utils/_utils.php';
-init_page_serversides();
 include "utils/_format.php";
+init_page_serversides();
 ?>
 
 <!DOCTYPE html>
@@ -34,9 +35,7 @@ include "utils/_format.php";
             <div class="row d-flex">
                 <div class="col-xxl-4">
                     <strong> Elemente im Projekt </strong>
-
                 </div>
-
                 <div class="col-xxl-8 d-flex justify-content-end" id="CH_EIP">
                     <div class="me-4 d-flex " id="hide0Wrapper_ELiNpR">
                         <input class="btn-check btn-sm" type="checkbox" id="hideZeroRows_ELiNpR">
@@ -51,22 +50,80 @@ include "utils/_format.php";
                         <i class='far fa-file-pdf'></i> inkl. Preis
                     </button>
                 </div>
-
             </div>
         </div>
 
         <div class="card-body">
             <?php
             $mysqli = utils_connect_sql();
-            $sql = "SELECT Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_varianten.idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, 
-                        tabelle_projekt_varianten_kosten.Kosten, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
-                        tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern, tabelle_räume_has_tabelle_elemente.tabelle_Lose_Intern_idtabelle_Lose_Intern,
-                        tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke, tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG, tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG, tabelle_auftraggeber_gewerke.Gewerke_Nr, tabelle_auftraggeber_ghg.GHG, tabelle_auftraggeberg_gug.GUG
-										FROM tabelle_auftraggeber_gewerke RIGHT JOIN (tabelle_auftraggeberg_gug RIGHT JOIN (tabelle_auftraggeber_ghg RIGHT JOIN (tabelle_projekt_element_gewerk RIGHT JOIN (tabelle_elemente INNER JOIN (tabelle_räume INNER JOIN (tabelle_varianten INNER JOIN (tabelle_projekt_varianten_kosten INNER JOIN tabelle_räume_has_tabelle_elemente ON (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) AND (tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten)) ON tabelle_varianten.idtabelle_Varianten = tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten) ON (tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte) AND (tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)) ON tabelle_elemente.idTABELLE_Elemente = tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente) ON (tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente = tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente) AND (tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte = tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte)) ON tabelle_auftraggeber_ghg.idtabelle_auftraggeber_GHG = tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG) ON tabelle_auftraggeberg_gug.idtabelle_auftraggeberg_GUG = tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG) ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke = tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
-										WHERE (((tabelle_räume_has_tabelle_elemente.Standort)=1) AND ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
-										GROUP BY tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_varianten.idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_projekt_varianten_kosten.Kosten, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke, tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG, tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
-										ORDER BY tabelle_elemente.ElementID;";
-            $result = $mysqli->query($sql);
+            $projectID = $_SESSION["projectID"];
+            $sql = "SELECT 
+                        SUM(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
+                        tabelle_elemente.ElementID,
+                        tabelle_elemente.Bezeichnung,
+                        tabelle_varianten.Variante,
+                        tabelle_varianten.idtabelle_Varianten,
+                        tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
+                        tabelle_projekt_varianten_kosten.Kosten,
+                        tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
+                        tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke,
+                        tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG,
+                        tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG,
+                        tabelle_auftraggeber_gewerke.Gewerke_Nr,
+                        tabelle_auftraggeber_ghg.GHG,
+                        tabelle_auftraggeberg_gug.GUG
+                    FROM 
+                        tabelle_auftraggeber_gewerke
+                        RIGHT JOIN (
+                            tabelle_auftraggeberg_gug
+                            RIGHT JOIN (
+                                tabelle_auftraggeber_ghg
+                                RIGHT JOIN (
+                                    tabelle_projekt_element_gewerk
+                                    RIGHT JOIN (
+                                        tabelle_elemente
+                                        INNER JOIN (
+                                            tabelle_räume
+                                            INNER JOIN (
+                                                tabelle_varianten
+                                                INNER JOIN (
+                                                    tabelle_projekt_varianten_kosten
+                                                    INNER JOIN tabelle_räume_has_tabelle_elemente 
+                                                    ON tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
+                                                    AND tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
+                                                ) ON tabelle_varianten.idtabelle_Varianten = tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten
+                                            ) ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte
+                                            AND tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
+                                        ) ON tabelle_elemente.idTABELLE_Elemente = tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente
+                                    ) ON tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente = tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente
+                                    AND tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte = tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte
+                                ) ON tabelle_auftraggeber_ghg.idtabelle_auftraggeber_GHG = tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG
+                            ) ON tabelle_auftraggeberg_gug.idtabelle_auftraggeberg_GUG = tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
+                        ) ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke = tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
+                    WHERE 
+                        tabelle_räume_has_tabelle_elemente.Standort = 1 
+                        AND tabelle_räume.tabelle_projekte_idTABELLE_Projekte = ?
+                    GROUP BY 
+                        tabelle_elemente.ElementID, 
+                        tabelle_elemente.Bezeichnung, 
+                        tabelle_varianten.Variante, 
+                        tabelle_varianten.idtabelle_Varianten, 
+                        tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, 
+                        tabelle_projekt_varianten_kosten.Kosten, 
+                        tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
+                        tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke, 
+                        tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG, 
+                        tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
+                    ORDER BY 
+                        tabelle_elemente.ElementID; ";
+
+            $stmt = $mysqli->prepare($sql);
+            $stmt->bind_param("i", $projectID);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $stmt->close();
+            $mysqli->close();
+
             echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableElementsInProject'>
 									<thead><tr>
 										<th>ID</th>
@@ -79,7 +136,6 @@ include "utils/_format.php";
 										<th>Kosten </th> 
 										<th>Positionspreis</th>
 										<th>Gewerk</th>
-				
 									</tr>
 									</thead>
 									<tbody>";
@@ -96,16 +152,12 @@ include "utils/_format.php";
                 } else {
                     echo "<td>Ja</td>";
                 }
-
                 echo "<td>" . format_money($row["Kosten"]) . "</td>";
                 echo "<td>" . format_money(intval($row["Kosten"]) * intval($row["SummevonAnzahl"])) . "</td>";
-
                 echo "<td>" . $row["Gewerke_Nr"] . "</td>";
-
                 echo "</tr>";
             }
             echo "</tbody></table>";
-            $mysqli->close();
             ?>
         </div>
     </div>
@@ -122,17 +174,13 @@ include "utils/_format.php";
                                     <i class="fas fa-caret-up"></i>
                                 </button>
                                 <label>Räume mit Element</label></div>
-
                             <div class="col-6 d-flex justify-content-end" id="CHRME"></div>
-
-
                         </div>
                     </div>
                     <div class="card-body" id="roomsWithAndWithoutElements">
                     </div>
                 </div>
             </div>
-
 
             <div class="col-xxl-4">
                 <div class="  card">
@@ -152,7 +200,6 @@ include "utils/_format.php";
                             </div>
                         </div>
                     </div>
-
                     <div class="card-body" id="elementBestand"></div>
                 </div>
             </div>
@@ -164,7 +211,6 @@ include "utils/_format.php";
             <button type="button" class="btn btn-outline-dark btn-sm" id="showDBElementData">
                 <i class="fas fa-caret-down"></i></button>
             <label>DB Elemente</label>
-
         </div>
         <div class="card-body" id="DBElementData" style="display: none;">
             <div class="row">
@@ -202,16 +248,12 @@ include "utils/_format.php";
             </div>
         </div>
     </div>
-
 </div>
-
 
 <script src="utils/_utils.js"></script>
 <script>
     var tableElementsInProject, tableElementsInDB;
     $(document).ready(function () {
-
-
         tableElementsInProject = new DataTable('#tableElementsInProject', {
             paging: true,
             select: true,
@@ -243,21 +285,17 @@ include "utils/_format.php";
             initComplete: function () {
                 $('.dt-search label').remove();
                 $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CH_EIP');
-
             }
         });
-
 
         let filterIndex = $.fn.dataTable.ext.search.indexOf(hideZeroFilter_ELiNpR);
         if (filterIndex !== -1) {
             $.fn.dataTable.ext.search.splice(filterIndex, 1);
         }
         $.fn.dataTable.ext.search.push(hideZeroFilter_ELiNpR);
-
         $("#hideZeroRows_ELiNpR").on("change", function () {
             tableElementsInProject.draw();
         });
-
         function hideZeroFilter_ELiNpR(settings, data,) {
             if (settings.nTable.id !== 'tableElementsInProject') {
                 return true;
@@ -266,7 +304,6 @@ include "utils/_format.php";
             let amount = parseInt(data[1]) || 0;
             return !(hideZero && (amount === 0));
         }
-
 
         $('#tableElementsInProject tbody').on('click', 'tr', function () {
             $("#devicesInDB").html("");
@@ -280,7 +317,6 @@ include "utils/_format.php";
             }
             $.ajax({
                 url: "getRoomsWithElement1.php",
-
                 data: {"elementID": elementID, "variantenID": variantenID, "bestand": bestand},
                 type: "GET",
                 success: function (data) {
@@ -292,7 +328,7 @@ include "utils/_format.php";
                             $.ajax({
                                 url: "getElementBestand.php",
                                 data: {"id": id, "stk": stk},
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#elementBestand").html(data);
                                 }
@@ -302,7 +338,6 @@ include "utils/_format.php";
                 }
             });
         });
-
 
         tableElementsInDB = new DataTable('#tableElementsInDB', {
             paging: true,
@@ -364,36 +399,19 @@ include "utils/_format.php";
         });
 
         $("#reloadBestand").click(function () {
-            // Try to get the selected row from tableRoomsWithElement
-            let selectedRow = tableRoomsWithElement.row({selected: true});
-            console.log("Selected row object:", selectedRow);
-
-            if (!selectedRow.any()) {
-                console.log("No row selected in tableRoomsWithElement.");
+            let selectedRow = tableRoomsWithElement.row({selected: true}); //console.log("Selected row object:", selectedRow);
+            if (!selectedRow || !selectedRow.any()) {
                 makeToaster("Bitte wählen Sie einen Raum aus!", false);
                 return;
             }
-
-            // Get the ID from the selected row
-            let rowData = selectedRow.data();
-            console.log("Selected row data:", rowData);
-
-            // Depending on your table structure, adjust this if necessary
-            let id = rowData[0].display || rowData[0];
-            console.log("Extracted ID:", id);
-
-            // Get the amount from the corresponding input
-            let stk = $("#amount" + id).val() || 1;
-            console.log("Extracted amount (stk):", stk);
-
-            // Log the data that will be sent
-            let requestData = {"id": id, "stk": stk};
-            console.log("AJAX request data:", requestData);
-
+            let rowData = selectedRow.data(); //console.log("Selected row data:", rowData);
+            let id = rowData[0].display || rowData[0]; //console.log("Extracted ID:", id);
+            let stk = $("#amount" + id).val() || 1; //console.log("Extracted amount (stk):", stk);
+            let requestData = {"id": id, "stk": stk}; //console.log("AJAX request data:", requestData);
             $.ajax({
                 url: "getElementBestand.php",
                 data: requestData,
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#elementBestand").html(data);
                 },
@@ -402,11 +420,8 @@ include "utils/_format.php";
                 }
             });
         });
-
-
     });
 
-    // PDF erzeugen
     $('#createElementListPDF').click(function () {
         window.open('PDFs/pdf_createElementListPDF.php');
     });
@@ -455,21 +470,20 @@ include "utils/_format.php";
                     "gereatID": gereatID,
                     "currentPlace": currentPlace
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     // alert(data);
                     makeToaster(data, true);
                     $("#addBestandModal").modal('hide');
                     $.ajax({
                         url: "getElementBestand.php",
-                        type: "GET",
+                        type: "POST ",
                         success: function (data) {
                             $("#elementBestand").html(data);
                         }
                     });
                 }
             });
-
         } else {
             alert("Bitte Inventarnummer angeben!");
         }

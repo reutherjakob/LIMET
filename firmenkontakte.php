@@ -582,7 +582,7 @@
                         "lieferantOrt": lieferantOrt,
                         "lieferantLand": lieferantLand
                     },
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         alert(data);
                         // Neu Laden der Seite
@@ -691,7 +691,7 @@
                         "lieferantOrt": lieferantOrt,
                         "lieferantLand": lieferantLand
                     },
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         alert(data);
                         location.reload(); // or refresh only the table if you prefer

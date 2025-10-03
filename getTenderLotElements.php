@@ -1,5 +1,5 @@
 <?php
-// reworked 25
+// 10-2025 FX
 require_once 'utils/_utils.php';
 check_login();
 ?>
@@ -13,44 +13,51 @@ check_login();
 
 <?php
 $mysqli = utils_connect_sql();
-if ($_GET["lotID"] != "") {
-    $_SESSION["lotID"] = $_GET["lotID"];
+$mysqli = utils_connect_sql();
+
+if (!empty($_GET['lotID']) && ctype_digit($_GET['lotID'])) {
+    $_SESSION["lotID"] = (int)$_GET["lotID"];
 } else {
     echo "Kein Los ausgewählt!";
+    exit;
 }
 
-$sql = "
-SELECT 
-    tabelle_räume_has_tabelle_elemente.id, 
-    tabelle_räume_has_tabelle_elemente.Anzahl, 
-    tabelle_elemente.ElementID, 
-    tabelle_elemente.Bezeichnung AS ElementBezeichnung, 
-    tabelle_varianten.Variante, 
-    tabelle_räume_has_tabelle_elemente.Kurzbeschreibung, 
-    tabelle_räume.Geschoss, 
-    tabelle_räume.`Raumbereich Nutzer`,   
-    tabelle_räume.Raumnr, 
-    tabelle_räume.Raumbezeichnung, 
-    tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, 
-    tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, 
-    tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
-FROM 
-    tabelle_varianten 
-    INNER JOIN (
-        (tabelle_räume_has_tabelle_elemente 
-        INNER JOIN tabelle_räume 
-        ON tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = tabelle_räume.idTABELLE_Räume) 
-        INNER JOIN tabelle_elemente 
-        ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente
-    ) 
-    ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
-WHERE 
-    tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern = " . $_SESSION["lotID"] . " 
-    AND tabelle_räume_has_tabelle_elemente.Standort = 1
-ORDER BY 
-    tabelle_räume.Raumnr;";
+$stmt = $mysqli->prepare("
+    SELECT 
+        tabelle_räume_has_tabelle_elemente.id, 
+        tabelle_räume_has_tabelle_elemente.Anzahl, 
+        tabelle_elemente.ElementID, 
+        tabelle_elemente.Bezeichnung AS ElementBezeichnung, 
+        tabelle_varianten.Variante, 
+        tabelle_räume_has_tabelle_elemente.Kurzbeschreibung, 
+        tabelle_räume.Geschoss, 
+        tabelle_räume.`Raumbereich Nutzer`,   
+        tabelle_räume.Raumnr, 
+        tabelle_räume.Raumbezeichnung, 
+        tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, 
+        tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, 
+        tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
+    FROM 
+        tabelle_varianten 
+        INNER JOIN (
+            (tabelle_räume_has_tabelle_elemente 
+            INNER JOIN tabelle_räume 
+            ON tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = tabelle_räume.idTABELLE_Räume) 
+            INNER JOIN tabelle_elemente 
+            ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente
+        ) 
+        ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
+    WHERE 
+        tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern = ? 
+        AND tabelle_räume_has_tabelle_elemente.Standort = 1
+    ORDER BY 
+        tabelle_räume.Raumnr;
+");
 
-$result = $mysqli->query($sql);
+$stmt->bind_param("i", $_SESSION["lotID"]);
+$stmt->execute();
+$result = $stmt->get_result();
+
 echo "<table class='table table-sm compact table-responsiv table-striped table-bordered table-sm table-hover border border-light border-5' id='tableLotElements1'>
             <thead><tr>
             <th>ID</th>
@@ -110,49 +117,25 @@ $mysqli->close();
 ?>
 
 <script src="utils/_utils.js"></script>
-<script charset="utf-8" type="module">
-    import CustomPopover from './utils/_popover.js';
-
-    CustomPopover.init('.comment-btn', {    //TODO: Tell my why this aint working. Same code as in getRoomElementsDetailed1
-        onSave: function (trigger, newText) {
-            trigger.dataset.description = newText;
-            let id = trigger.id;// = tabelle_räume_has_tabelle_elemente.id
-            $.ajax({
-                url: "saveRoomElementComment.php",
-                data: {
-                    "comment": newText,
-                    "id": id
-                },
-                type: "GET",
-                success: function (data) {
-                    makeToaster(data.trim(), true);
-                    $(".comment-btn[id='" + id + "']").removeClass('btn-outline-secondary');
-                    $(".comment-btn[id='" + id + "']").addClass('btn-outline-dark');
-                    $(".comment-btn[id='" + id + "']").find('i').removeClass('fa fa-comment-slash');
-                    $(".comment-btn[id='" + id + "']").find('i').addClass('fa fa-comment');
-                    $(".comment-btn[id='" + id + "']").attr('data-description', newText).data('description', newText);
-
-                }
-            });
-        }
-    });
-
+<script charset="utf-8">
     var tableLotElements1;
-    let excelfilename2;
-    let excelfilename3;
+    if (typeof excelfilename2 === "undefined") {
+        let excelfilename2;
+    }
 
+    if (typeof excelfilename3 === "undefined") {
+        let excelfilename3;
+    }
     $(document).ready(function () {
 
         getExcelFilename('Elemente-im-Los')
             .then(filename => {
-                console.log('Generated filename:', filename);
+                //console.log('Generated filename:', filename);
                 excelfilename2 = filename;
-
                 getExcelFilename('Verortungsliste' )
                     .then(filename => {
-                        console.log('Generated filename:', filename);
+                        //console.log('Generated filename:', filename);
                         excelfilename3 = filename;
-
                         tableLotElements1 = new DataTable('#tableLotElements1', {
                             dom: '<"#topDiv.top-container d-flex"<"col-md-6 justify-content-start"B><"#topDivSearch2.col-md-6"f>>t<"bottom d-flex" <"col-md-6 justify-content-start"i><"col-md-6 d-flex align-items-center justify-content-end"lp>>',
                             columnDefs: [
@@ -201,7 +184,6 @@ $mysqli->close();
                                             }
                                         });
                                     }
-
                                 },
                                 {
                                     text: ' Elementliste PDF',
@@ -210,9 +192,8 @@ $mysqli->close();
                                         window.open('PDFs/pdf_createLotElementListPDF.php');
                                     }
                                 }
-                            ],
-                            initComplete: function () {
-                            }
+                            ]
+
                         });
 
                         $('#tableLotElements1 tbody').on('click', 'tr', function () {
@@ -231,7 +212,7 @@ $mysqli->close();
                                     $.ajax({
                                         url: "getElementBestand.php",
                                         data: {"id": id, "stk": stk},
-                                        type: "GET",
+                                        type: "POST",
                                         success: function (data) {
                                             $("#elementBestand").html(data);
                                             $("#elementBestand").show();

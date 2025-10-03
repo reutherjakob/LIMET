@@ -1,6 +1,5 @@
 <?php
-// V2.0: 2024-11-29, Reuther & Fux
-
+// 10-2025 FX
 require_once 'utils/_utils.php';
 include "utils/_format.php";
 check_login();
@@ -448,19 +447,14 @@ include "modal_elementHistory.html";
                     .removeClass('form-control form-control-sm')
                     .addClass('btn btn-sm btn-outline-dark xxx ms-1 me-1')
                     .appendTo('#room-action-buttons');
-
-
                 $('#tableRoomElements tbody').on('click', 'tr', function () {
                     const data = tableRoomElements.row(this).data();
                     if (!data) return;
-
-                    // data[0] is id (hidden)
-                    const id = data[0].display;
-                    console.log(data, id);
+                    const id = data[0].display;           // data[0] is id (hidden)
+                    // console.log(data, id);
                     const stk = $(`#amount${id}`).val();
                     const standort = $(`#Standort${id}`).val();
                     const verwendung = $(`#Verwendung${id}`).val();
-
                     const elementHTML = data[1].display;
                     const elementID = (elementHTML.match(/id="ElementName(\d+)"/) || [])[1];
 //                     console.log("tableRoomElements Klick");
@@ -482,7 +476,7 @@ include "modal_elementHistory.html";
                                     $.ajax({
                                         url: 'getElementBestand.php',
                                         data: {id, stk},
-                                        type: 'GET',
+                                        type: 'POST',
                                         success(data) {
                                             $('#elementBestand').html(data).show();
 
@@ -513,7 +507,6 @@ include "modal_elementHistory.html";
                         },
                     });
                 });
-
             },
         });
 
@@ -530,9 +523,6 @@ include "modal_elementHistory.html";
                 }
             }
         });
-
-        // Row click ajax cascade
-
     }
 
     function attachButtonListeners() {
@@ -575,7 +565,7 @@ include "modal_elementHistory.html";
             });
         });
 
-        $("button[value='saveElement']").click(function () {
+        $(document).on('click', "button[value='saveElement']", function () {
             const id = this.id;
             const comment = $(`.comment-btn[id='${id}']`).attr('data-description');
             const amount = $(`#amount${id}`).val();
@@ -588,19 +578,16 @@ include "modal_elementHistory.html";
                 alert('Standort und Verwendung kann nicht Nein sein!');
                 return;
             }
-
             $.ajax({
                 url: 'saveRoombookEntry.php',
-                type: 'GET',
+                type: 'POST',
                 data: {comment, id, amount, variantenID, bestand, standort, verwendung},
                 success(data) {
                     makeToaster(data.trim(), true);
                 },
             });
         });
-
-        // Add toggle checkbox to enable/disable remembering sorting state
-        addRememberSortingControl();
+        addRememberSortingControl();  // Add toggle checkbox to enable/disable remembering sorting state
     }
 
     function addRememberSortingControl() {
@@ -615,15 +602,11 @@ include "modal_elementHistory.html";
         const checkbox = $(
             `<input type="checkbox" id="${checkboxId}" style="vertical-align:middle; cursor:pointer;">`
         ).appendTo(container);
-
         checkbox.prop('checked', rememberSorting);
-
         checkbox.on('change', function () {
             rememberSorting = this.checked;
             localStorage.setItem('rememberSorting', rememberSorting ? 'true' : 'false');
-
-            // If disabled clear stored sorting, else save current if valid
-            if (!rememberSorting) {
+            if (!rememberSorting) {    // If disabled clear stored sorting, else save current if valid
                 localStorage.removeItem('roomElementsSort');
             } else if (currentSort.column !== null && currentSort.dir !== null) {
                 localStorage.setItem('roomElementsSort', JSON.stringify(currentSort));

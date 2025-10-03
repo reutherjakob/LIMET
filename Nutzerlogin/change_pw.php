@@ -14,8 +14,6 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $msg = '';
-
-// Lade aktuellen Passwort-Hash und Flag
 $stmt = $mysqli->prepare("SELECT password, must_change_pw FROM tabelle_users WHERE id = ?");
 $stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();

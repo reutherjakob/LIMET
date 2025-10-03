@@ -1,5 +1,7 @@
-w<?php
+<?php
 session_start();
+require 'utils/csrf.php';
+
 
 // Function for safe redirection
 function safeRedirect($url)
@@ -14,7 +16,7 @@ function logError($message): void
     error_log($message);
 }
 
-// Function to fetch user permissions
+
 function fetch_permissions($mysqli, $username): int
 {
     $stmt = $mysqli->prepare("SELECT permission FROM tabelle_user_permission WHERE user = ?");
@@ -31,7 +33,6 @@ function fetch_permissions($mysqli, $username): int
     return $row ? (int)$row["permission"] : 0;
 }
 
-// Function to check rate limiting
 function checkRateLimit($ip): void
 {
     if (!isset($_SESSION['login_attempts_ip'])) {
@@ -44,14 +45,10 @@ function checkRateLimit($ip): void
     $attempts = $_SESSION['login_attempts_ip'][$ip] ?? 0;
     $lastAttempt = $_SESSION['last_attempt_ip'][$ip] ?? 0;
     $currentTime = time();
-
-    // Reset attempts if last attempt was more than 15 minutes ago
     if ($currentTime - $lastAttempt > 900) {
         $attempts = 0;
     }
-
-    if ($attempts >= 3) {
-        // Too many attempts, implement delay
+    if ($attempts >= 3) {        // Too many attempts, implement delay
         $waitTime = min(pow(2, $attempts - 5), 3600); // Exponential backoff, max 1 hour
         if ($currentTime - $lastAttempt < $waitTime) {
             safeRedirect('index.php?error=too_many_attempts'.$_SERVER['REMOTE_ADDR'].'&wait=' . ($waitTime - ($currentTime - $lastAttempt)));
@@ -61,17 +58,26 @@ function checkRateLimit($ip): void
     $_SESSION['last_attempt_ip'][$ip] = $currentTime;
 }
 
+
+
+
 $username = isset($_POST["username"]) ? trim($_POST["username"]) : '';
 $password = $_POST["password"] ?? '';
+$csrf = $_POST['csrf'] ?? '';
+
+if (!csrf_check($csrf)) {
+    echo "Ungültige Zugangsdaten.";
+    exit;
+}
+
 
 if (empty($username) || empty($password)) {
     safeRedirect('index.php?error=empty_fields');
 }
 
-// Check rate limit before processing login
 checkRateLimit($_SERVER['REMOTE_ADDR']);
+$hashedPassword = md5($password); // TODO:  Consider using password_hash() and password_verify() for better security
 
-$hashedPassword = md5($password); // Consider using password_hash() and password_verify() for better security
 try {
     $mysqli = new mysqli('localhost', $username, $hashedPassword, 'LIMET_RB');
     if ($mysqli->connect_error) {

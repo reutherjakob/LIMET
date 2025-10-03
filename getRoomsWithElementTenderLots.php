@@ -392,7 +392,7 @@ $mysqli->close();
             $.ajax({
                 url: "getElementBestand.php",
                 data: {"id": id, "stk": stk},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#elementBestand").html(data);
                     $("#elementBestand").show();
