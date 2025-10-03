@@ -85,7 +85,6 @@
         // passwordInput.value = ''; // optional, clear plain password field
 
         $.post('login.php', $(this).serialize(), function (data) {
-
             if (data === "success") {
                 window.location = 'forward.php';
             } else if (data === "change_pw") {

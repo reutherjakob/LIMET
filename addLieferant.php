@@ -1,42 +1,52 @@
 <?php
+// 10-2025 FX
 require_once 'utils/_utils.php';
 check_login();
-if ($_GET["Name"] != "" && $_GET["Vorname"] != "" && $_GET["Tel"] != "") {
+
+$Name = getPostString('Name');
+$Vorname = getPostString('Vorname');
+$Tel = getPostString('Tel');
+
+if ($Name !== '' && $Vorname !== '' && $Tel !== '') {
+    $Adresse = getPostString('Adresse');
+    $PLZ = getPostString('PLZ');
+    $Ort = getPostString('Ort');
+    $Land = getPostString('Land');
+    $Email = getPostString('Email');
+    $gebiet = getPostString('gebiet');
+    $abteilung = getPostInt('abteilung', 0);
+    $lieferant = getPostInt('lieferant', 0);
 
     $mysqli = utils_connect_sql();
-    $sql = "INSERT INTO `tabelle_ansprechpersonen`
-				(`Name`,
-				`Vorname`,
-				`Tel`,
-				`Adresse`,
-				`PLZ`,
-				`Ort`,
-				`Land`,
-				`Mail`,
-                                `Gebietsbereich`,
-                                `tabelle_abteilung_idtabelle_abteilung`,
-                                `tabelle_lieferant_idTABELLE_Lieferant`)
-				VALUES
-				('" . $_GET["Name"] . "',
-				'" . $_GET["Vorname"] . "',
-				'" . $_GET["Tel"] . "',
-				'" . $_GET["Adresse"] . "',
-				'" . $_GET["PLZ"] . "',
-				'" . $_GET["Ort"] . "',
-				'" . $_GET["Land"] . "',
-				'" . $_GET["Email"] . "',
-                                '" . $_GET["gebiet"] . "',"
-        . $_GET["abteilung"] . ","
-        . $_GET["lieferant"] . ");";
+    $stmt = $mysqli->prepare("
+        INSERT INTO tabelle_ansprechpersonen
+        (Name, Vorname, Tel, Adresse, PLZ, Ort, Land, Mail, Gebietsbereich, tabelle_abteilung_idtabelle_abteilung, tabelle_lieferant_idTABELLE_Lieferant)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ");
+    $stmt->bind_param(
+        "ssssssssiii",
+        $Name,
+        $Vorname,
+        $Tel,
+        $Adresse,
+        $PLZ,
+        $Ort,
+        $Land,
+        $Email,
+        $gebiet,
+        $abteilung,
+        $lieferant
+    );
 
-    if ($mysqli->query($sql) === TRUE) {
+    if ($stmt->execute()) {
         echo "Kontaktperson hinzugefügt!";
         $id = $mysqli->insert_id;
     } else {
-        echo "Error1: " . $sql . "<br>" . $mysqli->error;
+        echo "Fehler: " . $stmt->error;
     }
+    $stmt->close();
     $mysqli->close();
 } else {
-    echo "Fehler bei der Verbindung";
+    echo "Fehler bei der Eingabe: Name, Vorname und Tel sind Pflicht!";
 }
 ?>

@@ -404,7 +404,7 @@ init_page_serversides();
 
         getExcelFilename("Lose-im_Projekt")
             .then(filename => {
-                console.log('Generated filename:', filename);
+                // console.log('Generated filename:', filename);
                 excelFilename = filename;
                 tableTenderLots = new DataTable('#tableTenderLots', {
                     columnDefs: [
@@ -788,7 +788,7 @@ init_page_serversides();
         $("#elementBestand").html("");
         $.ajax({
             url: "getElementBestand.php",
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 makeToaster("Reloaded!", true);
                 $("#elementBestand").html(data);

@@ -82,7 +82,7 @@ $mysqli->close();
             $.ajax({
                 url: "addParameterToDevice.php",
                 data: {"parameterID": id},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data, true);
                     $.ajax({

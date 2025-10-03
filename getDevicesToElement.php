@@ -208,7 +208,7 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
             $.ajax({
                 url: "getStandardDeviceParameters.php",
                 data: {"deviceID": deviceID},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#deviceParametersInDB").html(data);
                     $.ajax({
@@ -251,7 +251,7 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
             $.ajax({
                 url: "addDevice.php",
                 data: {"hersteller": hersteller, "type": type, "kurzbeschreibung": kurzbeschreibung},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     alert(data);
                     $.ajax({
@@ -337,7 +337,7 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
             $.ajax({
                 url: "addManufacturer.php",
                 data: {"manufacturer": manufacturer},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     alert(data);
                     $.ajax({

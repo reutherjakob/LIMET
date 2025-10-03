@@ -1,15 +1,16 @@
 <?php
+// 10-2025 FX
 require_once 'utils/_utils.php';
 check_login();
 
-// Collect all fields via POST only (more secure than GET)
-$id = filter_input(INPUT_GET, 'lieferantID');
-$firma = filter_input(INPUT_GET, 'firma');
-$tel = filter_input(INPUT_GET, 'lieferantTel');
-$adresse = filter_input(INPUT_GET, 'lieferantAdresse');
-$plz = filter_input(INPUT_GET, 'lieferantPLZ');
-$ort = filter_input(INPUT_GET, 'lieferantOrt');
-$land = filter_input(INPUT_GET, 'lieferantLand');
+$id = getPostString('lieferantID');
+$firma = getPostString('firma');
+$tel = getPostString('lieferantTel');
+$adresse = getPostString('lieferantAdresse');
+$plz = getPostString('lieferantPLZ');
+$ort = getPostString('lieferantOrt');
+$land = getPostString('lieferantLand');
+
 
 $requiredFields = [$firma, $tel, $adresse, $plz, $ort, $land];
 if (in_array("", $requiredFields, true)) {
@@ -19,7 +20,6 @@ if (in_array("", $requiredFields, true)) {
 $mysqli = utils_connect_sql();
 
 if ($id && is_numeric($id)) {
-    // UPDATE existing Lieferant using prepared statement
     $stmt = $mysqli->prepare("UPDATE tabelle_lieferant SET 
         Lieferant = ?,
         Tel = ?,
@@ -28,17 +28,13 @@ if ($id && is_numeric($id)) {
         Ort = ?,
         Land = ?
         WHERE idTABELLE_Lieferant = ?");
-
     $stmt->bind_param("ssssssi", $firma, $tel, $adresse, $plz, $ort, $land, $id);
 } else {
-    // INSERT new Lieferant using prepared statement
     $stmt = $mysqli->prepare("INSERT INTO tabelle_lieferant 
         (Lieferant, Tel, Anschrift, PLZ, Ort, Land)
         VALUES (?, ?, ?, ?, ?, ?)");
-
     $stmt->bind_param("ssssss", $firma, $tel, $adresse, $plz, $ort, $land);
 }
-
 if ($stmt->execute()) {
     echo $id ? "Lieferant aktualisiert!" : "Lieferant hinzugefügt!";
 } else {

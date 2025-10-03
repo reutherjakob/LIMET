@@ -1,45 +1,32 @@
 <?php
-session_start();
-?>
+// 10-2025 FX
+require_once 'utils/_utils.php';
+check_login();
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+$mysqli = utils_connect_sql();
 
-<?php
-	
+$roomID = getPostInt('roomID');
+$notiz = getPostString('Notiz');
+$kategorie = getPostString('Kategorie');
+$username = $_SESSION['username'] ?? '';
 
-	//echo $_GET["Notiz"]." ".date('Y-m-d')." ".$_SESSION["username"]." ".$_GET["Kategorie"]." ".$_GET["roomID"];
-	
-	if($_GET["roomID"] != "" && $_GET["Notiz"] != "" && $_GET["Kategorie"] != ""){
-		
-		
-		$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-		/* change character set to utf8 */
-		if (!$mysqli->set_charset("utf8")) {
-		    printf("Error loading character set utf8: %s\n", $mysqli->error);
-		    exit();
-		} 
-		
-		// Check connection
-		if ($mysqli->connect_error) {
-		    die("Connection failed: " . $mysqli->connect_error);
-		}
-		
-		$sql = "INSERT INTO tabelle_notizen (Notiz,Datum,User,Kategorie,tabelle_räume_idTABELLE_Räume) Values('".$_GET["Notiz"]."','".date('Y-m-d')."','".$_SESSION["username"]."','".$_GET["Kategorie"]."',".$_GET["roomID"].")";		
-		if ($mysqli->query($sql) === TRUE) {
-		    echo "Erfolgreich gespeichert!";
-		} else {
-		    echo "Error: " . $sql . "<br>" . $mysqli->error;
-		}
-		
-		$mysqli ->close();
+if ($roomID && $notiz !== '' && $kategorie !== '' && $username !== '') {
+	$datum = date('Y-m-d');
+
+	$stmt = $mysqli->prepare("
+        INSERT INTO tabelle_notizen (Notiz, Datum, User, Kategorie, tabelle_räume_idTABELLE_Räume) 
+        VALUES (?, ?, ?, ?, ?)
+    ");
+	$stmt->bind_param("ssssi", $notiz, $datum, $username, $kategorie, $roomID);
+
+	if ($stmt->execute()) {
+		echo "Erfolgreich gespeichert!";
+	} else {
+		echo "Fehler: " . $stmt->error;
 	}
-	else{
-		echo "test";
-	}
-?>
+
+	$stmt->close();
+	$mysqli->close();
+} else {
+	echo "Fehlende Pflichtfelder!";
+}

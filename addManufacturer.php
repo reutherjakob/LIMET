@@ -1,49 +1,25 @@
 <?php
-session_start();
-?>
+// 10-2025 FX
+require_once 'utils/_utils.php';
+check_login();
+if (isset($_POST['manufacturer']) && trim($_POST['manufacturer']) !== '') {
+    $manufacturer = getPostString('manufacturer');
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+    $mysqli =utils_connect_sql();
 
-<?php
-	
+    $stmt = $mysqli->prepare("INSERT INTO tabelle_hersteller (Hersteller) VALUES (?)");
+    $stmt->bind_param("s", $manufacturer);
 
-	//echo $_GET["Notiz"]." ".date('Y-m-d')." ".$_SESSION["username"]." ".$_GET["Kategorie"]." ".$_GET["roomID"];
-	
-	if(filter_input(INPUT_GET, 'manufacturer') != ""){				
-		$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-		/* change character set to utf8 */
-		if (!$mysqli->set_charset("utf8")) {
-		    printf("Error loading character set utf8: %s\n", $mysqli->error);
-		    exit();
-		} 
-		
-		// Check connection
-		if ($mysqli->connect_error) {
-		    die("Connection failed: " . $mysqli->connect_error);
-		}
-		
-		$sql = "INSERT INTO `tabelle_hersteller`
-				(`Hersteller`)
-				VALUES
-				('".filter_input(INPUT_GET, 'manufacturer')."');";
-		
-		if ($mysqli->query($sql) === TRUE) {
-		    echo "Hersteller hinzugefügt!";
-		    $id = $mysqli->insert_id; 
-		} 
-		else {
-		    echo "Error1: " . $sql . "<br>" . $mysqli->error;
-		}
-						
-		$mysqli ->close();
-	}
-	else{
-		echo "Kein Hersteller übertragen!";
-	}
+    if ($stmt->execute()) {
+        echo "Hersteller hinzugefügt!";
+        $id = $mysqli->insert_id;
+    } else {
+        echo "Fehler: " . $stmt->error;
+    }
+
+    $stmt->close();
+    $mysqli->close();
+} else {
+    echo "Kein Hersteller übertragen!";
+}
 ?>

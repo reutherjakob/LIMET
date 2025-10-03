@@ -240,7 +240,7 @@ if(!isset($_SESSION["username"]))
                     $.ajax({
 		        url : "addLieferant.php",
 		        data:{"Name":Name,"Vorname":Vorname,"Tel":Tel,"Adresse":Adresse,"PLZ":PLZ,"Ort":Ort,"Land":Land,"Email":Email,"lieferant":lieferant,"abteilung":abteilung,"gebiet":gebiet},
-		        type: "GET",
+		        type: "POST",
 		        success: function(data){
                             alert(data);                                
                             $.ajax({
