@@ -66,8 +66,10 @@ function log_attempt($mysqli, $ip, $username, $success): void
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ip = $_SERVER['REMOTE_ADDR'];
     $username = clean($_POST['username'] ?? '');
-    $password = $_POST['hashed_password'] ?? '';
+    $password = $_POST['password'] ?? ''; //$_POST['hashed_password'] ?? '';
+    //$password = password_hash($password, PASSWORD_ARGON2ID);
     $csrf = $_POST['csrf'] ?? '';
+
 
     if (!csrf_check($csrf)) {
         log_attempt($mysqli, $ip, $username, 0);
@@ -94,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
     if ($stmt->num_rows) {
-        $stmt->bind_result($id, $hash, $attempts, $last_attempt, $must_change_pw);
+        $stmt->bind_result($id, $hash, $attempts, $last_attempt, $must_change_pw); #hash aus der sb
         $stmt->fetch();
 
         if ($attempts >= MAX_ATTEMPTS && (time() - strtotime($last_attempt)) < LOCKOUT_TIME) { // Works
@@ -103,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        if ($password === $hash) {
+        if (password_verify($password, $hash) ) {
             session_regenerate_id(true);
             $_SESSION['user_id'] = $id;
             $_SESSION['user_name'] = $username;

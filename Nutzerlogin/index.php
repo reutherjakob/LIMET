@@ -82,7 +82,7 @@
         const passwordInput = this.querySelector('input[name="password"]');
         const hashedPasswordInput = this.querySelector('#hashed_password');
         hashedPasswordInput.value = await hashPassword(passwordInput.value);
-        passwordInput.value = ''; // optional, clear plain password field
+        // passwordInput.value = ''; // optional, clear plain password field
 
         $.post('login.php', $(this).serialize(), function (data) {
 
