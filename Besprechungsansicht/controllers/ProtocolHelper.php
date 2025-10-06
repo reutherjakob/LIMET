@@ -40,10 +40,9 @@ class ProtocolHelper
         $bestandstext = $bestandNeu === 0 ? "Ja" : "Nein";
 
         if (empty($old)) {
-            $elementName = $elementName . " (Var: " . $varianteLabels[$new['variant'] ?? 0] . ", Best.: " . $bestandstext . " )";
+            $elementName = $elementName . " (Var: " . $varianteLabels[$new['variant'] ?? 0] . ", Best.: " . $bestandstext . " ). Anmerkung: {$changeComment}";
             return "{$elementName} wurde {$new['Anzahl']} mal hinzugefügt.";// Neue Stückzahl: {$new['Anzahl']}";
         }
-
 
         $changes = [];
         if (isset($old['Anzahl'], $new['Anzahl']) && $old['Anzahl'] !== $new['Anzahl']) {
