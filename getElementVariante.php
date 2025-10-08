@@ -291,12 +291,18 @@ $row = $result->fetch_assoc(); ?>
             });
         });
 
+        const username = "<?php echo $_SESSION['username']; ?>";
+        let order = [[1, "asc"]];
+        if (username === "jud") {
+            order = [[2, "asc"]];
+        }
 
         $('#tableElementParameters').DataTable({ //same as in getPossibleVarianteParameters.php
+
             select: true,
             searching: true,
             pagingType: "simple",
-            order: [[1, 'asc']],
+            order: order,
             columnDefs: [
                 {
                     targets: [0],
