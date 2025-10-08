@@ -1,94 +1,132 @@
 <?php
-
-
-// --- CONSTS ---
-
-
 $allElementMappings = [
-    727 => ['param' => "HT_Abluft_Digestorium_Stk"],
-    1212 => ['param' => "HT_Abluft_Digestorium_Stk"],
-    1456 => ['param' => "HT_Abluft_Digestorium_Stk"],
-    1600 => ['param' => "HT_Abluft_Digestorium_Stk"],
-    1601 => ['param' => "HT_Abluft_Digestorium_Stk"],
-    1602 => ['param' => "HT_Abluft_Digestorium_Stk"],
-    1604 => ['param' => "HT_Abluft_Digestorium_Stk"],
-    1603 => ['param' => "HT_Abluft_Digestorium_Stk"],
-    1605 => ['param' => "HT_Abluft_Digestorium_Stk"],
-    1606 => ['param' => "HT_Abluft_Digestorium_Stk"],
-    1092 => ['param' => ["HT_Abluft_Sicherheitsschrank_Stk", "HT_Abluft_Sicherheitsschrank_Unterbau_Stk"]],
-    1093 => ['param' => ["HT_Abluft_Sicherheitsschrank_Stk", "HT_Abluft_Sicherheitsschrank_Unterbau_Stk"]],
-    1112 => ['param' => ["HT_Abluft_Sicherheitsschrank_Stk", "HT_Abluft_Sicherheitsschrank_Unterbau_Stk"]],
-    1688 => ['param' => ["HT_Abluft_Sicherheitsschrank_Stk", "HT_Abluft_Sicherheitsschrank_Unterbau_Stk"]],
-    570 => ['param' => "Laseranwendung"],
-    778 => ['param' => "Laseranwendung"],
-    890 => ['param' => "Laseranwendung"],
-    1331 => ['param' => "Laseranwendung"],
-    1332 => ['param' => "Laseranwendung"],
-    989 => ['param' => "Laseranwendung"],
-    1909 => ['param' => "Laseranwendung"],
-    60 => ['param' => ['EL_Roentgen 16A CEE Stk', 'Strahlenanwendung']],
-    167 => ['param' => ['EL_Roentgen 16A CEE Stk', 'Strahlenanwendung']],
-    168 => ['param' => ['Strahlenanwendung']],
-    170 => ['param' => 'Strahlenanwendung'],
-    259 => ['param' => 'Strahlenanwendung'],
-    317 => ['param' => 'Strahlenanwendung'],
-    484 => ['param' => 'Strahlenanwendung'],
-    489 => ['param' => 'Strahlenanwendung'],
-    579 => ['param' => 'Strahlenanwendung'],
-    580 => ['param' => 'Strahlenanwendung'],
-    1182 => ['param' => 'Strahlenanwendung'],
-    1388 => ['param' => 'Strahlenanwendung'],
-    1390 => ['param' => 'Strahlenanwendung'],
-    1417 => ['param' => 'Strahlenanwendung'],
-    1461 => ['param' => 'Strahlenanwendung'],
-    1462 => ['param' => 'Strahlenanwendung'],
-    1660 => ['param' => 'Strahlenanwendung'],
-    1680 => ['param' => 'Strahlenanwendung'],
-    67 => ['param' => '1 Kreis O2'],
-    68 => ['param' => '1 Kreis Va'],
-    69 => ['param' => '1 Kreis DL-5'],
-    161 => ['param' => 'N2O'],
-    162 => ['param' => 'NGA'],
-    163 => ['param' => 'DL-10'],
-    342 => ['param' => 'CO2'],
-    64 => ['param' => '1 Kreis O2'],
-    65 => ['param' => '1 Kreis Va'],
-    66 => ['param' => '1 Kreis DL-5'],
-    75 => ['param' => '1 Kreis O2'],
-    76 => ['param' => '1 Kreis Va'],
-    77 => ['param' => '1 Kreis DL-5'],
-    202 => ['param' => 'NGA'],
-    203 => ['param' => 'N2O'],
-    288 => ['param' => 'DL-10'],
-    289 => ['param' => 'CO2'],
-    1090 => ['param' => 'CO2'],
-    1086 => ['param' => '1 Kreis O2'],
-    1087 => ['param' => '1 Kreis Va'],
-    1088 => ['param' => '1 Kreis DL-5'],
-    1089 => ['param' => 'CO2'],
-    1103 => ['param' => '1 Kreis O2'],
-    1104 => ['param' => '1 Kreis Va'],
-    1105 => ['param' => '1 Kreis DL-5'],
-    1106 => ['param' => 'CO2'],
-    1327 => ['param' => 'N2'],
-    12 => ['param' => '1 Kreis DL-5'],
-    485 => ['param' => '1 Kreis DL-5'],
-    680 => ['param' => '1 Kreis DL-5'],
-    907 => ['param' => '1 Kreis DL-5'],
-    1001 => ['param' => '1 Kreis DL-5'],
-    1074 => ['param' => '1 Kreis DL-5'],
-    1553 => ['param' => '1 Kreis DL-5'],
-    1654 => ['param' => '1 Kreis DL-5'],
-    154 => ['param' => '1 Kreis DL-5'],
-    155 => ['param' => '1 Kreis DL-5'],
-    165 => ['param' => '1 Kreis DL-5'],
-    194 => ['param' => '1 Kreis DL-5'],
-    233 => ['param' => '1 Kreis DL-5'],
-    286 => ['param' => '1 Kreis DL-5'],
-    287 => ['param' => '1 Kreis DL-5'],
-    393 => ['param' => '1 Kreis DL-5'],
-    1076 => ['param' => '1 Kreis DL-5']
+    12 => ['param' => '1 Kreis DL-5'], // Deckenstativ ICU - Tandem - 2 armig,1.61.12.1
+    66 => ['param' => '1 Kreis DL-5'], // DL-5 in DVE,5.50.11.3
+    69 => ['param' => '1 Kreis DL-5'], // DL-5 Wandentnahmestelle,5.50.10.3
+    77 => ['param' => '1 Kreis DL-5'], // DL-5 in MVE,5.50.11.6
+    154 => ['param' => '1 Kreis DL-5'], // Deckenstativ Endoskopie - 2 armig - Endoskopieturm,1.61.12.2
+    155 => ['param' => '1 Kreis DL-5'], // Deckenstativ Endoskopie - 2 armig - für Monitore,1.61.12.3
+    165 => ['param' => '1 Kreis DL-5'], // Deckenstativ Schockraum - Tandem - 2 armig,1.61.12.4
+    194 => ['param' => '1 Kreis DL-5'], // Deckenstativ Anästhesie - 1 armig,1.61.12.5
+    233 => ['param' => '1 Kreis DL-5'], // Deckenstativ Universal - 1 armig,1.61.12.6
+    286 => ['param' => '1 Kreis DL-5'], // Deckenstativ OP Chir - 2 armig,1.61.12.7
+    287 => ['param' => '1 Kreis DL-5'], // Deckenstativ Anästhesie - 2 armig,1.61.12.8
+    393 => ['param' => '1 Kreis DL-5'], // Deckenstativ Endoskopie - Tandem - 2 armig,1.61.12.9
+    485 => ['param' => '1 Kreis DL-5'], // Deckenstativ OP - Liftarm,1.61.12.10
+    680 => ['param' => '1 Kreis DL-5'], // Deckenstativ Monitortragarm - 2 armig,1.61.12.11
+    907 => ['param' => '1 Kreis DL-5'], // Deckenstativ OP - Tandem - 2 armig - Chir/Monitor,1.61.12.12
+    1001 => ['param' => '1 Kreis DL-5'], // Deckenstativ Liftarm - 1 armig,1.61.12.13
+    1074 => ['param' => '1 Kreis DL-5'], // Deckenstativ 2 armig - Medien,1.61.12.14
+    1076 => ['param' => '1 Kreis DL-5'], // Deckenstativ für Waagenbedieneinheit,9.30.35.10
+    1088 => ['param' => '1 Kreis DL-5'], // DL in Digestorium,5.50.12.3
+    1105 => ['param' => '1 Kreis DL-5'], // DL in Labormedienzelle,5.50.12.7
+    1553 => ['param' => '1 Kreis DL-5'], // Deckenstativ Monitortragarm - Tandem - 2 armig,1.61.12.15
+    1654 => ['param' => '1 Kreis DL-5'], // Deckenstativ Schockraum 2-armig,1.61.12.16
+
+    64 => ['param' => '1 Kreis O2'], // O2 in DVE,5.50.11.1
+    67 => ['param' => '1 Kreis O2'], // O2 Wandentnahmestelle,5.50.10.1
+    75 => ['param' => '1 Kreis O2'], // O2 in MVE,5.50.11.4
+    1086 => ['param' => '1 Kreis O2'], // O2 in Digestorium,5.50.12.1
+    1103 => ['param' => '1 Kreis O2'], // O2 in Labormedienzelle,5.50.12.5
+
+    65 => ['param' => '1 Kreis Va'], // VA in DVE,5.50.11.2
+    68 => ['param' => '1 Kreis Va'], // VA Wandentnahmestelle,5.50.10.2
+    76 => ['param' => '1 Kreis Va'], // VA in MVE,5.50.11.5
+    1087 => ['param' => '1 Kreis Va'], // VA in Digestorium,5.50.12.2
+    1104 => ['param' => '1 Kreis Va'], // VA in Labormedienzelle,5.50.12.6
+
+    342 => ['param' => 'CO2'], // CO2 Wandentnahmestelle,5.50.10.7
+    289 => ['param' => 'CO2'], // CO2 in DVE,5.50.11.10
+    1089 => ['param' => 'CO2'], // CO2 in Digestorium,5.50.12.4
+    1090 => ['param' => 'CO2'], // CO2 in MVE,5.50.11.11
+    1106 => ['param' => 'CO2'], // CO2 in Labormedienzelle,5.50.12.8
+
+    163 => ['param' => 'DL-10'], // DL-10 Wandentnahmestelle,5.50.10.6
+    288 => ['param' => 'DL-10'], // DL-10 in DVE,5.50.11.9
+
+    1327 => ['param' => 'N2'], // N2 in Labormedienzelle,5.50.12.9
+
+    161 => ['param' => 'N2O'], // N2O Wandentnahmestelle,5.50.10.4
+    203 => ['param' => 'N2O'], // N2O in DVE,5.50.11.8
+    162 => ['param' => 'NGA'], // NGA Wandentnahmestelle,5.50.10.5
+    202 => ['param' => 'NGA'], // NGA in DVE,5.50.11.7
+
+    727 => ['param' => "HT_Abluft_Digestorium_Stk"], // Digestorium/Tischabzug,9.30.45.3
+    1212 => ['param' => "HT_Abluft_Digestorium_Stk"], // Digestorium - begehbar,9.30.45.20
+    1456 => ['param' => "HT_Abluft_Digestorium_Stk"], // Digestorium / Tischabzug EX,9.30.45.23
+    1600 => ['param' => "HT_Abluft_Digestorium_Stk"], // Digestorium/Tischabzug 1200,9.30.45.25
+    1601 => ['param' => "HT_Abluft_Digestorium_Stk"], // Digestorium/Tischabzug 1500,9.30.45.26
+    1602 => ['param' => "HT_Abluft_Digestorium_Stk"], // Digestorium/Tischabzug 1800,9.30.45.27
+    1603 => ['param' => "HT_Abluft_Digestorium_Stk"], // Digestorium/Tischabzug 2100,9.30.45.28
+    1604 => ['param' => "HT_Abluft_Digestorium_Stk"], // Digestorium/Tischabzug 1500 - Spez Abrauch,9.30.45.29
+    1605 => ['param' => "HT_Abluft_Digestorium_Stk"], // Digestorium/Tischabzug 1500 - Spez HF,9.30.45.30
+    1606 => ['param' => "HT_Abluft_Digestorium_Stk"], // Digestorium/Tischabzug 1500 - Radionuklid,9.30.45.31
+
+    1092 => ['param' => ["HT_Abluft_Sicherheitsschrank_Stk", "HT_Abluft_Sicherheitsschrank_Unterbau_Stk"]], // Gefahrenstoffsicherheitsschrank - Säuren/Laugen,4.35.30.2
+    1093 => ['param' => ["HT_Abluft_Sicherheitsschrank_Stk", "HT_Abluft_Sicherheitsschrank_Unterbau_Stk"]], // Gefahrenstoffsicherheitsschrank - brennbare Flüssigkeiten,4.35.30.3
+    1112 => ['param' => ["HT_Abluft_Sicherheitsschrank_Stk", "HT_Abluft_Sicherheitsschrank_Unterbau_Stk"]], // Gefahrenstoffsicherheitsschrank - Gasflaschen,4.35.30.4
+    1688 => ['param' => ["HT_Abluft_Sicherheitsschrank_Stk", "HT_Abluft_Sicherheitsschrank_Unterbau_Stk"]], // Gefahr-Stoffsicherheitsschrank Unterbau - brennb Flüssigkeit,4.35.30.5
+
+
+    570 => ['param' => 'Laseranwendung'], // Chirurgielaser,2.34.19.1
+    778 => ['param' => 'Laseranwendung'], // CO2 - Laser,2.34.19.2
+    890 => ['param' => 'Laseranwendung'], // Rauchgasabsaugung Laser,2.34.19.3
+    989 => ['param' => 'Laseranwendung'], // Laser-Therapiegerät,2.56.16.1
+    1331 => ['param' => 'Laseranwendung'], // Laser - Augen - Argon,2.34.19.4
+    1332 => ['param' => 'Laseranwendung'], // Laser - Augen - Nd:YAG,2.34.19.5
+    1909 => ['param' => 'Laseranwendung'], // Laser - Fläche - Dermatologie,2.56.16.3
+
+    60 => ['param' => ['EL_Roentgen 16A CEE Stk', 'Strahlenanwendung']], // Röntgenaufnahmegerät digital - fahrbar,2.41.13.1
+    167 => ['param' => ['EL_Roentgen 16A CEE Stk', 'Strahlenanwendung']], // C-Bogen - fahrbar,2.42.10.1
+    168 => ['param' => 'Strahlenanwendung'], // Röntgenaufnahmesystem - Deckenstativ,1.41.12.1
+    170 => ['param' => 'Strahlenanwendung'], // Röntgenaufnahmesystem - 3D Deckenstativ,1.41.12.2
+    259 => ['param' => 'Strahlenanwendung'], // Röntgendiagnostik - System - Durchleuchtung,1.42.10.1
+    317 => ['param' => 'Strahlenanwendung'], // SPECT,1.47.10.1
+    484 => ['param' => 'Strahlenanwendung'], // Kontrastmittelinjektor CT - deckenmontiert,1.49.10.1
+    489 => ['param' => 'Strahlenanwendung'], // SPECT/CT,1.47.15.1
+    579 => ['param' => 'Strahlenanwendung'], // Angiographieanlage - Kardiologisch - 2Ebenen,1.42.13.1
+    580 => ['param' => 'Strahlenanwendung'], // Angiographieanlage - Radiologisch - Intervention,1.42.12.1
+    1182 => ['param' => 'Strahlenanwendung'], // Panoramaröntgensystem - Boden/Decke,1.41.12.3
+    1388 => ['param' => 'Strahlenanwendung'], // Angiographieanlage - Kardiologisch - 1 Ebene,1.42.13.2
+    1390 => ['param' => 'Strahlenanwendung'], // Röntgendetektorhalterung - fahrbar,2.41.13.4
+    1417 => ['param' => 'Strahlenanwendung'], // Mammographie - System,1.46.10.1
+    1461 => ['param' => 'Strahlenanwendung'], // Röntgenraster Wandhalterung,1.41.10.2
+    1462 => ['param' => 'Strahlenanwendung'], // Linearbeschleuniger-System,1.71.10.1
+    1660 => ['param' => 'Strahlenanwendung'], // Unterkonstruktion Angiographieanlage - Kardiologisch,1.42.13.3
+    1680 => ['param' => 'Strahlenanwendung'], // Uroskopie - System - Durchleuchtung,1.42.10.5
+
+    118 => ["param" => "Abdunkelbarkeit"], // Ultraschallsystem - Kardiologisch,2.45.19.1
+    119 => ["param" => "Abdunkelbarkeit"], // Ultraschallsystem - Urologisch,2.45.29.1
+    120 => ["param" => "Abdunkelbarkeit"], // Ultraschallsystem - ICU,2.45.26.1
+    122 => ["param" => "Abdunkelbarkeit"], // Ultraschallgerät - transkranieller Doppler,2.45.15.1
+    153 => ["param" => "Abdunkelbarkeit"], // Ultraschallsystem - ZNA,2.45.17.1
+    253 => ["param" => "Abdunkelbarkeit"], // Ultraschalltherapiegerät,2.56.14.1
+    256 => ["param" => "Abdunkelbarkeit"], // Ultraschallsystem - Gynäkologisch,2.45.21.1
+    268 => ["param" => "Abdunkelbarkeit"], // Ultraschallsystem - Neurologie,2.45.25.1
+    312 => ["param" => "Abdunkelbarkeit"], // Ultraschallsystem - Radiologisch,2.45.18.1
+    431 => ["param" => "Abdunkelbarkeit"], // Fluoreszenzmikroskop,9.30.40.2
+    573 => ["param" => "Abdunkelbarkeit"], // Ultraschallsystem - Anästhesie,2.45.27.1
+    594 => ["param" => "Abdunkelbarkeit"], // Ultraschall - Gewebeablationsgerät,2.34.13.4
+    615 => ["param" => "Abdunkelbarkeit"], // Ultraschallgerät - Bronchial,2.45.15.3
+    620 => ["param" => "Abdunkelbarkeit"], // Endoskopie - Kaltlichtquelle,2.36.13.3
+    624 => ["param" => "Abdunkelbarkeit"], // Endoskopiewagen,2.21.14.8
+    637 => ["param" => "Abdunkelbarkeit"], // Ultraschall Video-Gastroskop,2.36.11.11
+    638 => ["param" => "Abdunkelbarkeit"], // Ultraschall Video-Bronchoskop,2.36.11.12
+    658 => ["param" => "Abdunkelbarkeit"], // HF - Ultraschall - Kombinationsgerät,2.34.13.5
+    693 => ["param" => "Abdunkelbarkeit"], // Ultraschallsystem - Thorax,2.45.28.1
+    770 => ["param" => "Abdunkelbarkeit"], // Ultraschallsystem - HNO,2.45.23.1
+    874 => ["param" => "Abdunkelbarkeit"], // Ultraschallsystem - Physiotherapie,2.45.18.2
+    1042 => ["param" => "Abdunkelbarkeit"], // Ultraschallbad Tischgerät,2.82.12.1
+    1083 => ["param" => "Abdunkelbarkeit"], // Ultraschallgerät - Endoskopie - Doppler,2.45.15.4
+    1362 => ["param" => "Abdunkelbarkeit"], // Endoskopie - Kaltlichtquelle LED - mobil,2.36.13.9
+    1368 => ["param" => "Abdunkelbarkeit"], // Atemtherapie - Ultraschallverneblung,2.32.17.5
+    1498 => ["param" => "Abdunkelbarkeit"], // Intravaskuläres Ultraschallsystem (IVUS),2.45.20.1
+    1503 => ["param" => "Abdunkelbarkeit"], // Endobronchiales Ultraschallsystem,2.36.17.1
+    1525 => ["param" => "Abdunkelbarkeit"], // Ultraschallsystem - Gefäße,2.45.19.2
+    1686 => ["param" => "Abdunkelbarkeit"], // Endoskopie - Spülpumpe Arthroskopie,2.36.13.11
+    1892 => ["param" => "Abdunkelbarkeit"], // Ultraschallgerät - intra operat - Kardiologie,2.45.15.6
 ];
+
 
 
 // ------------------- ERROR MESSAGES -------------------
