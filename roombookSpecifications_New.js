@@ -423,7 +423,7 @@ function html_2_plug_into_edit_cell(dataIdentifier) {
             "Gentechnikgesetz - S3",
             "Gentechnikgesetz - S4"
         ],
-        "H6020": [" - ", "H1a", "H1b", "H1c", "H2a", "H2b", "H2c", "H3", "H4", "ÖNORM S 5224", "DGUV 213-850"],
+        "H6020": [" - ", "H1a", "H1b", "H1c", "H2a", "H2b", "H2c", "H3", "H4","H4 VSD","H4+ VSÜ", "ÖNORM S 5224", "DGUV 213-850"],
         "Anwendungsgruppe": ["-", "0", "1", "2"],
         "Fussboden OENORM B5220": ["kA", "Klasse 1", "Klasse 2", "Klasse 3"]
     };
@@ -599,6 +599,7 @@ function updateButtonClass(button, table, startColumn, endColumn) {
 
 function toggleReportColumnsVisible() {
     const reportParams = [
+        "MT-relevant",
         'Raumbezeichnung', 'Raumnr', 'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt', 'Nutzfläche',
         'Abdunkelbarkeit', 'Strahlenanwendung', 'Laseranwendung', 'Allgemeine Hygieneklasse',
         'H6020', 'HT_Waermeabgabe_W', 'Anwendungsgruppe', 'Fussboden OENORM B5220',
@@ -606,7 +607,7 @@ function toggleReportColumnsVisible() {
         'ET_Anschlussleistung_SV_W', 'ET_Anschlussleistung_ZSV_W', 'ET_Anschlussleistung_USV_W', 'IT Anbindung',
         '1 Kreis O2', '2 Kreis O2', 'CO2', '1 Kreis Va', '2 Kreis Va', '1 Kreis DL-5', '2 Kreis DL-5',
         'DL-10', 'DL-tech', 'NGA', 'N2O', 'HT_Abluft_Sicherheitsschrank_Stk', 'HT_Abluft_Digestorium_Stk',
-        'HT_Punktabsaugung_Stk', 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'VE_Wasser'
+        'HT_Punktabsaugung_Stk', 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'VE_Wasser', 'ET_EMV_ja-nein'
     ];
 
 // Calculate the indices from columnsDefinition
