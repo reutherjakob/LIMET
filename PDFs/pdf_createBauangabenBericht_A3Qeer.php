@@ -171,82 +171,76 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         // Define cell configurations for both item lists.
         $cellConfigs = [
             [
-                'key'    => 'AV',
-                'label'  => 'AV: ',
-                'width'  => $e_C_2_3rd,
-                'nln'    => false
+                'key' => 'AV',
+                'label' => 'AV: ',
+                'width' => $e_C_2_3rd,
+                'nln' => false
             ],
             [
-                'key'    => 'SV',
-                'label'  => 'SV: ',
-                'width'  => $e_C_2_3rd,
-                'nln'    => false
+                'key' => 'SV',
+                'label' => 'SV: ',
+                'width' => $e_C_2_3rd,
+                'nln' => false
             ],
             [
-                'key'    => 'ZSV',
-                'label'  => 'ZSV: ',
-                'width'  => $e_C_2_3rd,
-                'nln'    => false
+                'key' => 'ZSV',
+                'label' => 'ZSV: ',
+                'width' => $e_C_2_3rd,
+                'nln' => false
             ],
             [
-                'key'    => 'USV',
-                'label'  => 'USV: ',
-                'width'  => $e_C_2_3rd,
-                'nln'    => false
+                'key' => 'USV',
+                'label' => 'USV: ',
+                'width' => $e_C_2_3rd,
+                'nln' => false
             ],
             [
-                'key'    => 'IT Anbindung',
-                'label'  => 'IT Anschl.: ',
-                'width'  => $e_C_2_3rd,
-                'nln'    => true // add newline after this
+                'key' => 'IT Anbindung',
+                'label' => 'IT Anschl.: ',
+                'width' => $e_C_2_3rd,
+                'nln' => true // add newline after this
             ]
         ];
 
         foreach ($cellConfigs as $cell) {
             multicell_text_hightlight($pdf, $cell['width'], $font_size, $cell['key'], $cell['label'], $parameter_changes_t_räume);
             hackerlA3($pdf, $font_size, $e_C_3rd + 10, $row[$cell['key']], "JA");
-            if ($cell['nln']) $pdf->Ln($horizontalSpacerLN2);
+             if ($cell['nln']) $pdf->Ln($horizontalSpacerLN2);
         }
 
-        if ($isnotVorentwurf) {
-            multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'EL_Roentgen 16A CEE Stk', "CEE16A Röntgen", $parameter_changes_t_räume);
-            multicell_with_str($pdf, $row['EL_Roentgen 16A CEE Stk'], $e_C_3rd, "Stk");
-            $pdf->Ln($horizontalSpacerLN);
-
-        }
 
 
 // Define configurations for power cells.
         $powerCellConfigs = [
             [
-                'key'   => 'ET_Anschlussleistung_W',
+                'key' => 'ET_Anschlussleistung_W',
                 'label' => 'Raum Anschlussl. ohne Glz:',
                 'width' => $e_C,
-                'nln'   => false  // or as needed per layout
+                'nln' => false  // or as needed per layout
             ],
             [
-                'key'   => 'ET_Anschlussleistung_AV_W',
+                'key' => 'ET_Anschlussleistung_AV_W',
                 'label' => 'AV(Rauml.): ',
                 'width' => $e_C_2_3rd,
-                'nln'   => false
+                'nln' => false
             ],
             [
-                'key'   => 'ET_Anschlussleistung_SV_W',
+                'key' => 'ET_Anschlussleistung_SV_W',
                 'label' => 'SV(Rauml.): ',
                 'width' => $e_C_2_3rd,
-                'nln'   => false
+                'nln' => false
             ],
             [
-                'key'   => 'ET_Anschlussleistung_ZSV_W',
+                'key' => 'ET_Anschlussleistung_ZSV_W',
                 'label' => 'ZSV(Rauml.): ',
                 'width' => $e_C_2_3rd,
-                'nln'   => false
+                'nln' => false
             ],
             [
-                'key'   => 'ET_Anschlussleistung_USV_W',
+                'key' => 'ET_Anschlussleistung_USV_W',
                 'label' => 'USV(Rauml.): ',
                 'width' => $e_C_2_3rd,
-                'nln'   => true
+                'nln' => true
             ]
         ];
         $pdf->MultiCell($block_header_w, $block_header_height, "", 0, 'L', 0, 0);
@@ -254,16 +248,26 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             multicell_text_hightlight($pdf, $cell['width'], $font_size, $cell['key'], $cell['label'], $parameter_changes_t_räume);
             $val = ($row[$cell['key']] != "0") ? kify($row[$cell['key']]) . "W" : "-";
             multicell_with_str($pdf, $val, $e_C_3rd + 10, "");
-            //if ($cell['nln']) $pdf->Ln($horizontalSpacerLN2);
+            //if ($cell['nln']) $pdf->Ln($horizontalSpacerLN2);   $pdf->MultiCell($block_header_w, $block_header_height, "", 0, 'L', 0, 0);
         }
 
 
         if ($isnotVorentwurf) {
             multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'ET_RJ45-Ports', "RJ45-Ports: ", $parameter_changes_t_räume);
-            multicell_with_nr($pdf, $row['ET_RJ45-Ports'], "Stk", $pdf->getFontSizePt(), $e_C_3rd);
+            multicell_with_nr($pdf, $row['ET_RJ45-Ports'], "Stk", $pdf->getFontSizePt(), $e_C_3rd + 10);
+
+            $pdf->Ln($horizontalSpacerLN2);
+            $pdf->MultiCell($block_header_w, $block_header_height, "", 0, 'L', 0, 0);
+            multicell_text_hightlight($pdf, $e_C, $font_size, 'EL_Roentgen 16A CEE Stk', "CEE16A Röntgen", $parameter_changes_t_räume);
+            multicell_with_str($pdf, $row['EL_Roentgen 16A CEE Stk'], $e_C_3rd + 10, "Stk");
 
             multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'EL_Laser 16A CEE Stk', "CEE16A Laser: ", $parameter_changes_t_räume);
-            multicell_with_str($pdf, $row['EL_Laser 16A CEE Stk'], $e_C_3rd, "Stk");
+            multicell_with_str($pdf, $row['EL_Laser 16A CEE Stk'], $e_C_3rd + 10, "Stk");
+
+
+            multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'ET_RJ45-Ports', "RJ45-Ports: ", $parameter_changes_t_räume);
+            multicell_with_nr($pdf, $row['ET_RJ45-Ports'], "Stk", $pdf->getFontSizePt(), $e_C_3rd + 10);
+
 
         }
 

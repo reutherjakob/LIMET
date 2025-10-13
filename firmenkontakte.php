@@ -439,7 +439,6 @@
             let lieferant = $("#lieferant").val();
             let abteilung = $("#abteilung").val();
             let gebiet = $("#lieferantenGebiet").val();
-            console.log(Name);
             if (Name.length > 0 && Vorname.length > 0 && Tel.length > 0) {
                 $('#addContactModal').modal('hide');
                 $.ajax({
@@ -457,7 +456,7 @@
                         "abteilung": abteilung,
                         "gebiet": gebiet
                     },
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         alert(data);
                         $.ajax({

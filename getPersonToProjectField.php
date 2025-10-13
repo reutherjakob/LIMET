@@ -3,7 +3,7 @@ require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
 
-function getOptions($sql, $valueField, $textField)
+function getOptions($sql, $valueField, $textField): string
 {
     global $mysqli;
     $result = $mysqli->query($sql);

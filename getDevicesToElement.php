@@ -162,7 +162,7 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
     var tableDevicesToElement;
 
     $(document).ready(function () {
-        tableDevicesToElement = $('#tableDevicesToElement').DataTable({
+        tableDevicesToElement = new DataTable('#tableDevicesToElement', {
             columnDefs: [
                 {
                     targets: [0, 5],
