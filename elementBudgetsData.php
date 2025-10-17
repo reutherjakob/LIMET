@@ -81,6 +81,13 @@ function renderBudgetSelect($rowID, $selectedBudgetID, $budgets)
 }
 
 while ($row = $result->fetch_assoc()) {
+    $selectedBudgetID = $row['idtabelle_projektbudgets'] ?? 0;
+    $selectedBudgetText = '';
+    if ($selectedBudgetID && isset($projectBudgets[$selectedBudgetID])) {
+        $b = $projectBudgets[$selectedBudgetID];
+        $selectedBudgetText = $b['idtabelle_projektbudgets'] . "-" . $b['Budgetnummer'] . "-" . $b['Budgetname'];
+    }
+
     $rowData = [];
     $rowData['id'] = $row['id'];
     $rowData['idtabelle_projektbudgets'] = $row['idtabelle_projektbudgets'];
@@ -94,7 +101,10 @@ while ($row = $result->fetch_assoc()) {
     $rowData['Variante'] = $row['Variante'];
     $rowData['Kosten'] = format_money($row['Kosten']);
     $rowData['PP'] = format_money($row['PP']);
-    $rowData['BudgetSelect'] = renderBudgetSelect($row['id'], $row['idtabelle_projektbudgets'] ?? 0, $projectBudgets);
+    //  $rowData['BudgetSelect'] = renderBudgetSelect($row['id'], $row['idtabelle_projektbudgets'] ?? 0, $projectBudgets);
+    $rowData['BudgetSelect'] = renderBudgetSelect($row['id'], $selectedBudgetID, $projectBudgets);
+    $rowData['BudgetID'] = $selectedBudgetID;
+    $rowData['BudgetText'] = $selectedBudgetText;
     $data[] = $rowData;
 }
 

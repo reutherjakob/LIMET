@@ -1,6 +1,8 @@
 <?php
 session_start();
 check_login();
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/my_debug_log.log');
 
 function checkEntry($jsonArray, $elementId, $parameterId): bool
 {
@@ -14,7 +16,7 @@ function checkEntry($jsonArray, $elementId, $parameterId): bool
 
 function checkAndManipulateString($input)
 {
-    if ($input === "\'\'" || $input === '\"' ) {
+    if ($input === "\'\'" || $input === '\"') {
         // Option 1: Use inch symbol
         return '"';
         // Option 2: Return empty string if you want no unit displayed
@@ -75,10 +77,46 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dat
         $paramInfosCounter = $paramInfosCounter + 1;
     }
 
+
+    // 1. Collect element IDs for current room from $result
+    $roomElementIDs = [];
+    $result->data_seek(0);
+    while ($row = $result->fetch_assoc()) {
+        $roomElementIDs[] = $row['TABELLE_Elemente_idTABELLE_Elemente'];
+    }
+
+// 2. Filter $elementParamInfos for elements in this room
+    $roomElementParamInfos = array_filter($elementParamInfos, function($ep) use ($roomElementIDs) {
+        return in_array($ep['elementID'], $roomElementIDs, true);
+    });
+
+// 3. Identify ParamIDs having values in room elements only
+    $validParamIDs = [];
+    foreach ($roomElementParamInfos as $ep) {
+        if (trim($ep['Wert']) !== '' && trim($ep['Wert']) !== null) {
+            $validParamIDs[$ep['ParamID']] = true;
+        }
+    }
+
+// 4. Filter $paramInfos accordingly
+    $paramInfos = array_values(array_filter($paramInfos, function ($param) use ($validParamIDs) {
+        return isset($validParamIDs[$param['ParamID']]);
+    }));
+
+// 5. Update param counter and recalc text_width safely
+    $table_column_sizes = array(15, 42, 7, 7, 11);
+    $paramInfosCounter = count($paramInfos);
+    if ($paramInfosCounter > 0) {
+        $text_width = ($SB - array_sum($table_column_sizes)) / $paramInfosCounter;
+    } else {
+        $text_width = 0; // or suitable fallback
+    }
+
+
     /// ---------- SIZE/FORMAT VARIABLES -----------
 
-    $table_column_sizes = array(15, 42, 7, 7, 11);
-    $text_width = ($SB - array_sum($table_column_sizes)) / $paramInfosCounter;
+
+    // $text_width = ($SB - array_sum($table_column_sizes)) / $paramInfosCounter;
     $rowHeight = 5;
     $rowHeightMainLine = 7;
     $f_size = 6;

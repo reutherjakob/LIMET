@@ -29,6 +29,7 @@ $allElementMappings = [
     1086 => ['param' => '1 Kreis O2'], // O2 in Digestorium,5.50.12.1
     1103 => ['param' => '1 Kreis O2'], // O2 in Labormedienzelle,5.50.12.5
 
+
     65 => ['param' => '1 Kreis Va'], // VA in DVE,5.50.11.2
     68 => ['param' => '1 Kreis Va'], // VA Wandentnahmestelle,5.50.10.2
     76 => ['param' => '1 Kreis Va'], // VA in MVE,5.50.11.5
@@ -128,12 +129,14 @@ $allElementMappings = [
 ];
 
 
+$IDsWandverstärkung = [1554, 1905, 10, 1730, 370, 372, 1039, 1933, 70, 529, 74, 523, 1044, 524, 525, 526, 527, 528, 1045, 548, 721, 722, 549, 723, 1008, 873, 383, 856, 817, 1049, 983, 870, 1713, 717, 238, 186, 550, 169, 1911, 282, 1837, 1460, 1243, 381, 906, 382, 684, 281, 68];
+// tabelle_parameter id: 97    ist der Elementparameter Wandverstärkung
 
 // ------------------- ERROR MESSAGES -------------------
 
 const ERROR_MESSAGES = [
     'dependency_non_zero' => '%s: %s --- %s:::Raumparameter - %s -> %s ist %s, aber %s ist %s<br>',
-    'max_value' => '%s: %s --- %s:::Raumparameter - LeistungZSV-> %s...%s übersteigt max=%s.<br>',
+    'max_value' => '%s: %s --- %s:::Raumparameter - LeistungZ SV-> %s...%s übersteigt max=%s.<br>',
     'max_value_rev' => '%s: %s --- %s:::Raumparameter - Abwärme%s-> %s übersteigt Raumangabe=%s.<br>',
     'rg_sv' => '%s: %s --- %s:::RG -> SV=%s, aber RG =%s.<br>',
     'rg_zsv' => '%s: %s --- %s:::RG = 2 -> ZSV=%s, aber RG =%s.<br>',
@@ -143,7 +146,7 @@ const ERROR_MESSAGES = [
     'element_param' => '%s: %s --- %s:::Raumparameter - ElementPort-> %s Element %s präsent, aber Raumparameter=%s %s! <br>',
     'na_missing' => '%s: %s --- %s:::Raumparameter - Netzarten-> %s in  Element präsent, aber Raumparameter=0!<br>',
     'element_param4' => '%s: %s --- %s:::Raumparameter - Elemente -> Element %s präsent, aber Raumparam %s= %s! <br>',
-    'element_param4z' => '%s: %s --- %s:::Raumparameter -> Element %s präsent, aber Raumparam %s/%s= %s! <br>',
+    'element_param4z' => '%s: %s --- %s:::Raumparameter - Elemente -> Element %s präsent, aber Elementparameter %s= %s! <br>',
     'stativ_dl5' => '%s: %s --- %s:::Elementparameter - Stativ ->  Stativ, braucht Druckluft! <br>',
     'stativ_vorabsperr' => '%s: %s --- %s:::ElementPort -> Gasanschluss am Stativ, braucht Vorabsperrkasten! <br>',
     'leistung_na_missing' => '%s: %s --- %s:::Netzarten->  %s hat Leistung aber keine Netzart!<br>',
@@ -252,7 +255,7 @@ function check_summe_leistungen(&$msgs, $roomParams)
 }
 
 // ------------------- ELEMENT CHECKS -------------------
-function check_room_for_parameters_cause_elementParamKathegorie(&$msgs, $roomParams, $paramID, $row)
+function check_room_for_parameters_cause_elementParamKathegorie(&$msgs, $roomParams, $paramID, $row): void
 {
     $map = [
         117 => '1 Kreis O2', 121 => '1 Kreis DL-5', 122 => '1 Kreis Va', 123 => 'DL-10',
@@ -266,7 +269,7 @@ function check_room_for_parameters_cause_elementParamKathegorie(&$msgs, $roomPar
     }
 }
 
-function check_room_for_na(&$msgs, $roomParams, $NAs)
+function check_room_for_na(&$msgs, $roomParams, $NAs): void
 {
     foreach ($NAs as $na) {
         if (($roomParams[$na] ?? 0) < 1) {
@@ -276,7 +279,7 @@ function check_room_for_na(&$msgs, $roomParams, $NAs)
     }
 }
 
-function check_4_room_param(&$msgs, $roomParams, $param, $row)
+function check_4_room_param(&$msgs, $roomParams, $param, $row): void
 {
     if (($roomParams[$param] ?? 0) < 1) {
         $msgs[] = sprintf(ERROR_MESSAGES['element_param4'],
@@ -305,7 +308,7 @@ function check4vorabsperr(&$msgs, $roomParams, $elements_in_room)
     }
 }
 
-function check_room_Leistungssumme(&$msgs, $roomParams, $P, $extra = "")
+function check_room_Leistungssumme(&$msgs, $roomParams, $P, $extra = ""): void
 {
     $map = ["NoNA", "AV", "SV", "ZSV", "USV"];
     foreach ($P as $i => $val) {
@@ -433,6 +436,36 @@ foreach ($raumparameter as $roomID => $roomParams) {
                 }
             }
         }
+
+        foreach ($IDsWandverstärkung as $id) {
+            if (intval($row['idTABELLE_Elemente']) == $id) {
+                $hasWandverstaerkung = false;
+
+                foreach ($elementParamInfos as $parameterInfo) {
+                    if (
+                        $parameterInfo["tabelle_Varianten_idtabelle_Varianten"] === abcTo123($row['Variante'])
+                        && $row['idTABELLE_Elemente'] === $parameterInfo["tabelle_elemente_idTABELLE_Elemente"]
+                        && $parameterInfo["idTABELLE_Parameter"] == 97 // ID des Parameters Wandverstärkung
+                    ) {
+                        $hasWandverstaerkung = true;
+                        break;
+                    }
+                }
+
+                if (!$hasWandverstaerkung) {
+                    $messages[] = sprintf(
+                        ERROR_MESSAGES['element_param4z'],
+                        $roomParams['Raumbezeichnung'],
+                        $roomParams['Raumnr'],
+                        $roomParams['idTABELLE_Räume'],
+                        $row['Bezeichnung'],
+                        "Wandverstärkung",
+                        "nicht vorhanden"
+                    );
+                }
+            }
+        }
+
 
         $temp_LeistungElement = 0;
         $tempNA_perElement = [];
