@@ -54,10 +54,13 @@ $mysqli = utils_connect_sql();
 
                     <th>Raumbereich</th>
                     <th>Raum</th>
-                    <th>Bestand</th><th>Variante</th>
+                    <th>Bestand</th>
+                    <th>Variante</th>
                     <th>EP</th>
                     <th>PP</th>
                     <th>Budget</th>
+                    <th>BudgetNr</th>
+                    <th>BudgetText</th>
                 </tr>
                 </thead>
             </table>
@@ -105,7 +108,7 @@ $mysqli = utils_connect_sql();
     }
 
     $(document).ready(function () {
-        var table = $('#tableElementsInProjectForBudget').DataTable({
+        $('#tableElementsInProjectForBudget').DataTable({
             ajax: {
                 url: 'elementBudgetsData.php',
                 dataSrc: ''
@@ -122,7 +125,14 @@ $mysqli = utils_connect_sql();
                 {data: 'Variante'},
                 {data: 'Kosten'},
                 {data: 'PP'},
-                {data: 'BudgetSelect', orderable: false, searchable: false}
+                {
+                    data: 'BudgetSelect',
+                    orderable: true,   // aktivieren
+                    searchable: false,
+                    orderData: 12      // Gleiches Ergebnis wie Spalte 'BudgetID'
+                },
+                {data: 'BudgetID', visible: false, searchable: false},
+                {data: 'BudgetText', visible: false, searchable: false}
             ],
             paging: true,
             order: [[3, "asc"]],
@@ -137,13 +147,39 @@ $mysqli = utils_connect_sql();
             },
             mark: true,
             layout: {
-                bottomStart: 'info',
-                bottomEnd: ["pageLength", "paging"],
+                bottomStart: null, topStart: null,
+                bottomEnd: ['info', "pageLength", "paging"],
                 topEnd: ["search", 'buttons']
             },
             buttons: [
-                {extend: 'searchBuilder', config: {columns: [2, 3, 4, 5, 6, 7, 8, 9, 10]}},
-                "excel", "pdf"
+                {
+                    extend: 'searchBuilder',
+                    config: {columns: [2, 3, 4, 5, 6, 7, 8, 9, 10]}
+                },
+                {
+                    extend: 'excel',
+                    text: 'Exportiere alle Zeilen',
+                    exportOptions: {
+                        modifier: {
+                            search: 'applied', // berücksichtigt Filter
+                            order: 'applied',  // respektiert Sortierung
+                            page: 'all'        // exportiert alle Seiten, nicht nur die sichtbare
+                        },
+                        columns: [0,1,2,3,4,5,6,7,8,9,10,12,13], // Spalte 11 (BudgetSelect) ausschließen
+                        format: {
+                            body: function (data, row, column, node) {
+                                if (node && node.querySelector && node.querySelector('select')) {
+                                    const selected = node.querySelector('select option:checked');
+                                    return selected ? selected.textContent.trim() : '';
+                                }
+                                return typeof data === 'string'
+                                    ? data.replace(/<[^>]*>/g, '').trim()
+                                    : data;
+                            }
+                        }
+                    }
+
+                }
             ],
             initComplete: function () {
                 $('.dt-search label').remove();
@@ -155,17 +191,27 @@ $mysqli = utils_connect_sql();
         $('#tableElementsInProjectForBudget').on('change', 'tbody select', function () {
             let roombookID = this.id;
             let budgetID = this.value;
+            let budgetText = $(this).find('option:selected').text();
             $.ajax({
                 url: "saveRoombookBudget.php",
                 data: {"roombookID": roombookID, "budgetID": budgetID},
                 type: "GET",
                 success: function (response) {
-                    makeToaster(response,true);
+                    makeToaster(response, true);
                 },
                 error: function () {
                     makeToaster("Fehler beim Speichern des Budgets");
                 }
             });
+
+            let table = $('#tableElementsInProjectForBudget').DataTable();
+            let row = table.row($('#' + roombookID).closest('tr'));
+
+            if (row.length) {
+                let rowData = row.data();
+                rowData.BudgetID = budgetID;
+                rowData.BudgetText = budgetText;
+            }
         });
 
     });
