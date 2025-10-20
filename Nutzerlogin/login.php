@@ -13,7 +13,7 @@ header('X-Frame-Options: DENY');
 header('X-Content-Type-Options: nosniff');
 header("Content-Security-Policy: default-src 'self'; style-src 'self' https://cdn.jsdelivr.net; script-src 'self' https://code.jquery.com https://cdn.jsdelivr.net");
 
-const MAX_ATTEMPTS = 5;
+const MAX_ATTEMPTS = 10;
 const LOCKOUT_TIME = 20 * 60;
 const RATE_LIMIT = 5;
 const RATE_LIMIT_WINDOW = 300;
@@ -24,7 +24,7 @@ function clean($str): string
     return htmlspecialchars(trim($str), ENT_QUOTES, 'UTF-8');
 }
 
-function rate_limit_check($mysqli, $ip, $username)
+function rate_limit_check($mysqli, $ip, $username): bool
 {
     $window_start = date('Y-m-d H:i:s', time() - RATE_LIMIT_WINDOW);
 
@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!rate_limit_check($mysqli, $ip, $username)) {
         log_attempt($mysqli, $ip, $username, 0);
-        echo "Ungültige Zugangsdaten.";
+        echo "Zu viele Versuche. Bitte probieren sie es später erneut. ";
         exit;
     }
 

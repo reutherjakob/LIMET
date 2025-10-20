@@ -1,0 +1,30 @@
+-> tabelle_room_requirements_from_user zurücksetzten
+-> tabelle_login_attempts zurücksetzten
+
+
+ALTER TABLE tabelle_room_requirements_from_user
+ADD COLUMN raumkategorie VARCHAR(255) NULL COMMENT 'spezifische Raumkategorie, z.B. Labor, Technikraum',
+ADD COLUMN anzahl_mitarbeiter INT NULL COMMENT 'Anzahl der ständig im Raum tätigen MitarbeiterInnen',
+ADD COLUMN oberflaechenbestaendigkeit TINYINT NULL COMMENT 'Erhöhte Anforderungen an die Oberflächenbeständigkeit, z.B. Säurebeständigkeit',
+ADD COLUMN gewicht_ueber_500kg TINYINT NULL COMMENT 'Geräte/Elemente mit Gewicht > 500kg in Verwendung',
+ADD COLUMN vibrationsempfindliche_geraete TINYINT NULL COMMENT 'Geräte in Verwendung, die vibrations­empfindlich sind (z.B. Präzisionswaagen)',
+ADD COLUMN explosionsschutz TINYINT NULL COMMENT 'Explosionsschutz im Raum erforderlich',
+ADD COLUMN temperatur_min_max VARCHAR(64) NULL COMMENT 'Besondere Anforderungen an die Raumtemperatur (min-max)',
+ADD COLUMN luftfeuchtigkeit_min_max VARCHAR(64) NULL COMMENT 'Besondere Anforderungen an die Luftfeuchtigkeit (min-max)',
+ADD COLUMN druckregelung_lueftung VARCHAR(64) NULL COMMENT 'Besondere Anforderungen an die Druckregelung der Lüftung',
+ADD COLUMN abluftwaescher TINYINT NULL COMMENT 'Abzüge mit Abluftwäscher oder Säurewäscher in Verwendung',
+ADD COLUMN raumabluft_anforderungen VARCHAR(255) NULL COMMENT 'Besondere Anforderungen an die Raumabluft',
+ADD COLUMN geraete_hohe_anschlussleistung TINYINT NULL COMMENT 'Geräte mit besonders hohen Anschlussleistungen (<500 W) im Einsatz',
+ADD COLUMN spezialabwasser TINYINT NULL COMMENT 'Abwasser vorhanden, das nicht in die Kanalisation geleitet werden darf';
+
+
+
+// STILL IN USE
+	- bsl_level
+	- chemikalienliste
+	- verdunkelung
+	- sonderabluft
+	- spezialgas
+	- usv_geraete
+	- VE_Wasser
+	- kuehlwasser

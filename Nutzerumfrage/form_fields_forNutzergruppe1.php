@@ -6,8 +6,60 @@ $formFields = [
     ["type" => "texthidden", "kathegorie" => "Raum", "name" => "roomID", "label" => "Room ID"],
     ["type" => "texthidden", "kathegorie" => "Raum", "name" => "raumnr", "label" => "Raum Nr."],
     ["type" => "texthidden", "kathegorie" => "Raum", "name" => "raumbereich_nutzer", "label" => "Raumbereich Nutzer"],
-    ["type" => "texthidden", "kathegorie" => "Raum", "name" => "ebene", "label" => "Ebene"],
+    //["type" => "texthidden", "kathegorie" => "Raum", "name" => "ebene", "label" => "Ebene"],
     ["type" => "texthidden", "kathegorie" => "Raum", "name" => "nf", "label" => "Nutzfläche (NF)"],
+
+
+    ["type" => "KathegorieDropdowner", "kathegorie" => "Raum", "name" => "raumkategorie", "label" => "Raumkategorie (spezifisch)?"],
+
+    ["type" => "select", "kathegorie" => "Raum", "name" => "mitarbeiter_anzahl", "label" => "Anzahl der im Raum ständig tätigen MitarbeiterInnen?", "options" => [0 => "0", 1 => "1", 2 => "2", 3 => "3", 4 => "4", 5 => "5", 6 => "6", 7 => "7", 8 => "8"]],
+
+    ["type" => "yesno", "kathegorie" => "Raum", "name" => "oberflaechenbestaendigkeit", "label" => "Erhöhte Anforderungen an die Oberflächenbeständigkeit (z.B. Einsatz von Säuren)?"],
+
+    ["type" => "yesno", "kathegorie" => "Raum", "name" => "gewicht_ueber_500kg", "label" => "Geräte/Elemente mit Gewicht größer 500kg in Verwendung?"],
+
+    ["type" => "yesno", "kathegorie" => "Raum", "name" => "verdunkelung", "label" => "Verdunkelung für lichtempfindliche Geräte erforderlich?"],
+
+    ["type" => "yesno", "kathegorie" => "Raum", "name" => "vibrationsempfindliche_geraete", "label" => "Vibrationsempfindliche Geräte in Verwendung (z.B. Präzisionswaagen, REM)?"],
+
+    ["type" => "yesno", "kathegorie" => "Raum", "name" => "chemikalienliste", "label" => "Tätigkeiten mit gefährlichen oder giftigen Chemikalien"],
+
+    ["type" => "yesno", "kathegorie" => "Raum", "name" => "explosionsschutz", "label" => "Explosionsschutz im Raum erforderlich"],
+
+    ["type" => "select", "kathegorie" => "Raum", "name" => "bsl_level", "label" => "Biosafety Level (BSL)", "options" => [
+        "0" => "keine Anforderung", "1" => "BSL-1", "2" => "BSL-2", "3" => "BSL-3", "4" => "BSL-4"]],
+
+    ["type" => "text", "kathegorie" => "HT", "name" => "raumtemperatur_besonders", "label" => "Besondere Anforderungen an die Raumtemperatur (min-max)?"],
+
+    ["type" => "text", "kathegorie" => "HT", "name" => "luftfeuchtigkeit_besonders", "label" => "Besondere Anforderungen an die Luftfeuchtigkeit (geringe Temperaturschwankungen min./max. Temperatur)?"],
+
+    ["type" => "select", "kathegorie" => "HT", "name" => "druckregelung_besonders", "label" => "Besondere Anforderungen an die Druckregelung der Lüftung?", "options" => [1 => "Keine", 2 => "Überdruck", 3 => "Unterdruck"]],
+
+    ["type" => "yesno", "kathegorie" => "HT", "name" => "abluftwaescher", "label" => "Abzüge mit Abluftwäscher/Säurewäscher in Verwendung? "],
+
+    ["type" => "select", "kathegorie" => "Abluft", "name" => "raumabluft_besonders", "label" => "Besondere Anforderungen an die Raumabluft?", "options" => [1 => "keine", 2 => "Hepa Filter", 3 => "Sonderabluft"]],
+    //Komemntar Feld ?
+
+    ["type" => "text", "kathegorie" => "Abluft", "name" => "sonderabluft", "label" => "Sonderabluft (z.B. Veraschung) von Nöten?"],
+
+    ["type" => "yesno", "kathegorie" => "Gas", "name" => "spezialgas", "label" => "Sondergase in Verwendung (dezentrale Versorgung)?"],
+    //Kommmntar Feld
+
+    ["type" => "yesno", "kathegorie" => "ET", "name" => "anschlussleistung_hoch", "label" => "Geräte mit besonders hohen Anschlussleistungen in Verwendung (<500 W)?"],
+
+    ["type" => "yesno", "kathegorie" => "ET", "name" => "usv_geraete", "label" => "Unterbrechungsfreie Stromversorgung (USV) für empfindliche Geräte von Nöten?"],
+
+    ["type" => "yesno", "kathegorie" => "Wasser", "name" => "VE_Wasser", "label" => "Verwendung von vollentsalztem/deionisiertem Wasser?"],
+
+    ["type" => "yesno", "kathegorie" => "Wasser", "name" => "kuehlwasser", "label" => "Sind Geräte in Verwendung welche mittels Kühlwasser gekühlt werden könnten?"],
+
+    ["type" => "yesno", "kathegorie" => "Wasser", "name" => "abwasser_sonderfall", "label" => "Abwasser vorhanden welches nicht in die Kanalisation geleitet werden darf?"]
+
+
+
+];
+
+/*
 
     ["type" => "select", "default_value" => "0", "kathegorie" => "Raum", "name" => "fussboden_onorm_b5220", "label" => "Fußboden ÖNORM B5220", "options" => ["0" => "keine Anforderung", "1" => "Klasse 1", "2" => "Klasse 2", "3" => "Klasse 3"]],
     ["type" => "textarea", "default_value" => "", "kathegorie" => "Raum Kommentar", "name" => "fussboden_onorm_b5220_comment", "label" => "Kommentar Fußboden ÖNORM B5220"],
@@ -102,3 +154,5 @@ $formFields = [
 
     ["type" => "textarea", "default_value" => "", "kathegorie" => "Kommentar", "name" => "room_comment", "label" => "Allgemeiner Raum Kommentar"],
 ];
+
+*/

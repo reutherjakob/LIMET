@@ -17,6 +17,7 @@ $stmt->bind_result($role);
 if ($stmt->fetch()) {
     $stmt->close();
     switch ($role) {
+        case 'spargefeld_admin':
         case 'spargefeld_ext_users':
             header('Location: ../Nutzerumfrage/Nutzerabfrage.php');
             break;

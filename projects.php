@@ -54,7 +54,9 @@
         "KFN-PSY-NB" => "fas fa-unlock-alt",
         "KFN-ARIO" => "fas fa-bomb",
         "KOR-ZNB"=> "fas fa-briefcase-medical",
-        "KOR-MB-Sectio-OP" => "fas fa-briefcase-medical"
+        "KOR-MB-Sectio-OP" => "fas fa-briefcase-medical",
+        "Labor Standardräume"=>"fas fa-mortar-pestle",
+        "AGES SF Nutzerraumbuch" => "fas fa-mortar-pestle"
     ];
     ?>
 

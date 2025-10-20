@@ -1,21 +1,9 @@
 <?php
 session_start();
+require_once "utils/_utils.php";
+check_login();
 
-if (!isset($_SESSION["username"])) {
-    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-    exit;
-}
-
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-if ($mysqli->connect_error) {
-    die("Connection failed: " . $mysqli->connect_error);
-}
-
-/* change character set to utf8 */
-if (!$mysqli->set_charset("utf8")) {
-    echo "Error loading character set utf8: " . $mysqli->error;
-    exit();
-}
+$mysqli = utils_connect_sql();
 
 // Retrieve all GET parameters
 $params = $_GET;
@@ -30,15 +18,17 @@ foreach ($params as $key => $value) {
     if ($key === "fk_TABELLE_Räume_TABELLE_Funktionsteilstellen1") {
         $key = "`TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen`"; // Add backticks
     }
-    if($key ==="Bezeichnung" || $key ==="Nummer"){continue; }
+    if ($key === "Bezeichnung" || $key === "Nummer") {
+        continue;
+    }
     $columns[] = "`$key`";
     $values[] = "'" . $mysqli->real_escape_string($value) . "'";
 }
 
 $columnsString = implode(", ", $columns);
 $valuesString = implode(", ", $values);
- 
-$columnsString= str_replace('+', ' ', $columnsString); 
+
+$columnsString = str_replace('+', ' ', $columnsString);
 
 $sql = "INSERT INTO `LIMET_RB`.`$table` ($columnsString) VALUES ($valuesString)";
 
