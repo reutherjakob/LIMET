@@ -18,6 +18,58 @@ ADD COLUMN geraete_hohe_anschlussleistung TINYINT NULL COMMENT 'Geräte mit beso
 ADD COLUMN spezialabwasser TINYINT NULL COMMENT 'Abwasser vorhanden, das nicht in die Kanalisation geleitet werden darf';
 
 
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN fussboden_onorm_b5220;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN fussboden_onorm_b5220_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN verdunkelung_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN schallschutzanforderung;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN schallschutzanforderung_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN vc_klasse;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN vc_klasse_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN chemikalienliste_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN vexat_zone;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN vexat_zone_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN bsl_level_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN laser;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN laser_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN o2;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN o2_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN va;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN va_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN dl;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN dl_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN co2;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN co2_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN h2;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN h2_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN he;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN he_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN he_rf;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN he_rf_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN ar;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN ar_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN n2;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN n2_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN ln;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN ln_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN sv_geraete;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN sv_geraete_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN usv_geraete_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN alarm_glt;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN alarm_glt_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN kuehlwasser_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN VE_Wasser_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN geraete_wasser_abfluss;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN geraete_wasser_abfluss_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN punktabsaugung;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN abluft_sicherheitsschrank;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN abluft_sicherheitsschrank_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN abluft_vakuumpumpe;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN abluft_vakuumpumpe_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN abrauchabzuege;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN abrauchabzuege_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN sonderabluft_comment;
+
+
 
 // STILL IN USE
 	- bsl_level

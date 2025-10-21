@@ -14,13 +14,13 @@ $formFields = [
 
     ["type" => "select", "kathegorie" => "Raum", "name" => "mitarbeiter_anzahl", "label" => "Anzahl der im Raum ständig tätigen MitarbeiterInnen?", "options" => [0 => "0", 1 => "1", 2 => "2", 3 => "3", 4 => "4", 5 => "5", 6 => "6", 7 => "7", 8 => "8"]],
 
-    ["type" => "yesno", "kathegorie" => "Raum", "name" => "oberflaechenbestaendigkeit", "label" => "Erhöhte Anforderungen an die Oberflächenbeständigkeit (z.B. Einsatz von Säuren)?"],
+    ["type" => "yesno", "kathegorie" => "Raum", "name" => "oberflaechenbestaendigkeit", "label" => "Erhöhte Anforderungen an die Oberflächenbeständigkeit <br> (z.B. Einsatz von Säuren)?"],
 
     ["type" => "yesno", "kathegorie" => "Raum", "name" => "gewicht_ueber_500kg", "label" => "Geräte/Elemente mit Gewicht größer 500kg in Verwendung?"],
 
     ["type" => "yesno", "kathegorie" => "Raum", "name" => "verdunkelung", "label" => "Verdunkelung für lichtempfindliche Geräte erforderlich?"],
 
-    ["type" => "yesno", "kathegorie" => "Raum", "name" => "vibrationsempfindliche_geraete", "label" => "Vibrationsempfindliche Geräte in Verwendung (z.B. Präzisionswaagen, REM)?"],
+    ["type" => "yesno", "kathegorie" => "Raum", "name" => "vibrationsempfindliche_geraete", "label" => "Vibrationsempfindliche Geräte in Verwendung <br> (z.B. Präzisionswaagen, REM)?"],
 
     ["type" => "yesno", "kathegorie" => "Raum", "name" => "chemikalienliste", "label" => "Tätigkeiten mit gefährlichen oder giftigen Chemikalien"],
 
@@ -29,9 +29,9 @@ $formFields = [
     ["type" => "select", "kathegorie" => "Raum", "name" => "bsl_level", "label" => "Biosafety Level (BSL)", "options" => [
         "0" => "keine Anforderung", "1" => "BSL-1", "2" => "BSL-2", "3" => "BSL-3", "4" => "BSL-4"]],
 
-    ["type" => "text", "kathegorie" => "HT", "name" => "raumtemperatur_besonders", "label" => "Besondere Anforderungen an die Raumtemperatur (min-max)?"],
+    ["type" => "text", "kathegorie" => "HT", "name" => "raumtemperatur_besonders", "label" => "Besondere Anforderungen an die Raumtemperatur? <br> (min./max.)"],
 
-    ["type" => "text", "kathegorie" => "HT", "name" => "luftfeuchtigkeit_besonders", "label" => "Besondere Anforderungen an die Luftfeuchtigkeit (geringe Temperaturschwankungen min./max. Temperatur)?"],
+    ["type" => "text", "kathegorie" => "HT", "name" => "luftfeuchtigkeit_besonders", "label" => "Besondere Anforderungen an die Luftfeuchtigkeit? <br> (geringe Temperaturschwankungen)"],
 
     ["type" => "select", "kathegorie" => "HT", "name" => "druckregelung_besonders", "label" => "Besondere Anforderungen an die Druckregelung der Lüftung?", "options" => [1 => "Keine", 2 => "Überdruck", 3 => "Unterdruck"]],
 
@@ -45,7 +45,7 @@ $formFields = [
     ["type" => "yesno", "kathegorie" => "Gas", "name" => "spezialgas", "label" => "Sondergase in Verwendung (dezentrale Versorgung)?"],
     //Kommmntar Feld
 
-    ["type" => "yesno", "kathegorie" => "ET", "name" => "anschlussleistung_hoch", "label" => "Geräte mit besonders hohen Anschlussleistungen in Verwendung (<500 W)?"],
+    ["type" => "yesno", "kathegorie" => "ET", "name" => "anschlussleistung_hoch", "label" => "Geräte mit besonders hohen Anschlussleistungen in Verwendung? <br> (<500 W)"],
 
     ["type" => "yesno", "kathegorie" => "ET", "name" => "usv_geraete", "label" => "Unterbrechungsfreie Stromversorgung (USV) für empfindliche Geräte von Nöten?"],
 

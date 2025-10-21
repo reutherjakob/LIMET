@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $msg = "Dieses Passwort ist viel zu leicht zu erraten, bitte wählen Sie ein anderes.";
     }
     // Passwortregeln prüfen
-    elseif (strlen($new_pw_plain) < 12 ||
+    elseif (strlen($new_pw_plain) < 8 ||
         !preg_match('/[A-Z]/', $new_pw_plain) ||
         !preg_match('/[a-z]/', $new_pw_plain) ||
         !preg_match('/[0-9]/', $new_pw_plain) ||
@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input class="form-control mb-3" name="new_pw" id="new_pw" type="password"
                                    placeholder="Neues Passwort" required autocomplete="off"/>
                             <div class="mt-3">
-                                <small>Das Passwort muss mindestens 12 Zeichen lang sein, Groß- und Kleinbuchstaben,
+                                <small>Das Passwort muss mindestens 8 Zeichen lang sein, Groß- und Kleinbuchstaben,
                                     eine Zahl und ein Sonderzeichen enthalten.</small>
                             </div>
                         </div>

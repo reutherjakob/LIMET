@@ -12,11 +12,31 @@ header('X-Content-Type-Options: nosniff');
 
 $projektid = 95;
 
-$sqlUserReq = "SELECT r.idTABELLE_Räume as roomID, r.Raumbezeichnung as roomname, r.Raumnr as raumnr, t.username, t.created_at
-        FROM tabelle_room_requirements_from_user t
-        JOIN tabelle_räume r ON t.roomID = r.idTABELLE_Räume
-        WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
-        ORDER BY t.created_at DESC";
+
+$sqlSummary = "
+    SELECT 
+        r.`Raumbereich Nutzer` AS rb,
+        SUM(CASE WHEN t.roomID IS NULL THEN 1 ELSE 0 END) AS open_rooms,
+        SUM(CASE WHEN t.roomID IS NOT NULL THEN 1 ELSE 0 END) AS filled_rooms
+    FROM tabelle_räume r
+    LEFT JOIN tabelle_room_requirements_from_user t ON r.idTABELLE_Räume = t.roomID
+    WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
+    GROUP BY r.`Raumbereich Nutzer`
+    ORDER BY r.`Raumbereich Nutzer`;
+";
+
+$summaryData = [];
+if ($stmt = $mysqli->prepare($sqlSummary)) {
+    $stmt->bind_param("i", $projektid);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+        $summaryData[] = $row;
+    }
+    $stmt->close();
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -46,18 +66,68 @@ $sqlUserReq = "SELECT r.idTABELLE_Räume as roomID, r.Raumbezeichnung as roomnam
         <div class="card-header">
             <ul class="nav nav-tabs card-header-tabs" id="roomTabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="user-req-tab" data-bs-toggle="tab" data-bs-target="#user-req" type="button" role="tab" aria-controls="user-req" aria-selected="true">User Room Requirements</button>
+                    <button class="nav-link active" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats"
+                            type="button" role="tab" aria-controls="stats" aria-selected="true">Übersicht
+                    </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="open-rooms-tab" data-bs-toggle="tab" data-bs-target="#open-rooms" type="button" role="tab" aria-controls="open-rooms" aria-selected="false">Open Rooms</button>
+                    <button class="nav-link " id="user-req-tab" data-bs-toggle="tab" data-bs-target="#user-req"
+                            type="button" role="tab" aria-controls="user-req" aria-selected="false">User Room
+                        Requirements
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="open-rooms-tab" data-bs-toggle="tab" data-bs-target="#open-rooms"
+                            type="button" role="tab" aria-controls="open-rooms" aria-selected="false">Open Rooms
+                    </button>
                 </li>
             </ul>
         </div>
 
         <div class="card-body">
             <div class="tab-content" id="roomTabsContent">
-                <div class="tab-pane fade show active" id="user-req" role="tabpanel" aria-labelledby="user-req-tab">
+
+                <div class="tab-pane fade show active" id="stats" role="tabpanel" aria-labelledby="stats-tab">
+
+                    <canvas id="roomsChart" height="100"></canvas>
+                    <div class="card-body">
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Raumbereich</th>
+                                <th>Offen</th>
+                                <th>Mindestens 1 mal bearbeitet</th>
+                                <th>Gesamt</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($summaryData as $row): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($row['rb']) ?></td>
+                                    <td><?= intval($row['open_rooms']) ?></td>
+                                    <td><?= intval($row['filled_rooms']) ?></td>
+                                    <td><?= intval($row['open_rooms'] + $row['filled_rooms']) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                </div>
+
+
+                <div class="tab-pane fade show" id="user-req" role="tabpanel" aria-labelledby="user-req-tab">
                     <?php
+
+                    $sqlUserReq = "SELECT r.idTABELLE_Räume as roomID, r.Raumbezeichnung as roomname, 
+                                        r.`Raumbereich Nutzer` as rb, 
+                                        r.Raumnr as raumnr, t.username, t.created_at
+                                    FROM tabelle_room_requirements_from_user t
+                                    JOIN tabelle_räume r ON t.roomID = r.idTABELLE_Räume
+                                    WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
+                                    ORDER BY t.created_at DESC";
+
                     if ($stmt = $mysqli->prepare($sqlUserReq)) {
                         $stmt->bind_param("i", $projektid);
                         $stmt->execute();
@@ -68,6 +138,7 @@ $sqlUserReq = "SELECT r.idTABELLE_Räume as roomID, r.Raumbezeichnung as roomnam
                             <tr>
                                 <th>Raumnr</th>
                                 <th>Raumname</th>
+                                <th>Raumbereich</th>
                                 <th>Username</th>
                                 <th>Zuletzt bearbeitet am</th>
                             </tr>
@@ -77,8 +148,10 @@ $sqlUserReq = "SELECT r.idTABELLE_Räume as roomID, r.Raumbezeichnung as roomnam
                                 <tr>
                                     <td><?php echo htmlspecialchars($row['raumnr']); ?></td>
                                     <td><?php echo htmlspecialchars($row['roomname']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['rb']); ?></td>
                                     <td><?php echo htmlspecialchars($row['username']); ?></td>
                                     <td><?php echo htmlspecialchars($row['created_at']); ?></td>
+
                                 </tr>
                             <?php } ?>
                             </tbody>
@@ -93,7 +166,7 @@ $sqlUserReq = "SELECT r.idTABELLE_Räume as roomID, r.Raumbezeichnung as roomnam
 
                 <div class="tab-pane fade" id="open-rooms" role="tabpanel" aria-labelledby="open-rooms-tab">
                     <?php
-                    $sqlOpenRooms = "SELECT idTABELLE_Räume as roomID, Raumbezeichnung as roomname, Raumnr, Bauabschnitt, Nutzfläche FROM tabelle_räume WHERE tabelle_projekte_idTABELLE_Projekte = ? AND idTABELLE_Räume NOT IN (SELECT roomID FROM tabelle_room_requirements_from_user) ORDER BY Raumbezeichnung";
+                    $sqlOpenRooms = "SELECT idTABELLE_Räume as roomID, Raumbezeichnung as roomname, Raumnr, Bauabschnitt, Nutzfläche, `Raumbereich Nutzer`as rb FROM tabelle_räume WHERE tabelle_projekte_idTABELLE_Projekte = ? AND idTABELLE_Räume NOT IN (SELECT roomID FROM tabelle_room_requirements_from_user) ORDER BY Raumbezeichnung";
                     if ($stmt2 = $mysqli->prepare($sqlOpenRooms)) {
                         $stmt2->bind_param("i", $projektid);
                         $stmt2->execute();
@@ -104,6 +177,7 @@ $sqlUserReq = "SELECT r.idTABELLE_Räume as roomID, r.Raumbezeichnung as roomnam
                             <tr>
                                 <th>Raumnr</th>
                                 <th>Raumname</th>
+                                <th>Raumbereich</th>
                                 <th>Bauabschnitt</th>
                                 <th>Nutzfläche</th>
                             </tr>
@@ -113,6 +187,7 @@ $sqlUserReq = "SELECT r.idTABELLE_Räume as roomID, r.Raumbezeichnung as roomnam
                                 <tr>
                                     <td><?php echo htmlspecialchars($row2['Raumnr']); ?></td>
                                     <td><?php echo htmlspecialchars($row2['roomname']); ?></td>
+                                    <td><?php echo htmlspecialchars($row2['rb']); ?></td>
                                     <td><?php echo htmlspecialchars($row2['Bauabschnitt']); ?></td>
                                     <td><?php echo htmlspecialchars($row2['Nutzfläche']); ?></td>
                                 </tr>
@@ -131,4 +206,45 @@ $sqlUserReq = "SELECT r.idTABELLE_Räume as roomID, r.Raumbezeichnung as roomnam
     </div>
 </div>
 </body>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const data = <?= json_encode($summaryData, JSON_HEX_TAG | JSON_HEX_AMP); ?>;
+        const labels = data.map(d => d.rb || 'Unbekannt');
+        const open = data.map(d => parseInt(d.open_rooms));
+        const filled = data.map(d => parseInt(d.filled_rooms));
+
+        const ctx = document.getElementById('roomsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Offene Räume',
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                        data: open
+                    },
+                    {
+                        label: 'Gefüllte Räume',
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        data: filled
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {display: true, text: 'Raumstatus nach Raumbereich Nutzer'},
+                    legend: {position: 'bottom'}
+                },
+                scales: {
+                    y: {beginAtZero: true, title: {display: true, text: 'Anzahl Räume'}}
+                }
+            }
+        });
+    });
+</script>
+
 </html>

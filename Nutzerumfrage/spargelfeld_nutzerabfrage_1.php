@@ -92,8 +92,8 @@ function renderForm(array $formFields, array $userData = []): void
                 $btnClass = $isYes ? 'btn btn-success' : 'btn btn-outline-primary';
                 $btnText = $isYes ? ' Ja ' : 'Nein';
                 echo "<div class='mb-1 {$kathegorie} d-flex align-items-center'>";
-                echo "<label for='{$name}_toggle' class='form-label col-6 ms-2 me-2 rechtsbuendig text-nowrap'><strong>{$label}</strong></label>";
-                echo "<button type='button' class='{$btnClass}' id='{$name}_toggle' style='width: 3vw;'>{$btnText}</button>";
+                echo "<label for='{$name}_toggle' class='form-label col-6 ms-2 me-2 rechtsbuendig'><strong>{$label}</strong></label>";
+                echo "<button type='button' class='{$btnClass} text-nowrap' id='{$name}_toggle' style='width: 4vw;'>{$btnText}</button>";
                 echo "<input type='hidden' name='{$name}' id='{$name}' value='" . ($isYes ? '1' : '0') . "'>";
                 echo "</div>";
                 break;

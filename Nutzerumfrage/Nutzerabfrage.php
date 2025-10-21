@@ -22,15 +22,33 @@ if ($role === "internal_rb_user" || $role === "spargefeld_admin") {
         die("Fehler in der Abfrage: " . $mysqli->error);
     }
 } else {
-    $sql = "SELECT idTABELLE_Räume AS raum_id, Raumbezeichnung AS raumname, Raumnr AS raumnummer, `Raumbereich Nutzer` AS bereich, Nutzfläche, Bauabschnitt
+    if (str_contains($user_name, 'TIF')) {
+        $sql = "SELECT idTABELLE_Räume AS raum_id, Raumbezeichnung AS raumname, Raumnr AS raumnummer,
+                   `Raumbereich Nutzer` AS bereich, Nutzfläche, Bauabschnitt
             FROM tabelle_räume
-            WHERE tabelle_projekte_idTABELLE_Projekte = ? AND `Raumbereich Nutzer` LIKE ?";
+            WHERE tabelle_projekte_idTABELLE_Projekte = ?
+              AND (`Raumbereich Nutzer` LIKE ? OR `Raumbereich Nutzer` LIKE 'Allgemein_H_TIF%')";
+    } elseif (str_contains($user_name, 'LSV')) {
+        $sql = "SELECT idTABELLE_Räume AS raum_id, Raumbezeichnung AS raumname, Raumnr AS raumnummer,
+                   `Raumbereich Nutzer` AS bereich, Nutzfläche, Bauabschnitt
+            FROM tabelle_räume
+            WHERE tabelle_projekte_idTABELLE_Projekte = ?
+              AND (`Raumbereich Nutzer` LIKE ? OR `Raumbereich Nutzer` LIKE 'Allgemein_H_LSV%')";
+    } else {
+        $sql = "SELECT idTABELLE_Räume AS raum_id, Raumbezeichnung AS raumname, Raumnr AS raumnummer,
+                   `Raumbereich Nutzer` AS bereich, Nutzfläche, Bauabschnitt
+            FROM tabelle_räume
+            WHERE tabelle_projekte_idTABELLE_Projekte = ?
+              AND `Raumbereich Nutzer` LIKE ?";
+    }
+
     if ($stmt = $mysqli->prepare($sql)) {
         $like_param = "%" . $user_name . "%";
         $stmt->bind_param("is", $projekt_id, $like_param);
     } else {
         die("Fehler in der Abfrage: " . $mysqli->error);
     }
+
 }
 
 $stmt->execute();
@@ -125,7 +143,12 @@ $mysqli->close();
         <!-- Rechte Spalte: Formular -->
         <div class="col-8">
             <div class="card" id="formContainer">
-                Wählen sie ienen Raum aus.
+                <div class="card-header"></div>
+                <div class="card-body">
+                    Wählen sie einen Raum aus.
+                </div>
+                <div class="card-foter"></div>
+
             </div>
         </div>
     </div>

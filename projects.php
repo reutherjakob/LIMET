@@ -55,7 +55,7 @@
         "KFN-ARIO" => "fas fa-bomb",
         "KOR-ZNB"=> "fas fa-briefcase-medical",
         "KOR-MB-Sectio-OP" => "fas fa-briefcase-medical",
-        "Labor Standardräume"=>"fas fa-mortar-pestle",
+        "Labor Kathegorien"=>"fas fa-atom",
         "AGES SF Nutzerraumbuch" => "fas fa-mortar-pestle"
     ];
     ?>
