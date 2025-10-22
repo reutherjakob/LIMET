@@ -61,9 +61,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
             </div>
         </div>
     </div>
-</div>
-
-
+</div>3
 
 
 <!-- Modal zum Ändern der Parameter -->

@@ -29,7 +29,6 @@ $(document).ready(function () {
         }
     });
 
-
     $("#addElementToRoom").click(function () {
         $.ajax({
             url: "addElementToRoom.php",
@@ -49,8 +48,6 @@ $(document).ready(function () {
         });
     });
 
-
-    //Element speichern
     $("#saveElement").click(function () {
         let bezeichnung = $("#bezeichnung").val();
         let kurzbeschreibung = $("#kurzbeschreibungModal").val();
@@ -75,5 +72,4 @@ $(document).ready(function () {
             alert("Bitte alle Felder ausfüllen!");
         }
     });
-
 });
