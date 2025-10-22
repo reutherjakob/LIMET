@@ -12,16 +12,16 @@ class MYPDF extends TCPDF
         get_header_logo($this);
         $this->SetFont('helvetica', '', 8);
         $this->cell(0, 0, '', 0, 0, 'L');
-        //  $this->Ln();
+        $this->Ln();
         if (isset($_SESSION["PDFTITEL"]) && $_SESSION["PDFTITEL"] != null) {
             $this->Cell(0, 0, $_SESSION["PDFTITEL"], 0, false, 'R', 0, '', 0, false, 'B', 'B');
         } else {
             $this->Cell(0, 0, '', 0, false, 'R', 0, '', 0, false, 'B', 'B');
         }
-
+        $this->Ln(5);//
         if (isset($_SESSION["PDFHeaderSubtext"])) {
-            $this->Ln();//
             $this->Cell(0, 0, $_SESSION["PDFHeaderSubtext"], 'B', false, 'R', 0, '', 0, false, 'B', 'B');
+            $this->Ln();
         } else {
             $this->Ln();
             $this->cell(0, 0, '', 'B', 0, 'L');;

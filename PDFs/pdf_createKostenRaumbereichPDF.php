@@ -14,7 +14,7 @@ if ($_SESSION["projectPlanungsphase"] == "Vorentwurf") {
 } else {
     $_SESSION["PDFTITEL"] = "Medizintechnische Kostenberechnung";
 }
-
+   $_SESSION["PDFHeaderSubtext"] = "";
 $marginTop = 20; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/
 $marginBTM = 10;
 $pageHeight = 180;
@@ -134,7 +134,10 @@ $index = 0;
 
 foreach ($teile as $valueOfRaumBereiche) {
     foreach ($raumbereicheInProject as $rowData) {
-        if (normalize_name($rowData['Raumbereich Nutzer']) == normalize_name($valueOfRaumBereiche) && trim($rowData['Geschoss']) == trim($teileGeschosse[$index])) {
+
+
+        if (normalize_name($rowData['Raumbereich Nutzer']) == normalize_name($valueOfRaumBereiche) && isset($teileGeschosse[$index]) &&
+            trim($rowData['Geschoss']) == trim($teileGeschosse[$index])) {
             // echo "<pre>";
             // echo "Comparing: \n";
             // echo "Raumbereich Nutzer DB: [" . trim($rowData['Raumbereich Nutzer']) . "]\n";

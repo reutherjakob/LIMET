@@ -45,7 +45,8 @@ $stmt->execute();
 $result = $stmt->get_result();
 $stmt->close();
 
-echo "<table class='table table-striped table-sm' id='tableDevicePrices'>
+echo "<table class='table table-striped table-sm' id='
+tableDevicePrices'>
 	<thead><tr>";
 echo "<th>Datum</th>
 		<th>Info</th>

@@ -23,7 +23,8 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <!--- Boostrap Selct2 css -->
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+          rel="stylesheet">
 
 </head>
 <?php
@@ -42,14 +43,13 @@ init_page_serversides();
                         <div class="col-xxl-6">Räume im Projekt</div>
 
                         <div id="CardHeaderRaume" class="col-xxl-6 d-flex justify-content-end align-items-center">
-                            <label class="float-right">
-                                Entfallene: <input type="checkbox" id="filter_EntfalleneRooms"
-                                                   class="form-check-input me-2">
-                            </label>
-                            <label class="float-right">
-                                MT-relevante Räume: <input type="checkbox" id="filter_MTrelevantRooms"
-                                                           checked class="form-check-input me-2">
-                            </label>
+
+                            <input type="checkbox" id="filter_EntfalleneRooms" class="btn-check">
+                            <label class="btn btn-outline-dark btn-sm float-right" for="filter_EntfalleneRooms">
+                                Entfallene ausblenden </label>
+
+                            <input type="checkbox" id="filter_MTrelevantRooms" checked class="btn-check">
+                            <label class="btn btn-outline-dark btn-sm float-right ms-1 me-1" for="filter_MTrelevantRooms"> Nur MT-relevante </label>
                         </div>
                     </div>
                 </div>
@@ -84,14 +84,14 @@ init_page_serversides();
 						<thead><tr>
 						<th>ID</th>
 						<th>Raumnr</th>
-                                                <th>R.NR.Nutzer</th>
+                        <th>R.NR.Nutzer</th>
 						<th>Raumbezeichnung</th>
 						<th>Nutzfläche</th>
 						<th>Raumbereich Nutzer</th>
-                                                <th>Ebene</th>
-                                                <th>MT-relevant</th>
-                                                <th>BO</th>   
-                                                 <th> <i class='fas fa-slash'></i> </th>
+                        <th>Ebene</th>
+                        <th>MT-relevant</th>
+                        <th>BO</th>   
+                         <th> <i class='fas fa-slash'></i> </th>
 						</tr></thead><tbody>";
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr>";
@@ -382,7 +382,6 @@ init_page_serversides();
         });
 
         init_table_elementsinDB();
-
     });
 
     $("button[value='reloadBestand']").click(function () {
@@ -436,7 +435,7 @@ init_page_serversides();
                 searchPlaceholder: "Suche..."
             },
             initComplete: function () {
-                 $('#CardHeaderElementesInDb .xxx').remove();
+                $('#CardHeaderElementesInDb .xxx').remove();
                 $('#tableElementsInDB_wrapper .dt-search label').remove();
                 $('#tableElementsInDB_wrapper .dt-search').children().removeClass("form-control form-control-sm float-right").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
             }

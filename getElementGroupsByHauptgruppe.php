@@ -1,17 +1,7 @@
 <?php
 require_once 'utils/_utils.php';
 check_login();
-?>
 
-<!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title>Get Element Groups by Haupgruppe</title>
-</head>
-<body>
-<?php
 
 $mysqli = utils_connect_sql();
 $sql = "SELECT tabelle_element_gewerke.idtabelle_element_gewerke, tabelle_element_gewerke.Nummer, tabelle_element_gewerke.Gewerk

@@ -2,21 +2,7 @@
 // V2.0
 require_once 'utils/_utils.php';
 check_login();
-?>
 
-<!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker3.min.css">
-    <script type='text/javascript'
-            src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
-    <title></title>
-</head>
-<body>
-
-<?php
 $mysqli = utils_connect_sql();
 $deviceID = "";
 if ($_GET["deviceID"] != "") {
@@ -146,13 +132,15 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
 
 <script>
     $(document).ready(function () {
-        $('#dateService').datepicker({
-            format: "yyyy-mm-dd",
-            calendarWeeks: true,
-            autoclose: true,
-            todayBtn: "linked",
-            language: "de"
-        });
+        setTimeout(function () {
+            $('#dateService').datepicker({
+                format: "yyyy-mm-dd",
+                calendarWeeks: true,
+                autoclose: true,
+                todayBtn: "linked",
+                language: "de"
+            });
+        }, 500);
     });
 
     new DataTable('#tableDeviceServicePrices', {

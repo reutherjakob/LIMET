@@ -127,6 +127,7 @@ init_page_serversides("x"); ?>
     </div>
 </div>
 
+
 <script charset="utf-8" type="text/javascript">
     var table1;
     function init_table_elementsinDB() {
@@ -175,11 +176,9 @@ init_page_serversides("x"); ?>
             $("#deviceLieferanten").hide();
             table1.$('tr.info').removeClass('info');
             $(this).addClass('info');
-
             let elementID = table1.row($(this)).data()[0];
             document.getElementById("bezeichnung").value = table1.row($(this)).data()[2];
             document.getElementById("kurzbeschreibungModal").value = table1.row($(this)).data()[3];
-
             $.ajax({
                 url: "setSessionVariables.php",
                 data: {"elementID": elementID},
@@ -211,11 +210,8 @@ init_page_serversides("x"); ?>
                     });
                 }
             });
-
         });
-
     }
-
     $(document).ready(function () {
         init_table_elementsinDB();
     });

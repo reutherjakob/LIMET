@@ -2,10 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/js/bootstrap-datepicker.min.js"></script>
     <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker3.min.css"/>
-    <script type='text/javascript'
-            src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+          href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/css/bootstrap-datepicker.min.css">
     <title>Get Devices 2 Element</title>
 </head>
 <body>
@@ -162,6 +161,7 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
     var tableDevicesToElement;
 
     $(document).ready(function () {
+
         tableDevicesToElement = new DataTable('#tableDevicesToElement', {
             columnDefs: [
                 {

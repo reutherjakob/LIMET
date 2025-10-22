@@ -47,6 +47,7 @@
                 tabelle_elemente.Bezeichnung as Elementbezeichnung,
                     tabelle_geraete.GeraeteID, 
                     tabelle_hersteller.Hersteller, 
+                    tabelle_hersteller.idtabelle_hersteller,
                     tabelle_geraete.Typ, 
                     tabelle_geraete.Kurzbeschreibung, 
                     tabelle_geraete.idTABELLE_Geraete
@@ -168,7 +169,7 @@
 <script src="utils/_utils.js"></script>
 <script>
     let table;
-    let deviceID;
+    var deviceID;
 
     $(document).ready(function () {
         table = new DataTable('#tableDevices', {
@@ -177,7 +178,7 @@
             paging: true,
             pageLength: 25,
             columnDefs: [{
-                targets: [5],
+                targets: [3, 6],
                 visible: false,
                 searchable: false
             }],
@@ -192,49 +193,25 @@
             initComplete: function () {
                 $('.dt-search label').remove();
                 $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CH1');
-
-
             }
         });
     });
 
-    $('#tableDevices tbody').on('click', 'tr', function () {
-        let rowData = table.row($(this)).data();
-        deviceID = rowData[4];
-        $('#hersteller').val(rowData[1]);
-        console.log(" Row Data [1] ", rowData[1]);
-        $('#type').val(rowData[2]);
-        $('#kurzbeschreibung').val(rowData[3]);
-    });
-
-
     $("button[value='changeDevice']").click(function () {
         $('#addDevice').hide();
         let rowData = table.row($(this).closest('tr')).data();
-
-        $('#type').val(rowData[2]);
-        $('#kurzbeschreibung').val(rowData[3]);
-        setTimeout(function () {
-            updateHerstellerDropdown(rowData[1]);
-        }, 100)
+        let manufacturerID = rowData[3];
+        console.log("Raw:V ", rowData);
+        $('#hersteller').val(manufacturerID).trigger('change');
+        $('#type').val(rowData[4]);
+        $('#kurzbeschreibung').val(rowData[5]);
     });
 
-    //    $('#changeDeviceModal').on('shown.bs.modal', function () { });
-
-    function updateHerstellerDropdown(selectedHersteller) {
-        console.log(selectedHersteller);
-        let optionValue = $('#hersteller option').filter(function () {
-            return $(this).text() === selectedHersteller;
-        }).val();
-        console.log(optionValue);
-        $('#hersteller').val(optionValue).trigger('change');
-    }
 
     $("#addDevice").click(function () {
         let hersteller = $("#hersteller").val();
         let type = $("#type").val();
         let kurzbeschreibung = $("#kurzbeschreibung").val();
-
         if (hersteller !== "" && type !== "" && kurzbeschreibung !== "") {
             $('#changeDeviceModal').modal('hide');
             $.ajax({
@@ -256,6 +233,7 @@
             alert("Bitte alle Felder ausfüllen!");
         }
     });
+
 
     $("#saveDevice").click(function () {
         let hersteller = $("#hersteller").val();
@@ -288,6 +266,7 @@
             alert("Bitte alle Felder ausfüllen!");
         }
     });
+
 
     $("#addManufacturer").click(function () {
         let manufacturer = $("#manufacturer").val();

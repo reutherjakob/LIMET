@@ -165,7 +165,10 @@ function abcTo123($char)
 
 function unitMultiplier($text)
 {
-    return stripos($text, 'k') !== false ? 1000 : 1;
+    if (stripos($text, 'k') !== false) return 1000;
+    if (stripos($text, 'M') !== false) return 1000000;
+    if (stripos($text, 'm') !== false) return 0.001;
+    return 1;
 }
 
 function getQueryParam($param)
@@ -184,6 +187,7 @@ function getUniqueComponents($new, $existing)
     foreach ($new as $c) if (!in_array($c, $existing)) $existing[] = $c;
     return $existing;
 }
+
 
 // ------------------- ROOM PARAMETER CHECKS -------------------
 function check_dependency_non_zero(&$msgs, $roomParams, $p1, $p2)
