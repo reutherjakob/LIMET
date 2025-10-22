@@ -72,13 +72,14 @@ if ($stmt = $mysqli->prepare($sqlSummary)) {
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link " id="user-req-tab" data-bs-toggle="tab" data-bs-target="#user-req"
-                            type="button" role="tab" aria-controls="user-req" aria-selected="false">User Room
-                        Requirements
+                            type="button" role="tab" aria-controls="user-req" aria-selected="false">
+                        Bearbeitete Räume
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="open-rooms-tab" data-bs-toggle="tab" data-bs-target="#open-rooms"
-                            type="button" role="tab" aria-controls="open-rooms" aria-selected="false">Open Rooms
+                            type="button" role="tab" aria-controls="open-rooms" aria-selected="false">
+                        Noch offene Räume
                     </button>
                 </li>
             </ul>
