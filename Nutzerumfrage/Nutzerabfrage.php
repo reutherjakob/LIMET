@@ -100,12 +100,12 @@ $mysqli->close();
                 <div class="card-header bg-success text-white">
                     <div class="row">
                         <div class="col-9">
-                            <strong>Räume des Projekts </strong>
-                            <span class="badge rounded-pill text-white m-1 p-2 float-end"
-                                  data-bs-toggle="popover"
-                                  data-bs-content="Hier sind die Räume laut RUF gelistet. Sie sehen jeweils nur die Labortechnisch relevanten Räume ihres Bereiches .">
-                                    <i class="fas fa-info-circle"></i>
-                                </span>
+                            <strong>Labortechnisch relevante Räume </strong>
+                            <button class="btn btn-sm btn-success "
+                                    data-bs-toggle="popover"
+                                    data-bs-content="Hier sind die als labortechnisch relevant eingestuften Räume ihres Bereiches des Raum und Funktionsprogrammes gelistet.">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
 
                         </div>
                         <div class="col-3 d-flex justify-content-end" id="RDPTCH"></div>
@@ -155,21 +155,32 @@ $mysqli->close();
 </div>
 
 <script>
-    $(document).ready(function () {
-        const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-        popoverTriggerList.forEach(el => new bootstrap.Popover(el));
-        document.addEventListener('click', e => {
-                document.querySelectorAll('[data-bs-toggle="popover"]').forEach(pop => {
-                    const popover = bootstrap.Popover.getInstance(pop);
-                    if (popover) {
-                        if (!pop.contains(e.target) && !(popover.tip && popover.tip.contains(e.target))) {
-                            popover.hide();
+    function reinitPopovers(container = document) {
+        container.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
+            bootstrap.Popover.getOrCreateInstance(el, {trigger: 'manual', container: 'body'});
+        });
+        document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
+            el.addEventListener('click', function (e) {
+                e.preventDefault();
+                const popover = bootstrap.Popover.getOrCreateInstance(el);
+
+                if (popover._isShown()) {  // Bootstrap 5.3+ private method, alternatively check popover tip class
+                    popover.hide();
+                } else {
+                    // Hide others (optional)
+                    document.querySelectorAll('[data-bs-toggle="popover"]').forEach(otherEl => {
+                        if (otherEl !== el) {
+                            bootstrap.Popover.getOrCreateInstance(otherEl).hide();
                         }
-                    }
-                });
-            },
-            true
-        );
+                    });
+                    popover.show();
+                }
+            });
+        });
+    }
+
+    $(document).ready(function () {
+        reinitPopovers();
 
         $('#raeumeTable').DataTable({
             paging: true,           // Enable or disable pagination (true/false)
@@ -223,6 +234,7 @@ $mysqli->close();
 
 
         $("#raeumeTable tbody tr").on("click", function () {
+            $("#formContainer").html("");
             let roomID = $(this).data("id");
             let raumnr = $(this).find('td').eq(0).text().trim();
             let roomname = $(this).find('td').eq(1).text().trim();
@@ -241,9 +253,11 @@ $mysqli->close();
             $.ajax({
                 url: "spargelfeld_nutzerabfrage_1.php",
                 method: "POST",
-                data: {roomID: roomID},
+                data: {roomID: roomID, roomname: roomname},
                 success: function (response) {
                     $("#formContainer").html(response);
+
+                    reinitPopovers(document.getElementById('formContainer'));
 
                     loadFormData(roomID);
                     $('[name="roomID"]').val(roomID);

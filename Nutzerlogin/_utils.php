@@ -15,7 +15,7 @@ function init_page($allowed_roles): string
 function check_login_new(): void
 {
     if (!isset($_SESSION['user_id'])) {
-        header("Location: ../Nutzerlogin/index.php");
+        header("Location: ../../Nutzerlogin/index.php");
         exit;
     }
 

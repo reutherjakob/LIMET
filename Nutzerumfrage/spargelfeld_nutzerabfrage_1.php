@@ -3,6 +3,7 @@ global $mysqli, $formFields;
 include "../Nutzerlogin/db.php";
 require_once "../Nutzerlogin/_utils.php";
 $role = init_page(["internal_rb_user", "spargefeld_ext_users"]);
+
 require_once("form_fields_forNutzergruppe1.php"); // Array $formFields
 require_once("../Nutzerlogin/csrf.php");
 
@@ -10,19 +11,20 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 $roomId = $_POST['raumid'] ?? null;
+$roomname = $_POST['roomname'] ?? null;
 error_log("Received roomId: " . var_export($roomId, true));
 
 // Funktion um Formular zu rendern aus vorheriger Antwort:
 function renderForm(array $formFields, array $userData = []): void
 {
-    global $mysqli;
+    global $mysqli, $roomname;
 
 
     echo '<form method="post" action=""><div class="card-header d-flex align-items-center justify-content-between" > 
             <strong> Labortechnische Raumanforderung </strong>';
 
 
-    echo '<div class="d-flex align-items-center justify-content-end"> <button type="submit" class="btn btn-success">Anforderungen speichern</button>
+    echo '<div class="d-flex align-items-center justify-content-end"> <button type="submit" class="btn btn-outline-success"> <i class="far fa-save"></i> Anforderungen speichern</button>
           </div> 
            </div> <div class="card-body px-2 py-2">    </div>';
 
@@ -35,34 +37,54 @@ function renderForm(array $formFields, array $userData = []): void
         $label = $field['label'];
         $type = $field['type'];
         $kathegorie = $field['kathegorie'] ?? '';
-        $defaultValue = $field['default_value'] ?? '';
+        $defaultValue = '';
+
+        if (is_array($field['default_value'] ?? false)) {
+            if ($roomname && isset($field['default_value'][$roomname])) {
+                $defaultValue = $field['default_value'][$roomname];
+            }
+        } else {
+            $defaultValue = $field['default_value'] ?? '';
+        }
+
         $options = $field['options'] ?? [];
         $value = $userData[$name] ?? $defaultValue;
-
+        $info = $field['info'] ?? '';
         switch ($type) {
-            case 'KathegorieDropdowner':
 
-                echo '<div class="mb-1 d-flex align-items-center">
-                        <label  for="Raumkathegorie" class="col-6 ms-2 form-label rechtsbuendig"><strong>  Raumkathegorie:  </strong></label>
-                        <select id="Raumkathegorie" class="ms-2 form-select"  name="raumkathegorie">
+            case 'KathegorieDropdowner':
+                echo '<div class="mb-1 d-flex align-items-center">';
+                echo '<label  for="Raumkathegorie" class="col-6 ms-2 form-label rechtsbuendig">
+                      <strong>  Raumkathegorie?  </strong>';
+                if ($info) {
+                    echo " <button class='btn btn-sm bg-white rounded'
+                                  data-bs-toggle='popover'
+                                  data-bs-content='{$info}'>
+                                    <i class='fas fa-info-circle'></i>
+                                </button>";
+                }
+                echo ' </label>
+                       <div class="col-5"> 
+                        <select id="Raumkathegorie" class="ms-2 form-select "  name="raumkathegorie">
                             <option value="">Raumkathegorie wählen</option>';
 
+                $sql = "SELECT tabelle_räume.Raumbezeichnung, idTABELLE_Räume, `Raumbereich Nutzer`
+                        FROM tabelle_räume
+                        where tabelle_projekte_idTABELLE_Projekte = 3";
 
-                $sql = "SELECT tabelle_räume.Raumbezeichnung, idTABELLE_Räume
-            FROM tabelle_räume
-            where tabelle_projekte_idTABELLE_Projekte = 3";
                 $result = $mysqli->query($sql);
                 while ($row = $result->fetch_assoc()) {
+                    if ($roomname && !str_contains($row['Raumbereich Nutzer'], $roomname)) continue;
                     echo "<option value=" . $row['idTABELLE_Räume'] . "  >" . $row['Raumbezeichnung'] . "</option>";
                 }
 
-                echo '</select> </div>';
+                echo '</select> </div> </div>';
                 break;
 
             case 'text':
                 echo "<div class='mb-1 {$kathegorie} d-flex align-items-center'>";
                 echo "<label for='{$name}' class='form-label col-6 ms-2 me-2 rechtsbuendig'><strong>{$label}</strong></label>";
-                echo "<input class='form-control flex-grow-1' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'>";
+                echo "<div class='col-5'>  <input class='form-control flex-grow-1' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'> </div>";
                 break;
 
             case 'texthidden':
@@ -73,7 +95,7 @@ function renderForm(array $formFields, array $userData = []): void
 
             case 'text_non_editable':
                 echo "<div class='{$kathegorie} d-flex align-items-center'>";
-                echo "<strong class=' col-6 rechtsbuendig'>{$label}:</strong>";
+                echo "<strong class='col-6 rechtsbuendig'>{$label}:</strong>";
                 echo "<input class='form-control ms-2' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'readonly>";
                 break;
 
@@ -89,10 +111,18 @@ function renderForm(array $formFields, array $userData = []): void
 
             case 'yesno':
                 $isYes = ($value == 1 || $value === '1');
-                $btnClass = $isYes ? 'btn btn-success' : 'btn btn-outline-primary';
+                $btnClass = $isYes ? 'btn btn-outline-success' : 'btn btn-outline-primary';
                 $btnText = $isYes ? ' Ja ' : 'Nein';
                 echo "<div class='mb-1 {$kathegorie} d-flex align-items-center'>";
-                echo "<label for='{$name}_toggle' class='form-label col-6 ms-2 me-2 rechtsbuendig'><strong>{$label}</strong></label>";
+                echo "<label for='{$name}_toggle' class='form-label col-6 ms-2 me-2 rechtsbuendig'><strong>{$label}";
+                if ($info) {
+                    echo " <button class='btn btn-sm bg-white rounded'
+                                  data-bs-toggle='popover'
+                                  data-bs-content='{$info}'>
+                                    <i class='fas fa-info-circle'></i>
+                                </button>";
+                }
+                echo " </strong></label>";
                 echo "<button type='button' class='{$btnClass} text-nowrap' id='{$name}_toggle' style='width: 4vw;'>{$btnText}</button>";
                 echo "<input type='hidden' name='{$name}' id='{$name}' value='" . ($isYes ? '1' : '0') . "'>";
                 echo "</div>";
@@ -101,7 +131,7 @@ function renderForm(array $formFields, array $userData = []): void
 
             case 'yesno_checkbox':
                 echo "<div class=' mb-1  {$kathegorie} d-flex justify-content-start '>";
-                echo "<label for='{$name}' class='form-label  col-6 ms-2 me-2 rechtsbuendig'> <strong> {$label}</strong></label>";
+                echo "<label for='{$name}' class='form-label   col-6 ms-2 me-2 rechtsbuendig'> <strong> {$label}</strong></label>";
                 $checked = ($value == "1" || $value === 1) ? "checked" : "";
                 echo "<div class='form-check'>";
                 echo "<input class='form-check-input' type='checkbox' name='{$name}' id='{$name}' value='1' {$checked}>";
@@ -123,8 +153,16 @@ function renderForm(array $formFields, array $userData = []): void
 
             case 'select':
                 echo "<div class='mb-1 {$kathegorie} d-flex align-items-center flex-wrap'>";
-                echo "<label class='form-label  me-2 ms-2  col-6 rechtsbuendig' ><strong>{$label}</strong></label>";
-                echo "<div class='btn-group' role='group' aria-label='{$label}'>";
+                echo "<label class='form-label  me-2 ms-2  col-6 rechtsbuendig' ><strong>{$label}</strong>";
+                if ($info) {
+                    echo " <button class='btn btn-sm bg-white rounded'
+                                  data-bs-toggle='popover'
+                                  data-bs-content='{$info}'>
+                                    <i class='fas fa-info-circle'></i>
+                                </button>";
+                }
+                echo "</label>
+                        <div class='btn-group' role='group' aria-label='{$label}'>";
                 foreach ($options as $optValue => $optLabel) {
                     $checked = ($optValue == $value) ? "checked" : "";
                     $btnId = "{$name}_{$optValue}";
@@ -183,6 +221,22 @@ if ($roomId) {
 <script>
 
     $(document).ready(function () {
+
+        reinitPopovers()
+        document.addEventListener('click', function (event) {
+            document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function (el) {
+                const popover = bootstrap.Popover.getInstance(el);
+                if (!popover) return;
+
+                const popoverElement = document.querySelector('.popover');
+                // Close when click is outside both the trigger and the popover
+                if (popoverElement && !el.contains(event.target) && !popoverElement.contains(event.target)) {
+                    popover.hide();
+                }
+            });
+        });
+
+
         $('button[id$="_toggle"]').each(function () {
             var btn = $(this);
             btn.on('click', function () {
@@ -190,10 +244,10 @@ if ($roomId) {
                 if (!hiddenInput.length) return;
                 var isYes = hiddenInput.val() === '1';
                 if (isYes) {
-                    btn.removeClass('btn-success').addClass('btn-outline-primary').text('Nein');
+                    btn.removeClass('btn-outline-success').addClass('btn-outline-primary').text('Nein');
                     hiddenInput.val('0');
                 } else {
-                    btn.removeClass('btn-outline-primary').addClass('btn-success').text(' Ja ');
+                    btn.removeClass('btn-outline-primary').addClass('btn-outline-success').text(' Ja ');
                     hiddenInput.val('1');
                 }
             });
@@ -227,10 +281,10 @@ if ($roomId) {
                 if (toggleBtn.length) {
                     // Set hidden input value and button text/class
                     if (value === 1 || value === '1') {
-                        toggleBtn.removeClass('btn-outline-primary').addClass('btn-success').text(' Ja ');
+                        toggleBtn.removeClass('btn-outline-primary').addClass('btn-outline-success').text(' Ja ');
                         el.val('1');
                     } else {
-                        toggleBtn.removeClass('btn-success').addClass('btn-outline-primary').text('Nein');
+                        toggleBtn.removeClass('btn-outline-success').addClass('btn-outline-primary').text('Nein');
                         el.val('0');
                     }
                     continue; // skip normal input
@@ -254,12 +308,10 @@ if ($roomId) {
                     continue;
                 }
 
-                // Default: input text or textarea
                 el.val(value);
             }
         }, 'json');
     }
-
 
 
     $('form').on('submit', function (e) {
