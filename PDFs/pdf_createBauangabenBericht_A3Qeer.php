@@ -164,111 +164,163 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $Block_height = 6 + $horizontalSpacerLN + getAnmHeight($pdf, $row['Anmerkung Elektro'], $SB) + $i;
         block_label_queer($block_header_w, $pdf, "Elektro", $Block_height, $block_header_height, $SB);
 
-        multicell_text_hightlight($pdf, $e_C, $font_size, "Anwendungsgruppe", "ÖVE E8101:", $parameter_changes_t_räume);
-        multicell_with_str($pdf, $row['Anwendungsgruppe'], $e_C_3rd + 10, "");
+        //    multicell_text_hightlight($pdf, $e_C, $font_size, "Anwendungsgruppe", ":", $parameter_changes_t_räume);
+        //     multicell_with_str($pdf, $row['Anwendungsgruppe'], $e_C_3rd, "");
 
-
-        // Define cell configurations for both item lists.
-        $cellConfigs = [
+        $reportFields = [
+            // 1. Basic supply fields (checkbox)
             [
-                'key'    => 'AV',
-                'label'  => 'AV: ',
-                'width'  => $e_C_2_3rd,
-                'nln'    => false
+                'key' => 'Anwendungsgruppe',
+                'label' => 'ÖVE E8101: ',
+                'width' => $e_C,
+                'type' => 'number',
+                'nichtInVE' => true
             ],
             [
-                'key'    => 'SV',
-                'label'  => 'SV: ',
-                'width'  => $e_C_2_3rd,
-                'nln'    => false
+                'key' => 'AV',
+                'label' => 'AV: ',
+                'width' => $e_C_2_3rd,
+                'type' => 'checkbox',
+                'nichtInVE' => true
             ],
             [
-                'key'    => 'ZSV',
-                'label'  => 'ZSV: ',
-                'width'  => $e_C_2_3rd,
-                'nln'    => false
+                'key' => 'SV',
+                'label' => 'SV: ',
+                'width' => $e_C_2_3rd,
+                'type' => 'checkbox',
+                'nichtInVE' => true
             ],
             [
-                'key'    => 'USV',
-                'label'  => 'USV: ',
-                'width'  => $e_C_2_3rd,
-                'nln'    => false
+                'key' => 'ZSV',
+                'label' => 'ZSV: ',
+                'width' => $e_C_2_3rd,
+                'type' => 'checkbox',
+                'nichtInVE' => true
             ],
             [
-                'key'    => 'IT Anbindung',
-                'label'  => 'IT Anschl.: ',
-                'width'  => $e_C_2_3rd,
-                'nln'    => true // add newline after this
-            ]
-        ];
-
-        foreach ($cellConfigs as $cell) {
-            multicell_text_hightlight($pdf, $cell['width'], $font_size, $cell['key'], $cell['label'], $parameter_changes_t_räume);
-            hackerlA3($pdf, $font_size, $e_C_3rd + 10, $row[$cell['key']], "JA");
-            if ($cell['nln']) $pdf->Ln($horizontalSpacerLN2);
-        }
-
-        if ($isnotVorentwurf) {
-            multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'EL_Roentgen 16A CEE Stk', "CEE16A Röntgen", $parameter_changes_t_räume);
-            multicell_with_str($pdf, $row['EL_Roentgen 16A CEE Stk'], $e_C_3rd, "Stk");
-            $pdf->Ln($horizontalSpacerLN);
-
-        }
-
-
-// Define configurations for power cells.
-        $powerCellConfigs = [
+                'key' => 'USV',
+                'label' => 'USV: ',
+                'width' => $e_C_2_3rd,
+                'type' => 'checkbox',
+                'nichtInVE' => true
+            ],
             [
-                'key'   => 'ET_Anschlussleistung_W',
+                'key' => 'IT Anbindung',
+                'label' => 'IT Anschl.: ',
+                'width' => $e_C_2_3rd,
+                'type' => 'checkbox',
+                'nichtInVE' => true,
+                'newline' => true           // if you want a line break after this
+            ],
+            // 2. Power info (number, kified)
+            [
+                'key' => 'ET_Anschlussleistung_W',
                 'label' => 'Raum Anschlussl. ohne Glz:',
                 'width' => $e_C,
-                'nln'   => false  // or as needed per layout
+                'type' => 'number',
+                'suffix' => 'W',
+                'nichtInVE' => true
             ],
             [
-                'key'   => 'ET_Anschlussleistung_AV_W',
+                'key' => 'ET_Anschlussleistung_AV_W',
                 'label' => 'AV(Rauml.): ',
                 'width' => $e_C_2_3rd,
-                'nln'   => false
+                'type' => 'number',
+                'suffix' => 'W',
+                'nichtInVE' => true
             ],
             [
-                'key'   => 'ET_Anschlussleistung_SV_W',
+                'key' => 'ET_Anschlussleistung_SV_W',
                 'label' => 'SV(Rauml.): ',
                 'width' => $e_C_2_3rd,
-                'nln'   => false
+                'type' => 'number',
+                'suffix' => 'W',
+                'nichtInVE' => true
             ],
             [
-                'key'   => 'ET_Anschlussleistung_ZSV_W',
+                'key' => 'ET_Anschlussleistung_ZSV_W',
                 'label' => 'ZSV(Rauml.): ',
                 'width' => $e_C_2_3rd,
-                'nln'   => false
+                'type' => 'number',
+                'suffix' => 'W',
+                'nichtInVE' => true
             ],
             [
-                'key'   => 'ET_Anschlussleistung_USV_W',
+                'key' => 'ET_Anschlussleistung_USV_W',
                 'label' => 'USV(Rauml.): ',
                 'width' => $e_C_2_3rd,
-                'nln'   => true
+                'type' => 'number',
+                'suffix' => 'W',
+                'nichtInVE' => true,
+
+            ],
+            // 3. Only if not Vorentwurf
+            [
+                'key' => 'ET_RJ45-Ports',
+                'label' => 'RJ45-Ports: ',
+                'width' => $e_C_2_3rd,
+                'type' => 'number',
+                'suffix' => 'Stk',
+                'nichtInVE' => false,
+                'newline' => true
+            ],
+            [
+                'key' => ' ',
+                'label' => '  ',
+                'width' => $e_C,
+                'type' => 'number',
+                'suffix' => ' ',
+                'nichtInVE' => false
+            ],
+            [
+                'key' => 'EL_Laser 16A CEE Stk',
+                'label' => 'CEE16A Laser: ',
+                'width' => $e_C_2_3rd,
+                'type' => 'number',
+                'suffix' => 'Stk',
+                'nichtInVE' => false
+            ],
+            [
+                'key' => 'EL_Roentgen 16A CEE Stk',
+                'label' => 'CEE16A Röntgen: ',
+                'width' => $e_C_2_3rd,
+                'type' => 'number',
+                'suffix' => 'Stk',
+                'nichtInVE' => false
             ]
         ];
-        $pdf->MultiCell($block_header_w, $block_header_height, "", 0, 'L', 0, 0);
-        foreach ($powerCellConfigs as $cell) {
-            multicell_text_hightlight($pdf, $cell['width'], $font_size, $cell['key'], $cell['label'], $parameter_changes_t_räume);
-            $val = ($row[$cell['key']] != "0") ? kify($row[$cell['key']]) . "W" : "-";
-            multicell_with_str($pdf, $val, $e_C_3rd + 10, "");
-            //if ($cell['nln']) $pdf->Ln($horizontalSpacerLN2);
+
+        foreach ($reportFields as $field) {
+            // Skip field if "nichtInVE" is true and $isnotVorentwurf is false
+            if ($field['nichtInVE'] && !$isnotVorentwurf) continue;
+
+            multicell_text_hightlight(
+                $pdf,
+                $field['width'],
+                $font_size,
+                $field['key'],
+                $field['label'],
+                $parameter_changes_t_räume
+            );
+
+            if ($field['type'] == 'checkbox') {
+                hackerlA3($pdf, $font_size, $e_C_3rd, $row[$field['key']], "JA");
+            } elseif ($field['type'] == 'number') {
+                $val = ($row[$field['key']] != "0" && $row[$field['key']] !== null)
+                    ? kify($row[$field['key']]) . ($field['suffix'] ?? '')
+                    : "-";
+                multicell_with_str($pdf, $val, $e_C_3rd, "");
+            } else { // fallback: plain text
+                multicell_with_str($pdf, $row[$field['key']], $e_C_3rd, "");
+            }
+
+            if (!empty($field['newline'])) {
+                $pdf->Ln($horizontalSpacerLN2);
+                $pdf->Multicell($block_header_w, $font_size, " ", 0, 0, 0, 0);
+
+            }
         }
 
-
-        if ($isnotVorentwurf) {
-            multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'ET_RJ45-Ports', "RJ45-Ports: ", $parameter_changes_t_räume);
-            multicell_with_nr($pdf, $row['ET_RJ45-Ports'], "Stk", $pdf->getFontSizePt(), $e_C_3rd);
-
-            multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'EL_Laser 16A CEE Stk', "CEE16A Laser: ", $parameter_changes_t_räume);
-            multicell_with_str($pdf, $row['EL_Laser 16A CEE Stk'], $e_C_3rd, "Stk");
-
-        }
-
-
-        $pdf->MultiCell($block_header_w, $block_header_height, "", 0, 'L', 0, 0);
         // if ($isnotVorentwurf) {
         //     $SQL = "SELECT tpep.Wert,
         //                tpep.Einheit,
@@ -402,7 +454,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         block_label_queer($block_header_w, $pdf, "Haustechnik", $Block_height, $block_header_height, $SB);
         $haustechnikParams = [
             ['key' => 'H6020', 'label' => 'H6020: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-            ['key' => 'HT_Abluft_Digestorium_Stk', 'label' => 'Abluft Digestorium:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
+            ['key' => 'HT_Abluft_Digestorium_Stk', 'label' => 'Abluft Werkbank:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
             ['key' => 'HT_Abluft_Sicherheitsschrank_Stk', 'label' => 'Abluft Sicherheitsschrank:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
             ['key' => 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'label' => 'Abluft Sicherheitsschrank Unterbau:', 'unit' => 'Stk', 'cell' => $e_C + $e_C_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => false],
             ['key' => 'HT_Punktabsaugung_Stk', 'label' => 'Punktabsaugung:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => true], // Line break after this

@@ -78,7 +78,9 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dat
     /// ---------- SIZE/FORMAT VARIABLES -----------
 
     $table_column_sizes = array(15, 42, 7, 7, 11);
-    $text_width = ($SB - array_sum($table_column_sizes)) / $paramInfosCounter;
+    $text_width = $SB-array_sum($table_column_sizes);
+    if($paramInfosCounter!=0){
+    $text_width = ($SB - array_sum($table_column_sizes)) / $paramInfosCounter;}
     $rowHeight = 5;
     $rowHeightMainLine = 7;
     $f_size = 6;
