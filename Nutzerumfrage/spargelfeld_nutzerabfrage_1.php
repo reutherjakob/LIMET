@@ -74,8 +74,12 @@ function renderForm(array $formFields, array $userData = []): void
 
                 $result = $mysqli->query($sql);
                 while ($row = $result->fetch_assoc()) {
+                    $checked = "";
                     if ($roomname && !str_contains($row['Raumbereich Nutzer'], $roomname)) continue;
-                    echo "<option value=" . $row['idTABELLE_Räume'] . "  >" . $row['Raumbezeichnung'] . "</option>";
+                    if ($roomname == "Waschküche" || $roomname == "Wägeraum") {
+                        $checked = "selected";
+                    }
+                    echo "<option value=' " . $row['idTABELLE_Räume'] . "' " . $checked . "  >" . $row['Raumbezeichnung'] . "</option>";
                 }
 
                 echo '</select> </div> </div>';

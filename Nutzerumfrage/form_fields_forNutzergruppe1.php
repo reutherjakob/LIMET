@@ -26,7 +26,7 @@ $formFields = [
     ["type" => "yesno", "kathegorie" => "Raum", "name" => "explosionsschutz", "label" => "Explosionsschutz im Raum erforderlich?"],
 
     ["type" => "select", "kathegorie" => "Raum", "name" => "bsl_level", "label" => "Biosafety Level (BSL)", "options" => [
-        "0" => "keine Anforderung", "1" => "BSL-1", "2" => "BSL-2", "3" => "BSL-3", "4" => "BSL-4"], "default_value" => "0"],
+        "0" => "keine Anforderung", "1" => "BSL-1", "2" => "BSL-2", "3" => "BSL-3"], "default_value" => "0"],
 
     ["type" => "text", "kathegorie" => "HT", "name" => "temperatur", "label" => "Besondere Anforderungen an die Raumtemperatur? <br> (z.B min./max.°C, max. Temperaturschwankung °C)", "default_value" => "Nein"],
 
@@ -58,13 +58,9 @@ $formFields = [
 
     ["type" => "yesno", "kathegorie" => "ET", "name" => "usv_geraete", "label" => "Unterbrechungsfreie Stromversorgung (USV) für empfindliche Geräte von Nöten?"],
 
-    ["type" => "yesno", "kathegorie" => "Wasser", "name" => "VE_Wasser", "label" => "Verwendung von vollentsalztem/deionisiertem Wasser?"],
-
-    ["type" => "yesno", "kathegorie" => "Wasser", "name" => "kuehlwasser", "label" => "Sind Geräte in Verwendung welche mittels Kühlwasser gekühlt werden könnten?"],
-
-    ["type" => "yesno", "kathegorie" => "Wasser", "name" => "abwasser_sonderfall", "label" => "Abwasser vorhanden welches nicht in die Kanalisation geleitet werden darf?"]
-
-
+    ["type" => "yesno", "kathegorie" => "HKLS", "name" => "VE_Wasser", "label" => "Verwendung von vollentsalztem/deionisiertem Wasser?" , "default_value" => 0, "options"=> [0=> "Nein", 1=> "Ja, aus der Leitung", 2=> "Ja, über zusätliche dezentrale Aufbereitung."]],
+    ["type" => "yesno", "kathegorie" => "HKLS", "name" => "kuehlwasser", "label" => "Sind Geräte in Verwendung welche mittels Kühlwasser gekühlt werden könnten?"],
+    ["type" => "yesno", "kathegorie" => "HKLS", "name" => "abwasser_sonderfall", "label" => "Ist Abwasser vorhanden welches nicht in die Kanalisation geleitet werden darf?"]
 ];
 
 /*
