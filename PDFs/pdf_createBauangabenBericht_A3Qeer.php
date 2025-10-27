@@ -1,5 +1,5 @@
 <?php
-global $mapping;
+global $mapping, $mp2;
 require_once '../utils/_utils.php';
 check_login();
 
@@ -129,8 +129,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $heightExceeds = false;
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "Allgemeine Hygieneklasse", "Hygieneklasse: ", $parameter_changes_t_räume);
         if ($row['Allgemeine Hygieneklasse'] != "") {
-
-            $heightExceeds = $pdf->getStringHeight($e_C_3rd * 4, $row['Allgemeine Hygieneklasse'], false, true, '', 1) > 6 ? true : false;
+            $heightExceeds = $pdf->getStringHeight($e_C_3rd * 4, $row['Allgemeine Hygieneklasse'], false, true, '', 1) > 6;
             multicell_with_str($pdf, $row['Allgemeine Hygieneklasse'], $e_C_3rd * 4, "");
 
         } else {
@@ -160,15 +159,11 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 //       ---------- ELEKTRO -----------
 
         $i = 12 + $horizontalSpacerLN + $horizontalSpacerLN2;
-
         $Block_height = 6 + $horizontalSpacerLN + getAnmHeight($pdf, $row['Anmerkung Elektro'], $SB) + $i;
         block_label_queer($block_header_w, $pdf, "Elektro", $Block_height, $block_header_height, $SB);
 
-        //    multicell_text_hightlight($pdf, $e_C, $font_size, "Anwendungsgruppe", ":", $parameter_changes_t_räume);
-        //     multicell_with_str($pdf, $row['Anwendungsgruppe'], $e_C_3rd, "");
 
         $reportFields = [
-            // 1. Basic supply fields (checkbox)
             [
                 'key' => 'Anwendungsgruppe',
                 'label' => 'ÖVE E8101: ',
@@ -210,9 +205,17 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                 'width' => $e_C_2_3rd,
                 'type' => 'checkbox',
                 'nichtInVE' => true,
-                'newline' => true           // if you want a line break after this
+
             ],
-            // 2. Power info (number, kified)
+            [
+                'key' => 'EL_Roentgen 16A CEE Stk',
+                'label' => 'CEE16A Röntgen: ',
+                'width' => $e_C_2_3rd,
+                'type' => 'number',
+                'suffix' => 'Stk',
+                'nichtInVE' => false,
+                'newline' => true
+            ],
             [
                 'key' => 'ET_Anschlussleistung_W',
                 'label' => 'Raum Anschlussl. ohne Glz:',
@@ -254,7 +257,6 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                 'nichtInVE' => true,
 
             ],
-            // 3. Only if not Vorentwurf
             [
                 'key' => 'ET_RJ45-Ports',
                 'label' => 'RJ45-Ports: ',
@@ -262,15 +264,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                 'type' => 'number',
                 'suffix' => 'Stk',
                 'nichtInVE' => false,
-                'newline' => true
-            ],
-            [
-                'key' => ' ',
-                'label' => '  ',
-                'width' => $e_C,
-                'type' => 'number',
-                'suffix' => ' ',
-                'nichtInVE' => false
+
             ],
             [
                 'key' => 'EL_Laser 16A CEE Stk',
@@ -279,19 +273,10 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                 'type' => 'number',
                 'suffix' => 'Stk',
                 'nichtInVE' => false
-            ],
-            [
-                'key' => 'EL_Roentgen 16A CEE Stk',
-                'label' => 'CEE16A Röntgen: ',
-                'width' => $e_C_2_3rd,
-                'type' => 'number',
-                'suffix' => 'Stk',
-                'nichtInVE' => false
             ]
         ];
 
         foreach ($reportFields as $field) {
-            // Skip field if "nichtInVE" is true and $isnotVorentwurf is false
             if ($field['nichtInVE'] && !$isnotVorentwurf) continue;
 
             multicell_text_hightlight(
@@ -454,15 +439,18 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         block_label_queer($block_header_w, $pdf, "Haustechnik", $Block_height, $block_header_height, $SB);
         $haustechnikParams = [
             ['key' => 'H6020', 'label' => 'H6020: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-            ['key' => 'HT_Abluft_Digestorium_Stk', 'label' => 'Abluft Werkbank:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
-            ['key' => 'HT_Abluft_Sicherheitsschrank_Stk', 'label' => 'Abluft Sicherheitsschrank:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
-            ['key' => 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'label' => 'Abluft Sicherheitsschrank Unterbau:', 'unit' => 'Stk', 'cell' => $e_C + $e_C_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => false],
-            ['key' => 'HT_Punktabsaugung_Stk', 'label' => 'Punktabsaugung:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => true], // Line break after this
+            ['key' => 'HT_Abluft_Digestorium_Stk', 'label' => 'Abluft Werkbank:', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+            ['key' => 'HT_Punktabsaugung_Stk', 'label' => 'Punktabsaugung:', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
 
-            ['key' => 'HT_Waermeabgabe_W', 'label' => 'Abwärme MT: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false], // Line break after
+            ['key' => 'HT_Abluft_Sicherheitsschrank_Stk', 'label' => 'Abluft Sicherheitsschrank:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
+
+            ['key' => 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'label' => 'Abluft Sicherheitsschrank Unterbau:', 'unit' => 'Stk', 'cell' => $e_C + $e_C_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true],
+
+
+            ['key' => 'HT_Waermeabgabe_W', 'label' => 'Abwärme MT: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
             ['key' => 'VE_Wasser', 'label' => 'VE Wasser:', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
             ['key' => 'HT_Notdusche', 'label' => 'Notdusche:', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-            ['key' => 'HT_Raumtemp Sommer °C', 'label' => 'Max. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+            ['key' => 'HT_Raumtemp Sommer °C', 'label' => 'Max. Raumtemp.', 'unit' => '°C', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
             ['key' => 'HT_Raumtemp Winter °C', 'label' => 'Min. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
         ];
 
