@@ -87,9 +87,7 @@ if ($stmt = $mysqli->prepare($sqlSummary)) {
 
         <div class="card-body">
             <div class="tab-content" id="roomTabsContent">
-
                 <div class="tab-pane fade show active" id="stats" role="tabpanel" aria-labelledby="stats-tab">
-
                     <canvas id="roomsChart" height="100"></canvas>
                     <div class="card-body">
                         <table class="table table-sm table-bordered">
@@ -97,30 +95,23 @@ if ($stmt = $mysqli->prepare($sqlSummary)) {
                             <tr>
                                 <th>Raumbereich</th>
                                 <th>Offen</th>
-                                <th>Mindestens 1 mal bearbeitet</th>
-                                <th>Gesamt</th>
                             </tr>
                             </thead>
                             <tbody>
                             <?php foreach ($summaryData as $row): ?>
                                 <tr>
                                     <td><?= htmlspecialchars($row['rb']) ?></td>
-                                    <td><?= intval($row['open_rooms']) ?></td>
-                                    <td><?= intval($row['filled_rooms']) ?></td>
-                                    <td><?= intval($row['open_rooms'] + $row['filled_rooms']) ?></td>
+                                    <td><?= intval($row['open_rooms']) ?> / <?= intval($row['open_rooms'] + $row['filled_rooms']) ?> </td>
                                 </tr>
                             <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>
-
-
                 </div>
 
 
                 <div class="tab-pane fade show" id="user-req" role="tabpanel" aria-labelledby="user-req-tab">
                     <?php
-
                     $sqlUserReq = "SELECT r.idTABELLE_Räume as roomID, r.Raumbezeichnung as roomname, 
                                         r.`Raumbereich Nutzer` as rb, 
                                         r.Raumnr as raumnr, t.username, t.created_at

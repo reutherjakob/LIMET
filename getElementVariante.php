@@ -494,7 +494,7 @@ $row = $result->fetch_assoc(); ?>
             $.ajax({
                 url: "addParameterToVariante.php",
                 data: {"parameterID": id, "variantenID": variantenID},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data.trim(), true);
                     $.ajax({
