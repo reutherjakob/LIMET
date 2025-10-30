@@ -8,7 +8,7 @@
       <jdbc-url>jdbc:mariadb://limet-rb.com:3306/LIMET_RB</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
       <driver-properties>
-        <property name="sessionVariables" value="sql_mode = &quot;&quot;" />
+        <property name="sessionVariables" value="sql_mode=&quot;&quot;" />
       </driver-properties>
     </data-source>
   </component>

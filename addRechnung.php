@@ -1,49 +1,49 @@
 <?php
-    session_start();
+// 10-2025 FX
+require_once "utils/_utils.php";
+check_login();
+session_start();
+$mysqli = utils_connect_sql();
 
-    if(!isset($_SESSION["username"]))
-    {
-        echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-        exit;
-    }
-    $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-    if ($mysqli ->connect_error) {
-        die("Connection failed: " . $mysqli->connect_error);
-    }
-    $mysqli->query("SET NAMES 'utf8'");
+$lotID = getPostInt('lotID');
+$rechnungNr = getPostString('rechnungNr');
+$teilRechnungNr = getPostString('teilRechnungNr');
+$rechnungAusstellungsdatum = getPostString('rechnungAusstellungsdatum');
+$rechnungEingangsdatum = getPostString('rechnungEingangsdatum');
+$rechnungSum = getPostString('rechnungSum');
+$rechnungBearbeiter = getPostString('rechnungBearbeiter');
+$rechnungSchlussrechnung = getPostInt('rechnungSchlussrechnung', 0);
 
-    /* change character set to utf8 */
-    if (!$mysqli->set_charset("utf8")) {
-        echo "Error loading character set utf8: " . $mysqli->error;
-        exit();
-    } 		 
-    
-    $sql = "INSERT INTO `LIMET_RB`.`tabelle_rechnungen`
-            (`tabelle_lose_extern_idtabelle_Lose_Extern`,
-            `Nummer`,
-            `InterneNummer`,
-            `Ausstellungsdatum`,
-            `Eingangsdatum`,
-            `Rechnungssumme`,
-            `Bearbeiter`,
-            `Schlussrechnung`)
-            VALUES
-            (".filter_input(INPUT_GET, 'lotID').",
-            '".filter_input(INPUT_GET, 'rechnungNr')."',
-            '".filter_input(INPUT_GET, 'teilRechnungNr')."',
-            '".filter_input(INPUT_GET, 'rechnungAusstellungsdatum')."',
-            '".filter_input(INPUT_GET, 'rechnungEingangsdatum')."',
-            '".filter_input(INPUT_GET, 'rechnungSum')."',
-            '".filter_input(INPUT_GET, 'rechnungBearbeiter')."',
-            ".filter_input(INPUT_GET, 'rechnungSchlussrechnung').");";
-    
-    if ($mysqli->query($sql) === TRUE) {
+$stmt = $mysqli->prepare("INSERT INTO `LIMET_RB`.`tabelle_rechnungen`
+            (`tabelle_lose_extern_idtabelle_Lose_Extern`, `Nummer`, `InterneNummer`, 
+             `Ausstellungsdatum`, `Eingangsdatum`, `Rechnungssumme`, 
+             `Bearbeiter`, `Schlussrechnung`) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+
+if ($stmt === false) {
+    $ausgabe = "Prepare failed: " . $mysqli->error;
+} else {
+    $stmt->bind_param(
+        'isssssii',
+        $lotID,
+        $rechnungNr,
+        $teilRechnungNr,
+        $rechnungAusstellungsdatum,
+        $rechnungEingangsdatum,
+        $rechnungSum,
+        $rechnungBearbeiter,
+        $rechnungSchlussrechnung
+    );
+
+    if ($stmt->execute()) {
         $ausgabe = "Rechnung erfolgreich hinzugefügt! \n";
-    } 
-    else {
-        $ausgabe = "Error: " . $sql . "<br>" . $mysqli->error;
-    }		
-    
-    $mysqli ->close();
-    echo $ausgabe;
+    } else {
+        $ausgabe = "Error: " . $stmt->error;
+    }
+    $stmt->close();
+}
+
+$mysqli->close();
+echo $ausgabe;
+
 ?>

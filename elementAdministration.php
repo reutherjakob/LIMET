@@ -45,7 +45,8 @@ init_page_serversides("x"); ?>
                         <div class="card-header">
                             <div class="row d-flex align-items-center">
                                 <div class="col-xxl-6 col-6">Elemente in DB</div>
-                                <div class="col-xxl-6 col-6 d-flex justify-content-end" id="CardHeaderElementesInDb"></div>
+                                <div class="col-xxl-6 col-6 d-flex justify-content-end"
+                                     id="CardHeaderElementesInDb"></div>
                             </div>
                         </div>
                         <div class="card-body" id="elementsInDB">
@@ -129,6 +130,7 @@ init_page_serversides("x"); ?>
 
 <script charset="utf-8" type="text/javascript">
     var table1;
+
     function init_table_elementsinDB() {
         $('#CardHeaderElementesInDb .xxx').remove();
         table1 = new DataTable('#tableElementsInDB', {

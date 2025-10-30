@@ -156,9 +156,7 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
 
 <!--suppress ES6ConvertVarToLetConst -->
 <script charset="utf-8" type="text/javascript">
-
     var deviceID;
-
     var tableDevicesToElement;
 
     $(document).ready(function () {

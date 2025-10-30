@@ -13,8 +13,8 @@ $roomIDsArray = explode(",", $roomIDs);
 $Änderungsdatum = getValidatedDateFromURL();
 
 
-//     -----   FORMATTING VARIABLES    -----     
-$marginTop = 17; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/ 
+//     -----   FORMATTING VARIABLES    -----
+$marginTop = 17; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/
 $marginBTM = 10;
 /** @noinspection PhpUndefinedConstantInspection */
 $SB = 420 - 2 * PDF_MARGIN_LEFT;  // A4: 210 x 297 // A3: 297 x 420
@@ -44,7 +44,7 @@ $pdf = new MYPDF('L', PDF_UNIT, "A3", true, 'UTF-8', false, true);
 
 $pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A3", "Bauangaben");
 $pdf->AddPage('L', 'A3');
-$pdf->SetFillColor(0, 0, 0, 0); //$pdf->SetFillColor(244, 244, 244); 
+$pdf->SetFillColor(0, 0, 0, 0); //$pdf->SetFillColor(244, 244, 244);
 $pdf->SetFont('helvetica', '', $font_size);
 $pdf->SetLineStyle($style_normal);
 
@@ -102,7 +102,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
     while ($row = $result_rooms->fetch_assoc()) {
 
         $pdf->SetFillColor(255, 255, 255);
-        raum_header($pdf, $horizontalSpacerLN3, $SB, $row['Raumbezeichnung'], $row['Raumnr'], $row['Raumbereich Nutzer'], $row['Geschoss'], $row['Bauetappe'], $row['Bauabschnitt'], "A3", $parameter_changes_t_räume); //utils function   
+        raum_header($pdf, $horizontalSpacerLN3, $SB, $row['Raumbezeichnung'], $row['Raumnr'], $row['Raumbereich Nutzer'], $row['Geschoss'], $row['Bauetappe'], $row['Bauabschnitt'], "A3", $parameter_changes_t_räume); //utils function
 
         if (null != ($row['Anmerkung FunktionBO'])) {
             $outstr = format_text(clean_string(br2nl($row['Anmerkung FunktionBO'])));
@@ -405,53 +405,50 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         //      $pdf->MultiCell($e_C, $block_header_height, "", 0, 'L', 0, 0);
         //      multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'ET_16A_3Phasig_Einzelanschluss', "Einzelanschl. 16A: ", $parameter_changes_t_räume);
         //      multicell_with_str($pdf, $row['ET_16A_3Phasig_Einzelanschluss'], $e_C_3rd, "Stk");
-        // 
+        //
         //      $pdf->Ln($horizontalSpacerLN);
         //      $pdf->MultiCell($block_header_w + $e_C + $e_C_3rd + 10, $block_header_height, "", 0, 'L', 0, 0);
-        // 
+        //
         //      $electricalItems = [
         //          ['EL_AV Steckdosen Stk', 'AV SSD: '],
         //          ['EL_SV Steckdosen Stk', 'SV SSD: '],
         //          ['EL_ZSV Steckdosen Stk', 'ZSV SSD: '],
         //          ['EL_USV Steckdosen Stk', 'USV SSD: ']
         //      ];
-        // 
+        //
         //      foreach ($electricalItems as $item) {
         //          multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, $item[0], $item[1], $parameter_changes_t_räume);
-        // 
+        //
         //          if ($item[0] === 'EL_AV Steckdosen Stk') {
         //              multicell_with_nr($pdf, $row[$item[0]], " Stk", $font_size, $e_C_3rd);
         //          } else {
         //              multicell_with_str($pdf, $row[$item[0]], $e_C_3rd, "Stk");
         //          }
         //      }
-        // 
+        //
         //  }
 
         $pdf->Ln($horizontalSpacerLN2);
         anmA3($pdf, $row['Anmerkung Elektro'], $SB, $block_header_w);
         $pdf->Ln($horizontalSpacerLN);
 
-// 
+//
 //// ---------- HAUSTEK ---------
 //
         $Block_height = 6 + $horizontalSpacerLN2 + getAnmHeight($pdf, $row['Anmerkung HKLS'], $SB);
         block_label_queer($block_header_w, $pdf, "Haustechnik", $Block_height, $block_header_height, $SB);
         $haustechnikParams = [
             ['key' => 'H6020', 'label' => 'H6020: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-            ['key' => 'HT_Abluft_Digestorium_Stk', 'label' => 'Abluft Werkbank:', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-            ['key' => 'HT_Punktabsaugung_Stk', 'label' => 'Punktabsaugung:', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-
-            ['key' => 'HT_Abluft_Sicherheitsschrank_Stk', 'label' => 'Abluft Sicherheitsschrank:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
-
-            ['key' => 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'label' => 'Abluft Sicherheitsschrank Unterbau:', 'unit' => 'Stk', 'cell' => $e_C + $e_C_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true],
-
-
-            ['key' => 'HT_Waermeabgabe_W', 'label' => 'Abwärme MT: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-            ['key' => 'VE_Wasser', 'label' => 'VE Wasser:', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-            ['key' => 'HT_Notdusche', 'label' => 'Notdusche:', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-            ['key' => 'HT_Raumtemp Sommer °C', 'label' => 'Max. Raumtemp.', 'unit' => '°C', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
+            ['key' => 'HT_Raumtemp Sommer °C', 'label' => 'Max. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
             ['key' => 'HT_Raumtemp Winter °C', 'label' => 'Min. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+            ['key' => 'VE_Wasser', 'label' => 'VE Wasser:', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+            ['key' => 'HT_Abluft_Digestorium_Stk', 'label' => 'Abluft Werkbank/Digestor:', 'unit' => 'Stk', 'cell' => $e_C+ $e_C_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => true],
+            ['key' => 'HT_Waermeabgabe_W', 'label' => 'Abwärme MT: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+            ['key' => 'HT_Notdusche', 'label' => 'Notdusche:', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+            ['key' => 'HT_Punktabsaugung_Stk', 'label' => 'Punktabsaugung:', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+            ['key' => 'HT_Abluft_Sicherheitsschrank_Stk', 'label' => 'Abluft Sicherheitsschrank:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
+            ['key' => 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'label' => 'Abluft Sicherheitsschrank Unterbau:', 'unit' => 'Stk', 'cell' => $e_C + $e_C_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => false],
+
         ];
 
         foreach ($haustechnikParams as $param) {
@@ -590,7 +587,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             $pdf->Ln();
         }
     } //sql:fetch-assoc
-}// for every room 
+}// for every room
 
 $mysqli->close();
 ob_end_clean();

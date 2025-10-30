@@ -157,23 +157,33 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
         });
     });
 
+    function initializeTableDevicePrices() {
+        if ($.fn.DataTable.isDataTable('#tableDevicePrices')) {
+            $('#tableDevicePrices').DataTable().destroy();
+            $('#tableDevicePrices').empty(); // Clear table content to avoid duplicates
+        }
 
-    const tableDevicePrices = new DataTable('#tableDevicePrices', {
-        paging: false,
-        searching: false,
-        info: false,
-        order: [[0, 'desc']],
-        language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
-            decimal: ',',
-            thousands: '.'
-        },
-        scrollY: '20vh',
-        scrollCollapse: true,
-        //deferRender: true,           // improves performance with large data sets
-        //pagingType: 'simple_numbers',  // uncomment if needed
-        //lengthMenu: [[5,10,25,50,-1], [5,10,25,50,'All']]  // uncomment if needed
-    });
+        // Assign to previously declared variable without 'let'
+        let tableDevicePrices = new DataTable('#tableDevicePrices', {
+            paging: false,
+            searching: false,
+            info: false,
+            order: [[0, 'desc']],
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                decimal: ',',
+                thousands: '.'
+            },
+            scrollY: '20vh',
+            scrollCollapse: true,
+            // deferRender: true,
+            // pagingType: 'simple_numbers',
+            // lengthMenu: [[5,10,25,50,-1], [5,10,25,50,'All']]
+        });
+    }
+
+    // Call this function whenever you need to import or reload
+    initializeTableDevicePrices();
 
 
     //Preis zu Geraet hinzufügen
@@ -209,7 +219,7 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
                     "project": project,
                     "lieferant": lieferant
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data, true);
                     $.ajax({
