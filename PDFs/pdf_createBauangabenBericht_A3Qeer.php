@@ -205,6 +205,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                 'width' => $e_C_2_3rd,
                 'type' => 'checkbox',
                 'nichtInVE' => true,
+                'newline' => true
 
             ],
             [
@@ -277,7 +278,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         ];
 
         foreach ($reportFields as $field) {
-            if ($field['nichtInVE'] && !$isnotVorentwurf) continue;
+            if (!$field['nichtInVE'] && !$isnotVorentwurf) continue;
 
             multicell_text_hightlight(
                 $pdf,
@@ -306,127 +307,6 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             }
         }
 
-        // if ($isnotVorentwurf) {
-        //     $SQL = "SELECT tpep.Wert,
-        //                tpep.Einheit,
-        //                tpep.tabelle_Varianten_idtabelle_Varianten,
-        //                tpep.tabelle_elemente_idTABELLE_Elemente,
-        //                tp.Bezeichnung,
-        //                tpk.Kategorie,
-        //                tpk.idTABELLE_Parameter_Kategorie,
-        //                tp.idTABELLE_Parameter,
-        //                tre.Anzahl
-        //         FROM tabelle_parameter_kategorie tpk
-        //                  INNER JOIN
-        //              tabelle_parameter tp
-        //              ON tpk.idTABELLE_Parameter_Kategorie = tp.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
-        //                  INNER JOIN
-        //              tabelle_projekt_elementparameter tpep ON tp.idTABELLE_Parameter = tpep.tabelle_parameter_idTABELLE_Parameter
-        //                  INNER JOIN
-        //              tabelle_räume_has_tabelle_elemente tre
-        //              ON tpep.tabelle_elemente_idTABELLE_Elemente = tre.tabelle_elemente_idTABELLE_Elemente
-        //         WHERE tpep.tabelle_projekte_idTABELLE_Projekte =  " . $_SESSION['projectID'] . "
-        //           AND tp.`Bauangaben relevant` = 1
-        //           AND tre.tabelle_räume_idTABELLE_Räume = " . $valueOfRoomID . "
-        //           AND tpk.Kategorie = 'Elektro'
-        //           AND tpep.tabelle_Varianten_idtabelle_Varianten = tre.tabelle_Varianten_idtabelle_Varianten
-        //         ORDER BY tp.idTABELLE_Parameter DESC;";
-        //
-        //     $resultE = $mysqli->query($SQL);
-        //     $netzart_options = ["AV", "SV", "ZSV", "USV"];
-        //     $netzart_dict = [];
-        //     $leistung_dict = array_fill_keys($netzart_options, 0);
-        //     $gleichzeitigkeit = [];
-        //     $errors = [];
-        //
-        //     foreach ($resultE as $key => $rowE) {
-        //         $wert = $rowE['Wert'];
-        //         $einheit = $rowE['Einheit'];
-        //         $variante_id = $rowE['tabelle_Varianten_idtabelle_Varianten'];
-        //         $element_id = $rowE['tabelle_elemente_idTABELLE_Elemente'];
-        //         $bezeichnung = $rowE['Bezeichnung'];
-        //         $kategorie = $rowE['Kategorie'];
-        //         $parameter_kategorie_id = $rowE['idTABELLE_Parameter_Kategorie'];
-        //         $parameter_id = $rowE['idTABELLE_Parameter'];
-        //         $anzahl = $rowE['Anzahl'];
-        //         //echo "Parameter " . $bezeichnung . ";<br>";
-        //         // Check for empty values in parameters 118 and 82
-        //         if (($parameter_id == 118 || $parameter_id == 82) && $wert === "") {
-        //             $errors[] = "Error: Parameter ID $parameter_id is empty for Element ID $element_id";
-        //         }
-        //         // Process Netzart
-        //         // echo "parameterID: " . $parameter_id . "<br>";
-        //         if ($parameter_id == 82) {
-        //             if (!in_array($wert, $netzart_options)) {
-        //                 $errors[] = "Error: Invalid Netzart for Element ID $element_id: $wert";
-        //             } else {
-        //                 $netzart_dict[$element_id] = $wert;
-        //             }
-        //         }
-        //      // Store Gleichzeitigkeit and Leistung
-        //      if ($parameter_id == 133) {
-        //          $gleichzeitigkeit[$element_id] = $wert === "" ? 1 : floatval(str_replace(',', '.', $wert));
-        //          // echo "Wert: " .  $wert . "<br>" ."Gleichzeitigkeit: ". $gleichzeitigkeit[$element_id]. "<br>";
-        //
-        //      } elseif ($parameter_id == 18) {
-        //          $leistung = floatval($wert) * getUnitMultiplier($einheit) * $anzahl;
-        //          //echo $leistung . "<br> ";
-        //          if (isset($netzart_dict[$element_id]) && isset($gleichzeitigkeit[$element_id])) {
-        //              $netzart = $netzart_dict[$element_id];
-        //              $gleichzeitigkeit_wert = $gleichzeitigkeit[$element_id];
-        //              $leistung_dict[$netzart] += $gleichzeitigkeit_wert * $leistung;
-        //          }
-        //      }
-        //  }
-        //  $total_sum = array_sum($leistung_dict);
-        //echo "Processed Data:<br>";
-        //echo "Netzart Dictionary: " . print_r($netzart_dict, true) . "<br>";
-        //echo "Leistung Dictionary: " . print_r($leistung_dict, true) . "<br>";
-        //echo "Gleichzeitigkeit: " . print_r($gleichzeitigkeit, true) . "<br>";
-        //echo "Errors: " . print_r($errors, true) . "<br>";
-        //echo "Total sum of all netzten leistungen: $total_sum <br>";
-        //echo "<br>" . $leistung_dict['AV'];
-        //echo "<br>" . $leistung_dict['SV'];
-
-
-        //   $pdf->MultiCell($e_C, $block_header_height, "Elemente Leistung inkl. Glz:", 0, 'L', 0, 0);
-        //   multicell_with_nr($pdf, kify($total_sum), "W", $font_size, $e_C_3rd + 10);
-        //   foreach ($netzart_options as $NA) {
-        //       $pdf->MultiCell($e_C_2_3rd, $block_header_height, $NA . "(El.& Glz.):", 0, 'L', 0, 0);
-        //       if ($leistung_dict[$NA] != 0) {
-        //           $outsr = kify($leistung_dict[$NA]) . "W";
-        //       } else {
-        //           $outsr = "-";
-        //       }
-        //       multicell_with_str($pdf, $outsr, $e_C_3rd, "");
-        //   }
-        //
-
-        //      $pdf->MultiCell($e_C, $block_header_height, "", 0, 'L', 0, 0);
-        //      multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'ET_16A_3Phasig_Einzelanschluss', "Einzelanschl. 16A: ", $parameter_changes_t_räume);
-        //      multicell_with_str($pdf, $row['ET_16A_3Phasig_Einzelanschluss'], $e_C_3rd, "Stk");
-        //
-        //      $pdf->Ln($horizontalSpacerLN);
-        //      $pdf->MultiCell($block_header_w + $e_C + $e_C_3rd + 10, $block_header_height, "", 0, 'L', 0, 0);
-        //
-        //      $electricalItems = [
-        //          ['EL_AV Steckdosen Stk', 'AV SSD: '],
-        //          ['EL_SV Steckdosen Stk', 'SV SSD: '],
-        //          ['EL_ZSV Steckdosen Stk', 'ZSV SSD: '],
-        //          ['EL_USV Steckdosen Stk', 'USV SSD: ']
-        //      ];
-        //
-        //      foreach ($electricalItems as $item) {
-        //          multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, $item[0], $item[1], $parameter_changes_t_räume);
-        //
-        //          if ($item[0] === 'EL_AV Steckdosen Stk') {
-        //              multicell_with_nr($pdf, $row[$item[0]], " Stk", $font_size, $e_C_3rd);
-        //          } else {
-        //              multicell_with_str($pdf, $row[$item[0]], $e_C_3rd, "Stk");
-        //          }
-        //      }
-        //
-        //  }
 
         $pdf->Ln($horizontalSpacerLN2);
         anmA3($pdf, $row['Anmerkung Elektro'], $SB, $block_header_w);
@@ -439,13 +319,17 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         block_label_queer($block_header_w, $pdf, "Haustechnik", $Block_height, $block_header_height, $SB);
         $haustechnikParams = [
             ['key' => 'H6020', 'label' => 'H6020: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-            ['key' => 'HT_Raumtemp Sommer °C', 'label' => 'Max. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-            ['key' => 'HT_Raumtemp Winter °C', 'label' => 'Min. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+            ['key' => 'HT_Waermeabgabe_W', 'label' => 'Abwärme MT: ', 'unit' => '', 'cell' => $e_C, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+            ['key' => 'HT_Raumtemp Sommer °C', 'label' => 'Max. Raumtemp.', 'unit' => '°C', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
+            ['key' => 'HT_Raumtemp Winter °C', 'label' => 'Min. Raumtemp.', 'unit' => '°C', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => true],
+
             ['key' => 'VE_Wasser', 'label' => 'VE Wasser:', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-            ['key' => 'HT_Abluft_Digestorium_Stk', 'label' => 'Abluft Werkbank/Digestor:', 'unit' => 'Stk', 'cell' => $e_C+ $e_C_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => true],
-            ['key' => 'HT_Waermeabgabe_W', 'label' => 'Abwärme MT: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-            ['key' => 'HT_Notdusche', 'label' => 'Notdusche:', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+           //  ['key' => 'HT_Kaltwasser', 'label' => 'Kaltwasser:', 'unit' => '', 'cell' => $e_C, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+            //  ['key' => 'HT_Warmwasser', 'label' => 'Warmwasser:', 'unit' => '', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
+            ['key' => 'HT_Notdusche', 'label' => 'Notdusche:', 'unit' => '', 'cell' => $e_C, 'str_cell' => $e_C_2_3rd, 'ln_after' => true],
+
             ['key' => 'HT_Punktabsaugung_Stk', 'label' => 'Punktabsaugung:', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+            ['key' => 'HT_Abluft_Digestorium_Stk', 'label' => 'Abluft Werkbank/Digestor:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
             ['key' => 'HT_Abluft_Sicherheitsschrank_Stk', 'label' => 'Abluft Sicherheitsschrank:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
             ['key' => 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'label' => 'Abluft Sicherheitsschrank Unterbau:', 'unit' => 'Stk', 'cell' => $e_C + $e_C_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => false],
 
