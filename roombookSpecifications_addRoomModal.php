@@ -89,7 +89,7 @@
                         "TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen": funktionsteilstelle,
                         "MT-relevant": MTrelevant
                     },
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         $('#addRoomModal').modal('hide');
                         makeToaster(data,true);

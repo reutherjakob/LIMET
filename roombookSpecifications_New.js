@@ -723,10 +723,11 @@ function copySelectedRow() {
         requestData[dbFieldName] = selectedRowData[field];
     });
     delete requestData.idTABELLE_Räume;
+
     $.ajax({
         url: "addRoom_all.php",
         data: requestData,
-        type: "GET",
+        type: "POST",
         success: function (data) {
             alert(data);
             window.location.replace("roombookSpecifications_New.php");

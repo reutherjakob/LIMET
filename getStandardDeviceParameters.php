@@ -98,8 +98,6 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
                                     $stmt->bind_param("i", $deviceID);
                                     $stmt->execute();
                                     $result = $stmt->get_result();
-
-
                                     echo "<table class='table table-striped table-sm' id='tableDeviceParameters'  >
                                             <thead><tr>
                                             <th>ID</th>
@@ -110,7 +108,6 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
                                             <th></th>
                                             </tr></thead>
                                             <tbody>";
-
                                     while ($row = $result->fetch_assoc()) {
                                         echo "<tr>";
                                         echo "<td><button type='button' id='" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' class='btn btn-outline-danger btn-sm' value='deleteDEVICEParameter'><i class='fas fa-minus'></i></button></td>";
@@ -120,7 +117,6 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
                                         echo "<td><input type='text' id='einheit" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' value='" . $row["Einheit"] . "'></td>";
                                         echo "<td><button type='button' id='" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' class='btn btn-warning btn-sm' value='saveDEVICEParameter'><i class='far fa-save'></i></button></td>";
                                         echo "</tr>";
-
                                     }
                                     echo "</tbody></table>";
                                     ?>
@@ -356,7 +352,6 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
         $.ajax({
             url: "getStandardDeviceParameters.php",
             type: "POST",
-
             success: function (data) {
                 $("#deviceParametersInDB").html(data);
                 $('#changeDeviceParameters').modal('hide');
@@ -390,7 +385,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
             method: 'GET',
             dataType: 'json',
             success: function (data) {
-                console.log(data);
+                // console.log(data);
                 $('#mbodyOvertake').html(
                     '<strong>Gerät:</strong> ' + data.deviceTyp + '<br>' +
                     '<strong>Element:</strong> ' + data.elementBezeichnung + '<br><br>' +
