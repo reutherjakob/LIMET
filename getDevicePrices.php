@@ -2,16 +2,27 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker3.min.css">
-    <script type='text/javascript'
-            src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
     <title></title>
 </head>
+<style> /* Make sure Select2 dropdown appears above Bootstrap modal */
+    .select2-container {
+        z-index: 1060 !important; /* slightly higher than Bootstrap modal backdrop */
+    }
+
+    /* Also target the actual dropdown for Select2 (the dropdown elements) */
+    .select2-dropdown {
+        z-index: 1061 !important;
+    }
+
+    /* Optional: When used inside modal, the dropdown might need higher z-index */
+    .modal .select2-container {
+        z-index: 1070 !important;
+    }
+
+    .modal .select2-dropdown {
+        z-index: 1071 !important;
+    }
+</style>
 <body>
 <?php
 require_once 'utils/_utils.php';
@@ -131,8 +142,6 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
 
                     echo "</select> 
                         </div> 
-
-
                         <div class='row mt-3'>
                         <div class='col-6'>    
                             <input type='button' id='addPrice' class='btn btn-success btn-sm col-12' value='Speichern'
@@ -143,7 +152,6 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
                         </div>
                     </div>
                  </form>";
-
 
                     echo "<hr>       
                      <div class='row'> 
@@ -158,7 +166,7 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
                                 </button>  
                             </div>  
                      </div>
-                  
+                 
                     <div class='mt-2'>
                         <div class='row align-items-center' style='display:none;' id='NeuenLieferantZuGerätHinzufügen'>
                                           <label for='Lieferant'>Neuen Lieferant zu Gerät hinzufügen:</label>		
@@ -173,17 +181,14 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
                             </div>
                         </div> 
                     </div>
-                    
-
                     <div id='inlineAddLieferant' style='display:none;'>
                             <input type='text' class='form-control mb-1' id='newLieferantName' placeholder='Name des Lieferanten' /> 
                             <input type='text' class='form-control mb-1' id='newLieferantTel' placeholder='Telefon' />
                             <input type='text' class='form-control mb-1' id='newLieferantAdresse' placeholder='Adresse' />
                             <input type='text' class='form-control mb-1' id='newLieferantPLZ' placeholder='PLZ' />
                             <input type='text' class='form-control mb-1' id='newLieferantOrt' placeholder='Ort' />
-                            <input type='text' class='form-control mb-1' id='newLieferantLand' placeholder='Land' /> ";
-                    echo "</select>
-                        
+                            <input type='text' class='form-control mb-1' id='newLieferantLand' placeholder='Land' /> 
+                            </select>
                             <div class='row'>
                                 <div class='col-6'>  
                                     <button type='button' class='btn btn-success btn-sm col-12' id='submitNewLieferant'>Speichern</button>
@@ -205,26 +210,30 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
 <script src="utils/_utils.js"></script>
 <script>
     $(document).ready(function () {
-        // $('#date').datepicker({
-        //     format: "yyyy-mm-dd",
-        //     calendarWeeks: true,
-        //     autoclose: true,
-        //     todayBtn: "linked",
-        //     language: "de"
-        // });
+        $('#date').datepicker({
+            format: "yyyy-mm-dd",
+            calendarWeeks: true,
+            autoclose: true,
+            todayBtn: "linked",
+            language: "de"
+        });
 
-        // // Initialize Select2
-        // $('#project').select2({
-        //     width: '100%',
-        //     placeholder: 'Projekt auswählen',
-        //     allowClear: true
-        // });
+        // Initialize Select2
+        $('#project').select2({
+            width: '100%',
+            placeholder: 'Projekt auswählen',
+            allowClear: true,
+            dropdownCssClass: 'select2-dropdown-long',
+            dropdownParent: $('#addPriceToElementModal') // bind dropdown inside modal
+        });
 
-        //$('#lieferant').select2({
-        //    width: '100%',
-        //    placeholder: 'Lieferant auswählen',
-        //    allowClear: true
-        //});
+        $('#lieferant').select2({
+            width: '100%',
+            placeholder: 'Lieferant auswählen',
+            dropdownParent: $('#addPriceToElementModal'), // bind dropdown inside modal
+            allowClear: true,
+            dropdownCssClass: 'select2-dropdown-long'
+        });
 
         function reloadLieferantOptions() {
             $.ajax({
