@@ -103,8 +103,8 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
         $pdf->SetFillColor(255, 255, 255);
         raum_header($pdf, $horizontalSpacerLN3, $SB, $row['Raumbezeichnung'], $row['Raumnr'], $row['Raumbereich Nutzer'], $row['Geschoss'], $row['Bauetappe'], $row['Bauabschnitt'], "A3", $parameter_changes_t_räume); //utils function   
-
-        if (null != ($row['Anmerkung FunktionBO'])) {
+        $text = trim($row['Anmerkung FunktionBO'] ?? "");
+        if ($text != "") {
             $outstr = format_text(clean_string(br2nl($row['Anmerkung FunktionBO'])));
             $rowHeightComment = $pdf->getStringHeight($SB - $einzugPlus, $outstr, false, true, '', 1);
             $i = ($rowHeightComment > 6) ? $horizontalSpacerLN : 0;
@@ -135,21 +135,21 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             multicell_with_str($pdf, $row['Allgemeine Hygieneklasse'], $e_C_3rd * 4, "");
 
         } else {
-            multicell_with_str($pdf, " - ", $e_C_3rd+10, "");
+            multicell_with_str($pdf, " - ", $e_C_3rd + 10, "");
         }
 
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'Strahlenanwendung', "Strahlenanw.: ", $parameter_changes_t_räume);
         if (($pdf->getStringHeight($e_C_3rd, $row['Strahlenanwendung'])) > 6) {
             strahlenanw($pdf, $row['Strahlenanwendung'], 4 * $e_C_3rd, $font_size);
         } else {
-            strahlenanw($pdf, $row['Strahlenanwendung'], $e_C_3rd+10  , $font_size);
+            strahlenanw($pdf, $row['Strahlenanwendung'], $e_C_3rd + 10, $font_size);
         }
 
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "Laseranwendung", "Laseranw.: ", $parameter_changes_t_räume);
-        hackerlA3($pdf, $font_size, $e_C_3rd +10 , $row['Laseranwendung'], "JA");
+        hackerlA3($pdf, $font_size, $e_C_3rd + 10, $row['Laseranwendung'], "JA");
 
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "Abdunkelbarkeit", "Abdunkelbarkeit: ", $parameter_changes_t_räume);
-        hackerlA3($pdf, $font_size, $e_C_3rd +10, $row['Abdunkelbarkeit'], "JA");
+        hackerlA3($pdf, $font_size, $e_C_3rd + 10, $row['Abdunkelbarkeit'], "JA");
 
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "Nutzfläche", "Fläche: ", $parameter_changes_t_räume);
         multicell_with_nr($pdf, $row['Nutzfläche'], "m2", 10, 4 * $e_C_3rd);
@@ -181,21 +181,23 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             ['key' => 'ET_RJ45-Ports', 'label' => 'RJ45-Ports: ', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
             // Parameters shown only if isnotVorentwurf=true
 
-            ['key' => 'EL_Laser 16A CEE Stk', 'label' => 'CEE16A Laser: ', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd +10, 'ln_after' => false, 'isnotVorentwurf' => true],
+            ['key' => 'EL_Laser 16A CEE Stk', 'label' => 'CEE16A Laser: ', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => true],
             ['key' => 'EL_Roentgen 16A CEE Stk', 'label' => 'CEE16A Röntgen', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
         ];
 
 
         foreach ($elektroParams as $param) {
             if ($param['isnotVorentwurf'] && !$isnotVorentwurf) {
-                if ($param['ln_after']) {
+                if ($param['ln_after'] && ($param['key'] != "EL_Laser 16A CEE Stk" || $param['key'] != "EL_Roentgen 16A CEE Stk")) {
                     $pdf->Ln($horizontalSpacerLN2);        // Print label placeholder for power section (only once)
                     $pdf->MultiCell($block_header_w, $block_header_height, "", 0, 'L', 0, 0);
                 }
                 continue;
             }
-
-            if (in_array($param['key'], [
+            if (($param['key'] === 'ET_RJ45-Ports' || $param['key'] === 'EL_Laser 16A CEE Stk' || $param['key'] === 'EL_Roentgen 16A CEE Stk') && $_SESSION['projectID'] == 80) {
+                continue;
+            } else if (in_array($param['key'], [
+                'Anwendungsgruppe',
                 'ET_Anschlussleistung_W', 'ET_Anschlussleistung_AV_W', 'ET_Anschlussleistung_SV_W',
                 'ET_Anschlussleistung_ZSV_W', 'ET_Anschlussleistung_USV_W'
             ])) {
@@ -220,7 +222,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                 $pdf->MultiCell($block_header_w, $block_header_height, "", 0, 'L', 0, 0);
             }
         }
-
+        $pdf->Ln($horizontalSpacerLN);
         anmA3($pdf, $row['Anmerkung Elektro'], $SB, $block_header_w);
         $pdf->Ln($horizontalSpacerLN);
 

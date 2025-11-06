@@ -1,15 +1,10 @@
 <?php
-session_start();
+// 10-2025 FX
 require_once "utils/_utils.php";
 check_login();
-
 $mysqli = utils_connect_sql();
-
-// Retrieve all GET parameters
-$params = $_GET;
-
+$params = $_POST;
 $table = "tabelle_räume";
-
 $columns = [];
 $values = [];
 
@@ -38,4 +33,3 @@ if ($mysqli->query($sql) === TRUE) {
     echo "Error: " . $sql . "<br>" . $mysqli->error;
 }
 $mysqli->close();
-?> 

@@ -606,7 +606,8 @@ function toggleReportColumnsVisible() {
         'ET_Anschlussleistung_SV_W', 'ET_Anschlussleistung_ZSV_W', 'ET_Anschlussleistung_USV_W', 'IT Anbindung',
         '1 Kreis O2', '2 Kreis O2', 'CO2', '1 Kreis Va', '2 Kreis Va', '1 Kreis DL-5', '2 Kreis DL-5',
         'DL-10', 'DL-tech', 'NGA', 'N2O', 'HT_Abluft_Sicherheitsschrank_Stk', 'HT_Abluft_Digestorium_Stk',
-        'HT_Punktabsaugung_Stk', 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'VE_Wasser', 'HT_Warmwasser', 'HT_Kaltwasser'
+        'HT_Punktabsaugung_Stk', 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'VE_Wasser', 'HT_Warmwasser', 'HT_Kaltwasser',
+        'HT_Raumtemp Sommer °C',  'HT_Raumtemp Winter °C'
     ];
 
 // Calculate the indices from columnsDefinition
@@ -723,10 +724,11 @@ function copySelectedRow() {
         requestData[dbFieldName] = selectedRowData[field];
     });
     delete requestData.idTABELLE_Räume;
+
     $.ajax({
         url: "addRoom_all.php",
         data: requestData,
-        type: "GET",
+        type: "POST",
         success: function (data) {
             alert(data);
             window.location.replace("roombookSpecifications_New.php");
