@@ -456,7 +456,7 @@ include "modal_elementHistory.html";
 
                     // data[0] is id (hidden)
                     const id = data[0].display;
-                    //console.log(data, id);
+                    console.log(data, id);
                     const stk = $(`#amount${id}`).val();
                     const standort = $(`#Standort${id}`).val();
                     const verwendung = $(`#Verwendung${id}`).val();
@@ -583,19 +583,12 @@ include "modal_elementHistory.html";
             const bestand = $(`#bestand${id}`).val();
             const standort = $(`#Standort${id}`).val();
             const verwendung = $(`#Verwendung${id}`).val();
-            //  console.log({
-            //      comment,
-            //      id,
-            //      amount,
-            //      variantenID,
-            //      bestand,
-            //      standort,
-            //      verwendung
-            //  });
+
             if (standort === '0' && verwendung === '0') {
                 alert('Standort und Verwendung kann nicht Nein sein!');
                 return;
             }
+
             $.ajax({
                 url: 'saveRoombookEntry.php',
                 type: 'GET',

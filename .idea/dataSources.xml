@@ -2,11 +2,14 @@
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
     <data-source source="LOCAL" name="LIMET_RB@limet-rb.com" uuid="a0035955-4929-452e-bc74-c974b5004fd4">
-      <driver-ref>mysql.8</driver-ref>
+      <driver-ref>mariadb</driver-ref>
       <synchronize>true</synchronize>
-      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://limet-rb.com:3306/LIMET_RB</jdbc-url>
+      <jdbc-driver>org.mariadb.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mariadb://limet-rb.com:3306/LIMET_RB</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
+      <driver-properties>
+        <property name="sessionVariables" value="sql_mode=&quot;&quot;" />
+      </driver-properties>
     </data-source>
   </component>
 </project>

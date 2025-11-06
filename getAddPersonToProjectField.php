@@ -162,7 +162,7 @@ include "modal_addOrganisationAndZustaendigkeit.php";
                 $.ajax({
                     url: "addExistingPersonToProject.php",
                     data: {"personID": id, "zustaendigkeit": zustaendigkeit, "organisation": organisation},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         alert(data);
                         $.ajax({

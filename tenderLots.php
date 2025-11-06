@@ -45,7 +45,7 @@ init_page_serversides();
 <div class="container-fluid">
 
     <div class='row'>
-        <div class='col-xxl-9' id="mainCardColumn">
+        <div class='col-xxl-11' id="mainCardColumn">
             <div class="mt-4 card">
                 <div class="card-header d-inline-flex justify-content-between align-items-center">
                     <div class="d-inline-flex align-items-center">
@@ -73,8 +73,8 @@ init_page_serversides();
 
                     </div>
                 </div>
-                <div class="card-body" id="projectLots">
-                    <div class="">
+                <div class="card-body p-0 py-0 m-0" id="projectLots">
+                    <div class="p-0">
                         <?php
                         $mysqli = utils_connect_sql();
                         $sql = "SELECT `tabelle_lieferant`.`idTABELLE_Lieferant`,
@@ -120,7 +120,7 @@ init_page_serversides();
 
                         $result = $mysqli->query($sql);
 
-                        echo "<table  id='tableTenderLots' class='table table-sm table-responsive table-striped compact border border-light border-5'>
+                        echo "<table  id='tableTenderLots' class='table table-sm table-responsive table-striped compact border border-light border-1'>
 								<thead><tr>
 								<th>ID</th>
                                         <th></th>
@@ -131,23 +131,26 @@ init_page_serversides();
                                         <th>Verfahren</th>
                                         <th>Bearbeiter</th>
 								        <th>Status</th>
-                                        <th>Schätzung-Neu</th>
-                                        <th>Schätzung-Bestand</th>
+                                        <th>Schätzung Neu</th>
+                                        <th>Schätzung Bestand</th>
                                         <th>Kostenanschlag</th>
                                         <th>Budget (val)</th>
                                         <th>Vergabesumme</th>
                                             <th>Schätzung-Neu</th>
                                             <th>Schätzung-Bestand</th>
-                                            <th>Kostenanschlag</th> 
+                                            <th>Kosten anschlag</th> 
                                             <th>Budget (val)</th>
                                             <th>Vergabesumme</th>
-                                        <th>Auftragnehmer</th>      
-                                        <th></th>          
-                                        <th>Notiztext</th>                                         
+                                            <th>Auftragnehmer</th>
+                                            <th data-bs-toggle='tooltip' data-bs-placement='top' title='Workflow'>
+                                                <i class='fas fa-code-branch'></i>
+                                            </th>
+                                            <th data-bs-toggle='tooltip' data-bs-placement='top' title='Notiz'>
+                                                <i class='far fa-sticky-note'></i>
+                                            </th>
                                             <th>IDLieferant</th>
                                             <th>Abgeschlossen</th>                                                                  
-                                            <th>MKF-von_Los</th>   
-                 
+                                            <th>MKF-von_Los</th>    
 								</tr></thead>";
                         echo "<tbody>";
                         $hauptLose = array();
@@ -204,7 +207,7 @@ init_page_serversides();
 
                             echo "<td>" . $row["Lieferant"] . "</td>";
 
-                            echo "<td><button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn btn-outline-secondary btn-sm' value='LotWorkflow' data-bs-toggle='modal' data-bs-target='#workflowDataModal'><i class='fas fa-history'></i></button></td>";
+                            echo "<td><button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn  btn-sm btn-outline-secondary' value='LotWorkflow' data-bs-toggle='modal' data-bs-target='#workflowDataModal'><i class='fas fa-history'></i></button></td>";
                             echo "<td>" . $row["Notiz"] . "</td>";
 
                             echo "<td>" . $row["idTABELLE_Lieferant"] . "</td>";
@@ -225,14 +228,14 @@ init_page_serversides();
                 </div>
             </div>
         </div>
-        <div class='col-xxl-3' id='vermerkeCardColumn'>
+        <div class='col-xxl-1' id='vermerkeCardColumn'>
             <div class='mt-4 card'>
                 <div class='card-header' id='vermerkePanelHead'>Vermerke zu Los
-                    <button id='toggleVermerkeBtn' class='btn btn-sm float-end'>
-                        <i class='fas fa-chevron-right'></i>
+                    <button id='toggleVermerkeBtn' class='btn btn-xs float-end'>
+                        <i class='fas fa-chevron-left'></i>
                     </button>
                 </div>
-                <div class='card-body' id='lotVermerke'>
+                <div class='card-body d-none' id='lotVermerke'>
                 </div>
             </div>
         </div>
@@ -402,9 +405,17 @@ init_page_serversides();
 
     $(document).ready(function () {
 
+        document.addEventListener('DOMContentLoaded', function () {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+        });
+
+
         getExcelFilename("Lose-im_Projekt")
             .then(filename => {
-                console.log('Generated filename:', filename);
+                // console.log('Generated filename:', filename);
                 excelFilename = filename;
                 tableTenderLots = new DataTable('#tableTenderLots', {
                     columnDefs: [
@@ -412,8 +423,13 @@ init_page_serversides();
                             targets: [0, 14, 15, 16, 17, 18, 22, 23, 24],
                             visible: false,
                             searchable: false
+                        },
+                        {
+                            targets: [1, 19, 20, 21],
+                            sortable: false
                         }
                     ],
+
                     select: true,
                     search: {search: ''},
                     paging: true,
@@ -589,7 +605,7 @@ init_page_serversides();
             lotMKFOf: document.getElementById("lotMKFOf").value
         };
 
-        console.log("Form Data:", formData);
+        // console.log("Form Data:", formData);
 
         if (formData.lotMKFOf === "0") {
             if (formData.losNr !== "" && formData.losName !== "" && formData.losDatum !== "" &&
@@ -788,7 +804,7 @@ init_page_serversides();
         $("#elementBestand").html("");
         $.ajax({
             url: "getElementBestand.php",
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 makeToaster("Reloaded!", true);
                 $("#elementBestand").html(data);

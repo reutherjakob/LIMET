@@ -155,7 +155,7 @@ $("input[value='Neue Notiz anlegen']").click(function(){
 		 $.ajax({
 	        url : "addNotice.php",
 	        data:{"roomID":id,"Notiz":notice,"Kategorie":category},
-	        type: "GET",
+	        type: "POST",
 	        success: function(data){
 	        	alert(data);
 	            $.ajax({

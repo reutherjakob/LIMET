@@ -92,7 +92,7 @@
                     type: "GET",
                     success: function (data) {
                         $('#addRoomModal').modal('hide');
-                        alert(data);
+                        makeToaster(data,true);
                         window.location.replace("roombookSpecifications_New.php");
                     }
                 });

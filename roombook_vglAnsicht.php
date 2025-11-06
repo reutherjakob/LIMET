@@ -29,7 +29,7 @@
 
 <?php
 require_once 'utils/_utils.php'; // CHECKS SESSION
-init_page_serversides(); // checks LOGIN
+init_page_serversides(); // checks Nutzerlogin
 ?>
 
 <body style="height:100%">

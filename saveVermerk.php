@@ -3,10 +3,18 @@ require_once 'utils/_utils.php';
 check_login();
 
 $mysqli = utils_connect_sql();
+$logFile = __DIR__ . '/log.log'; // Definiere logFile ganz oben!
 
+function writeLog($message)
+{
+    global $logFile;
+    file_put_contents($logFile, date('Y-m-d H:i:s') . " - $message\n", FILE_APPEND);
+}
 
+writeLog("RAW POST: " . $_POST['vermerkText']);
 $losID = getPostInt('los');
 $vermerkText = getPostString('vermerkText');
+writeLog("vermerktext: " . $vermerkText);
 $vermerkStatus = getPostInt('vermerkStatus');
 $vermerkTyp = getPostString('vermerkTyp');
 $untergruppenID = getPostInt('untergruppenID');
@@ -21,14 +29,7 @@ if ($losID === 0) {
     $losID = NULL;
 }
 
-//$logFile = __DIR__ . '/log.log'; // Definiere logFile ganz oben!
 
-//function writeLog($message)
-//{
-//    global $logFile;
-//    file_put_contents($logFile, date('Y-m-d H:i:s') . " - $message\n", FILE_APPEND);
-//}
-//
 //// Log input values and types
 //writeLog("losID: $losID (type: " . gettype($losID) . ")");
 //writeLog("vermerkText: $vermerkText (type: " . gettype($vermerkText) . ")");

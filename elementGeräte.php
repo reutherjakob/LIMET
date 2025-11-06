@@ -217,7 +217,7 @@
             $.ajax({
                 url: "addDevice.php",
                 data: {"hersteller": hersteller, "type": type, "kurzbeschreibung": kurzbeschreibung},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     alert(data);
                     $.ajax({
@@ -276,7 +276,7 @@
             $.ajax({
                 url: "addManufacturer.php",
                 data: {"manufacturer": manufacturer},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     alert(data);
                     $.ajax({

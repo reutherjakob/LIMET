@@ -380,7 +380,6 @@ init_page_serversides();
                 }
             });
         });
-
         init_table_elementsinDB();
     });
 
@@ -388,7 +387,7 @@ init_page_serversides();
         $("#elementBestand").html("");
         $.ajax({
             url: "getElementBestand.php",
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 makeToaster("Reloaded!", true);
                 $("#elementBestand").html(data);
@@ -396,7 +395,6 @@ init_page_serversides();
         });
     });
 
-    // DB Elemente einblenden
     $("#showDBElementData").click(function () {
         if ($("#DBElementData").is(':hidden')) {
             $(this).html("<i class='fas fa-caret-down'></i>");

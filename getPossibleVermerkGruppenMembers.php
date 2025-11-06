@@ -1,48 +1,64 @@
-<!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title></title></head>
-<body>
-
 <?php
 require_once 'utils/_utils.php';
 check_login();
-$mysqli = utils_connect_sql();
-$sql = "SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen, tabelle_ansprechpersonen.Name, tabelle_ansprechpersonen.Vorname
-                FROM tabelle_projekte_has_tabelle_ansprechpersonen INNER JOIN tabelle_ansprechpersonen ON tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen = tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen
-                WHERE (((tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ")
-                AND tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen NOT IN (
-                SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen
-                                FROM tabelle_ansprechpersonen INNER JOIN tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen ON tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen = tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen
-                                WHERE (((tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe)=" . filter_input(INPUT_GET, 'gruppenID') . "))
-                ));";
-$result = $mysqli->query($sql);
 
-echo "<table id='tablePossibleVermerkGroupMembers' class='table table-striped table-bordered table-sm table-hover border border-light border-5'  >
-        <thead><tr>
+$mysqli = utils_connect_sql();
+
+$gruppenID = filter_input(INPUT_GET, 'gruppenID', FILTER_VALIDATE_INT);
+if (!$gruppenID) {
+    echo "Ungültige Gruppen-ID.";
+    exit;
+}
+
+$sql = "SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen, tabelle_ansprechpersonen.Name, tabelle_ansprechpersonen.Vorname
+        FROM tabelle_projekte_has_tabelle_ansprechpersonen 
+        INNER JOIN tabelle_ansprechpersonen 
+            ON tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen = tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen
+        WHERE tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projekte_idTABELLE_Projekte = ?
+        AND tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen NOT IN (
+            SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen
+            FROM tabelle_ansprechpersonen 
+            INNER JOIN tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen 
+                ON tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen = tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen
+            WHERE tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe = ?
+        )";
+
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param('ii', $_SESSION["projectID"], $gruppenID);
+$stmt->execute();
+$result = $stmt->get_result();
+?>
+
+<table id='tablePossibleVermerkGroupMembers' class='table table-striped table-bordered table-sm table-hover border border-light border-5'>
+    <thead>
+    <tr>
         <th></th>
         <th>Name</th>
         <th>Vorname</th>
-        </tr></thead>
-        <tbody>";
+    </tr>
+    </thead>
+    <tbody>
+    <?php while ($row = $result->fetch_assoc()): ?>
+        <tr>
+            <td>
+                <button type='button' id='<?php echo htmlspecialchars($row["idTABELLE_Ansprechpersonen"], ENT_QUOTES, 'UTF-8'); ?>'
+                        class='btn btn-outline-success btn-sm' value='addVermerkGroupMember'>
+                    <i class='fas fa-plus'></i>
+                </button>
+            </td>
+            <td><?php echo htmlspecialchars($row["Name"], ENT_QUOTES, 'UTF-8'); ?></td>
+            <td><?php echo htmlspecialchars($row["Vorname"], ENT_QUOTES, 'UTF-8'); ?></td>
+        </tr>
+    <?php endwhile; ?>
+    </tbody>
+</table>
 
-while ($row = $result->fetch_assoc()) {
-    echo "<tr>";
-    echo "<td><button type='button' id='" . $row["idTABELLE_Ansprechpersonen"] . "' class='btn btn-outline-success btn-sm' value='addVermerkGroupMember'><i class='fas fa-plus'></i></button></td>";
-    echo "<td>" . $row["Name"] . "</td>";
-    echo "<td>" . $row["Vorname"] . "</td>";
-    echo "</tr>";
-
-}
-
-echo "</tbody></table>";
-
+<?php
+$stmt->close();
 $mysqli->close();
 ?>
 
 <script>
-
     $('#tablePossibleVermerkGroupMembers').DataTable({
         paging: false,
         searching: true,
@@ -70,7 +86,7 @@ $mysqli->close();
             $.ajax({
                 url: "addPersonToVermerkGroup.php",
                 data: {"ansprechpersonenID": id, "groupID": groupID},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data,true);
                     document.getElementById('pdfPreview').src += '';
@@ -88,18 +104,10 @@ $mysqli->close();
                                     $("#possibleVermerkGroupMembers").html(data);
                                 }
                             });
-
                         }
                     });
                 }
             });
         }
-
-
     });
-
-
 </script>
-
-</body>
-</html>

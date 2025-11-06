@@ -1,7 +1,8 @@
 <!--  18.2.25: Reworked -->
 
  <?php
-require_once 'utils/_utils.php';check_login();
+require_once 'utils/_utils.php';
+check_login();
 ?>
 
 <!DOCTYPE html>

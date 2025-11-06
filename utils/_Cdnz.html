@@ -43,15 +43,14 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 <body>
 <!--
+
 === Importing utils and initiating serversides ===
     <?php
-    if (!function_exists('utils_connect_sql')) {
-        include "utils/_utils.php"; // fills navbar, lots of support functions
-    }
-    check_login();
 
-    // if SQl connection is needed:
-    $mysqli = utils_connect_sql();
+require_once 'utils/_utils.php';
+check_login();
+$mysqli = utils_connect_sql();
+
     ?>
 
 === Navbar ===
@@ -85,4 +84,6 @@
     === Getters ===
 
     === Setters ===
+
+
 

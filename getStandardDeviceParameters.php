@@ -7,15 +7,10 @@
 <body>
 
 <?php
+// 10-2025 FX
 require_once 'utils/_utils.php';
 check_login();
-
-
-$deviceID = 0;
-if (isset($_GET["deviceID"]) && $_GET["deviceID"] != "") {
-    $deviceID = $_GET["deviceID"];
-}
-
+$deviceID = getPostInt('deviceID', 0);
 $mysqli = utils_connect_sql();
 $sql = "SELECT tabelle_parameter.Bezeichnung, tabelle_geraete_has_tabelle_parameter.Wert, tabelle_geraete_has_tabelle_parameter.Einheit, tabelle_parameter_kategorie.Kategorie
                 FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN tabelle_geraete_has_tabelle_parameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_geraete_has_tabelle_parameter.TABELLE_Parameter_idTABELLE_Parameter) ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
@@ -56,7 +51,8 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
                 <!-- Dynamisch gefüllt -->
             </div>
             <div class='modal-footer'>
-                <input type='button' id='saveParametersFromDevice' class='btn btn-success btn-sm' value='Ja' data-bs-dismiss='modal'>
+                <input type='button' id='saveParametersFromDevice' class='btn btn-success btn-sm' value='Ja'
+                       data-bs-dismiss='modal'>
                 <button type='button' class='btn btn-danger btn-sm' data-bs-dismiss='modal'>Nein</button>
             </div>
         </div>
@@ -82,10 +78,27 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
                                 </div>
                                 <div class='card-body' id='deviceParameters'>
                                     <?php
-                                    $sql = "SELECT tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung, tabelle_geraete_has_tabelle_parameter.Wert, tabelle_geraete_has_tabelle_parameter.Einheit, tabelle_geraete_has_tabelle_parameter.TABELLE_Parameter_idTABELLE_Parameter, tabelle_geraete_has_tabelle_parameter.tabelle_parameter_idTABELLE_Parameter
-                                                    FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN tabelle_geraete_has_tabelle_parameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_geraete_has_tabelle_parameter.TABELLE_Parameter_idTABELLE_Parameter) ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
-                                                    WHERE (((tabelle_geraete_has_tabelle_parameter.TABELLE_Geraete_idTABELLE_Geraete)=" . $deviceID . "));";
-                                    $result = $mysqli->query($sql);
+                                    $stmt = $mysqli->prepare("
+                                    SELECT 
+                                        tabelle_parameter_kategorie.Kategorie, 
+                                        tabelle_parameter.Bezeichnung, 
+                                        tabelle_geraete_has_tabelle_parameter.Wert, 
+                                        tabelle_geraete_has_tabelle_parameter.Einheit, 
+                                        tabelle_geraete_has_tabelle_parameter.TABELLE_Parameter_idTABELLE_Parameter, 
+                                        tabelle_geraete_has_tabelle_parameter.tabelle_parameter_idTABELLE_Parameter
+                                    FROM 
+                                        tabelle_parameter_kategorie 
+                                        INNER JOIN (
+                                            tabelle_parameter 
+                                            INNER JOIN tabelle_geraete_has_tabelle_parameter 
+                                            ON tabelle_parameter.idTABELLE_Parameter = tabelle_geraete_has_tabelle_parameter.TABELLE_Parameter_idTABELLE_Parameter
+                                        ) ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
+                                    WHERE 
+                                        tabelle_geraete_has_tabelle_parameter.TABELLE_Geraete_idTABELLE_Geraete = ? " );
+                                    $stmt->bind_param("i", $deviceID);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+
 
                                     echo "<table class='table table-striped table-sm' id='tableDeviceParameters'  >
                                             <thead><tr>
@@ -122,21 +135,29 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
                                 <div class='card-header'>
                                     <div class="row">
                                         <div class="col-10 d-flex align-items-center">Mögliche Geräteparameter</div>
-                                        <div class="col-2 d-flex align-items-center justify-content-end" id='possibleDeviceParametersCH'></div>
+                                        <div class="col-2 d-flex align-items-center justify-content-end"
+                                             id='possibleDeviceParametersCH'></div>
                                     </div>
                                 </div>
                                 <div class='card-body' id='possibleDeviceParameters'>
                                     <?php
-                                    $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung, tabelle_parameter_kategorie.Kategorie 
-			  					FROM tabelle_parameter, tabelle_parameter_kategorie 
-			  					WHERE tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie 
-								AND tabelle_parameter.idTABELLE_Parameter NOT IN 
-								(SELECT tabelle_geraete_has_tabelle_parameter.TABELLE_Parameter_idTABELLE_Parameter
-                                                                FROM tabelle_geraete_has_tabelle_parameter
-                                                                WHERE (((tabelle_geraete_has_tabelle_parameter.TABELLE_Geraete_idTABELLE_Geraete)=" . $deviceID . "))) 
-								ORDER BY tabelle_parameter_kategorie.Kategorie;";
+                                    $stmt = $mysqli->prepare("
+                                                SELECT tabelle_parameter.idTABELLE_Parameter,
+                                                       tabelle_parameter.Bezeichnung,
+                                                       tabelle_parameter_kategorie.Kategorie
+                                                FROM tabelle_parameter
+                                                JOIN tabelle_parameter_kategorie
+                                                  ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
+                                                WHERE tabelle_parameter.idTABELLE_Parameter NOT IN (
+                                                    SELECT tabelle_geraete_has_tabelle_parameter.TABELLE_Parameter_idTABELLE_Parameter
+                                                    FROM tabelle_geraete_has_tabelle_parameter
+                                                    WHERE tabelle_geraete_has_tabelle_parameter.TABELLE_Geraete_idTABELLE_Geraete = ?
+                                                )
+                                                ORDER BY tabelle_parameter_kategorie.Kategorie");
+                                    $stmt->bind_param("i", $deviceID);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
 
-                                    $result = $mysqli->query($sql);
 
                                     echo "<table class='table table-striped table-sm' id='tablePossibleDeviceParameters'  >
                                         <thead><tr>
@@ -257,7 +278,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
             $.ajax({
                 url: "addParameterToDevice.php",
                 data: {"parameterID": id},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data, data.substring(0, 4) === "Para");
                     $.ajax({
@@ -334,7 +355,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
     $("button[value='closeModal']").click(function () {
         $.ajax({
             url: "getStandardDeviceParameters.php",
-            type: "GET",
+            type: "POST",
 
             success: function (data) {
                 $("#deviceParametersInDB").html(data);
@@ -347,7 +368,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
     $("#saveParametersFromDevice").click(function () {
         $.ajax({
             url: "addDeviceParametersToVariante.php",
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 makeToaster(data, data.substring(0, 4) === "Vari");
                 $.ajax({
@@ -362,13 +383,13 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
         });
     });
 
-    $("button[value='ParameterOvertakeBtn']").click(function() {
+    $("button[value='ParameterOvertakeBtn']").click(function () {
         console.log("ParameterOvertakeBtn");
         $.ajax({
             url: 'getModalDataFromSession.php',
             method: 'GET',
             dataType: 'json',
-            success: function(data) {
+            success: function (data) {
                 console.log(data);
                 $('#mbodyOvertake').html(
                     '<strong>Gerät:</strong> ' + data.deviceTyp + '<br>' +
@@ -378,7 +399,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
                 );
                 $('#parameterOvertakeModal').modal('show');
             },
-            error: function( ) {
+            error: function () {
                 $('#mbodyOvertake').html('<span class="text-danger">Fehler beim Laden der Daten.</span>');
                 $('#parameterOvertakeModal').modal('show');
             }

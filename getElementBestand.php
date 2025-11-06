@@ -1,8 +1,10 @@
 <?php
+// 10-2025 FX
 require_once 'utils/_utils.php';
-include "utils/_format.php";
+require_once "utils/_format.php";
 check_login();
 ?>
+
 <!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
@@ -21,41 +23,42 @@ check_login();
 <body>
 
 <?php
-if (filter_input(INPUT_GET, 'id') != "") {
-    $_SESSION["roombookID"] = filter_input(INPUT_GET, 'id');
-}
-if (filter_input(INPUT_GET, 'stk') != "") {
-    $_SESSION["stk"] = filter_input(INPUT_GET, 'stk');
-}
+$_SESSION["roombookID"] = getPostInt("id");
+$_SESSION["stk"] = getPostInt("stk");
 
 
 $mysqli = utils_connect_sql();
-
-// Abfrage der Element-Geräte
-$sql = "SELECT tabelle_geraete.idTABELLE_Geraete, tabelle_hersteller.Hersteller, tabelle_geraete.Typ
-			FROM tabelle_räume_has_tabelle_elemente INNER JOIN (tabelle_hersteller INNER JOIN tabelle_geraete ON tabelle_hersteller.idtabelle_hersteller = tabelle_geraete.tabelle_hersteller_idtabelle_hersteller) ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_geraete.TABELLE_Elemente_idTABELLE_Elemente
-			WHERE (((tabelle_räume_has_tabelle_elemente.id)=" . $_SESSION["roombookID"] . "))
-			ORDER BY tabelle_hersteller.Hersteller;";
-
-$result = $mysqli->query($sql);
-
+$stmt = $mysqli->prepare(
+    "SELECT tabelle_geraete.idTABELLE_Geraete, tabelle_hersteller.Hersteller, tabelle_geraete.Typ
+     FROM tabelle_räume_has_tabelle_elemente 
+     INNER JOIN (tabelle_hersteller 
+     INNER JOIN tabelle_geraete ON tabelle_hersteller.idtabelle_hersteller = tabelle_geraete.tabelle_hersteller_idtabelle_hersteller)
+     ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_geraete.TABELLE_Elemente_idTABELLE_Elemente
+     WHERE tabelle_räume_has_tabelle_elemente.id = ?
+     ORDER BY tabelle_hersteller.Hersteller"
+);
+$stmt->bind_param("i", $_SESSION["roombookID"]);
+$stmt->execute();
+$result = $stmt->get_result();
 $possibleDevices = array();
 while ($row = $result->fetch_assoc()) {
     $possibleDevices[$row['idTABELLE_Geraete']]['Hersteller'] = $row['Hersteller'];
     $possibleDevices[$row['idTABELLE_Geraete']]['Typ'] = $row['Typ'];
     $possibleDevices[$row['idTABELLE_Geraete']]['idTABELLE_Geraete'] = $row['idTABELLE_Geraete'];
-
 }
+$stmt->close();
 
-$sql = "SELECT `tabelle_bestandsdaten`.`idtabelle_bestandsdaten`, tabelle_bestandsdaten.Inventarnummer, tabelle_bestandsdaten.Seriennummer, tabelle_bestandsdaten.Anschaffungsjahr, tabelle_bestandsdaten.`Aktueller Ort`, tabelle_bestandsdaten.tabelle_geraete_idTABELLE_Geraete
-			FROM tabelle_bestandsdaten
-			WHERE tabelle_bestandsdaten.tabelle_räume_has_tabelle_elemente_id=" . $_SESSION["roombookID"] . ";";
 
-$result = $mysqli->query($sql);
+$stmt = $mysqli->prepare(
+    "SELECT idtabelle_bestandsdaten, Inventarnummer, Seriennummer, Anschaffungsjahr, `Aktueller Ort`, tabelle_geraete_idTABELLE_Geraete
+     FROM tabelle_bestandsdaten
+     WHERE tabelle_räume_has_tabelle_elemente_id = ?"
+);
+$stmt->bind_param("i", $_SESSION["roombookID"]);
+$stmt->execute();
+$result = $stmt->get_result();
 $row_cnt = $result->num_rows;
-
-//    echo " <button type='button' id='addBestandsElement' class='btn ml-4 mt-2 btn-outline-success btn-sm' value='Hinzufügen' data-bs-toggle='modal' data-bs-target='#addBestandModal'><i class='fas fa-plus'></i></button>";
-
+$stmt->close();
 
 echo "<div class='table-responsive'><table class='table table-striped table-bordered table-sm table-hover border border-5 border-light' id='tableElementBestandsdaten' >
 	<thead><tr>
@@ -111,13 +114,14 @@ $mysqli->close();
 ?>
 
 <!-- Modal zum Anlegen eines Bestands -->
-<div class='modal fade' id='addBestandModal'  tabindex="-1" role='dialog' >
+<div class='modal fade' id='addBestandModal' tabindex="-1" role='dialog'>
     <div class='modal-dialog modal-md'>
         <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Bestand hinzufügen</h4>
-                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
 
             </div>
             <div class='modal-body' id='mbody'>
@@ -192,29 +196,23 @@ $mysqli->close();
             },
             scrollY: '20vh',
             scrollCollapse: true,
-            rowCallback: function (row, data, displayNum, displayIndex, dataIndex) {
+            rowCallback: function (row, data) {
                 if (data[8] === "0") {
                     $(row).css('background-color', 'rgba(100, 0, 25, 0.3)');
                 } else {
                     $(row).css('background-color', 'rgba(100, 140, 25, 0.3)');
                 }
-            },
-            initComplete: function (settings, json) {
-                // Your initComplete function here
             }
         });
     });
 
-
-    //Bestand hinzufügen
-    $("#addBestand").click(function () {
+    $("#addBestand").click(function () {    //Bestand hinzufügen
         $("#addBestandModal").modal('hide');
         let inventarNr = $("#invNr").val();
         let anschaffungsJahr = $("#year").val();
         let serienNr = $("#serNr").val();
         let gereatID = $("#geraetNr").val();
         let currentPlace = $("#currentPlace").val();
-
         if (inventarNr !== "") {
             $.ajax({
                 url: "addBestand.php",
@@ -225,13 +223,13 @@ $mysqli->close();
                     "gereatID": gereatID,
                     "currentPlace": currentPlace
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     // alert(data);
                     makeToaster(data, true);
                     $.ajax({
                         url: "getElementBestand.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#elementBestand").html(data)
                             //$("#elementelementBestandsInLot").html(data);
@@ -243,10 +241,9 @@ $mysqli->close();
         } else {
             alert("Bitte Inventarnummer angeben!");
         }
-
     });
 
-    $("button[value='deleteBestand']").click(function () {
+    $(document).on('click', "button[value='deleteBestand']", function () {
         let id = this.id;
         if (id !== "") {
             $.ajax({
@@ -261,7 +258,7 @@ $mysqli->close();
                     }
                     $.ajax({
                         url: "getElementBestand.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#elementBestand").html(data);
                         }
@@ -274,8 +271,7 @@ $mysqli->close();
         }
     });
 
-    //Bestand ändern
-    $("button[value='changeBestand']").click(function () {
+    $("button[value='changeBestand']").click(function () { //Bestand ändern
         let id = this.id;
         $("#saveBestand").show();
         $("#addBestand").hide();
@@ -309,10 +305,9 @@ $mysqli->close();
                     makeToaster(data, true)
                     $.ajax({
                         url: "getElementBestand.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
-                            makeToaster("Saved!", true);
-                            //$("#elementBestand").html(data);
+                            makeToaster("Saved!", true);                            //$("#elementBestand").html(data);
                         }
                     });
                 }
@@ -323,7 +318,6 @@ $mysqli->close();
     });
 
     $("#addBestandsElement").click(function () {
-        let id = this.id;
         $("#addBestand").show();
         $("#saveBestand").hide();
     });

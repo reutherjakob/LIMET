@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 
 <head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+
     <title>LIMET - Login</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -22,13 +22,14 @@ if (isset($_SESSION['username'])) {
     header("Location: projects.php");
     exit;
 }
+require 'utils/csrf.php';
 ?>
 
-<div class='container-fluid bg-light'  style="height:100vh;">
+<div class='container-fluid bg-light' style="height:100vh;">
     <div class='row d-flex align-items-center'>
         <div class='col-xxl-5 col-xl-5 col-lg-4 col-md-2 col-sm-1'></div>
         <div class='col-xxl-2 col-xl-2 col-lg-4 col-md-8 col-sm-10' id='login'>
-            <div class='card mx-auto my-4'  style="outline: 2px solid white;">
+            <div class='card mx-auto my-4' style="outline: 2px solid white;">
                 <div class='card-header d-flex align-items-center justify-content-center'>
                     <img src="Logo/LIMET_logo.png" alt="LIMETLOGO">
                 </div>
@@ -37,13 +38,17 @@ if (isset($_SESSION['username'])) {
                         <div class='row'>
                             <div class='col-xxl-12 mt-4'>
                                 <label for='username' class="visually-hidden">Username</label>
-                                <input class='form-control form-control-lg' type='text' id='username' name='username' placeholder="Username">
+                                <input class='form-control form-control-lg' type='text' id='username' name='username'
+                                       placeholder="Username">
                             </div>
                             <div class='col-xxl-12 mt-4'>
                                 <label for='password' class="visually-hidden">Passwort</label>
-                                <input class='form-control form-control-lg' type='password' id='password' name='password' placeholder="Passwort">
+                                <input class='form-control form-control-lg' type='password' id='password'
+                                       name='password' placeholder="Passwort">
                             </div>
-                            <div class='col-xxl-12 mt-4'></div>
+                            <div class='col-xxl-12 mt-4'>
+                                <input type="hidden" name="csrf"
+                                       value="<?php echo csrf_token(); ?>"></div>
                         </div>
                     </div>
                     <div class='card-footer'>
@@ -57,6 +62,7 @@ if (isset($_SESSION['username'])) {
             </div>
         </div>
         <div class='col-xxl-5 col-xl-5 col-lg-4 col-md-2 col-sm-1'></div>
+
     </div>
 </div>
 

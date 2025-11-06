@@ -279,7 +279,7 @@ echo "</tbody></table>";
     /* Inititation within DocumentationV2.php; also 4:  var vermerkID;*/
     vermerkUntergruppenID = <?php echo filter_input(INPUT_GET, 'vermerkUntergruppenID') ?>;
 
-    console.log("Get Vermerke To Untergruppe: ", vermerkUntergruppenID, untergruppenID);
+    //  console.log("Get Vermerke To Untergruppe: ", vermerkUntergruppenID, untergruppenID);
 
 
     $(document).ready(function () {
@@ -417,12 +417,13 @@ echo "</tbody></table>";
 
 
     $("#addVermerk").click(function () {
-        console.log("Doku addV: ", gruppenID, vermerkID, tableVermerke, untergruppenID, vermerkGruppenID);
+        // console.log("Doku addV: ", gruppenID, vermerkID, tableVermerke, untergruppenID, vermerkGruppenID);
         let rooms = $("#room").val();
         let los = $("#los").val();
         let vermerkStatus = $("#vermerkStatus").val();
         let vermerkTyp = $("#vermerkTyp").val();
         let vermerkText = $("#vermerkText").val();
+        console.log(" addVermerk sVermerkText: ",vermerkText);
         let faelligkeitDatum = $("#faelligkeit").val();
         if (vermerkTyp === "Info") {
             faelligkeitDatum = null;
@@ -476,7 +477,7 @@ echo "</tbody></table>";
         $("#untergruppe").prop('disabled', false);
 
         let rowData = tableVermerke.row($(this).closest('tr')).data();
-        console.log(rowData[6]);
+        //   console.log(rowData[6]);
         $('#vermerkStatus').val(rowData[6]).trigger('change');
         $('#changeVermerkModal').modal('show');
     });
@@ -489,6 +490,7 @@ echo "</tbody></table>";
         let vermerkTyp = $("#vermerkTyp").val();
         let vermerkText = $("#vermerkText").val();
         let faelligkeitDatum = $("#faelligkeit").val();
+        console.log(" addVermerk sVermerkText: ", vermerkText);
         //let untergruppenID = $("#untergruppe").val();
         if (vermerkTyp === "Info") {
             faelligkeitDatum = null;
