@@ -1,33 +1,7 @@
 <?php
-session_start();
-?>
-
-<!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml" lang="">
-
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title></title>
-</head>
-<body>
-<?php
-if (!isset($_SESSION["username"])) {
-    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-    exit;
-}
-?>
-
-<?php
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-
-
-/* change character set to utf8 */
-if (!$mysqli->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $mysqli->error);
-    exit();
-}
-
-
+require_once  "utils/_utils.php";
+check_login();
+$mysqli = utils_connect_sql();
 $sql = "SELECT tabelle_lieferant.idTABELLE_Lieferant, tabelle_lieferant.Lieferant, tabelle_lieferant.Land, tabelle_lieferant.Ort
                     FROM tabelle_geraete_has_tabelle_lieferant INNER JOIN tabelle_lieferant ON tabelle_geraete_has_tabelle_lieferant.tabelle_lieferant_idTABELLE_Lieferant = tabelle_lieferant.idTABELLE_Lieferant
                     WHERE (((tabelle_geraete_has_tabelle_lieferant.tabelle_geraete_idTABELLE_Geraete)=" . $_SESSION["deviceID"] . "))
@@ -128,7 +102,7 @@ include_once("modal_addLieferant.php");
             $.ajax({
                 url: "addLieferantToDevice.php",
                 data: {"lieferantenID": lieferantenID},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     alert(data);
                     $.ajax({
