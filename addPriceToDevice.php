@@ -13,7 +13,7 @@ $projektID = getPostInt('project');
 $nk = getPostString('nk');
 $lieferant = getPostInt('lieferant');
 $deviceID = $_SESSION["deviceID"];
-$date =  strtotime($dateStr);
+$date =  date("Y-m-d",strtotime($dateStr));
 
 // Prepare statement
 $stmt = $mysqli->prepare("INSERT INTO `LIMET_RB`.`tabelle_preise`

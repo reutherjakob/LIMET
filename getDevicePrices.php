@@ -269,7 +269,6 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
                     url: "addLieferantToDevice.php",
                     data: {lieferantenID: lieferantenID},
                     type: "POST",
-                    dataType: "json", // expect JSON response
                     success: function () {
                         reloadLieferantOptions();
                         loadPossibleLieferantenOptions();
@@ -277,7 +276,7 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
                             url: "getLieferantenToDevices.php",
                             type: "GET",
                             success: function (data) {
-                                makeToaster("Lieferant zu Gerät hinzugefügt.", trues);
+                                makeToaster("Lieferant zu Gerät hinzugefügt.", true);
                                 $("#deviceLieferanten").html(data);
                             }
                         });
@@ -389,6 +388,15 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
             }
             ep.replace(/,/g, '.').replace(/[^0-9.]/g, '');
 
+
+            console.log("date:", date);
+            console.log("quelle:", quelle);
+            console.log("menge:", menge);
+            console.log("nk:", nk);
+            console.log("project:", project);
+            console.log("lieferant:", lieferant);
+            console.log("ep:", ep);
+
             if (date !== "" && quelle !== "" && menge !== "" && ep !== "" && nk !== "" && lieferant > 0) {
                 $.ajax({
                     url: "addPriceToDevice.php",
@@ -401,7 +409,7 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
                         "project": project,
                         "lieferant": lieferant
                     },
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         makeToaster(data, true);
                         $.ajax({
