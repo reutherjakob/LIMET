@@ -420,7 +420,7 @@
             $.ajax({
                 url: "getLieferantenUmsaetze.php",
                 data: {"lieferantenID": tableLieferantenUnternehmen.row($(this)).data()[0]},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#lieferantenumsaetze").html(data);
                 }
@@ -475,7 +475,7 @@
                                 "abteilung": abteilung,
                                 "gebiet": gebiet
                             },
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 $("#lieferanten").html(data);
 
@@ -521,12 +521,12 @@
                         "abteilung": abteilung,
                         "gebiet": gebiet
                     },
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         alert(data);
                         $.ajax({
                             url: "getLieferantenPersonen.php",
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 $("#lieferanten").html(data);
 

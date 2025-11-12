@@ -180,7 +180,7 @@ $mysqli->close();
                     "lotVerfahren": lotVerfahren,
                     "lotLVBearbeiter": lotLVBearbeiter
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     alert(data);
                     $.ajax({

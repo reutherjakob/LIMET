@@ -38,6 +38,7 @@
 require_once 'utils/_utils.php';
 include "utils/_format.php";
 init_page_serversides();
+
 ?>
 
 <div id="limet-navbar"></div>
@@ -76,6 +77,19 @@ init_page_serversides();
                 <div class="card-body p-0 py-0 m-0" id="projectLots">
                     <div class="p-0">
                         <?php
+                        function getVerfahrenBadgeClass($verfahren) {
+                            switch ($verfahren) {
+                                case 'Direktvergabe': return 'bg-secondary';
+                                case 'Direktvergabe mit vorheriger Bekanntmachung': return 'bg-info';
+                                case 'Verhandlungsverfahren ohne Bekanntmachung': return 'bg-warning';
+                                case 'Nicht offenes Verfahren ohne Bekanntmachung': return 'bg-primary';
+                                case 'Nicht offenes Verfahren mit Bekanntmachung': return 'bg-success';
+                                case 'Offenes Verfahren': return 'bg-danger';
+                                case 'MKF': return "bg-danger";
+                                default: return 'bg-dark';
+                            }
+                        }
+
                         $mysqli = utils_connect_sql();
                         $sql = "SELECT `tabelle_lieferant`.`idTABELLE_Lieferant`,
                                                                             `tabelle_lieferant`.`Lieferant`
@@ -142,10 +156,10 @@ init_page_serversides();
                                             <th>Budget (val)</th>
                                             <th>Vergabesumme</th>
                                             <th>Auftragnehmer</th>
-                                            <th data-bs-toggle='tooltip' data-bs-placement='top' title='Workflow'>
+                                            <th class='text-center' title='Workflow'>
                                                 <i class='fas fa-code-branch'></i>
                                             </th>
-                                            <th data-bs-toggle='tooltip' data-bs-placement='top' title='Notiz'>
+                                            <th class='text-center'  title='Notiz'>
                                                 <i class='far fa-sticky-note'></i>
                                             </th>
                                             <th>IDLieferant</th>
@@ -164,7 +178,8 @@ init_page_serversides();
 
                             echo "<td>" . $row["Versand_LV"] . "</td>";
                             echo "<td>" . $row["Ausführungsbeginn"] . "</td>";
-                            echo "<td>" . $row["Verfahren"] . "</td>";
+                            echo '<td><span class="badge rounded-pill ' . getVerfahrenBadgeClass($row['Verfahren']) . '">' . htmlspecialchars($row['Verfahren']) . '</span></td>';
+
                             echo "<td>" . $row["Bearbeiter"] . "</td>";
                             echo "<td >";
                             switch ($row["Vergabe_abgeschlossen"]) {
@@ -317,11 +332,22 @@ init_page_serversides();
                             <input type='text' class='form-control form-control-sm' id='lotStart'
                                    placeholder='jjjj-mm-tt'/>
                         </div>
-                        <div class='form-group'>
-                            <label for='lotVerfahren'>Verfahren:</label>
-                            <input type='text' class='form-control form-control-sm' id='lotVerfahren'
-                                   placeholder='Verfahren'/>
+                        <div class="form-group">
+                            <label for="lotVerfahren">Verfahren</label>
+                            <select class="form-control form-control-sm" id="lotVerfahren" name="lotVerfahren">
+                                <option value="" selected disabled>Verfahren wählen</option>
+                                <option value="Direktvergabe">Direktvergabe</option>
+                                <option value="Direktvergabe mit vorheriger Bekanntmachung">Direktvergabe mit vorheriger Bekanntmachung</option>
+                                <option value="Verhandlungsverfahren ohne Bekanntmachung">Verhandlungsverfahren ohne Bekanntmachung</option>
+                                <option value="Nicht offenes Verfahren ohne Bekanntmachung">Nicht offenes Verfahren ohne Bekanntmachung</option>
+                                <option value="Nicht offenes Verfahren mit Bekanntmachung">Nicht offenes Verfahren mit Bekanntmachung</option>
+                                <option value="Offenes Verfahren">Offenes Verfahren</option>
+                                <option value="Verhandlungsverfahren mit Bekanntmachung">Verhandlungsverfahren mit Bekanntmachung</option>
+                                <option value="Andere">Andere</option>
+
+                            </select>
                         </div>
+
                         <div class='form-group'>
                             <label for='lotLVBearbeiter'>Bearbeiter:</label>
                             <input type='text' class='form-control form-control-sm' id='lotLVBearbeiter'
@@ -404,15 +430,6 @@ init_page_serversides();
     var tableTenderLots;
 
     $(document).ready(function () {
-
-        document.addEventListener('DOMContentLoaded', function () {
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl)
-            })
-        });
-
-
         getExcelFilename("Lose-im_Projekt")
             .then(filename => {
                 // console.log('Generated filename:', filename);
@@ -425,7 +442,7 @@ init_page_serversides();
                             searchable: false
                         },
                         {
-                            targets: [1, 19, 20, 21],
+                            targets: [1, 20, 21],
                             sortable: false
                         }
                     ],
@@ -480,12 +497,10 @@ init_page_serversides();
                         Array.from(sourceElements).forEach(function (element) {
                             targetElement.appendChild(element);
                         });
-
                         const button = document.querySelector(".dt-buttons");
                         if (button) {
                             button.classList.remove("dt-buttons");
                         }
-
                         $('.dt-search label').remove();
                         $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-secondary").appendTo('#LoseCardHeaderSub');
                     }
@@ -495,9 +510,7 @@ init_page_serversides();
                     if ($.fn.DataTable.isDataTable('#tableLotElements1')) {
                     }
                     lotID = tableTenderLots.row($(this)).data()[0];
-
                     let lotVerfahren1 = tableTenderLots.row($(this)).data()[5];
-
                     if (lotVerfahren1 === "MKF") {
                         $('#lotMKF').bootstrapToggle('enable');
                         $('#lotMKF').bootstrapToggle('on');
@@ -516,10 +529,8 @@ init_page_serversides();
                     document.getElementById("lotVerfahren").value = tableTenderLots.row($(this)).data()[6];
                     document.getElementById("lotLVBearbeiter").value = tableTenderLots.row($(this)).data()[7];
                     document.getElementById("kostenanschlag").value = tableTenderLots.row($(this)).data()[11].replace(/\./g, '');
-
                     document.getElementById("budget").value = tableTenderLots.row($(this)).data()[12].replace(/\./g, '');
                     document.getElementById("lotSum").value = tableTenderLots.row($(this)).data()[13].replace(/\./g, '');
-
 
                     const htmlString = tableTenderLots.row($(this)).data()[8];
                     const textContent = htmlString.replace(/<[^>]*>/g, '');
@@ -602,53 +613,54 @@ init_page_serversides();
             lotLVSend: document.getElementById("lotLVSend").value,
             lotVerfahren: document.getElementById("lotVerfahren").value,
             lotLVBearbeiter: document.getElementById("lotLVBearbeiter").value,
-            lotMKFOf: document.getElementById("lotMKFOf").value
+            lotMKFOf: document.getElementById("lotMKFOf") ? document.getElementById("lotMKFOf").value : "0"
         };
 
-        // console.log("Form Data:", formData);
-
         if (formData.lotMKFOf === "0") {
-            if (formData.losNr !== "" && formData.losName !== "" && formData.losDatum !== "" &&
-                formData.lotLVSend !== "" && formData.lotVerfahren !== "" && formData.lotLVBearbeiter !== "") {
+            if (formData.losNr && formData.losName && formData.losDatum &&
+                formData.lotLVSend && formData.lotVerfahren && formData.lotLVBearbeiter) {
                 sendData(formData);
             } else {
                 alert("Bitte alle Felder außer der Vergabesumme und Auftragnehmer ausfüllen!");
             }
         } else {
-            if (formData.losDatum !== "" && formData.lotLVSend !== "" &&
-                formData.lotVerfahren !== "" && formData.lotLVBearbeiter !== "") {
+            if (formData.losDatum && formData.lotLVSend &&
+                formData.lotLVBearbeiter) {
                 sendData(formData);
             } else {
-                alert("Für MKF bitte alle Felder r ausfüllen (außer der Vergabesumme und Auftragnehmer und Auftragnehme)!");
+                alert("Für MKF bitte alle Felder außer Vergabesumme und Auftragnehmer ausfüllen!");
             }
         }
     });
 
     function sendData(formData) {
-        console.log("Sending data:", formData);
-        document.getElementById('addTenderLotModal').style.display = 'none';
-        $('#addTenderLotModal').modal('hide');
-
-        const queryString = new URLSearchParams(formData).toString();
-        const url = `addTenderLot.php?${queryString}`;
-        console.log(url);
-        fetch(url, {
-            method: "GET",
+        const modal = document.getElementById('addTenderLotModal');
+        if (modal) {
+            modal.style.display = 'none';
+            if (typeof $ === 'function' && $('#addTenderLotModal').modal) {
+                $('#addTenderLotModal').modal('hide');
+            }
+        }
+        fetch("addTenderLot.php", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+            },
+            body: new URLSearchParams(formData).toString()
         })
             .then(response => response.text())
             .then(data => {
-                console.log("Response:", data);
-                alert(data);
-                window.location.replace("tenderLots.php");
+                makeToaster(data, true);
+                location.reload();
             })
             .catch(error => {
-                console.error('Error:', error);
+                makeToaster("Fehler beim Speichern: " + error, false);
+                location.reload();
             });
-        // window.location.replace("tenderLots.php");
+
     }
 
 
-    //Los speichern
     $("#saveTenderLot").click(function () {
         let losNr = $("#lotNr").val();
         let losName = $("#lotName").val();
@@ -747,7 +759,6 @@ init_page_serversides();
         document.getElementById("lotSum").value = "";
         document.getElementById("lotVergabe").value = "";
         document.getElementById("lotAuftragnehmer").value = "";
-
         document.getElementById("saveTenderLot").style.display = "none";      // Buttons ein/ausblenden!
         document.getElementById("addTenderLot").style.display = "inline";
         $('#lotMKF').bootstrapToggle('enable');

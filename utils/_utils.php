@@ -124,3 +124,20 @@ function getPostString(string $key, string $default = ''): string
     return isset($_POST[$key]) ? trim($_POST[$key]) : $default;
 }
 
+function getPostDate(string $key): string
+{
+    $dateInput = getPostString($key); // e.g. '2025-11-07'
+    $dateFormatted = '';
+
+    if ($dateInput !== '') {
+        $timestamp = strtotime($dateInput);
+        if ($timestamp !== false) {
+            $dateFormatted = date("Y-m-d", $timestamp); // expected to be identical here
+        }
+    }
+    return $dateFormatted;
+}
+
+function getPostFloat(string $key, float $default = 0.0): float {
+    return isset($_POST[$key]) ? filter_var($_POST[$key], FILTER_VALIDATE_FLOAT) ?? $default : $default;
+}

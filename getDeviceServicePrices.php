@@ -197,7 +197,7 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
                     "project": project,
                     "lieferant": lieferant
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     alert(data);
                     $.ajax({

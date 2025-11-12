@@ -213,7 +213,7 @@ $mysqli->close();
                 $.ajax({
                     url: "addStandortElement.php",
                     data: {"standortElement": standortElement, "id": id},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         $('#addStandortElementModal').modal('hide');
                         alert(data);

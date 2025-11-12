@@ -90,7 +90,6 @@ $sql = "
         AND re.Anzahl <> 0
         AND pep.tabelle_projekte_idTABELLE_Projekte = ?
     ORDER BY 
-        r.Raumbezeichnung, 
         e.ElementID, 
         par.Bezeichnung DESC
 ";

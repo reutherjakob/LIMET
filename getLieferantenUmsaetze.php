@@ -2,23 +2,24 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <!--DATEPICKER -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css"/>
     <script type='text/javascript'
             src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
     <title></title>
 </head>
-<body>
-<!-- Rework 2025 -->
+
+
+
 <?php
+// 11-25FX
 require_once 'utils/_utils.php';
 include "utils/_format.php";
 check_login();
 $mysqli = utils_connect_sql();
 
-if (isset($_GET["lieferantenID"])) {
-    $_SESSION["lieferantenID"] = $_GET["lieferantenID"];
+if (isset($_POST["lieferantenID"])) {
+    $_SESSION["lieferantenID"] = $_POST["lieferantenID"];
 }
 
 $stmt = $mysqli->prepare("SELECT idtabelle_umsaetze, umsatz, geschaeftsbereich, jahr FROM tabelle_umsaetze WHERE tabelle_lieferant_idTABELLE_Lieferant = ?");
@@ -27,9 +28,9 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 
-echo "<table class='table table-striped table-sm' id='tableLieferantenUmsaetze'  >
-	<thead><tr>";
-echo "<th>ID</th>
+echo "<table class='table table-striped table-sm' id='tableLieferantenUmsaetze'>    
+        <thead><tr>
+        <th>ID</th>
 		<th>Umsatz</th>
 		<th>Geschäftsbereich</th>
 		<th>Jahr</th>
@@ -52,8 +53,6 @@ echo "<input type='button' id='addUmsatzModal' class='btn btn-success btn-sm' va
 <!-- Modal zum Anlegen eines Umsatzes -->
 <div class='modal fade' id='addUmsatzToLieferantModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
-
-        <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
                 <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
@@ -113,7 +112,7 @@ echo "<input type='button' id='addUmsatzModal' class='btn btn-success btn-sm' va
         ]
     });
 
-    function showModal(){
+    function showModal() {
         let myModal = new bootstrap.Modal(document.getElementById('addUmsatzToLieferantModal'));
         myModal.show();
     }
@@ -125,18 +124,19 @@ echo "<input type='button' id='addUmsatzModal' class='btn btn-success btn-sm' va
         let jahr = parseInt($("#jahr").val());
         const bereichRegex = /^[a-zA-ZäöüÄÖÜß\s]{1,50}$/;
 
-        if (isNaN(umsatz) || umsatz <= 0) {v
-            makeToaster("Bitte einen gültigen Umsatz eingeben (positiver Dezimalwert).",false);
+        if (isNaN(umsatz) || umsatz <= 0) {
+            v
+            makeToaster("Bitte einen gültigen Umsatz eingeben (positiver Dezimalwert).", false);
             showModal();
             return;
         }
         if (!bereichRegex.test(bereich)) {
-            makeToaster("Bitte geben Sie einen gültigen Geschäftsbereich ein (nur Buchstaben).",false);
+            makeToaster("Bitte geben Sie einen gültigen Geschäftsbereich ein (nur Buchstaben).", false);
             showModal();
             return;
         }
         if (isNaN(jahr) || jahr < 1900 || jahr > 2100) {
-            makeToaster("Bitte geben Sie ein gültiges Jahr ein (zwischen 1900 und 2100).",false);
+            makeToaster("Bitte geben Sie ein gültiges Jahr ein (zwischen 1900 und 2100).", false);
             showModal();
             return;
         }
@@ -148,12 +148,12 @@ echo "<input type='button' id='addUmsatzModal' class='btn btn-success btn-sm' va
                 "bereich": bereich,
                 "jahr": jahr
             },
-            type: "GET",
+            type: "POST",
             success: function (data) {
-                alert(data);
+                makeToaster(data, true);
                 $.ajax({
                     url: "getLieferantenUmsaetze.php",
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         $("#lieferantenumsaetze").html(data);
                     }

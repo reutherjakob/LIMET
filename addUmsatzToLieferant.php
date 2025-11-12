@@ -1,29 +1,31 @@
 <?php
+// 11-25-FX
 include "utils/_format.php";
 include_once "utils/_utils.php";
 check_login();
 $mysqli = utils_connect_sql();
-$umsatz = filter_input(INPUT_GET, 'umsatz', FILTER_VALIDATE_FLOAT);
-$bereich_raw = filter_input(INPUT_GET, 'bereich', FILTER_UNSAFE_RAW);
-$bereich = trim($bereich_raw);
-$jahr = filter_input(INPUT_GET, 'jahr', FILTER_VALIDATE_INT);
+
+$umsatz = getPostFloat('umsatz', -1);
+$bereich = getPostString('bereich');
+$jahr = getPostInt('jahr', 0);
 
 $lieferantenID = isset($_SESSION["lieferantenID"]) ? intval($_SESSION["lieferantenID"]) : 0;
 
-// Simple input checks
-if ($umsatz === false || $umsatz < 0) {
+// Input validation
+if ($umsatz < 0) {
     exit("Ungültiger Umsatzwert.");
 }
 if (empty($bereich) || !preg_match('/^[a-zA-ZäöüÄÖÜß\s]{1,50}$/u', $bereich)) {
     exit("Ungültiger Geschäftsbereich.");
 }
-if ($jahr === false || $jahr < 1900 || $jahr > 2100) {
+if ($jahr < 1900 || $jahr > 2100) {
     exit("Ungültiges Jahr.");
 }
 if ($lieferantenID <= 0) {
     exit("Ungültige Lieferanten-ID.");
 }
 
+// Prepared statement to insert data
 $stmt = $mysqli->prepare("INSERT INTO LIMET_RB.tabelle_umsaetze (umsatz, geschaeftsbereich, jahr, tabelle_lieferant_idTABELLE_Lieferant) VALUES (?, ?, ?, ?)");
 if (!$stmt) {
     exit("Prepare failed: " . $mysqli->error);
@@ -38,3 +40,5 @@ if ($stmt->execute()) {
 }
 
 $stmt->close();
+$mysqli->close();
+?>

@@ -216,7 +216,7 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
                     $.ajax({
                         url: "getDevicePrices.php",
                         data: {"deviceID": deviceID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#devicePrices").html(data);
                             $.ajax({

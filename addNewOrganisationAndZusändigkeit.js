@@ -78,7 +78,7 @@ $(document).ready(function () {
                         $("#addOrganisationModal").modal('hide');
                         makeToaster(response,true);
                     } else {
-                        alert(data.error || "Fehler beim Hinzufügen der Organisation.");
+                        alert(data.error + " " +  data.suggestions || "Fehler beim Hinzufügen der Organisation.");
                     }
                 } catch (e) {
                     console.log(e);
