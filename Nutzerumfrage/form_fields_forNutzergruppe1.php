@@ -35,8 +35,6 @@ $formFields = [
     ["type" => "yesno", "kathegorie" => "HT", "name" => "temperatur_schwankungen_relevant", "label" => "Besondere Anforderungen an die maximal zulässigen Temperaturschwankungen? "],
 
     ["type" => "text", "kathegorie" => "HT", "name" => "luftfeuchtigkeit_besonders", "label" => "Besondere Anforderungen an die Luftfeuchtigkeit (min./max.)? ", "default_value" => "Keine"],
-    // ["type" => "text", "kathegorie" => "HT", "name" => "luftfeuchtigkeit_besonders", "label" => "Min. Luftfeuchtigkeit?"],
-    // ["type" => "text", "kathegorie" => "HT", "name" => "luftfeuchtigkeit_besonders", "label" => "Max. Luftfeuchtigkeit?"],
 
     ["type" => "select", "kathegorie" => "HT", "name" => "druckregelung_besonders", "label" => "Besondere Anforderungen an die Druckregelung der Lüftung?",
         "options" => [1 => "Keine", 2 => "Überdruck", 3 => "Unterdruck"]],
@@ -63,100 +61,3 @@ $formFields = [
     ["type" => "yesno", "kathegorie" => "HKLS", "name" => "abwasser_sonderfall", "label" => "Ist Abwasser vorhanden welches nicht in die Kanalisation geleitet werden darf?"]
 ];
 
-/*
-
-    ["type" => "select", "default_value" => "0", "kathegorie" => "Raum", "name" => "fussboden_onorm_b5220", "label" => "Fußboden ÖNORM B5220", "options" => ["0" => "keine Anforderung", "1" => "Klasse 1", "2" => "Klasse 2", "3" => "Klasse 3"]],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Raum Kommentar", "name" => "fussboden_onorm_b5220_comment", "label" => "Kommentar Fußboden ÖNORM B5220"],
-
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Raum", "name" => "verdunkelung", "label" => "Verdunkelung"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Raum Kommentar", "name" => "verdunkelung_comment", "label" => "Kommentar Verdunkelung"],
-
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Raum", "name" => "schallschutzanforderung", "label" => "Erhöhte Schallschutzanforderung"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Raum Kommentar", "name" => "schallschutzanforderung_comment", "label" => "Kommentar Erhöhte Schallschutzanforderung"],
-
-    ["type" => "select", "default_value" => "0", "kathegorie" => "Raum", "name" => "vc_klasse", "label" => "VC-Klassen", "options" => [1 => "VC-A", 2 => "VC-B", 3 => "VC-C", 4 => "VC-D", 5 => "VC-E", 6 => "VC-F", 7 => "VC-G",]],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Raum Kommentar", "name" => "vc_klasse_comment", "label" => "Kommentar VC-Klassen"],
-
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Raum", "name" => "chemikalienliste", "label" => "Chemikalienliste"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Raum Kommentar", "name" => "chemikalienliste_comment", "label" => "Kommentar Chemikalienliste"],
-
-    ["type" => "select", "default_value" => "0", "kathegorie" => "Raum", "name" => "vexat_zone", "label" => "VEXAT Zone", "options" => ["0" => "Zone 0", "1" => "Zone 1", "2" => "Zone 2"]],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Raum Kommentar", "name" => "vexat_zone_comment", "label" => "Kommentar VEXAT Zone"],
-
-    ["type" => "text", "default_value" => "", "kathegorie" => "Raum", "name" => "bsl_level", "label" => "Biosafety Level (BSL)"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Raum Kommentar", "name" => "bsl_level_comment", "label" => "Kommentar Biosafety Level"],
-
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Raum", "name" => "laser", "label" => "Laser"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Raum Kommentar", "name" => "laser_comment", "label" => "Kommentar Laser"],
-
-// Analog die Gas-Felder:
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Gas", "name" => "o2", "label" => "O2"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Gas Kommentar", "name" => "o2_comment", "label" => "Kommentar O2"],
-
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Gas", "name" => "va", "label" => "VA"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Gas Kommentar", "name" => "va_comment", "label" => "Kommentar VA"],
-
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Gas", "name" => "dl", "label" => "DL"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Gas Kommentar", "name" => "dl_comment", "label" => "Kommentar DL"],
-
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Gas", "name" => "co2", "label" => "CO2"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Gas Kommentar", "name" => "co2_comment", "label" => "Kommentar CO2"],
-
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Gas", "name" => "h2", "label" => "H2"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Gas Kommentar", "name" => "h2_comment", "label" => "Kommentar H2"],
-
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Gas", "name" => "he", "label" => "He"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Gas Kommentar", "name" => "he_comment", "label" => "Kommentar He"],
-
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Gas", "name" => "he_rf", "label" => "He-RF"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Gas Kommentar", "name" => "he_rf_comment", "label" => "Kommentar He-RF"],
-
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Gas", "name" => "ar", "label" => "Ar"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Gas Kommentar", "name" => "ar_comment", "label" => "Kommentar Ar"],
-
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Gas", "name" => "n2", "label" => "N2"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Gas Kommentar", "name" => "n2_comment", "label" => "Kommentar N2"],
-
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Gas", "name" => "ln", "label" => "LN"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Gas Kommentar", "name" => "ln_comment", "label" => "Kommentar LN"],
-
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Gas", "name" => "spezialgas", "label" => "Spezialgas lt. Anwender"],
-
-// ET-Felder
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "ET", "name" => "sv_geraete", "label" => "SV versorgte Geräte"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "ET Kommentar", "name" => "sv_geraete_comment", "label" => "Kommentar SV versorgte Geräte"],
-
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "ET", "name" => "usv_geraete", "label" => "USV versorgte Geräte"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "ET Kommentar", "name" => "usv_geraete_comment", "label" => "Kommentar USV versorgte Geräte"],
-
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "ET", "name" => "alarm_glt", "label" => "Alarmaufschaltung auf Gebäudeleittechnik"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "ET Kommentar", "name" => "alarm_glt_comment", "label" => "Kommentar Alarmaufschaltung"],
-
-// Wasser-Felder
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Wasser", "name" => "kuehlwasser", "label" => "Kühlwasser"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Wasser Kommentar", "name" => "kuehlwasser_comment", "label" => "Kommentar Kühlwasser"],
-
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Wasser", "name" => "VE_Wasser", "label" => "VE Wasser"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Wasser Kommentar", "name" => "VE_Wasser_comment", "label" => "Kommentar VE Wasser"],
-
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Wasser", "name" => "geraete_wasser_abfluss", "label" => "Geräte mit Wasserabflüssen"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Wasser Kommentar", "name" => "geraete_wasser_abfluss_comment", "label" => "Kommentar Geräte mit Wasserabflüssen"],
-
-// Abluft-Felder
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Abluft", "name" => "punktabsaugung", "label" => "Punktabsaugung vorhanden"],
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Abluft", "name" => "abluft_sicherheitsschrank", "label" => "Abluft Sicherheitsschrank vorhanden"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Abluft Kommentar", "name" => "abluft_sicherheitsschrank_comment", "label" => "Kommentar Abluft Sicherheitsschrank"],
-
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Abluft", "name" => "abluft_vakuumpumpe", "label" => "Abluft Vakuumpumpe vorhanden"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Abluft Kommentar", "name" => "abluft_vakuumpumpe_comment", "label" => "Kommentar Abluft Vakuumpumpe"],
-
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Abluft", "name" => "abrauchabzuege", "label" => "Abrauchabzüge/Veraschung"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Abluft Kommentar", "name" => "abrauchabzuege_comment", "label" => "Kommentar Abrauchabzüge"],
-
-    ["type" => "yesno", "default_value" => "0", "kathegorie" => "Abluft", "name" => "sonderabluft", "label" => "Sonderabluft vorhanden"],
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Abluft Kommentar", "name" => "sonderabluft_comment", "label" => "Kommentar Sonderabluft"],
-
-    ["type" => "textarea", "default_value" => "", "kathegorie" => "Kommentar", "name" => "room_comment", "label" => "Allgemeiner Raum Kommentar"],
-];
-
-*/
