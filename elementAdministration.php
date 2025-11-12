@@ -18,6 +18,7 @@
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
+
 </head>
 <?php
 require_once 'utils/_utils.php';
@@ -45,7 +46,8 @@ init_page_serversides("x"); ?>
                         <div class="card-header">
                             <div class="row d-flex align-items-center">
                                 <div class="col-xxl-6 col-6">Elemente in DB</div>
-                                <div class="col-xxl-6 col-6 d-flex justify-content-end" id="CardHeaderElementesInDb"></div>
+                                <div class="col-xxl-6 col-6 d-flex justify-content-end"
+                                     id="CardHeaderElementesInDb"></div>
                             </div>
                         </div>
                         <div class="card-body" id="elementsInDB">
@@ -127,8 +129,10 @@ init_page_serversides("x"); ?>
     </div>
 </div>
 
+
 <script charset="utf-8" type="text/javascript">
     var table1;
+
     function init_table_elementsinDB() {
         $('#CardHeaderElementesInDb .xxx').remove();
         table1 = new DataTable('#tableElementsInDB', {
@@ -175,11 +179,9 @@ init_page_serversides("x"); ?>
             $("#deviceLieferanten").hide();
             table1.$('tr.info').removeClass('info');
             $(this).addClass('info');
-
             let elementID = table1.row($(this)).data()[0];
             document.getElementById("bezeichnung").value = table1.row($(this)).data()[2];
             document.getElementById("kurzbeschreibungModal").value = table1.row($(this)).data()[3];
-
             $.ajax({
                 url: "setSessionVariables.php",
                 data: {"elementID": elementID},
@@ -211,11 +213,8 @@ init_page_serversides("x"); ?>
                     });
                 }
             });
-
         });
-
     }
-
     $(document).ready(function () {
         init_table_elementsinDB();
     });

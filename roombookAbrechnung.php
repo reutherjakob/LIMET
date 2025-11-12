@@ -349,7 +349,7 @@ if ($_SESSION["projectName"] == "") {
 
             $.ajax({
                 url: "addRechnung.php",
-                type: "GET",
+                type: "POST",
                 data: {
                     "lotID": id,
                     "rechnungID": rechnungID,

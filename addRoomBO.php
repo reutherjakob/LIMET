@@ -1,47 +1,31 @@
 <?php
-session_start();
+// 10 -2025 FX
+require_once "utils/_utils.php";
+check_login();
+$mysqli = utils_connect_sql();
 
-function br2nl($string){
-$return= str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $string);
-return $return;
+
+$stmt = $mysqli->prepare("INSERT INTO `LIMET_RB`.`tabelle_BO_Taetigkeiten_has_tabelle_räume`
+                         (`tabelle_BO_Taetigkeiten_idtabelle_BO_Taetigkeiten`,
+                          `tabelle_räume_idTABELLE_Räume`)
+                         VALUES (?, ?)");
+
+if ($stmt === false) {
+    die("Prepare failed: " . $mysqli->error);
 }
 
-?>
+$boID = intval($_GET["boID"]);
+$roomID = intval($_SESSION["roomID"]);
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+$stmt->bind_param("ii", $boID, $roomID);
 
-<?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	if ($mysqli ->connect_error) {
-	    die("Connection failed: " . $mysqli->connect_error);
-	}
-	
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    echo "Error loading character set utf8: " . $mysqli->error;
-	    exit();
-	} 
-		
-	$sql = "INSERT INTO `LIMET_RB`.`tabelle_BO_Taetigkeiten_has_tabelle_räume`
-			(`tabelle_BO_Taetigkeiten_idtabelle_BO_Taetigkeiten`,
-			`tabelle_räume_idTABELLE_Räume`)
-			VALUES
-			(".$_GET["boID"].",
-			".$_SESSION["roomID"].");";
-	
+// Execute and check result
+if ($stmt->execute()) {
+    echo "[translate:BO erfolgreich aktualisiert!]";
+} else {
+    echo "Error: " . $stmt->error;
+}
 
-	if ($mysqli ->query($sql) === TRUE) {
-	    echo "BO erfolgreich aktualisiert!";
-	} else {
-	    echo "Error: " . $sql . "<br>" . $mysqli->error;
-	}
-	
-	$mysqli ->close();	
-					
+$stmt->close();
+$mysqli->close();
 ?>

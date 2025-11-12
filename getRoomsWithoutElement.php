@@ -210,7 +210,7 @@ $mysqli->close();
         } else {
             $.ajax({
                 url: "addElementToMultipleRooms.php",
-                type: "GET",
+                type: "POST",
                 data: {
                     "elementID": elementID,
                     "rooms": roomIDs,

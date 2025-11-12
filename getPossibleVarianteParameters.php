@@ -104,7 +104,7 @@ $mysqli->close();
             $.ajax({
                 url: "addParameterToVariante.php",
                 data: {"parameterID": id, "variantenID": variantenID},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data, data.trim().substring(0, 4) === "Para");
                     $.ajax({

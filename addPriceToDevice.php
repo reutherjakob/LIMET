@@ -1,40 +1,55 @@
 <?php
+// 10-2025 FX
 require_once 'utils/_utils.php';
 check_login();
-
 $mysqli = utils_connect_sql();
 
-$timestamp = strtotime($_GET["date"] ?? '' );
 
-$projectID = filter_input(INPUT_GET, 'project');
-if ($projectID == 0) {
-    $projectID = "NULL";
+$preis = getPostString('ep');
+$menge = getPostString('menge');
+$quelle = getPostString('quelle');
+$dateStr = getPostString('date');
+$projektID = getPostInt('project');
+$nk = getPostString('nk');
+$lieferant = getPostInt('lieferant');
+$deviceID = $_SESSION["deviceID"];
+$date =  date("Y-m-d",strtotime($dateStr));
+
+// Prepare statement
+$stmt = $mysqli->prepare("INSERT INTO `LIMET_RB`.`tabelle_preise`
+          (`Preis`, `Menge`, `Quelle`, `Datum`, `TABELLE_Geraete_idTABELLE_Geraete`,
+           `Nebenkosten`, `TABELLE_Projekte_idTABELLE_Projekte`, `tabelle_lieferant_idTABELLE_Lieferant`)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+
+// Check prepare
+if ($stmt === false) {
+    echo "Prepare failed: " . $mysqli->error;
+    exit;
 }
 
-$sql = "INSERT INTO `LIMET_RB`.`tabelle_preise`
-			(`Preis`,
-			`Menge`,
-			`Quelle`,
-			`Datum`,
-			`TABELLE_Geraete_idTABELLE_Geraete`,
-			`Nebenkosten`,
-                        `TABELLE_Projekte_idTABELLE_Projekte`,
-                        `tabelle_lieferant_idTABELLE_Lieferant`)
-			VALUES
-			('" . filter_input(INPUT_GET, 'ep') . "',
-			'" . filter_input(INPUT_GET, 'menge') . "',
-			'" . filter_input(INPUT_GET, 'quelle') . "',
-			'" . date("Y-m-d", strtotime(filter_input(INPUT_GET, 'date')) ?? '' ) . "',
-			" . $_SESSION["deviceID"] . ",
-			'" . filter_input(INPUT_GET, 'nk') . "',
-                        " . $projectID . ",
-                        " . filter_input(INPUT_GET, 'lieferant') . ");";
+// Handle NULL for project ID
+$projectParam = $projektID === 0 ? null : $projektID;
 
-if ($mysqli->query($sql) === TRUE) {
-    echo "Preis zu Ger�t hinzugef�gt!";
+// Bind parameters
+$stmt->bind_param(
+    'sssssiii',
+    $preis,
+    $menge,
+    $quelle,
+    $date,
+    $deviceID,
+    $nk,
+    $projectParam,
+    $lieferant
+);
+
+if ($stmt->execute()) {
+    echo "Preis zu Gerät hinzugefügt!";
 } else {
-    echo "Error: " . $sql . "<br>" . $mysqli->error;
+    echo "Error: " . $stmt->error;
 }
+
+$stmt->close();
 
 $mysqli->close();
 

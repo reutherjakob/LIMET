@@ -1,59 +1,65 @@
 <?php
+// 10-2025 FX
 include "utils/_utils.php";
 check_login();
 $mysqli = utils_connect_sql();
 
-// Vorhandene Variantenparameter löschen
-$sqlDelete = "DELETE FROM `LIMET_RB`.`tabelle_projekt_elementparameter`
-                     WHERE `tabelle_projekte_idTABELLE_Projekte`=" . $_SESSION["projectID"] . " AND `tabelle_elemente_idTABELLE_Elemente` =" . $_SESSION["elementID"] . " AND `tabelle_Varianten_idtabelle_Varianten` =" . $_SESSION["variantenID"] . ";";
+// Prepare and execute deletion of existing variant parameters safely
+$stmtDelete = $mysqli->prepare("
+    DELETE FROM tabelle_projekt_elementparameter
+    WHERE tabelle_projekte_idTABELLE_Projekte = ? 
+      AND tabelle_elemente_idTABELLE_Elemente = ? 
+      AND tabelle_Varianten_idtabelle_Varianten = ?
+");
+$stmtDelete->bind_param("iii", $_SESSION["projectID"], $_SESSION["elementID"], $_SESSION["variantenID"]);
 
-if ($mysqli->query($sqlDelete) === TRUE) {
+if ($stmtDelete->execute()) {
     echo "Variantenparameter gelöscht!";
 } else {
-    echo "Error: " . $sqlDelete . "<br>" . $mysqli->error;
+    echo "Error bei Löschen: " . $stmtDelete->error;
 }
+$stmtDelete->close();
 
+// Select device parameters securely
+$stmtSelect = $mysqli->prepare("
+    SELECT TABELLE_Parameter_idTABELLE_Parameter, Wert, Einheit
+    FROM tabelle_geraete_has_tabelle_parameter
+    WHERE TABELLE_Geraete_idTABELLE_Geraete = ?
+");
+$stmtSelect->bind_param("i", $_SESSION["deviceID"]);
+$stmtSelect->execute();
+$result = $stmtSelect->get_result();
 
-// data loading Ansprechpersonentabelle
-$sql = "SELECT tabelle_geraete_has_tabelle_parameter.TABELLE_Parameter_idTABELLE_Parameter, tabelle_geraete_has_tabelle_parameter.Wert, tabelle_geraete_has_tabelle_parameter.Einheit
-                FROM tabelle_geraete_has_tabelle_parameter
-                WHERE (((tabelle_geraete_has_tabelle_parameter.TABELLE_Geraete_idTABELLE_Geraete)=" . $_SESSION["deviceID"] . "));";
-
-$result = $mysqli->query($sql);
-$deviceParameters = array();
+$deviceParameters = [];
 while ($row = $result->fetch_assoc()) {
-    $deviceParameters[$row['TABELLE_Parameter_idTABELLE_Parameter']]['TABELLE_Parameter_idTABELLE_Parameter'] = $row['TABELLE_Parameter_idTABELLE_Parameter'];
-    $deviceParameters[$row['TABELLE_Parameter_idTABELLE_Parameter']]['Wert'] = $row['Wert'];
-    $deviceParameters[$row['TABELLE_Parameter_idTABELLE_Parameter']]['Einheit'] = $row['Einheit'];
-
+    $deviceParameters[] = $row;
 }
+$stmtSelect->close();
+
+// Prepare insert statement for variant parameters
+$stmtInsert = $mysqli->prepare("
+    INSERT INTO tabelle_projekt_elementparameter 
+        (tabelle_projekte_idTABELLE_Projekte, tabelle_elemente_idTABELLE_Elemente, tabelle_parameter_idTABELLE_Parameter, Wert, Einheit, tabelle_Varianten_idtabelle_Varianten, tabelle_planungsphasen_idTABELLE_Planungsphasen)
+    VALUES (?, ?, ?, ?, ?, ?, 1)
+");
 
 foreach ($deviceParameters as $data) {
-    $sql = "INSERT INTO `LIMET_RB`.`tabelle_projekt_elementparameter`
-			(`tabelle_projekte_idTABELLE_Projekte`,
-			`tabelle_elemente_idTABELLE_Elemente`,
-			`tabelle_parameter_idTABELLE_Parameter`,			
-			`Wert`,
-			`Einheit`,
-                        `tabelle_Varianten_idtabelle_Varianten`,
-                        `tabelle_planungsphasen_idTABELLE_Planungsphasen`)
-			VALUES
-			(" . $_SESSION["projectID"] . ",
-                         " . $_SESSION["elementID"] . ",
-                         " . $data["TABELLE_Parameter_idTABELLE_Parameter"] . ",
-                         '" . $data["Wert"] . "',
-                         '" . $data["Einheit"] . "',                                               			
-			" . $_SESSION["variantenID"] . ",
-			1);";
-    if ($mysqli->query($sql) === TRUE) {
-        echo "\nParameter " . $data['Wert'] . " " . $data['Einheit'] . " zu Variante hinzugefügt!";
+    $stmtInsert->bind_param(
+        "iiissi",
+        $_SESSION["projectID"],
+        $_SESSION["elementID"],
+        $data["TABELLE_Parameter_idTABELLE_Parameter"],
+        $data["Wert"],
+        $data["Einheit"],
+        $_SESSION["variantenID"]
+    );
+    if ($stmtInsert->execute()) {
+        echo "\nParameter " . htmlspecialchars($data['Wert'], ENT_QUOTES, 'UTF-8') . " " . htmlspecialchars($data['Einheit'], ENT_QUOTES, 'UTF-8') . " zu Variante hinzugefügt!";
     } else {
-        echo "Error: " . $sql . "<br>" . $mysqli->error;
+        echo "Error beim Einfügen: " . $stmtInsert->error;
     }
 }
 
-
+$stmtInsert->close();
 $mysqli->close();
-
-
 ?>

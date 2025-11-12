@@ -1,22 +1,22 @@
 <?php
+// 10-2025 FX
 require_once 'utils/_utils.php';
 check_login();
-
 $mysqli = utils_connect_sql();
 
 // Validate and cast inputs to integers
 $projectID = (int)$_SESSION["projectID"];
 $elementID = (int)$_SESSION["elementID"];
-$parameterID = (int)$_GET["parameterID"];
-$variantenID = (int)$_GET["variantenID"];
+$parameterID =   getPostInt('parameterID');
+$variantenID = getPostInt( "variantenID");
 
 // Define special parameters set
 $CombinedParametersLeistung = [6, 9, 18, 82];
-
 $CombinedParametersGeometrie = [2, 3, 4, 7];
 
 // Parameter insertion function
-function insertParameter($mysqli, $projectID, $elementID, $paramID, $variantID) {
+function insertParameter($mysqli, $projectID, $elementID, $paramID, $variantID): void
+{
     $stmt = $mysqli->prepare("INSERT INTO `LIMET_RB`.`tabelle_projekt_elementparameter` 
         (`tabelle_projekte_idTABELLE_Projekte`, `tabelle_elemente_idTABELLE_Elemente`, 
         `tabelle_parameter_idTABELLE_Parameter`, `tabelle_Varianten_idtabelle_Varianten`, 

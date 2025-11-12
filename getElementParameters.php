@@ -26,7 +26,7 @@ echo "<table class='table table-striped table-sm table-hover table-bordered bord
 	<th>Parameter</th>
 	<th>Wert</th>
 	<th>Einheit</th>
-        <th>Kategorie</th>
+    <th>Kategorie</th>
 	</tr></thead>
 	<tbody>";
 

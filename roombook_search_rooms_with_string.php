@@ -1,8 +1,7 @@
 <?php
 require_once 'utils/_utils.php';
 init_page_serversides("x");
-
-
+check_login();
 //TODO Fußboden
 ?>
 

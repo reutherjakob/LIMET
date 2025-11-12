@@ -2,12 +2,27 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker3.min.css">
-    <script type='text/javascript'
-            src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
     <title></title>
 </head>
+<style> /* Make sure Select2 dropdown appears above Bootstrap modal */
+    .select2-container {
+        z-index: 1060 !important; /* slightly higher than Bootstrap modal backdrop */
+    }
+
+    /* Also target the actual dropdown for Select2 (the dropdown elements) */
+    .select2-dropdown {
+        z-index: 1061 !important;
+    }
+
+    /* Optional: When used inside modal, the dropdown might need higher z-index */
+    .modal .select2-container {
+        z-index: 1070 !important;
+    }
+
+    .modal .select2-dropdown {
+        z-index: 1071 !important;
+    }
+</style>
 <body>
 <?php
 require_once 'utils/_utils.php';
@@ -41,7 +56,8 @@ $stmt->execute();
 $result = $stmt->get_result();
 $stmt->close();
 
-echo "<table class='table table-striped table-sm' id='tableDevicePrices'>
+echo "<table class='table table-striped table-sm' id='
+tableDevicePrices'>
 	<thead><tr>";
 echo "<th>Datum</th>
 		<th>Info</th>
@@ -114,35 +130,81 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
                     while ($row = $result1->fetch_assoc()) {
                         echo "<option value=" . $row["idTABELLE_Projekte"] . ">" . $row["Interne_Nr"] . "-" . $row["Projektname"] . "</option>";
                     }
-                    echo "</select>										
-                                                </div>";
+                    echo "</select> </div>";
 
-                    $sql = "SELECT tabelle_lieferant.Lieferant, tabelle_lieferant.idTABELLE_Lieferant
-                                                        FROM tabelle_lieferant INNER JOIN tabelle_geraete_has_tabelle_lieferant ON tabelle_lieferant.idTABELLE_Lieferant = tabelle_geraete_has_tabelle_lieferant.tabelle_lieferant_idTABELLE_Lieferant
-                                                        WHERE (((tabelle_geraete_has_tabelle_lieferant.tabelle_geraete_idTABELLE_Geraete)=" . $_SESSION["deviceID"] . "));";
 
-                    $result1 = $mysqli->query($sql);
+                    echo "<div class='form-group'> 
+                                    <label class='' for='project'>Geräte Lieferant auswählen:</label>									
+                                    <select class='form-control input-sm' id='lieferant' name='lieferant'>
+                                            <option value='0'>Geräte Lieferant auswählen</option>";
+                    include "getDeviceLieferantenOptions.php";
 
-                    echo "<div class='form-group'>
-                                                    <label for='project'>Lieferant:</label>									
-                                                    <select class='form-control input-sm' id='lieferant' name='lieferant'>
-                                                            <option value='0'>Lieferant auswählen</option>";
-                    while ($row = $result1->fetch_assoc()) {
-                        echo "<option value=" . $row["idTABELLE_Lieferant"] . ">" . $row["Lieferant"] . "</option>";
-                    }
-                    echo "</select>										
-                                                </div>";
+
+                    echo "</select> 
+                        </div> 
+                        <div class='row mt-3'>
+                        <div class='col-6'>    
+                            <input type='button' id='addPrice' class='btn btn-success btn-sm col-12' value='Speichern'
+                                           data-bs-dismiss='modal'>
+                        </div>
+                        <div class='col-6'>
+                            <button type='button' class='btn btn-danger btn-sm col-12' data-bs-dismiss='modal'>Abbrechen</button>
+                        </div>
+                    </div>
+                 </form>";
+
+                    echo "<hr>       
+                     <div class='row'> 
+                             <div class='col-6'>  
+                                <button type='button' class='btn btn-sm btn-outline-success mt-2' id='addNewDevLieferant' title='Geräte Lieferant hinzufügen'>
+                                <i class='fas fa-plus'></i> Geräte Lieferant hinzufügen
+                                </button>     
+                             </div>     
+                             <div class='col-6'>   
+                                <button type='button' class='btn btn-sm btn-outline-success mt-2' id='addNewLieferant' title='Neuen Lieferant anlegen'>
+                                <i class='fas fa-plus'></i> Neuen Lieferant anlegen
+                                </button>  
+                            </div>  
+                     </div>
+                 
+                    <div class='mt-2'>
+                        <div class='row align-items-center' style='display:none;' id='NeuenLieferantZuGerätHinzufügen'>
+                                          <label for='Lieferant'>Neuen Lieferant zu Gerät hinzufügen:</label>		
+                            <div class='col-10'> 
+                                    <select class='form-control input-sm' id='idlieferant2Dev' name='lieferant'>
+                                            <option value=0>Lieferant auswählen </option>";
+                    include "getPossibleLieferantenOptions.php";
+                    echo "  </select>  
+                            </div>
+                            <div class='col-2'>   
+                                <button id='addLieferant2Dev' class='btn btn-success btn-sm'><i class='fas fa-plus'></i></button> 
+                            </div>
+                        </div> 
+                    </div>
+                    <div id='inlineAddLieferant' style='display:none;'>
+                            <input type='text' class='form-control mb-1' id='newLieferantName' placeholder='Name des Lieferanten' /> 
+                            <input type='text' class='form-control mb-1' id='newLieferantTel' placeholder='Telefon' />
+                            <input type='text' class='form-control mb-1' id='newLieferantAdresse' placeholder='Adresse' />
+                            <input type='text' class='form-control mb-1' id='newLieferantPLZ' placeholder='PLZ' />
+                            <input type='text' class='form-control mb-1' id='newLieferantOrt' placeholder='Ort' />
+                            <input type='text' class='form-control mb-1' id='newLieferantLand' placeholder='Land' /> 
+                            </select>
+                            <div class='row'>
+                                <div class='col-6'>  
+                                    <button type='button' class='btn btn-success btn-sm col-12' id='submitNewLieferant'>Speichern</button>
+                                </div>
+                                <div class='col-6'>  
+                                    <button type='button' class='btn btn-secondary btn-sm col-12' id='cancelNewLieferant'>Abbrechen</button>
+                                </div>
+                            </div>
+                 </div>";
                     $mysqli->close();
                     ?>
-                </form>
-            </div>
-            <div class='modal-footer'>
-                <input type='button' id='addPrice' class='btn btn-success btn-sm' value='Speichern' data-bs-dismiss='modal'>
-                <button type='button' class='btn btn-danger btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
             </div>
         </div>
-
     </div>
+
+</div>
 </div>
 
 <script src="utils/_utils.js"></script>
@@ -155,81 +217,219 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
             todayBtn: "linked",
             language: "de"
         });
-    });
 
+        // Initialize Select2
+        $('#project').select2({
+            width: '100%',
+            placeholder: 'Projekt auswählen',
+            allowClear: true,
+            dropdownCssClass: 'select2-dropdown-long',
+            dropdownParent: $('#addPriceToElementModal') // bind dropdown inside modal
+        });
 
-    const tableDevicePrices = new DataTable('#tableDevicePrices', {
-        paging: false,
-        searching: false,
-        info: false,
-        order: [[0, 'desc']],
-        language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
-            decimal: ',',
-            thousands: '.'
-        },
-        scrollY: '20vh',
-        scrollCollapse: true,
-        //deferRender: true,           // improves performance with large data sets
-        //pagingType: 'simple_numbers',  // uncomment if needed
-        //lengthMenu: [[5,10,25,50,-1], [5,10,25,50,'All']]  // uncomment if needed
-    });
+        $('#lieferant').select2({
+            width: '100%',
+            placeholder: 'Lieferant auswählen',
+            dropdownParent: $('#addPriceToElementModal'), // bind dropdown inside modal
+            allowClear: true,
+            dropdownCssClass: 'select2-dropdown-long'
+        });
 
-
-    //Preis zu Geraet hinzufügen
-    $("#addPrice").click(function () {  // TODO test preis hinzufügen...
-        var date = $("#date").val();
-        var quelle = $("#quelle").val();
-        var menge = $("#menge").val();
-
-        var nk = $("#nk").val();
-        if (nk.toLowerCase().endsWith('k')) {
-            nk = nk.slice(0, -1) + '000';
-        }
-        nk.replace(/,/g, '.').replace(/[^0-9.]/g, '');
-
-        var project = $("#project").val();
-        var lieferant = $("#lieferant").val();
-
-        let ep = $("#ep").val();
-        if (ep.toLowerCase().endsWith('k')) {
-            ep = ep.slice(0, -1) + '000';
-        }
-        ep.replace(/,/g, '.').replace(/[^0-9.]/g, '');
-
-        if (date !== "" && quelle !== "" && menge !== "" && ep !== "" && nk !== "" && lieferant > 0) {
+        function reloadLieferantOptions() {
             $.ajax({
-                url: "addPriceToDevice.php",
-                data: {
-                    "date": date,
-                    "quelle": quelle,
-                    "menge": menge,
-                    "ep": ep,
-                    "nk": nk,
-                    "project": project,
-                    "lieferant": lieferant
+                url: 'getDeviceLieferantenOptions.php',
+                type: 'GET',
+                success: function (optionsHtml) {
+                    $('#lieferant').html(optionsHtml).trigger('change'); // refresh Select2 dropdown
                 },
-                type: "GET",
-                success: function (data) {
-                    makeToaster(data, true);
-                    $.ajax({
-                        url: "getDevicePrices.php",
-                        type: "GET",
-                        success: function (data) {
-                            $("#devicePrices").html(data);
-                        }
-                    });
+                error: function () {
+                    alert('Fehler beim Laden der Lieferanten.');
                 }
             });
-
-        } else {
-            makeToaster("Bitte alle Felder ausfüllen!", false);
-            let myModal = new bootstrap.Modal(document.getElementById('addPriceToElementModal'));
-            myModal.show();
-
         }
-    });
 
+        function loadPossibleLieferantenOptions() {
+            $.ajax({
+                url: 'getPossibleLieferantenOptions.php',
+                type: 'GET',
+                success: function (optionsHtml) {
+                    $('#idlieferant2Dev').html(optionsHtml).trigger('change'); // trigger for Select2 refresh if used
+                },
+                error: function () {
+                    alert('Fehler beim Laden der Lieferanten.');
+                }
+            });
+        }
+
+        $("#addLieferant2Dev").click(function () {
+            let lieferantenID = $("#idlieferant2Dev").val();
+            console.log("addLieferant2Dev!", lieferantenID);
+            if (lieferantenID !== "0") {
+                $.ajax({
+                    url: "addLieferantToDevice.php",
+                    data: {lieferantenID: lieferantenID},
+                    type: "POST",
+                    success: function () {
+                        reloadLieferantOptions();
+                        loadPossibleLieferantenOptions();
+                        $.ajax({
+                            url: "getLieferantenToDevices.php",
+                            type: "GET",
+                            success: function (data) {
+                                makeToaster("Lieferant zu Gerät hinzugefügt.", true);
+                                $("#deviceLieferanten").html(data);
+                            }
+                        });
+                        $('#inlineAddLieferant').hide();
+                        $('#NeuenLieferantZuGerätHinzufügen').hide();
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Fehler bei der Anfrage: " + error);
+                    }
+                });
+            } else {
+                alert("Bitte Lieferant auswählen.");
+            }
+        });
+
+
+        $('#addNewLieferant').click(function () {
+            if ($('#inlineAddLieferant').is(':visible')) {
+                $('#inlineAddLieferant').hide();
+                $('#addNewDevLieferant').hide();
+
+            } else {
+                $('#inlineAddLieferant').show();
+                $('#addNewDevLieferant').show();
+                $('#NeuenLieferantZuGerätHinzufügen').hide();
+            }
+        });
+
+        $('#addNewDevLieferant').click(function () {
+            if ($('#NeuenLieferantZuGerätHinzufügen').is(':visible')) {
+                $('#NeuenLieferantZuGerätHinzufügen').hide();
+
+            } else {
+                $('#NeuenLieferantZuGerätHinzufügen').show();
+                $('#inlineAddLieferant').hide();
+            }
+        });
+
+        $('#cancelNewLieferant').click(function () {
+            $('#inlineAddLieferant').hide();
+        });
+
+        $('#submitNewLieferant').click(function () {
+            let name = $('#newLieferantName').val();
+            let land = $('#newLieferantLand').val();
+            let ort = $('#newLieferantOrt').val();
+            let tel = $('#newLieferantTel').val();
+            let adresse = $('#newLieferantAdresse').val();
+            let plz = $('#newLieferantPLZ').val();
+            if (name && land && ort && tel && adresse && plz) {
+                $.ajax({
+                    url: 'addFirma.php',
+                    type: 'GET',
+                    data: {
+                        firma: name,
+                        lieferantLand: land,
+                        lieferantOrt: ort,
+                        lieferantTel: tel,
+                        lieferantAdresse: adresse,
+                        lieferantPLZ: plz
+                    },
+                    success: function () {
+                        reloadLieferantOptions();
+                        loadPossibleLieferantenOptions();
+                        makeToaster("Neue Firma erfolgreich angelegt.", true);
+                    }
+                });
+            } else {
+                alert("Bitte alle Felder ausfüllen!");
+            }
+        });
+
+        new DataTable('#tableDevicePrices', {
+            paging: false,
+            searching: false,
+            info: false,
+            order: [[0, 'desc']],
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                decimal: ',',
+                thousands: '.'
+            },
+            scrollY: '20vh',
+            scrollCollapse: true,
+            //deferRender: true,           // improves performance with large data sets
+            //pagingType: 'simple_numbers',  // uncomment if needed
+            //lengthMenu: [[5,10,25,50,-1], [5,10,25,50,'All']]  // uncomment if needed
+        });
+
+
+        //Preis zu Geraet hinzufügen
+        $("#addPrice").click(function () {  // TODO test preis hinzufügen...
+            var date = $("#date").val();
+            var quelle = $("#quelle").val();
+            var menge = $("#menge").val();
+
+            var nk = $("#nk").val();
+            if (nk.toLowerCase().endsWith('k')) {
+                nk = nk.slice(0, -1) + '000';
+            }
+            nk.replace(/,/g, '.').replace(/[^0-9.]/g, '');
+
+            var project = $("#project").val();
+            var lieferant = $("#lieferant").val();
+
+            let ep = $("#ep").val();
+            if (ep.toLowerCase().endsWith('k')) {
+                ep = ep.slice(0, -1) + '000';
+            }
+            ep.replace(/,/g, '.').replace(/[^0-9.]/g, '');
+
+
+            console.log("date:", date);
+            console.log("quelle:", quelle);
+            console.log("menge:", menge);
+            console.log("nk:", nk);
+            console.log("project:", project);
+            console.log("lieferant:", lieferant);
+            console.log("ep:", ep);
+
+            if (date !== "" && quelle !== "" && menge !== "" && ep !== "" && nk !== "" && lieferant > 0) {
+                $.ajax({
+                    url: "addPriceToDevice.php",
+                    data: {
+                        "date": date,
+                        "quelle": quelle,
+                        "menge": menge,
+                        "ep": ep,
+                        "nk": nk,
+                        "project": project,
+                        "lieferant": lieferant
+                    },
+                    type: "POST",
+                    success: function (data) {
+                        makeToaster(data, true);
+                        $.ajax({
+                            url: "getDevicePrices.php",
+                            type: "GET",
+                            success: function (data) {
+                                $("#devicePrices").html(data);
+                            }
+                        });
+                    }
+                });
+
+            } else {
+                makeToaster("Bitte alle Felder ausfüllen!", false);
+                let myModal = new bootstrap.Modal(document.getElementById('addPriceToElementModal'));
+                myModal.show();
+
+            }
+        });
+    });
 
 </script>
 

@@ -326,7 +326,7 @@ $mysqli->close();
                     "standort": standort,
                     "verwendung": verwendung
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data.trim(), true);
                 }

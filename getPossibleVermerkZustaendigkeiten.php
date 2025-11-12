@@ -75,12 +75,11 @@ $mysqli->close();
         $("button[value='addVermerkZustaendigkeit']").click(function () {
             var id = this.id;
             var vermerkID = "<?php echo filter_input(INPUT_GET, 'vermerkID') ?>";
-
             if (id !== "") {
                 $.ajax({
                     url: "addPersonToVermerkZustaendigkeit.php",
                     data: {"ansprechpersonenID": id, "vermerkID": vermerkID},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         alert(data);
                         $.ajax({

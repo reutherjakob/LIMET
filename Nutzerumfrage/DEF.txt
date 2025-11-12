@@ -1,0 +1,83 @@
+-> tabelle_room_requirements_from_user zurücksetzten
+-> tabelle_login_attempts zurücksetzten
+
+
+ALTER TABLE tabelle_room_requirements_from_user
+ADD COLUMN raumkategorie VARCHAR(255) NULL COMMENT 'spezifische Raumkategorie, z.B. Labor, Technikraum',
+ADD COLUMN anzahl_mitarbeiter INT NULL COMMENT 'Anzahl der ständig im Raum tätigen MitarbeiterInnen',
+ADD COLUMN oberflaechenbestaendigkeit TINYINT NULL COMMENT 'Erhöhte Anforderungen an die Oberflächenbeständigkeit, z.B. Säurebeständigkeit',
+ADD COLUMN gewicht_ueber_500kg TINYINT NULL COMMENT 'Geräte/Elemente mit Gewicht > 500kg in Verwendung',
+ADD COLUMN vibrationsempfindliche_geraete TINYINT NULL COMMENT 'Geräte in Verwendung, die vibrations­empfindlich sind (z.B. Präzisionswaagen)',
+ADD COLUMN explosionsschutz TINYINT NULL COMMENT 'Explosionsschutz im Raum erforderlich',
+ADD COLUMN temperatur_min VARCHAR(64) NULL COMMENT 'Besondere Anforderungen an die Raumtemperatur (min)',
+ADD COLUMN temperatur_max VARCHAR(64) NULL COMMENT 'Besondere Anforderungen an die Raumtemperatur (max)',
+ADD COLUMN luftfeuchtigkeit_min_max VARCHAR(64) NULL COMMENT 'Besondere Anforderungen an die Luftfeuchtigkeit (min-max)',
+ADD COLUMN druckregelung_lueftung VARCHAR(64) NULL COMMENT 'Besondere Anforderungen an die Druckregelung der Lüftung',
+ADD COLUMN abluftwaescher TINYINT NULL COMMENT 'Abzüge mit Abluftwäscher oder Säurewäscher in Verwendung',
+ADD COLUMN raumabluft_anforderungen VARCHAR(255) NULL COMMENT 'Besondere Anforderungen an die Raumabluft',
+ADD COLUMN geraete_hohe_anschlussleistung TINYINT NULL COMMENT 'Geräte mit besonders hohen Anschlussleistungen (<500 W) im Einsatz',
+ADD COLUMN spezialabwasser TINYINT NULL COMMENT 'Abwasser vorhanden, das nicht in die Kanalisation geleitet werden darf';
+
+
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN fussboden_onorm_b5220;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN fussboden_onorm_b5220_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN verdunkelung_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN schallschutzanforderung;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN schallschutzanforderung_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN vc_klasse;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN vc_klasse_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN chemikalienliste_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN vexat_zone;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN vexat_zone_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN bsl_level_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN laser;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN laser_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN o2;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN o2_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN va;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN va_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN dl;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN dl_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN co2;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN co2_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN h2;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN h2_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN he;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN he_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN he_rf;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN he_rf_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN ar;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN ar_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN n2;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN n2_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN ln;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN ln_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN sv_geraete;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN sv_geraete_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN usv_geraete_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN alarm_glt;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN alarm_glt_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN kuehlwasser_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN VE_Wasser_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN geraete_wasser_abfluss;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN geraete_wasser_abfluss_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN punktabsaugung;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN abluft_sicherheitsschrank;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN abluft_sicherheitsschrank_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN abluft_vakuumpumpe;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN abluft_vakuumpumpe_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN abrauchabzuege;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN abrauchabzuege_comment;
+ALTER TABLE tabelle_room_requirements_from_user DROP COLUMN sonderabluft_comment;
+
+
+
+// STILL IN USE
+	- bsl_level
+	- chemikalienliste
+	- verdunkelung
+	- sonderabluft
+	- spezialgas
+	- usv_geraete
+	- VE_Wasser
+	- kuehlwasser

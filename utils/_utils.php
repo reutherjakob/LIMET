@@ -1,6 +1,21 @@
 <?php
 
 if (session_status() == PHP_SESSION_NONE) {
+    // Only send the session cookie over HTTPS connections
+    ini_set('session.cookie_secure', '1');
+    // Make session cookies inaccessible to JavaScript (prevents XSS stealing)
+    ini_set('session.cookie_httponly', '1');
+    // Restrict cookie to your site's path to prevent cross-site cookie usage (optional)
+    ini_set('session.cookie_path', '/');
+    // Additionally, consider SameSite attribute for cookies (PHP 7.3+)
+    session_set_cookie_params([
+        'lifetime' => 0,         // Session cookie lasts until browser closes
+        'path' => '/',
+        'domain' => '',          // Set domain if needed
+        'secure' => true,        // Cookie sent only over HTTPS
+        'httponly' => true,      // JavaScript can't access cookie
+        'samesite' => 'Strict'   // Or 'Lax' depending on your needs
+    ]);
     session_start();
 }
 
@@ -14,15 +29,13 @@ function init_page_serversides($ommit_redirect = "", $noscroll = ""): void
     load_nav_bar();
     if ($noscroll == "") {
         include '_scrollUpBtn.php';
-
     }
 }
 
 function check_login(): void
 {
     if (!isset($_SESSION["username"])) {
-        echo '
-        <div class="container-fluid bg-white py-5"> 
+        echo '<div class="container-fluid bg-white py-5"> 
             <div class="row justify-content-center">
                 <div class="col-12 col-md-6">
                     <div class="card shadow">
@@ -35,7 +48,7 @@ function check_login(): void
                     </div>
                 </div>
             </div>
-        </div>        ';
+        </div>';
         exit;
     }
 }
@@ -108,6 +121,6 @@ function getPostInt(string $key, int $default = 0): int
 
 function getPostString(string $key, string $default = ''): string
 {
-    return isset($_POST[$key]) ? htmlspecialchars(trim($_POST[$key]), ENT_QUOTES, 'UTF-8') : $default;
+    return isset($_POST[$key]) ? trim($_POST[$key]) : $default;
 }
 

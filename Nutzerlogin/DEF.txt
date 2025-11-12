@@ -1,0 +1,7 @@
+Nutzergruppen
+
+1) "internal_rb_user": LIMET RB user mit zugriff auf alles.
+2) "spargefeld_ext_users": Spargefeld Nutzergruppe. Hat nur Zugriff auf Räume die den Username im Raumbereich haben.
+3) "spargefeld_admin": Spargefeld Admin, kann alle SF Räume einsehen.
+
+

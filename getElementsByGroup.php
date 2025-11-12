@@ -1,16 +1,7 @@
 <?php
 require_once 'utils/_utils.php';
 check_login();
-?>
 
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title> Get Elements by Group</title>
-</head>
-<body>
-<?php
 $mysqli = utils_connect_sql();
 // Safely get the 'gruppeID'
 $gruppeID = isset($_GET['gruppeID']) ? (int)$_GET['gruppeID'] : 0;
@@ -48,7 +39,6 @@ if (isset($_SESSION['roomID'])) {
     }
     $stmt->close();
 }
-
 
 
 echo "<table class='table table-striped table-sm table-bordered border border-light border-5' id='tableElementsInDB'   >
@@ -101,9 +91,8 @@ include "addRoomElementModal.html";
     </div>
 </div>
 
-<script src="addElementToRoom.js"> </script>
+<script src="addElementToRoom.js"></script>
 <script charset="utf-8">
-
     $(document).ready(function () {
         $("#CardHeaderElementesInDb .xxx").remove();
         new DataTable('#tableElementsInDB', {
@@ -134,8 +123,8 @@ include "addRoomElementModal.html";
             },
             initComplete: function () {
                 $("#CardHeaderElementesInDb .xxx").remove();
-                $('.dt-search label').remove();
-                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
+                $('#elementsInDB .dt-search label').remove();
+                $('#elementsInDB .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
             }
         });
 
@@ -204,9 +193,6 @@ include "addRoomElementModal.html";
             }
         });
     });
-
-
-
 
 
 </script>

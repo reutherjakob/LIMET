@@ -28,7 +28,7 @@ init_page_serversides();
 </head>
 
 <body style="height:100%">
-<div class="container-fluid bg-light" >
+<div class="container-fluid bg-light">
     <div id="limet-navbar"></div>
     <div class="mt-4 card">
         <?php
@@ -83,8 +83,13 @@ init_page_serversides();
                     <div class='col-xxl-6 d-flex flex-nowrap  justify-content-end' id='CardHeader'> 
                 ";
         if ($result->num_rows > 0) {
-            echo "<button type='button' class='ml-4 btn btn-outline-dark btn-sm' value='createBestandsPDF'><i class='far fa-file-pdf'></i> Bestands-PDF</button>";
+            echo " 
+            <div class='col-xxl-2' id='dateSelectContainer'>
+                    <label for='dateSelect' class='visually-hidden'>Änderungsdatum</label>
+                    <input type='date' id='dateSelect' name='dateSelect' class='form-control' title='Datum am Bericht'/>
+                </div>";   echo "<button type='button' class='ml-4 btn btn-outline-dark btn-sm' value='createBestandsPDF'><i class='far fa-file-pdf'></i> Bestands-PDF</button>";
             echo "<button  class='ml-4 btn btn-outline-dark btn-sm' onclick=\"window.location.href='out_bestands_csv.php'\">Download CSV</button>";
+
         }
         echo "</div> </div> </div> <div class='card-body'>";
         echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5'' id='tableBestandsElemente'>
@@ -215,7 +220,10 @@ init_page_serversides();
         });
 
         $("button[value='createBestandsPDF']").click(function () {
-            var datum = new Date().toISOString().slice(0,10); // aktuelles Datum im Format YYYY-MM-DD
+            var datum = $('#dateSelect ').val();
+            if (!datum) {
+                datum = new Date().toISOString().slice(0, 10); // aktuelles Datum im Format YYYY-MM-DD
+            }
             var url = "PDFs/pdf_createBestandPDF.php?datum=" + encodeURIComponent(datum);
             window.open(url);
         });

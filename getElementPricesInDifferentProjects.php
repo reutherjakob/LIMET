@@ -52,7 +52,7 @@ echo "</tbody></table>";
 
 <script>
     $(document).ready(function () {
-        $("#tableElementPricesInProjects").DataTable({
+        new DataTable('#tableElementPricesInProjects', {
             paging: false,
             searching: false,
             info: false,
@@ -60,10 +60,14 @@ echo "</tbody></table>";
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                 decimal: ",",
-                thousands: "."
-            }
+                thousands: ".",
+                emptyTable: "Keine Daten verfügbar"
+            },
+            data: [],          // empty dataset to avoid errors when no data
+            deferRender: true  // improve performance
         });
     });
+
 
 </script>
 </body>

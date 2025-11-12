@@ -1,33 +1,7 @@
 <?php
-session_start();
-?>
-
-<!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml" lang="">
-
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title></title>
-</head>
-<body>
-<?php
-if (!isset($_SESSION["username"])) {
-    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-    exit;
-}
-?>
-
-<?php
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-
-
-/* change character set to utf8 */
-if (!$mysqli->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $mysqli->error);
-    exit();
-}
-
-
+require_once  "utils/_utils.php";
+check_login();
+$mysqli = utils_connect_sql();
 $sql = "SELECT tabelle_lieferant.idTABELLE_Lieferant, tabelle_lieferant.Lieferant, tabelle_lieferant.Land, tabelle_lieferant.Ort
                     FROM tabelle_geraete_has_tabelle_lieferant INNER JOIN tabelle_lieferant ON tabelle_geraete_has_tabelle_lieferant.tabelle_lieferant_idTABELLE_Lieferant = tabelle_lieferant.idTABELLE_Lieferant
                     WHERE (((tabelle_geraete_has_tabelle_lieferant.tabelle_geraete_idTABELLE_Geraete)=" . $_SESSION["deviceID"] . "))
@@ -57,52 +31,10 @@ while ($row = $result->fetch_assoc()) {
 
 echo "</tbody></table>";
 echo "<input type='button' id='addLieferantModalButton' class='btn btn-success btn-sm' value='Lieferant hinzufügen' data-bs-toggle='modal' data-bs-target='#addLieferantModal'> ";
+
+include_once("modal_addLieferant.php");
 ?>
 
-<!-- Modal zum Hinzufügen eines Lieferanten -->
-<div class='modal fade' id='addLieferantModal' role='dialog' tabindex="-1">
-    <div class='modal-dialog modal-md'>
-
-        <!-- Modal content-->
-        <div class='modal-content'>
-            <div class='modal-header'>
-                <h4 class='modal-title'>Lieferant zu Gerät hinzufügen</h4>
-                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
-            </div>
-            <div class='modal-body' id='mbody'>
-                <form role="form">
-                    <?php
-
-                    $sql = "SELECT tabelle_lieferant.idTABELLE_Lieferant, tabelle_lieferant.Lieferant, tabelle_lieferant.Land, tabelle_lieferant.Ort
-                                                    FROM tabelle_lieferant WHERE tabelle_lieferant.idTABELLE_Lieferant NOT IN (SELECT tabelle_geraete_has_tabelle_lieferant.tabelle_lieferant_idTABELLE_Lieferant
-                                                    FROM tabelle_geraete_has_tabelle_lieferant
-                                                    WHERE ((tabelle_geraete_has_tabelle_lieferant.tabelle_geraete_idTABELLE_Geraete=" . $_SESSION["deviceID"] . ")))
-                                                    ORDER BY tabelle_lieferant.Lieferant;";
-                    $result = $mysqli->query($sql);
-
-                    echo "<div class='form-group'>
-                                                            <label for='Lieferant'>Lieferant:</label>									
-                                                                <select class='form-control input-sm' id='idlieferant' name='lieferant'>
-                                                                        <option value=0>Lieferant auswählen </option>
-                                                                        <option value='new'>Nicht dabei? - Neu Anlegen! </a></option>";
-
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<option value=" . $row["idTABELLE_Lieferant"] . ">" . $row["Lieferant"] . " - " . $row["Land"] . " " . $row["Ort"] . "</option>";
-                    }
-                    echo "</select>	 </div>";
-                    $mysqli->close();
-                    ?>
-                </form>
-            </div>
-            <div class='modal-footer'>
-                <input type='button' id='addLieferant' class='btn btn-success btn-sm' value='Hinzufügen'
-                       data-bs-dismiss='modal'>
-                <button type='button' class='btn btn-warning btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
-            </div>
-        </div>
-
-    </div>
-</div>
 
 <!-- Modal zum Anzeigen der Lieferantenmitarbeiter-->
 <div class='modal fade' id='showLieferantContactsModal' role='dialog' tabindex="-1">
@@ -142,7 +74,9 @@ echo "<input type='button' id='addLieferantModalButton' class='btn btn-success b
             info: false,
             order: [[1, 'asc']],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json', search: "", searchPlaceholder: "Suche..."
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                search: "",
+                searchPlaceholder: "Suche..."
             },
             layout: {
                 topStart: null,
@@ -168,7 +102,7 @@ echo "<input type='button' id='addLieferantModalButton' class='btn btn-success b
             $.ajax({
                 url: "addLieferantToDevice.php",
                 data: {"lieferantenID": lieferantenID},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     alert(data);
                     $.ajax({
@@ -176,12 +110,10 @@ echo "<input type='button' id='addLieferantModalButton' class='btn btn-success b
                         type: "GET",
                         success: function (data) {
                             $("#deviceLieferanten").html(data);
-
                         }
                     });
                 }
             });
-
         } else {
             alert("Kein Lieferant ausgewählt!");
         }

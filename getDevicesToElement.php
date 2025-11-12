@@ -2,10 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/js/bootstrap-datepicker.min.js"></script>
     <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker3.min.css"/>
-    <script type='text/javascript'
-            src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+          href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/css/bootstrap-datepicker.min.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <title>Get Devices 2 Element</title>
 </head>
 <body>
@@ -156,13 +159,12 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
 
 <!--suppress ES6ConvertVarToLetConst -->
 <script charset="utf-8" type="text/javascript">
-
     var deviceID;
-
     var tableDevicesToElement;
 
     $(document).ready(function () {
-        tableDevicesToElement = $('#tableDevicesToElement').DataTable({
+
+        tableDevicesToElement = new DataTable('#tableDevicesToElement', {
             columnDefs: [
                 {
                     targets: [0, 5],
@@ -208,7 +210,7 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
             $.ajax({
                 url: "getStandardDeviceParameters.php",
                 data: {"deviceID": deviceID},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#deviceParametersInDB").html(data);
                     $.ajax({
@@ -251,7 +253,7 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
             $.ajax({
                 url: "addDevice.php",
                 data: {"hersteller": hersteller, "type": type, "kurzbeschreibung": kurzbeschreibung},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     alert(data);
                     $.ajax({
@@ -337,7 +339,7 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
             $.ajax({
                 url: "addManufacturer.php",
                 data: {"manufacturer": manufacturer},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     alert(data);
                     $.ajax({
