@@ -76,19 +76,79 @@ class MYPDF extends TCPDF
         $this->SetFont('', '', '8');
         $fill = 0;
         foreach ($data as $row) {
-            $rowHeight = 5;
-            $this->Cell($w[0], $rowHeight, $row['Name'] . " " . $row['Vorname'], 1, 0, 'L', $fill, '', 0);
-            $this->Cell($w[1], $rowHeight, $row['Mail'], 1, 0, 'L', $fill, '', 3);
-            $this->Cell($w[2], $rowHeight, $row['Organisation'], 1, 0, 'L', $fill, '', 3);
-            $this->Cell($w[3], $rowHeight, $row['Zuständigkeit'], 1, 0, 'L', $fill, '', 3);
+            $cellData = [
+                $row['Name'] . " " . $row['Vorname'],
+                $row['Mail'],
+                $row['Organisation'],
+                $row['Zuständigkeit'],
+            ];
+            $cellWidths = [$w[0], $w[1], $w[2], $w[3]];
+            $lineHeight = 5; // height of one line
 
+            // Calculate max number of lines needed per cell in row
+            $maxLines = 1;
+            foreach ($cellData as $i => $text) {
+                $lines = $this->getNumLines($text, $cellWidths[$i]);
+                if ($lines > $maxLines) {
+                    $maxLines = $lines;
+                }
+            }
+            $rowHeight = $lineHeight * $maxLines;
+
+            // Save current X,Y position
+            $x = $this->GetX();
+            $y = $this->GetY();
+
+            // Output the first four columns as MultiCell with uniform rowHeight
+            foreach ($cellData as $i => $text) {
+                $this->MultiCell(
+                    $cellWidths[$i],
+                    $rowHeight,
+                    $text,
+                    1,
+                    'L',
+                    $fill,
+                    0,
+                    '',
+                    '',
+                    true,
+                    0,
+                    false,
+                    true,
+                    $rowHeight,
+                    'M'
+                );
+                // Position cursor for next cell, same vertical start
+                $this->SetXY($x + array_sum(array_slice($cellWidths, 0, $i + 1)), $y);
+            }
+
+            // Output last two columns with symbol cells, same height
             $this->SetFont('zapfdingbats', '', 8);
-            $this->Cell($w[4], $rowHeight, $row['Anwesenheit'] == '0' ? TCPDF_FONTS::unichr(54) : TCPDF_FONTS::unichr(52), 1, 0, 'C', $fill, '', 0);
-            $this->Cell($w[5], $rowHeight, $row['Verteiler'] == '0' ? TCPDF_FONTS::unichr(54) : TCPDF_FONTS::unichr(52), 1, 0, 'C', $fill, '', 0);
-            $this->SetFont('helvetica', '', '8');
-            $this->Ln();
+            $this->SetXY($x + array_sum($cellWidths), $y);
+            $this->Cell(
+                $w[4],
+                $rowHeight,
+                $row['Anwesenheit'] == '0' ? TCPDF_FONTS::unichr(54) : TCPDF_FONTS::unichr(52),
+                1,
+                0,
+                'C',
+                $fill
+            );
+            $this->Cell(
+                $w[5],
+                $rowHeight,
+                $row['Verteiler'] == '0' ? TCPDF_FONTS::unichr(54) : TCPDF_FONTS::unichr(52),
+                1,
+                0,
+                'C',
+                $fill
+            );
+
+            $this->SetFont('helvetica', '', 8);
+            $this->Ln($rowHeight);
             $fill = !$fill;
         }
+
         $this->Cell(array_sum($w), 0, '', 'T');
     }
 
@@ -177,12 +237,31 @@ class MYPDF extends TCPDF
                     $this->MultiCell($w[2], $rowHeight, '', 1, 'L', $fill, 0, '', '');
                 }
                 $this->Ln($rowHeight4);
-                $this->MultiCell($w[0], $rowHeight - $rowHeight4, $row['Vermerktext'], 'LRB', 'L', $fill, 1, '', '');
+
+
+                $sentences = preg_split('/(?<=[.?!])\s+/', trim($row['Vermerktext']));
+                $y = $this->GetY();
+                $sentenceCount = count($sentences);
+                foreach ($sentences as $index => $sentence) {
+                    $sentenceHeight = $this->getStringHeight($w[0], $sentence, false, true, '', 1);
+                    if (($y + $sentenceHeight) >= 270) {
+                        $this->AddPage();
+                        $this->SetFont('', 'I', '7');
+                        $this->MultiCell($w[0], $rowHeight4, $betreffText, 'LTR', 'L', $fill, 1, '', '');
+                    }
+                    $this->SetFont('', '', '8');
+
+                    $border = ($index === $sentenceCount - 1) ? 'LRB' : 'LR';
+
+                    $this->MultiCell($w[0], $sentenceHeight, $sentence, $border, 'L', $fill, 1, '', '');
+                    $y = $this->GetY();
+                }
+
+
             }
         }
     }
 }
-
 
 
 // create new PDF document

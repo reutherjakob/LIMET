@@ -1,10 +1,13 @@
 <?php
+// 11-25 FX
 require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
 
-$elementID = filter_input(INPUT_GET, 'elementID', FILTER_VALIDATE_INT);
-$variantenID = filter_input(INPUT_GET, 'variantenID', FILTER_VALIDATE_INT);
+$elementID = getPostInt('elementID');
+ //   filter_input(INPUT_GET, 'elementID', FILTER_VALIDATE_INT);
+$variantenID =  getPostInt('variantID');
+    //filter_input(INPUT_GET, 'variantenID', FILTER_VALIDATE_INT);
 $projectID = $_SESSION["projectID"];
 
 // Vorhandene Elementparameter löschen

@@ -88,7 +88,7 @@ function getFileName($topic)
 {
     $date = $_SESSION["PDFdatum"] ?? date('Y-m-d');
     $projectname = $_SESSION['projectName'];
-    return $projectname . "__GPMT__" . $topic . "__" . $date . ".pdf";
+    return $projectname . "_GPMT_" . $topic . "_" . $date . ".pdf";
 }
 
 function check4newpage($pdf, $rowHeightComment)

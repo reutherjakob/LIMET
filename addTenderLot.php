@@ -1,63 +1,111 @@
 <?php
+// 11-2025 FX
 require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
 
-function insertLos($mysqli, $data, $isMainLos = true) {
-    $commonFields = [
-        'LosNr_Extern' => $data['losNr'],
-        'LosBezeichnung_Extern' => $data['losName'],
-        'Ausführungsbeginn' => date("Y-m-d", strtotime($data['losDatum']) ?? ''),
-        'tabelle_projekte_idTABELLE_Projekte' => $_SESSION["projectID"],
-        'Vergabe_abgeschlossen' => $data['lotVergabe'],
-        'Versand_LV' => date("Y-m-d", strtotime($data['lotLVSend']) ?? ''),
-        'Verfahren' => $data['lotVerfahren'],
-        'Bearbeiter' => $data['lotLVBearbeiter'],
-        'Notiz' => $data['lotNotice'],
-        'Kostenanschlag' => $data['kostenanschlag'],
-        'Budget' => $data['budget']
+function logPostData(array $data): void
+{
+    $logfile = __DIR__ . '/addTenderLot_post_log.txt';
+    $logEntry = "[" . date('Y-m-d H:i:s') . "] POST Data: " . json_encode($data, JSON_PRETTY_PRINT) . PHP_EOL;
+    file_put_contents($logfile, $logEntry, FILE_APPEND);
+}
+
+function insertLos($mysqli, $data, $isMainLos = true): void
+{
+    $losNr = $mysqli->real_escape_string($data['losNr']);
+    $losName = $mysqli->real_escape_string($data['losName']);
+    $ausfBeginn = $mysqli->real_escape_string($data['losDatum']);
+    $projektID = intval($_SESSION["projectID"]);
+    $vergabeAbgeschlossen = intval($data['lotVergabe']);
+    $versandLV = $mysqli->real_escape_string($data['lotLVSend']);
+    $verfahren = $mysqli->real_escape_string($data['lotVerfahren']);
+    $bearbeiter = $mysqli->real_escape_string($data['lotLVBearbeiter']);
+    $notiz = $mysqli->real_escape_string($data['lotNotice']);
+    $kostenanschlag = isset($data['kostenanschlag']) ? floatval(str_replace(',', '.', $data['kostenanschlag'])) : 0;
+    $budget = isset($data['budget']) ? floatval(str_replace(',', '.', $data['budget'])) : 0;
+    $vergabesumme = isset($data['lotSum']) ? floatval(str_replace(',', '.', $data['lotSum'])) : null;
+    $lieferantID = (isset($data['lotAuftragnehmer']) && $data['lotAuftragnehmer'] != 0) ? intval($data['lotAuftragnehmer']) : null;
+
+    $columns = [
+        'LosNr_Extern', 'LosBezeichnung_Extern', 'Ausführungsbeginn', 'tabelle_projekte_idTABELLE_Projekte',
+        'Vergabe_abgeschlossen', 'Versand_LV', 'Verfahren', 'Bearbeiter', 'Notiz', 'Kostenanschlag', 'Budget'
+    ];
+    $values = [
+        $losNr, $losName, $ausfBeginn, $projektID, $vergabeAbgeschlossen, $versandLV, $verfahren, $bearbeiter, $notiz,
+        $kostenanschlag, $budget
     ];
 
+    if ($vergabesumme !== null) {
+        $columns[] = 'Vergabesumme';
+        $values[] = $vergabesumme;
+    }
+
+    if ($lieferantID !== null) {
+        $columns[] = 'tabelle_lieferant_idTABELLE_Lieferant';
+        $values[] = $lieferantID;
+    }
+
     if (!$isMainLos) {
-        $commonFields['mkf_von_los'] = $data['lotMKFOf'];
-        $commonFields['mkf_nr'] = $data['laufendeNr'];
+        $mkfVonLos = intval($data['lotMKFOf']);
+        $mkfNr = intval($data['laufendeNr']);
+        $columns[] = 'mkf_von_los';
+        $columns[] = 'mkf_nr';
+        $values[] = $mkfVonLos;
+        $values[] = $mkfNr;
     }
 
-    if (isset($data['lotSum'])) {
-        $commonFields['Vergabesumme'] = $data['lotSum'];
-    }
+    $escapedValues = array_map(function($val) use ($mysqli) {
+        if (is_null($val)) return "NULL";
+        if (is_numeric($val)) return $val;
+        return "'" . $mysqli->real_escape_string($val) . "'";
+    }, $values);
 
-    if ($data['lotAuftragnehmer'] != 0) {
-        $commonFields['tabelle_lieferant_idTABELLE_Lieferant'] = $data['lotAuftragnehmer'];
-    }
+    $sql = "INSERT INTO `LIMET_RB`.`tabelle_lose_extern` (" . implode(", ", $columns) . ") VALUES (" . implode(", ", $escapedValues) . ")";
 
-    $columns = implode(", ", array_keys($commonFields));
-    $values = "'" . implode("', '", array_values($commonFields)) . "'";
-
-    $sql = "INSERT INTO `LIMET_RB`.`tabelle_lose_extern` ($columns) VALUES ($values)";
-    //echo $sql;
     if ($mysqli->query($sql) === TRUE) {
         echo "Los zu Projekt hinzugefügt!";
     } else {
-        echo "Error: " . $sql . "<br>" . $mysqli->error;
+        echo "Fehler: " . $mysqli->error;
     }
 }
 
-$data = $_GET;
-$data['lotAuftragnehmer'] = filter_input(INPUT_GET, 'lotAuftragnehmer', FILTER_VALIDATE_INT);
-$data['lotMKFOf'] = filter_input(INPUT_GET, 'lotMKFOf', FILTER_VALIDATE_INT);
+// After gathering POST data, log it
+$data = [];
+$data['losNr'] = getPostString('losNr');
+$data['losName'] = getPostString('losName');
+$data['losDatum'] = getPostDate('losDatum');
+$data['lotVergabe'] = getPostInt('lotVergabe');
+$data['lotLVSend'] = getPostDate('lotLVSend');
+$data['lotVerfahren'] = getPostString('lotVerfahren');
+$data['lotLVBearbeiter'] = getPostString('lotLVBearbeiter');
+$data['lotNotice'] = getPostString('lotNotice');
+$data['kostenanschlag'] = getPostString('kostenanschlag');
+$data['budget'] = getPostString('budget');
+$data['lotSum'] = getPostString('lotSum');
+$data['lotAuftragnehmer'] = getPostInt('lotAuftragnehmer');
+$data['lotMKFOf'] = getPostInt('lotMKFOf', 0);
+$data['laufendeNr'] = 0;
 
-if ($data['lotMKFOf'] == 0) {
+logPostData($data);
+
+if ($data['lotMKFOf'] === 0) {
     insertLos($mysqli, $data);
 } else {
-    // MKF anlegen
-    $sqlMKF = "SELECT Max(mkf_nr) AS Maxvonmkf_nr FROM tabelle_lose_extern WHERE mkf_von_los = " . $data['lotMKFOf'];
-    $resultMKFNr = $mysqli->query($sqlMKF);
-    $laufendeNr = ($resultMKFNr->fetch_assoc()['Maxvonmkf_nr'] ?? 0) + 1;
+    $stmt = $mysqli->prepare("SELECT Max(mkf_nr) AS maxNr FROM tabelle_lose_extern WHERE mkf_von_los = ?");
+    $stmt->bind_param("i", $data['lotMKFOf']);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $row = $res->fetch_assoc();
+    $laufendeNr = (($row['maxNr'] ?? 0) + 1);
+    $stmt->close();
 
-    $sqlLosDaten = "SELECT LosNr_Extern, LosBezeichnung_Extern FROM tabelle_lose_extern WHERE idtabelle_Lose_Extern = " . $data['lotMKFOf'];
-    $resultLosDaten = $mysqli->query($sqlLosDaten);
-    $losDaten = $resultLosDaten->fetch_assoc();
+    $stmt = $mysqli->prepare("SELECT LosNr_Extern, LosBezeichnung_Extern FROM tabelle_lose_extern WHERE idtabelle_Lose_Extern = ?");
+    $stmt->bind_param("i", $data['lotMKFOf']);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $losDaten = $res->fetch_assoc();
+    $stmt->close();
 
     $data['losNr'] = $losDaten['LosNr_Extern'] . "." . $laufendeNr;
     $data['losName'] = $losDaten['LosBezeichnung_Extern'];

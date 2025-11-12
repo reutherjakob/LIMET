@@ -30,10 +30,11 @@ include "utils/_format.php";
 check_login();
 
 $mysqli = utils_connect_sql();
-if (isset($_GET["deviceID"])) {
-    $_SESSION["deviceID"] = $_GET["deviceID"];
+if (isset($_POST["deviceID"])) {
+    $_SESSION["deviceID"] = $_POST["deviceID"];
 }
 $deviceID = isset($_SESSION["deviceID"]) ? intval($_SESSION["deviceID"]) : 0;
+
 $sql = "SELECT tabelle_preise.Datum,
                tabelle_preise.Quelle,
                tabelle_preise.Menge,
@@ -414,7 +415,7 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
                         makeToaster(data, true);
                         $.ajax({
                             url: "getDevicePrices.php",
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 $("#devicePrices").html(data);
                             }
