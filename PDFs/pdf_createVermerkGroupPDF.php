@@ -237,31 +237,12 @@ class MYPDF extends TCPDF
                     $this->MultiCell($w[2], $rowHeight, '', 1, 'L', $fill, 0, '', '');
                 }
                 $this->Ln($rowHeight4);
-
-
-                $sentences = preg_split('/(?<=[.?!])\s+/', trim($row['Vermerktext']));
-                $y = $this->GetY();
-                $sentenceCount = count($sentences);
-                foreach ($sentences as $index => $sentence) {
-                    $sentenceHeight = $this->getStringHeight($w[0], $sentence, false, true, '', 1);
-                    if (($y + $sentenceHeight) >= 270) {
-                        $this->AddPage();
-                        $this->SetFont('', 'I', '7');
-                        $this->MultiCell($w[0], $rowHeight4, $betreffText, 'LTR', 'L', $fill, 1, '', '');
-                    }
-                    $this->SetFont('', '', '8');
-
-                    $border = ($index === $sentenceCount - 1) ? 'LRB' : 'LR';
-
-                    $this->MultiCell($w[0], $sentenceHeight, $sentence, $border, 'L', $fill, 1, '', '');
-                    $y = $this->GetY();
-                }
-
-
+                $this->MultiCell($w[0], $rowHeight - $rowHeight4, $row['Vermerktext'], 'LRB', 'L', $fill, 1, '', '');
             }
         }
     }
 }
+
 
 
 // create new PDF document
