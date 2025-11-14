@@ -342,6 +342,7 @@ ORDER BY tabelle_elemente.ElementID;";
                                         data: {"elementID": elementID},
                                         type: "GET",
                                         success: function (data) {
+                                            console.log(data);
                                             $("#elementPricesInOtherProjects").html(data);
                                             $.ajax({
                                                 url: "getDevicesToElement.php",

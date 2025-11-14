@@ -261,6 +261,7 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
                         type: "GET",
                         success: function (data) {
                             $("#devicesInDB").html(data);
+                            $("#devicesToElement").html(data);
                         }
                     });
                 }

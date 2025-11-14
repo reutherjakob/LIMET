@@ -16,7 +16,7 @@ check_login();
 $mysqli = utils_connect_sql();
 $sql = "SELECT tabelle_projekte.Projektname,
        tabelle_projekte.Interne_Nr,
-       tabelle_projekte.Preisbasis,
+       tabelle_projekte.Preisbasis, 
        tabelle_varianten.Variante,
        tabelle_projekt_varianten_kosten.Kosten
  
@@ -63,8 +63,7 @@ echo "</tbody></table>";
                 thousands: ".",
                 emptyTable: "Keine Daten verfügbar"
             },
-            data: [],          // empty dataset to avoid errors when no data
-            deferRender: true  // improve performance
+
         });
     });
 
