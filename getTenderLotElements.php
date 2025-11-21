@@ -205,7 +205,7 @@ $mysqli->close();
                             $.ajax({
                                 url: "getVariantenParameters.php",
                                 data: {"variantenID": variantenID, "elementID": elementID},
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#elementsvariantenParameterInLot").html(data);
                                     $("#elementsvariantenParameterInLot").show();

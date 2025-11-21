@@ -125,13 +125,13 @@ $mysqli->close();
                 $.ajax({
                     url: "saveVermerkStatus.php",
                     data: {"vermerkID": vermerkID, "vermerkStatus": vermerkStatus},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         alert(data);
                         $.ajax({
                             url: "getLotVermerke.php",
                             data: {"lotID": lotID},
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 $("#lotVermerke").html(data);
                             }

@@ -58,13 +58,13 @@ $mysqli->close();
                     $.ajax({
                         url: "getImagesToRoom.php",
                         data: {"roomID": roomID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#roomImages").html(data);
                             $.ajax({
                                 url: "getImagesNotInRoom.php",
                                 data: {"roomID": roomID},
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#projectImages").html(data);
                                 }

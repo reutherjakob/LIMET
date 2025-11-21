@@ -28,7 +28,7 @@ check_login(); //print_session_vars();
                 $('#addSheet').click(function () {
                     $.ajax({
                         url: 'getRoomElementsParameterTableData.php',
-                        method: 'GET',
+                        method: 'POST',
                         dataType: 'json',
                         success: function (data) {
                             var ws = XLSX.utils.json_to_sheet(data);

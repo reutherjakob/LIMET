@@ -203,7 +203,6 @@ $mysqli->close();
     import CustomPopover from './utils/_popover.js';
 
     $(document).ready(function () {
-
         tableRoomsWithElement = new DataTable('#tableRoomsWithElement', {
             columnDefs: [
                 {
@@ -225,7 +224,7 @@ $mysqli->close();
             layout: {
                 topStart: null,
                 topEnd: ['buttons', 'search'],
-                bottomStart: [],
+                bottomStart: ["info"],
                 bottomEnd: []
             },
             buttons: [
@@ -282,7 +281,7 @@ $mysqli->close();
                         "comment": newText,
                         "id": id
                     },
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         makeToaster(data.trim(), true);
                         $(".comment-btn[id='" + id + "']").attr('data-description', newText).data('description', newText);
@@ -306,7 +305,7 @@ $mysqli->close();
     $("button[value='saveElement']").click(function () {
         let id = this.id;
         let comment = $(".comment-btn[id='" + id + "']").attr('data-description');
-        // console.log(comment);
+
         let amount = $("#amount" + id).val();
         let variantenID = $("#variante" + id).val();
         let bestand = $("#bestand" + id).val();
@@ -315,6 +314,7 @@ $mysqli->close();
         if (standort === '0' && verwendung === '0') {
             alert("Standort und Verwendung kann nicht Nein sein!");
         } else {
+            console.log(id, typeof(id) );
             $.ajax({
                 url: "saveRoombookEntry.php",
                 data: {

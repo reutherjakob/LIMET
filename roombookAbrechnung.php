@@ -273,7 +273,7 @@ if ($_SESSION["projectName"] == "") {
                 $.ajax({
                     url: "getRechnungenToLot.php",
                     data: {"lotID": id},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         $("#rechnungen").html(data);
                     }
@@ -303,7 +303,7 @@ if ($_SESSION["projectName"] == "") {
 
             $.ajax({
                 url: "saveRechnung.php",
-                type: "GET",
+                type: "POST",
                 data: {
                     "rechnungID": rechnungID,
                     "rechnungNr": rechnungNr,
@@ -319,7 +319,7 @@ if ($_SESSION["projectName"] == "") {
                     $.ajax({
                         url: "getRechnungenToLot.php",
                         data: {"lotID": id},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#rechnungen").html(data);
                         }
@@ -366,7 +366,7 @@ if ($_SESSION["projectName"] == "") {
                     $.ajax({
                         url: "getRechnungenToLot.php",
                         data: {"lotID": id},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#rechnungen").html(data);
                         }
@@ -385,7 +385,7 @@ if ($_SESSION["projectName"] == "") {
         }
         $.ajax({
             url: "saveLosSchlussrechnungsStatus.php",
-            type: "GET",
+            type: "POST",
             data: {"schlussgerechnet": schlussgerechnet, "lotID": id},
             success: function (data) {
                 alert(data);

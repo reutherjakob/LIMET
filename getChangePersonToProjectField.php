@@ -1,7 +1,6 @@
 <?php
 require_once 'utils/_utils.php';
 check_login();
-
 $mysqli = utils_connect_sql();
 
 /**
@@ -21,38 +20,51 @@ function getSelectOptions($mysqli, $sql, $valueField, $textField, $selectedValue
 }
 
 // --- Fetch person data ---
-$personSql = <<<SQL
-SELECT
-    tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projekte_idTABELLE_Projekte,
-    tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen,
-    tabelle_ansprechpersonen.Name,
-    tabelle_ansprechpersonen.Vorname,
-    tabelle_ansprechpersonen.Tel,
-    tabelle_ansprechpersonen.Adresse,
-    tabelle_ansprechpersonen.PLZ,
-    tabelle_ansprechpersonen.Ort,
-    tabelle_ansprechpersonen.Land,
-    tabelle_ansprechpersonen.Mail,
-    tabelle_ansprechpersonen.Raumnr,
-    tabelle_organisation.idtabelle_organisation,
-    tabelle_projektzuständigkeiten.idTABELLE_Projektzuständigkeiten
-FROM tabelle_ansprechpersonen
-INNER JOIN (
-    tabelle_organisation
+$projectID = getPostInt("projectID"); // Assume you have this from a POST form or similar
+$personID = getPostInt("personID");
+$stmt = $mysqli->prepare(
+    "SELECT
+        tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projekte_idTABELLE_Projekte,
+        tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen,
+        tabelle_ansprechpersonen.Name,
+        tabelle_ansprechpersonen.Vorname,
+        tabelle_ansprechpersonen.Tel,
+        tabelle_ansprechpersonen.Adresse,
+        tabelle_ansprechpersonen.PLZ,
+        tabelle_ansprechpersonen.Ort,
+        tabelle_ansprechpersonen.Land,
+        tabelle_ansprechpersonen.Mail,
+        tabelle_ansprechpersonen.Raumnr,
+        tabelle_organisation.idtabelle_organisation,
+        tabelle_projektzuständigkeiten.idTABELLE_Projektzuständigkeiten
+    FROM tabelle_ansprechpersonen
     INNER JOIN (
-        tabelle_projektzuständigkeiten
-        INNER JOIN tabelle_projekte_has_tabelle_ansprechpersonen
-        ON tabelle_projektzuständigkeiten.idTABELLE_Projektzuständigkeiten = tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projektzuständigkeiten_idTABELLE_Projektzuständigkeiten
+        tabelle_organisation
+        INNER JOIN (
+            tabelle_projektzuständigkeiten
+            INNER JOIN tabelle_projekte_has_tabelle_ansprechpersonen
+            ON tabelle_projektzuständigkeiten.idTABELLE_Projektzuständigkeiten = tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projektzuständigkeiten_idTABELLE_Projektzuständigkeiten
+        )
+        ON tabelle_organisation.idtabelle_organisation = tabelle_projekte_has_tabelle_ansprechpersonen.tabelle_organisation_idtabelle_organisation
     )
-    ON tabelle_organisation.idtabelle_organisation = tabelle_projekte_has_tabelle_ansprechpersonen.tabelle_organisation_idtabelle_organisation
-)
-ON tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen = tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen
-WHERE tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projekte_idTABELLE_Projekte = {$_SESSION["projectID"]}
-  AND tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen = {$_GET["personID"]}
-SQL;
+    ON tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen = tabelle_projekte_has_tabelle_ansprechpersonen.TABLE_Ansprechpersonen_idTABELLE_Ansprechpersonen
+    WHERE tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projekte_idTABELLE_Projekte = ?
+      AND tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen = ?"
+);
 
-$personResult = $mysqli->query($personSql);
+// Bind parameters
+$stmt->bind_param("ii", $projectID, $personID);
+
+// Execute
+$stmt->execute();
+
+// Fetch result
+$personResult = $stmt->get_result();
 $person = $personResult->fetch_assoc();
+
+$stmt->close();
+$mysqli->close();
+
 
 // --- Prepare select options ---
 $zustaendigkeitOptions = getSelectOptions(
@@ -195,10 +207,9 @@ $mysqli->close();
             }
         });
 
-        // Remove person from project (delegated)
         $(document).on('click', '#btn-remove', function () {
             let personID = $(this).data("person-id");
-            $.get("deletePersonFromProject.php", {personID: personID}, function (response) {
+            $.post("deletePersonFromProject.php", {personID: personID}, function (response) {
                 alert(response);
                 $("#personsInProject").load("getPersonsOfProject.php", function () {
                     $("#personsNotInProject").load("getPersonsNotInProject.php");
@@ -208,6 +219,4 @@ $mysqli->close();
             });
         });
     });
-
-
 </script>

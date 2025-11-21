@@ -85,22 +85,22 @@ init_page_serversides();
     $(document).ready(function () {
         $.ajax({
             url: "getPersonsOfProject.php",
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 $("#personsInProject").html(data);
                 $.ajax({
                     url: "getPersonsNotInProject.php",
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         $("#personsNotInProject").html(data);
                         $.ajax({
                             url: "getPersonToProjectField.php",
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 $("#addPersonToProject").html(data);
                                 $.ajax({
                                     url: "getProjectNotices.php",
-                                    type: "GET",
+                                    type: "POST",
                                     success: function (data) {
                                         $("#projectNotices").html(data);
                                         setTimeout(function () {
@@ -119,7 +119,7 @@ init_page_serversides();
         $("#resetAddPerson").click(function () {
             $.ajax({
                 url: "getPersonToProjectField.php",
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#addPersonToProject").html(data);
                 }

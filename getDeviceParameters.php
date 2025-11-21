@@ -86,18 +86,18 @@ $mysqli->close();
                 $.ajax({
                     url: "deleteParameterFromDevice.php",
                     data: {"parameterID": id},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         alert(data);
                         $.ajax({
                             url: "getDeviceParameters.php",
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
 
                                 $("#deviceParameters").html(data);
                                 $.ajax({
                                     url: "getPossibleDeviceParameters.php",
-                                    type: "GET",
+                                    type: "POST",
                                     success: function (data) {
                                         $("#possibleDeviceParameters").html(data);
                                     }
@@ -121,7 +121,7 @@ $mysqli->close();
             $.ajax({
                 url: "updateDeviceParameter.php",
                 data: {"parameterID": id, "wert": wert, "einheit": einheit},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data, true);
 

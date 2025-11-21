@@ -161,7 +161,7 @@ if (!isset($_SESSION["username"])) {
                 $.ajax({
                     url: "getVermerkgruppenToGewerk.php",
                     data: {"vermerkGruppenID": table.row($(this)).data()[0]},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         $("#div_Infos_Body").html(data);
                     }

@@ -1,4 +1,5 @@
 <?php
+// 11-25-FX
 require_once 'utils/_utils.php';
 include "utils/_format.php";
 check_login();
@@ -15,12 +16,21 @@ check_login();
 
 <?php
 $mysqli = utils_connect_sql();
-$sql = "SELECT tabelle_varianten.Variante, tabelle_projekt_varianten_kosten_aenderung.kosten_alt, tabelle_projekt_varianten_kosten_aenderung.kosten_neu, tabelle_projekt_varianten_kosten_aenderung.timestamp, tabelle_projekt_varianten_kosten_aenderung.user
-                FROM tabelle_varianten INNER JOIN tabelle_projekt_varianten_kosten_aenderung ON tabelle_varianten.idtabelle_Varianten = tabelle_projekt_varianten_kosten_aenderung.variante
-                WHERE (((tabelle_projekt_varianten_kosten_aenderung.projekt)=" . $_SESSION["projectID"] . ") AND ((tabelle_projekt_varianten_kosten_aenderung.element)=" . $_GET["elementID"] . "))
-                ORDER BY tabelle_projekt_varianten_kosten_aenderung.timestamp DESC;";
+$projectID = isset($_SESSION["projectID"]) && is_numeric($_SESSION["projectID"]) ? intval($_SESSION["projectID"]) : 0;
+$elementID = getPostInt("elementID", 0);
 
-$result = $mysqli->query($sql);
+$sql = "SELECT tabelle_varianten.Variante, tabelle_projekt_varianten_kosten_aenderung.kosten_alt, tabelle_projekt_varianten_kosten_aenderung.kosten_neu, tabelle_projekt_varianten_kosten_aenderung.timestamp, tabelle_projekt_varianten_kosten_aenderung.user
+        FROM tabelle_varianten 
+        INNER JOIN tabelle_projekt_varianten_kosten_aenderung 
+            ON tabelle_varianten.idtabelle_Varianten = tabelle_projekt_varianten_kosten_aenderung.variante
+        WHERE tabelle_projekt_varianten_kosten_aenderung.projekt = ? 
+          AND tabelle_projekt_varianten_kosten_aenderung.element = ?
+        ORDER BY tabelle_projekt_varianten_kosten_aenderung.timestamp DESC";
+
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("ii", $projectID, $elementID);
+$stmt->execute();
+$result = $stmt->get_result();
 
 echo "<table class='table table-striped table-sm' id='tableVarianteCostChanges'  >
 	<thead> <tr>

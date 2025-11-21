@@ -333,36 +333,36 @@
                     "projectAusfuehrung": projectAusfuehrung,
                     "projectPlanungsphase": projectPlanungsphase
                 },
-                type: "GET",
+                type: "POST",
                 success: function () {
                     $("#projectSelected").text(projectName);
                     $.ajax({
                         url: "getPersonsOfProject.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#personsInProject").html(data);
 
                             $.ajax({
                                 url: "getPersonsNotInProject.php",
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#personsNotInProject").html(data);
 
                                     $.ajax({
                                         url: "getPersonToProjectField.php",
-                                        type: "GET",
+                                        type: "POST",
                                         success: function (data) {
                                             $("#addPersonToProject").html(data);
 
                                             $.ajax({
                                                 url: "getProjectVermerke.php",
-                                                type: "GET",
+                                                type: "POST",
                                                 success: function (data) {
                                                     $("#projectVermerke").html(data);
                                                     $("#vermerkeFilter").show();
                                                     $.ajax({
                                                         url: "getProjectCheck.php",
-                                                        type: "GET",
+                                                        type: "POST",
                                                         success: function (data) {
                                                             $("#quickCheckDashboard").html(data);
 
@@ -413,7 +413,7 @@
                         "nf": nf,
                         "PBdate": PBdate
                     },
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         alert(data);
                         location.reload();
@@ -429,7 +429,7 @@
             $.ajax({
                 url: "getProjectVermerke.php",
                 data: {"filterValue": filterValue},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#projectVermerke").html(data);
                 }

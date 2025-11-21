@@ -84,13 +84,13 @@ $mysqli->close();
                         alert(data);
                         $.ajax({
                             url: "getVermerkZustaendigkeiten.php",
-                            type: "GET",
+                            type: "POST",
                             data: {"vermerkID": vermerkID},
                             success: function (data) {
                                 $("#vermerkZustaendigkeit").html(data);
                                 $.ajax({
                                     url: "getPossibleVermerkZustaendigkeiten.php",
-                                    type: "GET",
+                                    type: "POST",
                                     data: {"vermerkID": vermerkID},
                                     success: function (data) {
                                         $("#possibleVermerkZustaendigkeit").html(data);

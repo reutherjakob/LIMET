@@ -75,7 +75,7 @@ $mysqli->close();
         $.ajax({
             url: "getElementGroupsByGewerk.php",
             data: {"gewerkID": gewerkID},
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 $("#elementGroups").html(data);
             }
@@ -90,7 +90,7 @@ $mysqli->close();
         $.ajax({
             url: "getElementGroupsByHauptgruppe.php",
             data: {"gewerkID": gewerkID, "hauptgruppeID": hauptgruppeID},
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 $("#elementGroups").html(data);
             }
@@ -104,7 +104,7 @@ $mysqli->close();
             $.ajax({
                 url: "getElementsByGroup.php",
                 data: {"gruppeID": gruppeID},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#elementsInDB").html(data);
                 }

@@ -53,7 +53,7 @@ if ($row === null || $row["Kosten"] === null) {
 
         foreach ($roomIDs as $roomID) {
             $roomID = (int)$roomID; // cast for safety
-            $stmtInsertRoom->bind_param("iiis", $roomID, $elementID, $amount, $timestamp, $comment);
+            $stmtInsertRoom->bind_param("iiiss", $roomID, $elementID, $amount, $timestamp, $comment);
             if ($stmtInsertRoom->execute()) {
                 $output .= "Raum $roomID Element hinzugefügt! \n";
             } else {
@@ -78,7 +78,7 @@ if ($row === null || $row["Kosten"] === null) {
 
     foreach ($roomIDs as $roomID) {
         $roomID = (int)$roomID;
-        $stmtInsertRoom->bind_param("iiis", $roomID, $elementID, $amount, $timestamp, $comment);
+        $stmtInsertRoom->bind_param("iiiss", $roomID, $elementID, $amount, $timestamp, $comment);
         if ($stmtInsertRoom->execute()) {
             $output .= "Raum $roomID Element hinzugefügt! \n";
         } else {

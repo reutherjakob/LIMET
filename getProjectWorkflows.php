@@ -79,11 +79,11 @@ $mysqli->close();
             $.ajax({
                 url: "addWorkflowToLot.php",
                 data: {"workflowID": workflowID},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $.ajax({
                         url: "getLotWorkflow.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#workflowModalBody").html(data);
                         }

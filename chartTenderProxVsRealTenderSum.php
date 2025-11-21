@@ -9,27 +9,21 @@ check_login();
 <head>
     <title></title>
 </head>
-
 <body>
 <canvas id="myChart" ></canvas>
-
 <script>
-    
     $(document).ready(function(){
 	$.ajax({
 		url: "getChartTenderProxVsRealTenderSums.php",
-		method: "GET",
+		method: 'POST',
 		success: function(data) {
 			console.log(data);
 			var tenderLot = [];
 			var delta = [];
-                        
-
 			for(var i in data) {
 				tenderLot.push(data[i].LosNr_Extern);
 				delta.push(data[i].delta);
 			}
-
 			var chartdata = {
 				labels: tenderLot,
 				datasets : [
@@ -44,7 +38,6 @@ check_login();
 					}
 				]
 			};
-
 			var ctx = $("#myChart");
 
 			var barGraph = new Chart(ctx, {

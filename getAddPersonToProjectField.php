@@ -167,12 +167,12 @@ include "modal_addOrganisationAndZustaendigkeit.php";
                         alert(data);
                         $.ajax({
                             url: "getPersonsOfProject.php",
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 $("#personsInProject").html(data);
                                 $.ajax({
                                     url: "getPersonsNotInProject.php",
-                                    type: "GET",
+                                    type: "POST",
                                     success: function (data) {
                                         $("#personsNotInProject").html(data);
                                     }

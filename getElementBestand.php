@@ -249,7 +249,7 @@ $mysqli->close();
             $.ajax({
                 url: "deleteBestand.php",
                 data: {"bestandID": id},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     if (data.includes("error")) {
                         alert("Lol, hätteste gern.\nGeht aber nich... \nFrag den Jakob.");
@@ -300,7 +300,7 @@ $mysqli->close();
                     "geraeteID": geraeteIDNeu,
                     "currentPlace": currentPlace
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data, true)
                     $.ajax({

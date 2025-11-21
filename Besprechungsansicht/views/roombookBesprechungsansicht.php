@@ -449,13 +449,13 @@ include "GroupMembersModal.html";
             var id = besprechung.id;
             $.ajax({
                 url: "../../getVermerkgruppenMembers.php",
-                type: "GET",
+                type: "POST",
                 data: {"gruppenID": id},
                 success: function (data) {
                     $("#vermerkGroupMembers").html(data);
                     $.ajax({
                         url: "../../getPossibleVermerkGruppenMembers.php",
-                        type: "GET",
+                        type: "POST",
                         data: {"gruppenID": id},
                         success: function (data) {
                             $("#possibleVermerkGroupMembers").html(data);
@@ -472,19 +472,19 @@ include "GroupMembersModal.html";
                 $.ajax({
                     url: "/addPersonToVermerkGroup.php",
                     data: {"ansprechpersonenID": id, "groupID": groupID},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         makeToaster(data, true);
                         document.getElementById('pdfPreview').src += '';
                         $.ajax({
                             url: "/getVermerkgruppenMembers.php",
-                            type: "GET",
+                            type: "POST",
                             data: {"gruppenID": groupID},
                             success: function (data) {
                                 $("#vermerkGroupMembers").html(data);
                                 $.ajax({
                                     url: "/getPossibleVermerkGruppenMembers.php",
-                                    type: "GET",
+                                    type: "POST",
                                     data: {"gruppenID": groupID},
                                     success: function (data) {
                                         $("#possibleVermerkGroupMembers").html(data);

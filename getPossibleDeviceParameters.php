@@ -87,12 +87,12 @@ $mysqli->close();
                     makeToaster(data, true);
                     $.ajax({
                         url: "getDeviceParameters.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#deviceParameters").html(data);
                             $.ajax({
                                 url: "getPossibleDeviceParameters.php",
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#possibleDeviceParameters").html(data);
                                 }

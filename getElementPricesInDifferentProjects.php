@@ -1,34 +1,28 @@
 <?php
-// V2.0: 2024-11-29, Reuther & Fux
+// 25Fux
 require_once 'utils/_utils.php';
 include "utils/_format.php";
 check_login();
-?>
 
-<!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-<head>
-    <title></title></head>
-<body>
 
-<?php
+$elementID = getPostInt("elementID", 0);
 $mysqli = utils_connect_sql();
-$sql = "SELECT tabelle_projekte.Projektname,
+$stmt = $mysqli->prepare("SELECT tabelle_projekte.Projektname,
        tabelle_projekte.Interne_Nr,
        tabelle_projekte.Preisbasis, 
        tabelle_varianten.Variante,
        tabelle_projekt_varianten_kosten.Kosten
- 
 FROM tabelle_varianten
          INNER JOIN (tabelle_projekt_varianten_kosten INNER JOIN tabelle_projekte
                      ON tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte =
                         tabelle_projekte.idTABELLE_Projekte) ON tabelle_varianten.idtabelle_Varianten =
                                                                 tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten
-WHERE (((tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente) = " . $_GET["elementID"] . ") AND
-       NOT (tabelle_projekte.Projektname = 'Test1'));";
+WHERE (((tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente) = ?) AND
+       NOT (tabelle_projekte.Projektname = 'Test1'))");
+$stmt->bind_param('i', $elementID);
+$stmt->execute();
+$result = $stmt->get_result();
 
-$result = $mysqli->query($sql);
 echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableElementPricesInProjects'>
             <thead><tr>
             <th>Projekt</th>

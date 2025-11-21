@@ -148,7 +148,7 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
             $.ajax({
                 url: "getElementGewerkeFiltered.php",
                 data: {"filterValueGHG": ghgid, "filterValueGewerke": gewerkid},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#elementGewerk").html(data);
                 }
@@ -162,7 +162,7 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
             $.ajax({
                 url: "getElementGewerkeFiltered.php",
                 data: {"filterValueGewerke": gewerkid},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#elementGewerk").html(data);
                 }
@@ -181,7 +181,7 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
                     "ghg": $('#ghg').val(),
                     "gug": $('#gug').val()
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data.trim(), true);
                 }
@@ -193,7 +193,7 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
         $.ajax({
             url: "saveElementGewerk.php",
             data: {"gewerk": 2, "ghg": $('#ghg').val(), "gug": $('#gug').val()},
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 makeToaster(data.trim(), true);
             }
@@ -204,7 +204,7 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
         $.ajax({
             url: "saveElementGewerk.php",
             data: {"gewerk": 1, "ghg": $('#ghg').val(), "gug": $('#gug').val()},
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 makeToaster(data.trim(), true);
             }
@@ -215,7 +215,7 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
         $.ajax({
             url: "saveElementGewerk.php",
             data: {"gewerk": 6, "ghg": $('#ghg').val(), "gug": $('#gug').val()},
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 makeToaster(data.trim(), true);
             }

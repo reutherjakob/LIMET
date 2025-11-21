@@ -1,17 +1,22 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
+
 $mysqli = utils_connect_sql();
 
-$sql = "DELETE FROM `LIMET_RB`.`tabelle_bestandsdaten`
-			WHERE `tabelle_bestandsdaten`.`idtabelle_bestandsdaten` = " . $_GET["bestandID"] . ";";
+// Safely get the integer 'bestandID' from GET parameters using _utils method
+$bestandID = getPostInt("bestandID", 0 ); // Assuming this method exists analogously to getPostInt
 
-if ($mysqli->query($sql) === TRUE) {
-    echo "Bestand geloescht!";
+$stmt = $mysqli->prepare("DELETE FROM `LIMET_RB`.`tabelle_bestandsdaten` WHERE `idtabelle_bestandsdaten` = ?");
+$stmt->bind_param("i", $bestandID);
+
+if ($stmt->execute()) {
+    echo json_encode(["message" => "Bestand geloescht!"]);
 } else {
-    echo $mysqli->error;
+    echo json_encode(["error" => $stmt->error]);
 }
 
+$stmt->close();
 $mysqli->close();
-
 ?>

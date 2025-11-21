@@ -239,7 +239,7 @@ $mysqli->close();
                 $.ajax({
                     url: "getBauphasenToLot.php",
                     data: {"lotID": lotId},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         $("#lotBauphasen").html(data);
                     }
@@ -263,7 +263,7 @@ $mysqli->close();
         $.ajax({
             url: "updateTenderWorkflowDates.php",
             data: {"lotID": lotId},
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 alert(data);
                 location.reload();
@@ -280,7 +280,7 @@ $mysqli->close();
         $.ajax({
             url: "updateTenderWorkflowDate.php",
             data: {"lotID": newString[1], "workflowTeilID": newString[2], "workflowID": newString[3], "date": date},
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 alert(data);
             }
@@ -296,7 +296,7 @@ $mysqli->close();
         $.ajax({
             url: "updateTenderWorkflowDateIST.php",
             data: {"lotID": newString[1], "workflowTeilID": newString[2], "workflowID": newString[3], "date": date},
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 alert(data);
             }

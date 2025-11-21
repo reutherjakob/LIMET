@@ -163,7 +163,7 @@ include "utils/_format.php";
                 $.ajax({
                     url: "getBestandWithRaumbereich.php",
                     data: {"elementID": elementID, "raumbereich": raumbereich},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         $("#bestandsRoombook").html(data);
                     }

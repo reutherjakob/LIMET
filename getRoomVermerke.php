@@ -188,14 +188,14 @@ $mysqli->close();
                 if (vermerkID) {
                     $.ajax({
                         url: "saveVermerkStatus.php",
-                        method: "GET",
+                        method: 'POST',
                         data: {vermerkID: vermerkID, vermerkStatus: status},
                         success: function (data) {
                             // You can replace with a user feedback system or toaster here
                             alert(data);
                             $.ajax({
                                 url: "getRoomVermerke2.php",
-                                method: "GET",
+                                method: 'POST',
                                 success: function (html) {
                                     $("#roomVermerke").html(html);
                                 }

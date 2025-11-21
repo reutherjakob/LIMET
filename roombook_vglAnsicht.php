@@ -263,11 +263,11 @@ init_page_serversides(); // checks Nutzerlogin
         $.ajax({
             url: "setSessionVariables.php",
             data: {"roomID": rid},
-            type: "GET",
+            type: "POST",
             success: function () {
                 $.ajax({
                     url: "getRoomSpecifications2.php",
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         $(where2putthedata).html(data);
                         //  console.log("Data Loaded " + data);
@@ -322,7 +322,7 @@ init_page_serversides(); // checks Nutzerlogin
         $.ajax({
             url: "get_RoomElementsData.php",
             data: {"roomID": RaumID},
-            type: "GET",
+            type: "POST",
             dataType: "json",
             success: function (data) {
                 let tableId = 'tableRoomElements' + RaumID;

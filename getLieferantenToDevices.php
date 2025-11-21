@@ -1,15 +1,34 @@
 <?php
-require_once  "utils/_utils.php";
+// 25FX
+require_once "utils/_utils.php";
 check_login();
 $mysqli = utils_connect_sql();
-$sql = "SELECT tabelle_lieferant.idTABELLE_Lieferant, tabelle_lieferant.Lieferant, tabelle_lieferant.Land, tabelle_lieferant.Ort
-                    FROM tabelle_geraete_has_tabelle_lieferant INNER JOIN tabelle_lieferant ON tabelle_geraete_has_tabelle_lieferant.tabelle_lieferant_idTABELLE_Lieferant = tabelle_lieferant.idTABELLE_Lieferant
-                    WHERE (((tabelle_geraete_has_tabelle_lieferant.tabelle_geraete_idTABELLE_Geraete)=" . $_SESSION["deviceID"] . "))
-                    ORDER BY tabelle_lieferant.Lieferant;";
 
-$result = $mysqli->query($sql);
+$deviceID = isset($_SESSION["deviceID"]) ? intval($_SESSION["deviceID"]) : 0;
+if ($deviceID <= 0) {
+    die("Invalid device ID");
+}
 
-echo "<table class='table table-striped table-sm' id='tableDeviceLieferanten'  >
+$sql = "
+    SELECT 
+        tabelle_lieferant.idTABELLE_Lieferant, 
+        tabelle_lieferant.Lieferant, 
+        tabelle_lieferant.Land, 
+        tabelle_lieferant.Ort
+    FROM tabelle_geraete_has_tabelle_lieferant
+    INNER JOIN tabelle_lieferant 
+        ON tabelle_geraete_has_tabelle_lieferant.tabelle_lieferant_idTABELLE_Lieferant = tabelle_lieferant.idTABELLE_Lieferant
+    WHERE tabelle_geraete_has_tabelle_lieferant.tabelle_geraete_idTABELLE_Geraete = ?
+    ORDER BY tabelle_lieferant.Lieferant;
+";
+
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("i", $deviceID);
+$stmt->execute();
+$result = $stmt->get_result();
+
+
+echo "<table class='table table-striped table-sm' id='tableDeviceLieferanten' >
 	<thead><tr>
 	<th></th>
 	<th>Lieferant</th>
@@ -25,10 +44,10 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . $row["Lieferant"] . "</td>";
     echo "<td>" . $row["Land"] . "</td>";
     echo "<td>" . $row["Ort"] . "</td>";
-    echo "<td><button type='button' id='" . $row["idTABELLE_Lieferant"] . "' class='btn btn-outline-dark btn-sm' value='showLieferantContacts' data-bs-toggle='modal' data-bs-target='#showLieferantContactsModal'><i class='fas fa-users'></i></button></td>";
+    echo "<td><button type='button' id='" . $row["idTABELLE_Lieferant"] . "' class='btn btn-outline-dark btn-sm' value='showLieferantContacts' data-bs-toggle='modal' 
+            data-bs-target='#showLieferantContactsModal'><i class='fas fa-users'></i></button></td>";
     echo "</tr>";
 }
-
 echo "</tbody></table>";
 echo "<input type='button' id='addLieferantModalButton' class='btn btn-success btn-sm' value='Lieferant hinzufügen' data-bs-toggle='modal' data-bs-target='#addLieferantModal'> ";
 
@@ -53,10 +72,6 @@ include_once("modal_addLieferant.php");
         </div>
     </div>
 </div>
-
-<?php
-
-?>
 
 <script>
 
@@ -107,7 +122,7 @@ include_once("modal_addLieferant.php");
                     alert(data);
                     $.ajax({
                         url: "getLieferantenToDevices.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#deviceLieferanten").html(data);
                         }
@@ -126,12 +141,12 @@ include_once("modal_addLieferant.php");
             $.ajax({
                 url: "deleteLieferantFromDevice.php",
                 data: {"lieferantID": id},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     alert(data);
                     $.ajax({
                         url: "getLieferantenToDevices.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#deviceLieferanten").html(data);
                         }
@@ -149,7 +164,7 @@ include_once("modal_addLieferant.php");
             $.ajax({
                 url: "getPersonsOfLieferant.php",
                 data: {"lieferantID": id},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#data").html(data);
                 }

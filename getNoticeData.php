@@ -160,7 +160,7 @@ $("input[value='Neue Notiz anlegen']").click(function(){
 	        	alert(data);
 	            $.ajax({
 			        url : "getRoomNotices.php",
-			        type: "GET",
+			        type: "POST",
 			        success: function(data){
 			            $("#roomNotices").html(data);
 			        } 
@@ -176,19 +176,19 @@ $("input[value='Neue Notiz anlegen']").click(function(){
 	    $.ajax({
 	        url : "saveNoticeStatus.php",
 	        data:{"status":status},
-	        type: "GET",
+	        type: "POST",
 	        success: function(data){
 		    	alert(data);
 		    	$.ajax({
 			        url : "getRoomNotices.php",
-			        type: "GET",
+			        type: "POST",
 			        success: function(data){
 			            $("#roomNotices").html(data);
 			        }
 	    		});	
 	    		$.ajax({
 			        url : "getProjectNotices.php",
-			        type: "GET",
+			        type: "POST",
 			        success: function(data){
 			            $("#projectNotices").html(data);
 			        }

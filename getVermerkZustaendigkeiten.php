@@ -1,18 +1,10 @@
-<!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title>getVermerkZustaendigkeiten</title>
-</head>
-<body>
-
 <?php
 require_once 'utils/_utils.php';
 check_login();
 
 $mysqli = utils_connect_sql();
 
-$vermerkID = filter_input(INPUT_GET, 'vermerkID', FILTER_VALIDATE_INT);
+$vermerkID = getPostInt('vermerkID');
 
 if (!$vermerkID) {
     echo "Ungültige Vermerk-ID.";
@@ -58,7 +50,7 @@ echo "</tbody></table>";
 $mysqli->close();
 ?>
 
-</body>
+
 <script>
     $(document).ready(function () {
         $("button[value='deleteVermerkZustaendigkeit']").click(function () {
@@ -69,18 +61,18 @@ $mysqli->close();
                 $.ajax({
                     url: "deletePersonFromVermerkZustaendigkeit.php",
                     data: {"ansprechpersonenID": id, "vermerkID": vermerkID},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         alert(data);
                         $.ajax({
                             url: "getVermerkZustaendigkeiten.php",
-                            type: "GET",
+                            type: "POST",
                             data: {"vermerkID": vermerkID},
                             success: function (data) {
                                 $("#vermerkZustaendigkeit").html(data);
                                 $.ajax({
                                     url: "getPossibleVermerkZustaendigkeiten.php",
-                                    type: "GET",
+                                    type: "POST",
                                     data: {"vermerkID": vermerkID},
                                     success: function (data) {
                                         $("#possibleVermerkZustaendigkeit").html(data);

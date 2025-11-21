@@ -1,4 +1,5 @@
 <?php
+//"%FX
 require_once 'utils/_utils.php';
 include "utils/_format.php";
 init_page_serversides();
@@ -195,7 +196,7 @@ $mysqli = utils_connect_sql();
             $.ajax({
                 url: "saveRoombookBudget.php",
                 data: {"roombookID": roombookID, "budgetID": budgetID},
-                type: "GET",
+                type: "POST",
                 success: function (response) {
                     makeToaster(response, true);
                 },

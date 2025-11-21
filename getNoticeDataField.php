@@ -86,7 +86,7 @@ $("input[value='Neue Notiz anlegen']").click(function(){
 	        	alert(data);
 	            $.ajax({
 			        url : "getRoomNotices.php",
-			        type: "GET",
+			        type: "POST",
 			        success: function(data){
 			            $("#roomNotices").html(data);
 			        } 

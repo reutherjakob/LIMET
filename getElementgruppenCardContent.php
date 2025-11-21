@@ -1,9 +1,11 @@
 <?php
+// 25FX
 require_once 'utils/_utils.php';
 $mysqli = utils_connect_sql();
-$sql = "SELECT tabelle_element_gewerke.idtabelle_element_gewerke, tabelle_element_gewerke.Nummer, tabelle_element_gewerke.Gewerk
-												FROM tabelle_element_gewerke
-												ORDER BY tabelle_element_gewerke.Nummer;";
+$sql = "SELECT tabelle_element_gewerke.idtabelle_element_gewerke, 
+       tabelle_element_gewerke.Nummer, tabelle_element_gewerke.Gewerk
+        FROM tabelle_element_gewerke
+        ORDER BY tabelle_element_gewerke.Nummer;";
 
 $result = $mysqli->query($sql);
 echo "<div class='form-group row mt-1'>
@@ -40,7 +42,7 @@ echo " <script>
     $.ajax({
         url: 'getElementGroupsByGewerk.php',
         data: {'gewerkID': 3},
-        type: 'GET',
+        type: 'POST',
         success: function (data) {
             $('#elementGroups').html(data);
         }
@@ -53,11 +55,12 @@ echo " <script>
             $.ajax({
                 url: 'getElementGroupsByGewerk.php',
                 data: {'gewerkID': 3},
-                type: 'GET',
+                type: 'POST',
                 success: function (data) {
                     $('#elementGroups').html(data);
                     $.ajax({
                         url: 'getElementsInDbCardBodyContent.php',
+                        type: 'POST',
                         success: function (data) {
                             $('#elementsInDB').html(data);
                             init_table_elementsinDB();
@@ -69,4 +72,3 @@ echo " <script>
     });
 
 </script>";
-?>

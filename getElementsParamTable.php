@@ -43,7 +43,7 @@ check_login();
         //console.log(K2R);
         $.ajax({
             url: 'getRoomElementsParameterData.php',
-            method: 'GET',
+       method: 'POST',
             dataType: 'json',
             data: {"roomID": <?php echo $_GET["roomID"]; ?>, "K2Return": JSON.stringify(K2R)},
             success: function (data) {

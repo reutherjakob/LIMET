@@ -132,7 +132,7 @@ echo " <!-- Modal zum Kopieren der Bauangaben -->
                 "baustatik": baustatik,
                 "hkls": hkls
             },
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 try {
                     makeToaster(data, data.substring(0, 4) === "Raum")
@@ -150,7 +150,7 @@ echo " <!-- Modal zum Kopieren der Bauangaben -->
         //console.log("File: getRbSpecs2.ph M:BauangabenKopieren RID: ", ID);
         $.ajax({
             url: "getRoomsToCopy.php",
-            type: "GET",
+            type: "POST",
             data: {"originRoomID": ID},
             success: function (data) {
                 //console.log("Sucessfully opened getRoomsToCopy.php");

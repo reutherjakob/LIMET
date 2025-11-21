@@ -160,7 +160,7 @@ $mysqli->close();
                     "comment": comment,
                     "status": status
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#infoBody").html(data);
                     $('#infoModal').modal('show');
@@ -173,7 +173,7 @@ $mysqli->close();
     $("button[value='addWorkflowToLot']").click(function () {
         $.ajax({
             url: "getProjectWorkflows.php",
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 $("#workflowModalBody").html(data);
             }

@@ -1,5 +1,5 @@
 <?php
-// V2.0: 2024-11-28, Reuther & Fux
+// 2025-11- FX
 require_once 'utils/_utils.php';
 init_page_serversides();
 ?>
@@ -32,7 +32,7 @@ init_page_serversides();
             src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
 
 </head>
-<body style="height:100%">
+<body>
 <div id="limet-navbar"></div> <!-- Container für Navbar -->
 
 <div class="container-fluid">
@@ -89,6 +89,7 @@ init_page_serversides();
                                             <thead><tr>
                                             <th>Raumbereich</th>
                                             <th>Geschoss</th>
+                                            
                                             <th>Bauabschnitt</th>
                                             <th>Bauetappe</th>
                                             </tr></thead><tbody>";
@@ -205,7 +206,7 @@ init_page_serversides();
 
         $.ajax({        //Diagramm zeichnen
             url: "getChartProjectCosts.php",
-            method: "GET",
+            method: 'POST',
             success: function (data) {
                 let summeNeu = [];
                 let summeBestand = [];

@@ -1,9 +1,3 @@
-<!DOCTYPE html>
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-<html lang="">
-<head>
-    <title></title></head>
-<body>
 <?php
 
 // 10-2025 FX - unused
@@ -38,8 +32,8 @@ while ($row = $result->fetch_assoc()) {
     }
     echo "<div class='m-1 card'>";
     echo "<div class='card-header'>                                               
-                            <button type='button' id='" . $row["idtabelle_Files"] . "' class='float-right btn btn-outline-danger btn-sm' value='removeImageFromRoom'><i class='fas fa-minus'></i></button>   
-                         </div>";
+        <button type='button' id='" . $row["idtabelle_Files"] . "' class='float-right btn btn-outline-danger btn-sm' value='removeImageFromRoom'><i class='fas fa-minus'></i></button>   
+        </div>";
     echo "<div class='card-body'>";
     echo "<img src='https://limet-rb.com/Dokumente_RB/Images/" . $row['Name'] . "' height='200' width='200'>";
     echo "</div>";
@@ -60,19 +54,19 @@ $mysqli->close();
             $.ajax({
                 url: "deleteImageFromRoom.php",
                 data: {"imageID": imageID, "roomID": roomID},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     alert(data);
                     $.ajax({
                         url: "getImagesToRoom.php",
                         data: {"roomID": roomID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#roomImages").html(data);
                             $.ajax({
                                 url: "getImagesNotInRoom.php",
                                 data: {"roomID": roomID},
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#projectImages").html(data);
                                 }

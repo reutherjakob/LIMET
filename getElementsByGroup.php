@@ -145,24 +145,24 @@ include "addRoomElementModal.html";
                 $.ajax({
                     url: "setSessionVariables.php",
                     data: {"elementID": elementID},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         $.ajax({
                             url: "getStandardElementParameters.php",
                             data: {"elementID": elementID},
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 $("#elementParametersInDB").html(data);
                                 $.ajax({
                                     url: "getElementPricesInDifferentProjects.php",
                                     data: {"elementID": elementID},
-                                    type: "GET",
+                                    type: "POST",
                                     success: function (data) {
                                         $("#elementPricesInOtherProjects").html(data);
                                         $.ajax({
                                             url: "getDevicesToElement.php",
                                             data: {"elementID": elementID},
-                                            type: "GET",
+                                            type: "POST",
                                             success: function (data) {
                                                 $("#devicesInDB").html(data);
                                             }
@@ -177,13 +177,13 @@ include "addRoomElementModal.html";
                 $.ajax({
                     url: "getRoomsWithElement1.php",
                     data: {"elementID": elementID},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         $("#roomsWithElement").html(data);
                         $.ajax({
                             url: "getRoomsWithoutElement.php",
                             data: {"elementID": elementID},
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 $("#roomsWithoutElement").html(data);
                             }

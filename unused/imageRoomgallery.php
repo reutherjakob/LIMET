@@ -184,13 +184,13 @@ $mysqli = utils_connect_sql();
             $.ajax({
                 url: "getImagesToRoom.php",
                 data: {"roomID": raumID},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#roomImages").html(data);
                     $.ajax({
                         url: "getImagesNotInRoom.php",
                         data: {"roomID": raumID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#projectImages").html(data);
                         }

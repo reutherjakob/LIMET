@@ -18,12 +18,7 @@
 require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
-$elementID = "0";
-if (!empty($_GET["elementID"])) {
-    $elementID = $_GET["elementID"];
-} elseif (!empty($_SESSION["elementID"])) {
-    $elementID = $_SESSION["elementID"];
-}
+$elementID =  getPostInt('elementID',$_SESSION["elementID"]?? 0 );
 
 $sql = "SELECT tabelle_geraete.idTABELLE_Geraete, tabelle_geraete.GeraeteID, tabelle_hersteller.Hersteller, tabelle_geraete.Typ, tabelle_geraete.Kurzbeschreibung, tabelle_hersteller.idtabelle_hersteller
         FROM tabelle_geraete
@@ -32,7 +27,7 @@ $sql = "SELECT tabelle_geraete.idTABELLE_Geraete, tabelle_geraete.GeraeteID, tab
         ORDER BY tabelle_geraete.GeraeteID DESC";
 
 $stmt = $mysqli->prepare($sql);
-$stmt->bind_param('i', $elementID); // 'i' specifies the type as integer
+$stmt->bind_param('i', $elementID);
 $stmt->execute();
 $result = $stmt->get_result();
 $stmt->close();
@@ -163,7 +158,6 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
     var tableDevicesToElement;
 
     $(document).ready(function () {
-
         tableDevicesToElement = new DataTable('#tableDevicesToElement', {
             columnDefs: [
                 {
@@ -221,13 +215,13 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
                             $("#devicePrices").html(data);
                             $.ajax({
                                 url: "getLieferantenToDevices.php",
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#deviceLieferanten").html(data);
                                     $.ajax({
                                         url: "getDeviceServicePrices.php",
                                         data: {"deviceID": deviceID},
-                                        type: "GET",
+                                        type: "POST",
                                         success: function (data) {
                                             $("#deviceServicePrices").html(data);
                                         }
@@ -247,7 +241,6 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
         let hersteller = $("#hersteller").val();
         let type = $("#type").val();
         let kurzbeschreibung = $("#kurzbeschreibung").val();
-
         if (hersteller !== "" && type !== "" && kurzbeschreibung !== "") {
             $('#addDeviceModal').modal('hide');
             $.ajax({
@@ -258,7 +251,7 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
                     alert(data);
                     $.ajax({
                         url: "getDevicesToElement.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#devicesInDB").html(data);
                             $("#devicesToElement").html(data);
@@ -287,12 +280,12 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
                     "type": type,
                     "kurzbeschreibung": kurzbeschreibung
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     alert(data);
                     $.ajax({
                         url: "getDevicesToElement.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#devicesInDB").html(data);
                         }
@@ -319,11 +312,11 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
 
     //Gerätevergleich anzeigen
     $("input[value='Geräte vergleichen']").click(function () {
-        let ID = this.id;
+        let id = this.id;
         $.ajax({
             url: "getDeviceComparison.php",
-            type: "GET",
-            data: {"elementID": ID},
+            type: "POST",
+            data: {"elementID": id},
             success: function (data) {
                 $("#mbodyDeviceComparison").html(data);
             }
@@ -333,7 +326,6 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
     //Hersteller hinzufügen
     $("#addManufacturer").click(function () {
         let manufacturer = $("#manufacturer").val();
-        //var elementID = // $_SESSION["elementID"];
         if (manufacturer !== "") {
             $('#addManufacturerModal').modal('hide');
             $('#addDeviceModal').modal('hide');
@@ -346,7 +338,7 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
                     $.ajax({
                         url: "getDevicesToElement.php",
                         data: {"elementID": ""},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#devicesInDB").html(data);
                         }

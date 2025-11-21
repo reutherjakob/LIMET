@@ -25,7 +25,7 @@ $row = $result->fetch_assoc(); ?>
     <!--- for the import of getElementGewerke.php on elementsInProject.php --->
     <div class='col-xxl-6'>
         <div class="card">
-            <div class='card-header d-inline-flex customCardx'>
+            <div class='card-header d-inline-flex customCardx  flex-nowrap'>
                 <div class=' d-flex align-items-center flex-wrap'>
                     <div class='form-group d-flex align-items-center mr-2'>
                         <label for='variante'>Variante </label>
@@ -51,16 +51,16 @@ $row = $result->fetch_assoc(); ?>
                         <div>
                             <button type='button' id='saveVariantePrice'
                                     class='btn btn-outline-dark btn-sm'>
-                                <i class='far fa-save'></i> Kosten speichern
+                                <i class='far fa-save'></i> <i class='far fa-money-bill-alt'></i> speichern
                             </button>
                             <button type='button' id='getElementPriceHistory'
-                                    class='btn btn-outline-dark btn-sm'
+                                    class='btn btn-outline-dark btn-sm ms-1'
                                     data-bs-toggle='modal' data-bs-target='#getElementPriceHistoryModal'>
-                                <i class='far fa-clock'></i> Kosten Änderungsverlauf
+                                <i class='far fa-clock'></i> <i class='far fa-money-bill-alt'></i> Änderungsverlauf
                             </button>
 
                             <button type='button' id='addVariantenParameters'
-                                    class='btn btn-outline-dark btn-sm m-1' value='addVariantenParameters'
+                                    class='btn btn-outline-dark btn-sm' value='addVariantenParameters'
                                     data-bs-toggle='modal'
                                     data-bs-target='#addVariantenParameterToElementModal'><i
                                         class='fas fa-upload'></i> Variantenparameter übernehmen
@@ -402,16 +402,16 @@ $row = $result->fetch_assoc(); ?>
         $.ajax({
             url: "setSessionVariables.php",
             data: {"variantenID": variantenID},
-            type: "GET",
+            type: "POST",
             success: function () {  //console.log("JS:", variantenID);
                 $.ajax({
                     url: "getSessionVariante.php",
-                    type: "GET",
+                    type: "POST",
                     success: function () {
                         $.ajax({
                             url: "getVariantePrice.php",
                             data: {"variantenID": variantenID},
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 if (data.length === 2) {
                                     $("#error").html("Variante noch nicht vorhanden! Zum Anlegen Kosten eingeben und Speichern!");
@@ -426,14 +426,14 @@ $row = $result->fetch_assoc(); ?>
                                     $.ajax({
                                         url: "getVarianteParameters.php",
                                         data: {"variantenID": variantenID},
-                                        type: "GET",
+                                        type: "POST",
                                         success: function (data) {
                                             $('#variantenParameterCh .xxx').remove();
                                             $("#variantenParameter").html(data);
                                             $.ajax({
                                                 url: "getPossibleVarianteParameters.php",
                                                 data: {"variantenID": variantenID},
-                                                type: "GET",
+                                                type: "POST",
                                                 success: function (data) {
                                                     $("#possibleVariantenParameter").html(data);
                                                     //console.log("0", data);
@@ -461,7 +461,7 @@ $row = $result->fetch_assoc(); ?>
             let variantenID = $('#variante').val();
             $.ajax({
                 url: "saveVariantePrice.php",
-                type: "GET",
+                type: "POST",
                 data: {"kosten": KostenFormatiert, "variantenID": variantenID},
                 success: function (data) {
                     makeToaster(data.trim(), true);
@@ -470,14 +470,14 @@ $row = $result->fetch_assoc(); ?>
                     $.ajax({
                         url: "getVarianteParameters.php",
                         data: {"variantenID": variantenID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $('#variantenParameterCh .xxx').remove();
                             $("#variantenParameter").html(data);
                             $.ajax({
                                 url: "getPossibleVarianteParameters.php",
                                 data: {"variantenID": variantenID},
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#possibleVariantenParameter").html(data);
                                 }
@@ -506,14 +506,14 @@ $row = $result->fetch_assoc(); ?>
                     $.ajax({
                         url: "getVarianteParameters.php",
                         data: {"variantenID": variantenID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $('#variantenParameterCh .xxx').remove();
                             $("#variantenParameter").html(data);
                             $.ajax({
                                 url: "getPossibleVarianteParameters.php",
                                 data: {"variantenID": variantenID},
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#possibleVariantenParameter").html(data);
                                 }
@@ -535,13 +535,13 @@ $row = $result->fetch_assoc(); ?>
             $.ajax({
                 url: "addVariantenParameterToElement.php",
                 data: {"elementID": elementID, "variantenID": variantenID},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data.trim(), true);  //alert(data);
                     $.ajax({
                         url: "getStandardElementParameters.php",
                         data: {"elementID": elementID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#elementDBParameter").html(data);
                         }

@@ -145,17 +145,17 @@ if(!isset($_SESSION["username"]))
 	        $.ajax({
 		        url : "addRoomBO.php",
 		        data:{"boID":id},
-		        type: "GET",
+		        type: "POST",
 		        success: function(data){
 		        	alert(data);
 		        	$.ajax({
 				        url : "getRoomBOs.php",
-				        type: "GET",
+				        type: "POST",
 				        success: function(data){
 				        	$("#roomBOs").html(data);
 				        	$.ajax({
 						        url : "getPossibleRoomBOs.php",
-						        type: "GET",
+						        type: "POST",
 						        data:{"filterValueBO":filterBO},
 						        success: function(data){
 						        	$("#possibleRoomBOs").html(data);
@@ -180,7 +180,7 @@ if(!isset($_SESSION["username"]))
 	    	$.ajax({
 		        url : "updateBO.php",
 		        data:{"boID":id,"bo_deutsch":bo_deutsch,"bo_englisch":bo_englisch},
-		        type: "GET",
+		        type: "POST",
 		        success: function(data){
 		        	alert(data);
 		        }
@@ -194,7 +194,7 @@ if(!isset($_SESSION["username"]))
 	    $.ajax({
 	        url : "getPossibleRoomBOsFiltered.php",
 	        data:{"filterValueBO":filterBO},
-	        type: "GET",
+	        type: "POST",
 	        success: function(data){
 		            $("#possibleRoomBOs").html(data);		            
 			}

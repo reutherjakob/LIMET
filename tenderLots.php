@@ -156,10 +156,10 @@ init_page_serversides();
                                             <th>Budget (val)</th>
                                             <th>Vergabesumme</th>
                                             <th>Auftragnehmer</th>
-                                            <th class='text-center' title='Workflow'>
+                                        <th data-bs-toggle='tooltip' data-bs-placement='top' title='Workflow'>
                                                 <i class='fas fa-code-branch'></i>
                                             </th>
-                                            <th class='text-center'  title='Notiz'>
+                                            <th data-bs-toggle='tooltip' data-bs-placement='top' title='Notiz'>
                                                 <i class='far fa-sticky-note'></i>
                                             </th>
                                             <th>IDLieferant</th>
@@ -178,7 +178,7 @@ init_page_serversides();
 
                             echo "<td>" . $row["Versand_LV"] . "</td>";
                             echo "<td>" . $row["Ausführungsbeginn"] . "</td>";
-                            echo '<td><span class="badge rounded-pill ' . getVerfahrenBadgeClass($row['Verfahren']) . '">' . htmlspecialchars($row['Verfahren']) . '</span></td>';
+                            echo '<td><span class="badge rounded-pill ' . getVerfahrenBadgeClass($row['Verfahren']) . '">' . htmlspecialchars($row['Verfahren'] ?? "" ) . '</span></td>';
 
                             echo "<td>" . $row["Bearbeiter"] . "</td>";
                             echo "<td >";
@@ -565,13 +565,13 @@ init_page_serversides();
                     $.ajax({
                         url: "getLotVermerke.php",
                         data: {"lotID": lotID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#lotVermerke").html(data);
                             $.ajax({
                                 url: "getTenderLotElements.php",
                                 data: {"lotID": lotID},
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#elementsInLot").html(data);
                                     $("#elementBestand").hide();
@@ -698,7 +698,7 @@ init_page_serversides();
                         "kostenanschlag": kostenanschlag,
                         "budget": budget
                     },
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         alert(data);
                         window.location.replace("tenderLots.php");
@@ -729,7 +729,7 @@ init_page_serversides();
                         "kostenanschlag": kostenanschlag,
                         "budget": budget
                     },
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         alert(data);
                         window.location.replace("tenderLots.php");
@@ -802,7 +802,7 @@ init_page_serversides();
         var ID = this.id;
         $.ajax({
             url: "getLotWorkflow.php",
-            type: "GET",
+            type: "POST",
             data: {"lotID": ID},
             success: function (data) {
                 $("#workflowModalBody").html(data);

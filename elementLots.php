@@ -362,14 +362,14 @@
                     "raumbereich": raumbereich,
                     "bauabschnitt": bauabschnitt
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#roomsWithElement").html(data);
                     $("#elementBestand").hide();
                     $.ajax({
                         url: "getVariantenParameters.php",
                         data: {"variantenID": variantenID, "elementID": elementID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#variantenParameter").html(data);
                         }

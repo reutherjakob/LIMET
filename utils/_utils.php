@@ -141,3 +141,18 @@ function getPostDate(string $key): string
 function getPostFloat(string $key, float $default = 0.0): float {
     return isset($_POST[$key]) ? filter_var($_POST[$key], FILTER_VALIDATE_FLOAT) ?? $default : $default;
 }
+
+function getPostArrayInt(string $key, array $default = []): array {
+    $input = filter_input(INPUT_POST, $key, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
+    if (!$input) {
+        return $default;
+    }
+    $output = [];
+    foreach ($input as $item) {
+        $val = filter_var($item, FILTER_VALIDATE_INT);
+        if ($val !== false) {
+            $output[] = $val;
+        }
+    }
+    return $output;
+}

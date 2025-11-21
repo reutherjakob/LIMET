@@ -221,7 +221,7 @@ $mysqli->close();
                         $.ajax({
                             url: "getElementStandort.php",
                             data: {"id": id, "elementID": elementID},
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 $("#elementVerwendung").html(data);
                             }
@@ -241,13 +241,13 @@ $mysqli->close();
                 $.ajax({
                     url: "deleteStandortElement.php",
                     data: {"standortID": standortID, "verwendungID": id},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         makeToaster("Element Standort e2ntfernt" ,true);
                         $.ajax({
                             url: "getElementStandort.php",
                             data: {"id": id, "elementID": elementID},
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 $("#elementVerwendung").html(data);
                             }

@@ -200,41 +200,60 @@ foreach ($elements as $element => $data) {
         }
     }
 
-    while ($parameterIndex < count($sorted_parameters) || $roomIndex < count($data['rooms'])) {
+    // Step 1: Define parameter groups for combining
+    $parameter_groups = [
+        ['Einbringweg_Breite', 'Einbringweg_Breite_2'],
+        ['Einbringweg_Tiefe', 'Einbringweg_Tiefe_2'],
+        ['Einbringweg_Höhe', 'Einbringweg_Höhe_2'],
+        ['Einbringweg_Gewicht'],
+        ['Einbringweg_Flächenlast']
+    ];
 
-        $y = $pdf->GetY();
-
-        if ($parameterIndex < count($sorted_parameters)) {
-            $parameter = $sorted_parameters[$parameterIndex];
-            $pdf->SetXY($pdf->GetX(), $y);
-            if (str_replace(' ', '', $data['values'][$parameter]['Wert'] . $data['values'][$parameter]['Einheit']) === "") {
-                $pdf->MultiCell($spaces[0], $rowHeight, "", 0, 'L', 0, 0);
-            } else {
-                $pdf->MultiCell($spaces[0] * $proportions[1], $rowHeight, parseBezeichnung($parameter), 0, 'L', 0, 0);
-                $pdf->MultiCell($spaces[0] * $proportions[0], $rowHeight, $data['values'][$parameter]['Wert'] . " " . $data['values'][$parameter]['Einheit'], 0, 'L', 0, 0);
+    $combined_parameters = [];
+    foreach ($parameter_groups as $group) {
+        $values = [];
+        foreach ($group as $param) {
+            if (isset($data['values'][$param])) {
+                $values[] = $data['values'][$param]['Wert'] . (!empty($data['values'][$param]['Einheit']) ? " " . $data['values'][$param]['Einheit'] : "");
             }
-            $parameterIndex++;
+        }
+        if (count($values) > 0) {
+            $label = parseBezeichnung($group[0]);
+            // For first 3 groups use the "1/2" format if 2 values
+            if (count($group) === 2) {
+                $label .= (count($values) === 2) ? " 1/2" : "";
+            }
+            $combined_parameters[] = [
+                'label' => $label . (count($values) > 1 ? ': ' : ''),
+                'value' => implode(' / ', $values)
+            ];
+        }
+    }
+
+// Step 2: Output the rows
+
+    $maxRows = max(count($combined_parameters), count($data['rooms']));
+    for ($row = 0; $row < $maxRows; $row++) {
+        // Parameter cell
+        if ($row < count($combined_parameters)) {
+            $pdf->MultiCell($spaces[0] * $proportions[1], $rowHeight, $combined_parameters[$row]['label'], 0, 'L', 0, 0);
+            $pdf->MultiCell($spaces[0] * $proportions[0], $rowHeight, $combined_parameters[$row]['value'], 0, 'L', 0, 0);
         } else {
-            $pdf->SetXY($pdf->GetX(), $y);
             $pdf->MultiCell($spaces[0] * $proportions[1], $rowHeight, "", 0, 'L', 0, 0);
             $pdf->MultiCell($spaces[0] * $proportions[0], $rowHeight, "", 0, 'L', 0, 0);
         }
-
-        // Räume ausgeben
-        if ($roomIndex < count($data['rooms'])) {
-            $pdf->MultiCell($spaces[1], $rowHeight, $data['rooms'][$roomIndex] . " - " . $data['roomDescriptions'][$roomIndex], 0, 'L', 0, 1);
-            $roomIndex++;
+        // Room cell
+        if ($row < count($data['rooms'])) {
+            $pdf->MultiCell($spaces[1], $rowHeight, $data['rooms'][$row] . " - " . $data['roomDescriptions'][$row], 0, 'L', 0, 1);
         } else {
-            $pdf->SetXY($pdf->GetX() + $spaces[0], $y);
             $pdf->MultiCell($spaces[1], $rowHeight, "", 0, 'L', 0, 1);
         }
-
-        // Prüfen, ob eine neue Seite erforderlich ist
         if ($pdf->GetY() > $SH) {
             $pdf->AddPage();
             $pdf->SetFont('helvetica', '', $font_size);
         }
     }
+
 
     $pdf->Ln(10);
 }

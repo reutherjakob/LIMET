@@ -246,7 +246,7 @@ if (!isset($_SESSION["username"])) {
         let lieferdatum = $("#lieferdatum").val();
         $.ajax({
             url: "saveLieferdatum.php",
-            type: "GET",
+            type: "POST",
             data: {"elements": elementIDs, "lieferdatum": lieferdatum},
             success: function (data) {
                 $('#saveLieferdatumModal').modal('hide');

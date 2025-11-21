@@ -167,8 +167,7 @@ function init_btn_4_dt() {
             text: "",
             titleAttr: "Download as Excel",
             exportOptions: {
-                columns: function (idx, data, node) {
-                    // Export all visible columns + the ID column even if hidden
+                columns: function (idx ) {
                     const idIndex = columnsDefinition.findIndex(col => col.data === 'idTABELLE_Räume');
                     return table.column(idx).visible() || idx === idIndex;
                 },
@@ -179,7 +178,6 @@ function init_btn_4_dt() {
                         if (columnIdx === idIndex) {
                             return "Raum ID"; // Or your desired header
                         }
-                        // Default header text from the table
                         return data;
                     }
                 }
@@ -528,18 +526,18 @@ function table_click() {
         $.ajax({
             url: "setSessionVariables.php",
             data: {"roomID": RaumID},
-            type: "GET",
+            type: "POST",
             success: function () {
                 $.ajax({
                     url: "getRoomSpecifications2.php",
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         $("#bauangaben").html(data);
                         if (previous_room_session !== RaumID) {
                             previous_room_session = RaumID;
                             $.ajax({
                                 url: "getRoomElementsDetailed1.php",
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
 
                                     $('#elementParameters').empty();
@@ -699,7 +697,7 @@ function save_changes(RaumID, ColumnName, newData, raumname) {
     $.ajax({
         url: "saveRoomProperties.php",
         data: {"roomID": RaumID, "column": ColumnName, "value": newData},
-        type: "GET",
+        type: "POST",
         success: function (data) {
             if (data === "Erfolgreich aktualisiert!") {
                 table_edited = true;

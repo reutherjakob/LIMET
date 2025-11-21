@@ -159,7 +159,7 @@ require_once 'utils/_utils.php';
             } else {
                 $.ajax({
                     url: "copyRoomElements.php",
-                    type: "GET",
+                    type: "POST",
                     data: {"rooms": roomIDs},
                     success: function (data) {
                         alert(data);

@@ -178,7 +178,7 @@ init_page_serversides();
             $.ajax({
                 url: "setSessionVariables.php",
                 data: {"roomID": id},
-                type: "GET",
+                type: "POST",
                 success: function () {
                     var url = "roombookMeetingRoombook.php";
                     var anzeige = "<H4><i class='fas fa-list'></i> Rauminhalt</H4>";
@@ -195,7 +195,7 @@ init_page_serversides();
                     }
                     $.ajax({
                         url: url,
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#informationOverview").html(data);
                             document.getElementById("informationHeader").style.backgroundColor = anzeigeColor;
@@ -214,7 +214,7 @@ init_page_serversides();
     $("#roomInfo").click(function () {
         $.ajax({
             url: "roombookMeetingRoomInfo.php",
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 $("#informationOverview").html(data);
                 document.getElementById("informationHeader").style.backgroundColor = "#343a40";
@@ -230,7 +230,7 @@ init_page_serversides();
     $("#roombook").click(function () {
         $.ajax({
             url: "roombookMeetingRoombook.php",
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 $("#informationOverview").html(data);
                 document.getElementById("informationHeader").style.backgroundColor = "#5cb85c";
@@ -247,7 +247,7 @@ init_page_serversides();
     $("#roombookBO").click(function () {
         $.ajax({
             url: "roombookMeetingBO.php",
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 $("#informationOverview").html(data);
                 document.getElementById("informationHeader").style.backgroundColor = "#5bc0de";

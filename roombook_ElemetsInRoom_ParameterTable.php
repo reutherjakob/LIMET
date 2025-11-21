@@ -169,7 +169,7 @@ init_page_serversides("", "x");
                 //console.log( Raumbezeichnung);
                 $.ajax({
                     url: 'getRoomElementsParameterData.php',
-                    method: 'GET',
+               method: 'POST',
                     data: {"roomID": RaumID, "K2Return": JSON.stringify(K2R)},
                     success: function (data) {
                         if (data && data.length > 0) {
@@ -256,12 +256,12 @@ init_page_serversides("", "x");
         $.ajax({
                 url: "setSessionVariables.php",
                 data: {"roomID": RaumID},
-                type: "GET",
+                type: "POST",
                 success: function () {
                     $.ajax({
                         url: "getElementsParamTable.php",
                         data: {"roomID": RaumID, "K2Return": JSON.stringify(K2R)},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             console.log(data);
                             $("#elemetsParamsTable").html(data);

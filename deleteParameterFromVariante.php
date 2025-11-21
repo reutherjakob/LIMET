@@ -1,46 +1,41 @@
 <?php
-session_start();
+// 25 FX
+require_once 'utils/_utils.php';
+check_login();
+$mysqli = utils_connect_sql();
 
-function br2nl($string){
-$return= str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $string);
-return $return;
+// Use POST with sanitized integer inputs instead of GET
+$parameterID = getPostInt("parameterID");
+$variantenID = getPostInt("variantenID");
+
+// Use SESSION variables as is, assuming they are already validated session state
+$projectID = $_SESSION["projectID"];
+$elementID = $_SESSION["elementID"];
+
+// Prepare the DELETE statement to prevent SQL injection
+$stmt = $mysqli->prepare("DELETE FROM `LIMET_RB`.`tabelle_projekt_elementparameter`
+    WHERE `tabelle_projekte_idTABELLE_Projekte` = ?
+    AND `tabelle_elemente_idTABELLE_Elemente` = ?
+    AND `tabelle_parameter_idTABELLE_Parameter` = ?
+    AND `tabelle_Varianten_idtabelle_Varianten` = ?");
+
+if ($stmt === false) {
+    // Prepare failed
+    echo "Error preparing statement: " . $mysqli->error;
+    $mysqli->close();
+    exit;
 }
 
-?>
+// Bind parameters as integers
+$stmt->bind_param("iiii", $projectID, $elementID, $parameterID, $variantenID);
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+// Execute and check result
+if ($stmt->execute()) {
+    echo "Parameter entfernt!";
+} else {
+    echo "Error deleting parameter: " . $stmt->error;
+}
 
-<?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	if ($mysqli ->connect_error) {
-	    die("Connection failed: " . $mysqli->connect_error);
-	}
-	
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    echo "Error loading character set utf8: " . $mysqli->error;
-	    exit();
-	} 
-		
-	$sql = " DELETE FROM `LIMET_RB`.`tabelle_projekt_elementparameter`
-			WHERE `tabelle_projekte_idTABELLE_Projekte`=".$_SESSION["projectID"]."
-			AND `tabelle_elemente_idTABELLE_Elemente`=".$_SESSION["elementID"]."
-			AND `tabelle_parameter_idTABELLE_Parameter`=".$_GET["parameterID"]."
-			AND `tabelle_Varianten_idtabelle_Varianten`=".$_GET["variantenID"].";";
-	
-	if ($mysqli ->query($sql) === TRUE) {
-	    echo "Parameter entfernt!";
-	} else {
-	    echo "Error: " . $sql . "<br>" . $mysqli->error;
-	}
-	
-	$mysqli ->close();	
-					
+$stmt->close();
+$mysqli->close();
 ?>
-

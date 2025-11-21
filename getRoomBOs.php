@@ -103,15 +103,13 @@ $mysqli->close();
 
         //Rauminhalt kopieren für getRoomsToCopy.php
         $("#copyRoomElements").click(function () {
-
             roomIDs = [...new Set(roomIDs)];
-
             if (roomIDs.length === 0) {
                 alert("Kein Raum ausgewählt!");
             } else {
                 $.ajax({
                     url: "copyRoomElements.php",
-                    type: "GET",
+                    type: "POST",
                     data: {"rooms": roomIDs},
                     success: function (data) {
                         makeToaster(data, true);
@@ -120,8 +118,6 @@ $mysqli->close();
                 });
             }
         });
-
-
     });
 
 
@@ -131,17 +127,17 @@ $mysqli->close();
             $.ajax({
                 url: "deleteRoomBO.php",
                 data: {"boID": id},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     alert(data);
                     $.ajax({
                         url: "getRoomBOs.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#roomBOs").html(data);
                             $.ajax({
                                 url: "getPossibleRoomBOs.php",
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#possibleRoomBOs").html(data);
                                 }
@@ -165,7 +161,7 @@ $mysqli->close();
             $.ajax({
                 url: "updateBO.php",
                 data: {"boID": id, "bo_deutsch": bo_deutsch, "bo_englisch": bo_englisch},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     alert(data);
                 }
@@ -178,7 +174,7 @@ $mysqli->close();
         var ID = this.id;
         $.ajax({
             url: "getRoomsToCopy.php",
-            type: "GET",
+            type: "POST",
             data: {"id": ID},
             success: function (data) {
                 $("#mbody").html(data);

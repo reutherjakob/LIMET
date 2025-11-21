@@ -311,7 +311,7 @@ include "modal_elementHistory.html";
             $.ajax({
                 url: 'saveRoomElementComment.php',
                 data: {comment: newText, id},
-                type: 'GET',
+                type: 'POST',
                 success(data) {
                     makeToaster(data.trim(), true);
                     const btn = $(`.comment-btn[id='${id}']`);
@@ -468,21 +468,21 @@ include "modal_elementHistory.html";
                     $.ajax({
                         url: 'getElementParameters.php',
                         data: {id},
-                        type: 'GET',
+                        type: 'POST',
                         success(data) {
                             $('#elementParameters').html(data).show();
 
                             $.ajax({
                                 url: 'getElementPrice.php',
                                 data: {id},
-                                type: 'GET',
+                                type: 'POST',
                                 success(data) {
                                     $('#price').html(data);
 
                                     $.ajax({
                                         url: 'getElementBestand.php',
                                         data: {id, stk},
-                                        type: 'GET',
+                                        type: 'POST',
                                         success(data) {
                                             $('#elementBestand').html(data).show();
 
@@ -490,7 +490,7 @@ include "modal_elementHistory.html";
                                                 $.ajax({
                                                     url: 'getElementStandort.php',
                                                     data: {id, elementID},
-                                                    type: 'GET',
+                                                    type: 'POST',
                                                     success(data) {
                                                         $('#elementVerwendung').html(data).show();
                                                     },
@@ -500,7 +500,7 @@ include "modal_elementHistory.html";
                                                 $.ajax({
                                                     url: 'getElementVerwendung.php',
                                                     data: {id},
-                                                    type: 'GET',
+                                                    type: 'POST',
                                                     success(data) {
                                                         $('#elementVerwendung').html(data).show();
                                                     },
@@ -552,7 +552,7 @@ include "modal_elementHistory.html";
             const originRoomID = this.id;
             $.ajax({
                 url: 'getRoomsToCopy.php',
-                type: 'GET',
+                type: 'POST',
                 data: {originRoomID},
                 success(data) {
                     $('#mbodyCRE').html(data);
@@ -591,7 +591,7 @@ include "modal_elementHistory.html";
 
             $.ajax({
                 url: 'saveRoombookEntry.php',
-                type: 'GET',
+                type: 'POST',
                 data: {comment, id, amount, variantenID, bestand, standort, verwendung},
                 success(data) {
                     makeToaster(data.trim(), true);

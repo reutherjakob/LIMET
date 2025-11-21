@@ -1,4 +1,5 @@
 <?php
+// FX 25
 require_once 'utils/_utils.php';
 init_page_serversides();
 ?>
@@ -42,12 +43,43 @@ init_page_serversides();
                     <option></option>
                     <?php
                     $mysqli = utils_connect_sql();
-                    $sql = "SELECT tabelle_räume.`Raumbereich Nutzer`
-                    FROM tabelle_räume
-                    WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
-                    GROUP BY tabelle_räume.`Raumbereich Nutzer`
-                    ORDER BY tabelle_räume.`Raumbereich Nutzer`;";
-                    $result = $mysqli->query($sql);
+
+                    $projectID = isset($_SESSION["projectID"]) ? intval($_SESSION["projectID"]) : 0;
+                    $sql = "SELECT tabelle_räume.`Raumbereich Nutzer`, 
+                                   tabelle_räume.Geschoss, 
+                                   tabelle_räume.Bauabschnitt,  
+                                   tabelle_räume.Bauetappe
+                            FROM tabelle_auftraggeberg_gug 
+                            RIGHT JOIN (
+                                tabelle_auftraggeber_ghg 
+                                RIGHT JOIN (
+                                    tabelle_auftraggeber_gewerke 
+                                    RIGHT JOIN (
+                                        (tabelle_räume 
+                                          INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
+                                        ) 
+                                        INNER JOIN tabelle_projekt_element_gewerk 
+                                        ON (tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) 
+                                        AND (tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte)
+                                    ) 
+                                    ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke = tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
+                                ) 
+                                ON tabelle_auftraggeber_ghg.idtabelle_auftraggeber_GHG = tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG
+                            ) 
+                            ON tabelle_auftraggeberg_gug.idtabelle_auftraggeberg_GUG = tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
+                            WHERE tabelle_räume.tabelle_projekte_idTABELLE_Projekte=?
+                            GROUP BY tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss
+                            ORDER BY tabelle_räume.Geschoss;";
+
+                    $stmt = $mysqli->prepare($sql);
+
+                    if ($stmt) {
+                        $stmt->bind_param("i", $projectID);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        // Use $result as needed
+                        $stmt->close();
+                    }
                     while ($row = $result->fetch_assoc()) {
                         echo "<option value='" . $row["Raumbereich Nutzer"] . "'>" . $row["Raumbereich Nutzer"] . "</option>";
                     }
@@ -86,7 +118,7 @@ init_page_serversides();
             $.ajax({
                 url: "getRoomAreaCosts.php",
                 data: {"roomArea": roomArea, "bestandInkl": bestandInkl},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $('#costsRoomArea').html(data);
                 }

@@ -76,7 +76,7 @@ if(!isset($_SESSION["username"]))
         $.ajax({
 	        url : 'getNoticeData.php',
 	        data:{'noticeID':id},
-	        type: 'GET',
+	        type: 'POST',
 	        success: function(data){
 	            $('#ProjektID').text(id);
 	            $('#addNotice1').html(data);
@@ -131,7 +131,7 @@ if(!isset($_SESSION["username"]))
 	            $.ajax({
 			        url : 'getNoticeData.php',
 			        data:{'noticeID':noticeID},
-			        type: 'GET',
+			        type: 'POST',
 			        success: function(data){
 			            $('#addNotice1').html(data);
 			        } 

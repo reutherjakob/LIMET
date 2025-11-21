@@ -5,7 +5,7 @@ $(document).ready(function () {
             $.ajax({
                 url: "getElementToElementID.php",
                 data: {"elementID": elementID},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#elID").html(data);
                     $.ajax({
@@ -32,13 +32,13 @@ $(document).ready(function () {
     $("#addElementToRoom").click(function () {
         $.ajax({
             url: "addElementToRoom.php",
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 makeToaster(data, true);
                 setTimeout(function () {
                     $.ajax({
                         url: "getRoomElementsDetailed1.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#roomElements").html(data);
                         }
@@ -55,13 +55,13 @@ $(document).ready(function () {
             $.ajax({
                 url: "saveElement.php",
                 data: {"bezeichnung": bezeichnung, "kurzbeschreibung": kurzbeschreibung},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $('#changeElementModal').modal('hide');
                     alert(data);
                     $.ajax({
                         url: "getElementsInDB.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#elementsInDB").html(data);
                         }

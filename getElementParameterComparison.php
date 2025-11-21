@@ -1,26 +1,25 @@
 <?php
+// FX 25
 include "utils/_utils.php";
 check_login();
 $mysqli = utils_connect_sql();
 
-// Validate and sanitize input
-$elementID = isset($_GET["elementID"]) ? (int)$_GET["elementID"] : 0;
-if ($elementID < 1) die("Invalid element ID");
 
-// Set group concat only once
+$elementID = getPostInt('elementID', 0);
+if ($elementID < 1) die("Invalid element ID");
 if (!$mysqli->query("SET group_concat_max_len=15000")) {
     die("Error setting group concat: " . $mysqli->error);
 }
 
-// Dynamic column generation (fixed table references)
+
 $columnQuery = "SELECT GROUP_CONCAT(DISTINCT
                 CONCAT(
                     'MAX(IF(param.Bezeichnung = ''',
                     REPLACE(param.Bezeichnung, '''', ''''''),
                     ''', CONCAT(e.Wert, e.Einheit), NULL)) AS `',
                     REPLACE(param.Bezeichnung, '`', '``'),
-                    '`'
                 )
+                    '`'
             ) INTO @sql
             FROM tabelle_projekt_elementparameter AS e
             JOIN tabelle_parameter AS param

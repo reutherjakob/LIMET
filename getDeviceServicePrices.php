@@ -4,17 +4,36 @@ require_once 'utils/_utils.php';
 check_login();
 
 $mysqli = utils_connect_sql();
-$deviceID = "";
-if ($_GET["deviceID"] != "") {
-    $deviceID = $_GET["deviceID"];
+$deviceID = getPostInt('deviceID', 0);
+
+if ($deviceID < 1) {
+    die("Invalid device ID.");
 }
+$stmt = $mysqli->prepare(
+    "SELECT 
+        tabelle_wartungspreise.Datum, 
+        tabelle_wartungspreise.Info, 
+        tabelle_wartungspreise.Menge, 
+        tabelle_wartungspreise.Wartungsart, 
+        tabelle_wartungspreise.WartungspreisProJahr, 
+        tabelle_projekte.Projektname, 
+        tabelle_lieferant.Lieferant, 
+        tabelle_wartungspreise.idtabelle_wartungspreise
+     FROM 
+        tabelle_wartungspreise
+     LEFT JOIN 
+        tabelle_lieferant ON tabelle_wartungspreise.tabelle_lieferant_idTABELLE_Lieferant = tabelle_lieferant.idTABELLE_Lieferant
+     LEFT JOIN 
+        tabelle_projekte ON tabelle_wartungspreise.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
+     WHERE 
+        tabelle_wartungspreise.tabelle_geraete_idTABELLE_Geraete = ?"
+);
 
-$sql = "SELECT tabelle_wartungspreise.Datum, tabelle_wartungspreise.Info, tabelle_wartungspreise.Menge, tabelle_wartungspreise.Wartungsart, tabelle_wartungspreise.WartungspreisProJahr, tabelle_projekte.Projektname, tabelle_lieferant.Lieferant, tabelle_wartungspreise.idtabelle_wartungspreise
-                FROM (tabelle_wartungspreise LEFT JOIN tabelle_lieferant ON tabelle_wartungspreise.tabelle_lieferant_idTABELLE_Lieferant = tabelle_lieferant.idTABELLE_Lieferant) LEFT JOIN tabelle_projekte ON tabelle_wartungspreise.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
-                 WHERE (((tabelle_wartungspreise.tabelle_geraete_idTABELLE_Geraete)=" . $deviceID . "));";
+$stmt->bind_param('i', $deviceID);
+$stmt->execute();
 
+$result = $stmt->get_result();
 
-$result = $mysqli->query($sql);
 
 echo "<table class='table table-striped table-sm' id='tableDeviceServicePrices'  >
 	<thead><tr>";
@@ -99,12 +118,21 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
                     echo "</select>										
                                                 </div>";
 
-                    $sql = "SELECT tabelle_lieferant.Lieferant, tabelle_lieferant.idTABELLE_Lieferant
-                                                        FROM tabelle_lieferant INNER JOIN tabelle_geraete_has_tabelle_lieferant ON tabelle_lieferant.idTABELLE_Lieferant = tabelle_geraete_has_tabelle_lieferant.tabelle_lieferant_idTABELLE_Lieferant
-                                                        WHERE (((tabelle_geraete_has_tabelle_lieferant.tabelle_geraete_idTABELLE_Geraete)=" . $deviceID . "));";
 
-                    $result1 = $mysqli->query($sql);
+                    $stmt = $mysqli->prepare(
+                        "SELECT tabelle_lieferant.Lieferant, tabelle_lieferant.idTABELLE_Lieferant
+                                     FROM tabelle_lieferant
+                                     INNER JOIN tabelle_geraete_has_tabelle_lieferant
+                                       ON tabelle_lieferant.idTABELLE_Lieferant = tabelle_geraete_has_tabelle_lieferant.tabelle_lieferant_idTABELLE_Lieferant
+                                     WHERE tabelle_geraete_has_tabelle_lieferant.tabelle_geraete_idTABELLE_Geraete = ?");
 
+                    $stmt->bind_param("i", $deviceID);
+                    $stmt->execute();
+
+                    $result1 = $stmt->get_result();
+
+                    $stmt->close();
+                    $mysqli->close();
                     echo "<div class='form-group'>
                                                     <label for='lieferantService'>Lieferant:</label>									
                                                     <select class='form-control input-sm' id='lieferantService' name='lieferantService'>
@@ -116,7 +144,7 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
                     }
                     echo "</select>										
                                                 </div>";
-                    $mysqli->close();
+
                     ?>
                 </form>
             </div>
@@ -170,7 +198,6 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
         }
         if (this.value === 'add') {
             $('#addServicePriceModal').modal("hide");
-
             $('#addLieferantModal').modal('toggle');
         }
     });
@@ -202,7 +229,7 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
                     alert(data);
                     $.ajax({
                         url: "getDeviceServicePrices.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#deviceServicePrices").html(data);
                         }
@@ -217,6 +244,3 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
 
 
 </script>
-
-</body>
-</html>

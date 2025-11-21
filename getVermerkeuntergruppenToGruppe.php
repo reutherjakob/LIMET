@@ -130,7 +130,7 @@ $mysqli->close();
                     "vermerkUntergruppenID": tableVermerkUnterGruppe.row($(this)).data()[0],
                     "vermerkGruppenID": tableVermerkUnterGruppe.row($(this)).data()[4]
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#vermerke").html(data);
                 }
@@ -160,7 +160,7 @@ $mysqli->close();
             $.ajax({
                 url: "addVermerkUnterGroup.php",
                 data: {"untergruppenName": untergruppenName, "untergruppenNummer": untergruppenNummer, "gruppenID": id},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data, true);
                     $.ajax({

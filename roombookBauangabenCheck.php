@@ -323,7 +323,7 @@ init_page_serversides();
         let ids = getRoomIdsFromCurrentUrl();
         $.ajax({
             url: "get_angaben_check.php",
-            type: "GET",
+            type: "POST",
             data: {'roomID': ids.join(',')},
             success: function (data) {
                 //  console.log(data);

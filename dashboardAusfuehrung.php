@@ -26,7 +26,7 @@ init_page_serversides("");
           rel="stylesheet">
 
 </head>
-<body  >
+<body>
 <div id="limet-navbar"></div> <!-- Container für Navbar -->
 <div class="container-fluid">
     <div class='row mt-4 mb-4'>
@@ -36,24 +36,37 @@ init_page_serversides("");
                     <h4 class="card-subtitle text-muted">Vorleistungen kontrolliert</h4>
                     <?php
                     $mysqli = utils_connect_sql();
+                    $projectID = isset($_SESSION["projectID"]) ? intval($_SESSION["projectID"]) : 0;
 
-                    $sqlVorleistungen = "SELECT Count(tabelle_lose_extern.Vorleistungspruefung) AS AnzahlvonVorleistungspruefung, tabelle_lose_extern.Vorleistungspruefung
-                                                FROM tabelle_lose_extern
-                                                WHERE (((tabelle_lose_extern.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
-                                                GROUP BY tabelle_lose_extern.Vorleistungspruefung;";
+                    if ($projectID <= 0) {
+                        die("Invalid Project ID");
+                    }
+
+                    $stmt = $mysqli->prepare(
+                        "SELECT COUNT(Vorleistungspruefung) AS AnzahlvonVorleistungspruefung, Vorleistungspruefung
+                                FROM tabelle_lose_extern
+                                WHERE tabelle_projekte_idTABELLE_Projekte = ?
+                                GROUP BY Vorleistungspruefung"
+                    );
+
+                    $stmt->bind_param("i", $projectID);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
 
                     $vorleistungGeprfueft = 0;
                     $vorleistungUngeprueft = 0;
-                    $result = $mysqli->query($sqlVorleistungen);
+
                     while ($row = $result->fetch_assoc()) {
                         if ($row["Vorleistungspruefung"] == 0) {
                             $vorleistungUngeprueft = $row["AnzahlvonVorleistungspruefung"];
-                        } else {
-                            if ($row["Vorleistungspruefung"] == 1) {
-                                $vorleistungGeprfueft = $row["AnzahlvonVorleistungspruefung"];
-                            }
+                        } elseif ($row["Vorleistungspruefung"] == 1) {
+                            $vorleistungGeprfueft = $row["AnzahlvonVorleistungspruefung"];
                         }
                     }
+
+                    $stmt->close();
+                    $mysqli->close();
+
                     ?>
                     <h1 class="card-title text-info mt-2"><?php if (($vorleistungGeprfueft + $vorleistungUngeprueft) > 0) {
                             echo round($vorleistungGeprfueft / ($vorleistungGeprfueft + $vorleistungUngeprueft) * 100, 2);
@@ -69,29 +82,50 @@ init_page_serversides("");
                 <div class="card-body">
                     <h4 class="card-subtitle text-muted">Liefertermine fixiert</h4>
                     <?php
-                    $sql1 = "SET @lieferDatumGesetzt = 
-                                    (
-                                    SELECT Count(tabelle_räume_has_tabelle_elemente.Lieferdatum) AS AnzahlvonLieferdatum
-                                    FROM tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
-                                    WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume_has_tabelle_elemente.Anzahl)>0) AND ((tabelle_räume_has_tabelle_elemente.Standort)=1))
-                                    HAVING (((Count(tabelle_räume_has_tabelle_elemente.Lieferdatum)) Is Not Null))
-                                    )";
+                    $mysqli = utils_connect_sql();
 
-                    $sql2 = "SET @gesamtElemente = 
-                                    (
-                                    SELECT Count(*) AS AnzahlvonLieferdatum
-                                    FROM tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
-                                    WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume_has_tabelle_elemente.Anzahl)>0) AND ((tabelle_räume_has_tabelle_elemente.Standort)=1))
-                                    )";
-
-                    $sql3 = "SELECT FORMAT(@lieferDatumGesetzt/@gesamtElemente, 4) AS ergebnis;";
-
-                    $result1 = $mysqli->query($sql1);
-                    $result2 = $mysqli->query($sql2);
-                    $result3 = $mysqli->query($sql3);
-                    while ($row = $result3->fetch_assoc()) {
-                        $lieferDatumProzent = $row["ergebnis"];
+                    // Validate and cast projectID from session
+                    $projectID = isset($_SESSION["projectID"]) ? intval($_SESSION["projectID"]) : 0;
+                    if ($projectID <= 0) {
+                        die("Invalid Project ID");
                     }
+                    $sql = "
+                        SELECT FORMAT(
+                            (
+                                SELECT COUNT(tre_elm.Lieferdatum)
+                                FROM tabelle_räume tre
+                                INNER JOIN tabelle_räume_has_tabelle_elemente tre_elm 
+                                    ON tre.idTABELLE_Räume = tre_elm.TABELLE_Räume_idTABELLE_Räume
+                                WHERE tre.tabelle_projekte_idTABELLE_Projekte = ? 
+                                AND tre_elm.Anzahl > 0
+                                AND tre_elm.Standort = 1
+                                AND tre_elm.Lieferdatum IS NOT NULL
+                            ) 
+                            / 
+                            (
+                                SELECT COUNT(*) 
+                                FROM tabelle_räume tre
+                                INNER JOIN tabelle_räume_has_tabelle_elemente tre_elm 
+                                    ON tre.idTABELLE_Räume = tre_elm.TABELLE_Räume_idTABELLE_Räume
+                                WHERE tre.tabelle_projekte_idTABELLE_Projekte = ? 
+                                AND tre_elm.Anzahl > 0
+                                AND tre_elm.Standort = 1
+                            )
+                        , 4) AS ergebnis;
+                        ";
+
+                    $stmt = $mysqli->prepare($sql);
+                    $stmt->bind_param("ii", $projectID, $projectID);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+
+                    $lieferDatumProzent = null;
+                    if ($row = $result->fetch_assoc()) {
+                        $lieferDatumProzent = $row['ergebnis'];
+                    }
+
+                    $stmt->close();
+
                     ?>
                     <h1 class="card-title text-danger mt-2"><?php echo $lieferDatumProzent * 100; ?> %</h1>
                     <a href="roombookAusfuehrungLiefertermine.php" class="card-link">Festlegen ></a>
@@ -105,9 +139,12 @@ init_page_serversides("");
                     <?php
                     $sql = "SELECT Sum(tabelle_lose_extern.Vergabesumme) AS SummevonVergabesumme, Sum(tabelle_rechnungen.Rechnungssumme) AS SummevonRechnungssumme
                                     FROM tabelle_rechnungen RIGHT JOIN tabelle_lose_extern ON tabelle_rechnungen.tabelle_lose_extern_idtabelle_Lose_Extern = tabelle_lose_extern.idtabelle_Lose_Extern
-                                    WHERE (((tabelle_lose_extern.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "));";
+                                    WHERE (((tabelle_lose_extern.tabelle_projekte_idTABELLE_Projekte)= ? ));";
+                    $stmt = $mysqli->prepare($sql);
+                    $stmt->bind_param("i", $projectID);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
 
-                    $result = $mysqli->query($sql);
                     while ($row = $result->fetch_assoc()) {
                         $vergabesumme = $row["SummevonVergabesumme"];
                         $abrechngungssumme = $row["SummevonRechnungssumme"];
@@ -163,12 +200,25 @@ init_page_serversides("");
                     <div class="row">
                         <div class='col-xxl-12'>
                             <?php
-                            $sql = "SELECT tabelle_Vermerkgruppe.Gruppenname, tabelle_Vermerkgruppe.Gruppenart, tabelle_Vermerkgruppe.Ort, tabelle_Vermerkgruppe.Datum, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern, tabelle_ansprechpersonen.Name, tabelle_ansprechpersonen.Vorname, tabelle_Vermerke.Faelligkeit, tabelle_Vermerke.Vermerkart, tabelle_Vermerke.Bearbeitungsstatus, tabelle_Vermerke.Vermerktext, tabelle_Vermerke.idtabelle_Vermerke
-                                        FROM (((tabelle_Vermerke LEFT JOIN (tabelle_ansprechpersonen RIGHT JOIN tabelle_Vermerke_has_tabelle_ansprechpersonen ON tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen = tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen) ON tabelle_Vermerke.idtabelle_Vermerke = tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_Vermerke_idtabelle_Vermerke) INNER JOIN (tabelle_Vermerkgruppe INNER JOIN tabelle_Vermerkuntergruppe ON tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe = tabelle_Vermerkuntergruppe.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe) ON tabelle_Vermerke.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe = tabelle_Vermerkuntergruppe.idtabelle_Vermerkuntergruppe) LEFT JOIN tabelle_räume ON tabelle_Vermerke.tabelle_räume_idTABELLE_Räume = tabelle_räume.idTABELLE_Räume) LEFT JOIN tabelle_lose_extern ON tabelle_Vermerke.tabelle_lose_extern_idtabelle_Lose_Extern = tabelle_lose_extern.idtabelle_Lose_Extern
-                                        WHERE (((tabelle_Vermerke.Vermerkart)='Bearbeitung') AND ((tabelle_Vermerkgruppe.Gruppenart)='ÖBA-Protokoll') AND ((tabelle_Vermerkgruppe.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
-                                        ORDER BY tabelle_Vermerkgruppe.Datum DESC;";
-
-                            $result = $mysqli->query($sql);
+                            $sql = "SELECT tabelle_Vermerkgruppe.Gruppenname, tabelle_Vermerkgruppe.Gruppenart, tabelle_Vermerkgruppe.Ort,
+                                           tabelle_Vermerkgruppe.Datum, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern,
+                                           tabelle_ansprechpersonen.Name, tabelle_ansprechpersonen.Vorname, tabelle_Vermerke.Faelligkeit, tabelle_Vermerke.Vermerkart, tabelle_Vermerke.Bearbeitungsstatus,
+                                           tabelle_Vermerke.Vermerktext, tabelle_Vermerke.idtabelle_Vermerke
+                                    FROM (((tabelle_Vermerke LEFT JOIN (tabelle_ansprechpersonen RIGHT JOIN tabelle_Vermerke_has_tabelle_ansprechpersonen 
+                                    ON tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen = tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen) 
+                                    ON tabelle_Vermerke.idtabelle_Vermerke = tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_Vermerke_idtabelle_Vermerke)
+                                    INNER JOIN (tabelle_Vermerkgruppe INNER JOIN tabelle_Vermerkuntergruppe 
+                                        ON tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe = tabelle_Vermerkuntergruppe.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe) 
+                                    ON tabelle_Vermerke.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe = tabelle_Vermerkuntergruppe.idtabelle_Vermerkuntergruppe)
+                                    LEFT JOIN tabelle_räume ON tabelle_Vermerke.tabelle_räume_idTABELLE_Räume = tabelle_räume.idTABELLE_Räume) 
+                                    LEFT JOIN tabelle_lose_extern ON tabelle_Vermerke.tabelle_lose_extern_idtabelle_Lose_Extern = tabelle_lose_extern.idtabelle_Lose_Extern
+                                    WHERE (((tabelle_Vermerke.Vermerkart)='Bearbeitung') AND ((tabelle_Vermerkgruppe.Gruppenart)='ÖBA-Protokoll') 
+                                               AND ((tabelle_Vermerkgruppe.tabelle_projekte_idTABELLE_Projekte)=?))
+                                    ORDER BY tabelle_Vermerkgruppe.Datum DESC;";
+                            $stmt = $mysqli->prepare($sql);
+                            $stmt->bind_param("i", $projectID);
+                            $stmt->execute();
+                            $result = $stmt->get_result();
 
                             echo "<div class='table-responsive'><table class='table table-striped table-bordered table-sm table-hover border border-light border-5'' id='tableOEBAVermerke' > 
                                         <thead><tr>
@@ -228,11 +278,18 @@ init_page_serversides("");
                                         RIGHT JOIN tabelle_lose_extern
                                         RIGHT JOIN (tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) ON tabelle_lose_extern.idtabelle_Lose_Extern = tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern
                                         ON tabelle_lieferant.idTABELLE_Lieferant = tabelle_lose_extern.tabelle_lieferant_idTABELLE_Lieferant
-                                        WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume_has_tabelle_elemente.Standort)=1) AND WEEK(tabelle_räume_has_tabelle_elemente.Lieferdatum) >= WEEK(CURDATE()) AND WEEK(tabelle_räume_has_tabelle_elemente.Lieferdatum) <= WEEK(CURDATE())+4 )
+                                        WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=?) 
+                                                   AND ((tabelle_räume_has_tabelle_elemente.Standort)=1) 
+                                                   AND WEEK(tabelle_räume_has_tabelle_elemente.Lieferdatum) >= WEEK(CURDATE()) 
+                                                   AND WEEK(tabelle_räume_has_tabelle_elemente.Lieferdatum) <= WEEK(CURDATE())+4 )
                                         GROUP BY lieferWeek, LosNr_Extern
                                         ORDER BY lieferWeek asc;";
 
-                            $result = $mysqli->query($sql);
+                            $stmt = $mysqli->prepare($sql);
+                            $stmt->bind_param("i", $projectID);
+                            $stmt->execute();
+                            $result = $stmt->get_result();
+
                             $currentWeek = 0;
                             while ($row = $result->fetch_assoc()) {
                                 if ($row["lieferWeek"] !== $currentWeek) {
@@ -250,7 +307,6 @@ init_page_serversides("");
                                     echo "<h4>" . $row["LosNr_Extern"] . "-" . $row["LosBezeichnung_Extern"] . ": " . $row["Lieferant"] . "</span></h4>";
                                 }
                             }
-                            $mysqli->close();
                             ?>
                         </div>
                     </div>
@@ -282,7 +338,9 @@ init_page_serversides("");
             order: [[5, 'asc']],
             orderMulti: false,
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json', search: "", searchPlaceholder: "Suche..."
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                search: "",
+                searchPlaceholder: "Suche..."
             },
             layout: {
                 topStart: null,

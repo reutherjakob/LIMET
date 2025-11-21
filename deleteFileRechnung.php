@@ -1,75 +1,60 @@
 <?php
-    session_start();
-    if(!isset($_SESSION["username"]))
-    {
-        echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-        exit;
-    }
-    
-    $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
+// 25Fx
+require_once 'utils/_utils.php';
+check_login();
 
-    /* change character set to utf8 */
+$mysqli = utils_connect_sql();
 
+// Sanitize and get idRechnung safely from POST
+$idRechnung = getPostInt("idRechnung");
 
-    if ($mysqli->connect_error) {
-        die("Connection failed: " . $mysqli->connect_error);
-    }
-    
-    $idRechnung = filter_input(INPUT_GET, 'idRechnung');        
-    // destination of the file on the server
-    $file_path = "/var/www/vhosts/limet-rb.com/httpdocs/Dokumente_RB/Rechnungen/Rechnung_".$idRechnung.".pdf";
-    echo $file_path;
-    /* Delete file if its exist in folder */    
-    if (file_exists($file_path)) {
-        unlink($file_path);
-        echo "Datei gelöscht! \n";
-        
-        // Abfrage der FileID
-        $sql = "SELECT tabelle_rechnungen.tabelle_Files_idtabelle_Files
-                FROM tabelle_rechnungen
-                WHERE tabelle_rechnungen.idtabelle_rechnungen=".$idRechnung.";";
-        
-        $result = $mysqli->query($sql);
+// Destination path of the file on the server
+$file_path = "/var/www/vhosts/limet-rb.com/httpdocs/Dokumente_RB/Rechnungen/Rechnung_" . $idRechnung . ".pdf";
+
+$response = ["file_path" => $file_path];
+
+// Delete file if it exists
+if (file_exists($file_path)) {
+    if (unlink($file_path)) {
+        $response["file_deleted"] = "Datei gelöscht!";
+
+        // Prepared statement to get file ID linked to Rechnung
+        $stmt = $mysqli->prepare("SELECT idtabelle_rechnungen FROM tabelle_rechnungen WHERE idtabelle_rechnungen = ?");
+        $stmt->bind_param("i", $idRechnung);
+        $stmt->execute();
+        $result = $stmt->get_result();
         $row = $result->fetch_assoc();
         $idFile = $row["tabelle_Files_idtabelle_Files"];
-        
-        $sql_Update = "UPDATE `LIMET_RB`.`tabelle_rechnungen`
-                    SET
-                    `tabelle_Files_idtabelle_Files` = NULL
-                    WHERE `idtabelle_rechnungen` = ".$idRechnung.";";
+        $stmt->close();
 
-        if ($mysqli->query($sql_Update) === TRUE) {
-            echo " Datei von Rechnung entfernt!";
-        } 
-        else {
-            echo " Error: " .$mysqli->error;
+        // Update the Rechnung to remove the file reference
+        $stmt_update = $mysqli->prepare("UPDATE tabelle_rechnungen SET idtabelle_rechnungen = NULL WHERE idtabelle_rechnungen = ?");
+        $stmt_update->bind_param("i", $idRechnung);
+        if ($stmt_update->execute()) {
+            $response["rechnung_update"] = "Datei von Rechnung entfernt!";
+        } else {
+            $response["error_update"] = $stmt_update->error;
         }
-        
-        $sql_Delete = "DELETE FROM `LIMET_RB`.`tabelle_Files`
-                    WHERE
-                    `idtabelle_Files` = ".$idFile.";";
+        $stmt_update->close();
 
-        if ($mysqli->query($sql_Delete) === TRUE) {
-            echo " File gelöscht!";
-        } 
-        else {
-            echo " Error: " .$mysqli->error;
+        // Delete the file entry from tabelle_Files
+        $stmt_delete = $mysqli->prepare("DELETE FROM tabelle_Files WHERE idtabelle_Files = ?");
+        $stmt_delete->bind_param("i", $idFile);
+        if ($stmt_delete->execute()) {
+            $response["file_deleted_db"] = "File gelöscht!";
+        } else {
+            $response["error_delete"] = $stmt_delete->error;
         }
-      
-      
-    } 
-    /*
-    $sql = "DELETE FROM `LIMET_RB`.`tabelle_projekte_has_tabelle_ansprechpersonen`
-                    WHERE `TABELLE_Projekte_idTABELLE_Projekte` = ".$_SESSION["projectID"]." AND `TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen` = ".$_GET["personID"].";";
+        $stmt_delete->close();
 
-    if ($mysqli->query($sql) === TRUE) {
-        echo "Person erfolgreich von Projekt entfernt!"; 
-    } 
-    else {
-        echo "Error1: " . $sql . "<br>" . $mysqli->error;
+    } else {
+        $response["error_unlink"] = "Datei konnte nicht gelöscht werden!";
     }
-     * 
-     */
+} else {
+    $response["error_file_exists"] = "Datei existiert nicht!";
+}
 
-    $mysqli ->close();
+$mysqli->close();
+
+echo json_encode($response);
 ?>

@@ -185,7 +185,7 @@ $mysqli->close();
                     alert(data);
                     $.ajax({
                         url: "getProjectTenderLots.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#projectLots").html(data);
                         }
@@ -228,14 +228,14 @@ $mysqli->close();
                     "lotVerfahren": lotVerfahren,
                     "lotLVBearbeiter": lotLVBearbeiter
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     alert(data);
                     var searchVal = $('div.dataTables_filter input').val();
                     $.ajax({
                         url: "getProjectTenderLots.php",
                         data: {"searchValue": searchVal},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#projectLots").html(data);
                         }

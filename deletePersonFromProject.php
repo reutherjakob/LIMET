@@ -1,40 +1,36 @@
 <?php
-session_start();
-?>
+//25FX
+require_once 'utils/_utils.php';
+check_login();
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+$mysqli = utils_connect_sql();
 
-<?php
-	
-		
-		$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-		/* change character set to utf8 */
-		if (!$mysqli->set_charset("utf8")) {
-		    printf("Error loading character set utf8: %s\n", $mysqli->error);
-		    exit();
-		} 
-		
-		// Check connection
-		if ($mysqli->connect_error) {
-		    die("Connection failed: " . $mysqli->connect_error);
-		}
-		
-	
-		$sql = "DELETE FROM `LIMET_RB`.`tabelle_projekte_has_tabelle_ansprechpersonen`
-				WHERE `TABELLE_Projekte_idTABELLE_Projekte` = ".$_SESSION["projectID"]." AND `TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen` = ".$_GET["personID"].";";
-				
-		if ($mysqli->query($sql) === TRUE) {
-		    echo "Person erfolgreich von Projekt entfernt!"; 
-		} 
-		else {
-		    echo "Error1: " . $sql . "<br>" . $mysqli->error;
-		}
-			
-		$mysqli ->close();
+// Use POST for personID and sanitize as integer
+$personID = getPostInt("personID");
+
+// Use SESSION variable for projectID, assuming it is validated securely
+$projectID = $_SESSION["projectID"];
+
+// Prepare statement to sanitize input and prevent SQL injection
+$stmt = $mysqli->prepare("DELETE FROM `LIMET_RB`.`tabelle_projekte_has_tabelle_ansprechpersonen`
+    WHERE `TABELLE_Projekte_idTABELLE_Projekte` = ? 
+    AND `TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen` = ?");
+
+if ($stmt === false) {
+	echo "Error preparing statement: " . $mysqli->error;
+	$mysqli->close();
+	exit;
+}
+
+// Bind parameters as integers
+$stmt->bind_param("ii", $projectID, $personID);
+
+if ($stmt->execute()) {
+	echo "Person erfolgreich von Projekt entfernt!";
+} else {
+	echo "Error deleting person: " . $stmt->error;
+}
+
+$stmt->close();
+$mysqli->close();
 ?>

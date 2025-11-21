@@ -21,9 +21,7 @@
 </head>
 
 <style>
-    .customCardx{
-        height: 6vh;
-    }
+
 </style>
 
 <body>
@@ -316,7 +314,7 @@ ORDER BY tabelle_elemente.ElementID;";
             $.ajax({
                 url: "getRoomsWithElement1.php",
                 data: {"elementID": elementID, "variantenID": variantenID, "bestand": bestand},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     let $table = $('#tableRoomsWithElement');
                     if ($table.length && $.fn.DataTable && $.fn.DataTable.isDataTable) {
@@ -328,32 +326,32 @@ ORDER BY tabelle_elemente.ElementID;";
                     $.ajax({
                         url: "getElementVariante.php",
                         data: {"elementID": elementID, "variantenID": variantenID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#elementVarianten").html(data);
                             $.ajax({
                                 url: "getStandardElementParameters.php",
                                 data: {"elementID": elementID},
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#elementDBParameter").html(data);
                                     $.ajax({
                                         url: "getElementPricesInDifferentProjects.php",
                                         data: {"elementID": elementID},
-                                        type: "GET",
+                                        type: "POST",
                                         success: function (data) {
                                             console.log(data);
                                             $("#elementPricesInOtherProjects").html(data);
                                             $.ajax({
                                                 url: "getDevicesToElement.php",
                                                 data: {"elementID": elementID},
-                                                type: "GET",
+                                                type: "POST",
                                                 success: function (data) {
                                                     $("#devicesToElement").html(data);
                                                     $.ajax({
                                                         url: "getElementGewerke.php",
                                                         data: {"elementID": elementID},
-                                                        type: "GET",
+                                                        type: "POST",
                                                         success: function (data) {
                                                             $("#elementGewerk").html(data);
                                                         }

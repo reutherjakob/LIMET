@@ -217,7 +217,7 @@ $mysqli->close();
             $.ajax({
                 url: "getElementGewerkeFiltered.php",
                 data: {"filterValueGHG": ghgid, "filterValueGewerke": gewerkid},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#elementGewerk").html(data);
                 }
@@ -232,7 +232,7 @@ $mysqli->close();
             $.ajax({
                 url: "getElementGewerkeFiltered.php",
                 data: {"filterValueGewerke": gewerkid},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#elementGewerk").html(data);
                 }
@@ -250,7 +250,7 @@ $mysqli->close();
             $.ajax({
                 url: "saveElementGewerk.php",
                 data: {"gewerk": $('#gewerk').val(), "ghg": $('#ghg').val(), "gug": $('#gug').val()},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     //		        	$("#infoBody").html(data);
 
@@ -265,7 +265,7 @@ $mysqli->close();
         $.ajax({
             url: "saveElementGewerk.php",
             data: {"gewerk": 2, "ghg": $('#ghg').val(), "gug": $('#gug').val()},
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 makeToaster(data.trim(), true);
             }
@@ -276,7 +276,7 @@ $mysqli->close();
         $.ajax({
             url: "saveElementGewerk.php",
             data: {"gewerk": 1, "ghg": $('#ghg').val(), "gug": $('#gug').val()},
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 makeToaster(data.trim(), true);
             }
@@ -287,7 +287,7 @@ $mysqli->close();
         $.ajax({
             url: "saveElementGewerk.php",
             data: {"gewerk": 6, "ghg": $('#ghg').val(), "gug": $('#gug').val()},
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 makeToaster(data.trim(), true);
             }

@@ -110,14 +110,14 @@ $mysqli->close();
                     $.ajax({
                         url: "getVarianteParameters.php",
                         data: {"variantenID": variantenID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $('#variantenParameterCh .xxx').remove();
                             $("#variantenParameter").html(data);
                             $.ajax({
                                 url: "getPossibleVarianteParameters.php",
                                 data: {"variantenID": variantenID},
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#possibleVariantenParameter").html(data);
                                 }

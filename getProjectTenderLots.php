@@ -155,13 +155,13 @@ echo "</tbody></table>";
                 $.ajax({
                     url: "getTenderLotDetails.php",
                     data: {"lotID": lotID},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         $("#lotDetails").html(data);
                         $.ajax({
                             url: "getTenderLotElements.php",
                             data: {"lotID": lotID},
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 $("#elementsInLot").html(data);
                                 $("#elementBestand").hide();

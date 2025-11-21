@@ -335,7 +335,7 @@ if(!isset($_SESSION["username"]))
 	    $.ajax({
 	        url : "getElementsCADFiltered.php",
 	        data:{"filterValueDWGNotwendig":filterValueDWGNotwendig,"filterValueDWGVorhanden":filterValueDWGVorhanden,"filterValueFamilieVorhanden":filterValueFamilieVorhanden},
-	        type: "GET",
+	        type: "POST",
 	        success: function(data){
 		            $("#cadElements").html(data);		            
 			}
@@ -350,7 +350,7 @@ if(!isset($_SESSION["username"]))
 	    $.ajax({
 	        url : "getElementsCADFiltered.php",
 	        data:{"filterValueDWGNotwendig":filterValueDWGNotwendig,"filterValueDWGVorhanden":filterValueDWGVorhanden,"filterValueFamilieVorhanden":filterValueFamilieVorhanden},
-	        type: "GET",
+	        type: "POST",
 	        success: function(data){
 		            $("#cadElements").html(data);		            
 			}
@@ -365,7 +365,7 @@ if(!isset($_SESSION["username"]))
 	    $.ajax({
 	        url : "getElementsCADFiltered.php",
 	        data:{"filterValueDWGNotwendig":filterValueDWGNotwendig,"filterValueDWGVorhanden":filterValueDWGVorhanden,"filterValueFamilieVorhanden":filterValueFamilieVorhanden},
-	        type: "GET",
+	        type: "POST",
 	        success: function(data){
 		            $("#cadElements").html(data);		            
 			}

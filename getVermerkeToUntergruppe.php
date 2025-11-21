@@ -382,13 +382,13 @@ echo "</tbody></table>";
             let id = this.id;
             $.ajax({
                 url: "getVermerkZustaendigkeiten.php",
-                type: "GET",
+                type: "POST",
                 data: {"vermerkID": id},
                 success: function (data) {
                     $("#vermerkZustaendigkeit").html(data);
                     $.ajax({
                         url: "getPossibleVermerkZustaendigkeiten.php",
-                        type: "GET",
+                        type: "POST",
                         data: {"vermerkID": id},
                         success: function (data) {
                             $("#possibleVermerkZustaendigkeit").html(data);
@@ -441,13 +441,13 @@ echo "</tbody></table>";
                     "vermerkText": vermerkText,
                     "faelligkeitDatum": faelligkeitDatum
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data, true);
                     $.ajax({
                         url: "getVermerkeToUntergruppe.php",
                         data: {"vermerkUntergruppenID": vermerkUntergruppenID, "vermerkGruppenID": vermerkGruppenID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#vermerke").html(data);
                             document.getElementById('pdfPreview').src += '';
@@ -515,7 +515,7 @@ echo "</tbody></table>";
                     $.ajax({
                         url: "getVermerkeToUntergruppe.php",
                         data: {"vermerkUntergruppenID": vermerkUntergruppenID, "vermerkGruppenID": vermerkGruppenID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#vermerke").html(data);
                             document.getElementById('pdfPreview').src += '';
@@ -538,13 +538,13 @@ echo "</tbody></table>";
         $.ajax({
             url: "deleteVermerk.php",
             data: {"vermerkID": vermerkID},
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 alert(data);
                 $.ajax({
                     url: "getVermerkeToUntergruppe.php",        // Neu Laden der Vermerkliste
                     data: {"vermerkUntergruppenID": vermerkUntergruppenID, "vermerkGruppenID": vermerkGruppenID},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         $("#vermerke").html(data);
                         document.getElementById('pdfPreview').src += '';                        // Neu laden der PDF-Vorschau

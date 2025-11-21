@@ -75,6 +75,8 @@ function rangeValues($min, $max, $includeEmpty = true): array
     return array_map('strval', $arr);
 }
 
+$medgase_wert = array_merge(["Ja", "Nein"], rangeValues(0,9));
+
 $parameterFieldConfig = [
     'Geometrie|Länge|Einheit' => $unitSets['length'],
     'Geometrie|Breite|Einheit' => $unitSets['length'],
@@ -197,16 +199,16 @@ $parameterFieldConfig = [
     'Laser|Laserklasse|Wert' => $valueSets['laserClass'],
     'MedGas|Stickstoff_Strom|Einheit' => $unitSets['flow'],
     'MedGas|Argon_Strom|Einheit' => $unitSets['flow'],
-    'MedGas|O2 Anschluss|Wert' => rangeValues(0, 40),
-    'MedGas|DL-5 Anschluss|Wert' => rangeValues(0, 9),
-    'MedGas|VAC Anschluss|Wert' => $valueSets['boolean'],
-    'MedGas|DL-10 Anschluss|Wert' => rangeValues(0, 9),
+    'MedGas|O2 Anschluss|Wert' => $medgase_wert,
+    'MedGas|DL-5 Anschluss|Wert' => $medgase_wert,
+    'MedGas|VAC Anschluss|Wert' =>$medgase_wert ,
+    'MedGas|DL-10 Anschluss|Wert' => $medgase_wert,
     'MedGas|DL-10 Anschluss|Einheit' => $unitSets['pieces'],
-    'MedGas|N2 Anschluss|Wert' => rangeValues(0, 40),
+    'MedGas|N2 Anschluss|Wert' => $medgase_wert,
     'MedGas|N2 Anschluss|Einheit' => $unitSets ['piecesOrvolumetricFlow'],
-    'MedGas|NGA Anschluss|Wert' => rangeValues(0, 40),
-    'MedGas|N2O Anschluss|Wert' => rangeValues(0, 40),
-    'MedGas|CO2 Anschluss|Wert' => rangeValues(0, 40),
+    'MedGas|NGA Anschluss|Wert' => $medgase_wert,
+    'MedGas|N2O Anschluss|Wert' => $medgase_wert,
+    'MedGas|CO2 Anschluss|Wert' => $medgase_wert,
     'Beleuchtung|Beleuchtungsstärke|Einheit' => $unitSets['illumination'],
     'Statik|Punktlast|Einheit' => $unitSets['force'],
     'Statik|Wandverstärkung|Wert' => $valueSets['wallReinforcementValues'],

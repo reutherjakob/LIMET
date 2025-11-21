@@ -222,7 +222,7 @@
                     alert(data);
                     $.ajax({
                         url: "getDevicesToElement.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#devicesInDB").html(data);
                         }
@@ -250,12 +250,12 @@
                     "type": type,
                     "kurzbeschreibung": kurzbeschreibung
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     alert(data);
                     $.ajax({
                         url: "getDevicesToElement.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#devicesInDB").html(data);
                         }
@@ -282,7 +282,7 @@
                     $.ajax({
                         url: "getDevicesToElement.php",
                         data: {"elementID": ""},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#devicesInDB").html(data);
                         }

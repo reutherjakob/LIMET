@@ -66,7 +66,7 @@ if (!isset($_SESSION["username"])) {
         if ($('#selectTenderChart').val() !== '0') {
             $.ajax({
                 url: $('#selectTenderChart').val(),
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#tenderChart").html(data);
                 }

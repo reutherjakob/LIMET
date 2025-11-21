@@ -358,18 +358,18 @@ init_page_serversides();
             $.ajax({
                 url: "setSessionVariables.php",
                 data: {"roomID": id},
-                type: "GET",
+                type: "POST",
                 success: function () {
                     $("#RoomID").text(id);
                     $.ajax({
                         url: "getRoomVermerke.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#roomVermerke").html(data);
 
                             $.ajax({
                                 url: "getRoomElementsDetailed1.php",
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#roomElements").html(data);
                                 }
@@ -444,24 +444,24 @@ init_page_serversides();
             $.ajax({
                 url: "setSessionVariables.php",
                 data: {"elementID": elementID},
-                type: "GET",
+                type: "POST",
                 success: function () {
                     $.ajax({
                         url: "getStandardElementParameters.php",
                         data: {"elementID": elementID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#elementParametersInDB").html(data);
                             $.ajax({
                                 url: "getElementPricesInDifferentProjects.php",
                                 data: {"elementID": elementID},
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#elementPricesInOtherProjects").html(data);
                                     $.ajax({
                                         url: "getDevicesToElement.php",
                                         data: {"elementID": elementID},
-                                        type: "GET",
+                                        type: "POST",
                                         success: function (data) {
                                             $("#devicesInDB").html(data);
                                         }

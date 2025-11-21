@@ -92,7 +92,7 @@ $mysqli->close();
             $.ajax({
                 url: "getChangePersonToProjectField.php",
                 data: {"personID": personID},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#addPersonToProject").html(data);
                 }

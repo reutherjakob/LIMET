@@ -1,11 +1,11 @@
 <?php
+// 25FX
 require_once 'utils/_utils.php';
 check_login();
-
 $mysqli = utils_connect_sql();
 
-$gruppenID = filter_input(INPUT_GET, 'gruppenID', FILTER_VALIDATE_INT);
-if (!$gruppenID) {
+$gruppenID = getPostInt('gruppenID',0);
+if (0===$gruppenID) {
     echo "Ungültige Gruppen-ID.";
     exit;
 }
@@ -92,13 +92,13 @@ $mysqli->close();
                     document.getElementById('pdfPreview').src += '';
                     $.ajax({
                         url: "/getVermerkgruppenMembers.php",
-                        type: "GET",
+                        type: "POST",
                         data: {"gruppenID": groupID},
                         success: function (data) {
                             $("#vermerkGroupMembers").html(data);
                             $.ajax({
                                 url: "/getPossibleVermerkGruppenMembers.php",
-                                type: "GET",
+                                type: "POST",
                                 data: {"gruppenID": groupID},
                                 success: function (data) {
                                     $("#possibleVermerkGroupMembers").html(data);

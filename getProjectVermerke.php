@@ -140,12 +140,12 @@
             $.ajax({
                 url: "saveVermerkStatus.php",
                 data: {"vermerkID": vermerkID, "vermerkStatus": vermerkStatus},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     alert(data);
                     $.ajax({
                         url: "getProjectVermerke.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#projectVermerke").html(data);
                         }

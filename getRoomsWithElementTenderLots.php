@@ -409,7 +409,7 @@ $mysqli->close();
             let ID = this.id;
             $.ajax({
                 url: "getComment.php",
-                type: "GET",
+                type: "POST",
                 data: {"commentID": ID},
                 success: function (data) {
                     $("#modalKurzbeschreibung").html(data);
@@ -423,7 +423,7 @@ $mysqli->close();
             alert(comment);
             $.ajax({
                 url: "saveRoombookComment.php",
-                type: "GET",
+                type: "POST",
                 data: {"comment": comment},
                 success: function (data) {
                     alert(data);
@@ -451,7 +451,7 @@ $mysqli->close();
         }
         $.ajax({   // Make an AJAX call to save the data
             url: "saveRoombookTender.php", // Server-side script to handle saving
-            type: "GET", // HTTP method
+            type: "POST", // HTTP method
             data: {
                 "amount": amount,
                 "bestand": bestand,

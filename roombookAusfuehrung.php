@@ -184,13 +184,13 @@ if (!isset($_SESSION["username"])) {
                 $.ajax({
                     url: "getNewElementsInRoomAusfuehrung.php",
                     data: {"roomID": id},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         $("#newElements").html(data);
                         $.ajax({
                             url: "getBestandElementsInRoomAusfuehrung.php",
                             data: {"roomID": id},
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 $("#bestandElements").html(data);
                             }
