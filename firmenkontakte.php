@@ -33,14 +33,22 @@
         </div>
         <div class="card-body">
             <?php
+            // 25 FX
             if (!function_exists('utils_connect_sql')) {
                 include "utils/_utils.php";
             }
             init_page_serversides("x");
             $mysqli = utils_connect_sql();
-            $sql = "SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen, tabelle_ansprechpersonen.Name, tabelle_ansprechpersonen.Vorname, tabelle_ansprechpersonen.Tel, tabelle_ansprechpersonen.Adresse, tabelle_ansprechpersonen.PLZ, tabelle_ansprechpersonen.Ort, tabelle_ansprechpersonen.Land, tabelle_ansprechpersonen.Mail, tabelle_lieferant.Lieferant, tabelle_abteilung.Abteilung,
-                                 tabelle_lieferant.idTABELLE_Lieferant, tabelle_abteilung.idtabelle_abteilung, tabelle_ansprechpersonen.Gebietsbereich
-                                FROM tabelle_abteilung INNER JOIN (tabelle_lieferant INNER JOIN tabelle_ansprechpersonen ON tabelle_lieferant.idTABELLE_Lieferant = tabelle_ansprechpersonen.tabelle_lieferant_idTABELLE_Lieferant) ON tabelle_abteilung.idtabelle_abteilung = tabelle_ansprechpersonen.tabelle_abteilung_idtabelle_abteilung;";
+            $sql = "SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen, tabelle_ansprechpersonen.Name, 
+                       tabelle_ansprechpersonen.Vorname, tabelle_ansprechpersonen.Tel, 
+                       tabelle_ansprechpersonen.Adresse, tabelle_ansprechpersonen.PLZ,
+                       tabelle_ansprechpersonen.Ort, tabelle_ansprechpersonen.Land, 
+                       tabelle_ansprechpersonen.Mail,  tabelle_abteilung.Abteilung,
+                       tabelle_lieferant.Lieferant, tabelle_lieferant.idTABELLE_Lieferant,
+                       tabelle_abteilung.idtabelle_abteilung, tabelle_ansprechpersonen.Gebietsbereich
+            FROM tabelle_abteilung INNER JOIN (tabelle_lieferant INNER JOIN tabelle_ansprechpersonen 
+                ON tabelle_lieferant.idTABELLE_Lieferant = tabelle_ansprechpersonen.tabelle_lieferant_idTABELLE_Lieferant)
+                ON tabelle_abteilung.idtabelle_abteilung = tabelle_ansprechpersonen.tabelle_abteilung_idtabelle_abteilung;";
             $result = $mysqli->query($sql);
 
             echo "<table class='table table-striped table-bordered  table-sm' id='tableLieferantenKontakte'>
@@ -502,7 +510,6 @@
             let lieferant = $("#lieferant").val();
             let abteilung = $("#abteilung").val();
             let gebiet = $("#lieferantenGebiet").val();
-
             if (Name.length > 0 && Vorname.length > 0 && Tel.length > 0) {
                 $('#addContactModal').modal('hide');
                 $.ajax({
@@ -532,7 +539,6 @@
 
                             }
                         });
-
                     }
                 });
             } else {
@@ -550,13 +556,11 @@
             document.getElementById("lieferantenLand").value = "";
             document.getElementById("lieferantenEmail").value = "";
             document.getElementById("lieferantenGebiet").value = "";
-            // Buttons ein/ausblenden!
-            document.getElementById("saveLieferantenKontakt").style.display = "none";
+            document.getElementById("saveLieferantenKontakt").style.display = "none";            // Buttons ein/ausblenden!
             document.getElementById("addLieferantenKontakt").style.display = "inline";
         });
 
         $("button[value='changeContact']").click(function () {
-            // Buttons ein/ausblenden!
             document.getElementById("addLieferantenKontakt").style.display = "none";
             document.getElementById("saveLieferantenKontakt").style.display = "inline";
         });
@@ -584,7 +588,6 @@
                     type: "POST",
                     success: function (data) {
                         alert(data);
-                        // Neu Laden der Seite
                         location.reload();
                     }
                 });
@@ -592,7 +595,6 @@
                 alert("Bitte alle Felder ausfüllen!");
             }
         });
-
 
         tableLieferantenUnternehmen = $('#tableLieferantenUnternehmen').DataTable({
             columnDefs: [
@@ -637,14 +639,11 @@
             }
         });
 
-
         $("button[value='changeLieferant']").click(function () {
             document.getElementById("addLieferant").style.display = "none";
             document.getElementById("saveLieferant").style.display = "inline";
-
             let $tr = $(this).closest('tr');
             let rowData = tableLieferantenUnternehmen.row($tr).data();
-
             $("#lieferantID").val(rowData[0]);
             $("#firma").val(rowData[2]);
             $("#lieferantTel").val(rowData[3]);
@@ -666,17 +665,15 @@
             document.getElementById("addLieferant").style.display = "inline";
         });
 
-
         $("#saveLieferant").click(function () {
             let lieferantID = $("#lieferantID").val();
             let firma = $("#firma").val();
-            console.log("FIRMA: ", firma);
+           // console.log("FIRMA: ", firma);
             let lieferantTel = $("#lieferantTel").val();
             let lieferantAdresse = $("#lieferantAdresse").val();
             let lieferantPLZ = $("#lieferantPLZ").val();
             let lieferantOrt = $("#lieferantOrt").val();
             let lieferantLand = $("#lieferantLand").val();
-
             if (firma && lieferantTel && lieferantAdresse && lieferantPLZ && lieferantOrt && lieferantLand) {
                 $('#changeLieferantModal').modal('hide');
                 $.ajax({
@@ -701,7 +698,5 @@
             }
         });
     });
-
-
 </script>
 </html>

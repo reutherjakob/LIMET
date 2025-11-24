@@ -27,7 +27,7 @@ if ($result->num_rows > 0) {
 	<th>Seriennummer</th>
 	<th>Anschaffungsjahr</th>
 	<th>Gerät</th>
-    <th>Standort aktuell</th>
+    <th class='d-flex justify-content-center' data-bs-toggle='tooltip' title='Standort aktuell'><i class='fab fa-periscope'></i></th>
 	</tr></thead>
 	<tbody>";
 
@@ -51,6 +51,7 @@ if ($result->num_rows > 0) {
 $mysqli->close();
 ?>
 
+<script src="utils/_utils.js"></script>
 <script>
     var table;
     $(document).ready(function () {

@@ -1,4 +1,5 @@
 <?php
+// 25 FX
 require_once "utils/_utils.php";
 check_login();
 
@@ -184,25 +185,25 @@ echo "<input type='button' id='addContactModalButton' class='btn btn-success btn
 
         $('#tableLieferanten tbody').on('click', 'tr', function () {
             if ($(this).hasClass('info')) {
-
             } else {
                 table1.$('tr.info').removeClass('info');
                 $(this).addClass('info');
-                ansprechID = table1.row($(this)).data()[0];
-                document.getElementById("lieferantenName").value = table1.row($(this)).data()[1];
-                document.getElementById("lieferantenVorname").value = table1.row($(this)).data()[2];
-                document.getElementById("lieferantenTel").value = table1.row($(this)).data()[3];
-                document.getElementById("lieferantenAdresse").value = table1.row($(this)).data()[5];
-                document.getElementById("lieferantenPLZ").value = table1.row($(this)).data()[6];
-                document.getElementById("lieferantenOrt").value = table1.row($(this)).data()[7];
-                document.getElementById("lieferantenLand").value = table1.row($(this)).data()[8];
-                document.getElementById("lieferantenEmail").value = table1.row($(this)).data()[4];
-                document.getElementById("lieferant").value = table1.row($(this)).data()[13];
-                document.getElementById("abteilung").value = table1.row($(this)).data()[14];
-                document.getElementById("lieferantenGebiet").value = table1.row($(this)).data()[11];
             }
+            ansprechID = table1.row($(this)).data()[0];
+            document.getElementById("lieferantenName").value = table1.row($(this)).data()[1];
+            document.getElementById("lieferantenVorname").value = table1.row($(this)).data()[2];
+            document.getElementById("lieferantenTel").value = table1.row($(this)).data()[3];
+            document.getElementById("lieferantenAdresse").value = table1.row($(this)).data()[5];
+            document.getElementById("lieferantenPLZ").value = table1.row($(this)).data()[6];
+            document.getElementById("lieferantenOrt").value = table1.row($(this)).data()[7];
+            document.getElementById("lieferantenLand").value = table1.row($(this)).data()[8];
+            document.getElementById("lieferantenEmail").value = table1.row($(this)).data()[4];
+            document.getElementById("lieferant").value = table1.row($(this)).data()[13];
+            document.getElementById("abteilung").value = table1.row($(this)).data()[14];
+            document.getElementById("lieferantenGebiet").value = table1.row($(this)).data()[11];
         });
     });
+
 
     $("#addLieferantenKontakt").click(function () {
         let Name = $("#lieferantenName").val();
@@ -244,7 +245,6 @@ echo "<input type='button' id='addContactModalButton' class='btn btn-success btn
 
                         }
                     });
-
                 }
             });
         } else {
@@ -252,19 +252,19 @@ echo "<input type='button' id='addContactModalButton' class='btn btn-success btn
         }
     });
 
-    $("#saveLieferantenKontakt").click(function () {
-       let Name = $("#lieferantenName").val();
-       let Vorname = $("#lieferantenVorname").val();
-       let Tel = $("#lieferantenTel").val();
-       let Adresse = $("#lieferantenAdresse").val();
-       let PLZ = $("#lieferantenPLZ").val();
-       let Ort = $("#lieferantenOrt").val();
-       let Land = $("#lieferantenLand").val();
-       let Email = $("#lieferantenEmail").val();
-       let lieferant = $("#lieferant").val();
-       let abteilung = $("#abteilung").val();
-       let gebiet = $("#lieferantenGebiet").val();
 
+    $("#saveLieferantenKontakt").click(function () {
+        let Name = $("#lieferantenName").val();
+        let Vorname = $("#lieferantenVorname").val();
+        let Tel = $("#lieferantenTel").val();
+        let Adresse = $("#lieferantenAdresse").val();
+        let PLZ = $("#lieferantenPLZ").val();
+        let Ort = $("#lieferantenOrt").val();
+        let Land = $("#lieferantenLand").val();
+        let Email = $("#lieferantenEmail").val();
+        let lieferant = $("#lieferant").val();
+        let abteilung = $("#abteilung").val();
+        let gebiet = $("#lieferantenGebiet").val();
         if (Name.length > 0 && Vorname.length > 0 && Tel.length > 0) {
             $('#addContactModal').modal('hide');
             $.ajax({
@@ -293,13 +293,13 @@ echo "<input type='button' id='addContactModalButton' class='btn btn-success btn
                             $("#lieferanten").html(data);
                         }
                     });
-
                 }
             });
         } else {
             alert("Bitte überprüfen Sie Ihre Angaben! Name, Vorname und Tel ist Pflicht!");
         }
     });
+
 
     $("#addContactModalButton").click(function () {
         document.getElementById("lieferantenName").value = "";
@@ -311,8 +311,7 @@ echo "<input type='button' id='addContactModalButton' class='btn btn-success btn
         document.getElementById("lieferantenLand").value = "";
         document.getElementById("lieferantenEmail").value = "";
         document.getElementById("lieferantenGebiet").value = "";
-        // Buttons ein/ausblenden!
-        document.getElementById("saveLieferantenKontakt").style.display = "none";
+        document.getElementById("saveLieferantenKontakt").style.display = "none";        // Buttons ein/ausblenden!
         document.getElementById("addLieferantenKontakt").style.display = "inline";
     });
 

@@ -15,16 +15,17 @@
 
 
 <?php
+// 25 FX
+
 require_once 'utils/_utils.php';
 check_login();
 
-$_SESSION["variantenID"] = filter_input(INPUT_GET, 'variantenID');
-$elementID = filter_input(INPUT_GET, 'elementID');
+$_SESSION["variantenID"] = getPostInt('variantenID', 0);
+$elementID = getPostInt("elementID", 0);
 $projectID = $_SESSION["projectID"];
-$variantenID = filter_input(INPUT_GET, 'variantenID');
-$bestand = filter_input(INPUT_GET, 'bestand');
+$variantenID =  getPostInt("variantenID", 0);
+$bestand = getPostInt("bestand", 0);
 
-// Build dynamic WHERE clause
 $where = [];
 if ($bestand !== null && $bestand !== "") {
     $where[] = "tabelle_räume_has_tabelle_elemente.`Neu/Bestand` = " . intval($bestand);
@@ -305,7 +306,6 @@ $mysqli->close();
     $("button[value='saveElement']").click(function () {
         let id = this.id;
         let comment = $(".comment-btn[id='" + id + "']").attr('data-description');
-
         let amount = $("#amount" + id).val();
         let variantenID = $("#variante" + id).val();
         let bestand = $("#bestand" + id).val();
@@ -314,7 +314,7 @@ $mysqli->close();
         if (standort === '0' && verwendung === '0') {
             alert("Standort und Verwendung kann nicht Nein sein!");
         } else {
-            console.log(id, typeof(id) );
+            console.log(id, typeof (id));
             $.ajax({
                 url: "saveRoombookEntry.php",
                 data: {
@@ -333,8 +333,6 @@ $mysqli->close();
             });
         }
     });
-
-
 </script>
 </body>
 </html>

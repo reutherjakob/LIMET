@@ -50,7 +50,7 @@ function loadPivotTable(params = {}) {
                     searchPlaceholder: "Suche...",
                     lengthMenu: "_MENU_", // show only the select dropdown without 'Zeilen anzeigen'
                     info: "von _MAX_ Einträgen",
-                    infoEmpty: "Keine Daten vorhanden",
+                    infoEmpty: "Keine Daten vorhanden...",
                     infoFiltered: ""  // hides the "(gefiltert von ...)" text
                 },
                 scrollX: true,

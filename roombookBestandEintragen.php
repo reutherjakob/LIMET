@@ -1,5 +1,5 @@
 <?php
-// 10-2025 FX
+// 25 FX
 require_once 'utils/_utils.php';
 include "utils/_format.php";
 init_page_serversides();

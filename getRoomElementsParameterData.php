@@ -1,10 +1,13 @@
 <?php
+//  25 FX
 require_once 'utils/_utils.php';
 check_login();
 
 // 🔐 Input Validation
-$roomID = filter_input(INPUT_GET, 'roomID', FILTER_VALIDATE_INT);
-$K2Return = $_GET['K2Return'] ?? '[]';
+$roomID = getPostInt('roomID');
+#filter_input(INPUT_GET, 'roomID', FILTER_VALIDATE_INT);
+$K2Return = getPostInt("K2Return", 0);
+#    $_POST['K2Return'] ?? '[]';
 $K2Ret = json_decode($K2Return, true); // true = associative array
 
 $projectID = $_SESSION["projectID"] ?? null;
@@ -71,9 +74,9 @@ while ($row = $kategorieResult->fetch_assoc()) {
     if (empty($K2Ret) || in_array($row['KategorieID'], $K2Ret)) {
         $paramInfos[$row['ParamID']] = [
             'KategorieID' => $row['KategorieID'],
-            'ParamID'     => $row['ParamID'],
+            'ParamID' => $row['ParamID'],
             'Bezeichnung' => $row['Bezeichnung'],
-            'Kategorie'   => $row['Kategorie'],
+            'Kategorie' => $row['Kategorie'],
         ];
     }
 }
@@ -104,15 +107,16 @@ $elementParamInfos = [];
 while ($row = $tabelle_projekt_elementparameter->fetch_assoc()) {
     $elementParamInfos[] = [
         'KategorieID' => $row['KategorieID'],
-        'ParamID'     => $row['ParamID'],
-        'elementID'   => $row['tabelle_elemente_idTABELLE_Elemente'],
+        'ParamID' => $row['ParamID'],
+        'elementID' => $row['tabelle_elemente_idTABELLE_Elemente'],
         'variantenID' => $row['tabelle_Varianten_idtabelle_Varianten'],
-        'Wert'        => $row['Wert'],
-        'Einheit'     => $row['Einheit'],
+        'Wert' => $row['Wert'],
+        'Einheit' => $row['Einheit'],
     ];
 }
 
 $mysqli->close();
+$stmt->close();
 
 // 4️⃣ Kombination aus den Daten aufbauen
 $result = [];

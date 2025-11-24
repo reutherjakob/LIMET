@@ -1,4 +1,4 @@
-<?php
+getLieferantenPersonen<?php
 session_start();
 ?>
 

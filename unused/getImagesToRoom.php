@@ -1,6 +1,6 @@
 <?php
 
-// 10-2025 FX - unused
+// 25 FX - unused
 require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();

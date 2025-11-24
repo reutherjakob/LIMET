@@ -47,7 +47,6 @@
         init_page_serversides();
         include "utils/_format.php";
 
-
         function makeTable($result): void
         {
             $headers = [
@@ -60,15 +59,14 @@
                 "<b>Stk >0 <input type='checkbox' id='filter_count'></b>",
                 '', '', '', '', '',
                 "<select id='filter_bestand'>
-            <option value='2'></option> 
-            <option value='1'>Ja</option>
-            <option value='0'>Nein</option>
-        </select>",
+                    <option value='2'></option> 
+                    <option value='1'>Ja</option>
+                    <option value='0'>Nein</option>
+                </select>",
                 '', '', '', '',
                 "<input type='checkbox' id='filter_lot'>",
                 '', '', '', '', ''
             ];
-
             $statusBadges = [
                 0 => "<span class='badge badge-pill bg-danger'>Offen</span>",
                 1 => "<span class='badge badge-pill bg-success'>Fertig</span>",
@@ -102,7 +100,7 @@
                 echo "<td>" . htmlspecialchars($row['LosNr_Extern'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                 echo "<td>" . htmlspecialchars($row['LosBezeichnung_Extern'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                 echo "<td>" . htmlspecialchars($row['Ausführungsbeginn'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
-                echo "<td>" . htmlspecialchars($row['Gewerke_Nr'] ?? "", ENT_QUOTES, 'UTF-8') ." " .  htmlspecialchars($row['GWBEZ'] ?? "", ENT_QUOTES, 'UTF-8'). "</td>";
+                echo "<td>" . htmlspecialchars($row['Gewerke_Nr'] ?? "", ENT_QUOTES, 'UTF-8') . " " . htmlspecialchars($row['GWBEZ'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                 echo "<td>" . htmlspecialchars($row['Budgetnummer'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                 echo "<td>" . ($statusBadges[$row['Vergabe_abgeschlossen']] ?? '') . "</td>";
                 echo "</tr>";
@@ -110,7 +108,6 @@
             }
             echo "</tbody></table>";
         }
-
 
         echo '<div class="card-header ">
                     <div class="row "> 
@@ -120,7 +117,6 @@
                         <div id="ElInPrCardHeader" class="col-xxl-6 d-inline-flex align-items-center justify-content-end"> (Änderungen nicht in Tabelle? - Reload!) &emsp;               </div>
                     </div>
                 </div>';
-
 
         echo '<div class="card-body" id="elementLots">';
 
@@ -173,8 +169,8 @@
                          LEFT JOIN tabelle_projektbudgets
                                    ON tabelle_räume_has_tabelle_elemente.tabelle_projektbudgets_idtabelle_projektbudgets =
                                       tabelle_projektbudgets.idtabelle_projektbudgets
-                WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["projectID"] . ") AND
-                       ((tabelle_räume_has_tabelle_elemente.Standort) = 1))
+                WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = ?
+                AND (tabelle_räume_has_tabelle_elemente.Standort) = 1))
                 GROUP BY tabelle_elemente.ElementID,
                          tabelle_varianten.idtabelle_Varianten,
                          tabelle_varianten.Variante,
@@ -184,10 +180,13 @@
                          tabelle_projektbudgets.Budgetnummer,
                          tabelle_räume.Bauabschnitt
                 ORDER BY tabelle_elemente.ElementID;";
-
-        $result = $mysqli->query($sql);
+        $stmt = $mysqli->prepare($sql);
+        $stmt->bind_param('i', $_SESSION['projectID']);
+        $stmt->execute();
+        $result = $stmt->get_result();
         makeTable($result);
         $mysqli->close();
+        $stmt->close();
         ?>
     </div>
 </div>
@@ -351,7 +350,7 @@
             let bestand = tableElementsInProject.row($(this)).data()[4];
             let raumbereich = decodeHtmlEntities(tableElementsInProject.row($(this)).data()[9]);
             let bauabschnitt = tableElementsInProject.row($(this)).data()[10];
-            console.log(variantenID, losID, bestand, raumbereich);
+          //  console.log(variantenID, losID, bestand, raumbereich);
             $.ajax({
                 url: "getRoomsWithElementTenderLots.php",
                 data: {

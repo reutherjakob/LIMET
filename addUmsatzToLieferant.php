@@ -1,5 +1,5 @@
 <?php
-// 11-25-FX
+// 25 FX
 include "utils/_format.php";
 include_once "utils/_utils.php";
 check_login();

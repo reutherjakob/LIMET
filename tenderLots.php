@@ -32,7 +32,6 @@
 
 
 </head>
-
 <body id="bodyTenderLots">
 <?php
 require_once 'utils/_utils.php';
@@ -40,11 +39,8 @@ include "utils/_format.php";
 init_page_serversides();
 
 ?>
-
 <div id="limet-navbar"></div>
-
 <div class="container-fluid">
-
     <div class='row'>
         <div class='col-xxl-11' id="mainCardColumn">
             <div class="mt-4 card">
@@ -156,10 +152,10 @@ init_page_serversides();
                                             <th>Budget (val)</th>
                                             <th>Vergabesumme</th>
                                             <th>Auftragnehmer</th>
-                                        <th data-bs-toggle='tooltip' data-bs-placement='top' title='Workflow'>
+                                        <th data-bs-toggle='tooltip' data-bs-placement='top' title='Workflow' class='d-flex justify-content-center'>
                                                 <i class='fas fa-code-branch'></i>
                                             </th>
-                                            <th data-bs-toggle='tooltip' data-bs-placement='top' title='Notiz'>
+                                            <th data-bs-toggle='tooltip' data-bs-placement='top' title='Notiz'  class='d-flex justify-content-center'>
                                                 <i class='far fa-sticky-note'></i>
                                             </th>
                                             <th>IDLieferant</th>

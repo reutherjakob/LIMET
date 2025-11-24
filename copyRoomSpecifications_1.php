@@ -1,6 +1,6 @@
 <?php
 
-// 11-25-FX
+// 25 FX
 session_start();
 require_once 'utils/_utils.php';
 check_login();

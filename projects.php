@@ -59,6 +59,7 @@
         "AGES SF Nutzerraumbuch" => "fas fa-mortar-pestle",
         "AGES Spargelfeld"=> "fas fa-mortar-pestle",
         "Test KHI" => "fas fa-question-circle",
+        "Labor Kategorien" =>"fas fa-microscope"
     ];
     ?>
 

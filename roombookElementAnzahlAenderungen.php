@@ -78,7 +78,6 @@ if (!function_exists('h')) {
                 <th>Kurzbeschreibung</th>
                 <th>User</th>
                 <th>Timestamp</th>
-
                 <th>Raum ID</th>
                 <th>Element ID</th>
                 <th>Bezeichnung</th>

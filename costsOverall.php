@@ -38,15 +38,16 @@ init_page_serversides();
 <div class="container-fluid">
     <div class="mt-4 card">
         <div class="card-header d-inline-flex justify-content-start align-items-center">
-
             Gesamtprojekt
             <button type='button' class='btn btn-outline-dark btn-sm ms-2 me-2' value='createKostenOverallPDF'><i
                         class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk
             </button>
             <button type='button' class='btn btn-outline-dark btn-sm me-2' value='createKostenOverallBauabschnittPDF'><i
-                        class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk und Bauabschnitt <!--- TODO: Fix Wrong calculations -->
+                        class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk und Bauabschnitt
+                <!--- TODO: Fix Wrong calculations -->
             </button>
-            <button type='button' class='btn btn-outline-dark btn-sm me-2' value='createKostenOverallBauabschnittBudgetPDF'>
+            <button type='button' class='btn btn-outline-dark btn-sm me-2'
+                    value='createKostenOverallBauabschnittBudgetPDF'>
                 <i class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk, Bauabschnitt und Budget
             </button>
             <button type='button' class='btn btn-outline-dark btn-sm me-2' value='createKostenInclGHGOverallPDF'><i
@@ -58,25 +59,21 @@ init_page_serversides();
             <!-- <div class="card-body"> </div>-->
         </div>
     </div>
-
     <div class="mt-4 card">
         <div class="card-header">
-
-
             <div class="row">
                 <div class="col-xxl-6"><span>Raumbereiche</span></div>
-                <div class="col-xxl-6 d-flex align-items-center justify-content-end text-nowrap" id="RaumsucheCardHeaderSub">
-                    <button type='button' class='btn btn-outline-dark btn-sm me-2 ml-2' id='createRaumbereichPDF'>
+                <div class="col-xxl-6 d-flex align-items-center justify-content-end text-nowrap"
+                     id="RaumsucheCardHeaderSub">
+                    <button type='button' class='btn btn-outline-dark btn-sm me-5 ml-2' id='createRaumbereichPDF'>
                         <i class='far fa-file-pdf'></i> Kosten-PDF
                     </button>
                 </div>
             </div>
-
         </div>
         <div class="card-body" id="costsRoomArea">
             <?php
             $mysqli = utils_connect_sql();
-
             $sql = "SELECT tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauabschnitt,  tabelle_räume.Bauetappe
                                                     FROM tabelle_auftraggeberg_gug RIGHT JOIN (tabelle_auftraggeber_ghg RIGHT JOIN (tabelle_auftraggeber_gewerke RIGHT JOIN ((tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) INNER JOIN tabelle_projekt_element_gewerk ON (tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) AND (tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte)) ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke = tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke) ON tabelle_auftraggeber_ghg.idtabelle_auftraggeber_GHG = tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG) ON tabelle_auftraggeberg_gug.idtabelle_auftraggeberg_GUG = tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
                                                     WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
@@ -84,12 +81,10 @@ init_page_serversides();
                                                     ORDER BY tabelle_räume.Geschoss;";
 
             $result = $mysqli->query($sql);
-
             echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableRaumbereiche'>
                                             <thead><tr>
                                             <th>Raumbereich</th>
                                             <th>Geschoss</th>
-                                            
                                             <th>Bauabschnitt</th>
                                             <th>Bauetappe</th>
                                             </tr></thead><tbody>";
@@ -120,6 +115,7 @@ init_page_serversides();
 <script>
     var roomBereiche = [];
     var roomBereichGeschosse = [];
+    var roomBauabschnitt = [];
     var table;
 
     $("button[value='createKostenOverallPDF']").click(function () {
@@ -185,23 +181,7 @@ init_page_serversides();
 
 
         $('#tableRaumbereiche tbody').on('click', 'tr', function () {
-            if ($(this).hasClass('info')) {
-                $(this).removeClass('info');
-                for (let i = roomBereiche.length - 1; i >= 0; i--) {
-                    if (roomBereiche[i] === table.row($(this)).data()[0]) {
-                        roomBereiche.splice(i, 1);
-                    }
-                }
-                for (let i = roomBereichGeschosse.length - 1; i >= 0; i--) {
-                    if (roomBereichGeschosse[i] === table.row($(this)).data()[1]) {
-                        roomBereichGeschosse.splice(i, 1);
-                    }
-                }
-            } else {
-                $(this).addClass('info');
-                roomBereiche.push(table.row($(this)).data()[0]);
-                roomBereichGeschosse.push(table.row($(this)).data()[1]);
-            }
+            $(this).toggleClass('info');
         });
 
         $.ajax({        //Diagramm zeichnen
@@ -266,13 +246,34 @@ init_page_serversides();
     });
 
     $('#createRaumbereichPDF').click(function () {
-        if (roomBereiche.length === 0) {
-            alert("Kein Raumbereich ausgewählt!");
-        } else {
-            window.open('PDFs/pdf_createKostenRaumbereichPDF.php?roomBereiche=' + roomBereiche + '&roomBereichGeschosse=' + roomBereichGeschosse);//there are many ways to do this
-        }
+        var roomBereicheTemp = [];
+        var roomBereichGeschosseTemp = [];
+        var roomBauabschnittTemp = [];
 
+        // Iterate over all rows in current order that have 'info' class
+        $('#tableRaumbereiche tbody tr.info').each(function () {
+            var rowData = table.row(this).data();
+            if (rowData) {
+                roomBereicheTemp.push(rowData[0]);        // Raumbereich Nutzer
+                roomBereichGeschosseTemp.push(rowData[1]); // Geschoss
+                roomBauabschnittTemp.push(rowData[2]);    // Bauabschnitt
+            }
+        });
+
+        if (roomBereicheTemp.length === 0) {
+            alert("Kein Raumbereich ausgewählt!");
+            return;
+        }
+        console.log(roomBereicheTemp);
+        // Encode and open the PDF generation link with arrays reflecting current table order
+        const paramRoomBereiche = encodeURIComponent(roomBereicheTemp.join(','));
+        const paramRoomBereichGeschosse = encodeURIComponent(roomBereichGeschosseTemp.join(','));
+        window.open(
+            'PDFs/pdf_createKostenRaumbereichPDF.php?roomBereiche=' + paramRoomBereiche +
+            '&roomBereichGeschosse=' + paramRoomBereichGeschosse
+        );
     });
+
 
 </script>
 </body>

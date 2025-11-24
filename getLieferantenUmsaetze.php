@@ -12,18 +12,22 @@
 
 
 <?php
-// 11-25FX
+// 25 FX
 require_once 'utils/_utils.php';
 include "utils/_format.php";
 check_login();
 $mysqli = utils_connect_sql();
+$lieferantenID = getPostInt('lieferantenID',0 );
 
-if (isset($_POST["lieferantenID"])) {
-    $_SESSION["lieferantenID"] = $_POST["lieferantenID"];
+if ($lieferantenID<>0 ) {
+    $_SESSION["lieferantenID"] = $lieferantenID;
+}
+else {
+    die("Lieferanten ID fehlt.");
 }
 
 $stmt = $mysqli->prepare("SELECT idtabelle_umsaetze, umsatz, geschaeftsbereich, jahr FROM tabelle_umsaetze WHERE tabelle_lieferant_idTABELLE_Lieferant = ?");
-$stmt->bind_param("i", $_SESSION["lieferantenID"]);
+$stmt->bind_param("i", $lieferantenID);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -125,7 +129,6 @@ echo "<input type='button' id='addUmsatzModal' class='btn btn-success btn-sm' va
         const bereichRegex = /^[a-zA-ZäöüÄÖÜß\s]{1,50}$/;
 
         if (isNaN(umsatz) || umsatz <= 0) {
-            v
             makeToaster("Bitte einen gültigen Umsatz eingeben (positiver Dezimalwert).", false);
             showModal();
             return;

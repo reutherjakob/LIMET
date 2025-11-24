@@ -32,8 +32,15 @@ init_page_serversides();
 <body style="height:100%">
 <div class="container-fluid bg-light">
     <div id="limet-navbar"></div>
-    <div class="mt-4 card">
-        <div class="card-header"><b>Elemente im Projekt</b></div>
+    <div class="mt-2 card">
+        <div class="card-header">
+            <div class=" row">
+                <div class="col-6">
+                    <b>Elemente im Projekt</b>
+                </div>
+                <div class="col-6 d-flex justify-content-end" id="dt-header-container"></div>
+            </div>
+        </div>
         <div class="card-body" id="elementLots">
             <?php
             $mysqli = utils_connect_sql();
@@ -91,29 +98,30 @@ AND Anzahl <>0;";
 
             $result = $mysqli->query($sql);
             echo "<table class='table table-striped table-hover compact table-bordered' id='tableRoombookList'>
-                                                        <thead><tr>
-                                                            <th>Raumnr</th>
-                                                            <th>Raum</th>
-                                                            <th>Raumbereich</th>
-                                                            <th>Geschoss</th>
-                                                            <th>BE</th>
-                                                            <th>BA</th>
-                                                            <th>Stk</th>
-                                                            <th>ID</th>
-                                                            <th>Element</th>
-                                                            <th>Variante</th>  
-                                                            <th>Standort</th>  
-                                                            <th>Bestand</th>                                                                              									
-                                                            <th>EP</th>            
-                                                             <th>EP-Excel</th>                                                            
-                                                            <th>Los-Nr</th>
-                                                            <th>Budget</th>                                                                
-                                                            <th>Gewerk</th>
-                                                            <th>GHG</th>
-                                                            <th>Los Bezeichnung</th>
-                                                            <!--th>RAUM-ID</th-->
-                                                        </tr>
-                                                        </thead>";
+            <thead><tr>
+                <th>Raumnr</th>
+                <th>Raum</th>
+                <th>Raumbereich</th>
+                <th>Geschoss</th>
+                <th>BE</th>
+                <th>BA</th>
+                <th>Stk</th>
+                <th> <div class='d-flex justify-content-center' data-bs-toggle='tooltip' title='ID'><i class='fas fa-fingerprint'></i></div> </th>
+                <th>Element</th>
+                <th>Variante</th>  
+                <th> <div class='d-flex justify-content-center' data-bs-toggle='tooltip' title='Standort'> <i class='fab fa-periscope '></i></div> </th>
+                <th>Bestand</th>
+                <th> <div class='d-flex justify-content-center' data-bs-toggle='tooltip' title='Einheitspreis'> <i class='fas fa-euro-sign'></i> </div></th>
+                <th>EP-Excel</th>                                                            
+                <th>Los-Nr</th>
+                <th>Budget</th>                                                                
+                <th>Gewerk</th>
+                <th>GHG</th>
+                <th>Los Bezeichnung</th>
+                <!--th>RAUM-ID</th-->
+                <th> <div class='d-flex justify-content-center' data-bs-toggle='tooltip' title='Kommentar'><i class='far fa-comments'></i></div></th>
+            </tr>
+            </thead>";
             echo "<tbody>";
             while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
@@ -141,6 +149,16 @@ AND Anzahl <>0;";
                 echo "<td>" . $row["GHG"] . "</td>";
                 echo "<td>" . $row["LosBezeichnung_Extern"] . "</td>";
                 //  echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
+                if (null != ($row["Kurzbeschreibung"])) {
+                    echo "<td><button type='button' class='btn btn-sm btn-outline-dark' 
+                    data-bs-toggle='popover' 
+                    data-bs-placement='top' 
+                    data-bs-content='" . htmlspecialchars($row["Kurzbeschreibung"]) . "' 
+                    title='Kommentar'>
+                    <i class='fa fa-comment'></i></button></td>";
+                } else {
+                    echo "<td> </td>";
+                }
                 echo "</tr>";
             }
             echo "</tbody></table>";
@@ -149,17 +167,19 @@ AND Anzahl <>0;";
         </div>
     </div>
 </div>
-
+<script src="utils/_utils.js"></script>
 <script>
     $(document).ready(function () {
+
         new DataTable('#tableRoombookList', {
             select: true,
-            layout: {
-                topStart: 'buttons',
-                topEnd: ['search', 'info'],
-                bottomStart: null,
-                bottomEnd: null
-            },
+            dom: "<'dt-buttons'B><'dt-search'f><'dt-info' i>rt",
+            // layout: {
+            //     topStart: 'buttons',
+            //     topEnd: ['search', 'info'],
+            //     bottomStart: null,
+            //     bottomEnd: null
+            // },
             order: [[2, "asc"]],
             columnDefs: [
                 {
@@ -176,23 +196,29 @@ AND Anzahl <>0;";
                 {
                     extend: 'excelHtml5',
                     text: 'Excel',
-                    className: 'fas fa-file-excel btn btn-outline-success bg-white',
+                    className: 'fas fa-file-excel btn btn-sm btn-outline-success bg-white',
                     exportOptions: {
                         columns: ':not(:eq(12))', // Exclude column 12 (index 11)
-                         format: {
-                             body: function (data, row, column, node) {
-                                 // Beispiel: für die Los-Nr-Spalte (z.B. Spalte 14)
-                                 if (column === 14) {
-                                     return "'" + data ; // Apostroph voranstellen
-                                 }
-                                 return data;
-                             }
-                         }
+                        format: {
+                            body: function (data, row, column) {
+                                if (column === 14) {
+                                    return "'" + data; // Apostroph voranstellen
+                                }
+                                return data;
+                            }
+                        }
                     }
-                },
-                'searchBuilder'
+                },{
+                    extend: 'searchBuilder',
+                    className: 'btn btn-sm bg-white btn-outline-dark' // add your btn-sm here with desired styles
+                }
             ],
-            paging: false
+            paging: false,
+            initComplete: function () {
+                $('#tableRoombookList_wrapper .dt-buttons').appendTo('#dt-header-container');
+                $('#tableRoombookList_wrapper .dt-search').appendTo('#dt-header-container');
+                $('#tableRoombookList_wrapper .dt-info').appendTo('#dt-header-container');
+            }
         });
     });
 

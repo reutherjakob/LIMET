@@ -124,10 +124,8 @@ if (!isset($_SESSION["username"])) {
     </div>
 </div>
 <script>
-
-    // Tabellen formatieren
     $(document).ready(function () {
-        var table = $('#tableGewerke').DataTable({
+        let table = $('#tableGewerke').DataTable({
             "select": true,
             "paging": true,
             "pagingType": "simple",
@@ -149,7 +147,7 @@ if (!isset($_SESSION["username"])) {
         $.get("navbar4.html", function (data) {
             $("#limet-navbar").html(data);
             $(".navbar-nav").find("li:nth-child(3)").addClass("active");
-            currentP = <?php     echo json_encode($_SESSION["projectName"]); ?>;
+            let currentP = <?php     echo json_encode($_SESSION["projectName"]); ?>;
             $("#projectSelected").text(currentP);
         });
 
@@ -168,11 +166,7 @@ if (!isset($_SESSION["username"])) {
                 });
             }
         });
-
     });
-
 </script>
-
 </body>
-
 </html>

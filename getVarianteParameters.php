@@ -1,11 +1,5 @@
-<!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title>getVarianteParameters</title>
-</head>
-<body>
 <?php
+// 25 FX
 include "utils/_utils.php";
 include "getElementParameterTable.php";
 check_login();
@@ -17,7 +11,6 @@ generate_variante_parameter_inputtable();
 <script>
 
     $(document).ready(function () {
-
         document.querySelectorAll('select[id^="Wert_"], select[id^="Einheit_"]').forEach(function (select) {
             select.addEventListener('change', function () {
                 const freetextInput = document.getElementById(this.id + '_freetext');
@@ -29,7 +22,6 @@ generate_variante_parameter_inputtable();
                 }
             });
         });
-
 
         $('#tableElementParameters').DataTable({ //same as in getElementVariante.php
             select: true,
@@ -57,18 +49,12 @@ generate_variante_parameter_inputtable();
             },
             scrollX: true,
             initComplete: function () {
-
                 $('#variantenParameterCH .xxx').remove();
                 $('#variantenParameter .dt-search label').remove();
                 $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").prependTo('#variantenParameterCH');
-
             }
         });
-
-
     });
-
-
 </script>
 </body>
 </html>

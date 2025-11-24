@@ -158,12 +158,12 @@ const ERROR_MESSAGES = [
 ];
 
 // ------------------- UTILITY FUNCTIONS -------------------
-function abcTo123($char)
+function abcTo123($char): int
 {
     return ord(strtolower($char)) - ord('a') + 1;
 }
 
-function unitMultiplier($text)
+function unitMultiplier($text): float|int
 {
     if (stripos($text, 'k') !== false) return 1000;
     if (stripos($text, 'M') !== false) return 1000000;
@@ -171,12 +171,8 @@ function unitMultiplier($text)
     return 1;
 }
 
-function getQueryParam($param)
-{
-    return $_GET[$param] ?? null;
-}
 
-function getComponents($input)
+function getComponents($input): array
 {
     $valid = ["AV", "SV", "ZSV", "USV"];
     return array_values(array_filter(explode("/", $input), fn($c) => in_array($c, $valid)));
@@ -235,7 +231,7 @@ function check_RG(&$msgs, $roomParams)
     }
 }
 
-function check_summe_leistungen(&$msgs, $roomParams)
+function check_summe_leistungen(&$msgs, $roomParams): void
 {
     $sum = array_sum([
         intval($roomParams['ET_Anschlussleistung_AV_W'] ?? 0),
@@ -293,7 +289,7 @@ function check_4_room_param(&$msgs, $roomParams, $param, $row): void
 }
 
 
-function check4vorabsperr(&$msgs, $roomParams, $elements_in_room)
+function check4vorabsperr(&$msgs, $roomParams, $elements_in_room): void
 {
     if (intval($roomParams["1 Kreis DL-5"] ?? 0) == 0) {
         $msgs[] = sprintf(ERROR_MESSAGES['stativ_dl5'],
@@ -353,9 +349,12 @@ check_login();
 $messages = [];
 $roomIDsArray = [];
 
-if (($roomID = getQueryParam('roomID')) !== null) $roomIDsArray = explode(',', $roomID);
+if (($roomID = getPostInt('roomID')) !== null) {
+    $roomIDsArray = explode(',', $roomID);
+}
 
 $mysqli = utils_connect_sql();
+
 $stmt = $mysqli->prepare(
     "SELECT * FROM tabelle_räume
      INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
@@ -366,7 +365,10 @@ $stmt->bind_param("i", $_SESSION["projectID"]);
 $stmt->execute();
 $result = $stmt->get_result();
 $raumparameter = [];
-while ($row = $result->fetch_assoc()) $raumparameter[$row['idTABELLE_Räume']] = $row;
+
+while ($row = $result->fetch_assoc()) {
+    $raumparameter[$row['idTABELLE_Räume']] = $row;
+}
 
 $stmt = $mysqli->prepare(
     "SELECT tabelle_projekt_elementparameter.Wert, tabelle_projekt_elementparameter.Einheit, tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten, 

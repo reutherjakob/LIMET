@@ -1,9 +1,8 @@
 <?php
-// 25Fux
+// 25 Fx
 require_once 'utils/_utils.php';
 include "utils/_format.php";
 check_login();
-
 
 $elementID = getPostInt("elementID", 0);
 $mysqli = utils_connect_sql();
@@ -32,6 +31,7 @@ echo "<table class='table table-striped table-bordered table-sm table-hover bord
             <th>Preisbasis </th>
             </tr></thead>
             <tbody>";
+
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
     echo "<td>" . $row["Projektname"] . "</td>";
@@ -60,8 +60,4 @@ echo "</tbody></table>";
 
         });
     });
-
-
 </script>
-</body>
-</html>

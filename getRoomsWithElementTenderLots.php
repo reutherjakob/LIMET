@@ -1,13 +1,5 @@
-<!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-<head>
-    <title></title></head>
-<body>
-
-
 <?php
-// --> REWORKED 25 <--
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 
@@ -17,10 +9,13 @@ $sql = "SELECT `tabelle_lose_extern`.`idtabelle_Lose_Extern`,
 			    `tabelle_lose_extern`.`LosBezeichnung_Extern`,
 			    `tabelle_lose_extern`.`Ausführungsbeginn`
 			FROM `LIMET_RB`.`tabelle_lose_extern`
-			WHERE `tabelle_lose_extern`.`tabelle_projekte_idTABELLE_Projekte`=" . $_SESSION["projectID"] . "
+			WHERE `tabelle_lose_extern`.`tabelle_projekte_idTABELLE_Projekte`= ?
 			ORDER BY `tabelle_lose_extern`.`LosNr_Extern`;";
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("i", $_SESSION['projectID']);
+$stmt->execute();
 
-$result = $mysqli->query($sql);
+$result = $stmt->get_result();
 
 $lotsInProject = array();
 while ($row = $result->fetch_assoc()) {
@@ -58,12 +53,16 @@ while ($row = $result->fetch_assoc()) {
 
 <?php
 
-$raumbereich = urldecode($_GET["raumbereich"]);
-$bauabschnitt = urldecode($_GET["bauabschnitt"]);
-$losID = $_GET["losID"] ?? null;
-$bestand = $_GET["bestand"] ?? null;
-$variantenID = $_GET["variantenID"] ?? null;
-$elementID = $_GET["elementID"] ?? null;
+$raumbereich = getPostString("raumbereich");
+$bauabschnitt = getPostString("bauabschnitt");
+$losID = getPostInt("losID", 0);
+#    $_GET["losID"] ?? null;
+$bestand = getPostInt("bestand", 0);
+#$_GET["bestand"] ?? null;
+$variantenID = getPostInt("variantenID", 0);
+#$_GET["variantenID"] ?? null;
+$elementID = getPostInt('elementID', 0);
+#$_GET["elementID"] ?? null;
 $projectID = $_SESSION["projectID"] ?? null;
 
 // Basis-SQL
@@ -166,9 +165,9 @@ echo "<table class='table table-striped table-bordered border border-light borde
 	<th>Raumbezeichnung</th>
 	<th>Raumbereich</th>
 	<th>Bestand</th>
-	<th>Stand</th>
+	<th class='d-flex justify-content-center' data-bs-toggle='tooltip' title='Standort'><i class='fab fa-periscope '></i></th>
 	<th>Verw</th>
-	<th>Komm</th>
+	<th class='d-flex justify-content-center' data-bs-toggle='tooltip' title='Kommentar'><i class='far fa-comment'></i></th>
 	<th>LosNr</th>
 	<th></th>
 		<th>Batch</th>
@@ -245,7 +244,7 @@ $mysqli->close();
 ?>
 
 <!-- Modal zum Anzeigen bzw Speichern des Kommentars -->
-<div class='modal fade' id='commentModal' role='dialog' tabindex="-1" >
+<div class='modal fade' id='commentModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
         <div class='modal-content'>
             <div class='modal-header'>
@@ -271,18 +270,15 @@ $mysqli->close();
 
 
 <!--suppress ES6ConvertVarToLetConst -->
+<script src="utils/_utils.js"></script>
 <script charset="utf-8">
     var tableRoomsWithElementTenderLots;
     var selectedRows = [];
 
-
-
     $(document).ready(function () {
-
-
         $('.batch-select').prop('checked', true)
         $('.batch-select').each(function () {
-            var id = $(this).attr('id').replace('batchSelect', '');
+            let id = $(this).attr('id').replace('batchSelect', '');
             selectedRows.push(id);
         });        // console.log(selectedRows);
         $("#saveSelected").click(function () {
@@ -290,7 +286,6 @@ $mysqli->close();
                 saveElement(ID);
             });
         });
-
         $('#globalLosExtern').select2({
             width: 'resolve' // or 'style' if you want it to match your existing CSS
         });
@@ -446,7 +441,7 @@ $mysqli->close();
         let standort = $("#Standort" + ID).val();
         let verwendung = $("#Verwendung" + ID).val();
         if (standort === '0' && verwendung === '0') {
-            alert("Standort und Verwendung kann nicht Nein sein!");
+            makeToaster("Standort und Verwendung kann nicht Nein sein!", false);
             return; // Stop execution if validation fails
         }
         $.ajax({   // Make an AJAX call to save the data
@@ -466,13 +461,8 @@ $mysqli->close();
             },
             error: function (xhr, status, error) {
                 console.error("Error saving data:", error);
-                alert("Es gab einen Fehler beim Speichern der Daten. Bitte versuchen Sie es erneut.");
+                alert("Es gab einen Fehler beim Speichern der Daten. Bitte versuchen Sie es erneut." + error);
             }
         });
     }
-
-
 </script>
-
-</body>
-</html>

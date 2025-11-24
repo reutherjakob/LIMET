@@ -1,96 +1,45 @@
 <?php
-session_start();
-?>
+//  25Fx
+require_once 'utils/_utils.php';
+check_login();
 
+$mysqli = utils_connect_sql();
+$id = getPostInt("id");
+$cadKommentar = getPostString("CADcomment");
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+$mapYesNo = fn($val) => $val === "Ja" ? 1 : 0;
+$mapKontrolliert = fn($val) => $val === "Nicht geprüft" ? 0 : ($val === "Freigegeben" ? 1 : 2);
 
-<?php
+if ($id !== 0 &&
+    ($cadNotwendig = $mapYesNo(getPostString("selectCAD_notwendig"))) !== null &&
+    ($dwgVorhanden = $mapYesNo(getPostString("selectCAD_dwg_vorhanden"))) !== null &&
+    ($dwgKontrollliert = $mapKontrolliert(getPostString("selectCAD_dwg_kontrolliert"))) !== null &&
+    ($familieVorhanden = $mapYesNo(getPostString("selectCAD_familie_vorhanden"))) !== null &&
+    ($familieKontrolliert = $mapKontrolliert(getPostString("selectCAD_familie_kontrolliert"))) !== null
+) {
+    $stmt = $mysqli->prepare(
+        "UPDATE `LIMET_RB`.`tabelle_elemente`
+        SET `CAD_notwendig` = ?, `CAD_dwg_vorhanden` = ?, `CAD_dwg_kontrolliert` = ?, `CAD_familie_vorhanden` = ?, 
+            `CAD_familie_kontrolliert` = ?, `CAD_Kommentar` = ?
+        WHERE `idTABELLE_Elemente` = ?"
+    );
+    $stmt->bind_param(
+        "iiiiisi",
+        $cadNotwendig,
+        $dwgVorhanden,
+        $dwgKontrollliert,
+        $familieVorhanden,
+        $familieKontrolliert,
+        $cadKommentar,
+        $id
+    );
+    if ($stmt->execute()) {
+        echo "Erfolgreich aktualisiert!";
+    } else {
+        echo "Error: " . $stmt->error;
+    }
+    $stmt->close();
+    $mysqli->close();
+}
 
-	if($_GET["id"] != "" && $_GET["selectCAD_notwendig"] != "" && $_GET["selectCAD_dwg_vorhanden"] != "" && $_GET["selectCAD_dwg_kontrolliert"] != "" && $_GET["selectCAD_familie_vorhanden"] != "" && $_GET["selectCAD_familie_kontrolliert"] != ""){
-		
-		$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-		/* change character set to utf8 */
-		if (!$mysqli->set_charset("utf8")) {
-		    printf("Error loading character set utf8: %s\n", $mysqli->error);
-		    exit();
-		} 		
-		// Check connection
-		if ($mysqli->connect_error) {
-		    die("Connection failed: " . $mysqli->connect_error);
-		}
-		else{
-			
-			if($_GET["selectCAD_notwendig"]=="Ja"){
-				$cadnotwendig = 1;
-			}
-			else{
-				$cadnotwendig = 0;
-			}
-			if($_GET["selectCAD_dwg_vorhanden"]=="Ja"){
-				$dwgvorhanden = 1;
-			}
-			else{
-				$dwgvorhanden = 0;
-			}
-
-			if($_GET["selectCAD_dwg_kontrolliert"]=="Nicht geprüft"){
-				$dwgkontrollliert = 0;
-			}
-			else{
-				if($_GET["selectCAD_dwg_kontrolliert"]=="Freigegeben"){
-					$dwgkontrollliert = 1;
-				}
-				else{
-					$dwgkontrollliert = 2;
-				}
-			}
-			if($_GET["selectCAD_familie_vorhanden"]=="Ja"){
-				$familievorhanden = 1;
-			}
-			else{
-				$familievorhanden = 0;
-			}
-			
-			if($_GET["selectCAD_familie_kontrolliert"]=="Nicht geprüft"){
-				$familiekontrolliert = 0;
-			}
-			else{
-				if($_GET["selectCAD_familie_kontrolliert"]=="Freigegeben"){
-					$familiekontrolliert = 1;
-				}
-				else{
-					$familiekontrolliert = 2;
-				}
-			}
-			
-			
-			$sql = "UPDATE `LIMET_RB`.`tabelle_elemente` 
-			SET `CAD_notwendig` = '".$cadnotwendig."',
-			`CAD_dwg_vorhanden` = '".$dwgvorhanden."',
-			`CAD_dwg_kontrolliert` = '".$dwgkontrollliert."',
-			`CAD_familie_vorhanden` = '".$familievorhanden."',
-			`CAD_familie_kontrolliert` = '".$familiekontrolliert."',
-			`CAD_Kommentar` = '".$_GET["CADcomment"]."' 
-			WHERE `idTABELLE_Elemente` = ".$_GET["id"];	
-				
-			if ($mysqli ->query($sql) === TRUE) {
-			    echo "Erfolgreich aktualisiert!";
-			} else {
-			    echo "Error: " . $sql . "<br>" . $mysqli->error;
-			}
-			
-		}
-		
-		$mysqli ->close();
-	}
-	else{
-		echo "Keine korrekten Werte übergeben!";
-	}
 ?>

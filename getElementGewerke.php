@@ -1,17 +1,13 @@
 <?php
-session_start();
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
-?>
 
-<!DOCTYPE html>
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-<html lang="de">
-<head>
-    <title> get el gewerk</title></head>
-<body>
-<?php
-$_SESSION["elementID"] = $_GET["elementID"];
+$_SESSION["elementID"] =getPostInt('elementID',0);
+
+if ($_SESSION["elementID"]===0) {
+    die("Invalid input data: missing elementID");
+}
 $mysqli = utils_connect_sql();
 
 // Function to fetch Gewerk, GHG, and GUG
@@ -152,40 +148,13 @@ $gugOptions = $gewerkeData['ghg'] ? fetchGUGOptions($mysqli, $gewerkeData['ghg']
                     <?php endif; ?>
                 </select>
             </div>
-
-            <!--div class='form-group d-flex align-items-center mr-2'>
-                <div>
-                    <button type='button' id='saveElementGewerk' class='btn btn-outline-dark btn-sm me-1 '
-                            value='saveElementGewerk'>
-                        <i class='far fa-save'></i> Gewerk speichern
-                    </button>
-
-                    <button type='button' id='saveElementGewerk94'
-                            class='btn btn-outline-dark btn-sm me-1'
-                            value='saveElementGewerk2'>
-                        <i class='far fa-save'></i> 94
-                    </button>
-                    <button type='button' id='saveElementGewerk93'
-                            class='btn btn-outline-dark btn-sm me-1'
-                            value='saveElementGewerk1'>
-                        <i class='far fa-save'></i> 93
-                    </button>
-                    <button type='button' id='saveElementGewerk91' class='btn btn-outline-dark btn-sm'
-                            value='saveElementGewerk6'>
-                        <i class='far fa-save'></i> 91
-                    </button>
-                </div>
-            </div--->
-
         </form>
     </div>
 </div>
 
-
 <?php
 $mysqli->close();
 ?>
-
 
 <!-- Modal Info -->
 <div class='modal fade' id='infoModal' role='dialog' tabindex="-1">
@@ -206,13 +175,13 @@ $mysqli->close();
     </div>
 </div>
 
+
 <script src="utils/_utils.js"></script>
 <script charset="utf-8">
-
     //GHG geändert
     $('#ghg').change(function () {
-        var ghgid = $('#ghg').val();
-        var gewerkid = $('#gewerk').val();
+        let ghgid = $('#ghg').val();
+        let gewerkid = $('#gewerk').val();
         if (gewerkid !== 0 && ghgid !== 0) {
             $.ajax({
                 url: "getElementGewerkeFiltered.php",
@@ -224,10 +193,9 @@ $mysqli->close();
             });
         }
     });
-
     //Gewerk geändert
     $('#gewerk').change(function () {
-        var gewerkid = $('#gewerk').val();
+        let gewerkid = $('#gewerk').val();
         if (gewerkid !== 0) {
             $.ajax({
                 url: "getElementGewerkeFiltered.php",
@@ -252,49 +220,10 @@ $mysqli->close();
                 data: {"gewerk": $('#gewerk').val(), "ghg": $('#ghg').val(), "gug": $('#gug').val()},
                 type: "POST",
                 success: function (data) {
-                    //		        	$("#infoBody").html(data);
-
                     makeToaster(data.trim(), true);
-                    //                                $('#infoModal').modal('show');
                 }
             });
         }
     });
 
-    $("button[value='saveElementGewerk2']").click(function () {
-        $.ajax({
-            url: "saveElementGewerk.php",
-            data: {"gewerk": 2, "ghg": $('#ghg').val(), "gug": $('#gug').val()},
-            type: "POST",
-            success: function (data) {
-                makeToaster(data.trim(), true);
-            }
-        });
-    });
-
-    $("button[value='saveElementGewerk1']").click(function () {
-        $.ajax({
-            url: "saveElementGewerk.php",
-            data: {"gewerk": 1, "ghg": $('#ghg').val(), "gug": $('#gug').val()},
-            type: "POST",
-            success: function (data) {
-                makeToaster(data.trim(), true);
-            }
-        });
-    });
-
-    $("button[value='saveElementGewerk6']").click(function () {
-        $.ajax({
-            url: "saveElementGewerk.php",
-            data: {"gewerk": 6, "ghg": $('#ghg').val(), "gug": $('#gug').val()},
-            type: "POST",
-            success: function (data) {
-                makeToaster(data.trim(), true);
-            }
-        });
-    });
-
-
 </script>
-</body>
-</html>

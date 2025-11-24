@@ -1,4 +1,5 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 include "utils/_format.php";
 header('Content-Type: application/json; charset=utf-8');
@@ -6,7 +7,6 @@ header('Content-Type: application/json; charset=utf-8');
 $mysqli = utils_connect_sql();
 $projectID = (int)$_SESSION["projectID"];
 
-// Fetch all budgets in one go for select options
 $sqlBudgets = "SELECT idtabelle_projektbudgets, Budgetnummer, Budgetname
                FROM tabelle_projektbudgets
                WHERE tabelle_projekte_idTABELLE_Projekte = ?

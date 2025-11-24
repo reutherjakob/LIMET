@@ -8,7 +8,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-
     <!-- Rework 2025 CDNs -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -21,8 +20,6 @@
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
-
-
 </head>
 <body style="height:100%">
 <div id="limet-navbar" class=''></div>
@@ -63,7 +60,6 @@
                     tabelle_geraete.GeraeteID DESC";
 
             $result = $mysqli->query($sql);
-
             echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableDevices'>
                       <thead><tr>";
             $firstRow = $result->fetch_assoc();
@@ -169,7 +165,7 @@
 <script src="utils/_utils.js"></script>
 <script>
     let table;
-    var deviceID;
+    var deviceID; //used in multiple subscripts, maybe set Session var?
 
     $(document).ready(function () {
         table = new DataTable('#tableDevices', {

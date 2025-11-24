@@ -1,4 +1,4 @@
-function makeToaster(headerText, success) {
+window.makeToaster = window.makeToaster || function (headerText, success) {
     const existingToasts = Array.from(document.querySelectorAll('.toast'));
     const visibleToasts = existingToasts.filter(toast => toast.classList.contains('show'));
     const toast = document.createElement('div');
@@ -6,7 +6,7 @@ function makeToaster(headerText, success) {
     toast.setAttribute('role', 'alert');
     toast.style.position = 'fixed';
     toast.style.right = '10px';
-    headerText = headerText.replace(/\n/g, '<br>'); // Replace \n with <br>
+    headerText = headerText.replace(/\n/g, '<br>');
     toast.innerHTML = `
         <div class="toast-header ${success ? "grün" : "rot"}">
             <strong class="mr-auto">${headerText}</strong>
@@ -23,32 +23,27 @@ function makeToaster(headerText, success) {
             updateToastPositions();
         }, 50);
     }, 10000);
-}
+};
 
-function updateToastPositions() {
+window.updateToastPositions = window.updateToastPositions || function () {
     const visibleToasts = Array.from(document.querySelectorAll('.toast.show'));
     let topPosition = 10;
     visibleToasts.forEach(toast => {
         toast.style.top = `${topPosition}px`;
         topPosition += toast.offsetHeight + 10;
     });
-}
+};
 
-function move_item(item2move_id, where2move_id) {
+window.move_item = window.move_item || function (item2move_id, where2move_id) {
     let item = document.getElementById(item2move_id);
-
     if (item) {
         item.parentNode.removeChild(item);
         document.getElementById(where2move_id).appendChild(item);
     }
-}
+};
 
-
-async function getExcelFilename(documentName, options = {}) {
-    // Prepare form data
+window.getExcelFilename = window.getExcelFilename || async function (documentName, options = {}) {
     const formData = new URLSearchParams({ documentName, ...options });
-
-    // Fetch filename from backend
     const response = await fetch('/utils/get_excel_filename.php', {
         method: 'POST',
         body: formData
@@ -56,4 +51,14 @@ async function getExcelFilename(documentName, options = {}) {
     if (!response.ok) throw new Error('Network response was not ok');
     const data = await response.json();
     return data.filename;
+};
+
+// Tooltips only once
+if (!window.tooltipList) {
+    let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    window.tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl, {
+            delay: { "show": 10, "hide": 0 }
+        });
+    });
 }

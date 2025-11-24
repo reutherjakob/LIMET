@@ -87,15 +87,16 @@ init_page_serversides();
             <div class='col-xxl-2' id='dateSelectContainer'>
                     <label for='dateSelect' class='visually-hidden'>Änderungsdatum</label>
                     <input type='date' id='dateSelect' name='dateSelect' class='form-control' title='Datum am Bericht'/>
-                </div>";   echo "<button type='button' class='ml-4 btn btn-outline-dark btn-sm' value='createBestandsPDF'><i class='far fa-file-pdf'></i> Bestands-PDF</button>";
+                </div>";
+            echo "<button type='button' class='ml-4 btn btn-outline-dark btn-sm' value='createBestandsPDF'><i class='far fa-file-pdf'></i> Bestands-PDF</button>";
             echo "<button  class='ml-4 btn btn-outline-dark btn-sm' onclick=\"window.location.href='out_bestands_csv.php'\">Download CSV</button>";
 
         }
         echo "</div> </div> </div> <div class='card-body'>";
-        echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5'' id='tableBestandsElemente'>
+        echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableBestandsElemente'>
             <thead><tr>
             <th>ID</th>
-            <th>ElementID</th>
+<th> <div class='d-flex justify-content-center' data-bs-toggle='tooltip' title='Element ID'><i class='fas fa-fingerprint'></i></div> </th>
             <th>Element</th>
             <th>Inventarnr</th>
             <th>Seriennr</th>
@@ -103,11 +104,11 @@ init_page_serversides();
             <th>Gerät</th>
             <th>Raumnr</th>
             <th>Raum</th>
-              <th>Raumbereich</th>
-            <th>Standort aktuell</th>
-            <th><i class='fas fa-euro-sign'> <i class='fas fa-euro-sign'</i></th>
-            <th>Kosten</th><!-- unformatiert -->
-            <th><i class='far fa-comments'></i></th>                                                    
+            <th>Raumbereich</th>
+            <th> <div class='d-flex justify-content-center' data-bs-toggle='tooltip' title='Standort'> <i class='fab fa-periscope '></i></div> </th>
+            <th> <div class='d-flex justify-content-center' data-bs-toggle='tooltip' title='Kosten'> <i class='fas fa-euro-sign'></i> </div></th>
+            <th >Kosten</th><!-- unformatiert -->
+            <th> <div class='d-flex justify-content-center' data-bs-toggle='tooltip' title='Kommentar'><i class='far fa-comments'></i></div></th>                                                    
             </tr></thead>
             <tbody>";
 
@@ -121,8 +122,7 @@ init_page_serversides();
             echo "<td>" . $row["Anschaffungsjahr"] . "</td>";
             echo "<td>" . $row["Hersteller"] . "-" . $row["Typ"] . "</td>";
             echo "<td>" . $row["Raumnr"] . "</td>";
-            echo "<td>" . $row["Raumbezeichnung"] . "</td>";
-            // 10th
+            echo "<td>" . $row["Raumbezeichnung"] . "</td>";            // 10th
             echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
             echo "<td>" . $row["Aktueller Ort"] . "</td>";
             echo "<td>" . format_money($row["Kosten"]) . "</td>";
@@ -144,6 +144,7 @@ init_page_serversides();
     </div>
 </div>
 </body>
+<script src="utils/_utils.js"></script>
 <script>
     var table1;
     $(document).ready(function () {
@@ -203,15 +204,6 @@ init_page_serversides();
 
             }
         });
-
-        let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-        let popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-            return new bootstrap.Popover(popoverTriggerEl, {
-                trigger: 'click',
-                html: true
-            })
-        })
-
         $(document).on('click', function (e) {
             if (!$(e.target).closest('[data-bs-toggle="popover"]').length &&
                 !$(e.target).closest('.popover').length) {
@@ -227,11 +219,6 @@ init_page_serversides();
             var url = "PDFs/pdf_createBestandPDF.php?datum=" + encodeURIComponent(datum);
             window.open(url);
         });
-
     });
-
-
 </script>
-
-
 </html>

@@ -1,22 +1,31 @@
-<!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml" lang="">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title></title>
-</head>
-<body>
 <?php
 require_once 'utils/_utils.php';
 check_login();
-?>
 
-<?php
 $mysqli = utils_connect_sql();
-$sql = "SELECT tabelle_parameter.Bezeichnung, tabelle_projekt_elementparameter.Wert, tabelle_projekt_elementparameter.Einheit, tabelle_parameter_kategorie.Kategorie, tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter
-        FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter) ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
-        WHERE (((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION['projectID'] . ") AND ((tabelle_projekt_elementparameter.tabelle_elemente_idTABELLE_Elemente)=" . $_GET['elementID'] . ") AND ((tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten)=" . $_GET['variantenID'] . "))
+$projectID = getPostInt('projectID', 0);
+$elementID = getPostInt('elementID', 0);
+$variantenID = getPostInt('variantenID', 0);
+
+$sql = "SELECT tabelle_parameter.Bezeichnung, tabelle_projekt_elementparameter.Wert, tabelle_projekt_elementparameter.Einheit, 
+        tabelle_parameter_kategorie.Kategorie, tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter
+        FROM tabelle_parameter_kategorie 
+        INNER JOIN (tabelle_parameter 
+        INNER JOIN tabelle_projekt_elementparameter 
+            ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter) 
+        ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
+        WHERE tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte = ? 
+          AND tabelle_projekt_elementparameter.tabelle_elemente_idTABELLE_Elemente = ? 
+          AND tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten = ?
         ORDER BY tabelle_parameter_kategorie.Kategorie;";
-$result = $mysqli->query($sql);
+
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("iii", $projectID, $elementID, $variantenID);
+$stmt->execute();
+$result = $stmt->get_result();
+$stmt->close();
+$mysqli->close();
+
 echo "<table class='table table-striped table-sm' id='tableVariantenParameters' >
 	<thead><tr>
         <th>Kategorie</th>
@@ -25,6 +34,7 @@ echo "<table class='table table-striped table-sm' id='tableVariantenParameters' 
 	<th>Einheit</th>
 	</tr></thead>
 	<tbody>";
+
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
     echo "<td>" . $row["Kategorie"] . "</td>";
@@ -32,14 +42,13 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . $row["Wert"] . "</td>";
     echo "<td>" . $row["Einheit"] . "</td>";
     echo "</tr>";
-
 }
 echo "</tbody></table>";
-$mysqli->close();
 ?>
+
 <script charset="utf-8">
     $("#tableVariantenParameters").DataTable({
-        savestate:true,
+        savestate: true,
         paging: false,
         searching: true,
         info: false,
@@ -48,5 +57,3 @@ $mysqli->close();
         scrollCollapse: true
     });
 </script>
-</body>
-</html>
