@@ -1,11 +1,9 @@
 <?php
-// V2.0
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
-
 $mysqli = utils_connect_sql();
 $deviceID = getPostInt('deviceID', 0);
-
 if ($deviceID < 1) {
     die("Invalid device ID.");
 }
@@ -103,9 +101,8 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
                     </div>
 
                     <?php
-                    $sql = "SELECT tabelle_projekte.idTABELLE_Projekte, tabelle_projekte.Interne_Nr, tabelle_projekte.Projektname"
-                        . " FROM tabelle_projekte ORDER BY tabelle_projekte.Interne_Nr;";
-
+                    $sql = "SELECT tabelle_projekte.idTABELLE_Projekte, tabelle_projekte.Interne_Nr, tabelle_projekte.Projektname 
+                            FROM tabelle_projekte ORDER BY tabelle_projekte.Interne_Nr;";
                     $result1 = $mysqli->query($sql);
 
                     echo "<div class='form-group'>
@@ -115,9 +112,7 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
                     while ($row = $result1->fetch_assoc()) {
                         echo "<option value=" . $row["idTABELLE_Projekte"] . ">" . $row["Interne_Nr"] . "-" . $row["Projektname"] . "</option>";
                     }
-                    echo "</select>										
-                                                </div>";
-
+                    echo "</select> </div>";
 
                     $stmt = $mysqli->prepare(
                         "SELECT tabelle_lieferant.Lieferant, tabelle_lieferant.idTABELLE_Lieferant
@@ -128,24 +123,19 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
 
                     $stmt->bind_param("i", $deviceID);
                     $stmt->execute();
-
                     $result1 = $stmt->get_result();
-
                     $stmt->close();
                     $mysqli->close();
                     echo "<div class='form-group'>
-                                                    <label for='lieferantService'>Lieferant:</label>									
-                                                    <select class='form-control input-sm' id='lieferantService' name='lieferantService'>
-                                                            <option value=0>Lieferant auswählen</option>
-                                                             <option value='add'>Nicht dabei? - Zu Element Hinzufügen! </option>
-                                                             <option value='new'>Nicht dabei? - Neu Anlegen!</option>";
+                        <label for='lieferantService'>Lieferant:</label>									
+                        <select class='form-control input-sm' id='lieferantService' name='lieferantService'>
+                                <option value=0>Lieferant auswählen</option>
+                                 <option value='add'>Nicht dabei? - Zu Element Hinzufügen! </option>
+                                 <option value='new'>Nicht dabei? - Neu Anlegen!</option>";
                     while ($row = $result1->fetch_assoc()) {
                         echo "<option value=" . $row["idTABELLE_Lieferant"] . ">" . $row["Lieferant"] . "</option>";
                     }
-                    echo "</select>										
-                                                </div>";
-
-                    ?>
+                    echo "</select> </div>"; ?>
                 </form>
             </div>
             <div class='modal-footer'>
@@ -154,7 +144,6 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
                 <button type='button' class='btn btn-danger btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -191,7 +180,6 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
         }
     });
 
-
     document.getElementById('lieferantService').addEventListener('change', function () {
         if (this.value === 'new') {
             window.location.href = 'firmenkontakte.php';
@@ -202,16 +190,14 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
         }
     });
 
-
     $("#addServicePrice").click(function () {//Wartungspreis zu Geraet hinzufügen
         let date = $("#dateService").val();
         let info = $("#infoService").val();
         let menge = $("#mengeService").val();
         let wartungsart = $("#wartungsart").val();
-        let wartungspreis = $("#wartungspreis").val();
+        let wartungspreis = normalizeCosts(    $("#wartungspreis").val());
         let project = $("#projectService").val();
         let lieferant = $("#lieferantService").val();
-
         if (date !== "" && info !== "" && menge !== "" && wartungsart !== "" && wartungspreis !== "" && lieferant > 0) {
             $.ajax({
                 url: "addServicePriceToDevice.php",
@@ -236,11 +222,8 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
                     });
                 }
             });
-
         } else {
             alert("Bitte alle Felder ausfüllen!");
         }
     });
-
-
 </script>

@@ -1,4 +1,5 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 $_SESSION["elementID"] = getPostInt("elementID");
 $_SESSION["variantenID"] = getPostInt("variantenID");
@@ -179,13 +180,23 @@ $row = $result->fetch_assoc();
             </div>
             <div class='modal-body' id='mbody'>
                 <?php
-                $sql = "SELECT tabelle_varianten.Variante, tabelle_projekt_varianten_kosten_aenderung.kosten_alt, tabelle_projekt_varianten_kosten_aenderung.kosten_neu, tabelle_projekt_varianten_kosten_aenderung.timestamp, tabelle_projekt_varianten_kosten_aenderung.user
-							FROM tabelle_varianten INNER JOIN tabelle_projekt_varianten_kosten_aenderung ON tabelle_varianten.idtabelle_Varianten = tabelle_projekt_varianten_kosten_aenderung.variante
-							WHERE (((tabelle_projekt_varianten_kosten_aenderung.projekt)=" . $_SESSION["projectID"] . ") 
-							AND ((tabelle_projekt_varianten_kosten_aenderung.element)=" . $_SESSION["elementID"] . "))
-							ORDER BY tabelle_varianten.Variante, tabelle_projekt_varianten_kosten_aenderung.timestamp DESC;";
+                $sql = "SELECT tabelle_varianten.Variante, tabelle_projekt_varianten_kosten_aenderung.kosten_alt,
+                        tabelle_projekt_varianten_kosten_aenderung.kosten_neu,
+                        tabelle_projekt_varianten_kosten_aenderung.timestamp,
+                        tabelle_projekt_varianten_kosten_aenderung.user
+                        FROM tabelle_varianten
+                        INNER JOIN tabelle_projekt_varianten_kosten_aenderung
+                        ON tabelle_varianten.idtabelle_Varianten = tabelle_projekt_varianten_kosten_aenderung.variante
+                        WHERE tabelle_projekt_varianten_kosten_aenderung.projekt = ?
+                        AND tabelle_projekt_varianten_kosten_aenderung.element = ?
+                        ORDER BY tabelle_varianten.Variante, tabelle_projekt_varianten_kosten_aenderung.timestamp DESC";
 
-                $result = $mysqli->query($sql);
+                $stmt = $mysqli->prepare($sql);
+                $stmt->bind_param("ii", $_SESSION["projectID"], $_SESSION["elementID"]);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $stmt->close();
+
                 echo "<table class='table table-striped table-sm' id='tableVariantenCostsOverTime'>
 						<thead><tr>
 						<th>Variante</th>
@@ -226,10 +237,8 @@ $row = $result->fetch_assoc();
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-bs-dismiss="modal">&times;
-                </button>
-                <h4 class="modal-title"><span
-                            class='glyphicon glyphicon-info-sign'></span> Info</h4>
+                <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><span class='glyphicon glyphicon-info-sign'></span> Info</h4>
             </div>
             <div class="modal-body">
                 <p id="error"></p>
@@ -461,13 +470,8 @@ $row = $result->fetch_assoc();
 
     $("#saveVariantePrice").click(function () {    // Kosten für Variante speichern
         if ($('#kosten').val() !== '') {
-            let KostenFormatiert = $('#kosten').val();
-            if (KostenFormatiert.toLowerCase().endsWith('k')) {
-                KostenFormatiert = KostenFormatiert.slice(0, -1) + '000';
-            }
-            KostenFormatiert = KostenFormatiert.replace(/,/g, '.').replace(/[^0-9.]/g, ''); //console.log(KostenFormatiert.toLowerCase());
+            let KostenFormatiert = normalizeCosts($('#kosten').val());
             let variantenID = $('#variante').val();
-           //  console.log("#saveVariantePrice", KostenFormatiert.toLowerCase(), variantenID);
             $.ajax({
                 url: "saveVariantePrice.php",
                 type: "POST",

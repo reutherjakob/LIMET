@@ -8,7 +8,7 @@ $elementID = getPostInt('elementID');
  //   filter_input(INPUT_GET, 'elementID', FILTER_VALIDATE_INT);
 $variantenID =  getPostInt('variantID');
     //filter_input(INPUT_GET, 'variantenID', FILTER_VALIDATE_INT);
-$projectID = $_SESSION["projectID"];
+$projectID = (int)$_SESSION["projectID"];
 
 // Vorhandene Elementparameter löschen
 $sqlDelete = "DELETE FROM tabelle_elemente_has_tabelle_parameter WHERE TABELLE_Elemente_idTABELLE_Elemente = ?";

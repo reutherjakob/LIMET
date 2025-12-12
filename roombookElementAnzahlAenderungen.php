@@ -1,4 +1,5 @@
 <?php
+// 25 FX
 if (!function_exists('utils_connect_sql')) {
     include "utils/_utils.php";
 }
@@ -33,10 +34,9 @@ $changes = $mysqli->query("
     rb.lieferdatum_alt,
     rb.lieferdatum_neu
 FROM tabelle_rb_aenderung rb
- 
 LEFT JOIN tabelle_räume r_neu ON rb.raumID_neu = r_neu.idTABELLE_Räume
 LEFT JOIN tabelle_elemente e ON rb.elementID_neu = e.idTABELLE_Elemente 
-WHERE r_neu.tabelle_projekte_idTABELLE_Projekte = " . $_SESSION["projectID"] . "
+WHERE r_neu.tabelle_projekte_idTABELLE_Projekte = ?
 ORDER BY rb.Timestamp DESC
 ");
 
@@ -152,8 +152,6 @@ if (!function_exists('h')) {
         </table>
     </div>
 </div>
-
-
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/v/bs5/dt-2.2.1/datatables.min.js"></script>
@@ -180,10 +178,8 @@ if (!function_exists('h')) {
 
         function loadChangeDetails(changeId) {
             $('#rbChangeDetailsContent').html('<div class="text-center my-4"><div class="spinner-border" role="status"></div></div>');
-
             let startDate = $('#start_date_rb_changes').val();
             let endDate = $('#end_date_rb_changes').val();
-
             $.ajax({
                 type: 'POST',
                 url: 'get_rb_change_details.php',
@@ -200,7 +196,6 @@ if (!function_exists('h')) {
                 }
             });
         }
-
         $('#start_date_rb_changes, #end_date_rb_changes').on('change', function () {
             const startDate = $('#start_date_rb_changes').val();
             const endDate = $('#end_date_rb_changes').val();

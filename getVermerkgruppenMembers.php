@@ -1,15 +1,14 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 
 $mysqli = utils_connect_sql();
-
 $gruppenID = getPostInt('gruppenID', 0);
 if (0 === $gruppenID) {
     echo "Ungültige Gruppen-ID.";
     exit;
 }
-
 
 $sql = "SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen, tabelle_ansprechpersonen.Name, tabelle_ansprechpersonen.Vorname, tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.Anwesenheit, tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.Verteiler
                 FROM tabelle_ansprechpersonen INNER JOIN tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen ON tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen = tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen
@@ -167,7 +166,7 @@ $mysqli->close();
                 }
             });
         } else {
-            alert("Vertiler nicht lesbar!");
+            alert("VertEeiler nicht lesbar!");
         }
     });
 </script>

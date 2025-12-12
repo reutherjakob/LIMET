@@ -1,4 +1,5 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
@@ -10,9 +11,9 @@ $gruppenVerfasser = getPostString('gruppenVerfasser');
 $gruppenStart     = getPostString('gruppenStart');
 $gruppenEnde      = getPostString('gruppenEnde');
 $gruppenDatum     = getPostString('gruppenDatum');
-$gruppenID        = getPostInt('gruppenID');
+$gruppenID        = getPostInt('gruppenID',0);
 
-if ($gruppenID === null) {
+if ($gruppenID === 0) {
     die("Ungültige Gruppen-ID.");
 }
 
@@ -50,7 +51,5 @@ if ($stmt->execute()) {
 }
 
 $stmt->close();
-
-
 $mysqli->close();
 ?>

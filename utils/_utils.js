@@ -62,3 +62,36 @@ if (!window.tooltipList) {
         });
     });
 }
+window.normalizeCosts = window.normalizeCosts || function (input) {
+    let ep = String(input);
+    if (ep.toLowerCase().endsWith('k')) {
+        ep = ep.slice(0, -1) + '000';
+    }
+    ep = ep.replace(/,/g, '.').replace(/[^0-9.]/g, '');
+    return ep;
+}
+
+//    function normalizeCosts(input) {
+//         let ep = String(input);
+//         if (ep.toLowerCase().endsWith('k')) {
+//             ep = ep.slice(0, -1) + '000';
+//         }
+//         ep = ep.replace(/,/g, '.').replace(/[^0-9.]/g, '');
+//         return ep;
+//     }
+
+
+// utils/_utils.js
+//function postForm(url, data = {}) {
+//    const params = new URLSearchParams();
+//    Object.entries(data).forEach(([key, value]) => {
+//        if (value === undefined || value === null) return;
+//        params.append(key, value);
+//    });
+
+//    return fetch(url, {
+//        method: 'POST',
+//        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+//        body: params.toString()
+//    }).then(r => r.text()); // oder .json(), je nach Bedarf
+//}

@@ -1,7 +1,7 @@
 <?php
-
-// Include necessary utility functions
+// 25 FX
 require_once 'utils/_utils.php';
+check_login();
 
 // Establish database connection
 $mysqli = utils_connect_sql();
@@ -22,60 +22,71 @@ $fields = [
     'tabelle_lieferant_idTABELLE_Lieferant' => 'lotAuftragnehmer'
 ];
 
-// Set lotID from GET request if provided
-if (!empty($_GET["lotID"])) {
-    $_SESSION["lotID"] = $_GET["lotID"];
+// Validate lotID from session
+$lotID = getPostInt('lotID',0);
+if ($lotID <= 0) {
+    die("Ungültige Lot-ID.");
 }
 
-// Prepare SQL query
-$queryFields = [];
-foreach ($fields as $column => $inputField) {
-    if ($inputField == 'losDatum' || $inputField == 'lotLVSend') {
-        $value = date("Y-m-d", strtotime($_GET[$inputField]) ?? '');
-    } elseif ($inputField == 'kostenanschlag') {
-        $value = $_GET[$inputField];
-    } else {
-        $value = $_GET[$inputField] ?? '';
-    }
+// Collect and sanitize input values
+$data = [];
+$types = '';
+$setParts = [];
+$allowedFields = array_values($fields);
 
-    // Skip empty fields to avoid overwriting existing data
-    if (!empty($value) || $inputField == 'kostenanschlag') {
-        if ($column == 'tabelle_lieferant_idTABELLE_Lieferant') {
-            $value = filter_input(INPUT_GET, 'lotAuftragnehmer');
-            if ($value == 0) {
-                continue; // Skip if lotAuftragnehmer is 0
+foreach ($fields as $dbColumn => $postField) {
+    $value = filter_input(INPUT_POST, $postField, FILTER_DEFAULT); // ✅ Fixed: No deprecated constant
+    $value = trim($value ?? '');
+
+
+    if ($value !== null && $value !== false && $value !== '') {
+        // Special handling for dates
+        if (in_array($postField, ['losDatum', 'lotLVSend'])) {
+            $date = DateTime::createFromFormat('d.m.Y', $value);
+            if ($date) {
+                $value = $date->format('Y-m-d');
+            } else {
+                continue; // Skip invalid dates
             }
         }
-        $queryFields[] = "`$column` = '$value'";
+
+        // Skip supplier if 0
+        if ($postField === 'lotAuftragnehmer' && $value == '0') {
+            continue;
+        }
+
+        $data[$dbColumn] = $value;
+        $setParts[] = "`$dbColumn` = ?";
+        $types .= 's'; // All fields treated as strings for simplicity
     }
 }
 
-// Add specific conditions based on input
-if (filter_input(INPUT_GET, 'mkf') == 0) {
-    // Add additional fields if mkf is 0
-    if (!empty($_GET["lotSum"])) {
-        $queryFields[] = "`Vergabesumme` = '" . $_GET["lotSum"] . "'";
-    }
+if (empty($setParts)) {
+    echo "Keine Felder zum Aktualisieren.";
+    $mysqli->close();
+    exit;
+}
+
+// Build dynamic prepared UPDATE statement
+$sql = "UPDATE `LIMET_RB`.`tabelle_lose_extern` SET " . implode(', ', $setParts) . " WHERE `idtabelle_Lose_Extern` = ?";
+$types .= 'i'; // lotID is integer
+$data['lotID'] = $lotID; // Add lotID for WHERE clause
+
+// Prepare and execute
+$stmt = $mysqli->prepare($sql);
+if (!$stmt) {
+    die("Prepare failed: " . $mysqli->error);
+}
+
+$params = array_values($data);
+$stmt->bind_param($types, ...$params);
+
+if ($stmt->execute()) {
+    echo "Los erfolgreich aktualisiert! " . $stmt->affected_rows . " Zeile(n) betroffen.";
 } else {
-    // Handle mkf != 0
-    if (!empty($_GET["lotSum"])) {
-        $queryFields[] = "`Vergabesumme` = '" . $_GET["lotSum"] . "'";
-    }
+    echo "Fehler beim Ausführen: " . $stmt->error;
 }
 
-// Construct SQL query
-if (!empty($queryFields)) {
-    $sql = "UPDATE `LIMET_RB`.`tabelle_lose_extern` SET " . implode(', ', $queryFields) . " WHERE `idtabelle_Lose_Extern` = " . $_SESSION["lotID"] . ";";
-    //echo $sql;
-
-    // Execute query
-    if ($mysqli->query($sql) === TRUE) {
-        echo "Los erfolgreich aktualisiert!";
-    } else {
-        echo "Error: " . $sql . "<br>" . $mysqli->error;
-    }
-} else {
-    echo "No fields to update.";
-}
-
+$stmt->close();
 $mysqli->close();
+?>

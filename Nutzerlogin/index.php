@@ -2,9 +2,6 @@
 <html lang="de">
 <head>
     <title>Login</title>
-    <!--meta http-equiv="Content-Security-Policy"
-          content="default-src 'self'; style-src 'self' https://cdn.jsdelivr.net; script-src 'self' https://code.jquery.com https://cdn.jsdelivr.net"-->
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -45,7 +42,19 @@
 
                             </div>
                         </div>
+                        <!-- DSGVO Einwilligung Checkbox -->
+                        <!--div-- class="mb-3 col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="consentCheckbox" name="consentCheckbox" required>
+                                <label class="form-check-label" for="consentCheckbox">
+                                    Ich habe die <a href="../Nutzerumfrage/DSGVO_Nutzerumfrage.php" target="_blank" rel="noopener">Datenschutzerklärung</a>
+                                    gelesen und stimme der Verarbeitung meiner personenbezogenen Daten zu.
+                                </label>
+                            </div>
+                        </div-->
+
                         <div id="loginMsg" class="mt-3"></div>
+
                     </div>
                     <div class='card-footer'>
                         <div class='d-flex align-items-center justify-content-center'>
@@ -68,8 +77,17 @@
     </div>
 </body>
 
-<script>
+<?php
+include '../Nutzerlogin/footer.html';
+?>
 
+<script>
+   // const consentCheckbox = $('#consentCheckbox');
+   // const loginBtn = $('#loginBtn');
+   // // Login-Button nur aktivieren wenn Checkbox angehakt
+   // consentCheckbox.change(function() {
+   //     loginBtn.prop('disabled', !this.checked);
+   // });
 
     $('#loginForm').submit(async function (e) {
         e.preventDefault();

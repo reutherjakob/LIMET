@@ -1,15 +1,18 @@
 <?php
+// 25 FX
 include "utils/_utils.php";
 check_login();
 init_page_serversides("", "x");
-$projectID = $_SESSION["projectID"];
+$projectID = (int)$_SESSION["projectID"];
 $conn = utils_connect_sql();
 $raumbereichOptions = [];
+
 $sql = "SELECT DISTINCT `Raumbereich Nutzer` FROM tabelle_räume WHERE tabelle_projekte_idTABELLE_Projekte = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $projectID);
 $stmt->execute();
 $result = $stmt->get_result();
+
 while ($row = $result->fetch_assoc()) {
     if (!empty($row["Raumbereich Nutzer"])) {
         $raumbereichOptions[] = $row["Raumbereich Nutzer"];
@@ -17,13 +20,12 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
-
 $sql = "SELECT idTABELLE_Räume AS id, 
                CONCAT(Raumnr, ' - ', Raumbezeichnung, ' - ', `Raumbereich Nutzer`) AS text
           FROM tabelle_räume
          WHERE tabelle_projekte_idTABELLE_Projekte = ? AND Entfallen =0
-         
       ORDER BY Raumnr";
+
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $projectID);
 $stmt->execute();
@@ -40,7 +42,6 @@ $sql = "SELECT tabelle_elemente.idTABELLE_Elemente as id,
   		    FROM tabelle_elemente";
 
 $stmt = $conn->prepare($sql);
-$stmt->execute();
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -59,18 +60,15 @@ $conn->close();
     <title>Besprechungsansicht</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"/>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
-
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
-
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker3.min.css">
     <script type='text/javascript'
@@ -83,22 +81,16 @@ $conn->close();
 
     </style>
 </head>
-
 <body>
-
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class="row row-cols-2">
-
         <div class="col-lg-2 mx-auto mb-4" id="filterCardCol">
             <div class="card mb-2">
                 <div class="card-header d-inline-flex align-items-center justify-content-between">
-                        Elemente je Raum
+                    Elemente je Raum
                 </div>
-
             </div>
-
-
             <div class="card mb-2">
                 <form id="filterForm">
                     <div class="card-header d-flex flex-nowrap">
@@ -114,11 +106,11 @@ $conn->close();
                                 <i class="fas fa-info-circle"></i>
                             </span>
                     </div>
-
                     <div class="card-body">
                         <div class=" d-flex flex-nowrap mb-2">
-                            <select id="zusatzRaeume" name="zusatzRaeume[]" class="form-select" style="width:95%"
-                                    multiple>
+                            <label for="zusatzRaeume"></label><select id="zusatzRaeume" name="zusatzRaeume[]"
+                                                                      class="form-select" style="width:95%"
+                                                                      multiple>
                                 <?php foreach ($raeume as $raum): ?>
                                     <option value="<?= htmlspecialchars($raum['id']) ?>">
                                         <?= htmlspecialchars($raum['text']) ?>
@@ -133,8 +125,9 @@ $conn->close();
                             </span>
                         </div>
                         <div class=" d-flex flex-nowrap mb-2">
-                            <select id="zusatzElemente" name="zusatzElemente[]" class="form-select" style="width:95%"
-                                    multiple>
+                            <label for="zusatzElemente"></label><select id="zusatzElemente" name="zusatzElemente[]"
+                                                                        class="form-select" style="width:95%"
+                                                                        multiple>
                                 <?php foreach ($elemente as $element): ?>
                                     <option value="<?= htmlspecialchars($element['id']) ?>">
                                         <?= htmlspecialchars($element['Bez']) ?>
@@ -181,7 +174,6 @@ $conn->close();
                                 Nullen ausblenden
                             </label>
                         </div>
-
                         <div>
                             <button type="submit" class="btn btn-success w-100">Anzeigen</button>
                         </div>
@@ -189,11 +181,7 @@ $conn->close();
 
                 </form>
             </div>
-
-
-
         </div>
-
 
         <div class="col-lg-10 mx-auto" id="tableCardCol">
             <div class="card">
@@ -217,26 +205,19 @@ $conn->close();
 </div>
 
 
-
 <script src="utils/_utils.js"></script>
 <script>
-
-
     $(document).ready(function () {
         let excelfilename;
         let filterVisible = true;
-
         $('#raumbereich').select2({placeholder: "Raumbereich wählen"});
         $('#zusatzRaeume').select2({placeholder: "Zusätzliche Räume wählen"});
         $('#zusatzElemente').select2({placeholder: "Zusätzliche Elemente wählen"});
-
-
         $('#isTransposed').on('change', updateTransposeLabel);
         $('#filterForm').on('submit', function (e) {
             e.preventDefault();
             loadPivotTable();
         });
-
 
         $('#ToggleCard').on('click', function () {
             if (filterVisible) {                // Filter-Card ausblenden, Tabellen-Card auf volle Breite
@@ -255,38 +236,24 @@ $conn->close();
         popoverTriggerList.forEach(function (popoverTriggerEl) {
             new bootstrap.Popover(popoverTriggerEl);
         });
-
-
     });
 
     function table_click() {
         $('#pivotTable').off('click', 'td').on('click', 'td', function () {
             const cell = $(this);
             const table = $('#pivotTable').DataTable();
-
-            // DataTable cell/row/col index
             const cellIdx = table.cell(this).index();
-
-            // Row and column indices (zero-based)
             const rowIdx = cellIdx.row;
             const colIdx = cellIdx.column;
-
-            // Get raw data for this row and column
             const cellData = table.cell(cell).data();
-
             const rowData = table.row(rowIdx).data();
-
-            // Get the header text for this column
             const headerText = $(table.column(colIdx).header()).text().trim();
 
             // Log all relevant info
-            console.log('Cell Value:', cellData);
-            console.log('Column:', colIdx, '(', headerText, ')');
-            console.log('Row:', rowIdx, rowData);
+            // console.log('Cell Value:', cellData);
+            // console.log('Column:', colIdx, '(', headerText, ')');
+            // console.log('Row:', rowIdx, rowData);
 
-
-            // Optionally: log any IDs stored as data attributes, e.g.
-            // <td data-roomid="123" data-elementid="55">
             const dataRoomId = cell.data('roomid');
             const dataElementId = cell.data('elementid');
             const idTABELLE_Räume_has_tabelle_Elemente = cell.data('roomhaselementid')
@@ -295,8 +262,6 @@ $conn->close();
             if (dataElementId) console.log('Element ID:', dataElementId);
             if (idTABELLE_Räume_has_tabelle_Elemente) console.log('Element ID:', idTABELLE_Räume_has_tabelle_Elemente); //TODO validate
         });
-
-
     }
 
     function updateTransposeLabel() {
@@ -319,8 +284,6 @@ $conn->close();
         let hideZeros = $('#hideZeros').is(':checked');
         let zusatzRaeume = $('#zusatzRaeume').val();
         let zusatzElemente = $('#zusatzElemente').val();
-        console.log(zusatzElemente);
-
         $.ajax({
             url: 'getElementeJeRaeumePivotTable.php',
             method: 'POST',
@@ -359,7 +322,6 @@ $conn->close();
                                 columns.push(null);
                             }
                         }
-
                         $('#pivotTable').DataTable({
                             language: {
                                 url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
@@ -375,10 +337,8 @@ $conn->close();
                             fixedColumns: {start: 1},
                             fixedHeader: true,
                             select: true,
-
                             paging: true,
                             pagingType: "full",
-
                             searching: true,
                             ordering: true,
                             info: true,
@@ -419,13 +379,9 @@ $conn->close();
                     .catch(error => {
                         console.error('Failed to generate filename:', error);
                     });
-
-
             }
         });
     }
-
-
 </script>
 </body>
 </html>

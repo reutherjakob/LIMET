@@ -1,17 +1,18 @@
 <?php
+// 25 FX
 require_once "utils/_utils.php";
 check_login();
 
 $mysqli = utils_connect_sql();
 
-$vermerkID = filter_input(INPUT_GET, 'vermerkID', FILTER_VALIDATE_INT);
-$vermerkStatus = filter_input(INPUT_GET, 'vermerkStatus', FILTER_UNSAFE_RAW);
-$vermerkStatus = trim($vermerkStatus);
+$vermerkID = getPostInt('vermerkID');
+$vermerkStatus = getPostString('vermerkStatus', "");
+$vermerkStatus = trim($vermerkStatus ?? "");
 
-if (!$vermerkID || $vermerkStatus === null) {
-	echo "Ungültige Eingaben.";
-	$mysqli->close();
-	exit;
+if (!$vermerkID) {
+    echo "Ungültige Eingaben.";
+    $mysqli->close();
+    exit;
 }
 
 $stmt = $mysqli->prepare("
@@ -23,9 +24,9 @@ $stmt = $mysqli->prepare("
 $stmt->bind_param("si", $vermerkStatus, $vermerkID);
 
 if ($stmt->execute()) {
-	echo "Vermerk aktualisiert!";
+    echo "Vermerk aktualisiert!";
 } else {
-	echo "Error: " . $stmt->error;
+    echo "Error: " . $stmt->error;
 }
 
 $stmt->close();

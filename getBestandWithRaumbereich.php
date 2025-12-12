@@ -27,7 +27,7 @@ if ($result->num_rows > 0) {
 	<th>Seriennummer</th>
 	<th>Anschaffungsjahr</th>
 	<th>Gerät</th>
-    <th class='d-flex justify-content-center' data-bs-toggle='tooltip' title='Standort aktuell'><i class='fab fa-periscope'></i></th>
+    <th class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Standort aktuell'><i class='fab fa-periscope'></i></th>
 	</tr></thead>
 	<tbody>";
 

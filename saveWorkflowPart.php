@@ -1,46 +1,34 @@
 <?php
-session_start();
-?>
+// 25 FX
+require_once 'utils/_utils.php';
+check_login();
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+$mysqli = utils_connect_sql();
 
-<?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	if ($mysqli ->connect_error) {
-	    die("Connection failed: " . $mysqli->connect_error);
-	}
-	
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    echo "Error loading character set utf8: " . $mysqli->error;
-	    exit();
-	} 
-	
-        $sql = "UPDATE `LIMET_RB`.`tabelle_lot_workflow`
+$stmt = $mysqli->prepare("UPDATE `LIMET_RB`.`tabelle_lot_workflow`
                     SET
-                    `Timestamp_Ist` = '".filter_input(INPUT_GET, 'dateIs')."',
-                    `Timestamp_Soll` = '".filter_input(INPUT_GET, 'dateShould')."',
-                    `Abgeschlossen` = '".filter_input(INPUT_GET, 'status')."',
-                    `user` = '".$_SESSION["username"]."',
-                    `Kommentar` = '".filter_input(INPUT_GET, 'comment')."'"
-                    . " WHERE `tabelle_lose_extern_idtabelle_Lose_Extern`= ".$_SESSION["lotID"]."
-                        AND `tabelle_wofklowteil_idtabelle_wofklowteil`= ".filter_input(INPUT_GET, 'workflowID').";";
-        
-	
-	if ($mysqli ->query($sql) === TRUE) {
-	    echo "Workflow erfolgreich aktualisiert!";
-	} else {
-	    echo "Error: " . $sql . "<br>" . $mysqli->error;
-	}
-	
-	$mysqli ->close();
-	
-	
-					
-?>
+                    `Timestamp_Ist` = ?,
+                    `Timestamp_Soll` = ?,
+                    `Abgeschlossen` = ?,
+                    `user` = ?,
+                    `Kommentar` = ?
+                    WHERE `tabelle_lose_extern_idtabelle_Lose_Extern` = ?
+                    AND `tabelle_wofklowteil_idtabelle_wofklowteil` = ?");
+
+$dateIs = getPostDate('dateIs');
+$dateShould = getPostDate('dateShould');
+$status = getPostString('status');
+$username = $_SESSION["username"];
+$comment = getPostString('comment');
+$lotID = $_SESSION["lotID"];
+$workflowID = getPostInt('workflowID');
+
+$stmt->bind_param("sssssii", $dateIs, $dateShould, $status, $username, $comment, $lotID, $workflowID);
+$stmt->execute();
+
+if ($stmt->affected_rows > 0) {
+    echo "Workflow erfolgreich aktualisiert!";
+} else {
+    echo "Error: " . $stmt->error;
+}
+$mysqli->close();

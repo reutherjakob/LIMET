@@ -16,13 +16,12 @@
 
 <?php
 // 25 FX
-
 require_once 'utils/_utils.php';
 check_login();
 
 $_SESSION["variantenID"] = getPostInt('variantenID', 0);
 $elementID = getPostInt("elementID", 0);
-$projectID = $_SESSION["projectID"];
+$projectID = (int)$_SESSION["projectID"];
 $variantenID =  getPostInt("variantenID", 0);
 $bestand = getPostInt("bestand", 0);
 

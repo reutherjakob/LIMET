@@ -28,6 +28,7 @@
 
 </head>
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 init_page_serversides();
 ?>
@@ -49,14 +50,15 @@ init_page_serversides();
                                 Entfallene ausblenden </label>
 
                             <input type="checkbox" id="filter_MTrelevantRooms" checked class="btn-check">
-                            <label class="btn btn-outline-dark btn-sm float-right ms-1 me-1" for="filter_MTrelevantRooms"> Nur MT-relevante </label>
+                            <label class="btn btn-outline-dark btn-sm float-right ms-1 me-1"
+                                   for="filter_MTrelevantRooms"> Nur MT-relevante </label>
                         </div>
                     </div>
                 </div>
                 <div class="card-body" style="overflow: auto; ">
                     <?php
                     $mysqli = utils_connect_sql();
-                    $projectID = $_SESSION["projectID"] ?? null;
+                    $projectID = (int)$_SESSION["projectID"] ?? null;
 
                     if (!is_numeric($projectID)) {
                         die("Ungültige Projekt-ID");
@@ -93,30 +95,32 @@ init_page_serversides();
                         <th>BO</th>   
                          <th> <i class='fas fa-slash'></i> </th>
 						</tr></thead><tbody>";
+
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr>";
-                        echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
-                        echo "<td>" . $row["Raumnr"] . "</td>";
-                        echo "<td>" . $row["Raumnummer_Nutzer"] . "</td>";
-                        echo "<td>" . $row["Raumbezeichnung"] . "</td>";
-                        echo "<td>" . $row["Nutzfläche"] . "</td>";
-                        echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
-                        echo "<td>" . $row["Geschoss"] . "</td>";
+                        echo "<td>" . htmlspecialchars($row["idTABELLE_Räume"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Raumnr"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Raumnummer_Nutzer"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Raumbezeichnung"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Nutzfläche"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Raumbereich Nutzer"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Geschoss"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                         echo "<td>";
-                        if ((int)$row["MT-relevant"] === 0) {
+                        if ((int)($row["MT-relevant"] ?? 0) === 0) {
                             echo "Nein";
                         } else {
                             echo "Ja";
                         }
                         echo "</td>";
                         echo "<td>";
-                        if ($row["Anmerkung FunktionBO"] != null) {
-                            echo "<button type='button' class='btn btn-sm btn-outline-dark' style='height=20px; ' id='buttonBO' value='" . $row["Anmerkung FunktionBO"] . "' data-bs-toggle='modal' data-bs-target='#boModal'><i class='fa fa-comment'></i></button>";
+                        if (!empty($row["Anmerkung FunktionBO"])) {
+                            echo "<button type='button' class='btn btn-sm btn-outline-dark' style='height=20px; ' id='buttonBO' value='" . htmlspecialchars($row["Anmerkung FunktionBO"] ?? "", ENT_QUOTES, 'UTF-8') . "' data-bs-toggle='modal' data-bs-target='#boModal'><i class='fa fa-comment'></i></button>";
                         }
                         echo "</td>";
-                        echo "<td>" . $row["Entfallen"] . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Entfallen"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                         echo "</tr>";
                     }
+
                     echo "</tbody></table>";
                     ?>
                 </div>

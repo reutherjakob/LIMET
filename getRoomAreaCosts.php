@@ -1,11 +1,11 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 include "utils/_format.php";
 check_login();
 
-
 $bestandInkl = isset($_POST["bestandInkl"]) && $_POST["bestandInkl"] == 1;
-$projectID = $_SESSION["projectID"] ?? 0;
+$projectID = (int)$_SESSION["projectID"] ?? 0;
 $roomArea = $_POST["roomArea"] ?? '';
 
 $sql = "SELECT tabelle_projekt_varianten_kosten.Kosten,
@@ -161,10 +161,8 @@ $mysqli->close();
                     .reduce(function (a, b) {
                         return intVal(a) + intVal(b);
                     }, 0);
-
                 $("#SUMME").val(formatGermanCurrency(total));
             }
         });
-
     });
 </script>

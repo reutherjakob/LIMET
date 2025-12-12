@@ -63,7 +63,7 @@ $variantenID = getPostInt("variantenID", 0);
 #$_GET["variantenID"] ?? null;
 $elementID = getPostInt('elementID', 0);
 #$_GET["elementID"] ?? null;
-$projectID = $_SESSION["projectID"] ?? null;
+$projectID = (int)$_SESSION["projectID"] ?? null;
 
 // Basis-SQL
 $sql = "SELECT 
@@ -165,9 +165,9 @@ echo "<table class='table table-striped table-bordered border border-light borde
 	<th>Raumbezeichnung</th>
 	<th>Raumbereich</th>
 	<th>Bestand</th>
-	<th class='d-flex justify-content-center' data-bs-toggle='tooltip' title='Standort'><i class='fab fa-periscope '></i></th>
+	<th class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Standort'><i class='fab fa-periscope '></i></th>
 	<th>Verw</th>
-	<th class='d-flex justify-content-center' data-bs-toggle='tooltip' title='Kommentar'><i class='far fa-comment'></i></th>
+	<th class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Kommentar'><i class='far fa-comment'></i></th>
 	<th>LosNr</th>
 	<th></th>
 		<th>Batch</th>

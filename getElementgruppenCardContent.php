@@ -1,5 +1,5 @@
 <?php
-// 25FX
+// 25 FX
 require_once 'utils/_utils.php';
 $mysqli = utils_connect_sql();
 $sql = "SELECT tabelle_element_gewerke.idtabelle_element_gewerke, 

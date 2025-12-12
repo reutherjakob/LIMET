@@ -256,7 +256,7 @@ init_page_serversides("", "x");
                     data: {"roomID": RaumID, "K2Return": JSON.stringify(K2R)},
                     type: "POST",
                     success: function (data) {
-                        console.log(data);
+                        // console.log(data);
                         $("#elemetsParamsTable").html(data);
                     }
                 });

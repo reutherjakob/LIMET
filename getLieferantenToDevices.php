@@ -1,5 +1,5 @@
 <?php
-// 25FX
+// 25 FX
 require_once "utils/_utils.php";
 check_login();
 $mysqli = utils_connect_sql();
@@ -30,7 +30,7 @@ $result = $stmt->get_result();
 
 echo "<table class='table table-striped table-sm' id='tableDeviceLieferanten' >
 	<thead><tr>
-	<th></th>
+	<th></th> 
 	<th>Lieferant</th>
 	<th>Land</th>
 	<th>Ort</th>

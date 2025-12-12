@@ -1,33 +1,11 @@
-<!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml" lang="">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title></title>
-</head>
-<body>
 <?php
-session_start();
-if (!isset($_SESSION["username"])) {
-    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-    exit;
-}
-?>
-
-<?php
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
+// 25 FX
+require_once 'utils/_utils.php';
+check_login();
+$mysqli = utils_connect_sql();
 
 
-/* change character set to utf8 */
-if (!$mysqli->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $mysqli->error);
-    exit();
-}
-
-if (filter_input(INPUT_GET, 'lotID') != "") {
-    $_SESSION["lotID"] = filter_input(INPUT_GET, 'lotID');
-}
-
-$sql = "SELECT tabelle_lot_workflow.tabelle_lose_extern_idtabelle_Lose_Extern,
+$stmt = $mysqli->prepare("SELECT tabelle_lot_workflow.tabelle_lose_extern_idtabelle_Lose_Extern,
        tabelle_workflow_has_tabelle_wofklowteil.Reihenfolgennummer, 
        tabelle_workflowteil.aufgabe, 
        tabelle_lot_workflow.tabelle_wofklowteil_idtabelle_wofklowteil, 
@@ -36,11 +14,17 @@ $sql = "SELECT tabelle_lot_workflow.tabelle_lose_extern_idtabelle_Lose_Extern,
        tabelle_lot_workflow.Abgeschlossen, 
        tabelle_lot_workflow.user, 
        tabelle_lot_workflow.Kommentar
-    FROM (tabelle_workflow_has_tabelle_wofklowteil INNER JOIN tabelle_workflowteil ON tabelle_workflow_has_tabelle_wofklowteil.tabelle_wofklowteil_idtabelle_wofklowteil = tabelle_workflowteil.idtabelle_wofklowteil) INNER JOIN tabelle_lot_workflow ON (tabelle_workflow_has_tabelle_wofklowteil.tabelle_workflow_idtabelle_workflow = tabelle_lot_workflow.tabelle_workflow_idtabelle_workflow) AND (tabelle_workflow_has_tabelle_wofklowteil.tabelle_wofklowteil_idtabelle_wofklowteil = tabelle_lot_workflow.tabelle_wofklowteil_idtabelle_wofklowteil)
-    WHERE (((tabelle_lot_workflow.tabelle_lose_extern_idtabelle_Lose_Extern)=" . $_SESSION["lotID"] . "))
-    ORDER BY tabelle_workflow_has_tabelle_wofklowteil.Reihenfolgennummer";
+    FROM (tabelle_workflow_has_tabelle_wofklowteil INNER JOIN tabelle_workflowteil 
+    ON tabelle_workflow_has_tabelle_wofklowteil.tabelle_wofklowteil_idtabelle_wofklowteil = tabelle_workflowteil.idtabelle_wofklowteil)
+    INNER JOIN tabelle_lot_workflow ON (tabelle_workflow_has_tabelle_wofklowteil.tabelle_workflow_idtabelle_workflow = tabelle_lot_workflow.tabelle_workflow_idtabelle_workflow) 
+    AND (tabelle_workflow_has_tabelle_wofklowteil.tabelle_wofklowteil_idtabelle_wofklowteil = tabelle_lot_workflow.tabelle_wofklowteil_idtabelle_wofklowteil)
+    WHERE tabelle_lot_workflow.tabelle_lose_extern_idtabelle_Lose_Extern = ? 
+    ORDER BY tabelle_workflow_has_tabelle_wofklowteil.Reihenfolgennummer");
 
-$result = $mysqli->query($sql);
+$stmt->bind_param("s", $_SESSION["lotID"]);
+$stmt->execute();
+$result = $stmt->get_result();
+
 if ($result->num_rows == 0) {
     echo "<button type='button' class='btn btn-outline-dark btn-sm btn-default' value='addWorkflowToLot'>Workflow hinzufügen</button>";
 } else {
@@ -92,9 +76,6 @@ if ($result->num_rows == 0) {
         echo "</td>";
         echo "<td>" . $row["user"] . "</td>";
         echo "<td><button type='button' id='" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "' class='btn btn-sm btn-warning' value='saveWorkflowteil'><i class='far fa-save'></i></button></td>";
-        echo "</tr>";
-
-
     }
     echo "</tbody></table>";
 }
@@ -140,14 +121,12 @@ $mysqli->close();
         }
     });
 
-    // Workfloweintrag speichern
     $("button[value='saveWorkflowteil']").click(function () {
         let workflowID = this.id;
         let date_Is = $("#workflowDateIs" + workflowID).val();
         let date_Should = $("#workflowDateShould" + workflowID).val();
         let comment = $("#workflowComment" + workflowID).val();
         let status = ($("#workflowStatus" + workflowID).prop('checked') === true) ? 1 : 0;
-
         if (workflowID === "") {
             alert("Keinen Workflowteilgefunden!");
         } else {
@@ -169,7 +148,6 @@ $mysqli->close();
         }
     });
 
-    // Workfloweintrag speichern
     $("button[value='addWorkflowToLot']").click(function () {
         $.ajax({
             url: "getProjectWorkflows.php",
@@ -179,8 +157,4 @@ $mysqli->close();
             }
         });
     });
-
 </script>
-
-</body>
-</html>

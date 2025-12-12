@@ -9,7 +9,7 @@ $parameterID = getPostInt("parameterID");
 $variantenID = getPostInt("variantenID");
 
 // Use SESSION variables as is, assuming they are already validated session state
-$projectID = $_SESSION["projectID"];
+$projectID = (int)$_SESSION["projectID"];
 $elementID = $_SESSION["elementID"];
 
 // Prepare the DELETE statement to prevent SQL injection

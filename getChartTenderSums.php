@@ -1,5 +1,5 @@
 <?php
-// 2025-11- FX
+// 25 FX
 header('Content-Type: application/json');
 require_once "utils/_utils.php";
 check_login();
@@ -21,18 +21,13 @@ if ($stmt) {
     $stmt->bind_param("i", $projectID);
     $stmt->execute();
     $result = $stmt->get_result();
-
     $data = array();
     while ($row = $result->fetch_assoc()) {
         $data[] = $row;
     }
     $stmt->close();
-    $mysqli->close();
     print json_encode($data);
-} else {
-    // handle error appropriately, e.g., log and output a safe message
-    $mysqli->close();
+} else {    // handle error appropriately, e.g., log and output a safe message
     echo json_encode(["error" => "Database query failed"]);
 }
-
-?>			
+$mysqli->close();

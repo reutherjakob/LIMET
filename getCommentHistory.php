@@ -1,10 +1,9 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
-
 $roombookID = getPostInt('roombookID');
-
 
 $stmt = $mysqli->prepare("
     SELECT 
@@ -24,8 +23,7 @@ $stmt = $mysqli->prepare("
           OR (Anzahl IS NULL AND Anzahl_copy1 IS NOT NULL)
           OR (Anzahl IS NOT NULL AND Anzahl_copy1 IS NULL)
       )
-    ORDER BY Timestamp DESC
-");
+    ORDER BY Timestamp DESC");
 
 $stmt->bind_param("i", $roombookID);
 $stmt->execute();
@@ -35,8 +33,8 @@ echo "<table class='table table-striped table-bordered table-sm table-hover bord
     <thead><tr>
     <th>Datum</th>
     <th>user</th>
-    <th>Kommentar-Alt</th>
-    <th>Kommentar-Neu</th>
+    <th> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Kommentar'><i class='far fa-comments'></i></div>-Alt</th>
+    <th> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Kommentar'><i class='far fa-comments'>-Neu</i></div></th>
     <th>Anzahl-Alt</th>
     <th>Anzahl-Neu</th>
     </tr></thead>
@@ -52,9 +50,6 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . htmlspecialchars($row["Anzahl_copy1"]?? '') . "</td>";
     echo "</tr>";
 }
-
 echo "</tbody></table>";
-
 $stmt->close();
 $mysqli->close();
-?>

@@ -1,10 +1,10 @@
 <?php
-// REWORKED 25
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 
 $mysqli = utils_connect_sql();
-$projectID = $_SESSION["projectID"];
+$projectID = (int)$_SESSION["projectID"];
 $id = getPostInt("id");
 
 $sql = "SELECT tabelle_parameter.Bezeichnung, tabelle_projekt_elementparameter.Wert, tabelle_projekt_elementparameter.Einheit, tabelle_parameter_kategorie.Kategorie
@@ -47,8 +47,8 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . $row["Kategorie"] . "</td>";
     echo "</tr>";
 }
-echo "</tbody></table>";
 
+echo "</tbody></table>";
 $mysqli->close();
 ?>
 
@@ -84,9 +84,4 @@ $mysqli->close();
             $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#variantenParameterCH');
         }
     });
-
-
 </script>
-
-</body>
-</html>

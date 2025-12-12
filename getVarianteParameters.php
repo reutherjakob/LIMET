@@ -9,7 +9,6 @@ generate_variante_parameter_inputtable();
 <script src="utils/_utils.js"></script>
 <script src="saveElementParameters.js"></script>
 <script>
-
     $(document).ready(function () {
         document.querySelectorAll('select[id^="Wert_"], select[id^="Einheit_"]').forEach(function (select) {
             select.addEventListener('change', function () {
@@ -56,5 +55,3 @@ generate_variante_parameter_inputtable();
         });
     });
 </script>
-</body>
-</html>

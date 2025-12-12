@@ -1,6 +1,5 @@
 <?php
-// V2.0: 2024-11-29, Reuther & Fux
-session_start();
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 ?>
@@ -38,10 +37,14 @@ check_login();
 $mysqli = utils_connect_sql();
 $sql = "SELECT `Anmerkung FunktionBO`, `Anmerkung Geräte`, `Anmerkung BauStatik`, `Anmerkung Elektro`, `Anmerkung MedGas`, `Anmerkung HKLS` 
                 FROM tabelle_räume 
-                WHERE idTABELLE_Räume = " . $_SESSION["roomID"];
-$result = $mysqli->query($sql);
+                WHERE idTABELLE_Räume =? ";
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param('i', $_SESSION["roomID"]);
+$stmt ->execute();
+$result = $stmt->get_result();
 $row = $result->fetch_assoc();
 $mysqli->close();
+$stmt->close();
 
 $anmerkungen = [
     "FunktionBO" => "Funktion BO",
@@ -62,8 +65,7 @@ foreach ($anmerkungen as $key => $label) {
                     </div>
                 </div>";
 }
-echo "
-            <div class='well well-sm'>
+echo "      <div class='well well-sm'>
                 <input type='button' id='saveBauangaben' class='btn btn-success btn-sm' value='Bauangaben speichern'>
                 <input type='button' class='btn btn-info btn-sm' value='Bauangaben kopieren exkl. BO' id='" . $_SESSION["roomID"] . "' data-bs-toggle='modal' data-bs-target='#BauangabenModal'>
             </div>      </form>";
@@ -91,9 +93,8 @@ echo " <!-- Modal zum Kopieren der Bauangaben -->
 <script>
     $(document).ready(function () {
 
-        //Specs kopieren für getRoomsToCopy.php
         $("#copySpecifications").click(function () {
-            console.log("getRoomsToCopy.php -> Bauang. Kopieren Btn. IDS:", roomIDs);
+           // console.log("getRoomsToCopy.php -> Bauang. Kopieren Btn. IDS:", roomIDs);
             if (roomIDs.length === 0) {
                 alert("Kein Raum ausgewählt!");
             } else {
@@ -105,15 +106,15 @@ echo " <!-- Modal zum Kopieren der Bauangaben -->
                         columns: JSON.stringify(columnsDefinition)
                     },
                     success: function (data) {
-                        console.log(data);
+                       // console.log(data);
                         alert(data);
                         location.reload(true); // if(confirm("Raum erfolgreich Aktualisiert! :) \nUm Änderungen anzuzeigen, muss Seite Neu laden. Jetzt neu laden? \n",data)) { location.reload(true);}
                     }
                 });
             }
         });
-
     })
+
     //Bauangaben speichern
     $("input[value='Bauangaben speichern']").click(function () {
         let funktionBO = $("#FunktionBO").val();
@@ -146,14 +147,12 @@ echo " <!-- Modal zum Kopieren der Bauangaben -->
 
     //Bauangaben kopieren
     $("input[value='Bauangaben kopieren exkl. BO']").click(function () {
-        let ID = this.id;
-        //console.log("File: getRbSpecs2.ph M:BauangabenKopieren RID: ", ID);
+        let ID = this.id; //console.log("File: getRbSpecs2.ph M:BauangabenKopieren RID: ", ID);
         $.ajax({
             url: "getRoomsToCopy.php",
             type: "POST",
             data: {"originRoomID": ID},
-            success: function (data) {
-                //console.log("Sucessfully opened getRoomsToCopy.php");
+            success: function (data) { //console.log("Sucessfully opened getRoomsToCopy.php");
                 $("#mbody2").html(data);
                 $('#BauangabenModal').modal('show');
             }

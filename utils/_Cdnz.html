@@ -95,11 +95,21 @@ $mysqli = utils_connect_sql();
 </th>
 
 
-<th> <div class='d-flex justify-content-center' data-bs-toggle='tooltip' title='ID'><i class="fas fa-fingerprint"></i></div> </th>
+<th> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='ID'><i class="fas fa-fingerprint"></i></div> </th>
 
-    <th> <div class='d-flex justify-content-center' data-bs-toggle='tooltip' title='Standort'> <i class='fab fa-periscope '></i></div> </th>
+<th> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Standort'> <i class='fab fa-periscope '></i></div> </th>
 
-<th> <div class='d-flex justify-content-center' data-bs-toggle='tooltip' title='Kosten'> <i class='fas fa-euro-sign'></i> </div></th>
+<th> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Kosten'> <i class='fas fa-euro-sign'></i> </div></th>
 
-<th> <div class='d-flex justify-content-center' data-bs-toggle='tooltip' title='Kommentar'><i class='far fa-comments'></i></div></th>
+<th> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Kommentar'><i class='far fa-comments'></i></div></th>
 
+Kalender <i class="far fa-calendar-alt"></i>
+
+
+<!-- TODO
+$.get("navbar4.html", function (data) {
+$("#limet-navbar").html(data);
+$(".navbar-nav").find("li:nth-child(3)").addClass("active");
+let currentP = <?php     echo json_encode($_SESSION["projectName"]); ?>;
+$("#projectSelected").text(currentP);
+});

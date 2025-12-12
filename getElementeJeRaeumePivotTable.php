@@ -1,9 +1,10 @@
 <?php
+// 25 FX
 include_once "utils/_utils.php";
 
 // --- AUTH and INIT ---
 check_login();
-$projectID = $_SESSION["projectID"];
+$projectID = (int)$_SESSION["projectID"];
 header("Content-Type: text/html; charset=UTF-8");
 
 // 1. POST Inputs holen
@@ -13,7 +14,11 @@ $zusatzRaeume = $_POST['zusatzRaeume'] ?? [];
 if (!is_array($zusatzRaeume)) $zusatzRaeume = [$zusatzRaeume];
 $zusatzElemente = $_POST['zusatzElemente'] ?? [];
 if (!is_array($zusatzElemente)) $zusatzElemente = [$zusatzElemente];
-error_log('ZusatzElemente: ' . print_r($zusatzElemente, true));
+// error_log('ZusatzElemente: ' . print_r($zusatzElemente, true));
+
+$raumbereiche = array_map('intval', (array)($raumbereiche));
+$zusatzRaeume = array_map('intval', (array)($zusatzRaeume));
+$zusatzElemente = array_map('intval', (array)($zusatzElemente));
 
 $mtRelevant = isset($_POST["mtRelevant"]) ? intval($_POST["mtRelevant"]) : 0;
 $entfallen = isset($_POST["entfallen"]) ? intval($_POST["entfallen"]) : 0;
@@ -89,8 +94,11 @@ $sqlElemIDs = "
      WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
        AND re.Standort = 1
        AND r.idTABELLE_Räume IN ($roomPlaceholders)";
+
 $elemParams = array_merge([$projectID], $roomIDs);
+
 $elemTypes = str_repeat('i', 1 + count($roomIDs));
+
 $stmt = $conn->prepare($sqlElemIDs);
 $stmt->bind_param($elemTypes, ...$elemParams);
 $stmt->execute();
@@ -134,7 +142,7 @@ if ($filterElemente) {
         $elementFilterSQL = " AND (" . implode(" OR ", $elementFilterArr) . ")";
     }
 }
-error_log("Element Filter SQL: " . $elementFilterSQL);
+// error_log("Element Filter SQL: " . $elementFilterSQL);
 
 $sql = "
     SELECT
@@ -169,7 +177,7 @@ $res = $stmt->get_result();
 // --- PIVOT DATA PREP
 $pivot = [];
 while ($row = $res->fetch_assoc()) {
-    error_log("Pivot row: " . print_r($row, true));
+    // error_log("Pivot row: " . print_r($row, true));
     $pivotKey = $row["idTABELLE_Elemente"] . "_" . $row["idtabelle_Varianten"];
     $label = $row["ElementID"] . ' ' . $row["Bezeichnung"] . ' (' . $row["VarianteName"] . ')';
     if (!isset($pivot[$pivotKey])) {

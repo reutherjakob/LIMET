@@ -9,7 +9,7 @@ $mysqli = utils_connect_sql();
 $personID = getPostInt("personID");
 
 // Use SESSION variable for projectID, assuming it is validated securely
-$projectID = $_SESSION["projectID"];
+$projectID = (int)$_SESSION["projectID"];
 
 // Prepare statement to sanitize input and prevent SQL injection
 $stmt = $mysqli->prepare("DELETE FROM `LIMET_RB`.`tabelle_projekte_has_tabelle_ansprechpersonen`

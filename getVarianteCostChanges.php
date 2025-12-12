@@ -3,18 +3,7 @@
 require_once 'utils/_utils.php';
 include "utils/_format.php";
 check_login();
-?>
 
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title></title>
-</head>
-<body>
-
-
-<?php
 $mysqli = utils_connect_sql();
 $projectID = isset($_SESSION["projectID"]) && is_numeric($_SESSION["projectID"]) ? intval($_SESSION["projectID"]) : 0;
 $elementID = getPostInt("elementID", 0);
@@ -77,5 +66,3 @@ $mysqli->close();
     });
 
 </script>
-</body>
-</html>

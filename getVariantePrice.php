@@ -1,6 +1,7 @@
 <?php
+// 25 FX 
 require_once 'utils/_utils.php';
-
+check_login();
 $_SESSION["variantenID"] = getPostInt('variantenID');
 
 $mysqli = utils_connect_sql();

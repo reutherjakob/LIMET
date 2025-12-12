@@ -75,7 +75,7 @@ init_page_serversides();
                 <div class="card-body">
                     <?php
                     $mysqli = utils_connect_sql();
-                    $projectID = $_SESSION["projectID"];
+                    $projectID = (int)$_SESSION["projectID"];
 
                     $sql = "SELECT 
             tabelle_Vermerkgruppe.Gruppenname, 

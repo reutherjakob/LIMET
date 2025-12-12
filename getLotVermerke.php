@@ -1,39 +1,62 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
-?>
-
-<!DOCTYPE html>
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-<html lang="de">
-<head>
-    <title></title></head>
-<body>
-
-<?php
 $mysqli = utils_connect_sql();
 
-$sql = "SELECT tabelle_Vermerkgruppe.Gruppenname, tabelle_Vermerkgruppe.Gruppenart, tabelle_Vermerkgruppe.Ort, tabelle_Vermerkgruppe.Datum, tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern, tabelle_ansprechpersonen.Name, tabelle_ansprechpersonen.Vorname, tabelle_Vermerke.Faelligkeit, tabelle_Vermerke.Vermerkart, tabelle_Vermerke.Bearbeitungsstatus, tabelle_Vermerke.Vermerktext, tabelle_Vermerke.Erstellungszeit, tabelle_Vermerke.idtabelle_Vermerke, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung
-                FROM (((tabelle_Vermerke LEFT JOIN (tabelle_ansprechpersonen RIGHT JOIN tabelle_Vermerke_has_tabelle_ansprechpersonen ON tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen = tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen) ON tabelle_Vermerke.idtabelle_Vermerke = tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_Vermerke_idtabelle_Vermerke) INNER JOIN (tabelle_Vermerkgruppe INNER JOIN tabelle_Vermerkuntergruppe ON tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe = tabelle_Vermerkuntergruppe.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe) ON tabelle_Vermerke.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe = tabelle_Vermerkuntergruppe.idtabelle_Vermerkuntergruppe) LEFT JOIN tabelle_räume ON tabelle_Vermerke.tabelle_räume_idTABELLE_Räume = tabelle_räume.idTABELLE_Räume) LEFT JOIN tabelle_lose_extern ON tabelle_Vermerke.tabelle_lose_extern_idtabelle_Lose_Extern = tabelle_lose_extern.idtabelle_Lose_Extern
-                WHERE (((tabelle_Vermerkgruppe.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_Vermerke.tabelle_lose_extern_idtabelle_Lose_Extern)=" . filter_input(INPUT_GET, 'lotID') . "))
-                ORDER BY tabelle_Vermerkgruppe.Datum DESC , tabelle_Vermerke.Erstellungszeit DESC;";
+$sql = "SELECT tabelle_Vermerkgruppe.Gruppenname,
+       tabelle_Vermerkgruppe.Gruppenart,
+       tabelle_Vermerkgruppe.Ort,
+       tabelle_Vermerkgruppe.Datum,
+       tabelle_lose_extern.LosNr_Extern,
+       tabelle_lose_extern.LosBezeichnung_Extern,
+       tabelle_ansprechpersonen.Name,
+       tabelle_ansprechpersonen.Vorname,
+       tabelle_Vermerke.Faelligkeit,
+       tabelle_Vermerke.Vermerkart,
+       tabelle_Vermerke.Bearbeitungsstatus,
+       tabelle_Vermerke.Vermerktext,
+       tabelle_Vermerke.Erstellungszeit,
+       tabelle_Vermerke.idtabelle_Vermerke,
+       tabelle_räume.Raumnr,
+       tabelle_räume.Raumbezeichnung
+FROM (((tabelle_Vermerke LEFT JOIN (tabelle_ansprechpersonen RIGHT JOIN tabelle_Vermerke_has_tabelle_ansprechpersonen
+                                    ON tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen =
+                                       tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen)
+        ON tabelle_Vermerke.idtabelle_Vermerke =
+           tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_Vermerke_idtabelle_Vermerke) INNER JOIN (tabelle_Vermerkgruppe INNER JOIN tabelle_Vermerkuntergruppe
+                                                                                                          ON tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe =
+                                                                                                             tabelle_Vermerkuntergruppe.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe)
+       ON tabelle_Vermerke.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe =
+          tabelle_Vermerkuntergruppe.idtabelle_Vermerkuntergruppe) LEFT JOIN tabelle_räume
+      ON tabelle_Vermerke.tabelle_räume_idTABELLE_Räume = tabelle_räume.idTABELLE_Räume)
+         LEFT JOIN tabelle_lose_extern ON tabelle_Vermerke.tabelle_lose_extern_idtabelle_Lose_Extern =
+                                          tabelle_lose_extern.idtabelle_Lose_Extern
+WHERE (((tabelle_Vermerkgruppe.tabelle_projekte_idTABELLE_Projekte) = ?) AND
+       ((tabelle_Vermerke.tabelle_lose_extern_idtabelle_Lose_Extern) = ?))
+ORDER BY tabelle_Vermerkgruppe.Datum DESC, tabelle_Vermerke.Erstellungszeit DESC";
 
-$result = $mysqli->query($sql);
+$stmt = $mysqli->prepare($sql);
+$projectID = (int)$_SESSION["projectID"];
+$lotID = getPostInt('lotID');
+$stmt->bind_param("ii", $projectID, $lotID);
+$stmt->execute();
 
-echo "<button type='button' class='btn btn-outline-dark btn-sm' value='createLotVermerkePDF' id='" . filter_input(INPUT_GET, 'lotID') . "'><i class='far fa-file-pdf'></i> Losvermerke - PDF</button>";
+$result = $stmt->get_result();
 
+echo "<div id='VermerkeZuLosCardBody' class='d-flex justify-content-between align-items-start flex-nowrap' style='height: 3vh; '> <button type='button' class='btn btn-outline-dark btn-sm' value='createLotVermerkePDF' id='" . $lotID . "'><i class='far fa-file-pdf'></i> Losvermerke</button></div>";
 echo "<table class='table table-striped table-bordered table-sm table-hover border border-5 border-light' id='tableLotVermerke'>
 	<thead><tr>
 	<th>ID</th>
-        <th>Art</th>
-        <th>Name</th>
-        <th>Status</th>
-	<th>Datum</th>
+    <th>Art</th>
+    <th>Name</th>
+    <th><div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Status'><i class='fas fa-check-double'></i></div></th>
+	<th><div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Datum'><i class='far fa-calendar-alt'></i></div></th>
 	<th>Typ</th>
 	<th>Zuständig</th>
 	<th>Fälligkeit</th>
-        <th>Vermerk</th>	  
-        <th>Status</th>
+    <th>Vermerk</th>	  
+    <th>Status</th>
 	</tr></thead><tbody>";
 
 while ($row = $result->fetch_assoc()) {
@@ -65,9 +88,8 @@ while ($row = $result->fetch_assoc()) {
 echo "</tbody></table>";
 $mysqli->close();
 ?>
-
+<script src="utils/_utils.js"></script>
 <script>
-
     $(document).ready(function () {
         new DataTable('#tableLotVermerke', {
             columns: [
@@ -110,7 +132,14 @@ $mysqli->close();
                 } else {
                     $(row).css('background-color', '#d3edf8');
                 }
+            }, initComplete: function () {
+                $('#VermerkeZuLosCardBody  .xxx').remove();
+                $('#tableLotVermerke_wrapper .dt-info').addClass("btn btn-sm xxx").appendTo('#VermerkeZuLosCardBody');
+                $('#tableLotVermerke_wrapper .dt-paging').addClass("btn btn-sm xxx").appendTo('#VermerkeZuLosCardBody');
+                $('#tableLotVermerke_wrapper .dt-search label').remove();
+                $('#tableLotVermerke_wrapper  .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#VermerkeZuLosCardBody');
             }
+
         });
 
         $("input[value='statusCheck']").change(function () {
@@ -142,6 +171,9 @@ $mysqli->close();
                 alert("Vermerkstatus nicht lesbar!");
             }
         });
+        $("button[value='createLotVermerkePDF']").click(function () {
+            window.open('PDFs/pdf_createLotVermerkePDF.php?losID=' + this.id);
+        });
 
         $(function () {
             // Enable all popovers
@@ -153,7 +185,6 @@ $mysqli->close();
                     placement: 'left' // optional
                 });
             });
-
             // Close any open popover when clicking outside
             $(document).on('click', function (e) {
                 $('[data-bs-toggle="popover"]').each(function () {
@@ -167,13 +198,7 @@ $mysqli->close();
                 });
             });
         });
-
     });
 
-    $("button[value='createLotVermerkePDF']").click(function () {
-        window.open('PDFs/pdf_createLotVermerkePDF.php?losID=' + this.id);
-    });
 
 </script>
-</body>
-</html>

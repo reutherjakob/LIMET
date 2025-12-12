@@ -3,13 +3,14 @@ include "../../utils/_utils.php";
 check_login();
 header('Content-Type: application/json; charset=utf-8');
 
-$projectID = $_SESSION["projectID"] ?? null;
+$projectID = (int)$_SESSION["projectID"] ?? null;
 $username = $_SESSION['username'] ?? 'unknown';
 $timestamp = date("Y-m-d H:i:s");
 $response = ["success" => true, "addedVermerke" => [], "skipped" => [], "errors" => []];
 $vermerkgruppe_id = getPostInt("vermerkgruppe_id");
 $raumbereiche = $_POST['raumbereiche'] ?? [];
 $action = getPostString("action", "");
+
 $conn = utils_connect_sql();
 
 if ($action === 'updateVermerkText') {

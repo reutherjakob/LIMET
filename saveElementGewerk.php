@@ -6,7 +6,7 @@ check_login();
 
 $mysqli = utils_connect_sql();
 
-$projectID = $_SESSION["projectID"];
+$projectID = (int)$_SESSION["projectID"];
 $elementID = $_SESSION["elementID"];
 $gewerkID = getPostInt('gewerk');
 $ghgID = getPostInt('ghg');

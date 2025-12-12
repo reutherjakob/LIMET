@@ -1,4 +1,5 @@
 <?php
+// 25 FX
 $allElementMappings = [
     12 => ['param' => '1 Kreis DL-5'], // Deckenstativ ICU - Tandem - 2 armig,1.61.12.1
     66 => ['param' => '1 Kreis DL-5'], // DL-5 in DVE,5.50.11.3
@@ -129,7 +130,12 @@ $allElementMappings = [
 ];
 
 
-$IDsWandverstärkung = [1554, 1905, 10, 1730, 370, 372, 1039, 1933, 70, 529, 74, 523, 1044, 524, 525, 526, 527, 528, 1045, 548, 721, 722, 549, 723, 1008, 873, 383, 856, 817, 1049, 983, 870, 1713, 717, 238, 186, 550, 169, 1911, 282, 1837, 1460, 1243, 381, 906, 382, 684, 281, 68];
+$IDsWandverstärkung = [1554, 1905, 10, 1730, 370, 372, 1039, 1933, 70,
+    529, 74, 523, 1044, 524, 525, 526, 527,
+    528, 1045, 548, 721, 722, 549, 723, 1008,
+    873, 383, 856, 817, 1049, 983, 870, 1713,
+    717, 238, 186, 550, 169, 1911, 282, 1837,
+    1460, 1243, 381, 906, 382, 684, 281];
 // tabelle_parameter id: 97    ist der Elementparameter Wandverstärkung
 
 // ------------------- ERROR MESSAGES -------------------
@@ -184,32 +190,55 @@ function getUniqueComponents($new, $existing)
     return $existing;
 }
 
+function e($v): string {
+    return htmlspecialchars((string)($v ?? ''), ENT_QUOTES, 'UTF-8');
+}
 
 // ------------------- ROOM PARAMETER CHECKS -------------------
 function check_dependency_non_zero(&$msgs, $roomParams, $p1, $p2)
 {
     if (($roomParams[$p2] ?? 0) > 0 && (($roomParams[$p1] ?? 0) < 1)) {
-        $msgs[] = sprintf(ERROR_MESSAGES['dependency_non_zero'],
-            $roomParams['Raumbezeichnung'], $roomParams['Raumnr'], $roomParams['idTABELLE_Räume'],
-            $p2, $p1, $roomParams[$p1] ?? 'n/a', $p2, $roomParams[$p2]);
+        $msgs[] = sprintf(
+            ERROR_MESSAGES['dependency_non_zero'],
+            e($roomParams['Raumbezeichnung']),
+            e($roomParams['Raumnr']),
+            (int)$roomParams['idTABELLE_Räume'],
+            e($p2),
+            e($p1),
+            e($roomParams[$p1] ?? 'n/a'),
+            e($p2),
+            e($roomParams[$p2])
+        );
     }
 }
 
 function check_max_value(&$msgs, $roomParams, $param, $max)
 {
     if (($roomParams[$param] ?? 0) > $max) {
-        $msgs[] = sprintf(ERROR_MESSAGES['max_value'],
-            $roomParams['Raumbezeichnung'], $roomParams['Raumnr'], $roomParams['idTABELLE_Räume'],
-            $param, $roomParams[$param], $max);
+        $msgs[] = sprintf(
+            ERROR_MESSAGES['max_value'],
+            e($roomParams['Raumbezeichnung']),
+            e($roomParams['Raumnr']),
+            (int)$roomParams['idTABELLE_Räume'],
+            e($param),
+            e($roomParams[$param]),
+            (int)$max
+        );
     }
 }
 
 function check_max_value_rev(&$msgs, $roomParams, $param, $max, $extra = "")
 {
     if (!isset($roomParams[$param]) || $roomParams[$param] < $max) {
-        $msgs[] = sprintf(ERROR_MESSAGES['max_value_rev'],
-            $roomParams['Raumbezeichnung'], $roomParams['Raumnr'], $roomParams['idTABELLE_Räume'],
-            $extra, $max, $roomParams[$param] ?? 'n/a');
+        $msgs[] = sprintf(
+            ERROR_MESSAGES['max_value_rev'],
+            e($roomParams['Raumbezeichnung']),
+            e($roomParams['Raumnr']),
+            (int)$roomParams['idTABELLE_Räume'],
+            e($extra),
+            (int)$max,
+            e($roomParams[$param] ?? 'n/a')
+        );
     }
 }
 
@@ -219,37 +248,68 @@ function check_RG(&$msgs, $roomParams)
     $sv = $roomParams['SV'] ?? null;
     $zsv = $roomParams['ZSV'] ?? null;
     $fb = $roomParams['Fussboden OENORM B5220'] ?? null;
+
     if ($rg !== null) {
-        if ($rg >= 1 && $sv != 1)
-            $msgs[] = sprintf(ERROR_MESSAGES['rg_sv'], $roomParams['Raumbezeichnung'], $roomParams['Raumnr'], $roomParams['idTABELLE_Räume'], $sv, $rg);
-        if ($rg == 2 && $zsv != 1)
-            $msgs[] = sprintf(ERROR_MESSAGES['rg_zsv'], $roomParams['Raumbezeichnung'], $roomParams['Raumnr'], $roomParams['idTABELLE_Räume'], $zsv, $rg);
-        if ($rg == 2 && $fb != "Klasse 1")
-            $msgs[] = sprintf(ERROR_MESSAGES['rg_floor'], $roomParams['Raumbezeichnung'], $roomParams['Raumnr'], $roomParams['idTABELLE_Räume'], $fb);
-        if ($rg != 2 && $fb === "Klasse 1")
-            $msgs[] = sprintf(ERROR_MESSAGES['rg_floor2'], $roomParams['Raumbezeichnung'], $roomParams['Raumnr'], $roomParams['idTABELLE_Räume'], $fb);
+        if ($rg >= 1 && $sv != 1) {
+            $msgs[] = sprintf(
+                ERROR_MESSAGES['rg_sv'],
+                e($roomParams['Raumbezeichnung']),
+                e($roomParams['Raumnr']),
+                (int)$roomParams['idTABELLE_Räume'],
+                e($sv),
+                (int)$rg
+            );
+        }
+        if ($rg == 2 && $zsv != 1) {
+            $msgs[] = sprintf(
+                ERROR_MESSAGES['rg_zsv'],
+                e($roomParams['Raumbezeichnung']),
+                e($roomParams['Raumnr']),
+                (int)$roomParams['idTABELLE_Räume'],
+                e($zsv),
+                (int)$rg
+            );
+        }
+        if ($rg == 2 && $fb != "Klasse 1") {
+            $msgs[] = sprintf(
+                ERROR_MESSAGES['rg_floor'],
+                e($roomParams['Raumbezeichnung']),
+                e($roomParams['Raumnr']),
+                (int)$roomParams['idTABELLE_Räume'],
+                e($fb)
+            );
+        }
+        if ($rg != 2 && $fb === "Klasse 1") {
+            $msgs[] = sprintf(
+                ERROR_MESSAGES['rg_floor2'],
+                e($roomParams['Raumbezeichnung']),
+                e($roomParams['Raumnr']),
+                (int)$roomParams['idTABELLE_Räume'],
+                e($fb)
+            );
+        }
     }
 }
 
 function check_summe_leistungen(&$msgs, $roomParams): void
 {
-    $sum = array_sum([
-        intval($roomParams['ET_Anschlussleistung_AV_W'] ?? 0),
-        intval($roomParams['ET_Anschlussleistung_SV_W'] ?? 0),
-        intval($roomParams['ET_Anschlussleistung_ZSV_W'] ?? 0),
-        intval($roomParams['ET_Anschlussleistung_USV_W'] ?? 0)
-    ]);
-    $gesamt = intval($roomParams['ET_Anschlussleistung_W'] ?? 0);
+    $av  = (int)($roomParams['ET_Anschlussleistung_AV_W'] ?? 0);
+    $sv  = (int)($roomParams['ET_Anschlussleistung_SV_W'] ?? 0);
+    $zsv = (int)($roomParams['ET_Anschlussleistung_ZSV_W'] ?? 0);
+    $usv = (int)($roomParams['ET_Anschlussleistung_USV_W'] ?? 0);
+
+    $sum    = $av + $sv + $zsv + $usv;
+    $gesamt = (int)($roomParams['ET_Anschlussleistung_W'] ?? 0);
+
     if ($sum != $gesamt) {
-        $msgs[] = sprintf(ERROR_MESSAGES['sum_leistung'],
-            $roomParams['Raumbezeichnung'], $roomParams['Raumnr'], $roomParams['idTABELLE_Räume'],
-            $roomParams['ET_Anschlussleistung_W'] ?? 'n/a', $sum,
-            implode("+", [
-                intval($roomParams['ET_Anschlussleistung_AV_W'] ?? 0),
-                intval($roomParams['ET_Anschlussleistung_SV_W'] ?? 0),
-                intval($roomParams['ET_Anschlussleistung_ZSV_W'] ?? 0),
-                intval($roomParams['ET_Anschlussleistung_USV_W'] ?? 0)
-            ])
+        $msgs[] = sprintf(
+            ERROR_MESSAGES['sum_leistung'],
+            e($roomParams['Raumbezeichnung']),
+            e($roomParams['Raumnr']),
+            (int)$roomParams['idTABELLE_Räume'],
+            e($roomParams['ET_Anschlussleistung_W'] ?? 'n/a'),
+            $sum,
+            e(implode("+", [$av, $sv, $zsv, $usv]))
         );
     }
 }
@@ -262,10 +322,18 @@ function check_room_for_parameters_cause_elementParamKathegorie(&$msgs, $roomPar
         124 => 'NGA', 125 => 'N2O', 126 => 'CO2', 127 => 'ET_RJ45-Ports'
     ];
     $name = $map[$paramID] ?? null;
+
     if ($name && (($roomParams[$name] ?? 0) < 1)) {
-        $msgs[] = sprintf(ERROR_MESSAGES['element_param'],
-            $roomParams['Raumbezeichnung'], $roomParams['Raumnr'], $roomParams['idTABELLE_Räume'],
-            $name, $row['Bezeichnung'], $name, $roomParams[$name] ?? 'n/a');
+        $msgs[] = sprintf(
+            ERROR_MESSAGES['element_param'],
+            e($roomParams['Raumbezeichnung']),
+            e($roomParams['Raumnr']),
+            (int)$roomParams['idTABELLE_Räume'],
+            e($name),
+            e($row['Bezeichnung']),
+            e($name),
+            e($roomParams[$name] ?? 'n/a')
+        );
     }
 }
 
@@ -273,8 +341,13 @@ function check_room_for_na(&$msgs, $roomParams, $NAs): void
 {
     foreach ($NAs as $na) {
         if (($roomParams[$na] ?? 0) < 1) {
-            $msgs[] = sprintf(ERROR_MESSAGES['na_missing'],
-                $roomParams['Raumbezeichnung'], $roomParams['Raumnr'], $roomParams['idTABELLE_Räume'], $na);
+            $msgs[] = sprintf(
+                ERROR_MESSAGES['na_missing'],
+                e($roomParams['Raumbezeichnung']),
+                e($roomParams['Raumnr']),
+                (int)$roomParams['idTABELLE_Räume'],
+                e($na)
+            );
         }
     }
 }
@@ -282,19 +355,29 @@ function check_room_for_na(&$msgs, $roomParams, $NAs): void
 function check_4_room_param(&$msgs, $roomParams, $param, $row): void
 {
     if (($roomParams[$param] ?? 0) < 1) {
-        $msgs[] = sprintf(ERROR_MESSAGES['element_param4'],
-            $roomParams['Raumbezeichnung'], $roomParams['Raumnr'], $roomParams['idTABELLE_Räume'],
-            $row['Bezeichnung'], $param, $roomParams[$param] ?? 'n/a');
+        $msgs[] = sprintf(
+            ERROR_MESSAGES['element_param4'],
+            e($roomParams['Raumbezeichnung']),
+            e($roomParams['Raumnr']),
+            (int)$roomParams['idTABELLE_Räume'],
+            e($row['Bezeichnung']),
+            e($param),
+            e($roomParams[$param] ?? 'n/a')
+        );
     }
 }
 
-
 function check4vorabsperr(&$msgs, $roomParams, $elements_in_room): void
 {
-    if (intval($roomParams["1 Kreis DL-5"] ?? 0) == 0) {
-        $msgs[] = sprintf(ERROR_MESSAGES['stativ_dl5'],
-            $roomParams['Raumbezeichnung'], $roomParams['Raumnr'], $roomParams['idTABELLE_Räume']);
+    if ((int)($roomParams["1 Kreis DL-5"] ?? 0) === 0) {
+        $msgs[] = sprintf(
+            ERROR_MESSAGES['stativ_dl5'],
+            e($roomParams['Raumbezeichnung']),
+            e($roomParams['Raumnr']),
+            (int)$roomParams['idTABELLE_Räume']
+        );
     }
+
     $found = false;
     foreach ($elements_in_room as $el) {
         if ($el["idTABELLE_Elemente"] == 664) {
@@ -302,32 +385,60 @@ function check4vorabsperr(&$msgs, $roomParams, $elements_in_room): void
             break;
         }
     }
+
     if (!$found) {
-        $msgs[] = sprintf(ERROR_MESSAGES['stativ_vorabsperr'],
-            $roomParams['Raumbezeichnung'], $roomParams['Raumnr'], $roomParams['idTABELLE_Räume']);
+        $msgs[] = sprintf(
+            ERROR_MESSAGES['stativ_vorabsperr'],
+            e($roomParams['Raumbezeichnung']),
+            e($roomParams['Raumnr']),
+            (int)$roomParams['idTABELLE_Räume']
+        );
     }
 }
 
 function check_room_Leistungssumme(&$msgs, $roomParams, $P, $extra = ""): void
 {
     $map = ["NoNA", "AV", "SV", "ZSV", "USV"];
+
     foreach ($P as $i => $val) {
         if ($i > 0 && $i < 5) {
-            if ($val > ($roomParams['ET_Anschlussleistung_' . $map[$i] . '_W'] ?? 0)) {
-                $msgs[] = sprintf(ERROR_MESSAGES['leistung_sum'],
-                    $roomParams['Raumbezeichnung'], $roomParams['Raumnr'], $roomParams['idTABELLE_Räume'],
-                    $extra, $map[$i], $val, $map[$i], $roomParams['ET_Anschlussleistung_' . $map[$i] . '_W'] ?? 'n/a');
+            $limit = (int)($roomParams['ET_Anschlussleistung_' . $map[$i] . '_W'] ?? 0);
+
+            if ($val > $limit) {
+                $msgs[] = sprintf(
+                    ERROR_MESSAGES['leistung_sum'],
+                    e($roomParams['Raumbezeichnung']),
+                    e($roomParams['Raumnr']),
+                    (int)$roomParams['idTABELLE_Räume'],
+                    e($extra),
+                    e($map[$i]),
+                    $val,
+                    e($map[$i]),
+                    $limit
+                );
             }
+
             if ($val > 8000 && $i === 3) {
-                $msgs[] = sprintf(ERROR_MESSAGES['leistung_8kW'],
-                    $roomParams['Raumbezeichnung'], $roomParams['Raumnr'], $roomParams['idTABELLE_Räume'],
-                    $extra, $map[$i]);
+                $msgs[] = sprintf(
+                    ERROR_MESSAGES['leistung_8kW'],
+                    e($roomParams['Raumbezeichnung']),
+                    e($roomParams['Raumnr']),
+                    (int)$roomParams['idTABELLE_Räume'],
+                    e($extra),
+                    e($map[$i])
+                );
             }
         }
+
         if ($val === 0 && $i > 0 && ($roomParams[$map[$i]] ?? 0) === 1) {
-            $msgs[] = sprintf(ERROR_MESSAGES['leistung_zero_na'],
-                $roomParams['Raumbezeichnung'], $roomParams['Raumnr'], $roomParams['idTABELLE_Räume'],
-                $extra, $map[$i]);
+            $msgs[] = sprintf(
+                ERROR_MESSAGES['leistung_zero_na'],
+                e($roomParams['Raumbezeichnung']),
+                e($roomParams['Raumnr']),
+                (int)$roomParams['idTABELLE_Räume'],
+                e($extra),
+                e($map[$i])
+            );
         }
     }
 }
@@ -336,11 +447,22 @@ function distribute($x, $P, $NAs)
 {
     $map = ["AV" => 1, "SV" => 2, "ZSV" => 3, "USV" => 4];
     if ($x > 0) {
-        if (empty($NAs)) $P[0] += $x;
-        else foreach ($NAs as $NA) isset($map[$NA]) ? $P[$map[$NA]] += $x / count($NAs) : $P[0] += $x;
+        if (empty($NAs)) {
+            $P[0] += $x;
+        } else {
+            foreach ($NAs as $NA) {
+                if (isset($map[$NA])) {
+                    $P[$map[$NA]] += $x / count($NAs);
+                } else {
+                    $P[0] += $x;
+                }
+            }
+        }
     }
     return $P;
 }
+
+
 
 // ------------------- MAIN -------------------
 if (!function_exists('utils_connect_sql')) include "utils/_utils.php";

@@ -4,7 +4,6 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Geräteliste</title>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
@@ -35,9 +34,8 @@
         </div>
         <div id="CB1" class="card-body table-responsive">
             <?php
-            if (!function_exists('utils_connect_sql')) {
-                include "utils/_utils.php";
-            }
+            // 25 FX
+            require_once "utils/_utils.php";
             init_page_serversides("x");
             $mysqli = utils_connect_sql();
             $sql = "SELECT   

@@ -56,7 +56,7 @@ init_page_serversides();
         <div class="card-body">
             <?php
             $mysqli = utils_connect_sql();
-            $projectID = $_SESSION["projectID"];
+            $projectID = (int)$_SESSION["projectID"];
             $sql = "SELECT 
                         SUM(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
                         tabelle_elemente.ElementID,

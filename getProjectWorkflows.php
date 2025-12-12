@@ -1,32 +1,24 @@
-<!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title></title></head>
-<body>
 <?php
-session_start();
-if (!isset($_SESSION["username"])) {
-    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-    exit;
-}
-?>
+// 25 FX
+require_once "utils/_utils.php";
+check_login();
+$mysqli = utils_connect_sql();
 
-<?php
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-
-
-/* change character set to utf8 */
-if (!$mysqli->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $mysqli->error);
-    exit();
-}
 
 $sql = "SELECT tabelle_workflow.idtabelle_workflow, tabelle_workflow.Name
-                FROM tabelle_workflowtyp INNER JOIN (tabelle_workflow_has_tabelle_projekte INNER JOIN tabelle_workflow ON tabelle_workflow_has_tabelle_projekte.tabelle_workflow_idtabelle_workflow = tabelle_workflow.idtabelle_workflow) ON tabelle_workflowtyp.idtabelle_workflowtyp = tabelle_workflow.tabelle_workflowtyp_idtabelle_workflowtyp
-                WHERE (((tabelle_workflow_has_tabelle_projekte.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_workflow.tabelle_workflowtyp_idtabelle_workflowtyp)=1));";
+FROM tabelle_workflowtyp
+         INNER JOIN (tabelle_workflow_has_tabelle_projekte INNER JOIN tabelle_workflow
+                     ON tabelle_workflow_has_tabelle_projekte.tabelle_workflow_idtabelle_workflow =
+                        tabelle_workflow.idtabelle_workflow) ON tabelle_workflowtyp.idtabelle_workflowtyp =
+                                                                tabelle_workflow.tabelle_workflowtyp_idtabelle_workflowtyp
+WHERE tabelle_workflow_has_tabelle_projekte.tabelle_projekte_idTABELLE_Projekte =?
+AND tabelle_workflow.tabelle_workflowtyp_idtabelle_workflowtyp = 1";
 
-$result = $mysqli->query($sql);
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("i", $_SESSION["projectID"]);
+$stmt->execute();
+$result = $stmt->get_result();
+
 echo "<table class='table table-sm' id='tableprojectWorkflows'  >
             <thead><tr>
             <th>WorkflowID</th>
@@ -43,7 +35,6 @@ while ($row = $result->fetch_assoc()) {
     echo "</tr>";
 }
 echo "</tbody></table>";
-
 $mysqli->close();
 ?>
 
@@ -88,13 +79,10 @@ $mysqli->close();
                             $("#workflowModalBody").html(data);
                         }
                     });
-                    makeToaster("Workflow erfolgreich zu Los hinzugefügt!", data="Erfolg!");
+                    makeToaster("Workflow erfolgreich zu Los hinzugefügt!", data = "Erfolg!");
 
                 }
             });
         }
     });
 </script>
-
-</body>
-</html>

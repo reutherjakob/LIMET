@@ -8,19 +8,19 @@
 </head>
 <body>
 <?php
+// 25 FX
 require_once "utils/_utils.php";
 check_login();
 
 $mysqli = utils_connect_sql();
-$vermerkGruppenID = filter_input(INPUT_GET, 'vermerkGruppenID', FILTER_VALIDATE_INT);
+$vermerkGruppenID = getPostInt('vermerkGruppenID',0);
 
-if (!$vermerkGruppenID) {
+if (0 != $vermerkGruppenID) {
     echo "Ungültige Eingabe.";
     $mysqli->close();
     exit;
 }
 
-// Prepared statement to protect against SQL injection
 $stmt = $mysqli->prepare(
     "SELECT 
         vg.idtabelle_Vermerkgruppe,
@@ -60,35 +60,24 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . htmlspecialchars($row['Datum']  ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
     echo "<td>";
 
-    switch ($row["Gruppenart"]) {
-        case "Mailverkehr":
-            echo "<span class='badge badge-pill badge-info'> Mailverkehr </span>";
-            break;
-        case "Telefonnotiz":
-            echo "<span class='badge badge-pill badge-dark'> Telefonnotiz </span>";
-            break;
-        case "AV":
-            echo "<span class='badge badge-pill badge-warning'> AV </span>";
-            break;
-        case "Protokoll":
-            echo "<span class='badge badge-pill badge-primary'> Protokoll </span>";
-            break;
-        case "ÖBA-Protokoll":
-            echo "<span class='badge badge-pill badge-success'> ÖBA-Protokoll </span>";
-            break;
-        default:
-            echo "Art unbekannt: " . htmlspecialchars($row['Gruppenart']  ?? '',  ENT_QUOTES, 'UTF-8');
-    }
+    echo match ($row["Gruppenart"]) {
+        "Mailverkehr" => "<span class='badge badge-pill badge-info'> Mailverkehr </span>",
+        "Telefonnotiz" => "<span class='badge badge-pill badge-dark'> Telefonnotiz </span>",
+        "AV" => "<span class='badge badge-pill badge-warning'> AV </span>",
+        "Protokoll" => "<span class='badge badge-pill badge-primary'> Protokoll </span>",
+        "ÖBA-Protokoll" => "<span class='badge badge-pill badge-success'> ÖBA-Protokoll </span>",
+        default => "Art unbekannt: " . htmlspecialchars($row['Gruppenart'] ?? '', ENT_QUOTES, 'UTF-8'),
+    };
 
     echo "</td>";
     echo "<td>" . htmlspecialchars($row['Ort']  ?? '', ENT_QUOTES, 'UTF-8') . "</td>";
     echo "</tr>";
 }
 echo "</tbody></table>";
-
 $stmt->close();
 $mysqli->close();
 ?>
+
 
 <script>
     $(document).ready(function () {

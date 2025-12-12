@@ -25,10 +25,9 @@
 </head>
 <body>
 <div id="limet-navbar"></div>
-
 <div class="container-fluid bg-white">
-
     <?php
+    //25 FX
     if (!function_exists('utils_connect_sql')) {
         include "utils/_utils.php";
     }
@@ -44,6 +43,9 @@
         "Cino 2.1" => "fas fa-smoking",
         "KFN-ZNA" => "fas fa-book-dead",
         "KFN-LAB" => "fas fa-skull-crossbones",
+        "KFN-PSY-NB" => "fas fa-unlock-alt",
+        "KFN-ARIO" => "fas fa-bomb",
+        "KFN-ZNA Neubau Pavillon G1" => "fas fa-book-dead",
         "Chirurgie Graz BE5" => "fas fa-bone",
         "Chirurgie Graz BE3" => "fas fa-bone",
         "ZVZ Nord" => "fas fa-teeth-open",
@@ -51,16 +53,16 @@
         "Test1" => "fas fa-bong",
         "KAGes Labor - LKH2 Süd" => "fas fa-vials",
         "KHI" => "fas fa-ambulance",
-        "KFN-PSY-NB" => "fas fa-unlock-alt",
-        "KFN-ARIO" => "fas fa-bomb",
-        "KOR-ZNB"=> "fas fa-briefcase-medical",
+        "KOR_ZNB" => "fas fa-briefcase-medical",
+        "KOR-P30" => "fas fa-briefcase-medical",
         "KOR-MB-Sectio-OP" => "fas fa-briefcase-medical",
-        "Labor Kathegorien"=>"fas fa-atom",
+        "Labor Kathegorien" => "fas fa-atom",
         "AGES SF Nutzerraumbuch" => "fas fa-mortar-pestle",
-        "AGES Spargelfeld"=> "fas fa-mortar-pestle",
+        "AGES Spargelfeld" => "fas fa-mortar-pestle",
         "Test KHI" => "fas fa-question-circle",
-        "Labor Kategorien" =>"fas fa-microscope"
+        "Labor Kategorien" => "fas fa-microscope",
     ];
+    //<i class="fas fa-mountain"></i>
     ?>
 
     <div class='row'>
@@ -105,18 +107,35 @@
                         </thead>
                         <tbody>
                         <?php $mysqli = utils_connect_sql();
-                        $sql = "SELECT tabelle_projekte.idTABELLE_Projekte, tabelle_projekte.Interne_Nr, tabelle_projekte.Projektname,"
-                            . " tabelle_projekte.Aktiv, tabelle_projekte.Neubau, tabelle_projekte.Bettenanzahl,"
-                            . " tabelle_projekte.BGF, tabelle_projekte.NF, tabelle_projekte.Ausfuehrung,tabelle_projekte.Preisbasis,"
-                            . " tabelle_planungsphasen.Bezeichnung, tabelle_planungsphasen.idTABELLE_Planungsphasen"
-                            . " FROM tabelle_projekte INNER JOIN tabelle_planungsphasen ON tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen = tabelle_planungsphasen.idTABELLE_Planungsphasen INNER JOIN tabelle_users_have_projects ON tabelle_projekte.idTABELLE_Projekte = tabelle_users_have_projects.tabelle_projekte_idTABELLE_Projekte WHERE tabelle_users_have_projects.User = '" . $_SESSION['username'] . "' ORDER BY tabelle_projekte.Interne_Nr;";
-                        $result = $mysqli->query($sql);
+                        $username = $_SESSION['username'] ?? '';
+
+                        $stmt = $mysqli->prepare("SELECT tabelle_projekte.idTABELLE_Projekte, 
+                                 tabelle_projekte.Interne_Nr, 
+                                 tabelle_projekte.Projektname,
+                                 tabelle_projekte.Aktiv, 
+                                 tabelle_projekte.Neubau, 
+                                 tabelle_projekte.Bettenanzahl,
+                                 tabelle_projekte.BGF, 
+                                 tabelle_projekte.NF, 
+                                 tabelle_projekte.Ausfuehrung,
+                                 tabelle_projekte.Preisbasis,
+                                 tabelle_planungsphasen.Bezeichnung, 
+                                 tabelle_planungsphasen.idTABELLE_Planungsphasen
+                          FROM tabelle_projekte 
+                          INNER JOIN tabelle_planungsphasen ON tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen = tabelle_planungsphasen.idTABELLE_Planungsphasen 
+                          INNER JOIN tabelle_users_have_projects ON tabelle_projekte.idTABELLE_Projekte = tabelle_users_have_projects.tabelle_projekte_idTABELLE_Projekte 
+                          WHERE tabelle_users_have_projects.User = ? 
+                          ORDER BY tabelle_projekte.Interne_Nr");
+
+                        $stmt->bind_param("s", $username);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+
                         while ($row = $result->fetch_assoc()) {
                             echo "<tr>";
                             echo "<td>" . $row["idTABELLE_Projekte"] . "</td>";
                             echo "<td> <button type='button' id='" . $row["idTABELLE_Projekte"] . "' class='btn btn-outline-dark btn-sm' value='changeProject' data-bs-toggle='modal' data-bs-target='#changeProjectModal'><i class='fas fa-pencil-alt'></i></button></td>";
                             echo "<td>" . $row["Interne_Nr"] . "</td>";
-
                             $projektname = $row["Projektname"];
                             if (isset($projectIcons[$projektname])) {
                                 $iconClass = $projectIcons[$projektname];
@@ -125,7 +144,6 @@
                                 echo "<td><i class='far fa-hospital me-2'> </i></td>";
                             }
                             echo "<td><strong>  {$projektname} </strong></td>";
-
                             echo "<td>";
                             if ($row["Aktiv"] == 1) {
                                 echo "Ja";
@@ -164,7 +182,7 @@
                 </div>
             </div>
             <div class='card mt-2'>
-                <div class='card-header'> <strong> Updates</strong>
+                <div class='card-header'><strong> Updates</strong>
                 </div>
                 <div class='card-body'>
                     <div class="row">
@@ -204,35 +222,35 @@
             </div>
         </div>
 
-        </div>
-            <div class='mt-2 row'>
-                <div class='col-xxl-10'>
-                    <div class='card'>
-                        <div class='card-header d-inline-flex' id='vermerkPanelHead'>
-                            <div class='col-10'>
-                                <form class='form-check form-check-inline'>
-                                    <label class='form-check-label' for='vermerkeFilter'>Vermerke im Projekt</label>
-                                    <select class='form-check-inline' id='vermerkeFilter'
-                                        <?php if (!isset($_SESSION["projectName"])) {
-                                            echo " style='display:none'";
-                                        } ?>
-                                    >
-                                        <option value=0 selected>Alle Vermerke</option>
-                                        <option value=1>Bearbeitung offen</option>
-                                    </select>
-                                </form>
-                            </div>
-                            <div class='col-2'>
-                                <div id='newSearchLocation' class='d-flex justify-content-end'></div>
-                            </div>
-                        </div>
-                        <div class='card-body px-1 py-1' id='vermerke'>
-                            <div class='row' id='projectVermerke'></div>
-                        </div>
+    </div>
+    <div class='mt-2 row'>
+        <div class='col-xxl-10'>
+            <div class='card'>
+                <div class='card-header d-inline-flex' id='vermerkPanelHead'>
+                    <div class='col-10'>
+                        <form class='form-check form-check-inline'>
+                            <label class='form-check-label' for='vermerkeFilter'>Vermerke im Projekt</label>
+                            <select class='form-check-inline' id='vermerkeFilter'
+                                <?php if (!isset($_SESSION["projectName"])) {
+                                    echo " style='display:none'";
+                                } ?>
+                            >
+                                <option value=0 selected>Alle Vermerke</option>
+                                <option value=1>Bearbeitung offen</option>
+                            </select>
+                        </form>
+                    </div>
+                    <div class='col-2'>
+                        <div id='newSearchLocation' class='d-flex justify-content-end'></div>
                     </div>
                 </div>
+                <div class='card-body px-1 py-1' id='vermerke'>
+                    <div class='row' id='projectVermerke'></div>
+                </div>
             </div>
+        </div>
     </div>
+</div>
 </body>
 
 <!--suppress ES6ConvertVarToLetConst -->
@@ -436,7 +454,6 @@
                 }
             });
         });
-
     }); // Document ready
 </script>
 </html> 

@@ -1,34 +1,30 @@
 <?php
-session_start();
+// 25 FX
+require_once "utils/_utils.php";
+check_login();
+
+$elementID = getPostInt('elementID');
+$_SESSION["elementID"] = $elementID;
+$mysqli = utils_connect_sql();
+
+$stmt = $mysqli->prepare("SELECT `Bezeichnung`, `ElementID` FROM `tabelle_elemente` WHERE `idTABELLE_Elemente` = ?");
+if (!$stmt) {
+    echo "Vorbereitungsfehler: " . htmlspecialchars($mysqli->error);
+    exit;
+}
+
+$stmt->bind_param("i", $elementID);
+$stmt->execute();
+
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
+if ($row) {
+    echo htmlspecialchars($row["ElementID"]) . " " . htmlspecialchars($row["Bezeichnung"]);
+} else {
+    echo "Element nicht gefunden.";
+}
+
+$stmt->close();
+$mysqli->close();
 ?>
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
-
-<?php
-	$_SESSION["elementID"]=$_GET["elementID"];
-
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	
-	
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    printf("Error loading character set utf8: %s\n", $mysqli->error);
-	    exit();
-	} 
-	
-	
-	$sql = "SELECT `tabelle_elemente`.`Bezeichnung`,
-			    `tabelle_elemente`.`ElementID`
-				FROM `LIMET_RB`.`tabelle_elemente`
-				WHERE `tabelle_elemente`.`idTABELLE_Elemente`= ".$_GET["elementID"].";";	
-	$result = $mysqli->query($sql);
-	$row = $result->fetch_assoc();
-	echo $row["ElementID"]." ".$row["Bezeichnung"];
-
-	$mysqli ->close();
-	?>

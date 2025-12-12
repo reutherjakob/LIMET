@@ -37,7 +37,6 @@ $mysqli->close();
 </head>
 <body>
 <div class="d-flex align-items-center w-100">
-
     <div id="kostenInfoPanel" class="collapse mt-2 border rounded p-3" style="background-color: #f8f9fa;">
         <?php include "getRoomCostsbyGewerke.php" ?>
     </div>
@@ -76,9 +75,9 @@ $mysqli->close();
         <th>Var</th>
         <th>Stk</th>
         <th>Bestand</th>
-        <th class='d-flex justify-content-center' data-bs-toggle='tooltip' title='Standort'><i class='fab fa-periscope '></i></th>
+        <th class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Standort'><i class='fab fa-periscope '></i></th>
         <th>Verw</th>
-        <th class='d-flex justify-content-center' data-bs-toggle='tooltip' title='Kommentar'><i class='far fa-comment'></i></th>
+        <th class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Kommentar'><i class='far fa-comment'></i></th>
         <th>Verlauf</th>
         <th></th>
     </tr>
@@ -314,7 +313,6 @@ include "modal_elementHistory.html";
                     .addClass('btn btn-sm btn-outline-dark xxx ms-1 me-1')
                     .appendTo('#room-action-buttons');
 
-
                 $('#tableRoomElements tbody').on('click', 'tr', function () {
                     const data = tableRoomElements.row(this).data();
                     if (!data) return;
@@ -332,14 +330,12 @@ include "modal_elementHistory.html";
                         type: 'POST',
                         success(data) {
                             $('#elementParameters').html(data).show();
-
                             $.ajax({
                                 url: 'getElementPrice.php',
                                 data: {id},
                                 type: 'POST',
                                 success(data) {
                                     $('#price').html(data);
-
                                     $.ajax({
                                         url: 'getElementBestand.php',
                                         data: {id, stk},
@@ -478,8 +474,6 @@ include "modal_elementHistory.html";
         checkbox.on('change', function () {
             rememberSorting = this.checked;
             localStorage.setItem('rememberSorting', rememberSorting ? 'true' : 'false');
-
-            // If disabled clear stored sorting, else save current if valid
             if (!rememberSorting) {
                 localStorage.removeItem('roomElementsSort');
             } else if (currentSort.column !== null && currentSort.dir !== null) {

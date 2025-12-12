@@ -1,4 +1,5 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
@@ -62,9 +63,13 @@ function getGUGOptions($mysqli, $ghgID, $selectedGUG): string
     return $options;
 }
 
-$filterValueGewerke = $_POST["filterValueGewerke"] ?? null;
-$filterValueGHG = $_POST["filterValueGHG"] ?? null;
-$filterValueGUG = $_POST["filterValueGUG"] ?? null;
+$filterValueGewerke = getPostInt("filterValueGewerke", 0);
+#$_POST["filterValueGewerke"] ?? null;
+$filterValueGHG = getPostInt("filterValueGHG", 0);
+#$_POST["filterValueGHG"] ?? null;
+$filterValueGUG = getPostInt("filterValueGUG", 0);
+ #$_POST["filterValueGUG"] ?? null;
+
 ?>
 
 
@@ -125,6 +130,8 @@ $filterValueGUG = $_POST["filterValueGUG"] ?? null;
     </div>
 </div>
 
+<?php $mysqli->close(); ?>
+
 <script src="utils/_utils.js"></script>
 <script>
     $('#ghg').change(function () {
@@ -178,5 +185,3 @@ $filterValueGUG = $_POST["filterValueGUG"] ?? null;
 </script>
 </body>
 </html>
-
-<?php $mysqli->close(); ?>

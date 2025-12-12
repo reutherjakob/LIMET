@@ -95,5 +95,4 @@ $(document).ready(function () {
         placeholder: 'Organistation wählen',
         dropdownCssClass: 'select2-dropdown-long'
     });
-
 });

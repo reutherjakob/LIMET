@@ -1,18 +1,9 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
-?>
 
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Raumvermerke Übersicht</title>
-</head>
-<body>
-
-<?php
-$projectID = $_SESSION["projectID"] ?? null;
+$projectID = (int)$_SESSION["projectID"] ?? null;
 $roomID = $_SESSION["roomID"] ?? null;
 
 if (!$projectID || !$roomID) {
@@ -157,7 +148,6 @@ $mysqli->close();
         });
 
 
-
         $('#tableRoomVermerke').DataTable({
             columnDefs: [
                 {targets: [0, 6, 9, 10], visible: false, searchable: false}
@@ -171,8 +161,8 @@ $mysqli->close();
             order: [[4, 'desc']],
             language: {url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'},
             rowCallback: function (row, data) {
-                var vermerkTyp = data[6];
-                var status = data[10];
+               let vermerkTyp = data[6];
+               let status = data[10];
                 if (vermerkTyp === "Bearbeitung") {
                     row.style.backgroundColor = status === "0" ? '#ff8080' : '#b8dc6f';
                 } else {
@@ -183,16 +173,15 @@ $mysqli->close();
 
         document.querySelectorAll("input[value='statusCheck']").forEach(function (input) {
             input.addEventListener("change", function () {
-                var vermerkID = this.id;
-                var status = this.checked ? 1 : 0;
+                let vermerkID = this.id;
+                let status = this.checked ? 1 : 0;
                 if (vermerkID) {
                     $.ajax({
                         url: "saveVermerkStatus.php",
                         method: 'POST',
                         data: {vermerkID: vermerkID, vermerkStatus: status},
                         success: function (data) {
-                            // You can replace with a user feedback system or toaster here
-                            alert(data);
+
                             $.ajax({
                                 url: "getRoomVermerke2.php",
                                 method: 'POST',
@@ -211,5 +200,3 @@ $mysqli->close();
     });
 
 </script>
-</body>
-</html>

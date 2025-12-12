@@ -5,14 +5,12 @@ check_login();
 $mysqli = utils_connect_sql();
 
 // Sanitize and validate inputs
-$projectID = getPostInt('projectID', 0);
-$elementID = getPostInt('elementID', 0);
+$projectID = $_SESSION['projectID'];
+$elementID = $_SESSION["elementID"];   # getPostInt('elementID', 0);
 $parameterID = getPostInt('parameterID', 0);
 $variantenID = getPostInt('variantenID', 0);
 $wert = getPostString('wert', '');
 $einheit = getPostString('einheit', '');
-
-
 
 $sql = "UPDATE `LIMET_RB`.`tabelle_projekt_elementparameter`
         SET `Wert` = ?, `Einheit` = ?
@@ -29,7 +27,7 @@ if (!$stmt) {
 $stmt->bind_param("ssiiii", $wert, $einheit, $projectID, $elementID, $parameterID, $variantenID);
 $success = $stmt->execute();
 
-if ($success) {
+if ($success && $stmt->affected_rows > 0) {
     // Fetch parameter Bezeichnung
     $sqlBez = "SELECT `Bezeichnung` FROM `tabelle_parameter` WHERE `idTABELLE_Parameter` = ?";
     $stmtBez = $mysqli->prepare($sqlBez);
@@ -39,12 +37,11 @@ if ($success) {
     $stmtBez->fetch();
     $stmtBez->close();
 
-    echo "Parameter <strong>" . htmlspecialchars($bezeichnung) . "</strong> erfolgreich aktualisiert! " . $wert . " " . $einheit . " " . $projectID . " " . $elementID . " " . $parameterID . " " . $variantenID . " ";
+    echo "Parameter <strong>" . htmlspecialchars($bezeichnung ?? 'Unbekannt') . "</strong> erfolgreich aktualisiert! " . htmlspecialchars($wert) . " " . htmlspecialchars($einheit);
 } else {
-    echo "Fehler beim Aktualisieren des Parameters: " . $stmt->error;
+    echo "Kein Datensatz gefunden oder Fehler: " . $stmt->error . " (affected_rows: " . $stmt->affected_rows . ")";
 }
-
-
 
 $stmt->close();
 $mysqli->close();
+?>

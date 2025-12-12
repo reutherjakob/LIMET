@@ -26,7 +26,6 @@ check_login();
 $roombookID = getPostInt("id");
 $Stk = getPostInt("stk");
 
-
 $mysqli = utils_connect_sql();
 $stmt = $mysqli->prepare(
     "SELECT tabelle_geraete.idTABELLE_Geraete, tabelle_hersteller.Hersteller, tabelle_geraete.Typ
@@ -48,7 +47,6 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
-
 $stmt = $mysqli->prepare(
     "SELECT idtabelle_bestandsdaten, Inventarnummer, Seriennummer, Anschaffungsjahr, `Aktueller Ort`, tabelle_geraete_idTABELLE_Geraete
      FROM tabelle_bestandsdaten
@@ -68,7 +66,7 @@ echo "<div class='table-responsive'><table class='table table-striped table-bord
 	<th>Seriennummer</th>
 	<th>Anschaffungsjahr</th>
 	<th>Gerät</th>
-    <th class='d-flex justify-content-center' data-bs-toggle='tooltip' title='Standort aktuell'><i class='fab fa-periscope '></i></th>
+    <th class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Standort aktuell'><i class='fab fa-periscope '></i></th>
 	<th></th>                                                                                            
     <th>Check ob genug bestand da</th>
 	</tr></thead>
@@ -121,8 +119,6 @@ $mysqli->close();
             <div class='modal-header'>
                 <h4 class='modal-title'>Bestand hinzufügen</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-
-
             </div>
             <div class='modal-body' id='mbody'>
                 <form role="form">
@@ -237,7 +233,6 @@ $mysqli->close();
                     });
                 }
             });
-
         } else {
             alert("Bitte Inventarnummer angeben!");
         }
@@ -288,7 +283,6 @@ $mysqli->close();
         let serienNr = $("#serienNr" + ID).val();
         let yearNr = $("#yearNr" + ID).val();
         let currentPlace = $("#currentPlace" + ID).val();
-
         if (ID !== "" && inventNr !== "") {
             $.ajax({
                 url: "saveBestand.php",
@@ -317,10 +311,12 @@ $mysqli->close();
         }
     });
 
+
     $("#addBestandsElement").click(function () {
         $("#addBestand").show();
         $("#saveBestand").hide();
     });
+
 </script>
 </body>
 </html>

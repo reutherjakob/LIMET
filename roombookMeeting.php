@@ -20,97 +20,128 @@
           rel="stylesheet">
 </head>
 <body>
-<!-- 13.2.25: Reworked -->
+
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 init_page_serversides();
+$mysqli = utils_connect_sql();
+$projectId = isset($_SESSION['projectID']) ? (int)$_SESSION['projectID'] : 0;
+
+$sql = "SELECT 
+            tabelle_räume.Raumnr,
+            tabelle_räume.Raumbezeichnung,
+            tabelle_räume.Nutzfläche,
+            tabelle_räume.`Raumbereich Nutzer`,
+            tabelle_räume.Geschoss,
+            tabelle_räume.`Anmerkung allgemein`,
+            tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen,
+            tabelle_räume.idTABELLE_Räume,
+            tabelle_räume.`MT-relevant`,
+            tabelle_räume.Geschoss,
+            tabelle_räume.Bauetappe,
+            tabelle_räume.Bauabschnitt,
+            tabelle_räume.Entfallen
+        FROM tabelle_räume
+        INNER JOIN tabelle_projekte 
+            ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
+        WHERE tabelle_projekte.idTABELLE_Projekte = ?
+          AND tabelle_räume.Entfallen <> 1
+        ORDER BY tabelle_räume.`MT-relevant` DESC";
+
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("i", $projectId);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
-<div id="limet-navbar"></div> <!-- Container für Navbar -->
+<div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class="card">
-    <div class="card">
-        <div class="card-header">
-            <div class="row ">
-                <div class="col-6"></div>
-                <div class="col-6 d-flex justify-content-end align-items-center" id="CardHeaderRooms">
-                    <select id="mtRelevantFilter" class="form-select form-select-sm mx-2" style="width:auto; display:inline-block;">
-                        <option value="">MT.-rel</option>
-                        <option value="1">Ja</option>
-                        <option value="0">Nein</option>
-                    </select>
+        <div class="card">
+            <div class="card-header">
+                <div class="row ">
+                    <div class="col-6"></div>
+                    <div class="col-6 d-flex justify-content-end align-items-center"
+                         id="CardHeaderRooms">
+                        <select id="mtRelevantFilter" class="form-select form-select-sm mx-2"
+                                style="width:auto; display:inline-block;">
+                            <option value="">MT.-rel</option>
+                            <option value="1">Ja</option>
+                            <option value="0">Nein</option>
+                        </select>
+                    </div>
                 </div>
             </div>
+            <div class="card-body">
+                <table class='table table-striped table-bordered table-sm' id='tableRooms'>
+                    <thead class='thead'>
+                    <tr>
+                        <th>ID</th>
+                        <th>Raumnr</th>
+                        <th>Raumbezeichnung</th>
+                        <th>Nutzfläche</th>
+                        <th>Raumbereich Nutzer</th>
+                        <th>Bauabschnitt</th>
+                        <th>Bauetappe</th>
+                        <th>Geschoss</th>
+                        <th>MT-rel.</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php while ($row = $result->fetch_assoc()): ?>
+                        <tr>
+                            <td><?= (int)$row["idTABELLE_Räume"] ?></td>
+                            <td><?= htmlspecialchars($row["Raumnr"]) ?></td>
+                            <td><?= htmlspecialchars($row["Raumbezeichnung"]) ?></td>
+                            <td><?= htmlspecialchars($row["Nutzfläche"]) ?></td>
+                            <td><?= htmlspecialchars($row["Raumbereich Nutzer"]) ?></td>
+                            <td><?= htmlspecialchars($row["Bauabschnitt"]) ?></td>
+                            <td><?= htmlspecialchars($row["Bauetappe"]) ?></td>
+                            <td><?= htmlspecialchars($row["Geschoss"]) ?></td>
+                            <td><?= htmlspecialchars($row["MT-relevant"]) ?></td>
+                        </tr>
+                    <?php endwhile; ?>
+                    </tbody>
+                </table>
+                <?php
+                $stmt->close();
+                $mysqli->close();
+                ?>
+
+            </div>
         </div>
-        <div class="card-body">
-            <?php
-            $mysqli = utils_connect_sql();
-            $sql = "SELECT tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.Nutzfläche, tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss,
-                            tabelle_räume.`Anmerkung allgemein`, tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, tabelle_räume.idTABELLE_Räume,
-                            tabelle_räume.`MT-relevant`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, tabelle_räume.Bauabschnitt, tabelle_räume.Entfallen
-                                            FROM tabelle_räume INNER JOIN tabelle_projekte ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
-                                            WHERE tabelle_projekte.idTABELLE_Projekte=" . $_SESSION["projectID"] . " AND tabelle_räume.Entfallen <>1
-                                            ORDER BY tabelle_räume.`MT-relevant` DESC";
-            $result = $mysqli->query($sql);
-            echo "<table class='table table-striped table-bordered table-sm ' id='tableRooms'   >
-                            <thead class='thead'><tr>
-                            <th>ID</th>
-                            <th>Raumnr</th>
-                            <th>Raumbezeichnung</th>
-                            <th>Nutzfläche</th>
-                            <th>Raumbereich Nutzer</th>
-                                <th>Bauabschnitt</th>
-                                <th>Bauetappe</th>
-                                <th>Geschoss</th>
-                                <th>MT-rel.</th>
-                            </tr></thead><tbody>";
-
-            while ($row = $result->fetch_assoc()) {
-                echo "<tr>";
-                echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
-                echo "<td>" . $row["Raumnr"] . "</td>";
-                echo "<td>" . $row["Raumbezeichnung"] . "</td>";
-                echo "<td>" . $row["Nutzfläche"] . "</td>";
-                echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
-                echo "<td>" . $row["Bauabschnitt"] . "</td>";
-                echo "<td>" . $row["Bauetappe"] . "</td>";
-                echo "<td>" . $row["Geschoss"] . "</td>";
-                echo "<td>" . $row["MT-relevant"] . "</td>";
-
-                echo "</tr>";
-            }
-            echo "</tbody></table>";
-            ?>
+        <div class="row mt-4">
+            <div class="col-xxl-1 col-sm-1">
+                <div class="card bg-dark text-center">
+                    <div class="card-body" id="roomInfo" data-bs-toggle="tooltip"
+                         data-bs-placement="right"
+                         title="Rauminfo">
+                        <i class="fas fa-home fa-3x text-light"></i>
+                    </div>
+                </div>
+                <div class="card bg-info text-center mt-4">
+                    <div class="card-body" id="roombookBO" data-bs-toggle="tooltip"
+                         data-bs-placement="right"
+                         title="Betriebsorganisation">
+                        <i class="fas fa-user-md fa-3x text-light"></i>
+                    </div>
+                </div>
+                <div class="card bg-success text-center mt-4">
+                    <div class="card-body" id="roombook" data-bs-toggle="tooltip"
+                         data-bs-placement="right"
+                         title="Rauminhalt">
+                        <i class="fas fa-list fa-3x text-light"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xxl-11 col-sm-11 ">
+                <div class="card">
+                    <div class="card-header" id="informationHeader"></div>
+                    <div class="card-body" id="informationOverview"></div>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row mt-4">
-        <div class="col-xxl-1 col-sm-1">
-            <div class="card bg-dark text-center">
-                <div class="card-body" id="roomInfo" data-bs-toggle="tooltip" data-bs-placement="right"
-                     title="Rauminfo">
-                    <i class="fas fa-home fa-3x text-light"></i>
-                </div>
-            </div>
-            <div class="card bg-info text-center mt-4">
-                <div class="card-body" id="roombookBO" data-bs-toggle="tooltip" data-bs-placement="right"
-                     title="Betriebsorganisation">
-                    <i class="fas fa-user-md fa-3x text-light"></i>
-                </div>
-            </div>
-            <div class="card bg-success text-center mt-4">
-                <div class="card-body" id="roombook" data-bs-toggle="tooltip" data-bs-placement="right"
-                     title="Rauminhalt">
-                    <i class="fas fa-list fa-3x text-light"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-xxl-11 col-sm-11 ">
-            <div class="card">
-                <div class="card-header" id="informationHeader"></div>
-                <div class="card-body" id="informationOverview"></div>
-            </div>
-        </div>
-    </div>
-</div>
 </div>
 </body>
 <!--suppress ES6ConvertVarToLetConst -->
@@ -155,7 +186,7 @@ init_page_serversides();
             initComplete: function () {
                 $('.dt-search label').remove();
                 $('#tableRooms_wrapper .dt-search').children().removeClass("form-control form-control-sm").addClass("btn").appendTo("#CardHeaderRooms");
-                $('#tableRooms_wrapper .dt-buttons').appendTo("#CardHeaderRooms") ;
+                $('#tableRooms_wrapper .dt-buttons').appendTo("#CardHeaderRooms");
                 $('#CardHeaderRooms .btn').attr('class', 'btn btn-sm btn-outline-dark');
 
             }

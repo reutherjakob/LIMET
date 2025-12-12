@@ -13,13 +13,11 @@ check_login();
 
 <?php
 $mysqli = utils_connect_sql();
-$mysqli = utils_connect_sql();
-
-if (!empty($_GET['lotID']) && ctype_digit($_GET['lotID'])) {
-    $_SESSION["lotID"] = (int)$_GET["lotID"];
+$losID = getPostInt('lotID', 0);
+if ($losID > 0) {
+    $_SESSION["lotID"] = $losID;
 } else {
-    echo "Kein Los ausgewählt!";
-    exit;
+    die("Keine Los ID. ");
 }
 
 $stmt = $mysqli->prepare("
@@ -104,7 +102,6 @@ while ($row = $result->fetch_assoc()) {
     $buttonClass = $Kurzbeschreibung === "" ? "btn-outline-secondary" : "btn-outline-dark";
     $iconClass = $Kurzbeschreibung === "" ? "fa fa-comment-slash" : "fa fa-comment";
     $dataAttr = $Kurzbeschreibung === "" ? "data-description= '' " : "data-description='" . htmlspecialchars($Kurzbeschreibung, ENT_QUOTES, 'UTF-8') . "'";
-
     echo " <button type='button'
         class='btn btn-sm " . $buttonClass . "comment-btn'" . $dataAttr . " id='" . $row['id']
         . "' title='Kommentar'><i class='" . $iconClass . " '></i>
@@ -120,11 +117,11 @@ $mysqli->close();
 <script charset="utf-8">
     var tableLotElements1;
     if (typeof excelfilename2 === "undefined") {
-        let excelfilename2;
+        var excelfilename2; // changed this to var end of 25
     }
 
     if (typeof excelfilename3 === "undefined") {
-        let excelfilename3;
+        var excelfilename3;
     }
     $(document).ready(function () {
 
@@ -132,7 +129,7 @@ $mysqli->close();
             .then(filename => {
                 //console.log('Generated filename:', filename);
                 excelfilename2 = filename;
-                getExcelFilename('Verortungsliste' )
+                getExcelFilename('Verortungsliste')
                     .then(filename => {
                         //console.log('Generated filename:', filename);
                         excelfilename3 = filename;

@@ -2,7 +2,7 @@
 include "../../utils/_utils.php";
 init_page_serversides("", "x");
 
-$projectID = $_SESSION["projectID"];
+$projectID = (int)$_SESSION["projectID"];
 $conn = utils_connect_sql();
 $raumbereichOptions = [];
 $sql = "SELECT DISTINCT `Raumbereich Nutzer` 

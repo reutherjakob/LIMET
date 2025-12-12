@@ -1,4 +1,5 @@
 <?php
+// 25 FX
 require_once "utils/_utils.php";
 check_login();
 
@@ -10,8 +11,7 @@ $untergruppenID = getPostInt("untergruppenID");
 
 $stmt = $mysqli->prepare("
     UPDATE `LIMET_RB`.`tabelle_Vermerkuntergruppe`
-    SET 
-        `Untergruppenname` = ?,
+    SET `Untergruppenname` = ?,
         `Untergruppennummer` = ?
     WHERE `idtabelle_Vermerkuntergruppe` = ? ");
 if (!$stmt) {

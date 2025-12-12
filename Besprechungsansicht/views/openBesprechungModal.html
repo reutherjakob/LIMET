@@ -1,0 +1,28 @@
+<!-- Modal for Opening Besprechung -->
+<div class="modal fade" id="besprechungSelectModal" tabindex="-1" aria-labelledby="besprechungSelectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="besprechungSelectModalLabel">Besprechung öffnen: Protokoll Besprechung auswählen</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table id="besprechungTable" class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Datum</th>
+                        <th>Startzeit</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Filled dynamically -->
+                    </tbody>
+                </table>
+                <div id="besprechungEmpty" style="display:none; text-align:center; margin: 2em 0;">
+                    Keine Protokoll Besprechungen gefunden.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

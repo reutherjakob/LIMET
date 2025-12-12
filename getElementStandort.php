@@ -4,7 +4,6 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <title></title>
     <style>
-        /* Place this in your page CSS or inside a `<style>` tag */
         .select2-container {
             z-index: 2050 !important; /* Bootstrap modal is 1050, so this must be higher */
         }
@@ -17,19 +16,16 @@
         #standortElement {
             width: 100% !important;
         }
-
     </style>
-
 </head>
-
 <body>
 
 
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 init_page_serversides();
 $mysqli = utils_connect_sql();
-
 
 $sql = "SELECT tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume.Geschoss, tabelle_räume.`Raumbereich Nutzer`,
                tabelle_varianten.Variante, tabelle_verwendungselemente.id_Standortelement
@@ -46,7 +42,11 @@ $stmt = $mysqli->prepare($sql);
 if (!$stmt) {
     die("Prepare failed: " . $mysqli->error);
 }
-$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$id = getPostInt("id", 0);
+$elementID = getPostInt("elementID", 0);
+if ($id === 0) {
+    die("No ID.");
+}
 $stmt->bind_param("i", $id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -118,35 +118,31 @@ echo "<button type='button' id='addStandortElementModalButton' class='btn ml-4 m
 
                     if ($stmt = $mysqli->prepare($sql)) {
                         $projectID = (int)$_SESSION["projectID"];
-                        $elementID = (int)filter_input(INPUT_GET, 'elementID', FILTER_VALIDATE_INT);
-                        if ($elementID === false || $elementID === null) {
-                            echo "<p>Invalid elementID provided.</p>";
+                        if ($elementID === 0) {
+                            die("Invalid elementID provided");
                         } else {
                             $stmt->bind_param('ii', $projectID, $elementID);
                             if ($stmt->execute()) {
                                 $result = $stmt->get_result();
 
                                 echo "<div class='form-group'>
-                        <label for='standortElement'>Standortelement:</label>                           
-                        <select name='standortElement' class='form-control form-control-sm' id='standortElement'>
-                            <option value='0' selected>Standortelement auswählen!</option>";
+                                    <label for='standortElement'>Standortelement:</label>                           
+                                    <select name='standortElement' class='form-control form-control-sm' id='standortElement'>
+                                    <option value='0' selected>Standortelement auswählen!</option>";
 
                                 while ($row = $result->fetch_assoc()) {
-
-                                    $optionValue = htmlspecialchars($row["id"]??'');
-                                    $raumbereich = htmlspecialchars($row["Raumbereich Nutzer"]??'');
-                                    $raumnr = htmlspecialchars($row["Raumnr"]??'');
-                                    $raumbez = htmlspecialchars($row["Raumbezeichnung"]??'');
-                                    $anzahl = htmlspecialchars($row["Anzahl"]??'');
-                                    $variante = htmlspecialchars($row["Variante"]??'');
-                                    $inventarnr = htmlspecialchars($row["Inventarnummer"]??'');
+                                    $optionValue = htmlspecialchars($row["id"] ?? '');
+                                    $raumbereich = htmlspecialchars($row["Raumbereich Nutzer"] ?? '');
+                                    $raumnr = htmlspecialchars($row["Raumnr"] ?? '');
+                                    $raumbez = htmlspecialchars($row["Raumbezeichnung"] ?? '');
+                                    $anzahl = htmlspecialchars($row["Anzahl"] ?? '');
+                                    $variante = htmlspecialchars($row["Variante"] ?? '');
+                                    $inventarnr = htmlspecialchars($row["Inventarnummer"] ?? '');
 
                                     echo "<option value='{$optionValue}'>
-                            Raumbereich: {$raumbereich} - Raumnr: {$raumnr} - Raum: {$raumbez} - Stk: {$anzahl} - Variante: {$variante} - Inventarnummer: {$inventarnr}
-                          </option>";
+                                             Raumbereich: {$raumbereich} - Raumnr: {$raumnr} - Raum: {$raumbez} - Stk: {$anzahl} - Variante: {$variante} - Inventarnummer: {$inventarnr}</option>";
                                 }
-                                echo "</select>
-                    </div>";
+                                echo "</select>      </div>";
                             } else {
                                 echo "<p>Failed to execute query.</p>";
                             }
@@ -154,10 +150,9 @@ echo "<button type='button' id='addStandortElementModalButton' class='btn ml-4 m
                         }
                     } else {
                         echo "<p>Failed to prepare query.</p>";
-                    }
+                    }$mysqli->close();
                     ?>
                 </form>
-
             </div>
             <div class='modal-footer'>
                 <input type='button' id='addStandortElement' class='btn btn-success btn-sm' value='Hinzufügen'></input>
@@ -167,15 +162,11 @@ echo "<button type='button' id='addStandortElementModalButton' class='btn ml-4 m
 
     </div>
 </div>
-<?php
-$mysqli->close();
-?>
-
 
 <script>
 
-    var id = <?php echo filter_input(INPUT_GET, 'id') ?>;
-    var elementID = <?php echo filter_input(INPUT_GET, 'elementID') ?>;
+    var id = <?php echo $id;  ?>;
+    var elementID = <?php echo $elementID; ?>;
 
     $(document).ready(function () {
         $("#tableElementStandortdaten").DataTable({
@@ -231,9 +222,7 @@ $mysqli->close();
             } else {
                 alert("Bitte Standortelement auswählen!");
             }
-
         });
-
         //Standortelement löschen
         $("button[value='deleteStandortElement']").click(function () {
             var standortID = this.id;
@@ -243,7 +232,7 @@ $mysqli->close();
                     data: {"standortID": standortID, "verwendungID": id},
                     type: "POST",
                     success: function (data) {
-                        makeToaster("Element Standort e2ntfernt" ,true);
+                        makeToaster("Element Standort e2ntfernt", true);
                         $.ajax({
                             url: "getElementStandort.php",
                             data: {"id": id, "elementID": elementID},
@@ -258,9 +247,6 @@ $mysqli->close();
             }
         });
     })
-
-
 </script>
-
 </body>
 </html>

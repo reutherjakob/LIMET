@@ -1,11 +1,12 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 
 $mysqli = utils_connect_sql();
 
 $roomID = $_SESSION["roomID"];
-$projectID = $_SESSION["projectID"];
+$projectID = (int)$_SESSION["projectID"];
 
 if ($roomID <= 0 || $projectID <= 0) {
     http_response_code(400);
@@ -113,11 +114,32 @@ usort($costsByGewerk, function ($a, $b) {
 });
 
 
+// Calculate total costs including Gewerke and Ohne Gewerke
+$totalCosts = 0.0;
+foreach ($costsByGewerk as $item) {
+    $totalCosts += $item['kosten'];
+}
+echo '<ul class="list-unstyled mb-0 row">';
 
-echo'<ul class="list-unstyled mb-0">';
 foreach ($costsByGewerk as $item) {
     $label = $item['gewerkeNr'] !== null ? $item['gewerkeNr'] . ' - ' . $item['bezeichnung'] : 'Ohne Gewerke';
     $costFormatted = number_format($item['kosten'], 2, ',', '.') . ' €';
-    echo "<li><strong>" . htmlspecialchars($label) . ":</strong> " . htmlspecialchars($costFormatted) . "</li>";
+
+    echo '<li class="col-12 d-flex justify-content-between">';
+    echo '<strong>' . htmlspecialchars($label) . ':</strong>';
+    echo '<span>' . htmlspecialchars($costFormatted) . '</span>';
+    echo '</li>';
 }
+
 echo '</ul>';
+
+// Add total costs below in its own row
+echo '<div class="row mt-3 fw-bold">';
+echo '<div class="col-6">';
+echo 'Gesamtkosten:';
+echo '</div>';
+echo '<div class="col-6 text-end">';
+echo number_format($totalCosts, 2, ',', '.') . ' €';
+echo '</div>';
+echo '</div>';
+?>

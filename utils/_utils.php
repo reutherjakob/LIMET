@@ -113,6 +113,19 @@ function load_nav_bar(): void
     echo '     };    </script>';
 }
 
+// if (!function_exists('h')) {
+//     function h($var): string
+//     {
+//         return htmlspecialchars((string)($var ?? ''));
+//     }
+// }
+
+// function writeLog($message): void
+// {
+//     $logFile = __DIR__ . '/log.log';
+//     file_put_contents($logFile, date('Y-m-d H:i:s') . " - $message\n", FILE_APPEND);
+// }
+
 
 function getPostInt(string $key, int $default = 0): int
 {

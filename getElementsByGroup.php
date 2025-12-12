@@ -1,20 +1,16 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 
 $mysqli = utils_connect_sql();
-// Safely get the 'gruppeID'
-$gruppeID = isset($_GET['gruppeID']) ? (int)$_GET['gruppeID'] : 0;
-
-// Prepare the SQL statement with a placeholder '?'
+$gruppeID = getPostInt("gruppeID",0);
 $stmt = $mysqli->prepare(
     "SELECT tabelle_elemente.idTABELLE_Elemente, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_elemente.Kurzbeschreibung
      FROM tabelle_elemente
      WHERE tabelle_element_gruppe_idTABELLE_Element_Gruppe = ?
      ORDER BY tabelle_elemente.ElementID;"
 );
-
-// Bind the parameter (integer)
 $stmt->bind_param("i", $gruppeID);
 $stmt->execute();
 $result_el = $stmt->get_result();
@@ -23,7 +19,6 @@ $result_el = $stmt->get_result();
 $showAddButton = false;
 if (isset($_SESSION['roomID'])) {
     $roomID = (int)$_SESSION['roomID'];
-    // Prepare and bind the room query
     $stmt = $mysqli->prepare(
         "SELECT Raumnr, Raumbezeichnung, `Raumbereich Nutzer`, Geschoss
          FROM tabelle_räume
@@ -32,14 +27,12 @@ if (isset($_SESSION['roomID'])) {
     $stmt->bind_param("i", $roomID);
     $stmt->execute();
     $result = $stmt->get_result();
-
     if ($result && $result->num_rows > 0) {
         $room = $result->fetch_assoc();
         $showAddButton = true;
     }
     $stmt->close();
 }
-
 
 echo "<table class='table table-striped table-sm table-bordered border border-light border-5' id='tableElementsInDB'   >
 	<thead><tr>
@@ -59,7 +52,6 @@ while ($row = $result_el->fetch_assoc()) {
     } else {
         echo "<td> </td>";
     }
-
     echo "<td>" . $row["ElementID"] . "</td>";
     echo "<td>" . $row["Bezeichnung"] . "</td>";
     echo "<td>" . $row["Kurzbeschreibung"] . "</td>";
@@ -68,7 +60,6 @@ while ($row = $result_el->fetch_assoc()) {
 }
 echo "</tbody></table>";
 $mysqli->close();
-
 include "addRoomElementModal.html";
 ?>
 
@@ -194,7 +185,4 @@ include "addRoomElementModal.html";
         });
     });
 
-
 </script>
-</body>
-</html>

@@ -3,6 +3,7 @@
 require_once 'utils/_utils.php';
 check_login();
 $deviceID = getPostInt('deviceID', 0);
+$_SESSION["deviceID"] = $deviceID;
 $mysqli = utils_connect_sql();
 $stmt = $mysqli->prepare("SELECT tabelle_parameter.Bezeichnung, 
                                  tabelle_geraete_has_tabelle_parameter.Wert, 
@@ -59,7 +60,6 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
         </div>
     </div>
 </div>
-
 
 <!-- Modal zum Ändern der Parameter -->
 <div class='modal fade' id='changeDeviceParameters' role='dialog' tabindex="-1">
@@ -324,7 +324,6 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
                         });
                     }
                 });
-
             } else {
                 alert("Fehler beim Löschen des Parameters!");
             }
@@ -332,7 +331,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
     });
 
     //Parameter ändern
-    $("button[value='saveDEVICEParameter']").click(function () { //TODO find and rename btn
+    $("button[value='saveDEVICEParameter']").click(function () {
         let id = this.id;
         let wert = $("#wert" + id).val();
         let einheit = $("#einheit" + id).val();
@@ -401,7 +400,4 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
             }
         });
     });
-
 </script>
-</body>
-</html>

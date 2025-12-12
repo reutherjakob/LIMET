@@ -1,7 +1,7 @@
 <?php
 require_once 'utils/_utils.php';
 
-$mysqli =  utils_connect_sql();
+$mysqli = utils_connect_sql();
 
 $sql = "SELECT 
             tabelle_elemente.ElementID, 
@@ -37,15 +37,17 @@ $sql = "SELECT
             INNER JOIN tabelle_räume_has_tabelle_elemente
             ON tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
             AND tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
-            WHERE tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte = {$_SESSION['projectID']}
+            WHERE tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte = ?
         ) AS costs
         ON tabelle_räume_has_tabelle_elemente.id = costs.element_id
-        WHERE tabelle_räume.tabelle_projekte_idTABELLE_Projekte = {$_SESSION['projectID']}
+        WHERE tabelle_räume.tabelle_projekte_idTABELLE_Projekte =?
         AND tabelle_räume_has_tabelle_elemente.`Neu/Bestand` = 0 
         AND tabelle_räume_has_tabelle_elemente.Standort = 1
         ORDER BY tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Raumnr;";
-
-$result = $mysqli->query($sql);
+$stmt_prepared = $mysqli->prepare($sql);
+$stmt_prepared->bind_param("i", $_SESSION['projectID'], $_SESSION['projectID']);
+$stmt_prepared->execute();
+$result = $stmt_prepared->get_result();
 
 // Check if the query returned any results
 if ($result && $result->num_rows > 0) {

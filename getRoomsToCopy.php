@@ -9,6 +9,7 @@
 
 
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 
@@ -71,7 +72,6 @@ $mysqli->close();
 <script charset="utf-8">
     var roomIDs = []; // Array to store selected room IDs
     var tableRoomsToCopy;
-
     $(document).ready(function () {
         if (typeof columnsDefinition === 'undefined') { // TO GUArantee function of old Bauanagaben page
             const script = document.createElement('script');

@@ -284,15 +284,15 @@ if ($action === 'freigabeAlle') {
 
     $vermerkIDs = $_POST['vermerkIDs'] ?? [];
     if (!is_array($vermerkIDs) || count($vermerkIDs) === 0) {
-        writeLog('FEHLER: Keine Vermerk-IDs erhalten.');
+        //writeLog('FEHLER: Keine Vermerk-IDs erhalten.');
         echo json_encode(['success' => false, 'message' => 'Keine Vermerk-IDs erhalten.']);
         exit;
     }
 
-    writeLog('Starte Freigabe für Vermerk-IDs: ' . implode(',', $vermerkIDs));
+    //writeLog('Starte Freigabe für Vermerk-IDs: ' . implode(',', $vermerkIDs));
 
     if ($mysqli->connect_error) {
-        writeLog('FEHLER: Datenbankverbindung fehlgeschlagen: ' . $mysqli->connect_error);
+        //writeLog('FEHLER: Datenbankverbindung fehlgeschlagen: ' . $mysqli->connect_error);
         echo json_encode(['success' => false, 'message' => 'Datenbankverbindung fehlgeschlagen.']);
         exit;
     }
@@ -307,7 +307,7 @@ if ($action === 'freigabeAlle') {
     ";
     $result = $mysqli->query($sqlFindIds);
     if (!$result) {
-        writeLog("FEHLER: ID-Suche fehlgeschlagen: " . $mysqli->error);
+        //writeLog("FEHLER: ID-Suche fehlgeschlagen: " . $mysqli->error);
         echo json_encode(['success' => false, 'message' => 'Fehler bei der ID-Suche: ' . $mysqli->error]);
         exit;
     }
@@ -327,14 +327,14 @@ if ($action === 'freigabeAlle') {
         ";
         $resultUpdate = $mysqli->query($sqlUpdateStatus);
         if ($resultUpdate) {
-            writeLog("Status erfolgreich aktualisiert für IDs: $updateIdsString");
+            //writeLog("Status erfolgreich aktualisiert für IDs: $updateIdsString");
         } else {
-            writeLog("FEHLER: Status-Update fehlgeschlagen: " . $mysqli->error);
+            //writeLog("FEHLER: Status-Update fehlgeschlagen: " . $mysqli->error);
             echo json_encode(['success' => false, 'message' => 'Status-Update fehlgeschlagen: ' . $mysqli->error]);
             exit;
         }
     } else {
-        writeLog("Keine zu aktualisierenden IDs gefunden.");
+        //writeLog("Keine zu aktualisierenden IDs gefunden.");
         echo json_encode(['success' => false, 'message' => 'Keine zu aktualisierenden IDs gefunden.']);
         exit;
     }
@@ -348,14 +348,14 @@ if ($action === 'freigabeAlle') {
     ";
     $resultVermerke = $mysqli->query($sqlUpdateVermerke);
     if ($resultVermerke) {
-        writeLog("Vermerkart erfolgreich aktualisiert für IDs: $idsString");
+        //writeLog("Vermerkart erfolgreich aktualisiert für IDs: $idsString");
     } else {
-        writeLog("FEHLER: Aktualisierung Vermerkart fehlgeschlagen: " . $mysqli->error);
+        //writeLog("FEHLER: Aktualisierung Vermerkart fehlgeschlagen: " . $mysqli->error);
         echo json_encode(['success' => false, 'message' => 'Aktualisierung der Vermerkart fehlgeschlagen: ' . $mysqli->error]);
         exit;
     }
 
-    writeLog("Freigabe erfolgreich abgeschlossen.");
+    //writeLog("Freigabe erfolgreich abgeschlossen.");
     echo json_encode(['success' => true, 'message' => 'Änderungen und Vermerke erfolgreich freigegeben.']);
 
     $mysqli->close();

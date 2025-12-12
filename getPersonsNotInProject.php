@@ -1,4 +1,5 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
@@ -79,7 +80,6 @@ $mysqli->close();
             } else {
                 table.rows('.selected').deselect();
                 table.row(this).select();
-
                 const personID = table.row(this).data()[0];
                 $.ajax({
                     url: `getAddPersonToProjectField.php`,

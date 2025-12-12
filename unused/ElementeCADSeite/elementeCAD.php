@@ -8,9 +8,9 @@ init_page_serversides("x");
 
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen"/>
     <title>LIMET - Raumbuch - Elemente im Raum</title>
-    <link rel="icon" href="Logo/iphone_favicon.png">
+    <link rel="icon" href="../../Logo/iphone_favicon.png">
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>

@@ -1,37 +1,25 @@
 <?php
-session_start();
-?>
+// 25 FX
+require_once 'utils/_utils.php';
+check_login();
+$mysqli = utils_connect_sql();
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+$comment = getPostString('comment');
+$amount  = getPostFloat('amount');
+$id      = getPostInt('id');
 
-<?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	if ($mysqli ->connect_error) {
-	    die("Connection failed: " . $mysqli->connect_error);
-	}
-	
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    echo "Error loading character set utf8: " . $mysqli->error;
-	    exit();
-	} 
-	
-	$sql = "UPDATE view_Raeume_has_Elemente SET view_Raeume_has_Elemente.Kurzbeschreibung = '".$_GET["comment"]."', view_Raeume_has_Elemente.Anzahl = '".$_GET["amount"]."' WHERE (((view_Raeume_has_Elemente.id)=".$_GET["id"]."))";
-	
-	if ($mysqli ->query($sql) === TRUE) {
-	    echo "Erfolgreich aktualisiert!";
-	} else {
-	    echo "Error: " . $sql . "<br>" . $mysqli->error;
-	}
-	
-	$mysqli ->close();
-	
-	
-					
-?>
+$stmt = $mysqli->prepare("
+    UPDATE view_Raeume_has_Elemente
+    SET Kurzbeschreibung = ?, Anzahl = ?
+    WHERE id = ?
+");
+$stmt->bind_param("sdi", $comment, $amount, $id);
+
+if ($stmt->execute()) {
+	echo "Erfolgreich aktualisiert!";
+} else {
+	echo "Error: " . $stmt->error;
+}
+
+$stmt->close();
+$mysqli->close();

@@ -5,12 +5,11 @@ check_login();
 
 // 🔐 Input Validation
 $roomID = getPostInt('roomID');
-#filter_input(INPUT_GET, 'roomID', FILTER_VALIDATE_INT);
-$K2Return = getPostInt("K2Return", 0);
-#    $_POST['K2Return'] ?? '[]';
+$K2Return = $_POST['K2Return'] ?? '[]';
+
 $K2Ret = json_decode($K2Return, true); // true = associative array
 
-$projectID = $_SESSION["projectID"] ?? null;
+$projectID = (int)$_SESSION["projectID"] ?? null;
 
 if (!$roomID || !$projectID || !is_array($K2Ret)) {
     http_response_code(400);

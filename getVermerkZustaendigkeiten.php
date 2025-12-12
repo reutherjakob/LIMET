@@ -1,4 +1,5 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 
@@ -43,10 +44,8 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . $row["Name"] . "</td>";
     echo "<td>" . $row["Vorname"] . "</td>";
     echo "</tr>";
-
 }
 echo "</tbody></table>";
-
 $mysqli->close();
 ?>
 
@@ -113,4 +112,3 @@ $mysqli->close();
     });
 
 </script>
-</html>

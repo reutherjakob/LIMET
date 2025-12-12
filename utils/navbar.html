@@ -3,7 +3,7 @@
     <div class="container-fluid border border-light border-3 rounded rounded-3">
         <div class="navbar-nav col-2 d-flex align-items-center justify-content-start">
             <a class="py-0 nav-link" href="/projects.php">
-                <img src= "/Logo/LIMET_logo.png" alt="LIMETLOGO" style="height:3.5vh;">
+                <img src="/Logo/LIMET_logo.png" alt="LIMETLOGO" style="height:3.5vh;">
             </a>
         </div>
         <ul class="navbar-nav col-8 col-sm-8 d-flex align-items-center justify-content-center flex-wrap">
@@ -77,7 +77,8 @@
                     </li>
 
                     <li>
-                        <a class="dropdown-item d-flex align-items-center" href="/Besprechungsansicht/views/roombookBesprechungsansicht.php">
+                        <a class="dropdown-item d-flex align-items-center"
+                           href="/Besprechungsansicht/views/roombookBesprechungsansicht.php">
                             <div class="col-2 text-center">
                                 <i class="fa fa-handshake"></i>
                             </div>
@@ -99,10 +100,18 @@
                         </a>
                     </li>
 
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="/roombookMeeting.php">
+                            <div class="col-2 text-center">
+                                <i class="fa fa-users"></i>
+                            </div>
+                            <div class="col-10">
+                                Meeting Räume
+                            </div>
+                        </a>
+                    </li>
                 </ul>
             </li>
-
-
 
 
             <li class="nav-item dropdown">
@@ -217,7 +226,7 @@
                                 <i class="fas fa-history"></i>
                             </div>
                             <div class="col-10">
-                               Element Änderungen
+                                Element Änderungen
                             </div>
                         </a>
                     </li>
@@ -232,16 +241,7 @@
                             </div>
                         </a>
                     </li>
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="/roombookMeeting.php">
-                            <div class="col-2 text-center">
-                                <i class="fa fa-users"></i>
-                            </div>
-                            <div class="col-10">
-                                Meeting Räume
-                            </div>
-                        </a>
-                    </li>
+
                     <li>
                         <a class="dropdown-item d-flex align-items-center" href="/roombookElementeJeRaumbereich.php">
                             <div class="col-2 text-center">
@@ -334,7 +334,7 @@
         <ul class="navbar-nav col-2 d-flex align-items-center justify-content-end">
             <li class="nav-item"><a class="py-0 nav-link text-success disabled" id="projectSelected"
                                     style="font-size:1.2vh;">Kein Projekttitel geladen</a></li>
-            <li><a class="py-0 nav-link text-nowrap" href="/logout.php" style="font-size:1.5vh"   title="Abmelden"><i
+            <li><a class="py-0 nav-link text-nowrap" href="/logout.php" style="font-size:1.5vh" title="Abmelden"><i
                     class="fa fa-sign-out-alt"></i></a></li>
         </ul>
     </div>

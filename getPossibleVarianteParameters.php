@@ -1,12 +1,5 @@
-<!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml" lang="">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title></title></head>
-<body>
-
 <?php
-
+// 25 FX
 include "utils/_utils.php";
 check_login();
 
@@ -133,5 +126,3 @@ echo "</tbody></table>";
         }
     });
 </script>
-</body>
-</html>
