@@ -81,7 +81,7 @@ $mysqli->close();
 
     $("button[value='addVermerkGroupMember']").click(function () {
         let id = this.id;
-        let groupID = "<?php echo filter_input(INPUT_GET, 'gruppenID') ?>";
+        let groupID = "<?php echo filter_input(INPUT_POST, 'gruppenID') ?>";
         if (id !== "") {
             $.ajax({
                 url: "/addPersonToVermerkGroup.php",

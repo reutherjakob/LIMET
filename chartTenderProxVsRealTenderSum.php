@@ -1,7 +1,6 @@
 <?php
 require_once 'utils/_utils.php';
 check_login();
-// TODO get this to work
 ?>
 
 <!DOCTYPE html >
@@ -60,7 +59,6 @@ check_login();
 		}
 	});
     });
-
 </script>
 </body>
 </html>

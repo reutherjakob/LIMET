@@ -55,7 +55,7 @@ $mysqli->close();
         $("button[value='deleteVermerkZustaendigkeit']").click(function () {
             let id = this.id;
             console.log("btn pressed");
-            let vermerkID = "<?php echo filter_input(INPUT_GET, 'vermerkID') ?>";
+            let vermerkID = "<?php echo filter_input(INPUT_POST, 'vermerkID') ?>";
             if (id !== "" && vermerkID !== "") {
                 $.ajax({
                     url: "deletePersonFromVermerkZustaendigkeit.php",

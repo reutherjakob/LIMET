@@ -273,13 +273,15 @@ if ($action === "Consolidate") {
 }
 
 
-
 if ($action === 'freigabeAlle') {
-    $logFile = __DIR__ . '/freigabe_log.txt';
+    // $logFile = __DIR__ . '/freigabe_log.txt';
+    $msg = "";
     function writeLog($message)
     {
-        global $logFile;
-        file_put_contents($logFile, date('Y-m-d H:i:s') . " - $message\n", FILE_APPEND);
+        //  global $logFile;
+        // file_put_contents($logFile, date('Y-m-d H:i:s') . " - $message\n", FILE_APPEND);
+        global $msg;
+        $msg = $msg . $message;
     }
 
     $vermerkIDs = $_POST['vermerkIDs'] ?? [];
@@ -288,7 +290,6 @@ if ($action === 'freigabeAlle') {
         echo json_encode(['success' => false, 'message' => 'Keine Vermerk-IDs erhalten.']);
         exit;
     }
-
     //writeLog('Starte Freigabe für Vermerk-IDs: ' . implode(',', $vermerkIDs));
 
     if ($mysqli->connect_error) {
@@ -356,12 +357,88 @@ if ($action === 'freigabeAlle') {
     }
 
     //writeLog("Freigabe erfolgreich abgeschlossen.");
-    echo json_encode(['success' => true, 'message' => 'Änderungen und Vermerke erfolgreich freigegeben.']);
+    echo json_encode(['success' => true, 'message' => 'Änderungen und Vermerke erfolgreich freigegeben.' . $msg]);
 
     $mysqli->close();
     exit;
 }
 
+
+if ($action === 'resetAlleBtn') {
+    // $logFile = __DIR__ . '/freigabe_log.txt';
+    /*  $msg = "";
+      function writeLog($message)
+      {
+          //  global $logFile;
+          // file_put_contents($logFile, date('Y-m-d H:i:s') . " - $message\n", FILE_APPEND);
+          global $msg;
+          $msg = $msg. $message;
+      }*/
+    $vermerkIDs = $_POST['vermerkIDs'] ?? [];
+    if (!is_array($vermerkIDs) || count($vermerkIDs) === 0) {
+        //writeLog('FEHLER: Keine Vermerk-IDs erhalten.');
+        echo json_encode(['success' => false, 'message' => 'Keine Vermerk-IDs erhalten.']);
+        exit;
+    }
+    //writeLog('Starte Freigabe für Vermerk-IDs: ' . implode(',', $vermerkIDs));
+    if ($mysqli->connect_error) {
+        //writeLog('FEHLER: Datenbankverbindung fehlgeschlagen: ' . $mysqli->connect_error);
+        echo json_encode(['success' => false, 'message' => 'Datenbankverbindung fehlgeschlagen.']);
+        exit;
+    }
+    $idsString = implode(',', array_map('intval', $vermerkIDs));
+
+
+    $sqlFindIds = "
+        SELECT r.id FROM tabelle_räume_has_tabelle_elemente r
+        JOIN tabelle_rb_aenderung a ON r.id = a.id
+        WHERE a.vermerk_ID IN ($idsString)";
+    $result = $mysqli->query($sqlFindIds);
+
+    if (!$result) {
+        echo json_encode(['success' => false, 'message' => 'Fehler bei der ID-Suche: ' . $mysqli->error]);
+        exit;
+    }
+
+    $idsToUpdate = [];
+    while ($row = $result->fetch_assoc()) {
+        $idsToUpdate[] = $row['id'];
+    }
+
+    if (count($idsToUpdate) > 0) {
+        $updateIdsString = implode(',', array_map('intval', $idsToUpdate));
+        // Schritt 2: Status in tabelle_räume_has_tabelle_elemente aktualisieren
+        $sqlUpdateStatus = "
+            UPDATE tabelle_räume_has_tabelle_elemente
+            SET status = 0
+            WHERE id IN ($updateIdsString)
+        ";
+        $resultUpdate = $mysqli->query($sqlUpdateStatus);
+        if ($resultUpdate) {
+            //writeLog("Status erfolgreich aktualisiert für IDs: $updateIdsString");
+        } else {
+            //writeLog("FEHLER: Status-Update fehlgeschlagen: " . $mysqli->error);
+            echo json_encode(['success' => false, 'message' => 'Status-Update fehlgeschlagen: ' . $mysqli->error]);
+            exit;
+        }
+    } else {
+        //writeLog("Keine zu aktualisierenden IDs gefunden.");
+        echo json_encode(['success' => false, 'message' => 'Keine zu aktualisierenden IDs gefunden.']);
+        exit;
+    }
+
+    // Vermerkart in tabelle_Vermerke aktualisieren
+    $sqlUpdateVermerke = "
+        UPDATE tabelle_Vermerke
+        SET Vermerkart = 'Info'
+        WHERE idtabelle_Vermerke IN ($idsString)";
+    $resultVermerke = $mysqli->query($sqlUpdateVermerke);
+
+    echo json_encode(['success' => true, 'message' => 'Änderungen und Vermerke erfolgreich freigegeben.' . $msg]);
+
+    $mysqli->close();
+    exit;
+}
 
 
 if ($action === 'getVermerkeByVermerkgruppe') {

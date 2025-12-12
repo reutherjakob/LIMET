@@ -4,6 +4,7 @@ require_once 'utils/_utils.php';
 check_login();
 $gewerkeID = getPostInt('gewerkID', 0);
 $hptgrID = getPostInt("hauptgruppeID", 0);
+
 if ($gewerkeID === 0 || $hptgrID === 0) {
     die("Gerweke ID oder Hauptgruppen ID = 0? ");
 }
@@ -44,7 +45,7 @@ echo "<div class='form-group row mt-1'>
         <div class='col-xxl-9'>
         <select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>";
 while ($row = $result->fetch_assoc()) {
-    if ($row["idTABELLE_Element_Hauptgruppe"] == $_GET["hauptgruppeID"]) {
+    if ($row["idTABELLE_Element_Hauptgruppe"] == $hptgrID) {
         echo "<option value=" . $row["idTABELLE_Element_Hauptgruppe"] . " selected>" . $row["Nummer"] . " - " . $row["Hauptgruppe"] . "</option>";
     } else {
         echo "<option value=" . $row["idTABELLE_Element_Hauptgruppe"] . ">" . $row["Nummer"] . " - " . $row["Hauptgruppe"] . "</option>";

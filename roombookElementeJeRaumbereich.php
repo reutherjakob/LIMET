@@ -260,7 +260,7 @@ $conn->close();
 
             if (dataRoomId) console.log('Room ID:', dataRoomId);
             if (dataElementId) console.log('Element ID:', dataElementId);
-            if (idTABELLE_Räume_has_tabelle_Elemente) console.log('Element ID:', idTABELLE_Räume_has_tabelle_Elemente); //TODO validate
+            if (idTABELLE_Räume_has_tabelle_Elemente) console.log('Element ID:', idTABELLE_Räume_has_tabelle_Elemente);
         });
     }
 

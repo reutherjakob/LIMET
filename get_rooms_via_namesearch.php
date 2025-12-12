@@ -24,8 +24,8 @@ function getProjectName($projectID) {
 
 $mysqli = utils_connect_sql();
 $table = "tabelle_räume";
-$field = filter_input(INPUT_GET, 'field', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 'Raumbezeichnung';
-$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 'None';
+$field = filter_input(INPUT_POST, 'field', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 'Raumbezeichnung';
+$search = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 'None';
 
 $sql = "SELECT * FROM $table WHERE $field LIKE ?";
 $stmt = $mysqli->prepare($sql);

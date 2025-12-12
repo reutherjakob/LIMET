@@ -4,7 +4,7 @@
 require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
-$roomID = filter_input(INPUT_GET, 'roomID', FILTER_VALIDATE_INT);
+$roomID = filter_input(INPUT_POST, 'roomID', FILTER_VALIDATE_INT);
 if ($roomID === null || $roomID === false) {
     echo "Ungültige RaumID!";
     exit;
@@ -46,7 +46,7 @@ $mysqli->close();
 ?>
 
 <script>
-    var roomID = <?php echo filter_input(INPUT_GET, 'roomID') ?>
+    var roomID = <?php echo filter_input(INPUT_POST, 'roomID') ?>
         // Bild zu Raum hinzufügen
         $("button[value='removeImageFromRoom']").click(function () {
             var imageID = this.id;

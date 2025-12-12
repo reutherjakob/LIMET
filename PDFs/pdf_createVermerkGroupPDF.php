@@ -12,6 +12,7 @@ require_once '_pdf_createBericht_utils.php';
 
 $document_out_title_components = "";
 $gruppenID = filter_input(INPUT_GET, 'gruppenID', FILTER_VALIDATE_INT);
+
 $projectID = isset($_SESSION["projectID"]) ? (int)$_SESSION["projectID"] : null;
 if (!$gruppenID || !$projectID) {
     die('Ungültige Eingabe.');
@@ -103,7 +104,6 @@ class MYPDF extends TCPDF
             $x = $this->GetX();
             $y = $this->GetY();
 
-            // Output the first four columns as MultiCell with uniform rowHeight
             foreach ($cellData as $i => $text) {
                 $this->MultiCell(
                     $cellWidths[$i],

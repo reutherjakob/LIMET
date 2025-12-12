@@ -16,7 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 
     $conn = utils_connect_sql(); // bestehende Verbindungsfunktion verwenden
-
     $sql = "SELECT DISTINCT Untergruppenname FROM tabelle_Vermerkuntergruppe WHERE tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $vermerkgruppe_id);

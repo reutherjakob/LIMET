@@ -103,7 +103,6 @@ try {
     safeRedirect('index.php?error=login_failed');
 } finally {
     if (isset($mysqli)) {
-
         $mysqli->close();
 
     }

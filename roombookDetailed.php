@@ -45,7 +45,7 @@ init_page_serversides();
 
                         <div id="CardHeaderRaume" class="col-xxl-6 d-flex justify-content-end align-items-center">
 
-                            <input type="checkbox" id="filter_EntfalleneRooms" class="btn-check">
+                            <input type="checkbox" id="filter_EntfalleneRooms" class="btn-check"  checked>
                             <label class="btn btn-outline-dark btn-sm float-right" for="filter_EntfalleneRooms">
                                 Entfallene ausblenden </label>
 
@@ -66,12 +66,20 @@ init_page_serversides();
 
                     $stmt = $mysqli->prepare("
                         SELECT 
-                            r.Raumnr, r.Raumbezeichnung, r.Nutzfläche,
-                            r.`Raumbereich Nutzer`, r.Geschoss, r.Bauetappe, 
-                            r.Bauabschnitt, r.Raumnummer_Nutzer,
-                            r.`Anmerkung allgemein`, r.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, 
-                            r.idTABELLE_Räume, r.`MT-relevant`, 
-                            r.`Anmerkung FunktionBO`, r.Entfallen
+                            r.Raumnr, 
+                            r.Raumbezeichnung, 
+                            r.Nutzfläche,
+                            r.`Raumbereich Nutzer`, 
+                            r.Geschoss, 
+                            r.Bauetappe, 
+                            r.Bauabschnitt, 
+                            r.Raumnummer_Nutzer,
+                            r.`Anmerkung allgemein`, 
+                            r.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, 
+                            r.idTABELLE_Räume, 
+                            r.`MT-relevant`, 
+                            r.`Anmerkung FunktionBO`, 
+                            r.Entfallen
                         FROM tabelle_räume r
                         INNER JOIN tabelle_projekte p 
                             ON r.tabelle_projekte_idTABELLE_Projekte = p.idTABELLE_Projekte
@@ -90,6 +98,8 @@ init_page_serversides();
 						<th>Raumbezeichnung</th>
 						<th>Nutzfläche</th>
 						<th>Raumbereich Nutzer</th>
+						<th>Bauetappe</th>
+						<th>Bauabschnitt</th>
                         <th>Ebene</th>
                         <th>MT-relevant</th>
                         <th>BO</th>   
@@ -104,6 +114,8 @@ init_page_serversides();
                         echo "<td>" . htmlspecialchars($row["Raumbezeichnung"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                         echo "<td>" . htmlspecialchars($row["Nutzfläche"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                         echo "<td>" . htmlspecialchars($row["Raumbereich Nutzer"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Bauetappe"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Bauabschnitt"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                         echo "<td>" . htmlspecialchars($row["Geschoss"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                         echo "<td>";
                         if ((int)($row["MT-relevant"] ?? 0) === 0) {
@@ -324,7 +336,7 @@ init_page_serversides();
                 if (settings.nTable.id !== 'tableRooms') {
                     return true;
                 }
-                let mtRelevant = data[7];
+                let mtRelevant = data[9];
                 let filterMTRelevant = $("#filter_MTrelevantRooms").is(':checked');
                 if (!filterMTRelevant) {
                     return true;
@@ -337,7 +349,7 @@ init_page_serversides();
                 if (settings.nTable.id !== 'tableRooms') {
                     return true;
                 }
-                let entfallen = data[9];
+                let entfallen = data[11];
                 let filterentfallen = $("#filter_EntfalleneRooms").is(':checked');
                 if (!filterentfallen) {
                     return true;

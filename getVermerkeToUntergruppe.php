@@ -130,7 +130,7 @@ echo "</tbody></table>";
                                         <label for='untergruppe'>Untergruppe:</label>									
                                         <select class='form-control form-control-sm' id='untergruppe' name='untergruppe'>";
                     while ($row = $result1->fetch_assoc()) {
-                        if ($row["idtabelle_Vermerkuntergruppe"] == filter_input(INPUT_GET, 'vermerkUntergruppenID')) {
+                        if ($row["idtabelle_Vermerkuntergruppe"] == filter_input(INPUT_POST, 'vermerkUntergruppenID')) {
                             echo "<option value=" . $row["idtabelle_Vermerkuntergruppe"] . " selected>" . $row["Untergruppennummer"] . " - " . $row["Untergruppenname"] . "</option>";
                         } else {
                             echo "<option value=" . $row["idtabelle_Vermerkuntergruppe"] . ">" . $row["Untergruppennummer"] . " - " . $row["Untergruppenname"] . "</option>";

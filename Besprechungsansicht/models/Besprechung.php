@@ -29,6 +29,13 @@ class Besprechung
         $this->projektID = $data['projektID'] ?? 0;
     }
 
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
     public function validate(): array
     {
         $errors = [];

@@ -4,7 +4,7 @@ check_login();
 
 $mysqli = utils_connect_sql();
 $imageID =   getPostInt('imageID', 0 );
-//filter_input(INPUT_GET, 'imageID', FILTER_VALIDATE_INT);
+//filter_input(INPUT_POST, 'imageID', FILTER_VALIDATE_INT);
 
 if ($imageID === 0) {
     die("Invalid image ID.");

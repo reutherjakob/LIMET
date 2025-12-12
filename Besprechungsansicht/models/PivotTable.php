@@ -86,7 +86,7 @@ class PivotTable
         }
         // Filter rooms by element presence if requested
         if ($nurMitElementen) {
-            $sql = "SELECT DISTINCT TABELLE_Räume_idTABELLE_Räume FROM tabelle_räume_has_tabelle_elemente WHERE Standort=1";
+            $sql = "SELECT DISTINCT TABELLE_Räume_idTABELLE_Räume FROM tabelle_räume_has_tabelle_elemente WHERE Standort=1 AND Anzahl > 0";
             $res = $conn->query($sql);
             $validRooms = [];
             while ($row = $res->fetch_assoc()) {
@@ -285,7 +285,7 @@ class PivotTable
         // === 4. Generate HTML ===
         ob_start();
         echo '<table id="pivotTable" class="table table-bordered table-sm table-striped">';
-        echo '<thead><tr><th>Element (Variante)</th><th><i class="fas fa-plus"></i></th>';
+        echo '<thead><tr><th>Element (Variante)</th><th> &Sigma;</th>';
         foreach ($rooms as $rId => $rLabel) {
             echo '<th>' . htmlspecialchars($rLabel) . '</th>';
         }

@@ -1,4 +1,5 @@
 <?php
+// https://github.com/reutherjakob/LIMET/tree/754197c9427f6d2086ee071f1068b21c5eba2a9c/Besprechungsansicht/views
 include "../../utils/_utils.php";
 init_page_serversides("", "x");
 
@@ -243,6 +244,9 @@ $conn->close();
                                 <div class="col-6 d-flex justify-content-end"
                                      id="CardHeaderHoldingDatatableManipulators2"></div>
                             </div>
+                            <button type="reset" class="btn btn-sm btn-success text-nowrap" title="resetElementStati" id="resetElementStati">
+                                Reset Statii
+                            </button>
                             <button type="reset" class="btn btn-sm btn-outline-dark" title="ResetPivot" id="ResetPivot">
                                 <i class="fas fa-sync-alt"></i>
                             </button>
@@ -252,7 +256,7 @@ $conn->close();
                                   Grün: Freigegeben. ">
                               <i class="fas fa-info-circle"></i></span>
                         </div>
-                        <div class="card-body p-1">
+                        <div class="card-body">
                             <div id="pivotTableContainer">
                                 <!-- Die Pivot-Tabelle wird hier per AJAX geladen -->
                             </div>
@@ -281,6 +285,13 @@ $conn->close();
                                     title="Dieser Button setzt alle Nutzeranforderungen aus dieser Besprechung auf Freigegeben.">
                                 Freigeben
                             </button>
+                            <!--button type="button" class="btn btn-sm btn-success text-light p-2 ms-2"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    id="resetAlleBtn"
+                                    title="Dieser Button setzt alle Raum-Element-Einträge aus dieser Besprechung zurück (auf Status = Info).">
+                                Zurücksetzen
+                            </button-->
                         </div>
                         <div class="card-body">
                             <iframe class="embed-responsive-item" id="pdfPreview"></iframe>
@@ -322,6 +333,8 @@ include "GroupMembersModal.html";
 <script src="../js/Vermerke.js"></script>
 
 <script>
+
+
     // let excelfilename;
     let besprechung;
     $(document).ready(function () {
@@ -398,6 +411,7 @@ include "GroupMembersModal.html";
             refreshPDF();//
             getVermerke();
         });
+
         $('#ResetPivot').on("click", function () {
             editablePivot.reloadPivotTable();
         });
@@ -429,6 +443,7 @@ include "GroupMembersModal.html";
         $('#freigebenAlleBtn').click(function () {
             let vermerkIDs = []; // Mit der aktuellen Besprechung alle relevanten VermerkIDs aus roomVermerkMap sammeln
             Object.values(besprechung.roomVermerkMap).forEach(ids => vermerkIDs.push(...ids));            //console.log("Handing over:", vermerkIDs);
+            console.log(("freigabeAlle"));
             $.ajax({
                 url: '../controllers/BesprechungController.php',
                 type: 'POST',
@@ -436,7 +451,27 @@ include "GroupMembersModal.html";
                     action: 'freigabeAlle',
                     vermerkIDs: vermerkIDs
                 },
-                success: function (response) {                    // console.log(response);
+                success: function (response) {
+                    console.log(response);
+                    refreshPDF();
+                    editablePivot.reloadPivotTable();
+                }
+            });
+        }); 
+
+        $('#resetAlleBtn').click(function () {
+            let vermerkIDs = []; // Mit der aktuellen Besprechung alle relevanten VermerkIDs aus roomVermerkMap sammeln
+            Object.values(besprechung.roomVermerkMap).forEach(ids => vermerkIDs.push(...ids));            //console.log("Handing over:", vermerkIDs);
+            console.log("resetAlleBtn; vermerkIDs: ", vermerkIDs);
+            $.ajax({
+                url: '../controllers/BesprechungController.php',
+                type: 'POST',
+                data: {
+                    action: 'resetAlleBtn',
+                    vermerkIDs: vermerkIDs
+                },
+                success: function (response) {
+                    console.log(response);
                     refreshPDF();
                     editablePivot.reloadPivotTable();
                 }
@@ -467,7 +502,8 @@ include "GroupMembersModal.html";
 
         $("button[value='addVermerkGroupMember']").click(function () {
             let id = this.id;
-            let groupID = besprechung.id;
+            let groupID = besprechung.getId();
+            console.log(groupID);
             if (id !== "") {
                 $.ajax({
                     url: "/addPersonToVermerkGroup.php",
@@ -500,7 +536,8 @@ include "GroupMembersModal.html";
     }); // doc ready
 
 
-    function loadRaumbereiche(vermerkgruppeId) {        //console.log("ID ", vermerkgruppeId);
+    function loadRaumbereiche(vermerkgruppeId) {
+        console.log("loadRaumbereiche with ID: ", vermerkgruppeId);
         $.ajax({
             url: '../controllers/VermerkuntergruppeController.php',
             method: 'POST',
@@ -509,6 +546,7 @@ include "GroupMembersModal.html";
             success: function (response) {
                 if (response.success) {
                     console.log(response);
+                    console.log(besprechung.id);
                     $('#raumbereich').val(response.data).trigger('change.select2');
                 } else {
                     console.error('Fehler:', response.message);
@@ -568,6 +606,72 @@ include "GroupMembersModal.html";
             $('#pdfPreview').attr('src', '../../PDFs/pdf_createVermerkGroupPDF.php?gruppenID=' + besprechung.id);
         }, 100);
     }
+
+
+    $('#resetElementStati').click(function() {
+        // Check if table is loaded using jQuery methods
+        const $pivotContainer = $('#pivotTableContainer');
+        if ($pivotContainer.children().length === 0 ||
+            $pivotContainer.find('table').length === 0 ||
+            typeof window.pivotTable === 'undefined' ||
+            !window.pivotTable) {
+            makeToaster('Bitte laden Sie zuerst eine Tabelle.', false);
+            return;
+        }
+
+        if (confirm('Alle Element-Status in der aktuellen Tabelle auf 0 zurücksetzen? Dies betrifft alle Räume/Elemente mit Status ≠ 0.')) {
+            // Collect all unique relation IDs from table cells
+            let relationIds = [];
+            $pivotContainer.find('td[data-relation-id]').each(function() {
+                const relId = parseInt($(this).data('relation-id'));
+                if (relId && relId > 0 && !relationIds.includes(relId)) {
+                    relationIds.push(relId);
+                }
+            });
+
+            if (relationIds.length === 0) {
+                makeToaster('Keine Elemente mit Status zum Zurücksetzen gefunden.', false);
+                return;
+            }
+
+            makeToaster('Setze ' + relationIds.length + ' Element-Status zurück...', true);
+
+            // Send to backend to reset status to 0
+            $.ajax({
+                url: '../controllers/PivotTableController.php',
+                method: 'POST',
+                data: {
+                    action: 'resetElementStati',
+                    relationIds: JSON.stringify(relationIds)
+                },
+                traditional: true,
+                success: function(response) {
+                    console.log('Reset response:', response);
+                    try {
+                        const data = typeof response === 'string' ? JSON.parse(response) : response;
+
+                        if (data.success) {
+                            makeToaster('Erfolgreich! ' + data.affectedRows + ' Records auf Status 0 gesetzt.', true);
+                            if (typeof editablePivot !== 'undefined' && editablePivot.reloadPivotTable) {
+                                editablePivot.reloadPivotTable();
+                            } else if (typeof loadPivotTable === 'function') {
+                                loadPivotTable();
+                            }
+                            if (typeof refreshPDF === 'function') refreshPDF();
+                        } else {
+                            makeToaster('Fehler: ' + (data.message || 'Unbekannter Fehler'), false);
+                        }
+                    } catch (e) {
+                        makeToaster('Fehler beim Parsen der Antwort.', false);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                    makeToaster('Fehler beim Zurücksetzen der Status.', false);
+                }
+            });
+        }
+    });
 
 
 </script>

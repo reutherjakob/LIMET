@@ -5,9 +5,9 @@ check_login();
 $mysqli = utils_connect_sql();
 
 $elementID = getPostInt('elementID');
- //   filter_input(INPUT_GET, 'elementID', FILTER_VALIDATE_INT);
+ //   filter_input(INPUT_POST, 'elementID', FILTER_VALIDATE_INT);
 $variantenID =  getPostInt('variantID');
-    //filter_input(INPUT_GET, 'variantenID', FILTER_VALIDATE_INT);
+    //filter_input(INPUT_POST, 'variantenID', FILTER_VALIDATE_INT);
 $projectID = (int)$_SESSION["projectID"];
 
 // Vorhandene Elementparameter löschen

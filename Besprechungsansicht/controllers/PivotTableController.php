@@ -48,6 +48,31 @@ if ($action === "loadTable") {
     exit;
 }
 
+if ($_POST['action'] === 'resetElementStati') {
+    $relationIds = json_decode($_POST['relationIds'], true);  // Decode back to array
+    if (!is_array($relationIds)) {
+        echo json_encode(['success' => false, 'message' => 'Invalid relationIds']);
+        exit;
+    }
+
+    $placeholders = str_repeat('?,', count($relationIds) - 1) . '?';
+    $sql = "UPDATE tabelle_räume_has_tabelle_elemente SET status = 0 WHERE id IN ($placeholders)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param(str_repeat('i', count($relationIds)), ...$relationIds);
+
+    $stmt->execute();
+    $affectedRows = $stmt->affected_rows;
+
+    echo json_encode([
+        'success' => true,
+        'affectedRows' => $affectedRows,
+        'processed' => count($relationIds),
+        'message' => "$affectedRows von " . count($relationIds) . " Records auf Status 0 gesetzt"
+    ]);
+    $stmt->close();
+}
+
+
 
 if ($action == "getElementDetails") {
     $roomId = getPostInt('roomId');
