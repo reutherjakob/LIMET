@@ -274,7 +274,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
         if (id !== "") {
             $.ajax({
                 url: "addParameterToDevice.php",
-                data: {"parameterID": id},
+                data: {"parameterID": id, "deviceID":deviceID },
                 type: "POST",
                 success: function (data) {
                     makeToaster(data, data.substring(0, 4) === "Para");

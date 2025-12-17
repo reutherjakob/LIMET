@@ -45,6 +45,7 @@ $mysqli->close();
 
 
 <script>
+    deviceID = '<?php echo $deviceID; ?>';
     new DataTable('#tablePossibleDeviceParameters', {
         paging: false,
         searching: true,
@@ -81,7 +82,7 @@ $mysqli->close();
         if (id !== "") {
             $.ajax({
                 url: "addParameterToDevice.php",
-                data: {"parameterID": id},
+                data: {"parameterID": id, "deviceID":deviceID},
                 type: "POST",
                 success: function (data) {
                     makeToaster(data, true);

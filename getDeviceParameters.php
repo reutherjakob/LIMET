@@ -30,12 +30,12 @@ echo "<table class='table table-striped table-sm' id='tableDeviceParameters'  >
 
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
-    echo "<td><button type='button' id='" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' class='btn btn-outline-danger btn-sm' value='deleteDEVICEParameter'><i class='fas fa-minus'></i></button></td>";
+    echo "<td><button type='button' id='" . $row["TABELLE_Parameter_idTABELLE_Parameter"] . "' class='btn btn-outline-danger btn-sm' value='deleteDEVICEParameter'><i class='fas fa-minus'></i></button></td>";
     echo "<td>" . $row["Kategorie"] . "</td>";
     echo "<td>" . $row["Bezeichnung"] . "</td>";
-    echo "<td><input type='text' id='wert" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' value='" . $row["Wert"] . "'></td>";
-    echo "<td><input type='text' id='einheit" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' value='" . $row["Einheit"] . "'></td>";
-    echo "<td><button type='button' id='" . $row["tabelle_parameter_idTABELLE_Parameter"] . "' class='btn btn-warning btn-sm' value='saveDEVICEParameter'><i class='far fa-save'></i></button></td>";
+    echo "<td><input type='text' id='wert" . $row["TABELLE_Parameter_idTABELLE_Parameter"] . "' value='" . $row["Wert"] . "'></td>";
+    echo "<td><input type='text' id='einheit" . $row["TABELLE_Parameter_idTABELLE_Parameter"] . "' value='" . $row["Einheit"] . "'></td>";
+    echo "<td><button type='button' id='" . $row["TABELLE_Parameter_idTABELLE_Parameter"] . "' class='btn btn-warning btn-sm' value='saveDEVICEParameter'><i class='far fa-save'></i></button></td>";
     echo "</tr>";
 }
 echo "</tbody></table>";

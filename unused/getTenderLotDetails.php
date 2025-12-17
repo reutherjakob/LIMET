@@ -123,7 +123,7 @@ echo "</select></div>
 $mysqli->close();
 ?>
 
-<script src="utils/_utils.js"></script>
+<script src="../utils/_utils.js"></script>
 
 <script>
     $('#lotLVSend').datepicker({
