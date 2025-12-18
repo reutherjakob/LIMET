@@ -64,7 +64,7 @@ $pdf = init_pdf_attributes($pdf, PDF_MARGIN_LEFT, $marginTop, $marginBTM, "A4", 
 
 $mysqli = utils_connect_sql();
 $losID = filter_input(INPUT_GET, 'losID', FILTER_VALIDATE_INT);
-$projectID = $_SESSION["projectID"] ?? null;
+$projectID = (int)$_SESSION["projectID"] ?? null;
 
 if (!$losID || !$projectID) {
     die("Ungültige Eingabe.");

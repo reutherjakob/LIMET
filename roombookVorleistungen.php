@@ -1,9 +1,8 @@
 <?php
-session_start();
-if (!isset($_SESSION["username"])) {
-    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-    exit;
-}
+// 25 FX
+require_once 'utils/_utils.php';
+check_login();
+$mysqli = utils_connect_sql();
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +20,6 @@ if (!isset($_SESSION["username"])) {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-
 
     <link rel="stylesheet" type="text/css"
           href="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.2/b-html5-1.5.2/sl-1.2.6/datatables.min.css"/>
@@ -56,23 +54,26 @@ if (!isset($_SESSION["username"])) {
                 <div class="card-header"><h4>Gewerke</h4>
                 </div>
                 <div class="card-body">
+
                     <?php
-                    $mysqli = $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-                    if ($mysqli->connect_errno) {
-                        echo "Failed to connect to MySQL: " . $mysqli->connect_error;
+                    $projectId = isset($_SESSION['projectID']) ? (int)$_SESSION['projectID'] : 0;
+                    
+                    $sql = "SELECT 
+                                tabelle_lose_extern.idtabelle_Lose_Extern,
+                                tabelle_lose_extern.LosNr_Extern,
+                                tabelle_lose_extern.LosBezeichnung_Extern,
+                                tabelle_lieferant.Lieferant,
+                                tabelle_lose_extern.Vorleistungspruefung
+                            FROM tabelle_lose_extern
+                            LEFT JOIN tabelle_lieferant 
+                                ON tabelle_lose_extern.tabelle_lieferant_idTABELLE_Lieferant = tabelle_lieferant.idTABELLE_Lieferant
+                            WHERE tabelle_lose_extern.tabelle_projekte_idTABELLE_Projekte = ?
+                            ORDER BY tabelle_lose_extern.LosNr_Extern";
 
-                    }
-                    if (!$mysqli->set_charset("utf8")) {
-                        printf("Error loading character set utf8: %s\n", $mysqli->error);
-                        exit();
-                    }
-
-                    $sql = "SELECT tabelle_lose_extern.idtabelle_Lose_Extern, tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern, tabelle_lieferant.Lieferant, tabelle_lose_extern.Vorleistungspruefung
-                                FROM (tabelle_lose_extern LEFT JOIN tabelle_lieferant ON tabelle_lose_extern.tabelle_lieferant_idTABELLE_Lieferant = tabelle_lieferant.idTABELLE_Lieferant)
-                                WHERE (((tabelle_lose_extern.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
-                                ORDER BY tabelle_lose_extern.LosNr_Extern;";
-
-                    $result = $mysqli->query($sql);
+                    $stmt = $mysqli->prepare($sql);
+                    $stmt->bind_param("i", $projectId);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
 
                     echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableGewerke'   >
                         <thead><tr>
@@ -97,7 +98,6 @@ if (!isset($_SESSION["username"])) {
                         }
                         echo "</td>";
                         echo "</tr>";
-
                     }
                     echo "</tbody></table>";
                     ?>
@@ -111,6 +111,7 @@ if (!isset($_SESSION["username"])) {
                 <div class="card-body" id="div_Infos_Body"></div>
             </div>
         </div>
+
         <!-- Darstellung PDF -->
         <div class="col-lg-5">
             <div class="card">
@@ -120,36 +121,34 @@ if (!isset($_SESSION["username"])) {
                 </div>
             </div>
         </div>
-        <!-- ----------------------------->
+
     </div>
 </div>
 <script>
-
-    // Tabellen formatieren
     $(document).ready(function () {
-        var table = $('#tableGewerke').DataTable({
-            "select": true,
-            "paging": true,
-            "pagingType": "simple",
-            "lengthChange": false,
-            "pageLength": 20,
-            "columnDefs": [
+        let table = $('#tableGewerke').DataTable({
+            select: true,
+            paging: true,
+            pagingType: "simple",
+            lengthChange: false,
+            pageLength: 20,
+            columnDefs: [
                 {
-                    "targets": [0],
-                    "visible": false,
-                    "searchable": false
+                    targets: [0],
+                    visible: false,
+                    searchable: false
                 }
             ],
-            "order": [[1, "asc"]],
-            "orderMulti": true,
-            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
-            "mark": true
+            order: [[1, "asc"]],
+            orderMulti: true,
+            language: {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
+            mark: true
         });
 
         $.get("navbar4.html", function (data) {
             $("#limet-navbar").html(data);
             $(".navbar-nav").find("li:nth-child(3)").addClass("active");
-            currentP = <?php     echo json_encode($_SESSION["projectName"]); ?>;
+            let currentP = <?php     echo json_encode($_SESSION["projectName"]); ?>;
             $("#projectSelected").text(currentP);
         });
 
@@ -161,18 +160,14 @@ if (!isset($_SESSION["username"])) {
                 $.ajax({
                     url: "getVermerkgruppenToGewerk.php",
                     data: {"vermerkGruppenID": table.row($(this)).data()[0]},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         $("#div_Infos_Body").html(data);
                     }
                 });
             }
         });
-
     });
-
 </script>
-
 </body>
-
 </html>

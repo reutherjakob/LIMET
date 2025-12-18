@@ -1,16 +1,8 @@
 <?php
-
-session_start();
-
-$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-if ($mysqli->connect_errno) {
-    echo "Failed to connect to MySQL: " . $mysqli->connect_error;
-}
-
-if (!$mysqli->set_charset("utf8")) {
-    printf("Error loading character set utf8: %s\n", $mysqli->error);
-    exit();
-}
+// 25 FX
+require_once "utils/_utils.php";
+check_login();
+$mysqli = utils_connect_sql();
 
 $sql = " SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte, 
 tabelle_räume.idTABELLE_Räume, 
@@ -37,7 +29,6 @@ tabelle_räume.AR_Statik_relevant,
 tabelle_räume.AR_AP_permanent, 
 tabelle_räume.`1 Kreis O2`, 
 tabelle_räume.`2 Kreis O2`, 
-
 tabelle_räume.`1 Kreis Va`, 
 tabelle_räume.`2 Kreis Va`, 
 tabelle_räume.VA, 
@@ -47,7 +38,6 @@ tabelle_räume.`DL-5`,
 tabelle_räume.`DL-10`, 
 tabelle_räume.`DL-tech`,
 tabelle_räume.`He-RF`, 
-
 tabelle_räume.NGA, 
 tabelle_räume.N2O, 
 tabelle_räume.AV, 
@@ -86,7 +76,6 @@ tabelle_räume.HT_Abluft_Sicherheitsschrank_Unterbau_Stk,
 tabelle_räume.HT_Abluft_Sicherheitsschrank_Stk, 
 tabelle_räume.HT_Spuele_Stk, 
 tabelle_räume.HT_Kühlwasser, 
-
 tabelle_räume.`ET_RJ45-Ports`, 
 tabelle_räume.ET_64A_3Phasig_Einzelanschluss, 
 tabelle_räume.ET_32A_3Phasig_Einzelanschluss, 
@@ -151,13 +140,11 @@ tabelle_räume.`HT_Luftwechsel 1/h`,
 tabelle_räume.EL_Not_Aus_Funktion,
 tabelle_räume.EL_Not_Aus,
 tabelle_räume.EL_Signaleinrichtung,
-
 tabelle_räume.`HT_Raumtemp Sommer °C`,
 tabelle_räume.`HT_Raumtemp Winter °C`,
 tabelle_räume.ET_PA_Stk,
 tabelle_räume.HT_Kaltwasser,
 tabelle_räume.HT_Warmwasser,
-
 tabelle_räume.HT_Abwasser_Stk,
 tabelle_räume.AR_Empf_Breite_cm,
 tabelle_räume.AR_Empf_Tiefe_cm,
@@ -168,7 +155,6 @@ tabelle_räume.HT_Abluft_Geraete,
 tabelle_räume.`ET_EMV_ja-nein`,
 tabelle_räume.`Entfallen`, 
 tabelle_räume.AR_Statik_relevant,
-
 tabelle_räume.`Fussboden`,
 tabelle_räume.`Decke`,
 tabelle_räume.`Anmerkung AR`,
@@ -193,17 +179,14 @@ tabelle_räume.`PHY_Akustik_Schallgrad`,
 tabelle_räume.`EL_Laser 32A Stk`
 FROM tabelle_räume
 INNER JOIN tabelle_funktionsteilstellen ON tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = tabelle_funktionsteilstellen.idTABELLE_Funktionsteilstellen
-WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
+WHERE tabelle_räume.tabelle_projekte_idTABELLE_Projekte= ? 
 ORDER BY tabelle_räume.Raumnr, tabelle_räume.`Raumbereich Nutzer`";
 
-if (!$mysqli->query($sql)) {
-    echo "Error executing query: " . $mysqli->error;
-} else {
-    $result = $mysqli->query($sql);
-}
-
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("i", $_SESSION['projectID']);
+$result = $stmt->execute();
+$result = $stmt->get_result();
 $mysqli->close();
-
 $data = array();
 while ($row = $result->fetch_assoc()) {
     $data[] = $row;

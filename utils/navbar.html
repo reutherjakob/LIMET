@@ -3,7 +3,7 @@
     <div class="container-fluid border border-light border-3 rounded rounded-3">
         <div class="navbar-nav col-2 d-flex align-items-center justify-content-start">
             <a class="py-0 nav-link" href="/projects.php">
-                <img src= "/Logo/LIMET_logo.png" alt="LIMETLOGO" style="height:3.5vh;">
+                <img src="/Logo/LIMET_logo.png" alt="LIMETLOGO" style="height:3.5vh;">
             </a>
         </div>
         <ul class="navbar-nav col-8 col-sm-8 d-flex align-items-center justify-content-center flex-wrap">
@@ -51,19 +51,68 @@
                                 <i class="far fa-paper-plane"></i>
                             </div>
                             <div class="col-10">
-                                Feedback
+                                RB-Feedback
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+
+            <li class="nav-item dropdown">
+
+                <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
+                   data-bs-toggle="dropdown"><i class="fa fa-comment"></i> Dokumentation</a>
+                <ul class="dropdown-menu">
+
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="/documentationV2.php">
+                            <div class="col-2 text-center">
+                                <i class="fas fa-file-medical-alt"></i>
+                            </div>
+                            <div class="col-10">
+                                Protokolle
+                            </div>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center"
+                           href="/Besprechungsansicht/views/roombookBesprechungsansicht.php">
+                            <div class="col-2 text-center">
+                                <i class="fa fa-handshake"></i>
+                            </div>
+                            <div class="col-10">
+                                Besprechungsansicht
                             </div>
                         </a>
                     </li>
 
 
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="/TODO">
+                            <div class="col-2 text-center">
+                                <i class="fab fa-font-awesome-flag"></i>
+                            </div>
+                            <div class="col-10">
+                                Projektstandards
+                            </div>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="/roombookMeeting.php">
+                            <div class="col-2 text-center">
+                                <i class="fa fa-users"></i>
+                            </div>
+                            <div class="col-10">
+                                Meeting Räume
+                            </div>
+                        </a>
+                    </li>
                 </ul>
             </li>
 
-            <li class="nav-item">
-                <a class="py-0 nav-link  " href="/documentationV2.php" role="button"><i
-                        class="fas fa-comment"></i> Dokumentation </a>
-            </li>
 
             <li class="nav-item dropdown">
                 <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
@@ -177,7 +226,7 @@
                                 <i class="fas fa-history"></i>
                             </div>
                             <div class="col-10">
-                               Element Änderungen
+                                Element Änderungen
                             </div>
                         </a>
                     </li>
@@ -192,16 +241,7 @@
                             </div>
                         </a>
                     </li>
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="/roombookMeeting.php">
-                            <div class="col-2 text-center">
-                                <i class="fa fa-users"></i>
-                            </div>
-                            <div class="col-10">
-                                Meeting Räume
-                            </div>
-                        </a>
-                    </li>
+
                     <li>
                         <a class="dropdown-item d-flex align-items-center" href="/roombookElementeJeRaumbereich.php">
                             <div class="col-2 text-center">
@@ -252,7 +292,7 @@
                 <a class="py-0 nav-link dropdown-toggle" href="#" role="button"
                    data-bs-toggle="dropdown"><i class="fa fa-tasks"></i> Ausschreibung</a>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="/tenderLots.php">Los-Verwaltung</a></li>
+                    <li><a class="dropdown-item" href="/roombook_tenderLots.php">Los-Verwaltung</a></li>
                     <li><a class="dropdown-item" href="/tenderCalendar.php">Vergabekalender</a></li>
                     <li><a class="dropdown-item" href="/tenderCharts.php">Vergabe-Diagramme</a></li>
                     <li><a class="dropdown-item" href="/elementLots.php">Element-Verwaltung</a></li>
@@ -270,8 +310,8 @@
                         Räume</a></li>
                     <li><a class="dropdown-item" href="/roombookAusfuehrungLiefertermine.php"><i
                             class="far fa-calendar-alt"></i> Liefertermine</a></li>
-                    <li><a class="dropdown-item" href="/roombookAbrechnung.php"><i class="fas fa-euro-sign"></i>
-                        Abrechnung</a></li>
+                    <!--li><a class="dropdown-item" href="../unused/roombookAbrechnung.php"><i class="fas fa-euro-sign"></i>
+                        Abrechnung</a></li-->
                 </ul>
             </li>
             <li class="nav-item dropdown">
@@ -294,7 +334,7 @@
         <ul class="navbar-nav col-2 d-flex align-items-center justify-content-end">
             <li class="nav-item"><a class="py-0 nav-link text-success disabled" id="projectSelected"
                                     style="font-size:1.2vh;">Kein Projekttitel geladen</a></li>
-            <li><a class="py-0 nav-link text-nowrap" href="/logout.php" style="font-size:1.5vh"   title="Abmelden"><i
+            <li><a class="py-0 nav-link text-nowrap" href="/logout.php" style="font-size:1.5vh" title="Abmelden"><i
                     class="fa fa-sign-out-alt"></i></a></li>
         </ul>
     </div>

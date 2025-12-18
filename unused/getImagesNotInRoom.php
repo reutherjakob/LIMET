@@ -7,7 +7,7 @@
 
 <?php
 
-// 10-2025 FX - unused
+// 25 FX - unused
 require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
@@ -16,7 +16,7 @@ $mysqli = utils_connect_sql();
 $sql = "SELECT f.`idtabelle_Files`, f.`Name` FROM `tabelle_Files` f WHERE f.`idtabelle_Files`
                 NOT IN (SELECT `tabelle_Files`.`idtabelle_Files`
                     FROM `LIMET_RB`.`tabelle_Files` INNER JOIN `tabelle_Files_has_tabelle_Raeume` ON `tabelle_Files_has_tabelle_Raeume`.`tabelle_idfFile` = `tabelle_Files`.`idtabelle_Files`
-                    WHERE `tabelle_Files`.`tabelle_projekte_idTABELLE_Projekte`= " . $_SESSION["projectID"] . " AND `tabelle_Files`.`tabelle_filetype_id` = 1 AND `tabelle_Files_has_tabelle_Raeume`.`tabelle_idRaeume` = " . filter_input(INPUT_GET, 'roomID') . ")
+                    WHERE `tabelle_Files`.`tabelle_projekte_idTABELLE_Projekte`= " . $_SESSION["projectID"] . " AND `tabelle_Files`.`tabelle_filetype_id` = 1 AND `tabelle_Files_has_tabelle_Raeume`.`tabelle_idRaeume` = " . filter_input(INPUT_POST, 'roomID') . ")
                 AND f.`tabelle_projekte_idTABELLE_Projekte`= " . $_SESSION["projectID"] . ";";
 
 $result = $mysqli->query($sql);
@@ -44,7 +44,7 @@ $mysqli->close();
 ?>
 
 <script>
-    var roomID = <?php echo filter_input(INPUT_GET, 'roomID') ?>
+    var roomID = <?php echo filter_input(INPUT_POST, 'roomID') ?>
         // Bild zu Raum hinzufügen
         $("button[value='addImageToRoom']").click(function () {
             var imageID = this.id;
@@ -58,13 +58,13 @@ $mysqli->close();
                     $.ajax({
                         url: "getImagesToRoom.php",
                         data: {"roomID": roomID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#roomImages").html(data);
                             $.ajax({
                                 url: "getImagesNotInRoom.php",
                                 data: {"roomID": roomID},
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#projectImages").html(data);
                                 }

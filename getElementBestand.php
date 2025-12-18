@@ -1,5 +1,5 @@
 <?php
-// 10-2025 FX
+// 25 FX
 require_once 'utils/_utils.php';
 require_once "utils/_format.php";
 check_login();
@@ -23,9 +23,8 @@ check_login();
 <body>
 
 <?php
-$_SESSION["roombookID"] = getPostInt("id");
-$_SESSION["stk"] = getPostInt("stk");
-
+$roombookID = getPostInt("id");
+$Stk = getPostInt("stk");
 
 $mysqli = utils_connect_sql();
 $stmt = $mysqli->prepare(
@@ -37,7 +36,7 @@ $stmt = $mysqli->prepare(
      WHERE tabelle_räume_has_tabelle_elemente.id = ?
      ORDER BY tabelle_hersteller.Hersteller"
 );
-$stmt->bind_param("i", $_SESSION["roombookID"]);
+$stmt->bind_param("i", $roombookID);
 $stmt->execute();
 $result = $stmt->get_result();
 $possibleDevices = array();
@@ -48,13 +47,12 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
-
 $stmt = $mysqli->prepare(
     "SELECT idtabelle_bestandsdaten, Inventarnummer, Seriennummer, Anschaffungsjahr, `Aktueller Ort`, tabelle_geraete_idTABELLE_Geraete
      FROM tabelle_bestandsdaten
      WHERE tabelle_räume_has_tabelle_elemente_id = ?"
 );
-$stmt->bind_param("i", $_SESSION["roombookID"]);
+$stmt->bind_param("i", $roombookID);
 $stmt->execute();
 $result = $stmt->get_result();
 $row_cnt = $result->num_rows;
@@ -68,7 +66,7 @@ echo "<div class='table-responsive'><table class='table table-striped table-bord
 	<th>Seriennummer</th>
 	<th>Anschaffungsjahr</th>
 	<th>Gerät</th>
-    <th>Standort aktuell</th>
+    <th class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Standort aktuell'><i class='fab fa-periscope '></i></th>
 	<th></th>                                                                                            
     <th>Check ob genug bestand da</th>
 	</tr></thead>
@@ -101,7 +99,7 @@ while ($row = $result->fetch_assoc()) {
     echo "<td><input class='form-control form-control-sm' type='text' id='currentPlace" . $row["idtabelle_bestandsdaten"] . "' value='" . $row["Aktueller Ort"] . "' ></input></td>";
     echo "<td><button type='button' id='" . $row["idtabelle_bestandsdaten"] . "' class='btn btn-warning btn-sm' value='saveBestand'><i class='far fa-save'></i></button></td>";
     echo "<td>";
-    if ($row_cnt == $_SESSION["stk"]) {
+    if ($row_cnt == $Stk) {
         echo "1";
     } else {
         echo "0";
@@ -121,8 +119,6 @@ $mysqli->close();
             <div class='modal-header'>
                 <h4 class='modal-title'>Bestand hinzufügen</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-
-
             </div>
             <div class='modal-body' id='mbody'>
                 <form role="form">
@@ -237,7 +233,6 @@ $mysqli->close();
                     });
                 }
             });
-
         } else {
             alert("Bitte Inventarnummer angeben!");
         }
@@ -249,7 +244,7 @@ $mysqli->close();
             $.ajax({
                 url: "deleteBestand.php",
                 data: {"bestandID": id},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     if (data.includes("error")) {
                         alert("Lol, hätteste gern.\nGeht aber nich... \nFrag den Jakob.");
@@ -288,7 +283,6 @@ $mysqli->close();
         let serienNr = $("#serienNr" + ID).val();
         let yearNr = $("#yearNr" + ID).val();
         let currentPlace = $("#currentPlace" + ID).val();
-
         if (ID !== "" && inventNr !== "") {
             $.ajax({
                 url: "saveBestand.php",
@@ -300,7 +294,7 @@ $mysqli->close();
                     "geraeteID": geraeteIDNeu,
                     "currentPlace": currentPlace
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data, true)
                     $.ajax({
@@ -317,10 +311,12 @@ $mysqli->close();
         }
     });
 
+
     $("#addBestandsElement").click(function () {
         $("#addBestand").show();
         $("#saveBestand").hide();
     });
+
 </script>
 </body>
 </html>

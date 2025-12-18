@@ -1,11 +1,12 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 
 // 🔐 Input Validation
-$K2Return = $_GET['K2Return'] ?? '[]';
+$K2Return = $_POST['K2Return'] ?? '[]';
 $K2Ret = json_decode($K2Return, true); // true = associative array
-$projectID = $_SESSION["projectID"] ?? null;
+$projectID = (int)$_SESSION["projectID"] ?? null;
 
 if (!$projectID || !is_array($K2Ret)) {
     http_response_code(400);
@@ -36,13 +37,8 @@ $rooms = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $result = [];
 foreach ($rooms as $room) {
     $roomID = $room['idTABELLE_Räume'];
-    // Add all room fields here, pass full room info except 'idTABELLE_Räume' separately if you want
     $roomData = $room;
     $roomData['elements'] = [];
-
-    // fetch elements as before ...
-    // same code as you have now to fill roomData['elements']
-
     $result[] = $roomData;
 }
 
@@ -174,10 +170,8 @@ foreach ($rooms as $room) {
 
         $roomData['elements'][] = $elementData;
     }
-
     $result[] = $roomData;
 }
-
 $mysqli->close();
 
 // 5️⃣ Output as JSON

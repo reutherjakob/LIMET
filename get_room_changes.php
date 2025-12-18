@@ -1,40 +1,37 @@
 <?php
+//25 FX
 require_once 'utils/_utils.php';
-
-if (!isset($_POST['roomId']) || empty($_POST['roomId'])) {
-    die("Ungültige Raum-ID");
-}
+check_login();
 
 $mysqli = utils_connect_sql();
 
-$roomId = $mysqli->real_escape_string($_POST['roomId']);
+$roomId = getPostInt('roomId');
 $startDate = $_POST['startDate'] ?? null;
 $endDate = $_POST['endDate'] ?? null;
 
-// Prepare SQL query
-$query = "SELECT * FROM tabelle_raeume_aenderungen WHERE raum_id = '$roomId'";
-$conditions = [];
+$query = "SELECT * FROM tabelle_raeume_aenderungen WHERE raum_id = ?";
+$params = [$roomId];
+$types = "s";
 
-// Add date range condition if both dates are provided
 if (!empty($startDate) && !empty($endDate)) {
-    $conditions[] = "Timestamp BETWEEN '$startDate' AND '$endDate'";
-}
-
-// Append conditions to the query
-if (!empty($conditions)) {
-    $query .= " AND " . implode(" AND ", $conditions);
+    $query .= " AND Timestamp BETWEEN ? AND ?";
+    $params[] = $startDate;
+    $params[] = $endDate;
+    $types .= "ss";
 }
 
 $query .= " ORDER BY Timestamp DESC";
 
-// Execute query
-$result = $mysqli->query($query);
+$stmt = $mysqli->prepare($query);
+$stmt->bind_param($types, ...$params);
+$stmt->execute();
+$result = $stmt->get_result();
 
-$output = [];// Define a mapping array for suffixes and their corresponding new field labels
+$output = [];
 $suffixMapping = [
     '_alt' => '_neu',
-    '_copy1' => '', // For _copy1, the old field has no suffix
-    'alt' => 'neu' // Assuming 'alt' should be treated like '_alt'
+    '_copy1' => '',
+    'alt' => 'neu'
 ];
 
 while ($row = $result->fetch_assoc()) {
@@ -42,30 +39,24 @@ while ($row = $result->fetch_assoc()) {
     $timestamp = date('d.m.Y H:i', strtotime($row['Timestamp']));
     $user = htmlspecialchars($row['user']);
 
-    // Dynamic field comparison
     foreach ($row as $field => $value) {
         foreach ($suffixMapping as $suffix => $newSuffix) {
-
-
             if (str_ends_with($field, $suffix)) {
-                $baseField = substr($field, 0, -strlen($suffix)); // Remove the suffix
-                if ($newSuffix === '') { // For _copy1, use the base field as the old field
+                $baseField = substr($field, 0, -strlen($suffix));
+                if ($newSuffix === '') {
                     $oldVal = $row[$baseField] ?? null;
                     $newVal = $row[$field] ?? null;
-
-                } else { // For _alt or alt, use the base field with _neu as the new field
+                } else {
                     $newField = $baseField . $newSuffix;
                     $oldVal = $row[$field] ?? null;
                     $newVal = $row[$newField] ?? null;
                 }
-
                 if ($oldVal != $newVal) {
                     $changes[] = sprintf(
-                        "<strong>%s:</strong> %s →
- %s",
+                        "<strong>%s:</strong> %s → %s",
                         htmlspecialchars(str_replace('_', ' ', $baseField)),
-                        htmlspecialchars( br2nl($oldVal) ?? 'N/A'),
-                        htmlspecialchars( br2nl($newVal) ?? 'N/A')
+                        htmlspecialchars(br2nl($oldVal) ?? 'N/A'),
+                        htmlspecialchars(br2nl($newVal) ?? 'N/A')
                     );
                 }
             }
@@ -74,9 +65,9 @@ while ($row = $result->fetch_assoc()) {
 
     if (!empty($changes)) {
         $output[] = "<div class='change-entry mb-3'>
-            <div class='change-header text-muted small'>$timestamp - $user</div>
-            <div class='change-details'>".implode('<br>',   ($changes))."</div>
-        </div><hr>";
+    <div class='change-header text-muted small'>$timestamp - $user</div>
+    <div class='change-details'>" . implode('<br>', $changes) . "</div>
+</div><hr>";
     }
 }
 
@@ -84,3 +75,5 @@ echo !empty($output)
     ? implode('', $output)
     : "<div class='alert alert-info'>Keine Änderungen gefunden</div>";
 
+$stmt->close();
+$mysqli->close();

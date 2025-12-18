@@ -1,42 +1,23 @@
 <?php
-    session_start();
+require_once 'utils/_utils.php';
+check_login();
+$mysqli = utils_connect_sql();
 
-    if(!isset($_SESSION["username"]))
-    {
-        echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-        exit;
-    }
-    $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-    if ($mysqli ->connect_error) {
-        die("Connection failed: " . $mysqli->connect_error);
-    }
-    $mysqli->query("SET NAMES 'utf8'");
+$date = getPostDate('date');           // ✅ aus $_POST
+$lotID = getPostInt('lotID');          // ✅ aus $_POST
+$workflowID = getPostInt('workflowID'); // ✅ aus $_POST
+$workflowTeilID = getPostInt('workflowTeilID'); // ✅ aus $_POST
 
-    /* change character set to utf8 */
-    if (!$mysqli->set_charset("utf8")) {
-        echo "Error loading character set utf8: " . $mysqli->error;
-        exit();
-    } 	
-    
-    
-    $sql1 = "UPDATE `LIMET_RB`.`tabelle_lot_workflow`
-        SET
-        `Timestamp_Ist` = '".filter_input(INPUT_GET, 'date')."'  
-        WHERE 
-        `tabelle_lose_extern_idtabelle_Lose_Extern` = ".filter_input(INPUT_GET, 'lotID')." 
-        AND 
-        `tabelle_workflow_idtabelle_workflow` = ".filter_input(INPUT_GET, 'workflowID')." 
-        AND
-        `tabelle_wofklowteil_idtabelle_wofklowteil` = ".filter_input(INPUT_GET, 'workflowTeilID').";";
-
-    if ($mysqli->query($sql1) === TRUE) {
-        $ausgabe = "Ist-Datum erfolgreich aktualisiert!";
-    } 
-    else {
-        $ausgabe = " Error: " . $sql . "<br>" . $mysqli->error;
-    }
-
-                       
-    $mysqli ->close();
-    echo $ausgabe;
+if ($lotID > 0 && $date) {
+    $sql = "UPDATE LIMET_RB.tabelle_lot_workflow SET Timestamp_Ist=? 
+          WHERE tabelle_lose_extern_idtabelle_Lose_Extern=? 
+          AND tabelle_workflow_idtabelle_workflow=? 
+          AND tabelle_wofklowteil_idtabelle_wofklowteil=?";
+    $stmt = $mysqli->prepare($sql);
+    $stmt->bind_param("siii", $date, $lotID, $workflowID, $workflowTeilID);
+    $ausgabe = $stmt->execute() ? "Ist-Datum erfolgreich aktualisiert!" : "Error: " . $stmt->error;
+    $stmt->close();
+} else $ausgabe = "Fehlende Daten: lotID=$lotID, date='$date'";
+echo $ausgabe;
+$mysqli->close();
 ?>

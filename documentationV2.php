@@ -75,11 +75,26 @@ init_page_serversides();
                 <div class="card-body">
                     <?php
                     $mysqli = utils_connect_sql();
-                    $sql = "SELECT tabelle_Vermerkgruppe.Gruppenname, tabelle_Vermerkgruppe.Gruppenart, tabelle_Vermerkgruppe.Ort, date_format(tabelle_Vermerkgruppe.Startzeit, '%h:%i') Startzeit, date_format(tabelle_Vermerkgruppe.Endzeit, '%h:%i') Endzeit, tabelle_Vermerkgruppe.Datum, tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe, tabelle_Vermerkgruppe.Verfasser
-                                                        FROM tabelle_Vermerkgruppe
-                                                        WHERE (((tabelle_Vermerkgruppe.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
-                                                        ORDER BY tabelle_Vermerkgruppe.Datum DESC;";
-                    $result = $mysqli->query($sql);
+                    $projectID = (int)$_SESSION["projectID"];
+
+                    $sql = "SELECT 
+            tabelle_Vermerkgruppe.Gruppenname, 
+            tabelle_Vermerkgruppe.Gruppenart, 
+            tabelle_Vermerkgruppe.Ort, 
+            DATE_FORMAT(tabelle_Vermerkgruppe.Startzeit, '%h:%i') AS Startzeit, 
+            DATE_FORMAT(tabelle_Vermerkgruppe.Endzeit, '%h:%i') AS Endzeit, 
+            tabelle_Vermerkgruppe.Datum, 
+            tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe, 
+            tabelle_Vermerkgruppe.Verfasser
+        FROM tabelle_Vermerkgruppe
+        WHERE tabelle_Vermerkgruppe.tabelle_projekte_idTABELLE_Projekte = ?
+        ORDER BY tabelle_Vermerkgruppe.Datum DESC";
+
+                    $stmt = $mysqli->prepare($sql);
+                    $stmt->bind_param("i", $projectID);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+
                     echo "<table class='table responsive compact table-striped table-bordered table-sm table-hover  border border-light border-5' id='tableVermerkGruppe'>
                                                         <thead><tr>
                                                         <th>ID</th>
@@ -283,7 +298,7 @@ init_page_serversides();
         </div>
     </div>
 
-    <!-- Modal Vermerk Suche -->
+    <!-- Modal Vermerk-Suche -->
     <div class='modal fade' id='showSearchModal' role='dialog' tabindex="-1">
         <div class='modal-dialog modal-lg'>
             <!-- Modal content-->
@@ -294,12 +309,38 @@ init_page_serversides();
                 </div>
                 <div class='modal-body' id='showSearchModalBody'>
                     <?php
-                    $sql = "SELECT tabelle_Vermerkgruppe.Gruppenname, tabelle_Vermerkgruppe.Datum, tabelle_Vermerkuntergruppe.Untergruppennummer, tabelle_Vermerkuntergruppe.Untergruppenname, tabelle_Vermerke.Vermerktext, tabelle_Vermerke.idtabelle_Vermerke, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_lose_extern.LosNr_Extern, tabelle_lose_extern.LosBezeichnung_Extern
-                                            FROM tabelle_lose_extern RIGHT JOIN (tabelle_räume RIGHT JOIN ((tabelle_Vermerkgruppe INNER JOIN tabelle_Vermerkuntergruppe ON tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe = tabelle_Vermerkuntergruppe.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe) INNER JOIN tabelle_Vermerke ON tabelle_Vermerkuntergruppe.idtabelle_Vermerkuntergruppe = tabelle_Vermerke.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe) ON tabelle_räume.idTABELLE_Räume = tabelle_Vermerke.tabelle_räume_idTABELLE_Räume) ON tabelle_lose_extern.idtabelle_Lose_Extern = tabelle_Vermerke.tabelle_lose_extern_idtabelle_Lose_Extern
-                                            WHERE (((tabelle_Vermerkgruppe.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
-                                            ORDER BY tabelle_Vermerkgruppe.Datum DESC;";
+                    $sql = "SELECT tabelle_Vermerkgruppe.Gruppenname,
+                        tabelle_Vermerkgruppe.Datum,
+                        tabelle_Vermerkuntergruppe.Untergruppennummer,
+                        tabelle_Vermerkuntergruppe.Untergruppenname,
+                        tabelle_Vermerke.Vermerktext,
+                        tabelle_Vermerke.idtabelle_Vermerke,
+                        tabelle_räume.Raumnr,
+                        tabelle_räume.Raumbezeichnung,
+                        tabelle_lose_extern.LosNr_Extern,
+                        tabelle_lose_extern.LosBezeichnung_Extern
+                        FROM tabelle_lose_extern
+                        RIGHT JOIN (
+                        tabelle_räume
+                        RIGHT JOIN (
+                        (
+                        tabelle_Vermerkgruppe
+                        INNER JOIN tabelle_Vermerkuntergruppe
+                        ON tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe = tabelle_Vermerkuntergruppe.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe
+                        )
+                        INNER JOIN tabelle_Vermerke
+                        ON tabelle_Vermerkuntergruppe.idtabelle_Vermerkuntergruppe = tabelle_Vermerke.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe
+                        )
+                        ON tabelle_räume.idTABELLE_Räume = tabelle_Vermerke.tabelle_räume_idTABELLE_Räume
+                        )
+                        ON tabelle_lose_extern.idtabelle_Lose_Extern = tabelle_Vermerke.tabelle_lose_extern_idtabelle_Lose_Extern
+                        WHERE tabelle_Vermerkgruppe.tabelle_projekte_idTABELLE_Projekte = ?
+                        ORDER BY tabelle_Vermerkgruppe.Datum DESC";
+                    $stmt = $mysqli->prepare($sql);
+                    $stmt->bind_param("i", $projectID);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
 
-                    $result = $mysqli->query($sql);
 
                     echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableSearchVermerk'>
                                             <thead><tr>
@@ -340,8 +381,8 @@ init_page_serversides();
 
 <!--suppress ES6ConvertVarToLetConst -->
 <script>
-
-    var tableVermerkGruppe, gruppenID, vermerkID, tableVermerke, untergruppenID, vermerkGruppenID;     // for getVermerkToUntergruppe.php and getVermerkUntergruppeToGruppe.php
+    //       for getVermerkToUntergruppe.php
+    var tableVermerkGruppe, gruppenID, vermerkID, tableVermerke, untergruppenID, vermerkGruppenID; //  for getVermerkUntergruppeToGruppe.php
 
     $(document).ready(function () {
         tableVermerkGruppe = new DataTable('#tableVermerkGruppe', {
@@ -372,6 +413,7 @@ init_page_serversides();
                 $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeaderVermerkGruppen');
             }
         });
+
         setTimeout(function () {
             new DataTable('#tableSearchVermerk', {
                 columnDefs: [
@@ -407,7 +449,6 @@ init_page_serversides();
         $('#tableVermerkGruppe tbody').on('click', 'tr', function () {
             gruppenID = tableVermerkGruppe.row($(this)).data()[0];
             let art = tableVermerkGruppe.row($(this)).data()[4];
-            //   console.log("tableVermerkGruppe tbody').on('click:: Gruppenart: ", art);
             document.getElementById("buttonNewVermerkuntergruppe").disabled = art === "Protokoll Besprechung";
             document.getElementById("gruppenart").value = art;
             document.getElementById("gruppenName").value = tableVermerkGruppe.row($(this)).data()[2];
@@ -417,6 +458,7 @@ init_page_serversides();
             document.getElementById("gruppenStart").value = tableVermerkGruppe.row($(this)).data()[10];
             document.getElementById("gruppenEnde").value = tableVermerkGruppe.row($(this)).data()[11];
             $("#vermerke").hide();
+
             $.ajax({
                 url: "getVermerkeuntergruppenToGruppe.php",
                 data: {
@@ -429,6 +471,7 @@ init_page_serversides();
                 }
             });
             $('#pdfPreview').attr('src', 'PDFs/pdf_createVermerkGroupPDF.php?gruppenID=' + gruppenID);
+
         });
     });
 
@@ -461,13 +504,13 @@ init_page_serversides();
         var id = this.id;
         $.ajax({
             url: "getVermerkgruppenMembers.php",
-            type: "GET",
+            type: "POST",
             data: {"gruppenID": id},
             success: function (data) {
                 $("#vermerkGroupMembers").html(data);
                 $.ajax({
                     url: "getPossibleVermerkGruppenMembers.php",
-                    type: "GET",
+                    type: "POST",
                     data: {"gruppenID": id},
                     success: function (data) {
                         $("#possibleVermerkGroupMembers").html(data);
@@ -478,6 +521,7 @@ init_page_serversides();
     });
 
     $("button[value='changeVermerkgruppe']").click(function () {
+        // Buttons ein/ausblenden!
         document.getElementById("saveGroup").style.display = "inline";
         document.getElementById("addGroup").style.display = "none";
         $('#changeGroupModal').modal('show');
@@ -506,7 +550,6 @@ init_page_serversides();
         window.open('PDFs/pdf_createVermerkGroupPDF.php?gruppenID=' + this.id + '&');//there are many ways to do this
     });
 
-
     $("#addGroup").click(function () {
         var gruppenart = $("#gruppenart").val();
         var gruppenName = $("#gruppenName").val();
@@ -529,7 +572,7 @@ init_page_serversides();
                 },
                 type: "POST",
                 success: function (data) {
-                    alert(data);
+                    makeToaster(data,true);
                     location.reload();
                 }
             });
@@ -562,9 +605,10 @@ init_page_serversides();
                 },
                 type: "POST",
                 success: function (data) {
-                    alert(data);
+
                     location.reload();
                     document.getElementById('pdfPreview').contentWindow.location.reload();
+                    makeToaster(data,true);
                 }
             });
         } else {

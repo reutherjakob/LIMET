@@ -1,17 +1,4 @@
-<?php
-require_once 'utils/_utils.php';
-check_login();
-
-$originRoomID = $_GET["originRoomID"] ?? null;
-if ($originRoomID === null) {
-    echo "<p>Error: Origin Room ID is missing.</p>";
-    exit;
-}
-
-$mysqli = utils_connect_sql(); ?>
-
 <div class="d-inline-flex align-items-center">
-
     <div id="mtrelevantfilter" class="d-flex col-10">
         <button id="selectAllRows">Select All Rows</button>
         <button id="selectVisibleRows">Select Visible Rows</button>
@@ -20,12 +7,20 @@ $mysqli = utils_connect_sql(); ?>
     <div id="Subdiv1" class="d-flex col-2"></div>
 </div>
 
-<?php
-// Sanitize input
-$originRoomID = mysqli_real_escape_string($mysqli, $originRoomID);
 
-// Fetch rooms, excluding the current room
-$sql = "SELECT tabelle_räume.Raumnr,
+<?php
+// 25 FX
+require_once 'utils/_utils.php';
+check_login();
+
+$originRoomID = getPostInt('originRoomID', 0);
+if ($originRoomID === 0) {
+    echo "<p>Error: Origin Room ID is missing.</p>";
+    exit;
+}
+
+$mysqli = utils_connect_sql();
+$stmt = $mysqli->prepare("SELECT tabelle_räume.Raumnr,
             tabelle_räume.Raumbezeichnung,
             tabelle_räume.`Raumbereich Nutzer`,
             tabelle_räume.Nutzfläche,
@@ -36,9 +31,11 @@ $sql = "SELECT tabelle_räume.Raumnr,
             tabelle_räume.`MT-relevant`
         FROM tabelle_räume 
         INNER JOIN tabelle_projekte ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
-        WHERE ((NOT (tabelle_räume.idTABELLE_Räume) = '$originRoomID') AND ((tabelle_projekte.idTABELLE_Projekte) = '" . $_SESSION["projectID"] . "'));";
+        WHERE tabelle_räume.idTABELLE_Räume != ? AND tabelle_projekte.idTABELLE_Projekte = ?");
 
-$result = $mysqli->query($sql);
+$stmt->bind_param("ii", $originRoomID, $_SESSION['projectID']);
+$stmt->execute();
+$result = $stmt->get_result();
 
 echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableRoomsToCopy' >
     <thead><tr>
@@ -72,43 +69,15 @@ echo "</tbody></table>";
 $mysqli->close();
 ?>
 
-
-<!-- input type='button' id='copyRoomElements' class='btn btn-info btn-sm' value='Elemente kopieren'>
-<input type='button' id='copyBauangaben' class='btn btn-info btn-sm' value='Bauangaben kopieren' -->
-
 <script charset="utf-8">
-
-    // ALL THE COMMENTED PARTS ARE NOW WITHIN THE FILE IMPORTING THIS GetRoomsToCopy
-   var roomIDs = []; // Array to store selected room IDs
-    // //Bauangaben kopieren
-
-    //
-    // //Rauminhalt kopieren
-
-
+    var roomIDs = []; // Array to store selected room IDs
     var tableRoomsToCopy;
-
-    function add_MT_rel_filter(location, table) {
-        let dropdownHtml = '<select class=" fix_size" id="columnFilter2">' + '<option value=" ">MT</option><option value="1">Ja</option>' + '<option value="0">Nein</option></select>';
-        $(location).append(dropdownHtml);
-        $('#columnFilter2').change(function () {
-            let filterValue = $(this).val();
-            table.column(1).search(filterValue).draw();
-
-        });
-        console.log(table.column(0));
-    }
-
     $(document).ready(function () {
-
-
         if (typeof columnsDefinition === 'undefined') { // TO GUArantee function of old Bauanagaben page
             const script = document.createElement('script');
-            script.src = 'roombookSpecifications_constDeclarations.js';
-            //script.onload = () => console.log('columnsDefinition loaded');
+            script.src = 'roombookSpecifications_constDeclarations.js';            //script.onload = () => console.log('columnsDefinition loaded');
             document.head.appendChild(script);
         }
-
         tableRoomsToCopy = new DataTable("#tableRoomsToCopy", {
             select: {
                 style: "multi"
@@ -134,8 +103,6 @@ $mysqli->close();
             initComplete: function () {
                 $('.dt-search label').remove();
                 $('#tableRoomsToCopy_wrapper .dt-search').children().removeClass('form-control form-control-sm').appendTo('#Subdiv1');
-
-
             }
         });
 
@@ -149,50 +116,50 @@ $mysqli->close();
                     return value !== id;
                 });
             }
-
         });
+
+        function add_MT_rel_filter(location, table) {
+            let dropdownHtml = '<select class=" fix_size" id="columnFilter2">' + '<option value=" ">MT</option><option value="1">Ja</option>' + '<option value="0">Nein</option></select>';
+            $(location).append(dropdownHtml);
+            $('#columnFilter2').change(function () {
+                let filterValue = $(this).val();
+                table.column(1).search(filterValue).draw();
+            });
+        }
+        add_MT_rel_filter('#mtrelevantfilter', tableRoomsToCopy);
 
         $("#selectAllRows").click(function () {
             tableRoomsToCopy.rows().select();
             roomIDs = tableRoomsToCopy.rows().data().toArray().map(function (row) {
                 return row[0];
-            });
-            console.log("Select All Rows ", roomIDs);
+            }); //  console.log("Select All Rows ", roomIDs);
         });
 
         $("#selectVisibleRows").click(function () {
             tableRoomsToCopy.rows({search: 'applied'}).select();
             roomIDs = tableRoomsToCopy.rows({search: 'applied'}).data().toArray().map(function (row) {
                 return row[0];
-            });
-            console.log("Select Visible Rows ", roomIDs);
+            }); //console.log("Select Visible Rows ", roomIDs);
         });
+
         $("#DeselectRows").click(function () {
             tableRoomsToCopy.rows().deselect();
-            roomIDs = [];
-            console.log("Deselect All Rows ", roomIDs);
+            roomIDs = []; // console.log("Deselect All Rows ", roomIDs);
         });
 
-
-        add_MT_rel_filter('#mtrelevantfilter', tableRoomsToCopy);
-
-        $("#copyRoomElements").click(function () {
-
-            console.log("copyRoomElements btn click funcction", roomIDs);
-            roomIDs = [...new Set(roomIDs)];
-            console.log("Letzte log vorm kopieren", roomIDs);
+        $("#copyRoomElements").click(function () { //console.log("copyRoomElements btn click funcction", roomIDs);
+            roomIDs = [...new Set(roomIDs)]; //Console.log("Letzte log vorm kopieren", roomIDs);
             if (roomIDs.length === 0) {
-                alert("Kein Raum ausgewählt!");
+                makeToaster("Kein Raum ausgewählt!",false);
             } else {
                 $.ajax({
                     url: "copyRoomElements.php",
-                    type: "GET",
+                    type: "POST",
                     data: {"rooms": roomIDs},
                     success: function (data) {
                         makeToaster(data, true);
                         $("#mbodyCRE").modal('hide');
                         $("#copyRoomElementsModal").modal('hide');
-
                     }
                 });
             }

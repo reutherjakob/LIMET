@@ -15,7 +15,7 @@ header("Content-Security-Policy: default-src 'self'; style-src 'self' https://cd
 
 const MAX_ATTEMPTS = 10;
 const LOCKOUT_TIME = 20 * 60;
-const RATE_LIMIT = 5;
+const RATE_LIMIT = 10;
 const RATE_LIMIT_WINDOW = 300;
 
 

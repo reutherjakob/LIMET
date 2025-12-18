@@ -1,22 +1,13 @@
-<!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml" lang="">
-<head>
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <title></title></head>
-<body>
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 include "utils/_format.php";
 check_login();
 $mysqli = utils_connect_sql();
+$elementID = getPostInt('id', 0);
+$projectID = (int)$_SESSION["projectID"];
 
-// Check if required variables are set
-if (isset($_SESSION["projectID"], $_GET["id"]) && is_numeric($_SESSION["projectID"]) && is_numeric($_GET["id"])) {
-
-    $projectID = (int)$_SESSION["projectID"];
-    $elementID = (int)$_GET["id"];
-
-    // Use a prepared statement for security
+if ($elementID <> 0) {
     $sql = "SELECT tabelle_projekt_varianten_kosten.Kosten
             FROM tabelle_projekt_varianten_kosten
             INNER JOIN tabelle_räume_has_tabelle_elemente 
@@ -24,14 +15,11 @@ if (isset($_SESSION["projectID"], $_GET["id"]) && is_numeric($_SESSION["projectI
                AND tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
             WHERE tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte = ? 
               AND tabelle_räume_has_tabelle_elemente.id = ?";
-
     $stmt = $mysqli->prepare($sql);
-
     if ($stmt) {
         $stmt->bind_param("ii", $projectID, $elementID);
         $stmt->execute();
         $result = $stmt->get_result();
-
         if ($row = $result->fetch_assoc()) {
             echo "
                 <div class='d-flex flex-wrap justify-content-end'>
@@ -43,23 +31,12 @@ if (isset($_SESSION["projectID"], $_GET["id"]) && is_numeric($_SESSION["projectI
         } else {
             echo "<div class='text-danger'>Keine Kosten gefunden.</div>";
         }
-
         $stmt->close();
     } else {
         echo "<div class='text-danger'>Datenbankfehler: " . $mysqli->error . "</div>";
     }
-
 } else {
     echo "<div class='text-danger'>Fehlende oder ungültige Parameter.</div>";
 }
-
 $mysqli->close();
 ?>
-
-    
-	    
-
-</script>
-
-</body>
-</html>

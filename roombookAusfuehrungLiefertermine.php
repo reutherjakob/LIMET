@@ -1,10 +1,7 @@
 <?php
-session_start();
-if (!isset($_SESSION["username"])) {
-    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-    exit;
-}
-
+// 25 FX
+require_once 'utils/_utils.php';
+init_page_serversides();
 ?>
 
 <!DOCTYPE html>
@@ -39,7 +36,7 @@ if (!isset($_SESSION["username"])) {
 
 </head>
 <body style="height:100%">
-<div class="container-fluid bg-light" >
+<div class="container-fluid bg-light">
     <div id="limet-navbar"></div>
     <div class='row'>
         <div class='col-xxl-12'>
@@ -60,26 +57,46 @@ if (!isset($_SESSION["username"])) {
                             </form>
                         </div>
 
-                        <div class="col-4 form-inline d-flex justify-content-end" id ="cardHeaderD3"></div>
+                        <div class="col-4 form-inline d-flex justify-content-end" id="cardHeaderD3"></div>
                     </div>
                 </div>
                 <div class="card-body">
                     <?php
-                    $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-                    if ($mysqli->connect_errno) {
-                        echo "Failed to connect to MySQL: " . $mysqli->connect_error;
+                    $mysqli = utils_connect_sql();
 
-                    }
-                    if (!$mysqli->set_charset("utf8")) {
-                        printf("Error loading character set utf8: %s\n", $mysqli->error);
-                        exit();
-                    }
-
-                    $sql = "SELECT tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss, tabelle_räume.Bauetappe, tabelle_räume.Bauabschnitt, tabelle_bauphasen.bauphase, tabelle_bauphasen.datum_fertigstellung, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_lose_extern.LosBezeichnung_Extern,tabelle_lose_extern.LosNr_Extern, tabelle_räume_has_tabelle_elemente.Anzahl, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.Lieferdatum, tabelle_räume_has_tabelle_elemente.id
-                                                        FROM ((((tabelle_räume LEFT JOIN tabelle_bauphasen ON tabelle_räume.tabelle_bauphasen_idtabelle_bauphasen = tabelle_bauphasen.idtabelle_bauphasen) INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) INNER JOIN tabelle_varianten ON tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten = tabelle_varianten.idtabelle_Varianten) LEFT JOIN tabelle_lose_extern ON tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern = tabelle_lose_extern.idtabelle_Lose_Extern
-                                                        WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume_has_tabelle_elemente.Standort)=1) AND tabelle_räume_has_tabelle_elemente.Anzahl > 0);";
-
-                    $result = $mysqli->query($sql);
+                    $sql = "SELECT tabelle_räume.`Raumbereich Nutzer`,
+       tabelle_räume.Geschoss,
+       tabelle_räume.Bauetappe,
+       tabelle_räume.Bauabschnitt,
+       tabelle_bauphasen.bauphase,
+       tabelle_bauphasen.datum_fertigstellung,
+       tabelle_räume.Raumnr,
+       tabelle_räume.Raumbezeichnung,
+       tabelle_lose_extern.LosBezeichnung_Extern,
+       tabelle_lose_extern.LosNr_Extern,
+       tabelle_räume_has_tabelle_elemente.Anzahl,
+       tabelle_elemente.ElementID,
+       tabelle_elemente.Bezeichnung,
+       tabelle_varianten.Variante,
+       tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
+       tabelle_räume_has_tabelle_elemente.Lieferdatum,
+       tabelle_räume_has_tabelle_elemente.id
+FROM ((((tabelle_räume LEFT JOIN tabelle_bauphasen ON tabelle_räume.tabelle_bauphasen_idtabelle_bauphasen =
+                                                      tabelle_bauphasen.idtabelle_bauphasen) INNER JOIN tabelle_räume_has_tabelle_elemente
+        ON tabelle_räume.idTABELLE_Räume =
+           tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) INNER JOIN tabelle_elemente
+       ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente =
+          tabelle_elemente.idTABELLE_Elemente) INNER JOIN tabelle_varianten
+      ON tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten =
+         tabelle_varianten.idtabelle_Varianten)
+         LEFT JOIN tabelle_lose_extern ON tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern =
+                                          tabelle_lose_extern.idtabelle_Lose_Extern
+WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = ? ) AND
+       ((tabelle_räume_has_tabelle_elemente.Standort) = 1) AND tabelle_räume_has_tabelle_elemente.Anzahl > 0);";
+                    $stmt = $mysqli->prepare($sql);
+                    $stmt->bind_param("i", $_SESSION["projectID"]);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
 
                     echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableElements'   >
 						<thead><tr>
@@ -104,31 +121,32 @@ if (!isset($_SESSION["username"])) {
 
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr>";
-                        echo "<td>" . $row["id"] . "</td>";
-                        echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
-                        echo "<td>" . $row["Geschoss"] . "</td>";
-                        echo "<td>" . $row["Bauetappe"] . "</td>";
-                        echo "<td>" . $row["Bauabschnitt"] . "</td>";
-                        echo "<td>" . $row["bauphase"] . "</td>";
-                        echo "<td>" . $row["datum_fertigstellung"] . "</td>";
-                        echo "<td>" . $row["Raumnr"] . "</td>";
-                        echo "<td>" . $row["Raumbezeichnung"] . "</td>";
-                        echo "<td>" . $row["LosNr_Extern"] . "</td>";
-                        echo "<td>" . $row["LosBezeichnung_Extern"] . "</td>";
-                        echo "<td>" . $row["Anzahl"] . "</td>";
-                        echo "<td>" . $row["ElementID"] . "</td>";
-                        echo "<td>" . $row["Bezeichnung"] . "</td>";
-                        echo "<td>" . $row["Variante"] . "</td>";
+                        echo "<td>" . htmlspecialchars($row["id"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Raumbereich Nutzer"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Geschoss"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Bauetappe"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Bauabschnitt"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["bauphase"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["datum_fertigstellung"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Raumnr"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Raumbezeichnung"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["LosNr_Extern"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["LosBezeichnung_Extern"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Anzahl"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["ElementID"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Bezeichnung"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Variante"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                         echo "<td>";
-                        if ($row["Neu/Bestand"] === '0') {
+                        if (($row["Neu/Bestand"] ?? '0') === '0') {
                             echo "Ja";
                         } else {
                             echo "Nein";
                         }
                         echo "</td>";
-                        echo "<td>" . $row["Lieferdatum"] . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Lieferdatum"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                         echo "</tr>";
                     }
+
                     echo "</tbody></table>";
                     ?>
                 </div>
@@ -172,11 +190,8 @@ if (!isset($_SESSION["username"])) {
     </div>
 </div>
 <script>
-
     var elementIDs = [];
     $(document).ready(function () {
-
-
         $.get("navbar4.html", function (data) {
             $("#limet-navbar").html(data);
             $(".navbar-nav").find("li:nth-child(3)").addClass("active");
@@ -246,7 +261,7 @@ if (!isset($_SESSION["username"])) {
         let lieferdatum = $("#lieferdatum").val();
         $.ajax({
             url: "saveLieferdatum.php",
-            type: "GET",
+            type: "POST",
             data: {"elements": elementIDs, "lieferdatum": lieferdatum},
             success: function (data) {
                 $('#saveLieferdatumModal').modal('hide');

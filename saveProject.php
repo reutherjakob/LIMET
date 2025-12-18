@@ -1,47 +1,24 @@
 <?php
-session_start();
-?>
+// 25 FX
+require_once "utils/_utils.php";
+check_login();
+$mysqli = utils_connect_sql();
+$betten = getPostInt('betten');
+$bgf = getPostFloat('bgf');
+$nf = getPostFloat('nf');
+$aktiv = getPostInt('active');
+$neubau = getPostInt('neubau');
+$planungsphase = getPostInt('planungsphase');
+$ausfuehrung = getPostString('bearbeitung');
+$preisbasis = getPostDate('PBdate');
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?> 
-
-<?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    printf("Error loading character set utf8: %s\n", $mysqli->error);
-	    exit();
-	} 
-	
-	// Check connection
-	if ($mysqli->connect_error) {
-	    die("Connection failed: " . $mysqli->connect_error);
-	}        
-
-        $sql = "UPDATE `LIMET_RB`.`tabelle_projekte`
-                SET
-                `Bettenanzahl` = '".filter_input(INPUT_GET, 'betten')."',
-                `BGF` = '".filter_input(INPUT_GET, 'bgf')."',
-                `NF` = '".filter_input(INPUT_GET, 'nf')."',
-                `Aktiv` = '".filter_input(INPUT_GET, 'active')."',
-                `Neubau` = '".filter_input(INPUT_GET, 'neubau')."',
-                `TABELLE_Planungsphasen_idTABELLE_Planungsphasen` = ".filter_input(INPUT_GET, 'planungsphase').",
-                `Ausfuehrung` = '".filter_input(INPUT_GET, 'bearbeitung')."',
-                `Preisbasis` = '".filter_input(INPUT_GET, 'PBdate')."'
-                WHERE `idTABELLE_Projekte` = ".$_SESSION["projectID"].";";
-        
-	if ($mysqli->query($sql) === TRUE) {
-            echo "Projekt aktualisiert!";
-//            echo filter_input(INPUT_GET, 'PBdate') ;
-	} 
-	else {
-            echo "Error: " . $sql . "<br>" . $mysqli->error;
-	}
-
-	$mysqli ->close();
-?>
+$sql = "UPDATE `LIMET_RB`.`tabelle_projekte` SET `Bettenanzahl` = ?, `BGF` = ?, `NF` = ?, `Aktiv` = ?, `Neubau` = ?, `TABELLE_Planungsphasen_idTABELLE_Planungsphasen` = ?, `Ausfuehrung` = ?, `Preisbasis` = ? WHERE `idTABELLE_Projekte` = ?";
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("iddiiiss i", $betten, $bgf, $nf, $aktiv, $neubau, $planungsphase, $ausfuehrung, $preisbasis, $_SESSION["projectID"]);
+if ($stmt->execute()) {
+    echo "Projekt aktualisiert!";
+} else {
+    echo "Error: " . $stmt->error;
+}
+$stmt->close();
+$mysqli->close(); ?>

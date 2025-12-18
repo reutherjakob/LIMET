@@ -1,4 +1,5 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 init_page_serversides();
 ?>
@@ -58,11 +59,14 @@ $sql = "SELECT tabelle_räume_has_tabelle_elemente.id,
                         tabelle_element_gruppe.tabelle_element_hauptgruppe_idTABELLE_Element_Hauptgruppe)
                     ON tabelle_element_gewerke.idtabelle_element_gewerke =
                        tabelle_element_hauptgruppe.tabelle_element_gewerke_idtabelle_element_gewerke
-    WHERE tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = " . $_SESSION["roomID"] . " AND
+    WHERE tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = ?  AND
        tabelle_räume_has_tabelle_elemente.Anzahl <> 0 AND
        tabelle_element_gewerke.Nummer= 1
     ORDER BY tabelle_elemente.ElementID;";
-$result = $mysqli->query($sql);
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("i", $_SESSION["roomID"]);
+$stmt->execute();
+$result = $stmt->get_result();
 
 echo "
         <div class='row mt-4'>
@@ -109,11 +113,15 @@ $sql = "SELECT tabelle_räume_has_tabelle_elemente.id,
                         tabelle_element_gruppe.tabelle_element_hauptgruppe_idTABELLE_Element_Hauptgruppe)
                     ON tabelle_element_gewerke.idtabelle_element_gewerke =
                        tabelle_element_hauptgruppe.tabelle_element_gewerke_idtabelle_element_gewerke
-    WHERE   tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = " . $_SESSION["roomID"] . " AND
+    WHERE   tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume =  ?  AND
             tabelle_räume_has_tabelle_elemente.Anzahl <> 0 AND
             tabelle_element_gewerke.Nummer = 2
     ORDER BY tabelle_elemente.ElementID;";
-$result = $mysqli->query($sql);
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("i", $_SESSION["roomID"]);
+$stmt->execute();
+$result = $stmt->get_result();
+
 
 echo "<div class='col-xxl-6'> 
                 <div class='card  m-2'>
@@ -157,11 +165,15 @@ $sql = "SELECT tabelle_räume_has_tabelle_elemente.id,
                         tabelle_element_gruppe.tabelle_element_hauptgruppe_idTABELLE_Element_Hauptgruppe)
                     ON tabelle_element_gewerke.idtabelle_element_gewerke =
                        tabelle_element_hauptgruppe.tabelle_element_gewerke_idtabelle_element_gewerke
-    WHERE tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = " . $_SESSION["roomID"] . " AND
+    WHERE tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = ? AND
        tabelle_räume_has_tabelle_elemente.Anzahl <> 0 AND
        tabelle_element_gewerke.Nummer = 4
     ORDER BY tabelle_elemente.ElementID;";
-$result = $mysqli->query($sql);
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("i", $_SESSION["roomID"]);
+$stmt->execute();
+$result = $stmt->get_result();
+
 
 echo "<div class='row mt-4'>
             <div class='col-xxl-6'> 
@@ -206,14 +218,16 @@ $sql = "SELECT tabelle_räume_has_tabelle_elemente.id,
                         tabelle_element_gruppe.tabelle_element_hauptgruppe_idTABELLE_Element_Hauptgruppe)
                     ON tabelle_element_gewerke.idtabelle_element_gewerke =
                        tabelle_element_hauptgruppe.tabelle_element_gewerke_idtabelle_element_gewerke
-    WHERE tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = " . $_SESSION["roomID"] . " AND
+    WHERE tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = ?  AND
        tabelle_räume_has_tabelle_elemente.Anzahl <> 0 AND
        tabelle_element_gewerke.Nummer = 5
     ORDER BY tabelle_elemente.ElementID;";
-$result = $mysqli->query($sql);
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("i", $_SESSION["roomID"]);
+$stmt->execute();
+$result = $stmt->get_result();
 
-echo "
-            <div class='col-xxl-6'> 
+echo "<div class='col-xxl-6'> 
                 <div class='card  m-2'>
                     <div class='card-header'>
                         <h4 class='text-dark'><i class='fas fa-arrows-alt'></i> Medizinische Gase</h4>
@@ -257,14 +271,18 @@ $sql = "SELECT tabelle_räume_has_tabelle_elemente.id,
                         tabelle_element_gruppe.tabelle_element_hauptgruppe_idTABELLE_Element_Hauptgruppe)
                     ON tabelle_element_gewerke.idtabelle_element_gewerke =
                        tabelle_element_hauptgruppe.tabelle_element_gewerke_idtabelle_element_gewerke
-    WHERE   tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = " . $_SESSION["roomID"] . " AND
+    WHERE   tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = ? AND
             tabelle_räume_has_tabelle_elemente.Anzahl <> 0 AND
             tabelle_element_gewerke.Nummer = 9
     ORDER BY tabelle_elemente.ElementID;";
-$result = $mysqli->query($sql);
 
-echo "
-        <div class='row mt-4'>
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("i", $_SESSION["roomID"]);
+$stmt->execute();
+$result = $stmt->get_result();
+
+
+echo "<div class='row mt-4'>
             <div class='col-xxl-6'> 
                 <div class='card  m-2'>
                     <div class='card-header'>
@@ -289,44 +307,44 @@ $mysqli->close();
 <script>
     $(document).ready(function () {
         $("#ofMT").DataTable({
-            "select": false,
-            "paging": false,
-            "searching": false,
-            "info": false,
-            "order": [[0, "asc"]],
-            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
+            select: false,
+            paging: false,
+            searching: false,
+            info: false,
+            order: [[0, "asc"]],
+            language: {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
         });
         $("#ovMT").DataTable({
-            "select": false,
-            "paging": false,
-            "searching": false,
-            "info": false,
-            "order": [[0, "asc"]],
-            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
+            select: false,
+            paging: false,
+            searching: false,
+            info: false,
+            order: [[0, "asc"]],
+            language: {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
         });
         $("#moebel").DataTable({
-            "select": false,
-            "paging": false,
-            "searching": false,
-            "info": false,
-            "order": [[0, "asc"]],
-            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
+            select: false,
+            paging: false,
+            searching: false,
+            info: false,
+            order: [[0, "asc"]],
+            language: {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
         });
         $("#gase").DataTable({
-            "select": false,
-            "paging": false,
-            "searching": false,
-            "info": false,
-            "order": [[0, "asc"]],
-            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
+            select: false,
+            paging: false,
+            searching: false,
+            info: false,
+            order: [[0, "asc"]],
+            language: {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
         });
         $("#labor").DataTable({
-            "select": false,
-            "paging": false,
-            "searching": false,
-            "info": false,
-            "order": [[0, "asc"]],
-            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
+            select: false,
+            paging: false,
+            searching: false,
+            info: false,
+            order: [[0, "asc"]],
+            language: {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
         });
     });
 </script>

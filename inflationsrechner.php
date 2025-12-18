@@ -21,11 +21,10 @@
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
 </head>
 <body>
-
 <div id="limet-navbar"></div>
 <div class="container-fluid my-3">
-
     <?php
+    // 25 FX
     if (!function_exists('utils_connect_sql')) {
         include "utils/_utils.php";
     }
@@ -33,7 +32,8 @@
     init_page_serversides("x");
     $mysqli = utils_connect_sql();
 
-    function fetch_data($mysqli, $query, $params = [], $types = '') {
+    function fetch_data($mysqli, $query, $params = [], $types = '')
+    {
         $stmt = $mysqli->prepare($query);
         if ($params) {
             $stmt->bind_param($types, ...$params);
@@ -52,13 +52,24 @@
     );
 
     // Handle filters from POST
-    $start_date = $_POST['start_date'] ?? '';
-    $end_date = $_POST['end_date'] ?? '';
-    $device_type = $_POST['device_type'] ?? [];
-    if (!is_array($device_type)) $device_type = [$device_type];
+    $start_date = getPostDate('start_date');
+    $end_date = getPostDate('end_date');
+    $device_type_raw = filter_input(INPUT_POST, 'device_type', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY | FILTER_NULL_ON_FAILURE) ?: [];
+    $device_type = [];
+    if (is_array($device_type_raw)) {
+        foreach ($device_type_raw as $type) {
+            $type = trim($type ?? '');
+            if ($type !== '' && ctype_alpha($type) && strlen($type) <= 50) { // Basic validation
+                $device_type[] = $type;
+            }
+        }
+    }
 
-    $min_entries = isset($_POST['min_entries']) ? intval($_POST['min_entries']) : 4;
-    $exclude_outliers = isset($_POST['exclude_outliers']) && $_POST['exclude_outliers'] == 1;
+    $valid_types = array_column($all_types, 'Typ');
+    $device_type = array_intersect($device_type, $valid_types);
+
+    $min_entries = getPostInt('min_entries', 4);
+    $exclude_outliers = getPostInt('exclude_outliers', 0) === 1;
 
     // Build WHERE clauses
     $where = [];
@@ -131,7 +142,8 @@
     $mysqli->close();
 
     // Outlier removal function
-    function remove_outliers($prices) {
+    function remove_outliers($prices)
+    {
         if (count($prices) < 3) return $prices;
         $mean = array_sum($prices) / count($prices);
         $sd = sqrt(array_sum(array_map(fn($x) => pow($x - $mean, 2), $prices)) / count($prices));
@@ -247,7 +259,8 @@
                     </div>
                     <div class="col-auto">
                         <div class="form-check mt-4">
-                            <input type="checkbox" name="exclude_outliers" value="1" class="form-check-input" id="excludeOutliers" <?= $exclude_outliers ? 'checked' : '' ?>>
+                            <input type="checkbox" name="exclude_outliers" value="1" class="form-check-input"
+                                   id="excludeOutliers" <?= $exclude_outliers ? 'checked' : '' ?>>
                             <label class="form-check-label" for="excludeOutliers">Exclude Outliers</label>
                         </div>
                     </div>
@@ -263,7 +276,7 @@
         <div class="col-xxl-3">
             <div class="card h-auto">
                 <div class="card-header">Price Development Details</div>
-                <div class="card-body" >
+                <div class="card-body">
                     <?php if ($price_changes): ?>
                         <ul class="list-group">
                             <?php foreach ($price_changes as $geraet_id => $months): ?>
@@ -275,7 +288,8 @@
                                                 Avg Price = <?= $stats['average_price'] ?>,
                                                 (Prices = <?= implode(', ', $stats['raw_prices']) ?>)
                                                 <br>
-                                                <strong>% Change = <?= $stats['percentage_change'] !== null ? "{$stats['percentage_change']}%" : 'N/A' ?></strong>
+                                                <strong>% Change
+                                                    = <?= $stats['percentage_change'] !== null ? "{$stats['percentage_change']}%" : 'N/A' ?></strong>
                                             </li>
                                         <?php endforeach; ?>
                                     </ul>
@@ -291,7 +305,7 @@
         <div class="col-xxl-9">
             <div class="card mb-4">
                 <div class="card-header">Normalized Price Development per Month for Each Device</div>
-                <div class="card-body" style="max-height: 70vh; overflow-y: auto;" >
+                <div class="card-body" style="max-height: 70vh; overflow-y: auto;">
                     <canvas id="priceDevelopmentChart"></canvas>
                 </div>
             </div>
@@ -310,7 +324,8 @@
                             <?php endforeach; ?>
                         </ul>
                         <h5 class="mt-4">Summary for All Devices:</h5>
-                        <p><strong>Average Percentage Price Change Over All Devices and Months: <?= $average_percentage_change ?>%</strong></p>
+                        <p><strong>Average Percentage Price Change Over All Devices and
+                                Months: <?= $average_percentage_change ?>%</strong></p>
                     <?php else: ?>
                         <p>No data available for overall results.</p>
                     <?php endif; ?>
@@ -321,14 +336,14 @@
 </div>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('.select2').select2({
             placeholder: "Select device type(s)",
             allowClear: true,
             width: 'resolve'
         });
 
-        $(function() {
+        $(function () {
             $('.datepicker').datepicker({
                 format: 'yyyy-mm-dd',
                 autoclose: true,
@@ -338,7 +353,6 @@
         });
 
     });
-
 
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -381,7 +395,7 @@
 
         new Chart(ctx, {
             type: 'line',
-            data: { datasets: datasets },
+            data: {datasets: datasets},
             options: {
                 responsive: true,
                 plugins: {
@@ -393,11 +407,11 @@
                 scales: {
                     x: {
                         type: 'time',
-                        time: { unit: 'month' },
-                        title: { display: true, text: 'Month' }
+                        time: {unit: 'month'},
+                        title: {display: true, text: 'Month'}
                     },
                     y: {
-                        title: { display: true, text: 'Normalized Price' }
+                        title: {display: true, text: 'Normalized Price'}
                     }
                 }
             }

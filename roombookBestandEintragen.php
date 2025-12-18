@@ -1,5 +1,5 @@
 <?php
-// 10-2025 FX
+// 25 FX
 require_once 'utils/_utils.php';
 include "utils/_format.php";
 init_page_serversides();
@@ -56,7 +56,7 @@ init_page_serversides();
         <div class="card-body">
             <?php
             $mysqli = utils_connect_sql();
-            $projectID = $_SESSION["projectID"];
+            $projectID = (int)$_SESSION["projectID"];
             $sql = "SELECT 
                         SUM(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
                         tabelle_elemente.ElementID,
@@ -318,7 +318,7 @@ init_page_serversides();
             $.ajax({
                 url: "getRoomsWithElement1.php",
                 data: {"elementID": elementID, "variantenID": variantenID, "bestand": bestand},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#roomsWithAndWithoutElements").html(data);
                     setTimeout(function () {
@@ -384,12 +384,12 @@ init_page_serversides();
             $.ajax({
                 url: "setSessionVariables.php",
                 data: {"elementID": elementID},
-                type: "GET",
+                type: "POST",
                 success: function () {
                     $.ajax({
                         url: "getDevicesToElement.php",
                         data: {"elementID": elementID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#devicesInDB").html(data);
                         }

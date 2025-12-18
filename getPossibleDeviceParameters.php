@@ -1,24 +1,27 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title>getPossibleDevParams</title></head>
-<body>
 <?php
+// 25 FX
 include "utils/_utils.php";
 check_login();
 $mysqli = utils_connect_sql();
 
-$sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung, tabelle_parameter_kategorie.Kategorie 
-			  					FROM tabelle_parameter, tabelle_parameter_kategorie 
-			  					WHERE tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie 
-								AND tabelle_parameter.idTABELLE_Parameter NOT IN 
-								(SELECT tabelle_geraete_has_tabelle_parameter.TABELLE_Parameter_idTABELLE_Parameter
-                                                                FROM tabelle_geraete_has_tabelle_parameter
-                                                                WHERE (((tabelle_geraete_has_tabelle_parameter.TABELLE_Geraete_idTABELLE_Geraete)=" . $_SESSION["deviceID"] . "))) 
-								ORDER BY tabelle_parameter_kategorie.Kategorie;";
+$deviceID = $_SESSION['deviceID'] ?? 0;
 
-$result = $mysqli->query($sql);
+$stmt = $mysqli->prepare("
+    SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichnung, tabelle_parameter_kategorie.Kategorie
+    FROM tabelle_parameter
+    JOIN tabelle_parameter_kategorie ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
+    WHERE tabelle_parameter.idTABELLE_Parameter NOT IN (
+        SELECT TABELLE_Parameter_idTABELLE_Parameter 
+        FROM tabelle_geraete_has_tabelle_parameter 
+        WHERE TABELLE_Geraete_idTABELLE_Geraete = ?
+    )
+    ORDER BY tabelle_parameter_kategorie.Kategorie
+");
+
+$stmt->bind_param("i", $deviceID);
+$stmt->execute();
+$result = $stmt->get_result();
+
 
 echo "<table class='table table-striped table-sm' id='tablePossibleDeviceParameters'>
         <thead><tr>
@@ -36,15 +39,13 @@ while ($row = $result->fetch_assoc()) {
     echo "</tr>";
 
 }
-
 echo "</tbody></table>";
-
 $mysqli->close();
 ?>
 
+
 <script>
-
-
+    deviceID = '<?php echo $deviceID; ?>';
     new DataTable('#tablePossibleDeviceParameters', {
         paging: false,
         searching: true,
@@ -81,18 +82,18 @@ $mysqli->close();
         if (id !== "") {
             $.ajax({
                 url: "addParameterToDevice.php",
-                data: {"parameterID": id},
+                data: {"parameterID": id, "deviceID":deviceID},
                 type: "POST",
                 success: function (data) {
                     makeToaster(data, true);
                     $.ajax({
                         url: "getDeviceParameters.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#deviceParameters").html(data);
                             $.ajax({
                                 url: "getPossibleDeviceParameters.php",
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#possibleDeviceParameters").html(data);
                                 }
@@ -104,9 +105,4 @@ $mysqli->close();
             });
         }
     });
-
-
 </script>
-
-</body>
-</html>

@@ -1,34 +1,72 @@
 <?php
+// 25 FX
+
 include "utils/_utils.php";
 check_login();
 
-if ($_GET["Name"] != "" && $_GET["Vorname"] != "" && $_GET["Tel"] != "") {
+$name = getPostString('Name');
+$vorname = getPostString('Vorname');
+$tel = getPostString('Tel');
+$adresse = getPostString('Adresse');
+$plz = getPostString('PLZ');
+$ort = getPostString('Ort');
+$land = getPostString('Land');
+$email = getPostString('Email');
+$gebiet = getPostString('gebiet');
+$abteilung = getPostInt('abteilung');
+$lieferant = getPostInt('lieferant');
+$ansprechID = getPostInt('ansprechID');
 
+if ($name !== '' && $vorname !== '' && $tel !== '') {
 
-    $mysqli =utils_connect_sql();
+    $mysqli = utils_connect_sql();
+
     $sql = "UPDATE `LIMET_RB`.`tabelle_ansprechpersonen`
-                        SET
-                        `Name` = '" . $_GET["Name"] . "',
-                        `Vorname` = '" . $_GET["Vorname"] . "',
-                        `Tel` = '" . $_GET["Tel"] . "',
-                        `Adresse` = '" . $_GET["Adresse"] . "',
-                        `PLZ` = '" . $_GET["PLZ"] . "',
-                        `Ort` = '" . $_GET["Ort"] . "',
-                        `Land` = '" . $_GET["Land"] . "',
-                        `Mail` = '" . $_GET["Email"] . "',
-                        `Gebietsbereich` = '" . $_GET["gebiet"] . "',
-                        `tabelle_abteilung_idtabelle_abteilung` = " . $_GET["abteilung"] . ",
-                        `tabelle_lieferant_idTABELLE_Lieferant` = " . $_GET["lieferant"] . "
-                        WHERE `idTABELLE_Ansprechpersonen` = " . $_GET["ansprechID"] . ";";
+            SET
+                `Name` = ?,
+                `Vorname` = ?,
+                `Tel` = ?,
+                `Adresse` = ?,
+                `PLZ` = ?,
+                `Ort` = ?,
+                `Land` = ?,
+                `Mail` = ?,
+                `Gebietsbereich` = ?,
+                `tabelle_abteilung_idtabelle_abteilung` = ?,
+                `tabelle_lieferant_idTABELLE_Lieferant` = ?
+            WHERE `idTABELLE_Ansprechpersonen` = ?";
 
-    if ($mysqli->query($sql) === TRUE) {
-        echo "Kontaktperson gespeichert!";
-        $id = $mysqli->insert_id;
-    } else {
-        echo "Error1: " . $sql . "<br>" . $mysqli->error;
+    $stmt = $mysqli->prepare($sql);
+    if (!$stmt) {
+        echo "Prepare failed: " . $mysqli->error;
+        exit;
     }
 
+    $stmt->bind_param(
+        "sssssssssiiii",
+        $name,
+        $vorname,
+        $tel,
+        $adresse,
+        $plz,
+        $ort,
+        $land,
+        $email,
+        $gebiet,
+        $abteilung,
+        $lieferant,
+        $ansprechID
+    );
+
+    if ($stmt->execute()) {
+        echo "Kontaktperson gespeichert!";
+    } else {
+        echo "Error: " . $stmt->error;
+    }
+    $stmt->close();
     $mysqli->close();
+
 } else {
     echo "Fehler bei der Übertragung der Parameter";
 }
+?>

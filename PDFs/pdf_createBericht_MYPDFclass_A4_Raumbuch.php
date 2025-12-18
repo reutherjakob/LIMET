@@ -25,7 +25,14 @@ class MYPDF extends TCPDF
                     $this->Cell(0, 0, $_SESSION["PDFHeaderSubtext"], '', false, 'R', 0, '', 0, false, 'B', 'B');
                 }
             }
-            $this->Ln(0.1);
+
+            $this->Ln(1);
+            if ($_SESSION["PDFTITELBLATT"] === "KHI Quest") {
+                $this->Ln(5);
+            }
+
+            $this->cell(0, 0, '', 'B', 0, 'L');
+            $this->Ln(1);
             $this->cell(0, 0, '', 'B', 0, 'L');
             $this->Ln(1);
 
@@ -35,10 +42,16 @@ class MYPDF extends TCPDF
             if (!empty($roomIDs)) {
                 $teile = explode(",", $roomIDs);
             }
-            $sql = "SELECT tabelle_projekte.Projektname, tabelle_planungsphasen.Bezeichnung, tabelle_räume.`Raumbereich Nutzer`
-                    FROM tabelle_räume INNER JOIN (tabelle_planungsphasen INNER JOIN tabelle_projekte ON tabelle_planungsphasen.idTABELLE_Planungsphasen = tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen) 
-                        ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte ";
+            $sql = "SELECT tabelle_projekte.Projektname,
+                           tabelle_planungsphasen.Bezeichnung,
+                           tabelle_räume.`Raumbereich Nutzer`
+                    FROM tabelle_räume INNER JOIN
+                            (tabelle_planungsphasen INNER JOIN
+                            tabelle_projekte ON tabelle_planungsphasen.idTABELLE_Planungsphasen =
+                            tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen) 
+                    ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte ";
             $i = 0;
+
             if (isset($teile)) {
                 foreach ($teile as $valueOfRoomID) {
                     if ($i == 0) {

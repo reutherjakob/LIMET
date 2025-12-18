@@ -1,4 +1,5 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 init_page_serversides();
 ?>
@@ -309,9 +310,18 @@ init_page_serversides();
         $('#' + modal_id).modal('show');
     }
 
+    function escHtml(str) {
+        return String(str ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
     function getRoomIdsFromCurrentUrl() {
-        let urlObj = new URL(window.location.href);
-        let roomIDParam = urlObj.searchParams.get("roomID");
+        const urlObj = new URL(window.location.href);
+        const roomIDParam = urlObj.searchParams.get("roomID");
         if (roomIDParam) {
             return roomIDParam.split(",");
         } else {
@@ -320,38 +330,44 @@ init_page_serversides();
     }
 
     $(document).ready(function () {
-        let ids = getRoomIdsFromCurrentUrl();
+        const ids = getRoomIdsFromCurrentUrl();
+
         $.ajax({
             url: "get_angaben_check.php",
-            type: "GET",
-            data: {'roomID': ids.join(',')},
+            type: "POST",
+            data: { roomID: ids.join(',') },
             success: function (data) {
-                //  console.log(data);
                 const lines = data.split('\n').filter(line => line.trim() !== '');
                 const roomIssues = {};
+
                 lines.forEach(line => {
                     const parts = line.split(':::');
-                    console.log(parts);
-                    const ROOM = parts[0].trim().split('---')[0].replace(/<br\s*\/?>/g, " ");   //  console.log(ROOM);
-                    const R_ID = parts[0].trim().split('---')[1];                               //  console.log(R_ID);
-                    const kathegorie = parts[1].split('->')[0].trim();                          //  console.log(kathegorie);
-                    const issue = parts[1].split('->')[1].trim();                               //  console.log(issue);
+                    const ROOM = parts[0].trim().split('---')[0].replace(/<br\s*\/?>/g, " ");
+                    const R_ID = parts[0].trim().split('---')[1];
+                    const kathegorie = parts[1].split('->')[0].trim();
+                    const issue = parts[1].split('->')[1].trim();
                     roomIssues[R_ID] = roomIssues[R_ID] || [];
-                    roomIssues[R_ID].push({ROOM, kathegorie, issue});
+                    roomIssues[R_ID].push({ ROOM, kathegorie, issue });
                 });
 
                 const tbody = document.getElementById('tableBody');
+
                 for (const id in roomIssues) {
                     const rows = roomIssues[id].map((item, index) => {
                         const isChecked = localStorage.getItem(`${id}-${index}`) === 'true';
-                        return `<tr class="${isChecked ? 'checked' : ''}" data-id="${id}">
+                        const safeROOM = escHtml(item.ROOM);
+                        const safeKathegorie = escHtml(item.kathegorie);
+                        const safeIssue = escHtml(item.issue);
+                        const safeId = escHtml(id);
+
+                        return `<tr class="${isChecked ? 'checked' : ''}" data-id="${safeId}">
                             <td data-checked="${isChecked ? 1 : 0}">
                                 <span style="display:none">${isChecked ? 1 : 0}</span>
                                 <input class="form-check-input" type="checkbox" ${isChecked ? 'checked' : ''}>
                             </td>
-                            <td>${item.ROOM}</td>
-                            <td>${item.kathegorie}</td>
-                            <td>${item.issue}</td>
+                            <td>${safeROOM}</td>
+                            <td>${safeKathegorie}</td>
+                            <td>${safeIssue}</td>
                         </tr>`;
                     });
 
@@ -363,7 +379,7 @@ init_page_serversides();
                         dom: ' <"TableCardHeader"f>ti',
                         language: {
                             search: "",
-                            seachPlaceholder: "Suche...",
+                            seachPlaceholder: "Suche..."
                         },
                         keys: true,
                         scrollx: true,
@@ -373,54 +389,54 @@ init_page_serversides();
                         select: 'os',
                         initComplete: function () {
                             $('.dt-search label').remove();
-                            $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CH1');
+                            $('.dt-search').children()
+                                .removeClass("form-control form-control-sm")
+                                .addClass("btn btn-sm btn-outline-dark")
+                                .appendTo('#CH1');
 
-                            // Count problem occurrences
                             const problemCounts = {};
-                            // Count kathegorie occurrences
                             const kathegorieCounts = {};
 
                             this.api().rows().every(function () {
                                 const data = this.data();
-                                const problemText = data[3];     // Problem column index 3
-                                const kathegorieText = data[2];  // Kathegorie column index 2
+                                const problemText = data[3];
+                                const kathegorieText = data[2];
 
                                 problemCounts[problemText] = (problemCounts[problemText] || 0) + 1;
                                 kathegorieCounts[kathegorieText] = (kathegorieCounts[kathegorieText] || 0) + 1;
                             });
 
-                            // Filter problems with count > 1
                             const repeatedProblems = Object.entries(problemCounts)
                                 .filter(([problem, count]) => count > 1)
                                 .map(([problem]) => problem);
 
-                            // Filter kathegories with count > 1 (optional: or remove threshold to show all)
                             const repeatedKathegories = Object.entries(kathegorieCounts)
                                 .filter(([kathe, count]) => count > 1)
                                 .map(([kathe]) => kathe);
 
-                            // Create problems dropdown
                             const $problemDropdown = $('<select class="form-select form-select-sm me-2" aria-label="Select problem"></select>');
                             $problemDropdown.append('<option value="" disabled selected>Problem wählen...</option>');
                             repeatedProblems.forEach(problem => {
-                                $problemDropdown.append(`<option value="${problem}">${problem}</option>`);
+                                const safe = escHtml(problem);
+                                $problemDropdown.append(`<option value="${safe}">${safe}</option>`);
                             });
 
-                            // Create kathegorie dropdown
                             const $kathegorieDropdown = $('<select class="form-select form-select-sm me-2" aria-label="Select kathegorie"></select>');
                             $kathegorieDropdown.append('<option value="" disabled selected>Kathegorie wählen...</option>');
                             repeatedKathegories.forEach(kathe => {
-                                $kathegorieDropdown.append(`<option value="${kathe}">${kathe}</option>`);
+                                const safe = escHtml(kathe);
+                                $kathegorieDropdown.append(`<option value="${safe}">${safe}</option>`);
                             });
 
-                            // Create cross-all buttons for problems and kathegories
                             const $btnCrossAllProblems = $('<button class="btn btn-sm btn-outline-primary me-2 text-nowrap" type="button">Alle Probleme abhaken</button>');
                             const $btnCrossAllKathegories = $('<button class="btn btn-sm btn-outline-success me-2 text-nowrap" type="button">Alle Kathegorien abhaken</button>');
 
-                            // Prepend the new controls to header area (#CH1)
-                            $('#CH1').prepend($btnCrossAllKathegories).prepend($kathegorieDropdown).prepend($btnCrossAllProblems).prepend($problemDropdown);
+                            $('#CH1')
+                                .prepend($btnCrossAllKathegories)
+                                .prepend($kathegorieDropdown)
+                                .prepend($btnCrossAllProblems)
+                                .prepend($problemDropdown);
 
-                            // Button click handler to check all matching problems
                             $btnCrossAllProblems.on('click', function () {
                                 const selectedProblem = $problemDropdown.val();
                                 if (!selectedProblem) {
@@ -440,7 +456,6 @@ init_page_serversides();
                                 });
                             });
 
-                            // Button click handler to check all matching kathegories
                             $btnCrossAllKathegories.on('click', function () {
                                 const selectedKathe = $kathegorieDropdown.val();
                                 if (!selectedKathe) {
@@ -459,15 +474,13 @@ init_page_serversides();
                                     }
                                 });
                             });
-                        }
-                        ,
+                        },
                         columns: [
-                            {width: '2%'},
-                            {width: '25%'},
-                            {width: '20%'},
-                            {width: '50%'}
+                            { width: '2%' },
+                            { width: '25%' },
+                            { width: '20%' },
+                            { width: '50%' }
                         ],
-
                         createdRow: function (row, data) {
                             const kathegorie = data[2] || data.kathegorie;
                             if (kathegorie) {
@@ -484,7 +497,6 @@ init_page_serversides();
                 $('#table1ID').on('change', 'input[type="checkbox"]', function () {
                     const tr = $(this).closest('tr');
                     const id = tr.data('id');
-                    //   console.log(id);
                     const issue = tr.find('td:nth-child(4)').text();
                     const key = `${id}-${issue}`;
 
@@ -498,14 +510,14 @@ init_page_serversides();
                 });
 
                 $('#table1ID tr').each(function (index, row) {
-                    if (index !== 0) { // Skip the header row
+                    if (index !== 0) {
                         const id = $(row).data('id');
                         const issue = $(row).find('td:nth-child(4)').text();
                         const key = `${id}-${issue}`;
                         const isChecked = localStorage.getItem(key) === 'true';
                         if (isChecked) {
-                            $(row).addClass('checked');
-                            $(row).find('input[type="checkbox"]').prop('checked', true);
+                            $(row).classList?.add('checked');
+                            $(row).querySelector('input[type="checkbox"]').checked = true;
                         }
                     }
                 });
@@ -518,15 +530,15 @@ init_page_serversides();
                 checkbox.prop('checked', !checkbox.prop('checked')).trigger('change');
             }
         });
+
         const deleteButton = document.getElementById('deleteButton');
         deleteButton.addEventListener('click', deleteLocalStorageItem);
-    })
-
+    });
 
     function deleteLocalStorageItem() {
         localStorage.clear();
         console.log('Local storage cleared.');
     }
-
 </script>
+
 </html>

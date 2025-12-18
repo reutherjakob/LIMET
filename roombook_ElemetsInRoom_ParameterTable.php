@@ -1,51 +1,42 @@
-<!--  18.2.25: Reworked -->
-
+<?php
+// 25 FX
+require_once 'utils/_utils.php';
+init_page_serversides("", "x");
+?>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
-    <title>Element Parameter Tabelle</title>
+    <title>Element Parameter Tabellllllle</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
           integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
 </head>
 
-<?php
-
-require_once 'utils/_utils.php';
-init_page_serversides("", "x");
-?>
-
-
 <body>
 <div class="container-fluid">
     <div id="limet-navbar" class=' '></div>
-
     <div class="d-flex">
         <div class="mt-2 card col-8 ">
             <div class="card-header">
                 <div class="row">
-                    <div class="col-xxl-6 d-flex flex-nowrap overflow-auto" id='TableCardHeader1'></div>
-                    <div class="col-xxl-6 d-inline-flex flex-nowrap overflow-auto justify-content-end"
+                    <div class="col-xxl-4 d-flex flex-nowrap overflow-auto" id='TableCardHeader1'></div>
+                    <div class="col-xxl-8 d-inline-flex flex-nowrap overflow-auto justify-content-end"
                          id='TableCardHeader'></div>
                 </div>
             </div>
-
             <div class="card-body" id="table_container_div">
                 <table class="table display compact table-responsive table-striped table-bordered table-sm sticky"
                        style="width:100%" id="table_rooms">
@@ -54,7 +45,6 @@ init_page_serversides("", "x");
                 </table>
             </div>
         </div>
-
         <div class="mt-2 card col-4">
             <div class="card-header d-flex align-items-center justify-content-center"><b> &ensp; </b>
                 <button class="btn btn-success responsive" id="addSheet">Add Sheet</button> &ensp;
@@ -66,7 +56,6 @@ init_page_serversides("", "x");
             </div>
         </div>
     </div>
-
     <div class=' mt-1 card col-12'>
         <div style="height: 50px" class="card-header d-inline-flex  align-content-start"
              id="elemetsParamsTableCardHeader">
@@ -82,7 +71,19 @@ init_page_serversides("", "x");
 <script src="roombookSpecifications_constDeclarations.js"></script>
 <script>
     var columnsDefinitionShort = columnsDefinition.filter(column =>
-        ['tabelle_projekte_idTABELLE_Projekte', "idTABELLE_Räume", 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen', 'MT-relevant', 'Raumbezeichnung', 'Raumnr', "Bezeichnung", 'Funktionelle Raum Nr', 'Nummer', 'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt'].includes(column.data)
+        ['tabelle_projekte_idTABELLE_Projekte',
+            "idTABELLE_Räume",
+            'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen',
+            'MT-relevant',
+            'Raumbezeichnung',
+            'Raumnr',
+            "Bezeichnung",
+            'Funktionelle Raum Nr',
+            'Nummer',
+            'Raumbereich Nutzer',
+            'Geschoss',
+            'Bauetappe',
+            'Bauabschnitt'].includes(column.data)
     );
     var table, RaumID, Raumbezeichnung, sheetcounter = 1;  //for rooms: table // var table2:for elements table  //in el table code defined
     var wb = XLSX.utils.book_new();
@@ -154,7 +155,6 @@ init_page_serversides("", "x");
         });
     }
 
-
     function init_xls_interface() {
         $('#addSheet').click(function () {
             let selectedData = getSelectedData(table);
@@ -163,13 +163,11 @@ init_page_serversides("", "x");
                 return;
             }
             selectedData.forEach(function (rowData) {
-                ////console.log("Row Data", rowData);
                 RaumID = rowData.id;
                 Raumbezeichnung = rowData.Raumbezeichnung;
-                //console.log( Raumbezeichnung);
                 $.ajax({
                     url: 'getRoomElementsParameterData.php',
-                    method: 'GET',
+                    method: 'POST',
                     data: {"roomID": RaumID, "K2Return": JSON.stringify(K2R)},
                     success: function (data) {
                         if (data && data.length > 0) {
@@ -196,7 +194,7 @@ init_page_serversides("", "x");
                         }
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
-                        //console.log("ERR function2:  ", textStatus, errorThrown);
+                        console.log("ERR function2:  ", textStatus, errorThrown);
                     }
                 });
             });
@@ -204,7 +202,6 @@ init_page_serversides("", "x");
 
         $('#download').click(function () {
             let wbout = XLSX.write(wb, {bookType: 'xlsx', type: 'binary'});
-
             function s2ab(s) {
                 let buf = new ArrayBuffer(s.length);
                 let view = new Uint8Array(buf);
@@ -212,7 +209,6 @@ init_page_serversides("", "x");
                     view[i] = s.charCodeAt(i) & 0xFF;
                 return buf;
             }
-
             saveAs(new Blob([s2ab(wbout)], {type: "application/octet-stream"}), 'Elemetparameter' + " <?php echo $_SESSION["projectName"]; ?> " + '.xlsx');
         });
 
@@ -224,9 +220,9 @@ init_page_serversides("", "x");
     }
 
     function getRowDataByRoomID(roomID) {
-        var allData = table.rows().data();
-        var rowData;
-        for (var i = 0; i < allData.length; i++) {
+        let allData = table.rows().data();
+        let rowData;
+        for (let i = 0; i < allData.length; i++) {
             if (allData[i]['idTABELLE_Räume'] === roomID) {
                 rowData = allData[i];
                 break;
@@ -237,9 +233,6 @@ init_page_serversides("", "x");
 
     function getSelectedData(table) {
         let selectedData = table.rows({selected: true}).data();
-        //console.log(selectedData);
-        //console.log(selectedData[1]);
-        //console.log(selectedData[1].Raumbezeichnung);
         let result = [];
         for (let i = 0; i < selectedData.length; i++) {
             let rowData = selectedData[i];
@@ -248,28 +241,27 @@ init_page_serversides("", "x");
                 Raumbezeichnung: rowData.Raumnr + " " + rowData.Raumbezeichnung
             });
         }
-        //console.log(result);
         return result;
     }
 
+
     function getElementsParamTable(RaumID) {
         $.ajax({
-                url: "setSessionVariables.php",
-                data: {"roomID": RaumID},
-                type: "GET",
-                success: function () {
-                    $.ajax({
-                        url: "getElementsParamTable.php",
-                        data: {"roomID": RaumID, "K2Return": JSON.stringify(K2R)},
-                        type: "GET",
-                        success: function (data) {
-                            console.log(data);
-                            $("#elemetsParamsTable").html(data);
-                        }
-                    });
-                }
+            url: "setSessionVariables.php",
+            data: {"roomID": RaumID},
+            type: "POST",
+            success: function () {
+                $.ajax({
+                    url: "getElementsParamTable.php",
+                    data: {"roomID": RaumID, "K2Return": JSON.stringify(K2R)},
+                    type: "POST",
+                    success: function (data) {
+                        // console.log(data);
+                        $("#elemetsParamsTable").html(data);
+                    }
+                });
             }
-        );
+        });
     }
 
     function table_click() {
@@ -277,7 +269,6 @@ init_page_serversides("", "x");
             RaumID = table.row($(this)).data()['idTABELLE_Räume'];
             getElementsParamTable(RaumID);
         });
-
     }
 
     function init_dt() {
@@ -304,7 +295,7 @@ init_page_serversides("", "x");
             scrollX: true,
             scrollCollapse: true,
             language: {
-                "search": "",
+                search: "",
                 searchBuilder: {
                     title: null,
                     depthLimit: 2,
@@ -333,7 +324,6 @@ init_page_serversides("", "x");
     }
 
     function init_btns(location) {
-        let spacer = {extend: 'spacer', style: 'bar'};
         new $.fn.dataTable.Buttons(table, {
             buttons: [
                 {
@@ -344,27 +334,23 @@ init_page_serversides("", "x");
                 {
                     text: 'All',
                     action: function () {
-                        table.rows().select();
-                        //displaySelectedData(table);
+                        table.rows().select();                        //displaySelectedData(table);
                     },
                     className: "btn"
                 }, {
                     text: 'Vis',
                     action: function () {
-                        table.rows(':visible').select();
-                        //displaySelectedData(table);
+                        table.rows(':visible').select();                        //displaySelectedData(table);
                     },
                     className: "btn btn-dark"
                 },
                 {
                     text: 'None',
                     action: function () {
-                        table.rows().deselect();
-                        //displaySelectedData(table);
+                        table.rows().deselect();                         //displaySelectedData(table);
                     },
                     className: "btn"
                 }
-
             ]
         }).container().appendTo($(location));
     }

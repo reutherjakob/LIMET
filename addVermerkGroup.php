@@ -1,4 +1,5 @@
 <?php
+
 include_once "utils/_utils.php";
 check_login();
 
@@ -9,7 +10,7 @@ $gruppenVerfasser = getPostString('gruppenVerfasser');;
 $gruppenStart    = getPostString('gruppenStart');
 $gruppenEnde     = getPostString('gruppenEnde');
 $gruppenDatum    = getPostString('gruppenDatum');
-$projectID = $_SESSION["projectID"];
+$projectID = (int)$_SESSION["projectID"];
 
 $mysqli = utils_connect_sql();
 $sql = "INSERT INTO `LIMET_RB`.`tabelle_Vermerkgruppe` 

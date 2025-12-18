@@ -1,5 +1,5 @@
 <?php
-// 10-2025 FX
+// 25 FX
 
 require_once "utils/_utils.php";
 check_login();
@@ -10,7 +10,7 @@ $mysqli = utils_connect_sql();
 $raumnummer = getPostString('raumnummer');
 $raumbezeichnung = getPostString('raumbezeichnung');
 $funktionsteilstelle = getPostInt('funktionsteilstelle');
-$projectID = $_SESSION["projectID"] ?? 0;
+$projectID = (int)$_SESSION["projectID"] ?? 0;
 $raumbereich = getPostString('raumbereich');
 $geschoss = getPostString('geschoss');
 $bauetappe = getPostString('bauetappe');

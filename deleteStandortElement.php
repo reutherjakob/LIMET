@@ -1,22 +1,17 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
-init_page_serversides();
 check_login(); // session/login check
 
-if (!isset($_GET['standortID']) || !is_numeric($_GET['standortID'])) {
+$standortID = getPostInt('standortID');
+if ($standortID === 0) { // assuming 0 indicates invalid or missing
     echo "Ungültige Standort-ID.";
     exit;
 }
 
-$standortID = (int)$_GET['standortID'];
-
-// There is an optional $verwendungID parameter, but it is not used in the deletion:
-$verwendungID = isset($_GET['verwendungID']) ? (int)$_GET['verwendungID'] : null;
-
 $mysqli = utils_connect_sql();
 
 $sql = "DELETE FROM tabelle_verwendungselemente WHERE id_Standortelement = ?";
-
 $stmt = $mysqli->prepare($sql);
 if (!$stmt) {
     echo "Fehler bei der Vorbereitung der Anfrage: " . $mysqli->error;
@@ -33,3 +28,5 @@ if ($stmt->execute()) {
 
 $stmt->close();
 $mysqli->close();
+?>
+s

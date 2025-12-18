@@ -1,32 +1,35 @@
-<!DOCTYPE html>
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-<html lang="de">
-<head>
-    <title>Get Element Variante</title></head>
-<body>
-
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
-if (filter_input(INPUT_GET, 'elementID') != "") {
-    $_SESSION["elementID"] = filter_input(INPUT_GET, 'elementID');
-}
-if (filter_input(INPUT_GET, 'variantenID') != "") {
-    $_SESSION["variantenID"] = filter_input(INPUT_GET, 'variantenID');
-}
+$_SESSION["elementID"] = getPostInt("elementID");
+$_SESSION["variantenID"] = getPostInt("variantenID");
+
 $mysqli = utils_connect_sql();
-$sql = "SELECT tabelle_projekt_varianten_kosten.Kosten
-			FROM tabelle_projekt_varianten_kosten
-			WHERE (((tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)=" . $_SESSION["variantenID"] . ") AND ((tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente)=" . $_SESSION["elementID"] . ") AND ((tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "));";
-$result = $mysqli->query($sql);
-$row = $result->fetch_assoc(); ?>
+$stmt = $mysqli->prepare(
+    "SELECT tabelle_projekt_varianten_kosten.Kosten 
+     FROM tabelle_projekt_varianten_kosten 
+     WHERE tabelle_Varianten_idtabelle_Varianten = ? 
+       AND tabelle_elemente_idTABELLE_Elemente = ? 
+       AND tabelle_projekte_idTABELLE_Projekte = ?"
+);
+$stmt->bind_param(
+    "iii",
+    $_SESSION["variantenID"],
+    $_SESSION["elementID"],
+    $_SESSION["projectID"]
+);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+?>
 
 <div class='row'>
     <div class='col-xxl-6' id="elementGewerk"></div>
     <!--- for the import of getElementGewerke.php on elementsInProject.php --->
     <div class='col-xxl-6'>
         <div class="card">
-            <div class='card-header d-inline-flex customCardx'>
-                <div class=' d-flex align-items-center flex-wrap'>
+            <div class='card-header d-inline-flex customCardx  flex-nowrap'>
+                <div class=' d-flex align-items-center flex-nowrap'>
                     <div class='form-group d-flex align-items-center mr-2'>
                         <label for='variante'>Variante </label>
                         <select class='form-control form-control-sm me-1 ms-1' id='variante'>
@@ -41,32 +44,34 @@ $row = $result->fetch_assoc(); ?>
                             ?>
                         </select>
                     </div>
-                    <div class='form-group d-flex align-items-center mr-2'>
+                    <div class='form-group d-flex align-items-center '>
                         <label for='kosten'>Kosten </label>
-                        <input type='text' class='form-control form-control-sm' id='kosten'
+                        <input type='text' class='form-control form-control-sm ms-1' id='kosten'
                                value="<?php echo $row['Kosten']; ?>">
+                        <button type='button' id='saveVariantePrice'
+                                class='btn btn-warning btn-sm'>
+                            <i class='far fa-save'></i>
+                        </button>
                     </div>
-                    <div class='form-group d-flex align-items-center mr-2'>
-                        <label>&nbsp;</label>
+
+                    <div class='form-group d-flex align-items-center justify-content-end'>
                         <div>
-                            <button type='button' id='saveVariantePrice'
-                                    class='btn btn-outline-dark btn-sm'>
-                                <i class='far fa-save'></i> Kosten speichern
-                            </button>
+
                             <button type='button' id='getElementPriceHistory'
-                                    class='btn btn-outline-dark btn-sm'
+                                    class='btn btn-outline-dark btn-sm ms-1'
                                     data-bs-toggle='modal' data-bs-target='#getElementPriceHistoryModal'>
-                                <i class='far fa-clock'></i> Kosten Änderungsverlauf
+                                <i class='far fa-clock'></i> <i class='far fa-money-bill-alt'> </i> Änderungsverlauf
                             </button>
 
                             <button type='button' id='addVariantenParameters'
-                                    class='btn btn-outline-dark btn-sm m-1' value='addVariantenParameters'
+                                    class='btn btn-outline-dark btn-sm' value='addVariantenParameters'
                                     data-bs-toggle='modal'
                                     data-bs-target='#addVariantenParameterToElementModal'><i
                                         class='fas fa-upload'></i> Variantenparameter übernehmen
                             </button>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -115,12 +120,9 @@ $row = $result->fetch_assoc(); ?>
                                 FROM tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON
                                 tabelle_parameter.idTABELLE_Parameter =
                                 tabelle_projekt_elementparameter.TABELLE_Parameter_idTABELLE_Parameter
-                                WHERE tabelle_projekt_elementparameter.TABELLE_Elemente_idTABELLE_Elemente = " .
-                    $_SESSION["elementID"] . " AND
-                                tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte = " .
-                    $_SESSION["projectID"] . " AND
-                                tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten = " .
-                    $_SESSION["variantenID"] . ")
+                                WHERE tabelle_projekt_elementparameter.TABELLE_Elemente_idTABELLE_Elemente =  ? 
+                                AND tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte = ? 
+                                AND tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten = ? ) 
                                 ORDER BY 
                                 CASE 
                                     WHEN tabelle_parameter.Bezeichnung = 'Nennleistung' 
@@ -128,9 +130,16 @@ $row = $result->fetch_assoc(); ?>
                                     ELSE 1 
                                 END,
                                 tabelle_parameter_kategorie.Kategorie,
-                                tabelle_parameter.Bezeichnung;";
+                                tabelle_parameter.Bezeichnung";
+                $stmt = $mysqli->prepare($sql);
+                $stmt->bind_param("iii",
+                    $_SESSION["elementID"],
+                    $_SESSION["projectID"],
+                    $_SESSION["variantenID"]);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $stmt->close();
 
-                $result = $mysqli->query($sql);
                 echo "<table class='table table-striped table-sm table-hover table-bordered border border-5 border-light' id='tablePossibleElementParameters'>
                                     <thead>
                                     <tr>
@@ -171,12 +180,23 @@ $row = $result->fetch_assoc(); ?>
             </div>
             <div class='modal-body' id='mbody'>
                 <?php
-                $sql = "SELECT tabelle_varianten.Variante, tabelle_projekt_varianten_kosten_aenderung.kosten_alt, tabelle_projekt_varianten_kosten_aenderung.kosten_neu, tabelle_projekt_varianten_kosten_aenderung.timestamp, tabelle_projekt_varianten_kosten_aenderung.user
-							FROM tabelle_varianten INNER JOIN tabelle_projekt_varianten_kosten_aenderung ON tabelle_varianten.idtabelle_Varianten = tabelle_projekt_varianten_kosten_aenderung.variante
-							WHERE (((tabelle_projekt_varianten_kosten_aenderung.projekt)=" . $_SESSION["projectID"] . ") AND ((tabelle_projekt_varianten_kosten_aenderung.element)=" . $_SESSION["elementID"] . "))
-							ORDER BY tabelle_varianten.Variante, tabelle_projekt_varianten_kosten_aenderung.timestamp DESC;";
+                $sql = "SELECT tabelle_varianten.Variante, tabelle_projekt_varianten_kosten_aenderung.kosten_alt,
+                        tabelle_projekt_varianten_kosten_aenderung.kosten_neu,
+                        tabelle_projekt_varianten_kosten_aenderung.timestamp,
+                        tabelle_projekt_varianten_kosten_aenderung.user
+                        FROM tabelle_varianten
+                        INNER JOIN tabelle_projekt_varianten_kosten_aenderung
+                        ON tabelle_varianten.idtabelle_Varianten = tabelle_projekt_varianten_kosten_aenderung.variante
+                        WHERE tabelle_projekt_varianten_kosten_aenderung.projekt = ?
+                        AND tabelle_projekt_varianten_kosten_aenderung.element = ?
+                        ORDER BY tabelle_varianten.Variante, tabelle_projekt_varianten_kosten_aenderung.timestamp DESC";
 
-                $result = $mysqli->query($sql);
+                $stmt = $mysqli->prepare($sql);
+                $stmt->bind_param("ii", $_SESSION["projectID"], $_SESSION["elementID"]);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $stmt->close();
+
                 echo "<table class='table table-striped table-sm' id='tableVariantenCostsOverTime'>
 						<thead><tr>
 						<th>Variante</th>
@@ -217,10 +237,8 @@ $row = $result->fetch_assoc(); ?>
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-bs-dismiss="modal">&times;
-                </button>
-                <h4 class="modal-title"><span
-                            class='glyphicon glyphicon-info-sign'></span> Info</h4>
+                <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><span class='glyphicon glyphicon-info-sign'></span> Info</h4>
             </div>
             <div class="modal-body">
                 <p id="error"></p>
@@ -324,7 +342,6 @@ $row = $result->fetch_assoc(); ?>
             },
             scrollX: true,
             initComplete: function () {
-
                 $('#variantenParameterCH .xxx').remove();
                 $('#variantenParameter .dt-search label').remove();
                 $('#variantenParameter .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#variantenParameterCH');
@@ -402,16 +419,16 @@ $row = $result->fetch_assoc(); ?>
         $.ajax({
             url: "setSessionVariables.php",
             data: {"variantenID": variantenID},
-            type: "GET",
+            type: "POST",
             success: function () {  //console.log("JS:", variantenID);
                 $.ajax({
                     url: "getSessionVariante.php",
-                    type: "GET",
+                    type: "POST",
                     success: function () {
                         $.ajax({
                             url: "getVariantePrice.php",
                             data: {"variantenID": variantenID},
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 if (data.length === 2) {
                                     $("#error").html("Variante noch nicht vorhanden! Zum Anlegen Kosten eingeben und Speichern!");
@@ -426,14 +443,14 @@ $row = $result->fetch_assoc(); ?>
                                     $.ajax({
                                         url: "getVarianteParameters.php",
                                         data: {"variantenID": variantenID},
-                                        type: "GET",
+                                        type: "POST",
                                         success: function (data) {
                                             $('#variantenParameterCh .xxx').remove();
                                             $("#variantenParameter").html(data);
                                             $.ajax({
                                                 url: "getPossibleVarianteParameters.php",
                                                 data: {"variantenID": variantenID},
-                                                type: "GET",
+                                                type: "POST",
                                                 success: function (data) {
                                                     $("#possibleVariantenParameter").html(data);
                                                     //console.log("0", data);
@@ -453,16 +470,12 @@ $row = $result->fetch_assoc(); ?>
 
     $("#saveVariantePrice").click(function () {    // Kosten für Variante speichern
         if ($('#kosten').val() !== '') {
-            let KostenFormatiert = $('#kosten').val();
-            if (KostenFormatiert.toLowerCase().endsWith('k')) {
-                KostenFormatiert = KostenFormatiert.slice(0, -1) + '000';
-            } //console.log(KostenFormatiert.toLowerCase());
-            KostenFormatiert = KostenFormatiert.replace(/,/g, '.').replace(/[^0-9.]/g, ''); //console.log(KostenFormatiert.toLowerCase());
+            let KostenFormatiert = normalizeCosts($('#kosten').val());
             let variantenID = $('#variante').val();
             $.ajax({
                 url: "saveVariantePrice.php",
-                type: "GET",
-                data: {"kosten": KostenFormatiert, "variantenID": variantenID},
+                type: "POST",
+                data: {"kosten": KostenFormatiert, "variantID": variantenID},
                 success: function (data) {
                     makeToaster(data.trim(), true);
                     $("#possibleVariantenParameter").show();
@@ -470,14 +483,14 @@ $row = $result->fetch_assoc(); ?>
                     $.ajax({
                         url: "getVarianteParameters.php",
                         data: {"variantenID": variantenID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $('#variantenParameterCh .xxx').remove();
                             $("#variantenParameter").html(data);
                             $.ajax({
                                 url: "getPossibleVarianteParameters.php",
                                 data: {"variantenID": variantenID},
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#possibleVariantenParameter").html(data);
                                 }
@@ -506,14 +519,14 @@ $row = $result->fetch_assoc(); ?>
                     $.ajax({
                         url: "getVarianteParameters.php",
                         data: {"variantenID": variantenID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $('#variantenParameterCh .xxx').remove();
                             $("#variantenParameter").html(data);
                             $.ajax({
                                 url: "getPossibleVarianteParameters.php",
                                 data: {"variantenID": variantenID},
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#possibleVariantenParameter").html(data);
                                 }
@@ -535,13 +548,13 @@ $row = $result->fetch_assoc(); ?>
             $.ajax({
                 url: "addVariantenParameterToElement.php",
                 data: {"elementID": elementID, "variantenID": variantenID},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data.trim(), true);  //alert(data);
                     $.ajax({
                         url: "getStandardElementParameters.php",
                         data: {"elementID": elementID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#elementDBParameter").html(data);
                         }
@@ -551,5 +564,3 @@ $row = $result->fetch_assoc(); ?>
         }
     });
 </script>
-</body>
-</html>

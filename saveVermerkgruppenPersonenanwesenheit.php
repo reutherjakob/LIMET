@@ -1,32 +1,32 @@
 <?php
-
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
 
-// Get and validate input parameters safely
-$anwesenheit        = filter_input(INPUT_GET, 'anwesenheit', FILTER_VALIDATE_INT);
-$groupID            = filter_input(INPUT_GET, 'groupID', FILTER_VALIDATE_INT);
-$ansprechpersonenID = filter_input(INPUT_GET, 'ansprechpersonenID', FILTER_VALIDATE_INT);
 
-// Check that all inputs are valid
-if ($anwesenheit === null || $groupID === null || $ansprechpersonenID === null ||
-    $anwesenheit === false || $groupID === false || $ansprechpersonenID === false) {
-    die("Ungültige Eingabe.");
+$anwesenheit        = getPostInt('anwesenheit',0);
+$groupID            = getPostInt('groupID');
+$ansprechpersonenID = getPostInt('ansprechpersonenID');
+
+if ($anwesenheit === 0 || $groupID <= 0 || $ansprechpersonenID <= 0) {
+    echo "Ungültige Eingabe.";
+    $mysqli->close();
+    exit;
 }
 
 $sql = "UPDATE tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen
         SET Anwesenheit = ?
         WHERE tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe = ?
-        AND tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen = ?";
+          AND tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen = ?";
 
 $stmt = $mysqli->prepare($sql);
-
 if (!$stmt) {
-    die("Prepare failed: " . $mysqli->error);
+    echo "Prepare failed: " . $mysqli->error;
+    $mysqli->close();
+    exit;
 }
 
-// Bind parameters: 3 integers (i = int)
 $stmt->bind_param("iii", $anwesenheit, $groupID, $ansprechpersonenID);
 
 if ($stmt->execute()) {

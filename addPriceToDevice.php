@@ -1,10 +1,8 @@
 <?php
-// 10-2025 FX
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
-
-
 $preis = getPostString('ep');
 $menge = getPostString('menge');
 $quelle = getPostString('quelle');
@@ -42,15 +40,11 @@ $stmt->bind_param(
     $projectParam,
     $lieferant
 );
-
 if ($stmt->execute()) {
     echo "Preis zu Gerät hinzugefügt!";
 } else {
     echo "Error: " . $stmt->error;
 }
-
 $stmt->close();
-
 $mysqli->close();
-
 ?>

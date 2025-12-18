@@ -1,4 +1,5 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 init_page_serversides();
 ?>
@@ -10,12 +11,10 @@ init_page_serversides();
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
     <link rel="icon" href="Logo/iphone_favicon.png">
-    <!-- Rework 2025 CDNs -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
           integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
@@ -33,22 +32,71 @@ init_page_serversides();
                 <div class="col-xxl-6">
                     <b>Raumbuchänderungen</b>
                 </div>
-                <div class="col-xxl-6 d-inline-flex justify-content-end align-items-center" id="CardHeader"> &emsp; <i
-                            class='fas fa-hourglass-start'>=Vorher</i> &emsp; <i
-                            class='fas fa-hourglass-end'>=Nachher</i> &emsp;
+                <div class="col-xxl-6 d-inline-flex justify-content-end align-items-center" id="CardHeader"> &emsp;
+                    <i class='fas fa-hourglass-start'>=Vorher</i> &emsp;
+                    <i class='fas fa-hourglass-end'>=Nachher</i> &emsp;
                 </div>
             </div>
-
-
         </div>
         <div class="card-body">
             <?php
             $mysqli = utils_connect_sql();
-            $sql = "SELECT tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Raumnr,tabelle_räume.Raumnummer_Nutzer, tabelle_räume.Raumnummer_Nutzer, tabelle_räume.Raumbezeichnung, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_rb_aenderung.Timestamp, tabelle_rb_aenderung.User, tabelle_rb_aenderung.Anzahl, tabelle_rb_aenderung.Anzahl_copy1, tabelle_rb_aenderung.tabelle_Varianten_idtabelle_Varianten, tabelle_rb_aenderung.tabelle_Varianten_idtabelle_Varianten_copy1, tabelle_elemente.idTABELLE_Elemente, tabelle_varianten.Variante AS Var_Alt, tabelle_varianten_1.Variante AS Var_Neu, tabelle_rb_aenderung.`Neu/Bestand`, tabelle_rb_aenderung.`Neu/Bestand_copy1`, tabelle_rb_aenderung.Standort, tabelle_rb_aenderung.Standort_copy1
-                                FROM tabelle_varianten AS tabelle_varianten_1 RIGHT JOIN (tabelle_varianten RIGHT JOIN (tabelle_elemente INNER JOIN (tabelle_rb_aenderung INNER JOIN (tabelle_räume_has_tabelle_elemente INNER JOIN tabelle_räume ON tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = tabelle_räume.idTABELLE_Räume) ON tabelle_rb_aenderung.id = tabelle_räume_has_tabelle_elemente.id) ON tabelle_elemente.idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) ON tabelle_varianten.idtabelle_Varianten = tabelle_rb_aenderung.tabelle_Varianten_idtabelle_Varianten) ON tabelle_varianten_1.idtabelle_Varianten = tabelle_rb_aenderung.tabelle_Varianten_idtabelle_Varianten_copy1
-                                WHERE (((Not (tabelle_rb_aenderung.Anzahl)=`tabelle_rb_aenderung`.`Anzahl_copy1`)) AND ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ")) OR (((tabelle_rb_aenderung.Anzahl) Is Null) AND ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ")) OR (((Not (tabelle_rb_aenderung.tabelle_Varianten_idtabelle_Varianten)=`tabelle_rb_aenderung`.`tabelle_Varianten_idtabelle_Varianten_copy1`)) AND ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ")) OR (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((Not (tabelle_rb_aenderung.`Neu/Bestand`)=`tabelle_rb_aenderung`.`Neu/Bestand_copy1`))) OR (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((Not (tabelle_rb_aenderung.Standort)=`tabelle_rb_aenderung`.`Standort_copy1`)))
-                                ORDER BY tabelle_rb_aenderung.Timestamp DESC;";
-            $result = $mysqli->query($sql);
+
+            $projectID = isset($_SESSION["projectID"]) ? intval($_SESSION["projectID"]) : 0;
+
+            $sql = "SELECT tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Raumnr, tabelle_räume.Raumnummer_Nutzer,
+               tabelle_räume.Raumnummer_Nutzer, tabelle_räume.Raumbezeichnung, tabelle_elemente.ElementID,
+               tabelle_elemente.Bezeichnung, tabelle_rb_aenderung.Timestamp, tabelle_rb_aenderung.User,
+               tabelle_rb_aenderung.Anzahl, tabelle_rb_aenderung.Anzahl_copy1,
+               tabelle_rb_aenderung.tabelle_Varianten_idtabelle_Varianten,
+               tabelle_rb_aenderung.tabelle_Varianten_idtabelle_Varianten_copy1,
+               tabelle_elemente.idTABELLE_Elemente,
+               tabelle_varianten.Variante AS Var_Alt,
+               tabelle_varianten_1.Variante AS Var_Neu,
+               tabelle_rb_aenderung.`Neu/Bestand`,
+               tabelle_rb_aenderung.`Neu/Bestand_copy1`,
+               tabelle_rb_aenderung.Standort,
+               tabelle_rb_aenderung.Standort_copy1
+        FROM tabelle_varianten AS tabelle_varianten_1 
+        RIGHT JOIN (
+            tabelle_varianten 
+            RIGHT JOIN (
+                tabelle_elemente 
+                INNER JOIN (
+                    tabelle_rb_aenderung 
+                    INNER JOIN (
+                        tabelle_räume_has_tabelle_elemente 
+                        INNER JOIN tabelle_räume 
+                        ON tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = tabelle_räume.idTABELLE_Räume
+                    ) ON tabelle_rb_aenderung.id = tabelle_räume_has_tabelle_elemente.id
+                ) ON tabelle_elemente.idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
+            ) ON tabelle_varianten.idtabelle_Varianten = tabelle_rb_aenderung.tabelle_Varianten_idtabelle_Varianten
+        ) ON tabelle_varianten_1.idtabelle_Varianten = tabelle_rb_aenderung.tabelle_Varianten_idtabelle_Varianten_copy1
+        WHERE (
+            (NOT (tabelle_rb_aenderung.Anzahl) = tabelle_rb_aenderung.Anzahl_copy1) AND (tabelle_räume.tabelle_projekte_idTABELLE_Projekte = ?)
+        ) OR (
+            (tabelle_rb_aenderung.Anzahl IS NULL) AND (tabelle_räume.tabelle_projekte_idTABELLE_Projekte = ?)
+        ) OR (
+            (NOT (tabelle_rb_aenderung.tabelle_Varianten_idtabelle_Varianten) = tabelle_rb_aenderung.tabelle_Varianten_idtabelle_Varianten_copy1) AND (tabelle_räume.tabelle_projekte_idTABELLE_Projekte = ?)
+        ) OR (
+            (tabelle_räume.tabelle_projekte_idTABELLE_Projekte = ?) AND (NOT (tabelle_rb_aenderung.`Neu/Bestand`) = tabelle_rb_aenderung.`Neu/Bestand_copy1`)
+        ) OR (
+            (tabelle_räume.tabelle_projekte_idTABELLE_Projekte = ?) AND (NOT (tabelle_rb_aenderung.Standort) = tabelle_rb_aenderung.Standort_copy1)
+        )
+        ORDER BY tabelle_rb_aenderung.Timestamp DESC";
+
+            $stmt = $mysqli->prepare($sql);
+
+            if ($stmt) {
+                // Bind projectID five times for the five placeholders
+                $stmt->bind_param("iiiii", $projectID, $projectID, $projectID, $projectID, $projectID);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                // fetch results as needed here
+                $stmt->close();
+            } else {
+
+            }
 
             echo "<table class='table compact text-nowrap table-sm table-hover table-bordered border border-light border-5 table-striped' id='tableCostChanges'>
     <thead>
@@ -78,8 +126,6 @@ init_page_serversides();
         </tr>
     </thead>
     <tbody>";
-
-
             while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
                 echo "<td data-order='" . $row["Raumbereich Nutzer"] . "' >" . $row["Raumbereich Nutzer"] . "</td>";
@@ -124,9 +170,7 @@ init_page_serversides();
             </div>
         </div>
     </div>
-
     <script>
-
         // Tabellen formatieren
         $(document).ready(function () {
             new DataTable('#tableCostChanges', {
@@ -139,9 +183,7 @@ init_page_serversides();
                     search: "",
                     sSearchPlaceholder: "Suche.."
                 },
-
                 lengthChange: true,
-
                 layout: {
                     topStart: null,
                     topEnd: null,
@@ -163,7 +205,7 @@ init_page_serversides();
             let ID = this.id;
             $.ajax({
                 url: "getVarianteCostChanges.php",
-                type: "GET",
+                type: "POST",
                 data: {"elementID": ID},
                 success: function (data) {
                     $("#mbody").html(data);

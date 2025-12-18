@@ -1,0 +1,82 @@
+<div class="card-header d-flex justify-content-center">
+<i class="me-2 ms-2 fas fa-dice"> </i>
+<i class="me-2 ms-2 fas fa-book-dead"> </i>
+<i class="me-2 ms-2 fas fa-ring"> </i>
+<i class="me-2 ms-2 fab fa-jedi-order"></i>
+<i class="me-2 ms-2 fas fa-award"></i>
+<i class="me-2 ms-2 fas fa-bomb"></i>
+<i class="me-2 ms-2 fas fa-pastafarianism"></i>
+<i class="me-2 ms-2 fas fa-ankh"></i>
+<i class="me-2 ms-2 fas fa-toilet"></i>
+<i class="me-2 ms-2 fas fa-cannabis"></i>
+
+<i class="me-2 ms-2 fas fa-plug"> </i>
+<i class="me-2 ms-2 fas fa-luggage-cart"></i>
+<i class="me-2 ms-2 fas fa-heartbeat"></i>
+</div>
+
+<?php
+require_once "_utils.php";
+check_login();
+
+function getSubDirectories($dir)
+{
+    $subDirs = [];
+// Get directories in $dir
+    foreach (glob($dir . '/*', GLOB_ONLYDIR) as $directory) {
+        $subDirs[] = $directory;
+// Recursively add subdirectories
+        $subDirs = array_merge($subDirs, getSubDirectories($directory));
+    }
+    return $subDirs;
+}
+
+function listDirs($dir)
+{
+    $result = [];
+    $handle = opendir($dir);
+    while (false !== ($entry = readdir($handle))) {
+        if ($entry != '.' && $entry != '..' && is_dir($dir . '/' . $entry)) {
+            $result[] = $dir . '/' . $entry;
+            $result = array_merge($result, listDirs($dir . '/' . $entry));
+        }
+    }
+    closedir($handle);
+    return $result;
+}
+
+
+
+
+echo '<div class="container">';
+echo '<h2>Session-Variablen</h2>';
+if (!empty($_SESSION)) {
+    echo '<table class="table table-bordered"><thead><tr><th>Schlüssel</th><th>Wert</th></tr></thead><tbody>';
+    foreach ($_SESSION as $key => $value) {
+        echo '<tr><td>' . htmlspecialchars($key) . '</td><td>' . htmlspecialchars(print_r($value, true)) . '</td></tr>';
+    }
+    echo '</tbody></table>';
+} else {
+    echo '<p>Keine Sessions gefunden.</p>';
+}
+echo '</div>';
+
+echo $_SERVER['DOCUMENT_ROOT'] . "<br>";
+echo __DIR__ . "<br>";
+echo preg_replace("!{$_SERVER['SCRIPT_NAME']}$!", '', $_SERVER['SCRIPT_FILENAME']) . "<br>";
+
+
+$docRoot = $_SERVER['DOCUMENT_ROOT'];
+$subDirs = listDirs($docRoot);
+
+echo '<pre>' . print_r($subDirs, true) . '</pre>';
+
+
+$docRoot = $_SERVER['DOCUMENT_ROOT'];
+$subPaths = getSubDirectories($docRoot);
+echo "Get Subs: <br>";
+echo '<pre>' . print_r($docRoot, true) . '</pre>';
+
+
+
+?>

@@ -11,7 +11,7 @@ $(document).ready(function () {
 
         $.ajax({
             url: "updateParameter.php",
-            type: "GET",
+            type: "POST",
             data: {
                 parameterID: id,
                 wert: wert,
@@ -56,7 +56,7 @@ $(document).ready(function () {
                         "einheit": einheit,
                         "variantenID": variantenID
                     },
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         makeToaster(data.trim(), true);
                     }
@@ -73,21 +73,20 @@ $(document).ready(function () {
                 $.ajax({
                     url: "deleteParameterFromVariante.php",
                     data: {"parameterID": id, "variantenID": variantenID},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
-                        //  alert(data);
                         makeToaster(data.trim(), true);
                         $.ajax({
                             url: "getVarianteParameters.php",
                             data: {"variantenID": variantenID},
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 $('#variantenParameterCh .xxx').remove();
                                 $("#variantenParameter").html(data);
                                 $.ajax({
                                     url: "getPossibleVarianteParameters.php",
                                     data: {"variantenID": variantenID},
-                                    type: "GET",
+                                    type: "POST",
                                     success: function (data) {
                                         $("#possibleVariantenParameter").html(data);
                                     }

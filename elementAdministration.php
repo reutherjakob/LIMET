@@ -133,6 +133,10 @@ init_page_serversides("x"); ?>
 <script charset="utf-8" type="text/javascript">
     var table1;
 
+    $(document).ready(function () {
+        init_table_elementsinDB();
+    });
+
     function init_table_elementsinDB() {
         $('#CardHeaderElementesInDb .xxx').remove();
         table1 = new DataTable('#tableElementsInDB', {
@@ -185,24 +189,24 @@ init_page_serversides("x"); ?>
             $.ajax({
                 url: "setSessionVariables.php",
                 data: {"elementID": elementID},
-                type: "GET",
+                type: "POST",
                 success: function () {
                     $.ajax({
                         url: "getStandardElementParameters.php",
                         data: {"elementID": elementID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#elementParametersInDB").html(data);
                             $.ajax({
                                 url: "getElementPricesInDifferentProjects.php",
                                 data: {"elementID": elementID},
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#elementPricesInOtherProjects").html(data);
                                     $.ajax({
                                         url: "getDevicesToElement.php",
                                         data: {"elementID": elementID},
-                                        type: "GET",
+                                        type: "POST",
                                         success: function (data) {
                                             $("#devicesInDB").html(data);
                                         }
@@ -215,9 +219,6 @@ init_page_serversides("x"); ?>
             });
         });
     }
-    $(document).ready(function () {
-        init_table_elementsinDB();
-    });
 
 
     //Element speichern
@@ -229,13 +230,13 @@ init_page_serversides("x"); ?>
                 $.ajax({
                     url: "saveElement.php",
                     data: {"bezeichnung": bezeichnung, "kurzbeschreibung": kurzbeschreibung},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         alert(data);
                         $('#changeElementModal').modal('hide');
                         $.ajax({
                             url: "getElementsInDB.php",
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 $("#elementsInDB").html(data);
                             }

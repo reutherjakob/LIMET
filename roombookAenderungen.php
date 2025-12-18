@@ -46,20 +46,26 @@
                 </thead>
                 <tbody>
                 <?php
+                // 25 FX
                 if (!function_exists('utils_connect_sql')) {
                     include "utils/_utils.php";
                 }
                 init_page_serversides("", "x");
                 $mysqli = utils_connect_sql();
-                $rooms = $mysqli->query("
-                    SELECT r.idTABELLE_Räume, r.Raumnr, r.Raumbezeichnung, r.Raumnummer_Nutzer,
-                           MAX(a.Timestamp) AS last_change
-                    FROM tabelle_räume r
-                    LEFT JOIN tabelle_raeume_aenderungen a ON r.idTABELLE_Räume = a.raum_id
-                    WHERE r.tabelle_projekte_idTABELLE_Projekte = {$_SESSION["projectID"]}
-                    GROUP BY r.idTABELLE_Räume
-                    ORDER BY last_change DESC
-                ");
+                $projectID = getPostInt("projectID", (int)$_SESSION["projectID"]);
+                $stmt = $mysqli->prepare("
+                        SELECT r.idTABELLE_Räume, r.Raumnr, r.Raumbezeichnung, r.Raumnummer_Nutzer,
+                               MAX(a.Timestamp) AS last_change
+                        FROM tabelle_räume r
+                        LEFT JOIN tabelle_raeume_aenderungen a ON r.idTABELLE_Räume = a.raum_id
+                        WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
+                        GROUP BY r.idTABELLE_Räume
+                        ORDER BY last_change DESC
+                    ");
+                $stmt->bind_param("i", $projectID);
+                $stmt->execute();
+                $rooms = $stmt->get_result();
+
                 while ($room = $rooms->fetch_assoc()):
                     ?>
                     <tr data-room-id="<?= htmlspecialchars($room['idTABELLE_Räume']) ?>"
@@ -89,7 +95,6 @@
             </div>
         </div>
         <div class="card-body" id="changesContent"></div>
-
     </div>
 
     <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">

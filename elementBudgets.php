@@ -1,10 +1,10 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 include "utils/_format.php";
 init_page_serversides();
 $mysqli = utils_connect_sql();
 ?>
-
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
@@ -14,28 +14,22 @@ $mysqli = utils_connect_sql();
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
     <link rel="icon" href="Logo/iphone_favicon.png">
-
-    <!-- Rework 2025 CDNs -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
           integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
-
 </head>
 <body>
 <div class="container-fluid bg-light">
     <div id="limet-navbar"></div>
-
     <div class="mt-4 card">
         <div class="card-header">
-
             <div class="row">
                 <div class="col-8"><b>Elemente</b></div>
                 <div class="col-4 d-flex flex-nowrap align-items-center justify-content-end" id="cardHeader"></div>
@@ -51,7 +45,6 @@ $mysqli = utils_connect_sql();
                     <th>Anzahl</th>
                     <th>ID</th>
                     <th>Element</th>
-
                     <th>Raumbereich</th>
                     <th>Raum</th>
                     <th>Bestand</th>
@@ -68,45 +61,8 @@ $mysqli = utils_connect_sql();
     </div>
 </div>
 
-
+<script src="utils/_utils.js"> </script>
 <script>
-
-    function makeToaster(headerText, success) {
-        const existingToasts = Array.from(document.querySelectorAll('.toast'));
-        const visibleToasts = existingToasts.filter(toast => toast.classList.contains('show'));
-        const toast = document.createElement('div');
-        toast.classList.add('toast', 'fade', 'show');
-        toast.setAttribute('role', 'alert');
-        toast.style.position = 'fixed';
-        toast.style.right = '10px';
-        headerText = headerText.replace(/\n/g, '<br>'); // Replace \n with <br>
-        toast.innerHTML = `
-        <div class="toast-header ${success ? "grün" : "rot"}">
-            <strong class="mr-auto">${headerText}</strong>
-        </div>`;
-        document.body.appendChild(toast);
-
-        const topPosition = 20 + visibleToasts.reduce((acc, t) => acc + t.offsetHeight + 10, 0);
-        toast.style.top = `${topPosition}px`;
-
-        setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => {
-                toast.remove();
-                updateToastPositions();
-            }, 50);
-        }, 10000);
-    }
-
-    function updateToastPositions() {
-        const visibleToasts = Array.from(document.querySelectorAll('.toast.show'));
-        let topPosition = 10;
-        visibleToasts.forEach(toast => {
-            toast.style.top = `${topPosition}px`;
-            topPosition += toast.offsetHeight + 10;
-        });
-    }
-
     $(document).ready(function () {
         $('#tableElementsInProjectForBudget').DataTable({
             ajax: {
@@ -195,7 +151,7 @@ $mysqli = utils_connect_sql();
             $.ajax({
                 url: "saveRoombookBudget.php",
                 data: {"roombookID": roombookID, "budgetID": budgetID},
-                type: "GET",
+                type: "POST",
                 success: function (response) {
                     makeToaster(response, true);
                 },
@@ -203,18 +159,17 @@ $mysqli = utils_connect_sql();
                     makeToaster("Fehler beim Speichern des Budgets");
                 }
             });
-
             let table = $('#tableElementsInProjectForBudget').DataTable();
             let row = table.row($('#' + roombookID).closest('tr'));
-
             if (row.length) {
                 let rowData = row.data();
                 rowData.BudgetID = budgetID;
                 rowData.BudgetText = budgetText;
             }
         });
-
     });
+
 </script>
+
 </body>
 </html>

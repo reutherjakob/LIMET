@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
     <link rel="icon" href="Logo/iphone_favicon.png">
 
-    <!-- Rework 2025 CDNs -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -18,35 +17,27 @@
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
-
-
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
     <!--DATEPICKER -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker3.min.css">
     <script type='text/javascript'
             src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
-
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
-
 </head>
 <body style="height:100%">
 <div id="limet-navbar"></div> <!-- Container für Navbar -->
 <div class="container-fluid">
     <div class="mt-1 card">
 
-
         <?php
-        if (!function_exists('utils_connect_sql')) {
-            include "utils/_utils.php";
-        }
+        // 25 FX
+        require_once "utils/_utils.php";
         init_page_serversides();
         include "utils/_format.php";
-
 
         function makeTable($result): void
         {
@@ -60,15 +51,14 @@
                 "<b>Stk >0 <input type='checkbox' id='filter_count'></b>",
                 '', '', '', '', '',
                 "<select id='filter_bestand'>
-            <option value='2'></option> 
-            <option value='1'>Ja</option>
-            <option value='0'>Nein</option>
-        </select>",
+                    <option value='2'></option> 
+                    <option value='1'>Ja</option>
+                    <option value='0'>Nein</option>
+                </select>",
                 '', '', '', '',
                 "<input type='checkbox' id='filter_lot'>",
                 '', '', '', '', ''
             ];
-
             $statusBadges = [
                 0 => "<span class='badge badge-pill bg-danger'>Offen</span>",
                 1 => "<span class='badge badge-pill bg-success'>Fertig</span>",
@@ -102,7 +92,7 @@
                 echo "<td>" . htmlspecialchars($row['LosNr_Extern'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                 echo "<td>" . htmlspecialchars($row['LosBezeichnung_Extern'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                 echo "<td>" . htmlspecialchars($row['Ausführungsbeginn'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
-                echo "<td>" . htmlspecialchars($row['Gewerke_Nr'] ?? "", ENT_QUOTES, 'UTF-8') ." " .  htmlspecialchars($row['GWBEZ'] ?? "", ENT_QUOTES, 'UTF-8'). "</td>";
+                echo "<td>" . htmlspecialchars($row['Gewerke_Nr'] ?? "", ENT_QUOTES, 'UTF-8') . " " . htmlspecialchars($row['GWBEZ'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                 echo "<td>" . htmlspecialchars($row['Budgetnummer'] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                 echo "<td>" . ($statusBadges[$row['Vergabe_abgeschlossen']] ?? '') . "</td>";
                 echo "</tr>";
@@ -110,7 +100,6 @@
             }
             echo "</tbody></table>";
         }
-
 
         echo '<div class="card-header ">
                     <div class="row "> 
@@ -121,11 +110,10 @@
                     </div>
                 </div>';
 
-
         echo '<div class="card-body" id="elementLots">';
 
         $mysqli = utils_connect_sql();
-        $sql = "SELECT SUM(tabelle_räume_has_tabelle_elemente.Anzahl)                                           AS SummevonAnzahl,
+        $sql = "SELECT SUM(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
                        tabelle_elemente.ElementID,
                        tabelle_elemente.Bezeichnung,
                        tabelle_varianten.Variante,
@@ -173,8 +161,8 @@
                          LEFT JOIN tabelle_projektbudgets
                                    ON tabelle_räume_has_tabelle_elemente.tabelle_projektbudgets_idtabelle_projektbudgets =
                                       tabelle_projektbudgets.idtabelle_projektbudgets
-                WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["projectID"] . ") AND
-                       ((tabelle_räume_has_tabelle_elemente.Standort) = 1))
+                WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = ?
+                AND (tabelle_räume_has_tabelle_elemente.Standort) = 1))
                 GROUP BY tabelle_elemente.ElementID,
                          tabelle_varianten.idtabelle_Varianten,
                          tabelle_varianten.Variante,
@@ -184,10 +172,13 @@
                          tabelle_projektbudgets.Budgetnummer,
                          tabelle_räume.Bauabschnitt
                 ORDER BY tabelle_elemente.ElementID;";
-
-        $result = $mysqli->query($sql);
+        $stmt = $mysqli->prepare($sql);
+        $stmt->bind_param('i', $_SESSION['projectID']);
+        $stmt->execute();
+        $result = $stmt->get_result();
         makeTable($result);
         $mysqli->close();
+        $stmt->close();
         ?>
     </div>
 </div>
@@ -351,7 +342,7 @@
             let bestand = tableElementsInProject.row($(this)).data()[4];
             let raumbereich = decodeHtmlEntities(tableElementsInProject.row($(this)).data()[9]);
             let bauabschnitt = tableElementsInProject.row($(this)).data()[10];
-            console.log(variantenID, losID, bestand, raumbereich);
+          //  console.log(variantenID, losID, bestand, raumbereich);
             $.ajax({
                 url: "getRoomsWithElementTenderLots.php",
                 data: {
@@ -362,14 +353,14 @@
                     "raumbereich": raumbereich,
                     "bauabschnitt": bauabschnitt
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#roomsWithElement").html(data);
                     $("#elementBestand").hide();
                     $.ajax({
                         url: "getVariantenParameters.php",
                         data: {"variantenID": variantenID, "elementID": elementID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#variantenParameter").html(data);
                         }

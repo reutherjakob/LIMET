@@ -53,15 +53,14 @@ init_page_serversides("No Redirect");
                 </div>
                 <div class="card-body">
                     <?php
-                    /* Abfragen der Fotos */
+
                     $mysqli = utils_connect_sql();
-                    // Abfrage aller Bilddateien im Projekt
                     $sql = "SELECT `tabelle_Files`.`idtabelle_Files`,
                                 `tabelle_Files`.`Name`
                                 FROM `LIMET_RB`.`tabelle_Files`
-                                WHERE `tabelle_Files`.`tabelle_projekte_idTABELLE_Projekte`= " . $_SESSION["projectID"] . " AND `tabelle_Files`.`tabelle_filetype_id` = 1;";
+                                WHERE `tabelle_Files`.`tabelle_projekte_idTABELLE_Projekte`= " . $_SESSION["projectID"] . " 
+                                AND `tabelle_Files`.`tabelle_filetype_id` = 1;";
                     $result = $mysqli->query($sql);
-
                     $imageCounter = 0;
                     echo "<div class='row'>";
                     while ($row = $result->fetch_assoc()) {
@@ -193,7 +192,7 @@ init_page_serversides("No Redirect");
         $.ajax({
             url: "deleteImage.php",
             data: {"imageID": imageID},
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 alert(data);
                 // Neu Laden der Vermerkliste

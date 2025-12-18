@@ -1,48 +1,34 @@
 <?php
-session_start();
-?>
+// 25 FX
+require_once 'utils/_utils.php';
+check_login();
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+$mysqli = utils_connect_sql();
 
-<?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	if ($mysqli ->connect_error) {
-	    die("Connection failed: " . $mysqli->connect_error);
-	}
-	
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    echo "Error loading character set utf8: " . $mysqli->error;
-	    exit();
-	} 
-        
-        if(filter_input(INPUT_GET, 'budgetID') === '0'){
-            $sql = "UPDATE `LIMET_RB`.`tabelle_räume_has_tabelle_elemente`
-                    SET
-                    `tabelle_projektbudgets_idtabelle_projektbudgets` = NULL 
-                    WHERE `id` =  ".filter_input(INPUT_GET, 'roombookID').";";
-        }
-        else{
-            $sql = "UPDATE `LIMET_RB`.`tabelle_räume_has_tabelle_elemente`
-                    SET
-                    `tabelle_projektbudgets_idtabelle_projektbudgets` = ".filter_input(INPUT_GET, 'budgetID')." 
-                    WHERE `id` =  ".filter_input(INPUT_GET, 'roombookID').";";
-        }
+$budgetId   = getPostInt('budgetID');
+$roombookId = getPostInt('roombookID');
 
-	if ($mysqli ->query($sql) === TRUE) {
-	    echo "Erfolgreich aktualisiert!";
-	} else {
-	    echo "Error: " . $sql . "<br>" . $mysqli->error;
-	}
-	
-	$mysqli ->close();
-	
-	
-					
-?>
+if ($budgetId === 0) {
+	$stmt = $mysqli->prepare("
+        UPDATE `LIMET_RB`.`tabelle_räume_has_tabelle_elemente`
+        SET `tabelle_projektbudgets_idtabelle_projektbudgets` = NULL
+        WHERE `id` = ?
+    ");
+	$stmt->bind_param("i", $roombookId);
+} else {
+	$stmt = $mysqli->prepare("
+        UPDATE `LIMET_RB`.`tabelle_räume_has_tabelle_elemente`
+        SET `tabelle_projektbudgets_idtabelle_projektbudgets` = ?
+        WHERE `id` = ?
+    ");
+	$stmt->bind_param("ii", $budgetId, $roombookId);
+}
+
+if ($stmt->execute()) {
+	echo "Erfolgreich aktualisiert!";
+} else {
+	echo "Error: " . $stmt->error;
+}
+
+$stmt->close();
+$mysqli->close();

@@ -87,7 +87,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 //        $roomName = $row['Raumbezeichnung']; // Replace with actual room name variable
 //        $elementID = $rows_el_in_room[$rowcounter]['TABELLE_Elemente_idTABELLE_Elemente'];
 //        $variantID = $rows_el_in_room[$rowcounter]['Variante'];
-//        $projectID = $_SESSION["projectID"];
+//        $projectID = (int)$_SESSION["projectID"];
 //        echo "Room Name: " . $roomName . "<br>";
 //        echo "Room ID: " . $valueOfRoomID . "<br>";
 //        echo "Element ID: " . $elementID . "<br>";

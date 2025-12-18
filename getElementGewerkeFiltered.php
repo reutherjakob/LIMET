@@ -1,10 +1,10 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
-session_start();
 check_login();
 $mysqli = utils_connect_sql();
 
-function getGewerkOptions($mysqli, $projectID, $selectedGewerk)
+function getGewerkOptions($mysqli, $projectID, $selectedGewerk): string
 {
     $sql = "SELECT Gewerke_Nr, Bezeichnung, idTABELLE_Auftraggeber_Gewerke
             FROM tabelle_projekte 
@@ -25,7 +25,7 @@ function getGewerkOptions($mysqli, $projectID, $selectedGewerk)
     return $options;
 }
 
-function getGHGOptions($mysqli, $gewerkID, $selectedGHG)
+function getGHGOptions($mysqli, $gewerkID, $selectedGHG): string
 {
     $sql = "SELECT GHG, Bezeichnung, idtabelle_auftraggeber_GHG
             FROM tabelle_auftraggeber_ghg
@@ -44,7 +44,7 @@ function getGHGOptions($mysqli, $gewerkID, $selectedGHG)
     return $options;
 }
 
-function getGUGOptions($mysqli, $ghgID, $selectedGUG)
+function getGUGOptions($mysqli, $ghgID, $selectedGUG): string
 {
     $sql = "SELECT idtabelle_auftraggeberg_GUG, GUG, Bezeichnung
             FROM tabelle_auftraggeberg_gug
@@ -63,9 +63,13 @@ function getGUGOptions($mysqli, $ghgID, $selectedGUG)
     return $options;
 }
 
-$filterValueGewerke = $_GET["filterValueGewerke"] ?? null;
-$filterValueGHG = $_GET["filterValueGHG"] ?? null;
-$filterValueGUG = $_GET["filterValueGUG"] ?? null;
+$filterValueGewerke = getPostInt("filterValueGewerke", 0);
+#$_POST["filterValueGewerke"] ?? null;
+$filterValueGHG = getPostInt("filterValueGHG", 0);
+#$_POST["filterValueGHG"] ?? null;
+$filterValueGUG = getPostInt("filterValueGUG", 0);
+ #$_POST["filterValueGUG"] ?? null;
+
 ?>
 
 
@@ -115,22 +119,9 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
 
                 <div class='form-group d-flex align-items-center mr-2'>
                     <div>
-                        <button type='button' id='saveElementGewerk' class='btn btn-outline-dark btn-sm me-1 ms-1 '
+                        <button type='button' id='saveElementGewerk' class='btn btn-warning btn-sm me-1 ms-1 '
                                 value='saveElementGewerk'>
-                            <i class='far fa-save'></i> Gewerk speichern
-                        </button>
-
-                        <button type='button' id='saveElementGewerk94' class='btn btn-outline-dark btn-sm me-1 ms-1 float-right'
-                                value='saveElementGewerk2'>
-                            <i class='far fa-save'></i> 94
-                        </button>
-                        <button type='button' id='saveElementGewerk93' class='btn btn-outline-dark btn-sm me-1 ms-1 float-right'
-                                value='saveElementGewerk1'>
-                            <i class='far fa-save'></i> 93
-                        </button>
-                        <button type='button' id='saveElementGewerk91' class='btn btn-outline-dark btn-sm me-1 ms-1 float-right'
-                                value='saveElementGewerk6'>
-                            <i class='far fa-save'></i> 91
+                            <i class='far fa-save'></i> Gewerk
                         </button>
                     </div>
                 </div>
@@ -138,6 +129,8 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
         </div>
     </div>
 </div>
+
+<?php $mysqli->close(); ?>
 
 <script src="utils/_utils.js"></script>
 <script>
@@ -148,7 +141,7 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
             $.ajax({
                 url: "getElementGewerkeFiltered.php",
                 data: {"filterValueGHG": ghgid, "filterValueGewerke": gewerkid},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#elementGewerk").html(data);
                 }
@@ -162,7 +155,7 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
             $.ajax({
                 url: "getElementGewerkeFiltered.php",
                 data: {"filterValueGewerke": gewerkid},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#elementGewerk").html(data);
                 }
@@ -181,7 +174,7 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
                     "ghg": $('#ghg').val(),
                     "gug": $('#gug').val()
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data.trim(), true);
                 }
@@ -189,40 +182,6 @@ $filterValueGUG = $_GET["filterValueGUG"] ?? null;
         }
     });
 
-    $("#saveElementGewerk94").click(function () {
-        $.ajax({
-            url: "saveElementGewerk.php",
-            data: {"gewerk": 2, "ghg": $('#ghg').val(), "gug": $('#gug').val()},
-            type: "GET",
-            success: function (data) {
-                makeToaster(data.trim(), true);
-            }
-        });
-    });
-
-    $("#saveElementGewerk93").click(function () {
-        $.ajax({
-            url: "saveElementGewerk.php",
-            data: {"gewerk": 1, "ghg": $('#ghg').val(), "gug": $('#gug').val()},
-            type: "GET",
-            success: function (data) {
-                makeToaster(data.trim(), true);
-            }
-        });
-    });
-
-    $("#saveElementGewerk91").click(function () {
-        $.ajax({
-            url: "saveElementGewerk.php",
-            data: {"gewerk": 6, "ghg": $('#ghg').val(), "gug": $('#gug').val()},
-            type: "GET",
-            success: function (data) {
-                makeToaster(data.trim(), true);
-            }
-        });
-    });
 </script>
 </body>
 </html>
-
-<?php $mysqli->close(); ?>

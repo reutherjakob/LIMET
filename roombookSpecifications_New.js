@@ -167,8 +167,7 @@ function init_btn_4_dt() {
             text: "",
             titleAttr: "Download as Excel",
             exportOptions: {
-                columns: function (idx, data, node) {
-                    // Export all visible columns + the ID column even if hidden
+                columns: function (idx ) {
                     const idIndex = columnsDefinition.findIndex(col => col.data === 'idTABELLE_Räume');
                     return table.column(idx).visible() || idx === idIndex;
                 },
@@ -179,7 +178,6 @@ function init_btn_4_dt() {
                         if (columnIdx === idIndex) {
                             return "Raum ID"; // Or your desired header
                         }
-                        // Default header text from the table
                         return data;
                     }
                 }
@@ -423,7 +421,22 @@ function html_2_plug_into_edit_cell(dataIdentifier) {
             "Gentechnikgesetz - S3",
             "Gentechnikgesetz - S4"
         ],
-        "H6020": [" - ", "H1a", "H1b", "H1c", "H2a", "H2b", "H2c", "H3", "H4", "ÖNORM S 5224", "DGUV 213-850"],
+        "H6020": [
+            " - ",
+            "H1a",
+            "H1b",
+            "H1c",
+            "H2a",
+            "H2b",
+            "H2c",
+            "H3",
+            "H4",
+            "H1a/H1b",
+            "H1b/H1c",
+            "H2a/H2b",
+            "ÖNORM S 5224",
+            "DGUV 213-850"
+        ],
         "Anwendungsgruppe": ["-", "0", "1", "2"],
         "Fussboden OENORM B5220": ["kA", "Klasse 1", "Klasse 2", "Klasse 3"]
     };
@@ -528,18 +541,18 @@ function table_click() {
         $.ajax({
             url: "setSessionVariables.php",
             data: {"roomID": RaumID},
-            type: "GET",
+            type: "POST",
             success: function () {
                 $.ajax({
                     url: "getRoomSpecifications2.php",
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         $("#bauangaben").html(data);
                         if (previous_room_session !== RaumID) {
                             previous_room_session = RaumID;
                             $.ajax({
                                 url: "getRoomElementsDetailed1.php",
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
 
                                     $('#elementParameters').empty();
@@ -696,10 +709,12 @@ function init_showRoomElements_btn() {
 }
 
 function save_changes(RaumID, ColumnName, newData, raumname) {
+    const dataKeys = columnsDefinition.map(col => col.data);
+
     $.ajax({
         url: "saveRoomProperties.php",
-        data: {"roomID": RaumID, "column": ColumnName, "value": newData},
-        type: "GET",
+        data: {"roomID": RaumID, "column": ColumnName, "value": newData, "columnsData": JSON.stringify(dataKeys)},
+        type: "POST",
         success: function (data) {
             if (data === "Erfolgreich aktualisiert!") {
                 table_edited = true;

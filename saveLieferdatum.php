@@ -1,38 +1,31 @@
 <?php
-    session_start();
+// 25 FX
+include "utils/_utils.php";
+check_login();
+$mysqli = utils_connect_sql();
 
-    if(!isset($_SESSION["username"]))
-    {
-        echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-        exit;
+$lieferdatum = getPostDate('lieferdatum');
+$elementIDs  = isset($_POST['elements']) && is_array($_POST['elements']) ? $_POST['elements'] : [];
+
+$ausgabe = "";
+$stmt = $mysqli->prepare("
+    UPDATE `LIMET_RB`.`tabelle_räume_has_tabelle_elemente`
+    SET `Lieferdatum` = ?
+    WHERE `id` = ?
+");
+
+foreach ($elementIDs as $valueOfElementID) {
+    $elementIdInt = (int)$valueOfElementID;
+    $stmt->bind_param("si", $lieferdatum, $elementIdInt);
+
+    if ($stmt->execute()) {
+        $ausgabe .= "Element " . $elementIdInt . " erfolgreich aktualisiert! \n";
+    } else {
+        $ausgabe = "Error: " . $stmt->error;
+        break;
     }
-    $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-    if ($mysqli ->connect_error) {
-        die("Connection failed: " . $mysqli->connect_error);
-    }
-    $mysqli->query("SET NAMES 'utf8'");
+}
 
-    /* change character set to utf8 */
-    if (!$mysqli->set_charset("utf8")) {
-        echo "Error loading character set utf8: " . $mysqli->error;
-        exit();
-    } 		
-
-    //Raumdaten updaten
-    $elementIDs = $_GET["elements"];
-    $ausgabe = "";
-    foreach ($elementIDs as $valueOfElementID) {
-        $sql = "UPDATE `LIMET_RB`.`tabelle_räume_has_tabelle_elemente`
-                SET
-                `Lieferdatum` = '".filter_input(INPUT_GET, 'lieferdatum')."' WHERE `id` = ".$valueOfElementID.";";            
-
-        if ($mysqli->query($sql) === TRUE) {
-            $ausgabe = $ausgabe . "Element ".$valueOfElementID." erfolgreich aktualisiert! \n";
-        } 
-        else {
-            $ausgabe = "Error: " . $sql . "<br>" . $mysqli->error;
-        }
-    }				
-    $mysqli ->close();
-    echo $ausgabe;
-?>
+$stmt->close();
+$mysqli->close();
+echo $ausgabe;

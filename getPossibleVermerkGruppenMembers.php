@@ -1,11 +1,11 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
-
 $mysqli = utils_connect_sql();
 
-$gruppenID = filter_input(INPUT_GET, 'gruppenID', FILTER_VALIDATE_INT);
-if (!$gruppenID) {
+$gruppenID = getPostInt('gruppenID',0);
+if (0===$gruppenID) {
     echo "Ungültige Gruppen-ID.";
     exit;
 }
@@ -81,24 +81,24 @@ $mysqli->close();
 
     $("button[value='addVermerkGroupMember']").click(function () {
         let id = this.id;
-        let groupID = "<?php echo filter_input(INPUT_GET, 'gruppenID') ?>";
+        let groupID = "<?php echo filter_input(INPUT_POST, 'gruppenID') ?>";
         if (id !== "") {
             $.ajax({
-                url: "addPersonToVermerkGroup.php",
+                url: "/addPersonToVermerkGroup.php",
                 data: {"ansprechpersonenID": id, "groupID": groupID},
                 type: "POST",
                 success: function (data) {
                     makeToaster(data,true);
                     document.getElementById('pdfPreview').src += '';
                     $.ajax({
-                        url: "getVermerkgruppenMembers.php",
-                        type: "GET",
+                        url: "/getVermerkgruppenMembers.php",
+                        type: "POST",
                         data: {"gruppenID": groupID},
                         success: function (data) {
                             $("#vermerkGroupMembers").html(data);
                             $.ajax({
-                                url: "getPossibleVermerkGruppenMembers.php",
-                                type: "GET",
+                                url: "/getPossibleVermerkGruppenMembers.php",
+                                type: "POST",
                                 data: {"gruppenID": groupID},
                                 success: function (data) {
                                     $("#possibleVermerkGroupMembers").html(data);

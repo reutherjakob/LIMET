@@ -1,11 +1,12 @@
 <?php
+use JetBrains\PhpStorm\NoReturn;
+
 session_start();
 require 'utils/csrf.php';
 
 
-// Function for safe redirection
-function safeRedirect($url)
-{
+#[NoReturn] function safeRedirect($url): void
+  {
     header("Location: $url");
     exit();
 }
@@ -17,6 +18,9 @@ function logError($message): void
 }
 
 
+/**
+ * @throws Exception
+ */
 function fetch_permissions($mysqli, $username): int
 {
     $stmt = $mysqli->prepare("SELECT permission FROM tabelle_user_permission WHERE user = ?");
@@ -76,7 +80,7 @@ if (empty($username) || empty($password)) {
 }
 
 checkRateLimit($_SERVER['REMOTE_ADDR']);
-$hashedPassword = md5($password); // TODO:  Consider using password_hash() and password_verify() for better security
+$hashedPassword = md5($password);
 
 try {
     $mysqli = new mysqli('localhost', $username, $hashedPassword, 'LIMET_RB');
@@ -100,5 +104,7 @@ try {
 } finally {
     if (isset($mysqli)) {
         $mysqli->close();
+
     }
+
 }

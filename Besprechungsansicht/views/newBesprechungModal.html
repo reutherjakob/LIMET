@@ -1,0 +1,68 @@
+
+<!-- Besprechung anlegen Modal -->
+<div class="modal fade" id="createMeetingModal" tabindex="-1" aria-labelledby="createMeetingLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-scrollable">
+        <div class="modal-content">
+            <form id="createMeetingForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createMeetingLabel">Neue Besprechung anlegen</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2">
+                        <label for="meetingName" class="form-label">Besprechungsname (=Protokollname) </label>
+                        <input type="text" class="form-control" id="meetingName" name="name" required>
+                    </div>
+                    <div class="mb-2">
+                        <label for="meetingDatum" class="form-label">Datum</label>
+                        <input type="date" class="form-control" id="meetingDatum" name="datum" required
+                               placeholder="*required">
+                    </div>
+                    <div class="mb-2">
+                        <label for="meetingUhrzeitStart" class="form-label">Uhrzeit [Start] </label>
+                        <input type="time" class="form-control" id="meetingUhrzeitStart" name="uhrzeit" required>
+                    </div>
+                    <div class="mb-2">
+                        <label for="meetingUhrzeitEnde" class="form-label">Uhrzeit [Ende] </label>
+                        <input type="time" class="form-control" id="meetingUhrzeitEnde" name="uhrzeit">
+                    </div>
+                    <div class="mb-2">
+                        <label for="meetingOrt" class="form-label">Ort</label>
+                        <input type="text" class="form-control" id="meetingOrt" name="ort">
+                    </div>
+
+                    <div class="mb-2">
+                        <label for="meetingVerfasser" class="form-label">Verfasser</label>
+                        <input type="text" class="form-control" id="meetingVerfasser" name="verfasser" required>
+                    </div>
+
+                    <!--- div class="mb-2">
+                        <div class="badge rounded-pill bg-light text-dark m-1 p-2 float-end"
+                             data-bs-toggle="popover"
+                             title="INFO"
+                             data-bs-content="Vorerst können hier nur Pfade als txt gespeichert werden.">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <label for="meetingDokumente" class="form-label">relevante Dokumente</label>
+                        <input type="text" class="form-control" id="meetingDokumente" name="name" disabled
+                               placeholder="TODO">
+                    </div>
+
+                    <div class="mb-3"> TODO 4 later: Get Projektbeteiligte  & use exisiting structure for saving files
+                        <label for="meetingBeteiligte" class="form-label">Beteiligte</label>
+                        <input type="text" class="form-control" id="meetingBeteiligte" name="beteiligte" placeholder="Namen kommasepariert">
+                    </div>
+                    <div class="mb-3">
+                        <label for="meetingDokumente" class="form-label">Relevante Dokumente</label>
+                        <input type="file" class="form-control" id="meetingDokumente" name="dokumente[]" multiple>
+                    </div --->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                    <button type="submit" class="btn btn-success" id="BesprechungAnlegenBtn">Besprechung anlegen
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

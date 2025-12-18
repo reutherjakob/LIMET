@@ -1,39 +1,14 @@
-<!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title></title>
-</head>
-<style> /* Make sure Select2 dropdown appears above Bootstrap modal */
-    .select2-container {
-        z-index: 1060 !important; /* slightly higher than Bootstrap modal backdrop */
-    }
-
-    /* Also target the actual dropdown for Select2 (the dropdown elements) */
-    .select2-dropdown {
-        z-index: 1061 !important;
-    }
-
-    /* Optional: When used inside modal, the dropdown might need higher z-index */
-    .modal .select2-container {
-        z-index: 1070 !important;
-    }
-
-    .modal .select2-dropdown {
-        z-index: 1071 !important;
-    }
-</style>
-<body>
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 include "utils/_format.php";
 check_login();
-
 $mysqli = utils_connect_sql();
-if (isset($_GET["deviceID"])) {
-    $_SESSION["deviceID"] = $_GET["deviceID"];
+$deviceID = getPostInt('deviceID', 0);
+if ($deviceID <> 0) {
+    $_SESSION["deviceID"] = $deviceID;
 }
-$deviceID = isset($_SESSION["deviceID"]) ? intval($_SESSION["deviceID"]) : 0;
+
 $sql = "SELECT tabelle_preise.Datum,
                tabelle_preise.Quelle,
                tabelle_preise.Menge,
@@ -54,20 +29,18 @@ if (!$stmt) {
 $stmt->bind_param("i", $deviceID);
 $stmt->execute();
 $result = $stmt->get_result();
-$stmt->close();
 
-echo "<table class='table table-striped table-sm' id='
-tableDevicePrices'>
+echo "<table class='table table-striped table-sm' id='tableDevicePrices'>
 	<thead><tr>";
 echo "<th>Datum</th>
 		<th>Info</th>
 		<th>Menge</th>
 		<th>EP</th>
 		<th>NK/Stk</th>
-                <th>Projekt</th>
-                <th>Lieferant</th>
-               
+        <th>Projekt</th>
+        <th>Lieferant</th>              
 	</tr></thead><tbody>";
+
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
     $date = date_create($row["Datum"]);
@@ -78,12 +51,12 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . format_money($row["Nebenkosten"]) . "</td>";
     echo "<td>" . $row["Projektname"] . "</td>";
     echo "<td>" . $row["Lieferant"] . "</td>";
-
     echo "</tr>";
 }
-echo "</tbody></table>";
-echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Preis hinzufügen' data-bs-toggle='modal' data-bs-target='#addPriceToElementModal'> Preis hinzufügen</button>";
-?>
+echo "</tbody></table>"; ?>
+<button type='button' id='addPriceModal' class='btn btn-success' value='Preis hinzufügen' data-bs-toggle='modal'
+        data-bs-target='#addPriceToElementModal'> Preis hinzufügen
+</button>
 
 <div class='modal fade' id='addPriceToElementModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
@@ -114,24 +87,20 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
                         <label for="nk">NK/Stk:</label>
                         <input type="text" class="form-control" id="nk" placeholder="Komma ."/>
                     </div>
-
                     <?php
-
-                    $sql = "SELECT tabelle_projekte.idTABELLE_Projekte, tabelle_projekte.Interne_Nr, tabelle_projekte.Projektname"
-                        . " FROM tabelle_projekte ORDER BY tabelle_projekte.Interne_Nr;";
-
+                    $sql = "SELECT tabelle_projekte.idTABELLE_Projekte,
+                                    tabelle_projekte.Interne_Nr, 
+                                    tabelle_projekte.Projektname 
+                            FROM tabelle_projekte ORDER BY tabelle_projekte.Interne_Nr;";
                     $result1 = $mysqli->query($sql);
-
                     echo "<div class='form-group'>
-                                                    <label for='project'>Projekt:</label>									
-                                                    <select class='form-control input-sm' id='project' name='project'>
-                                                            <option value=0>Kein Projekt</option>";
-
+                        <label for='project'>Projekt:</label>									
+                        <select class='form-control input-sm' id='project' name='project'>
+                                <option value=0>Kein Projekt</option>";
                     while ($row = $result1->fetch_assoc()) {
                         echo "<option value=" . $row["idTABELLE_Projekte"] . ">" . $row["Interne_Nr"] . "-" . $row["Projektname"] . "</option>";
                     }
                     echo "</select> </div>";
-
 
                     echo "<div class='form-group'> 
                                     <label class='' for='project'>Geräte Lieferant auswählen:</label>									
@@ -139,20 +108,17 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
                                             <option value='0'>Geräte Lieferant auswählen</option>";
                     include "getDeviceLieferantenOptions.php";
 
-
                     echo "</select> 
                         </div> 
                         <div class='row mt-3'>
                         <div class='col-6'>    
-                            <input type='button' id='addPrice' class='btn btn-success btn-sm col-12' value='Speichern'
-                                           data-bs-dismiss='modal'>
+                            <input type='button' id='addPrice' class='btn btn-success btn-sm col-12' value='Speichern' data-bs-dismiss='modal'>
                         </div>
                         <div class='col-6'>
                             <button type='button' class='btn btn-danger btn-sm col-12' data-bs-dismiss='modal'>Abbrechen</button>
                         </div>
                     </div>
                  </form>";
-
                     echo "<hr>       
                      <div class='row'> 
                              <div class='col-6'>  
@@ -174,6 +140,7 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
                                     <select class='form-control input-sm' id='idlieferant2Dev' name='lieferant'>
                                             <option value=0>Lieferant auswählen </option>";
                     include "getPossibleLieferantenOptions.php";
+
                     echo "  </select>  
                             </div>
                             <div class='col-2'>   
@@ -199,17 +166,19 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
                             </div>
                  </div>";
                     $mysqli->close();
+                    $stmt->close();
+
                     ?>
             </div>
         </div>
     </div>
+</div>
 
-</div>
-</div>
 
 <script src="utils/_utils.js"></script>
 <script>
     $(document).ready(function () {
+
         $('#date').datepicker({
             format: "yyyy-mm-dd",
             calendarWeeks: true,
@@ -218,7 +187,6 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
             language: "de"
         });
 
-        // Initialize Select2
         $('#project').select2({
             width: '100%',
             placeholder: 'Projekt auswählen',
@@ -238,7 +206,7 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
         function reloadLieferantOptions() {
             $.ajax({
                 url: 'getDeviceLieferantenOptions.php',
-                type: 'GET',
+                type: 'POST',
                 success: function (optionsHtml) {
                     $('#lieferant').html(optionsHtml).trigger('change'); // refresh Select2 dropdown
                 },
@@ -251,7 +219,7 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
         function loadPossibleLieferantenOptions() {
             $.ajax({
                 url: 'getPossibleLieferantenOptions.php',
-                type: 'GET',
+                type: 'POST',
                 success: function (optionsHtml) {
                     $('#idlieferant2Dev').html(optionsHtml).trigger('change'); // trigger for Select2 refresh if used
                 },
@@ -274,7 +242,7 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
                         loadPossibleLieferantenOptions();
                         $.ajax({
                             url: "getLieferantenToDevices.php",
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 makeToaster("Lieferant zu Gerät hinzugefügt.", true);
                                 $("#deviceLieferanten").html(data);
@@ -294,6 +262,8 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
 
 
         $('#addNewLieferant').click(function () {
+            confirm("Wurde schon genau geprüft, ob es den Lieferant nicht gibt?";
+        )
             if ($('#inlineAddLieferant').is(':visible')) {
                 $('#inlineAddLieferant').hide();
                 $('#addNewDevLieferant').hide();
@@ -306,6 +276,7 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
         });
 
         $('#addNewDevLieferant').click(function () {
+            console.log("Btn werqs");
             if ($('#NeuenLieferantZuGerätHinzufügen').is(':visible')) {
                 $('#NeuenLieferantZuGerätHinzufügen').hide();
 
@@ -329,7 +300,7 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
             if (name && land && ort && tel && adresse && plz) {
                 $.ajax({
                     url: 'addFirma.php',
-                    type: 'GET',
+                    type: 'POST',
                     data: {
                         firma: name,
                         lieferantLand: land,
@@ -366,36 +337,15 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
             //lengthMenu: [[5,10,25,50,-1], [5,10,25,50,'All']]  // uncomment if needed
         });
 
-
         //Preis zu Geraet hinzufügen
         $("#addPrice").click(function () {  // TODO test preis hinzufügen...
-            var date = $("#date").val();
-            var quelle = $("#quelle").val();
-            var menge = $("#menge").val();
-
-            var nk = $("#nk").val();
-            if (nk.toLowerCase().endsWith('k')) {
-                nk = nk.slice(0, -1) + '000';
-            }
-            nk.replace(/,/g, '.').replace(/[^0-9.]/g, '');
-
-            var project = $("#project").val();
-            var lieferant = $("#lieferant").val();
-
-            let ep = $("#ep").val();
-            if (ep.toLowerCase().endsWith('k')) {
-                ep = ep.slice(0, -1) + '000';
-            }
-            ep.replace(/,/g, '.').replace(/[^0-9.]/g, '');
-
-
-            console.log("date:", date);
-            console.log("quelle:", quelle);
-            console.log("menge:", menge);
-            console.log("nk:", nk);
-            console.log("project:", project);
-            console.log("lieferant:", lieferant);
-            console.log("ep:", ep);
+            let date = $("#date").val();
+            let quelle = $("#quelle").val();
+            let menge = $("#menge").val();
+            let nk = normalizeCosts($("#nk").val());
+            let project = $("#project").val();
+            let lieferant = $("#lieferant").val();
+            let ep = normalizeCosts($("#ep").val());
 
             if (date !== "" && quelle !== "" && menge !== "" && ep !== "" && nk !== "" && lieferant > 0) {
                 $.ajax({
@@ -414,24 +364,18 @@ echo "<button type='button' id='addPriceModal' class='btn btn-success' value='Pr
                         makeToaster(data, true);
                         $.ajax({
                             url: "getDevicePrices.php",
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 $("#devicePrices").html(data);
                             }
                         });
                     }
                 });
-
             } else {
                 makeToaster("Bitte alle Felder ausfüllen!", false);
                 let myModal = new bootstrap.Modal(document.getElementById('addPriceToElementModal'));
                 myModal.show();
-
             }
         });
     });
-
 </script>
-
-</body>
-</html>

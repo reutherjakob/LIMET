@@ -1,58 +1,64 @@
 <?php
-session_start();
+// 25 FX
+require_once 'utils/_utils.php';
+check_login();
+$mysqli = utils_connect_sql();
 
-?>
+$geraeteID = getPostInt('geraeteID');
+if ($geraeteID !== 0) {
+    $sql = "UPDATE `LIMET_RB`.`tabelle_bestandsdaten`
+            SET
+                `Inventarnummer` = ?,
+                `Seriennummer` = ?,
+                `Anschaffungsjahr` = ?,
+                `Aktueller Ort` = ?,
+                `tabelle_geraete_idTABELLE_Geraete` = ?
+            WHERE `idtabelle_bestandsdaten` = ?";
+} else {
+    $sql = "UPDATE `LIMET_RB`.`tabelle_bestandsdaten`
+            SET
+                `Inventarnummer` = ?,
+                `Seriennummer` = ?,
+                `Anschaffungsjahr` = ?,
+                `Aktueller Ort` = ?
+            WHERE `idtabelle_bestandsdaten` = ?";
+}
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+$inventarNr = getPostString('inventarNr');
+$serienNr = getPostString('serienNr');
+$anschaffungsJahr = getPostString('anschaffungsJahr');
+$currentPlace = getPostString('currentPlace');
+$bestandID = getPostInt('bestandID');
 
-<?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	if ($mysqli ->connect_error) {
-	    die("Connection failed: " . $mysqli->connect_error);
-	}
-	$mysqli->query("SET NAMES 'utf8'");
-	
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    echo "Error loading character set utf8: " . $mysqli->error;
-	    exit();
-	} 
-        
-	
-	if(filter_input(INPUT_GET, 'geraeteID') != 0){
-		$sql = "UPDATE `LIMET_RB`.`tabelle_bestandsdaten`
-			SET
-			`Inventarnummer` = '".filter_input(INPUT_GET, 'inventarNr')."',
-			`Seriennummer` = '".filter_input(INPUT_GET, 'serienNr')."',
-			`Anschaffungsjahr` = '".filter_input(INPUT_GET, 'anschaffungsJahr')."',
-                        `Aktueller Ort` =  '".filter_input(INPUT_GET, 'currentPlace')."',       
-			`tabelle_geraete_idTABELLE_Geraete` = ".filter_input(INPUT_GET, 'geraeteID')."
-			WHERE `idtabelle_bestandsdaten` = ".filter_input(INPUT_GET, 'bestandID').";";	
-	}
-	else{
-		$sql = "UPDATE `LIMET_RB`.`tabelle_bestandsdaten`
-			SET
-			`Inventarnummer` = '".filter_input(INPUT_GET, 'inventarNr')."',
-			`Seriennummer` = '".filter_input(INPUT_GET, 'serienNr')."',
-			`Anschaffungsjahr` = '".filter_input(INPUT_GET, 'anschaffungsJahr')."',
-                        `Aktueller Ort` =  '".filter_input(INPUT_GET, 'currentPlace')."' 
-			WHERE `idtabelle_bestandsdaten` = ".filter_input(INPUT_GET, 'bestandID').";";	
-		
-	}
-		
-	if ($mysqli ->query($sql) === TRUE) {
-	    echo "Bestand ge�ndert!";
-	} else {
-	    echo "Error: " . $sql . "<br>" . $mysqli->error;
-	}
-	
-	
-	$mysqli ->close();	
-					
-?>
+if ($stmt = $mysqli->prepare($sql)) {
+    if ($geraeteID !== 0) {
+        $stmt->bind_param(
+            "sssdii",
+            $inventarNr,
+            $serienNr,
+            $anschaffungsJahr,
+            $currentPlace,
+            $geraeteID,
+            $bestandID
+        );
+    } else {
+        $stmt->bind_param(
+            "sssdi",
+            $inventarNr,
+            $serienNr,
+            $anschaffungsJahr,
+            $currentPlace,
+            $bestandID
+        );
+    }
+
+    if ($stmt->execute()) {
+        echo "Bestand geändert!";
+    } else {
+        echo "Error: " . $stmt->error;
+    }
+
+    $stmt->close();
+}
+
+$mysqli->close();

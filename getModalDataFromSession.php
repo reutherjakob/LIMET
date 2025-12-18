@@ -1,7 +1,8 @@
 <?php
+// 25 FX 
 include "utils/_utils.php";
 check_login();
-$conn = utils_connect_sql();
+$mysqli = utils_connect_sql();
 
 header('Content-Type: application/json');
 
@@ -17,14 +18,14 @@ $deviceID = $_SESSION['deviceID'];
 
 try {
     // Element
-    $stmt = $conn->prepare("SELECT Bezeichnung FROM tabelle_elemente WHERE idTABELLE_Elemente = ?");
+    $stmt = $mysqli->prepare("SELECT Bezeichnung FROM tabelle_elemente WHERE idTABELLE_Elemente = ?");
     $stmt->bind_param("s", $elementID);
     $stmt->execute();
     $elementResult = $stmt->get_result()->fetch_assoc();
     $elementBezeichnung = $elementResult['Bezeichnung'] ?? 'Unbekanntes Element';
 
     // Device
-    $stmt = $conn->prepare("SELECT Typ FROM tabelle_geraete WHERE idTABELLE_Geraete = ?");
+    $stmt = $mysqli->prepare("SELECT Typ FROM tabelle_geraete WHERE idTABELLE_Geraete = ?");
     $stmt->bind_param("s", $deviceID);
     $stmt->execute();
     $deviceResult = $stmt->get_result()->fetch_assoc();

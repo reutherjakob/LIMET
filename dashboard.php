@@ -22,9 +22,7 @@ init_page_serversides();
           integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
-
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-
 
     <style>
 
@@ -41,25 +39,19 @@ init_page_serversides();
         .card-body .rotate i {
             color: rgba(20, 20, 20, 0.15);
             position: absolute;
-            left: 0;
-            left: auto;
             right: 10px;
             bottom: 0;
             display: block;
-            -webkit-transform: rotate(-44deg);
-            -moz-transform: rotate(-44deg);
-            -o-transform: rotate(-44deg);
             -ms-transform: rotate(-44deg);
             transform: rotate(-44deg);
         }
-
     </style>
 </head>
 
 <body>
-<div class="container-fluid bg-light" >
+<div class="container-fluid bg-light">
     <div id="limet-navbar"></div>
-    <div class="row mt-3">
+    <!--div class="row mt-3">
         <div class="col-xxl-3 col-xxl-6 py-2">
             <div class="card text-dark h-100">
                 <div class="card-header bg-light"><h3>Anzahl meiner aktiven Projekte</h3></div>
@@ -71,19 +63,19 @@ init_page_serversides();
                 </div>
             </div>
         </div>
-    </div>
+    </div-->
     <!--
     <div class="row mt-3">
         <div class="col-xxl-3 col-xxl-6 py-2">
             <div class="card text-white bg-warning h-100">
-                <div class="card-header"><h3>Offene Vermerke in meinen Projekten</h3></div>      
-                <div class="card-body">                            
+                <div class="card-header"><h3>Offene Vermerke in meinen Projekten</h3></div>
+                <div class="card-body">
                     <div class="rotate">
                         <i class="fa fa-question fa-4x"></i>
                     </div>
                 </div>
             </div>
-        </div>         
+        </div>
     </div>
     -->
     <div class="row mt-3">
@@ -104,24 +96,14 @@ init_page_serversides();
             </div>
         </div>
     </div>
-
 </div>
 </body>
 <script>
 
     $(document).ready(function () {
         $.ajax({
-            url: "getNumberOfActiveProjects.php",
-            type: "GET",
-            success: function (data) {
-                $("#numberOfActiveProjects").html(data);
-            }
-        });
-
-
-        $.ajax({
             url: "getChartDataActiveOpenVermerke.php",
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 console.log(data);
                 var projects = [];
@@ -185,7 +167,7 @@ init_page_serversides();
 
         $.ajax({
             url: "getChartDataActiveOpenTendersWithStatus.php",
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 console.log(data);
                 var counterTendersStatus0 = [];

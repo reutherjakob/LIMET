@@ -8,26 +8,21 @@
     <link rel="icon" href="Logo/iphone_favicon.png"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
           integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
-
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-
-
     <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.css"
           rel="stylesheet"/>
     <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/kt-2.12.0/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sp-2.3.1/sl-2.0.1/sr-1.4.1/datatables.min.js"></script>
-
-
 </head>
 
 <?php
+// 25 FX 
 require_once 'utils/_utils.php'; // CHECKS SESSION
 init_page_serversides(); // checks Nutzerlogin
 ?>
@@ -263,11 +258,11 @@ init_page_serversides(); // checks Nutzerlogin
         $.ajax({
             url: "setSessionVariables.php",
             data: {"roomID": rid},
-            type: "GET",
+            type: "POST",
             success: function () {
                 $.ajax({
                     url: "getRoomSpecifications2.php",
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         $(where2putthedata).html(data);
                         //  console.log("Data Loaded " + data);
@@ -322,7 +317,7 @@ init_page_serversides(); // checks Nutzerlogin
         $.ajax({
             url: "get_RoomElementsData.php",
             data: {"roomID": RaumID},
-            type: "GET",
+            type: "POST",
             dataType: "json",
             success: function (data) {
                 let tableId = 'tableRoomElements' + RaumID;

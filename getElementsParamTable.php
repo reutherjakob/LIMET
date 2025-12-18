@@ -1,32 +1,32 @@
-<!--  18.2.25: Reworked -->
-
  <?php
+ // 25 FX
 require_once 'utils/_utils.php';
 check_login();
+$K2Return = $_POST['K2Return'];
+$K2Ret = json_decode($K2Return);
 ?>
+ <!DOCTYPE html>
+ <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
+ <head>
+     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+     <title>get Elements Parameter Table </title>
+ </head>
+ <body>
+ <div class="card-body " id="elemetsParamsTableCard">
+     <table class='table display compact table-striped table-bordered table-sm' id='roomElementsParamTable'>
+         <thead>
+         <tr></tr>
+         </thead>
+         <tbody>
+         <td></td>
+         </tbody>
+     </table>
+ </div>
+ </body>
+ </html>
 
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
-    <title>get Elements Parameter Table </title>
-</head>
-<body>
-<div class="card-body " id="elemetsParamsTableCard">
-    <table class='table display compact table-striped table-bordered table-sm' id='roomElementsParamTable'>
-        <thead>
-        <tr></tr>
-        </thead>
-        <tbody>
-        <td></td>
-        </tbody>
-    </table>
-</div>
-</body>
-</html>
 <script>
     var table2;
     $(document).ready(function () {
@@ -34,21 +34,16 @@ check_login();
     });
 
     function make_table() {
-
-        <?php
-        $K2Return = $_GET['K2Return'];
-        $K2Ret = json_decode($K2Return);
-        ?>
         let K2R = <?php echo json_encode($K2Ret); ?>;
-        //console.log(K2R);
+
         $.ajax({
             url: 'getRoomElementsParameterData.php',
-            method: 'GET',
+            method: 'POST',
             dataType: 'json',
-            data: {"roomID": <?php echo $_GET["roomID"]; ?>, "K2Return": JSON.stringify(K2R)},
+            data: {"roomID": <?php echo $_POST["roomID"]; ?>, "K2Return": JSON.stringify(K2R)},
             success: function (data) {
                 if (!data || data.length === 0) {
-                    console.log('getElementsParamTable -> ajax: getRoomElementsParameterTableData -> No valid data returned');
+                    // console.log('ajax: getRoomElementsParamTable -> No valid data returned');
                     return;
                 }
                 let titleMapping = {

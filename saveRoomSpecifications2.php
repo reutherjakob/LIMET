@@ -1,20 +1,33 @@
 <?php
-session_start();
+// 25 FX
 require_once 'utils/_utils.php';
-//check_login();
-
+check_login();
 $mysqli = utils_connect_sql();
 
-$sql = "UPDATE tabelle_räume SET tabelle_räume.`Anmerkung FunktionBO` = '".br2nl($_GET["funktionBO"])."', tabelle_räume.`Anmerkung Geräte` = '".br2nl($_GET["geraete"])."', tabelle_räume.`Anmerkung BauStatik` = '".br2nl($_GET["baustatik"])."', ";
-$sql.= "tabelle_räume.`Anmerkung Elektro` = '".br2nl($_GET["Elektro"])."', tabelle_räume.`Anmerkung MedGas` = '".br2nl($_GET["medgas"])."', tabelle_räume.`Anmerkung HKLS` = '".br2nl($_GET["hkls"])."' ";
-$sql.= "WHERE (((tabelle_räume.idTABELLE_Räume)=".$_SESSION["roomID"]."));";
+$stmt = $mysqli->prepare("UPDATE tabelle_räume SET 
+    `Anmerkung FunktionBO` = ?, `Anmerkung Geräte` = ?, 
+    `Anmerkung BauStatik` = ?, `Anmerkung Elektro` = ?, 
+    `Anmerkung MedGas` = ?, `Anmerkung HKLS` = ? 
+    WHERE idTABELLE_Räume = ?");
 
-if ($mysqli ->query($sql) === TRUE) {
+$getPostString = getPostString("funktionBO");
+$getPostString1 = getPostString("geraete");
+$getPostString2 = getPostString("baustatik");
+$getPostString3 = getPostString("Elektro");
+$getPostString4 = getPostString("medgas");
+$getPostString5 = getPostString("hkls");
+$stmt->bind_param("ssssssi",
+    $getPostString,
+    $getPostString1,
+    $getPostString2,
+    $getPostString3,
+    $getPostString4,
+    $getPostString5,
+    $_SESSION["roomID"]);
+
+if ($stmt->execute()) {
     echo "Raum erfolgreich aktualisiert!";
 } else {
-    echo "Error: " . $sql . "<br>" . $mysqli->error;
+    echo "Error: " . $stmt->error;
 }
-
-$mysqli ->close();	
-					
-?>
+$stmt->close();

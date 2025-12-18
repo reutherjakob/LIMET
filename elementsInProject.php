@@ -21,9 +21,7 @@
 </head>
 
 <style>
-    .customCardx{
-        height: 6vh;
-    }
+
 </style>
 
 <body>
@@ -87,58 +85,87 @@
                            tabelle_auftraggeber_gewerke.Gewerke_Nr,
                            tabelle_auftraggeber_ghg.GHG,
                            tabelle_auftraggeberg_gug.GUG
-                    FROM tabelle_auftraggeber_gewerke
-                    RIGHT JOIN (tabelle_auftraggeberg_gug RIGHT JOIN (tabelle_auftraggeber_ghg RIGHT JOIN (tabelle_projekt_element_gewerk RIGHT JOIN (tabelle_elemente INNER JOIN (tabelle_räume INNER JOIN (tabelle_varianten INNER JOIN (tabelle_projekt_varianten_kosten INNER JOIN tabelle_räume_has_tabelle_elemente
-                                                                                                                                                                                                                                ON (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente =
-                                                                                                                                                                                                                                    tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) AND
-                                                                                                                                                                                                                                   (tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten =
-                                                                                                                                                                                                                                    tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten))
-                                                                                                                                                                                                  ON tabelle_varianten.idtabelle_Varianten =
-                                                                                                                                                                                                     tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)
-                                                                                                                                                                        ON (tabelle_räume.tabelle_projekte_idTABELLE_Projekte =
-                                                                                                                                                                            tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte) AND
-                                                                                                                                                                           (tabelle_räume.idTABELLE_Räume =
-                                                                                                                                                                            tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume))
-                                                                                                                                           ON tabelle_elemente.idTABELLE_Elemente =
-                                                                                                                                              tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente)
-                                                                                                ON (tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente =
-                                                                                                    tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente) AND
-                                                                                                   (tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte =
-                                                                                                    tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte))
-                                                           ON tabelle_auftraggeber_ghg.idtabelle_auftraggeber_GHG =
-                                                              tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG)
-                    ON tabelle_auftraggeberg_gug.idtabelle_auftraggeberg_GUG =
-                        tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG)
-                    ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke =
-                        tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
-WHERE (((tabelle_räume_has_tabelle_elemente.Standort) = 1) AND
-       ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["projectID"] . "))
-GROUP BY tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante,
-         tabelle_varianten.idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
-         tabelle_projekt_varianten_kosten.Kosten,
-         tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
-         tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke,
-         tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG,
-         tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
-ORDER BY tabelle_elemente.ElementID;";
-            $result = $mysqli->query($sql);
+                                    FROM tabelle_auftraggeber_gewerke
+                                    RIGHT JOIN (tabelle_auftraggeberg_gug RIGHT JOIN (tabelle_auftraggeber_ghg RIGHT JOIN (tabelle_projekt_element_gewerk RIGHT JOIN (tabelle_elemente INNER JOIN (tabelle_räume INNER JOIN (tabelle_varianten INNER JOIN (tabelle_projekt_varianten_kosten INNER JOIN tabelle_räume_has_tabelle_elemente
+                                                                                                                                                                                                                                                ON (tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente =
+                                                                                                                                                                                                                                                    tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente) AND
+                                                                                                                                                                                                                                                   (tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten =
+                                                                                                                                                                                                                                                    tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten))
+                                                                                                                                                                                                                  ON tabelle_varianten.idtabelle_Varianten =
+                                                                                                                                                                                                                     tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)
+                                                                                                                                                                                        ON (tabelle_räume.tabelle_projekte_idTABELLE_Projekte =
+                                                                                                                                                                                            tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte) AND
+                                                                                                                                                                                           (tabelle_räume.idTABELLE_Räume =
+                                                                                                                                                                                            tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume))
+                                                                                                                                                           ON tabelle_elemente.idTABELLE_Elemente =
+                                                                                                                                                              tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente)
+                                                                                                                ON (tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente =
+                                                                                                                    tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente) AND
+                                                                                                                   (tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte =
+                                                                                                                    tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte))
+                                                                           ON tabelle_auftraggeber_ghg.idtabelle_auftraggeber_GHG =
+                                                                              tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG)
+                                    ON tabelle_auftraggeberg_gug.idtabelle_auftraggeberg_GUG =
+                                        tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG)
+                                    ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke =
+                                        tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
+                            WHERE (((tabelle_räume_has_tabelle_elemente.Standort) = 1) AND
+                                   ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = ?))
+                            GROUP BY tabelle_elemente.ElementID,
+                                     tabelle_elemente.Bezeichnung, 
+                                     tabelle_varianten.Variante,
+                                     tabelle_varianten.idtabelle_Varianten, 
+                                     tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
+                                     tabelle_projekt_varianten_kosten.Kosten,
+                                     tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
+                                     tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke,
+                                     tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG,
+                                     tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
+                            ORDER BY tabelle_elemente.ElementID;";
+
+            $stmt = $mysqli->prepare($sql);
+            if ($stmt === false) {
+                die("Prepare failed: " . $mysqli->error);
+            }
+
+            $id = $_SESSION["projectID"] ?? null;
+            if ($id === null) {
+                die("Session projectID is not set.");
+            }
+
+            if (!$stmt->bind_param('i', $id)) {
+                die("Bind param failed: " . $stmt->error);
+            }
+
+            if (!$stmt->execute()) {
+                die("Execute failed: " . $stmt->error);
+            }
+
+            $result = $stmt->get_result();
+            if ($result === false) {
+                die("Getting result set failed: " . $stmt->error);
+            }
+
+            $stmt->close();
+
             echo "<table class='table table-striped table-bordered table-sm table-hover table-hover border border-light border-5' id='tableElementsInProject'>
-									<thead><tr>
-										<th>ID</th>
-										<th>Anzahl</th>
-										<th>ID</th>
-										<th>Element</th>
-										<th>Variante</th>
-										<th>VariantenID</th>
-										<th>Bestand</th>										
-										<th>Kosten </th> <!-- unformatiert -->
-										<th>Kosten</th>
-										<th>Gewerk</th>
-										<th>GHG</th>
-										<th>GUG</th>
-									</tr>
-									</thead>
-									<tbody>";
+                    <thead><tr>
+                        <th>ID</th>
+                        <th>Anzahl</th>
+                        <th>ID</th>
+                        <th>Element</th>
+                        <th>Variante</th>
+                        <th>VariantenID</th>
+                        <th>Bestand</th>										
+                        <th>Kosten </th> <!-- unformatiert -->
+                        <th>Kosten</th>
+                        <th>Gewerk</th> 
+                        <th>GHG</th>
+                        <th>GUG</th>
+                        </tr>
+                    </thead>
+                    <tbody>";
+
             while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
                 echo "<td>" . $row["TABELLE_Elemente_idTABELLE_Elemente"] . "</td>";
@@ -171,9 +198,8 @@ ORDER BY tabelle_elemente.ElementID;";
                         class="fas fa-caret-right"></i></button>
             <label>Elementvarianten</label></div>
         <div class="card-body" id="elementInfo">
-
-                <!-- div class="" id="elementGewerk"> within getElementVariante.php </div--->
-                <div class="row" id="elementVarianten"></div>
+            <!-- div class="" id="elementGewerk"> within getElementVariante.php </div--->
+            <div class="row" id="elementVarianten"></div>
 
         </div>
     </div>
@@ -238,10 +264,8 @@ ORDER BY tabelle_elemente.ElementID;";
     <div class="card-body" id="roomsWithAndWithoutElements" style="display:none"></div>
 </div>
 
-
 <script src="utils/_utils.js"></script>
 <script charset="utf-8">
-
     var tableElementsInProject;
     var tableRoomsWithElement;
     const searchbuilder = [
@@ -252,9 +276,7 @@ ORDER BY tabelle_elemente.ElementID;";
             titleAttr: "Filter",
         }
     ];
-
     $(document).ready(function () {
-
         tableElementsInProject = new DataTable('#tableElementsInProject', {
             paging: true,
             select: true,
@@ -270,6 +292,7 @@ ORDER BY tabelle_elemente.ElementID;";
                 }
             ],
             language: {
+
                 search: "",
                 searchPlaceholder: "Suche...",
                 searchBuilder: {
@@ -301,7 +324,6 @@ ORDER BY tabelle_elemente.ElementID;";
                     tableElementsInProject.buttons().container().appendTo('#target_div .btn-group');
                     new $.fn.dataTable.Buttons(tableElementsInProject, {buttons: searchbuilder}).container().appendTo('#sbdiv');
                 }, 100);
-
             }
         });
 
@@ -312,11 +334,10 @@ ORDER BY tabelle_elemente.ElementID;";
             if (tableElementsInProject.row($(this)).data()[6] === "Ja") {
                 bestand = 0;
             }
-
             $.ajax({
                 url: "getRoomsWithElement1.php",
                 data: {"elementID": elementID, "variantenID": variantenID, "bestand": bestand},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     let $table = $('#tableRoomsWithElement');
                     if ($table.length && $.fn.DataTable && $.fn.DataTable.isDataTable) {
@@ -328,31 +349,34 @@ ORDER BY tabelle_elemente.ElementID;";
                     $.ajax({
                         url: "getElementVariante.php",
                         data: {"elementID": elementID, "variantenID": variantenID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#elementVarianten").html(data);
                             $.ajax({
                                 url: "getStandardElementParameters.php",
                                 data: {"elementID": elementID},
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#elementDBParameter").html(data);
                                     $.ajax({
                                         url: "getElementPricesInDifferentProjects.php",
                                         data: {"elementID": elementID},
-                                        type: "GET",
+                                        type: "POST",
                                         success: function (data) {
+                                            // console.log(data);
                                             $("#elementPricesInOtherProjects").html(data);
                                             $.ajax({
                                                 url: "getDevicesToElement.php",
                                                 data: {"elementID": elementID},
-                                                type: "GET",
+                                                type: "POST",
                                                 success: function (data) {
                                                     $("#devicesToElement").html(data);
+                                                    console.log(elementID);
+
                                                     $.ajax({
                                                         url: "getElementGewerke.php",
                                                         data: {"elementID": elementID},
-                                                        type: "GET",
+                                                        type: "POST",
                                                         success: function (data) {
                                                             $("#elementGewerk").html(data);
                                                         }

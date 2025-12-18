@@ -23,6 +23,7 @@
 </head>
 
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 init_page_serversides("", "x");
 ?>
@@ -88,10 +89,8 @@ init_page_serversides("", "x");
             dataTable.destroy();
             $('#elementsTable').remove();
         }
-
         $('#elemetsParamsTable').empty();
 
-        // Request the data from your PHP endpoint, pass K2Return as JSON string in GET
         const url = 'getRoomElementsInProjectParameterData.php?K2Return=' + encodeURIComponent(JSON.stringify(K2R));
 
         $.getJSON(url, function (data) {
@@ -102,18 +101,17 @@ init_page_serversides("", "x");
 
             // Build columns dynamically: fixed columns + dynamic parameter columns from first room's element keys
             const fixedCols = [
-                {title: 'Raum ID', data: 'roomID', visble:false},
-                {title: 'Raumbezeichnung', data: 'Raumbezeichnung'},
-                {title: 'Raumnr', data: 'Raumnr'},
-                {title: 'MTrelevant', data: 'MTrelevant'},
-                {title: 'Bauabschnitt', data: 'Bauabschnitt'},
-                {title: 'Geschoss', data: 'Geschoss'},
-
-                {title: 'ElementID', data: 'ElementID'},
+                {title: 'Raum ID', data: 'roomID', visible: false},
+                // {title: 'Raumbezeichnung', data: 'Raumbezeichnung'},
+                // {title: 'Raumnr', data: 'Raumnr'},
+                // {title: 'MTrelevant', data: 'MTrelevant'},
+                // {title: 'Bauabschnitt', data: 'Bauabschnitt'},
+                // {title: 'Geschoss', data: 'Geschoss'},
+                {title: "<th> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='ElementID'><i class='fas fa-fingerprint'></i></div> </th> " , data: 'ElementID'},
                 {title: 'Bezeichnung', data: 'Bezeichnung'},
-                {title: 'Variante', data: 'Variante'},
+                {title: 'Var', data: 'Variante'},
                 {title: 'Neu/Bestand', data: 'Neu/Bestand'},
-                {title: 'Standort', data: 'Standort'},
+                {title: "<th> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Standort'> <i class='fab fa-periscope '></i></div> </th>",data: 'Standort'},
                 {title: 'SummevonAnzahl', data: 'SummevonAnzahl'}
             ];
 
@@ -124,8 +122,8 @@ init_page_serversides("", "x");
                 const exampleElem = firstRoom.elements[0];
                 // Filter out known fixed keys to get only parameter keys
                 const paramKeys = Object.keys(exampleElem).filter(k => ![
-                    'ElementID','Bezeichnung','Variante','Neu/Bestand','Standort','SummevonAnzahl',
-                    'TABELLE_Elemente_idTABELLE_Elemente','tabelle_Varianten_idtabelle_Varianten'
+                    'ElementID', 'Bezeichnung', 'Variante', 'Neu/Bestand', 'Standort', 'SummevonAnzahl',
+                    'TABELLE_Elemente_idTABELLE_Elemente', 'tabelle_Varianten_idtabelle_Varianten'
                 ].includes(k));
                 paramCols = paramKeys.map(key => ({title: key, data: key}));
             }
@@ -168,8 +166,8 @@ init_page_serversides("", "x");
         init_checkboxes4selectingKathegories();
         loadElementsParamTable();
     });
-</script>
 
+</script>
 </body>
 </html>
 

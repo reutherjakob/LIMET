@@ -1,8 +1,9 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 init_page_serversides("x");
 check_login();
-//TODO Fußboden
+//TODO Fußboden - ??
 ?>
 
 
@@ -115,7 +116,7 @@ check_login();
 
         $.ajax({
             url: 'get_rooms_via_namesearch.php',
-            type: 'GET',
+            type: 'POST',
             dataType: 'json',
             data: {field: selectedField, search: searchString},
             success: function (response) {
@@ -172,12 +173,12 @@ check_login();
         $.ajax({
             url: "setSessionVariables.php",
             data: {"roomID": RaumID},
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 $("#RoomID").text(RaumID);
                 $.ajax({
                     url: "getRoomElementsDetailed1.php",
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         if (!data || data.trim() === "") {
                             $("#roomElements").empty();
@@ -188,7 +189,7 @@ check_login();
                         $('#elementParameters').empty();
                         $.ajax({
                             url: "getRoomSpecifications2.php",
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 $("#bauangaben").html(data);
                             }

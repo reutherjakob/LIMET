@@ -87,7 +87,6 @@ init_page_serversides("", "x");
                 'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt',
                 'Anmerkung allgemein', 'Entfallen'
             ];
-
             $sql = "SELECT " . implode(", ", array_map(function ($col) {
                     return "r.`$col`";
                 }, $columns)) .
@@ -95,7 +94,6 @@ init_page_serversides("", "x");
                  INNER JOIN tabelle_projekte p  
                  ON r.tabelle_projekte_idTABELLE_Projekte = p.idTABELLE_Projekte 
                  WHERE p.idTABELLE_Projekte=" . $_SESSION["projectID"];
-
             $result = $mysqli->query($sql);
             if (!$result) {
                 die("Query failed: " . $mysqli->error);
@@ -124,9 +122,9 @@ init_page_serversides("", "x");
     </div>
 </div>
 
+
 <script>
     let table;
-
     const reportCategoryOptions = [
         {value: "", text: "-- Berichtkathegorie auswählen --", disabled: true, selected: true},
         {value: "bauangaben", text: "Bauangaben"},
@@ -135,7 +133,6 @@ init_page_serversides("", "x");
         {value: "oldReports", text: "Historische Berichte"},
 
     ];
-
     const reportCategories = {
         bauangaben: [
             {text: "PDF V1", url: "pdf_createBauangabenPDF"},
@@ -175,14 +172,12 @@ init_page_serversides("", "x");
         ]
     };
 
-
     $(document).ready(function () {
         $('#dateSelect').val(new Date().toISOString().split('T')[0]);
         $('#dateSelect4Report').val(new Date().toISOString().split('T')[0]);
         initDataTable();
         addMTFilter('#filtersContainer');
         addEntfallenFilter('#filtersContainer');
-
 
         setTimeout(() => {
             const searchbuilderBtns = [{
@@ -213,7 +208,6 @@ init_page_serversides("", "x");
         categorySelect.on('change', function () {
             displayReportsForCategory(this.value);
         });
-
     });
 
     function initDataTable() {
@@ -256,11 +250,8 @@ init_page_serversides("", "x");
     function displayReportsForCategory(category) {
         const container = $('#reportButtonsContainer');
         container.empty();
-
         if (!category || !reportCategories[category]) return;
-
         const btnGroup = $('<div class="btn-group" role="group" aria-label="Berichtsbuttons"></div>');
-
         reportCategories[category].forEach(report => {
             const button = $('<button type="button" class="btn btn-light border-dark btn-sm"></button>').text(report.text);
             button.on('click', () => generateReport(report, $('#dateSelect').val()));
@@ -273,13 +264,11 @@ init_page_serversides("", "x");
     function generateReport(report, date) {
         const roomIDs = table.rows({selected: true}).data().toArray().map(row => row[0]);
         const formattedDate = date || getDate("#dateSelect");
-
         if (report.url.startsWith("pdf_createElementEinbringwegePDF")) {
             // For einbringwege PDFs, no room selection required:
             const url = `/PDFs/${report.url}.php?date=${formattedDate}`; // no roomID param
             window.open(url);
-        } else {
-            // Other reports require room selection:
+        } else {// Other reports require room selection:
             if (!roomIDs.length) {
                 alert("Kein Raum ausgewählt!");
                 return;
@@ -319,17 +308,15 @@ init_page_serversides("", "x");
     function initTooltips() {
         const opts = {delay: {show: 0, hide: 200}};
         let el;
-
         el = document.getElementById('dateSelect');
         if (el) new bootstrap.Tooltip(el, opts);
-
         el = document.getElementById('dateSelect4Report');
         if (el) new bootstrap.Tooltip(el, opts);
     }
 
     function handleReportDateSelection() {
         const val = $('#dateSelect4Report').val();
-        $.get('PDFs/pdf_setSession.php', {PDFdatum: val});
+        $.post('PDFs/pdf_setSession.php', {PDFdatum: val});
     }
 
 

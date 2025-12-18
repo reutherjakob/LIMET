@@ -113,6 +113,19 @@ function load_nav_bar(): void
     echo '     };    </script>';
 }
 
+// if (!function_exists('h')) {
+//     function h($var): string
+//     {
+//         return htmlspecialchars((string)($var ?? ''));
+//     }
+// }
+
+// function writeLog($message): void
+// {
+//     $logFile = __DIR__ . '/log.log';
+//     file_put_contents($logFile, date('Y-m-d H:i:s') . " - $message\n", FILE_APPEND);
+// }
+
 
 function getPostInt(string $key, int $default = 0): int
 {
@@ -124,3 +137,35 @@ function getPostString(string $key, string $default = ''): string
     return isset($_POST[$key]) ? trim($_POST[$key]) : $default;
 }
 
+function getPostDate(string $key): string
+{
+    $dateInput = getPostString($key); // e.g. '2025-11-07'
+    $dateFormatted = '';
+
+    if ($dateInput !== '') {
+        $timestamp = strtotime($dateInput);
+        if ($timestamp !== false) {
+            $dateFormatted = date("Y-m-d", $timestamp); // expected to be identical here
+        }
+    }
+    return $dateFormatted;
+}
+
+function getPostFloat(string $key, float $default = 0.0): float {
+    return isset($_POST[$key]) ? filter_var($_POST[$key], FILTER_VALIDATE_FLOAT) ?? $default : $default;
+}
+
+function getPostArrayInt(string $key, array $default = []): array {
+    $input = filter_input(INPUT_POST, $key, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
+    if (!$input) {
+        return $default;
+    }
+    $output = [];
+    foreach ($input as $item) {
+        $val = filter_var($item, FILTER_VALIDATE_INT);
+        if ($val !== false) {
+            $output[] = $val;
+        }
+    }
+    return $output;
+}

@@ -1,18 +1,11 @@
-<!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title>getVermerkZustaendigkeiten</title>
-</head>
-<body>
-
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 
 $mysqli = utils_connect_sql();
 
-$vermerkID = filter_input(INPUT_GET, 'vermerkID', FILTER_VALIDATE_INT);
+$vermerkID = getPostInt('vermerkID');
 
 if (!$vermerkID) {
     echo "Ungültige Vermerk-ID.";
@@ -51,36 +44,34 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . $row["Name"] . "</td>";
     echo "<td>" . $row["Vorname"] . "</td>";
     echo "</tr>";
-
 }
 echo "</tbody></table>";
-
 $mysqli->close();
 ?>
 
-</body>
+
 <script>
     $(document).ready(function () {
         $("button[value='deleteVermerkZustaendigkeit']").click(function () {
             let id = this.id;
             console.log("btn pressed");
-            let vermerkID = "<?php echo filter_input(INPUT_GET, 'vermerkID') ?>";
+            let vermerkID = "<?php echo filter_input(INPUT_POST, 'vermerkID') ?>";
             if (id !== "" && vermerkID !== "") {
                 $.ajax({
                     url: "deletePersonFromVermerkZustaendigkeit.php",
                     data: {"ansprechpersonenID": id, "vermerkID": vermerkID},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         alert(data);
                         $.ajax({
                             url: "getVermerkZustaendigkeiten.php",
-                            type: "GET",
+                            type: "POST",
                             data: {"vermerkID": vermerkID},
                             success: function (data) {
                                 $("#vermerkZustaendigkeit").html(data);
                                 $.ajax({
                                     url: "getPossibleVermerkZustaendigkeiten.php",
-                                    type: "GET",
+                                    type: "POST",
                                     data: {"vermerkID": vermerkID},
                                     success: function (data) {
                                         $("#possibleVermerkZustaendigkeit").html(data);
@@ -121,4 +112,3 @@ $mysqli->close();
     });
 
 </script>
-</html>

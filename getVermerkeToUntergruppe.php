@@ -1,9 +1,8 @@
-<!-- 13.2.25: Reworked -->
-<body>
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
-
+$vermerkUntergruppenID = getPostInt('vermerkUntergruppenID');
 $mysqli = utils_connect_sql();
 $sql = "SELECT 
     v.idtabelle_Vermerke, 
@@ -21,14 +20,16 @@ FROM tabelle_Vermerke v
 LEFT JOIN tabelle_vermerke_has_tabelle_räume v2r ON v.idtabelle_Vermerke = v2r.tabelle_vermerke_idTabelle_vermerke
 LEFT JOIN tabelle_räume r ON v2r.tabelle_räume_idTabelle_räume = r.idTABELLE_Räume
 LEFT JOIN tabelle_lose_extern le ON v.tabelle_lose_extern_idtabelle_Lose_Extern = le.idtabelle_Lose_Extern
-WHERE v.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe = " . filter_input(INPUT_GET, 'vermerkUntergruppenID') . "
+WHERE v.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe = ?
 GROUP BY v.idtabelle_Vermerke
 ORDER BY v.Erstellungszeit";
 
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("i", $vermerkUntergruppenID);
+$stmt->execute();
+$result = $stmt->get_result();
 
-$result = $mysqli->query($sql);
-
-echo "<table class='table table-striped table-bordered table-responsive border border-light border-5' id='tableVermerke'>
+echo "<body> <table class='table table-striped table-bordered table-responsive border border-light border-5' id='tableVermerke'>
                 <thead><tr>
                 <th>ID</th>
                 <th></th>
@@ -62,17 +63,16 @@ while ($row = $result->fetch_assoc()) {
     echo "<td id='vermerkTyp" . $row["idtabelle_Vermerke"] . "' value ='" . $row['Vermerkart'] . "'>" . $row['Vermerkart'] . "</td>";
     echo "<td><button type='button' id=" . $row['idtabelle_Vermerke'] . " class='btn btn-outline-dark btn-sm' value='showVermerkZustaendigkeit' data-bs-toggle='modal' data-bs-target='#showVermerkZustaendigkeitModal'><i class='fas fa-users'></i></button></td>";
     echo "<td id='lot" . $row["idtabelle_Vermerke"] . "' value ='" . $row['tabelle_lose_extern_idtabelle_Lose_Extern'] . "'>" . $row['tabelle_lose_extern_idtabelle_Lose_Extern'] . "</td>";
-
     echo "<td id='rooms" . $row["idtabelle_Vermerke"] . "'>" . htmlspecialchars($row['RaumIDs'] ?? '') . "</td>";
-
     echo "<td>" . $row['LosNr_Extern'] . "</td>";
     echo "<td>" . htmlspecialchars($row['Raumnummern'] ?? '') . "</td>";
     echo "</tr>";
 }
 echo "</tbody></table>";
 ?>
-</body>
-<!-- Modal zum Hinzufügen/Ändern eines Vermerks -->
+
+
+
 <div class='modal fade' id='changeVermerkModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-lg'>
         <div class='modal-content'>
@@ -102,7 +102,6 @@ echo "</tbody></table>";
                                             FROM tabelle_lose_extern LEFT JOIN tabelle_lieferant ON tabelle_lose_extern.tabelle_lieferant_idTABELLE_Lieferant = tabelle_lieferant.idTABELLE_Lieferant
                                             WHERE (((tabelle_lose_extern.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
                                             ORDER BY tabelle_lose_extern.LosNr_Extern;";
-
                     $result1 = $mysqli->query($sql);
 
                     echo "<div class='form-group'>
@@ -114,29 +113,33 @@ echo "</tbody></table>";
                     }
                     echo "</select><div>";
 
-                    // Untergruppen-Abfrage für Änderung der Untergruppe
-                    $sql = "SELECT tabelle_Vermerkuntergruppe.idtabelle_Vermerkuntergruppe, tabelle_Vermerkuntergruppe.Untergruppenname, tabelle_Vermerkuntergruppe.Untergruppennummer
-                                            FROM tabelle_Vermerkuntergruppe
-                                            WHERE (((tabelle_Vermerkuntergruppe.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe)=" . filter_input(INPUT_GET, 'vermerkGruppenID') . "))
-                                            ORDER BY Untergruppennummer ASC;";
+                    $sql = "SELECT idtabelle_Vermerkuntergruppe, 
+                                    Untergruppenname, 
+                                    Untergruppennummer
+                                FROM tabelle_Vermerkuntergruppe
+                                WHERE tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe = ?
+                                ORDER BY Untergruppennummer ASC";
 
-                    $result1 = $mysqli->query($sql);
+                    $stmt = $mysqli->prepare($sql);
+                    $stmt->bind_param("i", $vermerkGruppenID);
+                    $stmt->execute();
+                    $result1 = $stmt->get_result();
+
 
                     echo "<div class='form-group'>
                                         <label for='untergruppe'>Untergruppe:</label>									
                                         <select class='form-control form-control-sm' id='untergruppe' name='untergruppe'>";
-
                     while ($row = $result1->fetch_assoc()) {
-                        if ($row["idtabelle_Vermerkuntergruppe"] == filter_input(INPUT_GET, 'vermerkUntergruppenID')) {
+                        if ($row["idtabelle_Vermerkuntergruppe"] == filter_input(INPUT_POST, 'vermerkUntergruppenID')) {
                             echo "<option value=" . $row["idtabelle_Vermerkuntergruppe"] . " selected>" . $row["Untergruppennummer"] . " - " . $row["Untergruppenname"] . "</option>";
                         } else {
                             echo "<option value=" . $row["idtabelle_Vermerkuntergruppe"] . ">" . $row["Untergruppennummer"] . " - " . $row["Untergruppenname"] . "</option>";
                         }
                     }
                     echo "</select>  </div>";
-
                     $mysqli->close();
                     ?>
+
                     <div class='form-group'>
                         <label for='vermerkStatus'>Status:</label>
                         <select class='form-control form-control-sm' id='vermerkStatus' name='vermerkStatus'>
@@ -165,9 +168,7 @@ echo "</tbody></table>";
                                   style="font-size:10pt"> </textarea>
 
                     </div>
-                    <div class="form-group">
-
-                    </div>
+                    <div class="form-group"></div>
                 </form>
             </div>
 
@@ -275,15 +276,14 @@ echo "</tbody></table>";
 
 
 <script charset="utf-8 " type="text/javascript">
-    vermerkGruppenID = <?php echo filter_input(INPUT_GET, 'vermerkGruppenID') ?>;
     /* Inititation within DocumentationV2.php; also 4:  var vermerkID;*/
-    vermerkUntergruppenID = <?php echo filter_input(INPUT_GET, 'vermerkUntergruppenID') ?>;
+    vermerkGruppenID = <?php echo json_encode(filter_input(INPUT_POST, 'vermerkGruppenID')); ?>;
+    vermerkUntergruppenID = <?php echo json_encode(filter_input(INPUT_POST, 'vermerkUntergruppenID')); ?>;
 
     //  console.log("Get Vermerke To Untergruppe: ", vermerkUntergruppenID, untergruppenID);
 
 
     $(document).ready(function () {
-
         $('#changeVermerkModal select').select2({
             width: '100%',
             placeholder: 'Bitte auswählen...',
@@ -382,13 +382,13 @@ echo "</tbody></table>";
             let id = this.id;
             $.ajax({
                 url: "getVermerkZustaendigkeiten.php",
-                type: "GET",
+                type: "POST",
                 data: {"vermerkID": id},
                 success: function (data) {
                     $("#vermerkZustaendigkeit").html(data);
                     $.ajax({
                         url: "getPossibleVermerkZustaendigkeiten.php",
-                        type: "GET",
+                        type: "POST",
                         data: {"vermerkID": id},
                         success: function (data) {
                             $("#possibleVermerkZustaendigkeit").html(data);
@@ -423,7 +423,7 @@ echo "</tbody></table>";
         let vermerkStatus = $("#vermerkStatus").val();
         let vermerkTyp = $("#vermerkTyp").val();
         let vermerkText = $("#vermerkText").val();
-        console.log(" addVermerk sVermerkText: ",vermerkText);
+        console.log(" addVermerk sVermerkText: ", vermerkText);
         let faelligkeitDatum = $("#faelligkeit").val();
         if (vermerkTyp === "Info") {
             faelligkeitDatum = null;
@@ -441,13 +441,13 @@ echo "</tbody></table>";
                     "vermerkText": vermerkText,
                     "faelligkeitDatum": faelligkeitDatum
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data, true);
                     $.ajax({
                         url: "getVermerkeToUntergruppe.php",
                         data: {"vermerkUntergruppenID": vermerkUntergruppenID, "vermerkGruppenID": vermerkGruppenID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#vermerke").html(data);
                             document.getElementById('pdfPreview').src += '';
@@ -515,7 +515,7 @@ echo "</tbody></table>";
                     $.ajax({
                         url: "getVermerkeToUntergruppe.php",
                         data: {"vermerkUntergruppenID": vermerkUntergruppenID, "vermerkGruppenID": vermerkGruppenID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#vermerke").html(data);
                             document.getElementById('pdfPreview').src += '';
@@ -538,13 +538,13 @@ echo "</tbody></table>";
         $.ajax({
             url: "deleteVermerk.php",
             data: {"vermerkID": vermerkID},
-            type: "GET",
+            type: "POST",
             success: function (data) {
                 alert(data);
                 $.ajax({
                     url: "getVermerkeToUntergruppe.php",        // Neu Laden der Vermerkliste
                     data: {"vermerkUntergruppenID": vermerkUntergruppenID, "vermerkGruppenID": vermerkGruppenID},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         $("#vermerke").html(data);
                         document.getElementById('pdfPreview').src += '';                        // Neu laden der PDF-Vorschau

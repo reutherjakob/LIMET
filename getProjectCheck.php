@@ -1,18 +1,9 @@
-<!DOCTYPE html>
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-<html>
-<head>
-</head>
-<body>
-
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 init_page_serversides();
-
 $mysqli = utils_connect_sql();
-
-$projectID = $_SESSION["projectID"] ?? null;
-$projectID = intval($projectID);
+$projectID = (int)$_SESSION["projectID"] ?? null;
 
 if (!$projectID) {
     echo "<div class='alert alert-danger'>Projekt-ID fehlt oder ungültig.</div>";
@@ -123,8 +114,3 @@ $stmt->close();
 $mysqli->close();
 
 ?>
-
-<script>
-</script>
-</body>
-</html>

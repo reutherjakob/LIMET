@@ -1,23 +1,24 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
+check_login();
+
 $mysqli = utils_connect_sql();
 
-$id = $_POST['id'];
-$field = $_POST['field'];
-$value = $_POST['value'];
+$id = getPostInt('id');
+$field = getPostString('field');
+$value = getPostString('value');
 
-// Sanitize input
-$id = $mysqli->real_escape_string($id);
-$field = $mysqli->real_escape_string($field);
-$value = $mysqli->real_escape_string($value);
+$sql = "UPDATE tabelle_räume_has_tabelle_elemente SET ? = ? WHERE id = ?";
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("sii", $field, $value, $id);
 
-$sql = "UPDATE tabelle_räume_has_tabelle_elemente SET $field = '$value' WHERE id = $id";
-if ($mysqli->query($sql) === TRUE) {
+if ($stmt->execute()) {
     echo "Record updated successfully";
 } else {
-    echo "Error updating record: " . $mysqli->error;
+    echo "Error updating record: " . $stmt->error;
 }
 
+$stmt->close();
 $mysqli->close();
 ?>
-<?php

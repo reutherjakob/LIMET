@@ -28,6 +28,7 @@
 
 </head>
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 init_page_serversides();
 ?>
@@ -44,19 +45,20 @@ init_page_serversides();
 
                         <div id="CardHeaderRaume" class="col-xxl-6 d-flex justify-content-end align-items-center">
 
-                            <input type="checkbox" id="filter_EntfalleneRooms" class="btn-check">
+                            <input type="checkbox" id="filter_EntfalleneRooms" class="btn-check"  checked>
                             <label class="btn btn-outline-dark btn-sm float-right" for="filter_EntfalleneRooms">
                                 Entfallene ausblenden </label>
 
                             <input type="checkbox" id="filter_MTrelevantRooms" checked class="btn-check">
-                            <label class="btn btn-outline-dark btn-sm float-right ms-1 me-1" for="filter_MTrelevantRooms"> Nur MT-relevante </label>
+                            <label class="btn btn-outline-dark btn-sm float-right ms-1 me-1"
+                                   for="filter_MTrelevantRooms"> Nur MT-relevante </label>
                         </div>
                     </div>
                 </div>
                 <div class="card-body" style="overflow: auto; ">
                     <?php
                     $mysqli = utils_connect_sql();
-                    $projectID = $_SESSION["projectID"] ?? null;
+                    $projectID = (int)$_SESSION["projectID"] ?? null;
 
                     if (!is_numeric($projectID)) {
                         die("Ungültige Projekt-ID");
@@ -64,12 +66,20 @@ init_page_serversides();
 
                     $stmt = $mysqli->prepare("
                         SELECT 
-                            r.Raumnr, r.Raumbezeichnung, r.Nutzfläche,
-                            r.`Raumbereich Nutzer`, r.Geschoss, r.Bauetappe, 
-                            r.Bauabschnitt, r.Raumnummer_Nutzer,
-                            r.`Anmerkung allgemein`, r.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, 
-                            r.idTABELLE_Räume, r.`MT-relevant`, 
-                            r.`Anmerkung FunktionBO`, r.Entfallen
+                            r.Raumnr, 
+                            r.Raumbezeichnung, 
+                            r.Nutzfläche,
+                            r.`Raumbereich Nutzer`, 
+                            r.Geschoss, 
+                            r.Bauetappe, 
+                            r.Bauabschnitt, 
+                            r.Raumnummer_Nutzer,
+                            r.`Anmerkung allgemein`, 
+                            r.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, 
+                            r.idTABELLE_Räume, 
+                            r.`MT-relevant`, 
+                            r.`Anmerkung FunktionBO`, 
+                            r.Entfallen
                         FROM tabelle_räume r
                         INNER JOIN tabelle_projekte p 
                             ON r.tabelle_projekte_idTABELLE_Projekte = p.idTABELLE_Projekte
@@ -88,35 +98,41 @@ init_page_serversides();
 						<th>Raumbezeichnung</th>
 						<th>Nutzfläche</th>
 						<th>Raumbereich Nutzer</th>
+						<th>Bauetappe</th>
+						<th>Bauabschnitt</th>
                         <th>Ebene</th>
                         <th>MT-relevant</th>
                         <th>BO</th>   
                          <th> <i class='fas fa-slash'></i> </th>
 						</tr></thead><tbody>";
+
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr>";
-                        echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
-                        echo "<td>" . $row["Raumnr"] . "</td>";
-                        echo "<td>" . $row["Raumnummer_Nutzer"] . "</td>";
-                        echo "<td>" . $row["Raumbezeichnung"] . "</td>";
-                        echo "<td>" . $row["Nutzfläche"] . "</td>";
-                        echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
-                        echo "<td>" . $row["Geschoss"] . "</td>";
+                        echo "<td>" . htmlspecialchars($row["idTABELLE_Räume"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Raumnr"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Raumnummer_Nutzer"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Raumbezeichnung"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Nutzfläche"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Raumbereich Nutzer"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Bauetappe"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Bauabschnitt"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Geschoss"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                         echo "<td>";
-                        if ((int)$row["MT-relevant"] === 0) {
+                        if ((int)($row["MT-relevant"] ?? 0) === 0) {
                             echo "Nein";
                         } else {
                             echo "Ja";
                         }
                         echo "</td>";
                         echo "<td>";
-                        if ($row["Anmerkung FunktionBO"] != null) {
-                            echo "<button type='button' class='btn btn-sm btn-outline-dark' style='height=20px; ' id='buttonBO' value='" . $row["Anmerkung FunktionBO"] . "' data-bs-toggle='modal' data-bs-target='#boModal'><i class='fa fa-comment'></i></button>";
+                        if (!empty($row["Anmerkung FunktionBO"])) {
+                            echo "<button type='button' class='btn btn-sm btn-outline-dark' style='height=20px; ' id='buttonBO' value='" . htmlspecialchars($row["Anmerkung FunktionBO"] ?? "", ENT_QUOTES, 'UTF-8') . "' data-bs-toggle='modal' data-bs-target='#boModal'><i class='fa fa-comment'></i></button>";
                         }
                         echo "</td>";
-                        echo "<td>" . $row["Entfallen"] . "</td>";
+                        echo "<td>" . htmlspecialchars($row["Entfallen"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
                         echo "</tr>";
                     }
+
                     echo "</tbody></table>";
                     ?>
                 </div>
@@ -320,7 +336,7 @@ init_page_serversides();
                 if (settings.nTable.id !== 'tableRooms') {
                     return true;
                 }
-                let mtRelevant = data[7];
+                let mtRelevant = data[9];
                 let filterMTRelevant = $("#filter_MTrelevantRooms").is(':checked');
                 if (!filterMTRelevant) {
                     return true;
@@ -333,7 +349,7 @@ init_page_serversides();
                 if (settings.nTable.id !== 'tableRooms') {
                     return true;
                 }
-                let entfallen = data[9];
+                let entfallen = data[11];
                 let filterentfallen = $("#filter_EntfalleneRooms").is(':checked');
                 if (!filterentfallen) {
                     return true;
@@ -358,18 +374,18 @@ init_page_serversides();
             $.ajax({
                 url: "setSessionVariables.php",
                 data: {"roomID": id},
-                type: "GET",
+                type: "POST",
                 success: function () {
                     $("#RoomID").text(id);
                     $.ajax({
                         url: "getRoomVermerke.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#roomVermerke").html(data);
 
                             $.ajax({
                                 url: "getRoomElementsDetailed1.php",
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#roomElements").html(data);
                                 }
@@ -444,24 +460,24 @@ init_page_serversides();
             $.ajax({
                 url: "setSessionVariables.php",
                 data: {"elementID": elementID},
-                type: "GET",
+                type: "POST",
                 success: function () {
                     $.ajax({
                         url: "getStandardElementParameters.php",
                         data: {"elementID": elementID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#elementParametersInDB").html(data);
                             $.ajax({
                                 url: "getElementPricesInDifferentProjects.php",
                                 data: {"elementID": elementID},
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#elementPricesInOtherProjects").html(data);
                                     $.ajax({
                                         url: "getDevicesToElement.php",
                                         data: {"elementID": elementID},
-                                        type: "GET",
+                                        type: "POST",
                                         success: function (data) {
                                             $("#devicesInDB").html(data);
                                         }

@@ -121,23 +121,25 @@ setlocale(LC_MONETARY, "de_DE");
 $sumRaumbereich = 0;
 $sumRaumbereichNeu = 0;
 $sumRaumbereichBestand = 0;
-
 $fill = 0;
 
-// RaumBereiche laden über GET
-$roomBereiche = filter_input(INPUT_GET, 'roomBereiche');
-$roomBereichGeschosse = filter_input(INPUT_GET, 'roomBereichGeschosse');
-$teile = explode(",", $roomBereiche);
 
-$teileGeschosse = explode(",", $roomBereichGeschosse);
+$roomBereiche = filter_input(INPUT_GET, 'roomBereiche') ?? '';
+$roomBereichGeschosse = filter_input(INPUT_GET, 'roomBereichGeschosse') ?? '';
+$teile = $roomBereiche !== '' ? explode(',', $roomBereiche) : [];
+$teileGeschosse = $roomBereichGeschosse !== '' ? explode(',', $roomBereichGeschosse) : [];
 $index = 0;
 
-foreach ($teile as $valueOfRaumBereiche) {
+foreach ($teile as $idx => $valueOfRaumBereiche) {
+    $geschossFilter = $teileGeschosse[$idx] ?? null;
     foreach ($raumbereicheInProject as $rowData) {
+        if (
+            normalize_name($rowData['Raumbereich Nutzer']) == normalize_name($valueOfRaumBereiche) &&
+            $geschossFilter !== null &&
+            trim($rowData['Geschoss']) == trim($geschossFilter)
+        ) {
 
 
-        if (normalize_name($rowData['Raumbereich Nutzer']) == normalize_name($valueOfRaumBereiche) && isset($teileGeschosse[$index]) &&
-            trim($rowData['Geschoss']) == trim($teileGeschosse[$index])) {
             // echo "<pre>";
             // echo "Comparing: \n";
             // echo "Raumbereich Nutzer DB: [" . trim($rowData['Raumbereich Nutzer']) . "]\n";
@@ -176,7 +178,7 @@ foreach ($teile as $valueOfRaumBereiche) {
             $pdf->Ln();
             $pdf->SetFont('helvetica', 'I', 6);
 
-            // ------------------------------------Neu ---------------------------------------------- 
+            // ------------------------------------Neu ----------------------------------------------
             $pdf->MultiCell($w[0], 4, 'davon Neu', 0, 'R', $fill, 0);
             $pdf->MultiCell($w[1], 4, '', 0, 'C', $fill, 0);
             foreach ($gewerkeInProject as $key => $rowDataGewerkeInProject) {
@@ -195,7 +197,7 @@ foreach ($teile as $valueOfRaumBereiche) {
             }
             $pdf->MultiCell(25, 4, format_money_report($sumRaumbereichNeu), 0, 'R', $fill, 0);
             $pdf->Ln();
-            // ------------------------------------Bestand ---------------------------------------------- 
+            // ------------------------------------Bestand ----------------------------------------------
             $pdf->MultiCell($w[0], 4, 'davon Bestand', 0, 'R', $fill, 0);
             $pdf->MultiCell($w[1], 4, '', 0, 'C', $fill, 0);
             foreach ($gewerkeInProject as $key => $rowDataGewerkeInProject) {

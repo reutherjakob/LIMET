@@ -1,43 +1,25 @@
 <?php
-session_start();
+// 25 FX
+require_once "utils/_utils.php";
+check_login();
 
-?>
+$mysqli = utils_connect_sql();
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+$bezeichnung = getPostString('bezeichnung');
+$kurzbeschreibung = getPostString('kurzbeschreibung');
+$elementID = $_SESSION["elementID"];
 
-<?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	if ($mysqli ->connect_error) {
-	    die("Connection failed: " . $mysqli->connect_error);
-	}
-	$mysqli->query("SET NAMES 'utf8'");
-	
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    echo "Error loading character set utf8: " . $mysqli->error;
-	    exit();
-	} 		
-        
-			
-	$sql = "UPDATE `LIMET_RB`.`tabelle_elemente`
-                SET
-                `Bezeichnung` = '".filter_input(INPUT_GET, 'bezeichnung')."',
-                `Kurzbeschreibung` = '".filter_input(INPUT_GET, 'kurzbeschreibung')."'
-                WHERE `idTABELLE_Elemente` = ".$_SESSION["elementID"].";";	
-        
-	if ($mysqli ->query($sql) === TRUE) {
-	    echo "Element gespeichert!";
-	} else {
-	    echo "Error: " . $sql . "<br>" . $mysqli->error;
-	}
-	
-	
-	$mysqli ->close();	
-					
+$sql = "UPDATE `LIMET_RB`.`tabelle_elemente` SET `Bezeichnung` = ?, `Kurzbeschreibung` = ? WHERE `idTABELLE_Elemente` = ?";
+
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("ssi", $bezeichnung, $kurzbeschreibung, $elementID);
+
+if($stmt->execute()) {
+	echo "Element gespeichert!";
+} else {
+	echo "Error: " . $stmt->error;
+}
+
+$stmt->close();
+$mysqli->close();
 ?>

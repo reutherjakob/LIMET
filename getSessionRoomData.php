@@ -1,4 +1,5 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 header('Content-Type: application/json');
@@ -18,10 +19,10 @@ $stmt->close();
 
 if ($row = $result->fetch_assoc()) {
     echo json_encode([
-        'Raumbezeichnung' => htmlspecialchars($row['Raumbezeichnung']),
-        'Raumnr' => htmlspecialchars($row['Raumnr']),
-        'RaumbereichNutzer' => htmlspecialchars($row['Raumbereich Nutzer']),
-        'Geschoss' => htmlspecialchars($row['Geschoss'])
+        'Raumbezeichnung' => htmlspecialchars($row['Raumbezeichnung'] ??""),
+        'Raumnr' => htmlspecialchars($row['Raumnr']??""),
+        'RaumbereichNutzer' => htmlspecialchars($row['Raumbereich Nutzer']??""),
+        'Geschoss' => htmlspecialchars($row['Geschoss']??"" )
     ]);
 } else {
     echo json_encode(['error' => 'Raum nicht gefunden']);

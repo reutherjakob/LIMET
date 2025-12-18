@@ -1,25 +1,27 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
-?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title>getPossibleVermerkZustaendigkeiten</title></head>
-<body>
 
-<?php
 $mysqli = utils_connect_sql();
-$sql = "SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen, tabelle_ansprechpersonen.Name, tabelle_ansprechpersonen.Vorname
-                FROM tabelle_projekte_has_tabelle_ansprechpersonen INNER JOIN tabelle_ansprechpersonen ON tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen = tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen
-                WHERE (((tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ")
+$vermerkID = getPostInt('vermerkID', 0);
+
+$stmt = $mysqli->prepare("SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen, tabelle_ansprechpersonen.Name, tabelle_ansprechpersonen.Vorname
+                FROM tabelle_projekte_has_tabelle_ansprechpersonen 
+                INNER JOIN tabelle_ansprechpersonen ON tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen = tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen
+                WHERE tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projekte_idTABELLE_Projekte = ?
                 AND tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen NOT IN (
-                SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen
-						FROM tabelle_Vermerke_has_tabelle_ansprechpersonen INNER JOIN tabelle_ansprechpersonen ON tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen = tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen
-						WHERE (((tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_Vermerke_idtabelle_Vermerke)=" . filter_input(INPUT_GET, 'vermerkID') . "))
-                ));";
-$result = $mysqli->query($sql);
+                    SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen
+                    FROM tabelle_Vermerke_has_tabelle_ansprechpersonen 
+                    INNER JOIN tabelle_ansprechpersonen ON tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen = tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen
+                    WHERE tabelle_Vermerke_has_tabelle_ansprechpersonen.tabelle_Vermerke_idtabelle_Vermerke = ?
+                )");
+
+$projectID = (int)$_SESSION["projectID"];
+$stmt->bind_param("ii", $projectID, $vermerkID);
+$stmt->execute();
+$result = $stmt->get_result();
+
 
 echo "<table class='table table-striped table-sm' id='tablepossibleVermerkZustaendigkeitMembers'  >
         <thead><tr>
@@ -39,14 +41,12 @@ while ($row = $result->fetch_assoc()) {
 }
 
 echo "</tbody></table>";
-
 $mysqli->close();
 ?>
-</body>
+
+
 <script>
-
     $(document).ready(function () {
-
         $('#tablepossibleVermerkZustaendigkeitMembers').DataTable({
             paging: false,
             searching: true,
@@ -73,8 +73,8 @@ $mysqli->close();
         });
 
         $("button[value='addVermerkZustaendigkeit']").click(function () {
-            var id = this.id;
-            var vermerkID = "<?php echo filter_input(INPUT_GET, 'vermerkID') ?>";
+            let id = this.id;
+            let vermerkID = "<?php echo filter_input(INPUT_POST, 'vermerkID') ?>";
             if (id !== "") {
                 $.ajax({
                     url: "addPersonToVermerkZustaendigkeit.php",
@@ -84,13 +84,13 @@ $mysqli->close();
                         alert(data);
                         $.ajax({
                             url: "getVermerkZustaendigkeiten.php",
-                            type: "GET",
+                            type: "POST",
                             data: {"vermerkID": vermerkID},
                             success: function (data) {
                                 $("#vermerkZustaendigkeit").html(data);
                                 $.ajax({
                                     url: "getPossibleVermerkZustaendigkeiten.php",
-                                    type: "GET",
+                                    type: "POST",
                                     data: {"vermerkID": vermerkID},
                                     success: function (data) {
                                         $("#possibleVermerkZustaendigkeit").html(data);
@@ -106,5 +106,5 @@ $mysqli->close();
             }
         });
     });
+
 </script>
-</html>

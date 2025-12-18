@@ -17,6 +17,27 @@
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <style> /* Make sure Select2 dropdown appears above Bootstrap modal */
+        .select2-container {
+            z-index: 1060 !important; /* slightly higher than Bootstrap modal backdrop */
+        }
+
+        /* Also target the actual dropdown for Select2 (the dropdown elements) */
+        .select2-dropdown {
+            z-index: 1061 !important;
+        }
+
+        /* Optional: When used inside modal, the dropdown might need higher z-index */
+        .modal .select2-container {
+            z-index: 1070 !important;
+        }
+
+        .modal .select2-dropdown {
+            z-index: 1071 !important;
+        }
+    </style>
 </head>
 <body style="height:100%">
 <!-- Rework 2025 -->
@@ -33,14 +54,22 @@
         </div>
         <div class="card-body">
             <?php
+            // 25 FX
             if (!function_exists('utils_connect_sql')) {
                 include "utils/_utils.php";
             }
             init_page_serversides("x");
             $mysqli = utils_connect_sql();
-            $sql = "SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen, tabelle_ansprechpersonen.Name, tabelle_ansprechpersonen.Vorname, tabelle_ansprechpersonen.Tel, tabelle_ansprechpersonen.Adresse, tabelle_ansprechpersonen.PLZ, tabelle_ansprechpersonen.Ort, tabelle_ansprechpersonen.Land, tabelle_ansprechpersonen.Mail, tabelle_lieferant.Lieferant, tabelle_abteilung.Abteilung,
-                                 tabelle_lieferant.idTABELLE_Lieferant, tabelle_abteilung.idtabelle_abteilung, tabelle_ansprechpersonen.Gebietsbereich
-                                FROM tabelle_abteilung INNER JOIN (tabelle_lieferant INNER JOIN tabelle_ansprechpersonen ON tabelle_lieferant.idTABELLE_Lieferant = tabelle_ansprechpersonen.tabelle_lieferant_idTABELLE_Lieferant) ON tabelle_abteilung.idtabelle_abteilung = tabelle_ansprechpersonen.tabelle_abteilung_idtabelle_abteilung;";
+            $sql = "SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen, tabelle_ansprechpersonen.Name, 
+                       tabelle_ansprechpersonen.Vorname, tabelle_ansprechpersonen.Tel, 
+                       tabelle_ansprechpersonen.Adresse, tabelle_ansprechpersonen.PLZ,
+                       tabelle_ansprechpersonen.Ort, tabelle_ansprechpersonen.Land, 
+                       tabelle_ansprechpersonen.Mail,  tabelle_abteilung.Abteilung,
+                       tabelle_lieferant.Lieferant, tabelle_lieferant.idTABELLE_Lieferant,
+                       tabelle_abteilung.idtabelle_abteilung, tabelle_ansprechpersonen.Gebietsbereich
+            FROM tabelle_abteilung INNER JOIN (tabelle_lieferant INNER JOIN tabelle_ansprechpersonen 
+                ON tabelle_lieferant.idTABELLE_Lieferant = tabelle_ansprechpersonen.tabelle_lieferant_idTABELLE_Lieferant)
+                ON tabelle_abteilung.idtabelle_abteilung = tabelle_ansprechpersonen.tabelle_abteilung_idtabelle_abteilung;";
             $result = $mysqli->query($sql);
 
             echo "<table class='table table-striped table-bordered  table-sm' id='tableLieferantenKontakte'>
@@ -176,178 +205,90 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
+<?php
+require_once "modal_LieferantenKontaktHinzufuegen.php";
+?>
 
-        <!-- Modal zum Anlegen eines Firmenkontakts -->
-        <div class='modal fade' id='addContactModal' role='dialog' tabindex="-1">
-            <div class='modal-dialog modal-md'>
-
-                <!-- Modal content-->
-                <div class='modal-content'>
-                    <div class='modal-header'>
-                        <h4 class='modal-title'>Lieferantenkontakt hinzufügen</h4>
-                        <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
-                    </div>
-                    <div class='modal-body' id='mbody'>
-                        <form role="form">
-                            <div class='form-group'>
-                                <label for='lieferantenName'>Name</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantenName'>
-                            </div>
-                            <div class='form-group'>
-                                <label for='lieferantenVorname'>Vorname</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantenVorname'>
-                            </div>
-                            <div class='form-group'>
-                                <label class='control-label' for='lieferantenTel'>Tel</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantenTel'>
-                            </div>
-                            <div class='form-group'>
-                                <label class='control-label' for='lieferantenAdresse'>Adresse</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantenAdresse'>
-                            </div>
-                            <div class='form-group'>
-                                <label class='control-label' for='lieferantenPLZ'>PLZ</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantenPLZ'>
-                            </div>
-                            <div class='form-group'>
-                                <label class='control-label' for='lieferantenOrt'>Ort</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantenOrt'>
-                            </div>
-                            <div class='form-group'>
-                                <label class='control-label' for='lieferantenLand'>Land</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantenLand'>
-                            </div>
-                            <div class='form-group'>
-                                <label class='control-label' for='lieferantenEmail'>Email</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantenEmail'>
-                            </div>
-                            <?php
-                            $sql = "SELECT `tabelle_lieferant`.`idTABELLE_Lieferant`,
-                                           `tabelle_lieferant`.`Lieferant`
-                                       FROM `LIMET_RB`.`tabelle_lieferant` ORDER BY Lieferant;";
-                            $result = $mysqli->query($sql);
-
-                            echo "<div class='form-group'>
-                                              <label class='control-label' for='lieferant'>Lieferant</label>
-                                                      <select class='form-control form-control-sm' id='lieferant'>";
-                            while ($row = $result->fetch_assoc()) {
-                                echo "<option value=" . $row["idTABELLE_Lieferant"] . ">" . $row["Lieferant"] . "</option>";
-                            }
-                            echo "</select>	
-                              </div>";
-
-                            $sql = "SELECT `tabelle_abteilung`.`idtabelle_abteilung`,
-                                       `tabelle_abteilung`.`Abteilung`
-                                   FROM `LIMET_RB`.`tabelle_abteilung` ORDER BY Abteilung;";
-                            $result = $mysqli->query($sql);
-
-                            echo "<div class='form-group'>
-                              <label class='control-label' for='abteilung'>Abteilung</label>
-                                      <select class='form-control form-control-sm' id='abteilung'>";
-                            while ($row = $result->fetch_assoc()) {
-                                echo "<option value=" . $row["idtabelle_abteilung"] . ">" . $row["Abteilung"] . "</option>";
-                            }
-                            echo "</select>
-                                  </div>";
-                            $mysqli->close();
-                            ?>
-                            <div class='form-group'>
-                                <label class='control-label' for='lieferantenGebiet'>Gebiet</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantenGebiet'>
-                            </div>
-                        </form>
-                    </div>
-                    <div class='modal-footer'>
-                        <input type='button' id='addLieferantenKontakt' class='btn btn-success btn-sm'
-                               value='Hinzufügen'>
-                        <input type='button' id='saveLieferantenKontakt' class='btn btn-warning btn-sm'
-                               value='Speichern'>
-                        <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
-                    </div>
-                </div>
+<!-- Modal zum Anzeigen der Visitenkarte -->
+<div class='modal fade' id='showAddressCard' role='dialog' tabindex="-1">
+    <div class='modal-dialog modal-sm'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h4 class='modal-title'>Kontaktdaten</h4>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
-        </div>
-
-        <!-- Modal zum Anzeigen der Visitenkarte -->
-        <div class='modal fade' id='showAddressCard' role='dialog' tabindex="-1">
-            <div class='modal-dialog modal-sm'>
-                <div class='modal-content'>
-                    <div class='modal-header'>
-                        <h4 class='modal-title'>Kontaktdaten</h4>
-                        <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
-                    </div>
-                    <div class='modal-body' id='mbody'>
-                        <address class="m-t-md">
-                            <strong><label class='control-label' id="cardName"></label></strong><br>
-                            <label class='control-label' id="cardLieferant"></label><br>
-                            <label class='control-label' id="cardAddress"></label><br>
-                            <label class='control-label' id="cardPlace"></label><br>
-                            <abbr title="Phone">T: </abbr><label class='control-label' id="cardTel"></label><br>
-                            <abbr title="Mail">M: </abbr><label class='control-label' id="cardMail"></label><br>
-                        </address>
-                    </div>
-                    <div class='modal-footer'>
-                    </div>
-                </div>
+            <div class='modal-body' id='mbody'>
+                <address class="m-t-md">
+                    <strong><label class='control-label' id="cardName"></label></strong><br>
+                    <label class='control-label' id="cardLieferant"></label><br>
+                    <label class='control-label' id="cardAddress"></label><br>
+                    <label class='control-label' id="cardPlace"></label><br>
+                    <abbr title="Phone">T: </abbr><label class='control-label' id="cardTel"></label><br>
+                    <abbr title="Mail">M: </abbr><label class='control-label' id="cardMail"></label><br>
+                </address>
             </div>
-        </div>
-
-        <div class='modal fade' id='changeLieferantModal' role='dialog' tabindex="-1">
-            <div class='modal-dialog modal-md'>
-                <!-- Modal content-->
-                <div class='modal-content'>
-                    <div class='modal-header'>
-                        <h4 class='modal-title'>Lieferant</h4>
-                        <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
-                    </div>
-                    <div class='modal-body' id='mbody'>
-
-                        <input type='hidden' id='lieferantID'>
-                        <form role="form">
-                            <div class='form-group'>
-                                <label for='firma'>Lieferant</label>
-                                <input type='text' class='form-control form-control-sm' id='firma'>
-                            </div>
-                            <div class='form-group'>
-                                <label class='control-label' for='lieferantTel'>Tel</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantTel'>
-                            </div>
-                            <div class='form-group'>
-                                <label class='control-label' for='lieferantAdresse'>Adresse</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantAdresse'>
-                            </div>
-                            <div class='form-group'>
-                                <label class='control-label' for='lieferantPLZ'>PLZ</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantPLZ'>
-                            </div>
-                            <div class='form-group'>
-                                <label class='control-label' for='lieferantOrt'>Ort</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantOrt'>
-                            </div>
-                            <div class='form-group'>
-                                <label class='control-label' for='lieferantLand'>Land</label>
-                                <input type='text' class='form-control form-control-sm' id='lieferantLand'>
-                            </div>
-                        </form>
-                    </div>
-                    <div class='modal-footer'>
-                        <div class='modal-footer'>
-                            <input type='button' id='addLieferant' class='btn btn-success btn-sm me-1'
-                                   value='Hinzufügen'>
-                            <input type='button' id='saveLieferant' class='btn btn-warning btn-sm me-1'
-                                   value='Speichern'>
-                            <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen
-                            </button>
-                        </div>
-
-                    </div>
-                </div>
+            <div class='modal-footer'>
             </div>
         </div>
     </div>
-</body>
+</div>
 
+<div class='modal fade' id='changeLieferantModal' role='dialog' tabindex="-1">
+    <div class='modal-dialog modal-md'>
+        <!-- Modal content-->
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h4 class='modal-title'>Lieferant</h4>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
+            </div>
+            <div class='modal-body' id='mbody'>
+                <input type='hidden' id='lieferantID'>
+                <form role="form">
+                    <div class='form-group'>
+                        <label for='firma'>Lieferant</label>
+                        <input type='text' class='form-control form-control-sm' id='firma'>
+                    </div>
+                    <div class='form-group'>
+                        <label class='control-label' for='lieferantTel'>Tel</label>
+                        <input type='text' class='form-control form-control-sm' id='lieferantTel'>
+                    </div>
+                    <div class='form-group'>
+                        <label class='control-label' for='lieferantAdresse'>Adresse</label>
+                        <input type='text' class='form-control form-control-sm' id='lieferantAdresse'>
+                    </div>
+                    <div class='form-group'>
+                        <label class='control-label' for='lieferantPLZ'>PLZ</label>
+                        <input type='text' class='form-control form-control-sm' id='lieferantPLZ'>
+                    </div>
+                    <div class='form-group'>
+                        <label class='control-label' for='lieferantOrt'>Ort</label>
+                        <input type='text' class='form-control form-control-sm' id='lieferantOrt'>
+                    </div>
+                    <div class='form-group'>
+                        <label class='control-label' for='lieferantLand'>Land</label>
+                        <input type='text' class='form-control form-control-sm' id='lieferantLand'>
+                    </div>
+                </form>
+            </div>
+            <div class='modal-footer'>
+                <div class='modal-footer'>
+                    <input type='button' id='addLieferant' class='btn btn-success btn-sm me-1'
+                           value='Hinzufügen'>
+                    <input type='button' id='saveLieferant' class='btn btn-warning btn-sm me-1'
+                           value='Speichern'>
+                    <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
 
 <script charset="utf-8">
     var ansprechID;
@@ -420,7 +361,7 @@
             $.ajax({
                 url: "getLieferantenUmsaetze.php",
                 data: {"lieferantenID": tableLieferantenUnternehmen.row($(this)).data()[0]},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#lieferantenumsaetze").html(data);
                 }
@@ -475,7 +416,7 @@
                                 "abteilung": abteilung,
                                 "gebiet": gebiet
                             },
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 $("#lieferanten").html(data);
 
@@ -502,7 +443,6 @@
             let lieferant = $("#lieferant").val();
             let abteilung = $("#abteilung").val();
             let gebiet = $("#lieferantenGebiet").val();
-
             if (Name.length > 0 && Vorname.length > 0 && Tel.length > 0) {
                 $('#addContactModal').modal('hide');
                 $.ajax({
@@ -521,18 +461,17 @@
                         "abteilung": abteilung,
                         "gebiet": gebiet
                     },
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         alert(data);
                         $.ajax({
                             url: "getLieferantenPersonen.php",
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 $("#lieferanten").html(data);
 
                             }
                         });
-
                     }
                 });
             } else {
@@ -541,6 +480,7 @@
         });
 
         $("#addContactModalButton").click(function () {
+            // Clear all fields first
             document.getElementById("lieferantenName").value = "";
             document.getElementById("lieferantenVorname").value = "";
             document.getElementById("lieferantenTel").value = "";
@@ -550,13 +490,36 @@
             document.getElementById("lieferantenLand").value = "";
             document.getElementById("lieferantenEmail").value = "";
             document.getElementById("lieferantenGebiet").value = "";
-            // Buttons ein/ausblenden!
+
+            // Hide save button, show add button
             document.getElementById("saveLieferantenKontakt").style.display = "none";
             document.getElementById("addLieferantenKontakt").style.display = "inline";
+
+            // Get selected row of LieferantenUnternehmen table
+            var selectedRow = tableLieferantenUnternehmen.row({selected: true});
+            if (selectedRow.node()) {
+                var rowData = selectedRow.data();
+                // Assuming rowData mapping:
+                // [0] = ID (hidden)
+                // [2] = Lieferant name
+                // [3] = Tel
+                // [4] = Adresse
+                // [5] = PLZ
+                // [6] = Ort
+                // [7] = Land
+
+                // Prefill related input fields in the modal
+                // Here, Lieferant ID should be set in the Lieferant dropdown as well if needed
+                $("#lieferant").val(rowData[0]); // Set Lieferant ID in dropdown
+                document.getElementById("lieferantenAdresse").value = rowData[4];
+                document.getElementById("lieferantenPLZ").value = rowData[5];
+                document.getElementById("lieferantenOrt").value = rowData[6];
+                document.getElementById("lieferantenLand").value = rowData[7];
+                document.getElementById("lieferantenTel").value = rowData[3];
+            }
         });
 
         $("button[value='changeContact']").click(function () {
-            // Buttons ein/ausblenden!
             document.getElementById("addLieferantenKontakt").style.display = "none";
             document.getElementById("saveLieferantenKontakt").style.display = "inline";
         });
@@ -584,7 +547,6 @@
                     type: "POST",
                     success: function (data) {
                         alert(data);
-                        // Neu Laden der Seite
                         location.reload();
                     }
                 });
@@ -592,7 +554,6 @@
                 alert("Bitte alle Felder ausfüllen!");
             }
         });
-
 
         tableLieferantenUnternehmen = $('#tableLieferantenUnternehmen').DataTable({
             columnDefs: [
@@ -637,14 +598,11 @@
             }
         });
 
-
         $("button[value='changeLieferant']").click(function () {
             document.getElementById("addLieferant").style.display = "none";
             document.getElementById("saveLieferant").style.display = "inline";
-
             let $tr = $(this).closest('tr');
             let rowData = tableLieferantenUnternehmen.row($tr).data();
-
             $("#lieferantID").val(rowData[0]);
             $("#firma").val(rowData[2]);
             $("#lieferantTel").val(rowData[3]);
@@ -666,17 +624,15 @@
             document.getElementById("addLieferant").style.display = "inline";
         });
 
-
         $("#saveLieferant").click(function () {
             let lieferantID = $("#lieferantID").val();
             let firma = $("#firma").val();
-            console.log("FIRMA: ", firma);
+            // console.log("FIRMA: ", firma);
             let lieferantTel = $("#lieferantTel").val();
             let lieferantAdresse = $("#lieferantAdresse").val();
             let lieferantPLZ = $("#lieferantPLZ").val();
             let lieferantOrt = $("#lieferantOrt").val();
             let lieferantLand = $("#lieferantLand").val();
-
             if (firma && lieferantTel && lieferantAdresse && lieferantPLZ && lieferantOrt && lieferantLand) {
                 $('#changeLieferantModal').modal('hide');
                 $.ajax({
@@ -700,8 +656,61 @@
                 alert("Bitte alle Felder ausfüllen!");
             }
         });
+
+        // Select2 initialisieren nach Modal-Show
+        $('#addContactModal').on('shown.bs.modal', function () {
+            $('.select2').select2({
+                dropdownCssClass: 'select2-dropdown-long',
+                width: '100%',
+                dropdownParent: $('#addContactModal'),
+                placeholder: $(this).data('placeholder') || 'Auswählen...',
+                allowClear: true
+            });
+        });
+
+        // Neue Abteilung speichern
+        $('#saveNewAbteilung').click(function () {
+            var newAbteilungName = $('#newAbteilungName').val().trim();
+            if (newAbteilungName === '') {
+                alert('Bitte geben Sie einen Abteilungsnamen ein.');
+                return;
+            }
+            if (!confirm("Haben sie genau geprüft, ob es diese Abteilung schon gibt?")) {
+                return;
+            }
+            $.post('save_abteilung.php', {
+                "abteilung": newAbteilungName
+            }, function (response) {
+                if (response.success) {
+                    // Neue Option zum Select hinzufügen
+                    $('#abteilung').append(
+                        $('<option></option>')
+                            .attr('value', response.id)
+                            .text(newAbteilungName)
+                    );
+
+                    // Select2 aktualisieren
+                    $('#abteilung').trigger('change.select2');
+
+                    // Modal schließen und Felder zurücksetzen
+                    $('#addAbteilungModal').modal('hide');
+                    $('#newAbteilungName').val('');
+
+                    alert('Abteilung erfolgreich hinzugefügt!');
+                } else {
+                    alert('Fehler beim Speichern: ' + (response.error || 'Unbekannter Fehler'));
+                }
+            }, 'json').fail(function () {
+                alert('Verbindungsfehler. Bitte versuchen Sie es erneut.');
+            });
+        });
+
+        // Modal zurücksetzen beim Schließen
+        $('#addAbteilungModal').on('hidden.bs.modal', function () {
+            $('#newAbteilungName').val('');
+        });
+
+
     });
-
-
 </script>
 </html>

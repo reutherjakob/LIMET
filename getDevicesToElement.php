@@ -5,25 +5,37 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/js/bootstrap-datepicker.min.js"></script>
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/css/bootstrap-datepicker.min.css">
-
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
     <title>Get Devices 2 Element</title>
+    <style> /* Make sure Select2 dropdown appears above Bootstrap modal */
+        .select2-container {
+            z-index: 1060 !important; /* slightly higher than Bootstrap modal backdrop */
+        }
+
+        /* Also target the actual dropdown for Select2 (the dropdown elements) */
+        .select2-dropdown {
+            z-index: 1061 !important;
+        }
+
+        /* Optional: When used inside modal, the dropdown might need higher z-index */
+        .modal .select2-container {
+            z-index: 1070 !important;
+        }
+
+        .modal .select2-dropdown {
+            z-index: 1071 !important;
+        }
+    </style>
 </head>
 <body>
 
 <?php
-// V3.0: 2025 Rework: Reuther & Fux
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
-$elementID = "0";
-if (!empty($_GET["elementID"])) {
-    $elementID = $_GET["elementID"];
-} elseif (!empty($_SESSION["elementID"])) {
-    $elementID = $_SESSION["elementID"];
-}
+$elementID =  getPostInt('elementID',$_SESSION["elementID"]?? 0 );
 
 $sql = "SELECT tabelle_geraete.idTABELLE_Geraete, tabelle_geraete.GeraeteID, tabelle_hersteller.Hersteller, tabelle_geraete.Typ, tabelle_geraete.Kurzbeschreibung, tabelle_hersteller.idtabelle_hersteller
         FROM tabelle_geraete
@@ -32,7 +44,7 @@ $sql = "SELECT tabelle_geraete.idTABELLE_Geraete, tabelle_geraete.GeraeteID, tab
         ORDER BY tabelle_geraete.GeraeteID DESC";
 
 $stmt = $mysqli->prepare($sql);
-$stmt->bind_param('i', $elementID); // 'i' specifies the type as integer
+$stmt->bind_param('i', $elementID);
 $stmt->execute();
 $result = $stmt->get_result();
 $stmt->close();
@@ -60,13 +72,11 @@ while ($row = $result->fetch_assoc()) {
     echo "<td><button type='button' id='" . $row["idTABELLE_Geraete"] . "' class='btn btn-outline-dark btn-sm' value='changeDevice' data-bs-toggle='modal' data-bs-target='#addDeviceModal'><i class='fas fa-pencil-alt'></i></button></td>";
     echo "</tr>";
 }
-
 echo "</tbody></table>";
 echo "<input type='button' id='addDeviceModalButton' class='btn btn-success btn-sm' value='Gerät hinzufügen' data-bs-toggle='modal' data-bs-target='#addDeviceModal'><input type='button' id='";
 echo $elementID;
 echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggle='modal' data-bs-target='#deviceComparisonModal'>";
 ?>
-
 
 <div class='modal fade' id='addDeviceModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
@@ -118,8 +128,6 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
 <!-- Modal zum Zeigen des Parametervergleichs -->
 <div class='modal fade' id='deviceComparisonModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-lg'>
-
-        <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Geräte-Vergleich</h4>
@@ -161,9 +169,7 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
 <script charset="utf-8" type="text/javascript">
     var deviceID;
     var tableDevicesToElement;
-
     $(document).ready(function () {
-
         tableDevicesToElement = new DataTable('#tableDevicesToElement', {
             columnDefs: [
                 {
@@ -216,18 +222,18 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
                     $.ajax({
                         url: "getDevicePrices.php",
                         data: {"deviceID": deviceID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#devicePrices").html(data);
                             $.ajax({
                                 url: "getLieferantenToDevices.php",
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#deviceLieferanten").html(data);
                                     $.ajax({
                                         url: "getDeviceServicePrices.php",
                                         data: {"deviceID": deviceID},
-                                        type: "GET",
+                                        type: "POST",
                                         success: function (data) {
                                             $("#deviceServicePrices").html(data);
                                         }
@@ -247,7 +253,6 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
         let hersteller = $("#hersteller").val();
         let type = $("#type").val();
         let kurzbeschreibung = $("#kurzbeschreibung").val();
-
         if (hersteller !== "" && type !== "" && kurzbeschreibung !== "") {
             $('#addDeviceModal').modal('hide');
             $.ajax({
@@ -258,9 +263,10 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
                     alert(data);
                     $.ajax({
                         url: "getDevicesToElement.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#devicesInDB").html(data);
+                            $("#devicesToElement").html(data);
                         }
                     });
                 }
@@ -275,7 +281,6 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
         let hersteller = $("#hersteller").val();
         let type = $("#type").val();
         let kurzbeschreibung = $("#kurzbeschreibung").val();
-
         if (hersteller !== "" && type !== "" && kurzbeschreibung !== "") {
             $('#addDeviceModal').modal('hide');
             $.ajax({
@@ -286,12 +291,12 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
                     "type": type,
                     "kurzbeschreibung": kurzbeschreibung
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     alert(data);
                     $.ajax({
                         url: "getDevicesToElement.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#devicesInDB").html(data);
                         }
@@ -318,21 +323,19 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
 
     //Gerätevergleich anzeigen
     $("input[value='Geräte vergleichen']").click(function () {
-        let ID = this.id;
+        let id = this.id;
         $.ajax({
             url: "getDeviceComparison.php",
-            type: "GET",
-            data: {"elementID": ID},
+            type: "POST",
+            data: {"elementID": id},
             success: function (data) {
                 $("#mbodyDeviceComparison").html(data);
             }
         });
     });
 
-    //Hersteller hinzufügen
     $("#addManufacturer").click(function () {
         let manufacturer = $("#manufacturer").val();
-        //var elementID = // $_SESSION["elementID"];
         if (manufacturer !== "") {
             $('#addManufacturerModal').modal('hide');
             $('#addDeviceModal').modal('hide');
@@ -345,7 +348,7 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
                     $.ajax({
                         url: "getDevicesToElement.php",
                         data: {"elementID": ""},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#devicesInDB").html(data);
                         }

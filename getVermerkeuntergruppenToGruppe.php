@@ -1,5 +1,5 @@
-<!-- 13.2.25: Reworked -->
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 ?>
@@ -23,8 +23,7 @@ $vermerkGruppenID = getPostInt('vermerkGruppenID');
 $stmt->bind_param("i", $vermerkGruppenID);
 $stmt->execute();
 $result = $stmt->get_result();
-
-$art =  getPostString("art") != "Protokoll Besprechung";
+$art = getPostString("art") != "Protokoll Besprechung";
 
 echo "<table class='table responsive compact table-striped table-bordered table-sm table-hover  border border-light border-5' id='tableVermerkUnterGruppe'>
                 <thead><tr>
@@ -38,7 +37,7 @@ echo "<table class='table responsive compact table-striped table-bordered table-
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
     echo "<td>" . $row['idtabelle_Vermerkuntergruppe'] . "</td>";
-    if ($art ){//|| $row['Untergruppennummer'] === 0 ) {
+    if ($art) {//|| $row['Untergruppennummer'] === 0 ) {
         echo "<td> <button type='button' id='" . $row['idtabelle_Vermerkuntergruppe'] . "' class='btn btn-outline-dark btn-sm' value='changeVermerkuntergruppe'><i class='fas fa-pencil-alt'></i></button></td>";
     } else {
         echo "<td></td>";
@@ -89,6 +88,12 @@ $mysqli->close();
 <script>
 
     $(document).ready(function () {
+
+        if (typeof untergruppenID === 'undefined') {
+            var untergruppenID = 0;  // or 0, '', [], etc. depending on expected type
+        }
+
+
         $('#topDivSearch').remove();
         document.getElementById("buttonNewVermerkuntergruppe").style.visibility = "visible";
         let tableVermerkUnterGruppe = $('#tableVermerkUnterGruppe').DataTable({
@@ -130,7 +135,7 @@ $mysqli->close();
                     "vermerkUntergruppenID": tableVermerkUnterGruppe.row($(this)).data()[0],
                     "vermerkGruppenID": tableVermerkUnterGruppe.row($(this)).data()[4]
                 },
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#vermerke").html(data);
                 }
@@ -160,7 +165,7 @@ $mysqli->close();
             $.ajax({
                 url: "addVermerkUnterGroup.php",
                 data: {"untergruppenName": untergruppenName, "untergruppenNummer": untergruppenNummer, "gruppenID": id},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data, true);
                     $.ajax({
@@ -180,9 +185,9 @@ $mysqli->close();
     });
 
     $("#saveUnterGroup").click(function () {
-        var untergruppenName = $("#unterGruppenName").val();
-        var untergruppenNummer = $("#unterGruppenNummer").val();
-        var id = <?php echo getPostInt('vermerkGruppenID') ?>;
+        let untergruppenName = $("#unterGruppenName").val();
+        let untergruppenNummer = $("#unterGruppenNummer").val();
+        let id = <?php echo getPostInt('vermerkGruppenID') ?>;
         if (untergruppenName !== "" && untergruppenNummer !== "") {
             $.ajax({
                 url: "saveVermerkUnterGroup.php",
@@ -211,5 +216,4 @@ $mysqli->close();
         }
     });
 </script>
-
 </html>

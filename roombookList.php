@@ -1,6 +1,5 @@
-<!-- 19.2.25: Reworked -->
-
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 include "utils/_format.php";
 init_page_serversides();
@@ -14,12 +13,10 @@ init_page_serversides();
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
     <link rel="icon" href="Logo/iphone_favicon.png">
-
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
           integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
@@ -28,93 +25,105 @@ init_page_serversides();
           rel="stylesheet">
 </head>
 
-
 <body style="height:100%">
 <div class="container-fluid bg-light">
     <div id="limet-navbar"></div>
-    <div class="mt-4 card">
-        <div class="card-header"><b>Elemente im Projekt</b></div>
+    <div class="mt-2 card">
+        <div class="card-header">
+            <div class=" row">
+                <div class="col-6">
+                    <b>Elemente im Projekt</b>
+                </div>
+                <div class="col-6 d-flex justify-content-end" id="dt-header-container"></div>
+            </div>
+        </div>
         <div class="card-body" id="elementLots">
             <?php
             $mysqli = utils_connect_sql();
-            $sql = "SELECT tabelle_räume.Raumnr,
-       tabelle_räume.idTABELLE_Räume,
-       tabelle_räume.Raumbezeichnung,
-       tabelle_räume.`Raumbereich Nutzer`,
-       tabelle_räume.Raumnummer_Nutzer,
-       tabelle_räume.Geschoss,
-       tabelle_räume.Bauetappe,
-       tabelle_räume.Bauabschnitt,
-       tabelle_räume_has_tabelle_elemente.Anzahl,
-       tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
-       tabelle_räume_has_tabelle_elemente.Standort,
-       tabelle_projekt_varianten_kosten.Kosten AS EP,
-       tabelle_elemente.ElementID,
-       tabelle_elemente.Bezeichnung,
-       tabelle_varianten.Variante,
-       tabelle_projektbudgets.Budgetnummer,
-       tabelle_lose_extern.LosNr_Extern,
-       tabelle_lose_extern.LosBezeichnung_Extern,
-       tabelle_auftraggeber_gewerke.Gewerke_Nr,
-       tabelle_auftraggeber_ghg.GHG,
-       tabelle_räume_has_tabelle_elemente.Kurzbeschreibung
-FROM (((tabelle_projekt_element_gewerk RIGHT JOIN (tabelle_projektbudgets RIGHT JOIN (tabelle_lose_extern RIGHT JOIN (tabelle_varianten INNER JOIN (tabelle_elemente INNER JOIN ((tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente
-                                                                                                                                                                                  ON tabelle_räume.idTABELLE_Räume =
-                                                                                                                                                                                     tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) INNER JOIN tabelle_projekt_varianten_kosten
-                                                                                                                                                                                 ON (tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten =
-                                                                                                                                                                                     tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten) AND
-                                                                                                                                                                                    (tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte =
-                                                                                                                                                                                     tabelle_räume.tabelle_projekte_idTABELLE_Projekte) AND
-                                                                                                                                                                                    (tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente =
-                                                                                                                                                                                     tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente))
-                                                                                                                                                    ON tabelle_elemente.idTABELLE_Elemente =
-                                                                                                                                                       tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente)
-                                                                                                                      ON tabelle_varianten.idtabelle_Varianten =
-                                                                                                                         tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)
-                                                                                      ON tabelle_lose_extern.idtabelle_Lose_Extern =
-                                                                                         tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern)
-                                                   ON tabelle_projektbudgets.idtabelle_projektbudgets =
-                                                      tabelle_räume_has_tabelle_elemente.tabelle_projektbudgets_idtabelle_projektbudgets)
-        ON (tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente =
-            tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente) AND
-           (tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte =
-            tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte)) LEFT JOIN tabelle_auftraggeber_gewerke
-       ON tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke =
-          tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke) LEFT JOIN tabelle_auftraggeber_ghg
-      ON tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG =
-         tabelle_auftraggeber_ghg.idtabelle_auftraggeber_GHG)
-         LEFT JOIN tabelle_auftraggeberg_gug
-                   ON tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG =
-                      tabelle_auftraggeberg_gug.idtabelle_auftraggeberg_GUG
-WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = " . $_SESSION["projectID"] . "))
-AND Anzahl <>0;";
+            $sql = "SELECT  tabelle_räume.Raumnr,
+                            tabelle_räume.idTABELLE_Räume,
+                            tabelle_räume.Raumbezeichnung,
+                            tabelle_räume.`Raumbereich Nutzer`,
+                            tabelle_räume.Raumnummer_Nutzer,
+                            tabelle_räume.Geschoss,
+                            tabelle_räume.Bauetappe,
+                            tabelle_räume.Bauabschnitt,
+                            tabelle_räume_has_tabelle_elemente.Anzahl,
+                            tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
+                            tabelle_räume_has_tabelle_elemente.Standort,
+                            tabelle_projekt_varianten_kosten.Kosten AS EP,
+                            tabelle_elemente.ElementID,
+                            tabelle_elemente.Bezeichnung,
+                            tabelle_varianten.Variante,
+                            tabelle_projektbudgets.Budgetnummer,
+                            tabelle_lose_extern.LosNr_Extern,
+                            tabelle_lose_extern.LosBezeichnung_Extern,
+                            tabelle_auftraggeber_gewerke.Gewerke_Nr,
+                            tabelle_auftraggeber_ghg.GHG,
+                            tabelle_räume_has_tabelle_elemente.Kurzbeschreibung
+                FROM (((tabelle_projekt_element_gewerk RIGHT JOIN (tabelle_projektbudgets RIGHT JOIN (tabelle_lose_extern RIGHT JOIN 
+                (tabelle_varianten INNER JOIN (tabelle_elemente INNER JOIN ((tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente
+                ON tabelle_räume.idTABELLE_Räume =
+                tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) INNER JOIN tabelle_projekt_varianten_kosten
+                ON (tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten =
+                tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten) AND
+                (tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte =
+                tabelle_räume.tabelle_projekte_idTABELLE_Projekte) AND
+                (tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente =
+                tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente))
+                ON tabelle_elemente.idTABELLE_Elemente =
+                tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente)
+                ON tabelle_varianten.idtabelle_Varianten =
+                tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)
+                ON tabelle_lose_extern.idtabelle_Lose_Extern =
+                tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern)
+                ON tabelle_projektbudgets.idtabelle_projektbudgets =
+                tabelle_räume_has_tabelle_elemente.tabelle_projektbudgets_idtabelle_projektbudgets)
+                ON (tabelle_projekt_element_gewerk.tabelle_elemente_idTABELLE_Elemente =
+                tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente) AND
+                (tabelle_projekt_element_gewerk.tabelle_projekte_idTABELLE_Projekte =
+                tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte)) LEFT JOIN tabelle_auftraggeber_gewerke
+                ON tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke =
+                tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke) LEFT JOIN tabelle_auftraggeber_ghg
+                ON tabelle_projekt_element_gewerk.tabelle_auftraggeber_ghg_idtabelle_auftraggeber_GHG =
+                tabelle_auftraggeber_ghg.idtabelle_auftraggeber_GHG)
+                LEFT JOIN tabelle_auftraggeberg_gug
+                ON tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG =
+                tabelle_auftraggeberg_gug.idtabelle_auftraggeberg_GUG
+                WHERE tabelle_räume.tabelle_projekte_idTABELLE_Projekte = ? 
+                AND Anzahl <>0";
 
-            $result = $mysqli->query($sql);
+            $stmt = $mysqli->prepare($sql);
+            $stmt->bind_param('i',  $_SESSION["projectID"] );
+            $stmt->execute();
+            $result = $stmt->get_result();
+
             echo "<table class='table table-striped table-hover compact table-bordered' id='tableRoombookList'>
-                                                        <thead><tr>
-                                                            <th>Raumnr</th>
-                                                            <th>Raum</th>
-                                                            <th>Raumbereich</th>
-                                                            <th>Geschoss</th>
-                                                            <th>BE</th>
-                                                            <th>BA</th>
-                                                            <th>Stk</th>
-                                                            <th>ID</th>
-                                                            <th>Element</th>
-                                                            <th>Variante</th>  
-                                                            <th>Standort</th>  
-                                                            <th>Bestand</th>                                                                              									
-                                                            <th>EP</th>            
-                                                             <th>EP-Excel</th>                                                            
-                                                            <th>Los-Nr</th>
-                                                            <th>Budget</th>                                                                
-                                                            <th>Gewerk</th>
-                                                            <th>GHG</th>
-                                                            <th>Los Bezeichnung</th>
-                                                            <!--th>RAUM-ID</th-->
-                                                        </tr>
-                                                        </thead>";
+            <thead><tr>
+                <th>Raumnr</th>
+                <th>Raum</th>
+                <th>Raumbereich</th>
+                <th>Geschoss</th>
+                <th>BE</th>
+                <th>BA</th>
+                <th>Stk</th>
+                <th> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='ID'><i class='fas fa-fingerprint'></i></div> </th>
+                <th>Element</th>
+                <th>Variante</th>  
+                <th> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Standort'> <i class='fab fa-periscope '></i></div> </th>
+                <th>Bestand</th>
+                <th> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Einheitspreis'> <i class='fas fa-euro-sign'></i> </div></th>
+                <th>EP-Excel</th>                                                            
+                <th>Los-Nr</th>
+                <th>Budget</th>                                                                
+                <th>Gewerk</th>
+                <th>GHG</th>
+                <th>Los Bezeichnung</th> 
+                <th> <div class='d-flex justify-content-centeralign-items-center' data-bs-toggle='tooltip' title='Kommentar'><i class='far fa-comments'></i></div></th>
+            </tr>
+            </thead>";
             echo "<tbody>";
+
             while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
                 if ($_SESSION["projectName"] === "GCP") {
@@ -140,7 +149,16 @@ AND Anzahl <>0;";
                 echo "<td>" . $row["Gewerke_Nr"] . "</td>";
                 echo "<td>" . $row["GHG"] . "</td>";
                 echo "<td>" . $row["LosBezeichnung_Extern"] . "</td>";
-                //  echo "<td>" . $row["idTABELLE_Räume"] . "</td>";
+                if (null != ($row["Kurzbeschreibung"])) {
+                    echo "<td><button type='button' class='btn btn-sm btn-outline-dark' 
+                    data-bs-toggle='popover' 
+                    data-bs-placement='top' 
+                    data-bs-content='" . htmlspecialchars($row["Kurzbeschreibung"]) . "' 
+                    title='Kommentar'>
+                    <i class='fa fa-comment'></i></button></td>";
+                } else {
+                    echo "<td> </td>";
+                }
                 echo "</tr>";
             }
             echo "</tbody></table>";
@@ -150,16 +168,12 @@ AND Anzahl <>0;";
     </div>
 </div>
 
+<script src="utils/_utils.js"></script>
 <script>
     $(document).ready(function () {
         new DataTable('#tableRoombookList', {
             select: true,
-            layout: {
-                topStart: 'buttons',
-                topEnd: ['search', 'info'],
-                bottomStart: null,
-                bottomEnd: null
-            },
+            dom: "<'dt-buttons'B><'dt-search'f><'dt-info' i>rt",
             order: [[2, "asc"]],
             columnDefs: [
                 {
@@ -176,23 +190,29 @@ AND Anzahl <>0;";
                 {
                     extend: 'excelHtml5',
                     text: 'Excel',
-                    className: 'fas fa-file-excel btn btn-outline-success bg-white',
+                    className: 'fas fa-file-excel btn btn-sm btn-outline-success bg-white',
                     exportOptions: {
                         columns: ':not(:eq(12))', // Exclude column 12 (index 11)
-                         format: {
-                             body: function (data, row, column, node) {
-                                 // Beispiel: für die Los-Nr-Spalte (z.B. Spalte 14)
-                                 if (column === 14) {
-                                     return "'" + data ; // Apostroph voranstellen
-                                 }
-                                 return data;
-                             }
-                         }
+                        format: {
+                            body: function (data, row, column) {
+                                if (column === 14) {
+                                    return "'" + data; // Apostroph voranstellen
+                                }
+                                return data;
+                            }
+                        }
                     }
-                },
-                'searchBuilder'
+                },{
+                    extend: 'searchBuilder',
+                    className: 'btn btn-sm bg-white btn-outline-dark' // add your btn-sm here with desired styles
+                }
             ],
-            paging: false
+            paging: false,
+            initComplete: function () {
+                $('#tableRoombookList_wrapper .dt-buttons').appendTo('#dt-header-container');
+                $('#tableRoombookList_wrapper .dt-search').appendTo('#dt-header-container');
+                $('#tableRoombookList_wrapper .dt-info').appendTo('#dt-header-container');
+            }
         });
     });
 

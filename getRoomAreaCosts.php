@@ -1,12 +1,12 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 include "utils/_format.php";
 check_login();
 
-
-$bestandInkl = isset($_GET["bestandInkl"]) && $_GET["bestandInkl"] == 1;
-$projectID = $_SESSION["projectID"] ?? 0;
-$roomArea = $_GET["roomArea"] ?? '';
+$bestandInkl = isset($_POST["bestandInkl"]) && $_POST["bestandInkl"] == 1;
+$projectID = (int)$_SESSION["projectID"] ?? 0;
+$roomArea = $_POST["roomArea"] ?? '';
 
 $sql = "SELECT tabelle_projekt_varianten_kosten.Kosten,
        Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
@@ -99,9 +99,7 @@ $mysqli->close();
                 <input class="bg-secondary-subtle border-light text-dark text-md-center fs-5" disabled id="SUMME">
             </label>
         </div>
-
     </div>
-
 </div>
 
 <script>
@@ -131,7 +129,12 @@ $mysqli->close();
                     visible: false,
                     searchable: false
                 }
-            ],
+            ], layout: {
+                topStart: "buttons",
+                topEnd: null,
+                bottomStart: 'info',
+                bottomEnd: null
+            },
             buttons: [
                 {
                     extend: 'excelHtml5',
@@ -143,12 +146,7 @@ $mysqli->close();
                     className: 'btn btn-sm btn-light btn-outline-success' // Bootstrap small
                 }
             ],
-            layout: {
-                topStart: "buttons",
-                topEnd: null,
-                bottomStart: 'info',
-                bottomEnd: null
-            },
+
             footerCallback: function () {//row, data, start, end, display) {
                 let api = this.api();
                 let intVal = function (i) {
@@ -163,10 +161,8 @@ $mysqli->close();
                     .reduce(function (a, b) {
                         return intVal(a) + intVal(b);
                     }, 0);
-
                 $("#SUMME").val(formatGermanCurrency(total));
             }
         });
-
     });
 </script>

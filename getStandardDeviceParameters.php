@@ -1,21 +1,23 @@
-<!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title>getStandardDev</title>
-</head>
-<body>
-
 <?php
-// 10-2025 FX
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 $deviceID = getPostInt('deviceID', 0);
+$_SESSION["deviceID"] = $deviceID;
 $mysqli = utils_connect_sql();
-$sql = "SELECT tabelle_parameter.Bezeichnung, tabelle_geraete_has_tabelle_parameter.Wert, tabelle_geraete_has_tabelle_parameter.Einheit, tabelle_parameter_kategorie.Kategorie
-                FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN tabelle_geraete_has_tabelle_parameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_geraete_has_tabelle_parameter.TABELLE_Parameter_idTABELLE_Parameter) ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
-                WHERE (((tabelle_geraete_has_tabelle_parameter.TABELLE_Geraete_idTABELLE_Geraete)=" . $deviceID . "));";
-$result = $mysqli->query($sql);
+$stmt = $mysqli->prepare("SELECT tabelle_parameter.Bezeichnung, 
+                                 tabelle_geraete_has_tabelle_parameter.Wert, 
+                                 tabelle_geraete_has_tabelle_parameter.Einheit, 
+                                 tabelle_parameter_kategorie.Kategorie
+                          FROM tabelle_parameter_kategorie
+                          INNER JOIN (tabelle_parameter 
+                                      INNER JOIN tabelle_geraete_has_tabelle_parameter 
+                                      ON tabelle_parameter.idTABELLE_Parameter = tabelle_geraete_has_tabelle_parameter.TABELLE_Parameter_idTABELLE_Parameter) 
+                          ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
+                          WHERE tabelle_geraete_has_tabelle_parameter.TABELLE_Geraete_idTABELLE_Geraete = ?");
+$stmt->bind_param("i", $deviceID);
+$stmt->execute();
+$result = $stmt->get_result();
 
 echo "<table class='table table-striped table-sm' id='tableStandardDeviceParameters'  >
 	<thead><tr>
@@ -59,7 +61,6 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
     </div>
 </div>
 
-
 <!-- Modal zum Ändern der Parameter -->
 <div class='modal fade' id='changeDeviceParameters' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable'>
@@ -94,7 +95,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
                                             ON tabelle_parameter.idTABELLE_Parameter = tabelle_geraete_has_tabelle_parameter.TABELLE_Parameter_idTABELLE_Parameter
                                         ) ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
                                     WHERE 
-                                        tabelle_geraete_has_tabelle_parameter.TABELLE_Geraete_idTABELLE_Geraete = ? " );
+                                        tabelle_geraete_has_tabelle_parameter.TABELLE_Geraete_idTABELLE_Geraete = ? ");
                                     $stmt->bind_param("i", $deviceID);
                                     $stmt->execute();
                                     $result = $stmt->get_result();
@@ -273,18 +274,18 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
         if (id !== "") {
             $.ajax({
                 url: "addParameterToDevice.php",
-                data: {"parameterID": id},
+                data: {"parameterID": id, "deviceID":deviceID },
                 type: "POST",
                 success: function (data) {
                     makeToaster(data, data.substring(0, 4) === "Para");
                     $.ajax({
                         url: "getDeviceParameters.php",
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#deviceParameters").html(data);
                             $.ajax({
                                 url: "getPossibleDeviceParameters.php",
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#possibleDeviceParameters").html(data);
                                 }
@@ -304,17 +305,17 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
                 $.ajax({
                     url: "deleteParameterFromDevice.php",
                     data: {"parameterID": id},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         alert(data);
                         $.ajax({
                             url: "getDeviceParameters.php",
-                            type: "GET",
+                            type: "POST",
                             success: function (data) {
                                 $("#deviceParameters").html(data);
                                 $.ajax({
                                     url: "getPossibleDeviceParameters.php",
-                                    type: "GET",
+                                    type: "POST",
                                     success: function (data) {
                                         $("#possibleDeviceParameters").html(data);
                                     }
@@ -323,7 +324,6 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
                         });
                     }
                 });
-
             } else {
                 alert("Fehler beim Löschen des Parameters!");
             }
@@ -331,7 +331,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
     });
 
     //Parameter ändern
-    $("button[value='saveDEVICEParameter']").click(function () { //TODO find and rename btn
+    $("button[value='saveDEVICEParameter']").click(function () {
         let id = this.id;
         let wert = $("#wert" + id).val();
         let einheit = $("#einheit" + id).val();
@@ -339,7 +339,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
             $.ajax({
                 url: "updateDeviceParameter.php",
                 data: {"parameterID": id, "wert": wert, "einheit": einheit},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     makeToaster(data, true);
                 }
@@ -368,7 +368,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
                 makeToaster(data, data.substring(0, 4) === "Vari");
                 $.ajax({
                     url: "getElementVariante.php",
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         $("#elementVarianten").html(data);
                     }
@@ -382,7 +382,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
         console.log("ParameterOvertakeBtn");
         $.ajax({
             url: 'getModalDataFromSession.php',
-            method: 'GET',
+            method: 'POST',
             dataType: 'json',
             success: function (data) {
                 // console.log(data);
@@ -400,7 +400,4 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-ou
             }
         });
     });
-
 </script>
-</body>
-</html>

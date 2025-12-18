@@ -1,9 +1,9 @@
 <?php
-// 10-2025 FX
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
-$projectID = $_SESSION["projectID"];
+$projectID = (int)$_SESSION["projectID"];
 $personID = getPostInt('personID');
 $zustaendigkeit = getPostInt('zustaendigkeit');
 $organisation = getPostInt('organisation');

@@ -1,42 +1,39 @@
 <?php
-session_start();
+// 25 FX
+require_once 'utils/_utils.php';
+check_login();
+$mysqli = utils_connect_sql();
 
-function br2nl($string){
-$return= str_replace(array("\r\n", "\n\r", "\r", "\n"), "<br/>", $string);
-return $return;
+$groupID = getPostInt('groupID');
+$ansprechpersonenID = getPostInt('ansprechpersonenID');
+
+if ($groupID === false || $ansprechpersonenID === false) {
+    echo "Invalid input.";
+    $mysqli->close();
+    exit;
 }
 
-?>
+// Prepare the DELETE statement to prevent SQL injection
+$stmt = $mysqli->prepare("DELETE FROM `LIMET_RB`.`tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen`
+    WHERE `tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe` = ? 
+    AND `tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen` = ?");
 
-<?php
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-?>
+if ($stmt === false) {
+    echo "Error preparing statement: " . $mysqli->error;
+    $mysqli->close();
+    exit;
+}
 
-<?php
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	if ($mysqli ->connect_error) {
-	    die("Connection failed: " . $mysqli->connect_error);
-	}
-	
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    echo "Error loading character set utf8: " . $mysqli->error;
-	    exit();
-	} 
-		
-        $sql = "DELETE FROM `LIMET_RB`.`tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen`
-                WHERE `tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe`= ".filter_input(INPUT_GET, 'groupID')."
-                AND `tabelle_ansprechpersonen_idTABELLE_Ansprechpersonen`=".filter_input(INPUT_GET, 'ansprechpersonenID').";";
-	if ($mysqli ->query($sql) === TRUE) {
-	    echo "Person entfernt!";
-	} else {
-	    echo "Error: " . $sql . "<br>" . $mysqli->error;
-	}
-	
-	$mysqli ->close();	
-					
+// Bind parameters as integers
+$stmt->bind_param("ii", $groupID, $ansprechpersonenID);
+
+// Execute the statement
+if ($stmt->execute()) {
+    echo "Person entfernt!";
+} else {
+    echo "Error: " . $stmt->error;
+}
+
+$stmt->close();
+$mysqli->close();
 ?>

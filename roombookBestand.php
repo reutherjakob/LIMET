@@ -1,4 +1,5 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 init_page_serversides();
 include "utils/_format.php";
@@ -12,21 +13,16 @@ include "utils/_format.php";
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
     <link rel="icon" href="Logo/iphone_favicon.png"/>
-
-    <!-- Rework 2025 CDNs -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
           integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
-
-
 </head>
 <body>
 <div class="container-fluid bg-light" >
@@ -41,8 +37,7 @@ include "utils/_format.php";
         <div class="card-body">
             <?php
             $mysqli = utils_connect_sql();
-            $stmt = "SELECT 
-                                Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl, 
+            $sql = "SELECT    Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl, 
                                 tabelle_elemente.ElementID, 
                                 tabelle_elemente.Bezeichnung, 
                                 tabelle_räume.`Raumbereich Nutzer`, 
@@ -65,9 +60,9 @@ include "utils/_format.php";
                                     (tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten = tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten)) 
                             ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
                             WHERE 
-                                ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte = " . $_SESSION["projectID"] . ") 
+                                ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte = ? ) 
                                     AND (tabelle_räume_has_tabelle_elemente.`Neu/Bestand` = 0) 
-                                    AND (tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte =" . $_SESSION["projectID"] . " )
+                                    AND (tabelle_projekt_varianten_kosten.tabelle_projekte_idTABELLE_Projekte =? )
                                 )
                             GROUP BY 
                                 tabelle_elemente.ElementID, 
@@ -79,7 +74,10 @@ include "utils/_format.php";
                             ORDER BY 
                                 tabelle_elemente.ElementID;";
 
-            $result = $mysqli->query($stmt);
+            $stmt = $mysqli->prepare($sql);
+            $stmt -> bind_param("ii", $_SESSION["projectID"] ,$_SESSION["projectID"] );
+            $stmt -> execute();
+            $result = $stmt->get_result();
 
             echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tableBestandsElemente'>
                         <thead><tr>
@@ -95,15 +93,16 @@ include "utils/_format.php";
 
             while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
-                echo "<td>" . $row["TABELLE_Elemente_idTABELLE_Elemente"] . "</td>";
-                echo "<td>" . $row["SummevonAnzahl"] . "</td>";
-                echo "<td>" . $row["ElementID"] . "</td>";
-                echo "<td>" . $row["Bezeichnung"] . "</td>";
-                echo "<td>" . $row["Raumbereich Nutzer"] . "</td>";
-                echo "<td>" . $row["Variante"] . "</td>";
-                echo "<td>" . format_money($row["Kosten"]) . "</td>";
+                echo "<td>" . htmlspecialchars($row["TABELLE_Elemente_idTABELLE_Elemente"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars($row["SummevonAnzahl"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars($row["ElementID"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars($row["Bezeichnung"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars($row["Raumbereich Nutzer"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars($row["Variante"] ?? "", ENT_QUOTES, 'UTF-8') . "</td>";
+                echo "<td>" . htmlspecialchars(format_money($row["Kosten"] ?? ""), ENT_QUOTES, 'UTF-8') . "</td>";
                 echo "</tr>";
             }
+
             echo "</tbody></table>";
             ?>
 
@@ -163,7 +162,7 @@ include "utils/_format.php";
                 $.ajax({
                     url: "getBestandWithRaumbereich.php",
                     data: {"elementID": elementID, "raumbereich": raumbereich},
-                    type: "GET",
+                    type: "POST",
                     success: function (data) {
                         $("#bestandsRoombook").html(data);
                     }

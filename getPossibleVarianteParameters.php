@@ -1,12 +1,5 @@
-<!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml" lang="">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <title></title></head>
-<body>
-
 <?php
-
+// 25 FX
 include "utils/_utils.php";
 check_login();
 
@@ -20,8 +13,9 @@ $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichn
         AND tabelle_parameter.idTABELLE_Parameter NOT IN 
         (SELECT tabelle_parameter.idTABELLE_Parameter 
         FROM tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.TABELLE_Parameter_idTABELLE_Parameter 
-        WHERE tabelle_projekt_elementparameter.TABELLE_Elemente_idTABELLE_Elemente = " . $_SESSION["elementID"] . " AND tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte = " . $_SESSION["projectID"] . " 
-        AND tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten = " . $_GET["variantenID"] . ") 
+        WHERE tabelle_projekt_elementparameter.TABELLE_Elemente_idTABELLE_Elemente  = ? 
+        AND tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte    = ? 
+        AND tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten  = ?) 
          ORDER BY 
             CASE 
                 WHEN tabelle_parameter.Bezeichnung = 'Nennleistung' 
@@ -31,7 +25,13 @@ $sql = "SELECT tabelle_parameter.idTABELLE_Parameter, tabelle_parameter.Bezeichn
             tabelle_parameter_kategorie.Kategorie,
             tabelle_parameter.Bezeichnung;";
 
-$result = $mysqli->query($sql);
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("iii",   $_SESSION["elementID"],$_SESSION["projectID"], $_SESSION["variantenID"]);
+
+$stmt->execute();
+$result = $stmt->get_result();
+$stmt->close();
+$mysqli->close();
 
 echo "<table class='table table-striped table-sm table-hover table-bordered border border-5 border-light' id='tablePossibleElementParameters'>
 						<thead><tr>
@@ -50,15 +50,11 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . $row["Abkuerzung"] . "</td>";
     echo "</tr>";
 }
-
 echo "</tbody></table>";
-
-$mysqli->close();
 ?>
+
 <script src="utils/_utils.js"></script>
-
 <script>
-
     $(document).ready(function () {
         tablePossibleElementParameters = null; // global var
         tablePossibleElementParameters = $('#tablePossibleElementParameters').DataTable({
@@ -110,14 +106,14 @@ $mysqli->close();
                     $.ajax({
                         url: "getVarianteParameters.php",
                         data: {"variantenID": variantenID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $('#variantenParameterCh .xxx').remove();
                             $("#variantenParameter").html(data);
                             $.ajax({
                                 url: "getPossibleVarianteParameters.php",
                                 data: {"variantenID": variantenID},
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#possibleVariantenParameter").html(data);
                                 }
@@ -130,5 +126,3 @@ $mysqli->close();
         }
     });
 </script>
-</body>
-</html>

@@ -1,5 +1,5 @@
  <?php
- // 10-2025 FX
+ // 25 FX
 require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
@@ -43,18 +43,18 @@ echo "<form id='addPersonForm' class='form-horizontal' role='form' method='POST'
 
 foreach ($formFields as $field) {
     echo "<div class='form-group row'>
-            <label class='control-label col-xxl-2' for='{$field[0]}'>{$field[0]}</label>
-            <div class='col-xxl-8'>
+            <label class='control-label col-xxl-3' for='{$field[0]}'>{$field[0]}</label>
+            <div class='col-xxl-9'>
                 <input type='{$field[1]}' class='form-control form-control-sm' id='{$field[0]}' name='{$field[0]}' required>
             </div>
           </div>";
 }
 
 echo "
-<div class='form-group row'><label class='control-label col-xxl-2' for='zustaendigkeit'> Zuständigkeit</label>
-    <div class='col-xxl-7'><select class='form-control form-control-sm' id='zustaendigkeit' name='zustaendigkeit'
+<div class='form-group row'><label class='control-label col-xxl-3' for='zustaendigkeit'> Zuständigkeit</label>
+    <div class='col-xxl-8'><select class='form-control form-control-sm' id='zustaendigkeit' name='zustaendigkeit'
                                   required> $zustaendigkeitOptions</select></div>
-      <div class='col-xxl-1'>
+      <div class='col-xxl-1 m-0 p-0'>
             <button type='button' 
                     class='btn btn-outline-success ' 
                     id='addZustaendigkeitBtn' title='Zuständigkeit hinzufügen'>
@@ -62,11 +62,11 @@ echo "
             </button> 
       </div> 
 </div>
-<div class='form-group inline row'><label class='control-label col-xxl-2' for='organisation'> Organisation</label>
-    <div class='col-xxl-7'>
+<div class='form-group inline row'><label class='control-label col-xxl-3' for='organisation'> Organisation</label>
+    <div class='col-xxl-8'>
     <select class='form-control form-control-sm' id='organisation' name='organisation' required>  $organisationOptions</select>  
     </div>
-         <div class='col-xxl-1'>
+         <div class='col-xxl-1 m-0 p-0'>
             <button type='button' 
                     class='btn btn-outline-success' 
                     id='addOrganisationBtn' title='Organisation hinzufügen'>
@@ -74,16 +74,15 @@ echo "
             </button> 
         </div>
     <div class='form-group row'>
-        <div class='col-xxl-2'></div>
+        <div class='col-xxl-3'></div>
                 <div class='col-xxl-8'>
             <input type='submit' id='addPersonToProjectButton'
-             class='btn btn-success btn-sm mt-1 ms-1' value='Person zu Projekt hinzufügen'>
+             class='btn btn-success btn-sm mt-1 ms-1' value='Person neu anlegen und zu Projekt hinzufügen'>
         </div>
     </div>
     </div>
     </form> ";
 $mysqli->close();
-
 include "modal_addOrganisationAndZustaendigkeit.php";
 ?>
 

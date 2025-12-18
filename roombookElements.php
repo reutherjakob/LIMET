@@ -1,5 +1,5 @@
-<!-- 17.2.25: Reworked -->
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 init_page_serversides();
 ?>
@@ -12,19 +12,16 @@ init_page_serversides();
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
     <link rel="icon" href="Logo/iphone_favicon.png"/>
-
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
           integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
-
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <style>
@@ -34,10 +31,10 @@ init_page_serversides();
     </style>
 </head>
 
+
 <body>
 <div id="limet-navbar"></div> <!-- Container für Navbar Aufruf über onLoad -->
 <div class="container-fluid bg-secondary bg-opacity-10">
-
     <div class="row">
         <div class="col-xxl-6">
             <div class="card mt-1">
@@ -64,10 +61,7 @@ init_page_serversides();
                     <?php include "getElementgruppenCardContent.php"; ?>
                 </div>
             </div>
-
-
         </div>
-
         <div class="col-xxl-4">
             <div class="card mt-1" id="devicesInDBCard" style="max-height: 500px;overflow-y: scroll;">
                 <div class="card-header" id=""> Geräte zu Element
@@ -76,7 +70,6 @@ init_page_serversides();
                 </div>
             </div>
         </div>
-
     </div>
 
 
@@ -97,7 +90,6 @@ init_page_serversides();
         <div class='col-xxl-5'>
             <div class="card mt-1 h-auto">
                 <div class="card-header" id="RäumeOhneElCardHeader ">
-
                     <div class="row">
                         <div class="col-xxl-4 d-flex flex-nowrap text-nowrap align-items-center" id="CardHeaderRäumeOhneElement">
                             <i class="fas fa-door-open  fa-lg me-2"></i> ohne Element
@@ -117,7 +109,6 @@ init_page_serversides();
                                 Keinen Raum auswählen
                             </button>
                         </div>
-
                     </div>
                 </div>
                 <div class="card-body h-auto" id="roomsWithoutElement"></div>
@@ -127,8 +118,9 @@ init_page_serversides();
 </div>
 
 
+
 <script>
-    var elementBezeichnung; //var, beacause used to set Modal Title in getRoomsWithoutElement
+    var elementBezeichnung; //var, because used to set Modal Title in getRoomsWithoutElement
     var selectedRooms = [];
     var tableElementsInDB;
 
@@ -175,25 +167,25 @@ init_page_serversides();
             $.ajax({
                 url: "setSessionVariables.php",
                 data: {"elementID": elementID},
-                type: "GET",
+                type: "POST",
                 success: function () {
                     $.ajax({
                         url: "getRoomsWithElement1.php",
                         data: {"elementID": elementID},
-                        type: "GET",
+                        type: "POST",
                         success: function (data) {
                             $("#roomsWithElement").html(data);
                             $.ajax({
                                 url: "getRoomsWithoutElement.php",
                                 data: {"elementID": elementID},
-                                type: "GET",
+                                type: "POST",
                                 success: function (data) {
                                     $("#roomsWithoutElement").html(data);
 
                                     $.ajax({
                                         url: "getDevicesToElement.php",
                                         data: {"elementID": elementID},
-                                        type: "GET",
+                                        type: "POST",
                                         success: function (data) {
                                             $("#devicesInDB").html(data);
                                         }

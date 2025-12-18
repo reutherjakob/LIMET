@@ -1,4 +1,5 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
@@ -81,7 +82,6 @@ $mysqli->close();
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                 search: ""
-
             }
         });
 
@@ -92,7 +92,7 @@ $mysqli->close();
             $.ajax({
                 url: "getChangePersonToProjectField.php",
                 data: {"personID": personID},
-                type: "GET",
+                type: "POST",
                 success: function (data) {
                     $("#addPersonToProject").html(data);
                 }

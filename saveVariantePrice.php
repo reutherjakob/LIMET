@@ -1,15 +1,27 @@
 <?php
+// 25 FX
 require_once "utils/_utils.php";
 $mysqli = utils_connect_sql();
 
 // Validate and sanitize input
-$variantenID = filter_input(INPUT_GET, 'variantenID', FILTER_VALIDATE_INT);
-$kosten = filter_input(INPUT_GET, 'kosten', FILTER_VALIDATE_FLOAT);
+$variantenID = getPostInt('variantID',0);
+$kosten = getPostInt('kosten',0);
 $projectID = $_SESSION['projectID'];
 $elementID = $_SESSION['elementID'];
+if (!$variantenID) {
+    die("Invalid input data: missing variantenID");
+}
 
-if (!$variantenID || !isset($kosten) || !$projectID || !$elementID) {
-    die("Invalid input data");
+if (!isset($kosten)) {
+    die("Invalid input data: kosten not set");
+}
+
+if (!$projectID) {
+    die("Invalid input data: missing projectID");
+}
+
+if (!$elementID) {
+    die("Invalid input data: missing elementID");
 }
 
 // Prepare the initial SELECT query

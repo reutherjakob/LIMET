@@ -1,31 +1,38 @@
 <?php
-session_start();
+// 25 FX
+require_once 'utils/_utils.php';
+check_login();
+$mysqli = utils_connect_sql();
+$columnFromPost = getPostString('column');
+$value = getPostString('value');
+$roomID = getPostInt('roomID');
+$columnsDataJson = getPostString('columnsData');
+$columnsData = json_decode($columnsDataJson, true) ?? [];
 
-if(!isset($_SESSION["username"]))
-   {
-   echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-   exit;
-   }
-
-	$mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
-	if ($mysqli ->connect_error) {
-	    die("Connection failed: " . $mysqli->connect_error);
-	}
-	
-	/* change character set to utf8 */
-	if (!$mysqli->set_charset("utf8")) {
-	    echo "Error loading character set utf8: " . $mysqli->error;
-	    exit();
-	} 
-	
-	$sql = "UPDATE tabelle_räume SET tabelle_räume.`".filter_input(INPUT_GET, 'column')."` = '".filter_input(INPUT_GET, 'value')."' WHERE (((tabelle_räume.idTABELLE_Räume)=".filter_input(INPUT_GET, 'roomID')."))";
-	
-	if ($mysqli ->query($sql) === TRUE) {
-	    echo "Erfolgreich aktualisiert!";
-	} else {
-	    echo "Error: " . $sql . "<br>" . $mysqli->error;
-	}
-	
-	$mysqli ->close();
-							
-?>
+if ($roomID <= 0) {
+    http_response_code(400);
+    echo 'Ungültige Raum-ID';
+    exit;
+}
+if (!is_array($columnsData) || !in_array($columnFromPost, $columnsData, true)) {
+    http_response_code(400);
+    echo 'Ungültige Spalte';
+    exit;
+}
+$sql = "UPDATE tabelle_räume SET tabelle_räume.`$columnFromPost` = ? WHERE tabelle_räume.idTABELLE_Räume = ?";
+$stmt = $mysqli->prepare($sql);
+if ($stmt === false) {
+    http_response_code(500);
+    echo 'Fehler beim Vorbereiten des Statements';
+    $mysqli->close();
+    exit;
+}
+$stmt->bind_param('si', $value, $roomID);
+if ($stmt->execute()) {
+    echo 'Erfolgreich aktualisiert!';
+} else {
+    http_response_code(500);
+    echo 'Fehler beim Aktualisieren';
+}
+$stmt->close();
+$mysqli->close(); ?>

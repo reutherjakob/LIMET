@@ -1,27 +1,22 @@
 <?php
+// 25 FX
 require_once 'utils/_utils.php';
 check_login();
-
 $mysqli = utils_connect_sql();
 
-$untergruppenID = filter_input(INPUT_GET, 'untergruppenID', FILTER_VALIDATE_INT);
-$losParam = filter_input(INPUT_GET, 'los', FILTER_VALIDATE_INT);
-$losID = ($losParam === 0 || is_null($losParam)) ? null : $losParam;
 
-$vermerkText = filter_input(INPUT_GET, 'vermerkText', FILTER_UNSAFE_RAW);
-$vermerkText = htmlspecialchars(trim($vermerkText), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-
-$vermerkStatus = filter_input(INPUT_GET, 'vermerkStatus', FILTER_UNSAFE_RAW);
-$vermerkStatus = htmlspecialchars(trim($vermerkStatus), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-
-$vermerkTyp = filter_input(INPUT_GET, 'vermerkTyp', FILTER_UNSAFE_RAW);
-$vermerkTyp = htmlspecialchars(trim($vermerkTyp), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-
-$faelligkeitDatum = filter_input(INPUT_GET, 'faelligkeitDatum', FILTER_UNSAFE_RAW);
-$faelligkeitDatum = htmlspecialchars(trim($faelligkeitDatum), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-
+$untergruppenID = getPostInt('untergruppenID', 0);
+$losID = getPostInt('los', 0);
+if ($losID === 0) {
+    $losID = null;
+}
+$vermerkText = getPostString('vermerkText', '');
+$vermerkStatus = getPostString('vermerkStatus', '');
+$vermerkTyp = getPostString('vermerkTyp', '');
+$faelligkeitDatum = getPostString('faelligkeitDatum', '');
 $username = $_SESSION["username"] ?? '';
 $timestamp = date("Y-m-d H:i:s");
+
 
 $stmt = $mysqli->prepare("
     INSERT INTO tabelle_Vermerke (
@@ -49,7 +44,7 @@ $stmt->bind_param(
 
 if ($stmt->execute()) {
     $vermerkID = $stmt->insert_id;
-    $roomArray = filter_input(INPUT_GET, 'room', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY) ?? [];
+    $roomArray = filter_input(INPUT_POST, 'room', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY) ?? [];
     $roomStmt = $mysqli->prepare("
         INSERT INTO tabelle_vermerke_has_tabelle_räume (
             tabelle_vermerke_idTabelle_vermerke,
