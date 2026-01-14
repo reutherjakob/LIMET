@@ -85,6 +85,7 @@ init_page_serversides();
                             }
                         }
 
+
                         $mysqli = utils_connect_sql();
                         $sql = "SELECT `tabelle_lieferant`.`idTABELLE_Lieferant`,
                                                                             `tabelle_lieferant`.`Lieferant`
@@ -99,8 +100,10 @@ init_page_serversides();
                         }
 
                         $sql = "SELECT tabelle_lose_extern.idtabelle_Lose_Extern, tabelle_lose_extern.LosNr_Extern, 
-                                        tabelle_lose_extern.LosBezeichnung_Extern, tabelle_lose_extern.Versand_LV, tabelle_lose_extern.Ausführungsbeginn, tabelle_lose_extern.Verfahren, tabelle_lose_extern.mkf_von_los,
-                                        tabelle_lose_extern.Bearbeiter, tabelle_lose_extern.Vergabesumme, tabelle_lose_extern.Vergabe_abgeschlossen, tabelle_lose_extern.Versand_LV, tabelle_lose_extern.Notiz, tabelle_lose_extern.Kostenanschlag, tabelle_lose_extern.Budget,
+                                        tabelle_lose_extern.LosBezeichnung_Extern, tabelle_lose_extern.Versand_LV, 
+                                        tabelle_lose_extern.Ausführungsbeginn, tabelle_lose_extern.Verfahren, tabelle_lose_extern.mkf_von_los,
+                                        tabelle_lose_extern.Bearbeiter, tabelle_lose_extern.Vergabesumme, 
+                                        tabelle_lose_extern.Vergabe_abgeschlossen, tabelle_lose_extern.Versand_LV, tabelle_lose_extern.Notiz, tabelle_lose_extern.Kostenanschlag, tabelle_lose_extern.Budget,
                                         tabelle_lieferant.Lieferant, tabelle_lieferant.idTABELLE_Lieferant,
                                         losschaetzsumme.Summe,
                                         losbestandschaetzsumme.SummeBestand,
@@ -787,7 +790,6 @@ require_once "modal_showLotWorkflow.php";
                 $("#workflowModalBody").html(data);
             }
         });
-
     });
 
     $("button[value='reloadBestand']").click(function () {

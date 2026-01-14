@@ -264,6 +264,7 @@
 
     $("#addManufacturer").click(function () {
         let manufacturer = $("#manufacturer").val();
+        console.log(manufacturer);
         if (manufacturer !== "") {
             $('#addManufacturerModal').modal('hide');
             $('#changeDeviceModal').modal('hide');

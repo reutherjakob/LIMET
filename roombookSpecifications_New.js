@@ -167,20 +167,20 @@ function init_btn_4_dt() {
             text: "",
             titleAttr: "Download as Excel",
             exportOptions: {
-                columns: function (idx ) {
-                    const idIndex = columnsDefinition.findIndex(col => col.data === 'idTABELLE_Räume');
-                    return table.column(idx).visible() || idx === idIndex;
-                },
-                // Provide a custom header label to ensure it's printed
-                format: {
-                    header: (data, columnIdx) => {
-                        const idIndex = columnsDefinition.findIndex(col => col.data === 'idTABELLE_Räume');
-                        if (columnIdx === idIndex) {
-                            return "Raum ID"; // Or your desired header
-                        }
-                        return data;
-                    }
-                }
+             columns: function (idx ) {
+                 const idIndex = columnsDefinition.findIndex(col => col.data === 'idTABELLE_Räume');
+                 return table.column(idx).visible();// || idx === idIndex;
+             },
+//
+              format: {
+                  header: (data, columnIdx) => {
+                     // const idIndex = columnsDefinition.findIndex(col => col.data === 'idTABELLE_Räume');
+                     // if (columnIdx === idIndex) {
+                     //     return "Raum ID"; // Or your desired header
+                     // }
+                      return data;
+                  }
+              }
             },
             action: function (e, dt, node, config) {
                 $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, node, config);

@@ -41,11 +41,11 @@ init_page_serversides();
             <div class="mt-2 card">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col-xxl-6">Räume im Projekt</div>
+                        <div class="col-xxl-4">Räume im Projekt</div>
 
-                        <div id="CardHeaderRaume" class="col-xxl-6 d-flex justify-content-end align-items-center">
+                        <div id="CardHeaderRaume" class="col-xxl-8 d-flex justify-content-end align-items-center">
 
-                            <input type="checkbox" id="filter_EntfalleneRooms" class="btn-check"  checked>
+                            <input type="checkbox" id="filter_EntfalleneRooms" class="btn-check" checked>
                             <label class="btn btn-outline-dark btn-sm float-right" for="filter_EntfalleneRooms">
                                 Entfallene ausblenden </label>
 
@@ -299,34 +299,64 @@ init_page_serversides();
 
         tableRooms = new DataTable('#tableRooms', {
             select: true,
+            savestate: true,
             paging: {
                 type: 'simple',
                 numbers: 10
             },
-            lengthChange: false,
+            lengthChange: true,
+            pageLength: 10,
             columnDefs: [
                 {
                     targets: [0],
                     visible: false,
                     searchable: false
+                },
+                {
+                    targets: [2, 6, 7, 11],
+                    visible: false,
                 }
             ],
             order: [[1, "asc"]],
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 search: '',
-                searchPlaceholder: 'Suche... '
+                searchPlaceholder: 'Suche... ',
+                info: "_TOTAL_ Zeilen",
+                select: {
+                    rows:   "",
+                    columns:"",
+                    cells:  ""
+                }
             },
             mark: true,
             layout: {
-                topStart: null,
+                topStart: {
+                    buttons: [
+                        {
+                            extend: 'colvis',
+                            text: 'Sichtbare Spalten',
+                            className: 'btn btn-outline-dark btn-sm',
+                            columns: ':not(:first-child)'
+                        }
+                    ]
+                },
                 topEnd: null,
-                bottomStart: "info",
+                bottomStart: ["info", "pageLength"],
                 bottomEnd: ["search", "paging"]
             },
             initComplete: function () {
                 $('.dt-search label').remove();
                 $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeaderRaume');
+                $('.dt-buttons').addClass('btn-group btn-group-sm ms-1 me-1').appendTo('#CardHeaderRaume');
+                tableRooms.on('buttons-collection.dt', function (e, settings, button, nodes) {
+                    $(nodes).closest('.dt-button-collection').css({
+                        'width': '320px !important',
+                        'max-height': '420px !important',
+                        'overflow-y': 'auto !important'
+                    });
+                });
+
             }
 
         });

@@ -1,40 +1,37 @@
 <?php
 function get_header_logo($pdf): void
 {
-    if ($_SESSION["projectAusfuehrung"] === "LIMET-MADER") {
+    if ($_SESSION["PDFHeaderSubtext"] === "Versorgungsgebäude BT0") {
+        $image_file = '../Logo/Logo_HealthTeamWien.jpg';
+        if (file_exists($image_file)) {
+            $pdf->Image($image_file, 15, 9, 10, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
+        }
+    } else if ($_SESSION["projectAusfuehrung"] === "LIMET-MADER") {
         $image_file1 = '../Logo/LIMET_web.png';
         $image_file2 = '../Logo/MADER_Logo.png';
 
         if (file_exists($image_file1)) {
             $pdf->Image($image_file1, 17, 4, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-        } else {
-            $pdf->SetXY(17, 9);
-            $pdf->Write(0, 'LIMET_web.png not found');
         }
-
         if (file_exists($image_file2)) {
             $pdf->Image($image_file2, 38, 4, 14, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-        } else {
-            $pdf->SetXY(38, 9);
-            $pdf->Write(0, 'MADER_Logo.png not found');
         }
 
     } else if ($_SESSION["projectAusfuehrung"] === "LIMET") {
         $image_file = '../Logo/LIMET_web.png';
         if (file_exists($image_file)) {
             $pdf->Image($image_file, 15, 5, 20, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
-        } else {
-            $pdf->SetXY(15, 9);
-            $pdf->Write(0, 'LIMET_web.png not found');
         }
-
     } else if ($_SESSION["projectAusfuehrung"] === "LIMET-CFM") {
         $image_file = '../Logo/ARGE_LIMET-CFM_Logo_03.png';
-        if (file_exists($image_file) && is_readable($image_file) ) {
+        if (file_exists($image_file) && is_readable($image_file)) {
             $info = @getimagesize($image_file);
             if ($info && ($info[2] === IMAGETYPE_PNG)) {
-            $pdf->Image($image_file, 15, 5, 30, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);}else{  $pdf->SetXY(15, 9);
-                $pdf->Write(0, 'ARGE_LIMET-CFM_Logo_03.png not readable');}
+                $pdf->Image($image_file, 15, 5, 30, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
+            } else {
+                $pdf->SetXY(15, 9);
+                $pdf->Write(0, 'ARGE_LIMET-CFM_Logo_03.png not readable');
+            }
         } else {
             $pdf->SetXY(15, 9);
             $pdf->Write(0, 'ARGE_LIMET-CFM_Logo_03.png not found');
@@ -49,7 +46,13 @@ function get_titelblatt_logo($pdf, $format = "A4"): void
     if ($format === "A3") {
         $spacer = 210;
     }
-    if ($_SESSION["projectAusfuehrung"] === "LIMET-MADER") {
+    if ($_SESSION["PDFHeaderSubtext"] === "Versorgungsgebäude BT0") {
+        $image_file = '../Logo/Logo_HealthTeamWien.jpg';
+        if (file_exists($image_file)) {
+            $pdf->Image($image_file, 150 + $spacer, 40, 40, 40, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);
+        }
+    }
+    else if ($_SESSION["projectAusfuehrung"] === "LIMET-MADER") {
         $image_file = '../Logo/LIMET_web.png';
         $pdf->Image($image_file, 145 + $spacer, 40, 30, 13, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
         $image_file = '../Logo/MADER_Logo.png';

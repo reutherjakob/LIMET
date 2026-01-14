@@ -23,6 +23,7 @@ class MYPDF extends TCPDF
             if (isset($_SESSION["PDFHeaderSubtext"])) {
                 if (!empty(str_replace(" ", "", $_SESSION["PDFHeaderSubtext"]))) {
                     $this->Cell(0, 0, $_SESSION["PDFHeaderSubtext"], '', false, 'R', 0, '', 0, false, 'B', 'B');
+                    $this->Ln() ;
                 }
             }
 
