@@ -113,12 +113,12 @@ function load_nav_bar(): void
     echo '     };    </script>';
 }
 
-// if (!function_exists('h')) {
-//     function h($var): string
-//     {
-//         return htmlspecialchars((string)($var ?? ''));
-//     }
-// }
+if (!function_exists('h')) {
+    function h($var): string
+    {
+        return htmlspecialchars((string)($var ?? ''));
+    }
+}
 
 // function writeLog($message): void
 // {
@@ -151,11 +151,13 @@ function getPostDate(string $key): string
     return $dateFormatted;
 }
 
-function getPostFloat(string $key, float $default = 0.0): float {
+function getPostFloat(string $key, float $default = 0.0): float
+{
     return isset($_POST[$key]) ? filter_var($_POST[$key], FILTER_VALIDATE_FLOAT) ?? $default : $default;
 }
 
-function getPostArrayInt(string $key, array $default = []): array {
+function getPostArrayInt(string $key, array $default = []): array
+{
     $input = filter_input(INPUT_POST, $key, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
     if (!$input) {
         return $default;

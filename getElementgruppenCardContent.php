@@ -48,6 +48,7 @@ echo " <script>
         }
     });
     
+    
     $('#ResetElementGroups').on('click', function () {
         $('#elementsInDB').html('');
         $('#elementGroups').html('');

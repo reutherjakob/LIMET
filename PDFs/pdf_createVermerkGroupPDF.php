@@ -248,7 +248,6 @@ class MYPDF extends TCPDF
 }
 
 
-
 // create new PDF document
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 $pdf->SetCreator(PDF_CREATOR);
@@ -297,10 +296,12 @@ while ($stmt->fetch()) {
 $stmt->close();
 $pdf->Ln(1);
 
-$verteiler_table_header = array('Name', 'Mail', 'Organisation', 'Rolle', 'Anw.', 'Vert.');
 
-$stmt = $mysqli->prepare(
-    "SELECT
+if ($gruppenID != 970 && $gruppenID != 971) {
+    $verteiler_table_header = array('Name', 'Mail', 'Organisation', 'Rolle', 'Anw.', 'Vert.');
+
+    $stmt = $mysqli->prepare(
+        "SELECT
         tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen,
         tabelle_ansprechpersonen.Name,
         tabelle_ansprechpersonen.Vorname,
@@ -320,23 +321,36 @@ $stmt = $mysqli->prepare(
             ON tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projektzuständigkeiten_idTABELLE_Projektzuständigkeiten = tabelle_projektzuständigkeiten.idTABELLE_Projektzuständigkeiten
      WHERE tabelle_Vermerkgruppe_has_tabelle_ansprechpersonen.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe = ?
        AND tabelle_projekte_has_tabelle_ansprechpersonen.TABELLE_Projekte_idTABELLE_Projekte = ?"
-);
-$stmt->bind_param("ii", $gruppenID, $projectID);
-$stmt->execute();
-$result = $stmt->get_result();
-$gruppenTeilnehmer = array();
-while ($row = $result->fetch_assoc()) {
-    $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Name'] = $row['Name'];
-    $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Vorname'] = $row['Vorname'];
-    $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Mail'] = $row['Mail'];
-    $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Organisation'] = $row['Organisation'];
-    $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Anwesenheit'] = $row['Anwesenheit'];
-    $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Verteiler'] = $row['Verteiler'];
-    $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Zuständigkeit'] = $row['Zuständigkeit'];
+    );
+    $stmt->bind_param("ii", $gruppenID, $projectID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $gruppenTeilnehmer = array();
+    while ($row = $result->fetch_assoc()) {
+        $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Name'] = $row['Name'];
+        $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Vorname'] = $row['Vorname'];
+        $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Mail'] = $row['Mail'];
+        $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Organisation'] = $row['Organisation'];
+        $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Anwesenheit'] = $row['Anwesenheit'];
+        $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Verteiler'] = $row['Verteiler'];
+        $gruppenTeilnehmer[$row['idTABELLE_Ansprechpersonen']]['Zuständigkeit'] = $row['Zuständigkeit'];
+    }
+    $stmt->close();
+    $pdf->Ln();
+    $pdf->verteilerTable($verteiler_table_header, $gruppenTeilnehmer);
+
+} else {
+    $pdf->Ln();
+    $pdf->SetFillColor(255, 0, 0);
+    $pdf->SetTextColor(0);
+    $pdf->SetDrawColor(0, 0, 0);
+    $pdf->SetLineWidth(0.1);
+    $pdf->SetFont('', '', '9');
+    $pdf->MultiCell(180, 6, 'Teilnehmer/Verteiler: Laut Anhang.', 0, 'L', 0);
+    $pdf->SetFillColor(244, 244, 244);
+    $pdf->SetTextColor(0);
+    $pdf->SetFont('', '', '8');
 }
-$stmt->close();
-$pdf->Ln();
-$pdf->verteilerTable($verteiler_table_header, $gruppenTeilnehmer);
 
 $pdf->Ln(2);
 $topics_table_header = array('Text', 'Typ', 'Wer/Bis wann');

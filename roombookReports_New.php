@@ -168,7 +168,8 @@ init_page_serversides("", "x");
             {text: "BO-PDF", url: "pdf_createBOPDF"},
             {text: "VE-Gesamt-PDF", url: "pdf_createBericht_VE_PDF"},
             {text: "ENT-Gesamt-PDF", url: "pdf_createBericht_ENT_PDF"},
-            {text: "Nutzer Formular", url: "pdf_createUserFormPDF"}
+            {text: "Nutzer Formular", url: "pdf_createUserFormPDF"},
+            {text: "KHI BT0", url: "pdf_createBerichtKHIMA40"}
         ]
     };
 

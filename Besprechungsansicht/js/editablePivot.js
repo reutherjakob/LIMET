@@ -13,6 +13,8 @@ class EditablePivot {
             document.getElementById('edit-raum-info').value = '';
             document.getElementById('edit-element-info').value = '';
             document.getElementById('edit-current-amount').value = '';
+            document.getElementById('edit-element-comments').value = '';
+
         });
     }
 

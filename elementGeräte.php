@@ -195,11 +195,14 @@
         $('#addDevice').hide();
         let rowData = table.row($(this).closest('tr')).data();
         let manufacturerID = rowData[3];
-        console.log("Raw:V ", rowData);
+        deviceID = rowData[6];  // idTABELLE_Geraete setzen (Index 6 laut columnDefs und SQL)
+        console.log("Raw: ", rowData);
+        console.log("DeviceID: ", deviceID);
         $('#hersteller').val(manufacturerID).trigger('change');
         $('#type').val(rowData[4]);
         $('#kurzbeschreibung').val(rowData[5]);
     });
+
 
 
     $("#addDevice").click(function () {
@@ -264,6 +267,7 @@
 
     $("#addManufacturer").click(function () {
         let manufacturer = $("#manufacturer").val();
+        console.log(manufacturer);
         if (manufacturer !== "") {
             $('#addManufacturerModal').modal('hide');
             $('#changeDeviceModal').modal('hide');

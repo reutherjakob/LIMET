@@ -35,7 +35,7 @@ const columnsDefinition = [
     }, // 2
     {
         data: 'MT-relevant', title: 'MT-rel.', name: 'MT-relevant', case: "bit", render: function (data) {
-            return data === '1' ? 'Ja' : 'Nein';
+            return data === 1 ? 'Ja' : 'Nein';
         }
     }, // 3
     {data: 'Raumbezeichnung', title: 'Raumbez'}, // 4
