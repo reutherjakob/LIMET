@@ -1,4 +1,7 @@
 <?php
+// ICH GKLAUB DAS IST DIE ALTE UND DIE ALTE MACHT JETZT NUR DIE BENUTZEN PARAMTER JE RAUM
+
+
 session_start();
 check_login();
 
@@ -15,10 +18,7 @@ function checkEntry($jsonArray, $elementId, $parameterId): bool
 function checkAndManipulateString($input)
 {
     if ($input === "\'\'" || $input === '\"' ) {
-        // Option 1: Use inch symbol
         return '"';
-        // Option 2: Return empty string if you want no unit displayed
-        // return '';
     }
     if (str_contains($input, '/min')) {
         $input = ' ' . $input;

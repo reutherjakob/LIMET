@@ -16,9 +16,10 @@ $zusatzElemente = $_POST['zusatzElemente'] ?? [];
 if (!is_array($zusatzElemente)) $zusatzElemente = [$zusatzElemente];
 // error_log('ZusatzElemente: ' . print_r($zusatzElemente, true));
 
-$raumbereiche = array_map('intval', (array)($raumbereiche));
-$zusatzRaeume = array_map('intval', (array)($zusatzRaeume));
-$zusatzElemente = array_map('intval', (array)($zusatzElemente));
+
+$raumbereiche = (array)($raumbereiche);  // No intval!
+$zusatzRaeume = array_map('intval', (array)($zusatzRaeume));  // IDs only
+$zusatzElemente = array_map('intval', (array)($zusatzElemente));  // IDs only
 
 $mtRelevant = isset($_POST["mtRelevant"]) ? intval($_POST["mtRelevant"]) : 0;
 $entfallen = isset($_POST["entfallen"]) ? intval($_POST["entfallen"]) : 0;
@@ -146,7 +147,7 @@ if ($filterElemente) {
 
 $sql = "
     SELECT
-        e.ElementID,
+        e.ElementID,#
         e.Bezeichnung,
         e.idTABELLE_Elemente,
         COALESCE(v.idtabelle_Varianten, 0) AS idtabelle_Varianten,

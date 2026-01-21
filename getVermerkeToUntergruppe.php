@@ -72,7 +72,6 @@ echo "</tbody></table>";
 ?>
 
 
-
 <div class='modal fade' id='changeVermerkModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-lg'>
         <div class='modal-content'>
@@ -113,31 +112,31 @@ echo "</tbody></table>";
                     }
                     echo "</select><div>";
 
-                    $sql = "SELECT idtabelle_Vermerkuntergruppe, 
-                                    Untergruppenname, 
-                                    Untergruppennummer
-                                FROM tabelle_Vermerkuntergruppe
-                                WHERE tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe = ?
-                                ORDER BY Untergruppennummer ASC";
-
-                    $stmt = $mysqli->prepare($sql);
-                    $stmt->bind_param("i", $vermerkGruppenID);
-                    $stmt->execute();
-                    $result1 = $stmt->get_result();
-
-
-                    echo "<div class='form-group'>
-                                        <label for='untergruppe'>Untergruppe:</label>									
-                                        <select class='form-control form-control-sm' id='untergruppe' name='untergruppe'>";
-                    while ($row = $result1->fetch_assoc()) {
-                        if ($row["idtabelle_Vermerkuntergruppe"] == filter_input(INPUT_POST, 'vermerkUntergruppenID')) {
-                            echo "<option value=" . $row["idtabelle_Vermerkuntergruppe"] . " selected>" . $row["Untergruppennummer"] . " - " . $row["Untergruppenname"] . "</option>";
-                        } else {
-                            echo "<option value=" . $row["idtabelle_Vermerkuntergruppe"] . ">" . $row["Untergruppennummer"] . " - " . $row["Untergruppenname"] . "</option>";
-                        }
-                    }
-                    echo "</select>  </div>";
-                    $mysqli->close();
+                    # $sql = "SELECT idtabelle_Vermerkuntergruppe,
+                    #                 Untergruppenname,
+                    #                 Untergruppennummer
+                    #             FROM tabelle_Vermerkuntergruppe
+                    #             WHERE tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe = ?
+                    #             ORDER BY Untergruppennummer ASC";
+                    #
+                    # $stmt = $mysqli->prepare($sql);
+                    # $stmt->bind_param("i", $vermerkGruppenID);
+                    # $stmt->execute();
+                    # $result1 = $stmt->get_result();
+                    #
+                    #
+                    # echo "<div class='form-group'>
+                    #                     <label for='untergruppe'></label>
+                    #                     <select class='form-control fUntergruppe:orm-control-sm' id='untergruppe' name='untergruppe'>";
+                    # while ($row = $result1->fetch_assoc()) {
+                    #     if ($row["idtabelle_Vermerkuntergruppe"] == filter_input(INPUT_POST, 'vermerkUntergruppenID'))
+                    #         echo "<option value=" . $row["idtabelle_Vermerkuntergruppe"] . " selected>" . $row["Untergruppennummer"] . " - " . $row["Untergruppenname"] . "</option>";
+                    #     } else {
+                    #         echo "<option value=" . $row["idtabelle_Vermerkuntergruppe"] . ">" . $row["Untergruppennummer"] . " - " . $row["Untergruppenname"] . "</option>";
+                    #     }
+                    # }
+                    # echo "</select>  </div>";
+                    # $mysqli->close();
                     ?>
 
                     <div class='form-group'>
@@ -409,7 +408,7 @@ echo "</tbody></table>";
     $("#buttonNewVermerk").click(function () {
         document.getElementById("saveVermerk").style.display = "none";
         document.getElementById("deleteVermerk").style.display = "none";
-        $("#untergruppe").prop('disabled', true);
+//         $("#untergruppe").prop('disabled', true);
         document.getElementById("addVermerk").style.display = "inline";
         $('#deleteVermerkModal').modal('hide');
         $('#changeVermerkModal').modal('show');
@@ -474,7 +473,7 @@ echo "</tbody></table>";
         document.getElementById("saveVermerk").style.display = "inline";
         document.getElementById("deleteVermerk").style.display = "inline";
         document.getElementById("addVermerk").style.display = "none";
-        $("#untergruppe").prop('disabled', false);
+       // $("#untergruppe").prop('disabled', false);
 
         let rowData = tableVermerke.row($(this).closest('tr')).data();
         //   console.log(rowData[6]);

@@ -4,7 +4,7 @@ require_once "utils/_utils.php";
 check_login();
 $mysqli = utils_connect_sql();
 
-$sql = " SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte, 
+$sql = "SELECT tabelle_räume.tabelle_projekte_idTABELLE_Projekte, 
 tabelle_räume.idTABELLE_Räume, 
 tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen, 
 tabelle_funktionsteilstellen.Nummer, 
@@ -19,7 +19,12 @@ tabelle_räume.Geschoss,
 tabelle_räume.Bauetappe, 
 tabelle_räume.Bauabschnitt, 
 tabelle_räume.Nutzfläche, 
-tabelle_räume.Abdunkelbarkeit, 
+CASE 
+    WHEN tabelle_räume.Abdunkelbarkeit = 0 THEN 'kein Anspruch'
+    WHEN tabelle_räume.Abdunkelbarkeit = 1 THEN 'vollverdunkelbar'
+    WHEN tabelle_räume.Abdunkelbarkeit = 2 THEN 'abdunkelbar '
+    ELSE '-' 
+  END AS Abdunkelbarkeit,
 tabelle_räume.Strahlenanwendung, 
 tabelle_räume.Laseranwendung, 
 tabelle_räume.H6020, 

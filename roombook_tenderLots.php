@@ -397,7 +397,7 @@ init_page_serversides();
 </div>
 
 <?php
-require_once "modal_showLotWorkflow.php";
+include "modal_showLotWorkflow.php";
 ?>
 
 <script src="utils/_utils.js"></script>
@@ -780,12 +780,12 @@ require_once "modal_showLotWorkflow.php";
         window.open('PDFs/pdf_createTenderWorkflowPDF.php');
     });
 
-    $("button[value='LotWorkflow']").click(function () {
+    $(document).on("click", "button[value='LotWorkflow']", function () {
         var ID = this.id;
         $.ajax({
             url: "getLotWorkflow.php",
             type: "POST",
-            data: {"lotID": ID},
+            data: { lotID: ID },
             success: function (data) {
                 $("#workflowModalBody").html(data);
             }

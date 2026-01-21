@@ -13,15 +13,15 @@ const buttonRanges = [
     {name: 'All', start: 6, end: 168, longName: 'Alle Spalten'},
     {name: 'R', start: 7, end: 24, longName: 'Raum'},
     {name: 'HKLS', start: 25, end: 34, longName: 'HKLS'},
-    {name: 'ET', start: 35, end: 56+1, longName: 'Elektro'},
-    {name: 'AR', start: 56+1, end: 61+1, longName: 'Architektur'},
-    {name: 'MG', start: 62+1, end: 74+1, longName: 'Medgas'},
-    {name: 'LAB', start: 65+1, end: 147+1, longName: 'Labor'},
-    {name: '-GAS', start: 75+1, end: 116+1, longName: 'Labor-GAS'},
-    {name: '-ET', start: 117+1, end: 128+1, longName: 'Labor-ET'},
-    {name: '-HT', start: 129+1, end: 139+1, longName: 'Labor-HT'},
-    {name: '-H2O', start: 140+1, end: 148+1, longName: 'Labor-H2O'},
-    {name: 'GCP', start: 148+1, end: 168+1, longName: ''}
+    {name: 'ET', start: 35, end: 56 + 1, longName: 'Elektro'},
+    {name: 'AR', start: 56 + 1, end: 61 + 1, longName: 'Architektur'},
+    {name: 'MG', start: 62 + 1, end: 74 + 1, longName: 'Medgas'},
+    {name: 'LAB', start: 65 + 1, end: 147 + 1, longName: 'Labor'},
+    {name: '-GAS', start: 75 + 1, end: 116 + 1, longName: 'Labor-GAS'},
+    {name: '-ET', start: 117 + 1, end: 128 + 1, longName: 'Labor-ET'},
+    {name: '-HT', start: 129 + 1, end: 139 + 1, longName: 'Labor-HT'},
+    {name: '-H2O', start: 140 + 1, end: 148 + 1, longName: 'Labor-H2O'},
+    {name: 'GCP', start: 148 + 1, end: 168 + 1, longName: ''}
 ];
 
 const columnsDefinition = [
@@ -50,17 +50,7 @@ const columnsDefinition = [
     {data: 'Bauetappe', title: 'Bauetappe', visible: false}, // 13
     {data: 'Bauabschnitt', title: 'Bauabschnitt', visible: false}, // 14
     {data: 'Nutzfläche', title: 'Nutzfläche', visible: false, case: "num"}, // 15
-    {
-        data: 'Abdunkelbarkeit', title: 'Abdunkelbar', visible: false, case: "abd", render: function (data) {
-            if (data === "0") {
-                return "kein Anspruch";
-            } else if (data === "1") {
-                return "vollverdunkelbar";
-            } else {
-                return "abdunkelbar";
-            }
-        }
-    }, // 16
+    {data: 'Abdunkelbarkeit', title: 'Abdunkelbar', visible: false, case: "abd"}, // 16
     {data: 'Strahlenanwendung', title: 'Strahlenanw.', visible: false, case: "bit"}, // 17
     {data: 'Laseranwendung', title: 'Laseranw.', visible: false, case: "bit"}, // 18
     {data: 'Allgemeine Hygieneklasse', title: 'Allg. Hygieneklasse', visible: false}, // 19
@@ -215,7 +205,7 @@ const columnsDefinition = [
     {data: 'H2_Sensor', title: 'H2_Sensor', visible: false, case: 'num'}, // 112
     {data: 'O2_Sensor', title: 'O2_Sensor', visible: false, case: 'num'}, // 113
     {data: 'Acetylen_Melder', title: 'Acetylen_Melder', visible: false, case: 'num'}, // 114
-     {data: 'Blitzleuchte', title: 'Blitzleuchte', visible: false, case: 'num'}, // 115
+    {data: 'Blitzleuchte', title: 'Blitzleuchte', visible: false, case: 'num'}, // 115
     {data: 'ET_PA_Stk', title: 'ET PA Stk', visible: false, case: "num"}, // 116
     {data: 'ET_16A_3Phasig_Einzelanschluss', title: '16A 3Ph Einzelanschluss', visible: false, case: "num"}, // 117
     {data: 'ET_32A_3Phasig_Einzelanschluss', title: '32A 3Ph Einzelanschluss', visible: false, case: "num"}, // 118
@@ -270,30 +260,30 @@ const columnsDefinition = [
     {data: 'Wasser Qual 1', title: 'H20 Q1', visible: false, case: "bit"}, // 146 +1
 
     // GCP STISSL... 
-   {data: 'Belichtungsfläche', title: 'AR Belichtungsfläche', visible: false, case: ""},
-   {data: 'Fussboden', title: 'AR Fussboden', visible: false, case: ""},
-   {data: 'Decke', title: 'AR Decke', visible: false, case: ""},
-   {data: 'Anmerkung AR', title: 'AR Anmerkung', visible: false, case: ""},
-   {data: 'Taetigkeiten', title: 'AR Taetigkeiten', visible: false, case: ""},
-   {data: 'AR_APs', title: 'APs Anzahl', visible: false, case: ""},
-   {data: 'AP_Gefaehrdung', title: 'AP_Gefaehrdung', visible: false, case: ""},
-   {data: 'AP_Geistige', title: 'AP Geistige', visible: false, case: ""},
-   {data: 'AR_Schwingungsklasse', title: 'AR Schwingungsklasse', visible: false, case: ""},
-   {data: 'Spezialgase', title: 'Spezialgase', visible: false, case: ""},
-   {data: 'Gaswarneinrichtung-Art', title: 'Gaswarneinrichtung-Art', visible: false, case: ""},
-   {data: 'EL_Beleuchtungsstaerke', title: 'EL_Beleuchtungsstaerke', visible: false, case: ""},
-   {data: 'ET_EMV', title: 'ET_E EMV Maßnahme Txt', visible: false, case: ""},    //148
-   {data: 'HT_Luftmenge m3/h', title: 'HT_Luftmenge m3/h', visible: false, case: ""},
-   {data: 'HT_Kuehlung', title: 'HT_Kuehlung', visible: false, case: ""},
-   {data: 'HT_Kaelteabgabe_Typ', title: 'HT_Kaelteabgabe_Typ', visible: false, case: ""},
-   {data: 'HT_Heizung', title: 'HT_Heizung', visible: false, case: ""},
-   {data: 'HT_Waermeabgabe_Typ', title: 'HT_Waermeabgabe_Typ', visible: false, case: ""}, {
-       data: 'HT_Heizung',
-       title: 'HT_Heizung',
-       visible: false,
-       case: ""
-   },
-   {data: 'HT_Belueftung', title: 'HT_Belueftung', visible: false, case: ""},
-   {data: 'HT_Entlueftung', title: 'HT_Entlueftung', visible: false, case: ""},
-   {data: 'PHY_Akustik_Schallgrad', title: 'PHY_Akustik_Schallgrad', visible: false, case: ""}
+    {data: 'Belichtungsfläche', title: 'AR Belichtungsfläche', visible: false, case: ""},
+    {data: 'Fussboden', title: 'AR Fussboden', visible: false, case: ""},
+    {data: 'Decke', title: 'AR Decke', visible: false, case: ""},
+    {data: 'Anmerkung AR', title: 'AR Anmerkung', visible: false, case: ""},
+    {data: 'Taetigkeiten', title: 'AR Taetigkeiten', visible: false, case: ""},
+    {data: 'AR_APs', title: 'APs Anzahl', visible: false, case: ""},
+    {data: 'AP_Gefaehrdung', title: 'AP_Gefaehrdung', visible: false, case: ""},
+    {data: 'AP_Geistige', title: 'AP Geistige', visible: false, case: ""},
+    {data: 'AR_Schwingungsklasse', title: 'AR Schwingungsklasse', visible: false, case: ""},
+    {data: 'Spezialgase', title: 'Spezialgase', visible: false, case: ""},
+    {data: 'Gaswarneinrichtung-Art', title: 'Gaswarneinrichtung-Art', visible: false, case: ""},
+    {data: 'EL_Beleuchtungsstaerke', title: 'EL_Beleuchtungsstaerke', visible: false, case: ""},
+    {data: 'ET_EMV', title: 'ET_E EMV Maßnahme Txt', visible: false, case: ""},    //148
+    {data: 'HT_Luftmenge m3/h', title: 'HT_Luftmenge m3/h', visible: false, case: ""},
+    {data: 'HT_Kuehlung', title: 'HT_Kuehlung', visible: false, case: ""},
+    {data: 'HT_Kaelteabgabe_Typ', title: 'HT_Kaelteabgabe_Typ', visible: false, case: ""},
+    {data: 'HT_Heizung', title: 'HT_Heizung', visible: false, case: ""},
+    {data: 'HT_Waermeabgabe_Typ', title: 'HT_Waermeabgabe_Typ', visible: false, case: ""}, {
+        data: 'HT_Heizung',
+        title: 'HT_Heizung',
+        visible: false,
+        case: ""
+    },
+    {data: 'HT_Belueftung', title: 'HT_Belueftung', visible: false, case: ""},
+    {data: 'HT_Entlueftung', title: 'HT_Entlueftung', visible: false, case: ""},
+    {data: 'PHY_Akustik_Schallgrad', title: 'PHY_Akustik_Schallgrad', visible: false, case: ""}
 ]

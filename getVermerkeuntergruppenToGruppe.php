@@ -86,17 +86,14 @@ $mysqli->close();
 
 <script src="utils/_utils.js"></script>
 <script>
+    window.tableVermerkUnterGruppe = window.tableVermerkUnterGruppe || null;
+    window.untergruppenID = window.untergruppenID || null;
 
     $(document).ready(function () {
-
-        if (typeof untergruppenID === 'undefined') {
-            var untergruppenID = 0;  // or 0, '', [], etc. depending on expected type
-        }
-
-
         $('#topDivSearch').remove();
         document.getElementById("buttonNewVermerkuntergruppe").style.visibility = "visible";
-        let tableVermerkUnterGruppe = $('#tableVermerkUnterGruppe').DataTable({
+        tableVermerkUnterGruppe = null;
+        tableVermerkUnterGruppe = $('#tableVermerkUnterGruppe').DataTable({
             columnDefs: [
                 {
                     "targets": [0, 4],
@@ -126,6 +123,7 @@ $mysqli->close();
 
         $('#tableVermerkUnterGruppe tbody').on('click', 'tr', function () {
             untergruppenID = tableVermerkUnterGruppe.row($(this)).data()[0];
+            console.log("tableVermerkUnterGruppe tbody", untergruppenID);
             document.getElementById("unterGruppenNummer").value = tableVermerkUnterGruppe.row($(this)).data()[2];
             document.getElementById("unterGruppenName").value = tableVermerkUnterGruppe.row($(this)).data()[3];
             $("#vermerke").show();
@@ -159,18 +157,16 @@ $mysqli->close();
     $("#addUnterGroup").click(function () {
         var untergruppenName = $("#unterGruppenName").val();
         var untergruppenNummer = $("#unterGruppenNummer").val();
-        var id = <?php echo getPostInt('vermerkGruppenID') ?>;
-        console.log(" $(#addUnterGroup).click(function () {", id);
         if (untergruppenName !== "" && untergruppenNummer !== "") {
             $.ajax({
                 url: "addVermerkUnterGroup.php",
-                data: {"untergruppenName": untergruppenName, "untergruppenNummer": untergruppenNummer, "gruppenID": id},
+                data: {"untergruppenName": untergruppenName, "untergruppenNummer": untergruppenNummer, "gruppenID": gruppenID},
                 type: "POST",
                 success: function (data) {
                     makeToaster(data, true);
                     $.ajax({
                         url: "getVermerkeuntergruppenToGruppe.php",
-                        data: {"vermerkGruppenID": id},
+                        data: {"vermerkGruppenID": vermerkGruppenID},
                         type: "POST",
                         success: function (data) {
                             $("#vermerkUntergruppen").html(data);
@@ -187,7 +183,7 @@ $mysqli->close();
     $("#saveUnterGroup").click(function () {
         let untergruppenName = $("#unterGruppenName").val();
         let untergruppenNummer = $("#unterGruppenNummer").val();
-        let id = <?php echo getPostInt('vermerkGruppenID') ?>;
+        console.log("saveUnterGroup", untergruppenNummer, untergruppenName, untergruppenID);
         if (untergruppenName !== "" && untergruppenNummer !== "") {
             $.ajax({
                 url: "saveVermerkUnterGroup.php",
@@ -201,11 +197,10 @@ $mysqli->close();
                     makeToaster(data, true);
                     $.ajax({
                         url: "getVermerkeuntergruppenToGruppe.php",
-                        data: {"vermerkGruppenID": id},
+                        data: {"vermerkGruppenID": vermerkGruppenID},
                         type: "POST",
                         success: function (data) {
                             $("#vermerkUntergruppen").html(data);
-                            // Neu laden der PDF-Vorschau
                             document.getElementById('pdfPreview').src += '';
                         }
                     });
