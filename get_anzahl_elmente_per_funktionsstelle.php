@@ -3,7 +3,9 @@
 require_once 'utils/_utils.php';
 
 $TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen =  getPostInt('value',0);
+
 if($TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen == 0){die("Kein Wert übergeben.");}
+
 $stmt = "SELECT COUNT(tabelle_räume_has_tabelle_elemente.Anzahl) AS AnzahlvonAnzahl,
        SUM(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
        tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
@@ -16,6 +18,7 @@ $stmt = "SELECT COUNT(tabelle_räume_has_tabelle_elemente.Anzahl) AS AnzahlvonAn
         WHERE tabelle_räume.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = ? 
         GROUP BY tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
                  tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_projekte.Projektname";
+
 $mysqli = utils_connect_sql();
 $stmt_prepared = $mysqli->prepare($stmt);
 $stmt_prepared->bind_param("i", $TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen);

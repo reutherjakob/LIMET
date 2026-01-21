@@ -9,31 +9,31 @@ class MYPDF extends TCPDF
 {
     public function Header()
     {
-        get_header_logo($this);
-        $this->SetFont('helvetica', '', 8);
-        $this->cell(0, 0, '', 0, 0, 'L');
-        $this->Ln();
-        if (isset($_SESSION["PDFTITEL"]) && $_SESSION["PDFTITEL"] != null) {
-            $this->Cell(0, 0, $_SESSION["PDFTITEL"], 0, false, 'R', 0, '', 0, false, 'B', 'B');
-        } else {
-            $this->Cell(0, 0, '', 0, false, 'R', 0, '', 0, false, 'B', 'B');
-        }
-        $this->Ln(5);//
-        if (isset($_SESSION["PDFHeaderSubtext"])) {
-            $this->Cell(0, 0, $_SESSION["PDFHeaderSubtext"], 'B', false, 'R', 0, '', 0, false, 'B', 'B');
+        if ($this->numpages > 1) {
+            get_header_logo($this);
+            $this->SetFont('helvetica', '', 8);
+            $this->cell(0, 0, '', 0, 0, 'L');
+            $this->Ln(1);
+            if ($_SESSION["PDFTITEL"] != null) {
+                $this->Cell(0, 0, $_SESSION["PDFTITEL"], 0, false, 'R', 0, '', 0, false, 'B', 'B');
+            } else {
+                $this->Cell(0, 0, 'Raumbuch', 0, false, 'R', 0, '', 0, false, 'B', 'B');
+            }
             $this->Ln();
-        } else {
-            $this->Ln();
-            $this->cell(0, 0, '', 'B', 0, 'L');;
+            if (isset($_SESSION["PDFHeaderSubtext"])) {
+                if (!empty(str_replace(" ", "", $_SESSION["PDFHeaderSubtext"]))) {
+                    $this->Cell(0, 0, $_SESSION["PDFHeaderSubtext"], '', false, 'R', 0, '', 0, false, 'B', 'B');
+                    $this->Ln();
+                }
+            }
+            $this->cell(0, 0, '', 'B', 0, 'L');
+            $this->Ln(1);
+            $this->cell(0, 0, '', 'B', 0, 'L');
+            $this->Ln(5);
 
         }
-
-        $this->Ln();
-        $this->Ln();
-        $this->Ln();
     }
 
-    // Page footer
     public function Footer()
     {
         $this->SetY(-15);
@@ -46,7 +46,6 @@ class MYPDF extends TCPDF
         } else {
             $this->Cell(0, 0, $tDate, 0, false, 'L', 0, '', 0, false, 'T', 'M');
         }
-
         $this->Cell(0, 0, 'Seite ' . $this->getAliasNumPage() . ' von ' . $this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
     }
 }

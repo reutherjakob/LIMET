@@ -4,7 +4,7 @@ require_once '../utils/_utils.php';
 check_login();
 
 require_once('../TCPDF-main/TCPDF-main/tcpdf.php');
-include "pdf_createBericht_MYPDFclass_A4_Raumbuch.php";
+include "pdf_createBericht_MYPDFclass_A4_ohneTitelblatt.php";
 include "_pdf_createBericht_utils.php";
 
 $marginTop = 20;
@@ -61,9 +61,10 @@ function ensure_space_for_fullwidth_text($pdf, $section, $row)
 }
 
 
-$sql_elemente = "SELECT  tabelle_elemente.idTABELLE_Elemente,
+$sql_elemente = "SELECT  
+    tabelle_elemente.idTABELLE_Elemente,
     tabelle_elemente.Bezeichnung,
-   tabelle_räume_has_tabelle_elemente.Anzahl   
+    tabelle_räume_has_tabelle_elemente.Anzahl   
 FROM tabelle_räume_has_tabelle_elemente
 INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = 
                                 tabelle_elemente.idTABELLE_Elemente
@@ -71,11 +72,7 @@ WHERE tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume = ?
 GROUP BY tabelle_elemente.idTABELLE_Elemente, tabelle_elemente.Bezeichnung
 ORDER BY tabelle_elemente.Bezeichnung ASC";
 
-// ============================================================================
-// OUTPUT PARAMETER DEFINITION - GROUPED BY SECTIONS
-// ============================================================================
 $outputparameter = [
-    // SECTION 1: Basic Room Informatio n Raumzone_Nr, Funktionsteilstelle_Nr
     "basic" => [
         "title" => "Raum",
         "layout" => "columns",
@@ -83,20 +80,18 @@ $outputparameter = [
             ["name" => "Raumbezeichnung", "fetch_data" => "sql", "dataname" => "Raumbezeichnung"],
             ["name" => "Topograf. Raumnummer", "fetch_data" => "sql", "dataname" => "Raumnummer_Nutzer"],
             ["name" => "Raumbezeichnung Zusatz", "fetch_data" => "sql", "dataname" => "Anmerkung AR"],
-            ["name" => "Funktionale Raumnummer", "fetch_data" => "sql", "dataname" => "Funktionelle Raum Nr"],
+            ["name" => "Funktionale Raumnummer", "fetch_data" => "sql", "dataname" => "Funktionale Raumnummer Raum Nr"],
             ["name" => "Standort", "fetch_data" => "session", "dataname" => "projectName"],
             ["name" => "Raumzone Nr.", "fetch_data" => "sql", "dataname" => "Raumzone_Nr"],
             ["name" => "Bauteil", "fetch_data" => "sql", "dataname" => "Bauabschnitt"],
             ["name" => "Funktionsteilstelle Nr.", "fetch_data" => "sql", "dataname" => "Funktionsteilstelle_Nr"],
 
-            ["name" => "Geschoss", "fetch_data" => "sql", "dataname" => "Geschoss"],
+            ["name" => "Ebene", "fetch_data" => "sql", "dataname" => "Geschoss"],
             ["name" => "Funktionsstelle", "fetch_data" => "sql", "dataname" => "Raumbereich Nutzer"],
             ["name" => "Raumzone", "fetch_data" => "sql", "dataname" => "Anmerkung allgemein"],
 
         ]
     ],
-
-    // SECTION 2: Raumdaten Architektur – 2 Spalten
     "functional" => [
         "title" => "Raumdaten Architektur",
         "layout" => "columns",
@@ -144,9 +139,7 @@ $outputparameter = [
         "title" => "Medizintechnik",
         "layout" => "elements_list",  // Neuer Layout-Typ
         "sql_query" => $sql_elemente,  // Separate SQL Query
-        "fields" => [
-            // Wird durch SQL-Ergebnisse gefüllt
-        ]
+        "fields" => [ ]
     ],
 
 
@@ -175,7 +168,6 @@ $outputparameter = [
 $sql = "SELECT 
     tabelle_räume.idTABELLE_Räume,
     tabelle_räume.Raumnummer_Nutzer,
-
     tabelle_räume.Raumbezeichnung,
     tabelle_räume.`Anmerkung AR`,
     tabelle_projekte.Projektname, 
@@ -184,12 +176,10 @@ $sql = "SELECT
     tabelle_räume.`Anmerkung allgemein`,
     tabelle_räume.`Funktionelle Raum Nr`,
     tabelle_räume.Geschoss,
-    tabelle_räume.GMP,
-    
+    tabelle_räume.GMP,    
     SUBSTRING_INDEX(tabelle_räume.`Funktionelle Raum Nr`, '.', 3) AS Funktionsteilstelle_Nr,
     -- Raumzone Nr. = x.yy.zz.ww
     SUBSTRING_INDEX(tabelle_räume.`Funktionelle Raum Nr`, '.', 4) AS Raumzone_Nr, 
-    
     tabelle_räume.Fussboden,
     tabelle_räume.Decke,
     tabelle_räume.Nutzfläche,
@@ -198,28 +188,22 @@ $sql = "SELECT
     tabelle_räume.`Raumhoehe 2`,
     tabelle_räume.AR_Nutzung_ON1800,
     tabelle_räume.AR_Bodenaufbau,
-    
     tabelle_räume.`Fussboden OENORM B5220`,
     tabelle_räume.AR_Boden_Rutschfestigkeit,
-    
     tabelle_räume.AR_AP_permanent,
     tabelle_räume.H6020,
-    
     tabelle_räume.`HT_Luftwechsel 1/h`,
     tabelle_räume.`HT_Luftmenge m3/h`,
     tabelle_räume.`HT_Luftmenge Abluft m3/h`,
     tabelle_räume.`HT_Raumtemp Sommer °C`,
     tabelle_räume.`HT_Raumtemp Winter °C`,
-    
     tabelle_räume.EL_Beleuchtungsstaerke,
-    
     tabelle_räume.`Anmerkung Geräte`,
     tabelle_räume.`Anmerkung Elektro`,
     tabelle_räume.`Anmerkung HKLS`,
     tabelle_räume.`Anmerkung FunktionBO`,
     tabelle_räume.`Anmerkung Kuechentechnik`,
     tabelle_räume.`Anmerkung Rohrpost`
-
 FROM tabelle_räume
 INNER JOIN tabelle_projekte
     ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = 

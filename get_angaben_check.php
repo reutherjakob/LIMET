@@ -132,10 +132,10 @@ $allElementMappings = [
 
 $IDsWandverstärkung = [1554, 1905, 10, 1730, 370, 372, 1039, 1933, 70,
     529, 74, 523, 1044, 524, 525, 526, 527,
-    528, 1045, 548, 721, 722, 549, 723, 1008,
-    873, 383, 856, 817, 1049, 983, 870, 1713,
+    528, 1045, 548, 721, 722, 549, 723,
+    873, 383, 856, 817, 1049, 870, 1713,
     717, 238, 186, 550, 169, 1911, 282, 1837,
-    1460, 1243, 381, 906, 382, 684, 281];
+    1460, 381, 906, 382, 684, 281];
 // tabelle_parameter id: 97    ist der Elementparameter Wandverstärkung
 
 // ------------------- ERROR MESSAGES -------------------
@@ -468,12 +468,13 @@ function distribute($x, $P, $NAs)
 if (!function_exists('utils_connect_sql')) include "utils/_utils.php";
 check_login();
 
-$messages = [];
+$roomID = $_POST['roomID'] ?? null;
 $roomIDsArray = [];
-
-if (($roomID = getPostInt('roomID')) !== null) {
-    $roomIDsArray = explode(',', $roomID);
+if ($roomID !== null && $roomID !== '') {
+    $roomIDsArray = array_map('intval', explode(',', $roomID));
+    $roomIDsArray = array_filter($roomIDsArray);
 }
+
 
 $mysqli = utils_connect_sql();
 

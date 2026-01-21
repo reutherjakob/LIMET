@@ -129,6 +129,7 @@ $mysqli->close();
                     $.ajax({
                         url: "getVermerkgruppenMembers.php",
                         type: "POST",
+                        data: {"gruppenID": groupID},
                         success: function (data) {
                             $("#vermerkGroupMembers").html(data);
                         }
