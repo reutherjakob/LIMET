@@ -48,7 +48,7 @@ const columnsDefinition = [
     {data: 'Raumbereich Nutzer', title: 'Raumbereich', visible: false}, // 11
     {data: 'Geschoss', title: 'Geschoss', visible: false}, // 12
     {data: 'Bauetappe', title: 'Bauetappe', visible: false}, // 13
-    {data: 'Bauabschnitt', title: 'Bauabschnitt', visible: false}, // 14
+    {data: 'Bauabschnitt', title: 'Bauabschnitt/-teil', visible: false}, // 14
     {data: 'Nutzfläche', title: 'Nutzfläche', visible: false, case: "num"}, // 15
     {data: 'Abdunkelbarkeit', title: 'Abdunkelbar', visible: false, case: "abd"}, // 16
     {data: 'Strahlenanwendung', title: 'Strahlenanw.', visible: false, case: "bit"}, // 17
@@ -285,5 +285,6 @@ const columnsDefinition = [
     },
     {data: 'HT_Belueftung', title: 'HT_Belueftung', visible: false, case: ""},
     {data: 'HT_Entlueftung', title: 'HT_Entlueftung', visible: false, case: ""},
-    {data: 'PHY_Akustik_Schallgrad', title: 'PHY_Akustik_Schallgrad', visible: false, case: ""}
+    {data: 'PHY_Akustik_Schallgrad', title: 'PHY_Akustik_Schallgrad', visible: false, case: ""},
+    {data: 'element_mask', title: '#Elemente', name: 'element_mask', visible: false, case: "bit"}
 ]

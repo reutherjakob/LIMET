@@ -71,9 +71,9 @@ class MYPDF extends TCPDF
                     $funktionsStellen = $funktionsStellen . "\n";
                 }
                 $funktionsStellen = $funktionsStellen . $raumInfos[$raumInfosCounter]['Raumbereich'];
-
                 $raumInfosCounter = $raumInfosCounter + 1;
             }
+
             $this->SetFont('helvetica', '', 12);
             $this->MultiCell(150, 6, $funktionsStellen, 0, 'L', 0, 0);
             $this->Ln();

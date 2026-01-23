@@ -69,7 +69,7 @@ init_page_serversides("", "x");
                 </div>
                 <div class="col-xxl-9" id="reportButtonsContainer" aria-live="polite"></div>
 
-                <div class="col-xxl-1" id="dateSelectContainer">
+                <div class="col-xxl-1 d-none" id="dateSelectContainer">
                     <label for="dateSelect" class="visually-hidden">Änderungsdatum</label>
                     <input type="date" id="dateSelect" name="dateSelect" class="form-control form-control-sm"
                            data-bs-toggle="tooltip"
@@ -252,7 +252,17 @@ init_page_serversides("", "x");
     function displayReportsForCategory(category) {
         const container = $('#reportButtonsContainer');
         container.empty();
+
+        // Sichtbarkeit Änderungsdatum steuern
+        const dateSelectContainer = $('#dateSelectContainer');
+        if (category === 'bauangaben') {
+            dateSelectContainer.removeClass('d-none');
+        } else {
+            dateSelectContainer.addClass('d-none');
+        }
+
         if (!category || !reportCategories[category]) return;
+
         const btnGroup = $('<div class="btn-group" role="group" aria-label="Berichtsbuttons"></div>');
         reportCategories[category].forEach(report => {
             const button = $('<button type="button" class="btn btn-light border-dark btn-sm"></button>').text(report.text);
@@ -262,6 +272,7 @@ init_page_serversides("", "x");
 
         container.append(btnGroup);
     }
+
 
     function generateReport(report, date) {
         const roomIDs = table.rows({selected: true}).data().toArray().map(row => row[0]);
@@ -319,6 +330,7 @@ init_page_serversides("", "x");
     function handleReportDateSelection() {
         const val = $('#dateSelect4Report').val();
         $.post('PDFs/pdf_setSession.php', {PDFdatum: val});
+
     }
 
 

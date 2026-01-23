@@ -9,7 +9,7 @@ class MYPDF extends TCPDF
 {
     public function Header()
     {
-        if ($this->numpages > 1) {
+
             get_header_logo($this);
             $this->SetFont('helvetica', '', 8);
             $this->cell(0, 0, '', 0, 0, 'L');
@@ -29,9 +29,9 @@ class MYPDF extends TCPDF
             $this->cell(0, 0, '', 'B', 0, 'L');
             $this->Ln(1);
             $this->cell(0, 0, '', 'B', 0, 'L');
-            $this->Ln(5);
+            $this->Ln(1);
 
-        }
+
     }
 
     public function Footer()

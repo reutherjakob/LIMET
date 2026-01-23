@@ -176,7 +176,8 @@
                         <td><strong>Parameter Details </strong></td>
                         <td>
                             <ul>
-                                <li>Abdunkelbarkeit: Für KH nur "abdunkelbar" [1 und 2] und "kein Anspruch" [0]. GCP hat "kein anspruch" =0, "vollverdunkelbar" = 1 und "abdunkelbar" = 2.</li>
+                                <li>Abdunkelbarkeit: Für KH nur "abdunkelbar" [1 und 2] und "kein Anspruch" [0]. Derzeit hat nur GCP hat "kein anspruch" =0, "vollverdunkelbar" = 1 und "abdunkelbar" = 2.</li>
+                                <li>Bauteil ist dasselbe wie Bauabschnittund ist räumlich definiert. Bauetappe ist Zeitlich.  </li>
                             </ul>
                         </td>
                     </tr>
