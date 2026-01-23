@@ -30,7 +30,7 @@
 
 <div id="limet-navbar"></div>
 <?php require_once 'utils/_utils.php';
-init_page_serversides("x"); ?>
+init_page_serversides(""); ?>
 <div class="container-fluid">
     <div class="row row-cols-2">
         <div class="col-lg-12">
@@ -52,7 +52,7 @@ init_page_serversides("x"); ?>
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body px-0 py-0">
                     <table id="rbChangeTable" class="table table-striped table-hover border border-5">
                         <thead>
                         <tr>
@@ -119,14 +119,14 @@ init_page_serversides("x"); ?>
             },
             order: [[8, 'desc']], // sort descending by Timestamp column (index 8)
             select: "single",
-            scrollY: '80vh',
+            scrollY: '75vh',
             paging: true,
-            pageLength: 25,
-            lengthMenu: [[ 10, 25, 50, -1], ['10 rows', '20 rows', '50 rows', 'All']],
+            pageLength: 10,
+            lengthMenu: [[ 10, 25, -1], ['10 rows', '25 rows', 'All']],
             layout: {
                 topStart: null,
                 topEnd: null,
-                bottomStart: ['info', 'search'],
+                bottomStart: ['search','info'],
                 bottomEnd: ['pageLength', 'paging']
             },
             initComplete: function () {

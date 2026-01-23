@@ -22,31 +22,12 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker3.min.css">
     <script type='text/javascript'
             src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
-
     <!--Bootstrap Toggle -->
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
 </head>
 
-<style>
-    .card-header {
-        height: 50px !important;
-        overflow: hidden;
-    }
-
-    .row {
-        height: 100%; /* fills card-header */
-        align-items: stretch; /* stretches cols to full height */
-    }
-
-    #LoseCardHeaderSub {
-        height: 100%;
-        flex-wrap: nowrap;
-        overflow: hidden;
-        gap: 0.25rem; /* Bootstrap spacing for controls */
-    }
-</style>
 
 <body id="bodyTenderLots">
 <?php require_once 'utils/_utils.php';
@@ -70,7 +51,6 @@ init_page_serversides("x"); ?>
                             </div>
                         </div>
                         <div class="col-8 d-flex align-items-top justify-content-end" id="LoseCardHeaderSub">
-
                         </div>
                     </div>
                 </div>
@@ -135,20 +115,23 @@ init_page_serversides("x"); ?>
                     {targets: [5, 10, 11], visible: false},
                     {targets: [0], sortable: false}
                 ],
+
                 select: true,
                 search: {search: ''},
                 paging: true,
                 searching: true,
                 info: true,
                 order: [[2, 'asc']],
-                pagingType: 'simple',
+                pagingType: 'full',
                 lengthChange: true,
-                lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
-                pageLength: 10,
+                pageLength: 22,
+
+                lengthMenu: [[10, 22, 50, 100], [10, 22, 50, 100]],
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                     decimal: ',', thousands: '.', searchPlaceholder: 'Suche..', search: "", lengthMenu: "_MENU_"
                 },
+                scrollY: '78vh',
                 buttons: [
                     {
                         extend: 'colvis', className: "btn btn-success fas fa-eye me-2 ms-2",
@@ -186,17 +169,13 @@ init_page_serversides("x"); ?>
                         .removeClass('form-control form-control-sm')
                         .addClass("btn btn-sm btn-outline-secondary")
                         .appendTo('#LoseCardHeaderSub');
-
-                    $('.dt-length').appendTo('#LoseCardHeaderSub');
-                    $('.dt-paging').appendTo('#LoseCardHeaderSub');
-
                     $('#dateSelect').on('change', debounce(function () {
                         console.log("Reloading after debounce");
                         if ($(this).val() !== $(this).data('oldValue')) { // Nur bei neuem Datum
                             $(this).data('oldValue', $(this).val());
                             tableTenderLots.ajax.reload(null, false);
                         }
-                    }, 2000))
+                    }, 2000));
                 }
             });
         });
