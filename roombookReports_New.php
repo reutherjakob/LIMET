@@ -218,7 +218,7 @@ init_page_serversides("", "x");
             columnDefs: [{targets: [0], visible: false, searchable: false}],
             orderCellsTop: true,
             order: [[1, "asc"]],
-            scrollY: '75vh',
+            scrollY: '83vh',
             scrollCollapse: true,
             dom: 'frtip',
             select: {style: 'multi'},

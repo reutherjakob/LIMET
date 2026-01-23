@@ -28,6 +28,26 @@
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
 </head>
+
+<style>
+    .card-header {
+        height: 50px !important;
+        overflow: hidden;
+    }
+
+    .row {
+        height: 100%; /* fills card-header */
+        align-items: stretch; /* stretches cols to full height */
+    }
+
+    #LoseCardHeaderSub {
+        height: 100%;
+        flex-wrap: nowrap;
+        overflow: hidden;
+        gap: 0.25rem; /* Bootstrap spacing for controls */
+    }
+</style>
+
 <body id="bodyTenderLots">
 <?php require_once 'utils/_utils.php';
 init_page_serversides("x"); ?>
@@ -176,7 +196,7 @@ init_page_serversides("x"); ?>
                             $(this).data('oldValue', $(this).val());
                             tableTenderLots.ajax.reload(null, false);
                         }
-                    }, 2000)).trigger('change');
+                    }, 2000))
                 }
             });
         });
@@ -186,13 +206,12 @@ init_page_serversides("x"); ?>
             $.ajax({
                 url: "getLotWorkflow.php",
                 type: "POST",
-                data: { lotID: ID },
+                data: {lotID: ID},
                 success: function (data) {
                     $("#workflowModalBody").html(data);
                 }
             });
         });
-
 
 
     </script>
