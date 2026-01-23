@@ -397,7 +397,7 @@ init_page_serversides();
 </div>
 
 <?php
-require_once "modal_showLotWorkflow.php";
+include "modal_showLotWorkflow.php";
 ?>
 
 <script src="utils/_utils.js"></script>
@@ -489,8 +489,12 @@ require_once "modal_showLotWorkflow.php";
                     if ($.fn.DataTable.isDataTable('#tableLotElements1')) {
                     }
                     lotID = tableTenderLots.row($(this)).data()[0];
-                    let lotVerfahren1 = tableTenderLots.row($(this)).data()[5];
-                    if (lotVerfahren1 === "MKF") {
+
+                    let verfahrenCell = tableTenderLots.row($(this)).data()[6];
+                    let rawVerfahren = verfahrenCell ? verfahrenCell.replace(/<[^>]*>/g, '').trim() : '';
+                    document.getElementById("lotVerfahren").value = rawVerfahren;
+                    console.log("lotVerfahren1:",lotVerfahren1)
+                    if (rawVerfahren === "MKF") {
                         $('#lotMKF').bootstrapToggle('enable');
                         $('#lotMKF').bootstrapToggle('on');
                         $('#lotMKF').bootstrapToggle('disable');
@@ -505,7 +509,6 @@ require_once "modal_showLotWorkflow.php";
                     document.getElementById("lotName").value = tableTenderLots.row($(this)).data()[3];
                     document.getElementById("lotLVSend").value = tableTenderLots.row($(this)).data()[4];
                     document.getElementById("lotStart").value = tableTenderLots.row($(this)).data()[5];
-                    document.getElementById("lotVerfahren").value = tableTenderLots.row($(this)).data()[6];
                     document.getElementById("lotLVBearbeiter").value = tableTenderLots.row($(this)).data()[7];
                     document.getElementById("kostenanschlag").value = tableTenderLots.row($(this)).data()[11].replace(/\./g, '');
                     document.getElementById("budget").value = tableTenderLots.row($(this)).data()[12].replace(/\./g, '');
@@ -643,7 +646,10 @@ require_once "modal_showLotWorkflow.php";
     $("#saveTenderLot").click(function () {
         let losNr = $("#lotNr").val();
         let losName = $("#lotName").val();
+
         let losDatum = $("#lotStart").val();
+        let lotLVSend = $("#lotLVSend").val();
+
         let kostenanschlag = $("#kostenanschlag").val();
         kostenanschlag  = normalizeCosts(kostenanschlag);
         let budget = $("#budget").val();
@@ -653,13 +659,12 @@ require_once "modal_showLotWorkflow.php";
         let lotVergabe = $("#lotVergabe").val();
         let lotNotice = $("#lotNotice").val();
         let lotAuftragnehmer = $("#lotAuftragnehmer").val();
-        let lotLVSend = $("#lotLVSend").val();
+
         let lotVerfahren = $("#lotVerfahren").val();
         let lotLVBearbeiter = $("#lotLVBearbeiter").val();
         //console.log(lotVerfahren);
 
         if ($("#lotMKF").prop('checked') === false) {
-            console.log("$('#lotMKF').prop('checked') === false");
             if (losNr !== "" && losName !== "" && losDatum !== "" && lotLVSend !== "" && lotVerfahren !== "" && lotLVBearbeiter !== "") {
                 $('#addTenderLotModal').modal('hide');
                 $.ajax({
@@ -780,12 +785,12 @@ require_once "modal_showLotWorkflow.php";
         window.open('PDFs/pdf_createTenderWorkflowPDF.php');
     });
 
-    $("button[value='LotWorkflow']").click(function () {
+    $(document).on("click", "button[value='LotWorkflow']", function () {
         var ID = this.id;
         $.ajax({
             url: "getLotWorkflow.php",
             type: "POST",
-            data: {"lotID": ID},
+            data: { lotID: ID },
             success: function (data) {
                 $("#workflowModalBody").html(data);
             }

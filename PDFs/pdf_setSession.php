@@ -2,9 +2,8 @@
 require_once '../utils/_utils.php';
 check_login();
 
-if (isset($_GET["PDFdatum"]) && $_GET["PDFdatum"] != "") {
-    $_SESSION["PDFdatum"] = $_GET["PDFdatum"];
+if (isset($_POST["PDFdatum"]) && $_POST["PDFdatum"] != "") {
+    $_SESSION["PDFdatum"] = $_POST["PDFdatum"];
+    echo "PDF Datum erfolgreich gesetzt:". $_SESSION["PDFdatum"];
 }
 
-// $_SESSION["PDFTITEL"]
-// $_SESSION["PDFHeaderSubtext"]

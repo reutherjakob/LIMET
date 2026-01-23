@@ -9,7 +9,7 @@ $anwesenheit        = getPostInt('anwesenheit',0);
 $groupID            = getPostInt('groupID');
 $ansprechpersonenID = getPostInt('ansprechpersonenID');
 
-if ($anwesenheit === 0 || $groupID <= 0 || $ansprechpersonenID <= 0) {
+if ($groupID <= 0 || $ansprechpersonenID <= 0) {
     echo "Ungültige Eingabe.";
     $mysqli->close();
     exit;

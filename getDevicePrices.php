@@ -118,11 +118,10 @@ echo "</tbody></table>"; ?>
                             <button type='button' class='btn btn-danger btn-sm col-12' data-bs-dismiss='modal'>Abbrechen</button>
                         </div>
                     </div>
-                 </form>";
-                    echo "<hr>       
+                 </form><hr>        
                      <div class='row'> 
                              <div class='col-6'>  
-                                <button type='button' class='btn btn-sm btn-outline-success mt-2' id='addNewDevLieferant' title='Geräte Lieferant hinzufügen'>
+                                <button type='button' class='btn btn-sm btn-outline-success mt-2' id='addNewDevLieferant' title='Geräte Lieferantttt hinzufügen'>
                                 <i class='fas fa-plus'></i> Geräte Lieferant hinzufügen
                                 </button>     
                              </div>     
@@ -262,8 +261,7 @@ echo "</tbody></table>"; ?>
 
 
         $('#addNewLieferant').click(function () {
-            confirm("Wurde schon genau geprüft, ob es den Lieferant nicht gibt?";
-        )
+            confirm("Wurde schon genau geprüft, ob es den Lieferant nicht gibt?");
             if ($('#inlineAddLieferant').is(':visible')) {
                 $('#inlineAddLieferant').hide();
                 $('#addNewDevLieferant').hide();

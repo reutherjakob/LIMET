@@ -1,9 +1,8 @@
 <?php
-// 25 FX
 require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
-
+$lotId = getPostInt('lotID');
 
 $stmt = $mysqli->prepare("SELECT tabelle_lot_workflow.tabelle_lose_extern_idtabelle_Lose_Extern,
        tabelle_workflow_has_tabelle_wofklowteil.Reihenfolgennummer, 
@@ -21,7 +20,7 @@ $stmt = $mysqli->prepare("SELECT tabelle_lot_workflow.tabelle_lose_extern_idtabe
     WHERE tabelle_lot_workflow.tabelle_lose_extern_idtabelle_Lose_Extern = ? 
     ORDER BY tabelle_workflow_has_tabelle_wofklowteil.Reihenfolgennummer");
 
-$stmt->bind_param("s", $_SESSION["lotID"]);
+$stmt->bind_param("i", $lotId);
 $stmt->execute();
 $result = $stmt->get_result();
 

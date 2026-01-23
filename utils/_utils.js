@@ -43,7 +43,7 @@ window.move_item = window.move_item || function (item2move_id, where2move_id) {
 };
 
 window.getExcelFilename = window.getExcelFilename || async function (documentName, options = {}) {
-    const formData = new URLSearchParams({ documentName, ...options });
+    const formData = new URLSearchParams({documentName, ...options});
     const response = await fetch('/utils/get_excel_filename.php', {
         method: 'POST',
         body: formData
@@ -53,45 +53,23 @@ window.getExcelFilename = window.getExcelFilename || async function (documentNam
     return data.filename;
 };
 
-// Tooltips only once
 if (!window.tooltipList) {
-    let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    let tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        .filter(el => el.nodeType === Node.ELEMENT_NODE && el.nodeName && typeof el.nodeName === 'string');
     window.tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl, {
-            delay: { "show": 10, "hide": 0 }
+            delay: {"show": 10, "hide": 0}
         });
     });
 }
+
 window.normalizeCosts = window.normalizeCosts || function (input) {
-    let ep = String(input);
-    if (ep.toLowerCase().endsWith('k')) {
+    let ep = input?.textContent || input?.val?.() || String(input || '');
+    if (!ep) return '0';
+    ep = ep.toString().toLowerCase();
+    if (ep.endsWith('k')) {
         ep = ep.slice(0, -1) + '000';
     }
-    ep = ep.replace(/,/g, '.').replace(/[^0-9.]/g, '');
-    return ep;
-}
+    return parseFloat(ep.replace(/,/g, '.').replace(/[^0-9.]/g, '')) || 0;
+};
 
-//    function normalizeCosts(input) {
-//         let ep = String(input);
-//         if (ep.toLowerCase().endsWith('k')) {
-//             ep = ep.slice(0, -1) + '000';
-//         }
-//         ep = ep.replace(/,/g, '.').replace(/[^0-9.]/g, '');
-//         return ep;
-//     }
-
-
-// utils/_utils.js
-//function postForm(url, data = {}) {
-//    const params = new URLSearchParams();
-//    Object.entries(data).forEach(([key, value]) => {
-//        if (value === undefined || value === null) return;
-//        params.append(key, value);
-//    });
-
-//    return fetch(url, {
-//        method: 'POST',
-//        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-//        body: params.toString()
-//    }).then(r => r.text()); // oder .json(), je nach Bedarf
-//}

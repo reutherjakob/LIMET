@@ -167,8 +167,17 @@
                         <td><strong>Weiteres</strong></td>
                         <td>
                             <ul>
-                                <li>Löschen von Räumen nicht möglich! Raumparameter durch " - " ersetzbar.</li>
-                                <li>Neuer Raumparameter zum Filtern: Entfällt  </li>
+                                <li>Löschen von Räumen nicht möglich! Neuer Raumparameter zum Filtern: Entfällt  </li>
+                                <li>Raumparameter durch " - " ersetzbar.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Parameter Details </strong></td>
+                        <td>
+                            <ul>
+                                <li>Abdunkelbarkeit: Für KH nur "abdunkelbar" [1 und 2] und "kein Anspruch" [0]. Derzeit hat nur GCP hat "kein anspruch" =0, "vollverdunkelbar" = 1 und "abdunkelbar" = 2.</li>
+                                <li>Bauteil ist dasselbe wie Bauabschnittund ist räumlich definiert. Bauetappe ist Zeitlich.  </li>
                             </ul>
                         </td>
                     </tr>

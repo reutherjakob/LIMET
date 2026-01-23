@@ -1,7 +1,7 @@
 <?php
 function get_header_logo($pdf): void
 {
-    if ($_SESSION["PDFHeaderSubtext"] === "Versorgungsgebäude BT0") {
+    if (isset($_SESSION['PDFHeaderSubtext']) && $_SESSION["PDFHeaderSubtext"] === "Versorgungsgebäude BT0") {
         $image_file = '../Logo/Logo_HealthTeamWien.jpg';
         if (file_exists($image_file)) {
             $pdf->Image($image_file, 15, 9, 10, 10, 'PNG', '', 'M', false, 300, '', false, false, 0, false, false, false);
@@ -46,7 +46,7 @@ function get_titelblatt_logo($pdf, $format = "A4"): void
     if ($format === "A3") {
         $spacer = 210;
     }
-    if ($_SESSION["PDFHeaderSubtext"] === "Versorgungsgebäude BT0") {
+    if (isset($_SESSION['PDFHeaderSubtext']) && $_SESSION["PDFHeaderSubtext"] === "Versorgungsgebäude BT0") {
         $image_file = '../Logo/Logo_HealthTeamWien.jpg';
         if (file_exists($image_file)) {
             $pdf->Image($image_file, 150 + $spacer, 40, 40, 40, 'JPG', '', 'M', false, 300, '', false, false, 0, false, false, false);

@@ -87,7 +87,7 @@ foreach ($teile as $valueOfRoomID) {
         $pdf->MultiCell(80, 6, "Raumhöhe Ist: " . $row['Raumhoehe'] . " m", 0, 'L', 0, 0);
         $pdf->Ln();
         $pdf->MultiCell(100, 6, "Projektstatus: " . $row['Bezeichnung'], 'B', 'L', 0, 0);
-        $pdf->MultiCell(80, 6, "Bauteil: " . $row['Bauetappe'], 'B', 'L', 0, 0);
+        $pdf->MultiCell(80, 6, "Bauettape: " . $row['Bauetappe'], 'B', 'L', 0, 0);
         $pdf->Ln();
         $pdf->SetFont('helvetica', 'B', 10);
         $pdf->MultiCell(22, 8, "Allgemein: ", 0, 'L', 0, 0);

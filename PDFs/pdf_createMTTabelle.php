@@ -17,10 +17,7 @@ function checkEntry($jsonArray, $elementId, $parameterId): bool
 function checkAndManipulateString($input)
 {
     if ($input === "\'\'" || $input === '\"') {
-        // Option 1: Use inch symbol
         return '"';
-        // Option 2: Return empty string if you want no unit displayed
-        // return '';
     }
     if (str_contains($input, '/min')) {
         $input = ' ' . $input;
@@ -28,23 +25,26 @@ function checkAndManipulateString($input)
     return $input;
 }
 
-function abk_vz($result4, $pdf, $f_size): void
+function abk_vz($paramInfos, $pdf, $f_size): void
 {
-    $result4->data_seek(0);
-    while ($row1 = $result4->fetch_assoc()) {
-        $text_width = $pdf->GetStringWidth($row1['Abkuerzung'] . "-", 'courier', 'B', $f_size);
+    if (empty($paramInfos)) {
+        return;
+    }
+    $pdf->MultiCell(20, $f_size,"Abkürzungen: ", 0, 'L', 0, 0, '', '', true, 0, false, false, 0);
+    foreach ($paramInfos as $array) {
+        $text_width = $pdf->GetStringWidth($array['Bezeichnung'] . "-", 'courier', 'B', $f_size);
         if (($pdf->GetX() + $text_width) >= 400) {
             $pdf->Ln($f_size / 2);
         }
         $pdf->SetFont('courier', 'B', $f_size);
-        $pdf->MultiCell($text_width + 3, $f_size, $row1['Abkuerzung'] . "-", 0, 'R', 0, 0, '', '', true, 0, false, false, 0);
+        $pdf->MultiCell($text_width + 3, $f_size, $array['Bezeichnung'] . "-", 0, 'R', 0, 0, '', '', true, 0, false, false, 0);
 
-        $text_width = $pdf->GetStringWidth($row1['Bezeichnung'] . ";", 'courier', '', $f_size);
+        $text_width = $pdf->GetStringWidth($array['Bezeichnung'] . ";", 'courier', '', $f_size);
         if (($pdf->GetX() + $text_width) >= 400) {
             $pdf->Ln($f_size / 2);
         }
         $pdf->SetFont('courier', '', $f_size);
-        $pdf->MultiCell($text_width + 3, $f_size, $row1['Bezeichnung'] . ";", 0, 'L', 0, 0, '', '', true, 0, false, false, 0);
+        $pdf->MultiCell($text_width + 3, $f_size, $array['Bezeichnung'] . ";", 0, 'L', 0, 0, '', '', true, 0, false, false, 0);
     }
     $pdf->SetFont('courier', 'B', $f_size);
 }
@@ -52,7 +52,7 @@ function abk_vz($result4, $pdf, $f_size): void
 function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dataChanges): void
 {
 
-    // $result4 = Abkürzungen
+    // $result1 = Abkürzungen
     // -------------------------Elemente parameter -------------------------
     $elementParamInfos = array();
     $elementParamInfosCounter = 0;
@@ -166,7 +166,7 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dat
         //---------------- Prüfen ob Seitenende---------------------------------------------------------
         $y = $pdf->GetY();
         if ($y >= $SH - 5) {
-            abk_vz($result1, $pdf, $f_size);
+            abk_vz($paramInfos, $pdf, $f_size);
             $pdf->AddPage('L', 'A3');
             $lastXCoordinateHeader = $pdf->GetX();
             $lastYCoordinateHeader = $pdf->GetY();
@@ -267,7 +267,7 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dat
         }
         $pdf->Ln();
     }
-    abk_vz($result1, $pdf, $f_size);
+    abk_vz($paramInfos, $pdf, $f_size);
     $pdf->Ln();
 }
  
