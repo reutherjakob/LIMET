@@ -1,88 +1,62 @@
 <?php
-// 25 FX
+// setTenderLot.php - FIXED VERSION
 require_once 'utils/_utils.php';
 check_login();
 
-// Establish database connection
 $mysqli = utils_connect_sql();
 
-// Define input fields and their corresponding database columns
-$fields = [
-    'LosNr_Extern' => 'losNr',
-    'LosBezeichnung_Extern' => 'losName',
-    'Ausführungsbeginn' => 'losDatum',
-    'Vergabesumme' => 'lotSum',
-    'Vergabe_abgeschlossen' => 'lotVergabe',
-    'Versand_LV' => 'lotLVSend',
-    'Verfahren' => 'lotVerfahren',
-    'Bearbeiter' => 'lotLVBearbeiter',
-    'Notiz' => 'lotNotice',
-    'Kostenanschlag' => 'kostenanschlag',
-    'Budget' => 'budget',
-    'tabelle_lieferant_idTABELLE_Lieferant' => 'lotAuftragnehmer'
-];
-
-// Validate lotID from session
-$lotID = getPostInt('lotID',0);
+$lotID = getPostInt('lotID', 0);
 if ($lotID <= 0) {
     die("Ungültige Lot-ID.");
 }
 
-// Collect and sanitize input values
-$data = [];
-$types = '';
-$setParts = [];
-$allowedFields = array_values($fields);
+$losNr = $_POST['losNr'] ?? '';
+$losName = $_POST['losName'] ?? '';
+$losDatum = $_POST['losDatum'] ?? '';
+$lotSum = $_POST['lotSum'] ?? '0';
+$lotVergabe = $_POST['lotVergabe'] ?? '0';
+$lotNotice = $_POST['lotNotice'] ?? '';
+$lotAuftragnehmer = $_POST['lotAuftragnehmer'] ?? '0';
+$lotLVSend = $_POST['lotLVSend'] ?? '';
+$lotVerfahren = $_POST['lotVerfahren'] ?? '';
+$lotLVBearbeiter = $_POST['lotLVBearbeiter'] ?? '';
+$kostenanschlag = $_POST['kostenanschlag'] ?? '0';
+$budget = $_POST['budget'] ?? '0';
+$includeSupplier = ($lotAuftragnehmer != '0' && $lotAuftragnehmer != '');
 
-foreach ($fields as $dbColumn => $postField) {
-    $value = filter_input(INPUT_POST, $postField, FILTER_DEFAULT); // ✅ Fixed: No deprecated constant
-    $value = trim($value ?? '');
 
+if ($includeSupplier) {
+    $sql = "UPDATE `LIMET_RB`.`tabelle_lose_extern` SET 
+        `LosNr_Extern` = ?, `LosBezeichnung_Extern` = ?, `Ausführungsbeginn` = ?,
+        `Vergabesumme` = ?, `Vergabe_abgeschlossen` = ?, `Notiz` = ?,
+        `tabelle_lieferant_idTABELLE_Lieferant` = ?, `Versand_LV` = ?,
+        `Verfahren` = ?, `Bearbeiter` = ?, `Kostenanschlag` = ?, `Budget` = ?
+    WHERE `idtabelle_Lose_Extern` = ?";
 
-    if ($value !== null && $value !== false && $value !== '') {
-        // Special handling for dates
-        if (in_array($postField, ['losDatum', 'lotLVSend'])) {
-            $date = DateTime::createFromFormat('d.m.Y', $value);
-            if ($date) {
-                $value = $date->format('Y-m-d');
-            } else {
-                continue; // Skip invalid dates
-            }
-        }
+    $stmt = $mysqli->prepare($sql);
+    $stmt->bind_param(
+        'sssississsiii',
+        $losNr, $losName, $losDatum, $lotSum, $lotVergabe, $lotNotice, $lotAuftragnehmer, $lotLVSend, $lotVerfahren, $lotLVBearbeiter,
+        $kostenanschlag, $budget, $lotID
+    );
+} else {
+    $sql = "UPDATE `LIMET_RB`.`tabelle_lose_extern` SET 
+        `LosNr_Extern` = ?, `LosBezeichnung_Extern` = ?, `Ausführungsbeginn` = ?,
+        `Vergabesumme` = ?, `Vergabe_abgeschlossen` = ?, `Notiz` = ?,
+        `tabelle_lieferant_idTABELLE_Lieferant` = NULL, `Versand_LV` = ?,
+        `Verfahren` = ?, `Bearbeiter` = ?, `Kostenanschlag` = ?, `Budget` = ?
+    WHERE `idtabelle_Lose_Extern` = ?";
 
-        // Skip supplier if 0
-        if ($postField === 'lotAuftragnehmer' && $value == '0') {
-            continue;
-        }
-
-        $data[$dbColumn] = $value;
-        $setParts[] = "`$dbColumn` = ?";
-        $types .= 's'; // All fields treated as strings for simplicity
-    }
+    $stmt = $mysqli->prepare($sql);
+    $stmt->bind_param(
+        'sssisssssiii',   #Summe als float?
+        $losNr, $losName, $losDatum, $lotSum, $lotVergabe, $lotNotice,
+        $lotLVSend, $lotVerfahren, $lotLVBearbeiter, $kostenanschlag, $budget, $lotID
+    );
 }
-
-if (empty($setParts)) {
-    echo "Keine Felder zum Aktualisieren.";
-    $mysqli->close();
-    exit;
-}
-
-// Build dynamic prepared UPDATE statement
-$sql = "UPDATE `LIMET_RB`.`tabelle_lose_extern` SET " . implode(', ', $setParts) . " WHERE `idtabelle_Lose_Extern` = ?";
-$types .= 'i'; // lotID is integer
-$data['lotID'] = $lotID; // Add lotID for WHERE clause
-
-// Prepare and execute
-$stmt = $mysqli->prepare($sql);
-if (!$stmt) {
-    die("Prepare failed: " . $mysqli->error);
-}
-
-$params = array_values($data);
-$stmt->bind_param($types, ...$params);
 
 if ($stmt->execute()) {
-    echo "Los erfolgreich aktualisiert! " . $stmt->affected_rows . " Zeile(n) betroffen.";
+    echo "Los erfolgreich aktualisiert! " ;
 } else {
     echo "Fehler beim Ausführen: " . $stmt->error;
 }

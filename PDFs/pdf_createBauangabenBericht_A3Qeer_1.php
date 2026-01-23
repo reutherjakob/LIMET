@@ -300,7 +300,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             $rowcounter++;
         }
         $resultX->data_seek(0);
-
+        $upcmn_blck_size=0;
         if ($isnotVorentwurf && $rowcounter > 0) {
             // -----------------Projekt Elementparameter/Variantenparameter laden----------------------------
             $sql = "SELECT tabelle_parameter_kategorie.Kategorie,tabelle_parameter.Abkuerzung, tabelle_parameter.Bezeichnung, tabelle_parameter.idTABELLE_Parameter, tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie, tabelle_parameter.Abkuerzung

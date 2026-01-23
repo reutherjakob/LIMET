@@ -80,7 +80,7 @@ $outputparameter = [
             ["name" => "Raumbezeichnung", "fetch_data" => "sql", "dataname" => "Raumbezeichnung"],
             ["name" => "Topograf. Raumnummer", "fetch_data" => "sql", "dataname" => "Raumnummer_Nutzer"],
             ["name" => "Raumbezeichnung Zusatz", "fetch_data" => "sql", "dataname" => "Anmerkung AR"],
-            ["name" => "Funktionale Raumnummer", "fetch_data" => "sql", "dataname" => "Funktionale Raumnummer Raum Nr"],
+            ["name" => "Funktionale Raumnummer", "fetch_data" => "sql", "dataname" => "Funktionelle Raum Nr"],
             ["name" => "Standort", "fetch_data" => "session", "dataname" => "projectName"],
             ["name" => "Raumzone Nr.", "fetch_data" => "sql", "dataname" => "Raumzone_Nr"],
             ["name" => "Bauteil", "fetch_data" => "sql", "dataname" => "Bauabschnitt"],
@@ -115,9 +115,9 @@ $outputparameter = [
         "title" => "Haustechnik",
         "layout" => "columns",
         "fields" => [
-            ["name" => "Raumklasse H6020", "fetch_data" => "sql", "dataname" => "H6020"],
+            ["name" => "Klasse H6020/ ISO 14644", "fetch_data" => "sql", "dataname" => "H6020"],
             ["name" => "Luftwechselrate [1/h]", "fetch_data" => "sql", "dataname" => "HT_Luftwechsel 1/h"],
-            ["name" => "Reinraumklasse ISO 14644", "fetch_data" => "sql", "dataname" => "GMP"],
+         #   ["name" => "Reinraumklasse ISO 14644", "fetch_data" => "sql", "dataname" => "GMP"],
             ["name" => "Luftmenge Zuluft [m3/h]", "fetch_data" => "sql", "dataname" => "HT_Luftmenge m3/h"],
             ["name" => "Luftmenge Abluft [m3/h]", "fetch_data" => "sql", "dataname" => "HT_Luftmenge Abluft m3/h"],
             ["name" => "Raumtemperatur Sommer [°C]", "fetch_data" => "sql", "dataname" => "HT_Raumtemp Sommer °C"],
@@ -236,7 +236,6 @@ function get_multicell_height($pdf, $width, $text)
 // PDF GENERATION LOOP
 // ============================================================================
 foreach ($teile as $valueOfRoomID) {
-    $pdf->AddPage('P', 'A4');
 
     $stmt = $mysqli->prepare($sql);
     $stmt->bind_param('i', $valueOfRoomID);
@@ -390,7 +389,7 @@ foreach ($teile as $valueOfRoomID) {
                 $pdf->Line(15, $pdf->GetY(), 195, $pdf->GetY());
                 $pdf->SetLineWidth(0.4);
             }
-        }
+        }      $pdf->AddPage('P', 'A4');
     }
 }
 

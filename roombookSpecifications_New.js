@@ -74,9 +74,34 @@ function add_entfallen_filter(location, table) {
     });
 }
 
+function add_element_einträge_not_0_filter(location, table) {
+    let dropdownHtml2 = '<select class="fix_size" id="ElementEinträgeNot0Filter">' +
+        '<option value="">Alle</option>' +
+        '<option value="0">ohne Element</option>' +
+        '<option value="1">mit Elementen </option>' +
+        '</select>';
+    $(location).append(dropdownHtml2);
+
+    $('#ElementEinträgeNot0Filter').on('change', function () {  // Fixed selector + .on()
+        let filterValue = $(this).val();
+        if (filterValue === '') {
+            table.column('element_mask:name').search('').draw();
+        } else if (filterValue === '0') {
+            // Exact match for 0
+            table.column('element_mask:name').search('^0$', true, false).draw();
+        } else if (filterValue === '1') {
+            // Anything but 0 (regex excludes exact 0)
+            table.column('element_mask:name').search('^(?!0$).*$', true, false).draw();
+        }
+    });
+}
+
+
+
 function init_filter() {
     add_MT_rel_filter('#TableCardHeader', table);
     add_entfallen_filter('#TableCardHeader', table);
+    add_element_einträge_not_0_filter('#TableCardHeader', table);
     table.column('Entfallen:name').search(0).draw();
     setTimeout(function () {
         if ((document.getElementById('settings_save_state').checked || document.getElementById('settings_save_state_4all_projects').checked) && table.state.loaded()) {
@@ -92,7 +117,7 @@ function init_filter() {
                 }
             }
         }
-    }, 100);
+    }, 10);
 }
 
 function handleCheckboxChange() {
