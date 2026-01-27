@@ -493,7 +493,9 @@ include "modal_showLotWorkflow.php";
                     let verfahrenCell = tableTenderLots.row($(this)).data()[6];
                     let rawVerfahren = verfahrenCell ? verfahrenCell.replace(/<[^>]*>/g, '').trim() : '';
                     document.getElementById("lotVerfahren").value = rawVerfahren;
-                    console.log("lotVerfahren1:",lotVerfahren1)
+                    //console.log("Verfahren:",rawVerfahren)
+
+
                     if (rawVerfahren === "MKF") {
                         $('#lotMKF').bootstrapToggle('enable');
                         $('#lotMKF').bootstrapToggle('on');
