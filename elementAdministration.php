@@ -57,7 +57,6 @@ init_page_serversides("x"); ?>
                 </div>
                 <div class='col-xxl-6'>
                     <div class="mt-1 card">
-
                             <ul class="nav nav-tabs mt-2 float-end" style="font-size:0.85em;">
                                 <li class="nav-item">
                                     <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#elementPricesInOtherProjects"><label>Schätzkosten in Projekten</label></button>
@@ -67,8 +66,8 @@ init_page_serversides("x"); ?>
                                 </li>
                             </ul>
                         <div class="card-body tab-content">
-                            <div class="tab-pane fade show active" id="elementPricesInOtherProjects"><!-- Bestehender Inhalt --></div>
-                            <div class="tab-pane fade" id="allDevicePrices"> </div>
+                            <div class="tab-pane fade show active" id="elementPricesInOtherProjects"><!-- --></div>
+                            <div class="tab-pane fade" id="elementPricesInOtherProjects-2"> </div>
                         </div>
                     </div>
 
@@ -232,7 +231,7 @@ init_page_serversides("x"); ?>
                                                 data: {"elementID": elementID},
                                                 type: "POST",
                                                 success: function (data) {
-                                                    $("#allDevicePrices").html(data)
+                                                    $("#elementPricesInOtherProjects-2").html(data)
                                                 }
                                             });
                                         }

@@ -413,6 +413,7 @@
             let nf = $("#nf").val();
             let bearbeitung = $("#bearbeitung").val();
             let planungsphase = $("#planungsphase").val();
+            console.log(planungsphase)
             let active = $("#active").val();
             let neubau = $("#neubau").val();
             if (active !== "" && neubau !== "" && bearbeitung !== "" && planungsphase !== "" && !isNaN(betten) && !isNaN(bgf) && !isNaN(nf)) {

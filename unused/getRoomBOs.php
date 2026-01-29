@@ -8,7 +8,8 @@
 </head>
 <body>
 <?php
-
+require_once 'utils/_utils.php';
+check_login();
 $mysqli =utils_connect_sql();
 
 $sql = "SELECT tabelle_BO_Taetigkeiten.idtabelle_BO_Taetigkeiten, tabelle_BO_Taetigkeiten.Taetigkeit_Deutsch, tabelle_BO_Taetigkeiten.Taetigkeit_Englisch, tabelle_BO_Untergruppe.idtabelle_BO_Untergruppe, tabelle_BO_Untergruppe.Bezeichnung As UGBezeichnung, tabelle_BO_Untergruppe.Nummer, tabelle_BO_Hauptgruppe.idtabelle_BO_Hauptgruppe, tabelle_BO_Hauptgruppe.Bezeichnung As HGBezeichnung, tabelle_BO_Hauptgruppe.Nummmer

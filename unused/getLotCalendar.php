@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once 'utils/_utils.php';
+check_login();
 ?>
 
 <!DOCTYPE html >
@@ -8,10 +9,7 @@ session_start();
 </head>
 <body>
 <?php
-if (!isset($_SESSION["username"])) {
-    echo "Bitte erst <a href=\"index.php\">einloggen</a>";
-    exit;
-}
+
 
 $mysqli = new mysqli('localhost', $_SESSION["username"], $_SESSION["password"], 'LIMET_RB');
 
