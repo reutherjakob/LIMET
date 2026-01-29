@@ -36,6 +36,8 @@ class MYPDF extends TCPDF
 
     public function Footer()
     {
+
+
         $this->SetY(-15);
         $this->SetFont('helvetica', 'I', 8);
         $this->cell(0, 0, '', 'T', 0, 'L');

@@ -1,3 +1,9 @@
+<?php
+require_once "utils/_utils.php";
+init_page_serversides("x");
+?>
+
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
@@ -55,10 +61,6 @@
         <div class="card-body">
             <?php
             // 25 FX
-            if (!function_exists('utils_connect_sql')) {
-                include "utils/_utils.php";
-            }
-            init_page_serversides("x");
             $mysqli = utils_connect_sql();
             $sql = "SELECT tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen, tabelle_ansprechpersonen.Name, 
                        tabelle_ansprechpersonen.Vorname, tabelle_ansprechpersonen.Tel, 

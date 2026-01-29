@@ -23,11 +23,10 @@ class MYPDF extends TCPDF
             if (isset($_SESSION["PDFHeaderSubtext"])) {
                 if (!empty(str_replace(" ", "", $_SESSION["PDFHeaderSubtext"]))) {
                     $this->Cell(0, 0, $_SESSION["PDFHeaderSubtext"], '', false, 'R', 0, '', 0, false, 'B', 'B');
-                    $this->Ln() ;
+                    $this->Ln(1);
                 }
             }
 
-            $this->Ln(1);
             if ($_SESSION["PDFTITELBLATT"] === "KHI Quest") {
                 $this->Ln(5);
             }
@@ -38,6 +37,7 @@ class MYPDF extends TCPDF
             $this->Ln(1);
 
         } else {
+
             $mysqli = utils_connect_sql();
             $roomIDs = filter_input(INPUT_GET, 'roomID');
             if (!empty($roomIDs)) {
@@ -110,13 +110,21 @@ class MYPDF extends TCPDF
             // GET LOGO
             get_titelblatt_logo($this);
 
-            if (isset($_SESSION["DisclaimerText"]) && $_SESSION["DisclaimerText"] != null) {
-                $this->SetFont('helvetica', '', 9);
-                $Disclaimer_txt = $_SESSION["DisclaimerText"];
-                $this->SetY(280 - ($this->getStringHeight(180, $Disclaimer_txt, 0, false, 'L', 0, '', 0, false, '', '')));
-                $this->Multicell(180, 0, $Disclaimer_txt, 0, 'L', 0, 0);
-                $_SESSION["DisclaimerText"] = null;
+            $Vorentwurf = " Im Vorentwurf sind die raumweisen elektrischen Leitungsangaben je Netzart ohne Gleichzeitigkeit angegeben. Die Werte stellen die Summe der Nennleistungen der im Raum geplanten medizin- und labortechnischen Geräte inkl. einer Auslegungsreserve dar. Diese Auslegungsreserve ist erforderlich, um beispielsweise Geräte zu berücksichtigen, welche nicht im Raum verortet sind, aber dort genutzt werden können. Detailliertere Angaben zu Großgeräten (Röntgenanlagen, CT, MRT etc.) erfolgen stets gesondert.";
+            $Entwurf = "Die elektrischen Leistungsangaben je Netzart, die aus der Verwendung der medizin- und labortechnischen Geräte resultieren, werden aus der Summe der einzelnen Geräte/Element-Nennleistungen unter Berücksichtigung der Gleichzeitigkeit je Element berechnet. Die Differenz der angeführten Leistungssumme zu den Vorbemessungsangaben aus  dem Vorentwurf ist die verbleibende Auslegungsreserve je Raum.";
+            $Disclaimer = "Die nachfolgenden medizin- und labortechnischen Angaben beziehen sich nur auf diejenigen medizin- und labortechnisch-relevanten Räume, die seitens der Planung bearbeitet werden. Die Angaben dienen als Grundlage für die Fachplaner Architektur, Elektrotechnik, HKLS, Medgas & Statik. Neben den aufgelisteten Bemessungsangaben je Fachbereich werden die medizin- und labortechnischen Elemente eines Raumes in Listenform angeführt. Diese sind ebenfalls als Planungsgrundlage heranzuziehen. ";
+            $Disclaimer2 = "Angaben zur Abdunkelung leiten sich aus der medizintechnischen/labortechnischen Ausstattung und medizinischen Verwendung ab. Diese bilden nicht die aus anderen Gründen erwünschte Abdunkelung bzw. den ggf. erforderlichen Blendschutz ab.";
+
+            $this->SetFont('helvetica', '', 10);
+            if ($_SESSION["projectPlanungsphase"] === "Vorentwurf") {
+                $Disclaimer = $Disclaimer . $Vorentwurf . $Disclaimer2;
+            } else if ($_SESSION["projectPlanungsphase"] === "Entwurf") {
+                $Disclaimer = $Disclaimer . $Entwurf . $Disclaimer2;
             }
+            $height = $this->getStringHeight(180, $Disclaimer, 0, 'J', 0, 6);
+            $this->SetY(275 - $height);
+            $this->MultiCell(180, 6, $Disclaimer, 0, 'L', 0, 0);
+
             $this->SetFont('helvetica', '', 6);
         }
     }
