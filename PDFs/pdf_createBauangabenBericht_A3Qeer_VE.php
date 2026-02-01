@@ -329,7 +329,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         multicell_with_str($pdf, $abwrem_out, $e_C_3rd , "");
 
         $haustechnikItems = [
-            ["HT_Raumtemp Sommer °C", "max. Raumtemp.:", " °C"],
+//             ["HT_Raumtemp Sommer °C", "max. Raumtemp.:", " °C"],
             ['H6020', 'ÖNORM H6020: ', '']
 
             //['HT_Abluft_Digestorium_Stk', 'Abluft Digestorium:', 'Stk'],

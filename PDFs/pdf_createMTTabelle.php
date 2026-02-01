@@ -1,8 +1,8 @@
 <?php
 session_start();
 check_login();
-ini_set('log_errors', 1);
-ini_set('error_log', __DIR__ . '/my_debug_log.log');
+//ini_set('log_errors', 1);
+//ini_set('error_log', __DIR__ . '/my_debug_log.log');
 
 function checkEntry($jsonArray, $elementId, $parameterId): bool
 {
@@ -30,7 +30,7 @@ function abk_vz($paramInfos, $pdf, $f_size): void
     if (empty($paramInfos)) {
         return;
     }
-    $pdf->MultiCell(20, $f_size,"Abkürzungen: ", 0, 'L', 0, 0, '', '', true, 0, false, false, 0);
+    $pdf->MultiCell(20, $f_size, "Abkürzungen: ", 0, 'L', 0, 0, '', '', true, 0, false, false, 0);
     foreach ($paramInfos as $array) {
         $text_width = $pdf->GetStringWidth($array['Bezeichnung'] . "-", 'courier', 'B', $f_size);
         if (($pdf->GetX() + $text_width) >= 400) {
@@ -86,7 +86,7 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dat
     }
 
 // 2. Filter $elementParamInfos for elements in this room
-    $roomElementParamInfos = array_filter($elementParamInfos, function($ep) use ($roomElementIDs) {
+    $roomElementParamInfos = array_filter($elementParamInfos, function ($ep) use ($roomElementIDs) {
         return in_array($ep['elementID'], $roomElementIDs, true);
     });
 
@@ -104,7 +104,7 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dat
     }));
 
 // 5. Update param counter and recalc text_width safely
-    $table_column_sizes = array(15, 42, 7, 7, 11);
+    $table_column_sizes = array(15, 42, 7, 7, 11, 7, 9);
     $paramInfosCounter = count($paramInfos);
     if ($paramInfosCounter > 0) {
         $text_width = ($SB - array_sum($table_column_sizes)) / $paramInfosCounter;
@@ -135,6 +135,8 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dat
     $pdf->MultiCell($table_column_sizes[2], $rowHeight, "Var", 1, 'C', 0, 0);
     $pdf->MultiCell($table_column_sizes[3], $rowHeight, "Stk", 1, 'C', 0, 0);
     $pdf->MultiCell($table_column_sizes[4], $rowHeight, "Bestand", 1, 'C', 0, 0);
+    $pdf->MultiCell($table_column_sizes[5], $rowHeight, "Ort", 1, 'C', 0, 0);
+    $pdf->MultiCell($table_column_sizes[6], $rowHeight, "Verw.", 1, 'C', 0, 0);
 
     // Kopfzeile der Tabelle ausgeben
     foreach ($paramInfos as $array) {
@@ -180,6 +182,9 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dat
             $pdf->MultiCell($table_column_sizes[2], $rowHeight, "Var", 1, 'C', 0, 0);
             $pdf->MultiCell($table_column_sizes[3], $rowHeight, "Stk", 1, 'C', 0, 0);
             $pdf->MultiCell($table_column_sizes[4], $rowHeight, "Bestand", 1, 'C', 0, 0);
+            $pdf->MultiCell($table_column_sizes[5], $rowHeight, "Bestand", 1, 'C', 0, 0);
+            $pdf->MultiCell($table_column_sizes[6], $rowHeight, "Bestand", 1, 'C', 0, 0);
+
 
             // Kopfzeile der Tabelle ausgeben
             foreach ($paramInfos as $array) {
@@ -221,7 +226,7 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dat
         } else {
             $rowHeightMainLine = 7;
         }
-
+        $rowHeightMainLine = 7;
         $pdf->MultiCell($table_column_sizes[0], $rowHeightMainLine, $row['ElementID'], 1, 'C', true, 0);
         $pdf->MultiCell($table_column_sizes[1], $rowHeightMainLine, $row['Bezeichnung'], 1, 'C', true, 0);
         $pdf->MultiCell($table_column_sizes[2], $rowHeightMainLine, $row['Variante'], 1, 'C', true, 0);
@@ -231,6 +236,9 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dat
         } else {
             $pdf->MultiCell($table_column_sizes[4], $rowHeightMainLine, "Ja", 1, 'C', true, 0);
         }
+
+        $pdf->MultiCell($table_column_sizes[5], $rowHeightMainLine, $row['Standort'], 1, 'C', true, 0);
+        $pdf->MultiCell($table_column_sizes[6], $rowHeightMainLine, $row['Verwendung'], 1, 'C', true, 0);
 
         // Parameter ausgeben  
         $temp_extracellspace_causeTextToBig = 0;
