@@ -75,9 +75,11 @@ $mysqli->close();
         <th>Var</th>
         <th>Stk</th>
         <th>Bestand</th>
-        <th class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Standort'><i class='fab fa-periscope '></i></th>
+        <th class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Standort'><i
+                    class='fab fa-periscope '></i></th>
         <th>Verw</th>
-        <th class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Kommentar'><i class='far fa-comment'></i></th>
+        <th class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Kommentar'><i
+                    class='far fa-comment'></i></th>
         <th>Verlauf</th>
         <th></th>
     </tr>
@@ -317,7 +319,7 @@ include "modal_elementHistory.html";
                     const data = tableRoomElements.row(this).data();
                     if (!data) return;
                     const id = data[0].display;      // data[0] is id (hidden)
-                    console.log(data, id);
+                    //  console.log(data, id);
                     const stk = $(`#amount${id}`).val();
                     const standort = $(`#Standort${id}`).val();
                     const verwendung = $(`#Verwendung${id}`).val();

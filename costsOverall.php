@@ -61,7 +61,7 @@ init_page_serversides();
                 <div class="col-xxl-6 d-flex align-items-center justify-content-end text-nowrap"
                      id="RaumsucheCardHeaderSub">
                     <button type='button' class='btn btn-outline-dark btn-sm me-5 ml-2' id='createRaumbereichPDF'>
-                        <i class='far fa-file-pdf'></i> Kosten-PDF
+                        <i class='far fa-file-pdf'></i> Kosten je Raumbereich
                     </button>
                 </div>
             </div>
@@ -250,29 +250,57 @@ init_page_serversides();
         });
     });
 
+    //  $('#createRaumbereichPDF').click(function () {
+    //      let roomBereicheTemp = [];
+    //      let roomBereichGeschosseTemp = [];
+    //      let roomBauabschnittTemp = [];
+    //      $('#tableRaumbereiche tbody tr.info').each(function () {
+    //          let rowData = table.row(this).data();
+    //          if (rowData) {
+    //              roomBereicheTemp.push(rowData[0]);        // Raumbereich Nutzer
+    //              roomBereichGeschosseTemp.push(rowData[1]); // Geschoss
+    //              roomBauabschnittTemp.push(rowData[2]);    // Bauabschnitt
+    //          }
+    //      });
+
+    //      if (roomBereicheTemp.length === 0) {
+    //          makeToaster("Kein Raumbereich ausgewählt!",false);
+    //          return;
+    //      }
+    //     // console.log(roomBereicheTemp);
+    //      const paramRoomBereiche = encodeURIComponent(roomBereicheTemp.join(','));
+    //      const paramRoomBereichGeschosse = encodeURIComponent(roomBereichGeschosseTemp.join(','));
+    //      window.open(
+    //          'PDFs/pdf_createKostenRaumbereichPDF.php?roomBereiche=' + paramRoomBereiche +
+    //          '&roomBereichGeschosse=' + paramRoomBereichGeschosse
+    //      );
+    //  });
+
     $('#createRaumbereichPDF').click(function () {
         let roomBereicheTemp = [];
         let roomBereichGeschosseTemp = [];
         let roomBauabschnittTemp = [];
-        $('#tableRaumbereiche tbody tr.info').each(function () {
-            let rowData = table.row(this).data();
-            if (rowData) {
-                roomBereicheTemp.push(rowData[0]);        // Raumbereich Nutzer
-                roomBereichGeschosseTemp.push(rowData[1]); // Geschoss
-                roomBauabschnittTemp.push(rowData[2]);    // Bauabschnitt
-            }
+
+        table.rows({selected: true}).every(function () {
+            let rowData = this.data();
+            roomBereicheTemp.push(rowData[0]);
+            roomBereichGeschosseTemp.push(rowData[1]);
+            roomBauabschnittTemp.push(rowData[2]);
         });
 
         if (roomBereicheTemp.length === 0) {
-            makeToaster("Kein Raumbereich ausgewählt!",false);
+            makeToaster("Kein Raumbereich ausgewählt!", false);
             return;
         }
-       // console.log(roomBereicheTemp);
+
         const paramRoomBereiche = encodeURIComponent(roomBereicheTemp.join(','));
         const paramRoomBereichGeschosse = encodeURIComponent(roomBereichGeschosseTemp.join(','));
+        const paramRoomBauabschnitt = encodeURIComponent(roomBauabschnittTemp.join(','));
+
         window.open(
             'PDFs/pdf_createKostenRaumbereichPDF.php?roomBereiche=' + paramRoomBereiche +
-            '&roomBereichGeschosse=' + paramRoomBereichGeschosse
+            '&roomBereichGeschosse=' + paramRoomBereichGeschosse +
+            '&roomBauabschnitt=' + paramRoomBauabschnitt
         );
     });
 

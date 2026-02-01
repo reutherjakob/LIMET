@@ -72,10 +72,10 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
     $result_rooms = $mysqli->query($sql);
     while ($row = $result_rooms->fetch_assoc()) {
-
+        $pdf->Ln(8);
         $pdf->SetFillColor(255, 255, 255);
         raum_header($pdf, $horizontalSpacerLN3, $SB, $row['Raumbezeichnung'], $row['Raumnr'], $row['Raumbereich Nutzer'], $row['Geschoss'], $row['Bauetappe'], $row['Bauabschnitt'], "A3", $parameter_changes_t_räume); //utils function
-        $text = trim( $row['Anmerkung FunktionBO']??"");
+        $text = trim($row['Anmerkung FunktionBO'] ?? "");
         if ($text != "") {
             $outstr = format_text(clean_string(br2nl($row['Anmerkung FunktionBO'])));
             $rowHeightComment = $pdf->getStringHeight($SB - $einzugPlus, $outstr, false, true, '', 1);
@@ -144,6 +144,8 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             ['key' => 'USV', 'label' => 'USV: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
             ['key' => 'IT Anbindung', 'label' => 'IT Anschl.: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => true, 'isnotVorentwurf' => false],
 
+            ['key' => 'EL_Laser 16A CEE Stk', 'label' => 'CEE16A Laser: ', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => true],
+            ['key' => 'EL_Roentgen 16A CEE Stk', 'label' => 'CEE16A Röntgen', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
             // Power connection values
             ['key' => 'ET_Anschlussleistung_W', 'label' => 'Raum Anschlussl. ohne Glz:', 'unit' => 'W', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
             ['key' => 'ET_Anschlussleistung_AV_W', 'label' => 'AV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
@@ -152,21 +154,16 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             ['key' => 'ET_Anschlussleistung_USV_W', 'label' => 'USV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
             ['key' => 'ET_RJ45-Ports', 'label' => 'RJ45-Ports: ', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
             // Parameters shown only if isnotVorentwurf=true
-
-            ['key' => 'EL_Laser 16A CEE Stk', 'label' => 'CEE16A Laser: ', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => true],
-            ['key' => 'EL_Roentgen 16A CEE Stk', 'label' => 'CEE16A Röntgen', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
         ];
-
 
         foreach ($elektroParams as $param) {
             if ($param['isnotVorentwurf'] && !$isnotVorentwurf) {
-                if ($param['ln_after'] && ($param['key'] != "EL_Laser 16A CEE Stk" || $param['key'] != "EL_Roentgen 16A CEE Stk")) {
-                    $pdf->Ln($horizontalSpacerLN2);        // Print label placeholder for power section (only once)
-                    $pdf->MultiCell($block_header_w, $block_header_height, "", 0, 'L', 0, 0);
+                if ($param['key'] === "ET_Anschlussleistung_USV_W") {
+                    $pdf->Ln($horizontalSpacerLN2);
                 }
-                continue;
             }
-            if (($param['key'] === 'ET_RJ45-Ports' || $param['key'] === 'EL_Laser 16A CEE Stk' || $param['key'] === 'EL_Roentgen 16A CEE Stk') && $_SESSION['projectID'] == 80) {
+
+            if (!$isnotVorentwurf && ($param['key'] === 'ET_RJ45-Ports' || $param['key'] === 'EL_Laser 16A CEE Stk' || $param['key'] === 'EL_Roentgen 16A CEE Stk')) {
                 continue;
             } else if (in_array($param['key'], [
                 'Anwendungsgruppe',
@@ -193,8 +190,16 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                 $pdf->Ln($horizontalSpacerLN2);        // Print label placeholder for power section (only once)
                 $pdf->MultiCell($block_header_w, $block_header_height, "", 0, 'L', 0, 0);
             }
+            if ($param['key'] === "ET_Anschlussleistung_USV_W" && !$isnotVorentwurf) {
+                $pdf->Ln($horizontalSpacerLN2);
+                $pdf->MultiCell($block_header_w, $block_header_height, "", 0, 'L', 0, 0);
+            }
         }
-        $pdf->Ln($horizontalSpacerLN);
+
+        include "pdf_getRaumleistungInklGlz.php";
+
+
+        $pdf->Ln($horizontalSpacerLN2);
         anmA3($pdf, $row['Anmerkung Elektro'], $SB, $block_header_w);
         $pdf->Ln($horizontalSpacerLN);
 
@@ -281,6 +286,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             $pdf->Ln($horizontalSpacerLN);
         }
 //
+//
 ////     ------- MT Tabelle  ---------
 //
         // -------------------------Elemente im Raum laden--------------------------
@@ -337,7 +343,6 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                 $dataChanges[] = $row3;
             }
             $dataChanges = filter_old_equal_new($dataChanges);
-
             $upcmn_blck_size = 10 + $rowcounter * 5;
             block_label_queer($block_header_w, $pdf, "Med.-tech.", $upcmn_blck_size, $block_header_height, $SB);
             make_MT_details_table($pdf, $resultX, $result1, $result3, $SB, $SH, $dataChanges);

@@ -4,9 +4,9 @@ check_login();
 ?>
 
 <!DOCTYPE html >
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
-</head>
+    <title></title></head>
 <body>
 <?php
 
@@ -78,7 +78,7 @@ while ($row = $result->fetch_assoc()) {
         echo "<td>" . $row["idtabelle_Lose_Extern"] . "</td>";
         echo "<td>" . $row["LosNr_Extern"] . "</td>";
         echo "<td>" . $row["LosBezeichnung_Extern"] . "</td>";
-        echo "<td align='center'>";
+        echo "<td>";
         switch ($row["Vergabe_abgeschlossen"]) {
             case 0:
                 //echo "<b><font color='red'>&#10007;</font></b>";
@@ -175,7 +175,7 @@ $mysqli->close();
             </div>
             <div class='modal-footer'>
                 <input type='button' id='updateTenderWorkflowDates' class='btn btn-success btn-sm' value='Ja'
-                       data-bs-dismiss='modal'></input>
+                       data-bs-dismiss='modal'>
                 <button type='button' class='btn btn-danger btn-sm' data-bs-dismiss='modal'>Nein</button>
             </div>
         </div>
@@ -216,7 +216,7 @@ $mysqli->close();
                 {
                     extend: 'excel', exportOptions: {
                         format: {
-                            body: function (data, row, column, node) {
+                            body: function (data) {
                                 //check if type is input using jquery
                                 return $(data).is("form") ?
                                     $(data).find('input:text').val() :
