@@ -17,7 +17,7 @@ FROM tabelle_varianten
                         tabelle_projekte.idTABELLE_Projekte) ON tabelle_varianten.idtabelle_Varianten =
                                                                 tabelle_projekt_varianten_kosten.tabelle_Varianten_idtabelle_Varianten
 WHERE (((tabelle_projekt_varianten_kosten.tabelle_elemente_idTABELLE_Elemente) = ?) AND
-       NOT (tabelle_projekte.Projektname = 'Test1'))");
+       NOT (tabelle_projekte.idTABELLE_Projekte = 4) AND NOT (tabelle_projekte_idTABELLE_Projekte =1) )");
 $stmt->bind_param('i', $elementID);
 $stmt->execute();
 $result = $stmt->get_result();

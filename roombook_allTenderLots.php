@@ -39,28 +39,31 @@ init_page_serversides("x"); ?>
             <div class="mt-4 card">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col-4 d-flex align-items-top justify-content-start">
+                        <div class="col-6 d-flex align-items-top justify-content-start" id="LoseCardHeaderSub0">
                             <span><strong>ÜBERSICHT ALLE LOSE</strong> &emsp;</span>
+
+                        </div>
+                        <div class="col-6 d-flex align-items-top justify-content-end" id="LoseCardHeaderSub">
                             <div class="me-2">
-                                <label for="dateSelect" class="visually-hidden">Änderungsdatum</label>
+                                <label for="dateSelect" class="visually-hidden">
+                                    Änderungsdatum
+                                </label>
                                 <input type="date" id="dateSelect" name="dateSelect"
                                        class="form-control form-control-sm w-auto"
                                        data-bs-toggle="tooltip"
-                                       data-bs-title="Ab welchem Versanddatum Lose laden?"
-                                       data-bs-custom-class="custom-tooltip"/>
+                                       data-bs-title="Ab welchem Versanddatum Lose laden?"/>
                             </div>
-                        </div>
-                        <div class="col-8 d-flex align-items-top justify-content-end" id="LoseCardHeaderSub">
                         </div>
                     </div>
                 </div>
 
-                <div class="card-body p-0 py-0 m-0" id="projectLots">
+                <div class="card-body p-1 py-1 m-1" id="projectLots">
                     <table id="tableTenderLots"
                            class="table table-sm table-responsive table-striped compact border border-light border-1 w-100">
                         <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>ID Los</th>
+                            <th>ID Projekt</th>
                             <th>Projekt</th>
                             <th>LosNummer</th>
                             <th>Bezeichnung</th>
@@ -72,8 +75,30 @@ init_page_serversides("x"); ?>
                             <th>Vergabesumme</th>
                             <th>Auftragnehmer</th>
                             <th>MKF-von_Los</th>
-                            <th><i data-bs-toggle="tooltip" data-bs-placement="top" title="Workflow"
-                                   class="fas fa-code-branch"></i></th>
+                            <th><i data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="Los Workflow"
+                                   class="fas fa-code-branch"></i>
+                                <span class="visually-hidden">Workflow</span>
+                            </th>
+                            <th><i data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="Elemente im Los"
+                                   class="fas fa-briefcase-medical"></i>
+                                <span class="visually-hidden">Elemente in Los </span>
+                            </th>
+                            <th><i data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="Preis in DB eingetragen? "
+                                   class="fas fa-dollar-sign"></i>
+                                <span class="visually-hidden">Preis in DB </span>
+                            </th>
+                            <th><i data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="Preis Eintrag kontrolliert von "
+                                   class="fas fa-user-check"></i>
+                                <span class="visually-hidden">Preis Eintrag kontrolliert von:</span>
+                            </th>
                         </tr>
                         </thead>
                         <tbody></tbody>
@@ -84,8 +109,8 @@ init_page_serversides("x"); ?>
     </div>
 
     <?php require "modal_showLotWorkflow.php"; ?>
+    <?php require "modal_showLotElements.php"; ?>
 
-    <script src="utils/_utils.js"></script>
     <script charset="utf-8">
         function debounce(func, wait) {
             let timeout;
@@ -111,9 +136,11 @@ init_page_serversides("x"); ?>
                     }
                 },
                 columnDefs: [
-                    {targets: [0, 9], visible: false, searchable: false},
-                    {targets: [5, 10, 11], visible: false},
-                    {targets: [0], sortable: false}
+                    {targets: [0, 1], visible: false, searchable: false, sortable: false}, {
+                        targets: [10],
+                        visible: false,
+                        searchable: false
+                    }
                 ],
 
                 select: true,
@@ -124,32 +151,54 @@ init_page_serversides("x"); ?>
                 order: [[2, 'asc']],
                 pagingType: 'full',
                 lengthChange: true,
-                pageLength: 22,
-
-                lengthMenu: [[10, 22, 50, 100], [10, 22, 50, 100]],
+                pageLength: 20,
+                lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
-                    decimal: ',', thousands: '.', searchPlaceholder: 'Suche..', search: "", lengthMenu: "_MENU_"
+                    decimal: ',',
+                    thousands: '.',
+                    searchPlaceholder: 'Suche..',
+                    search: "",
+                    lengthMenu: "_MENU_",
+                    searchBuilder: {
+                        title: '',
+                        button: ''
+                    },
+                    buttons: {
+                        excel: ''
+                    }
                 },
-                scrollY: '78vh',
+
                 buttons: [
                     {
-                        extend: 'colvis', className: "btn btn-success fas fa-eye me-2 ms-2",
-                        text: 'Spaltensichtbarkeit',
-                        columns: function (idx) {
-                            return idx !== 0 && idx !== 9;
+                        extend: 'colvis', className: "btn  btn-light btn-outline-dark fas fa-eye",
+                        text: '',
+                        attr: {
+                            'data-bs-toggle': 'tooltip',
+                            "data-bs-title": 'Spalten ein/ausblenden',
                         }
                     },
                     {
-                        extend: 'excel', className: "btn btn-success fas fa-file-excel me-2 ms-2",
-                        title: "Losliste",
+                        extend: 'excel', className: "btn btn-light btn-outline-dark fas fa-file-excel",
                         exportOptions: {
                             columns: function (idx) {
-                                return idx !== 0 && idx !== 8;
+                                return idx !== 0 && idx !== 1 && idx !== 9 && idx !== 13 && idx !== 14;
                             }
-                        }
+                        },
+                        attr: {
+                            'data-bs-toggle': 'tooltip',
+                            "data-bs-title": 'Download als Excel',
+                        },
+
                     },
-                    {extend: 'searchBuilder', className: "btn btn-success fas fa-filter me-2 ms-2"}
+                    {
+                        extend: 'searchBuilder',
+                        className: "btn btn-light btn-outline-dark fas fa-filter",
+                        attr: {
+                            'data-bs-toggle': 'tooltip',
+                            "data-bs-title": 'Filter erstellen',
+                        }
+                    }
                 ],
                 layout: {
                     topStart: null, topEnd: null,
@@ -158,41 +207,142 @@ init_page_serversides("x"); ?>
                 },
                 initComplete: function () {
                     let sourceElements = document.getElementsByClassName("dt-buttons");
-                    let targetElement = document.getElementById("LoseCardHeaderSub");
+                    let targetElement = document.getElementById("LoseCardHeaderSub0");
                     Array.from(sourceElements).forEach(function (element) {
                         targetElement.appendChild(element);
                     });
-                    const button = document.querySelector(".dt-buttons");
-                    if (button) button.classList.remove("dt-buttons");
+
                     $('.dt-search label').remove();
                     $('.dt-search').children()
                         .removeClass('form-control form-control-sm')
                         .addClass("btn btn-sm btn-outline-secondary")
                         .appendTo('#LoseCardHeaderSub');
+
                     $('#dateSelect').on('change', debounce(function () {
                         console.log("Reloading after debounce");
                         if ($(this).val() !== $(this).data('oldValue')) { // Nur bei neuem Datum
                             $(this).data('oldValue', $(this).val());
                             tableTenderLots.ajax.reload(null, false);
                         }
-                    }, 2000));
-                }
-            });
-        });
+                    }, 500));
 
-        $(document).on("click", "button[value='LotWorkflow']", function () {
-            var ID = this.id;
-            $.ajax({
-                url: "getLotWorkflow.php",
-                type: "POST",
-                data: {lotID: ID},
-                success: function (data) {
-                    $("#workflowModalBody").html(data);
+                    if (!window.tooltipList) {
+                        let tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                            .filter(el => el.nodeType === Node.ELEMENT_NODE && el.nodeName && typeof el.nodeName === 'string');
+                        window.tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                            return new bootstrap.Tooltip(tooltipTriggerEl, {
+                                delay: {"show": 10, "hide": 0}
+                            });
+                        });
+                    }
+
                 }
             });
+            $(document).on("click", "button[value='Los Workflow']", function () {
+                var ID = this.id;
+                $.ajax({
+                    url: "getLotWorkflow.php",
+                    type: "POST",
+                    data: {lotID: ID},
+                    success: function (data) {
+                        $("#workflowModalBody").html(data);
+                    }
+                });
+            });
+
+            $(document).on("click", "button[value='Los Elemente']", function (e) {
+                e.preventDefault();
+                var buttonId = $(this).attr('id');  // e.g. "lotelem_456_123"
+                var parts = buttonId.split('_');
+                var projectID = parts[1];  // 456
+                var lotID = parts[2];      // 123
+                console.log('projectID:', projectID, 'lotID:', lotID);
+                $("#lotElementsModalBody").html(`<div class="text-center p-5">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Laden...</span>
+                        </div>
+                        <p class="mt-2">Los Elemente werden geladen...</p>
+                    </div>`);
+
+                $.ajax({
+                    url: "getTenderLotElements.php",
+                    type: "POST",
+                    data: {
+                        lotID: lotID,
+                        projectID: projectID
+                    },
+                    success: function (data) {
+                        $("#lotElementsModalBody").html(data);
+                    },
+                    error: function () {
+                        $("#lotElementsModalBody").html(`<div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Fehler beim Laden der Los Elemente.
+                </div>`);
+                    }
+                });
+            });
+
+            $(document).on('change', '.lot-preis-checkbox', function () {
+                var $checkbox = $(this);
+                var lotId = $checkbox.data('lot-id');
+                var projektId = $checkbox.data('projekt-id');
+                var newStatus = $checkbox.is(':checked') ? 1 : 0;
+                var $label = $checkbox.siblings('.form-check-label');
+                $label.html('<span class="spinner-border spinner-border-sm me-1"></span>Laden...');
+                $.ajax({
+                    url: 'lotPriceUpdated.php',
+                    type: 'POST',
+                    data: {
+                        lot_id: lotId,
+                        projekt_id: projektId,
+                        preis_status: newStatus
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                        } else {
+                            alert('Fehler beim Speichern: ' + (response.error || 'Unbekannter Fehler'));
+                        }
+                    },
+                    error: function () {
+                        alert('Verbindungsfehler. Bitte versuchen Sie es erneut.');
+                    }
+                });
+            });
+
+
+            $(document).on('click', '.kontrolle-btn', function () {
+                if (this.disabled) return;
+
+                const projektId = $(this).data('projekt-id');
+                const lotId = $(this).data('lot-id');
+                const username = <?php echo json_encode($_SESSION['username'] ?? ''); ?>;
+
+                if (!username) {
+                    alert('Kein Benutzername in der Session gefunden!');
+                    return;
+                }
+
+                $.post('update_los_kontrolliert.php', {
+                    projekt_id: projektId,
+                    lot_id: lotId
+                }).done(function (data) {
+                    if (data.success) {
+                        console.log("Success");
+                        $(this).html(username).attr('title', 'Gekontrolliert von: ' + username);
+                    } else {
+                        alert('Fehler: ' + (data.error || 'Unbekannter Fehler'));
+                    }
+                }).fail(function () {
+                    alert('Verbindungsfehler');
+                }.bind(this));  // Bind context for $(this)
+            });
+
+
         });
 
 
     </script>
+
 </body>
 </html>

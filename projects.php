@@ -59,7 +59,7 @@
         "Labor Kathegorien" => "fas fa-atom",
         "AGES SF Nutzerraumbuch" => "fas fa-mortar-pestle",
         "AGES Spargelfeld" => "fas fa-mortar-pestle",
-        "Test KHI" => "fas fa-question-circle",
+        "Test KHI" =>"fas fa-yin-yang",
         "Labor Kategorien" => "fas fa-microscope",
     ];
     //<i class="fas fa-mountain"></i>

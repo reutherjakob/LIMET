@@ -7,17 +7,24 @@ const CustomPopover = (function ($) {
         return $('<div>', {
             class: 'custom-popover',
             html: `
-                <textarea class="popover-textarea form-control">${text}</textarea>
-                <div class="popover-buttons mt-2">
-                    <button class="btn btn-success btn-sm btn-save">Save</button>
+            <textarea class="popover-textarea form-control" style="min-width: 400px; min-height: 400px; resize: both;">${text}</textarea>
+            <div class="popover-buttons mt-2">
+                <button class="btn btn-success btn-sm btn-save">Save</button>
                 <button class="btn btn-secondary btn-sm btn-cancel">Cancel</button>  
-                </div>
-            `
+            </div>
+        `
         }).css({
             position: 'absolute',
             top: `${position.top}px`,
             left: `${position.left}px`,
-            zIndex: 9999
+            zIndex: 9999,
+            minWidth: '400px',  // Add this
+
+            padding: '15px',    // Add this
+            background: 'white',
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.2)'
         });
     }
 

@@ -8,17 +8,15 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <title>Get Devices 2 Element</title>
-    <style> /* Make sure Select2 dropdown appears above Bootstrap modal */
+    <style>
         .select2-container {
-            z-index: 1060 !important; /* slightly higher than Bootstrap modal backdrop */
+            z-index: 1060 !important;
         }
 
-        /* Also target the actual dropdown for Select2 (the dropdown elements) */
         .select2-dropdown {
             z-index: 1061 !important;
         }
 
-        /* Optional: When used inside modal, the dropdown might need higher z-index */
         .modal .select2-container {
             z-index: 1070 !important;
         }
@@ -35,7 +33,7 @@
 require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
-$elementID =  getPostInt('elementID',$_SESSION["elementID"]?? 0 );
+$elementID = getPostInt('elementID', $_SESSION["elementID"] ?? 0);
 
 $sql = "SELECT tabelle_geraete.idTABELLE_Geraete, tabelle_geraete.GeraeteID, tabelle_hersteller.Hersteller, tabelle_geraete.Typ, tabelle_geraete.Kurzbeschreibung, tabelle_hersteller.idtabelle_hersteller
         FROM tabelle_geraete

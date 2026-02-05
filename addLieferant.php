@@ -29,7 +29,7 @@ if ($name !== '' && $vorname !== '' && $tel !== '') {
         exit;
     }
 
-    $stmt->bind_param('ssssssssiii',
+    $stmt->bind_param('sssssssssii',
         $name,
         $vorname,
         $tel,

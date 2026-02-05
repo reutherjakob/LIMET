@@ -123,7 +123,7 @@ $mysqli->close();
 
         $('#tableVermerkUnterGruppe tbody').on('click', 'tr', function () {
             untergruppenID = tableVermerkUnterGruppe.row($(this)).data()[0];
-            console.log("tableVermerkUnterGruppe tbody", untergruppenID);
+            //  console.log("tableVermerkUnterGruppe tbody", untergruppenID);
             document.getElementById("unterGruppenNummer").value = tableVermerkUnterGruppe.row($(this)).data()[2];
             document.getElementById("unterGruppenName").value = tableVermerkUnterGruppe.row($(this)).data()[3];
             $("#vermerke").show();
@@ -160,7 +160,11 @@ $mysqli->close();
         if (untergruppenName !== "" && untergruppenNummer !== "") {
             $.ajax({
                 url: "addVermerkUnterGroup.php",
-                data: {"untergruppenName": untergruppenName, "untergruppenNummer": untergruppenNummer, "gruppenID": gruppenID},
+                data: {
+                    "untergruppenName": untergruppenName,
+                    "untergruppenNummer": untergruppenNummer,
+                    "gruppenID": gruppenID
+                },
                 type: "POST",
                 success: function (data) {
                     makeToaster(data, true);

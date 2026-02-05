@@ -34,7 +34,7 @@ init_page_serversides();
 
 <body>
 <div id="limet-navbar"></div> <!-- Container für Navbar Aufruf über onLoad -->
-<div class="container-fluid bg-secondary bg-opacity-10">
+<div class="container-fluid bg-light">
     <div class="row">
         <div class="col-xxl-6">
             <div class="card mt-1">

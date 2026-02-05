@@ -350,7 +350,7 @@ init_page_serversides();
                     roomIssues[R_ID].push({ ROOM, kathegorie, issue });
                 });
 
-                const tbody = document.getElementById('tableBody');
+                const $tbody = $('#tableBody');
 
                 for (const id in roomIssues) {
                     const rows = roomIssues[id].map((item, index) => {
@@ -371,10 +371,10 @@ init_page_serversides();
                         </tr>`;
                     });
 
-                    tbody.innerHTML += rows.join('');
+                    $tbody.append(rows.join(''));
                 }
 
-                if (tbody.innerHTML.trim() !== '') {
+                if ($tbody.html().trim() !== '') {
                     new DataTable('#table1ID', {
                         dom: ' <"TableCardHeader"f>ti',
                         language: {
@@ -490,7 +490,7 @@ init_page_serversides();
                         }
                     });
                 } else {
-                    document.getElementById('table1ID').style.display = 'none';
+                    $('#table1ID').hide();
                     alert("Keine Angaben zu checken? Oder bug?");
                 }
 
@@ -511,13 +511,14 @@ init_page_serversides();
 
                 $('#table1ID tr').each(function (index, row) {
                     if (index !== 0) {
-                        const id = $(row).data('id');
-                        const issue = $(row).find('td:nth-child(4)').text();
+                        const $row = $(row);
+                        const id = $row.data('id');
+                        const issue = $row.find('td:nth-child(4)').text();
                         const key = `${id}-${issue}`;
                         const isChecked = localStorage.getItem(key) === 'true';
                         if (isChecked) {
-                            $(row).classList?.add('checked');
-                            $(row).querySelector('input[type="checkbox"]').checked = true;
+                            $row.addClass('checked');
+                            $row.find('input[type="checkbox"]').prop('checked', true);
                         }
                     }
                 });
@@ -531,10 +532,13 @@ init_page_serversides();
             }
         });
 
-        const deleteButton = document.getElementById('deleteButton');
-        deleteButton.addEventListener('click', deleteLocalStorageItem);
+        $('#deleteButton').on('click', function() {
+            localStorage.clear();
+            console.log('Local storage cleared.');
+        });
     });
 
+    // Helper function (kept for potential use elsewhere)
     function deleteLocalStorageItem() {
         localStorage.clear();
         console.log('Local storage cleared.');
