@@ -83,7 +83,7 @@ LEFT JOIN (
 ) AS losbestandschaetzsumme ON tabelle_lose_extern.idtabelle_Lose_Extern = losbestandschaetzsumme.id
 LEFT JOIN tabelle_projekte ON tabelle_projekte.idTABELLE_Projekte = COALESCE(losschaetzsumme.tabelle_projekte_idTABELLE_Projekte, losbestandschaetzsumme.tabelle_projekte_idTABELLE_Projekte)
 LEFT JOIN tabelle_lose_extern AS mkf_los ON tabelle_lose_extern.mkf_von_los = mkf_los.idtabelle_Lose_Extern
-WHERE tabelle_lose_extern.Versand_LV >= ?  AND idTABELLE_Projekte <> 4 AND idTABELLE_Projekte <> 1
+WHERE tabelle_lose_extern.Versand_LV >= ? AND idTABELLE_Projekte <> 4 AND idTABELLE_Projekte <> 1
 ORDER BY tabelle_projekte.Projektname, tabelle_lose_extern.LosNr_Extern
 ";
 
@@ -108,8 +108,7 @@ while ($row = $result->fetch_assoc()) {
     };
 
 
-
-    if ($row["Vergabe_abgeschlossen"] !== 1 ) {
+    if ($row["Vergabe_abgeschlossen"] !== 1) {
         $checkbox_html = '';
         $kontrolliert_btn = '';
         $preise_in_db = null;
@@ -117,35 +116,45 @@ while ($row = $result->fetch_assoc()) {
     } else {
         $preise_in_db = $row["preise_in_db"];
         $kontrolle_user = $row["kontrolle_preise_in_db_user"] ?? '';
-        $checkbox_html = "<label class='form-check form-switch form-switch-sm'>
+
+        // Preis NICHT eingetragen: nur Checkbox zeigen
+        if ($preise_in_db == 0) {
+            $checkbox_html = "<label class='form-check form-switch form-switch-sm'>
         <input class='form-check-input lot-preis-checkbox' 
                type='checkbox' 
                data-lot-id='{$row["idtabelle_Lose_Extern"]}'
-               data-projekt-id='{$row["idTABELLE_Projekte"]}'
-               " . ($preise_in_db ? 'checked' : '') . " 
-               " . ($kontrolle_user ? 'disabled' : '') . ">
+               data-projekt-id='{$row["idTABELLE_Projekte"]}'>
         </label>";
-
-        if ($preise_in_db == 0) {
-            $button_text = 'Preis fehlt';
-            $button_disabled = 'disabled';
-            $button_title = 'Preis muss zuerst eingetragen werden';
-        } elseif (!empty($kontrolle_user)) {
-            $button_text = htmlspecialchars($kontrolle_user);
-            $button_disabled = 'disabled';
-            $button_title = 'Bereits kontrolliert: ' . htmlspecialchars($kontrolle_user);
-        } else {
-            $button_text = 'kontrollieren';
-            $button_disabled = '';
-            $button_title = 'Preis kontrollieren';
+            $kontrolliert_btn = '';
         }
-        $kontrolliert_btn = "<button type='button' 
-         id='checked_by_{$row["idTABELLE_Projekte"]}_{$row["idtabelle_Lose_Extern"]}' 
-         class='btn btn-sm btn-outline-secondary kontrolle-btn' 
-         data-projekt-id='{$row["idTABELLE_Projekte"]}'
-         data-lot-id='{$row["idtabelle_Lose_Extern"]}'
-         {$button_disabled}
-         title='{$button_title}'>{$button_text}</button>";
+        // Preis IST eingetragen: nur Button zeigen
+        else {
+            $checkbox_html = '';
+
+            // Bereits kontrolliert: grüner disabled Button
+            if (!empty($kontrolle_user) && strlen(trim($kontrolle_user)) > 0) {
+                $button_text = htmlspecialchars(substr($kontrolle_user, 0, 3));
+                $button_title = 'Bereits kontrolliert: ' . htmlspecialchars($kontrolle_user);
+                $kontrolliert_btn = "<button type='button' 
+             id='checked_by_{$row["idTABELLE_Projekte"]}_{$row["idtabelle_Lose_Extern"]}' 
+             class='btn btn-sm btn-success kontrolle-btn fas fa-check' 
+             data-projekt-id='{$row["idTABELLE_Projekte"]}'
+             data-lot-id='{$row["idtabelle_Lose_Extern"]}'
+             disabled
+             title='{$button_title}'>{$button_text}</button>";
+            }
+            // Noch nicht kontrolliert: aktiver Button
+            else {
+                $kontrolliert_btn = "<button type='button' 
+             id='checked_by_{$row["idTABELLE_Projekte"]}_{$row["idtabelle_Lose_Extern"]}' 
+             class='btn btn-sm btn-outline-dark kontrolle-btn fas fa-check' 
+             data-projekt-id='{$row["idTABELLE_Projekte"]}'
+             data-lot-id='{$row["idtabelle_Lose_Extern"]}'
+             data-bs-toggle='tooltip'
+             data-bs-title='Preis kontrolliert? '
+             title='Preis kontrollieren'></button>";
+            }
+        }
     }
 
     $data[] = [

@@ -50,7 +50,7 @@
         "Chirurgie Graz BE3" => "fas fa-bone",
         "ZVZ Nord" => "fas fa-teeth-open",
         "KLU-ANGIO-RV-KABEG" => "fas fa-x-ray",
-        "Test1" => "fas fa-bong",
+        "Test_Projekt" => "fas fa-bong",
         "KAGes Labor - LKH2 Süd" => "fas fa-vials",
         "KHI" => "fas fa-ambulance",
         "KOR_ZNB" => "fas fa-briefcase-medical",
@@ -182,44 +182,43 @@
                 </div>
             </div>
             <div class='card mt-2'>
-                <div class='card-header'><strong> Updates</strong>
+                <div class='card-header'><strong> Raumbuch Updates</strong>
                 </div>
                 <div class='card-body'>
                     <div class="row">
                         <p>
-                            <i class="fas fa-american-sign-language-interpreting col-1"></i> Auswahl eines
-                            <a class="col-11" href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free"
-                               target="_blank">Projekt Icons</a>
+                            <i class="fas fa-list col-1"></i>
+                            <a class="col-11" href="roombook_allTenderLots.php">
+                                Übergeordnete Losliste </a>
                         </p>
+
                         <p>
-                            <i class="far fa-comments col-1"></i>
-                            <a class="col-11" href="/FeedbackCenter/FeedbackIndex.php" target="_blank">Feedback und
-                                Bugreport</a>.
-                        </p>
-                        <p>
-                            <i class="fas fa-user-md col-1"></i>
-                            <a class="col-11" href="roombookElementeJeRaumbereich.php"
-                               target="_blank"> Elemente je Raumbereich </a>
-                        </p>
-                        <p>
-                            <i class="fas fa-map col-1"></i>
-                            <a class="col-11" href="roombookStandortVerwendung.php"
-                               target="_blank"> Standort/Verwendung </a>
-                        </p>
-                        <p>
-                            <i class="far fa-handshake col-1"></i>
-                            <a class="col-11" href="/Besprechungsansicht/views/roombookBesprechungsansicht.php"
-                               target="_blank"> Besprechungsansicht </a>
-                        </p>
-                        <p>
-                            <i class="fab fa-jedi-order col-1"></i>
-                            <a class="col-11" href="roombookElementAnzahlAenderungen.php"
-                               target="_blank"> Element Änderungen </a>
+                            <i class="far fa-bell col-1"></i>
+                            <span class ="col-11">Neu: Preise ändern Button </span>
                         </p>
                     </div>
 
                 </div>
             </div>
+
+            <div class='card mt-2'>
+                <div class='card-body'>
+                    <div class="row">
+                        <p>
+                            <i class="fa fa-fort-awesome-alt col-1"></i>
+                            <a class="col-11" href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free"
+                               target="_blank">Projekt Icons</a>
+                        </p>
+                        <p>
+                            <i class="far fa-comment-dots col-1"></i>
+                            <a class="col-11" href="/FeedbackCenter/FeedbackIndex.php" target="_blank">Feedback &
+                                Bugreport</a>.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
         </div>
 
     </div>

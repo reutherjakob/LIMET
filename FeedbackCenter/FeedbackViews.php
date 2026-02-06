@@ -42,7 +42,8 @@ init_page_serversides("x", "x");
                 <div class="card-body">
                     <ul class="nav nav-tabs mb-4" role="tablist">
                         <li class="nav-item">
-                            <button class="nav-link active"  data-bs-toggle="tab" data-bs-target="#bug-form" type="button"
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#bug-form"
+                                    type="button"
                                     role="tab">
                                 <i class="fas fa-bug"></i> Bug melden
                             </button>
@@ -202,8 +203,10 @@ init_page_serversides("x", "x");
                                                 aria-controls="wishCollapse<?= $idx ?>">
                                             <span class="badge bg-secondary me-2"><?= htmlspecialchars($entry['id']) ?></span>
                                             <strong><?= htmlspecialchars($entry['title']) ?></strong>
-                                            <span class="ms-2 text-muted small"><i
-                                                        class="fas fa-calendar-alt"></i> <?= htmlspecialchars($entry['date']) ?></span>
+                                            <span class="ms-2 text-muted small">
+                                                <i class="fas fa-calendar-alt"></i>
+                                                <?= htmlspecialchars($entry['date']) ?>
+                                            </span>
                                         </button>
                                     </h2>
 

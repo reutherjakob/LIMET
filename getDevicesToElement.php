@@ -47,10 +47,10 @@ $stmt->execute();
 $result = $stmt->get_result();
 $stmt->close();
 
-echo "<table class='table table-striped table-sm' id='tableDevicesToElement'>
+echo "<table class='table table-striped table-bordered table-sm table-hover border border-light px-0 py-0' id='tableDevicesToElement'>
 	<thead><tr>
 	<th>ID</th>
-	<th>GeraeteID</th>
+	<th>Gerät ID</th>
 	<th>Hersteller</th>
 	<th>Typ</th>
     <th>Beschreibung</th>
@@ -71,14 +71,31 @@ while ($row = $result->fetch_assoc()) {
     echo "</tr>";
 }
 echo "</tbody></table>";
-echo "<input type='button' id='addDeviceModalButton' class='btn btn-success btn-sm' value='Gerät hinzufügen' data-bs-toggle='modal' data-bs-target='#addDeviceModal'><input type='button' id='";
-echo $elementID;
-echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggle='modal' data-bs-target='#deviceComparisonModal'>";
+echo "
+<div class='col-12 d-flex justify-content-start'>
+    <button type='button'
+            id='addDeviceModalButton'
+            class='btn btn-sm btn-success'
+            value='Gerät hinzufügen'
+            data-bs-toggle='modal'
+            data-bs-target='#addDeviceModal'>
+            <i class='fas fa-plus'></i>
+        Gerät hinzufügen
+    </button>
+       <button type='button'
+            id='" . $elementID . "' 
+            class='btn btn-sm btn-outline-dark ms-1'
+            value='Geräte vergleichen'
+            data-bs-toggle='modal'
+            data-bs-target='#deviceComparisonModal'>
+            <i class='fas fa-not-equal'></i>
+        Gerät vergleichen
+    </button>
+</div> ";
 ?>
 
 <div class='modal fade' id='addDeviceModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
-        <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Gerät hinzufügen/bearbeiten</h4>
@@ -182,11 +199,11 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
                 }
             ],
             select: true,
-            paging: true,
+            paging: false,
             pagingType: 'simple',
             lengthChange: false,
             pageLength: 10,
-            searching: true, // Enable searching
+            searching: false, // Enable searching
             info: false,
             order: [[1, 'asc']],
             language: {
@@ -320,7 +337,7 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
     });
 
     //Gerätevergleich anzeigen
-    $("input[value='Geräte vergleichen']").click(function () {
+    $("button[value='Geräte vergleichen']").click(function () {
         let id = this.id;
         $.ajax({
             url: "getDeviceComparison.php",

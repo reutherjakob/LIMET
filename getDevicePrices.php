@@ -44,7 +44,7 @@ echo "
        <th>NK/Stk</th>
        <th>Projekt</th>
        <th>Lieferant</th>      
-       <th class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Bearbeiten'>  <i class='fa-pencil-alt'></i> </th>   
+       <th class='' data-bs-toggle='tooltip' title='Bearbeiten'>  <i class='fa fa-pencil-alt'></i> </th>   
     </tr></thead><tbody>";
 
 while ($row = $result->fetch_assoc()) {
@@ -69,16 +69,27 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . format_money($row["Nebenkosten"] ?? '') . "</td>";
     echo "<td>" . htmlspecialchars($row["Projektname"] ?? '') . "</td>";
     echo "<td>" . htmlspecialchars($row["Lieferant"] ?? '') . "</td>";
-    echo "<td><button class='btn btn-sm btn-outline-primary edit-price-btn' title='Preis ändern'>
-              <i class='far fa-edit'></i>
+    echo "<td> <button class='btn btn-sm btn-outline-dark edit-price-btn' 
+                title='Preis ändern' 
+                data-bs-toggle='modal'
+                data-bs-target='#addPriceToElementModal'>
+              <i class='fa fa-pencil-alt'></i>
           </button></td>";
     echo "</tr>";
 }
 
 echo "</tbody></table>"; ?>
-<button type='button' id='addPriceModal' class='btn btn-success' value='Preis hinzufügen' data-bs-toggle='modal'
-        data-bs-target='#addPriceToElementModal'> Preis hinzufügen
-</button>
+<div class="col-12 d-flex justify-content-end">
+    <button type='button'
+            id='addPriceModal_show'
+            class='btn btn-sm btn-success'
+            value='Preis hinzufügen'
+            data-bs-toggle='modal'
+            data-bs-target='#addPriceToElementModal'>
+            <i class='fas fa-plus'></i>
+        Preis hinzufügen
+    </button>
+</div>
 
 <div class='modal fade' id='addPriceToElementModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
@@ -138,7 +149,7 @@ echo "</tbody></table>"; ?>
                         </div> 
                         <div class='row mt-3'>
                         <div class='col-6'>    
-                            <input type='button' id='addPrice' class='btn btn-success btn-sm col-12' value='Speichern' data-bs-dismiss='modal'>
+                            <input type='button' id='addPrice' class='btn btn-success btn-sm col-12' value='Speichern'>
                         </div>
                         <div class='col-6'>
                             <button type='button' class='btn btn-danger btn-sm col-12' data-bs-dismiss='modal'>Abbrechen</button>
@@ -151,7 +162,7 @@ echo "</tbody></table>"; ?>
                                 <i class='fas fa-plus'></i> Geräte Lieferant hinzufügen
                                 </button>     
                              </div>     
-                             <div class='col-6'>   
+                             <div class='col-6 d-inline-flex justify-content-end'>   
                                 <button type='button' class='btn btn-sm btn-outline-success mt-2' id='addNewLieferant' title='Neuen Lieferant anlegen'>
                                 <i class='fas fa-plus'></i> Neuen Lieferant anlegen
                                 </button>  
@@ -203,35 +214,24 @@ echo "</tbody></table>"; ?>
 <script src="utils/_utils.js"></script>
 <script>
     $(document).ready(function () {
-
-        // EDIT PRICE BUTTON - Populate modal with existing data
         $(document).on('click', '.edit-price-btn', function (e) {
-            e.preventDefault(); // Verhindere Standard-Verhalten
-
+            //e.preventDefault();
             const row = $(this).closest('tr');
-
-            // Populate all fields from data attributes mit den IDs!
             $('#priceID').val(row.data('price-id'));
             $('#date').val(row.data('date'));
             $('#quelle').val(row.data('quelle'));
             $('#menge').val(row.data('menge'));
             $('#ep').val(row.data('ep'));
             $('#nk').val(row.data('nk'));
-
-            // WICHTIG: Setze die IDs, nicht die Namen!
             $('#project').val(row.data('project-id') || '0').trigger('change');
             $('#lieferant').val(row.data('lieferant-id') || '0').trigger('change');
-
             $('#modalTitle').text('Preis ändern');
             $('#addPrice').val('Änderungen speichern');
-
-            // Modal öffnen - OHNE data-bs-toggle zu verwenden
-            let myModal = new bootstrap.Modal(document.getElementById('addPriceToElementModal'));
-            myModal.show();
+            //let myModal = new bootstrap.Modal(document.getElementById('addPriceToElementModal'));
+            //myModal.show();
         });
 
-        // RESET MODAL - For new price entry
-        $('#addPriceModal').click(function () {
+        $('#addPriceModal_show').click(function () {
             $('#priceID').val('0');
             $('#modalTitle').text('Preis hinzufügen');
             $('#addPrice').val('Speichern');
@@ -254,7 +254,6 @@ echo "</tbody></table>"; ?>
                 makeToaster("Bitte alle Felder ausfüllen!", false);
                 return;
             }
-
             let url = priceID == '0' ? "addPriceToDevice.php" : "updateDevicePrice.php";
 
             $.ajax({
@@ -272,18 +271,9 @@ echo "</tbody></table>"; ?>
                 type: "POST",
                 success: function (data) {
                     makeToaster(data.trim(), true);
-                    reloadTable(); // Refresh table
-
-                    // Modal korrekt schließen
-                    let myModal = bootstrap.Modal.getInstance(document.getElementById('addPriceToElementModal'));
-                    if (myModal) {
-                        myModal.hide();
-                    }
-
-                    // Entferne alle verbleibenden Backdrops (Sicherheitsnetz)
-                    $('.modal-backdrop').remove();
-                    $('body').removeClass('modal-open');
-                    $('body').css('overflow', '');
+                    setTimeout(function () {
+                        reloadTable();
+                    }, 300);
                 },
                 error: function () {
                     makeToaster("Fehler beim Speichern!", false);
@@ -297,11 +287,8 @@ echo "</tbody></table>"; ?>
                 type: "POST",
                 data: {deviceID: <?= $deviceID ?>},
                 success: function (data) {
-                    // Replace entire table section
                     const $tableContainer = $('#tableDevicePrices').closest('.table-responsive') || $('#tableDevicePrices').parent();
                     $tableContainer.html(data);
-
-                    // Re-init DataTable + event handlers
                     setTimeout(() => {
                         if ($.fn.DataTable.isDataTable('#tableDevicePrices')) {
                             $('#tableDevicePrices').DataTable().destroy();

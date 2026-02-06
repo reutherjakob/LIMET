@@ -60,14 +60,23 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . $row["Lieferant"] . "</td>";
     echo "</tr>";
 }
-echo "</tbody></table>";
-echo "<input type='button' id='addServicePriceModalButton' class='btn btn-success btn-sm' value='Wartungspreis hinzufügen' data-bs-toggle='modal' data-bs-target='#addServicePriceModal'></input>";
+echo " </tbody></table>";
+echo " <div class='col-12 d-inline-flex justify-content-end'>  
+          <button type='button' 
+            id='addServicePriceModalButton' 
+            class='btn btn-success btn-sm  mt-2' 
+            value='Wartungspreis hinzufügen' 
+            data-bs-toggle='modal' 
+            data-bs-target='#addServicePriceModal'>
+            <i class='fas fa-plus'></i> 
+            Wartungspreis hinzufügen
+        </button>
+        </div>";
 ?>
 
 <!-- Modal zum Anlegen eines Preises -->
 <div class='modal fade' id='addServicePriceModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
-        <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Wartungspreis hinzufügen</h4>
@@ -161,8 +170,7 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
     });
 
     new DataTable('#tableDeviceServicePrices', {
-        paging: true,
-        pagingType: 'simple',
+        paging: false,
         lengthChange: false,
         searching: false,
         info: false,
@@ -176,7 +184,7 @@ echo "<input type='button' id='addServicePriceModalButton' class='btn btn-succes
             topStart: null,
             topEnd: null,
             bottomStart: null,
-            bottomEnd: 'paging'
+            bottomEnd: null
         }
     });
 

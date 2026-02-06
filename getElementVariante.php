@@ -202,8 +202,7 @@ $row = $result->fetch_assoc();
 						<th>Variante</th>
 						<th>Kosten vorher</th>
 						<th>Kosten nachher</th>						
-						<th>User</th>
-						<th>Datum</th>
+						<th>User</t						            <th class='text-center'>         <i class='fas fa-calendar-alt' ></i></th>
 						</tr></thead>
 						<tbody>";
 

@@ -25,13 +25,15 @@
     <!--Bootstrap Toggle -->
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-
 </head>
 
 
 <body id="bodyTenderLots">
-<?php require_once 'utils/_utils.php';
-init_page_serversides("x"); ?>
+<?php
+require_once 'utils/_utils.php';
+init_page_serversides("x");
+?>
+
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class='row'>
@@ -75,28 +77,39 @@ init_page_serversides("x"); ?>
                             <th>Vergabesumme</th>
                             <th>Auftragnehmer</th>
                             <th>MKF-von_Los</th>
-                            <th><i data-bs-toggle="tooltip"
-                                   data-bs-placement="top"
-                                   title="Los Workflow"
-                                   class="fas fa-code-branch"></i>
+                            <th>
+                                <div class='d-flex justify-content-center align-items-center'
+                                     data-bs-toggle="tooltip"
+                                     data-bs-placement="top"
+                                     title="Los Workflow"><i
+                                            class="fas fa-code-branch"></i>
+                                </div>
                                 <span class="visually-hidden">Workflow</span>
                             </th>
-                            <th><i data-bs-toggle="tooltip"
-                                   data-bs-placement="top"
-                                   title="Elemente im Los"
-                                   class="fas fa-briefcase-medical"></i>
+                            <th>
+                                <div class='d-flex justify-content-center align-items-center'
+                                     data-bs-toggle="tooltip"
+                                     data-bs-placement="top"
+                                     title="Elemente im Los">
+                                    <i class="fas fa-briefcase-medical"></i>
+                                </div>
                                 <span class="visually-hidden">Elemente in Los </span>
                             </th>
-                            <th><i data-bs-toggle="tooltip"
-                                   data-bs-placement="top"
-                                   title="Preis in DB eingetragen? "
-                                   class="fas fa-dollar-sign"></i>
+                            <th>
+                                <div class='d-flex justify-content-center align-items-center' data-bs-toggle="tooltip"
+                                     data-bs-placement="top"
+                                     title="Preis in DB eingetragen?">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
                                 <span class="visually-hidden">Preis in DB </span>
                             </th>
-                            <th><i data-bs-toggle="tooltip"
-                                   data-bs-placement="top"
-                                   title="Preis Eintrag kontrolliert von "
-                                   class="fas fa-user-check"></i>
+                            <th>
+                                <div class='d-flex justify-content-center align-items-center'
+                                     data-bs-toggle="tooltip"
+                                     data-bs-placement="top"
+                                     title="Preis Eintrag kontrolliert von">
+                                    <i class="fas fa-user-check"> </i>
+                                </div>
                                 <span class="visually-hidden">Preis Eintrag kontrolliert von:</span>
                             </th>
                         </tr>
@@ -111,7 +124,10 @@ init_page_serversides("x"); ?>
     <?php require "modal_showLotWorkflow.php"; ?>
     <?php require "modal_showLotElements.php"; ?>
 
+    <script src="utils/_utils.js"></script>
     <script charset="utf-8">
+        var tableTenderLots;
+
         function debounce(func, wait) {
             let timeout;
             return function executedFunction(...args) {
@@ -126,7 +142,7 @@ init_page_serversides("x"); ?>
 
         $(document).ready(function () {
             $('#dateSelect').val('2024-01-01');
-            var tableTenderLots = new DataTable('#tableTenderLots', {
+            tableTenderLots = new DataTable('#tableTenderLots', {
                 ajax: {
                     url: 'getFilteredLots.php',
                     type: 'POST',
@@ -219,7 +235,6 @@ init_page_serversides("x"); ?>
                         .appendTo('#LoseCardHeaderSub');
 
                     $('#dateSelect').on('change', debounce(function () {
-                        console.log("Reloading after debounce");
                         if ($(this).val() !== $(this).data('oldValue')) { // Nur bei neuem Datum
                             $(this).data('oldValue', $(this).val());
                             tableTenderLots.ajax.reload(null, false);
@@ -300,6 +315,8 @@ init_page_serversides("x"); ?>
                     },
                     success: function (response) {
                         if (response.success) {
+                            tableTenderLots.ajax.reload(null, false);
+
                         } else {
                             alert('Fehler beim Speichern: ' + (response.error || 'Unbekannter Fehler'));
                         }
@@ -310,39 +327,31 @@ init_page_serversides("x"); ?>
                 });
             });
 
-
             $(document).on('click', '.kontrolle-btn', function () {
                 if (this.disabled) return;
-
-                const projektId = $(this).data('projekt-id');
-                const lotId = $(this).data('lot-id');
-                const username = <?php echo json_encode($_SESSION['username'] ?? ''); ?>;
-
-                if (!username) {
-                    alert('Kein Benutzername in der Session gefunden!');
-                    return;
-                }
-
+                const $btn = $(this); // Button-Referenz speichern
+                const projektId = $btn.data('projekt-id');
+                const lotId = $btn.data('lot-id');
                 $.post('update_los_kontrolliert.php', {
                     projekt_id: projektId,
                     lot_id: lotId
                 }).done(function (data) {
                     if (data.success) {
-                        console.log("Success");
-                        $(this).html(username).attr('title', 'Gekontrolliert von: ' + username);
+                        makeToaster("Kontrolliert", true);
+                        $btn.removeClass('btn-outline-success')
+                            .addClass('btn-success')
+                            .prop('disabled', true)
+                            .attr('title', 'Kontrolliert.')
+                            .text("Erledigt");
+                        tableTenderLots.ajax.reload(null, false);
                     } else {
                         alert('Fehler: ' + (data.error || 'Unbekannter Fehler'));
                     }
                 }).fail(function () {
                     alert('Verbindungsfehler');
-                }.bind(this));  // Bind context for $(this)
+                });
             });
-
-
         });
-
-
     </script>
-
 </body>
 </html>

@@ -81,7 +81,7 @@ while ($row = $result->fetch_assoc()) {
         echo $row["Faelligkeit"];
     }
     echo "</td>";
-    echo "<td><button type='button' class='btn btn-default btn-sm' data-bs-toggle='popover' title='Vermerk' data-placement='left' data-bs-content='" . $row["Vermerktext"] . "'><i class='far fa-comment'></i></button></td>";
+    echo "<td><button type='button' class='btn btn-default btn-sm' data-bs-toggle='popover' data-placement='left' data-bs-content='" . $row["Vermerktext"] . "'><i class='far fa-comment'></i></button></td>";
     echo "<td>" . $row["Bearbeitungsstatus"] . "</td>";
     echo "</tr>";
 }

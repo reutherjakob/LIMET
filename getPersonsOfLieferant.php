@@ -6,13 +6,26 @@ $mysqli = utils_connect_sql();
 
 $lieferantenID = getPostInt('lieferantID', 0);
 
-$stmt = $mysqli->prepare("SELECT tabelle_ansprechpersonen.Name, tabelle_ansprechpersonen.Vorname, tabelle_ansprechpersonen.Tel, tabelle_ansprechpersonen.Adresse, tabelle_ansprechpersonen.PLZ, tabelle_ansprechpersonen.Ort, tabelle_ansprechpersonen.Land, tabelle_ansprechpersonen.Mail, tabelle_abteilung.Abteilung
-                        FROM tabelle_abteilung INNER JOIN tabelle_ansprechpersonen ON tabelle_abteilung.idtabelle_abteilung = tabelle_ansprechpersonen.tabelle_abteilung_idtabelle_abteilung
-                        WHERE (((tabelle_ansprechpersonen.tabelle_lieferant_idTABELLE_Lieferant)=?))");
-$stmt->bind_param("i", $lieferantenID);
-$result = $stmt->execute();
+$stmt = $mysqli->prepare("SELECT 
+                    tabelle_ansprechpersonen.idTABELLE_Ansprechpersonen,
+                    tabelle_ansprechpersonen.Name, 
+                    tabelle_ansprechpersonen.Vorname, 
+                    tabelle_ansprechpersonen.Tel, 
+                    tabelle_ansprechpersonen.Adresse, 
+                    tabelle_ansprechpersonen.PLZ, 
+                    tabelle_ansprechpersonen.Ort, 
+                    tabelle_ansprechpersonen.Land, 
+                    tabelle_ansprechpersonen.Mail, 
+                    tabelle_abteilung.Abteilung#
 
-echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tablePersonsOfLieferant'   >
+                FROM tabelle_abteilung INNER JOIN tabelle_ansprechpersonen 
+                    ON tabelle_abteilung.idtabelle_abteilung = tabelle_ansprechpersonen.tabelle_abteilung_idtabelle_abteilung
+                WHERE tabelle_ansprechpersonen.tabelle_lieferant_idTABELLE_Lieferant=?");
+$stmt->bind_param("i", $lieferantenID);
+$stmt->execute();
+$result = $stmt->get_result();
+#
+echo "<table class='table table-striped table-bordered table-sm table-hover border border-light border-5' id='tablePersonsOfLieferant'>
                 <thead><tr>
                 <th>ID</th>
                 <th>Name</th>
@@ -46,8 +59,8 @@ echo "</tbody></table>";
 
 <script>
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const table = new DataTable('#tablePersonsOfLieferant', {
+    $(document).ready(function () {
+        new DataTable('#tablePersonsOfLieferant', {
             columnDefs: [
                 {
                     targets: 0,
@@ -57,10 +70,8 @@ echo "</tbody></table>";
             ],
             paging: false,
             searching: false,
-            info: true,
+            info: false,
             order: [[1, 'asc']],
-            pagingType: 'simple_numbers',
-            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
             }
