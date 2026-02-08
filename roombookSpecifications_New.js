@@ -194,15 +194,15 @@ function init_btn_4_dt() {
             exportOptions: {
              columns: function (idx ) {
                  const idIndex = columnsDefinition.findIndex(col => col.data === 'idTABELLE_Räume');
-                 return table.column(idx).visible();// || idx === idIndex;
+                 return table.column(idx).visible() || idx === idIndex;
              },
 //
               format: {
                   header: (data, columnIdx) => {
-                     // const idIndex = columnsDefinition.findIndex(col => col.data === 'idTABELLE_Räume');
-                     // if (columnIdx === idIndex) {
-                     //     return "Raum ID"; // Or your desired header
-                     // }
+                      const idIndex = columnsDefinition.findIndex(col => col.data === 'idTABELLE_Räume');
+                      if (columnIdx === idIndex) {
+                          return "Raum ID";
+                      }
                       return data;
                   }
               }

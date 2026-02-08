@@ -20,7 +20,7 @@
             <div class="row">
                 <h4 class="col-xxl-6">Räume </h4>
                 <div class=" col-xxl-6 d-flex align-items-center justify-content-end">
-                    <!-- label for="start_date_raumänderungen">Von</label><input type="date" class="me-2 ms-2"
+                    <label for="start_date_raumänderungen">Von</label><input type="date" class="me-2 ms-2"
                                                                              id="start_date_raumänderungen"
                                                                              name="start_date">
                     <label for="end_date_raumänderungen">Bis</label><input type="date" class="me-2 ms-2"
@@ -29,7 +29,7 @@
                     <button type="button" class="btn btn-info float-end" data-bs-toggle="modal"
                             data-bs-target="#infoModal">
                         <i class="fas fa-info-circle"></i>
-                    </button -->
+                    </button>
                 </div>
             </div>
 
@@ -271,107 +271,110 @@
 
     <script>
         $(document).ready(function () {
+            const today = new Date().toISOString().split('T')[0];
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 300);
+            const defaultStart = thirtyDaysAgo.toISOString().split('T')[0];
 
+            $('#start_date_raumänderungen').val(defaultStart);
+            $('#end_date_raumänderungen').val(today);
+            $('#start_date').val(defaultStart);
+            $('#end_date').val(today);
 
             const roomTable = $('#roomTable').DataTable({
-                language: {
-                    url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
-                },
+                language: {url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'},
                 order: [[2, 'asc']],
-                select: "single", mark: true
+                select: "single",
+                mark: true,
+                columnDefs: [{
+                    targets: 2, // Letzte Änderung Spalte
+                    searchable: true
+                }]
             });
 
+            // ROW CLICK
             $('#roomTable tbody').on('click', 'tr', function () {
                 $('#roomTable tbody tr').removeClass('focusedRow');
                 $(this).addClass('focusedRow');
                 const roomId = $(this).data('room-id');
                 const roomName = $(this).data('room-name');
                 const roomNR = $(this).data('room-nr');
-                console.log(roomName, roomNR);
-                $('#PlaceholderForRoomIdentification').text(roomName + roomNR);
+                $('#PlaceholderForRoomIdentification').text(roomName + ' ' + roomNR);
                 loadRoomChanges(roomId);
                 $('#changesCard').collapse('show');
             });
 
+            // 🔥 KORRIGIERTE FILTER FUNKTION
             function filterRooms(startDate, endDate) {
-                //console.log('Filter wird angewendet:');
-                //console.log('Startdatum:', startDate);
-                //console.log('Enddatum:', endDate);
-
+                //console.log('🔍 Filter:', startDate, 'bis', endDate);
+                const startDateObj = new Date(startDate + 'T00:00:00');
+                const endDateObj = new Date(endDate + 'T23:59:59');
                 roomTable.columns(2).search(
-                    function (data, type, row) {
-                        //console.log('Datenzeile:', data);
-                        if (data === 'Keine Änderungen') {
-                            //console.log('Keine Änderungen, ignorieren');
-                            return false; // Keine Änderungen ignorieren
+                    function (value, searchIndex, rowData) {
+                        if (value === 'Keine Änderungen') return false;
+
+                        try {
+                            // "31.01.2026 14:30" → Date Object
+                            const [datePart, timePart] = value.split(' ');
+                            const [day, month, year] = datePart.split('.');
+                            const [hour, minute] = timePart.split(':');
+
+                            const rowDate = new Date(year, month - 1, day, hour, minute);
+
+                            return rowDate >= startDateObj && rowDate <= endDateObj;
+                        } catch (e) {
+                            console.error('Filter Parse Error:', value, e);
+                            return false;
                         }
-
-                        // Datumswert korrekt umwandeln
-                        const parts = data.split(' ');
-                        const dateParts = parts[0].split('.');
-                        const timestamp = new Date(dateParts[2], dateParts[1] - 1, dateParts[0], parts[1].split(':')[0], parts[1].split(':')[1]).getTime();
-                        //console.log('Timestamp:', timestamp);
-
-                        const start = new Date(startDate).getTime();
-                        //console.log('Startzeitstempel:', start);
-                        const end = new Date(endDate).getTime();
-                        //console.log('Endzeitstempel:', end);
-
-                        const result = timestamp >= start && timestamp <= end;
-                        //console.log('Filterergebnis:', result);
-                        return result;
                     },
-                    true, // regex = false
-                    true // smart = true
+                    true,  // regex
+                    false  // smart → AUS!
                 ).draw();
             }
 
 
-// Ereignisbehandlung für Filtereingaben
-            $('#start_date_raumänderungen, #end_date_raumänderungen').on('change', function () {
-                //console.log('Datumseingabe geändert');
-                const startDate = $('#start_date_raumänderungen').val();
-                const endDate = $('#end_date_raumänderungen').val();
+            $('#start_date, #end_date').on('change', function () {
+                const selectedRow = $('#roomTable tbody tr.focusedRow');
+                if (selectedRow.length) {
+                    const roomId = selectedRow.data('room-id');
+                    loadRoomChanges(roomId);
 
-                //console.log('Startdatum:', startDate);
-                //console.log('Enddatum:', endDate);
-
-                if (startDate && endDate) {
-                    //console.log('Beide Daten vorhanden, Filter anwenden');
-                    filterRooms(startDate, endDate);
-                } else {
-                    //console.log('Filter zurücksetzen');
-                    roomTable.columns(2).search('').draw(); // Filter zurücksetzen
                 }
             });
 
 
+            // AJAX LOAD CHANGES
             function loadRoomChanges(roomId) {
-                $('#changesContent').html('<div class="text-center my-4"><div class="spinner-border" role="status"></div></div>');
-
-                let startDate = $('#start_date').val();
-                let endDate = $('#end_date').val();
+                //console.log('📥 Loading room:', roomId, $('#start_date').val(), $('#end_date').val());
+                $('#changesContent').html('<div class="text-center my-4"><div class="spinner-border" role="status"><span class="visually-hidden">Laden...</span></div></div>');
 
                 $.ajax({
                     type: 'POST',
                     url: 'get_room_changes.php',
                     data: {
                         roomId: roomId,
-                        startDate: startDate,
-                        endDate: endDate
+                        startDate: $('#start_date').val() || '',
+                        endDate: $('#end_date').val() || ''
                     },
                     success: function (response) {
+                        //console.log('✅ AJAX OK:', response.substring(0, 200));
                         $('#changesContent').html(response);
                     },
-                    error: function () {
-                        $('#changesContent').html('<div class="alert alert-danger">Fehler beim Laden der Änderungen</div>');
+                    error: function (xhr, status) {
+                        //console.error('❌ AJAX Error:', xhr.responseText);
+                        $('#changesContent').html(`
+                    <div class="alert alert-danger">
+                        <strong>Fehler:</strong> ${status}<br>
+                        <code>${xhr.responseText.substring(0, 500)}</code>
+                    </div>
+                `);
                     }
                 });
             }
 
+            setTimeout(() => filterRooms(defaultStart, today), 100);
+        });
 
-        })
-        ;
     </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 <?php
-global $mapping;
+global $mapping, $mp2;
 require_once '../utils/_utils.php';
 check_login();
 
@@ -172,16 +172,18 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             ['key' => 'USV', 'label' => 'USV: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
             ['key' => 'IT Anbindung', 'label' => 'IT Anschl.: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => true, 'isnotVorentwurf' => false],
 
-            ['key' => 'EL_Laser 16A CEE Stk', 'label' => 'CEE16A Laser: ', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => true],
-            ['key' => 'EL_Roentgen 16A CEE Stk', 'label' => 'CEE16A Röntgen', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
-            // Power connection values
             ['key' => 'ET_Anschlussleistung_W', 'label' => 'Raum Anschlussl. ohne Glz:', 'unit' => 'W', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
             ['key' => 'ET_Anschlussleistung_AV_W', 'label' => 'AV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
             ['key' => 'ET_Anschlussleistung_SV_W', 'label' => 'SV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
             ['key' => 'ET_Anschlussleistung_ZSV_W', 'label' => 'ZSV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
             ['key' => 'ET_Anschlussleistung_USV_W', 'label' => 'USV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
             ['key' => 'ET_RJ45-Ports', 'label' => 'RJ45-Ports: ', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
-            // Parameters shown only if isnotVorentwurf=true
+
+            ["key" => "RaumAnschlussLeistungInklGlz"],
+
+            ['key' => 'EL_Laser 16A CEE Stk', 'label' => 'CEE16A Laser: ', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => true],
+            ['key' => 'EL_Roentgen 16A CEE Stk', 'label' => 'CEE16A Röntgen', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
+
         ];
 
         foreach ($elektroParams as $param) {
@@ -190,19 +192,20 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                     $pdf->Ln($horizontalSpacerLN2);
                 }
             }
-
-            if (!$isnotVorentwurf && ($param['key'] === 'ET_RJ45-Ports' || $param['key'] === 'EL_Laser 16A CEE Stk' || $param['key'] === 'EL_Roentgen 16A CEE Stk')) {
+            if (!$isnotVorentwurf &&
+                in_array($param['key'], ['ET_RJ45-Ports', 'EL_Laser 16A CEE Stk', 'EL_Roentgen 16A CEE Stk', 'RaumAnschlussLeistungInklGlz'])) {
                 continue;
-            } else if (in_array($param['key'], [
-                'Anwendungsgruppe',
-                'ET_Anschlussleistung_W', 'ET_Anschlussleistung_AV_W', 'ET_Anschlussleistung_SV_W',
-                'ET_Anschlussleistung_ZSV_W', 'ET_Anschlussleistung_USV_W'
-            ])) {
+            } else if ($param['key'] == 'RaumAnschlussLeistungInklGlz') {
+                include "pdf_getRaumleistungInklGlz.php";
+                $pdf->Ln($horizontalSpacerLN2);
+                $pdf->MultiCell($block_header_w, $block_header_height, "", 0, 'L', 0, 0);
+
+            } else if (in_array($param['key'], ['Anwendungsgruppe', 'ET_Anschlussleistung_W', 'ET_Anschlussleistung_AV_W', 'ET_Anschlussleistung_SV_W', 'ET_Anschlussleistung_ZSV_W', 'ET_Anschlussleistung_USV_W'])) {
                 $val = ($row[$param['key']] != "0") ? kify($row[$param['key']]) . $param['unit'] : "-";
                 multicell_text_hightlight($pdf, $param['cell'], $font_size, $param['key'], $param['label'], $parameter_changes_t_räume);
                 multicell_with_str($pdf, $val, $param['str_cell'], "");
+
             } else if (in_array($param['key'], ['ET_RJ45-Ports', 'EL_Laser 16A CEE Stk', 'EL_Roentgen 16A CEE Stk'])) {
-                // For these isnotVorentwurf true params
                 multicell_text_hightlight($pdf, $param['cell'], $font_size, $param['key'], $param['label'], $parameter_changes_t_räume);
                 if ($param['key'] === 'ET_RJ45-Ports') {
                     multicell_with_nr($pdf, $row[$param['key']], $param['unit'], $pdf->getFontSizePt(), $param['str_cell']);
@@ -210,7 +213,6 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                     multicell_with_str($pdf, $row[$param['key']], $param['str_cell'], $param['unit']);
                 }
             } else {
-                // Default: show with hackerlA3 for yes/no
                 multicell_text_hightlight($pdf, $param['cell'], $font_size, $param['key'], $param['label'], $parameter_changes_t_räume);
                 hackerlA3($pdf, $font_size, $param['str_cell'], $row[$param['key']], "JA");
             }
@@ -224,10 +226,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             }
         }
 
-        include "pdf_getRaumleistungInklGlz.php";
 
-
-        $pdf->Ln($horizontalSpacerLN2);
         anmA3($pdf, $row['Anmerkung Elektro'], $SB, $block_header_w);
         $pdf->Ln($horizontalSpacerLN);
 
@@ -318,7 +317,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 //
         // -------------------------Elemente im Raum laden--------------------------
         $sql = "SELECT tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
-            tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
+            tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.Standort, tabelle_räume_has_tabelle_elemente.Verwendung
             FROM tabelle_varianten INNER JOIN (tabelle_räume_has_tabelle_elemente INNER JOIN tabelle_elemente ON 
             tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON
             tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
@@ -370,7 +369,6 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                 $dataChanges[] = $row3;
             }
             $dataChanges = filter_old_equal_new($dataChanges);
-
             $upcmn_blck_size = 10 + $rowcounter * 5;
             block_label_queer($block_header_w, $pdf, "Med.-tech.", $upcmn_blck_size, $block_header_height, $SB);
             make_MT_details_table($pdf, $resultX, $result1, $result3, $SB, $SH, $dataChanges);

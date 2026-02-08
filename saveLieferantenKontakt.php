@@ -43,7 +43,7 @@ if ($name !== '' && $vorname !== '' && $tel !== '') {
     }
 
     $stmt->bind_param(
-        "sssssssssiiii",
+        "sssssssssiii",
         $name,
         $vorname,
         $tel,

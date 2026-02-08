@@ -50,15 +50,15 @@ if ($elementID > 0) {
         while ($row = $result->fetch_assoc()) {
             $date = date_create($row["Datum"]);
             echo "<tr>";
-            echo "<td><strong>" . htmlspecialchars($row['Gerät']) . "</strong></td>";
-            echo "<td>" . htmlspecialchars($row['Hersteller']) . "</td>";
+            echo "<td><strong>" . htmlspecialchars($row['Gerät'] ??'') . "</strong></td>";
+            echo "<td>" . htmlspecialchars($row['Hersteller']??'') . "</td>";
             echo "<td>" . date_format($date, 'Y-m-d') . "</td>";
-            echo "<td>" . htmlspecialchars($row["Quelle"]) . "</td>";
+            echo "<td>" . htmlspecialchars($row["Quelle"]??'') . "</td>";
             echo "<td>" . $row["Menge"] . "</td>";
             echo "<td>" . format_money($row["EP"]) . "</td>";
             echo "<td>" . format_money($row["NK/Stk"]) . "</td>";
-            echo "<td>" . htmlspecialchars($row["Projektname"]) ?? '-' . "</td>";
-            echo "<td>" . htmlspecialchars($row["Lieferant"]) ?? '-' . "</td>";
+            echo "<td>" . htmlspecialchars($row["Projektname"]??'') ?? '-' . "</td>";
+            echo "<td>" . htmlspecialchars($row["Lieferant"]??'') ?? '-' . "</td>";
             echo "</tr>";
         }
     } else {

@@ -127,7 +127,9 @@ init_page_serversides("", "x");
     let table;
     const reportCategoryOptions = [
         {value: "", text: "-- Berichtkathegorie auswählen --", disabled: true, selected: true},
+        {value: "bauangaben_neu", text: "Bauangaben Neu"},
         {value: "bauangaben", text: "Bauangaben"},
+
         {value: "elementReports", text: "Element-/Raum Berichte"},
         {value: "einbringwege", text: "Einbringwege"},
         {value: "oldReports", text: "Historische Berichte"},
@@ -143,13 +145,15 @@ init_page_serversides("", "x");
             {text: "Lab-Kurz-PDF'", url: "pdf_createBauangabenLabKompaktPDF"},
             {text: "Lab-ENT-PDF", url: "pdf_createBauangabenLabEntPDF"},
             {text: "Lab-EIN-PDF", url: "pdf_createBauangabenLabEinrPDF_1"},
-            {text: "", url: " "},
+         ],
+        bauangaben_neu:[
             {text: "BAU A3", url: "pdf_createBauangabenBericht_A3Qeer"},
-            {text: "ohne Lab", url: "pdf_createBauangabenBericht_A3Qeer_ohne_Lab_params"},
             {text: "ohne Änderungsmarkierungen", url: "pdf_createBauangabenBericht_A3Qeer_1"},
+
+            {text: "ohne Lab", url: "pdf_createBauangabenBericht_A3Qeer_ohne_Lab_params"},
+
             {text: "VE", url: "pdf_createBauangabenBericht_A3Qeer_VE"},
-            {text: "CINO", url: "pdf_createBauangabenBericht_A3Qeer_CINO"},
-            {text: "tabelle minimiert", url: "pdf_createBauangabenBericht_A3Qeer_tabelleminimiert"},
+            {text: "CINO", url: "pdf_createBauangabenBericht_A3Qeer_CINO"}
         ],
         elementReports: [
             {text: "Elem./Raum (w/Bestand)", url: "pdf_createRoombookElWithoutBestand"},
@@ -218,7 +222,7 @@ init_page_serversides("", "x");
             columnDefs: [{targets: [0], visible: false, searchable: false}],
             orderCellsTop: true,
             order: [[1, "asc"]],
-            scrollY: '75vh',
+            scrollY: '83vh',
             scrollCollapse: true,
             dom: 'frtip',
             select: {style: 'multi'},
@@ -252,17 +256,13 @@ init_page_serversides("", "x");
     function displayReportsForCategory(category) {
         const container = $('#reportButtonsContainer');
         container.empty();
-
-        // Sichtbarkeit Änderungsdatum steuern
         const dateSelectContainer = $('#dateSelectContainer');
-        if (category === 'bauangaben') {
+        if (category === 'bauangaben_neu') {
             dateSelectContainer.removeClass('d-none');
         } else {
             dateSelectContainer.addClass('d-none');
         }
-
         if (!category || !reportCategories[category]) return;
-
         const btnGroup = $('<div class="btn-group" role="group" aria-label="Berichtsbuttons"></div>');
         reportCategories[category].forEach(report => {
             const button = $('<button type="button" class="btn btn-light border-dark btn-sm"></button>').text(report.text);

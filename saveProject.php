@@ -14,7 +14,8 @@ $preisbasis = getPostDate('PBdate');
 
 $sql = "UPDATE `LIMET_RB`.`tabelle_projekte` SET `Bettenanzahl` = ?, `BGF` = ?, `NF` = ?, `Aktiv` = ?, `Neubau` = ?, `TABELLE_Planungsphasen_idTABELLE_Planungsphasen` = ?, `Ausfuehrung` = ?, `Preisbasis` = ? WHERE `idTABELLE_Projekte` = ?";
 $stmt = $mysqli->prepare($sql);
-$stmt->bind_param("iddiiiss i", $betten, $bgf, $nf, $aktiv, $neubau, $planungsphase, $ausfuehrung, $preisbasis, $_SESSION["projectID"]);
+
+$stmt->bind_param("iddiiissi", $betten, $bgf, $nf, $aktiv, $neubau, $planungsphase, $ausfuehrung, $preisbasis, $_SESSION["projectID"]);
 if ($stmt->execute()) {
     echo "Projekt aktualisiert!";
 } else {
