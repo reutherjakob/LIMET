@@ -321,7 +321,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             FROM tabelle_varianten INNER JOIN (tabelle_räume_has_tabelle_elemente INNER JOIN tabelle_elemente ON 
             tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON
             tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
-            WHERE (((tabelle_räume_has_tabelle_elemente.Verwendung)=1))
+-- WHERE (((tabelle_räume_has_tabelle_elemente.Verwendung)=1))
             GROUP BY tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, 
             tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
             HAVING (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=" . $valueOfRoomID . ") AND SummevonAnzahl > 0)
@@ -335,30 +335,55 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
         if ($isnotVorentwurf && $rowcounter > 0) {
             // -----------------Projekt Elementparameter/Variantenparameter laden----------------------------
-            $sql = "SELECT tabelle_parameter_kategorie.Kategorie,tabelle_parameter.Abkuerzung, tabelle_parameter.Bezeichnung, tabelle_parameter.idTABELLE_Parameter, tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie, tabelle_parameter.Abkuerzung
-                FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter) 
-                ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
-                WHERE ((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte=" . $_SESSION["projectID"] . ") AND (tabelle_parameter.`Bauangaben relevant` = 1) 
+            $sql = "SELECT tabelle_parameter_kategorie.Kategorie,
+                           tabelle_parameter.Abkuerzung, 
+                           tabelle_parameter.Bezeichnung, 
+                           tabelle_parameter.idTABELLE_Parameter,
+                           tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie, 
+                           tabelle_parameter.Abkuerzung
+                FROM tabelle_parameter_kategorie INNER JOIN 
+                    (tabelle_parameter INNER JOIN tabelle_projekt_elementparameter 
+                    ON tabelle_parameter.idTABELLE_Parameter = 
+                       tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter) 
+                ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = 
+                   tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
+                WHERE ((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte=" . $_SESSION["projectID"] . ")
+                 AND (tabelle_parameter.`Bauangaben relevant` = 1) 
                 AND NOT (tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = 18 )) 
                 GROUP BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung
                 ORDER BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung;";
             $result1 = $mysqli->query($sql);
 
             // -------------------------Elemente parameter -------------------------
-            $sql = "SELECT tabelle_projekt_elementparameter.Wert, tabelle_projekt_elementparameter.Einheit, tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten, 
-                tabelle_projekt_elementparameter.tabelle_elemente_idTABELLE_Elemente, tabelle_parameter.Bezeichnung, tabelle_parameter_kategorie.Kategorie, tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie, tabelle_parameter.idTABELLE_Parameter 
-                FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter) 
+            $sql = "SELECT tabelle_projekt_elementparameter.Wert, 
+                tabelle_projekt_elementparameter.Einheit, 
+                tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten, 
+                tabelle_projekt_elementparameter.tabelle_elemente_idTABELLE_Elemente, 
+                tabelle_parameter.Bezeichnung,
+                tabelle_parameter_kategorie.Kategorie, 
+                tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie, tabelle_parameter.idTABELLE_Parameter 
+                FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter
+                    INNER JOIN tabelle_projekt_elementparameter 
+                    ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter) 
                 ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
-                WHERE ((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte=" . $_SESSION["projectID"] . ") AND (tabelle_parameter.`Bauangaben relevant` = 1)
+                WHERE ((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte=" . $_SESSION["projectID"] . ")
+                 AND (tabelle_parameter.`Bauangaben relevant` = 1)
                 AND NOT (tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = 18 ))
                 ORDER BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung;";
             $result3 = $mysqli->query($sql);
 
-            //while ($row = $result3->fetch_assoc()) {
-            //    echorow($row);
-            //} echo "\n --------------------------------- \n ";
 
-            $sql = "SELECT tabelle_projekt_elementparameter_aenderungen.idtabelle_projekt_elementparameter_aenderungen, tabelle_projekt_elementparameter_aenderungen.projekt, tabelle_projekt_elementparameter_aenderungen.element, tabelle_projekt_elementparameter_aenderungen.parameter, tabelle_projekt_elementparameter_aenderungen.variante, tabelle_projekt_elementparameter_aenderungen.wert_alt, tabelle_projekt_elementparameter_aenderungen.wert_neu, tabelle_projekt_elementparameter_aenderungen.einheit_alt, tabelle_projekt_elementparameter_aenderungen.einheit_neu, tabelle_projekt_elementparameter_aenderungen.timestamp, tabelle_projekt_elementparameter_aenderungen.user
+            $sql = "SELECT tabelle_projekt_elementparameter_aenderungen.idtabelle_projekt_elementparameter_aenderungen, 
+                        tabelle_projekt_elementparameter_aenderungen.projekt,
+                        tabelle_projekt_elementparameter_aenderungen.element,
+                        tabelle_projekt_elementparameter_aenderungen.parameter,
+                        tabelle_projekt_elementparameter_aenderungen.variante, 
+                        tabelle_projekt_elementparameter_aenderungen.wert_alt, 
+                        tabelle_projekt_elementparameter_aenderungen.wert_neu, 
+                        tabelle_projekt_elementparameter_aenderungen.einheit_alt, 
+                        tabelle_projekt_elementparameter_aenderungen.einheit_neu, 
+                        tabelle_projekt_elementparameter_aenderungen.timestamp,
+                        tabelle_projekt_elementparameter_aenderungen.user
                 FROM tabelle_projekt_elementparameter_aenderungen
                 WHERE (((tabelle_projekt_elementparameter_aenderungen.projekt)=" . $_SESSION["projectID"] . "))
                 AND tabelle_projekt_elementparameter_aenderungen.timestamp > '$Änderungsdatum'
@@ -368,10 +393,13 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             while ($row3 = $changes->fetch_assoc()) {
                 $dataChanges[] = $row3;
             }
+
             $dataChanges = filter_old_equal_new($dataChanges);
             $upcmn_blck_size = 10 + $rowcounter * 5;
             block_label_queer($block_header_w, $pdf, "Med.-tech.", $upcmn_blck_size, $block_header_height, $SB);
             make_MT_details_table($pdf, $resultX, $result1, $result3, $SB, $SH, $dataChanges);
+
+
         } else if ($rowcounter > 0) {
             $upcmn_blck_size = 10 + $rowcounter / 2 * 5;
             block_label_queer($block_header_w, $pdf, "Med.-tech.", $upcmn_blck_size, $block_header_height, $SB); //el_in_room_html_table($pdf, $resultX, 1, "A3", $SB-$block_header_w);

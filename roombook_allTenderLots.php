@@ -55,7 +55,13 @@ init_page_serversides("x");
                                        data-bs-toggle="tooltip"
                                        data-bs-title="Ab welchem Versanddatum Lose laden?"/>
                             </div>
+                            <button type="button" class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="modal"
+                                    data-bs-target="#helpModal" title="Hilfe">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
                         </div>
+
+
                     </div>
                 </div>
 
@@ -95,6 +101,17 @@ init_page_serversides("x");
                                 </div>
                                 <span class="visually-hidden">Elemente in Los </span>
                             </th>
+
+                            <th>
+                                <div class='d-flex justify-content-center align-items-center'
+                                     data-bs-toggle="tooltip"
+                                     data-bs-placement="top"
+                                     title="ToDo-Einträge">
+                                    <i class="fas fa-tasks"></i>
+                                </div>
+                                <span class="visually-hidden">ToDos</span>
+                            </th>
+
                             <th>
                                 <div class='d-flex justify-content-center align-items-center' data-bs-toggle="tooltip"
                                      data-bs-placement="top"
@@ -112,6 +129,7 @@ init_page_serversides("x");
                                 </div>
                                 <span class="visually-hidden">Preis Eintrag kontrolliert von:</span>
                             </th>
+
                         </tr>
                         </thead>
                         <tbody></tbody>
@@ -121,6 +139,8 @@ init_page_serversides("x");
         </div>
     </div>
 
+    <?php require "modal_show_lose_todo.php"; ?>
+    <?php require "modal_help_allTenderLots.php"; ?>
     <?php require "modal_showLotWorkflow.php"; ?>
     <?php require "modal_showLotElements.php"; ?>
 
@@ -152,7 +172,8 @@ init_page_serversides("x");
                     }
                 },
                 columnDefs: [
-                    {targets: [0, 1], visible: false, searchable: false, sortable: false}, {
+                    {targets: [0, 1], visible: false, searchable: false, sortable: false},
+                    {
                         targets: [10],
                         visible: false,
                         searchable: false
@@ -232,7 +253,7 @@ init_page_serversides("x");
                     $('.dt-search').children()
                         .removeClass('form-control form-control-sm')
                         .addClass("btn btn-sm btn-outline-secondary")
-                        .appendTo('#LoseCardHeaderSub');
+                        .appendTo('#LoseCardHeaderSub0');
 
                     $('#dateSelect').on('change', debounce(function () {
                         if ($(this).val() !== $(this).data('oldValue')) { // Nur bei neuem Datum
@@ -253,6 +274,32 @@ init_page_serversides("x");
 
                 }
             });
+
+            $(document).on("click", "button[value='Los ToDos']", function () {
+                var lotID = this.id.replace('lottodo_', '');
+                $("#todoModalBody").html(`<div class="text-center p-5">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Laden...</span>
+        </div>
+        <p class="mt-2">ToDos werden geladen...</p>
+    </div>`);
+
+                $.ajax({
+                    url: "getLotTodos.php",
+                    type: "POST",
+                    data: {lotID: lotID},
+                    success: function (data) {
+                        $("#todoModalBody").html(data);
+                    },
+                    error: function () {
+                        $("#todoModalBody").html(`<div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Fehler beim Laden der ToDos.
+            </div>`);
+                    }
+                });
+            });
+
             $(document).on("click", "button[value='Los Workflow']", function () {
                 var ID = this.id;
                 $.ajax({

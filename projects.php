@@ -176,7 +176,7 @@
 
         <div class='col-xxl-2'>
             <div class='card mt-2'>
-                <div class='card-header'>Quick-Check
+                <div class='card-header'>Quick-Check<
                 </div>
                 <div class='card-body' id='quickCheckDashboard'>
                 </div>
@@ -187,14 +187,20 @@
                 <div class='card-body'>
                     <div class="row">
                         <p>
-                            <i class="fas fa-list col-1"></i>
+                            <i class="fas fa-scroll col-1"></i>
                             <a class="col-11" href="roombook_allTenderLots.php">
                                 Übergeordnete Losliste </a>
                         </p>
 
                         <p>
+                            <i class="fas fa-list col-1"></i>
+                            <a class="col-11" href="roombookTenderLotsToDo.php">
+                                Los ToDoz </a>
+                        </p>
+
+                        <p>
                             <i class="far fa-bell col-1"></i>
-                            <span class ="col-11">Neu: Preise ändern Button </span>
+                            <span class ="col-11"  href="elementAdministration.php">Neu: Preise ändern Button </span>
                         </p>
                     </div>
 

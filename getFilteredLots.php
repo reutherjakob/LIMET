@@ -92,6 +92,19 @@ $stmt->bind_param("s", $datum);
 $stmt->execute();
 $result = $stmt->get_result();
 
+$sql_todos = "
+SELECT id_tabelle_lose_extern, COUNT(*) as todo_count 
+FROM tabelle_lose_ToDos 
+GROUP BY id_tabelle_lose_extern
+";
+
+$result_todos = $mysqli->query($sql_todos);
+$todo_counts = [];
+while ($row_todo = $result_todos->fetch_assoc()) {
+    $todo_counts[$row_todo['id_tabelle_lose_extern']] = $row_todo['todo_count'];
+}
+
+
 $data = [];
 while ($row = $result->fetch_assoc()) {
     if (empty($row["Projektname"]) || $row["Projektname"] === "Test_Projekt" ||
@@ -107,6 +120,23 @@ while ($row = $result->fetch_assoc()) {
         default => ""
     };
 
+    $todo_count = $todo_counts[$row["idtabelle_Lose_Extern"]] ?? 0;
+    if ($todo_count > 0) {
+        $todo_button = "<button type='button' id='lottodo_{$row["idtabelle_Lose_Extern"]}' 
+                           class='btn btn-sm btn-warning position-relative' 
+                           value='Los ToDos' 
+                           data-bs-toggle='modal' 
+                           data-bs-target='#todoModal'>
+                        <i class='fas fa-tasks'></i>
+                        <span class='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger'>
+                            {$todo_count}
+                        </span>
+                    </button>";
+    } else {
+        $todo_button = "<button type='button' class='btn btn-sm btn-outline-secondary' disabled>
+                        <i class='fas fa-tasks'></i>
+                    </button>";
+    }
 
     if ($row["Vergabe_abgeschlossen"] !== 1) {
         $checkbox_html = '';
@@ -116,7 +146,6 @@ while ($row = $result->fetch_assoc()) {
     } else {
         $preise_in_db = $row["preise_in_db"];
         $kontrolle_user = $row["kontrolle_preise_in_db_user"] ?? '';
-
         // Preis NICHT eingetragen: nur Checkbox zeigen
         if ($preise_in_db == 0) {
             $checkbox_html = "<label class='form-check form-switch form-switch-sm'>
@@ -126,11 +155,9 @@ while ($row = $result->fetch_assoc()) {
                data-projekt-id='{$row["idTABELLE_Projekte"]}'>
         </label>";
             $kontrolliert_btn = '';
-        }
-        // Preis IST eingetragen: nur Button zeigen
+        } // Preis IST eingetragen: nur Button zeigen
         else {
             $checkbox_html = '';
-
             // Bereits kontrolliert: grüner disabled Button
             if (!empty($kontrolle_user) && strlen(trim($kontrolle_user)) > 0) {
                 $button_text = htmlspecialchars(substr($kontrolle_user, 0, 3));
@@ -142,8 +169,7 @@ while ($row = $result->fetch_assoc()) {
              data-lot-id='{$row["idtabelle_Lose_Extern"]}'
              disabled
              title='{$button_title}'>{$button_text}</button>";
-            }
-            // Noch nicht kontrolliert: aktiver Button
+            } // Noch nicht kontrolliert: aktiver Button
             else {
                 $kontrolliert_btn = "<button type='button' 
              id='checked_by_{$row["idTABELLE_Projekte"]}_{$row["idtabelle_Lose_Extern"]}' 
@@ -173,8 +199,10 @@ while ($row = $result->fetch_assoc()) {
         $row["mkf_losnummer"],
         "<button type='button' id='lotwf_{$row["idtabelle_Lose_Extern"]}' class='btn btn-sm btn-outline-secondary' value='Los Workflow' data-bs-toggle='modal' data-bs-target='#workflowDataModal'><i class='fas fa-history'></i></button>",
         "<button type='button' id='lotelem_{$row["idTABELLE_Projekte"]}_{$row["idtabelle_Lose_Extern"]}' class='btn btn-sm btn-outline-secondary' value='Los Elemente' data-bs-toggle='modal' data-bs-target='#lotElementsModal'><i class='fas fa-notes-medical'></i></button>",
+        $todo_button,
         $checkbox_html,
         $kontrolliert_btn
+
     ];
 }
 
