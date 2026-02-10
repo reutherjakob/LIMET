@@ -93,12 +93,10 @@ INNER JOIN (
 ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
 WHERE ";
 
-// Bedingungen dynamisch aufbauen
 $conditions = [];
 $params = [];
 $types = "";
 
-// LosID
 if (!empty($losID)) {
     $conditions[] = "tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern = ?";
     $params[] = $losID;
@@ -107,37 +105,40 @@ if (!empty($losID)) {
     $conditions[] = "tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern IS NULL";
 }
 
-// Raumbereich
 if (!empty($raumbereich)) {
     $conditions[] = "tabelle_räume.`Raumbereich Nutzer` = ?";
     $params[] = $raumbereich;
     $types .= "s";
+} else {
+    // Show only rooms with empty/NULL raumbereich when parameter is empty
+    $conditions[] = "(tabelle_räume.`Raumbereich Nutzer` IS NULL OR tabelle_räume.`Raumbereich Nutzer` = '')";
 }
 
-// Bestand
 $conditions[] = "tabelle_räume_has_tabelle_elemente.`Neu/Bestand` = ?";
 $params[] = $bestand;
 $types .= "i";
 
-// VariantenID
 $conditions[] = "tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten = ?";
 $params[] = $variantenID;
 $types .= "i";
 
-// ElementID
 $conditions[] = "tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = ?";
 $params[] = $elementID;
 $types .= "i";
 
-// ProjectID
 $conditions[] = "tabelle_räume.tabelle_projekte_idTABELLE_Projekte = ?";
 $params[] = $projectID;
 $types .= "i";
 
-// Bauabschnitt (LIKE)
-$conditions[] = "tabelle_räume.Bauabschnitt LIKE ?";
-$params[] = $bauabschnitt;
-$types .= "s";
+if (!empty($bauabschnitt)) {
+    $conditions[] = "tabelle_räume.Bauabschnitt LIKE ?";
+    $params[] = "%" . $bauabschnitt . "%";
+    $types .= "s";
+} else {
+    // Show only rooms with empty/NULL bauabschnitt when parameter is empty
+    $conditions[] = "(tabelle_räume.Bauabschnitt IS NULL OR tabelle_räume.Bauabschnitt = '')";
+    $types .= ""; // No parameter needed for this condition
+}
 
 $sql .= implode(" AND ", $conditions) . " ORDER BY tabelle_räume.Raumnr";
 

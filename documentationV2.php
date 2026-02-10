@@ -24,11 +24,9 @@ init_page_serversides();
           rel="stylesheet">
     <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
 
-
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
 
-    <!--DATEPICKER -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker3.min.css">
     <script type='text/javascript'
@@ -38,14 +36,12 @@ init_page_serversides();
         .card-body {
             overflow: auto;
         }
-
         .card-body iframe {
             top: 0;
             left: 0;
             width: 100%;
             height: 85vh;
         }
-
     </style>
 </head>
 <body>
@@ -57,7 +53,8 @@ init_page_serversides();
                 <div class="card-header">
                     <div class="row">
                         <div class="col-7">
-                            <b>Vermerkgruppen</b></div>
+                            <b>Vermerkgruppen</b>
+                        </div>
                         <div class="col-5 d-inline-flex justify-content-end align-items-center"
                              id="CardHeaderVermerkGruppen">
                             <button type="button" class="btn btn-sm btn-outline-dark me-2" value="searchDocumentation"

@@ -292,7 +292,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             FROM tabelle_varianten INNER JOIN (tabelle_räume_has_tabelle_elemente INNER JOIN tabelle_elemente ON 
             tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON
             tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
-            WHERE (((tabelle_räume_has_tabelle_elemente.Verwendung)=1))
+            -- WHERE (((tabelle_räume_has_tabelle_elemente.Verwendung)=1))
             GROUP BY tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, 
             tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
             HAVING (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=" . $valueOfRoomID . ") AND SummevonAnzahl > 0)
@@ -339,6 +339,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             while ($row3 = $changes->fetch_assoc()) {
                 $dataChanges[] = $row3;
             }
+
             $dataChanges = filter_old_equal_new($dataChanges);
             $upcmn_blck_size = 10 + $rowcounter * 5;
             block_label_queer($block_header_w, $pdf, "Med.-tech.", $upcmn_blck_size, $block_header_height, $SB);

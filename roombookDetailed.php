@@ -318,15 +318,30 @@ init_page_serversides();
                 }
             ],
             order: [[1, "asc"]],
+
+            searchBuilder: {
+                columns: [1, 2, 3, 4, 5, 6, 7, 8, 9], // Enable for visible/searchable columns
+                depthLimit: 2, // Optional: limit nesting depth
+                conditions: {
+                    // Optional: customize conditions per column type
+                    string: {
+                        contains: {
+                            conditionName: 'Enthält'
+                        }
+                    }
+                }
+            },
+
+
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 search: '',
                 searchPlaceholder: 'Suche... ',
                 info: "_TOTAL_ Zeilen",
                 select: {
-                    rows:   "",
-                    columns:"",
-                    cells:  ""
+                    rows: "",
+                    columns: "",
+                    cells: ""
                 }
             },
             mark: true,
@@ -336,8 +351,17 @@ init_page_serversides();
                         {
                             extend: 'colvis',
                             text: 'Sichtbare Spalten',
-                            className: 'btn btn-outline-dark btn-sm',
+                            className: 'btn btn-outline-dark bg-white btn-sm',
                             columns: ':not(:first-child)'
+                        },
+                        {
+                            extend: 'searchBuilder',
+                            text: '<i class="fas fa-filter"></i> Erweiterte Suche',
+                            className: 'btn btn-outline-dark bg-white btn-sm ms-1',
+                            config: {
+                                depthLimit: 2,
+                                columns: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+                            }
                         }
                     ]
                 },
@@ -427,7 +451,8 @@ init_page_serversides();
             });
         });
         init_table_elementsinDB();
-    });
+    })
+    ;
 
     $("button[value='reloadBestand']").click(function () {
         $("#elementBestand").html("");

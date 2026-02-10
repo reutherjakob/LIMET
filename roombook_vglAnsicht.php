@@ -38,6 +38,7 @@ init_page_serversides(); // checks Nutzerlogin
                         <input class="form-check-input track-checkbox" type="checkbox" id="checkbox1">
                         <label class="form-check-label" for="checkbox1">Weniger Vergleichsräume laden</label>
                     </div> &emsp;
+
                     <div class="form-check col-xxl-6 d-flex justify-content-end">
                         <button type="button" class="btn btn-info btn-sm me-2 text-dark"
                                 onclick="show_modal('helpModal')">
@@ -49,7 +50,7 @@ init_page_serversides(); // checks Nutzerlogin
                     <div class="row">
                         <div class="col-xxl-6" id="col1">
                             <div class="card border-success" id="card1">
-                                <div class="card-header"> Räume auf dem aktuellen Projekt
+                                <div class="card-header"> Räume aktuelles Projekt
                                     <button class="btn float-end grün" onclick="toggleCard('col1', 'col2', this)">
                                         <i class="fa fa-arrow-right"> </i></button>
 
@@ -67,18 +68,20 @@ init_page_serversides(); // checks Nutzerlogin
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-xxl-6" id="col2">
                             <div class="card " id="card2">
                                 <div class="card-header"> Vergleichsräume
                                     <div class=" justify-content-end d-inline-flex" id="CardHeaderVglRooms"></div>
-                                    <button class="btn float-end toggle-btn grün "><i
-                                                class="fa fa-arrow-up"></i>
+                                    <button class="btn float-end toggle-btn grün ">
+                                        <i class="fa fa-arrow-up"></i>
                                     </button>
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-compact table-responsive table-striped table-lg"
                                            id="t_rooms_vgl"
-                                           style="width: 100%"></table>
+                                           style="width: 100%">
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -88,7 +91,6 @@ init_page_serversides(); // checks Nutzerlogin
         </div>
     </div>
 
-    <!--- Elemente im Raum --->
     <div class="card" id="">
         <div class="card-header"> ELEMENTE
             <button class="btn float-end toggle-btn grün ">
@@ -97,13 +99,10 @@ init_page_serversides(); // checks Nutzerlogin
         </div>
         <div class="card-body" id="">
             <div class="row mt-1">
-
-
                 <div class="col-xxl-6" id="col3">
                     <div class="card border-success" id="card3">
                         <div class="card-header">
                             Elemente im Raum
-
                         </div>
                         <div class="card-body">
                             <p class="card-text" id="CB3"></p>
@@ -124,7 +123,7 @@ init_page_serversides(); // checks Nutzerlogin
         </div>
     </div>
 
-    <!--- Textuelle Raumbeschreibungen--->
+
     <div class="card">
         <div class="card-header"> Bauangaben
             <button class="btn float-end toggle-btn grün ">
@@ -152,11 +151,10 @@ init_page_serversides(); // checks Nutzerlogin
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
-<!---  Help Modal   --->
+
 <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -214,9 +212,43 @@ init_page_serversides(); // checks Nutzerlogin
     let t_rooms_vgl;
     let RID1;
     let RID2;
-    const newEntry = {data: 'Projektname', title: 'Projekt', visible: true, searchable: true};
-    let cDef = [...columnsDefinition];
-    cDef.unshift(newEntry);
+
+    const columnsDefinitionShort = [
+        {
+            data: 'tabelle_projekte_idTABELLE_Projekte',
+            title: 'Projek ID',
+            visible: false,
+            searchable: false
+        },
+        {data: 'idTABELLE_Räume', title: 'Raum ID', visible: false, searchable: false},
+        {
+            data: 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen',
+            title: 'Funktionsstellen ID',
+            visible: false,
+            searchable: false
+        },
+        {data: 'Projektname', title: 'Projekt', visible: true, searchable: true},
+        {
+            data: 'MT-relevant',
+            title: 'MT-rel.',
+            name: 'MT-relevant',
+            case: "bit",
+            render: function (data) {
+                return data === '1' ? 'Ja' : 'Nein';
+            }
+        },
+        {data: 'Raumbezeichnung', title: 'Raumbez.'},
+        {data: 'Raumnr', title: 'Raumnr'},
+
+        {data: "Bezeichnung", title: "Funktionsstelle", visible: true, case: "none-edit"}, //#7
+        {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'},
+        {data: "Nummer", title: "DIN13080", visible: false, case: "none-edit"},
+
+        {data: "Entfallen", title: "Entfallen", name: "Entfallen", visible: false, case: "bit"},
+
+        {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer', visible: false},
+        {data: 'Raumbereich Nutzer', title: 'Raumbereich', visible: false}];
+
 
     function table_click(table_id, taget_id_4_new_content) {
         $(document).on('click', "#" + table_id + " tr", function () {
@@ -392,24 +424,24 @@ init_page_serversides(); // checks Nutzerlogin
     function init_vgl_rooms_table(value) {
         if (t_rooms_vgl) {
             let visibleColumns = getVisibleColumns();
-            cDef.forEach(function (columnDef, index) {
+            columnsDefinitionShort.forEach(function (columnDef, index) {
                 columnDef.visible = !!visibleColumns.includes(index);
             });
-            //   console.log(cDef);
             t_rooms_vgl.buttons('.buttons-colvis').remove();
             $('.dt-buttons').remove();
             $('#dt-search-' + (filter_init_counter - 1).toString()).remove(); // Remove the old search element
             t_rooms_vgl.destroy();
         }
         setTimeout(function () {
-
+            // console.log("Making t_rooms_vgl... ");
             t_rooms_vgl = new DataTable('#t_rooms_vgl', {
                 ajax: {
                     url: 'get_rooms_with_funktionsteilstelle.php',
                     data: {"value": value, "RaumID": RID1, "Unique": $('#checkbox1').prop('checked')},
-                    dataSrc: ''
+                    dataSrc: '',
+                    type: 'POST'
                 },
-                columns: cDef,
+                columns: columnsDefinitionShort,
                 layout: {
                     topStart: null,
                     topEnd: null,
@@ -468,40 +500,6 @@ init_page_serversides(); // checks Nutzerlogin
 
 
     function init_t_rooms() {
-        const columnsDefinitionShort = [// NEW FIELD? - ADD Here, In get_rb_specs_data.php and the CPY/save methods
-            {
-                data: 'tabelle_projekte_idTABELLE_Projekte',
-                title: 'Projek ID',
-                visible: false,
-                searchable: false
-            },
-            {data: 'idTABELLE_Räume', title: 'Raum ID', visible: false, searchable: false},
-            {
-                data: 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen',
-                title: 'Funktionsstellen ID',
-                visible: false,
-                searchable: false
-            },
-            {
-                data: 'MT-relevant',
-                title: 'MT-rel.',
-                name: 'MT-relevant',
-                case: "bit",
-                render: function (data) {
-                    return data === '1' ? 'Ja' : 'Nein';
-                }
-            },
-            {data: 'Raumbezeichnung', title: 'Raumbez.'},
-            {data: 'Raumnr', title: 'Raumnr'},
-
-            {data: "Bezeichnung", title: "Funktionsstelle", visible: true, case: "none-edit"}, //#7
-            {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'},
-            {data: "Nummer", title: "DIN13080", visible: false, case: "none-edit"},
-
-            {data: "Entfallen", title: "Entfallen", name: "Entfallen", visible: false, case: "bit"},
-
-            {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer', visible: false},
-            {data: 'Raumbereich Nutzer', title: 'Raumbereich', visible: false}];
 
         t_rooms = new DataTable('#t_rooms', {
             ajax: {
