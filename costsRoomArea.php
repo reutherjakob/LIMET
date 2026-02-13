@@ -45,10 +45,7 @@ init_page_serversides();
                     $mysqli = utils_connect_sql();
 
                     $projectID = isset($_SESSION["projectID"]) ? intval($_SESSION["projectID"]) : 0;
-                    $sql = "SELECT tabelle_räume.`Raumbereich Nutzer`, 
-                                   tabelle_räume.Geschoss, 
-                                   tabelle_räume.Bauabschnitt,  
-                                   tabelle_räume.Bauetappe
+                    $sql = "SELECT DISTINCT tabelle_räume.`Raumbereich Nutzer`
                             FROM tabelle_auftraggeberg_gug 
                             RIGHT JOIN (
                                 tabelle_auftraggeber_ghg 
@@ -68,20 +65,16 @@ init_page_serversides();
                             ) 
                             ON tabelle_auftraggeberg_gug.idtabelle_auftraggeberg_GUG = tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG
                             WHERE tabelle_räume.tabelle_projekte_idTABELLE_Projekte=?
-                            GROUP BY tabelle_räume.`Raumbereich Nutzer`, tabelle_räume.Geschoss
-                            ORDER BY tabelle_räume.Geschoss;";
-
+                            ORDER BY tabelle_räume.`Raumbereich Nutzer`;";
                     $stmt = $mysqli->prepare($sql);
-
                     if ($stmt) {
                         $stmt->bind_param("i", $projectID);
                         $stmt->execute();
                         $result = $stmt->get_result();
-                        // Use $result as needed
                         $stmt->close();
                     }
                     while ($row = $result->fetch_assoc()) {
-                        echo "<option value='" . $row["Raumbereich Nutzer"] . "'>" . $row["Raumbereich Nutzer"] . "</option>";
+                        echo "<option value='" . htmlspecialchars($row["Raumbereich Nutzer"]) . "'>" . htmlspecialchars($row["Raumbereich Nutzer"]) . "</option>";
                     }
                     ?>
                 </select>
@@ -95,7 +88,6 @@ init_page_serversides();
                 </button>
             </form>
         </div>
-
         <div class="card-body" id="costsRoomArea">
         </div>
     </div>
@@ -108,7 +100,6 @@ init_page_serversides();
             placeholder: "Raumbereich auswählen"
         });
 
-        // Kosten berechnen
         $("button[id='calculateCostsRoomArea']").click(function () {
             let bestandInkl = $('#selectBestand').val();
             let x = document.getElementById("selectRoomArea").selectedIndex;

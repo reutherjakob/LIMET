@@ -27,12 +27,12 @@ init_page_serversides("x"); ?>
 <body style="height:100%">
 <div id="limet-navbar"></div> <!-- Container für Navbar -->
 <div class="container-fluid">
-    <div class="mt-4 card">
+    <div class="mt-2 card">
         <div class="card-header">Elemente</div>
         <div class="card-body">
             <div class="row mt-1">
-                <div class='col-xxl-6'>
-                    <div class='mt-1 card'>
+                <div class='col-xxl-5'>
+                    <div class='card'>
                         <div class='card-header' id="CardHeaderElementGruppen"><label>Elementgruppen</label>
                             <button type="reset" class="btn btn-sm float-end" title="Reset" id="ResetElementGroups">
                                 <i class="fas fa-sync-alt"></i>
@@ -55,8 +55,12 @@ init_page_serversides("x"); ?>
                         </div>
                     </div>
                 </div>
-                <div class='col-xxl-6'>
-                    <div class="mt-1 card">
+                <div class='col-xxl-3'>
+                    <div class='card'>
+                        <div class='card-header'>Schätzkosten</div>
+                        <div class="card-body" id="elementPricesInOtherProjects"></div>
+                    </div>
+                    <!--div class="mt-1 card">
                             <ul class="nav nav-tabs mt-2 float-end" style="font-size:0.85em;">
                                 <li class="nav-item">
                                     <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#elementPricesInOtherProjects"><label>Schätzkosten in Projekten</label></button>
@@ -66,11 +70,16 @@ init_page_serversides("x"); ?>
                                 </li>
                             </ul>
                         <div class="card-body tab-content">
-                            <div class="tab-pane fade show active" id="elementPricesInOtherProjects"><!-- --></div>
+                            <div class="tab-pane fade show active" id="elementPricesInOtherProjects"> </div>
                             <div class="tab-pane fade" id="elementPricesInOtherProjects-2"> </div>
                         </div>
+                    </div -->
+                </div>
+                <div class='col-xxl-4'>
+                    <div class='card'>
+                        <div class='card-header'>Gerätepreise</div>
+                        <div class="card-body" id="elementPricesInOtherProjects-2"></div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -112,7 +121,6 @@ init_page_serversides("x"); ?>
     </div>
 </body>
 
-<!-- Modal zum Ändern eines Elements -->
 <div class='modal fade' id='changeElementModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
         <div class='modal-content'>
@@ -143,7 +151,6 @@ init_page_serversides("x"); ?>
 
 <script charset="utf-8" type="text/javascript">
     var table1;
-
     $(document).ready(function () {
         init_table_elementsinDB();
     });
@@ -176,9 +183,9 @@ init_page_serversides("x"); ?>
                 search: "",
                 searchPlaceholder: "Suche...",
                 select: {
-                    rows:   "",
-                    columns:"",
-                    cells:  ""
+                    rows: "",
+                    columns: "",
+                    cells: ""
                 }
             },
             layout: {
@@ -225,7 +232,6 @@ init_page_serversides("x"); ?>
                                         type: "POST",
                                         success: function (data) {
                                             $("#devicesInDB").html(data);
-
                                             $.ajax({
                                                 url: "getDevicesAndTheirPricesForElements.php",
                                                 data: {"elementID": elementID},
@@ -246,7 +252,6 @@ init_page_serversides("x"); ?>
     }
 
 
-    //Element speichern
     $("#saveElement").click(function () {
         let bezeichnung = $("#bezeichnung").val();
         let kurzbeschreibung = $("#kurzbeschreibungModal").val();
@@ -275,6 +280,6 @@ init_page_serversides("x"); ?>
             alert("Bitte alle Felder ausfüllen!");
         }
     });
-</script>
 
+</script>
 </html>

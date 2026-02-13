@@ -221,7 +221,7 @@ class MYPDF extends TCPDF
                 $this->MultiCell($w[0], $rowHeight4, $betreffText, 'LTR', 'L', $fill, 0, '', '');
                 $this->SetFont('', '', '8');
 
-
+                $prettyText ="";
                 $softHyphen = "\xC2\xAD";
                 if ($row['Vermerkart'] === "Bearbeitung") {
                     $prettyText = "B";

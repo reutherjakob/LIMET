@@ -8,17 +8,15 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <title>Get Devices 2 Element</title>
-    <style> /* Make sure Select2 dropdown appears above Bootstrap modal */
+    <style>
         .select2-container {
-            z-index: 1060 !important; /* slightly higher than Bootstrap modal backdrop */
+            z-index: 1060 !important;
         }
 
-        /* Also target the actual dropdown for Select2 (the dropdown elements) */
         .select2-dropdown {
             z-index: 1061 !important;
         }
 
-        /* Optional: When used inside modal, the dropdown might need higher z-index */
         .modal .select2-container {
             z-index: 1070 !important;
         }
@@ -35,7 +33,7 @@
 require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
-$elementID =  getPostInt('elementID',$_SESSION["elementID"]?? 0 );
+$elementID = getPostInt('elementID', $_SESSION["elementID"] ?? 0);
 
 $sql = "SELECT tabelle_geraete.idTABELLE_Geraete, tabelle_geraete.GeraeteID, tabelle_hersteller.Hersteller, tabelle_geraete.Typ, tabelle_geraete.Kurzbeschreibung, tabelle_hersteller.idtabelle_hersteller
         FROM tabelle_geraete
@@ -49,10 +47,10 @@ $stmt->execute();
 $result = $stmt->get_result();
 $stmt->close();
 
-echo "<table class='table table-striped table-sm' id='tableDevicesToElement'>
+echo "<table class='table table-striped table-bordered table-sm table-hover border border-light px-0 py-0' id='tableDevicesToElement'>
 	<thead><tr>
 	<th>ID</th>
-	<th>GeraeteID</th>
+	<th>Gerät ID</th>
 	<th>Hersteller</th>
 	<th>Typ</th>
     <th>Beschreibung</th>
@@ -73,14 +71,31 @@ while ($row = $result->fetch_assoc()) {
     echo "</tr>";
 }
 echo "</tbody></table>";
-echo "<input type='button' id='addDeviceModalButton' class='btn btn-success btn-sm' value='Gerät hinzufügen' data-bs-toggle='modal' data-bs-target='#addDeviceModal'><input type='button' id='";
-echo $elementID;
-echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggle='modal' data-bs-target='#deviceComparisonModal'>";
+echo "
+<div class='col-12 d-flex justify-content-start'>
+    <button type='button'
+            id='addDeviceModalButton'
+            class='btn btn-sm btn-success'
+            value='Gerät hinzufügen'
+            data-bs-toggle='modal'
+            data-bs-target='#addDeviceModal'>
+            <i class='fas fa-plus'></i>
+        Gerät hinzufügen
+    </button>
+       <button type='button'
+            id='" . $elementID . "' 
+            class='btn btn-sm btn-outline-dark ms-1'
+            value='Geräte vergleichen'
+            data-bs-toggle='modal'
+            data-bs-target='#deviceComparisonModal'>
+            <i class='fas fa-not-equal'></i>
+        Gerät vergleichen
+    </button>
+</div> ";
 ?>
 
 <div class='modal fade' id='addDeviceModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
-        <!-- Modal content-->
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Gerät hinzufügen/bearbeiten</h4>
@@ -184,11 +199,11 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
                 }
             ],
             select: true,
-            paging: true,
+            paging: false,
             pagingType: 'simple',
             lengthChange: false,
             pageLength: 10,
-            searching: true, // Enable searching
+            searching: false, // Enable searching
             info: false,
             order: [[1, 'asc']],
             language: {
@@ -322,7 +337,7 @@ echo "' class='btn btn-default btn-sm' value='Geräte vergleichen' data-bs-toggl
     });
 
     //Gerätevergleich anzeigen
-    $("input[value='Geräte vergleichen']").click(function () {
+    $("button[value='Geräte vergleichen']").click(function () {
         let id = this.id;
         $.ajax({
             url: "getDeviceComparison.php",

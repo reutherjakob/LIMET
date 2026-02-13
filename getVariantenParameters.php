@@ -5,7 +5,7 @@ require_once 'utils/_utils.php';
 check_login();
 
 $mysqli = utils_connect_sql();
-$projectID = getPostInt('projectID', 0);
+$projectID = $_SESSION["projectID"];
 $elementID = getPostInt('elementID', 0);
 $variantenID = getPostInt('variantenID', 0);
 

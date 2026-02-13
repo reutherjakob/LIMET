@@ -33,8 +33,8 @@ init_page_serversides();
 
 
 <body>
-<div id="limet-navbar"></div> <!-- Container für Navbar Aufruf über onLoad -->
-<div class="container-fluid bg-secondary bg-opacity-10">
+<div id="limet-navbar"></div>
+<div class="container-fluid bg-light">
     <div class="row">
         <div class="col-xxl-6">
             <div class="card mt-1">
@@ -91,22 +91,33 @@ init_page_serversides();
             <div class="card mt-1 h-auto">
                 <div class="card-header" id="RäumeOhneElCardHeader ">
                     <div class="row">
-                        <div class="col-xxl-4 d-flex flex-nowrap text-nowrap align-items-center" id="CardHeaderRäumeOhneElement">
+
+                        <div class="col-2 d-flex flex-nowrap text-nowrap align-items-center"
+                            >
                             <i class="fas fa-door-open  fa-lg me-2"></i> ohne Element
                         </div>
-                        <div class="col-xxl-8 d-flex flex-nowrap justify-content-end align-items-center">
-                            <button type='button' class='btn btn-outline-success btn-sm ' id='addElements'
-                                    data-bs-toggle='modal' data-bs-target='#addElementsToRoomModal' disabled><i
-                                        class='fas fa-plus'></i> Element hinzufügen
+
+                        <div class="col-2 d-flex flex-nowrap text-nowrap justify-content-end align-items-center">
+                            <button type='button' class='btn btn-outline-success btn-sm '
+                                    id='addElements'
+                                    data-bs-toggle='modal'
+                                    data-bs-target='#addElementsToRoomModal' disabled>
+                                <i class='fas fa-plus'> Hinzufügen </i>
                             </button>
+                        </div>
+
+                        <div class="col-8 d-flex flex-nowrap text-nowrap justify-content-end align-items-center"  id="CardHeaderRäumeOhneElement">
                             <button type='button' id="selectAllRows"
-                                    class="btn btn-outline-primary btn-sm me-2 ms-4 ">
-                                <i class="fa fa-eye" aria-hidden="true"></i>
-                                Sichtbare auswählen
+                                    class="btn btn-outline-primary btn-sm me-2 ms-4 "
+                                    data-bs-toggle="tooltip"
+                                    data-bs-title="Sichtbare auswählen .">
+                                <i class="fa fa-eye" aria-hidden="true"> Auswählen </i>
                             </button>
-                            <button type='button' id="deselectAllRows" class="btn btn-outline-danger btn-sm">
-                                <i class="fas fa-times" aria-hidden="true"></i>
-                                Keinen Raum auswählen
+                            <button type='button' id="deselectAllRows"
+                                    class="btn btn-outline-danger btn-sm"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-title="Keine auswählen .">
+                                <i class="fas fa-times" aria-hidden="true"> Abwählen</i>
                             </button>
                         </div>
                     </div>
@@ -118,11 +129,11 @@ init_page_serversides();
 </div>
 
 
-
 <script>
     var elementBezeichnung; //var, because used to set Modal Title in getRoomsWithoutElement
     var selectedRooms = [];
     var tableElementsInDB;
+    var tableRoomsWithElement; // for getRoomsWithElement1
 
     function init_table_elementsinDB() {
         $('#CardHeaderElementesInDb .xxx').remove();

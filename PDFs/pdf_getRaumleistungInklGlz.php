@@ -1,14 +1,15 @@
 <?php
-// pdf_getRaumleistungInklGlz.php
+// ✅ pdf_getRaumleistungInklGlz.php - KORRIGIERT MIT NEUER GLZ-Logik + AKKU-MAPPING
 global $block_header_height, $block_header_w, $SB, $pdf, $mysqli, $valueOfRoomID, $row, $parameter_changes_t_räume,
-       $e_C, $font_size, $e_C_2_3rd, $e_C_3rd, $horizontalSpacerLN2; // Globale Variablen nutzen
+       $e_C, $font_size, $e_C_2_3rd, $e_C_3rd, $horizontalSpacerLN2;
 
-$raumID = $valueOfRoomID;  // Aus der Hauptschleife
+$raumID = $valueOfRoomID;
 $projectID = $_SESSION["projectID"];
 
- $sql = "SELECT 
-    netzart,
-    ROUND(SUM(gesamt_leistung_w), 2) AS gesamtleistung_w,
+// ✅ GLZ-FIX: CAST(REPLACE(pep_gleich.Wert, ',', '.') AS DECIMAL(5,2)) + AKKU-MAPPING
+$sql = "SELECT 
+    mapped_netzart AS netzart,
+    ROUND(SUM(gesamt_leistung_w), 0) AS gesamtleistung_w,
     COUNT(*) AS elemente_anzahl
 FROM (
     SELECT 
@@ -24,19 +25,30 @@ FROM (
             WHEN pep_leistung.Einheit = 'kW' THEN COALESCE(CAST(NULLIF(pep_leistung.Wert, '') AS DECIMAL(10,2)), 0) * 1000
             WHEN pep_leistung.Einheit = 'MW' THEN COALESCE(CAST(NULLIF(pep_leistung.Wert, '') AS DECIMAL(10,2)), 0) * 1000000
             ELSE COALESCE(CAST(NULLIF(pep_leistung.Wert, '') AS DECIMAL(10,2)), 0)
-        END AS leistung,  -- always in W
+        END AS leistung_w,
+ 
+        CASE 
+            WHEN pep_netz.Wert IN ('AV', 'Akku', '/Akku','AV/Akku') THEN 'AV'
+            WHEN pep_netz.Wert IN ('SV', 'SV/Akku') THEN 'SV'
+            WHEN pep_netz.Wert IN ('ZSV','ZSV/Akku') THEN 'ZSV'
+            WHEN pep_netz.Wert IN ('USV', 'USV/Akku') THEN 'USV'
+            ELSE 'Unbekannt'
+        END AS mapped_netzart,
 
-        COALESCE(CAST(NULLIF(pep_gleich.Wert, '') AS DECIMAL(10,2)), 100) AS gleichzeitigkeit,
-        COALESCE(pep_netz.Wert, 'Unbekannt') AS netzart,
-
-        SUM(re.Anzahl)
-        * CASE
-                WHEN pep_leistung.Einheit = 'kW' THEN COALESCE(CAST(NULLIF(pep_leistung.Wert, '') AS DECIMAL(10,2)), 0) * 1000
-                WHEN pep_leistung.Einheit = 'MW' THEN COALESCE(CAST(NULLIF(pep_leistung.Wert, '') AS DECIMAL(10,2)), 0) * 1000000
-                ELSE COALESCE(CAST(NULLIF(pep_leistung.Wert, '') AS DECIMAL(10,2)), 0)
-              END
-              * COALESCE(CAST(NULLIF(pep_gleich.Wert, '') AS DECIMAL(10,2)), 100)/100
-        AS gesamt_leistung_w
+        SUM(re.Anzahl) * 
+        CASE
+            WHEN pep_leistung.Einheit = 'kW' THEN COALESCE(CAST(NULLIF(pep_leistung.Wert, '') AS DECIMAL(10,2)), 0) * 1000
+            WHEN pep_leistung.Einheit = 'MW' THEN COALESCE(CAST(NULLIF(pep_leistung.Wert, '') AS DECIMAL(10,2)), 0) * 1000000
+            ELSE COALESCE(CAST(NULLIF(pep_leistung.Wert, '') AS DECIMAL(10,2)), 0)
+        END *
+        COALESCE(
+            CASE 
+                WHEN pep_gleich.Wert IS NULL OR pep_gleich.Wert = '' OR pep_gleich.Wert = '1' THEN 1.0
+                WHEN pep_gleich.Wert = '0' THEN 0.0
+                ELSE CAST(REPLACE(pep_gleich.Wert, ',', '.') AS DECIMAL(5,2))  
+            END, 
+            1.0
+        ) AS gesamt_leistung_w
 
     FROM tabelle_räume_has_tabelle_elemente re
         INNER JOIN tabelle_elemente e ON re.TABELLE_Elemente_idTABELLE_Elemente = e.idTABELLE_Elemente
@@ -62,12 +74,20 @@ FROM (
 
     WHERE re.TABELLE_Räume_idTABELLE_Räume = ?
         AND re.Verwendung = 1
+        AND re.Anzahl > 0
+        AND COALESCE(CAST(NULLIF(pep_leistung.Wert, '') AS DECIMAL(10,2)), 0) > 0
+
     GROUP BY 
-        re.TABELLE_Räume_idTABELLE_Räume, e.idTABELLE_Elemente, v.idtabelle_Varianten,
-        pep_leistung.Wert, pep_leistung.Einheit, pep_gleich.Wert, pep_netz.Wert
-    HAVING anzahl > 0 AND leistung > 0
+        re.TABELLE_Räume_idTABELLE_Räume, 
+        e.idTABELLE_Elemente, 
+        v.idtabelle_Varianten,
+        pep_leistung.Wert, 
+        pep_leistung.Einheit, 
+        pep_gleich.Wert,
+        pep_netz.Wert  
+    HAVING leistung_w > 0
 ) AS element_leistungen
-GROUP BY netzart
+GROUP BY mapped_netzart  
 ORDER BY 
     CASE netzart 
         WHEN 'AV' THEN 1 
@@ -75,33 +95,35 @@ ORDER BY
         WHEN 'ZSV' THEN 3 
         WHEN 'USV' THEN 4 
         ELSE 5 
-    END;
-";
-
-
+    END";
 
 $stmt = $mysqli->prepare($sql);
+if (!$stmt) {
+    error_log("Prepare failed: " . $mysqli->error);
+    return;
+}
+
 $stmt->bind_param('iiii', $projectID, $projectID, $projectID, $raumID);
-$stmt->execute();
+if (!$stmt->execute()) {
+    error_log("Execute failed: " . $stmt->error);
+    return;
+}
+
 $resultElementleistung = $stmt->get_result();
 
 $leistungen = ['AV' => 0, 'SV' => 0, 'ZSV' => 0, 'USV' => 0, 'Unbekannt' => 0];
-if (isset($resultElementleistung) && $resultElementleistung instanceof mysqli_result) {
-    $resultElementleistung->data_seek(0); // Reset pointer
-    while ($leisRow = $resultElementleistung->fetch_assoc()) {
-        $net = $leisRow['netzart'];
-        $sum = (float)$leisRow['gesamtleistung_w'];
-        if (array_key_exists($net, $leistungen)) {
-            $leistungen[$net] += $sum;
-        } else {
-            $leistungen['Unbekannt'] += $sum;
-        }
+while ($leisRow = $resultElementleistung->fetch_assoc()) {
+    $net = $leisRow['netzart'];
+    $sum = (float)$leisRow['gesamtleistung_w'];
+    if (array_key_exists($net, $leistungen)) {
+        $leistungen[$net] += $sum;
+    } else {
+        $leistungen['Unbekannt'] += $sum;
     }
 }
+$stmt->close();
 
-// Netzart-Leistungen ausgeben als Multicells im Elektro-Block   Leistungen nach Netzart inkl. Gleichzeitigkeit
-
-
+// PDF Output - UNVERÄNDERT
 multicell_text_hightlight($pdf, $e_C*2 +10, $font_size, 'MT Leistung AV', "Leistungen nach Netzart inkl. Gleichzeitigkeit -  AV: ", $parameter_changes_t_räume);
 multicell_with_nr($pdf, round($leistungen['AV'], 0), "W", $font_size, $e_C_3rd + 10);
 
@@ -114,6 +136,6 @@ multicell_with_nr($pdf, round($leistungen['ZSV'], 0), "W", $font_size, $e_C_3rd 
 multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'MT Leistung USV', "USV: ", $parameter_changes_t_räume);
 multicell_with_nr($pdf, round($leistungen['USV'], 0), "W", $font_size, $e_C_3rd + 10);
 
-multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'MT Leistung Unbekannt', "Ohne NA:", $parameter_changes_t_räume);
+multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'MT Leistung ohne Zuordnung', "Ohne NA:", $parameter_changes_t_räume);
 multicell_with_nr($pdf, round($leistungen['Unbekannt'], 0), "W", $font_size, $e_C_3rd + 10);
-
+?>

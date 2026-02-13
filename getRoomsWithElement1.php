@@ -19,22 +19,31 @@
 require_once 'utils/_utils.php';
 check_login();
 
-$_SESSION["variantenID"] = getPostInt('variantenID', 0);
-$elementID = getPostInt("elementID", 0);
-$projectID = (int)$_SESSION["projectID"];
-$variantenID =  getPostInt("variantenID", 0);
-$bestand = getPostInt("bestand", 0);
+$elementID   = getPostInt("elementID", 0);
+$projectID   = (int)$_SESSION["projectID"];
+
+// read raw POST strings in addition
+$rawBestand     = $_POST['bestand']     ?? null;
+$rawVariantenID = $_POST['variantenID'] ?? null;
+
+// convert to int if present
+$bestand     = ($rawBestand     === null || $rawBestand     === '') ? null : (int)$rawBestand;
+$variantenID = ($rawVariantenID === null || $rawVariantenID === '') ? null : (int)$rawVariantenID;
 
 $where = [];
-if ($bestand !== null && $bestand !== "") {
-    $where[] = "tabelle_räume_has_tabelle_elemente.`Neu/Bestand` = " . intval($bestand);
-}
-if ($variantenID !== null && $variantenID !== "") {
-    $where[] = "tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten = " . intval($variantenID);
-}
-$where[] = "tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = " . intval($elementID);
 $where[] = "tabelle_räume.tabelle_projekte_idTABELLE_Projekte = " . intval($projectID);
+$where[] = "tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = " . intval($elementID);
+
+if ($bestand !== null) {
+    $where[] = "tabelle_räume_has_tabelle_elemente.`Neu/Bestand` = " . $bestand;
+}
+if ($variantenID !== null) {
+    $_SESSION["variantenID"] = $variantenID;
+    $where[] = "tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten = " . $variantenID;
+}
+
 $whereClause = implode(' AND ', $where);
+
 
 $mysqli = utils_connect_sql();
 $sql = "SELECT
@@ -53,7 +62,6 @@ $sql = "SELECT
     tabelle_räume.Geschoss,
     tabelle_räume.Bauetappe,
     tabelle_räume.Bauabschnitt,
-
     tabelle_elemente.ElementID,
     tabelle_elemente.Bezeichnung AS ElementName
 FROM tabelle_räume
@@ -64,7 +72,6 @@ ORDER BY tabelle_räume.Raumnr;";
 
 $result = $mysqli->query($sql);
 
-// Column definitions for maintainability
 $columns = [
     ["id", "ID"],
     ["Raumnr", "Raum Nr."],

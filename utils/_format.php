@@ -10,6 +10,10 @@ function format_money($number): string // function to format costs for visualiza
 {
     return sprintf('%s', number_format((float)$number, 2, ',', '.'));
 }
+function format_money_no_decimals($number): string // function to format costs for visualization in table
+{
+    return sprintf('%s', number_format((float)$number, 0, ',', '.'));
+}
 
 function format_money_report($number): string // function to format costs for reports
 {
