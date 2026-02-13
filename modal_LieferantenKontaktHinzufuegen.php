@@ -1,7 +1,3 @@
-<?php
-global $mysqli;
-?>
-
 <!-- Modal zum Anlegen eines Firmenkontakts -->
 <div class='modal fade' id='addContactModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
@@ -10,45 +6,50 @@ global $mysqli;
                 <h4 class='modal-title'>Lieferantenkontakt hinzufügen</h4>
                 <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
-            <div class='modal-body mb-2' id='mbody'>
-                <form role="form">
+            <form role="form" id="addContactForm">
+                <div class='modal-body mb-2' id='mbody'>
+
                     <div class='form-group'>
                         <label for='lieferantenName'>Name</label>
-                        <input type='text' class='form-control input-sm' id='lieferantenName'>
+                        <input type='text' class='form-control input-sm' id='lieferantenName' required>
                     </div>
                     <div class='form-group'>
                         <label for='lieferantenVorname'>Vorname</label>
-                        <input type='text' class='form-control input-sm' id='lieferantenVorname'>
+                        <input type='text' class='form-control input-sm' id='lieferantenVorname' required>
                     </div>
                     <div class='form-group'>
                         <label class='control-label' for='lieferantenTel'>Tel</label>
-                        <input type='text' class='form-control input-sm' id='lieferantenTel'>
+                        <input type='text' class='form-control input-sm' id='lieferantenTel' required>
                     </div>
                     <div class='form-group'>
                         <label class='control-label' for='lieferantenAdresse'>Adresse</label>
-                        <input type='text' class='form-control input-sm' id='lieferantenAdresse'>
+                        <input type='text' class='form-control input-sm' id='lieferantenAdresse' required>
                     </div>
                     <div class='form-group'>
                         <label class='control-label' for='lieferantenPLZ'>PLZ</label>
-                        <input type='text' class='form-control input-sm' id='lieferantenPLZ'>
+                        <input type='text' class='form-control input-sm' id='lieferantenPLZ' required >
                     </div>
                     <div class='form-group'>
                         <label class='control-label' for='lieferantenOrt'>Ort</label>
-                        <input type='text' class='form-control input-sm' id='lieferantenOrt'>
+                        <input type='text' class='form-control input-sm' id='lieferantenOrt' required>
                     </div>
                     <div class='form-group'>
                         <label class='control-label' for='lieferantenLand'>Land</label>
-                        <input type='text' class='form-control input-sm' id='lieferantenLand'>
+                        <input type='text' class='form-control input-sm' id='lieferantenLand' required>
                     </div>
                     <div class='form-group'>
                         <label class='control-label' for='lieferantenGebiet'>Gebiet</label>
-                        <input type='text' class='form-control input-sm' id='lieferantenGebiet'>
+                        <input type='text' class='form-control input-sm' id='lieferantenGebiet' required>
                     </div>
                     <div class='form-group'>
                         <label class='control-label' for='lieferantenEmail'>Email</label>
-                        <input type='text' class='form-control input-sm' id='lieferantenEmail'>
+                        <input type='text' class='form-control input-sm' id='lieferantenEmail' required>
                     </div>
                     <?php
+                    global  $mysqli;
+                    if (!$mysqli) {
+                        $mysqli = utils_connect_sql();
+                    }
                     $sql = "SELECT `tabelle_lieferant`.`idTABELLE_Lieferant`,
                                      `tabelle_lieferant`.`Lieferant`
                                  FROM `LIMET_RB`.`tabelle_lieferant` ORDER BY Lieferant;";
@@ -56,7 +57,7 @@ global $mysqli;
 
                     echo "<div class='form-group'>
                             <label class='control-label' for='lieferant'>Lieferant</label>
-                            <select class='form-control select2' id='lieferant' data-placeholder='Lieferant wählen'>";
+                            <select class='form-control select2' id='lieferant' data-placeholder='Lieferant wählen' required>";
                     echo "<option value='' disabled selected>Lieferant wählen</option>";
                     while ($row = $result->fetch_assoc()) {
                         echo "<option value='" . $row["idTABELLE_Lieferant"] . "'>" . htmlspecialchars($row["Lieferant"]) . "</option>";
@@ -73,7 +74,7 @@ global $mysqli;
                         <div class='form-group'>
                             <label class='control-label'>Abteilung</label>
                             <div class='input-group flex-nowrap'>
-                                <select class='form-control input-sm select2' id='abteilung' data-placeholder='Abteilung wählen'>
+                                <select class='form-control input-sm select2' id='abteilung' data-placeholder='Abteilung wählen' required>
                                     <option value='' disabled selected>Abteilung wählen</option>";
                     while ($row = $result->fetch_assoc()) {
                         echo "<option value='" . $row["idtabelle_abteilung"] . "'>" . htmlspecialchars($row["Abteilung"]) . "</option>";
@@ -88,17 +89,19 @@ global $mysqli;
                     echo "</div>";
                     $mysqli->close();
                     ?>
-                </form>
-            </div>
-            <div class='modal-footer'>
-                <div class="d-flex justify-content-center">
-                    <input type='button' id='addLieferantenKontakt' class='btn btn-success btn-sm mt-4'
-                           value='Hinzufügen'>
-                    <input type='button' id='saveLieferantenKontakt' class='btn btn-warning btn-sm mt-4'
-                           value='Speichern'>
-                    <button type='button' class='btn btn-default btn-sm mt-4' data-bs-dismiss='modal'>Abbrechen</button>
+
                 </div>
-            </div>
+                <div class='modal-footer'>
+                    <div class="d-flex justify-content-center">
+                        <input type='button' id='addLieferantenKontakt' class='btn btn-success btn-sm mt-4'
+                               value='Hinzufügen'>
+                        <input type='button' id='saveLieferantenKontakt' class='btn btn-warning btn-sm mt-4'
+                               value='Speichern'>
+                        <button type='button' class='btn btn-default btn-sm mt-4' data-bs-dismiss='modal'>Abbrechen
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
