@@ -228,8 +228,8 @@ require_once "modal_firmenkontakte_visitenkarte.php";
                 {
                     className: 'control',
                     orderable: false,
-                    render: function(data, type, row) {
-                        return '';  // Empty control column for responsive
+                    render: function() {
+                        return '';
                     }
                 },
                 { data: 'Lieferant' },
