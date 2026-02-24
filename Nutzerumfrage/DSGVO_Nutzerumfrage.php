@@ -35,17 +35,16 @@
             verständlich und einfach wie möglich geklärt: </p>
         <ul>
             <li><strong>Welche Daten werden erhoben und zu welchem Zweck werden sie verarbeitet?</strong><br>
-                Lediglich die notwendigsten personenbezogenen Daten werden von uns ausschließlich für festgelegte,
+                Lediglich die notwendigsten Daten werden von uns ausschließlich für festgelegte,
                 eindeutige und legitime Zwecke erhoben, z. B. die Erfüllung von Verträgen und Aufgaben oder bei
-                berechtigten Interessen, und werden nicht unvereinbart weiterverarbeitet.
+                berechtigten Interessen, und werden nicht weitergegeben.
             </li>
             <li><strong>Wer verarbeitet die Daten?</strong><br>
-                Der Verantwortliche (z. B. Unternehmen) verarbeitet die Daten selbst.
+                Wir verarbeiten die Daten selbst.
             </li>
             <li><strong>Wie kann ein Widerspruch eingelegt/ eine Löschung/ Änderung beantragt werden?</strong><br>
                 Ein Widerspruch, Löschung oder Berichtigung wird formlos beim Verantwortlichen beantragt; bei Erfolg
-                muss
-                der Verantwortliche die Verarbeitung einstellen und Daten löschen, sofern keine vorrangigen Gründe
+                muss der Verantwortliche die Verarbeitung einstellen und Daten löschen, sofern keine vorrangigen Gründe
                 vorliegen.
             </li>
             <li><strong>Wie lange werden die jeweiligen Daten gespeichert?</strong><br>Daten werden nur so lange

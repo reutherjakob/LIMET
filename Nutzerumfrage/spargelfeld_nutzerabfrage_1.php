@@ -23,14 +23,11 @@ function renderForm(array $formFields, array $userData = []): void
     echo '<form method="post" action=""><div class="card-header d-flex align-items-center justify-content-between" > 
             <strong> Labortechnische Raumanforderung </strong>';
 
-
     echo '<div class="d-flex align-items-center justify-content-end"> <button type="submit" class="btn btn-outline-success"> <i class="far fa-save"></i> Anforderungen speichern</button>
           </div> 
            </div> <div class="card-body px-2 py-2">    </div>';
 
-
     echo '<input type="hidden" name="csrf_token" value="' . csrf_token() . '">';
-
 
     foreach ($formFields as $field) {
         $name = $field['name'];
@@ -322,7 +319,7 @@ if ($roomId) {
         e.preventDefault();
         let formData = $(this).serialize();
         //console.log(formData);
-        $.post('save_room_data.php', formData, function (response) {
+        $.post('Raumkathegorien.php', formData, function (response) {
             alert(response); // z.B. "Data successfully updated."
         }).fail(function () {
             alert('Fehler beim Speichern.');
