@@ -214,7 +214,7 @@ echo "</tbody></table>"; ?>
 <script src="utils/_utils.js"></script>
 <script>
     $(document).ready(function () {
-        $(document).on('click', '.edit-price-btn', function (e) {
+        $(document).on('click', '.edit-price-btn', function () {
             //e.preventDefault();
             const row = $(this).closest('tr');
             $('#priceID').val(row.data('price-id'));
@@ -302,29 +302,6 @@ echo "</tbody></table>"; ?>
                 }
             });
         });
-
-        function reloadTable() {
-            $.ajax({
-                url: "getDevicePrices.php",
-                type: "POST",
-                data: {deviceID: <?= $deviceID ?>},
-                success: function (data) {
-                    const $tableContainer = $('#tableDevicePrices').closest('.table-responsive') || $('#tableDevicePrices').parent();
-                    $tableContainer.html(data);
-                    setTimeout(() => {
-                        if ($.fn.DataTable.isDataTable('#tableDevicePrices')) {
-                            $('#tableDevicePrices').DataTable().destroy();
-                        }
-                        new DataTable('#tableDevicePrices', {
-                            paging: false, searching: false, info: false,
-                            order: [[1, 'desc']],
-                            language: {url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'},
-                            scrollY: '20vh', scrollCollapse: true
-                        });
-                    }, 100);
-                }
-            });
-        }
 
         $('#date').datepicker({
             format: "yyyy-mm-dd",
