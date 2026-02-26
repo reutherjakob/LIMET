@@ -5,6 +5,7 @@ check_login();
 $mysqli = utils_connect_sql();
 $lotID = getPostInt('lotID', 0);
 
+
 if ($lotID !== 0) {
     $_SESSION["lotID"] = $lotID;
 }

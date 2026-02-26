@@ -97,7 +97,6 @@ function add_element_einträge_not_0_filter(location, table) {
 }
 
 
-
 function init_filter() {
     add_MT_rel_filter('#TableCardHeader', table);
     add_entfallen_filter('#TableCardHeader', table);
@@ -192,20 +191,20 @@ function init_btn_4_dt() {
             text: "",
             titleAttr: "Download as Excel",
             exportOptions: {
-             columns: function (idx ) {
-                 const idIndex = columnsDefinition.findIndex(col => col.data === 'idTABELLE_Räume');
-                 return table.column(idx).visible() || idx === idIndex;
-             },
+                columns: function (idx) {
+                    const idIndex = columnsDefinition.findIndex(col => col.data === 'idTABELLE_Räume');
+                    return table.column(idx).visible() || idx === idIndex;
+                },
 //
-              format: {
-                  header: (data, columnIdx) => {
-                      const idIndex = columnsDefinition.findIndex(col => col.data === 'idTABELLE_Räume');
-                      if (columnIdx === idIndex) {
-                          return "Raum ID";
-                      }
-                      return data;
-                  }
-              }
+                format: {
+                    header: (data, columnIdx) => {
+                        const idIndex = columnsDefinition.findIndex(col => col.data === 'idTABELLE_Räume');
+                        if (columnIdx === idIndex) {
+                            return "Raum ID";
+                        }
+                        return data;
+                    }
+                }
             },
             action: function (e, dt, node, config) {
                 $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, node, config);
@@ -636,16 +635,24 @@ function updateButtonClass(button, table, startColumn, endColumn) {
 }
 
 function toggleReportColumnsVisible() {
-    const reportParams = [ "MT-relevant",
-        'Raumbezeichnung', 'Raumnr', 'Raumbereich Nutzer', 'Geschoss', 'Bauetappe', 'Bauabschnitt', 'Nutzfläche',
+    const reportParams = ["MT-relevant",
+        'Raumbezeichnung', 'Raumnr', 'Raumbereich Nutzer', 'Geschoss', 'Bauabschnitt', 'Nutzfläche',
         'Abdunkelbarkeit', 'Strahlenanwendung', 'Laseranwendung', 'Allgemeine Hygieneklasse',
-        'H6020', 'HT_Waermeabgabe_W', 'Anwendungsgruppe', 'Fussboden OENORM B5220',
-        'AV', 'SV', 'ZSV', 'USV', 'EL_Laser 16A CEE Stk', 'ET_Anschlussleistung_W', 'ET_Anschlussleistung_AV_W',
-        'ET_Anschlussleistung_SV_W', 'ET_Anschlussleistung_ZSV_W', 'ET_Anschlussleistung_USV_W', 'IT Anbindung',
+        'H6020', 'HT_Waermeabgabe_W', 'HT_Raumtemp Sommer °C', 'HT_Raumtemp Winter °C', 'HT_Spuele_Stk',
+        'Anwendungsgruppe', 'Fussboden OENORM B5220',
+        'AV', 'SV', 'ZSV', 'USV',
+        'ET_Anschlussleistung_W', 'ET_Anschlussleistung_AV_W', 'ET_Anschlussleistung_SV_W', 'ET_Anschlussleistung_ZSV_W',
+        'ET_Anschlussleistung_USV_W',
+        'IT Anbindung', 'ET_RJ45-Ports',
+        'EL_Laser 16A CEE Stk', 'EL_Roentgen 16A CEE Stk',
+        'ET_PA_Stk',
         '1 Kreis O2', '2 Kreis O2', 'CO2', '1 Kreis Va', '2 Kreis Va', '1 Kreis DL-5', '2 Kreis DL-5',
-        'DL-10', 'DL-tech', 'NGA', 'N2O', 'HT_Abluft_Sicherheitsschrank_Stk', 'HT_Abluft_Digestorium_Stk',
-        'HT_Punktabsaugung_Stk', 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'VE_Wasser', 'HT_Warmwasser', 'HT_Kaltwasser',
-        'HT_Raumtemp Sommer °C',  'HT_Raumtemp Winter °C'
+        'DL-10', 'DL-tech', 'NGA', 'N2O',
+        'HT_Abluft_Sicherheitsschrank_Stk', 'HT_Abluft_Digestorium_Stk', 'HT_Punktabsaugung_Stk',
+        'HT_Abluft_Sicherheitsschrank_Unterbau_Stk',
+        'HT_Abwasser_Stk',
+        'VE_Wasser', 'HT_Warmwasser', 'HT_Kaltwasser'
+
     ];
 
 // Calculate the indices from columnsDefinition

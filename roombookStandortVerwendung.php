@@ -73,6 +73,7 @@ $mysqli->close();
           rel="stylesheet">
 </head>
 <body>
+
 <div class="container-fluid bg-light">
     <div id="limet-navbar"></div>
     <div class="card shadow-sm">
@@ -91,10 +92,10 @@ $mysqli->close();
                 <tr>
                     <th>ID</th>
                     <th>Bezeichnung</th>
-                    <th>Verwendungsraum</th>
-                    <th>Verwendungsraumnr</th>
-                    <th>Standortraum</th>
-                    <th>Standortraumnr</th>
+                    <th>VerwendungsrRaum</th>
+                    <th>Verwendungs <i class="fas fa-hashtag"></i></th>
+                    <th><i class="fas fa-map-marked-alt"></i> Raum</th>
+                    <th><i class="fas fa-map-marked-alt"></i> <i class="fas fa-hashtag"></i></th>
                 </tr>
                 </thead>
                 <tbody>

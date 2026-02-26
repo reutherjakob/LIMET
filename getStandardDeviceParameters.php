@@ -38,8 +38,8 @@ while ($row = $result->fetch_assoc()) {
 }
 
 echo "</tbody></table>";
-echo "<button type='button' id='" . $deviceID . "' class='btn btn-outline-success btn-sm' value='ParameterOvertakeBtn' data-bs-toggle='modal' data-bs-target='#parameterOvertakeModal'><span class='glyphicon glyphicon-open-file'></span> Parameter übernehmen</button>";
-echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-outline-warning btn-sm' value='ParameterBearbeiten' data-bs-toggle='modal' data-bs-target='#changeDeviceParameters'><span class='glyphicon glyphicon-open-file'></span> Parameter ändern</button>";
+echo "<button type='button' id='" . $deviceID . "' class='btn btn-success btn-sm mt-2' value='ParameterOvertakeBtn' data-bs-toggle='modal' data-bs-target='#parameterOvertakeModal'><span class='glyphicon glyphicon-open-file'></span> Parameter übernehmen</button>";
+echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-warning btn-sm mt-2 ms-2' value='ParameterBearbeiten' data-bs-toggle='modal' data-bs-target='#changeDeviceParameters'><span class='glyphicon glyphicon-open-file'></span> Parameter ändern</button>";
 ?>
 
 <div class='modal' id='parameterOvertakeModal' role='dialog' aria-hidden="true" tabindex='-1'>

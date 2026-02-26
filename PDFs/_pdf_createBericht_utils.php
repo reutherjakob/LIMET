@@ -1,25 +1,4 @@
 <?php
-function normalize_name($str) {
-    // Ersetze typische Trennzeichen/Sonderzeichen durch Leerzeichen
-    $separators = ['+', '-', '/', '|', ',', '_', '.', ';', ':', '–', '—', '(', ')', '[', ']', '{', '}', '\'', '"', '\\', '&'];
-    $str = str_replace($separators, ' ', $str);
-
-    // Entferne HTML-Entities (falls Daten copy-pasted sind)
-    $str = html_entity_decode($str, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-
-    // Ersetze Unicode-Whitespace (z.B. \u00A0) durch Leerzeichen
-    $str = preg_replace('/[\s\pZ]+/u', ' ', $str);
-
-    // Entferne Accent-Zeichen (optional)
-    $str = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $str);
-
-    // Entferne führende und folgende Leerzeichen, mehrfachen Whitespace durch einfachen ersetzen
-    $str = preg_replace('/\s+/', ' ', $str);
-    $str = trim($str);
-
-    // Kleinbuchstabenvergleich
-    return strtolower($str);
-}
 
 function createRaumHeaderRaumbuch($pdf, $Raumdaten)
 {

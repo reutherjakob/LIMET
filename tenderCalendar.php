@@ -38,6 +38,10 @@
             justify-content: center;
             align-items: center;
         }
+        .soll-col { background-color: #e8f5e8 !important; }
+        .ist-col { background-color: #ffbebe !important; }
+
+
     </style>
 </head>
 
@@ -132,8 +136,8 @@ init_page_serversides();
                             echo "<tr>";
                             $counterWorkFlowTeile = 0;
                             foreach ($workflowTeile as $array) {
-                                echo "<th>Soll</th>
-                                    <th>Ist</th>";
+                                echo "<th class='soll-col'>Soll</th>
+                                        <th class='ist-col'>Ist</th>";
                                 $counterWorkFlowTeile++;
                                 if ($counterWorkFlowTeile < count($workflowTeile)) {
                                     echo "<th><i class='fas fa-arrows-alt-h'></i> </th>";
@@ -197,13 +201,13 @@ init_page_serversides();
                                     echo "<td><button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn btn-sm btn-outline-dark text-nowrap' value='calculateDates' data-bs-toggle='modal' data-bs-target='#claculateDatesModal'>Berechnen <i class='far fa-calendar-check'></i></button></td>";
 
                                     if ($row["SOLLDATE"] == "0000-00-00") {
-                                        echo "<td><form class='form-inline'>"
+                                        echo "<td class='soll-col'><form class='form-inline'>"
                                             . "<input type='text' name='input_solldate' class='form-control form-control-sm'   id='SOLLDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "'/>"
                                             . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn  btn-light btn-outline-dark btn-save'><i class='far fa-save'></i></button>"
                                             . "</form>"
                                             . "</td>";
                                     } else {
-                                        echo "<td><form class='form-inline form-check-inline'>"
+                                        echo "<td class='soll-col' ><form class='form-inline form-check-inline'>"
                                             . "<input type='text' name='input_solldate' class='form-control form-control-sm'   id='SOLLDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "' value='" . $row["SOLLDATE"] . "'/>"
                                             . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn  btn-light btn-outline-dark btn-save'><i class='far fa-save'></i></button>"
                                             . "</form>"
@@ -221,12 +225,12 @@ init_page_serversides();
                                     echo "</td>";
 
                                     if ($row["SOLLDATE"] == "0000-00-00") {
-                                        echo "<td><form class='form-inline'>"
+                                        echo "<td class='soll-col'><form class='form-inline'>"
                                             . "<input type='text' name='input_solldate' class='form-control form-control-sm'   id='SOLLDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "'/>"
                                             . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-light btn-outline-dark btn-save'><i class='far fa-save'></i></button>"
                                             . "</form></td>";
                                     } else {
-                                        echo "<td><form class='form-inline'>"
+                                        echo "<td class='soll-col'><form class='form-inline'>"
                                             . "<input type='text' name='input_solldate' class='form-control form-control-sm'   id='SOLLDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "' value='" . $row["SOLLDATE"] . "'/>"
                                             . "<button type='button' name='save_solldate' id='SAVE-SOLLDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-light btn-outline-dark btn-save'><i class='far fa-save'></i></button>"
                                             . "</form>"
@@ -235,12 +239,12 @@ init_page_serversides();
                                 }
 
                                 if ($row["ISTDATE"] == "0000-00-00") {
-                                    echo "<td><form class='form-inline'>"
+                                    echo "<td class='ist-col'><form class='form-inline'>"
                                         . "<input type='text' name='input_solldate' class='form-control form-control-sm'   id='ISTDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "'/>"
                                         . "<button type='button' name='save_istdate' id='SAVE-ISTDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-light btn-outline-dark btn-save'><i class='far fa-save'></i></button>"
                                         . "</form></td>";
                                 } else {
-                                    echo "<td><form class='form-inline'>"
+                                    echo "<td class='ist-col'><form class='form-inline'>"
                                         . "<input type='text' name='input_istdate' class='form-control form-control-sm'   id='ISTDATE-" . $row["idtabelle_Lose_Extern"] . "-" . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "-" . $row["tabelle_workflow_idtabelle_workflow"] . "' value='" . $row["ISTDATE"] . "'/>"
                                         . "<button type='button' name='save_istdate' id='SAVE-ISTDATE," . $row["idtabelle_Lose_Extern"] . "," . $row["tabelle_wofklowteil_idtabelle_wofklowteil"] . "," . $row["tabelle_workflow_idtabelle_workflow"] . "' class='btn btn-light btn-outline-dark btn-save'><i class='far fa-save'></i></button>"
                                         . "</form>"

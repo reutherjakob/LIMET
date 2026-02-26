@@ -7,6 +7,12 @@ require_once('../TCPDF-main/TCPDF-main/tcpdf.php');
 include "pdf_createBericht_MYPDFclass_A4_ohneTitelblatt.php";
 include "_pdf_createBericht_utils.php";
 
+
+// Handle both GET and POST parameters
+$lotID = getPostInt('lotID', (int)($_SESSION["lotID"] ?? 0));
+$projectID = getPostInt('projectID', (int)($_SESSION["projectID"] ?? 0));
+
+
 $marginTop = 20; // https://tcpdf.org/docs/srcdoc/TCPDF/files-config-tcpdf-config/
 $marginBTM = 10;
 $_SESSION["PDFTITEL"] = "Medizintechnische Los Elementliste";
@@ -17,14 +23,38 @@ $mysqli = utils_connect_sql();
 
 
 $pdf->SetFont('helvetica', '', 10);
-$sql = "SELECT tabelle_projekt_elementparameter.Wert, tabelle_projekt_elementparameter.Einheit, tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten, tabelle_projekt_elementparameter.tabelle_elemente_idTABELLE_Elemente, tabelle_parameter.Bezeichnung, tabelle_parameter_kategorie.Kategorie
-FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter) ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
-WHERE (((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . "))
-ORDER BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung;";
 
-$result1 = $mysqli->query($sql);
+
+$sql = "
+    SELECT 
+        tabelle_projekt_elementparameter.Wert, 
+        tabelle_projekt_elementparameter.Einheit, 
+        tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten, 
+        tabelle_projekt_elementparameter.tabelle_elemente_idTABELLE_Elemente, 
+        tabelle_parameter.Bezeichnung, 
+        tabelle_parameter_kategorie.Kategorie
+    FROM tabelle_parameter_kategorie 
+    INNER JOIN (
+        tabelle_parameter 
+        INNER JOIN tabelle_projekt_elementparameter 
+        ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter
+    ) ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
+    WHERE tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte = ?
+    ORDER BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung
+";
+
+$stmt = $mysqli->prepare($sql);
+if (!$stmt) {
+    die("Prepare failed: " . $mysqli->error);
+}
+
+$stmt->bind_param("i", $projectID);
+$stmt->execute();
+$result1 = $stmt->get_result();
 $variantenInfos = array();
 $variantenInfosCounter = 0;
+
+
 while ($row = $result1->fetch_assoc()) {
     $variantenInfos[$variantenInfosCounter]['VarID'] = $row['tabelle_Varianten_idtabelle_Varianten'];
     $variantenInfos[$variantenInfosCounter]['elementID'] = $row['tabelle_elemente_idTABELLE_Elemente'];
@@ -35,13 +65,32 @@ while ($row = $result1->fetch_assoc()) {
     $variantenInfosCounter = $variantenInfosCounter + 1;
 }
 
-// Räume mit Element laden
-// AND tabelle_räume.`Raumbereich Nutzer` != 'E04 Feuerkeller'
-$sql = "SELECT tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.Anzahl, tabelle_räume.Raumnr, tabelle_räume.Raumbezeichnung, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`
-FROM tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
-WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND (tabelle_räume_has_tabelle_elemente.Anzahl>0) AND (tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern = " . $_SESSION["lotID"] . "));";
 
-$result2 = $mysqli->query($sql);
+$sql = "
+    SELECT 
+        tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
+        tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, 
+        tabelle_räume_has_tabelle_elemente.Anzahl, 
+        tabelle_räume.Raumnr, 
+        tabelle_räume.Raumbezeichnung, 
+        tabelle_räume_has_tabelle_elemente.`Neu/Bestand`
+    FROM tabelle_räume 
+    INNER JOIN tabelle_räume_has_tabelle_elemente 
+        ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
+    WHERE tabelle_räume.tabelle_projekte_idTABELLE_Projekte = ? 
+      AND tabelle_räume_has_tabelle_elemente.Anzahl > 0 
+      AND tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern = ? 
+";
+
+$stmt = $mysqli->prepare($sql);
+if (!$stmt) {
+    die("Prepare failed: " . $mysqli->error);
+}
+
+$stmt->bind_param("ii", $projectID, $lotID);
+$stmt->execute();
+$result2 = $stmt->get_result();
+
 $raeumeMitElement = array();
 $raeumeMitElementCounter = 0;
 while ($row = $result2->fetch_assoc()) {
@@ -72,15 +121,46 @@ $pdf->Ln();
 $fill = 0;
 $pdf->SetFillColor(244, 244, 244);
 
-// Element im Projekt laden
-// AND tabelle_räume.`Raumbereich Nutzer` != 'E04 Feuerkeller'
-$sql = "SELECT Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_varianten.idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
-            FROM tabelle_elemente INNER JOIN (tabelle_varianten INNER JOIN (tabelle_räume INNER JOIN tabelle_räume_has_tabelle_elemente ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten) ON tabelle_elemente.idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
-            WHERE (((tabelle_räume.tabelle_projekte_idTABELLE_Projekte)=" . $_SESSION["projectID"] . ") AND ((tabelle_räume_has_tabelle_elemente.Anzahl)>0) AND (tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern = " . $_SESSION["lotID"] . ")) 
-            GROUP BY tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, tabelle_varianten.idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
-            ORDER BY tabelle_elemente.ElementID;";
+$sql = "
+    SELECT 
+        SUM(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl, 
+        tabelle_elemente.ElementID, 
+        tabelle_elemente.Bezeichnung, 
+        tabelle_varianten.Variante, 
+        tabelle_varianten.idtabelle_Varianten, 
+        tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, 
+        tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
+    FROM tabelle_elemente 
+    INNER JOIN (
+        tabelle_varianten 
+        INNER JOIN (
+            tabelle_räume 
+            INNER JOIN tabelle_räume_has_tabelle_elemente 
+            ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
+        ) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
+    ) ON tabelle_elemente.idTABELLE_Elemente = tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
+    WHERE tabelle_räume.tabelle_projekte_idTABELLE_Projekte = ? 
+      AND tabelle_räume_has_tabelle_elemente.Anzahl > 0 
+      AND tabelle_räume_has_tabelle_elemente.tabelle_Lose_Extern_idtabelle_Lose_Extern = ?
+    GROUP BY 
+        tabelle_elemente.ElementID, 
+        tabelle_elemente.Bezeichnung, 
+        tabelle_varianten.Variante, 
+        tabelle_varianten.idtabelle_Varianten, 
+        tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, 
+        tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente
+    ORDER BY tabelle_elemente.ElementID
+";
 
-$result3 = $mysqli->query($sql);
+$stmt = $mysqli->prepare($sql);
+if (!$stmt) {
+    die("Prepare failed: " . $mysqli->error);
+}
+
+$stmt->bind_param("ii", $projectID, $lotID);
+$stmt->execute();
+$result3 = $stmt->get_result();
+
 $pdf->SetFont('helvetica', 'I', 6);
 while ($row = $result3->fetch_assoc()) {
     $fill = !$fill;
@@ -89,7 +169,7 @@ while ($row = $result3->fetch_assoc()) {
         if ($array['elementID'] === $row['TABELLE_Elemente_idTABELLE_Elemente']) {
             if ($array['variantenID'] === $row['idtabelle_Varianten']) {
                 if ($array['Bestand'] === $row['Neu/Bestand']) {
-                    $raeume = $raeume . "\n" . $array['raumNr'] . "-" . $array['raum'] . ": " . $array['Stk'] . " Stk";
+                    $raeume = $raeume . $array['raumNr'] . "-" . $array['raum'] . ": " . $array['Stk'] . " Stk". "\n" ;
                 }
             }
         }
@@ -98,10 +178,11 @@ while ($row = $result3->fetch_assoc()) {
     foreach ($variantenInfos as $array1) {
         if ($array1['elementID'] === $row['TABELLE_Elemente_idTABELLE_Elemente']) {
             if ($array1['VarID'] === $row['idtabelle_Varianten']) {
-                $varInfo = $varInfo . "\n" . $array1['Kategorie'] . "-" . $array1['Bezeichnung'] . ": " . $array1['Wert'] . " " . $array1['Einheit'];
+                $varInfo = $varInfo . $array1['Kategorie'] . "-" . $array1['Bezeichnung'] . ": " . $array1['Wert'] . " " . $array1['Einheit']. "\n" ;
             }
         }
     }
+
     $rowHeight = $pdf->getStringHeight(80, $raeume, false, true, '', 1);
     $rowHeight1 = $pdf->getStringHeight(50, $varInfo, false, true, '', 1);
     $rowHeightFinal = 0;
@@ -125,7 +206,8 @@ while ($row = $result3->fetch_assoc()) {
     }
     $pdf->MultiCell(80, $rowHeightFinal, $raeume, 0, 'L', $fill, 0);
     $pdf->MultiCell(50, $rowHeightFinal, $varInfo, 0, 'L', $fill, 0);
-    $pdf->Ln();    // CHECK OLD VERSIONS TO FIND LOTS OF REMOVED CODE
+    $pdf->Ln();
+    if ($pdf->getStringHeight(50, $row['Bezeichnung'], 0, "C", 1, 0) > 5) {    $pdf->Ln();    }
 }
 
 

@@ -53,7 +53,8 @@ init_page_serversides("", "x");
                 <div class="col-xxl-1" id="dateSelect4ReportContainer">
                     <label for="dateSelect4Report" class="visually-hidden">Report Datum</label>
                     <input type="date" id="dateSelect4Report" name="dateSelect"
-                           class="form-control form-control-sm me-2" data-bs-toggle="tooltip"
+                           class="form-control form-control-sm me-2"
+                           data-bs-toggle="tooltip"
                            data-bs-title="Dieses Datum wird im Bericht als aktueller Stand angeführt. Wird dieser Wert geändert und dann ein Bericht (in anderem Tab) neu geladen, wird das Datum darauf ebenso aktualisiert."
                            data-bs-custom-class="custom-tooltip"/>
                 </div>

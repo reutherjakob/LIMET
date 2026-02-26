@@ -126,24 +126,24 @@ init_page_serversides();
     var table;
 
     $("button[value='createKostenOverallPDF']").click(function () {
-        window.open('PDFs/pdf_createKostenOverallPDF.php');//there are many ways to do this
+        window.open('PDFs/pdf_createKostenOverallPDF.php');
     });
 
     $("button[value='createKostenOverallBauabschnittPDF']").click(function () {
-        window.open('PDFs/pdf_createKostenOverallBauabschnittPDF.php');//there are many ways to do this
+        window.open('PDFs/pdf_createKostenOverallBauabschnittPDF.php');
     });
 
     $("button[value='createKostenOverallBauabschnittBudgetPDF']").click(function () {
-        window.open('PDFs/pdf_createKostenOverallBauabschnittBudgetPDF.php');//there are many ways to do this
+        window.open('PDFs/pdf_createKostenOverallBauabschnittBudgetPDF.php');
     });
 
 
     $("button[value='createKostenInclGHGOverallPDF']").click(function () {
-        window.open('PDFs/pdf_createKostenOverallInclGHGPDF.php');//there are many ways to do this
+        window.open('PDFs/pdf_createKostenOverallInclGHGPDF.php');
     });
 
     $("button[value='createKostenRaumbereichPDF']").click(function () {
-        window.open('PDFs/pdf_createKostenRaumbereichInclGHGPDF.php');//there are many ways to do this
+        window.open('PDFs/pdf_createKostenRaumbereichInclGHGPDF.php');
     });
 
     $(document).ready(function () {
@@ -250,31 +250,11 @@ init_page_serversides();
         });
     });
 
-    //  $('#createRaumbereichPDF').click(function () {
-    //      let roomBereicheTemp = [];
-    //      let roomBereichGeschosseTemp = [];
-    //      let roomBauabschnittTemp = [];
-    //      $('#tableRaumbereiche tbody tr.info').each(function () {
-    //          let rowData = table.row(this).data();
-    //          if (rowData) {
-    //              roomBereicheTemp.push(rowData[0]);        // Raumbereich Nutzer
-    //              roomBereichGeschosseTemp.push(rowData[1]); // Geschoss
-    //              roomBauabschnittTemp.push(rowData[2]);    // Bauabschnitt
-    //          }
-    //      });
-
-    //      if (roomBereicheTemp.length === 0) {
-    //          makeToaster("Kein Raumbereich ausgewählt!",false);
-    //          return;
-    //      }
-    //     // console.log(roomBereicheTemp);
-    //      const paramRoomBereiche = encodeURIComponent(roomBereicheTemp.join(','));
-    //      const paramRoomBereichGeschosse = encodeURIComponent(roomBereichGeschosseTemp.join(','));
-    //      window.open(
-    //          'PDFs/pdf_createKostenRaumbereichPDF.php?roomBereiche=' + paramRoomBereiche +
-    //          '&roomBereichGeschosse=' + paramRoomBereichGeschosse
-    //      );
-    //  });
+    function decodeHtmlEntities(str) {
+        let tempDiv = document.createElement('div');
+        tempDiv.innerHTML = str;
+        return tempDiv.textContent || tempDiv.innerText || '';
+    }
 
     $('#createRaumbereichPDF').click(function () {
         let roomBereicheTemp = [];
@@ -283,7 +263,7 @@ init_page_serversides();
 
         table.rows({selected: true}).every(function () {
             let rowData = this.data();
-            roomBereicheTemp.push(rowData[0]);
+            roomBereicheTemp.push(decodeHtmlEntities(rowData[0]));
             roomBereichGeschosseTemp.push(rowData[1]);
             roomBauabschnittTemp.push(rowData[2]);
         });
@@ -292,11 +272,9 @@ init_page_serversides();
             makeToaster("Kein Raumbereich ausgewählt!", false);
             return;
         }
-
         const paramRoomBereiche = encodeURIComponent(roomBereicheTemp.join(','));
         const paramRoomBereichGeschosse = encodeURIComponent(roomBereichGeschosseTemp.join(','));
         const paramRoomBauabschnitt = encodeURIComponent(roomBauabschnittTemp.join(','));
-
         window.open(
             'PDFs/pdf_createKostenRaumbereichPDF.php?roomBereiche=' + paramRoomBereiche +
             '&roomBereichGeschosse=' + paramRoomBereichGeschosse +

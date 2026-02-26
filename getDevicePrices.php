@@ -10,18 +10,22 @@ if ($deviceID <> 0) {
 }
 
 $sql = "SELECT tabelle_preise.Datum,
+       tabelle_preise.idTABELLE_Preise,
                tabelle_preise.Quelle,
                tabelle_preise.Menge,
                tabelle_preise.Preis,
                tabelle_preise.Nebenkosten,
+               tabelle_projekte.idTABELLE_Projekte AS projectID,
                tabelle_projekte.Interne_Nr,
                tabelle_projekte.Projektname,
+               tabelle_lieferant.idTABELLE_Lieferant AS lieferantID,
                tabelle_lieferant.Lieferant
         FROM tabelle_lieferant
         RIGHT JOIN (tabelle_preise LEFT JOIN tabelle_projekte
                    ON tabelle_preise.TABELLE_Projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte)
                   ON tabelle_lieferant.idTABELLE_Lieferant = tabelle_preise.tabelle_lieferant_idTABELLE_Lieferant
         WHERE tabelle_preise.TABELLE_Geraete_idTABELLE_Geraete = ?";
+
 $stmt = $mysqli->prepare($sql);
 if (!$stmt) {
     exit("Prepare failed: " . $mysqli->error);
@@ -31,42 +35,75 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 echo "<table class='table table-striped table-sm' id='tableDevicePrices'>
-	<thead><tr>";
-echo "<th>Datum</th>
-		<th>Info</th>
-		<th>Menge</th>
-		<th>EP</th>
-		<th>NK/Stk</th>
-        <th>Projekt</th>
-        <th>Lieferant</th>              
-	</tr></thead><tbody>";
+    <thead><tr>";
+echo "
+       <th>Datum</th>
+       <th>Info</th>
+       <th>Menge</th>
+       <th>EP</th>
+       <th>NK/Stk</th>
+       <th>Projekt</th>
+       <th>Lieferant</th>      
+       <th class='' data-bs-toggle='tooltip' title='Bearbeiten'>  <i class='fa fa-pencil-alt'></i> </th>   
+    </tr></thead><tbody>";
 
 while ($row = $result->fetch_assoc()) {
-    echo "<tr>";
+    $priceID = $row['idTABELLE_Preise'] ?? '';
     $date = date_create($row["Datum"]);
-    echo "<td>" . date_format($date, 'Y-m-d') . "</td>";
-    echo "<td>" . $row["Quelle"] . "</td>";
-    echo "<td>" . $row["Menge"] . "</td>";
-    echo "<td>" . format_money($row["Preis"]) . "</td>";
-    echo "<td>" . format_money($row["Nebenkosten"]) . "</td>";
-    echo "<td>" . $row["Projektname"] . "</td>";
-    echo "<td>" . $row["Lieferant"] . "</td>";
+    $formattedDate = date_format($date, 'Y-m-d');
+
+    echo "<tr data-price-id='" . htmlspecialchars($priceID) . "' 
+              data-date='" . htmlspecialchars($formattedDate) . "'
+              data-quelle='" . htmlspecialchars($row["Quelle"]) . "'
+              data-menge='" . htmlspecialchars($row["Menge"]) . "'
+              data-ep='" . htmlspecialchars($row["Preis"]) . "'
+              data-nk='" . htmlspecialchars($row["Nebenkosten"]) . "'
+              data-project-id='" . htmlspecialchars($row["projectID"] ?? '0') . "'
+              data-lieferant-id='" . htmlspecialchars($row["lieferantID"] ?? '0') . "'>";
+
+
+    echo "<td>" . $formattedDate . "</td>";
+    echo "<td>" . htmlspecialchars($row["Quelle"] ?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["Menge"] ?? '') . "</td>";
+    echo "<td>" . format_money($row["Preis"] ?? '') . "</td>";
+    echo "<td>" . format_money($row["Nebenkosten"] ?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["Projektname"] ?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["Lieferant"] ?? '') . "</td>";
+    echo "<td> <button class='btn btn-sm btn-outline-dark edit-price-btn' 
+                title='Preis ändern' 
+                data-bs-toggle='modal'
+                data-bs-target='#addPriceToElementModal'>
+              <i class='fa fa-pencil-alt'></i>
+          </button></td>";
     echo "</tr>";
 }
+
 echo "</tbody></table>"; ?>
-<button type='button' id='addPriceModal' class='btn btn-success' value='Preis hinzufügen' data-bs-toggle='modal'
-        data-bs-target='#addPriceToElementModal'> Preis hinzufügen
-</button>
+<div class="col-12 d-flex justify-content-end">
+    <button type='button'
+            id='addPriceModal_show'
+            class='btn btn-sm btn-success'
+            value='Preis hinzufügen'
+            data-bs-toggle='modal'
+            data-bs-target='#addPriceToElementModal'>
+            <i class='fas fa-plus'></i>
+        Preis hinzufügen
+    </button>
+</div>
 
 <div class='modal fade' id='addPriceToElementModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
         <div class='modal-content'>
             <div class='modal-header'>
-                <h4 class='modal-title'>Preis hinzufügen</h4>
+                <h4 class='modal-title' id='modalTitle'>Preis hinzufügen</h4>
                 <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
+
             <div class='modal-body' id='mbody'>
                 <form role="form">
+                    <div class="form-group" style="display:none;">
+                        <input type="hidden" id="priceID" value="0">
+                    </div>
                     <div class="form-group">
                         <label for="date">Datum:</label>
                         <input type="text" class="form-control" id="date" placeholder="jjjj.mm.tt"/>
@@ -112,7 +149,7 @@ echo "</tbody></table>"; ?>
                         </div> 
                         <div class='row mt-3'>
                         <div class='col-6'>    
-                            <input type='button' id='addPrice' class='btn btn-success btn-sm col-12' value='Speichern' data-bs-dismiss='modal'>
+                            <input type='button' id='addPrice' class='btn btn-success btn-sm col-12' value='Speichern'>
                         </div>
                         <div class='col-6'>
                             <button type='button' class='btn btn-danger btn-sm col-12' data-bs-dismiss='modal'>Abbrechen</button>
@@ -125,7 +162,7 @@ echo "</tbody></table>"; ?>
                                 <i class='fas fa-plus'></i> Geräte Lieferant hinzufügen
                                 </button>     
                              </div>     
-                             <div class='col-6'>   
+                             <div class='col-6 d-inline-flex justify-content-end'>   
                                 <button type='button' class='btn btn-sm btn-outline-success mt-2' id='addNewLieferant' title='Neuen Lieferant anlegen'>
                                 <i class='fas fa-plus'></i> Neuen Lieferant anlegen
                                 </button>  
@@ -177,6 +214,95 @@ echo "</tbody></table>"; ?>
 <script src="utils/_utils.js"></script>
 <script>
     $(document).ready(function () {
+        $(document).on('click', '.edit-price-btn', function (e) {
+            //e.preventDefault();
+            const row = $(this).closest('tr');
+            $('#priceID').val(row.data('price-id'));
+            $('#date').val(row.data('date'));
+            $('#quelle').val(row.data('quelle'));
+            $('#menge').val(row.data('menge'));
+            $('#ep').val(row.data('ep'));
+            $('#nk').val(row.data('nk'));
+            $('#project').val(row.data('project-id') || '0').trigger('change');
+            $('#lieferant').val(row.data('lieferant-id') || '0').trigger('change');
+            $('#modalTitle').text('Preis ändern');
+            $('#addPrice').val('Änderungen speichern');
+            //let myModal = new bootstrap.Modal(document.getElementById('addPriceToElementModal'));
+            //myModal.show();
+        });
+
+        $('#addPriceModal_show').click(function () {
+            $('#priceID').val('0');
+            $('#modalTitle').text('Preis hinzufügen');
+            $('#addPrice').val('Speichern');
+            $('#date, #quelle, #menge, #ep, #nk').val('');
+            $('#project, #lieferant').val('0').trigger('change');
+        });
+
+        // ENHANCED SAVE - Handles both ADD and EDIT
+        $("#addPrice").click(function () {
+            let priceID = $('#priceID').val();
+            let date = $("#date").val();
+            let quelle = $("#quelle").val();
+            let menge = $("#menge").val();
+            let nk = normalizeCosts($("#nk").val());
+            let project = $("#project").val();
+            let lieferant = $("#lieferant").val();
+            let ep = normalizeCosts($("#ep").val());
+
+            if (date === "" || quelle === "" || menge === "" || ep === "" || nk === "" || lieferant <= 0) {
+                makeToaster("Bitte alle Felder ausfüllen!", false);
+                return;
+            }
+            let url = priceID == '0' ? "addPriceToDevice.php" : "updateDevicePrice.php";
+
+            $.ajax({
+                url: url,
+                data: {
+                    "priceID": priceID,  // 0 for ADD, >0 for UPDATE
+                    "date": date,
+                    "quelle": quelle,
+                    "menge": menge,
+                    "ep": ep,
+                    "nk": nk,
+                    "project": project,
+                    "lieferant": lieferant
+                },
+                type: "POST",
+                success: function (data) {
+                    makeToaster(data.trim(), true);
+                    setTimeout(function () {
+                        reloadTable();
+                    }, 300);
+                },
+                error: function () {
+                    makeToaster("Fehler beim Speichern!", false);
+                }
+            });
+        });
+
+        function reloadTable() {
+            $.ajax({
+                url: "getDevicePrices.php",
+                type: "POST",
+                data: {deviceID: <?= $deviceID ?>},
+                success: function (data) {
+                    const $tableContainer = $('#tableDevicePrices').closest('.table-responsive') || $('#tableDevicePrices').parent();
+                    $tableContainer.html(data);
+                    setTimeout(() => {
+                        if ($.fn.DataTable.isDataTable('#tableDevicePrices')) {
+                            $('#tableDevicePrices').DataTable().destroy();
+                        }
+                        new DataTable('#tableDevicePrices', {
+                            paging: false, searching: false, info: false,
+                            order: [[1, 'desc']],
+                            language: {url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'},
+                            scrollY: '20vh', scrollCollapse: true
+                        });
+                    }, 100);
+                }
+            });
+        }
 
         $('#date').datepicker({
             format: "yyyy-mm-dd",
@@ -259,7 +385,6 @@ echo "</tbody></table>"; ?>
             }
         });
 
-
         $('#addNewLieferant').click(function () {
             confirm("Wurde schon genau geprüft, ob es den Lieferant nicht gibt?");
             if ($('#inlineAddLieferant').is(':visible')) {
@@ -322,58 +447,16 @@ echo "</tbody></table>"; ?>
             paging: false,
             searching: false,
             info: false,
-            order: [[0, 'desc']],
+            order: [[1, 'desc']],
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 decimal: ',',
                 thousands: '.'
             },
             scrollY: '20vh',
-            scrollCollapse: true,
-            //deferRender: true,           // improves performance with large data sets
-            //pagingType: 'simple_numbers',  // uncomment if needed
-            //lengthMenu: [[5,10,25,50,-1], [5,10,25,50,'All']]  // uncomment if needed
+            scrollCollapse: true
         });
 
-        //Preis zu Geraet hinzufügen
-        $("#addPrice").click(function () {  // TODO test preis hinzufügen...
-            let date = $("#date").val();
-            let quelle = $("#quelle").val();
-            let menge = $("#menge").val();
-            let nk = normalizeCosts($("#nk").val());
-            let project = $("#project").val();
-            let lieferant = $("#lieferant").val();
-            let ep = normalizeCosts($("#ep").val());
-
-            if (date !== "" && quelle !== "" && menge !== "" && ep !== "" && nk !== "" && lieferant > 0) {
-                $.ajax({
-                    url: "addPriceToDevice.php",
-                    data: {
-                        "date": date,
-                        "quelle": quelle,
-                        "menge": menge,
-                        "ep": ep,
-                        "nk": nk,
-                        "project": project,
-                        "lieferant": lieferant
-                    },
-                    type: "POST",
-                    success: function (data) {
-                        makeToaster(data, true);
-                        $.ajax({
-                            url: "getDevicePrices.php",
-                            type: "POST",
-                            success: function (data) {
-                                $("#devicePrices").html(data);
-                            }
-                        });
-                    }
-                });
-            } else {
-                makeToaster("Bitte alle Felder ausfüllen!", false);
-                let myModal = new bootstrap.Modal(document.getElementById('addPriceToElementModal'));
-                myModal.show();
-            }
-        });
     });
+
 </script>

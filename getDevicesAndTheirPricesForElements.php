@@ -1,5 +1,4 @@
 <?php
-// getDevicesAndTheirPricesForElement.php
 require_once "utils/_utils.php";
 include "utils/_format.php";
 
@@ -11,6 +10,7 @@ if ($elementID > 0) {
     $sql = "SELECT 
                 g.GeraeteID,
                 g.Typ AS Gerät,
+                g.Kurzbeschreibung,
                 h.Hersteller,
                 p.Datum,
                 p.Quelle,
@@ -32,42 +32,96 @@ if ($elementID > 0) {
     $stmt->execute();
     $result = $stmt->get_result();
 
-    echo "<div class='table-responsive'>";
-    echo "<table class='table table-sm table-striped table-hover'>";
-    echo "<thead class='table-dark'><tr>
-            <th>Gerät</th>
-            <th>Hersteller</th>
-            <th>Datum</th>
-            <th>Info</th>
-            <th>Menge</th>
+    echo "<table class='table table-striped table-bordered table-sm table-hover border border-light px-0 py-0' id='TableDevicePricesInProjects'>";
+    echo "<thead><tr> 
             <th>EP</th>
-            <th>NK/Stk</th>
+            <th>NK</th>
+            <th>Stk</th>
+            <th class='text-center'>      
+               <i class='fas fa-calendar-alt' ></i></th>
+            <th>Info</th>
+            <th>Gerät</th>      
+          
             <th>Projekt</th>
-            <th>Lieferant</th>
+            <th>Herst./Lief.</th>
+            <th>Beschr.</th>
+
           </tr></thead><tbody>";
 
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
             $date = date_create($row["Datum"]);
             echo "<tr>";
-            echo "<td><strong>" . htmlspecialchars($row['Gerät'] ??'') . "</strong></td>";
-            echo "<td>" . htmlspecialchars($row['Hersteller']??'') . "</td>";
-            echo "<td>" . date_format($date, 'Y-m-d') . "</td>";
-            echo "<td>" . htmlspecialchars($row["Quelle"]??'') . "</td>";
+            echo "<td  class='text-end'>" . format_money_no_decimals($row["EP"]) . "</td>";
+            echo "<td  class='text-end'>" . format_money_no_decimals($row["NK/Stk"]) . "</td>";
             echo "<td>" . $row["Menge"] . "</td>";
-            echo "<td>" . format_money($row["EP"]) . "</td>";
-            echo "<td>" . format_money($row["NK/Stk"]) . "</td>";
-            echo "<td>" . htmlspecialchars($row["Projektname"]??'') ?? '-' . "</td>";
-            echo "<td>" . htmlspecialchars($row["Lieferant"]??'') ?? '-' . "</td>";
+            echo "<td>" . date_format($date, 'Y-m-d') . "</td>";
+            echo "<td>" . htmlspecialchars($row["Quelle"] ?? '') . "</td>";
+            echo "<td>" . htmlspecialchars($row['Gerät']) . "</td>";
+            echo "<td>" . htmlspecialchars($row["Projektname"] ?? '') ?? '-' . "</td>";
+            echo "<td>" . htmlspecialchars($row["Lieferant"] ?? ' ') . ' - ' .
+                htmlspecialchars($row['Hersteller'] ?? '') . "</td>";
+            echo "<td>";
+            if (!empty($row["Kurzbeschreibung"])) {
+                echo "<button type='button' class='btn btn-outline-secondary btn-sm' 
+                data-bs-toggle='popover' 
+                data-bs-placement='top' 
+                data-bs-title=' ' 
+                    data-bs-content='" . htmlspecialchars($row["Kurzbeschreibung"])
+                    . "'><i class='fas fa-info-circle'></i></button>";
+            } else {
+                echo "-";
+            }
+            echo "</td>";
             echo "</tr>";
         }
     } else {
-        echo "<tr><td colspan='9' class='text-center text-muted py-4'>Keine Gerätepreise gefunden</td></tr>";
+        echo "<tr><td colspan='9' class='text-center text-muted'>Keine Gerätepreise gefunden</td></tr>";
     }
 
-    echo "</tbody></table></div>";
+    echo "</tbody></table> ";
 
     $stmt->close();
     $mysqli->close();
 }
 ?>
+
+<script>
+    $(document).ready(function () {
+        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+        var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl, {
+                container: 'body',
+                trigger: 'focus hover',
+                html: true,
+                placement: 'top'
+            });
+        });
+
+        if ($('#TableDevicePricesInProjects tbody tr').length > 0 &&
+            !$('#TableDevicePricesInProjects tbody tr td').hasClass('text-muted')) {
+            new DataTable('#TableDevicePricesInProjects', {
+                paging: false,
+                searching: false,
+                info: false,
+                order: [[3, "desc"]], // Datum absteigend
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
+                    decimal: ",",
+                    thousands: ".",
+                },
+            });
+        }
+
+        $(document).on('click', function (e) {
+            $('[data-bs-toggle="popover"]').each(function () {
+                if (!$(this).is(e.target) &&
+                    $(this).has(e.target).length === 0 &&
+                    $('.popover').has(e.target).length === 0) {
+                    $(this).popover('hide');
+                }
+            });
+        });
+
+    });
+</script>

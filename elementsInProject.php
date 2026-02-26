@@ -267,7 +267,7 @@
 <script src="utils/_utils.js"></script>
 <script charset="utf-8">
     var tableElementsInProject;
-    var tableRoomsWithElement;
+    var tableRoomsWithElement; // for getRoomsWithElement1
     const searchbuilder = [
         {
             extend: 'searchBuilder',

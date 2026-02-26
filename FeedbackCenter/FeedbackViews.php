@@ -42,18 +42,20 @@ init_page_serversides("x", "x");
                 <div class="card-body">
                     <ul class="nav nav-tabs mb-4" role="tablist">
                         <li class="nav-item">
-                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#feature-form"
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#bug-form"
+                                    type="button"
+                                    role="tab">
+                                <i class="fas fa-bug"></i> Bug melden
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link " data-bs-toggle="tab" data-bs-target="#feature-form"
                                     type="button"
                                     role="tab">
                                 <i class="fab fa-stack-overflow"></i> Feature vorschlagen
                             </button>
                         </li>
-                        <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#bug-form" type="button"
-                                    role="tab">
-                                <i class="fas fa-bug"></i> Bug melden
-                            </button>
-                        </li>
+
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#reports-form" type="button"
                                     role="tab">
@@ -62,30 +64,6 @@ init_page_serversides("x", "x");
                         </li>
                     </ul>
                     <div class="tab-content">
-
-                        <div class="tab-pane fade show active" id="feature-form" role="tabpanel">
-                            <form method="post" action="/FeedbackCenter/FeedbackIndex.php?action=addFeature"
-                                  class="needs-validation" novalidate>
-                                <div class="mb-3">
-                                    <label for="feature_website" class="form-label" hidden=""></label>
-                                    <input id="feature_website" name="feature_website" class="form-control"
-                                           maxlength="120"
-                                           required placeholder="Website Name">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="feature_title" class="form-label" hidden></label>
-                                    <input id="feature_title" name="feature_title" class="form-control" maxlength="120"
-                                           required placeholder="Feature Title">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="feature_description" class="form-label" hidden></label>
-                                    <textarea id="feature_description" name="feature_description" class="form-control"
-                                              rows="7"
-                                              required placeholder="Möglichst Detaillierte Beschreibung"></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-primary w-100 mt-1">Submit Feature Request</button>
-                            </form>
-                        </div>
                         <div class="tab-pane fade" id="bug-form" role="tabpanel">
                             <form method="post" action="/FeedbackCenter/FeedbackIndex.php?action=addBug"
                                   class="needs-validation" enctype="multipart/form-data" novalidate>
@@ -163,11 +141,38 @@ init_page_serversides("x", "x");
                                 <button type="submit" class="btn btn-primary w-100 mt-1">Submit Bug Report</button>
                             </form>
                         </div>
+                        <div class="tab-pane fade show active" id="feature-form" role="tabpanel">
+                            <form method="post" action="/FeedbackCenter/FeedbackIndex.php?action=addFeature"
+                                  class="needs-validation" novalidate>
+                                <div class="mb-3">
+                                    <label for="feature_website" class="form-label" hidden=""></label>
+                                    <input id="feature_website" name="feature_website" class="form-control"
+                                           maxlength="120"
+                                           required placeholder="Website Name">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="feature_title" class="form-label" hidden></label>
+                                    <input id="feature_title" name="feature_title" class="form-control" maxlength="120"
+                                           required placeholder="Feature Title">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="feature_description" class="form-label" hidden></label>
+                                    <textarea id="feature_description" name="feature_description" class="form-control"
+                                              rows="7"
+                                              required placeholder="Möglichst Detaillierte Beschreibung"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 mt-1">Submit Feature Request</button>
+                            </form>
+                        </div>
+
                         <div class="tab-pane fade" id="reports-form" role="tabpanel">
-                            <form method="post" action="/FeedbackCenter/FeedbackIndex.php?action=reportEntry" class="needs-validation" novalidate>
+                            <form method="post" action="/FeedbackCenter/FeedbackIndex.php?action=reportEntry"
+                                  class="needs-validation" novalidate>
                                 <div class="mb-3">
                                     <label for="report_description" class="form-label" hidden></label>
-                                    <textarea id="report_description" name="report_description" class="form-control" rows="5" required placeholder="Beschreibe das Problem oder den fehlerhaften Eintrag..."></textarea>
+                                    <textarea id="report_description" name="report_description" class="form-control"
+                                              rows="5" required
+                                              placeholder="Beschreibe das Problem oder den fehlerhaften Eintrag..."></textarea>
                                 </div>
                                 <button type="submit" class="btn btn-warning w-100 mt-1">Report absenden</button>
                             </form>
@@ -198,8 +203,10 @@ init_page_serversides("x", "x");
                                                 aria-controls="wishCollapse<?= $idx ?>">
                                             <span class="badge bg-secondary me-2"><?= htmlspecialchars($entry['id']) ?></span>
                                             <strong><?= htmlspecialchars($entry['title']) ?></strong>
-                                            <span class="ms-2 text-muted small"><i
-                                                        class="fas fa-calendar-alt"></i> <?= htmlspecialchars($entry['date']) ?></span>
+                                            <span class="ms-2 text-muted small">
+                                                <i class="fas fa-calendar-alt"></i>
+                                                <?= htmlspecialchars($entry['date']) ?>
+                                            </span>
                                         </button>
                                     </h2>
 

@@ -1,23 +1,12 @@
 <?php
-// 25 FX
+// 26 FX
 require_once 'utils/_utils.php';
 check_login();
-?>
-
-<!DOCTYPE html>
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-<html lang="de">
-<head>
-    <title>getTenderLotElements</title></head>
-<body>
-
-<?php
 $mysqli = utils_connect_sql();
-$losID = getPostInt('lotID', 0);
+$losID = getPostInt('lotID', (int)($_SESSION["lotID"]));
+$projectID = getPostInt('projectID', (int)($_SESSION["projectID"]));
 if ($losID > 0) {
     $_SESSION["lotID"] = $losID;
-} else {
-    die("Keine Los ID. ");
 }
 
 $stmt = $mysqli->prepare("
@@ -52,15 +41,15 @@ $stmt = $mysqli->prepare("
         tabelle_räume.Raumnr;
 ");
 
-$stmt->bind_param("i", $_SESSION["lotID"]);
+$stmt->bind_param("i", $losID);
 $stmt->execute();
 $result = $stmt->get_result();
 
-echo "<table class='table table-sm compact table-responsiv table-striped table-bordered table-sm table-hover border border-light border-5' id='tableLotElements1'>
+echo "<table class='table table-sm table-responsive table-striped table-bordered table-hover border border-light border-5' id='tableLotElements1'>
             <thead><tr>
             <th>ID</th>
-            <th>elementID</th>
             <th>variantenID</th>
+            <th>elementID</th>
             <th>Stk</th>
             <th>ID</th>
             <th>Element</th>
@@ -77,21 +66,17 @@ echo "<table class='table table-sm compact table-responsiv table-striped table-b
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
     echo "<td>" . $row["id"] . "</td>";
-    echo "<td>" . $row["TABELLE_Elemente_idTABELLE_Elemente"] . "</td>";
     echo "<td>" . $row["tabelle_Varianten_idtabelle_Varianten"] . "</td>";
+    echo "<td>" . $row["TABELLE_Elemente_idTABELLE_Elemente"] . "</td>";
     echo "<td>" . $row["Anzahl"] . "</td>";
     echo "<td>" . $row["ElementID"] . "</td>";
     echo "<td>" . $row["ElementBezeichnung"] . "</td>";
     echo "<td>" . $row["Variante"] . "</td>";
     echo "<td>";
-    switch ($row["Neu/Bestand"]) {
-        case 0:
-            echo "Ja";
-            break;
-        case 1:
-            echo "Nein";
-            break;
-    }
+    echo match ((int)$row["Neu/Bestand"]) {
+        1 => "Nein",
+        0 => "Ja"
+    };
     echo "</td>";
     echo "<td>" . $row["Raumnr"] . "</td>";
     echo "<td>" . $row["Raumbezeichnung"] . "</td>";
@@ -101,37 +86,68 @@ while ($row = $result->fetch_assoc()) {
     $Kurzbeschreibung = trim($row["Kurzbeschreibung"] ?? "");
     $buttonClass = $Kurzbeschreibung === "" ? "btn-outline-secondary" : "btn-outline-dark";
     $iconClass = $Kurzbeschreibung === "" ? "fa fa-comment-slash" : "fa fa-comment";
-    $dataAttr = $Kurzbeschreibung === "" ? "data-description= '' " : "data-description='" . htmlspecialchars($Kurzbeschreibung, ENT_QUOTES, 'UTF-8') . "'";
-    echo " <button type='button'
-        class='btn btn-sm " . $buttonClass . "comment-btn'" . $dataAttr . " id='" . $row['id']
-        . "' title='Kommentar'><i class='" . $iconClass . " '></i>
-     $Kurzbeschreibung
-        </button></td>";
-    echo "</tr>";
+    $dataAttr = $Kurzbeschreibung === "" ? "data-description=''" : "data-description='" . htmlspecialchars($Kurzbeschreibung, ENT_QUOTES, 'UTF-8') . "'";
+
+    echo "<button type='button'
+    class='btn btn-sm " . $buttonClass . " comment-btn' " . $dataAttr . "
+    id='" . $row['id'] . "' title='Kommentar'>
+    <i class='" . $iconClass . "'></i>
+  </button></td>";
 }
 echo "</tbody></table>";
 $mysqli->close();
 ?>
-
 <script src="utils/_utils.js"></script>
-<script charset="utf-8">
+
+<script charset="utf-8" type="module">
+    const { default: CustomPopover } = await import('./utils/_popover.js');
+
     var tableLotElements1;
     if (typeof excelfilename2 === "undefined") {
-        var excelfilename2; // changed this to var end of 25
+        var excelfilename2;
     }
 
     if (typeof excelfilename3 === "undefined") {
         var excelfilename3;
     }
+
     $(document).ready(function () {
+        CustomPopover.init('.comment-btn', {
+            onSave: (trigger, newText) => {
+                trigger.dataset.description = newText;
+                const id = trigger.id;
+
+                $.ajax({
+                    url: 'saveRoomElementComment.php',
+                    data: { comment: newText, id: id },
+                    type: 'POST',
+                    success: function(data) {
+                        const btn = $(`.comment-btn[id='${id}']`);
+                        if (newText.trim() === '') {
+                            btn.removeClass('btn-outline-dark').addClass('btn-outline-secondary');
+                            btn.find('i').removeClass('fa fa-comment').addClass('fa fa-comment-slash');
+                        } else {
+                            btn.removeClass('btn-outline-secondary').addClass('btn-outline-dark');
+                            btn.find('i').removeClass('fa fa-comment-slash').addClass('fa fa-comment');
+                        }
+                        btn.attr('data-description', newText).data('description', newText);
+
+                        if (typeof makeToaster === 'function') {
+                            makeToaster(data.trim(), true);
+                        }
+                    },
+                    error: function() {
+                        alert("Fehler beim Speichern des Kommentars.");
+                    }
+                });
+            }
+        });
 
         getExcelFilename('Elemente-im-Los')
             .then(filename => {
-                //console.log('Generated filename:', filename);
                 excelfilename2 = filename;
                 getExcelFilename('Verortungsliste')
                     .then(filename => {
-                        //console.log('Generated filename:', filename);
                         excelfilename3 = filename;
                         tableLotElements1 = new DataTable('#tableLotElements1', {
                             dom: '<"#topDiv.top-container d-flex"<"col-md-6 justify-content-start"B><"#topDivSearch2.col-md-6"f>>t<"bottom d-flex" <"col-md-6 justify-content-start"i><"col-md-6 d-flex align-items-center justify-content-end"lp>>',
@@ -160,45 +176,52 @@ $mysqli->close();
                                     extend: 'excel',
                                     text: ' Excel',
                                     className: "btn btn-success fas fa-file-excel me-1 ms-1",
-                                    title: excelfilename2
-                                },
-                                {
-                                    extend: 'excel',
-                                    title: excelfilename3,
-                                    text: ' Verortungsliste',
+                                    title: excelfilename2,
                                     exportOptions: {
-                                        columns: [3, 4, 5, 6, 7, 8, 9, 10, 11]
-                                    },
-                                    className: "btn btn-success fas fa-file-excel me-1 ms-1",
-                                    customize: function (xlsx) {
-                                        var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                                        $('row:first', sheet).remove();
-                                        $('row', sheet).each(function () {
-                                            var col3 = $('c[r^="A"]', this).text();
-                                            var col7 = $('c[r^="E"]', this).text();
-                                            if (col3 === '0' || col7 === 'Ja') {
-                                                $(this).remove();
-                                            }
-                                        });
+                                        columns: ':gt(2)',
+                                        modifier: {
+                                            page: 'all'
+                                        }
                                     }
                                 },
                                 {
-                                    text: ' Elementliste PDF',
+                                    text: 'Elementliste PDF',
                                     className: "btn btn-md bg-white btn-outline-secondary fas fa-file-pdf me-1 ms-1",
                                     action: function () {
-                                        window.open('PDFs/pdf_createLotElementListPDF.php');
+                                        var lotID = <?php echo json_encode($losID); ?>;
+                                        var projectID = <?php echo json_encode($projectID); ?>;
+
+                                        var form = $('<form>', {
+                                            'method': 'POST',
+                                            'action': 'PDFs/pdf_createLotElementListPDF.php',
+                                            'target': '_blank',
+                                            'style': 'display: none;'
+                                        }).appendTo('body');
+
+                                        form.append($('<input>', {
+                                            'type': 'hidden',
+                                            'name': 'lotID',
+                                            'value': lotID
+                                        }));
+
+                                        form.append($('<input>', {
+                                            'type': 'hidden',
+                                            'name': 'projectID',
+                                            'value': projectID
+                                        }));
+
+                                        form.submit();
+                                        form.remove();
                                     }
                                 }
                             ]
-
                         });
 
                         $('#tableLotElements1 tbody').on('click', 'tr', function () {
-                            let elementID = tableLotElements1.row($(this)).data()[1];
-                            let variantenID = tableLotElements1.row($(this)).data()[2];
+                            let elementID = tableLotElements1.row($(this)).data()[2];
+                            let variantenID = tableLotElements1.row($(this)).data()[1];
                             let id = tableLotElements1.row($(this)).data()[0];
                             let stk = tableLotElements1.row($(this)).data()[3];
-                            //console.log("elementID, variantenID, id, stk: ", elementID, variantenID, id, stk);
                             $.ajax({
                                 url: "getVariantenParameters.php",
                                 data: {"variantenID": variantenID, "elementID": elementID},
@@ -218,14 +241,7 @@ $mysqli->close();
                                 }
                             });
                         });
-
                     });
             });
     });
-    $('#createLotElementListPDF').click(function () {
-        window.open('PDFs/pdf_createLotElementListPDF.php');
-    });
-
 </script>
-</body>
-</html>

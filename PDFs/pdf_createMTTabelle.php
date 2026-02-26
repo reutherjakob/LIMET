@@ -182,8 +182,8 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dat
             $pdf->MultiCell($table_column_sizes[2], $rowHeight, "Var", 1, 'C', 0, 0);
             $pdf->MultiCell($table_column_sizes[3], $rowHeight, "Stk", 1, 'C', 0, 0);
             $pdf->MultiCell($table_column_sizes[4], $rowHeight, "Bestand", 1, 'C', 0, 0);
-            $pdf->MultiCell($table_column_sizes[5], $rowHeight, "Bestand", 1, 'C', 0, 0);
-            $pdf->MultiCell($table_column_sizes[6], $rowHeight, "Bestand", 1, 'C', 0, 0);
+            $pdf->MultiCell($table_column_sizes[5], $rowHeight, "Ort", 1, 'C', 0, 0);
+            $pdf->MultiCell($table_column_sizes[6], $rowHeight, "Verw.", 1, 'C', 0, 0);
 
 
             // Kopfzeile der Tabelle ausgeben

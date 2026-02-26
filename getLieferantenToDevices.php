@@ -49,7 +49,18 @@ while ($row = $result->fetch_assoc()) {
     echo "</tr>";
 }
 echo "</tbody></table>";
-echo "<input type='button' id='addLieferantModalButton' class='btn btn-success btn-sm' value='Lieferant hinzufügen' data-bs-toggle='modal' data-bs-target='#addLieferantModal'> ";
+echo "
+<div class='col-12 d-flex justify-content-end'>
+    <button type='button'
+            id='addLieferantModalButton'
+            class='btn btn-sm btn-success mt-2'
+            value='Lieferant hinzufügen'
+            data-bs-toggle='modal'
+            data-bs-target='#addLieferantModal'>
+            <i class='fas fa-plus'></i> 
+        Lieferant hinzufügen
+    </button>
+</div>";
 
 include_once("modal_addLieferant.php");
 ?>
@@ -57,7 +68,7 @@ include_once("modal_addLieferant.php");
 
 <!-- Modal zum Anzeigen der Lieferantenmitarbeiter-->
 <div class='modal fade' id='showLieferantContactsModal' role='dialog' tabindex="-1">
-    <div class='modal-dialog modal-lg'>
+    <div class='modal-dialog modal-xl'>
         <div class='modal-content'>
             <div class='modal-header'>
                 <h4 class='modal-title'>Lieferantenkontakte</h4>
@@ -159,7 +170,7 @@ include_once("modal_addLieferant.php");
     //Lieferantenkontakte anzeigen
     $("button[value='showLieferantContacts']").click(function () {
         let id = this.id;
-        console.log(id);
+        // console.log(id);
         if (id !== "") {
             $.ajax({
                 url: "getPersonsOfLieferant.php",
