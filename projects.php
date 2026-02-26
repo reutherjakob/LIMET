@@ -211,7 +211,7 @@
                 <div class='card-body'>
                     <div class="row">
                         <p>
-                            <i class="fa fa-fort-awesome-alt col-1"></i>
+                            <i class="fas fa-spider col-1"></i>
                             <a class="col-11" href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free"
                                target="_blank">Projekt Icons</a>
                         </p>

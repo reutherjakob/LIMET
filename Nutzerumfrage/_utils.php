@@ -1,7 +1,7 @@
 <?php
 
 global $role;// = get_user_role();
-include '../Nutzerumfrage/footer_Nutzerumfrage.html';
+// include '../Nutzerumfrage/footer_Nutzerumfrage.html';
 ?>
 
 <script>

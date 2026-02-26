@@ -1,8 +1,6 @@
 <?php
-session_start();
+require_once '../utils/_utils.php';
 check_login();
-//ini_set('log_errors', 1);
-//ini_set('error_log', __DIR__ . '/my_debug_log.log');
 
 function checkEntry($jsonArray, $elementId, $parameterId): bool
 {
