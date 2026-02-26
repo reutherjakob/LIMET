@@ -277,15 +277,9 @@ init_page_serversides("x");
 
             $(document).on("click", "button[value='Los ToDos']", function () {
                 var lotID = this.id.replace('lottodo_', '');
-                $("#todoModalBody").html(`<div class="text-center p-5">
-        <div class="spinner-border" role="status">
-            <span class="visually-hidden">Laden...</span>
-        </div>
-        <p class="mt-2">ToDos werden geladen...</p>
-    </div>`);
 
                 $.ajax({
-                    url: "getLotTodos.php",
+                    url: "get_los_todo.php",
                     type: "POST",
                     data: {lotID: lotID},
                     success: function (data) {
