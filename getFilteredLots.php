@@ -197,11 +197,32 @@ while ($row = $result->fetch_assoc()) {
         $row["Vergabesumme"],
         $row["Lieferant"],
         $row["mkf_losnummer"],
-        "<button type='button' id='lotwf_{$row["idtabelle_Lose_Extern"]}' class='btn btn-sm btn-outline-secondary' value='Los Workflow' data-bs-toggle='modal' data-bs-target='#workflowDataModal'><i class='fas fa-history'></i></button>",
-        "<button type='button' id='lotelem_{$row["idTABELLE_Projekte"]}_{$row["idtabelle_Lose_Extern"]}' class='btn btn-sm btn-outline-secondary' value='Los Elemente' data-bs-toggle='modal' data-bs-target='#lotElementsModal'><i class='fas fa-notes-medical'></i></button>",
+        "<button type='button' id='lotwf_{$row["idtabelle_Lose_Extern"]}' 
+            class='btn btn-sm btn-outline-secondary' 
+            value='Los Workflow' 
+            data-bs-toggle='modal' 
+            data-bs-target='#workflowDataModal'>
+            <i class='fas fa-code-branch'></i></button>",
+
+        "<button type='button' id='lotelem_{$row["idTABELLE_Projekte"]}_{$row["idtabelle_Lose_Extern"]}' 
+            class='btn btn-sm btn-outline-secondary' value='Los Elemente' 
+            data-bs-toggle='modal' 
+            data-bs-target='#lotElementsModal'>
+            <i class='fas fa-notes-medical'></i></button>",
+
+        "<button type='button'
+            class='btn btn-sm btn-outline-secondary'
+            value='Los Historie'
+            data-los-id='{$row["idtabelle_Lose_Extern"]}'
+            data-los-name='" . htmlspecialchars($row["LosBezeichnung_Extern"]) . "'
+            data-bs-toggle='modal'
+            data-bs-target='#losHistorieModal'>
+            <i class='fas fa-history'></i>
+        </button>",
+
         $todo_button,
         $checkbox_html,
-        $kontrolliert_btn
+        $kontrolliert_btn,
 
     ];
 }
