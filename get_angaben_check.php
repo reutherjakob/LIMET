@@ -102,7 +102,6 @@ $allElementMappings = [
     120 => ["param" => "Abdunkelbarkeit"], // Ultraschallsystem - ICU,2.45.26.1
     122 => ["param" => "Abdunkelbarkeit"], // Ultraschallgerät - transkranieller Doppler,2.45.15.1
     153 => ["param" => "Abdunkelbarkeit"], // Ultraschallsystem - ZNA,2.45.17.1
-    253 => ["param" => "Abdunkelbarkeit"], // Ultraschalltherapiegerät,2.56.14.1
     256 => ["param" => "Abdunkelbarkeit"], // Ultraschallsystem - Gynäkologisch,2.45.21.1
     268 => ["param" => "Abdunkelbarkeit"], // Ultraschallsystem - Neurologie,2.45.25.1
     312 => ["param" => "Abdunkelbarkeit"], // Ultraschallsystem - Radiologisch,2.45.18.1
