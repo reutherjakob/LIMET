@@ -3,8 +3,8 @@
 require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
-$losID = getPostInt('lotID', (int)($_SESSION["lotID"]));
-$projectID = getPostInt('projectID', (int)($_SESSION["projectID"]));
+$losID = getPostInt('lotID');
+$projectID = (int)$_SESSION["projectID"];
 if ($losID > 0) {
     $_SESSION["lotID"] = $losID;
 }
@@ -93,6 +93,7 @@ while ($row = $result->fetch_assoc()) {
     id='" . $row['id'] . "' title='Kommentar'>
     <i class='" . $iconClass . "'></i>
   </button></td>";
+
 }
 echo "</tbody></table>";
 $mysqli->close();

@@ -229,7 +229,22 @@ init_page_serversides();
                             echo "<td>" . $row["Vergabesumme"] . "</td>";
                             echo "<td>" . $row["Lieferant"] . "</td>";
                             echo "<td><button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn  btn-sm btn-outline-secondary' value='LotWorkflow' data-bs-toggle='modal' data-bs-target='#workflowDataModal'><i class='fas fa-history'></i></button></td>";
-                            echo "<td>" . $row["Notiz"] . "</td>";
+
+
+                            // echo "<td>" . $row["Notiz"] . "</td>";
+
+                            $Notiz = trim($row["Notiz"] ?? "");
+                            $buttonClass = $Notiz === "" ? "btn-outline-secondary" : "btn-outline-dark";
+                            $iconClass = $Notiz === "" ? "fa fa-comment-slash" : "fa fa-comment";
+                            $dataAttr = $Notiz === "" ? "data-description=''" : "data-description='" . htmlspecialchars($Notiz, ENT_QUOTES, 'UTF-8') . "'";
+
+                            echo "<td><button type='button'
+    class='btn btn-sm " . $buttonClass . " comment-btn' " . $dataAttr . "
+    id='" . $row["idtabelle_Lose_Extern"] . "' title='Kommentar'>
+    <i class='" . $iconClass . "'></i>
+  </button></td>";
+
+
                             echo "<td>" . $row["idTABELLE_Lieferant"] . "</td>";
                             echo "<td>" . $row["Vergabe_abgeschlossen"] . "</td>";
                             echo "<td>" . $row["mkf_von_los"] . "</td>";
@@ -825,6 +840,7 @@ include "modal_showLotWorkflow.php";
     });
 
     $('#toggleVermerkeBtn').click(function () {
+
         $('#mainCardColumn').toggleClass('col-xxl-8 col-xxl-11');
         $('#vermerkeCardColumn').toggleClass('col-xxl-4 col-xxl-1');
         $('#lotVermerke').toggleClass('d-none');

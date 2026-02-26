@@ -158,17 +158,17 @@ while ($row = $result->fetch_assoc()) {
         } // Preis IST eingetragen: nur Button zeigen
         else {
             $checkbox_html = '';
-            // Bereits kontrolliert: grüner disabled Button
+            // Bereits kontrolliert: Badge
             if (!empty($kontrolle_user) && strlen(trim($kontrolle_user)) > 0) {
-                $button_text = htmlspecialchars(substr($kontrolle_user, 0, 3));
+                $button_text = htmlspecialchars(strtoupper(substr($kontrolle_user, 0, 3)));
                 $button_title = 'Bereits kontrolliert: ' . htmlspecialchars($kontrolle_user);
-                $kontrolliert_btn = "<button type='button' 
-             id='checked_by_{$row["idTABELLE_Projekte"]}_{$row["idtabelle_Lose_Extern"]}' 
-             class='btn btn-sm btn-success kontrolle-btn fas fa-check' 
-             data-projekt-id='{$row["idTABELLE_Projekte"]}'
-             data-lot-id='{$row["idtabelle_Lose_Extern"]}'
-             disabled
-             title='{$button_title}'>{$button_text}</button>";
+                $kontrolliert_btn = "<span 
+                        id='checked_by_{$row["idTABELLE_Projekte"]}_{$row["idtabelle_Lose_Extern"]}' 
+                        class='badge bg-success kontrolle-badge' 
+                         style='font-size: 0.8em;'
+                        data-projekt-id='{$row["idTABELLE_Projekte"]}'
+                        data-lot-id='{$row["idtabelle_Lose_Extern"]}'
+                        title='{$button_title}'>{$button_text}</span>";
             } // Noch nicht kontrolliert: aktiver Button
             else {
                 $kontrolliert_btn = "<button type='button' 

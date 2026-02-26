@@ -2,10 +2,10 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="lotElementsModalLabel" style="font-size: 10px; ">
-                    <i class="fas fa-briefcase-medical me-2"></i>
-                    Los Elemente
-                </h5>
+                <i class="fas fa-briefcase-medical me-2"></i>
+                <h3 class="modal-title" id="lotElementsModalLabel">
+                    Elemente im Los
+                </h3>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="lotElementsModalBody" style="max-height: 90vh; overflow-y: auto;">
