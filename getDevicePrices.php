@@ -86,7 +86,7 @@ echo "</tbody></table>"; ?>
             value='Preis hinzufügen'
             data-bs-toggle='modal'
             data-bs-target='#addPriceToElementModal'>
-            <i class='fas fa-plus'></i>
+        <i class='fas fa-plus'></i>
         Preis hinzufügen
     </button>
 </div>
@@ -149,7 +149,7 @@ echo "</tbody></table>"; ?>
                         </div> 
                         <div class='row mt-3'>
                         <div class='col-6'>    
-                            <input type='button' id='addPrice' class='btn btn-success btn-sm col-12' value='Speichern'>
+                            <input type='button' id='addPrice' class='btn btn-success btn-sm col-12' value='Speichern'  data-bs-dismiss='modal'>
                         </div>
                         <div class='col-6'>
                             <button type='button' class='btn btn-danger btn-sm col-12' data-bs-dismiss='modal'>Abbrechen</button>
@@ -214,7 +214,7 @@ echo "</tbody></table>"; ?>
 <script src="utils/_utils.js"></script>
 <script>
     $(document).ready(function () {
-        $(document).on('click', '.edit-price-btn', function (e) {
+        $(document).on('click', '.edit-price-btn', function () {
             //e.preventDefault();
             const row = $(this).closest('tr');
             $('#priceID').val(row.data('price-id'));
@@ -256,6 +256,9 @@ echo "</tbody></table>"; ?>
             }
             let url = priceID == '0' ? "addPriceToDevice.php" : "updateDevicePrice.php";
 
+            let selectedRow = table1.row('.info');  // or table1.row({ selected: true })
+            let elementID = selectedRow.data() ? selectedRow.data()[0] : null;
+
             $.ajax({
                 url: url,
                 data: {
@@ -271,38 +274,34 @@ echo "</tbody></table>"; ?>
                 type: "POST",
                 success: function (data) {
                     makeToaster(data.trim(), true);
-                    setTimeout(function () {
-                        reloadTable();
-                    }, 300);
+
+                    $.ajax({
+                        url: "getDevicePrices.php",
+                        data: {"deviceID": deviceID},
+                        type: "POST",
+                        success: function (data) {
+                            $("#devicePrices").html(data);
+                        }
+                    });
+
+                    if (elementID) {
+                        $.ajax({
+                            url: "getDevicesAndTheirPricesForElements.php",
+                            data: {"elementID": elementID},
+                            type: "POST",
+                            success: function (data) {
+                                $("#elementPricesInOtherProjects-2").html(data);
+                            }
+                        });
+                    }
+
+
                 },
                 error: function () {
                     makeToaster("Fehler beim Speichern!", false);
                 }
             });
         });
-
-        function reloadTable() {
-            $.ajax({
-                url: "getDevicePrices.php",
-                type: "POST",
-                data: {deviceID: <?= $deviceID ?>},
-                success: function (data) {
-                    const $tableContainer = $('#tableDevicePrices').closest('.table-responsive') || $('#tableDevicePrices').parent();
-                    $tableContainer.html(data);
-                    setTimeout(() => {
-                        if ($.fn.DataTable.isDataTable('#tableDevicePrices')) {
-                            $('#tableDevicePrices').DataTable().destroy();
-                        }
-                        new DataTable('#tableDevicePrices', {
-                            paging: false, searching: false, info: false,
-                            order: [[1, 'desc']],
-                            language: {url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'},
-                            scrollY: '20vh', scrollCollapse: true
-                        });
-                    }, 100);
-                }
-            });
-        }
 
         $('#date').datepicker({
             format: "yyyy-mm-dd",

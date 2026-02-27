@@ -180,6 +180,7 @@
             ordering: true,
             info: true,
             language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 search: "_INPUT_",
                 searchPlaceholder: "Suche...",
                 lengthMenu: "Show _MENU_ entries"

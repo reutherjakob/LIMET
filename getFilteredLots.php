@@ -158,17 +158,17 @@ while ($row = $result->fetch_assoc()) {
         } // Preis IST eingetragen: nur Button zeigen
         else {
             $checkbox_html = '';
-            // Bereits kontrolliert: grüner disabled Button
+            // Bereits kontrolliert: Badge
             if (!empty($kontrolle_user) && strlen(trim($kontrolle_user)) > 0) {
-                $button_text = htmlspecialchars(substr($kontrolle_user, 0, 3));
+                $button_text = htmlspecialchars(strtoupper(substr($kontrolle_user, 0, 3)));
                 $button_title = 'Bereits kontrolliert: ' . htmlspecialchars($kontrolle_user);
-                $kontrolliert_btn = "<button type='button' 
-             id='checked_by_{$row["idTABELLE_Projekte"]}_{$row["idtabelle_Lose_Extern"]}' 
-             class='btn btn-sm btn-success kontrolle-btn fas fa-check' 
-             data-projekt-id='{$row["idTABELLE_Projekte"]}'
-             data-lot-id='{$row["idtabelle_Lose_Extern"]}'
-             disabled
-             title='{$button_title}'>{$button_text}</button>";
+                $kontrolliert_btn = "<span 
+                        id='checked_by_{$row["idTABELLE_Projekte"]}_{$row["idtabelle_Lose_Extern"]}' 
+                        class='badge bg-success kontrolle-badge' 
+                         style='font-size: 0.8em;'
+                        data-projekt-id='{$row["idTABELLE_Projekte"]}'
+                        data-lot-id='{$row["idtabelle_Lose_Extern"]}'
+                        title='{$button_title}'>{$button_text}</span>";
             } // Noch nicht kontrolliert: aktiver Button
             else {
                 $kontrolliert_btn = "<button type='button' 
@@ -197,11 +197,32 @@ while ($row = $result->fetch_assoc()) {
         $row["Vergabesumme"],
         $row["Lieferant"],
         $row["mkf_losnummer"],
-        "<button type='button' id='lotwf_{$row["idtabelle_Lose_Extern"]}' class='btn btn-sm btn-outline-secondary' value='Los Workflow' data-bs-toggle='modal' data-bs-target='#workflowDataModal'><i class='fas fa-history'></i></button>",
-        "<button type='button' id='lotelem_{$row["idTABELLE_Projekte"]}_{$row["idtabelle_Lose_Extern"]}' class='btn btn-sm btn-outline-secondary' value='Los Elemente' data-bs-toggle='modal' data-bs-target='#lotElementsModal'><i class='fas fa-notes-medical'></i></button>",
+        "<button type='button' id='lotwf_{$row["idtabelle_Lose_Extern"]}' 
+            class='btn btn-sm btn-outline-secondary' 
+            value='Los Workflow' 
+            data-bs-toggle='modal' 
+            data-bs-target='#workflowDataModal'>
+            <i class='fas fa-code-branch'></i></button>",
+
+        "<button type='button' id='lotelem_{$row["idTABELLE_Projekte"]}_{$row["idtabelle_Lose_Extern"]}' 
+            class='btn btn-sm btn-outline-secondary' value='Los Elemente' 
+            data-bs-toggle='modal' 
+            data-bs-target='#lotElementsModal'>
+            <i class='fas fa-notes-medical'></i></button>",
+
+        "<button type='button'
+            class='btn btn-sm btn-outline-secondary'
+            value='Los Historie'
+            data-los-id='{$row["idtabelle_Lose_Extern"]}'
+            data-los-name='" . htmlspecialchars($row["LosBezeichnung_Extern"]) . "'
+            data-bs-toggle='modal'
+            data-bs-target='#losHistorieModal'>
+            <i class='fas fa-history'></i>
+        </button>",
+
         $todo_button,
         $checkbox_html,
-        $kontrolliert_btn
+        $kontrolliert_btn,
 
     ];
 }

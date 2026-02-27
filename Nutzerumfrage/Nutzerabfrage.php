@@ -276,8 +276,9 @@ $mysqli->close();
         });
 
 
+
         $('#roomParameterForm').submit(function (e) {
-            e.preventDefault(); // prevent normal form submit
+            e.preventDefault();
             $.ajax({
                 url: 'spargelfeld_save.php',
                 type: 'POST',

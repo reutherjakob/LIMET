@@ -232,6 +232,7 @@ init_page_serversides("x"); ?>
                                         type: "POST",
                                         success: function (data) {
                                             $("#devicesInDB").html(data);
+
                                             $.ajax({
                                                 url: "getDevicesAndTheirPricesForElements.php",
                                                 data: {"elementID": elementID},

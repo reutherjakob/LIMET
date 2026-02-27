@@ -35,17 +35,16 @@
             verständlich und einfach wie möglich geklärt: </p>
         <ul>
             <li><strong>Welche Daten werden erhoben und zu welchem Zweck werden sie verarbeitet?</strong><br>
-                Lediglich die notwendigsten personenbezogenen Daten werden von uns ausschließlich für festgelegte,
-                eindeutige und legitime Zwecke erhoben, z. B. die Erfüllung von Verträgen und Aufgaben oder bei
-                berechtigten Interessen, und werden nicht unvereinbart weiterverarbeitet.
+                Prinzipiell werden lediglich die notwendigsten Daten von uns ausschließlich für festgelegte,
+                eindeutige und legitime Zwecke erhoben und werden nicht weitergegeben.
+                Weitere Details sind unten gelistet.
             </li>
             <li><strong>Wer verarbeitet die Daten?</strong><br>
-                Der Verantwortliche (z. B. Unternehmen) verarbeitet die Daten selbst.
+                Wir verarbeiten die Daten selbst bzw. die Hosting Provider verarbeiten die von Ihnen aufgezeichneten Daten
             </li>
             <li><strong>Wie kann ein Widerspruch eingelegt/ eine Löschung/ Änderung beantragt werden?</strong><br>
                 Ein Widerspruch, Löschung oder Berichtigung wird formlos beim Verantwortlichen beantragt; bei Erfolg
-                muss
-                der Verantwortliche die Verarbeitung einstellen und Daten löschen, sofern keine vorrangigen Gründe
+                muss der Verantwortliche die Verarbeitung einstellen und Daten löschen, sofern keine vorrangigen Gründe
                 vorliegen.
             </li>
             <li><strong>Wie lange werden die jeweiligen Daten gespeichert?</strong><br>Daten werden nur so lange
@@ -57,26 +56,6 @@
             </li>
 
         </ul>
-        <h4>Rechtsgrundlage</h4>
-        <p>In der DSGVO Art. 6 wird beschrieben, unter welchen Bedingungen die Verarbeitung personenbezogener Daten
-            rechtmäßig ist. Diese beinhalten unter anderem folgende: </p>
-        <ul>
-            <li> Die betroffene Person hat ihre Einwilligung zu der Verarbeitung gegeben. Diese Bedingung ist bspw.
-                durch
-                die Zustimmung der Cookies gegeben.
-            </li>
-            <li> Die Verarbeitung ist für die Erfüllung eines Vertrags oder zu Durchführung vorvertraglicher Maßnahmen
-                erforderlich. Darunter fällt die Nutzung unserer Website. Diese stellt eine Dienstleistung an die
-                BesucherInnen dar und für die Erfüllung dieser ist die Verarbeitung einiger weniger Daten notwendig.
-            </li>
-        </ul>
-        <p> Bezüglich Ihrer personenbezogenen Daten haben Sie grundsätzlich die Rechte auf Auskunft, Berichtigung,
-            Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit sowie Widerspruch (Art. 15 bis 21 DSGVO).
-            Beruht die Rechtmäßigkeit einer Datenverarbeitung auf Ihrer Einwilligung, so haben Sie das Recht, die
-            Einwilligung jederzeit zu widerrufen. Durch den Widerruf wird die Rechtmäßigkeit der Verarbeitung, die
-            auf
-            Basis der Einwilligung bis zum Zeitpunkt des Widerrufs erfolgt ist, nicht berührt (Art. 7 Abs. 3
-            DSGVO). </p>
 
 
         <h3>Welche Daten werden erhoben und zu welchem Zweck?</h3>
@@ -123,6 +102,28 @@
             PHP
             basieren. Wird bei Sitzungsende gelöscht (wenn die Seite verlassen oder geschlossen wird).
         </p>
+
+        <h4>Rechtsgrundlage</h4>
+        <p>In der DSGVO Art. 6 wird beschrieben, unter welchen Bedingungen die Verarbeitung personenbezogener Daten
+            rechtmäßig ist. Diese beinhalten unter anderem folgende: </p>
+        <ul>
+            <li> Die betroffene Person hat ihre Einwilligung zu der Verarbeitung gegeben. Diese Bedingung ist bspw.
+                durch
+                die Zustimmung der Cookies gegeben.
+            </li>
+            <li> Die Verarbeitung ist für die Erfüllung eines Vertrags oder zu Durchführung vorvertraglicher Maßnahmen
+                erforderlich. Darunter fällt die Nutzung unserer Website. Diese stellt eine Dienstleistung an die
+                BesucherInnen dar und für die Erfüllung dieser ist die Verarbeitung einiger weniger Daten notwendig.
+            </li>
+        </ul>
+        <p> Bezüglich Ihrer personenbezogenen Daten haben Sie grundsätzlich die Rechte auf Auskunft, Berichtigung,
+            Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit sowie Widerspruch (Art. 15 bis 21 DSGVO).
+            Beruht die Rechtmäßigkeit einer Datenverarbeitung auf Ihrer Einwilligung, so haben Sie das Recht, die
+            Einwilligung jederzeit zu widerrufen. Durch den Widerruf wird die Rechtmäßigkeit der Verarbeitung, die
+            auf
+            Basis der Einwilligung bis zum Zeitpunkt des Widerrufs erfolgt ist, nicht berührt (Art. 7 Abs. 3
+            DSGVO). </p>
+
 
         <h4>Kontaktaufnahme</h4>
         <p>Wenn Sie Kontakt mit uns aufnehmen, erfordert dies eine Datenübertragung Ihrerseits (Telefonnummer bei
