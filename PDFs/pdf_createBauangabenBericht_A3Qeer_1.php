@@ -51,6 +51,42 @@ $pdf->SetLineStyle($style_normal);
 
 $mysqli = utils_connect_sql();
 $isnotVorentwurf = $_SESSION["projectPlanungsphase"] !== "Vorentwurf";
+$elektroParams = [
+    // Always show these
+    ['key' => 'Anwendungsgruppe', 'label' => 'ÖVE E8101:', 'unit' => '', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
+    ['key' => 'AV', 'label' => 'AV: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
+    ['key' => 'SV', 'label' => 'SV: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
+    ['key' => 'ZSV', 'label' => 'ZSV: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
+    ['key' => 'USV', 'label' => 'USV: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
+    ['key' => 'IT Anbindung', 'label' => 'IT Anschl.: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => true, 'isnotVorentwurf' => false],
+
+    ['key' => 'ET_Anschlussleistung_W', 'label' => 'Raum Anschlussl. ohne Glz:', 'unit' => 'W', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
+    ['key' => 'ET_Anschlussleistung_AV_W', 'label' => 'AV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
+    ['key' => 'ET_Anschlussleistung_SV_W', 'label' => 'SV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
+    ['key' => 'ET_Anschlussleistung_ZSV_W', 'label' => 'ZSV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
+    ['key' => 'ET_Anschlussleistung_USV_W', 'label' => 'USV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
+    ['key' => 'ET_RJ45-Ports', 'label' => 'RJ45-Ports: ', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
+
+    ["key" => "RaumAnschlussLeistungInklGlz",'ln_after' => false, 'isnotVorentwurf' => true],
+
+    ['key' => 'EL_Laser 16A CEE Stk', 'label' => 'CEE16A Laser: ', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => true],
+    ['key' => 'EL_Roentgen 16A CEE Stk', 'label' => 'CEE16A Röntgen', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
+
+];
+
+$haustechnikParams = [
+    ['key' => 'H6020', 'label' => 'H6020: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+    ['key' => 'HT_Abluft_Digestorium_Stk', 'label' => 'Abluft Digestor/Werkbank:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
+    ['key' => 'HT_Abluft_Sicherheitsschrank_Stk', 'label' => 'Abluft Sicherheitsschrank:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
+    ['key' => 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'label' => 'Abluft Sicherheitsschrank Unterbau:', 'unit' => 'Stk', 'cell' => $e_C + $e_C_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => false],
+    ['key' => 'HT_Punktabsaugung_Stk', 'label' => 'Punktabsaugung:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => true], // Line break after this
+    ['key' => 'HT_Waermeabgabe_W', 'label' => 'Abwärme MT: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false], // Line break after
+    ['key' => 'VE_Wasser', 'label' => 'VE Wasser:', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+    ['key' => 'HT_Notdusche', 'label' => 'Notdusche:', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+    ['key' => 'HT_Raumtemp Sommer °C', 'label' => 'Max. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C, 'ln_after' => false],
+    ['key' => 'HT_Raumtemp Winter °C', 'label' => 'Min. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+];
+
 $parameter_changes_t_räume = array();
 foreach ($roomIDsArray as $valueOfRoomID) {
 
@@ -132,28 +168,6 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $blockHeight = 6 + $horizontalSpacerLN + getAnmHeight($pdf, $row['Anmerkung Elektro'], $SB) + $i;
         block_label_queer($block_header_w, $pdf, "Elektro", $blockHeight, $block_header_height, $SB);
 
-        $elektroParams = [
-            // Always show these
-            ['key' => 'Anwendungsgruppe', 'label' => 'ÖVE E8101:', 'unit' => '', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
-            ['key' => 'AV', 'label' => 'AV: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
-            ['key' => 'SV', 'label' => 'SV: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
-            ['key' => 'ZSV', 'label' => 'ZSV: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
-            ['key' => 'USV', 'label' => 'USV: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
-            ['key' => 'IT Anbindung', 'label' => 'IT Anschl.: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => true, 'isnotVorentwurf' => false],
-
-            ['key' => 'ET_Anschlussleistung_W', 'label' => 'Raum Anschlussl. ohne Glz:', 'unit' => 'W', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
-            ['key' => 'ET_Anschlussleistung_AV_W', 'label' => 'AV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
-            ['key' => 'ET_Anschlussleistung_SV_W', 'label' => 'SV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
-            ['key' => 'ET_Anschlussleistung_ZSV_W', 'label' => 'ZSV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
-            ['key' => 'ET_Anschlussleistung_USV_W', 'label' => 'USV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
-            ['key' => 'ET_RJ45-Ports', 'label' => 'RJ45-Ports: ', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
-
-            ["key" => "RaumAnschlussLeistungInklGlz"],
-
-            ['key' => 'EL_Laser 16A CEE Stk', 'label' => 'CEE16A Laser: ', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => true],
-            ['key' => 'EL_Roentgen 16A CEE Stk', 'label' => 'CEE16A Röntgen', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
-
-        ];
 
         foreach ($elektroParams as $param) {
             if ($param['isnotVorentwurf'] && !$isnotVorentwurf) {
@@ -204,19 +218,6 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 //
         $Block_height = 6 + $horizontalSpacerLN2 + getAnmHeight($pdf, $row['Anmerkung HKLS'], $SB);
         block_label_queer($block_header_w, $pdf, "Haustechnik", $Block_height, $block_header_height, $SB);
-        $haustechnikParams = [
-            ['key' => 'H6020', 'label' => 'H6020: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-            ['key' => 'HT_Abluft_Digestorium_Stk', 'label' => 'Abluft Digestor/Werkbank:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
-            ['key' => 'HT_Abluft_Sicherheitsschrank_Stk', 'label' => 'Abluft Sicherheitsschrank:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
-            ['key' => 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'label' => 'Abluft Sicherheitsschrank Unterbau:', 'unit' => 'Stk', 'cell' => $e_C + $e_C_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => false],
-            ['key' => 'HT_Punktabsaugung_Stk', 'label' => 'Punktabsaugung:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => true], // Line break after this
-
-            ['key' => 'HT_Waermeabgabe_W', 'label' => 'Abwärme MT: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false], // Line break after
-            ['key' => 'VE_Wasser', 'label' => 'VE Wasser:', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-            ['key' => 'HT_Notdusche', 'label' => 'Notdusche:', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-            ['key' => 'HT_Raumtemp Sommer °C', 'label' => 'Max. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C, 'ln_after' => false],
-            ['key' => 'HT_Raumtemp Winter °C', 'label' => 'Min. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-        ];
 
         foreach ($haustechnikParams as $param) {
             multicell_text_hightlight($pdf, $param['cell'], $font_size, $param['key'], $param['label'], $parameter_changes_t_räume);
@@ -287,8 +288,14 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 ////     ------- MT Tabelle  ---------
 //
         // -------------------------Elemente im Raum laden--------------------------
-        $sql = "SELECT tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
-            tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
+        $sql = "SELECT tabelle_elemente.ElementID,
+                        tabelle_elemente.Bezeichnung,
+                        tabelle_varianten.Variante, Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
+            tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, 
+            tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
+            tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten,
+            tabelle_räume_has_tabelle_elemente.Standort,
+            tabelle_räume_has_tabelle_elemente.Verwendung
             FROM tabelle_varianten INNER JOIN (tabelle_räume_has_tabelle_elemente INNER JOIN tabelle_elemente ON 
             tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON
             tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
@@ -305,8 +312,12 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         $resultX->data_seek(0);
         $upcmn_blck_size=0;
         if ($isnotVorentwurf && $rowcounter > 0) {
-            // -----------------Projekt Elementparameter/Variantenparameter laden----------------------------
-            $sql = "SELECT tabelle_parameter_kategorie.Kategorie,tabelle_parameter.Abkuerzung, tabelle_parameter.Bezeichnung, tabelle_parameter.idTABELLE_Parameter, tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie, tabelle_parameter.Abkuerzung
+            $sql = "SELECT tabelle_parameter_kategorie.Kategorie,
+                        tabelle_parameter.Abkuerzung, 
+                        tabelle_parameter.Bezeichnung, 
+                        tabelle_parameter.idTABELLE_Parameter, 
+                        tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie, 
+                        tabelle_parameter.Abkuerzung
                 FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter) 
                 ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
                 WHERE ((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte=" . $_SESSION["projectID"] . ") AND (tabelle_parameter.`Bauangaben relevant` = 1) 
@@ -315,9 +326,14 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                 ORDER BY tabelle_parameter_kategorie.Kategorie, tabelle_parameter.Bezeichnung;";
             $result1 = $mysqli->query($sql);
 
-            // -------------------------Elemente parameter -------------------------
-            $sql = "SELECT tabelle_projekt_elementparameter.Wert, tabelle_projekt_elementparameter.Einheit, tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten, 
-                tabelle_projekt_elementparameter.tabelle_elemente_idTABELLE_Elemente, tabelle_parameter.Bezeichnung, tabelle_parameter_kategorie.Kategorie, tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie, tabelle_parameter.idTABELLE_Parameter 
+            $sql = "SELECT tabelle_projekt_elementparameter.Wert, 
+                        tabelle_projekt_elementparameter.Einheit, 
+                        tabelle_projekt_elementparameter.tabelle_Varianten_idtabelle_Varianten, 
+                        tabelle_projekt_elementparameter.tabelle_elemente_idTABELLE_Elemente,
+                        tabelle_parameter.Bezeichnung,
+                        tabelle_parameter_kategorie.Kategorie,
+                        tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie,
+                        tabelle_parameter.idTABELLE_Parameter 
                 FROM tabelle_parameter_kategorie INNER JOIN (tabelle_parameter INNER JOIN tabelle_projekt_elementparameter ON tabelle_parameter.idTABELLE_Parameter = tabelle_projekt_elementparameter.tabelle_parameter_idTABELLE_Parameter) 
                 ON tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie = tabelle_parameter.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
                 WHERE ((tabelle_projekt_elementparameter.tabelle_projekte_idTABELLE_Projekte=" . $_SESSION["projectID"] . ") AND (tabelle_parameter.`Bauangaben relevant` = 1)
@@ -334,6 +350,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                 WHERE (((tabelle_projekt_elementparameter_aenderungen.projekt)=" . $_SESSION["projectID"] . "))
                 AND tabelle_projekt_elementparameter_aenderungen.timestamp > '$Änderungsdatum'
                 ORDER BY tabelle_projekt_elementparameter_aenderungen.timestamp DESC;";
+
             $changes = $mysqli->query($sql);
             $dataChanges = array();
             while ($row3 = $changes->fetch_assoc()) {

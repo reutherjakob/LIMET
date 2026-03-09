@@ -27,8 +27,10 @@ class MYPDF extends TCPDF
                 }
             }
 
-            if ($_SESSION["PDFTITELBLATT"] === "KHI Quest") {
-                $this->Ln(5);
+            if (isset($_SESSION["PDFTITELBLATT"])) {
+                if ($_SESSION["PDFTITELBLATT"] === "KHI Quest") {
+                    $this->Ln(5);
+                }
             }
 
             $this->cell(0, 0, '', 'B', 0, 'L');

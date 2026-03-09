@@ -70,7 +70,7 @@ $elektroParams = [
     ['key' => 'ET_Anschlussleistung_USV_W', 'label' => 'USV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
     ['key' => 'ET_RJ45-Ports', 'label' => 'RJ45-Ports: ', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
 
-    ["key" => "RaumAnschlussLeistungInklGlz"],
+    ["key" => "RaumAnschlussLeistungInklGlz",'ln_after' => false, 'isnotVorentwurf' => true],
 
     ['key' => 'EL_Laser 16A CEE Stk', 'label' => 'CEE16A Laser: ', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => true],
     ['key' => 'EL_Roentgen 16A CEE Stk', 'label' => 'CEE16A Röntgen', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
@@ -322,7 +322,11 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 //
         // -------------------------Elemente im Raum laden--------------------------
         $sql = "SELECT tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
-            tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.Standort, tabelle_räume_has_tabelle_elemente.Verwendung
+            tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
+            tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
+            tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten,
+            tabelle_räume_has_tabelle_elemente.Standort, 
+            tabelle_räume_has_tabelle_elemente.Verwendung
             FROM tabelle_varianten INNER JOIN (tabelle_räume_has_tabelle_elemente INNER JOIN tabelle_elemente ON 
             tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON
             tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
@@ -346,6 +350,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                            tabelle_parameter.idTABELLE_Parameter,
                            tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie, 
                            tabelle_parameter.Abkuerzung
+          
                 FROM tabelle_parameter_kategorie INNER JOIN 
                     (tabelle_parameter INNER JOIN tabelle_projekt_elementparameter 
                     ON tabelle_parameter.idTABELLE_Parameter = 

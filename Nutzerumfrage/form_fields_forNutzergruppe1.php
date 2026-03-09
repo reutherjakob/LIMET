@@ -9,7 +9,7 @@ $formFields = [
     //["type" => "texthidden", "kathegorie" => "Raum", "name" => "ebene", "label" => "Ebene"],
     ["type" => "texthidden", "kathegorie" => "Raum", "name" => "nf", "label" => "Nutzfläche (NF)"],
 
-    ["type" => "KathegorieDropdowner", "kathegorie" => "Raum", "name" => "raumkategorie", "label" => "Raumkategorie (spezifisch)?", "info" => "Die Planung sieht eine Trennung von Büros, Messräumen, Wägeräumen, Lagern, Labors vor."],
+    ["type" => "KathegorieDropdowner", "kathegorie" => "Raum", "name" => "raumkategorie", "label" => "Raumkategorie (spezifisch)?", "info" => "Die Planung sieht eine Trennung in Raumtypen vor. Siehe dazu ."],
 
     ["type" => "select", "kathegorie" => "Raum", "name" => "mitarbeiter_anzahl", "label" => "Anzahl der im Raum ständig tätigen MitarbeiterInnen?", "options" => [0 => "0", 1 => "1", 2 => "2", 3 => "3", 4 => "4", 5 => "5", 6 => "6", 7 => "7", 8 => "8"]],
 

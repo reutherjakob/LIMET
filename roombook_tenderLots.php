@@ -580,8 +580,16 @@ include "modal_showLotWorkflow.php";
                         }
                     }
                     document.getElementById("lotAuftragnehmer").value = tableTenderLots.row($(this)).data()[18];
-                    document.getElementById("lotNotice").value = tableTenderLots.row($(this)).data()[21];
-                    document.getElementById("lotMKFOf").value = tableTenderLots.row($(this)).data()[24]; //TODO ??
+                    document.getElementById("lotMKFOf").value = tableTenderLots.row($(this)).data()[24];
+
+
+                    const notizCell = tableTenderLots.row($(this)).data()[21];
+                    const tempDivNotiz = document.createElement('div');
+                    tempDivNotiz.innerHTML = notizCell || '';
+                    const notizBtn = tempDivNotiz.querySelector('button');
+                    document.getElementById("lotNotice").value = notizBtn ? (notizBtn.dataset.description || '') : '';
+
+
                     $.ajax({
                         url: "getLotVermerke.php",
                         data: {"lotID": lotID},
