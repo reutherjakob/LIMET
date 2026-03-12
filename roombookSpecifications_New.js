@@ -1,8 +1,10 @@
 let projectID;
+let sessionProjectName;
 fetch('get_project_id.php')
     .then(response => response.json())
     .then(data => {
         projectID = data.projectID;
+        sessionProjectName = data.projectName;
     })
     .catch(error => console.error('Error:', error));
 
@@ -46,9 +48,9 @@ $("#hideZeroRows").on("change", function () {  // 06052025
 $(document).ready(function () {
     loadSettings();
     init_dt();
-    init_btn_4_dt();
+
     init_showRoomElements_btn();
-    init_visibilities();
+
     table_click();
     init_filter();
     handleCheckboxChange();
@@ -303,7 +305,8 @@ function init_dt() {
         initComplete: function () {
             $('.dt-search label').remove();
             $(' .dt-search').children().appendTo('#TableCardHeader');//removeClass('form-control form-control-sm')
-
+            init_btn_4_dt();
+            init_visibilities();
         }
     });
 }
@@ -475,11 +478,14 @@ function html_2_plug_into_edit_cell(dataIdentifier) {
                                         <option value="1"${cellText === '1' ? ' selected' : ''}>1</option>
                                     </select> `;
     } else if (getCase(dataIdentifier) === "abd") {
+        const isGCP = sessionProjectName === "GCP";
+        const option1 = isGCP ? `<option value="2"${cellText === '2' ? ' selected' : ''}> vollverdunkelbar</option>` : '';
+
         return ` <select class="form-control form-control-sm" id="${dataIdentifier}_dropdowner">
-                                        <option value="0"${cellText === '0' ? ' selected' : ''}> kein Anspruch </option>
-                                        <option value="1"${cellText === '1' ? ' selected' : ''}> vollverdunkelbar</option>
-                                        <option value="2"${cellText === '2' ? ' selected' : ''}> abdunkelbar</option>
-                                    </select>   `;
+                                    <option value="0"${cellText === '0' ? ' selected' : ''}> kein Anspruch </option>
+                                    ${option1}
+                                    <option value="1"${cellText === '1' ? ' selected' : ''}> abdunkelbar</option>
+                                </select>   `;
     } else {
         return `<input class="form-control form-control-sm" id="CellInput" onclick="this.select()" type="text" value="${cellText}">`;
     }

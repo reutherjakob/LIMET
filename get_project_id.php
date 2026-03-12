@@ -2,4 +2,4 @@
 
 session_start();
 header('Content-Type: application/json');
-echo json_encode(['projectID' => $_SESSION["projectID"]]);
+echo json_encode(['projectID' => $_SESSION["projectID"] , 'projectName' => $_SESSION["projectName"]]);

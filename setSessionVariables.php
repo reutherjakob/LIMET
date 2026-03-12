@@ -30,6 +30,10 @@ if (isset($_POST["projectPlanungsphase"]) && $_POST["projectPlanungsphase"] != "
 if (isset($_POST["variantenID"]) &&$_POST["variantenID"] != "") {
     $_SESSION["variantenID"] = $_POST["variantenID"];
 }
+if (isset($_POST["projektArt"]) &&$_POST["projektArt"] != "") {
+    $_SESSION["projektArt"] = $_POST["projektArt"];
+}
+
 ?>
 
 </body>

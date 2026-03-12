@@ -59,7 +59,7 @@
         "Labor Kathegorien" => "fas fa-atom",
         "AGES SF Nutzerraumbuch" => "fas fa-mortar-pestle",
         "AGES Spargelfeld" => "fas fa-mortar-pestle",
-        "Test KHI" =>"fas fa-yin-yang",
+        "Test KHI" => "fas fa-yin-yang",
         "Labor Kategorien" => "fas fa-microscope",
     ];
     //<i class="fas fa-mountain"></i>
@@ -103,6 +103,7 @@
                             <th>Planungsphase</th>
                             <th>PlanungsphasenID</th> <!-- invis -->
                             <th>Preisbasis</th>
+                            <th>ProjektArt</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -120,7 +121,7 @@
                                  tabelle_projekte.Ausfuehrung,
                                  tabelle_projekte.Preisbasis,
                                  tabelle_planungsphasen.Bezeichnung, 
-                                 tabelle_planungsphasen.idTABELLE_Planungsphasen
+                                 tabelle_planungsphasen.idTABELLE_Planungsphasen, projektArt
                           FROM tabelle_projekte 
                           INNER JOIN tabelle_planungsphasen ON tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen = tabelle_planungsphasen.idTABELLE_Planungsphasen 
                           INNER JOIN tabelle_users_have_projects ON tabelle_projekte.idTABELLE_Projekte = tabelle_users_have_projects.tabelle_projekte_idTABELLE_Projekte 
@@ -165,6 +166,7 @@
                             echo "<td>" . $row["Bezeichnung"] . "</td>";
                             echo "<td>" . $row["idTABELLE_Planungsphasen"] . "</td>";
                             echo "<td>" . $row["Preisbasis"] . "</td>";
+                            echo "<td >" . $row["projektArt"] . "</td>";
                             echo "</tr>";
                         } ?>
                         </tbody>
@@ -200,7 +202,7 @@
 
                         <p>
                             <i class="far fa-bell col-1"></i>
-                            <span class ="col-11"  href="elementAdministration.php">Neu: Preise ändern Button </span>
+                            <span class="col-11" href="elementAdministration.php">Neu: Preise ändern Button </span>
                         </p>
                     </div>
 
@@ -266,7 +268,7 @@
         table = $('#tableProjects').DataTable({
             columnDefs: [
                 {
-                    targets: [0, 12],
+                    targets: [0, 12, 14],
                     visible: false,
                     searchable: false
                 },
@@ -332,7 +334,7 @@
             document.getElementById("vermerkeFilter").value = 0;
             document.getElementById("active").value = rowData[5] === "Ja" ? 1 : 0;
             document.getElementById("neubau").value = rowData[6] === 'Ja' ? 1 : 0;
-
+            let projektArt = rowData[14];
             // console.log({
             //     id,
             //     projectName,
@@ -355,7 +357,8 @@
                     "projectID": id,
                     "projectName": projectName,
                     "projectAusfuehrung": projectAusfuehrung,
-                    "projectPlanungsphase": projectPlanungsphase
+                    "projectPlanungsphase": projectPlanungsphase,
+                    "projektArt": projektArt
                 },
                 type: "POST",
                 success: function () {

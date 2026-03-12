@@ -138,7 +138,7 @@ foreach ($teile as $valueOfRoomID) {
             $pdf->SetFont('zapfdingbats', '', 10);
             $pdf->MultiCell(40, 6, TCPDF_FONTS::unichr(54), 0, 'L', 0, 0);
         } else {
-            if ($row['Abdunkelbarkeit'] === '1') {
+            if ($row['Abdunkelbarkeit'] === '2') {
                 $pdf->SetTextColor(0);
                 $pdf->SetFont('helvetica', '', 10);
                 $pdf->MultiCell(40, 6, "Vollverdunkelbar", 0, 'L', 0, 0);

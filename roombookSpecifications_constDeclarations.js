@@ -10,7 +10,7 @@ function title2data(columnsDefinition, title) {
 
 
 const buttonRanges = [
-    {name: 'All', start: 6, end: 168, longName: 'Alle Spalten'},
+    {name: 'All', start: 6, end: 166, longName: 'Alle Spalten'},
     {name: 'R', start: 7, end: 24, longName: 'Raum'},
     {name: 'HKLS', start: 25, end: 34, longName: 'HKLS'},
     {name: 'ET', start: 35, end: 56 + 1, longName: 'Elektro'},
@@ -21,7 +21,7 @@ const buttonRanges = [
     {name: '-ET', start: 117 + 1, end: 128 + 1, longName: 'Labor-ET'},
     {name: '-HT', start: 129 + 1, end: 139 + 1, longName: 'Labor-HT'},
     {name: '-H2O', start: 140 + 1, end: 148 + 1, longName: 'Labor-H2O'},
-    {name: 'GCP', start: 148 + 1, end: 168 + 1, longName: ''}
+    {name: 'GCP', start: 148 + 1, end: 166 + 1, longName: ''}
 ];
 
 const columnsDefinition = [
@@ -40,7 +40,7 @@ const columnsDefinition = [
     }, // 3
     {data: 'Raumbezeichnung', title: 'Raumbez'}, // 4
     {data: 'Raumnr', title: 'Raumnr'}, // 5
-    {data: "Bezeichnung", title: "Funktionsstelle", visible: false, case: "Funktionsstelle"}, // 6
+    {data: "Bezeichnung", title: "Funktionsstelle", visible: false, searchable: false, case: "Funktionsstelle"}, // 6
     {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'}, // 7
     {data: "Nummer", title: "DIN13080", visible: false, case: "none-edit"}, // 8
     {data: "Entfallen", title: "Entfallen", name: "Entfallen", visible: false, case: "bit"}, // 9
@@ -259,8 +259,7 @@ const columnsDefinition = [
     {data: 'Wasser Qual 2', title: 'H20 Q2', visible: false, case: "bit"}, // 145 +1
     {data: 'Wasser Qual 1', title: 'H20 Q1', visible: false, case: "bit"}, // 146 +1
 
-    // GCP STISSL... 
-    {data: 'Belichtungsfläche', title: 'AR Belichtungsfläche', visible: false, case: ""},
+    // GCP STISSL...
     {data: 'Fussboden', title: 'AR Fussboden', visible: false, case: ""},
     {data: 'Decke', title: 'AR Decke', visible: false, case: ""},
     {data: 'Anmerkung AR', title: 'AR Anmerkung', visible: false, case: ""},
@@ -277,14 +276,12 @@ const columnsDefinition = [
     {data: 'HT_Kuehlung', title: 'HT_Kuehlung', visible: false, case: ""},
     {data: 'HT_Kaelteabgabe_Typ', title: 'HT_Kaelteabgabe_Typ', visible: false, case: ""},
     {data: 'HT_Heizung', title: 'HT_Heizung', visible: false, case: ""},
-    {data: 'HT_Waermeabgabe_Typ', title: 'HT_Waermeabgabe_Typ', visible: false, case: ""}, {
-        data: 'HT_Heizung',
-        title: 'HT_Heizung',
-        visible: false,
-        case: ""
-    },
+    {data: 'HT_Waermeabgabe_Typ', title: 'HT_Waermeabgabe_Typ', visible: false, case: ""},
     {data: 'HT_Belueftung', title: 'HT_Belueftung', visible: false, case: ""},
     {data: 'HT_Entlueftung', title: 'HT_Entlueftung', visible: false, case: ""},
     {data: 'PHY_Akustik_Schallgrad', title: 'PHY_Akustik_Schallgrad', visible: false, case: ""},
+
+
+
     {data: 'element_mask', title: '#Elemente', name: 'element_mask', visible: false, case: "bit"}
 ]
