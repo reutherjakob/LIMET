@@ -55,31 +55,35 @@ init_page_serversides("x"); ?>
                         </div>
                     </div>
                 </div>
-                <div class='col-xxl-3'>
-                    <div class='card'>
+                <div class='col-xxl-7'>
+                    <!---div class='card'>
                         <div class='card-header'>Schätzkosten</div>
                         <div class="card-body" id="elementPricesInOtherProjects"></div>
-                    </div>
-                    <!--div class="mt-1 card">
-                            <ul class="nav nav-tabs mt-2 float-end" style="font-size:0.85em;">
-                                <li class="nav-item">
-                                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#elementPricesInOtherProjects"><label>Schätzkosten in Projekten</label></button>
-                                </li>
-                                <li class="nav-item">
-                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#elementPricesInOtherProjects-2">Gerätepreise</button>
-                                </li>
-                            </ul>
+                    </div--->
+                    <div class="mt-1 card">
+                        <ul class="nav nav-tabs mt-2 float-end">
+                            <li class="nav-item">
+                                <button class="nav-link active" data-bs-toggle="tab"
+                                        data-bs-target="#elementPricesInOtherProjects"><label>Schätzkosten in
+                                        Projekten</label></button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab"
+                                        data-bs-target="#elementPricesInOtherProjects-2">Gerätepreise
+                                </button>
+                            </li>
+                        </ul>
                         <div class="card-body tab-content">
-                            <div class="tab-pane fade show active" id="elementPricesInOtherProjects"> </div>
-                            <div class="tab-pane fade" id="elementPricesInOtherProjects-2"> </div>
+                            <div class="tab-pane fade show active" id="elementPricesInOtherProjects"></div>
+                            <div class="tab-pane fade" id="elementPricesInOtherProjects-2"></div>
                         </div>
-                    </div -->
+                    </div>
                 </div>
-                <div class='col-xxl-4'>
+                <!---div class='col-xxl-4'>
                     <div class='card'>
                         <div class='card-header'>Gerätepreise</div>
                         <div class="card-body" id="elementPricesInOtherProjects-2"></div>
-                    </div>
+                    </div--->
                 </div>
             </div>
         </div>

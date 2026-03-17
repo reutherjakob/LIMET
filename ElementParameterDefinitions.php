@@ -7,7 +7,7 @@ $unitSets = [
     'frequency' => ["", "Hz", "kHz", "MHz", "GHz"],
     'temp' => ["", "K", "°C"],
     'volume' => ["", "ml", "l", "m³"],
-    'connection' => ["", "DN", "Zoll", '"'],
+    'connection' => ["", "DN", '"'],
     'angle' => ["", "°"],
     'voltage' => ["", "V", "kV"],
     'current' => ["", "mA", "A", "kA"],
@@ -20,6 +20,7 @@ $unitSets = [
     'volumetricFlow' => ["", "ml/h", "l/h", "m³/h", "%"],
     'noise' => ["", "dB(A)"],
     'wallReinforcement' => ["", "kg/lfm"],
+    "installation_place" =>["", "Wand", "Decke", "Boden"],
     'pieces' => ["", "Stk", "Ja"],
     'piecesPerLength' => ["", "Stk", "Stk/lfm"],
     'piecesOrvolumetricFlow' => ["", "Stk", "L/min"],
@@ -169,6 +170,9 @@ $parameterFieldConfig = [
     'HKLS|Warmwasser_Temp_Min|Einheit' => $unitSets['temp'],
     'HKLS|Kaltwasser_Wasserhaerte|Einheit' => $unitSets['waterHardness'],
     'HKLS|Warmwasser_Wasserhaerte|Einheit' => $unitSets['waterHardness'],
+
+    'HKLS|Kühlwasser_Druckverlust|Einheit' => $unitSets['pressure'],
+
     'Ergonomie|Lärm|Einheit' => $unitSets['noise'],
     'Allgemein|Volumen|Einheit' => $unitSets['volume'],
     'Allgemein|Kosten_unbestätigt|Einheit' => $unitSets['money'],
@@ -213,6 +217,9 @@ $parameterFieldConfig = [
     'Statik|Punktlast|Einheit' => $unitSets['force'],
     'Statik|Wandverstärkung|Wert' => $valueSets['wallReinforcementValues'],
     'Statik|Wandverstärkung|Einheit' => $unitSets['wallReinforcement'],
+    'Statik|Montage_Ort|Wert' => $unitSets['installation_place'],
+
+
     'US-Sonden|Frequenzbereich|Einheit' => $unitSets['frequency'],
     'Waage|Mindesteinwaage|Einheit' => $unitSets['weight'],
     'Waage|Maximaleinwaage|Einheit' => $unitSets['weight'],
