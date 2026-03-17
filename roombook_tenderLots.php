@@ -83,11 +83,13 @@ init_page_serversides();
                                 case 'Nicht offenes Verfahren ohne Bekanntmachung':
                                     return 'bg-primary';
                                 case 'Nicht offenes Verfahren mit Bekanntmachung':
+                                case 'RV':
                                     return 'bg-success';
                                 case 'Offenes Verfahren':
-                                    return 'bg-danger';
                                 case 'MKF':
-                                    return "bg-danger";
+                                    return 'bg-danger';
+
+
                                 default:
                                     return 'bg-dark';
                             }
@@ -371,6 +373,7 @@ init_page_serversides();
                                 Bekanntmachung
                             </option>
                             <option value="MKF">MKF</option>
+                            <option value="RV">MKF</option>
                             <option value="Andere">Andere</option>
 
                         </select>

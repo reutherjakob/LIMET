@@ -18,6 +18,7 @@ function getVerfahrenBadgeClass($verfahren): string
         case 'Nicht offenes Verfahren ohne Bekanntmachung':
             return 'bg-primary';
         case 'Nicht offenes Verfahren mit Bekanntmachung':
+        case 'RV':
             return 'bg-success';
         case 'Offenes Verfahren':
         case 'MKF':
@@ -42,6 +43,7 @@ SELECT
     tabelle_lose_extern.Vergabe_abgeschlossen, 
     tabelle_lose_extern.Kostenanschlag, 
     tabelle_lose_extern.preise_in_db,
+    tabelle_lose_extern.preise_in_db_user,
     tabelle_lose_extern.kontrolle_preise_in_db_user,
     tabelle_lieferant.Lieferant, 
     tabelle_lieferant.idTABELLE_Lieferant,
@@ -155,21 +157,27 @@ while ($row = $result->fetch_assoc()) {
                data-projekt-id='{$row["idTABELLE_Projekte"]}'>
         </label>";
             $kontrolliert_btn = '';
-        } // Preis IST eingetragen: nur Button zeigen
+        }
+        // Preis IST eingetragen: nur Button zeigen
         else {
-            $checkbox_html = '';
-            // Bereits kontrolliert: Badge
+            $str="".$row['preise_in_db_user'];
+            $txt=  htmlspecialchars(strtoupper(substr($str, 0, 3)));
+            $checkbox_html =  "<span class='badge bg-success kontrolle-badge' 
+                            style='font-size: 0.6em;'>{$txt}</span>";
+
+
             if (!empty($kontrolle_user) && strlen(trim($kontrolle_user)) > 0) {
                 $button_text = htmlspecialchars(strtoupper(substr($kontrolle_user, 0, 3)));
                 $button_title = 'Bereits kontrolliert: ' . htmlspecialchars($kontrolle_user);
                 $kontrolliert_btn = "<span 
                         id='checked_by_{$row["idTABELLE_Projekte"]}_{$row["idtabelle_Lose_Extern"]}' 
                         class='badge bg-success kontrolle-badge' 
-                         style='font-size: 0.8em;'
+                         style='font-size: 0.6em;'
                         data-projekt-id='{$row["idTABELLE_Projekte"]}'
                         data-lot-id='{$row["idtabelle_Lose_Extern"]}'
                         title='{$button_title}'>{$button_text}</span>";
-            } // Noch nicht kontrolliert: aktiver Button
+            }
+            // Noch nicht kontrolliert: aktiver Button
             else {
                 $kontrolliert_btn = "<button type='button' 
              id='checked_by_{$row["idTABELLE_Projekte"]}_{$row["idtabelle_Lose_Extern"]}' 

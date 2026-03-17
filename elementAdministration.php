@@ -84,12 +84,11 @@ init_page_serversides("x"); ?>
                         <div class='card-header'>Gerätepreise</div>
                         <div class="card-body" id="elementPricesInOtherProjects-2"></div>
                     </div--->
-                </div>
             </div>
         </div>
     </div>
 
-    <hr>
+
     <div class="mt-1 card">
         <div class="card-header">Geräte</div>
         <div class="card-body">

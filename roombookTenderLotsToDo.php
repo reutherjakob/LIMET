@@ -1,6 +1,6 @@
 <?php
 require_once "utils/_utils.php";
-init_page_serversides("x");
+init_page_serversides();
 ?>
 
 <!DOCTYPE html>
@@ -131,16 +131,20 @@ init_page_serversides("x");
                                     <option value="">Gewerk/Los wählen...</option>
                                     <?php
                                     $mysqli = utils_connect_sql();
-                                    $sql = "SELECT p.Interne_Nr, p.Projektname, 
+                                    $stmt = $mysqli->prepare("SELECT p.Interne_Nr, p.Projektname, 
                                                    l.LosNr_Extern, l.LosBezeichnung_Extern, 
                                                    l.idtabelle_Lose_Extern,
                                                    l.Vergabe_abgeschlossen
                                             FROM tabelle_lose_extern l 
                                             INNER JOIN tabelle_projekte p 
                                                 ON l.tabelle_projekte_idTABELLE_Projekte = p.idTABELLE_Projekte
-                                            WHERE p.idTABELLE_Projekte != 4
-                                            ORDER BY p.Interne_Nr DESC, l.LosNr_Extern";
-                                    $result = $mysqli->query($sql);
+                                            WHERE p.idTABELLE_Projekte =? 
+                                            ORDER BY p.Interne_Nr DESC, l.LosNr_Extern");
+                                    $stmt->bind_param("i", $_SESSION["projectID"]);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+
+
                                     while ($row = $result->fetch_assoc()) {
                                         $statusIcon = '';
                                         switch ($row["Vergabe_abgeschlossen"]) {
@@ -168,10 +172,18 @@ init_page_serversides("x");
                                         required>
                                     <option value="">Element wählen...</option>
                                     <?php
-                                    $sql = "SELECT idTABELLE_Elemente, ElementID, Bezeichnung
-                                            FROM tabelle_elemente
-                                            ORDER BY ElementID";
-                                    $result = $mysqli->query($sql);
+                                    $stmt = $mysqli->prepare("
+                                            SELECT DISTINCT e.idTABELLE_Elemente, e.ElementID, e.Bezeichnung
+                                            FROM tabelle_elemente e
+                                            INNER JOIN tabelle_räume_has_tabelle_elemente rhe 
+                                                ON rhe.TABELLE_Elemente_idTABELLE_Elemente = e.idTABELLE_Elemente
+                                            INNER JOIN tabelle_räume r 
+                                                ON r.idTABELLE_Räume = rhe.TABELLE_Räume_idTABELLE_Räume
+                                            WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
+                                            ORDER BY e.ElementID");
+                                    $stmt->bind_param("i", $_SESSION["projectID"]);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
                                     while ($row = $result->fetch_assoc()) {
                                         echo "<option value='" . h($row["idTABELLE_Elemente"]) . "'>"
                                             . h($row["ElementID"]) . " - "
