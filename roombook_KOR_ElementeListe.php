@@ -7,7 +7,7 @@ init_page_serversides();
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
-    <title>RB-Liste – Gleichzeitigkeit</title>
+    <title>KOR_Elementliste</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
@@ -54,16 +54,20 @@ init_page_serversides();
                         tabelle_elemente.ElementID,
                         tabelle_elemente.Bezeichnung AS ElementBezeichnung,
                         tabelle_räume_has_tabelle_elemente.Anzahl,
-                        tabelle_elemente_has_tabelle_parameter.Wert AS Gleichzeitigkeit,
+                        CASE WHEN LOWER(tabelle_räume.Raumbezeichnung) IN ('gerätelager', 
+                                                                           'lager rollstühle',
+                                                                           'liegenlager rein',
+                                                                           'lager - reinigung (putzraum)') 
+                             THEN 0 
+                             ELSE 1 
+                        END AS Gleichzeitigkeit,
                          tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
                     FROM tabelle_räume
                         INNER JOIN tabelle_räume_has_tabelle_elemente
                             ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
                         INNER JOIN tabelle_elemente
                             ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente
-                        LEFT JOIN tabelle_elemente_has_tabelle_parameter
-                            ON tabelle_elemente.idTABELLE_Elemente = tabelle_elemente_has_tabelle_parameter.TABELLE_Elemente_idTABELLE_Elemente
-                            AND tabelle_elemente_has_tabelle_parameter.TABELLE_Parameter_idTABELLE_Parameter = 133
+
                     WHERE tabelle_räume.tabelle_projekte_idTABELLE_Projekte = ?
                         AND tabelle_räume_has_tabelle_elemente.Anzahl <> 0
                     ORDER BY tabelle_räume.Raumnr, tabelle_elemente.ElementID";

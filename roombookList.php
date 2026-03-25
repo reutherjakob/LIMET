@@ -94,7 +94,7 @@ init_page_serversides();
                 AND Anzahl <>0";
 
             $stmt = $mysqli->prepare($sql);
-            $stmt->bind_param('i',  $_SESSION["projectID"] );
+            $stmt->bind_param('i', $_SESSION["projectID"]);
             $stmt->execute();
             $result = $stmt->get_result();
 
@@ -149,15 +149,15 @@ init_page_serversides();
                 echo "<td>" . $row["Gewerke_Nr"] . "</td>";
                 echo "<td>" . $row["GHG"] . "</td>";
                 echo "<td>" . $row["LosBezeichnung_Extern"] . "</td>";
-                if (null != ($row["Kurzbeschreibung"])) {
+                if (!empty($row["Kurzbeschreibung"])) {
                     echo "<td><button type='button' class='btn btn-sm btn-outline-dark' 
-                    data-bs-toggle='popover' 
-                    data-bs-placement='top' 
-                    data-bs-content='" . htmlspecialchars($row["Kurzbeschreibung"]) . "' 
-                    title='Kommentar'>
-                    <i class='fa fa-comment'></i></button></td>";
+                        data-bs-toggle='popover' 
+                        data-bs-placement='top' 
+                        data-bs-content='" . htmlspecialchars($row["Kurzbeschreibung"]) . "' 
+                        title='Kommentar'>
+                        <i class='fa fa-comment'></i></button></td>";
                 } else {
-                    echo "<td> </td>";
+                    echo "<td></td>";
                 }
                 echo "</tr>";
             }
@@ -171,6 +171,7 @@ init_page_serversides();
 <script src="utils/_utils.js"></script>
 <script>
     $(document).ready(function () {
+
         new DataTable('#tableRoombookList', {
             select: true,
             dom: "<'dt-buttons'B><'dt-search'f><'dt-info' i>rt",
@@ -198,11 +199,15 @@ init_page_serversides();
                                 if (column === 14) {
                                     return "'" + data; // Apostroph voranstellen
                                 }
+                                if (column === 19) {
+                                    var match = data.match(/data-bs-content='([^']*)'/);
+                                    return match ? match[1] : '';
+                                }
                                 return data;
                             }
                         }
                     }
-                },{
+                }, {
                     extend: 'searchBuilder',
                     className: 'btn btn-sm bg-white btn-outline-dark' // add your btn-sm here with desired styles
                 }
@@ -214,6 +219,33 @@ init_page_serversides();
                 $('#tableRoombookList_wrapper .dt-info').appendTo('#dt-header-container');
             }
         });
+
+
+        $(function () {
+            // Enable all popovers
+            const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+            const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                return new bootstrap.Popover(popoverTriggerEl, {
+                    container: 'body',
+                    trigger: 'focus', // ensures popover closes when focus is lost
+                    placement: 'left' // optional
+                });
+            });
+            // Close any open popover when clicking outside
+            $(document).on('click', function (e) {
+                $('[data-bs-toggle="popover"]').each(function () {
+                    if (
+                        !$(this).is(e.target) &&                              // Not the clicked element
+                        $(this).has(e.target).length === 0 &&                // Not inside the clicked element
+                        $('.popover').has(e.target).length === 0             // Not inside the actual popover
+                    ) {
+                        $(this).popover('hide');                             // Hide it
+                    }
+                });
+            });
+        });
+
+
     });
 
 </script>

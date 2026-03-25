@@ -29,6 +29,7 @@ $unitSets = [
     'waterHardness' => ["", "°dH", "mmol/l"],
     'explosionZone' => ["", "0", "1", "2", "Keine"],
     'pressureBarMbar' => ["", "bar", "mbar"],
+    'pressureBarPa' => ["", "bar", "Pa"],
     'massFlowKgH' => ["", "kg/h"],
     'percent' => ["", "%"],
     'wavelength' => ["", "nm", "μm"],
@@ -93,6 +94,7 @@ $parameterFieldConfig = [
     'Elektro|Stromstärke|Einheit' => $unitSets['current'],
     'Elektro|Spannung|Einheit' => $unitSets['voltage'],
     'Elektro|Nennleistung|Einheit' => $unitSets['power'],
+    'Elektro|PA|Wert' =>rangeValues(0, 5),
     'Elektro|PA|Einheit' => $unitSets['pieces'],
     'Elektro|USV|Wert' => $valueSets['boolean'],
     'Elektro|Netzwerk|Einheit ' => $valueSets['netzwerk'],
@@ -119,6 +121,10 @@ $parameterFieldConfig = [
     'Elektro|Kreise AV|Wert' => rangeValues(0, 2),
     'Elektro|Kreise SV|Wert' => rangeValues(0, 2),
     'Elektro|Kreise ZSV|Wert' => rangeValues(0, 2),
+
+    'HKLS|Kaltwasser_Fließdruck|Einheit' => $unitSets['pressureBarPa'],
+	'HKLS|Warmwasser_Fließdruck|Einheit' =>$unitSets['pressureBarPa'],
+
     'HKLS|Abwärme|Einheit' => $unitSets['power'],
     'HKLS|Warmwasser_Strom|Einheit' => $unitSets['flow'],
     'HKLS|Kaltwasser_Strom|Einheit' => $unitSets['flow'],

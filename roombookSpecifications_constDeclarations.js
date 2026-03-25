@@ -10,7 +10,7 @@ function title2data(columnsDefinition, title) {
 
 
 const buttonRanges = [
-    {name: 'All', start: 6, end: 166, longName: 'Alle Spalten'},
+    {name: 'All', start: 6, end: 169, longName: 'Alle Spalten'},
     {name: 'R', start: 7, end: 24, longName: 'Raum'},
     {name: 'HKLS', start: 25, end: 34, longName: 'HKLS'},
     {name: 'ET', start: 35, end: 56 + 1, longName: 'Elektro'},
@@ -21,7 +21,7 @@ const buttonRanges = [
     {name: '-ET', start: 117 + 1, end: 128 + 1, longName: 'Labor-ET'},
     {name: '-HT', start: 129 + 1, end: 139 + 1, longName: 'Labor-HT'},
     {name: '-H2O', start: 140 + 1, end: 148 + 1, longName: 'Labor-H2O'},
-    {name: 'GCP', start: 148 + 1, end: 166 + 1, longName: ''}
+    {name: 'GCP', start: 148 + 1, end: 166 + 3, longName: ''}
 ];
 
 const columnsDefinition = [
@@ -281,6 +281,7 @@ const columnsDefinition = [
     {data: 'HT_Entlueftung', title: 'HT_Entlueftung', visible: false, case: ""},
     {data: 'PHY_Akustik_Schallgrad', title: 'PHY_Akustik_Schallgrad', visible: false, case: ""},
 
+    {data: 'Raumtyp BH', title: 'Raumtype', visible: false, case: ""},
 
 
     {data: 'element_mask', title: '#Elemente', name: 'element_mask', visible: false, case: "bit"}
