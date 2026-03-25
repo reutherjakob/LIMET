@@ -17,7 +17,7 @@ function createRaumHeaderRaumbuch($pdf, $Raumdaten)
         // Raumnummer
         $raumnrHeight = $pdf->getStringHeight(80, "Nummer: " . $row['Raumnr']);
         $pdf->MultiCell(80, 6, "Nummer: " . $row['Raumnr'], 0, 'L', 0, 0);
-        if ($raumnrHeight > 6   || $raumbezHeight > 6) $pdf->Ln(4);
+        if ($raumnrHeight > 6 || $raumbezHeight > 6) $pdf->Ln(4);
 
         $pdf->Ln();
         $pdf->SetFont('helvetica', '', 10);
@@ -62,11 +62,10 @@ function createRaumHeaderRaumbuch($pdf, $Raumdaten)
 }
 
 
-
 function getFileName($topic)
 {
     $date = $_SESSION["PDFdatum"] ?? date('Y-m-d');
-    $projectname = $_SESSION['projectName'];
+    $projectname = trim($_SESSION['projectName']??'');
     return $projectname . "_GPMT_" . $topic . "_" . $date . ".pdf";
 }
 
@@ -188,7 +187,7 @@ function is_not_no_comment($str)
 }
 
 function translateBestand($value)
-{ 
+{
     return ($value == 0) ? 'Ja' : 'Nein';
 }
 
@@ -334,7 +333,9 @@ function anmA3($pdf, $inp_text, $SB, $block_header_w)
         $rowHeightComment = $pdf->getStringHeight($SB, $outstr, false, true, '', 1);
         $pdf->MultiCell($block_header_w, $rowHeightComment, "", 0, 'R', 0, 0); //        if ($rowHeightComment < 25) {  //Cool, but wonky
         $pdf->MultiCell($SB - $block_header_w, $rowHeightComment, $outstr, 0, 'L', 0, 1);
+        return true;
     }
+    return false;
 }
 
 
@@ -420,9 +421,9 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
             ["Geschoss", "Geschoss: " . $Geschoss . $spacer],
             //["Bauetappe", "Bauetappe: " . $Bauetappe . $spacer],
             ["Bauabschnitt", "Bauteil: " . $Bauabschnitt . $spacer],
-            //   ["Nutzfläche", "Fläche: " . $Flaeche . " m2"]
+             ["Nutzfläche", "Fläche: " . $Flaeche . " m2"]
         ];
-        $qot = 1 / 5.5;
+        $qot = 1 / 6.5;
         $extraZeile = false;
         foreach ($output_pairs as $pair) {
             $Height = $pdf->getStringHeight($SB * $qot, $pair[1], false, true, '', 1);
@@ -435,7 +436,8 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
             $pdf->Ln($ln_spacer / 2);
         }
         $pdf->Ln(7);
-    } else if ($format == "A3X") {$pdf->SetFont('helvetica', 'B', 10);
+    } else if ($format == "A3X") {
+        $pdf->SetFont('helvetica', 'B', 10);
         if (($pdf->GetY()) >= 180) {
             $pdf->AddPage();
         }
@@ -460,8 +462,8 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
 
 // Determine widths
         $widths = [
-            [$blockheaderwith, $raumbezeichnung_width  ],
-            [$raumbezeichnung_width ],
+            [$blockheaderwith, $raumbezeichnung_width],
+            [$raumbezeichnung_width],
             [$raumbezeichnung_width],
             [$raumbezeichnung_width]
         ];
@@ -499,39 +501,37 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
         $pdf->Ln($maxHeight > $ln_spacer ? $ln_spacer : 0); // spacing row padding
         $pdf->Ln(5); // regular vertical space after that row
 
-    }
-    else if ($format == "A3XC") {$pdf->SetFont('helvetica', 'B', 10);
+    } else if ($format == "A3XC") {
+        $pdf->SetFont('helvetica', 'B', 10);
         if (($pdf->GetY()) >= 180) {
             $pdf->AddPage();
         }
-
         if (($pdf->GetY()) >= 18) {
             balken($pdf, 1, $SB);
         } else {
             $pdf->Ln(1);
         }
-
         $pdf->SetFont('helvetica', 'B', 10);
 
         $blockheaderwith = 25;
-        $raumbezeichnung_width = ($SB - $blockheaderwith - (($SB - $blockheaderwith) / 18)) / 6;
+        $raumbezeichnung_width = ($SB - $blockheaderwith - (($SB - $blockheaderwith) / 18)) / 5;
 
         $output_pairs = [
             ["Raumbezeichnung", "Raum", $Raumnr . " - " . $Raumbezeichnung],
             ["Raumbereich Nutzer", "Bereich: ", $RaumbereichNutzer],
             ["Geschoss", "Geschoss: ", $Geschoss],
-            ["Nutzfläche", "Nutzfläche [m2]: ", $Bauabschnitt]
+            ["Nutzfläche", "Nutzfläche [m2]: ", $Flaeche],
+            ["Bauabschnitt", "Bauteil: ", $Bauabschnitt],
         ];
 
-// Determine widths
         $widths = [
-            [$blockheaderwith, $raumbezeichnung_width  ],
-            [$raumbezeichnung_width ],
+            [$blockheaderwith, $raumbezeichnung_width],
             [$raumbezeichnung_width],
-            [$raumbezeichnung_width]
+            [$raumbezeichnung_width],
+            [$raumbezeichnung_width],
+            [$raumbezeichnung_width],   // <‑ fehlendes Komma ergänzt
         ];
 
-// Measure heights
         $heights = [];
         foreach ($output_pairs as $i => $pair) {
             if ($i == 0) {
@@ -546,11 +546,9 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
         }
 
         $maxHeight = max($heights);
-        if ($maxHeight > $ln_spacer) {
-            $extraZeile = true;
-        }
+        // optional: sauberer int‑Cast ohne Deprecated‑Notice
+        $maxHeight = (float)$maxHeight;
 
-// Now draw with normalized height
         foreach ($output_pairs as $i => $pair) {
             if ($i == 0) {
                 $pdf->MultiCell($widths[$i][0], $maxHeight, $pair[1], 0, "L", 1, 0);
@@ -561,10 +559,10 @@ function raum_header($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumbere
             }
         }
 
-        $pdf->Ln($maxHeight > $ln_spacer ? $ln_spacer : 0); // spacing row padding
-        $pdf->Ln(5); // regular vertical space after that row
-
+        $pdf->Ln($maxHeight > $ln_spacer ? $ln_spacer : 0);
+        $pdf->Ln(5);
     }
+
     $pdf->SetFont('helvetica', '', 10);
 }
 

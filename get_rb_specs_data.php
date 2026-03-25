@@ -178,12 +178,13 @@ r.`HT_Belueftung`,
 r.`HT_Entlueftung`,       
 r.`PHY_Akustik_Schallgrad`,
 r.`EL_Laser 32A Stk`,
+r.`Raumtyp BH`, 
     (
         SELECT COUNT(*)
         FROM tabelle_räume_has_tabelle_elemente re
         WHERE re.TABELLE_Räume_idTABELLE_Räume = r.idTABELLE_Räume
     ) AS element_mask
-FROM tabelle_räume r
+FROM tabelle_räume r 
 INNER JOIN tabelle_funktionsteilstellen f 
     ON r.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = f.idTABELLE_Funktionsteilstellen
 WHERE r.tabelle_projekte_idTABELLE_Projekte = ?

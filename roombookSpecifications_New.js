@@ -1,13 +1,5 @@
 let projectID;
 let sessionProjectName;
-fetch('get_project_id.php')
-    .then(response => response.json())
-    .then(data => {
-        projectID = data.projectID;
-        sessionProjectName = data.projectName;
-    })
-    .catch(error => console.error('Error:', error));
-
 var table;
 var table_edited = false;
 var dt_search_counter = 1;
@@ -46,16 +38,23 @@ $("#hideZeroRows").on("change", function () {  // 06052025
 });
 
 $(document).ready(function () {
-    loadSettings();
-    init_dt();
+    fetch('get_project_id.php')
+        .then(response => response.json())
+        .then(data => {
+            projectID = data.projectID;
+            sessionProjectName = data.projectName;
 
+            // ✅ Erst hier, INNERHALB des .then(), aufrufen:
+            loadSettings();
+            init_dt();
+        })
+        .catch(error => console.error('Error:', error));
+
+    // Diese brauchen projectID nicht → bleiben draußen:
     init_showRoomElements_btn();
-
     table_click();
-    init_filter();
     handleCheckboxChange();
     add_room_modal();
-
 });
 
 function add_MT_rel_filter(location, table) {
@@ -303,10 +302,12 @@ function init_dt() {
         lengthMenu: [[5, 10, 20, 50, -1], ['5 rows', '10 rows', '20 rows', '50 rows', 'All']],
         compact: true,
         initComplete: function () {
+            init_filter();
             $('.dt-search label').remove();
             $(' .dt-search').children().appendTo('#TableCardHeader');//removeClass('form-control form-control-sm')
             init_btn_4_dt();
             init_visibilities();
+
         }
     });
 }
