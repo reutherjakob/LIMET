@@ -2,34 +2,19 @@
 global $mysqli;
 include "../Nutzerlogin/db.php";
 require_once "../Nutzerlogin/_utils.php";
-init_page(["internal_rb_user", "spargefeld_ext_users"]);
+init_page(["internal_rb_user", "spargelfeld_ext_users"]);
 
 header('Content-Type: application/json');
 
-$roomId = $_POST['roomId'] ?? null;
+$roomId = $_GET['roomId'] ?? null;
 
 if (!$roomId || !is_numeric($roomId)) {
     echo json_encode(['error' => '[translate:Ungültige roomId]']);
     exit;
 }
 
-// Only these fields are loaded as requested:
-$fields = [
-    "roomID",
-    'bsl_level',
-    'chemikalienliste',
-    'verdunkelung',
-    'sonderabluft',
-    'spezialgas',
-    'usv_geraete',
-    'VE_Wasser',
-    'kuehlwasser'
-];
 
-// Prepare explicit field list string for the SQL query
-$fieldList = implode(', ', $fields);
-
-$stmt = $mysqli->prepare("SELECT $fieldList FROM tabelle_room_requirements_from_user WHERE roomID = ?");
+$stmt = $mysqli->prepare("SELECT *  FROM tabelle_room_requirements_from_user WHERE roomID = ?");
 if (!$stmt) {
     echo json_encode(['error' => '[translate:Datenbankfehler]']);
     exit;

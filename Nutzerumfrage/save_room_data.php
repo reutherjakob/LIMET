@@ -1,9 +1,14 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 global $mysqli;
 include "../Nutzerlogin/db.php";
 require_once "../Nutzerlogin/_utils.php";
-init_page(["internal_rb_user", "spargefeld_ext_users", "spargefeld_admin"]);
-require_once("../Nutzerlogin/csrf.php");
+require_once "../Nutzerlogin/csrf.php";
+
+
+init_page(["internal_rb_user", "spargelfeld_ext_users", "spargefeld_admin"]);
+header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -19,127 +24,158 @@ if (!isset($_POST['csrf_token']) || !csrf_check($_POST['csrf_token'])) {
 
 $mysqli->set_charset('utf8mb4');
 
-$roomID = $_POST['roomID'] ?? null;
-if ($roomID === null) {
+// Felder die direkt als String gespeichert werden
+$stringFields = [
+    'roomname', 'raumnr', 'raumbereich_nutzer', 'nf', 'raumkategorieAbfrage',
+    'explosionsschutz',
+
+    'raumabluft_besonders', 'raumzuluft_besonders', 'sonderabluft',
+    'kaltwasser_stundenverbrauch', 'kaltwasser_spitzenverbrauch',
+    'verbindungsgang_kommentar',
+    'vibrationsempfindlich_bodenstehend_kommentar',
+    'abluftwaescher_kommentar',
+    'starkstromanschluss_anzahl_kommentar',
+    'spezialabwasser_kommentar',
+    'nutzwasser_kommentar',
+];
+
+// Felder die als 0/1 gespeichert werden
+$boolFields = [
+    'doppelfluegeltuer',
+    'verbindungsgang',
+    'vibrationsempfindlich_bodenstehend',
+    'nutzwasser',
+    'spezialabwasser',
+];
+
+// Integer-Felder (select mit Zahlen)
+$intFields = [
+    'abluftwaescher',
+    'starkstromanschluss_anzahl',
+];
+
+$roomID = isset($_POST['roomID']) ? (int)$_POST['roomID'] : null;
+if (!$roomID) {
     echo json_encode(['status' => 'error', 'message' => 'Missing roomID.']);
     exit;
 }
 
-// Explicit parameter fields to save
-$params = [
-    'roomID',
-    'roomname',
-    'bsl_level',
-    'chemikalienliste',
-    'verdunkelung',
-    'sonderabluft',
-    'spezialgas',
-    'usv_geraete',
-    'VE_Wasser',
-    'kuehlwasser'
-];
+$data = ['roomID' => $roomID];
+$data['username'] = $_SESSION['user_name'] ?? 'unknown';
+$data['created_at'] = date('Y-m-d H:i:s');
 
-// Collect parameter values from POST, set null if missing
-$values = [];
-foreach ($params as $param) {
-    // For yesno / boolean params, store '1' or '0' string, else null
-    if (isset($_POST[$param])) {
-        // Normalize boolean inputs (checkbox or buttons)
-        $val = $_POST[$param];
-        if ($val === '1' || $val === 1 || $val === 'on' || $val === true) {
-            $values[$param] = '1';
-        } else {
-            $values[$param] = '0';
-        }
-    } else {
-        $values[$param] = '0'; // Default to 0 if not set on yesno fields
-    }
+foreach ($stringFields as $f) {
+    $data[$f] = isset($_POST[$f]) ? trim($_POST[$f]) : '';
+}
+foreach ($boolFields as $f) {
+    $data[$f] = isset($_POST[$f]) && $_POST[$f] === '1' ? 1 : 0;
+}
+foreach ($intFields as $f) {
+    $data[$f] = isset($_POST[$f]) ? (int)$_POST[$f] : 0;
 }
 
-// Check if entry exists
-$stmtCheck = $mysqli->prepare("SELECT COUNT(*) FROM tabelle_room_requirements_from_user WHERE roomID = ?");
-if (!$stmtCheck) {
-    echo json_encode(['status' => 'error', 'message' => 'Prepare failed: (' . $mysqli->errno . ') ' . $mysqli->error]);
+if (isset($_POST['spezialgas']) && is_array($_POST['spezialgas'])) {
+    $data['spezialgas'] = implode(',', array_map('trim', $_POST['spezialgas']));
+} else {
+    $data['spezialgas'] = 'Nein';
+}
+error_log('DEBUG spezialgas: ' . var_export($data['spezialgas'], true));
+
+
+// UPSERT
+$sql = "INSERT INTO tabelle_room_requirements_from_user 
+    (roomID, roomname, raumnr, raumbereich_nutzer, nf, raumkategorieAbfrage,
+     doppelfluegeltuer, verbindungsgang, verbindungsgang_kommentar,
+     vibrationsempfindlich_bodenstehend, vibrationsempfindlich_bodenstehend_kommentar,
+     explosionsschutz, abluftwaescher, abluftwaescher_kommentar,
+     spezialgas, starkstromanschluss_anzahl, starkstromanschluss_anzahl_kommentar,
+     raumabluft_besonders, raumzuluft_besonders, sonderabluft,
+     nutzwasser, spezialabwasser, spezialabwasser_kommentar,
+     kaltwasser_stundenverbrauch, kaltwasser_spitzenverbrauch,
+      username, created_at, nutzwasser_kommentar)
+
+VALUES (?,?,?,?,?,?, ?,?,?, ?,?, ?,?,?, ?,?,?, ?,?,?, ?,?,?, ?,?,?,?, ? )
+ON DUPLICATE KEY UPDATE
+    roomname                                    = VALUES(roomname),
+    raumnr                                      = VALUES(raumnr),
+    raumbereich_nutzer                          = VALUES(raumbereich_nutzer),
+    nf                                          = VALUES(nf),
+    raumkategorieAbfrage                        = VALUES(raumkategorieAbfrage),
+    doppelfluegeltuer                           = VALUES(doppelfluegeltuer),
+    verbindungsgang                             = VALUES(verbindungsgang),
+    verbindungsgang_kommentar                   = VALUES(verbindungsgang_kommentar),
+    vibrationsempfindlich_bodenstehend          = VALUES(vibrationsempfindlich_bodenstehend),
+    vibrationsempfindlich_bodenstehend_kommentar = VALUES(vibrationsempfindlich_bodenstehend_kommentar),
+    explosionsschutz                            = VALUES(explosionsschutz),
+    abluftwaescher                              = VALUES(abluftwaescher),
+    abluftwaescher_kommentar                    = VALUES(abluftwaescher_kommentar),
+    spezialgas                                  = VALUES(spezialgas),
+    starkstromanschluss_anzahl                  = VALUES(starkstromanschluss_anzahl),
+    starkstromanschluss_anzahl_kommentar        = VALUES(starkstromanschluss_anzahl_kommentar),
+    raumabluft_besonders                        = VALUES(raumabluft_besonders),
+    raumzuluft_besonders                        = VALUES(raumzuluft_besonders),
+    sonderabluft                                = VALUES(sonderabluft),
+    nutzwasser                                  = VALUES(nutzwasser),
+    spezialabwasser                             = VALUES(spezialabwasser),
+    spezialabwasser_kommentar                   = VALUES(spezialabwasser_kommentar),
+    kaltwasser_stundenverbrauch                 = VALUES(kaltwasser_stundenverbrauch),
+    kaltwasser_spitzenverbrauch                 = VALUES(kaltwasser_spitzenverbrauch),
+    username                                    = VALUES(username),
+    created_at                                  = VALUES(created_at),
+    nutzwasser_kommentar                   = VALUES(nutzwasser_kommentar)
+    ";
+
+
+$stmt = $mysqli->prepare($sql);
+if (!$stmt) {
+    echo json_encode(['status' => 'error', 'message' => 'Prepare failed: ' . $mysqli->error]);
     exit;
 }
-$stmtCheck->bind_param('i', $roomID);
-$stmtCheck->execute();
-$stmtCheck->bind_result($count);
-$stmtCheck->fetch();
-$stmtCheck->close();
 
-if ($count > 0) {
-    // Update existing record
-    $sqlUpdate = "UPDATE tabelle_room_requirements_from_user SET 
-        bsl_level = ?, 
-        chemikalienliste = ?, 
-        verdunkelung = ?, 
-        sonderabluft = ?, 
-        spezialgas = ?, 
-        usv_geraete = ?, 
-        VE_Wasser = ?, 
-        kuehlwasser = ?,
-        roomname = ? 
-        WHERE roomID = ?";
 
-    $stmt = $mysqli->prepare($sqlUpdate);
-    if (!$stmt) {
-        echo json_encode(['status' => 'error', 'message' => 'Prepare failed: (' . $mysqli->errno . ') ' . $mysqli->error]);
-        exit;
+foreach (array_merge($stringFields, ['spezialgas']) as $f) {
+    if (!isset($data[$f]) || $data[$f] === null) {
+        $data[$f] = '';
     }
-    $stmt->bind_param(
-        'ssssssssis',
-        $values['bsl_level'],
-        $values['chemikalienliste'],
-        $values['verdunkelung'],
-        $values['sonderabluft'],
-        $values['spezialgas'],
-        $values['usv_geraete'],
-        $values['VE_Wasser'],
-        $values['kuehlwasser'],
-        $roomID,
-        $values['roomname']
-
-    );
-
-    if ($stmt->execute()) {
-        echo json_encode(['status' => 'success', 'message' => 'Data successfully updated.']);
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'Update failed: (' . $stmt->errno . ') ' . $stmt->error]);
-    }
-    $stmt->close();
-
-} else {
-    // Insert new record
-    $sqlInsert = "INSERT INTO tabelle_room_requirements_from_user 
-        ( roomname, roomID, bsl_level, chemikalienliste, verdunkelung, sonderabluft, spezialgas, usv_geraete, VE_Wasser, kuehlwasser) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?  )";
-
-    $stmt = $mysqli->prepare($sqlInsert);
-    if (!$stmt) {
-        echo json_encode(['status' => 'error', 'message' => 'Prepare failed: (' . $mysqli->errno . ') ' . $mysqli->error]);
-        exit;
-    }
-    $stmt->bind_param(
-        'isssssssss',
-        $roomID,
-        $values['bsl_level'],
-        $values['chemikalienliste'],
-        $values['verdunkelung'],
-        $values['sonderabluft'],
-        $values['spezialgas'],
-        $values['usv_geraete'],
-        $values['VE_Wasser'],
-        $values['kuehlwasser'],
-        $values['roomname']
-    );
-
-    if ($stmt->execute()) {
-        echo json_encode(['status' => 'success', 'message' => 'Data successfully inserted.']);
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'Insert failed: (' . $stmt->errno . ') ' . $stmt->error]);
-    }
-    $stmt->close();
 }
 
+
+$stmt->bind_param('isssssiisississsssssiissssss',
+    $data['roomID'],
+    $data['roomname'],
+    $data['raumnr'],
+    $data['raumbereich_nutzer'],
+    $data['nf'],
+    $data['raumkategorieAbfrage'],
+    $data['doppelfluegeltuer'],
+    $data['verbindungsgang'],
+    $data['verbindungsgang_kommentar'],
+    $data['vibrationsempfindlich_bodenstehend'],
+    $data['vibrationsempfindlich_bodenstehend_kommentar'],
+    $data['explosionsschutz'],
+    $data['abluftwaescher'],
+    $data['abluftwaescher_kommentar'],
+    $data['spezialgas'],
+    $data['starkstromanschluss_anzahl'],
+    $data['starkstromanschluss_anzahl_kommentar'],
+    $data['raumabluft_besonders'],
+    $data['raumzuluft_besonders'],
+    $data['sonderabluft'],
+    $data['nutzwasser'],
+    $data['spezialabwasser'],
+    $data['spezialabwasser_kommentar'],
+    $data['kaltwasser_stundenverbrauch'],
+    $data['kaltwasser_spitzenverbrauch'],
+    $data['username'],
+    $data['created_at'],
+    $data['nutzwasser_kommentar']
+
+);
+
+if ($stmt->execute()) {
+    echo json_encode(['status' => 'success', 'message' => 'Gespeichert.']);
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Fehler: ' . $stmt->error]);
+}
+$stmt->close();
 $mysqli->close();

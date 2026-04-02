@@ -309,7 +309,8 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
 
 ////     ------- BauStatik ---------
-        if ("" != $row['Anmerkung BauStatik'] && $row['Anmerkung BauStatik'] != "keine Angaben MT") {
+        $anm = trim($row['Anmerkung BauStatik']?? '');
+        if ($anm !== '' && $anm !== 'Keine Anmerkung' && $anm !== 'keine Angaben MT') {
             $pdf->Ln($horizontalSpacerLN);
             $Block_height = getAnmHeight($pdf, $row['Anmerkung BauStatik'], $SB);
             block_label_queer($block_header_w, $pdf, "Baustatik", $Block_height, $block_header_height, $SB);
@@ -321,7 +322,8 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 ////     ------- MT Tabelle  ---------
 //
         // -------------------------Elemente im Raum laden--------------------------
-        $sql = "SELECT tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
+        $sql = "SELECT tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, 
+       Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
             tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
             tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
             tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten,

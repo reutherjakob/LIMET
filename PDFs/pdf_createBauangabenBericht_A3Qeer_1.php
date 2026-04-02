@@ -67,7 +67,7 @@ $elektroParams = [
     ['key' => 'ET_Anschlussleistung_USV_W', 'label' => 'USV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
     ['key' => 'ET_RJ45-Ports', 'label' => 'RJ45-Ports: ', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
 
-    ["key" => "RaumAnschlussLeistungInklGlz",'ln_after' => false, 'isnotVorentwurf' => true],
+    ["key" => "RaumAnschlussLeistungInklGlz", 'ln_after' => false, 'isnotVorentwurf' => true],
 
     ['key' => 'EL_Laser 16A CEE Stk', 'label' => 'CEE16A Laser: ', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => true],
     ['key' => 'EL_Roentgen 16A CEE Stk', 'label' => 'CEE16A Röntgen', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
@@ -104,7 +104,8 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         . " tabelle_räume.`EL_Laser 16A CEE Stk`, tabelle_räume.`EL_Einzel-Datendose Stk`, tabelle_räume.`EL_Doppeldatendose Stk`, tabelle_räume.`EL_Bodendose Typ`, tabelle_räume.`EL_Bodendose Stk`, tabelle_räume.`EL_Beleuchtung 1 Typ`, tabelle_räume.`EL_Beleuchtung 2 Typ`, tabelle_räume.`EL_Beleuchtung 3 Typ`, tabelle_räume.`EL_Beleuchtung 4 Typ`, tabelle_räume.`EL_Beleuchtung 5 Typ`, tabelle_räume.`EL_Beleuchtung 1 Stk`, tabelle_räume.`EL_Beleuchtung 2 Stk`, tabelle_räume.`EL_Beleuchtung 3 Stk`, tabelle_räume.`EL_Beleuchtung 4 Stk`, tabelle_räume.`EL_Beleuchtung 5 Stk`, tabelle_räume.`EL_Lichtschaltung BWM JA/NEIN`, tabelle_räume.`EL_Beleuchtung dimmbar JA/NEIN`, tabelle_räume.`EL_Brandmelder Decke JA/NEIN`, tabelle_räume.`EL_Brandmelder ZwDecke JA/NEIN`, tabelle_räume.`EL_Kamera Stk`, tabelle_räume.`EL_Lautsprecher Stk`, tabelle_räume.`EL_Uhr - Wand Stk`, tabelle_räume.`EL_Uhr - Decke Stk`, tabelle_räume.`EL_Lichtruf - Terminal Stk`, tabelle_räume.`EL_Lichtruf - Steckmodul Stk`, tabelle_räume.`EL_Lichtfarbe K`, tabelle_räume.`EL_Notlicht RZL Stk`, tabelle_räume.`EL_Notlicht SL Stk`, tabelle_räume.`EL_Jalousie JA/NEIN`, tabelle_räume.`HT_Luftmenge m3/h`, CAST(REPLACE(tabelle_räume.`HT_Luftwechsel 1/h`,',','.') as decimal(10,2)) AS `HT_Luftwechsel`, tabelle_räume.`HT_Kühlung Lueftung W`, tabelle_räume.`HT_Heizlast W`, tabelle_räume.`HT_Kühllast W`, tabelle_räume.`HT_Fussbodenkühlung W`, tabelle_räume.`HT_Kühldecke W`, tabelle_räume.`HT_Fancoil W`, tabelle_räume.`HT_Summe Kühlung W`, tabelle_räume.`HT_Raumtemp Sommer °C`, tabelle_räume.`HT_Raumtemp Winter °C`, tabelle_räume.`AR_Ausstattung`, tabelle_räume.`Aufenthaltsraum` "
         . "FROM tabelle_planungsphasen INNER JOIN (tabelle_projekte INNER JOIN tabelle_räume ON tabelle_projekte.idTABELLE_Projekte = tabelle_räume.tabelle_projekte_idTABELLE_Projekte) ON tabelle_planungsphasen.idTABELLE_Planungsphasen = tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen WHERE (((tabelle_räume.idTABELLE_Räume)=" . $valueOfRoomID . "))";
 
-    $result_rooms = $mysqli->query($sql);  while ($row = $result_rooms->fetch_assoc()) {
+    $result_rooms = $mysqli->query($sql);
+    while ($row = $result_rooms->fetch_assoc()) {
         $pdf->Ln(8);
         $pdf->SetFillColor(255, 255, 255);
         raum_header($pdf, $horizontalSpacerLN3, $SB, $row['Raumbezeichnung'], $row['Raumnr'], $row['Raumbereich Nutzer'], $row['Geschoss'], $row['Bauetappe'], $row['Bauabschnitt'], "A3", $parameter_changes_t_räume); //utils function
@@ -274,7 +275,8 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
 
 ////     ------- BauStatik ---------
-        if ("" != $row['Anmerkung BauStatik'] && $row['Anmerkung BauStatik'] != "keine Angaben MT") {
+        $anm = trim($row['Anmerkung BauStatik'] ?? '');
+        if ($anm !== '' && $anm !== 'Keine Anmerkung' && $anm !== 'keine Angaben MT') {
             $pdf->Ln($horizontalSpacerLN);
             $Block_height = getAnmHeight($pdf, $row['Anmerkung BauStatik'], $SB);
             block_label_queer($block_header_w, $pdf, "Baustatik", $Block_height, $block_header_height, $SB);
@@ -310,7 +312,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             $rowcounter++;
         }
         $resultX->data_seek(0);
-        $upcmn_blck_size=0;
+        $upcmn_blck_size = 0;
         if ($isnotVorentwurf && $rowcounter > 0) {
             $sql = "SELECT tabelle_parameter_kategorie.Kategorie,
                         tabelle_parameter.Abkuerzung, 

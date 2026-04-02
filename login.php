@@ -123,8 +123,7 @@ $password = $_POST["password"] ?? '';
 $csrf = $_POST['csrf'] ?? '';
 
 if (!csrf_check($csrf)) {
-    echo "Ungültige Zugangsdaten.";
-    exit;
+    safeRedirect('index.php?error=login_failed');
 }
 
 
@@ -155,10 +154,16 @@ try {
     } else {
 
         if (!$mysqli) return false;
-        $check = $mysqli->prepare("SELECT id, password FROM tabelle_users WHERE username = ?");
+        $check = $mysqli->prepare("SELECT id, password, role FROM tabelle_users WHERE username = ?");
         $check->bind_param("s", $username);
         $check->execute();
         $check->store_result();
+
+        $check->bind_result($id, $passwordHash, $role);
+
+       // if ($role != "internal_rb_user") {
+       //     safeRedirect('index.php?error=login_failed');
+       // }
 
         $hashedPassword = md5($password);
 

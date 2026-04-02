@@ -43,7 +43,7 @@ if ($stmt = $mysqli->prepare($sqlSummary)) {
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard</title>
+    <title>Admin Panel</title>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -56,6 +56,7 @@ if ($stmt = $mysqli->prepare($sqlSummary)) {
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -64,22 +65,24 @@ if ($stmt = $mysqli->prepare($sqlSummary)) {
 <div class="container-fluid mt-3">
     <div class="card">
         <div class="card-header">
-            <ul class="nav nav-tabs card-header-tabs" id="roomTabs" role="tablist">
+            <strong><i class="fa fa-cogs"></i> Admin Panel</strong>
+            <ul class="nav nav-tabs card-header-tabs mt-2" id="roomTabs" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats"
-                            type="button" role="tab" aria-controls="stats" aria-selected="true">Übersicht
+                            type="button" role="tab" aria-controls="stats" aria-selected="true">
+                        <i class="fa fa-chart-bar"></i> Übersicht
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link " id="user-req-tab" data-bs-toggle="tab" data-bs-target="#user-req"
+                    <button class="nav-link" id="user-req-tab" data-bs-toggle="tab" data-bs-target="#user-req"
                             type="button" role="tab" aria-controls="user-req" aria-selected="false">
-                        Bearbeitete Räume
+                        <i class="fa fa-check-circle"></i> Bearbeitete Räume
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="open-rooms-tab" data-bs-toggle="tab" data-bs-target="#open-rooms"
                             type="button" role="tab" aria-controls="open-rooms" aria-selected="false">
-                        Noch offene Räume
+                        <i class="fa fa-clock"></i> Noch offene Räume
                     </button>
                 </li>
             </ul>
@@ -87,32 +90,39 @@ if ($stmt = $mysqli->prepare($sqlSummary)) {
 
         <div class="card-body">
             <div class="tab-content" id="roomTabsContent">
+
+                <!-- TAB: Übersicht -->
                 <div class="tab-pane fade show active" id="stats" role="tabpanel" aria-labelledby="stats-tab">
-                    <canvas id="roomsChart" height="100"></canvas>
-                    <div class="card-body">
-                        <table class="table table-sm table-bordered">
-                            <thead>
+                    <canvas id="roomsChart" height="80" class="mb-3"></canvas>
+                    <table class="table table-sm table-bordered">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Raumbereich</th>
+                            <th>Offen</th>
+                            <th>Bearbeitet</th>
+                            <th>Gesamt</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($summaryData as $row): ?>
                             <tr>
-                                <th>Raumbereich</th>
-                                <th>Offen</th>
+                                <td><?= htmlspecialchars($row['rb']) ?></td>
+                                <td><?= intval($row['open_rooms']) ?></td>
+                                <td><?= intval($row['filled_rooms']) ?></td>
+                                <td><?= intval($row['open_rooms'] + $row['filled_rooms']) ?></td>
                             </tr>
-                            </thead>
-                            <tbody>
-                            <?php foreach ($summaryData as $row): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($row['rb']) ?></td>
-                                    <td><?= intval($row['open_rooms']) ?> / <?= intval($row['open_rooms'] + $row['filled_rooms']) ?> </td>
-                                </tr>
-                            <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </div>
 
-
-                <div class="tab-pane fade show" id="user-req" role="tabpanel" aria-labelledby="user-req-tab">
+                <!-- TAB: Bearbeitete Räume -->
+                <div class="tab-pane fade" id="user-req" role="tabpanel" aria-labelledby="user-req-tab">
                     <?php
-                    $sqlUserReq = "SELECT r.idTABELLE_Räume as roomID, r.Raumbezeichnung as roomname, 
+                    $sqlUserReq = "SELECT r.idTABELLE_Räume as roomID, 
+                                        r.Raumbezeichnung as roomname, 
+                                        r.Geschoss,
+                                        r.Bauabschnitt,
                                         r.`Raumbereich Nutzer` as rb, 
                                         r.Raumnr as raumnr, t.username, t.created_at
                                     FROM tabelle_room_requirements_from_user t
@@ -125,13 +135,16 @@ if ($stmt = $mysqli->prepare($sqlSummary)) {
                         $stmt->execute();
                         $result = $stmt->get_result();
                         ?>
-                        <table class="table table-striped">
-                            <thead>
+                        <table class="table table-striped table-hover" id="userReqTable">
+                            <thead class="table-light">
                             <tr>
                                 <th>Raumnr</th>
                                 <th>Raumname</th>
                                 <th>Raumbereich</th>
-                                <th>Username</th>
+                                <th>Trakt</th>
+                                <th>Ebene</th>
+
+                                <th>Zuletzt bearbeitet von</th>
                                 <th>Zuletzt bearbeitet am</th>
                             </tr>
                             </thead>
@@ -141,9 +154,10 @@ if ($stmt = $mysqli->prepare($sqlSummary)) {
                                     <td><?php echo htmlspecialchars($row['raumnr']); ?></td>
                                     <td><?php echo htmlspecialchars($row['roomname']); ?></td>
                                     <td><?php echo htmlspecialchars($row['rb']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['Bauabschnitt']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['Geschoss']); ?></td>
                                     <td><?php echo htmlspecialchars($row['username']); ?></td>
                                     <td><?php echo htmlspecialchars($row['created_at']); ?></td>
-
                                 </tr>
                             <?php } ?>
                             </tbody>
@@ -156,16 +170,21 @@ if ($stmt = $mysqli->prepare($sqlSummary)) {
                     ?>
                 </div>
 
+                <!-- TAB: Offene Räume -->
                 <div class="tab-pane fade" id="open-rooms" role="tabpanel" aria-labelledby="open-rooms-tab">
                     <?php
-                    $sqlOpenRooms = "SELECT idTABELLE_Räume as roomID, Raumbezeichnung as roomname, Raumnr, Bauabschnitt, Nutzfläche, `Raumbereich Nutzer`as rb FROM tabelle_räume WHERE tabelle_projekte_idTABELLE_Projekte = ? AND idTABELLE_Räume NOT IN (SELECT roomID FROM tabelle_room_requirements_from_user) ORDER BY Raumbezeichnung";
+                    $sqlOpenRooms = "SELECT idTABELLE_Räume as roomID, Raumbezeichnung as roomname, Raumnr, Bauabschnitt, Nutzfläche, `Raumbereich Nutzer` as rb 
+                                     FROM tabelle_räume 
+                                     WHERE tabelle_projekte_idTABELLE_Projekte = ? 
+                                       AND idTABELLE_Räume NOT IN (SELECT roomID FROM tabelle_room_requirements_from_user) 
+                                     ORDER BY Raumbezeichnung";
                     if ($stmt2 = $mysqli->prepare($sqlOpenRooms)) {
                         $stmt2->bind_param("i", $projektid);
                         $stmt2->execute();
                         $result2 = $stmt2->get_result();
                         ?>
-                        <table class="table table-striped">
-                            <thead>
+                        <table class="table table-striped table-hover" id="openRoomsTable">
+                            <thead class="table-light">
                             <tr>
                                 <th>Raumnr</th>
                                 <th>Raumname</th>
@@ -193,15 +212,17 @@ if ($stmt = $mysqli->prepare($sqlSummary)) {
                     }
                     ?>
                 </div>
+
             </div>
         </div>
     </div>
 </div>
 </body>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+
+        // Chart
         const data = <?= json_encode($summaryData, JSON_HEX_TAG | JSON_HEX_AMP); ?>;
         const labels = data.map(d => d.rb || 'Unbekannt');
         const open = data.map(d => parseInt(d.open_rooms));
@@ -219,7 +240,7 @@ if ($stmt = $mysqli->prepare($sqlSummary)) {
                         data: open
                     },
                     {
-                        label: 'Gefüllte Räume',
+                        label: 'Bearbeitete Räume',
                         backgroundColor: 'rgba(75, 192, 192, 0.6)',
                         data: filled
                     }
@@ -236,6 +257,45 @@ if ($stmt = $mysqli->prepare($sqlSummary)) {
                 }
             }
         });
+
+        // DataTables – werden erst beim Tab-Wechsel initialisiert (Bootstrap Tab shown-Event)
+        let userReqTableInit = false;
+        let openRoomsTableInit = false;
+
+        $('#roomTabs button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+            const target = $(e.target).data('bs-target');
+
+            if (target === '#user-req' && !userReqTableInit) {
+                $('#userReqTable').DataTable({
+                    language: {url: '//cdn.datatables.net/plug-ins/2.2.1/i18n/de-DE.json'},
+                    order: [[4, 'desc']],
+                    layout: {
+                        topStart: 'search',
+                        topEnd: 'buttons',
+                        bottomStart: 'info',
+                        bottomEnd: ['pageLength', 'paging']
+                    },
+                   // buttons: ['excel', 'print']
+                });
+                userReqTableInit = true;
+            }
+
+            if (target === '#open-rooms' && !openRoomsTableInit) {
+                $('#openRoomsTable').DataTable({
+                    language: {url: '//cdn.datatables.net/plug-ins/2.2.1/i18n/de-DE.json'},
+                    order: [[2, 'asc']],
+                    layout: {
+                        topStart: 'search',
+                        topEnd: 'buttons',
+                        bottomStart: 'info',
+                        bottomEnd: ['pageLength', 'paging']
+                    },
+                   // buttons: ['excel', 'print']
+                });
+                openRoomsTableInit = true;
+            }
+        });
+
     });
 </script>
 

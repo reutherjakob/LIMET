@@ -1,39 +1,47 @@
 <?php
-global $mysqli, $formFields;
+global $mysqli, $formFields, $labortypen;
 include "../Nutzerlogin/db.php";
 require_once "../Nutzerlogin/_utils.php";
-$role = init_page(["internal_rb_user", "spargefeld_ext_users"]);
+$role = init_page(["internal_rb_user", "spargelfeld_ext_users"]);
 
-require_once("form_fields_forNutzergruppe1.php"); // Array $formFields
-require_once("../Nutzerlogin/csrf.php");
+require_once "form_fields_forNutzergruppe1.php"; // Array $formFields
+require_once 'raumtyp_resolver.php';
+require_once "../Nutzerumfrage/raumtypen.php"; // lädt $labortypen
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-$roomId = $_POST['raumid'] ?? null;
-$roomname = $_POST['roomname'] ?? null;
-error_log("Received roomId: " . var_export($roomId, true));
 
-// Funktion um Formular zu rendern aus vorheriger Antwort:
+$roomId = $_POST['roomID'] ?? null;
+$roomname = $_POST['roomname'] ?? null;
+$raumtyp_id = $_POST['raumkategorie'] ?? null;
+$bauabschnitt = $_POST['bauabschnitt'] ?? null;
+$ebene = $_POST['ebene'] ?? null;
+
+
+$raumtyp = getRaumtypById($labortypen, $raumtyp_id);
+$formFields = applyRaumtypOverrides($formFields, $raumtyp, $bauabschnitt ?? '', $ebene ?? '');
+
+
 function renderForm(array $formFields, array $userData = []): void
 {
-    global $mysqli, $roomname;
-
-
-    echo '<form method="post" action=""><div class="card-header d-flex align-items-center justify-content-between" > 
+    global $roomname;
+    echo '<form id="roomParameterForm"><div class="card-header d-flex align-items-center justify-content-between" > 
             <strong> Labortechnische Raumanforderung </strong>';
 
-    echo '<div class="d-flex align-items-center justify-content-end"> <button type="submit" class="btn btn-outline-success"> <i class="far fa-save"></i> Anforderungen speichern</button>
-          </div> 
-           </div> <div class="card-body px-2 py-2">    </div>';
-
-    echo '<input type="hidden" name="csrf_token" value="' . csrf_token() . '">';
+    echo '<div class="d-flex align-items-center justify-content-end"> 
+            <button type="submit" id="saveBtn" class="btn btn-outline-success">
+                <i class="far fa-save"></i> Anforderungen speichern
+            </button>
+            </div> </div> 
+            <div class="card-body px-2 py-2">   
+            </div>';
 
     foreach ($formFields as $field) {
         $name = $field['name'];
         $label = $field['label'];
         $type = $field['type'];
-        $kathegorie = $field['kathegorie'] ?? '';
+        $kategorie = $field['kategorie'] ?? '';
         $defaultValue = '';
 
         if (is_array($field['default_value'] ?? false)) {
@@ -48,11 +56,9 @@ function renderForm(array $formFields, array $userData = []): void
         $value = $userData[$name] ?? $defaultValue;
         $info = $field['info'] ?? '';
         switch ($type) {
-
-            case 'KathegorieDropdowner':
-                echo '<div class="mb-1 d-flex align-items-center">';
-                echo '<label  for="Raumkathegorie" class="col-6 ms-2 form-label rechtsbuendig">
-                      <strong>  Raumkathegorie?  </strong>';
+            case 'text':
+                echo "<div class='mb-1 {$kategorie} d-flex align-items-center'>";
+                echo "<label for='{$name}' class='form-label col-6 ms-2 me-2 rechtsbuendig'><strong>{$label}</strong>";
                 if ($info) {
                     echo " <button class='btn btn-sm bg-white rounded'
                                   data-bs-toggle='popover'
@@ -60,128 +66,150 @@ function renderForm(array $formFields, array $userData = []): void
                                     <i class='fas fa-info-circle'></i>
                                 </button>";
                 }
-                echo ' </label>
-                       <div class="col-5"> 
-                        <select id="Raumkathegorie" class="ms-2 form-select "  name="raumkathegorie">
-                            <option value="">Raumkathegorie wählen</option>';
-
-                $sql = "SELECT tabelle_räume.Raumbezeichnung, idTABELLE_Räume, `Raumbereich Nutzer`
-                        FROM tabelle_räume
-                        where tabelle_projekte_idTABELLE_Projekte = 3";
-
-                $result = $mysqli->query($sql);
-                while ($row = $result->fetch_assoc()) {
-                    $checked = "";
-                    if ($roomname && !str_contains($row['Raumbereich Nutzer'], $roomname)) continue;
-                    if ($roomname == "Waschküche" || $roomname == "Wägeraum") {
-                        $checked = "selected";
-                    }
-                    echo "<option value=' " . $row['idTABELLE_Räume'] . "' " . $checked . "  >" . $row['Raumbezeichnung'] . "</option>";
-                }
-
-                echo '</select> </div> </div>';
-                break;
-
-            case 'text':
-                echo "<div class='mb-1 {$kathegorie} d-flex align-items-center'>";
-                echo "<label for='{$name}' class='form-label col-6 ms-2 me-2 rechtsbuendig'><strong>{$label}</strong></label>";
-                echo "<div class='col-5'>  <input class='form-control flex-grow-1' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'> </div>";
+                echo "</label>";
+                echo "<div class='col-5'>  <input class='form-control flex-grow-1' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'> </div></div>";
                 break;
 
             case 'texthidden':
-                echo "<div class='{$kathegorie}'>";
+                echo "<div class='{$kategorie}'>";
                 echo "<label for='{$name}' class='sr-only ms-2 me-2 rechtsbuendig' >{$label}:</label>";
                 echo "<div class='col-9'><input class='form-control' type='hidden' name='{$name}' id='{$name}'  value='" . htmlspecialchars($value) . "'></div>";
                 break;
 
             case 'text_non_editable':
-                echo "<div class='{$kathegorie} d-flex align-items-center'>";
-                echo "<strong class='col-6 rechtsbuendig'>{$label}:</strong>";
-                echo "<input class='form-control ms-2' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'readonly>";
+                echo "<div class='mb-1 {$kategorie} d-flex align-items-center'>";
+                echo "<label for='{$name}' class='form-label col-6 ms-2 me-2 rechtsbuendig'><strong>{$label}</strong>";
+                if ($info) {
+                    echo " <button class='btn btn-sm bg-white rounded'
+                                  data-bs-toggle='popover'
+                                  data-bs-content='{$info}'>
+                                    <i class='fas fa-info-circle'></i>
+                                </button>";
+                }
+                echo "</label>";
+                echo "<div class='col-5'>  <input readonly class='form-control flex-grow-1' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'> </div></div>";
                 break;
-
-
-            case 'textarea':
-                echo "<div class='mb-1 {$kathegorie} row align-items-start'>";
-                echo "<label for='{$name}' class='form-label col-6  ms-2 me-2 rechtsbuendig'>{$label}:</label>";
-                echo "<div class='col-9'>";
-                echo "<textarea class='form-control' name='{$name}' id='{$name}' rows='1' placeholder='{$label}'>" . htmlspecialchars($value) . "</textarea>";
-                echo "</div>";
-                break;
-
 
             case 'yesno':
-                $isYes = ($value == 1 || $value === '1');
+                $defaultVal = $field['default_value'] ?? 'Nein';
+                $isYes = ($value == 1 || $value === '1' || $value === 'Ja');
+                $isDefaultYes = ($defaultVal === 'Ja' || $defaultVal === '1' || $defaultVal == 1);
                 $btnClass = $isYes ? 'btn btn-outline-success' : 'btn btn-outline-primary';
                 $btnText = $isYes ? ' Ja ' : 'Nein';
-                echo "<div class='mb-1 {$kathegorie} d-flex align-items-center'>";
-                echo "<label for='{$name}_toggle' class='form-label col-6 ms-2 me-2 rechtsbuendig'><strong>{$label}";
+
+                // Kommentarfeld: zeigen wenn User vom Default abweicht
+                $hasComment = !empty($field['optional_comment_label']);
+                $commentLabel = $field['optional_comment_label'] ?? 'Kommentar:';
+                $commentName = $name . '_kommentar';
+                $commentValue = htmlspecialchars($userData[$commentName] ?? '');
+                $isDefaultValue = ($isYes === $isDefaultYes);  // true = User ist noch beim Default
+                $showComment = $hasComment && !$isDefaultValue; // zeigen wenn abgewichen
+
+                $showIfVal = $isDefaultYes ? '0' : '1';
+
+                echo "<div class='mb-1 {$kategorie}'>";
+                echo "  <div class='d-flex align-items-center'>";
+                echo "    <label for='{$name}_toggle' class='form-label col-6 ms-2 me-2 rechtsbuendig'><strong>{$label}";
                 if ($info) {
                     echo " <button class='btn btn-sm bg-white rounded'
-                                  data-bs-toggle='popover'
-                                  data-bs-content='{$info}'>
-                                    <i class='fas fa-info-circle'></i>
-                                </button>";
+                      data-bs-toggle='popover'
+                      data-bs-content='{$info}'>
+                        <i class='fas fa-info-circle'></i>
+                    </button>";
                 }
-                echo " </strong></label>";
-                echo "<button type='button' class='{$btnClass} text-nowrap' id='{$name}_toggle' style='width: 4vw;'>{$btnText}</button>";
-                echo "<input type='hidden' name='{$name}' id='{$name}' value='" . ($isYes ? '1' : '0') . "'>";
+                echo "    </strong></label>";
+                echo "    <button type='button' class='{$btnClass} text-nowrap' id='{$name}_toggle' data-yesno-toggle='1' style='width: 4vw;'>{$btnText}</button>";
+                echo "    <input type='hidden' name='{$name}' id='{$name}' value='" . ($isYes ? '1' : '0') . "'>";
+                echo "  </div>";
+
+                if ($hasComment) {
+                    $wrapClass = $showComment ? 'd-flex align-items-center mt-1' : 'align-items-center mt-1';
+                    $displayStyle = $showComment ? '' : 'display:none;';
+                    echo "  <div class='{$wrapClass}' id='{$name}_kommentar_wrap' data-show-if='{$showIfVal}' style='{$displayStyle}'>";
+                    echo "    <label class='form-label col-6 ms-2 me-2 rechtsbuendig text-muted'><small> Kommentar:</small></label>";
+                    echo "    <div class='col-5'><input class='form-control form-control-sm' type='text' name='{$commentName}' id='{$commentName}' value='{$commentValue}' placeholder='{$commentLabel}'></div>";
+                    echo "  </div>";
+                }
                 echo "</div>";
                 break;
 
+            case 'multiselect':
+                // Gespeicherte Werte als Array (kommasepariert aus DB)
+                $selectedValues = !empty($value) ? array_map('trim', explode(',', $value)) : [];
+                echo "<div class='mb-1 {$kategorie} d-flex align-items-center flex-wrap'>";
+                echo "<label class='form-label ms-2 col-6 rechtsbuendig'><strong>{$label}</strong>";
+                if ($info) {
+                    echo " <button class='btn btn-sm bg-white rounded'
+                      data-bs-toggle='popover'
+                      data-bs-content='{$info}'>
+                        <i class='fas fa-info-circle'></i>
+                    </button>";
+                }
+                echo "</label>";
 
-            case 'yesno_checkbox':
-                echo "<div class=' mb-1  {$kathegorie} d-flex justify-content-start '>";
-                echo "<label for='{$name}' class='form-label   col-6 ms-2 me-2 rechtsbuendig'> <strong> {$label}</strong></label>";
-                $checked = ($value == "1" || $value === 1) ? "checked" : "";
-                echo "<div class='form-check'>";
-                echo "<input class='form-check-input' type='checkbox' name='{$name}' id='{$name}' value='1' {$checked}>";
-                echo "<label class='sr-only' for='{$name}'></label>";
-                echo "</div>";
-                break;
+                echo "<div class='ms-2' id='{$name}_groups'>";
 
-
-            case 'select_dropdown':
-                echo "<div class='mb-1 {$kathegorie} d-flex justify-content-start'>";
-                echo "<label for='{$name}' class='form-label  me-2 ms-2  col-6 rechtsbuendig'><strong> {$label}</strong></label>";
-                echo "<select class='form-select' name='{$name}' id='{$name}'>";
+                echo "<div class='btn-group flex-wrap' role='group' id='{$name}_group'>";
                 foreach ($options as $optValue => $optLabel) {
-                    $selected = ($optValue == $value) ? "selected" : "";
-                    echo "<option value='" . htmlspecialchars($optValue) . "' {$selected}>" . htmlspecialchars($optLabel) . "</option>";
+                    $isChecked = in_array((string)$optValue, $selectedValues);
+                    $btnActiveClass = 'btn-outline-primary';
+                    $checkboxId = "{$name}_opt_" . preg_replace('/[^a-zA-Z0-9]/', '_', $optValue);
+                    echo "<input class='btn-check' type='checkbox'
+                        name='{$name}[]' id='{$checkboxId}'
+                        value='" . htmlspecialchars($optValue) . "'
+                        autocomplete='off'
+                        " . ($isChecked ? 'checked' : '') . ">";
+                    echo "<label class='btn {$btnActiveClass} me-1 mb-1' for='{$checkboxId}'>" . htmlspecialchars($optLabel) . "</label>";
                 }
-                echo "</select>";
+                echo "<input type='hidden' name='{$name}_sentinel' value='1'>";
+                echo "</div></div></div>";
                 break;
+
 
             case 'select':
-                echo "<div class='mb-1 {$kathegorie} d-flex align-items-center flex-wrap'>";
-                echo "<label class='form-label  me-2 ms-2  col-6 rechtsbuendig' ><strong>{$label}</strong>";
+                $hasComment = !empty($field['optional_comment_label']);
+                $commentLabel = $field['optional_comment_label'] ?? 'Kommentar:';
+                $commentName = $name . '_kommentar';
+                $commentValue = htmlspecialchars($userData[$commentName] ?? '');
+                $defaultVal = is_array($field['default_value'] ?? '') ? '' : ($field['default_value'] ?? '');
+                $isDefault = ((string)$value === (string)$defaultVal);
+                $showComment = $hasComment && !$isDefault;
+
+                echo "<div class='mb-1 {$kategorie}'>";
+                echo "<div class='d-flex align-items-center flex-wrap'>";
+                echo "<label class='form-label me-2 ms-2 col-6 rechtsbuendig'><strong>{$label}</strong>";
                 if ($info) {
                     echo " <button class='btn btn-sm bg-white rounded'
-                                  data-bs-toggle='popover'
-                                  data-bs-content='{$info}'>
-                                    <i class='fas fa-info-circle'></i>
-                                </button>";
+                      data-bs-toggle='popover'
+                      data-bs-content='{$info}'>
+                        <i class='fas fa-info-circle'></i>
+                    </button>";
                 }
-                echo "</label>
-                        <div class='btn-group' role='group' aria-label='{$label}'>";
+                echo "</label>";
+                echo "<div class='btn-group' role='group' aria-label='{$label}'>";
                 foreach ($options as $optValue => $optLabel) {
                     $checked = ($optValue == $value) ? "checked" : "";
                     $btnId = "{$name}_{$optValue}";
-                    echo "<input type='radio' class='btn-check' name='{$name}' id='{$btnId}' value='" . htmlspecialchars($optValue) . "' {$checked} autocomplete='off'>
-            <label class='btn btn-outline-primary me-1 mb-1' for='{$btnId}'>" . htmlspecialchars($optLabel) . "</label>        ";
+                    echo "<input type='radio' class='btn-check' name='{$name}' id='{$btnId}' value='" . htmlspecialchars($optValue) . "' {$checked} autocomplete='off' data-select-comment-target='{$name}'>";
+                    echo "<label class='btn btn-outline-primary me-1 mb-1' for='{$btnId}'>" . htmlspecialchars($optLabel) . "</label>";
                 }
-                echo "</div>";
-                echo "</div>";
-                break;
+                echo "</div></div>";
 
+                if ($hasComment) {
+                    $wrapClass = $showComment ? 'd-flex align-items-center mt-1' : 'align-items-center mt-1';
+                    $displayStyle = $showComment ? '' : 'display:none;';
+                    echo "<div class='{$wrapClass}' id='{$name}_kommentar_wrap' data-default-val='" . htmlspecialchars($defaultVal) . "' style='{$displayStyle}'>";
+                    echo "  <label class='form-label col-6 ms-2 me-2 rechtsbuendig text-muted'><small>Kommentar:</small></label>";
+                    echo "  <div class='col-5'><input class='form-control form-control-sm' type='text' name='{$commentName}' id='{$commentName}' value='{$commentValue}' placeholder='{$commentLabel}'></div>";
+                    echo "</div>";
+                }
+                echo "</div></div>";
+                break;
 
             default:
                 echo "<input class='form-control' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'>";
         }
-        echo "</div>";
     }
-
-
     echo '</form> </div>';
 }
 
@@ -222,8 +250,6 @@ if ($roomId) {
 <script>
 
     $(document).ready(function () {
-
-        reinitPopovers()
         document.addEventListener('click', function (event) {
             document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function (el) {
                 const popover = bootstrap.Popover.getInstance(el);
@@ -236,96 +262,6 @@ if ($roomId) {
                 }
             });
         });
-
-
-        $('button[id$="_toggle"]').each(function () {
-            var btn = $(this);
-            btn.on('click', function () {
-                var hiddenInput = $('#' + btn.attr('id').replace('_toggle', ''));
-                if (!hiddenInput.length) return;
-                var isYes = hiddenInput.val() === '1';
-                if (isYes) {
-                    btn.removeClass('btn-outline-success').addClass('btn-outline-primary').text('Nein');
-                    hiddenInput.val('0');
-                } else {
-                    btn.removeClass('btn-outline-primary').addClass('btn-outline-success').text(' Ja ');
-                    hiddenInput.val('1');
-                }
-            });
-        });
     });
-
-
-    function loadFormData(roomId) {
-        $.post('load_room_data_userinputs.php', {roomId: roomId}, function (response) {
-            if (response.error) {
-                alert('Fehler: ' + response.error);
-                return;
-            }
-            if (response.newRoom) {
-                return;
-            }
-            const data = response.data;
-
-            const skipFields = ['raumnr', 'roomname', 'raumbereich_nutzer', 'ebene', 'nf'];
-
-            for (const key in data) {
-                if (skipFields.includes(key)) continue;
-
-                const el = $('[name="' + key + '"]');
-                if (!el.length) continue;
-
-                const value = data[key];
-
-                // Handle yesno buttons: a button + hidden input pattern
-                const toggleBtn = $('#' + key + '_toggle');
-                if (toggleBtn.length) {
-                    // Set hidden input value and button text/class
-                    if (value === 1 || value === '1') {
-                        toggleBtn.removeClass('btn-outline-primary').addClass('btn-outline-success').text(' Ja ');
-                        el.val('1');
-                    } else {
-                        toggleBtn.removeClass('btn-outline-success').addClass('btn-outline-primary').text('Nein');
-                        el.val('0');
-                    }
-                    continue; // skip normal input
-                }
-
-                // Handle radio buttons (btn-check)
-                if (el.filter(':radio').length) {
-                    el.filter('[value="' + value + '"]').prop('checked', true);
-                    continue;
-                }
-
-                // Handle checkbox inputs
-                if (el.is(':checkbox')) {
-                    el.prop('checked', value === 1 || value === '1');
-                    continue;
-                }
-
-                // Select inputs
-                if (el.is('select')) {
-                    el.val(value).trigger('change');
-                    continue;
-                }
-
-                el.val(value);
-            }
-        }, 'json');
-    }
-
-
-    $('form').on('submit', function (e) {
-        e.preventDefault();
-        let formData = $(this).serialize();
-        //console.log(formData);
-        $.post('Raumkathegorien.php', formData, function (response) {
-            alert(response); // z.B. "Data successfully updated."
-        }).fail(function () {
-            alert('Fehler beim Speichern.');
-        });
-    });
-
-
 </script>
 </html>

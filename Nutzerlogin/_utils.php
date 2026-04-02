@@ -1,9 +1,18 @@
 <?php
-
+function start_session(): void
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start([
+            'cookie_httponly' => true,
+            'cookie_secure' => isset($_SERVER['HTTPS']),
+            'cookie_samesite' => 'Strict',
+        ]);
+    }
+}
 
 function init_page($allowed_roles): string
 {
-    session_start();
+    start_session();
     check_login_new();
     return check_role_based_access($allowed_roles);
     // close db - Nutzerlogin USer out
@@ -22,7 +31,6 @@ function check_login_new(): void
 }
 
 
-
 function check_role_based_access($allowed_roles): string
 {
     global $mysqli;
@@ -30,7 +38,7 @@ function check_role_based_access($allowed_roles): string
         include "db.php";
     }
 
-    $role = get_user_role($mysqli);
+    $role = get_user_role();
 
 
     if (is_array($allowed_roles)) {
@@ -39,8 +47,7 @@ function check_role_based_access($allowed_roles): string
         }
     } else {
         if ($role !== $allowed_roles) {
-            echo "HOW DID U GET HERE?";
-            // TODO LOG ATTEMPT?
+            header("Location: ../../Nutzerlogin/index.php");
             exit;
         }
     }

@@ -1,33 +1,16 @@
 <?php
-
 global $mysqli;
 require_once "../Nutzerlogin/_utils.php";
 
 if (!function_exists('loadEnv')) {
     include "../Nutzerlogin/db.php";
 }
-
-$role = init_page(["internal_rb_user", "spargefeld_ext_users", "spargefeld_admin"]);
-
-
-$sql = "SELECT  Raumbezeichnung, idTABELLE_Räume
-            FROM tabelle_räume
-            WHERE tabelle_projekte_idTABELLE_Projekte = 3";
-
-$stmt = $mysqli->prepare($sql);
-$stmt->execute();
-$result = $stmt->get_result();
-$raeume = [];
-while ($row = $result->fetch_assoc()) {
-    $raeume[] = $row;
-}
-$stmt->close();
-$mysqli->close();
+$role = init_page(["internal_rb_user", "spargelfeld_ext_users", "spargefeld_admin"]);
 
 ?>
 
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
@@ -50,24 +33,35 @@ $mysqli->close();
 <body class="">
 <div class="container-fluid">
     <div class="card">
-        <div class="card-header">Raum Kathegorien</div>
+        <div class="card-header d-inline-flex justify-content-center">
+            <h1> Support</h1>
+        </div>
         <div class="card-body">
-            <table class="table table-sm table-hover mb-0" id="raeumeTable">
-                <thead class="table-light">
-                <tr>
-                    <th>Raumname</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($raeume as $raum): ?>
-                    <tr data-id="<?= htmlspecialchars($raum['idTABELLE_Räume']) ?>"
-                        data-name="<?= htmlspecialchars($raum['Raumbezeichnung']) ?>">
-                        <td><?= htmlspecialchars($raum['Raumbezeichnung']) ?></td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
+            <p>
+                Für inhaltliche Fragen Kontaktieren Sie bitte Ihre geschätzte Nutzervertretung.
+            </p>
+            <p>
+                Im Falle von Website/Login/Usability Problemen kontaktieren Sie gerne:
+                W. Fuchs; <a href="mailto:fuchs@limet.at">fuchs@limet.at</a>; Tel: +431470483316
+            </p>
+
+
+            <!---div class="contact">
+                <p>Für labortechnische Fragen kontaktieren Sie bitte: LIMET Consulting und Planung ZT GmbH<br>
+                    Kaiserstraße 8/9, 1070 Wien<br>
+                    E-Mail: <a href="mailto:office@limet.at">office@limet.at</a><br>
+                    Tel: +43 1 470 48 33
+                    <a class="text-dark" href="https://www.limet.at" target="_blank" rel="noopener"> limet.at </a>
+                </p>
+            </div>
+
+            <div class="contact">
+                <p>Für Fragen zur Elektroversorgung oder HKLS kontaktieren Sie bitte:<br>
+                </p>
+            </div --->
+
         </div>
     </div>
+
 </div>
 </body>

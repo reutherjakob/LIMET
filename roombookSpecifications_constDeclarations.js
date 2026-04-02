@@ -41,7 +41,7 @@ const columnsDefinition = [
     {data: 'Raumbezeichnung', title: 'Raumbez'}, // 4
     {data: 'Raumnr', title: 'Raumnr'}, // 5
     {data: "Bezeichnung", title: "Funktionsstelle", visible: false, searchable: false, case: "Funktionsstelle"}, // 6
-    {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'}, // 7
+    {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr',visible: false}, // 7
     {data: "Nummer", title: "DIN13080", visible: false, case: "none-edit"}, // 8
     {data: "Entfallen", title: "Entfallen", name: "Entfallen", visible: false, case: "bit"}, // 9
     {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer', visible: false}, // 10

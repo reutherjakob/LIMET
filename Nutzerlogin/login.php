@@ -2,17 +2,15 @@
 global $mysqli;
 require 'db.php';
 
-session_start([
-    'cookie_httponly' => true,
-    'cookie_secure' => isset($_SERVER['HTTPS']),
-    'cookie_samesite' => 'Strict'
-]);
+require_once "../Nutzerlogin/_utils.php";
+start_session();
 require 'csrf.php';
 
 header('X-Frame-Options: DENY');
 header('X-Content-Type-Options: nosniff');
 header("Content-Security-Policy: default-src 'self'; style-src 'self' https://cdn.jsdelivr.net; script-src 'self' https://code.jquery.com https://cdn.jsdelivr.net");
-
+header('Referrer-Policy: no-referrer');
+header('Permissions-Policy: geolocation=(), camera=(), microphone=()');
 const MAX_ATTEMPTS = 10;
 const LOCKOUT_TIME = 20 * 60;
 const RATE_LIMIT = 10;
@@ -70,22 +68,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //$password = password_hash($password, PASSWORD_ARGON2ID);
     $csrf = $_POST['csrf'] ?? '';
 
-
     if (!csrf_check($csrf)) {
         log_attempt($mysqli, $ip, $username, 0);
-        echo "Ungültige Zugangsdaten.";
+        echo json_encode(['status' => 'error', 'msg' => 'Ungültige Zugangsdaten.', 'csrf' => csrf_token()]);
         exit;
     }
 
     if (!rate_limit_check($mysqli, $ip, $username)) {
         log_attempt($mysqli, $ip, $username, 0);
-        echo "Zu viele Versuche. Bitte probieren sie es später erneut. ";
+        echo json_encode(['status' => 'error', 'msg' => 'Zu viele Versuche. Bitte probieren sie es später erneut.', 'csrf' => csrf_token()]);
         exit;
     }
 
     if (!preg_match('/^[A-Za-z0-9_]{3,50}$/', $username)) {
         log_attempt($mysqli, $ip, $username, 0);
-        echo "Ungültige Zugangsdaten.";
+        echo json_encode(['status' => 'error', 'msg' => 'Ungültige Zugangsdaten.', 'csrf' => csrf_token()]);
         exit;
     }
 
@@ -101,11 +98,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($attempts >= MAX_ATTEMPTS && (time() - strtotime($last_attempt)) < LOCKOUT_TIME) { // Works
             log_attempt($mysqli, $ip, $username, 0);
-            echo "Zu viele Versuche. Probieren Sie es später erneut. ";
+            echo json_encode(['status' => 'error', 'msg' => 'Zu viele Versuche. Probieren Sie es später erneut.', 'csrf' => csrf_token()]);
             exit;
         }
 
-        if (password_verify($password, $hash) ) {
+        if (password_verify($password, $hash)) {
             session_regenerate_id(true);
             $_SESSION['user_id'] = $id;
             $_SESSION['user_name'] = $username;
@@ -114,9 +111,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $reset->execute();
             log_attempt($mysqli, $ip, $username, 1);
             if ($must_change_pw) {
-                echo "change_pw";
+                echo json_encode(['status' => 'change_pw']);
             } else {
-                echo "success";
+                echo json_encode(['status' => 'success']);
             }
         } else {
             $attempts++;
@@ -124,12 +121,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $update->bind_param("ii", $attempts, $id);
             $update->execute();
             log_attempt($mysqli, $ip, $username, 0);
-            echo "Ungültige Zugangsdaten.";
+            echo json_encode(['status' => 'error', 'msg' => 'Ungültige Zugangsdaten.', 'csrf' => csrf_token()]);
         }
         $mysqli->close();
     } else {
+        password_verify($password, '$argon2id$v=19$m=65536,t=4,p=1$Fe5EPJVPe71vIyIAcIDzyA$8Vama06zrsly0E+mM6rZKyr2RQE9V+x/VtMcwOw7Al0');
         log_attempt($mysqli, $ip, $username, 0);
-        echo "Ungültige Zugangsdaten.";
+        echo json_encode(['status' => 'error', 'msg' => 'Ungültige Zugangsdaten.', 'csrf' => csrf_token()]);
+        $mysqli->close();
     }
     exit;
 }

@@ -33,10 +33,9 @@ init_page_serversides();
         <div class="card-header">
             <div class="row align-items-center g-2">
                 <div class="col-auto">
-                    <b>Elektrische Anschlussübersicht – Elemente im Projekt</b>
+                    <b>KOR Katalog</b>
                 </div>
 
-                <!-- ── NEU: Raumbereich-Filter ── -->
                 <div class="col-xxl-4 col-lg-5 col-12">
                     <label for="select_raumbereiche" class="invisible"></label><select id="select_raumbereiche"
                                                                                        class="form-select form-select-sm"
@@ -74,8 +73,15 @@ init_page_serversides();
                             title="Filter leeren (alle anzeigen)">
                         <i class="fas fa-times"></i>
                     </button>
+                    <button class="btn btn-sm btn-outline-secondary ms-1"   type="button"
+                            title="       KOR Elementlistes">
+                        <a class="text-success" href="/roombook_KOR_ElementeListe.php">
+
+                        </a>
+                    </button>
+
+
                 </div>
-                <!-- ── ENDE NEU ── -->
 
                 <div class="col-auto ms-auto d-flex align-items-center" id="dt-header-controls">
                     <button type="button" class="btn btn-sm btn-info text-nowrap"
@@ -83,6 +89,8 @@ init_page_serversides();
                         <i class="fas fa-question-circle"></i>
                     </button>
                 </div>
+
+
             </div>
         </div>
         <div class="card-body p-1">

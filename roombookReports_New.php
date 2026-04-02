@@ -127,7 +127,7 @@ init_page_serversides("", "x");
 <script>
     let table;
     const reportCategoryOptions = [
-        {value: "", text: "-- Berichtkathegorie auswählen --", disabled: true, selected: true},
+        {value: "", text: "-- Berichtkategorie auswählen --", disabled: true, selected: true},
         {value: "bauangaben_neu", text: "Bauangaben Neu"},
         {value: "bauangaben", text: "Bauangaben"},
         {value: "einreichung", text: "Einreichung"},

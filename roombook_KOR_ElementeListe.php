@@ -91,25 +91,18 @@ init_page_serversides();
                 <tbody>";
 
             while ($row = $result->fetch_assoc()) {
-                $raumnr = ($_SESSION["projectName"] === "GCP")
-                    ? $row["Raumnummer_Nutzer"]
-                    : $row["Raumnr"];
-
                 $glz = $row["Gleichzeitigkeit"] ?? '—';
-
                 echo "<tr>";
-                echo "<td>" . h($raumnr) . "</td>";
+                echo "<td>" . h($row["Raumnr"]) . "</td>";
                 echo "<td>" . h($row["Raumbezeichnung"]) . "</td>";
                 echo "<td>" . h($row["Raumbereich Nutzer"]) . "</td>";
                 echo "<td>" . h($row["Geschoss"]) . "</td>";
                 echo "<td>" . h($row["ElementID"]) . h(varianteToLetter($row["tabelle_Varianten_idtabelle_Varianten"])) . "</td>";
-
                 echo "<td>" . h($row["ElementBezeichnung"]) . "</td>";
                 echo "<td>" . h($row["Anzahl"]) . "</td>";
                 echo "<td class='text-center'>" . h($glz) . "</td>";
                 echo "</tr>";
             }
-
             echo "</tbody></table>";
             $mysqli->close();
             ?>

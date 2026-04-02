@@ -31,56 +31,56 @@ init_page_serversides();
         }
 
         /* ET: Elektro-Technik */
-        .kathegorie-ET,
-        .kathegorie-Raumparameter---IT-Anbindung,
-        .kathegorie-Raumparameter---Leistung,
-        .kathegorie-Raumparameter---Netzarten,
-        .kathegorie-Raumparameter---ElementPort,
-        .kathegorie-Leistung-Elemente-in-Raum--EXKL--GLZ-,
-        .kathegorie-Leistung-Elemente-in-Raum--INKL--GLZ-,
-        .kathegorie-Raumparameter---Leistung----INKL--GLZ-,
-        .kathegorie-Raumparameter---Leistung----EXKL--GLZ-,
-        .kathegorie-Raumparameter---Elemente,
-        .kathegorie-Raumparameter---RG,
-        .kathegorie-Raumparameter---SummevonAnschlussleistung,
-        .kathegorie-Netzarten,
-        [class^="kathegorie-Raumparameter---Leistung"],
-        [class^="kathegorie-Raumparameter---ET-Anschlussleistung"] {
+        .kategorie-ET,
+        .kategorie-Raumparameter---IT-Anbindung,
+        .kategorie-Raumparameter---Leistung,
+        .kategorie-Raumparameter---Netzarten,
+        .kategorie-Raumparameter---ElementPort,
+        .kategorie-Leistung-Elemente-in-Raum--EXKL--GLZ-,
+        .kategorie-Leistung-Elemente-in-Raum--INKL--GLZ-,
+        .kategorie-Raumparameter---Leistung----INKL--GLZ-,
+        .kategorie-Raumparameter---Leistung----EXKL--GLZ-,
+        .kategorie-Raumparameter---Elemente,
+        .kategorie-Raumparameter---RG,
+        .kategorie-Raumparameter---SummevonAnschlussleistung,
+        .kategorie-Netzarten,
+        [class^="kategorie-Raumparameter---Leistung"],
+        [class^="kategorie-Raumparameter---ET-Anschlussleistung"] {
             background-color: #deefff !important; /* Light blue */
         }
 
         /* HT: Heizung, Lüftung, Klima, Sanitär */
-        .kathegorie-HT,
-        .kathegorie-Raumparameter---Abw-rme--EXKL--GLZ-,
-        .kathegorie-Raumparameter---Abw-rme--INKL--GLZ-,
-        .kathegorie-Raumparameter---Digestorium,
-        .kathegorie-Raumparameter---Sicherheitsschrank {
+        .kategorie-HT,
+        .kategorie-Raumparameter---Abw-rme--EXKL--GLZ-,
+        .kategorie-Raumparameter---Abw-rme--INKL--GLZ-,
+        .kategorie-Raumparameter---Digestorium,
+        .kategorie-Raumparameter---Sicherheitsschrank {
             background-color: #f2e5ff !important; /* Light orange */
         }
 
         /* MED-GAS: Medizingase */
-        .kathegorie-MED-GAS,
-        .kathegorie-Raumparameter---MED-GAS,
-        .kathegorie-Raumparameter---Entnahmestelle,
-        .kathegorie-Raumparameter---Gasanschluss,
-        .kathegorie-Raumparameter---Stativ {
+        .kategorie-MED-GAS,
+        .kategorie-Raumparameter---MED-GAS,
+        .kategorie-Raumparameter---Entnahmestelle,
+        .kategorie-Raumparameter---Gasanschluss,
+        .kategorie-Raumparameter---Stativ {
             background-color: #c0fac0 !important; /* Light green */
         }
 
         /* Laser */
-        .kathegorie-Laser,
-        .kathegorie-Raumparameter---Laseranwendung,
-        .kathegorie-Röntgen,
-        .kathegorie-Raumparameter---Strahlenanwendung,
-        .kathegorie-Raumparameter---Röntgen,
-        .kathegorie-CEE,
-        .kathegorie-Raumparameter---CEE,
-        .kathegorie-Raumparameter---Elemente,
-        .kathegorie-Raumparameter {
+        .kategorie-Laser,
+        .kategorie-Raumparameter---Laseranwendung,
+        .kategorie-Röntgen,
+        .kategorie-Raumparameter---Strahlenanwendung,
+        .kategorie-Raumparameter---Röntgen,
+        .kategorie-CEE,
+        .kategorie-Raumparameter---CEE,
+        .kategorie-Raumparameter---Elemente,
+        .kategorie-Raumparameter {
             background-color: #f8dfb0 !important; /* Light yellow */
         }
 
-        [class^="kathegorie-"] {
+        [class^="kategorie-"] {
             background-color: #f9f9f9;
         }
 
@@ -169,10 +169,10 @@ init_page_serversides();
                     const parts = line.split(':::');
                     const ROOM = parts[0].trim().split('---')[0].replace(/<br\s*\/?>/g, " ");
                     const R_ID = parts[0].trim().split('---')[1];
-                    const kathegorie = parts[1].split('->')[0].trim();
+                    const kategorie = parts[1].split('->')[0].trim();
                     const issue = parts[1].split('->')[1].trim();
                     roomIssues[R_ID] = roomIssues[R_ID] || [];
-                    roomIssues[R_ID].push({ ROOM, kathegorie, issue });
+                    roomIssues[R_ID].push({ ROOM, kategorie, issue });
                 });
 
                 const $tbody = $('#tableBody');
@@ -181,7 +181,7 @@ init_page_serversides();
                     const rows = roomIssues[id].map((item, index) => {
                         const isChecked = localStorage.getItem(`${id}-${index}`) === 'true';
                         const safeROOM = escHtml(item.ROOM);
-                        const safeKathegorie = escHtml(item.kathegorie);
+                        const safeKathegorie = escHtml(item.kategorie);
                         const safeIssue = escHtml(item.issue);
                         const safeId = escHtml(id);
 
@@ -220,22 +220,22 @@ init_page_serversides();
                                 .appendTo('#CH1');
 
                             const problemCounts = {};
-                            const kathegorieCounts = {};
+                            const kategorieCounts = {};
 
                             this.api().rows().every(function () {
                                 const data = this.data();
                                 const problemText = data[3];
-                                const kathegorieText = data[2];
+                                const kategorieText = data[2];
 
                                 problemCounts[problemText] = (problemCounts[problemText] || 0) + 1;
-                                kathegorieCounts[kathegorieText] = (kathegorieCounts[kathegorieText] || 0) + 1;
+                                kategorieCounts[kategorieText] = (kategorieCounts[kategorieText] || 0) + 1;
                             });
 
                             const repeatedProblems = Object.entries(problemCounts)
                                 .filter(([problem, count]) => count > 1)
                                 .map(([problem]) => problem);
 
-                            const repeatedKathegories = Object.entries(kathegorieCounts)
+                            const repeatedKathegories = Object.entries(kategorieCounts)
                                 .filter(([kathe, count]) => count > 1)
                                 .map(([kathe]) => kathe);
 
@@ -246,11 +246,11 @@ init_page_serversides();
                                 $problemDropdown.append(`<option value="${safe}">${safe}</option>`);
                             });
 
-                            const $kathegorieDropdown = $('<select class="form-select form-select-sm me-2" aria-label="Select kathegorie"></select>');
-                            $kathegorieDropdown.append('<option value="" disabled selected>Kathegorie wählen...</option>');
+                            const $kategorieDropdown = $('<select class="form-select form-select-sm me-2" aria-label="Select kategorie"></select>');
+                            $kategorieDropdown.append('<option value="" disabled selected>Kathegorie wählen...</option>');
                             repeatedKathegories.forEach(kathe => {
                                 const safe = escHtml(kathe);
-                                $kathegorieDropdown.append(`<option value="${safe}">${safe}</option>`);
+                                $kategorieDropdown.append(`<option value="${safe}">${safe}</option>`);
                             });
 
                             const $btnCrossAllProblems = $('<button class="btn btn-sm btn-outline-primary me-2 text-nowrap" type="button">Alle Probleme abhaken</button>');
@@ -258,7 +258,7 @@ init_page_serversides();
 
                             $('#CH1')
                                 .prepend($btnCrossAllKathegories)
-                                .prepend($kathegorieDropdown)
+                                .prepend($kategorieDropdown)
                                 .prepend($btnCrossAllProblems)
                                 .prepend($problemDropdown);
 
@@ -282,7 +282,7 @@ init_page_serversides();
                             });
 
                             $btnCrossAllKathegories.on('click', function () {
-                                const selectedKathe = $kathegorieDropdown.val();
+                                const selectedKathe = $kategorieDropdown.val();
                                 if (!selectedKathe) {
                                     alert("Bitte wählen Sie eine Kathegorie aus der Liste.");
                                     return;
@@ -307,10 +307,10 @@ init_page_serversides();
                             { width: '50%' }
                         ],
                         createdRow: function (row, data) {
-                            const kathegorie = data[2] || data.kathegorie;
-                            if (kathegorie) {
-                                const cleanKathegorie = kathegorie.replace(/[^a-zA-Z0-9-]/g, '-');
-                                $(row).addClass('kathegorie-' + cleanKathegorie);
+                            const kategorie = data[2] || data.kategorie;
+                            if (kategorie) {
+                                const cleanKathegorie = kategorie.replace(/[^a-zA-Z0-9-]/g, '-');
+                                $(row).addClass('kategorie-' + cleanKathegorie);
                             }
                         }
                     });

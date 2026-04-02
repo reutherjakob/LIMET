@@ -1,4 +1,3 @@
-
 <!-- InfoModal -->
 <div class="modal fade" id="InfoModal" tabindex="-1" aria-labelledby="InfoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
@@ -6,7 +5,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="InfoModalLabel">
                     <i class="fas fa-info-circle me-2 text-info"></i>
-                    Elektrische Anschlussübersicht — Spalteninformation
+                    Spalteninformation
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
@@ -116,7 +115,7 @@
                         <div class="col-md-4">
                             <div class="p-2 rounded border bg-light h-100">
                                 <div class="fw-semibold small mb-1"><?= htmlspecialchars($col) ?> <span
-                                        class="badge <?= $bg ?> bg-opacity-75 fw-normal mb-1"><?= $label ?></span>
+                                            class="badge <?= $bg ?> bg-opacity-75 fw-normal mb-1"><?= $label ?></span>
                                 </div>
 
                                 <div class="text-muted" style="font-size:12px"><?= htmlspecialchars($desc) ?></div>
@@ -143,7 +142,7 @@
                         <div class="col-md-4">
                             <div class="p-2 rounded border bg-light h-100">
                                 <div class="fw-semibold small mb-1"><?= htmlspecialchars($col) ?> <span
-                                        class="badge <?= $bg ?> bg-opacity-75 fw-normal mb-1"><?= $label ?></span>
+                                            class="badge <?= $bg ?> bg-opacity-75 fw-normal mb-1"><?= $label ?></span>
                                 </div>
 
                                 <div class="text-muted" style="font-size:12px"><?= htmlspecialchars($desc) ?></div>

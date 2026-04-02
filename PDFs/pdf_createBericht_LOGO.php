@@ -62,9 +62,9 @@ function get_titelblatt_logo($pdf, $format = "A4"): void
         $pdf->SetFont('helvetica', '', 6);
         $pdf->Cell(0, 0, "ARGE LIMET-MADER", 0, false, 'R', 0, '', 0, false, 'B', 'B');
         $pdf->Ln();
-        $pdf->Cell(0, 0, "Zwerggase 6/1", 0, false, 'R', 0, '', 0, false, 'B', 'B');
+        $pdf->Cell(0, 0, "Kaiserstraße 8/9", 0, false, 'R', 0, '', 0, false, 'B', 'B');
         $pdf->Ln();
-        $pdf->Cell(0, 0, "8010 Graz", 0, false, 'R', 0, '', 0, false, 'B', 'B');
+        $pdf->Cell(0, 0, "1070 Wien", 0, false, 'R', 0, '', 0, false, 'B', 'B');
         $pdf->Ln();
         $pdf->Ln();
         $pdf->Cell(0, 0, "Dipl.-Ing. Jens Liebmann, MBA", 0, false, 'R', 0, '', 0, false, 'B', 'B');

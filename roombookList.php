@@ -31,10 +31,10 @@ init_page_serversides();
     <div class="mt-2 card">
         <div class="card-header">
             <div class=" row">
-                <div class="col-6">
+                <div class="col-4">
                     <b>Elemente im Projekt</b>
                 </div>
-                <div class="col-6 d-flex justify-content-end" id="dt-header-container"></div>
+                <div class="col-8 d-flex justify-content-end" id="dt-header-container"></div>
             </div>
         </div>
         <div class="card-body" id="elementLots">
@@ -185,7 +185,30 @@ init_page_serversides();
             ],
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
-                search: ""
+                search: "",
+                info: "",
+                infoEmpty: "",
+                infoFiltered: "_TOTAL_ gefiltert von _MAX_; ",
+                select: {
+
+                    rows: {
+                        _: "%d ausgewählt",
+                        0: "",
+                        1: "1 ausgewählt"
+                    },
+
+                    columns: {
+                        _: "",
+                        0: "",
+                        1: ""
+                    },
+
+                    cells: {
+                        _: "",
+                        0: "",
+                        1: ""
+                    },
+                }
             },
             buttons: [
                 {
@@ -214,9 +237,9 @@ init_page_serversides();
             ],
             paging: false,
             initComplete: function () {
+                $('#tableRoombookList_wrapper .dt-info').appendTo('#dt-header-container');
                 $('#tableRoombookList_wrapper .dt-buttons').appendTo('#dt-header-container');
                 $('#tableRoombookList_wrapper .dt-search').appendTo('#dt-header-container');
-                $('#tableRoombookList_wrapper .dt-info').appendTo('#dt-header-container');
             }
         });
 

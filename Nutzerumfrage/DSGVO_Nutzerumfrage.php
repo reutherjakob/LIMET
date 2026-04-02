@@ -17,16 +17,39 @@
 <body>
 
 <div class="card mx-5">
-    <div class="card-header d-inline-flex justify-content-center">
-        <h1> Datenschutzerklärung</h1>
+    <div class="card-header">
+        Website von
+        <strong class="text-success"> LIMET Consulting und Planung ZT GmbH</strong>
     </div>
+    <div class="card-body">
+        <div class="contact">
+            <p>Technischer Support: Website/Login/Usability Probleme? Kontaktieren Sie gerne: W. Fuchs;
+                <a href="mailto:fuchs@limet.at" class="text-success">fuchs@limet.at </a>; Tel: +431470483316
+            </p>
+            <p> Firmenkontakt: <br> Kaiserstraße 8/9, 1070 Wien<br>
+                E-Mail: <a class="text-success" href="mailto:office@limet.at">office@limet.at</a><br>
+                Tel: +43 1 470 48 33
+                <a class="text-success" href="https://www.limet.at" target="_blank"> limet.at </a>
+            </p>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="card mx-5">
+
+    <div class="card-header">
+        <h4> Datenschutzerklärung</h4>
+    </div>
+
     <div class="card-body">
 
         <p>Um Ihnen ein bestmögliches Erlebnis auf unserer Website zu ermöglichen, erfassen wir (bewusst möglichst
             wenige) personenbezogene Daten, die für den technischen Ablauf benötigt werden. Da Datenschutz ein uns
             wichtiges Anliegen ist, speichern wir jenseits der technisch notwendigen Daten nichts und verarbeiten ihre
             Daten nur dann, wenn es zwingend notwendig ist und dann ausschließlich im Rahmen der gesetzlichen
-            Bestimmungen (DSGVO, DSG 2000, TKG 2003). </p>
+            Bestimmungen (DSGVO, DSG, TKG 2003). </p>
 
         <p>Personenbezogene Daten nach DSGVO Art. 4 sind solche, die sich auf eine natürliche Person beziehen (Name,
             Adresse) oder einen Rückschluss auf eine Person zulassen (z.B. die IP-Adresse). Nach der
@@ -40,7 +63,8 @@
                 Weitere Details sind unten gelistet.
             </li>
             <li><strong>Wer verarbeitet die Daten?</strong><br>
-                Wir verarbeiten die Daten selbst bzw. die Hosting Provider verarbeiten die von Ihnen aufgezeichneten Daten
+                Wir verarbeiten die Daten selbst bzw. die Hosting Provider verarbeiten die von Ihnen aufgezeichneten
+                Daten
             </li>
             <li><strong>Wie kann ein Widerspruch eingelegt/ eine Löschung/ Änderung beantragt werden?</strong><br>
                 Ein Widerspruch, Löschung oder Berichtigung wird formlos beim Verantwortlichen beantragt; bei Erfolg
@@ -87,29 +111,25 @@
         </p>
 
         <h4>Cookies</h4>
-        <p>Wir möchten die Erfassung von persönlichen Daten auf ein Minimum reduzieren. Deshalb sind von unserer
-            Seite
-            auch keine Cookies auf dieser Webseite implementiert worden. Sie können die Seite auch komplett ohne die
-            Speicherung von Cookies verwenden, möglicherweise führt das aber zu einer leicht eingeschränkten
-            Funktionalität. Um die Verwendung des technisch notwendigen Cookies so transparent wie möglich zu
-            machen,
-            gehen wir im Folgenden darauf ein und erklären ihre Funktion.
-        </p>
-        <h5> PHPSESSID</h5>
-        <p>
+        <p>Wir möchten die Erfassung von persönlichen Daten auf ein Minimum reduzieren. Deshalb
+            werden von unserer Seite keine eigenen Cookies implementiert. Die Seite verwendet
+            lediglich einen technisch notwendigen Session-Cookie (PHPSESSID), der automatisch
+            durch die verwendete PHP-Servertechnologie gesetzt wird.
             Dieses Cookie ist für einige PHP-Applikationen technisch notwendig und dient dem Wiedererkennen der
             Benutzenden. Wird dieser Cookie deaktiviert, kommt es zu leichten Einschränkungen bei Diensten, die auf
-            PHP
-            basieren. Wird bei Sitzungsende gelöscht (wenn die Seite verlassen oder geschlossen wird).
+            PHP basieren. Wird bei Sitzungsende gelöscht (wenn die Seite verlassen oder geschlossen wird).
+            Sie können die Seite auch komplett ohne
+            die Speicherung von Cookies verwenden, möglicherweise führt das aber zu einer leicht eingeschränkten
+            Funktionalität.
         </p>
+
 
         <h4>Rechtsgrundlage</h4>
         <p>In der DSGVO Art. 6 wird beschrieben, unter welchen Bedingungen die Verarbeitung personenbezogener Daten
             rechtmäßig ist. Diese beinhalten unter anderem folgende: </p>
         <ul>
-            <li> Die betroffene Person hat ihre Einwilligung zu der Verarbeitung gegeben. Diese Bedingung ist bspw.
-                durch
-                die Zustimmung der Cookies gegeben.
+            <li> Die betroffene Person hat ihre Einwilligung zu der Verarbeitung gegeben.
+                Dies gilt etwa für die Nutzung des technisch notwendigen Session-Cookies (PHPSESSID).
             </li>
             <li> Die Verarbeitung ist für die Erfüllung eines Vertrags oder zu Durchführung vorvertraglicher Maßnahmen
                 erforderlich. Darunter fällt die Nutzung unserer Website. Diese stellt eine Dienstleistung an die
@@ -142,20 +162,7 @@
             Kontaktaufnahme von unserer Seite dann nicht mehr möglich ist.
         </p>
 
-        <h4>Widerspruch, Löschung, Änderung</h4>
-        <p> Wenn Sie eine Verletzung Ihrer Datenschutzrechte vermuten, können Sie sich an die zuständige
-            Datenschutzbehörde (www.dsb.gv.at) wenden.</p>
-        <p> Sie können jederzeit Widerspruch einlegen oder Daten löschen lassen.
-            Kontaktieren Sie uns dazu über:</p>
-        <div class="contact">
-            <p>LIMET Consulting und Planung ZT GmbH<br>
-                Kaiserstraße 8/9, 1070 Wien<br>
-                E-Mail: <a href="mailto:office@limet.at">office@limet.at</a><br>
-                Tel: +43 1 470 48 33
-                <a class="text-dark" href="https://www.limet.at" target="_blank" rel="noopener"> limet.at </a>
-            </p>
 
-        </div>
     </div>
 </div>
 
