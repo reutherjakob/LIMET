@@ -305,7 +305,7 @@ init_page_serversides("x");
             });
 
             $(document).on("click", "button[value='Los Workflow']", function () {
-                var ID = this.id;
+                var ID = this.id.replace('lotwf_', '');
                 $.ajax({
                     url: "getLotWorkflow.php",
                     type: "POST",
@@ -546,7 +546,9 @@ init_page_serversides("x");
                 const losName = $(this).data('los-name');
 
                 $('#losHistorieModalTitle').text(losName);
+
                 $('#losHistorieModalBody').html(`<div class="text-center p-4"><div class="spinner-border" role="status"></div></div>`);
+
                 new bootstrap.Modal(document.getElementById('losHistorieModal')).show();
 
                 $.ajax({
@@ -561,8 +563,21 @@ init_page_serversides("x");
                         }
                         // Sort newest first (ISO string sorts correctly)
                         rows.sort((a, b) => (b[1] ?? '').localeCompare(a[1] ?? ''));
+
+// Remove consecutive rows where timestamp+user+all fields are identical
+                        const deduped = rows.filter((row, i) => {
+                            if (i === 0) return true;
+                            const prev = rows[i - 1];
+                            // Compare timestamp, user, and all alt/neu field indices
+                            return !(row[1] === prev[1] && row[2] === prev[2] &&
+                                [3, 4, 7, 8, 10, 11, 13, 14, 15, 16, 17, 18,
+                                    19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+                                    31, 32, 33, 34, 35, 36, 37, 38, 39, 40]
+                                    .every(idx => String(row[idx] ?? '') === String(prev[idx] ?? '')));
+                        });
+
                         $('#losHistorieModalBody').html(
-                            rows.map(row => `<div class="mb-4">${lh_buildDetailHtml(row)}</div>`).join('<hr class="my-2">')
+                            deduped.map(row => `<div class="mb-4">${lh_buildDetailHtml(row)}</div>`).join('<hr class="my-2">')
                         );
                     },
                     error: function () {

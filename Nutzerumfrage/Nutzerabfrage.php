@@ -137,6 +137,7 @@ foreach ($labortypen as $lt) {
                                 data-raumkategoriename="<?= $labortyp_map[$raum['Raumtyp BH']] ?? $raum['Raumtyp BH'] ?>"
                                 data-bauabschnitt="<?= htmlspecialchars($raum['Bauabschnitt']) ?>"
                                 data-ebene="<?= htmlspecialchars($raum['Geschoss']) ?>"
+                                data-nf="<?= htmlspecialchars($raum['Nutzfläche'] ?? '') ?>"
                             >
                                 <td><?= htmlspecialchars($raum['raumnummer']) ?></td>
                                 <td><?= htmlspecialchars($raum['raumname']) ?></td>
@@ -295,13 +296,11 @@ foreach ($labortypen as $lt) {
             let raumnr = $(this).find('td').eq(0).text().trim();
             let roomname = $(this).find('td').eq(1).text().trim();
             let raumbereich_nutzer = $(this).find('td').eq(2).text().trim();
-
-
             let raumkategorie = $(this).data("raumkategorie") || '';
             let raumkategoriename = $(this).data("raumkategoriename") || '';
             let bauabschnitt = $(this).data("bauabschnitt") || '';
             let ebene = $(this).data("ebene") || '';
-
+            let nf = $(this).data("nf") || '';
 
             $.ajax({
                 url: "spargelfeld_nutzerabfrage_1.php",
@@ -324,8 +323,9 @@ foreach ($labortypen as $lt) {
                     $('[name="roomname"]').val(roomname);
                     $('[name="raumbereich_nutzer"]').val(raumbereich_nutzer);
                     $('[name="ebene"]').val(ebene);
-
                     $('[name="raumkategorieAbfrage"]').val(raumkategoriename);
+                    $('[name="nf"]').val(nf);
+
                 },
                 error: function () {
                     $("#formContainer").html("<p class='text-danger'>Formular konnte nicht geladen werden.</p>");
@@ -390,16 +390,24 @@ foreach ($labortypen as $lt) {
                         }
                         continue;
                     }
-                    if (el.filter(':radio').length) { el.filter('[value="' + value + '"]').prop('checked', true).trigger('change'); continue; }
-                    if (el.is(':checkbox')) { el.prop('checked', value === 1 || value === '1'); continue; }
-                    if (el.is('select')) { el.val(value).trigger('change'); continue; }
+                    if (el.filter(':radio').length) {
+                        el.filter('[value="' + value + '"]').prop('checked', true).trigger('change');
+                        continue;
+                    }
+                    if (el.is(':checkbox')) {
+                        el.prop('checked', value === 1 || value === '1');
+                        continue;
+                    }
+                    if (el.is('select')) {
+                        el.val(value).trigger('change');
+                        continue;
+                    }
                     el.val(value);
                 }
             }, 'json');
         }
 
     }); // Ende document.ready
-
 
 
 </script>

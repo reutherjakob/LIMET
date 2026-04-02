@@ -49,7 +49,8 @@ $formFields = [
     ["type" => "select", "kategorie" => "Ausstattung", "name" => "abluftwaescher",
         "options" => [0 => "Nein", 1 => "1", 2 => "2"],
         "label" => "Sind Abzüge mit Abluftwäscher / Säurewäscher in Verwendung?",
-        "default_value" => 0
+        "default_value" => 0,
+        "optional_comment_label" => "",
     ],
 
 
@@ -112,15 +113,18 @@ $formFields = [
         "optional_comment_label" => "Bitte Neutralistaion- oder Sedimentationsanlage spezifizieren"
     ],
 
-    ["type" => "text", "kategorie" => "HKLS", "name" => "kaltwasser_stundenverbrauch",
+
+    ["type" => "number", "kategorie" => "HKLS", "name" => "kaltwasser_stundenverbrauch",
         "label" => "Geschätzter Kaltwasser Stundenverbrauch [l/h]?",
         "info" => "Nur gefragt bei Räumen, die lt. Type Kaltwasser haben.",
         "default_value" => ""],
 
-    ["type" => "text", "kategorie" => "HKLS", "name" => "kaltwasser_spitzenverbrauch",
+    ["type" => "number", "kategorie" => "HKLS", "name" => "kaltwasser_spitzenverbrauch",
         "label" => "Geschätzte Kaltwasser Spitzenentnahme [l/s]",
         "info" => "Nur gefragt bei Räumen, die lt. Type Kaltwasser haben.",
         "default_value" => ""],
+
+
 
 
     //["type" => "select", "kategorie" => "Raum", "name" => "mitarbeiter_anzahl",

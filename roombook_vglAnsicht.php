@@ -100,7 +100,7 @@ init_page_serversides(); // checks Nutzerlogin
         <div class="card-body" id="">
             <div class="row mt-1">
                 <div class="col-xxl-6" id="col3">
-                    <div class="card border-success" id="card3">
+                    <div class="card border-success" id="card3a">
                         <div class="card-header">
                             Elemente im Raum
                         </div>
@@ -110,7 +110,7 @@ init_page_serversides(); // checks Nutzerlogin
                     </div>
                 </div>
                 <div class="col-xxl-6" id="col4">
-                    <div class="card " id="card4">
+                    <div class="card " id="card4a">
                         <div class="card-header">
                             Elemente im Vergleichsraum
                         </div>
@@ -134,7 +134,7 @@ init_page_serversides(); // checks Nutzerlogin
         <div class="card-body">
             <div class="row mt-1">
                 <div class="col-xxl-6">
-                    <div class="card border-success" id="card3">
+                    <div class="card border-success" id="card3b">
                         <div class="card-header"> Bauangaben Text
                         </div>
                         <div class="card-body" id="bauangaben">
@@ -142,7 +142,7 @@ init_page_serversides(); // checks Nutzerlogin
                     </div>
                 </div>
                 <div class="col-xxl-6">
-                    <div class="card" id="card4">
+                    <div class="card" id="card4b">
                         <div class="card-header">Bauangaben Text Vgl
                         </div>
                         <div class="card-body" id="bauangaben_vgl">
@@ -192,7 +192,6 @@ init_page_serversides(); // checks Nutzerlogin
     </div>
 </div>
 
-
 <script src="roombookSpecifications_constDeclarations.js"></script>
 <script src="utils/_utils.js"></script>
 <script>
@@ -204,7 +203,7 @@ init_page_serversides(); // checks Nutzerlogin
     $(document).ready(function () {
         addToggleFunctionality();
         init_t_rooms();
-        table_click("t_rooms", "CB3");
+        // KEIN table_click hier — wird in initComplete von t_rooms registriert
     });
 
     let filter_init_counter = 1;
@@ -212,14 +211,11 @@ init_page_serversides(); // checks Nutzerlogin
     let t_rooms_vgl;
     let RID1;
     let RID2;
+    // FIX Bug 3: Flag ob t_rooms_vgl-Listener schon registriert ist
+    let vgl_click_registered = false;
 
-    const columnsDefinitionShort = [
-        {
-            data: 'tabelle_projekte_idTABELLE_Projekte',
-            title: 'Projek ID',
-            visible: false,
-            searchable: false
-        },
+    const columnsBase = [
+        {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projekt ID', visible: false, searchable: false},
         {data: 'idTABELLE_Räume', title: 'Raum ID', visible: false, searchable: false},
         {
             data: 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen',
@@ -227,77 +223,90 @@ init_page_serversides(); // checks Nutzerlogin
             visible: false,
             searchable: false
         },
-        {data: 'Projektname', title: 'Projekt', visible: true, searchable: true},
         {
-            data: 'MT-relevant',
-            title: 'MT-rel.',
-            name: 'MT-relevant',
-            case: "bit",
-            render: function (data) {
-                return data === '1' ? 'Ja' : 'Nein';
-            }
+            data: 'MT-relevant', title: 'MT-rel.', name: 'MT-relevant', case: "bit",
+            render: d => d === '1' ? 'Ja' : 'Nein'
         },
         {data: 'Raumbezeichnung', title: 'Raumbez.'},
         {data: 'Raumnr', title: 'Raumnr'},
-
-        {data: "Bezeichnung", title: "Funktionsstelle", visible: true, case: "none-edit"}, //#7
+        {data: 'Bezeichnung', title: 'Funktionsstelle', visible: true, case: "none-edit"},
         {data: 'Funktionelle Raum Nr', title: 'Funkt.R.Nr'},
-        {data: "Nummer", title: "DIN13080", visible: false, case: "none-edit"},
-
-        {data: "Entfallen", title: "Entfallen", name: "Entfallen", visible: false, case: "bit"},
-
+        {data: 'Nummer', title: 'DIN13080', visible: false, case: "none-edit"},
+        {data: 'Entfallen', title: 'Entfallen', name: 'Entfallen', visible: false, case: "bit"},
         {data: 'Raumnummer_Nutzer', title: 'Raumnr Nutzer', visible: false},
-        {data: 'Raumbereich Nutzer', title: 'Raumbereich', visible: false}];
+        {data: 'Raumbereich Nutzer', title: 'Raumbereich', visible: false}
+    ];
+    const columnsRooms = columnsBase;
+    const   columnsVgl = [
+            ...columnsBase.slice(0, 3),
+            {data: 'Projektname', title: 'Projekt', visible: true, searchable: true},
+            ...columnsBase.slice(3)
+        ];
 
+    // FIX Bug 3: Event-Delegation nur einmal pro Tabelle registrieren
+    function register_room_click() {
+        $(document).on('click', '#t_rooms tr', function () {
+            if (!t_rooms) return;
+            const selectedRowData = t_rooms.row(this).data();
+            if (!selectedRowData) return;
 
-    function table_click(table_id, taget_id_4_new_content) {
-        $(document).on('click', "#" + table_id + " tr", function () {
-            let selectedRowData;
-            let RID1change = false;
-            if (table_id === "t_rooms") {
-                selectedRowData = t_rooms.row('.selected').data();
-                if (selectedRowData) {
-                    if (RID1 !== selectedRowData[`idTABELLE_Räume`]) {
-                        RID1 = selectedRowData[`idTABELLE_Räume`];
-                        RID1change = true;
-                    }
-                }
-                load_room_texts(RID1, "#bauangaben");
+            const newRID1 = selectedRowData['idTABELLE_Räume'];
+            if (RID1 !== newRID1) {
+                RID1 = newRID1;
+                const funktionsstelleId = selectedRowData['TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen'];
+                init_vgl_rooms_table(funktionsstelleId);
+                $('#CB4').empty();
+            }
 
-            }
-            if (table_id === "t_rooms_vgl") {
-                selectedRowData = t_rooms_vgl.row('.selected').data();
-                if (selectedRowData) {
-                    if (RID2 !== selectedRowData["idTABELLE_Räume"]) {
-                        RID2 = selectedRowData["idTABELLE_Räume"];
-                    }
-                }
-                load_room_texts(RID2, "#bauangaben_vgl");
-            }
-            if (selectedRowData) {
-                value = selectedRowData["TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen"]
-                if (RID1change) {
-                    init_vgl_rooms_table(value);
-                    $('#CB4').empty();
-                }
-                get_el_in_room_table(selectedRowData['idTABELLE_Räume'], taget_id_4_new_content);
-            }
+            t_rooms.rows().nodes().each(function (row) {
+                $(row).removeClass('selected');
+            });
+            $(this).addClass('selected');
+
+            load_room_texts(RID1, '#bauangaben');
+            get_el_in_room_table(RID1, 'CB3');
+        });
+    }
+
+    function register_vgl_click() {
+        if (vgl_click_registered) return; // FIX Bug 3: nicht doppelt registrieren
+        vgl_click_registered = true;
+
+        $(document).on('click', '#t_rooms_vgl tr', function () {
+            if (!t_rooms_vgl) return;
+            const selectedRowData = t_rooms_vgl.row(this).data();
+            if (!selectedRowData) return;
+
+            RID2 = selectedRowData['idTABELLE_Räume'];
+
+            t_rooms_vgl.rows().nodes().each(function (row) {
+                $(row).removeClass('selected');
+            });
+            $(this).addClass('selected');
+
+            load_room_texts(RID2, '#bauangaben_vgl');
+            get_el_in_room_table(RID2, 'CB4');
         });
     }
 
     function load_room_texts(rid, where2putthedata) {
-
         $.ajax({
-            url: "setSessionVariables.php",
-            data: {"roomID": rid},
-            type: "POST",
+            url: 'setSessionVariables.php',
+            data: {roomID: rid},
+            type: 'POST',
+            // FIX: Fehlerbehandlung hinzugefügt
+            error: function () {
+                console.error('setSessionVariables.php fehlgeschlagen für RID', rid);
+            },
             success: function () {
                 $.ajax({
-                    url: "getRoomSpecifications2.php",
-                    type: "POST",
+                    url: 'getRoomSpecifications2.php',
+                    type: 'POST',
+                    error: function () {
+                        $(where2putthedata).html('<p class="text-danger">Bauangaben konnten nicht geladen werden.</p>');
+                    },
                     success: function (data) {
                         $(where2putthedata).html(data);
-                        //  console.log("Data Loaded " + data);
                     }
                 });
             }
@@ -305,60 +314,52 @@ init_page_serversides(); // checks Nutzerlogin
     }
 
     function compareElementTables() {
-        let elementIdsTable1 = $(`#tableRoomElements${RID1}`).DataTable().column(1).data().toArray();
-        let elementIdsTable2 = $(`#tableVglRoomElements${RID2}`).DataTable().column(1).data().toArray();
+        // FIX: Sicherstellen dass beide Tabellen existieren
+        if (!RID1 || !RID2) return;
+        const tableId1 = '#tableRoomElements' + RID1;
+        const tableId2 = '#tableVglRoomElements' + RID2;
+        if (!$.fn.DataTable.isDataTable(tableId1) || !$.fn.DataTable.isDataTable(tableId2)) return;
 
-        let idsSet1 = new Set(elementIdsTable1);
-        let idsSet2 = new Set(elementIdsTable2);
+        const idsSet1 = new Set($(tableId1).DataTable().column(1).data().toArray());
+        const idsSet2 = new Set($(tableId2).DataTable().column(1).data().toArray());
 
-        $(`#tableRoomElements${RID1}`).DataTable().rows().every(function () {
-
-            let rowData = this.data();
-            let rowId = rowData.ElementID;
-
-            $(this.node()).find('td').each(function (index) {
-                if (index === 1) {
-                    if (idsSet2.has(rowId)) {
-                        $(this).addClass('grün');
-                    } else {
-                        $(this).addClass('rot');
-                    }
-                }
-            });
+        $(tableId1).DataTable().rows().every(function () {
+            const rowId = this.data().ElementID;
+            $(this.node()).find('td').eq(1)
+                .toggleClass('grün', idsSet2.has(rowId))
+                .toggleClass('rot', !idsSet2.has(rowId));
         });
 
-        $(`#tableVglRoomElements${RID2}`).DataTable().rows().every(function () {
-
-            let rowData = this.data();
-            let rowId = rowData.ElementID;
-
-            $(this.node()).find('td').each(function (index) {
-                if (index === 1) {
-                    if (idsSet1.has(rowId)) {
-                        $(this).addClass('grün');
-                    } else {
-                        $(this).addClass('rot');
-                    }
-                }
-            });
+        $(tableId2).DataTable().rows().every(function () {
+            const rowId = this.data().ElementID;
+            $(this.node()).find('td').eq(1)
+                .toggleClass('grün', idsSet1.has(rowId))
+                .toggleClass('rot', !idsSet1.has(rowId));
         });
     }
 
-
     function get_el_in_room_table(RaumID, targetDiv) {
         $.ajax({
-            url: "get_RoomElementsData.php",
-            data: {"roomID": RaumID},
-            type: "POST",
-            dataType: "json",
+            url: 'get_RoomElementsData.php',
+            data: {roomID: RaumID},
+            type: 'POST',
+            dataType: 'json',
+            error: function () {
+                $('#' + targetDiv).html('<p class="text-danger">Elemente konnten nicht geladen werden.</p>');
+            },
             success: function (data) {
-                let tableId = 'tableRoomElements' + RaumID;
-                if (targetDiv === "CB4") {
-                    tableId = 'tableVglRoomElements' + RaumID;
+                const isVgl = (targetDiv === 'CB4');
+                const tableId = isVgl ? 'tableVglRoomElements' + RaumID : 'tableRoomElements' + RaumID;
+
+                // Alte DataTable destroyen falls vorhanden
+                if ($.fn.DataTable.isDataTable('#' + tableId)) {
+                    $('#' + tableId).DataTable().destroy();
                 }
-                // console.log("Initiating dt 4 elements: " + tableId);
-                let tableHtml = "<table id='" + tableId + "' class='table table-responsive table-striped table-bordered table-sm' style='width: 100%'></table>";
-                $("#" + targetDiv).html(tableHtml);
+
+                $('#' + targetDiv).html(
+                    "<table id='" + tableId + "' class='table table-responsive table-striped table-bordered table-sm' style='width:100%'></table>"
+                );
+
                 $('#' + tableId).DataTable({
                     data: data,
                     columns: [
@@ -366,178 +367,123 @@ init_page_serversides(); // checks Nutzerlogin
                         {data: 'ElementID', title: 'ID'},
                         {data: 'Anzahl', title: 'Stück'},
                         {data: 'Variante', title: 'Var.'},
-                        {
-                            data: 'Neu/Bestand', title: 'Best.', render: function (data) {
-                                return data === 1 ? "Nein" : "Ja";
-                            }
-                        },
-                        {
-                            data: 'Standort', title: 'Ort', render: function (data) {
-                                return data === 1 ? "Ja" : "Nein";
-                            }
-                        },
-                        {
-                            data: 'Verwendung', title: 'Verw.', render: function (data) {
-                                return data === 1 ? "Ja" : "Nein";
-                            }
-                        }
+                        {data: 'Neu/Bestand', title: 'Best.', render: d => d === 1 ? 'Nein' : 'Ja'},
+                        {data: 'Standort', title: 'Ort', render: d => d === 1 ? 'Ja' : 'Nein'},
+                        {data: 'Verwendung', title: 'Verw.', render: d => d === 1 ? 'Ja' : 'Nein'}
                     ],
-                    layout: {
-                        topStart: null,
-                        topEnd: null,
-                        bottomStart: ['info'],
-                        bottomEnd: null
-                    },
+                    layout: {topStart: null, topEnd: null, bottomStart: ['info'], bottomEnd: null},
                     paging: false,
                     responsive: true,
-                    language: {
-                        info: "_TOTAL_ Zeilen"
-                    },
+                    language: {info: '_TOTAL_ Zeilen'},
                     scrollCollapse: true,
-                    select: {
-                        style: "single",
-                        info: false
-                    },
-                    info: true,
+                    select: {style: 'single', info: false},
                     compact: true,
                     initComplete: function () {
-                        if (targetDiv === "CB4") {
+                        if (isVgl) {
                             compareElementTables();
                         }
                     }
                 });
             }
         });
-
     }
 
     function getVisibleColumns() {
-        let visibleColumns = [];
-        t_rooms_vgl.columns().every(function () {
-            if (this.visible()) {
-                visibleColumns.push(this.index());
-            }
-        });
-        return visibleColumns;
+        return t_rooms_vgl.columns().indexes().filter(i => t_rooms_vgl.column(i).visible()).toArray();
     }
 
     function init_vgl_rooms_table(value) {
+        // FIX Bug 5: kein setTimeout — destroy direkt, dann sofort neu initialisieren
         if (t_rooms_vgl) {
-            let visibleColumns = getVisibleColumns();
-            columnsDefinitionShort.forEach(function (columnDef, index) {
-                columnDef.visible = !!visibleColumns.includes(index);
+            const visibleCols = getVisibleColumns();
+            columnsVgl.forEach((col, i) => {
+                col.visible = visibleCols.includes(i);
             });
-            t_rooms_vgl.buttons('.buttons-colvis').remove();
-            $('.dt-buttons').remove();
-            $('#dt-search-' + (filter_init_counter - 1).toString()).remove(); // Remove the old search element
             t_rooms_vgl.destroy();
+            t_rooms_vgl = null;
         }
-        setTimeout(function () {
-            // console.log("Making t_rooms_vgl... ");
-            t_rooms_vgl = new DataTable('#t_rooms_vgl', {
-                ajax: {
-                    url: 'get_rooms_with_funktionsteilstelle.php',
-                    data: {"value": value, "RaumID": RID1, "Unique": $('#checkbox1').prop('checked')},
-                    dataSrc: '',
-                    type: 'POST'
-                },
-                columns: columnsDefinitionShort,
-                layout: {
-                    topStart: null,
-                    topEnd: null,
-                    bottomStart: ["info", "pageLength", 'search'],
-                    bottomEnd: {
-                        paging: {
-                            buttons: 3
-                        }
-                    }
-                },
-                language: {
-                    url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
-                    search: "",
-                    info: "_TOTAL_ Zeilen",
 
-                },
-                pageLength: 10,
-                lengthMenu: [
-                    [5, 10, 50],
-                    ['5 rows', '10 rows', '50 rows']
-                ],
-                select: {
-                    style: "single",
-                    info: false
-                },
-                responsive: true,
-                scrollCollapse: true,
-                compact: true,
-
-                initComplete: function () {
-                    const searchbuilder = [
-                        {
-                            extend: 'searchBuilder',
-                            text: null,
-                            className: "btn fas fa-search",
-                            titleAttr: "Suche konfigurieren",
-                        }
-                    ];
-                    new $.fn.dataTable.Buttons(t_rooms_vgl, {buttons: searchbuilder}).container().appendTo($('#CardHeaderVglRooms'));
-
-                    const buttonColumnVisbilities = [
-                        {
-                            extend: 'colvis',
-                            text: 'Vis',
-                            columns: ':gt(5)',
-                            collectionLayout: 'fixed columns',
-                            className: 'btn'
-                        }];
-                    new $.fn.dataTable.Buttons(t_rooms_vgl, {buttons: buttonColumnVisbilities}).container().appendTo($('#CardHeaderVglRooms'));
-                    move_item("dt-search-" + filter_init_counter.toString(), "CardHeaderVglRooms");
-                    filter_init_counter++;
-                    table_click("t_rooms_vgl", "CB4");
-                }
-            });
-        }, 20);
-    }
-
-
-    function init_t_rooms() {
-
-        t_rooms = new DataTable('#t_rooms', {
+        t_rooms_vgl = new DataTable('#t_rooms_vgl', {
             ajax: {
-                url: 'get_mt_relevant_room_specs.php',
-                dataSrc: ''
-            },
-            columns: columnsDefinitionShort,
-            layout: {
-                topStart: null,
-                topEnd: null,
-                bottomStart: ["info", "pageLength", 'search',],
-                bottomEnd: {
-                    paging: {
-                        buttons: 3
-                    }
+                url: 'get_rooms_with_funktionsteilstelle.php',
+                data: {value: value, RaumID: RID1, Unique: $('#checkbox1').prop('checked')},
+                dataSrc: '',   // ← erwartet direkt ein Array
+                type: 'POST',
+                error: function () {
+                    console.error('Vergleichsräume konnten nicht geladen werden.');
                 }
+            },
+            columns: columnsVgl,
+            layout: {
+                topStart: null, topEnd: null,
+                bottomStart: ['info', 'pageLength', 'search'],
+                bottomEnd: {paging: {buttons: 3}}
             },
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
-                search: "",
-                info: "_TOTAL_ Zeilen",
-
+                search: '',
+                info: '_TOTAL_ Zeilen'
             },
             pageLength: 10,
-            lengthMenu: [
-                [5, 10, 50],
-                ['5 rows', '10 rows', '50 rows']
-            ],
-            select: {
-                style: "single",
-                info: false
-            },
+            lengthMenu: [[5, 10, 50], ['5 Zeilen', '10 Zeilen', '50 Zeilen']],
+            select: {style: 'single', info: false},
             responsive: true,
             scrollCollapse: true,
             compact: true,
             initComplete: function () {
-                move_item("dt-search-0", "CardHeaderRooms");
+                $('#CardHeaderVglRooms').empty(); // alte Buttons entfernen
+
+                new $.fn.dataTable.Buttons(t_rooms_vgl, {
+                    buttons: [{
+                        extend: 'searchBuilder', text: null,
+                        className: 'btn fas fa-search', titleAttr: 'Suche konfigurieren'
+                    }]
+                }).container().appendTo($('#CardHeaderVglRooms'));
+
+                new $.fn.dataTable.Buttons(t_rooms_vgl, {
+                    buttons: [{
+                        extend: 'colvis', text: 'Vis', columns: ':gt(5)',
+                        collectionLayout: 'fixed columns', className: 'btn'
+                    }]
+                }).container().appendTo($('#CardHeaderVglRooms'));
+
+                move_item('dt-search-' + filter_init_counter.toString(), 'CardHeaderVglRooms');
+                filter_init_counter++;
+
+                register_vgl_click(); // FIX Bug 3: nur einmal registrieren
+            }
+        });
+    }
+
+    function init_t_rooms() {
+        t_rooms = new DataTable('#t_rooms', {
+            ajax: {
+                url: 'get_mt_relevant_room_specs.php',
+                dataSrc: '',  // FIX Bug 1: dataSrc explizit setzen
+                error: function () {
+                    console.error('Räume konnten nicht geladen werden.');
+                }
+            },
+            columns: columnsRooms,
+            layout: {
+                topStart: null, topEnd: null,
+                bottomStart: ['info', 'pageLength', 'search'],
+                bottomEnd: {paging: {buttons: 3}}
+            },
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                search: '',
+                info: '_TOTAL_ Zeilen'
+            },
+            pageLength: 10,
+            lengthMenu: [[5, 10, 50], ['5 Zeilen', '10 Zeilen', '50 Zeilen']],
+            select: {style: 'single', info: false},
+            responsive: true,
+            scrollCollapse: true,
+            compact: true,
+            initComplete: function () {
+                move_item('dt-search-0', 'CardHeaderRooms');
+                register_room_click(); // FIX Bug 3: Listener hier registrieren
             }
         });
     }
@@ -550,56 +496,47 @@ init_page_serversides(); // checks Nutzerlogin
     }
 
     function toggleCard(colId1, colId2, button) {
-        //console.log(button);
         const col1 = document.getElementById(colId1);
         const col2 = document.getElementById(colId2);
-        if (button.id.startsWith("Hide")) {
+        const hiding = button.id && button.id.startsWith('Hide');
+
+        if (hiding) {
             if (col1.classList.contains('col-xxl-6')) {
-                col1.classList.remove('col-xxl-6');
-                col1.classList.add('col-2');
-                col2.classList.remove('col-xxl-6');
-                col2.classList.add('col-10');
+                col1.classList.replace('col-xxl-6', 'col-2');
+                col2.classList.replace('col-xxl-6', 'col-10');
             } else if (col1.classList.contains('col-12')) {
-                col1.classList.remove('col-12');
-                col1.classList.add('col-xxl-6');
-                col2.classList.remove('col-12');
-                col2.classList.add('col-xxl-6');
+                col1.classList.replace('col-12', 'col-xxl-6');
+                col2.classList.replace('col-12', 'col-xxl-6');
             }
         } else {
             if (col1.classList.contains('col-xxl-6') && col2.classList.contains('col-xxl-6')) {
-                col1.classList.remove('col-xxl-6');
-                col1.classList.add('col-12');
-                col2.classList.remove('col-xxl-6');
-                col2.classList.add('col-12');
+                col1.classList.replace('col-xxl-6', 'col-12');
+                col2.classList.replace('col-xxl-6', 'col-12');
             } else if (col1.classList.contains('col-2')) {
-                col1.classList.remove('col-2');
-                col1.classList.add('col-xxl-6');
-                col2.classList.remove('col-10');
-                col2.classList.add('col-xxl-6');
+                col1.classList.replace('col-2', 'col-xxl-6');
+                col2.classList.replace('col-10', 'col-xxl-6');
             }
         }
         tableRedraw();
     }
 
     function tableRedraw() {
-        if ($.fn.DataTable.isDataTable('#t_rooms')) {
-            $('#t_rooms').DataTable().columns.adjust().draw();
+        ['#t_rooms', '#t_rooms_vgl'].forEach(id => {
+            if ($.fn.DataTable.isDataTable(id)) $(id).DataTable().columns.adjust().draw();
+        });
+        // FIX Bug 4: Null-Check für RID1 und RID2
+        if (RID1) {
+            const id1 = '#tableRoomElements' + RID1;
+            if ($.fn.DataTable.isDataTable(id1)) $(id1).DataTable().columns.adjust().draw();
         }
-        if ($.fn.DataTable.isDataTable('#t_rooms_vgl')) {
-            $('#t_rooms_vgl').DataTable().columns.adjust().draw();
-        }
-
-        let tableid = 'tableRoomElements' + RID1.toString();
-        if ($.fn.DataTable.isDataTable('#' + tableid)) {
-            $('#' + tableid).DataTable().columns.adjust().draw();
-        }
-        tableid = 'tableRoomElements' + RID2.toString();
-        if ($.fn.DataTable.isDataTable('#' + tableid)) {
-            $('#' + tableid).DataTable().columns.adjust().draw();
+        if (RID2) {
+            const id2 = '#tableVglRoomElements' + RID2;
+            if ($.fn.DataTable.isDataTable(id2)) $(id2).DataTable().columns.adjust().draw();
         }
     }
 
-
 </script>
+
+
 </body>
 </html>

@@ -85,7 +85,7 @@ LEFT JOIN (
 ) AS losbestandschaetzsumme ON tabelle_lose_extern.idtabelle_Lose_Extern = losbestandschaetzsumme.id
 LEFT JOIN tabelle_projekte ON tabelle_projekte.idTABELLE_Projekte = COALESCE(losschaetzsumme.tabelle_projekte_idTABELLE_Projekte, losbestandschaetzsumme.tabelle_projekte_idTABELLE_Projekte)
 LEFT JOIN tabelle_lose_extern AS mkf_los ON tabelle_lose_extern.mkf_von_los = mkf_los.idtabelle_Lose_Extern
-WHERE tabelle_lose_extern.Versand_LV >= ? AND idTABELLE_Projekte <> 4 AND idTABELLE_Projekte <> 1
+WHERE tabelle_lose_extern.Versand_LV >= ?  AND idTABELLE_Projekte <> 4 AND idTABELLE_Projekte <> 1
 ORDER BY tabelle_projekte.Projektname, tabelle_lose_extern.LosNr_Extern
 ";
 

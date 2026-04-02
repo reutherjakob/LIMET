@@ -66,25 +66,34 @@ tr.selected {
 }*/
 
 
-#scrollBtn {
-    height: 45px; /* Adjust height for ellipse shape */
-    width: 45px; /* Adjust width for ellipse shape */
-    display: block; /* Ensure the button is displayed */
+.scrollBtn {
     position: fixed;
-    bottom: 20px; /* Position it slightly above the bottom */
-    right: 20px; /* Position it slightly away from the right edge */
-    z-index: 99;
-    font-size: 10px;
-    background-color: rgba(100, 140, 25, 0.1);
-    color: #fff;
-    border: none;
-    padding: 10px;
-    border-radius: 50px; /* Make the button an ellipse */
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: none;
+
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surf);
+    color: var(--muted);
+
+    font-size: 12px;
+    cursor: pointer;
+    transition: all .2s;
+    box-shadow: 0 4px 16px rgba(100,140,25,.4);
 }
 
+.scrollBtn:hover {
+    border-color: var(--av);
+    color: var(--av);
+    background: var(--surf2);
+}
 
-#scrollBtn:hover {
-    background-color: #0056b3;
+.scrollBtn i {
+    font-size: 13px !important; /* fa-3x überschreiben */
 }
 
 #btn {

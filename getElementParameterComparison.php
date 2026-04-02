@@ -11,21 +11,19 @@ if (!$mysqli->query("SET group_concat_max_len=15000")) {
     die("Error setting group concat: " . $mysqli->error);
 }
 
-
 $columnQuery = "SELECT GROUP_CONCAT(DISTINCT
                 CONCAT(
                     'MAX(IF(param.Bezeichnung = ''',
                     REPLACE(param.Bezeichnung, '''', ''''''),
                     ''', CONCAT(e.Wert, e.Einheit), NULL)) AS `',
                     REPLACE(param.Bezeichnung, '`', '``'),
-                )
                     '`'
+                )
             ) INTO @sql
             FROM tabelle_projekt_elementparameter AS e
             JOIN tabelle_parameter AS param
               ON e.tabelle_parameter_idTABELLE_Parameter = param.idTABELLE_Parameter
             WHERE e.tabelle_elemente_idTABELLE_Elemente = " . $elementID;
-
 error_log("Generated column query: " . $columnQuery);
 if (!$mysqli->query($columnQuery)) {
     die("Column generation failed: " . $mysqli->error);

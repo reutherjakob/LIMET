@@ -4,7 +4,9 @@
     <title>RB-Projekte</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+
     <link rel="icon" href="Logo/iphone_favicon.png"/>
     <!-- 13.2.25: Reworked -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -25,9 +27,8 @@
 </head>
 <body>
 <div id="limet-navbar"></div>
-<div class="container-fluid bg-white">
+<div class="container-fluid">
     <?php
-    //25 FX
     if (!function_exists('utils_connect_sql')) {
         include "utils/_utils.php";
     }
@@ -35,7 +36,6 @@
     include 'projects_changeProjectModal.html';
     unset($_SESSION["login_attempts_ip"]);
     unset($_SESSION["last_attempt_ip"]);
-
     $projectIcons = [
         "BBE" => "fas fa-church",
         "GCP" => "fas fa-toilet-paper",
@@ -60,7 +60,7 @@
         "AGES SF Nutzerraumbuch" => "fas fa-mortar-pestle",
         "AGES Spargelfeld" => "fas fa-mortar-pestle",
         "Test KHI" => "fas fa-yin-yang",
-        "Labor Kategorien" => "fas fa-microscope",
+        "Labor Kategorien" => "fas fa-sith",
     ];
     //<i class="fas fa-mountain"></i>
     ?>
@@ -86,7 +86,7 @@
                 <div class="card-body table-responsive px-1 py-1">
 
                     <table id='tableProjects'
-                           class='table table-sm compact table-hover table-striped border border-light border-5'>
+                           class='table table-sm compact table-hover table-striped border border-5'>
                         <thead>
                         <tr>
                             <th>ID</th><!-- invis -->

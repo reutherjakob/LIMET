@@ -26,9 +26,12 @@ $mysqli->set_charset('utf8mb4');
 
 // Felder die direkt als String gespeichert werden
 $stringFields = [
-    'roomname', 'raumnr', 'raumbereich_nutzer', 'nf', 'raumkategorieAbfrage',
-    'explosionsschutz',
+    'roomname',
+    'raumnr',
+    'raumbereich_nutzer',
 
+    'raumkategorieAbfrage',
+    'explosionsschutz',
     'raumabluft_besonders', 'raumzuluft_besonders', 'sonderabluft',
     'kaltwasser_stundenverbrauch', 'kaltwasser_spitzenverbrauch',
     'verbindungsgang_kommentar',
@@ -79,10 +82,10 @@ if (isset($_POST['spezialgas']) && is_array($_POST['spezialgas'])) {
 } else {
     $data['spezialgas'] = 'Nein';
 }
-error_log('DEBUG spezialgas: ' . var_export($data['spezialgas'], true));
+
+$data['nf'] = isset($_POST['nf']) && is_numeric($_POST['nf']) ? (float)$_POST['nf'] : null;
 
 
-// UPSERT
 $sql = "INSERT INTO tabelle_room_requirements_from_user 
     (roomID, roomname, raumnr, raumbereich_nutzer, nf, raumkategorieAbfrage,
      doppelfluegeltuer, verbindungsgang, verbindungsgang_kommentar,
@@ -140,7 +143,7 @@ foreach (array_merge($stringFields, ['spezialgas']) as $f) {
 }
 
 
-$stmt->bind_param('isssssiisississsssssiissssss',
+$stmt->bind_param('isssdsiisississsssssiissssss',
     $data['roomID'],
     $data['roomname'],
     $data['raumnr'],

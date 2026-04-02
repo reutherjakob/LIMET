@@ -120,6 +120,22 @@ try {
         }
         if ($row[15]) $row[15] = date('d.m.Y', strtotime($row[15]));
         if ($row[16]) $row[16] = date('d.m.Y', strtotime($row[16]));
+
+        // Skip rows where nothing actually changed
+        $fieldPairs = [
+            [3,4],[7,8],[10,11],[13,14],[15,16],[17,18],
+            [19,20],[21,22],[23,24],[25,26],[27,28],[29,30],
+            [31,32],[33,34],[35,36],[37,38],[39,40]
+        ];
+        $anyChange = false;
+        foreach ($fieldPairs as [$alt, $neu]) {
+            if ((string)($row[$alt] ?? '') !== (string)($row[$neu] ?? '')) {
+                $anyChange = true;
+                break;
+            }
+        }
+        if (!$anyChange) continue;   // ← drop pure no-op saves
+
         $data[] = $row;
     }
 

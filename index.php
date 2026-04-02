@@ -22,6 +22,7 @@ if (isset($_SESSION['username'])) {
     header("Location: projects.php");
     exit;
 }
+$_SESSION["darkmode"] = false;
 require 'utils/csrf.php';
 ?>
 

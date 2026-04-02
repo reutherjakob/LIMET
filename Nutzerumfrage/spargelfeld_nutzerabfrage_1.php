@@ -206,6 +206,22 @@ function renderForm(array $formFields, array $userData = []): void
                 echo "</div></div>";
                 break;
 
+            case 'number':
+                echo "<div class='mb-1 {$kategorie} d-flex align-items-center'>";
+                echo "<label for='{$name}' class='form-label col-6 ms-2 me-2 rechtsbuendig'><strong>{$label}</strong>";
+                if ($info) {
+                    echo " <button class='btn btn-sm bg-white rounded'
+                      data-bs-toggle='popover'
+                      data-bs-content='{$info}'>
+                        <i class='fas fa-info-circle'></i>
+                    </button>";
+                }
+                echo "</label>";
+                echo "<div class='col-5'><input class='form-control flex-grow-1' type='text' inputmode='decimal' placeholder='Bitte Nummer angeben.'
+                        name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'
+                        oninput=\"this.value = this.value.replace(/[^0-9.,]/g, '')\"></div></div>";
+                                break;
+
             default:
                 echo "<input class='form-control' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'>";
         }

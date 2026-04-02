@@ -73,12 +73,11 @@ init_page_serversides();
                             title="Filter leeren (alle anzeigen)">
                         <i class="fas fa-times"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-secondary ms-1"   type="button"
-                            title="       KOR Elementlistes">
-                        <a class="text-success" href="/roombook_KOR_ElementeListe.php">
-
-                        </a>
-                    </button>
+                    <a class="btn btn-sm btn-outline-secondary ms-1 text-success"
+                       href="/roombook_KOR_ElementeListe.php"
+                       title="KOR Elementliste">
+                        KOR‑Elementliste
+                    </a>
 
 
                 </div>
@@ -95,11 +94,9 @@ init_page_serversides();
         </div>
         <div class="card-body p-1">
             <?php
-            // ---------------------------------------------------------------
-            // COLUMN DEFINITIONS
-            // ---------------------------------------------------------------
-            $columnDefs = [
 
+
+            $columnDefs = [
                 // --- Identity ---
                 ['header' => 'ID', 'source' => 'elem', 'key' => 'idTABELLE_Elemente', 'hidden' => true],
                 ['header' => 'Gewerk', 'source' => 'static', 'key' => 'GPMT'],
@@ -154,46 +151,52 @@ init_page_serversides();
 
                 // --- Medizingas ---
                 ['header' => 'O2', 'source' => 'display', 'key' => 'O2 Anschluss', 'group' => 'Medizingas', 'suppress_unit' => true],
+                ['header' => 'Flussrate [l/min] O2', 'source' => 'display', 'key' => 'O2_Flussrate', 'group' => 'Medizingas', 'suppress_unit' => true],
                 ['header' => 'Med. DL5', 'source' => 'display', 'key' => 'DL-5 Anschluss', 'group' => 'Medizingas', 'suppress_unit' => true],
+                ['header' => 'Flussrate [l/min] Med. DL5', 'source' => 'display', 'key' => 'DL-5_Flussrate', 'group' => 'Medizingas', 'suppress_unit' => true],
                 ['header' => 'Med. DL10', 'source' => 'display', 'key' => 'DL-10 Anschluss', 'group' => 'Medizingas', 'suppress_unit' => true],
-                ['header' => 'NGA', 'source' => 'display', 'key' => 'NGA Anschluss', 'group' => 'Medizingas', 'suppress_unit' => true],
-                ['header' => 'VA', 'source' => 'display', 'key' => 'VAC Anschluss', 'group' => 'Medizingas', 'suppress_unit' => true],
+                ['header' => 'Flussrate [l/min] Med. DL10', 'source' => 'display', 'key' => 'DL-10_Flussrate', 'group' => 'Medizingas', 'suppress_unit' => true],
                 ['header' => 'CO2', 'source' => 'display', 'key' => 'CO2 Anschluss', 'group' => 'Medizingas', 'suppress_unit' => true],
-
+                ['header' => 'Flussrate [l/min] CO2', 'source' => 'display', 'key' => 'CO2_Flussrate', 'group' => 'Medizingas', 'suppress_unit' => true],
+                ['header' => 'VA', 'source' => 'display', 'key' => 'VAC Anschluss', 'group' => 'Medizingas', 'suppress_unit' => true],
+                ['header' => 'NGA', 'source' => 'display', 'key' => 'NGA Anschluss', 'group' => 'Medizingas', 'suppress_unit' => true],
                 // --- Tech. Druckluft ---
                 ['header' => 'Tech. DL 6 bar', 'source' => 'calc_ac', 'key' => 'dl_6bar', 'center' => true, 'group' => 'Druckluft'],
                 ['header' => 'Tech. DL 9 bar', 'source' => 'calc_ac', 'key' => 'dl_9bar', 'center' => true, 'group' => 'Druckluft'],
                 ['header' => 'Tech. DL 12 bar', 'source' => 'calc_ac', 'key' => 'dl_12bar', 'center' => true, 'group' => 'Druckluft'],
-
+                ['header' => 'Bemerkung MG', 'source' => 'static', 'key' => ''],
                 // --- Kaltwasser ---
                 ['header' => 'KW Stadtwasser', 'source' => 'calc_wc', 'key' => 'kw_stadt_flag', 'center' => true, 'group' => 'Kaltwasser', 'suppress_unit' => true],
-                ['header' => 'KW Stadtwasser l/min', 'source' => 'calc_wc', 'key' => 'kw_stadt_strom', 'group' => 'Kaltwasser', 'suppress_unit' => true],
-                ['header' => 'KW weich <4°DH', 'source' => 'calc_wc', 'key' => 'kw_weich_flag', 'center' => true, 'group' => 'Kaltwasser', 'suppress_unit' => true],
-                ['header' => 'KW weich <4°DH l/min', 'source' => 'calc_wc', 'key' => 'kw_weich_strom', 'group' => 'Kaltwasser', 'suppress_unit' => true],
-                ['header' => 'KW weich <4°DH, 80-120 μS/cm', 'source' => 'calc_wc', 'key' => 'kw_weich_leitf_flag', 'center' => true, 'group' => 'Kaltwasser', 'suppress_unit' => true],
-                ['header' => 'KW weich <4°DH, 80-120 μS l/min', 'source' => 'calc_wc', 'key' => 'kw_weich_leitf_strom', 'group' => 'Kaltwasser', 'suppress_unit' => true],
-                ['header' => 'KW VE <0,2 μS + <10 KBE/ml', 'source' => 'calc_wc', 'key' => 'kw_ve02_flag', 'center' => true, 'group' => 'Kaltwasser', 'suppress_unit' => true],
-                ['header' => 'KW VE <0,2 μS l/min', 'source' => 'calc_wc', 'key' => 'kw_ve02_strom', 'group' => 'Kaltwasser', 'suppress_unit' => true],
-                ['header' => 'KW VE <15 μS/cm', 'source' => 'calc_wc', 'key' => 'kw_ve15_flag', 'center' => true, 'group' => 'Kaltwasser', 'suppress_unit' => true],
-                ['header' => 'KW VE <15 μS/cm l/min', 'source' => 'calc_wc', 'key' => 'kw_ve15_strom', 'group' => 'Kaltwasser', 'suppress_unit' => true],
+                ['header' => 'KW Stadtwasser [l/min]', 'source' => 'calc_wc', 'key' => 'kw_stadt_strom', 'group' => 'Kaltwasser', 'suppress_unit' => true],
+                ['header' => 'KW (weich <4°DH)', 'source' => 'calc_wc', 'key' => 'kw_weich_flag', 'center' => true, 'group' => 'Kaltwasser', 'suppress_unit' => true],
+                ['header' => 'KW (weich <4°DH [l/min]', 'source' => 'calc_wc', 'key' => 'kw_weich_strom', 'group' => 'Kaltwasser', 'suppress_unit' => true],
+                ['header' => 'KW (weich <4°DH, 80-120 µS/cm) ', 'source' => 'calc_wc', 'key' => 'kw_weich_leitf_flag', 'center' => true, 'group' => 'Kaltwasser', 'suppress_unit' => true],
+                ['header' => 'KW (weich <4°DH, 80-120 µS/cm) [l/min]', 'source' => 'calc_wc', 'key' => 'kw_weich_leitf_strom', 'group' => 'Kaltwasser', 'suppress_unit' => true],
+                ['header' => 'KW VE (< 0,2 µS/cm + < 10 KBE/ml)', 'source' => 'calc_wc', 'key' => 'kw_ve02_flag', 'center' => true, 'group' => 'Kaltwasser', 'suppress_unit' => true],
+                ['header' => 'KW VE (< 0,2 µS/cm + < 10 KBE/ml) [l/min]', 'source' => 'calc_wc', 'key' => 'kw_ve02_strom', 'group' => 'Kaltwasser', 'suppress_unit' => true],
+                ['header' => 'KW VE (<15 μS/cm)', 'source' => 'calc_wc', 'key' => 'kw_ve15_flag', 'center' => true, 'group' => 'Kaltwasser', 'suppress_unit' => true],
+                ['header' => 'KW VE (<15 μS/cm) [l/min]', 'source' => 'calc_wc', 'key' => 'kw_ve15_strom', 'group' => 'Kaltwasser', 'suppress_unit' => true],
 
                 // --- Warmwasser ---
                 ['header' => 'WW Stadtwasser', 'source' => 'calc_wc', 'key' => 'ww_stadt_flag', 'center' => true, 'group' => 'Warmwasser'],
-                ['header' => 'WW Stadtwasser l/min', 'source' => 'calc_wc', 'key' => 'ww_stadt_strom', 'group' => 'Warmwasser'],
+                ['header' => 'WW Stadtwasser[l/min]', 'source' => 'calc_wc', 'key' => 'ww_stadt_strom', 'group' => 'Warmwasser'],
                 ['header' => 'WW weich <4°DH', 'source' => 'calc_wc', 'key' => 'ww_weich_flag', 'center' => true, 'group' => 'Warmwasser'],
-                ['header' => 'WW weich <4°DH l/min', 'source' => 'calc_wc', 'key' => 'ww_weich_strom', 'group' => 'Warmwasser'],
+                ['header' => 'WW weich <4°DH[l/min]', 'source' => 'calc_wc', 'key' => 'ww_weich_strom', 'group' => 'Warmwasser'],
 
                 // --- Wasser allgemein ---
                 ['header' => 'Fließdruck', 'source' => 'calc_wc', 'key' => 'fliessdruck', 'group' => 'Wasser'],
                 ['header' => 'Direktanschluss Wasser', 'source' => 'calc_wc', 'key' => 'direkt_wasser', 'center' => true, 'group' => 'Wasser'],
+
                 ['header' => 'Anschlussdimension [DN]', 'source' => 'calc_wc', 'key' => 'anschluss_dimension', 'group' => 'Wasser'],
                 ['header' => 'Anschlusspunkt [Zoll]', 'source' => 'calc_wc', 'key' => 'anschluss_punkt', 'group' => 'Wasser'],
-                ['header' => 'Rohrtrenner EN1717', 'source' => 'calc_wc', 'key' => 'rohrtrenner', 'group' => 'Wasser'],
+
+
+                ['header' => 'Rohrtrenner EN1717', 'source' => 'calc_wc', 'key' => 'rohrtrenner', 'group' => 'Wasser', 'suppress_unit' => true],
                 ['header' => 'Bemerkung Wasser', 'source' => 'static', 'key' => ''],
 
                 // --- Abwasser ---
-                ['header' => 'Abwasser Anschluss', 'source' => 'calc_sc', 'key' => 'abwasser_anschl', 'group' => 'Abwasser'],
-                ['header' => 'Abwasser Strom', 'source' => 'calc_sc', 'key' => 'abwasser_strom', 'group' => 'Abwasser'],
+                ['header' => 'Abwasser Anschluss ', 'source' => 'calc_sc', 'key' => 'abwasser_anschl', 'group' => 'Abwasser'],
+                ['header' => 'Abwasser Anschluss [l/min]', 'source' => 'calc_sc', 'key' => 'abwasser_strom', 'group' => 'Abwasser'],
                 ['header' => 'Kondensat', 'source' => 'calc_sc', 'key' => 'kondensat_flag', 'center' => true, 'group' => 'Abwasser'],
                 ['header' => 'Kondensat Wert', 'source' => 'calc_sc', 'key' => 'kondensat_wert', 'group' => 'Abwasser'],
                 ['header' => 'Abwassertemperatur [°C]', 'source' => 'calc_sc', 'key' => 'abwasser_temp', 'group' => 'Abwasser'],
@@ -236,8 +239,8 @@ init_page_serversides();
                 ['header' => 'Gewicht [kg]', 'source' => 'calc_sc', 'key' => 'gewicht', 'group' => 'Architektur'],
                 ['header' => 'Vibration', 'source' => 'static', 'key' => ''],
                 ['header' => 'Lärm [dB(A)]', 'source' => 'calc_sc', 'key' => 'laerm', 'group' => 'Architektur', 'suppress_unit' => true],
-                ['header' => 'Punktlast abgehängt [N]', 'source' => 'calc_sc', 'key' => 'punktlast_decke', 'group' => 'Architektur', 'suppress_unit' => true],
-                ['header' => 'Punktlast Boden [N]', 'source' => 'calc_sc', 'key' => 'punktlast_boden', 'group' => 'Architektur', 'suppress_unit' => true],
+                ['header' => 'Punktlast abgehängt [kN]', 'source' => 'calc_sc', 'key' => 'punktlast_decke', 'group' => 'Architektur', 'suppress_unit' => true],
+                ['header' => 'Punktlast Boden [kN]', 'source' => 'calc_sc', 'key' => 'punktlast_boden', 'group' => 'Architektur', 'suppress_unit' => true],
                 ['header' => 'Bemerkung Architektur', 'source' => 'static', 'key' => ''],
             ];
 
@@ -389,11 +392,15 @@ init_page_serversides();
                     || in_array($ww_direkt, ['ja', '1', 'yes', 'true']);
                 $r['direkt_wasser'] = $isDirektWasser ? 'Ja' : '';
 
-                $kw_anschluss_display = trim($params['Kaltwasser_Anschluss'] ?? '');
                 $kw_anschluss_val = trim($params['Kaltwasser_Anschluss'] ?? '');
-                $kw_einheit = trim(substr($kw_anschluss_display, strlen($kw_anschluss_val)));
-                $r['anschluss_dimension'] = (stripos($kw_einheit, 'DN') !== false) ? $kw_anschluss_val : '';
+                $kw_anschluss_display = trim($display['Kaltwasser_Anschluss'] ?? '');
+
+// Einheit = display minus reiner Zahlenwert
+                $kw_einheit = strtolower(trim(str_replace($kw_anschluss_val, '', $kw_anschluss_display)));
+
+                $r['anschluss_dimension'] = (stripos($kw_einheit, 'dn') !== false) ? $kw_anschluss_val : '';
                 $r['anschluss_punkt'] = (str_contains($kw_einheit, '"')) ? $kw_anschluss_val : '';
+
                 $r['rohrtrenner'] = $trennung;
 
                 return $r;
@@ -412,7 +419,18 @@ init_page_serversides();
                 $r['laerm'] = trim($params['Lärm'] ?? '');
 
                 $montage_ort = strtolower(trim($params['Montage_Ort'] ?? ''));
-                $punktlast = trim($params['Punktlast'] ?? '');
+                $punktlast_raw = trim($params['Punktlast'] ?? '');
+                $punktlast_einheit = strtolower(trim($params['Punktlast_Einheit'] ??
+                    // Fallback: Einheit aus paramDisplay lesen
+                    str_replace($punktlast_raw, '', $display['Punktlast'] ?? '')
+                ));
+
+                if (is_numeric(str_replace(',', '.', $punktlast_raw)) && str_contains($punktlast_einheit, 'n') && !str_contains($punktlast_einheit, 'kn')) {
+                    $punktlast = ((float)str_replace(',', '.', $punktlast_raw)) / 1000;
+                    $punktlast = rtrim(rtrim(number_format($punktlast, 4, '.', ''), '0'), '.');
+                } else {
+                    $punktlast = $punktlast_raw;
+                }
                 $r['punktlast_decke'] = (stripos($montage_ort, 'decke') !== false) ? $punktlast : '';
                 $r['punktlast_boden'] = (stripos($montage_ort, 'boden') !== false) ? $punktlast : '';
 
@@ -732,7 +750,19 @@ init_page_serversides();
                         text: '<i class="fas fa-file-excel"></i>',
                         titleAttr: 'Excel Export',
                         className: 'btn btn-sm btn-outline-success bg-white',
-                        exportOptions: {columns: ':visible'}
+                        exportOptions: {
+                            columns: ':visible',
+                            format: {
+                                body: function (data) {
+                                    let val = data.replace(/<[^>]*>/g, '').trim();
+                                    let normalized = val.replace(',', '.');
+                                    if (val !== '' && !isNaN(parseFloat(normalized)) && isFinite(normalized)) {
+                                        return normalized;
+                                    }
+                                    return val;
+                                }
+                            }
+                        }
                     },
                     {
                         extend: 'colvis',

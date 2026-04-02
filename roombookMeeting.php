@@ -91,14 +91,14 @@ $result = $stmt->get_result();
                     <?php while ($row = $result->fetch_assoc()): ?>
                         <tr>
                             <td><?= (int)$row["idTABELLE_Räume"] ?></td>
-                            <td><?= htmlspecialchars($row["Raumnr"]) ?></td>
-                            <td><?= htmlspecialchars($row["Raumbezeichnung"]) ?></td>
-                            <td><?= htmlspecialchars($row["Nutzfläche"]) ?></td>
-                            <td><?= htmlspecialchars($row["Raumbereich Nutzer"]) ?></td>
-                            <td><?= htmlspecialchars($row["Bauabschnitt"]) ?></td>
-                            <td><?= htmlspecialchars($row["Bauetappe"]) ?></td>
-                            <td><?= htmlspecialchars($row["Geschoss"]) ?></td>
-                            <td><?= htmlspecialchars($row["MT-relevant"]) ?></td>
+                            <td><?= h($row["Raumnr"]) ?></td>
+                            <td><?= h($row["Raumbezeichnung"]) ?></td>
+                            <td><?= h($row["Nutzfläche"]) ?></td>
+                            <td><?= h($row["Raumbereich Nutzer"]) ?></td>
+                            <td><?= h($row["Bauabschnitt"]) ?></td>
+                            <td><?= h($row["Bauetappe"]) ?></td>
+                            <td><?= h($row["Geschoss"]) ?></td>
+                            <td><?= h($row["MT-relevant"]) ?></td>
                         </tr>
                     <?php endwhile; ?>
                     </tbody>

@@ -54,10 +54,12 @@ init_page_serversides();
                         tabelle_elemente.ElementID,
                         tabelle_elemente.Bezeichnung AS ElementBezeichnung,
                         tabelle_räume_has_tabelle_elemente.Anzahl,
-                        CASE WHEN LOWER(tabelle_räume.Raumbezeichnung) IN ('gerätelager', 
-                                                                           'lager rollstühle',
-                                                                           'liegenlager rein',
-                                                                           'lager - reinigung (putzraum)') 
+                        CASE WHEN LOWER(tabelle_räume.Raumbezeichnung) IN ( 'gerätelager', 
+                                                                            'lager rollstühle',
+                                                                            'liegenlager rein',
+                                                                            'Geräteraum',
+                                                                            'Anästhesie-Geräteraum' ,
+                                                                            'Anästhesiegeräte Rüstraum') 
                              THEN 0 
                              ELSE 1 
                         END AS Gleichzeitigkeit,
