@@ -112,15 +112,28 @@ $formFields = [
         "optional_comment_label" => "Bitte Neutralistaion- oder Sedimentationsanlage spezifizieren"
     ],
 
-    ["type" => "text", "kategorie" => "HKLS", "name" => "kaltwasser_stundenverbrauch",
+    //["type" => "text", "kategorie" => "HKLS", "name" => "kaltwasser_stundenverbrauch",
+    //    "label" => "Geschätzter Kaltwasser Stundenverbrauch [l/h]?",
+    //    "info" => "Nur gefragt bei Räumen, die lt. Type Kaltwasser haben.",
+    //    "default_value" => ""],
+
+    //["type" => "text", "kategorie" => "HKLS", "name" => "kaltwasser_spitzenverbrauch",
+    //    "label" => "Geschätzte Kaltwasser Spitzenentnahme [l/s]",
+    //    "info" => "Nur gefragt bei Räumen, die lt. Type Kaltwasser haben.",
+    //    "default_value" => ""],
+
+
+    ["type" => "number", "kategorie" => "HKLS", "name" => "kaltwasser_stundenverbrauch",
         "label" => "Geschätzter Kaltwasser Stundenverbrauch [l/h]?",
         "info" => "Nur gefragt bei Räumen, die lt. Type Kaltwasser haben.",
         "default_value" => ""],
 
-    ["type" => "text", "kategorie" => "HKLS", "name" => "kaltwasser_spitzenverbrauch",
+    ["type" => "number", "kategorie" => "HKLS", "name" => "kaltwasser_spitzenverbrauch",
         "label" => "Geschätzte Kaltwasser Spitzenentnahme [l/s]",
         "info" => "Nur gefragt bei Räumen, die lt. Type Kaltwasser haben.",
         "default_value" => ""],
+
+
 
 
     //["type" => "select", "kategorie" => "Raum", "name" => "mitarbeiter_anzahl",

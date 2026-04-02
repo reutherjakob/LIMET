@@ -12,11 +12,8 @@ if ($projectID <= 0) {
 /*
  * Zeigt alle Elemente, bei denen in einem Raum Standort und Verwendung
  * NICHT beide auf 1 gesetzt sind – also:
- *   - Standort=1 aber kein passender Verwendungs-Eintrag im selben Raum, ODER
- *   - Verwendung=1 aber kein passender Standort-Eintrag im selben Raum
- *
- * Technisch: alle (Raum, Element)-Kombinationen aus tabelle_räume_has_tabelle_elemente
- * im Projekt, bei denen nicht BEIDE Flags (Standort=1 UND Verwendung=1) existieren.
+ *   - Standort=1 aber Verwendungs=0, ODER
+ *   - Verwendung=1 aber Standort=0
  */
 
 $sql = "
@@ -40,7 +37,8 @@ GROUP BY
     te.Bezeichnung,
     r.Raumnr,
     r.Raumbezeichnung
-HAVING NOT (MAX(trhe.Standort) = 1 AND MAX(trhe.Verwendung) = 1)
+HAVING NOT (MAX(trhe.Standort) = 1 
+                AND MAX(trhe.Verwendung) = 1)
 ORDER BY te.Bezeichnung, r.Raumnr
 ";
 
@@ -80,14 +78,13 @@ $mysqli->close();
         <div class="card-header">
             <div class="row flex-nowrap">
                 <div class="col-6">
-                    Elemente: Standort/Verwendung im Raum unvollständig
-                    <small class="text-muted ms-2">(weder beides Ja, noch korrekt verknüpft)</small>
+                    Elemente: Standort ungleich Verwendung
                 </div>
                 <div class="col-6 d-inline-flex justify-content-end" id="cardHeader"></div>
             </div>
         </div>
-        <div class="card-body py-0">
-            <table id="elements-table" class="table table-striped table-sm px-2 py-2" style="width:100%">
+        <div class="card-body py-0 m-0">
+            <table id="elements-table" class="table table-striped table-sm m-0 p-0" style="width:100%">
                 <thead class="table table-striped table-sm table-hover table-bordered border border-light border-5">
                 <tr>
                     <th>ElementID</th>
