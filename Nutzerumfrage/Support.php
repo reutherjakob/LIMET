@@ -5,7 +5,7 @@ require_once "../Nutzerlogin/_utils.php";
 if (!function_exists('loadEnv')) {
     include "../Nutzerlogin/db.php";
 }
-$role = init_page(["internal_rb_user", "spargelfeld_ext_users", "spargefeld_admin"]);
+$role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargefeld_admin"]);
 
 ?>
 

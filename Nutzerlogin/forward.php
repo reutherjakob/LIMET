@@ -18,8 +18,8 @@ $stmt->bind_result($role);
 if ($stmt->fetch()) {
     $stmt->close();
     switch ($role) {
-        case 'spargefeld_admin':
-        case 'spargelfeld_ext_users':
+        case 'spargelfeld_admin':
+        case 'spargelfeld_ext_user':
             header('Location: ../Nutzerumfrage/Nutzerabfrage.php');
             break;
         case 'internal_rb_user':

@@ -2,7 +2,7 @@
 global $mysqli, $formFields, $labortypen;
 include "../Nutzerlogin/db.php";
 require_once "../Nutzerlogin/_utils.php";
-$role = init_page(["internal_rb_user", "spargelfeld_ext_users"]);
+$role = init_page(["internal_rb_user", "spargelfeld_ext_user"]);
 
 require_once "form_fields_forNutzergruppe1.php"; // Array $formFields
 require_once 'raumtyp_resolver.php';
@@ -30,7 +30,7 @@ function renderForm(array $formFields, array $userData = []): void
             <strong> Labortechnische Raumanforderung </strong>';
 
     echo '<div class="d-flex align-items-center justify-content-end"> 
-            <button type="submit" id="saveBtn" class="btn btn-outline-success">
+            <button type="submit" id="saveBtn" class="btn btn-success">
                 <i class="far fa-save"></i> Anforderungen speichern
             </button>
             </div> </div> 
@@ -87,7 +87,7 @@ function renderForm(array $formFields, array $userData = []): void
                                 </button>";
                 }
                 echo "</label>";
-                echo "<div class='col-5'>  <input readonly class='form-control flex-grow-1' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'> </div></div>";
+                echo "<div class='col-5'>  <input readonly class='form-control flex-grow-1 fw-bold border-white' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'> </div></div>";
                 break;
 
             case 'yesno':

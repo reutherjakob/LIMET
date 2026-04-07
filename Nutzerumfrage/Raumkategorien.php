@@ -7,7 +7,7 @@ if (!function_exists('loadEnv')) {
     include "../Nutzerlogin/db.php";
 }
 
-$role = init_page(["internal_rb_user", "spargelfeld_ext_users", "spargefeld_admin"]);
+$role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargefeld_admin"]);
 
 require_once "../Nutzerumfrage/raumtypen.php"; // lädt $labortypen
 
@@ -100,7 +100,7 @@ $column_config = [
     'sicherheit_notdusche' => ['label' => 'Notdusche', 'suffix' => '', 'hidden' => false],
     'sicherheit_augendusche' => ['label' => 'Augendusche (leitungsgebunden)', 'suffix' => '', 'hidden' => false],
     'sicherheit_notruf' => ['label' => 'Notrufmöglichkeit', 'suffix' => '', 'hidden' => false],
-    'sicherheit_erstehilfe' => ['label' => 'Erste-Hilfe-Koffer im Raum', 'suffix' => '', 'hidden' => false],
+    'sicherheit_erstehilfe' => ['label' => 'Erste-Hilfe-Koffer im Raum erforderlich', 'suffix' => '', 'hidden' => false],
 
 
     'sonstige_anforderungen' => ['label' => 'Sonstige Anforderungen', 'suffix' => '', 'hidden' => false],

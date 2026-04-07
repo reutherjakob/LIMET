@@ -70,7 +70,7 @@ $elektroParams = [
     ['key' => 'ET_Anschlussleistung_USV_W', 'label' => 'USV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
     ['key' => 'ET_RJ45-Ports', 'label' => 'RJ45-Ports: ', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
 
-    ["key" => "RaumAnschlussLeistungInklGlz",'ln_after' => false, 'isnotVorentwurf' => true],
+    ["key" => "RaumAnschlussLeistungInklGlz", 'ln_after' => false, 'isnotVorentwurf' => true],
 
     ['key' => 'EL_Laser 16A CEE Stk', 'label' => 'CEE16A Laser: ', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => true],
     ['key' => 'EL_Roentgen 16A CEE Stk', 'label' => 'CEE16A Röntgen', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
@@ -89,7 +89,6 @@ $haustechnikParams = [
     ['key' => 'HT_Raumtemp Sommer °C', 'label' => 'Max. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C, 'ln_after' => false],
     ['key' => 'HT_Raumtemp Winter °C', 'label' => 'Min. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
 ];
-
 
 
 foreach ($roomIDsArray as $valueOfRoomID) {
@@ -166,16 +165,14 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
         multicell_text_hightlight($pdf, $e_C, $font_size, 'Fussboden OENORM B5220', "Ö NORM B5220: ", $parameter_changes_t_räume);
         multicell_with_str($pdf, $row['Fussboden OENORM B5220'], $e_C_3rd + 10, "");
-        $heightExceeds = false;
 
-        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "Allgemeine Hygieneklasse", "Hygieneklasse: ", $parameter_changes_t_räume);
+        $hygiene = $row['Allgemeine Hygieneklasse'];
+        $heightExceeds = $hygiene != "" && $pdf->getStringHeight($e_C_3rd, $hygiene, false, true, '', 1) > 6;
 
-        if ($row['Allgemeine Hygieneklasse'] != "") {
-            $heightExceeds = $pdf->getStringHeight($e_C_3rd * 4, $row['Allgemeine Hygieneklasse'], false, true, '', 1) > 6 ? true : false;
-            multicell_with_str($pdf, $row['Allgemeine Hygieneklasse'], $e_C_3rd * 4, "");
 
-        } else {
-            multicell_with_str($pdf, " - ", $e_C_3rd + 10, "");
+        if (!$heightExceeds) {
+            multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "Allgemeine Hygieneklasse", "Hygieneklasse: ", $parameter_changes_t_räume);
+            multicell_with_str($pdf, $hygiene != "" ? $hygiene : " - ", $e_C_3rd + 10, "");
         }
 
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'Strahlenanwendung', "Strahlenanw.: ", $parameter_changes_t_räume);
@@ -192,12 +189,16 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         hackerlA3($pdf, $font_size, $e_C_3rd + 10, $row['Abdunkelbarkeit'], "JA");
 
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "Nutzfläche", "Fläche: ", $parameter_changes_t_räume);
-        multicell_with_nr($pdf, $row['Nutzfläche'], "m2", 10, 4 * $e_C_3rd);
-        $pdf->Ln($horizontalSpacerLN3);
+        multicell_with_nr($pdf, $row['Nutzfläche'], "m2", 10, 2 * $e_C_3rd);
+
         if ($heightExceeds) {
             $pdf->Ln($horizontalSpacerLN);
+            multicell_text_hightlight($pdf, $block_header_w, $font_size, "", "", []);
+            multicell_text_hightlight($pdf, $e_C, $font_size, "Allgemeine Hygieneklasse", "Hygieneklasse: ", $parameter_changes_t_räume);
+            multicell_with_str($pdf, $hygiene, $e_C_3rd * 5, "");
         }
 
+        $pdf->Ln($horizontalSpacerLN2);
 //       ---------- ELEKTRO -----------
         $i = 12 + $horizontalSpacerLN + $horizontalSpacerLN2;
         $blockHeight = 6 + $horizontalSpacerLN + getAnmHeight($pdf, $row['Anmerkung Elektro'], $SB) + $i;
@@ -236,7 +237,9 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             }
             if ($param['ln_after']) {
                 $pdf->Ln($horizontalSpacerLN2);        // Print label placeholder for power section (only once)
-                $pdf->MultiCell($block_header_w, $block_header_height, "", 0, 'L', 0, 0);
+                if ($param['key'] != "EL_Roentgen 16A CEE Stk") {
+                    $pdf->MultiCell($block_header_w, $block_header_height, "", 0, 'L', 0, 0);
+                }
             }
             if ($param['key'] === "ET_Anschlussleistung_USV_W" && !$isnotVorentwurf) {
                 $pdf->Ln($horizontalSpacerLN2);
@@ -309,7 +312,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
 
 ////     ------- BauStatik ---------
-        $anm = trim($row['Anmerkung BauStatik']?? '');
+        $anm = trim($row['Anmerkung BauStatik'] ?? '');
         if ($anm !== '' && $anm !== 'Keine Anmerkung' && $anm !== 'keine Angaben MT') {
             $pdf->Ln($horizontalSpacerLN);
             $Block_height = getAnmHeight($pdf, $row['Anmerkung BauStatik'], $SB);
@@ -422,7 +425,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             block_label_queer($block_header_w, $pdf, "Med.-tech.", $upcmn_blck_size, $block_header_height, $SB); //el_in_room_html_table($pdf, $resultX, 1, "A3", $SB-$block_header_w);
             $pdf->Multicell(0, 0, "Keine medizintechnische Ausstattung.", "", "L", 0, 0);
             $pdf->Ln();
-            
+
         }
     } //sql:fetch-assoc
 }// for every room 

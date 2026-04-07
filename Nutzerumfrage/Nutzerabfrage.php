@@ -7,7 +7,7 @@ if (!function_exists('loadEnv')) {
 require_once "../Nutzerumfrage/raumtypen.php"; // lädt $labortypen
 
 require_once "../Nutzerlogin/csrf.php";
-$role = init_page(["internal_rb_user", "spargelfeld_ext_users", "spargefeld_admin"]);
+$role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargefeld_admin"]);
 $user_name = $_SESSION["user_name"];
 $projekt_id = 95;
 
@@ -24,7 +24,9 @@ if ($role === "internal_rb_user" || $role === "spargefeld_admin") {
             Bauabschnitt, 
             `Raumtyp BH`, Geschoss
             FROM tabelle_räume
-            WHERE tabelle_projekte_idTABELLE_Projekte = ?";
+            WHERE tabelle_projekte_idTABELLE_Projekte = ?
+            AND  `Raumtyp BH` <> 34 
+            AND  `Raumtyp BH` <> 35";
     if ($stmt = $mysqli->prepare($sql)) {
         $stmt->bind_param("i", $projekt_id);
     } else {
@@ -97,7 +99,7 @@ foreach ($labortypen as $lt) {
 <div class="container-fluid">
     <div class="row">
 
-        <div class="col-4">
+        <div class="col-5">
             <div class="card">
                 <div class="card-header bg-success text-white">
                     <div class="row">
@@ -115,7 +117,7 @@ foreach ($labortypen as $lt) {
                         <div class="col-3 d-flex justify-content-end" id="RDPTCH"></div>
                     </div>
                 </div>
-                <div class="card-body p-0">
+                <div class="card-body p-2">
                     <table class="table table-sm table-hover mb-0" id="raeumeTable">
                         <thead class="table-light">
                         <tr>
@@ -155,7 +157,7 @@ foreach ($labortypen as $lt) {
             </div>
         </div>
         <!-- Rechte Spalte: Formular -->
-        <div class="col-8">
+        <div class="col-7">
             <div class="card" id="formContainer">
                 <div class="card-header"></div>
                 <div class="card-body">

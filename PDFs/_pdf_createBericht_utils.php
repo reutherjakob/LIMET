@@ -295,12 +295,12 @@ function anmA3($pdf, $inp_text, $SB, $block_header_w)
 {
     if ($inp_text != null) {
         if (is_not_no_comment($inp_text) && trim($inp_text) != "") {
-            $outstr = "Anm.: " . format_text(clean_string(br2nl($inp_text)));
+            $outstr = format_text(clean_string(br2nl($inp_text)));
         } else {
             $outstr = "Keine Anmerkung";
         }
         $rowHeightComment = $pdf->getStringHeight($SB, $outstr, false, true, '', 1);
-        $pdf->MultiCell($block_header_w, $rowHeightComment, "", 0, 'R', 0, 0); //        if ($rowHeightComment < 25) {  //Cool, but wonky
+        $pdf->MultiCell($block_header_w, $rowHeightComment, "Anmerkung:", 0, 'R', 0, 0); //        if ($rowHeightComment < 25) {  //Cool, but wonky
         $pdf->MultiCell($SB - $block_header_w, $rowHeightComment, $outstr, 0, 'L', 0, 1);
         return true;
     }
@@ -676,7 +676,7 @@ function raum_header_a3($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Raumb
         ["Bauteil: " . $Bauabschnitt . " "],
     ];
 
-    $qot = 1 / 5;
+    $qot = 1 / 4.6;
     $extraZeile = false;
     foreach ($output_pairs as $pair) {
         if ($pdf->getStringHeight($SB * $qot, $pair[0], false, true, '', 1) > $ln_spacer) {

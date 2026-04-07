@@ -7,7 +7,7 @@ require_once "../Nutzerlogin/_utils.php";
 require_once "../Nutzerlogin/csrf.php";
 
 
-init_page(["internal_rb_user", "spargelfeld_ext_users", "spargefeld_admin"]);
+init_page(["internal_rb_user", "spargelfeld_ext_user", "spargefeld_admin"]);
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -29,7 +29,6 @@ $stringFields = [
     'roomname',
     'raumnr',
     'raumbereich_nutzer',
-
     'raumkategorieAbfrage',
     'explosionsschutz',
     'raumabluft_besonders', 'raumzuluft_besonders', 'sonderabluft',

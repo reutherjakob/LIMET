@@ -74,7 +74,7 @@ $labortypen = [
         'bsl2' => '0',
         'bsl3' => '0',
         'sonstige_anforderungen' => 'Bodenbelag mit erhöhter Rutschfestigkeit',
-        'anmerkungen' => 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
+        'anmerkungen' => '',// 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
     ],
     [
         'id' => '2',
@@ -149,7 +149,7 @@ $labortypen = [
         'bsl2' => '0',
         'bsl3' => '0',
         'sonstige_anforderungen' => 'Bodenbelag mit erhöhter Rutschfestigkeit',
-        'anmerkungen' => 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
+        'anmerkungen' => '',// 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
     ],
     [
         'id' => '3',
@@ -225,7 +225,7 @@ $labortypen = [
         'bsl2' => '0',
         'bsl3' => '0',
         'sonstige_anforderungen' => '',
-        'anmerkungen' => 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
+        'anmerkungen' => '',// 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
     ],
     [
         'id' => '4',
@@ -301,7 +301,7 @@ $labortypen = [
         'bsl2' => '0',
         'bsl3' => '0',
         'sonstige_anforderungen' => '',
-        'anmerkungen' => 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
+        'anmerkungen' => '',// 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
     ],
     [
         'id' => '5',
@@ -376,7 +376,7 @@ $labortypen = [
         'bsl2' => '0',
         'bsl3' => '0',
         'sonstige_anforderungen' => '',
-        'anmerkungen' => 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
+        'anmerkungen' => '',// 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
     ],
     [
         'id' => '6',
@@ -451,7 +451,7 @@ $labortypen = [
         'bsl2' => '0',
         'bsl3' => '0',
         'sonstige_anforderungen' => '',
-        'anmerkungen' => 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
+        'anmerkungen' => '',// 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
     ],
     [
         'id' => '7',
@@ -526,7 +526,7 @@ $labortypen = [
         'bsl2' => '0',
         'bsl3' => '0',
         'sonstige_anforderungen' => '',
-        'anmerkungen' => 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
+        'anmerkungen' => '',// 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
     ],
     [
         'id' => '8',
@@ -601,7 +601,7 @@ $labortypen = [
         'bsl2' => '1',
         'bsl3' => '0',
         'sonstige_anforderungen' => '',
-        'anmerkungen' => 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
+        'anmerkungen' => '',// 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
     ],
     [
         'id' => '9',
@@ -676,7 +676,7 @@ $labortypen = [
         'bsl2' => '0',
         'bsl3' => '1',
         'sonstige_anforderungen' => 'Fenster dürfen nicht geöffnet werden. Schleuse zur Dekontamination. Getrennte Abwasserentsorgung/-vorbehandlung',
-        'anmerkungen' => 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
+        'anmerkungen' => '',// 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
     ],
     [
         'id' => '10',
@@ -751,7 +751,7 @@ $labortypen = [
         'bsl2' => '0',
         'bsl3' => '0',
         'sonstige_anforderungen' => 'Fenster dürfen nicht geöffnet werden. Schleuse zur Dekontamination. Getrennte Abwasserentsorgung/-vorbehandlung',
-        'anmerkungen' => 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
+        'anmerkungen' => '',// 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
     ],
     [
         'id' => '11',
@@ -826,7 +826,7 @@ $labortypen = [
         'bsl2' => '0',
         'bsl3' => '0',
         'sonstige_anforderungen' => '',
-        'anmerkungen' => 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
+        'anmerkungen' => '',// 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
     ],
     [
         'id' => '12',
@@ -901,7 +901,7 @@ $labortypen = [
         'bsl2' => '0',
         'bsl3' => '0',
         'sonstige_anforderungen' => '',
-        'anmerkungen' => 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
+        'anmerkungen' => '',// 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
     ],
     [
         'id' => '13',
@@ -1048,7 +1048,7 @@ $labortypen = [
         'bsl2' => '0',
         'bsl3' => '0',
         'sonstige_anforderungen' => 'Genehmigung nach Strahlenschutzgesetz',
-        'anmerkungen' => 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
+        'anmerkungen' => '',// 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
     ],
     [
         'id' => '15',
@@ -1123,7 +1123,7 @@ $labortypen = [
         'bsl2' => '0',
         'bsl3' => '0',
         'sonstige_anforderungen' => 'Genehmigung nach Strahlenschutzgesetz, eigener Brandabschnitt',
-        'anmerkungen' => 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
+        'anmerkungen' => '',// 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
     ],
     [
         'id' => '16',
@@ -1194,7 +1194,7 @@ $labortypen = [
         'sicherheit_notdusche' => '0',
         'sicherheit_augendusche' => '0',
         'sicherheit_notruf' => '0',
-        'sicherheit_erstehilfe' => '1',     'bsl2' => '0',
+        'sicherheit_erstehilfe' => '1', 'bsl2' => '0',
         'bsl3' => '0',
         'sonstige_anforderungen' => 'Raum mit Stickstoff begasbar',
         'anmerkungen' => 'aktuell nur zoologische Sammlung (Raum 391)',
@@ -1272,7 +1272,7 @@ $labortypen = [
         'bsl2' => '0',
         'bsl3' => '0',
         'sonstige_anforderungen' => '',
-        'anmerkungen' => 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
+        'anmerkungen' => '',// 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
     ],
     [
         'id' => '18',
@@ -1347,7 +1347,7 @@ $labortypen = [
         'bsl2' => '0',
         'bsl3' => '0',
         'sonstige_anforderungen' => '',
-        'anmerkungen' => 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
+        'anmerkungen' => '',// 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
     ],
     [
         'id' => '19',
@@ -1422,7 +1422,7 @@ $labortypen = [
         'bsl2' => '0',
         'bsl3' => '0',
         'sonstige_anforderungen' => '',
-        'anmerkungen' => 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
+        'anmerkungen' => '',// 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
     ],
     [
         'id' => '20',
@@ -1497,7 +1497,7 @@ $labortypen = [
         'bsl2' => '0',
         'bsl3' => '0',
         'sonstige_anforderungen' => '',
-        'anmerkungen' => 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
+        'anmerkungen' => '',// 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
     ],
     [
         'id' => '21',
@@ -1572,7 +1572,7 @@ $labortypen = [
         'bsl2' => '0',
         'bsl3' => '0',
         'sonstige_anforderungen' => 'Vibrationsdämpfung',
-        'anmerkungen' => 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
+        'anmerkungen' => '',// 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
     ],
     [
         'id' => '22',
@@ -1647,7 +1647,7 @@ $labortypen = [
         'bsl2' => '0',
         'bsl3' => '0',
         'sonstige_anforderungen' => '',
-        'anmerkungen' => 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
+        'anmerkungen' => '',// 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
     ],
     [
         'id' => '23',
@@ -1871,7 +1871,7 @@ $labortypen = [
         'bsl2' => '0',
         'bsl3' => '0',
         'sonstige_anforderungen' => '',
-        'anmerkungen' => 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
+        'anmerkungen' => '',// 'Erste-Hilfe-Koffer nicht in jedem Raum sondern gem. gesetzlichen Anforderungen in ausreichender Anzahl am Gang',
     ],
     [
         'id' => '26',
@@ -2168,7 +2168,8 @@ $labortypen = [
         'bsl2' => '0',
         'bsl3' => '0',
         'sonstige_anforderungen' => '',
-        'anmerkungen' => 'Lagerschränke sollten standardmäßig an Abluftstrang angeschlossen sein mit Abluftführung nach außen. Gaswarnanlage ist in Sonderausstattungsliste enthalten. Ggf. erhöhte elektrische Anschlussleistung als Sonderausstattung einmelden.',
+        'anmerkungen' => 'Lagerschränke standardmäßig an Abluftstrang. Gaswarnanlage in Sonderausstattungsliste.',
+//        'anmerkungen' => 'Lagerschränke sollten standardmäßig an Abluftstrang angeschlossen sein mit Abluftführung nach außen. Gaswarnanlage ist in Sonderausstattungsliste enthalten. Ggf. erhöhte elektrische Anschlussleistung als Sonderausstattung einmelden.',
     ],
     [
         'id' => '30',
@@ -2466,4 +2467,10 @@ $labortypen = [
         'sonstige_anforderungen' => '',
         'anmerkungen' => '',
     ],
+    [
+        'id' => '34',
+        'bezeichnung' => 'Büro Führungskraft / Fachexperte / Gutachter / Prüfleiter',],
+    [
+        'id' => '35',
+        'bezeichnung' => 'Büro Analytiker (Auswerteraum)',]
 ];

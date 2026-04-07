@@ -13,7 +13,7 @@ header('Referrer-Policy: no-referrer');
 header('Permissions-Policy: geolocation=(), camera=(), microphone=()');
 const MAX_ATTEMPTS = 10;
 const LOCKOUT_TIME = 20 * 60;
-const RATE_LIMIT = 10;
+const RATE_LIMIT = 20;
 const RATE_LIMIT_WINDOW = 300;
 
 

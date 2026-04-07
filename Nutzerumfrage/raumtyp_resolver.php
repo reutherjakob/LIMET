@@ -47,7 +47,13 @@ function resolveFieldOverrides(array $raumtyp, string $bauabschnitt = '', string
     if (($raumtyp['kaltwasser'] ?? '1') === '0') $hidden[] = 'kaltwasser_stundenverbrauch';
     if (($raumtyp['kaltwasser'] ?? '1') === '0') $hidden[] = 'kaltwasser_spitzenverbrauch';
 
-
+// -------------------------------------------------------------------------
+// ZULUFT-FILTER: Iodfilter-Option nur bei Messraum radiochemisch einblenden
+// -------------------------------------------------------------------------
+    $filter = $raumtyp['luftwechsel_filter'] ?? '0';
+    if (stripos($filter, 'Iod') !== false) {
+        $defaults['raumzuluft_besonders'] = 'Iod';
+    }
     // // -------------------------------------------------------------------------
     // // BSL-Level: Default direkt aus bsl2 / bsl3
     // // -------------------------------------------------------------------------
@@ -163,10 +169,12 @@ function resolveFieldOverrides(array $raumtyp, string $bauabschnitt = '', string
 // User sie nie gesehen hat.
 // Beim Laden: gespeicherter DB-Wert hat Vorrang vor default_value (renderForm-Logik).
 // -----------------------------------------------------------------------------
-function applyRaumtypOverrides(array $formFields, ?array $raumtyp, string $bauabschnitt = '', string $ebene = ''): array{
+function applyRaumtypOverrides(array $formFields, ?array $raumtyp, string $bauabschnitt = '', string $ebene = ''): array
+{
 
     // Türen-Logik läuft IMMER, unabhängig vom Raumtyp
     $overrides = resolveFieldOverrides($raumtyp ?? [], $bauabschnitt, $ebene);
+
     $hidden = $overrides['hidden'];
     $defaults = $overrides['defaults'];
     $freetext = $overrides['freetext'];
@@ -194,6 +202,16 @@ function applyRaumtypOverrides(array $formFields, ?array $raumtyp, string $bauab
         if (isset($defaults[$name])) {
             $field['default_value'] = $defaults[$name];
         }
+
+
+        // Iodfilter-Option dynamisch hinzufügen wenn Raumtyp es erfordert
+        if (($field['name'] ?? '') === 'raumzuluft_besonders') {
+            $filter = $raumtyp['luftwechsel_filter'] ?? '0';
+            if (stripos($filter, 'Iod') !== false) {
+                $field['options']['Iod'] = 'Iodfilter';
+            }
+        }
+
 
         // 2. Ausblenden → texthidden, Wert bleibt erhalten für DB
         if (in_array($name, $hidden)) {

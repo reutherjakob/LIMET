@@ -12,8 +12,7 @@ $formFields = [
     ["type" => "text_non_editable",
         "kategorie" => "Raum",
         "name" => "raumkategorieAbfrage",
-        "label" => "Labor-Raumtyp",
-        "info" => "Im RUF festgelegt."],
+        "label" => "Labor-Raumtyp lt. RUF"],
 
     ["type" => "yesno", "kategorie" => "Raum", "name" => "doppelfluegeltuer",
         "label" => "Doppelflügeltür (1,8m) erforderlich?",
@@ -65,7 +64,7 @@ $formFields = [
             "Ammoniak" => "Ammoniak",
             "Synth_Luft" => "Synthetische Luft",
         ],
-        "info" => "Zentrale Stickstoff- und Druckluftversorgung sind in best. Raumtypen standardmäßig vorgesehen und folglich keine dezentrale Sondergase."
+        "info" => "Zentrale Stickstoff- und Druckluftversorgung je nach Raumtyp."
     ],
 
     ["type" => "select", "kategorie" => "ET", "name" => "starkstromanschluss_anzahl",
@@ -83,7 +82,6 @@ $formFields = [
     ["type" => "select", "kategorie" => "Abluft", "name" => "raumzuluft_besonders",
         "label" => "Besondere Anforderungen an die Zuluft?",
         "options" => ["Nein" => "Nein", "HEPA" => "HEPA Filter",],
-        "info" => "Iodfilter für Raumtype Messraum, radiochemisch vorgesehen.",
         "default_value" => "Nein"
     ],
 
@@ -102,7 +100,7 @@ $formFields = [
         "kategorie" => "HKLS",
         "name" => "nutzwasser",
         "label" => "Ist Nutzwasser erforderlich?",
-        "info" => "Verbrauchswasser, welches nicht die Qualität von Trinkwasser aufweist",
+        "info" => "Wasser, welches nicht die Qualität von Trinkwasser aufweist.",
         "default_value" => "Nein",
         "optional_comment_label" => "Optional.",
     ],
@@ -120,11 +118,9 @@ $formFields = [
         "default_value" => ""],
 
     ["type" => "number", "kategorie" => "HKLS", "name" => "kaltwasser_spitzenverbrauch",
-        "label" => "Geschätzte Kaltwasser Spitzenentnahme [l/s]",
+        "label" => "Geschätzte Kaltwasser Spitzenentnahme [l/s])",
         "info" => "Nur gefragt bei Räumen, die lt. Type Kaltwasser haben.",
         "default_value" => ""],
-
-
 
 
     //["type" => "select", "kategorie" => "Raum", "name" => "mitarbeiter_anzahl",

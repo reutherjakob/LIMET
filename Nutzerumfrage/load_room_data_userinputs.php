@@ -2,7 +2,7 @@
 global $mysqli;
 include "../Nutzerlogin/db.php";
 require_once "../Nutzerlogin/_utils.php";
-init_page(["internal_rb_user", "spargelfeld_ext_users"]);
+init_page(["internal_rb_user", "spargelfeld_ext_user"]);
 
 header('Content-Type: application/json');
 

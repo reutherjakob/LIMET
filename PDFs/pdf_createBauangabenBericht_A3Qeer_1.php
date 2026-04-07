@@ -132,16 +132,14 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
         multicell_text_hightlight($pdf, $e_C, $font_size, 'Fussboden OENORM B5220', "Ö NORM B5220: ", $parameter_changes_t_räume);
         multicell_with_str($pdf, $row['Fussboden OENORM B5220'], $e_C_3rd + 10, "");
-        $heightExceeds = false;
 
-        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "Allgemeine Hygieneklasse", "Hygieneklasse: ", $parameter_changes_t_räume);
+        $hygiene = $row['Allgemeine Hygieneklasse'];
+        $heightExceeds = $hygiene != "" && $pdf->getStringHeight($e_C_3rd, $hygiene, false, true, '', 1) > 6;
 
-        if ($row['Allgemeine Hygieneklasse'] != "") {
-            $heightExceeds = $pdf->getStringHeight($e_C_3rd * 4, $row['Allgemeine Hygieneklasse'], false, true, '', 1) > 6 ? true : false;
-            multicell_with_str($pdf, $row['Allgemeine Hygieneklasse'], $e_C_3rd * 4, "");
 
-        } else {
-            multicell_with_str($pdf, " - ", $e_C_3rd + 10, "");
+        if (!$heightExceeds) {
+            multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "Allgemeine Hygieneklasse", "Hygieneklasse: ", $parameter_changes_t_räume);
+            multicell_with_str($pdf, $hygiene != "" ? $hygiene : " - ", $e_C_3rd + 10, "");
         }
 
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'Strahlenanwendung', "Strahlenanw.: ", $parameter_changes_t_räume);
@@ -158,11 +156,16 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         hackerlA3($pdf, $font_size, $e_C_3rd + 10, $row['Abdunkelbarkeit'], "JA");
 
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "Nutzfläche", "Fläche: ", $parameter_changes_t_räume);
-        multicell_with_nr($pdf, $row['Nutzfläche'], "m2", 10, 4 * $e_C_3rd);
-        $pdf->Ln($horizontalSpacerLN3);
+        multicell_with_nr($pdf, $row['Nutzfläche'], "m2", 10, 2 * $e_C_3rd);
+
         if ($heightExceeds) {
             $pdf->Ln($horizontalSpacerLN);
+            multicell_text_hightlight($pdf, $block_header_w, $font_size, "", "", []);
+            multicell_text_hightlight($pdf, $e_C, $font_size, "Allgemeine Hygieneklasse", "Hygieneklasse: ", $parameter_changes_t_räume);
+            multicell_with_str($pdf, $hygiene, $e_C_3rd * 5, "");
         }
+
+        $pdf->Ln($horizontalSpacerLN2);
 
 //       ---------- ELEKTRO -----------
         $i = 12 + $horizontalSpacerLN + $horizontalSpacerLN2;
