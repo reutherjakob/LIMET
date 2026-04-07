@@ -346,7 +346,7 @@ init_page_serversides();
                 $ve_anschluss = trim($params['Voll_entsalztes Wasser_Anschluss'] ?? '');
                 $ve_strom = trim($params['Voll_entsalztes Wasser_Strom'] ?? '');
 
-                $trennung = trim($display['Trennung EN1717'] ?? '');
+                $trennung = trim($params['Trennung EN1717'] ?? '');
 
                 $hasKW = ($kw_anschluss !== '' && $kw_anschluss !== '0' && strtolower($kw_anschluss) !== 'nein');
                 $hasWW = ($ww_anschluss !== '' && $ww_anschluss !== '0' && strtolower($ww_anschluss) !== 'nein');

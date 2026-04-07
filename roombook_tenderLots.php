@@ -373,9 +373,8 @@ init_page_serversides();
                                 Bekanntmachung
                             </option>
                             <option value="MKF">MKF</option>
-                            <option value="RV">MKF</option>
-                            <option value="Andere">Andere</option>
-
+                            <option value="RV">RV</option>
+                            <option value="Andere">Andere - Sags dem Dev ;)</option>
                         </select>
                     </div>
 

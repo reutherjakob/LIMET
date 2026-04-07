@@ -114,7 +114,15 @@ class FeedbackController {
             exit;
         }
     }
-
+    public function addComment(): void {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id      = $_POST['comment_entry_id'] ?? '';
+            $comment = $_POST['comment_text'] ?? '';
+            $_SESSION['message'] = $this->model->addComment($id, $comment);
+            header('Location: FeedbackIndex.php');
+            exit;
+        }
+    }
 
 
 }

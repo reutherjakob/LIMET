@@ -54,15 +54,18 @@ init_page_serversides();
                         tabelle_elemente.ElementID,
                         tabelle_elemente.Bezeichnung AS ElementBezeichnung,
                         tabelle_räume_has_tabelle_elemente.Anzahl,
-                        CASE WHEN LOWER(tabelle_räume.Raumbezeichnung) IN ( 'gerätelager', 
-                                                                            'lager rollstühle',
-                                                                            'liegenlager rein',
-                                                                            'Geräteraum',
-                                                                            'Anästhesie-Geräteraum' ,
-                                                                            'Anästhesiegeräte Rüstraum') 
-                             THEN 0 
-                             ELSE 1 
-                        END AS Gleichzeitigkeit,
+                    CASE WHEN TRIM(LOWER(tabelle_räume.Raumbezeichnung)) IN ( 
+                        'gerätelager', 
+                        'lager rollstühle',
+                        'liegenlager rein',
+                        'geräteraum',
+                        'anästhesie-geräteraum',
+                        'anästhesiegeräte rüstraum',
+                        'gerätelager, lager gehbehelfe'
+                    ) 
+                    THEN 0 
+                    ELSE 1 
+                    END AS Gleichzeitigkeit,
                          tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
                     FROM tabelle_räume
                         INNER JOIN tabelle_räume_has_tabelle_elemente

@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'FeedbackModel.php';
 require_once 'FeedbackController.php';
 
@@ -34,6 +35,9 @@ switch ($action) {
 
     case 'reportEntry':
         $controller->reportEntry();
+        break;
+    case 'addComment':
+        $controller->addComment();
         break;
 
     default:

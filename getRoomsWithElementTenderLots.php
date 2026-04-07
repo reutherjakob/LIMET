@@ -168,7 +168,7 @@ echo "<table class='table table-striped table-bordered border border-light borde
 	<th>Anzahl</th>
 	<th>Raumnummer</th>
 	<th>Raumbezeichnung</th>
-	<th>Raumbereich</th>
+	<th>Raumereich</th>
 	<th>Bestand</th>
 	<th class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Standort'><i class='fab fa-periscope '></i></th>
 	<th>Verw</th>

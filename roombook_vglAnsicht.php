@@ -300,7 +300,7 @@ init_page_serversides(); // checks Nutzerlogin
             },
             success: function () {
                 $.ajax({
-                    url: 'getRoomSpecifications2.php',
+                    url: 'getRoomSpecificationsAnnotationTexts.php',
                     type: 'POST',
                     error: function () {
                         $(where2putthedata).html('<p class="text-danger">Bauangaben konnten nicht geladen werden.</p>');

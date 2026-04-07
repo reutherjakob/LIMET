@@ -15,6 +15,7 @@ $sql = "SELECT tabelle_preise.Datum,
                tabelle_preise.Menge,
                tabelle_preise.Preis,
                tabelle_preise.Nebenkosten,
+               tabelle_preise.Kommentar,
                tabelle_projekte.idTABELLE_Projekte AS projectID,
                tabelle_projekte.Interne_Nr,
                tabelle_projekte.Projektname,
@@ -38,12 +39,14 @@ echo "<table class='table table-striped table-sm' id='tableDevicePrices'>
     <thead><tr>";
 echo "
        <th>Datum</th>
-       <th>Info</th>
+       <th>Verfahren</th>
        <th>Menge</th>
        <th>EP</th>
        <th>NK/Stk</th>
        <th>Projekt</th>
-       <th>Lieferant</th>      
+       <th>Lieferant</th> 
+           <th>Kommentar</th> 
+            
        <th class='' data-bs-toggle='tooltip' title='Bearbeiten'>  <i class='fa fa-pencil-alt'></i> </th>   
     </tr></thead><tbody>";
 
@@ -52,23 +55,26 @@ while ($row = $result->fetch_assoc()) {
     $date = date_create($row["Datum"]);
     $formattedDate = date_format($date, 'Y-m-d');
 
-    echo "<tr data-price-id='" . htmlspecialchars($priceID) . "' 
-              data-date='" . htmlspecialchars($formattedDate) . "'
-              data-quelle='" . htmlspecialchars($row["Quelle"]) . "'
-              data-menge='" . htmlspecialchars($row["Menge"]) . "'
-              data-ep='" . htmlspecialchars($row["Preis"]) . "'
-              data-nk='" . htmlspecialchars($row["Nebenkosten"]) . "'
-              data-project-id='" . htmlspecialchars($row["projectID"] ?? '0') . "'
-              data-lieferant-id='" . htmlspecialchars($row["lieferantID"] ?? '0') . "'>";
+    echo "<tr data-price-id='" . h($priceID) . "' 
+              data-date='" . h($formattedDate) . "'
+              data-quelle='" . h($row["Quelle"]) . "'
+              data-menge='" . h($row["Menge"]) . "'
+              data-ep='" . h($row["Preis"]) . "'
+              data-nk='" . h($row["Nebenkosten"]) . "'
+              data-Kommentar='" . h($row["Kommentar"]) . "'
+              data-project-id='" . h($row["projectID"] ?? '0') . "'
+              data-lieferant-id='" . h($row["lieferantID"] ?? '0') . "'>";
 
 
     echo "<td>" . $formattedDate . "</td>";
-    echo "<td>" . htmlspecialchars($row["Quelle"] ?? '') . "</td>";
-    echo "<td>" . htmlspecialchars($row["Menge"] ?? '') . "</td>";
+    echo "<td>" . h($row["Quelle"] ?? '') . "</td>";
+    echo "<td>" . h($row["Menge"] ?? '') . "</td>";
     echo "<td>" . format_money($row["Preis"] ?? '') . "</td>";
     echo "<td>" . format_money($row["Nebenkosten"] ?? '') . "</td>";
-    echo "<td>" . htmlspecialchars($row["Projektname"] ?? '') . "</td>";
-    echo "<td>" . htmlspecialchars($row["Lieferant"] ?? '') . "</td>";
+    echo "<td>" . h($row["Projektname"] ?? '') . "</td>";
+    echo "<td>" . h($row["Lieferant"] ?? '') . "</td>";
+    echo "<td>" . h($row["Kommentar"] ?? '') . "</td>";
+
     echo "<td> <button class='btn btn-sm btn-outline-dark edit-price-btn' 
                 title='Preis ändern' 
                 data-bs-toggle='modal'
@@ -105,24 +111,56 @@ echo "</tbody></table>"; ?>
                         <input type="hidden" id="priceID" value="0">
                     </div>
                     <div class="form-group">
-                        <label for="date">Datum:</label>
+                        <label class="mt-1" for="date">Datum:</label>
                         <input type="text" class="form-control" id="date" placeholder="jjjj.mm.tt"/>
                     </div>
                     <div class="form-group">
-                        <label for="quelle">Info:</label>
-                        <input type="text" class="form-control" id="quelle" placeholder="Verfahrensart, Anmerkung,..."/>
+                        <label class="mt-1" for="quelle">Info zum Verfahren:</label>
+                        <select class="form-control form-control-sm" id="quelle" name="quelle" required>
+                            <option value="" selected disabled>Verfahren wählen</option>
+                            <option value="Direktvergabe">Direktvergabe</option>
+                            <option value="Direktvergabe mit vorheriger Bekanntmachung">Direktvergabe mit vorheriger
+                                Bekanntmachung
+                            </option>
+                            <option value="Verhandlungsverfahren ohne Bekanntmachung">Verhandlungsverfahren ohne
+                                Bekanntmachung
+                            </option>
+                            <option value="Nicht offenes Verfahren ohne Bekanntmachung">Nicht offenes Verfahren ohne
+                                Bekanntmachung
+                            </option>
+                            <option value="Nicht offenes Verfahren mit Bekanntmachung">Nicht offenes Verfahren mit
+                                Bekanntmachung
+                            </option>
+                            <option value="Offenes Verfahren">Offenes Verfahren</option>
+                            <option value="Verhandlungsverfahren mit Bekanntmachung">Verhandlungsverfahren mit
+                                Bekanntmachung
+                            </option>
+                            <option value="MKF">MKF</option>
+                            <option value="RV">RV</option>
+                            <option value="Andere">Andere</option>
+                        </select>
+                        <input type="text" class="form-control mt-1" id="quelleAndere"
+                               placeholder="Verfahren beschreiben..." style="display:none;"/>
                     </div>
                     <div class="form-group">
-                        <label for="menge">Menge:</label>
+                        <label class="mt-1" for="menge">Menge:</label>
                         <input type="text" class="form-control" id="menge"/>
                     </div>
                     <div class="form-group">
-                        <label for="ep">EP:</label>
+                        <label class="mt-1" for="ep">EP:</label>
                         <input type="text" class="form-control" id="ep" placeholder="Komma ."/>
                     </div>
                     <div class="form-group">
-                        <label for="nk">NK/Stk:</label>
+                        <label class="mt-1" for="nk">NK/Stk:</label>
                         <input type="text" class="form-control" id="nk" placeholder="Komma ."/>
+                    </div>
+                    <div class="form-group">
+                        <label class="mt-1" for="preiskommentar">Optionaler Kommentar: </label>
+                        <textarea class="form-control"
+                                  id="preiskommentar"
+                                  rows="2"
+                                  maxlength="255"
+                                  placeholder="Preisgestaltungsrelevanter Kontext: z.B. Zubehör, Bieteranzahl, etc."></textarea>
                     </div>
                     <?php
                     $sql = "SELECT tabelle_projekte.idTABELLE_Projekte,
@@ -131,7 +169,7 @@ echo "</tbody></table>"; ?>
                             FROM tabelle_projekte ORDER BY tabelle_projekte.Interne_Nr;";
                     $result1 = $mysqli->query($sql);
                     echo "<div class='form-group'>
-                        <label for='project'>Projekt:</label>									
+                        <label class='mt-1' for='project'>Projekt:</label>									
                         <select class='form-control input-sm' id='project' name='project'>
                                 <option value=0>Kein Projekt</option>";
                     while ($row = $result1->fetch_assoc()) {
@@ -140,7 +178,7 @@ echo "</tbody></table>"; ?>
                     echo "</select> </div>";
 
                     echo "<div class='form-group'> 
-                                    <label class='' for='project'>Geräte Lieferant auswählen:</label>									
+                                    <label class='mt-1' for='project'>Geräte Lieferant auswählen:</label>									
                                     <select class='form-control input-sm' id='lieferant' name='lieferant'>
                                             <option value='0'>Geräte Lieferant auswählen</option>";
                     include "getDeviceLieferantenOptions.php";
@@ -214,15 +252,36 @@ echo "</tbody></table>"; ?>
 <script src="utils/_utils.js"></script>
 <script>
     $(document).ready(function () {
+        $('#quelle').on('change', function () {
+            if ($(this).val() === 'Andere') {
+                $('#quelleAndere').show().focus();
+            } else {
+                $('#quelleAndere').hide().val('');
+            }
+        });
+
         $(document).on('click', '.edit-price-btn', function () {
             //e.preventDefault();
             const row = $(this).closest('tr');
             $('#priceID').val(row.data('price-id'));
             $('#date').val(row.data('date'));
-            $('#quelle').val(row.data('quelle'));
+            const gespeichertesVerfahren = row.data('quelle');
+            const bekannteVerfahren = ['Direktvergabe','Direktvergabe mit vorheriger Bekanntmachung',
+                'Verhandlungsverfahren ohne Bekanntmachung','Nicht offenes Verfahren ohne Bekanntmachung',
+                'Nicht offenes Verfahren mit Bekanntmachung','Offenes Verfahren',
+                'Verhandlungsverfahren mit Bekanntmachung','MKF','RV','Andere'];
+
+            if (bekannteVerfahren.includes(gespeichertesVerfahren)) {
+                $('#quelle').val(gespeichertesVerfahren).trigger('change');
+            } else {
+                $('#quelle').val('Andere').trigger('change');
+                $('#quelleAndere').val(gespeichertesVerfahren);
+            }
             $('#menge').val(row.data('menge'));
             $('#ep').val(row.data('ep'));
             $('#nk').val(row.data('nk'));
+            $('#preiskommentar').val(row.data('preiskommentar'));
+
             $('#project').val(row.data('project-id') || '0').trigger('change');
             $('#lieferant').val(row.data('lieferant-id') || '0').trigger('change');
             $('#modalTitle').text('Preis ändern');
@@ -243,7 +302,10 @@ echo "</tbody></table>"; ?>
         $("#addPrice").click(function () {
             let priceID = $('#priceID').val();
             let date = $("#date").val();
-            let quelle = $("#quelle").val();
+            let quelle = $('#quelle').val() === 'Andere'
+                ? $('#quelleAndere').val()
+                : $('#quelle').val();
+            let preiskommentar = $("#preiskommentar").val() || "";
             let menge = $("#menge").val();
             let nk = normalizeCosts($("#nk").val());
             let project = $("#project").val();
@@ -269,7 +331,8 @@ echo "</tbody></table>"; ?>
                     "ep": ep,
                     "nk": nk,
                     "project": project,
-                    "lieferant": lieferant
+                    "lieferant": lieferant,
+                    "preiskommentar": preiskommentar
                 },
                 type: "POST",
                 success: function (data) {

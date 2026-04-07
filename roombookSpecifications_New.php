@@ -2,8 +2,9 @@
 <?php
 require_once 'utils/_utils.php';
 init_page_serversides();
- include 'roombookSpecifications_addRoomModal.php';
- include 'roombookSpecifications_HelpModal.php';
+include 'roombookSpecifications_addRoomModal.php';
+include 'roombookSpecifications_HelpModal.php';
+include('roombookSpecifications_copyRoomModal.php');
 ?>
 
 <!DOCTYPE html>
@@ -36,10 +37,12 @@ init_page_serversides();
             color: black;
             box-shadow: 0 2px 2px 0 rgba(100, 140, 25, 0.2), 0 2px 2px 0 rgba(100, 140, 25, 0.2);
         }
+
         .btn_vis {
             background-color: rgba(100, 140, 25, 0.1) !important;
             font-weight: 600;
         }
+
         .btn_invis {
             background-color: rgba(100, 0, 25, 0.1) !important;
             font-weight: 400;
@@ -124,7 +127,7 @@ init_page_serversides();
     </section>
     <section class='d-flex bd-highlight'>
         <div class='mt-4 me-2 mr-2 card flex-grow-1'>
-            <header class="card-header fix_size"><b>Bauangaben</b></header>
+            <header class="card-header fix_size"><b>Bauangaben Texte</b></header>
             <div class="card-body" id="bauangaben"></div>
         </div>
         <div class="mt-4 card">
