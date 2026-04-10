@@ -10,15 +10,38 @@ if ($sessionRoomID === false || $sessionRoomID === null) {
 	die("Invalid session room ID");
 }
 
-$sql = "SELECT tabelle_räume.idTABELLE_Räume, tabelle_räume.Abdunkelbarkeit, tabelle_räume.Strahlenanwendung, 
-               tabelle_räume.Laseranwendung, tabelle_räume.H6020, tabelle_räume.GMP, tabelle_räume.ISO, 
-               tabelle_räume.`1 Kreis O2`, tabelle_räume.`2 Kreis O2`, tabelle_räume.`1 Kreis Va`, tabelle_räume.`2 Kreis Va`,
-               tabelle_räume.`1 Kreis DL-5`, tabelle_räume.`2 Kreis DL-5`, tabelle_räume.`DL-10`, tabelle_räume.`DL-tech`, 
-               tabelle_räume.CO2, tabelle_räume.NGA, tabelle_räume.N2O, tabelle_räume.AV, tabelle_räume.SV, tabelle_räume.ZSV, 
-               tabelle_räume.USV, tabelle_räume.Anwendungsgruppe, 
-               tabelle_räume.`Anmerkung MedGas`, tabelle_räume.`Anmerkung Elektro`, tabelle_räume.`Anmerkung HKLS`, 
-               tabelle_räume.`Anmerkung Geräte`, tabelle_räume.`Anmerkung FunktionBO`, tabelle_räume.`Anmerkung BauStatik`, 
-               tabelle_räume.`Allgemeine Hygieneklasse`, tabelle_räume.`Fussboden OENORM B5220`, tabelle_räume.`IT Anbindung`
+$sql = "SELECT tabelle_räume.idTABELLE_Räume, 
+       tabelle_räume.Abdunkelbarkeit, 
+       tabelle_räume.Strahlenanwendung, 
+               tabelle_räume.Laseranwendung, 
+               tabelle_räume.H6020,
+               tabelle_räume.GMP,
+               tabelle_räume.ISO, 
+               tabelle_räume.`1 Kreis O2`,
+               tabelle_räume.`2 Kreis O2`,
+               tabelle_räume.`1 Kreis Va`,
+               tabelle_räume.`2 Kreis Va`,
+               tabelle_räume.`1 Kreis DL-5`,
+               tabelle_räume.`2 Kreis DL-5`,
+               tabelle_räume.`DL-10`, 
+               tabelle_räume.`DL-tech`, 
+               tabelle_räume.CO2,
+               tabelle_räume.NGA,
+               tabelle_räume.N2O,
+               tabelle_räume.AV,
+               tabelle_räume.SV,
+               tabelle_räume.ZSV, 
+               tabelle_räume.USV,
+               tabelle_räume.Anwendungsgruppe, 
+               tabelle_räume.`Anmerkung MedGas`,
+               tabelle_räume.`Anmerkung Elektro`,
+               tabelle_räume.`Anmerkung HKLS`, 
+               tabelle_räume.`Anmerkung Geräte`,
+               tabelle_räume.`Anmerkung FunktionBO`,
+               tabelle_räume.`Anmerkung BauStatik`, 
+               tabelle_räume.`Allgemeine Hygieneklasse`,
+               tabelle_räume.`Fussboden OENORM B5220`, 
+               tabelle_räume.`IT Anbindung`
         FROM tabelle_räume
         WHERE tabelle_räume.idTABELLE_Räume = ?";
 

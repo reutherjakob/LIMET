@@ -33,7 +33,7 @@ init_page_serversides("x", "x");
         <div class="col-3"></div>
         <div class="col-6">
             <?php if (!empty($message)): ?>
-                <div class="alert alert-info"><?= htmlspecialchars($message) ?></div>
+                <div class="alert alert-info"><?= h($message) ?></div>
             <?php endif; ?>
             <div class="card border-white">
                 <div class="card-header d-inline-flex justify-content-center border-white bg-white">
@@ -201,11 +201,11 @@ init_page_serversides("x", "x");
                                                 data-bs-toggle="collapse"
                                                 data-bs-target="#wishCollapse<?= $idx ?>" aria-expanded="false"
                                                 aria-controls="wishCollapse<?= $idx ?>">
-                                            <span class="badge bg-secondary me-2"><?= htmlspecialchars($entry['id']) ?></span>
-                                            <strong><?= htmlspecialchars($entry['title']) ?></strong>
+                                            <span class="badge bg-secondary me-2"><?= h($entry['id']) ?></span>
+                                            <strong><?= h($entry['title']) ?></strong>
                                             <span class="ms-2 text-muted small">
                                                 <i class="fas fa-calendar-alt"></i>
-                                                <?= htmlspecialchars($entry['date']) ?>
+                                                <?= h($entry['date']) ?>
                                             </span>
                                         </button>
                                     </h2>
@@ -214,9 +214,9 @@ init_page_serversides("x", "x");
                                          aria-labelledby="wishHeading<?= $idx ?>" data-bs-parent="#wishlistAccordion">
 
                                         <div class="accordion-body">
-                                            <strong>Website:</strong> <?= htmlspecialchars($entry['website']) ?><br>
+                                            <strong>Website:</strong> <?= h($entry['website']) ?><br>
                                             <pre class="mb-2"
-                                                 style="white-space: pre-wrap; word-break: break-word;"><?= htmlspecialchars($entry['description']) ?></pre>
+                                                 style="white-space: pre-wrap; word-break: break-word;"><?= h($entry['description']) ?></pre>
 
                                             <div class="d-inline-flex align-items-baseline justify-content-between flex-nowrap">
                                                 <strong>Upvotes:</strong> <?= (int)$entry['upvotes'] ?> |
@@ -225,7 +225,7 @@ init_page_serversides("x", "x");
                                                       action="/FeedbackCenter/FeedbackIndex.php?action=voteFeature"
                                                       style="display:inline;">
                                                     <input type="hidden" name="vote_feature_id"
-                                                           value="<?= htmlspecialchars($entry['id']) ?>">
+                                                           value="<?= h($entry['id']) ?>">
                                                     <button name="vote" value="up" class="btn btn-link p-0 ms-2"><i
                                                                 class="fas fa-arrow-up"></i></button>
                                                     <button name="vote" value="down" class="btn btn-link p-0 me-5"><i
@@ -233,7 +233,7 @@ init_page_serversides("x", "x");
                                                 </form>
                                                 <form method="post" action="FeedbackIndex.php?action=markFeatureDone">
                                                     <input type="hidden" name="feature_id"
-                                                           value="<?= htmlspecialchars($entry['id']) ?>">
+                                                           value="<?= h($entry['id']) ?>">
                                                     <input type="checkbox" name="Done"
                                                            onchange="this.form.submit();"
                                                         <?= ($entry['Done'] == 1 ? 'checked' : '') ?>>
@@ -245,12 +245,41 @@ init_page_serversides("x", "x");
                                                       style="display:inline;"
                                                       onsubmit="return confirm('Are you sure you want to delete this feature request?');">
                                                     <input type="hidden" name="delete_feature_id"
-                                                           value="<?= htmlspecialchars($entry['id']) ?>">
+                                                           value="<?= h($entry['id']) ?>">
                                                     <button type="submit" class="btn btn-danger btn-sm ms-2 me-5">
                                                         <i class="fas fa-trash-alt"></i> Delete
                                                     </button>
                                                 </form>
+
                                             </div>
+                                            <?php $comments = (new FeedbackModel())->getComments($entry['id']);
+                                            if (!empty($comments)): ?>
+                                                <hr>
+                                                <?php foreach ($comments as $c): ?>
+                                                    <div class="alert alert-secondary py-1 px-2 mb-1 small">
+                                                        <i class="fas fa-comment"></i>
+                                                        <?= h($c['comment']) ?>
+                                                        <span class="text-muted ms-2"><?= h($c['date']) ?></span>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+
+                                            <?php if ($_SESSION['username'] === 'fuchs'): ?>
+                                                <form method="post"
+                                                      action="/FeedbackCenter/FeedbackIndex.php?action=addComment">
+                                                    <input type="hidden" name="comment_entry_id"
+                                                           value="<?= h($entry['id']) ?>">
+                                                    <div class="input-group input-group-sm mt-1">
+                                                        <input type="text" name="comment_text" class="form-control"
+                                                               placeholder="Admin-Kommentar..." required>
+                                                        <button class="btn btn-outline-secondary" type="submit">
+                                                            <i class="fas fa-paper-plane"></i>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            <?php endif; ?>
+
+
                                         </div>
 
 
@@ -280,22 +309,22 @@ init_page_serversides("x", "x");
                                                 data-bs-toggle="collapse"
                                                 data-bs-target="#collapse<?= $idx ?>" aria-expanded="false"
                                                 aria-controls="collapse<?= $idx ?>">
-                                            <span class="badge bg-secondary me-2"><?= htmlspecialchars($report['id']) ?></span>
-                                            <strong><?= htmlspecialchars($report['title']) ?></strong>
+                                            <span class="badge bg-secondary me-2"><?= h($report['id']) ?></span>
+                                            <strong><?= h($report['title']) ?></strong>
                                             <span class="ms-2 text-muted small  "><i
-                                                        class="fas fa-calendar-alt"></i> <?= htmlspecialchars($report['date']) ?></span>
+                                                        class="fas fa-calendar-alt"></i> <?= h($report['date']) ?></span>
                                         </button>
                                     </h2>
                                     <div id="collapse<?= $idx ?>" class="accordion-collapse collapse"
                                          aria-labelledby="heading<?= $idx ?>" data-bs-parent="#bugAccordion">
                                         <div class="accordion-body">
-                                            <strong>Website:</strong> <?= htmlspecialchars($report['website']) ?><br>
+                                            <strong>Website:</strong> <?= h($report['website']) ?><br>
                                             <?php if (!empty($report['Severity'])): ?>
-                                                <strong>Severity:</strong> <?= htmlspecialchars($report['Severity']) ?>
+                                                <strong>Severity:</strong> <?= h($report['Severity']) ?>
                                                 <br>
                                             <?php endif; ?>
                                             <pre class="mb-2"
-                                                 style="white-space: pre-wrap; word-break: break-word;"><?= htmlspecialchars($report['description']) ?></pre>
+                                                 style="white-space: pre-wrap; word-break: break-word;"><?= h($report['description']) ?></pre>
                                             <?php if ($report['screenshot']): ?>
                                                 <div class="mb-3">
                                                     <a href="/FeedbackCenter/uploads/<?= urlencode($report['screenshot']) ?>"
@@ -305,7 +334,7 @@ init_page_serversides("x", "x");
                                                              style="max-width:300px;">
                                                     </a>
                                                     <div class="form-text">
-                                                        Screenshot: <?= htmlspecialchars($report['screenshot']) ?></div>
+                                                        Screenshot: <?= h($report['screenshot']) ?></div>
                                                 </div>
                                             <?php endif; ?>
 
@@ -315,7 +344,7 @@ init_page_serversides("x", "x");
                                                   action="/FeedbackCenter/FeedbackIndex.php?action=voteBug"
                                                   style="display:inline;">
                                                 <input type="hidden" name="vote_bug_id"
-                                                       value="<?= htmlspecialchars($report['id']) ?>">
+                                                       value="<?= h($report['id']) ?>">
                                                 <button name="vote" value="up" class="btn btn-link p-0 ms-2"><i
                                                             class="fas fa-arrow-up"></i></button>
                                                 <button name="vote" value="down" class="btn btn-link p-0"><i
@@ -324,7 +353,7 @@ init_page_serversides("x", "x");
                                             <div class="d-inline-flex align-items-baseline justify-content-between flex-nowrap">
                                                 <form method="post" action="FeedbackIndex.php?action=markBugDone">
                                                     <input type="hidden" name="bug_id"
-                                                           value="<?= htmlspecialchars($report['id']) ?>">
+                                                           value="<?= h($report['id']) ?>">
                                                     <input type="checkbox" name="Done"
                                                            onchange="this.form.submit();"
                                                         <?= ($report['Done'] == 1 ? 'checked' : '') ?>>
@@ -337,12 +366,40 @@ init_page_serversides("x", "x");
                                                       style="display:inline;"
                                                       onsubmit="return confirm('Are you sure you want to delete this bug report and its screenshot?');">
                                                     <input type="hidden" name="delete_bug_id"
-                                                           value="<?= htmlspecialchars($report['id']) ?>">
+                                                           value="<?= h($report['id']) ?>">
                                                     <button type="submit" class="btn btn-danger btn-sm ms-2 me-5">
                                                         <i class="fas fa-trash-alt"></i> Delete
                                                     </button>
                                                 </form>
                                             </div>
+                                            <?php $comments = (new FeedbackModel())->getComments($report['id']);
+                                            if (!empty($comments)): ?>
+                                                <hr>
+                                                <?php foreach ($comments as $c): ?>
+                                                    <div class="alert alert-secondary py-1 px-2 mb-1 small">
+                                                        <i class="fas fa-comment"></i>
+                                                        <?= h($c['comment']) ?>
+                                                        <span class="text-muted ms-2"><?= h($c['date']) ?></span>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+
+                                            <?php if ($_SESSION['username'] === 'fuchs'): ?>
+                                                <form method="post"
+                                                      action="/FeedbackCenter/FeedbackIndex.php?action=addComment">
+                                                    <input type="hidden" name="comment_entry_id"
+                                                           value="<?= h($report['id']) ?>">
+                                                    <div class="input-group input-group-sm mt-1">
+                                                        <input type="text" name="comment_text" class="form-control"
+                                                               placeholder="Admin-Kommentar..." required>
+                                                        <button class="btn btn-outline-secondary" type="submit">
+                                                            <i class="fas fa-paper-plane"></i>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            <?php endif; ?>
+
+
                                         </div>
                                     </div>
                                 </div>

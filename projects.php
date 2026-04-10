@@ -4,7 +4,9 @@
     <title>RB-Projekte</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+
     <link rel="icon" href="Logo/iphone_favicon.png"/>
     <!-- 13.2.25: Reworked -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -25,9 +27,8 @@
 </head>
 <body>
 <div id="limet-navbar"></div>
-<div class="container-fluid bg-white">
+<div class="container-fluid">
     <?php
-    //25 FX
     if (!function_exists('utils_connect_sql')) {
         include "utils/_utils.php";
     }
@@ -35,7 +36,6 @@
     include 'projects_changeProjectModal.html';
     unset($_SESSION["login_attempts_ip"]);
     unset($_SESSION["last_attempt_ip"]);
-
     $projectIcons = [
         "BBE" => "fas fa-church",
         "GCP" => "fas fa-toilet-paper",
@@ -59,8 +59,8 @@
         "Labor Kathegorien" => "fas fa-atom",
         "AGES SF Nutzerraumbuch" => "fas fa-mortar-pestle",
         "AGES Spargelfeld" => "fas fa-mortar-pestle",
-        "Test KHI" =>"fas fa-yin-yang",
-        "Labor Kategorien" => "fas fa-microscope",
+        "Test KHI" => "fas fa-yin-yang",
+        "Labor Kategorien" => "fas fa-sith",
     ];
     //<i class="fas fa-mountain"></i>
     ?>
@@ -86,7 +86,7 @@
                 <div class="card-body table-responsive px-1 py-1">
 
                     <table id='tableProjects'
-                           class='table table-sm compact table-hover table-striped border border-light border-5'>
+                           class='table table-sm compact table-hover table-striped border border-5'>
                         <thead>
                         <tr>
                             <th>ID</th><!-- invis -->
@@ -103,6 +103,7 @@
                             <th>Planungsphase</th>
                             <th>PlanungsphasenID</th> <!-- invis -->
                             <th>Preisbasis</th>
+                            <th>ProjektArt</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -120,7 +121,7 @@
                                  tabelle_projekte.Ausfuehrung,
                                  tabelle_projekte.Preisbasis,
                                  tabelle_planungsphasen.Bezeichnung, 
-                                 tabelle_planungsphasen.idTABELLE_Planungsphasen
+                                 tabelle_planungsphasen.idTABELLE_Planungsphasen, projektArt
                           FROM tabelle_projekte 
                           INNER JOIN tabelle_planungsphasen ON tabelle_projekte.TABELLE_Planungsphasen_idTABELLE_Planungsphasen = tabelle_planungsphasen.idTABELLE_Planungsphasen 
                           INNER JOIN tabelle_users_have_projects ON tabelle_projekte.idTABELLE_Projekte = tabelle_users_have_projects.tabelle_projekte_idTABELLE_Projekte 
@@ -165,6 +166,7 @@
                             echo "<td>" . $row["Bezeichnung"] . "</td>";
                             echo "<td>" . $row["idTABELLE_Planungsphasen"] . "</td>";
                             echo "<td>" . $row["Preisbasis"] . "</td>";
+                            echo "<td >" . $row["projektArt"] . "</td>";
                             echo "</tr>";
                         } ?>
                         </tbody>
@@ -200,7 +202,7 @@
 
                         <p>
                             <i class="far fa-bell col-1"></i>
-                            <span class ="col-11"  href="elementAdministration.php">Neu: Preise ändern Button </span>
+                            <span class="col-11" href="elementAdministration.php">Neu: Preise ändern Button </span>
                         </p>
                     </div>
 
@@ -211,7 +213,7 @@
                 <div class='card-body'>
                     <div class="row">
                         <p>
-                            <i class="fa fa-fort-awesome-alt col-1"></i>
+                            <i class="fas fa-spider col-1"></i>
                             <a class="col-11" href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free"
                                target="_blank">Projekt Icons</a>
                         </p>
@@ -266,7 +268,7 @@
         table = $('#tableProjects').DataTable({
             columnDefs: [
                 {
-                    targets: [0, 12],
+                    targets: [0, 12, 14],
                     visible: false,
                     searchable: false
                 },
@@ -332,7 +334,7 @@
             document.getElementById("vermerkeFilter").value = 0;
             document.getElementById("active").value = rowData[5] === "Ja" ? 1 : 0;
             document.getElementById("neubau").value = rowData[6] === 'Ja' ? 1 : 0;
-
+            let projektArt = rowData[14];
             // console.log({
             //     id,
             //     projectName,
@@ -355,7 +357,8 @@
                     "projectID": id,
                     "projectName": projectName,
                     "projectAusfuehrung": projectAusfuehrung,
-                    "projectPlanungsphase": projectPlanungsphase
+                    "projectPlanungsphase": projectPlanungsphase,
+                    "projektArt": projektArt
                 },
                 type: "POST",
                 success: function () {

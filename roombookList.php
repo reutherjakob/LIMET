@@ -11,7 +11,8 @@ init_page_serversides();
     <title>RB-Liste</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+
+
     <link rel="icon" href="Logo/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -23,18 +24,22 @@ init_page_serversides();
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <?php //include_theme_css(); ?>
+
 </head>
 
 <body style="height:100%">
-<div class="container-fluid bg-light">
+<div class="container-fluid">
     <div id="limet-navbar"></div>
     <div class="mt-2 card">
         <div class="card-header">
             <div class=" row">
-                <div class="col-6">
+                <div class="col-4">
                     <b>Elemente im Projekt</b>
                 </div>
-                <div class="col-6 d-flex justify-content-end" id="dt-header-container"></div>
+                <div class="col-8 d-flex justify-content-end" id="dt-header-container"></div>
             </div>
         </div>
         <div class="card-body" id="elementLots">
@@ -94,7 +99,7 @@ init_page_serversides();
                 AND Anzahl <>0";
 
             $stmt = $mysqli->prepare($sql);
-            $stmt->bind_param('i',  $_SESSION["projectID"] );
+            $stmt->bind_param('i', $_SESSION["projectID"]);
             $stmt->execute();
             $result = $stmt->get_result();
 
@@ -149,15 +154,15 @@ init_page_serversides();
                 echo "<td>" . $row["Gewerke_Nr"] . "</td>";
                 echo "<td>" . $row["GHG"] . "</td>";
                 echo "<td>" . $row["LosBezeichnung_Extern"] . "</td>";
-                if (null != ($row["Kurzbeschreibung"])) {
+                if (!empty($row["Kurzbeschreibung"])) {
                     echo "<td><button type='button' class='btn btn-sm btn-outline-dark' 
-                    data-bs-toggle='popover' 
-                    data-bs-placement='top' 
-                    data-bs-content='" . htmlspecialchars($row["Kurzbeschreibung"]) . "' 
-                    title='Kommentar'>
-                    <i class='fa fa-comment'></i></button></td>";
+                        data-bs-toggle='popover' 
+                        data-bs-placement='top' 
+                        data-bs-content='" . htmlspecialchars($row["Kurzbeschreibung"]) . "' 
+                        title='Kommentar'>
+                        <i class='fa fa-comment'></i></button></td>";
                 } else {
-                    echo "<td> </td>";
+                    echo "<td></td>";
                 }
                 echo "</tr>";
             }
@@ -171,6 +176,7 @@ init_page_serversides();
 <script src="utils/_utils.js"></script>
 <script>
     $(document).ready(function () {
+
         new DataTable('#tableRoombookList', {
             select: true,
             dom: "<'dt-buttons'B><'dt-search'f><'dt-info' i>rt",
@@ -184,7 +190,30 @@ init_page_serversides();
             ],
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
-                search: ""
+                search: "",
+                info: "",
+                infoEmpty: "",
+                infoFiltered: "_TOTAL_ gefiltert von _MAX_; ",
+                select: {
+
+                    rows: {
+                        _: "%d ausgewählt",
+                        0: "",
+                        1: "1 ausgewählt"
+                    },
+
+                    columns: {
+                        _: "",
+                        0: "",
+                        1: ""
+                    },
+
+                    cells: {
+                        _: "",
+                        0: "",
+                        1: ""
+                    },
+                }
             },
             buttons: [
                 {
@@ -198,22 +227,53 @@ init_page_serversides();
                                 if (column === 14) {
                                     return "'" + data; // Apostroph voranstellen
                                 }
+                                if (column === 19) {
+                                    var match = data.match(/data-bs-content='([^']*)'/);
+                                    return match ? match[1] : '';
+                                }
                                 return data;
                             }
                         }
                     }
-                },{
+                }, {
                     extend: 'searchBuilder',
                     className: 'btn btn-sm bg-white btn-outline-dark' // add your btn-sm here with desired styles
                 }
             ],
             paging: false,
             initComplete: function () {
+                $('#tableRoombookList_wrapper .dt-info').appendTo('#dt-header-container');
                 $('#tableRoombookList_wrapper .dt-buttons').appendTo('#dt-header-container');
                 $('#tableRoombookList_wrapper .dt-search').appendTo('#dt-header-container');
-                $('#tableRoombookList_wrapper .dt-info').appendTo('#dt-header-container');
             }
         });
+
+
+        $(function () {
+            // Enable all popovers
+            const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+            const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                return new bootstrap.Popover(popoverTriggerEl, {
+                    container: 'body',
+                    trigger: 'focus', // ensures popover closes when focus is lost
+                    placement: 'left' // optional
+                });
+            });
+            // Close any open popover when clicking outside
+            $(document).on('click', function (e) {
+                $('[data-bs-toggle="popover"]').each(function () {
+                    if (
+                        !$(this).is(e.target) &&                              // Not the clicked element
+                        $(this).has(e.target).length === 0 &&                // Not inside the clicked element
+                        $('.popover').has(e.target).length === 0             // Not inside the actual popover
+                    ) {
+                        $(this).popover('hide');                             // Hide it
+                    }
+                });
+            });
+        });
+
+
     });
 
 </script>

@@ -74,6 +74,22 @@ $columns = [];
 $values = [];
 
 foreach ($params as $key => $value) {
+    // PHP konvertiert Leerzeichen+Punkte in POST-Keys zu Unterstrichen → rückgängig machen
+    // Wir matchen gegen allowedColumns um den echten Namen zu finden
+    if (!in_array($key, $allowedColumns)) {
+        // Suche ob ein allowedColumn nach PHP-Konvertierung diesem Key entspricht
+        $found = null;
+        foreach ($allowedColumns as $allowed) {
+            if (str_replace([' ', '.'], '_', $allowed) === $key) {
+                $found = $allowed;
+                break;
+            }
+        }
+        if ($found !== null) {
+            $key = $found; // echten Namen wiederherstellen
+        }
+    }
+
     // Handle special column name mapping
     if ($key === "fk_TABELLE_Räume_TABELLE_Funktionsteilstellen1") {
         $key = "TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen";

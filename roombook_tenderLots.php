@@ -74,14 +74,24 @@ init_page_serversides();
                         function getVerfahrenBadgeClass($verfahren): string
                         {
                             switch ($verfahren) {
-                                case 'Direktvergabe': return 'bg-secondary';
-                                case 'Direktvergabe mit vorheriger Bekanntmachung': return 'bg-info';
-                                case 'Verhandlungsverfahren ohne Bekanntmachung': return 'bg-warning';
-                                case 'Nicht offenes Verfahren ohne Bekanntmachung': return 'bg-primary';
-                                case 'Nicht offenes Verfahren mit Bekanntmachung': return 'bg-success';
-                                case 'Offenes Verfahren': return 'bg-danger';
-                                case 'MKF': return "bg-danger";
-                                default: return 'bg-dark';
+                                case 'Direktvergabe':
+                                    return 'bg-secondary';
+                                case 'Direktvergabe mit vorheriger Bekanntmachung':
+                                    return 'bg-info';
+                                case 'Verhandlungsverfahren ohne Bekanntmachung':
+                                    return 'bg-warning';
+                                case 'Nicht offenes Verfahren ohne Bekanntmachung':
+                                    return 'bg-primary';
+                                case 'Nicht offenes Verfahren mit Bekanntmachung':
+                                case 'RV':
+                                    return 'bg-success';
+                                case 'Offenes Verfahren':
+                                case 'MKF':
+                                    return 'bg-danger';
+
+
+                                default:
+                                    return 'bg-dark';
                             }
                         }
 
@@ -130,7 +140,7 @@ init_page_serversides();
                                 ORDER BY LosNr_Extern;";
 
                         $stmt = $mysqli->prepare($sql);
-                        $stmt->bind_param('iii', $_SESSION["projectID"],$_SESSION["projectID"],$_SESSION["projectID"]);
+                        $stmt->bind_param('iii', $_SESSION["projectID"], $_SESSION["projectID"], $_SESSION["projectID"]);
                         $stmt->execute();
                         $result = $stmt->get_result();
 
@@ -178,7 +188,7 @@ init_page_serversides();
 
                             echo "<td>" . $row["Versand_LV"] . "</td>";
                             echo "<td>" . $row["Ausführungsbeginn"] . "</td>";
-                            echo '<td><span class="badge rounded-pill ' . getVerfahrenBadgeClass($row['Verfahren']) . '">' . htmlspecialchars($row['Verfahren'] ?? "" ) . '</span></td>';
+                            echo '<td><span class="badge rounded-pill ' . getVerfahrenBadgeClass($row['Verfahren']) . '">' . htmlspecialchars($row['Verfahren'] ?? "") . '</span></td>';
 
                             echo "<td>" . $row["Bearbeiter"] . "</td>";
                             echo "<td >";
@@ -221,7 +231,22 @@ init_page_serversides();
                             echo "<td>" . $row["Vergabesumme"] . "</td>";
                             echo "<td>" . $row["Lieferant"] . "</td>";
                             echo "<td><button type='button' id='" . $row["idtabelle_Lose_Extern"] . "' class='btn  btn-sm btn-outline-secondary' value='LotWorkflow' data-bs-toggle='modal' data-bs-target='#workflowDataModal'><i class='fas fa-history'></i></button></td>";
-                            echo "<td>" . $row["Notiz"] . "</td>";
+
+
+                            // echo "<td>" . $row["Notiz"] . "</td>";
+
+                            $Notiz = trim($row["Notiz"] ?? "");
+                            $buttonClass = $Notiz === "" ? "btn-outline-secondary" : "btn-outline-dark";
+                            $iconClass = $Notiz === "" ? "fa fa-comment-slash" : "fa fa-comment";
+                            $dataAttr = $Notiz === "" ? "data-description=''" : "data-description='" . htmlspecialchars($Notiz, ENT_QUOTES, 'UTF-8') . "'";
+
+                            echo "<td><button type='button'
+    class='btn btn-sm " . $buttonClass . " comment-btn' " . $dataAttr . "
+    id='" . $row["idtabelle_Lose_Extern"] . "' title='Kommentar'>
+    <i class='" . $iconClass . "'></i>
+  </button></td>";
+
+
                             echo "<td>" . $row["idTABELLE_Lieferant"] . "</td>";
                             echo "<td>" . $row["Vergabe_abgeschlossen"] . "</td>";
                             echo "<td>" . $row["mkf_von_los"] . "</td>";
@@ -280,7 +305,7 @@ init_page_serversides();
     </div>
 </div>
 </body>
-<!-- Modal zum Anlegen eines Loses-->
+<!-- Modal zum Anlegen eines Loses -->
 <div class='modal fade' id='addTenderLotModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
         <div class='modal-content'>
@@ -289,102 +314,113 @@ init_page_serversides();
                 <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='mbody'>
-                <form role="form">
-                    <form role='form'>
-                        <label for="lotMKF"></label>
-                        <input id="lotMKF" data-bs-toggle="toggle" type="checkbox" data-on="MKF" data-off="MKF"
-                               data-onstyle="success" data-offstyle="danger">
+                <form role="form" id="addTenderLotForm">
 
-                        <div class='form-group'>
-                            <label for='lotMKFOf'>Los wählen:</label>
-                            <select class='form-control form-control-sm' id='lotMKFOf' disabled>
-                                <option value=0 selected>Hauptlos wählen</option>
-                                <?php
-                                foreach ($hauptLose as $array) {
-                                    echo "<option value=" . $array['idtabelle_Lose_Extern'] . ">" . $array['LosNr_Extern'] . " - " . $array['LosBezeichnung_Extern'] . "</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class='form-group'>
-                            <label for='lotNr'>Losnummer:</label>
-                            <input type='text' class='form-control form-control-sm' id='lotNr' placeholder='Losnummer'/>
-                        </div>
-                        <div class='form-group'>
-                            <label for='lotName'>Bezeichnung:</label>
-                            <input type='text' class='form-control form-control-sm' id='lotName'
-                                   placeholder='Losbezeichnung'/>
-                        </div>
-                        <div class='form-group'>
-                            <label for='lotLVSend'>Versand LV:</label>
-                            <input type='text' class='form-control form-control-sm' id='lotLVSend'
-                                   placeholder='jjjj-mm-tt'/>
-                        </div>
-                        <div class='form-group'>
-                            <label for='lotStart'>Ausführungsbeginn:</label>
-                            <input type='text' class='form-control form-control-sm' id='lotStart'
-                                   placeholder='jjjj-mm-tt'/>
-                        </div>
-                        <div class="form-group">
-                            <label for="lotVerfahren">Verfahren</label>
-                            <select class="form-control form-control-sm" id="lotVerfahren" name="lotVerfahren">
-                                <option value="" selected disabled>Verfahren wählen</option>
-                                <option value="Direktvergabe">Direktvergabe</option>
-                                <option value="Direktvergabe mit vorheriger Bekanntmachung">Direktvergabe mit vorheriger Bekanntmachung</option>
-                                <option value="Verhandlungsverfahren ohne Bekanntmachung">Verhandlungsverfahren ohne Bekanntmachung</option>
-                                <option value="Nicht offenes Verfahren ohne Bekanntmachung">Nicht offenes Verfahren ohne Bekanntmachung</option>
-                                <option value="Nicht offenes Verfahren mit Bekanntmachung">Nicht offenes Verfahren mit Bekanntmachung</option>
-                                <option value="Offenes Verfahren">Offenes Verfahren</option>
-                                <option value="Verhandlungsverfahren mit Bekanntmachung">Verhandlungsverfahren mit Bekanntmachung</option>
-                                <option value="MKF">MKF</option>
-                                <option value="Andere">Andere</option>
+                    <label for="lotMKF"></label>
+                    <input id="lotMKF" data-bs-toggle="toggle" type="checkbox" data-on="MKF" data-off="MKF"
+                           data-onstyle="success" data-offstyle="danger">
 
-                            </select>
-                        </div>
+                    <div class='form-group'>
+                        <label for='lotMKFOf'>Los wählen:</label>
+                        <select class='form-control form-control-sm' id='lotMKFOf' disabled>
+                            <option value=0 selected>Hauptlos wählen</option>
+                            <?php
+                            foreach ($hauptLose as $array) {
+                                echo "<option value=" . $array['idtabelle_Lose_Extern'] . ">" . $array['LosNr_Extern'] . " - " . $array['LosBezeichnung_Extern'] . "</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class='form-group'>
+                        <label for='lotNr'>Losnummer:</label>
+                        <input type='text' class='form-control form-control-sm' id='lotNr' placeholder='Losnummer'
+                               required/>
+                    </div>
+                    <div class='form-group'>
+                        <label for='lotName'>Bezeichnung:</label>
+                        <input type='text' class='form-control form-control-sm' id='lotName'
+                               placeholder='Losbezeichnung' required/>
+                    </div>
+                    <div class='form-group'>
+                        <label for='lotLVSend'>Versand LV:</label>
+                        <input type='text' class='form-control form-control-sm' id='lotLVSend'
+                               placeholder='jjjj-mm-tt' required/>
+                    </div>
+                    <div class='form-group'>
+                        <label for='lotStart'>Ausführungsbeginn:</label>
+                        <input type='text' class='form-control form-control-sm' id='lotStart'
+                               placeholder='jjjj-mm-tt' required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="lotVerfahren">Verfahren</label>
+                        <select class="form-control form-control-sm" id="lotVerfahren" name="lotVerfahren" required>
+                            <option value="" selected disabled>Verfahren wählen</option>
+                            <option value="Direktvergabe">Direktvergabe</option>
+                            <option value="Direktvergabe mit vorheriger Bekanntmachung">Direktvergabe mit vorheriger
+                                Bekanntmachung
+                            </option>
+                            <option value="Verhandlungsverfahren ohne Bekanntmachung">Verhandlungsverfahren ohne
+                                Bekanntmachung
+                            </option>
+                            <option value="Nicht offenes Verfahren ohne Bekanntmachung">Nicht offenes Verfahren ohne
+                                Bekanntmachung
+                            </option>
+                            <option value="Nicht offenes Verfahren mit Bekanntmachung">Nicht offenes Verfahren mit
+                                Bekanntmachung
+                            </option>
+                            <option value="Offenes Verfahren">Offenes Verfahren</option>
+                            <option value="Verhandlungsverfahren mit Bekanntmachung">Verhandlungsverfahren mit
+                                Bekanntmachung
+                            </option>
+                            <option value="MKF">MKF</option>
+                            <option value="RV">RV</option>
+                            <option value="Andere">Andere - Sags dem Dev ;)</option>
+                        </select>
+                    </div>
 
-                        <div class='form-group'>
-                            <label for='lotLVBearbeiter'>Bearbeiter:</label>
-                            <input type='text' class='form-control form-control-sm' id='lotLVBearbeiter'
-                                   placeholder='Bearbeiter'/>
-                        </div>
-                        <div class='form-group'>
-                            <label for='kostenanschlag'>Kostenanschlag: (. oder ,)</label>
-                            <input type='text' class='form-control form-control-sm' id='kostenanschlag'
-                                   placeholder='0'/>
-                        </div>
-                        <div class='form-group'>
-                            <label for='budget'>Budget (valorisiert): (. oder ,)</label>
-                            <input type='text' class='form-control form-control-sm' id='budget' placeholder='0'/>
-                        </div>
-                        <div class='form-group'>
-                            <label for='lotSum'>Vergabesumme: (. oder ,)</label>
-                            <input type='text' class='form-control form-control-sm' id='lotSum' placeholder='Summe'/>
-                        </div>
-                        <div class='form-group'>
-                            <label for='lotVergabe'>Status:</label>
-                            <select class='form-control form-control-sm' id='lotVergabe'>
-                                <option value='0' selected>Nicht abgeschlossen</option>
-                                <option value='1'>Abgeschlossen</option>
-                                <option value='2'>Wartend</option>
-                            </select>
-                        </div>
-                        <div class='form-group'>
-                            <label for='lotAuftragnehmer'>Auftragnehmer:</label>
-                            <select class='form-control form-control-sm' id='lotAuftragnehmer'>
-                                <option value=0 selected>Auftragnehmer wählen</option>
-                                <?php
-                                foreach ($possibleAuftragnehmer as $array) {
-                                    echo "<option value=" . $array['idTABELLE_Lieferant'] . ">" . $array['Lieferant'] . "</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class='form-group'>
-                            <label for='lotNotice'>Notiz:</label>
-                            <textarea class='form-control form-control-sm' rows='5' id='lotNotice'
-                                      placeholder='Notiz'></textarea>
-                        </div>
-                    </form>
+                    <div class='form-group'>
+                        <label for='lotLVBearbeiter'>Bearbeiter:</label>
+                        <input type='text' class='form-control form-control-sm' id='lotLVBearbeiter'
+                               placeholder='Bearbeiter' required/>
+                    </div>
+                    <div class='form-group'>
+                        <label for='kostenanschlag'>Kostenanschlag: (. oder ,)</label>
+                        <input type='text' class='form-control form-control-sm' id='kostenanschlag'
+                               placeholder='0'/>
+                    </div>
+                    <div class='form-group'>
+                        <label for='budget'>Budget (valorisiert): (. oder ,)</label>
+                        <input type='text' class='form-control form-control-sm' id='budget' placeholder='0'/>
+                    </div>
+                    <div class='form-group'>
+                        <label for='lotSum'>Vergabesumme: (. oder ,)</label>
+                        <input type='text' class='form-control form-control-sm' id='lotSum' placeholder='Summe'/>
+                    </div>
+                    <div class='form-group'>
+                        <label for='lotVergabe'>Status:</label>
+                        <select class='form-control form-control-sm' id='lotVergabe'>
+                            <option value='0' selected>Nicht abgeschlossen</option>
+                            <option value='1'>Abgeschlossen</option>
+                            <option value='2'>Wartend</option>
+                        </select>
+                    </div>
+                    <div class='form-group'>
+                        <label for='lotAuftragnehmer'>Auftragnehmer:</label>
+                        <select class='form-control form-control-sm' id='lotAuftragnehmer'>
+                            <option value=0 selected>Auftragnehmer wählen</option>
+                            <?php
+                            foreach ($possibleAuftragnehmer as $array) {
+                                echo "<option value=" . $array['idTABELLE_Lieferant'] . ">" . $array['Lieferant'] . "</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class='form-group'>
+                        <label for='lotNotice'>Notiz:</label>
+                        <textarea class='form-control form-control-sm' rows='5' id='lotNotice'
+                                  placeholder='Notiz'></textarea>
+                    </div>
+                </form>
             </div>
             <div class='modal-footer'>
                 <input type='button' id='addTenderLot' class='btn btn-success btn-sm' value='Hinzufügen'>
@@ -485,15 +521,16 @@ include "modal_showLotWorkflow.php";
                     }
                 });
 
+
                 $('#tableTenderLots tbody').on('click', 'tr', function () {
                     if ($.fn.DataTable.isDataTable('#tableLotElements1')) {
                     }
                     lotID = tableTenderLots.row($(this)).data()[0];
 
                     let verfahrenCell = tableTenderLots.row($(this)).data()[6];
-                    let rawVerfahren = verfahrenCell ? verfahrenCell.replace(/<[^>]*>/g, '').trim() : '';
-                    document.getElementById("lotVerfahren").value = rawVerfahren;
-                    //console.log("Verfahren:",rawVerfahren)
+                    let tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = verfahrenCell || '';
+                    let rawVerfahren = tempDiv.textContent.trim();
 
 
                     if (rawVerfahren === "MKF") {
@@ -506,6 +543,8 @@ include "modal_showLotWorkflow.php";
                         $('#lotMKF').bootstrapToggle('off');
                         $('#lotMKF').bootstrapToggle('disable');
                     }
+
+                    document.getElementById("lotVerfahren").value = rawVerfahren;
 
                     document.getElementById("lotNr").value = tableTenderLots.row($(this)).data()[2];
                     document.getElementById("lotName").value = tableTenderLots.row($(this)).data()[3];
@@ -543,8 +582,16 @@ include "modal_showLotWorkflow.php";
                         }
                     }
                     document.getElementById("lotAuftragnehmer").value = tableTenderLots.row($(this)).data()[18];
-                    document.getElementById("lotNotice").value = tableTenderLots.row($(this)).data()[21];
-                    document.getElementById("lotMKFOf").value = tableTenderLots.row($(this)).data()[24]; //TODO ??
+                    document.getElementById("lotMKFOf").value = tableTenderLots.row($(this)).data()[24];
+
+
+                    const notizCell = tableTenderLots.row($(this)).data()[21];
+                    const tempDivNotiz = document.createElement('div');
+                    tempDivNotiz.innerHTML = notizCell || '';
+                    const notizBtn = tempDivNotiz.querySelector('button');
+                    document.getElementById("lotNotice").value = notizBtn ? (notizBtn.dataset.description || '') : '';
+
+
                     $.ajax({
                         url: "getLotVermerke.php",
                         data: {"lotID": lotID},
@@ -644,89 +691,80 @@ include "modal_showLotWorkflow.php";
     }
 
 
-
     $("#saveTenderLot").click(function () {
+        let form = document.querySelector('#addTenderLotForm');
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
         let losNr = $("#lotNr").val();
         let losName = $("#lotName").val();
-
         let losDatum = $("#lotStart").val();
         let lotLVSend = $("#lotLVSend").val();
-
         let kostenanschlag = $("#kostenanschlag").val();
-        kostenanschlag  = normalizeCosts(kostenanschlag);
+        kostenanschlag = normalizeCosts(kostenanschlag);
         let budget = $("#budget").val();
-        budget  = normalizeCosts(budget);
+        budget = normalizeCosts(budget);
         let lotSum = $("#lotSum").val();
-        lotSum  = normalizeCosts(lotSum);
+        lotSum = normalizeCosts(lotSum);
         let lotVergabe = $("#lotVergabe").val();
         let lotNotice = $("#lotNotice").val();
         let lotAuftragnehmer = $("#lotAuftragnehmer").val();
-
         let lotVerfahren = $("#lotVerfahren").val();
         let lotLVBearbeiter = $("#lotLVBearbeiter").val();
-        //console.log(lotVerfahren);
 
         if ($("#lotMKF").prop('checked') === false) {
-            if (losNr !== "" && losName !== "" && losDatum !== "" && lotLVSend !== "" && lotVerfahren !== "" && lotLVBearbeiter !== "") {
-                $('#addTenderLotModal').modal('hide');
-                $.ajax({
-                    url: "setTenderLot.php",
-                    data: {
-                        "lotID": lotID,
-                        "losNr": losNr,
-                        "losName": losName,
-                        "losDatum": losDatum,
-                        "lotSum": lotSum,
-                        "lotVergabe": lotVergabe,
-                        "lotNotice": lotNotice,
-                        "lotAuftragnehmer": lotAuftragnehmer,
-                        "lotLVSend": lotLVSend,
-                        "lotVerfahren": lotVerfahren,
-                        "lotLVBearbeiter": lotLVBearbeiter,
-                        "mkf": 0,
-                        "kostenanschlag": kostenanschlag,
-                        "budget": budget
-                    },
-                    type: "POST",
-                    success: function (data) {
-                        alert(data);
-                        window.location.replace("roombook_tenderLots.php");
-                    }
-                });
-            } else {
-                alert("Bitte alle Felder außer der Vergabesumme/Auftragnehmer ausfüllen!");
-            }
-
+            $('#addTenderLotModal').modal('hide');
+            $.ajax({
+                url: "setTenderLot.php",
+                data: {
+                    "lotID": lotID,
+                    "losNr": losNr,
+                    "losName": losName,
+                    "losDatum": losDatum,
+                    "lotSum": lotSum,
+                    "lotVergabe": lotVergabe,
+                    "lotNotice": lotNotice,
+                    "lotAuftragnehmer": lotAuftragnehmer,
+                    "lotLVSend": lotLVSend,
+                    "lotVerfahren": lotVerfahren,
+                    "lotLVBearbeiter": lotLVBearbeiter,
+                    "mkf": 0,
+                    "kostenanschlag": kostenanschlag,
+                    "budget": budget
+                },
+                type: "POST",
+                success: function (data) {
+                    alert(data);
+                    window.location.replace("roombook_tenderLots.php");
+                }
+            });
         } else {
-            if (losDatum !== "" && lotLVSend !== "" && lotVerfahren !== "" && lotLVBearbeiter !== "") {
-                $('#addTenderLotModal').modal('hide');
-                $.ajax({
-                    url: "setTenderLot.php",
-                    data: {
-                        "lotID": lotID,
-                        "losNr": losNr,
-                        "losName": losName,
-                        "losDatum": losDatum,
-                        "lotSum": lotSum,
-                        "lotVergabe": lotVergabe,
-                        "lotNotice": lotNotice,
-                        "lotAuftragnehmer": lotAuftragnehmer,
-                        "lotLVSend": lotLVSend,
-                        "lotVerfahren": lotVerfahren,
-                        "lotLVBearbeiter": lotLVBearbeiter,
-                        "mkf": 1,
-                        "kostenanschlag": kostenanschlag,
-                        "budget": budget
-                    },
-                    type: "POST",
-                    success: function (data) {
-                        alert(data);
-                        window.location.replace("roombook_tenderLots.php");
-                    }
-                });
-            } else {
-                alert("Bitte alle Felder außer der Vergabesumme/Auftragnehmer ausfüllen!");
-            }
+            $('#addTenderLotModal').modal('hide');
+            $.ajax({
+                url: "setTenderLot.php",
+                data: {
+                    "lotID": lotID,
+                    "losNr": losNr,
+                    "losName": losName,
+                    "losDatum": losDatum,
+                    "lotSum": lotSum,
+                    "lotVergabe": lotVergabe,
+                    "lotNotice": lotNotice,
+                    "lotAuftragnehmer": lotAuftragnehmer,
+                    "lotLVSend": lotLVSend,
+                    "lotVerfahren": lotVerfahren,
+                    "lotLVBearbeiter": lotLVBearbeiter,
+                    "mkf": 1,
+                    "kostenanschlag": kostenanschlag,
+                    "budget": budget
+                },
+                type: "POST",
+                success: function (data) {
+                    alert(data);
+                    window.location.replace("roombook_tenderLots.php");
+                }
+            });
         }
     });
 
@@ -792,7 +830,7 @@ include "modal_showLotWorkflow.php";
         $.ajax({
             url: "getLotWorkflow.php",
             type: "POST",
-            data: { lotID: ID },
+            data: {lotID: ID},
             success: function (data) {
                 $("#workflowModalBody").html(data);
             }
@@ -812,6 +850,7 @@ include "modal_showLotWorkflow.php";
     });
 
     $('#toggleVermerkeBtn').click(function () {
+
         $('#mainCardColumn').toggleClass('col-xxl-8 col-xxl-11');
         $('#vermerkeCardColumn').toggleClass('col-xxl-4 col-xxl-1');
         $('#lotVermerke').toggleClass('d-none');

@@ -127,10 +127,10 @@ init_page_serversides("", "x");
 <script>
     let table;
     const reportCategoryOptions = [
-        {value: "", text: "-- Berichtkathegorie auswählen --", disabled: true, selected: true},
+        {value: "", text: "-- Berichtkategorie auswählen --", disabled: true, selected: true},
         {value: "bauangaben_neu", text: "Bauangaben Neu"},
         {value: "bauangaben", text: "Bauangaben"},
-
+        {value: "einreichung", text: "Einreichung"},
         {value: "elementReports", text: "Element-/Raum Berichte"},
         {value: "einbringwege", text: "Einbringwege"},
         {value: "oldReports", text: "Historische Berichte"},
@@ -145,14 +145,11 @@ init_page_serversides("", "x");
             {text: "Lab-PDF", url: "pdf_createBauangabenLabPDF"},
             {text: "Lab-Kurz-PDF'", url: "pdf_createBauangabenLabKompaktPDF"},
             {text: "Lab-ENT-PDF", url: "pdf_createBauangabenLabEntPDF"},
-            {text: "Lab-EIN-PDF", url: "pdf_createBauangabenLabEinrPDF_1"},
          ],
         bauangaben_neu:[
             {text: "BAU A3", url: "pdf_createBauangabenBericht_A3Qeer"},
             {text: "ohne Änderungsmarkierungen", url: "pdf_createBauangabenBericht_A3Qeer_1"},
-
             {text: "ohne Lab", url: "pdf_createBauangabenBericht_A3Qeer_ohne_Lab_params"},
-
             {text: "VE", url: "pdf_createBauangabenBericht_A3Qeer_VE"},
             {text: "CINO", url: "pdf_createBauangabenBericht_A3Qeer_CINO"}
         ],
@@ -163,6 +160,10 @@ init_page_serversides("", "x");
         einbringwege: [
             {text: "Einbringwege Größgeräte", url: "pdf_createElementEinbringwegePDF"},
             {text: "Einbringwege Größgeräte", url: "pdf_createElementEinbringwegePDF2"},
+        ],
+        einreichung: [
+            {text: "KH SAN EINR BBE", url: "pdf_createBereicht_SAN_EINR"},
+            {text: "Lab-EIN-PDF", url: "pdf_createBauangabenLabEinrPDF_1"},
         ],
         oldReports: [
             {text: "RB PDF", url: "pdf_createRoombookPDF"},

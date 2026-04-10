@@ -1,13 +1,10 @@
 <?php
 global $mysqli;
 require 'db.php';
+require_once "../Nutzerlogin/_utils.php";
 
-session_start([
-    'cookie_httponly' => true,
-    'cookie_secure' => isset($_SERVER['HTTPS']),
-    'cookie_samesite' => 'Strict'
-]);
-
+start_session();
+require 'csrf.php';
 if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit;
@@ -31,36 +28,43 @@ $topPasswords = file('top_passwords.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPT
 $topPasswords = array_map('trim', $topPasswords);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $new_pw_plain = $_POST['new_pw'] ?? '';
+    $csrf = $_POST['csrf'] ?? '';
+    if (!csrf_check($csrf)) {
+        $msg = "Ungültige Anfrage.";
+    } else {
+        $new_pw_plain = $_POST['new_pw'] ?? '';
 
-    // Check Top Passwords
-    if (in_array($new_pw_plain, $topPasswords, true)) {
-        $msg = "Dieses Passwort ist viel zu leicht zu erraten, bitte wählen Sie ein anderes.";
-    }
-    // Passwortregeln prüfen
-    elseif (strlen($new_pw_plain) < 8 ||
-        !preg_match('/[A-Z]/', $new_pw_plain) ||
-        !preg_match('/[a-z]/', $new_pw_plain) ||
-        !preg_match('/[0-9]/', $new_pw_plain) ||
-        !preg_match('/[\W_]/', $new_pw_plain)) {
-        $msg = "Das Passwort entspricht nicht den Sicherheitserfordernissen.";
-    }
-    // Prüfen ob das neue PW gleich dem alten ist
-    elseif (password_verify($new_pw_plain, $current_hash)) {
-        $msg = "Das neue Passwort darf nicht mit dem aktuellen Passwort übereinstimmen.";
-    }
+        // Check Top Passwords
+        if (in_array($new_pw_plain, $topPasswords, true)) {
+            $msg = "Dieses Passwort ist viel zu leicht zu erraten, bitte wählen Sie ein anderes.";
+        } // Passwortregeln prüfen
+        elseif (strlen($new_pw_plain) < 8 ||
+            !preg_match('/[A-Z]/', $new_pw_plain) ||
+            !preg_match('/[a-z]/', $new_pw_plain) ||
+            !preg_match('/[0-9]/', $new_pw_plain) ||
+            !preg_match('/[\W_]/', $new_pw_plain)) {
+            $msg = "Das Passwort entspricht nicht den Sicherheitserfordernissen.";
+        } // Prüfen ob das neue PW gleich dem alten ist
+        elseif (password_verify($new_pw_plain, $current_hash)) {
+            $msg = "Das neue Passwort darf nicht mit dem aktuellen Passwort übereinstimmen.";
+        }
 
-    if (!$msg) {
-        // Neues Passwort hashen mit Argon2id
-        $new_hash = password_hash($new_pw_plain, PASSWORD_ARGON2ID);
+        if (!$msg) {
+            // Neues Passwort hashen mit Argon2id
+            $new_hash = password_hash($new_pw_plain, PASSWORD_ARGON2ID);
 
-        $stmt = $mysqli->prepare("UPDATE tabelle_users SET password = ?, must_change_pw = 0 WHERE id = ?");
-        $stmt->bind_param("si", $new_hash, $_SESSION['user_id']);
-        $stmt->execute();
-        $stmt->close();
+            $stmt = $mysqli->prepare("UPDATE tabelle_users SET password = ?, must_change_pw = 0 WHERE id = ?");
+            $stmt->bind_param("si", $new_hash, $_SESSION['user_id']);
+            $stmt->execute();
+            $stmt->close();
 
-        header("Location: index.php");
-        exit;
+            session_regenerate_id(true);
+            $_SESSION = [];
+            session_destroy();
+
+            header("Location: index.php");
+            exit;
+        }
     }
 }
 ?>
@@ -70,8 +74,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="utf-8"/>
     <title>Passwort ändern</title>
     <link rel="icon" href="../Logo/iphone_favicon.png"/>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+          crossorigin="anonymous"/>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I"
+            crossorigin="anonymous"></script>
+
 </head>
 <body class="container-fluid mt-4">
 <div class='row d-flex align-items-center'>
@@ -97,6 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                         </div>
                     </div>
+                    <input type="hidden" name="csrf" value="<?= csrf_token() ?>">
                 </div>
                 <div class='card-footer'>
                     <button class="btn btn-success col-12">Passwort ändern</button>

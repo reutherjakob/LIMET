@@ -2,9 +2,23 @@
 <html lang="de">
 <head>
     <title>Login</title>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+          crossorigin="anonymous"/>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I"
+            crossorigin="anonymous"></script>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
+
+
     <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen"/>
     <link rel="icon" href="../Logo/iphone_favicon.png"/>
 
@@ -65,7 +79,9 @@
 
                     </div>
                     <input type="hidden" name="csrf"
-                           value="<?php session_start();
+                           value="<?php
+                           require_once "_utils.php";
+                           start_session();
                            require 'csrf.php';
                            echo csrf_token(); ?>">
                     <input type="hidden" name="hashed_password" id="hashed_password"/>
@@ -97,14 +113,17 @@ include '../Nutzerlogin/footer.html';
         // passwordInput.value = ''; // optional, clear plain password field
 
         $.post('login.php', $(this).serialize(), function (data) {
-            if (data === "success") {
+            if (data.status === 'success') {
                 window.location = 'forward.php';
-            } else if (data === "change_pw") {
+            } else if (data.status === 'change_pw') {
                 window.location = 'change_pw.php';
             } else {
-                $('#loginMsg').html('<span class="text-danger">'+ data + '</span>');
+                // Fehlermeldung anzeigen
+                $('#loginMsg').html('<span class="text-danger">' + data.msg + '</span>');
+                // CSRF-Token im Formular aktualisieren
+                $('input[name="csrf"]').val(data.csrf);
             }
-        });
+        }, 'json');
     });
 
 </script>

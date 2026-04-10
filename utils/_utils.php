@@ -26,6 +26,8 @@ function init_page_serversides($ommit_redirect = "", $noscroll = ""): void
     if ($ommit_redirect == "") {
         check_if_project_selected_else_redirect();
     }
+
+
     load_nav_bar();
     if ($noscroll == "") {
         include '_scrollUpBtn.php';
@@ -103,14 +105,16 @@ function utils_connect_sql()
 function load_nav_bar(): void
 {
     echo '<script>';
-    echo '    window.onload = function () {';
-    echo '        jQuery.get("/utils/navbar.html", function (data) {';
-    echo '            jQuery("#limet-navbar").html(data);';
-    echo '           jQuery(".navbar-nav").find("li:nth-child(3)")';
-    echo '                    .addClass("active");';
-    echo '           jQuery("#projectSelected").text(currentP);';
-    echo '        });';
-    echo '     };    </script>';
+    echo 'var isDarkMode = ' . (($_SESSION['darkmode'] ?? false) ? 'true' : 'false') . ';';
+    echo 'window.onload = function () {';
+    echo '    jQuery.get("/utils/navbar.html", function (data) {';
+    echo '        jQuery("#limet-navbar").html(data);';
+    echo '        jQuery(".navbar-nav").find("li:nth-child(3)").addClass("active");';
+    echo '        jQuery("#projectSelected").text(currentP);';
+//     echo '       document.getElementById("darkModeToggle").checked = isDarkMode;';
+    echo '    });';
+    echo '};';
+    echo '</script>';
 }
 
 if (!function_exists('h')) {
@@ -119,13 +123,6 @@ if (!function_exists('h')) {
         return htmlspecialchars((string)($var ?? ''));
     }
 }
-
-// function writeLog($message): void
-// {
-//     $logFile = __DIR__ . '/log.log';
-//     file_put_contents($logFile, date('Y-m-d H:i:s') . " - $message\n", FILE_APPEND);
-// }
-
 
 function getPostInt(string $key, int $default = 0): int
 {
@@ -139,7 +136,7 @@ function getPostString(string $key, string $default = ''): string
 
 function getPostDate(string $key): string
 {
-    $dateInput = getPostString($key); // e.g. '2025-11-07'
+    $dateInput = getPostString($key); // e.g. '2025 - 11 - 07'
     $dateFormatted = '';
 
     if ($dateInput !== '') {
@@ -170,4 +167,14 @@ function getPostArrayInt(string $key, array $default = []): array
         }
     }
     return $output;
+}
+
+
+function include_theme_css(): void
+{
+    if ($_SESSION['darkmode'] ?? false) {
+        echo '<link rel="stylesheet" href="/css/dark_theme.css"/>';
+    } else {
+        echo '<link rel="stylesheet" href="/css/light_theme.css"/>';
+    }
 }

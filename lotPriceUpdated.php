@@ -13,6 +13,9 @@ $lot_id = (int)$_POST['lot_id'] ?? 0;
 $projekt_id = (int)$_POST['projekt_id'] ?? 0;
 $preis_status = (int)$_POST['preis_status'] ?? 0;
 
+$username = $_SESSION['username'];
+
+
 if (!$lot_id || !$projekt_id) {
     echo json_encode(['error' => 'Missing lot_id or projekt_id']);
     exit;
@@ -22,11 +25,11 @@ $mysqli = utils_connect_sql();
 
 $stmt = $mysqli->prepare("
     UPDATE tabelle_lose_extern 
-    SET preise_in_db = ?
+    SET preise_in_db_user=?, preise_in_db = ?
     WHERE idtabelle_Lose_Extern = ? AND tabelle_projekte_idTABELLE_Projekte = ?
 ");
 
-$stmt->bind_param("iii", $preis_status, $lot_id, $projekt_id);
+$stmt->bind_param("siii", $username,$preis_status, $lot_id, $projekt_id);
 
 if ($stmt->execute()) {
     if ($stmt->affected_rows > 0) {

@@ -35,6 +35,7 @@ $excludeColumns = [
     'Nummer',
     'Bezeichnung',
     'Raumbezeichnung',
+    'element_mask',
     'Raumnr',
     'Funktionelle Raum Nr',
     'Raumnummer_Nutzer',
@@ -69,7 +70,7 @@ $columns = array_map(function ($column) {
 }, $columns);
 $columnsList = implode(", ", $columns);
 
-// Securely prepare SQL to fetch values for those columns for the current session room
+
 $sql = "SELECT $columnsList, `Anwendungsgruppe`, `Anmerkung MedGas`, `Anmerkung Elektro`, `Anmerkung HKLS`, `Anmerkung Geräte`, `Anmerkung BauStatik`
         FROM tabelle_räume WHERE idTABELLE_Räume = ?";
 

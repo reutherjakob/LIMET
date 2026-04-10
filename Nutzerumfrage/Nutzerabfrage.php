@@ -4,8 +4,10 @@ require_once "../Nutzerlogin/_utils.php";
 if (!function_exists('loadEnv')) {
     include "../Nutzerlogin/db.php";
 }
+require_once "../Nutzerumfrage/raumtypen.php"; // lädt $labortypen
 
-$role = init_page(["internal_rb_user", "spargefeld_ext_users", "spargefeld_admin"]);
+require_once "../Nutzerlogin/csrf.php";
+$role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargefeld_admin"]);
 $user_name = $_SESSION["user_name"];
 $projekt_id = 95;
 
@@ -14,34 +16,29 @@ header('X-Content-Type-Options: nosniff');
 
 
 if ($role === "internal_rb_user" || $role === "spargefeld_admin") {
-    $sql = "SELECT idTABELLE_Räume AS raum_id, Raumbezeichnung AS raumname, Raumnr AS raumnummer, `Raumbereich Nutzer` AS bereich, Nutzfläche, Bauabschnitt
+    $sql = "SELECT idTABELLE_Räume AS raum_id, 
+            Raumbezeichnung AS raumname, 
+            Raumnr AS raumnummer, 
+            `Raumbereich Nutzer` AS bereich, 
+            Nutzfläche, 
+            Bauabschnitt, 
+            `Raumtyp BH`, Geschoss
             FROM tabelle_räume
-            WHERE tabelle_projekte_idTABELLE_Projekte = ?";
+            WHERE tabelle_projekte_idTABELLE_Projekte = ?
+            AND  `Raumtyp BH` <> 34 
+            AND  `Raumtyp BH` <> 35";
     if ($stmt = $mysqli->prepare($sql)) {
         $stmt->bind_param("i", $projekt_id);
     } else {
         die("Fehler in der Abfrage: " . $mysqli->error);
     }
 } else {
-    if (str_contains($user_name, 'TIF')) {
-        $sql = "SELECT idTABELLE_Räume AS raum_id, Raumbezeichnung AS raumname, Raumnr AS raumnummer,
-                   `Raumbereich Nutzer` AS bereich, Nutzfläche, Bauabschnitt
-            FROM tabelle_räume
-            WHERE tabelle_projekte_idTABELLE_Projekte = ?
-              AND (`Raumbereich Nutzer` LIKE ? OR `Raumbereich Nutzer` LIKE 'Allgemein_H_TIF%')";
-    } elseif (str_contains($user_name, 'LSV')) {
-        $sql = "SELECT idTABELLE_Räume AS raum_id, Raumbezeichnung AS raumname, Raumnr AS raumnummer,
-                   `Raumbereich Nutzer` AS bereich, Nutzfläche, Bauabschnitt
-            FROM tabelle_räume
-            WHERE tabelle_projekte_idTABELLE_Projekte = ?
-              AND (`Raumbereich Nutzer` LIKE ? OR `Raumbereich Nutzer` LIKE 'Allgemein_H_LSV%')";
-    } else {
-        $sql = "SELECT idTABELLE_Räume AS raum_id, Raumbezeichnung AS raumname, Raumnr AS raumnummer,
-                   `Raumbereich Nutzer` AS bereich, Nutzfläche, Bauabschnitt
+    $sql = "SELECT idTABELLE_Räume AS raum_id, Raumbezeichnung AS raumname, Raumnr AS raumnummer,
+                   `Raumbereich Nutzer` AS bereich, Nutzfläche,
+                   Bauabschnitt, Geschoss
             FROM tabelle_räume
             WHERE tabelle_projekte_idTABELLE_Projekte = ?
               AND `Raumbereich Nutzer` LIKE ?";
-    }
 
     if ($stmt = $mysqli->prepare($sql)) {
         $like_param = "%" . $user_name . "%";
@@ -49,7 +46,6 @@ if ($role === "internal_rb_user" || $role === "spargefeld_admin") {
     } else {
         die("Fehler in der Abfrage: " . $mysqli->error);
     }
-
 }
 
 $stmt->execute();
@@ -61,6 +57,11 @@ while ($row = $result->fetch_assoc()) {
 $stmt->close();
 $mysqli->close();
 
+
+$labortyp_map = [];
+foreach ($labortypen as $lt) {
+    $labortyp_map[$lt['id']] = $lt['bezeichnung'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -80,12 +81,14 @@ $mysqli->close();
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
 </head>
-<style>     .rechtsbuendig {
+<style>
+    .rechtsbuendig {
         display: inline-block; /* Wichtig, damit text-align funktioniert */
         width: 150px; /* Beispielbreite, anpassen nach Bedarf */
         text-align: right;
         padding-right: 10px; /* Optional: Abstand zum Eingabefeld */
-    }</style>
+    }
+</style>
 
 
 <div id="limet-navbar"></div>
@@ -96,7 +99,7 @@ $mysqli->close();
 <div class="container-fluid">
     <div class="row">
 
-        <div class="col-4">
+        <div class="col-5">
             <div class="card">
                 <div class="card-header bg-success text-white">
                     <div class="row">
@@ -104,7 +107,9 @@ $mysqli->close();
                             <strong>Labortechnisch relevante Räume </strong>
                             <button class="btn btn-sm btn-success "
                                     data-bs-toggle="popover"
-                                    data-bs-content="Hier sind die als labortechnisch relevant eingestuften Räume ihres Bereiches des Raum und Funktionsprogrammes gelistet.">
+                                    data-bs-content="Hier sind die als labortechnisch relevant eingestuften Räume ihres Bereiches des RUF gelistet.
+                                                     Darin sind auch die Raumkategorien festgelegt.
+                                                     Die Abfragen ziehen die Kategorien als Standard Ausgangswerte heran.">
                                 <i class="fas fa-info-circle"></i>
                             </button>
 
@@ -112,28 +117,38 @@ $mysqli->close();
                         <div class="col-3 d-flex justify-content-end" id="RDPTCH"></div>
                     </div>
                 </div>
-                <div class="card-body p-0">
+                <div class="card-body p-2">
                     <table class="table table-sm table-hover mb-0" id="raeumeTable">
                         <thead class="table-light">
                         <tr>
                             <th>Nummer</th>
                             <th>Raumname</th>
                             <th>Bereich</th>
-                            <th>ID</th>
-                            <th>m²</th>
+                            <th>Ebene</th>
                             <th>Bauteil</th>
+                            <th>m²</th>
+                            <th>Raumkategorie</th>
+                            <th>ID</th>
                         </tr>
                         </thead>
                         <tbody>
                         <?php foreach ($raeume as $raum): ?>
                             <tr data-id="<?= htmlspecialchars($raum['raum_id']) ?>"
-                                data-name="<?= htmlspecialchars($raum['raumname']) ?>">
+                                data-name="<?= htmlspecialchars($raum['raumname']) ?>"
+                                data-raumkategorie="<?= htmlspecialchars($raum['Raumtyp BH']) ?>"
+                                data-raumkategoriename="<?= $labortyp_map[$raum['Raumtyp BH']] ?? $raum['Raumtyp BH'] ?>"
+                                data-bauabschnitt="<?= htmlspecialchars($raum['Bauabschnitt']) ?>"
+                                data-ebene="<?= htmlspecialchars($raum['Geschoss']) ?>"
+                                data-nf="<?= htmlspecialchars($raum['Nutzfläche'] ?? '') ?>"
+                            >
                                 <td><?= htmlspecialchars($raum['raumnummer']) ?></td>
                                 <td><?= htmlspecialchars($raum['raumname']) ?></td>
                                 <td><?= htmlspecialchars($raum['bereich']) ?></td>
-                                <td><?= htmlspecialchars($raum['raum_id']) ?></td>
-                                <td><?= htmlspecialchars($raum['Nutzfläche']) ?></td>
+                                <td><?= htmlspecialchars($raum['Geschoss']) ?></td>
                                 <td><?= htmlspecialchars($raum['Bauabschnitt']) ?></td>
+                                <td><?= htmlspecialchars($raum['Nutzfläche']) ?></td>
+                                <td><?= htmlspecialchars($labortyp_map[$raum['Raumtyp BH']] ?? $raum['Raumtyp BH']) ?></td>
+                                <td><?= htmlspecialchars($raum['raum_id']) ?></td>
                             </tr>
                         <?php endforeach; ?>
                         </tbody>
@@ -142,7 +157,7 @@ $mysqli->close();
             </div>
         </div>
         <!-- Rechte Spalte: Formular -->
-        <div class="col-8">
+        <div class="col-7">
             <div class="card" id="formContainer">
                 <div class="card-header"></div>
                 <div class="card-body">
@@ -181,6 +196,7 @@ $mysqli->close();
     }
 
     $(document).ready(function () {
+        const csrfToken = "<?php echo csrf_token(); ?>";
         reinitPopovers();
 
         $('#raeumeTable').DataTable({
@@ -217,7 +233,7 @@ $mysqli->close();
             },
             columnDefs: [
                 {
-                    targets: [3],
+                    targets: [7],
                     visible: false,
                     searchable: false,
                     sortable: false
@@ -233,28 +249,71 @@ $mysqli->close();
             }
         });
 
+        $(document).off('change', '[data-select-comment-target]').on('change', '[data-select-comment-target]', function () {
+            const targetName = $(this).data('select-comment-target');
+            const wrap = $('#' + targetName + '_kommentar_wrap');
+            if (!wrap.length) return;
 
-        $("#raeumeTable tbody tr").on("click", function () {
+            const defaultVal = String(wrap.data('default-val'));
+            const selectedVal = String($(this).val());
+
+            if (selectedVal !== defaultVal) {
+                wrap.addClass('d-flex').slideDown(150);
+            } else {
+                wrap.slideUp(150, function () {
+                    wrap.removeClass('d-flex');
+                });
+            }
+        });
+
+
+        $(document).off('click', '[data-yesno-toggle]').on('click', '[data-yesno-toggle]', function () {
+            const name = this.id.replace('_toggle', '');
+            const hiddenInput = $('#' + name);
+            const isCurrentlyYes = hiddenInput.val() === '1';
+            const newIsYes = !isCurrentlyYes;
+
+            hiddenInput.val(newIsYes ? '1' : '0');
+            $(this)
+                .text(newIsYes ? ' Ja ' : 'Nein')
+                .removeClass('btn-outline-success btn-outline-primary')
+                .addClass(newIsYes ? 'btn-outline-success' : 'btn-outline-primary');
+
+            const wrap = $('#' + name + '_kommentar_wrap');
+            if (wrap.length) {
+                const showIf = wrap.data('show-if');
+                if (String(showIf) === (newIsYes ? '1' : '0')) {
+                    wrap.addClass('d-flex').slideDown(150);
+                } else {
+                    wrap.slideUp(150, function () {
+                        wrap.removeClass('d-flex');
+                    });
+                }
+            }
+        });
+
+        $("#raeumeTable tbody").on("click", "tr", function () {
             $("#formContainer").html("");
             let roomID = $(this).data("id");
             let raumnr = $(this).find('td').eq(0).text().trim();
             let roomname = $(this).find('td').eq(1).text().trim();
             let raumbereich_nutzer = $(this).find('td').eq(2).text().trim();
-            let ebene = $(this).find('td').eq(4).text().trim();
-            let nf = $(this).find('td').eq(3).text().trim();
-
-            // Log the values to console
-            // console.log("raumId:", raumId);
-            // console.log("raumnr:", raumnr);
-            //  console.log("roomname:", roomname);
-            // console.log("raumbereich_nutzer:", raumbereich_nutzer);
-            // console.log("ebene:", ebene);
-            // console.log("nf:", nf);
+            let raumkategorie = $(this).data("raumkategorie") || '';
+            let raumkategoriename = $(this).data("raumkategoriename") || '';
+            let bauabschnitt = $(this).data("bauabschnitt") || '';
+            let ebene = $(this).data("ebene") || '';
+            let nf = $(this).data("nf") || '';
 
             $.ajax({
                 url: "spargelfeld_nutzerabfrage_1.php",
                 method: "POST",
-                data: {roomID: roomID, roomname: roomname},
+                data: {
+                    roomID: roomID,
+                    roomname: roomname,
+                    raumkategorie: raumkategorie,
+                    bauabschnitt: bauabschnitt,
+                    ebene: ebene
+                },
                 success: function (response) {
                     $("#formContainer").html(response);
 
@@ -266,6 +325,7 @@ $mysqli->close();
                     $('[name="roomname"]').val(roomname);
                     $('[name="raumbereich_nutzer"]').val(raumbereich_nutzer);
                     $('[name="ebene"]').val(ebene);
+                    $('[name="raumkategorieAbfrage"]').val(raumkategoriename);
                     $('[name="nf"]').val(nf);
 
                 },
@@ -276,24 +336,82 @@ $mysqli->close();
         });
 
 
-        $('#roomParameterForm').submit(function (e) {
-            e.preventDefault(); // prevent normal form submit
+        $(document).on('submit', '#roomParameterForm', function (e) {
+            e.preventDefault();
             $.ajax({
-                url: 'spargelfeld_save.php',
+                url: 'save_room_data.php', // war: spargelfeld_save.php
                 type: 'POST',
-                data: $(this).serialize(),
+                data: $(this).serialize() + '&csrf_token=' + encodeURIComponent(csrfToken),
                 dataType: 'json',
                 success: function (response) {
-                    alert(response.message);
                     if (response.status === 'success') {
+                        // z.B. kurzes visuelles Feedback statt alert:
+                        $('#saveBtn').text('✓ Gespeichert').removeClass('btn-outline-success').addClass('btn-success');
+                        setTimeout(() => $('#saveBtn').text('Anforderungen speichern').removeClass('btn-success').addClass('btn-outline-success'), 2000);
+                    } else {
+                        alert('Fehler: ' + response.message);
                     }
                 },
-                error: function () {
-                    alert('Error saving room data.');
+                error: function (xhr, status, error) {
+                    alert('Verbindungsfehler beim Speichern.\nStatus: ' + xhr.status + '\nAntwort: ' + xhr.responseText.substring(0, 300));
                 }
             });
         });
-    });
+
+        // loadFormData-Funktion (gehört hierher, nicht in spargelfeld_nutzerabfrage_1.php)
+        function loadFormData(roomId) {
+            $.get('load_room_data_userinputs.php', {roomId: roomId}, function (response) {
+                if (response.error || response.newRoom) return;
+
+                const data = response.data;
+                const skipFields = ['raumnr', 'roomname', 'raumbereich_nutzer', 'ebene', 'nf'];
+
+                for (const key in data) {
+                    if (skipFields.includes(key)) continue;
+                    const el = $('[name="' + key + '"]');
+                    if (!el.length) continue;
+                    const value = data[key];
+
+                    const toggleBtn = $('#' + key + '_toggle');
+                    if (toggleBtn.length) {
+                        if (value === 1 || value === '1') {
+                            toggleBtn.removeClass('btn-outline-primary').addClass('btn-outline-success').text(' Ja ');
+                            el.val('1');
+                        } else {
+                            toggleBtn.removeClass('btn-outline-success').addClass('btn-outline-primary').text('Nein');
+                            el.val('0');
+                        }
+                        const wrap = $('#' + key + '_kommentar_wrap');
+                        if (wrap.length) {
+                            const showIf = wrap.data('show-if');
+                            if (String(showIf) === String(value)) {
+                                wrap.addClass('d-flex').show();
+                            } else {
+                                wrap.hide().removeClass('d-flex');
+                            }
+                        }
+                        continue;
+                    }
+                    if (el.filter(':radio').length) {
+                        el.filter('[value="' + value + '"]').prop('checked', true).trigger('change');
+                        continue;
+                    }
+                    if (el.is(':checkbox')) {
+                        el.prop('checked', value === 1 || value === '1');
+                        continue;
+                    }
+                    if (el.is('select')) {
+                        el.val(value).trigger('change');
+                        continue;
+                    }
+                    el.val(value);
+                }
+            }, 'json');
+        }
+
+    }); // Ende document.ready
+
+
 </script>
 </body>
 </html>

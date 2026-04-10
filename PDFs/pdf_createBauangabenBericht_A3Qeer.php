@@ -1,7 +1,9 @@
 <?php
 global $mapping, $mp2;
+ob_start();
 require_once '../utils/_utils.php';
 check_login();
+
 
 include 'pdf_createBericht_MYPDFclass_A3Queer.php'; //require_once('../TCPDF-main/TCPDF-main/tcpdf.php'); is in class file
 include '_pdf_createBericht_utils.php';
@@ -51,6 +53,43 @@ $pdf->SetLineStyle($style_normal);
 
 $mysqli = utils_connect_sql();
 $isnotVorentwurf = $_SESSION["projectPlanungsphase"] !== "Vorentwurf";
+
+$elektroParams = [
+    // Always show these
+    ['key' => 'Anwendungsgruppe', 'label' => 'ÖVE E8101:', 'unit' => '', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
+    ['key' => 'AV', 'label' => 'AV: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
+    ['key' => 'SV', 'label' => 'SV: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
+    ['key' => 'ZSV', 'label' => 'ZSV: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
+    ['key' => 'USV', 'label' => 'USV: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
+    ['key' => 'IT Anbindung', 'label' => 'IT Anschl.: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => true, 'isnotVorentwurf' => false],
+
+    ['key' => 'ET_Anschlussleistung_W', 'label' => 'Raum Anschlussl. ohne Glz:', 'unit' => 'W', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
+    ['key' => 'ET_Anschlussleistung_AV_W', 'label' => 'AV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
+    ['key' => 'ET_Anschlussleistung_SV_W', 'label' => 'SV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
+    ['key' => 'ET_Anschlussleistung_ZSV_W', 'label' => 'ZSV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
+    ['key' => 'ET_Anschlussleistung_USV_W', 'label' => 'USV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
+    ['key' => 'ET_RJ45-Ports', 'label' => 'RJ45-Ports: ', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
+
+    ["key" => "RaumAnschlussLeistungInklGlz", 'ln_after' => false, 'isnotVorentwurf' => true],
+
+    ['key' => 'EL_Laser 16A CEE Stk', 'label' => 'CEE16A Laser: ', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => true],
+    ['key' => 'EL_Roentgen 16A CEE Stk', 'label' => 'CEE16A Röntgen', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
+
+];
+
+$haustechnikParams = [
+    ['key' => 'H6020', 'label' => 'H6020: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+    ['key' => 'HT_Abluft_Digestorium_Stk', 'label' => 'Abluft Digestor/Werkbank:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
+    ['key' => 'HT_Abluft_Sicherheitsschrank_Stk', 'label' => 'Abluft Sicherheitsschrank:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
+    ['key' => 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'label' => 'Abluft Sicherheitsschrank Unterbau:', 'unit' => 'Stk', 'cell' => $e_C + $e_C_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => false],
+    ['key' => 'HT_Punktabsaugung_Stk', 'label' => 'Punktabsaugung:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => true], // Line break after this
+    ['key' => 'HT_Waermeabgabe_W', 'label' => 'Abwärme MT: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false], // Line break after
+    ['key' => 'VE_Wasser', 'label' => 'VE Wasser:', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+    ['key' => 'HT_Notdusche', 'label' => 'Notdusche:', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+    ['key' => 'HT_Raumtemp Sommer °C', 'label' => 'Max. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C, 'ln_after' => false],
+    ['key' => 'HT_Raumtemp Winter °C', 'label' => 'Min. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
+];
+
 
 foreach ($roomIDsArray as $valueOfRoomID) {
 
@@ -126,16 +165,14 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
         multicell_text_hightlight($pdf, $e_C, $font_size, 'Fussboden OENORM B5220', "Ö NORM B5220: ", $parameter_changes_t_räume);
         multicell_with_str($pdf, $row['Fussboden OENORM B5220'], $e_C_3rd + 10, "");
-        $heightExceeds = false;
 
-        multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "Allgemeine Hygieneklasse", "Hygieneklasse: ", $parameter_changes_t_räume);
+        $hygiene = $row['Allgemeine Hygieneklasse'];
+        $heightExceeds = $hygiene != "" && $pdf->getStringHeight($e_C_3rd, $hygiene, false, true, '', 1) > 6;
 
-        if ($row['Allgemeine Hygieneklasse'] != "") {
-            $heightExceeds = $pdf->getStringHeight($e_C_3rd * 4, $row['Allgemeine Hygieneklasse'], false, true, '', 1) > 6 ? true : false;
-            multicell_with_str($pdf, $row['Allgemeine Hygieneklasse'], $e_C_3rd * 4, "");
 
-        } else {
-            multicell_with_str($pdf, " - ", $e_C_3rd + 10, "");
+        if (!$heightExceeds) {
+            multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "Allgemeine Hygieneklasse", "Hygieneklasse: ", $parameter_changes_t_räume);
+            multicell_with_str($pdf, $hygiene != "" ? $hygiene : " - ", $e_C_3rd + 10, "");
         }
 
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, 'Strahlenanwendung', "Strahlenanw.: ", $parameter_changes_t_räume);
@@ -152,39 +189,21 @@ foreach ($roomIDsArray as $valueOfRoomID) {
         hackerlA3($pdf, $font_size, $e_C_3rd + 10, $row['Abdunkelbarkeit'], "JA");
 
         multicell_text_hightlight($pdf, $e_C_2_3rd, $font_size, "Nutzfläche", "Fläche: ", $parameter_changes_t_räume);
-        multicell_with_nr($pdf, $row['Nutzfläche'], "m2", 10, 4 * $e_C_3rd);
-        $pdf->Ln($horizontalSpacerLN3);
+        multicell_with_nr($pdf, $row['Nutzfläche'], "m2", 10, 2 * $e_C_3rd);
+
         if ($heightExceeds) {
             $pdf->Ln($horizontalSpacerLN);
+            multicell_text_hightlight($pdf, $block_header_w, $font_size, "", "", []);
+            multicell_text_hightlight($pdf, $e_C, $font_size, "Allgemeine Hygieneklasse", "Hygieneklasse: ", $parameter_changes_t_räume);
+            multicell_with_str($pdf, $hygiene, $e_C_3rd * 5, "");
         }
 
+        $pdf->Ln($horizontalSpacerLN2);
 //       ---------- ELEKTRO -----------
         $i = 12 + $horizontalSpacerLN + $horizontalSpacerLN2;
         $blockHeight = 6 + $horizontalSpacerLN + getAnmHeight($pdf, $row['Anmerkung Elektro'], $SB) + $i;
         block_label_queer($block_header_w, $pdf, "Elektro", $blockHeight, $block_header_height, $SB);
 
-        $elektroParams = [
-            // Always show these
-            ['key' => 'Anwendungsgruppe', 'label' => 'ÖVE E8101:', 'unit' => '', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
-            ['key' => 'AV', 'label' => 'AV: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
-            ['key' => 'SV', 'label' => 'SV: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
-            ['key' => 'ZSV', 'label' => 'ZSV: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
-            ['key' => 'USV', 'label' => 'USV: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
-            ['key' => 'IT Anbindung', 'label' => 'IT Anschl.: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => true, 'isnotVorentwurf' => false],
-
-            ['key' => 'ET_Anschlussleistung_W', 'label' => 'Raum Anschlussl. ohne Glz:', 'unit' => 'W', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
-            ['key' => 'ET_Anschlussleistung_AV_W', 'label' => 'AV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
-            ['key' => 'ET_Anschlussleistung_SV_W', 'label' => 'SV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
-            ['key' => 'ET_Anschlussleistung_ZSV_W', 'label' => 'ZSV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
-            ['key' => 'ET_Anschlussleistung_USV_W', 'label' => 'USV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => false],
-            ['key' => 'ET_RJ45-Ports', 'label' => 'RJ45-Ports: ', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
-
-            ["key" => "RaumAnschlussLeistungInklGlz"],
-
-            ['key' => 'EL_Laser 16A CEE Stk', 'label' => 'CEE16A Laser: ', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd + 10, 'ln_after' => false, 'isnotVorentwurf' => true],
-            ['key' => 'EL_Roentgen 16A CEE Stk', 'label' => 'CEE16A Röntgen', 'unit' => 'Stk', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => true, 'isnotVorentwurf' => true],
-
-        ];
 
         foreach ($elektroParams as $param) {
             if ($param['isnotVorentwurf'] && !$isnotVorentwurf) {
@@ -218,7 +237,9 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             }
             if ($param['ln_after']) {
                 $pdf->Ln($horizontalSpacerLN2);        // Print label placeholder for power section (only once)
-                $pdf->MultiCell($block_header_w, $block_header_height, "", 0, 'L', 0, 0);
+                if ($param['key'] != "EL_Roentgen 16A CEE Stk") {
+                    $pdf->MultiCell($block_header_w, $block_header_height, "", 0, 'L', 0, 0);
+                }
             }
             if ($param['key'] === "ET_Anschlussleistung_USV_W" && !$isnotVorentwurf) {
                 $pdf->Ln($horizontalSpacerLN2);
@@ -235,19 +256,6 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 //
         $Block_height = 6 + $horizontalSpacerLN2 + getAnmHeight($pdf, $row['Anmerkung HKLS'], $SB);
         block_label_queer($block_header_w, $pdf, "Haustechnik", $Block_height, $block_header_height, $SB);
-        $haustechnikParams = [
-            ['key' => 'H6020', 'label' => 'H6020: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-            ['key' => 'HT_Abluft_Digestorium_Stk', 'label' => 'Abluft Digestor/Werkbank:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
-            ['key' => 'HT_Abluft_Sicherheitsschrank_Stk', 'label' => 'Abluft Sicherheitsschrank:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
-            ['key' => 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'label' => 'Abluft Sicherheitsschrank Unterbau:', 'unit' => 'Stk', 'cell' => $e_C + $e_C_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => false],
-            ['key' => 'HT_Punktabsaugung_Stk', 'label' => 'Punktabsaugung:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => true], // Line break after this
-
-            ['key' => 'HT_Waermeabgabe_W', 'label' => 'Abwärme MT: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false], // Line break after
-            ['key' => 'VE_Wasser', 'label' => 'VE Wasser:', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-            ['key' => 'HT_Notdusche', 'label' => 'Notdusche:', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-            ['key' => 'HT_Raumtemp Sommer °C', 'label' => 'Max. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C, 'ln_after' => false],
-            ['key' => 'HT_Raumtemp Winter °C', 'label' => 'Min. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-        ];
 
         foreach ($haustechnikParams as $param) {
             multicell_text_hightlight($pdf, $param['cell'], $font_size, $param['key'], $param['label'], $parameter_changes_t_räume);
@@ -304,7 +312,8 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 
 
 ////     ------- BauStatik ---------
-        if ("" != $row['Anmerkung BauStatik'] && $row['Anmerkung BauStatik'] != "keine Angaben MT") {
+        $anm = trim($row['Anmerkung BauStatik'] ?? '');
+        if ($anm !== '' && $anm !== 'Keine Anmerkung' && $anm !== 'keine Angaben MT') {
             $pdf->Ln($horizontalSpacerLN);
             $Block_height = getAnmHeight($pdf, $row['Anmerkung BauStatik'], $SB);
             block_label_queer($block_header_w, $pdf, "Baustatik", $Block_height, $block_header_height, $SB);
@@ -316,8 +325,13 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 ////     ------- MT Tabelle  ---------
 //
         // -------------------------Elemente im Raum laden--------------------------
-        $sql = "SELECT tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
-            tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, tabelle_räume_has_tabelle_elemente.Standort, tabelle_räume_has_tabelle_elemente.Verwendung
+        $sql = "SELECT tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_varianten.Variante, 
+       Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
+            tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
+            tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
+            tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten,
+            tabelle_räume_has_tabelle_elemente.Standort, 
+            tabelle_räume_has_tabelle_elemente.Verwendung
             FROM tabelle_varianten INNER JOIN (tabelle_räume_has_tabelle_elemente INNER JOIN tabelle_elemente ON 
             tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON
             tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
@@ -341,6 +355,7 @@ foreach ($roomIDsArray as $valueOfRoomID) {
                            tabelle_parameter.idTABELLE_Parameter,
                            tabelle_parameter_kategorie.idTABELLE_Parameter_Kategorie, 
                            tabelle_parameter.Abkuerzung
+          
                 FROM tabelle_parameter_kategorie INNER JOIN 
                     (tabelle_parameter INNER JOIN tabelle_projekt_elementparameter 
                     ON tabelle_parameter.idTABELLE_Parameter = 
@@ -399,17 +414,18 @@ foreach ($roomIDsArray as $valueOfRoomID) {
             block_label_queer($block_header_w, $pdf, "Med.-tech.", $upcmn_blck_size, $block_header_height, $SB);
             make_MT_details_table($pdf, $resultX, $result1, $result3, $SB, $SH, $dataChanges);
 
-
         } else if ($rowcounter > 0) {
             $upcmn_blck_size = 10 + $rowcounter / 2 * 5;
             block_label_queer($block_header_w, $pdf, "Med.-tech.", $upcmn_blck_size, $block_header_height, $SB); //el_in_room_html_table($pdf, $resultX, 1, "A3", $SB-$block_header_w);
             $pdf->Line(15 + $block_header_w, $pdf->GetY(), $SB + 15, $pdf->GetY(), $style_dashed);
             make_MT_list($pdf, $SB, $block_header_w, $rowcounter, $resultX, $style_normal, $style_dashed);
+
         } else {
             $pdf->Line(15, $pdf->GetY(), $SB + 15, $pdf->GetY(), $style_normal);
             block_label_queer($block_header_w, $pdf, "Med.-tech.", $upcmn_blck_size, $block_header_height, $SB); //el_in_room_html_table($pdf, $resultX, 1, "A3", $SB-$block_header_w);
             $pdf->Multicell(0, 0, "Keine medizintechnische Ausstattung.", "", "L", 0, 0);
             $pdf->Ln();
+
         }
     } //sql:fetch-assoc
 }// for every room 

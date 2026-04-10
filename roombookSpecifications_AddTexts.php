@@ -11,13 +11,17 @@ $defaultRaumbezeichnung = '';
 $defaultTextToAdd = '';
 
 $anmerkungFields = [
+    'Anmerkung FunktionBO',
     'Anmerkung BauStatik',
     'Anmerkung Elektro',
     'Anmerkung Geräte',
     'Anmerkung HKLS'
 ];
 
-// Step 1: User submits filters and preview matches
+if (isset($_POST['cancel_update'])) {
+    $_SESSION['to_update'] = null;
+}
+
 if (isset($_POST['preview_rooms'])) {
     $mysqli = utils_connect_sql();
     if ($mysqli->connect_errno) {
@@ -35,11 +39,11 @@ if (isset($_POST['preview_rooms'])) {
         if (!in_array($anmerkungFieldInput, $anmerkungFields)) {
             $updateMessage = 'Ungültiges Anmerkungsfeld ausgewählt.';
         } else {
-            $query = "SELECT DISTINCT r.idTABELLE_Räume, CONCAT(Raumnr, ' ', Raumbezeichnung) AS Raumbezeichnung, e.Bezeichnung AS ElementName, r.`$anmerkungFieldInput` AS AnmerkungText
+            $query = "SELECT DISTINCT r.idTABELLE_Räume, CONCAT(Raumnr, 'char(10)', Raumbezeichnung) AS Raumbezeichnung, e.Bezeichnung AS ElementName, r.`$anmerkungFieldInput` AS AnmerkungText
                       FROM tabelle_räume r
                       LEFT JOIN tabelle_räume_has_tabelle_elemente re ON r.idTABELLE_Räume = re.TABELLE_Räume_idTABELLE_Räume
                       LEFT JOIN tabelle_elemente e ON re.TABELLE_Elemente_idTABELLE_Elemente = e.idTABELLE_Elemente
-                      WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
+                      WHERE r.tabelle_projekte_idTABELLE_Projekte = ? 
                         AND r.Entfallen = 0
                         AND r.`Raumbereich Nutzer` LIKE ?
                         AND r.Raumbezeichnung LIKE ?
@@ -107,8 +111,7 @@ if (isset($_POST['confirm_update'])) {
                 return in_array($roomId, $selectedRoomIDs);
             }, ARRAY_FILTER_USE_KEY);
             $anmerkungFieldInput = $data['anmerkungField'];
-            $textToAddInput = $data['textToAdd'] . "\n";
-
+            $textToAddInput = $data['textToAdd'];
             $mysqli = utils_connect_sql();
             if ($mysqli->connect_errno) {
                 $updateMessage = 'Fehler bei der Verbindung zur Datenbank: ' . $mysqli->connect_error;
@@ -117,10 +120,15 @@ if (isset($_POST['confirm_update'])) {
                             SET `$anmerkungFieldInput` = CONCAT(COALESCE(`$anmerkungFieldInput`, ''), ?)
                             WHERE idTABELLE_Räume = ?";
                 if ($updateStmt = $mysqli->prepare($updateQuery)) {
+
                     foreach ($rooms as $roomId => $roomData) {
-                        $updateStmt->bind_param('si', $textToAddInput, $roomId);
+                        $existing = $roomData['AnmerkungText'] ?? '';
+                        $prefix = (!empty($existing) && substr($existing, -1) !== "\n") ? "\n" : "";
+                        $textWithNewline = $prefix . $textToAddInput;
+                        $updateStmt->bind_param('si', $textWithNewline, $roomId);
                         $updateStmt->execute();
                     }
+
                     $updateStmt->close();
                     $updateMessage = 'Die Anmerkung wurde für ' . count($rooms) . ' Räume aktualisiert.';
                 } else {
@@ -203,7 +211,7 @@ $textToAddVal = $_POST['textToAdd'] ?? $defaultTextToAdd;
                         <div class="mb-3">
                             <label for="textToAdd" class="form-label">Text zur bestehenden Anmerkung hinzufügen</label>
                             <textarea class="form-control" id="textToAdd" name="textToAdd" rows="3"
-                                      required <?= !empty($_SESSION['to_update']) ? 'disabled' : '' ?>><?= htmlspecialchars($textToAddVal) ?></textarea>
+                                      <?= !empty($_SESSION['to_update']) ? 'readonly' : '' ?>><?= htmlspecialchars($textToAddVal) ?></textarea>
                         </div>
                         <?php if (!empty($_SESSION['to_update'])): ?>
                             <div class="alert alert-warning">
@@ -223,12 +231,7 @@ $textToAddVal = $_POST['textToAdd'] ?? $defaultTextToAdd;
                         <?php endif; ?>
                     </form>
 
-                    <?php
-                    if (isset($_POST['cancel_update'])) {
-                        $_SESSION['to_update'] = null;
-                        echo '<meta http-equiv="refresh" content="0">';
-                    }
-                    ?>
+
                 </div>
             </div>
         </div>
@@ -249,24 +252,26 @@ $textToAddVal = $_POST['textToAdd'] ?? $defaultTextToAdd;
                         <table id="roomsTable" class="table table-striped table-bordered" style="width:100%">
                             <thead>
                             <tr>
+                                <th><i class="fas fa-edit"></i></th>
                                 <th>Raumbezeichnung</th>
                                 <th>Element(e)</th>
                                 <th>Bestehende Anmerkungen</th>
-                                <th><i class="fas fa-edit"></i></th>
+
                             </tr>
                             </thead>
                             <tbody>
                             <?php foreach ($_SESSION['to_update']['rooms'] as $roomId => $roomData): ?>
                                 <tr>
+                                    <td>
+                                        <input type="checkbox" class="update-room-checkbox"
+                                               data-roomid="<?= (int)$roomId ?>">
+                                    </td>
                                     <td><?= htmlspecialchars($roomData['Raumbezeichnung'] ?? '') ?></td>
                                     <td><?= htmlspecialchars(implode(', ', $roomData['Elements']) ?? '') ?></td>
                                     <td>
                                         <pre style="white-space: pre-wrap; font-family: inherit;"><?= htmlspecialchars($roomData['AnmerkungText']) ?></pre>
                                     </td>
-                                    <td>
-                                        <input type="checkbox" class="update-room-checkbox"
-                                               data-roomid="<?= (int)$roomId ?>">
-                                    </td>
+
                                 </tr>
                             <?php endforeach; ?>
                             </tbody>

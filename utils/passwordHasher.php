@@ -1,152 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
-    <title>PHP Password Hasher - Alle Algorithmen</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        .algo-group { border: 1px solid #ddd; margin: 20px 0; padding: 15px; border-radius: 5px; }
-        .algo-group h3 { margin-top: 0; color: #333; }
-        select, input, button { padding: 8px; margin: 5px 0; border: 1px solid #ccc; border-radius: 4px; }
-        button { background: #007cba; color: white; cursor: pointer; }
-        button:hover { background: #005a87; }
-        .result { background: #f8f9fa; padding: 10px; margin: 10px 0; border-left: 4px solid #007cba; word-break: break-all; }
-        .error { background: #f8d7da; border-left-color: #dc3545; color: #721c24; }
-        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background: #f1f1f1; }
-    </style>
+    <meta charset="utf-8"/>
+    <title>Argon2id PasswordEncrypter </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
 </head>
-<body>
-<h1>PHP Password Hasher - Alle Algorithmen testen</h1>
-<p>Teste alle verfügbaren PHP Password Hashing Algorithmen mit einem Blick:</p>
+<body class="bg-light">
+<div class="container mt-5" style="max-width: 650px;">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">🔐 Argon2id PasswordEncrypter </h5>
+        </div>
+        <div class="card-body">
 
-<?php
-session_start();
+            <?php
+            $hash = '';
+            $msg  = '';
+            $verified = null;
 
-// Verfügbare Algorithmen mit Namen und Optionen
-$algorithms = [
-    PASSWORD_DEFAULT => ['name' => 'PASSWORD_DEFAULT (aktuell bcrypt)', 'options' => []],
-    PASSWORD_BCRYPT => ['name' => 'bcrypt', 'options' => ['cost' => 12]],
-    PASSWORD_ARGON2I => ['name' => 'Argon2i (Memory-hard)', 'options' => ['memory_cost' => 65536, 'time_cost' => 4, 'threads' => 1]],
-    PASSWORD_ARGON2ID => ['name' => 'Argon2id (Hybrid)', 'options' => ['memory_cost' => 65536, 'time_cost' => 4, 'threads' => 1]],
-];
+            // Argon2id options — gleich wie in change_pw.php (PHP defaults)
+            $argon_options = [
+                'memory_cost' => 65536,
+                'time_cost'   => 4,
+                'threads'     => 1,
+            ];
 
-if (isset($_POST['password']) && isset($_POST['algo'])) {
-    $password = $_POST['password'];
-    $algo = (int)$_POST['algo'];
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    if (!in_array($algo, array_keys($algorithms))) {
-        echo '<div class="result error">Ungültiger Algorithmus!</div>';
-    } else {
-        $options = $algorithms[$algo]['options'];
-        $hash = password_hash($password, $algo, $options);
-        $_SESSION['last_hash'] = ['hash' => $hash, 'algo' => $algo, 'password' => $password];
-        $_SESSION['all_hashes'][$algo] = $hash;
-        echo '<div class="result">';
-        echo '<strong>' . htmlspecialchars($algorithms[$algo]['name']) . ':</strong><br>';
-        echo '<code>' . htmlspecialchars($hash) . '</code>';
-        echo '</div>';
-    }
-}
+                if (isset($_POST['action']) && $_POST['action'] === 'hash') {
+                    $pw = $_POST['password'] ?? '';
+                    if ($pw === '') {
+                        $msg = '<div class="alert alert-warning">Bitte ein Passwort eingeben.</div>';
+                    } else {
+                        $hash = password_hash($pw, PASSWORD_ARGON2ID, $argon_options);
+                    }
+                }
 
-if (isset($_POST['verify_password']) && isset($_POST['verify_algo'])) {
-    $verifyPassword = $_POST['verify_password'];
-    $verifyAlgo = (int)$_POST['verify_algo'];
+                if (isset($_POST['action']) && $_POST['action'] === 'verify') {
+                    $pw   = $_POST['verify_pw']   ?? '';
+                    $stored = $_POST['verify_hash'] ?? '';
+                    if ($pw === '' || $stored === '') {
+                        $msg = '<div class="alert alert-warning">Bitte Passwort und Hash eingeben.</div>';
+                    } else {
+                        $verified = password_verify($pw, $stored);
+                    }
+                }
+            }
+            ?>
 
-    if (!isset($_SESSION['last_hash']) || !isset($_SESSION['last_hash']['hash'])) {
-        echo '<div class="result error"><b>Kein gehashtes Passwort zum Verifizieren!</b></div>';
-    } else {
-        $storedHash = $_SESSION['last_hash']['hash'];
-        if (password_verify($verifyPassword, $storedHash)) {
-            echo '<div class="result"><b>✅ Passwort stimmt überein!</b></div>';
-        } else {
-            echo '<div class="result error"><b>❌ Passwort stimmt nicht überein.</b></div>';
-        }
-    }
-}
+            <?= $msg ?>
 
-// Vergleichstabelle aller gespeicherten Hashes
-if (isset($_SESSION['all_hashes']) && count($_SESSION['all_hashes']) > 0) {
-    echo '<div class="algo-group">';
-    echo '<h3>Alle generierten Hashes (Vergleich)</h3>';
-    echo '<table>';
-    echo '<tr><th>Algorithmus</th><th>Hash</th><th>Länge</th></tr>';
-    foreach ($_SESSION['all_hashes'] as $algo => $hash) {
-        echo '<tr>';
-        echo '<td>' . htmlspecialchars($algorithms[$algo]['name']) . '</td>';
-        echo '<td><code style="font-size: 0.9em;">' . htmlspecialchars(substr($hash, 0, 60)) . '...</code></td>';
-        echo '<td>' . strlen($hash) . ' Zeichen</td>';
-        echo '</tr>';
-    }
-    echo '</table>';
-    echo '</div>';
-}
-?>
+            <!-- Hash generieren -->
+            <form method="post" autocomplete="off">
+                <input type="hidden" name="action" value="hash"/>
+                <label class="form-label fw-semibold">Passwort → Hash generieren</label>
+                <div class="input-group mb-2">
+                    <input type="password" name="password" class="form-control"
+                           placeholder="Passwort eingeben" required/>
+                    <button class="btn btn-success" type="submit">Hash generieren</button>
+                </div>
+            </form>
 
-<!-- Hashing Formular -->
-<div class="algo-group">
-    <h3>🔐 Passwort hashen</h3>
-    <form method="post" action="">
-        <label>Algorithmus auswählen:
-            <select name="algo" required>
-                <?php foreach ($algorithms as $algo => $info): ?>
-                    <option value="<?= $algo ?>"><?= htmlspecialchars($info['name']) ?></option>
-                <?php endforeach; ?>
-            </select>
-        </label><br>
-        <label>Passwort:<br>
-            <input type="password" name="password" placeholder="Passwort eingeben" required style="width: 300px;">
-        </label><br>
-        <button type="submit">Hash generieren</button>
-    </form>
+            <?php if ($hash): ?>
+                <div class="alert alert-success mt-2">
+                    <small class="text-muted">Argon2id Hash:</small><br/>
+                    <code style="word-break: break-all;"><?= htmlspecialchars($hash) ?></code>
+                    <button class="btn btn-sm btn-outline-secondary mt-2"
+                            onclick="navigator.clipboard.writeText(this.dataset.hash)"
+                            data-hash="<?= htmlspecialchars($hash) ?>">
+                        📋 Kopieren
+                    </button>
+                </div>
+            <?php endif; ?>
+
+            <hr/>
+
+            <!-- Verifizieren -->
+            <form method="post" autocomplete="off">
+                <input type="hidden" name="action" value="verify"/>
+                <label class="form-label fw-semibold">Passwort gegen Encrypted verifizieren</label>
+                <input type="password" name="verify_pw" class="form-control mb-2"
+                       placeholder="Passwort" required/>
+                <textarea name="verify_hash" class="form-control mb-2" rows="3"
+                          placeholder="Hash hier einfügen …" required></textarea>
+                <button class="btn btn-primary" type="submit">Verifizieren</button>
+            </form>
+
+            <?php if ($verified !== null): ?>
+                <?php if ($verified): ?>
+                    <div class="alert alert-success mt-2">✅ Passwort stimmt überein!</div>
+                <?php else: ?>
+                    <div class="alert alert-danger mt-2">❌ Passwort stimmt NICHT überein.</div>
+                <?php endif; ?>
+            <?php endif; ?>
+
+        </div>
+        <div class="card-footer text-muted" style="font-size: 0.8em;">
+            Algorithmus: <code>PASSWORD_ARGON2ID</code> —
+            memory_cost: 65536 | time_cost: 4 | threads: 1
+        </div>
+    </div>
 </div>
-
-<!-- Verification Formular -->
-<div class="algo-group">
-    <h3>🔍 Passwort verifizieren</h3>
-    <form method="post" action="">
-        <label>Algorithmus (vom letzten Hash):<br>
-            <select name="verify_algo" required>
-                <?php
-                $selectedAlgo = isset($_SESSION['last_hash']) ? $_SESSION['last_hash']['algo'] : PASSWORD_DEFAULT;
-                foreach ($algorithms as $algo => $info):
-                    ?>
-                    <option value="<?= $algo ?>" <?= $algo == $selectedAlgo ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($info['name']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </label><br>
-        <label>Zum Testen:<br>
-            <input type="password" name="verify_password" placeholder="Passwort zum Testen" required style="width: 300px;">
-        </label><br>
-        <button type="submit">Verifizieren</button>
-    </form>
-</div>
-
-<!-- Info Box -->
-<div class="algo-group">
-    <h3>ℹ️ Algorithmus-Info</h3>
-    <ul>
-        <li><strong>Argon2id</strong>: Modernster Standard, resistent gegen GPU/ASIC Attacks</li>
-        <li><strong>Argon2i</strong>: Memory-hard, gegen Side-Channel Attacks</li>
-        <li><strong>bcrypt</strong>: Bewährter Standard (PASSWORD_DEFAULT)</li>
-    </ul>
-    <p><strong>Empfehlung:</strong> Verwende immer <code>PASSWORD_DEFAULT</code> oder <code>PASSWORD_ARGON2ID</code> für Production!</p>
-</div>
-
-<!-- Reset Button -->
-<form method="post" action="" style="text-align: center; margin-top: 20px;">
-    <button type="submit" name="reset" style="background: #dc3545;">Session zurücksetzen</button>
-</form>
-
-<?php
-if (isset($_POST['reset'])) {
-    session_destroy();
-    header('Location: ' . $_SERVER['PHP_SELF']);
-    exit;
-}
-?>
-
 </body>
 </html>

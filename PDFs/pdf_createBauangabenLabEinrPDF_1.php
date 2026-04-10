@@ -592,7 +592,7 @@ WHERE (((tabelle_räume.idTABELLE_Räume) = " . $valueOfRoomID . "));";
             $pdf->SetFont('zapfdingbats', '', 10);
             $pdf->MultiCell(40, 5, TCPDF_FONTS::unichr(54), 0, 'L', 0, 0);
         } else {
-            if ($row['Abdunkelbarkeit'] === '1') {
+            if ($row['Abdunkelbarkeit'] === '2') {
                 $pdf->SetTextColor(0);
                 $pdf->SetFont('helvetica', '', 9);
                 $pdf->MultiCell(40, 5, "Vollverdunkelbar", 0, 'L', 0, 0);

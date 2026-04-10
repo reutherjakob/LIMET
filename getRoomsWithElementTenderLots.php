@@ -40,11 +40,15 @@ while ($row = $result->fetch_assoc()) {
                 } ?>
             </select>
             <label for="globalLosExtern" class="me-2"></label>
-            <button id="saveSelected" class="btn btn-warning  k btn-sm mr-2 me-2"><i class='far fa-save'></i> Batch
-                speichern
+            <button id="saveSelected" class="btn btn-warning  k btn-sm mr-2 me-2"><i class='far fa-save'></i>
+                Batch speichern
             </button>
-            <button class="btn btn-sm btn-danger" id="RemoveAllElementzFromBatch"><i class="fa fa-times"></i>
-                aus Batch entfernen
+            <button class="btn btn-sm btn-danger" id="RemoveAllElementzFromBatch"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="Löst Elemente aus der Auswahl. Setzt keine Los Zuordnung.">
+                <i class="fa fa-times"></i>
+                    Batch entfernen
             </button>
         </div>
     </div>
@@ -164,7 +168,7 @@ echo "<table class='table table-striped table-bordered border border-light borde
 	<th>Anzahl</th>
 	<th>Raumnummer</th>
 	<th>Raumbezeichnung</th>
-	<th>Raumbereich</th>
+	<th>Raumereich</th>
 	<th>Bestand</th>
 	<th class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Standort'><i class='fab fa-periscope '></i></th>
 	<th>Verw</th>

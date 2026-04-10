@@ -21,8 +21,8 @@ r.Bauabschnitt,
 r.Nutzfläche, 
 CASE 
     WHEN r.Abdunkelbarkeit = 0 THEN 'kein Anspruch'
-    WHEN r.Abdunkelbarkeit = 1 THEN 'vollverdunkelbar'
-    WHEN r.Abdunkelbarkeit = 2 THEN 'abdunkelbar '
+    WHEN r.Abdunkelbarkeit = 1 THEN 'abdunkelbar'
+    WHEN r.Abdunkelbarkeit = 2 THEN 'vollverdunkelbar'
     ELSE '-' 
   END AS Abdunkelbarkeit,
 r.Strahlenanwendung, 
@@ -81,7 +81,6 @@ r.HT_Abluft_Sicherheitsschrank_Unterbau_Stk,
 r.HT_Abluft_Sicherheitsschrank_Stk, 
 r.HT_Spuele_Stk, 
 r.HT_Kühlwasser, 
-r.`ET_RJ45-Ports`, 
 r.ET_64A_3Phasig_Einzelanschluss, 
 r.ET_32A_3Phasig_Einzelanschluss, 
 r.ET_16A_3Phasig_Einzelanschluss, 
@@ -115,7 +114,6 @@ r.`CO2 Reinheit`,
 r.`O2 l/min`,
 r.`O2 Reinheit`,
 r.Laserklasse,
-r.HT_Waermeabgabe_W,
 r.`Fussboden OENORM B5220`,
 r.HT_Notdusche,
 r.VE_Wasser,
@@ -159,7 +157,6 @@ r.HT_Tempgradient_Ch,
 r.HT_Abluft_Geraete,
 r.`ET_EMV_ja-nein`,
 r.`Entfallen`, 
-r.AR_Statik_relevant,
 r.`Fussboden`,
 r.`Decke`,
 r.`Anmerkung AR`,
@@ -167,7 +164,6 @@ r.`Taetigkeiten`,
 r.`AR_APs`,
 r.`AP_Gefaehrdung`,
 r.`AP_Geistige`,
-r.`Belichtungsfläche`,
 r.`ET_EMV`,
 r.`Spezialgase`,
 r.`Gaswarneinrichtung-Art`,
@@ -182,12 +178,13 @@ r.`HT_Belueftung`,
 r.`HT_Entlueftung`,       
 r.`PHY_Akustik_Schallgrad`,
 r.`EL_Laser 32A Stk`,
+r.`Raumtyp BH`, 
     (
         SELECT COUNT(*)
         FROM tabelle_räume_has_tabelle_elemente re
         WHERE re.TABELLE_Räume_idTABELLE_Räume = r.idTABELLE_Räume
     ) AS element_mask
-FROM tabelle_räume r
+FROM tabelle_räume r 
 INNER JOIN tabelle_funktionsteilstellen f 
     ON r.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = f.idTABELLE_Funktionsteilstellen
 WHERE r.tabelle_projekte_idTABELLE_Projekte = ?

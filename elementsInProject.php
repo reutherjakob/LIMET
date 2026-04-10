@@ -28,7 +28,7 @@
 <!-- Rework 2025 -->
 <div class="container-fluid bg-light">
     <div id="limet-navbar"></div>
-    <div class="mt-4 card">
+    <div class="mt-2 card">
         <div class="card-header">
             <div class="row d-flex align-items-center justify-content-between">
                 <div class="col-2"><strong> Elemente im Projekt</strong>
@@ -180,7 +180,7 @@
                     echo "<td>Ja</td>";
                 }
                 echo "<td>" . (float)$row["Kosten"] . "</td>";
-                echo "<td>" . format_money($row["Kosten"]) . "</td>";
+                echo "<td data-order=".  (float)$row["Kosten"] .">" . format_money($row["Kosten"]) . "</td>";
                 echo "<td>" . $row["Gewerke_Nr"] . "</td>";
                 echo "<td>" . $row["GHG"] . "</td>";
                 echo "<td>" . $row["GUG"] . "</td>";
@@ -292,7 +292,7 @@
                 }
             ],
             language: {
-
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 search: "",
                 searchPlaceholder: "Suche...",
                 searchBuilder: {

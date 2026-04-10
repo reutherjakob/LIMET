@@ -8,11 +8,17 @@ class FeedbackModel
     private $uploadDir = __DIR__ . '/uploads/';
     private $maxFileSize = 5 * 1024 * 1024; // 5 MB
     private string $reportFile = __DIR__ . '/reports.txt';
+    private string $commentsFile = __DIR__ . '/comments.txt';
 
     public function __construct()
     {
         if (!is_dir($this->uploadDir)) {
             mkdir($this->uploadDir, 0775, true);
+        }
+        foreach ([$this->wishlistFile, $this->bugReportFile, $this->reportFile, $this->commentsFile] as $file) {
+            if (!file_exists($file)) {
+                file_put_contents($file, '');
+            }
         }
     }
 
@@ -200,7 +206,9 @@ class FeedbackModel
         file_put_contents($this->wishlistFile, $newContent);
         return "Abstimmung gespeichert.";
     }
-    public function reportEntry($desc): string {
+
+    public function reportEntry($desc): string
+    {
         $report = "Eintrag gemeldet:\n" . trim($desc)
             . "\nUser: " . ($_SESSION["username"] ?? "Unbekannt")
             . "\nDate: " . date('Y-m-d H:i:s')
@@ -241,7 +249,7 @@ class FeedbackModel
     public function deleteFeature($id): string
     {
         if (!$id) return "Ungültige Feature-ID.";
-        if (file_exists($this->wishlistFile) && strpos($_SESSION["username"], "fuchs") == 0) {
+        if (file_exists($this->wishlistFile) && $_SESSION["username"] === "fuchs") {
             $content = file_get_contents($this->wishlistFile);
             $rawEntries = explode('------------------------', $content);
             $rawEntries = array_filter(array_map('trim', $rawEntries));
@@ -286,7 +294,8 @@ class FeedbackModel
     }
 
 
-    public function markFeatureDone($id, $status = 1): string {
+    public function markFeatureDone($id, $status = 1): string
+    {
         if (!file_exists($this->wishlistFile)) return "Feature-Liste nicht gefunden.";
 
         $content = file_get_contents($this->wishlistFile);
@@ -315,7 +324,8 @@ class FeedbackModel
         return "Feature-Status aktualisiert.";
     }
 
-    public function markBugDone($id, $status = 1): string {
+    public function markBugDone($id, $status = 1): string
+    {
         if (!file_exists($this->bugReportFile)) return "Bug-Liste nicht gefunden.";
 
         $content = file_get_contents($this->bugReportFile);
@@ -344,5 +354,35 @@ class FeedbackModel
         return "Bug-Status aktualisiert.";
     }
 
+    public function addComment(string $entryId, string $comment): string
+    {
+        if ($_SESSION["username"] !== "fuchs") return "Keine Berechtigung.";
+        $comment = trim($comment);
+        if (!$entryId || !$comment) return "Kommentar leer.";
+        $entry = "ID: $entryId\n"
+            . "Comment: " . htmlspecialchars($comment) . "\n"
+            . "Date: " . date('Y-m-d H:i:s') . "\n"
+            . "------------------------\n";
+        file_put_contents($this->commentsFile, $entry, FILE_APPEND | LOCK_EX);
+        return "Kommentar gespeichert.";
+    }
+
+    public function getComments(string $entryId): array
+    {
+        $comments = [];
+        if (!file_exists($this->commentsFile)) return $comments;
+        $content = file_get_contents($this->commentsFile);
+        foreach (explode('------------------------', $content) as $block) {
+            if (strpos($block, "ID: $entryId") !== false) {
+                preg_match('/^Comment: (.+)$/m', $block, $cm);
+                preg_match('/^Date: (.+)$/m', $block, $dm);
+                if (!empty($cm[1])) $comments[] = [
+                    'comment' => $cm[1],
+                    'date' => $dm[1] ?? ''
+                ];
+            }
+        }
+        return $comments;
+    }
 
 }

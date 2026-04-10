@@ -1,11 +1,5 @@
 let projectID;
-fetch('get_project_id.php')
-    .then(response => response.json())
-    .then(data => {
-        projectID = data.projectID;
-    })
-    .catch(error => console.error('Error:', error));
-
+let sessionProjectName;
 var table;
 var table_edited = false;
 var dt_search_counter = 1;
@@ -21,16 +15,8 @@ let previous_room_session = 0;
 var currentSort = {column: 0, dir: 'asc'};
 var tableRoomElements;  // tableRoomElements  && hideZeroFilter required for: getRoomELmeentsDetailed1.php
 
-var hideZeroFilter = function (settings, data, dataIndex) { // 06052025
-    if (settings.nTable.id !== 'tableRoomElements') {
-        return true; // Don't filter other tables
-    }
-    let hideZero = $("#hideZeroRows").is(":checked");
-    let row = tableRoomElements.row(dataIndex).node();
-    let amount = $(row).find('input[id^="amount"]').val();
-    amount = parseInt(amount) || 0;
-    return !(hideZero && (amount === 0));
-};
+let btnCache = {};
+
 
 $("#hideZeroRows").on("change", function () {  // 06052025
     const icon = $("#hideZeroIcon");
@@ -42,18 +28,24 @@ $("#hideZeroRows").on("change", function () {  // 06052025
         icon.removeClass("fa-eye-slash").addClass("fa-eye");
     }
 });
-
 $(document).ready(function () {
-    loadSettings();
-    init_dt();
-    init_btn_4_dt();
+    fetch('get_project_id.php')
+        .then(response => response.json())
+        .then(data => {
+            projectID = data.projectID;
+            sessionProjectName = data.projectName;
+
+            // ✅ Erst hier, INNERHALB des .then(), aufrufen:
+            loadSettings();
+            init_dt();
+        })
+        .catch(error => console.error('Error:', error));
+
+    // Diese brauchen projectID nicht → bleiben draußen:
     init_showRoomElements_btn();
-    init_visibilities();
     table_click();
-    init_filter();
     handleCheckboxChange();
     add_room_modal();
-
 });
 
 function add_MT_rel_filter(location, table) {
@@ -174,7 +166,7 @@ function init_btn_4_dt() {
         {
             text: '',
             className: "btn btn-light border-secondary fas fa-window-restore",
-            titleAttr: "Copy Selected Row",
+            titleAttr: "Raum(-Zeile) kopieren",
             action: function () {
                 if (table_edited) {
                     if (confirm(Reload_string)) {
@@ -253,7 +245,8 @@ function init_btn_4_dt() {
             text: button.name, className: 'btn btnx btn_vis',
             action: (e, dt, node) => {
                 toggleColumns(dt, button.start, button.end, button.name);
-                updateButtonClass(node, dt, button.start, button.end);
+                dt.columns.adjust().draw(false);
+                //updateButtonClass(node, dt, button.start, button.end);
             }
         }))
         , {
@@ -281,12 +274,12 @@ function init_dt() {
         scrollX: true,
         scrollCollapse: true,
         language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
             search: "",
             searchPlaceholder: "Suche...",
             searchBuilder: {
                 button: '(%d)'
             }
-            //,url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
         },
         select: "os",
         fixedColumns: {start: 2},
@@ -301,8 +294,14 @@ function init_dt() {
         lengthMenu: [[5, 10, 20, 50, -1], ['5 rows', '10 rows', '20 rows', '50 rows', 'All']],
         compact: true,
         initComplete: function () {
+            init_filter();
             $('.dt-search label').remove();
             $(' .dt-search').children().appendTo('#TableCardHeader');//removeClass('form-control form-control-sm')
+            init_btn_4_dt();
+            buttonRanges.forEach(b => {
+                btnCache[b.name] = $(`.btn_vis:contains('${b.name}')`);
+            });
+            init_visibilities();
 
         }
     });
@@ -311,8 +310,8 @@ function init_dt() {
 function toggleButtonTexts() {
     $('#checkbox_EditableTable').next('label').toggle();
     let buttons_group_selct = [{titleAttr: "Select All"}, {titleAttr: "Select Visible"}, {titleAttr: "Deselect All Rows"}];
-    let btn_grp_new_out = [{titleAttr: "Add Room"}, {titleAttr: "Copy Selected Row"}, {titleAttr: "Download as Excel"}];
-    let btn_grp_settings = [{titleAttr: "Open Settings"}, {titleAttr: "Bauangaben Check"}];
+    let btn_grp_new_out = [{titleAttr: "Add Room"}, {titleAttr: "Ausgewählten Raum kopieren"}, {titleAttr: "Download as Excel"}];
+    let btn_grp_settings = [{titleAttr: "Bauangaben Check"}, {titleAttr: "Help"}, {titleAttr: "Open Settings"},];
     const buttonGroups = [
         buttons_group_selct,
         btn_grp_new_out,
@@ -475,11 +474,14 @@ function html_2_plug_into_edit_cell(dataIdentifier) {
                                         <option value="1"${cellText === '1' ? ' selected' : ''}>1</option>
                                     </select> `;
     } else if (getCase(dataIdentifier) === "abd") {
+        const isGCP = sessionProjectName === "GCP";
+        const option1 = isGCP ? `<option value="2"${cellText === '2' ? ' selected' : ''}> vollverdunkelbar</option>` : '';
+
         return ` <select class="form-control form-control-sm" id="${dataIdentifier}_dropdowner">
-                                        <option value="0"${cellText === '0' ? ' selected' : ''}> kein Anspruch </option>
-                                        <option value="1"${cellText === '1' ? ' selected' : ''}> vollverdunkelbar</option>
-                                        <option value="2"${cellText === '2' ? ' selected' : ''}> abdunkelbar</option>
-                                    </select>   `;
+                                    <option value="0"${cellText === '0' ? ' selected' : ''}> kein Anspruch </option>
+                                    ${option1}
+                                    <option value="1"${cellText === '1' ? ' selected' : ''}> abdunkelbar</option>
+                                </select>   `;
     } else {
         return `<input class="form-control form-control-sm" id="CellInput" onclick="this.select()" type="text" value="${cellText}">`;
     }
@@ -568,10 +570,11 @@ function table_click() {
             type: "POST",
             success: function () {
                 $.ajax({
-                    url: "getRoomSpecifications2.php",
+                    url: "getRoomSpecificationsAnnotationTexts.php",
                     type: "POST",
                     success: function (data) {
                         $("#bauangaben").html(data);
+                        console.log("bauangaben. html entfernt");
                         if (previous_room_session !== RaumID) {
                             previous_room_session = RaumID;
                             $.ajax({
@@ -614,25 +617,13 @@ function table_click() {
 function init_visibilities() {
     const columns = table.columns().indexes();
     buttonRanges.forEach(button => {
-        const isVisible = table.column(columns[button.start]).visible();
-        const buttonElement = $(`.btn_vis:contains('${button.name}')`);
+        const isVisible = table.column(table.columns().indexes()[button.start]).visible();
         if (!isVisible) {
-            buttonElement.addClass('btn_invis');
+            btnCache[button.name].addClass('btn_invis');
         }
     });
 }
 
-function updateButtonClass(button, table, startColumn, endColumn) {
-    const columns = table.columns().indexes();
-    let vis = table.column(columns[endColumn]).visible();
-    if (vis) {
-        $(button).removeClass('btn_invis');
-        $(button).addClass('btn_vis');
-    } else {
-        $(button).removeClass('btn_vis');
-        $(button).addClass('btn_invis');
-    }
-}
 
 function toggleReportColumnsVisible() {
     const reportParams = ["MT-relevant",
@@ -662,9 +653,10 @@ function toggleReportColumnsVisible() {
 
     const columns = table.columns().indexes().toArray();
     const showSet = new Set(reportColumnIndexes);
-    columns.forEach(index => {
-        table.column(index).visible(showSet.has(index));
-    });
+// Alle auf einmal, dann einmal draw:
+    table.columns(columns.filter(i => showSet.has(i))).visible(true, false);
+    table.columns(columns.filter(i => !showSet.has(i))).visible(false, false);
+    table.columns.adjust().draw(false);
 }
 
 
@@ -682,7 +674,7 @@ function toggleColumns(table, startColumn, endColumn, button_name) {
         }
     }
     table.columns(colIndexes).visible(vis, false);
-    table.columns.adjust().draw(false);
+
     // --- 4. Update button classes as before ---
     toggle_btn_classes(button_name, vis);
     //   console.timeEnd('toggleColumns');
@@ -692,36 +684,18 @@ function toggleColumns(table, startColumn, endColumn, button_name) {
 function toggle_btn_classes(button_name, vis) {
 
     if (button_name === 'All') {
-        buttonRanges.forEach(button => {
-            const btn = $(`.btn_vis:contains('${button.name}')`);
-            if (vis) {
-                btn.removeClass('btn_invis');
-                btn.addClass('btn_vis');
-            } else {
-                btn.removeClass('btn_vis');
-                btn.addClass('btn_invis');
-            }
+        buttonRanges.forEach(b => {
+            const btn = btnCache[b.name];
+            btn.removeClass(vis ? 'btn_invis' : 'btn_vis').addClass(vis ? 'btn_vis' : 'btn_invis');
         });
     } else if (button_name === 'LAB') {
         ['-GAS', '-ET', '-HT', '-H2O'].forEach(name => {
-            const button = $(`.btn_vis:contains('${name}')`);
-            if (vis) {
-                button.removeClass('btn_invis');
-                button.addClass('btn_vis');
-            } else {
-                button.removeClass('btn_vis');
-                button.addClass('btn_invis');
-            }
+            const btn = btnCache[name];
+            btn.removeClass(vis ? 'btn_invis' : 'btn_vis').addClass(vis ? 'btn_vis' : 'btn_invis');
         });
     } else {
-        const button = $(`.btn_vis:contains('${button_name}')`);
-        if (vis) {
-            button.removeClass('btn_invis');
-            button.addClass('btn_vis');
-        } else {
-            button.removeClass('btn_vis');
-            button.addClass('btn_invis');
-        }
+        const btn = btnCache[button_name];
+        btn.removeClass(vis ? 'btn_invis' : 'btn_vis').addClass(vis ? 'btn_vis' : 'btn_invis');
     }
 }
 
@@ -759,26 +733,44 @@ function save_changes(RaumID, ColumnName, newData, raumname) {
 }
 
 function copySelectedRow() {
-    if (!confirm('Raum Kopieren??')) {
-        return 0;
-    }
     let selectedRowData = table.row('.selected').data();
-    table.row.add(selectedRowData).draw();
-    let requestData = {};
-    columnsDefinition.forEach(column => {
-        let field = column.data;
-        let dbFieldName = field.replace(/[ ,.]/g, '+'); // Replace dots and spaces with underscores to match the field names in the PHP file
-        requestData[dbFieldName] = selectedRowData[field];
-    });
-    delete requestData.idTABELLE_Räume;
+    if (!selectedRowData) {
+        alert("Kein Raum ausgewählt!");
+        return;
+    }
 
-    $.ajax({
-        url: "addRoom_all.php",
-        data: requestData,
-        type: "POST",
-        success: function (data) {
-            alert(data);
-            window.location.replace("roombookSpecifications_New.php");
-        }
-    });
+    let currentFstelle = selectedRowData['TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen'];
+    $('#copyRoom_funktionsstelle').val(currentFstelle).trigger('change');
+
+    // Raumnummer vorbelegen (User kann ändern)
+    $('#copyRoom_raumnr').val(selectedRowData['Raumnr']);
+
+    $('.copy-cat-toggle').removeClass('btn-danger').addClass('btn-success');
+    init_copyRoom_modal();
+    $('#copyRoomModal').modal('show');
 }
+
+
+function updateButtonClass(button, table, startColumn, endColumn) {
+    const columns = table.columns().indexes();
+    let vis = table.column(columns[endColumn]).visible();
+    if (vis) {
+        $(button).removeClass('btn_invis');
+        $(button).addClass('btn_vis');
+    } else {
+        $(button).removeClass('btn_vis');
+        $(button).addClass('btn_invis');
+    }
+}
+
+
+var hideZeroFilter = function (settings, data, dataIndex) { // 06052025
+    if (settings.nTable.id !== 'tableRoomElements') {
+        return true; // Don't filter other tables
+    }
+    let hideZero = $("#hideZeroRows").is(":checked");
+    let row = tableRoomElements.row(dataIndex).node();
+    let amount = $(row).find('input[id^="amount"]').val();
+    amount = parseInt(amount) || 0;
+    return !(hideZero && (amount === 0));
+};

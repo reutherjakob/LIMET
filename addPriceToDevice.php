@@ -11,13 +11,21 @@ $projektID = getPostInt('project');
 $nk = getPostString('nk');
 $lieferant = getPostInt('lieferant');
 $deviceID = $_SESSION["deviceID"];
-$date =  date("Y-m-d",strtotime($dateStr));
-
+$date = date("Y-m-d", strtotime($dateStr));
+$preiskommentar = getPostString('preiskommentar');
 // Prepare statement
-$stmt = $mysqli->prepare("INSERT INTO `LIMET_RB`.`tabelle_preise`
-          (`Preis`, `Menge`, `Quelle`, `Datum`, `TABELLE_Geraete_idTABELLE_Geraete`,
-           `Nebenkosten`, `TABELLE_Projekte_idTABELLE_Projekte`, `tabelle_lieferant_idTABELLE_Lieferant`)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt = $mysqli->prepare(
+    "INSERT INTO `LIMET_RB`.`tabelle_preise`
+              (`Preis`,
+               `Menge`, 
+               `Quelle`, 
+               `Datum`, 
+               `TABELLE_Geraete_idTABELLE_Geraete`,
+               `Nebenkosten`, 
+               `TABELLE_Projekte_idTABELLE_Projekte`, 
+               `tabelle_lieferant_idTABELLE_Lieferant`,
+               Kommentar)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 // Check prepare
 if ($stmt === false) {
@@ -30,7 +38,7 @@ $projectParam = $projektID === 0 ? null : $projektID;
 
 // Bind parameters
 $stmt->bind_param(
-    'sssssiii',
+    'ssssisiis',
     $preis,
     $menge,
     $quelle,
@@ -38,7 +46,8 @@ $stmt->bind_param(
     $deviceID,
     $nk,
     $projectParam,
-    $lieferant
+    $lieferant,
+    $preiskommentar
 );
 if ($stmt->execute()) {
     echo "Preis zu Gerät hinzugefügt!";

@@ -25,180 +25,116 @@ init_page_serversides();
           href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/css/bootstrap-datepicker.min.css">
     <script src="utils/_utils.js"></script>
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-
-
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
           rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
 </head>
 
 <body>
 <div class="container-fluid">
     <div id="limet-navbar"></div>
-    <!--div class="row mt-4">
-        <div class="col-md-3">
-            <div class="card border-danger border-start border-4">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col">
-                            <h6 class="text-uppercase text-muted mb-1">Offen</h6>
-                            <h2 class="mb-0" id="stat-offen">-</h2>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-exclamation-circle fa-3x text-danger opacity-50"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card border-primary border-start border-4">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col">
-                            <h6 class="text-uppercase text-muted mb-1">Wartend</h6>
-                            <h2 class="mb-0" id="stat-wartend">-</h2>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-clock fa-3x text-primary opacity-50"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card border-success border-start border-4">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col">
-                            <h6 class="text-uppercase text-muted mb-1">Fertig</h6>
-                            <h2 class="mb-0" id="stat-fertig">-</h2>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-check-circle fa-3x text-success opacity-50"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card border-secondary border-start border-4">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col">
-                            <h6 class="text-uppercase text-muted mb-1">Total</h6>
-                            <h2 class="mb-0" id="stat-total">-</h2>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-list fa-3x text-secondary opacity-50"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div-->
-
-
+    v
     <div class="row mt-2">
-        <div class="col-16">
+        <div class="col-12">
             <div class="card">
                 <div class="card-header bg-primary text-white">
                     <div class="row">
                         <div class="col-4">
-                            <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Neuer Todo-Eintrag</h5></div>
+                            <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Neuer Todo-Eintrag</h5>
+                        </div>
                         <div class="col-8">
                             <div class="d-flex justify-content-end">
-                                <button type="submit" class="btn btn-success btn-sm me-3">
-                                    <i class='fas fa-plus'> </i> Hinzufügen
+                                <button type="button" id="btn-add-todo" class="btn btn-success btn-sm me-3">
+                                    <i class='fas fa-plus'></i> Hinzufügen
                                 </button>
-                                <button type="reset" class="btn btn-secondary btn-sm">
+                                <button type="button" id="btn-reset-form" class="btn btn-secondary btn-sm">
                                     <i class="fas fa-times"></i> Zurücksetzen
                                 </button>
                             </div>
                         </div>
                     </div>
-
                 </div>
 
-                <div class="card-body">
+                <div class="card-body m-0 p-3">
                     <form id="form-add-todo">
                         <div class="row g-3">
                             <div class="col-md-3">
-                                <label for="select_los" class="form-label invisible"> <span class="text-danger"></span></label>
+                                <label for="select_los" class="form-label invisible"><span
+                                            class="text-danger"></span></label>
                                 <select class="form-select form-select-sm" id="select_los" name="select_los" required>
                                     <option value="">Gewerk/Los wählen...</option>
                                     <?php
                                     $mysqli = utils_connect_sql();
-                                    $sql = "SELECT p.Interne_Nr, p.Projektname, 
-                                                   l.LosNr_Extern, l.LosBezeichnung_Extern, 
-                                                   l.idtabelle_Lose_Extern,
-                                                   l.Vergabe_abgeschlossen
-                                            FROM tabelle_lose_extern l 
-                                            INNER JOIN tabelle_projekte p 
-                                                ON l.tabelle_projekte_idTABELLE_Projekte = p.idTABELLE_Projekte
-                                            WHERE p.idTABELLE_Projekte != 4
-                                            ORDER BY p.Interne_Nr DESC, l.LosNr_Extern";
-                                    $result = $mysqli->query($sql);
+                                    $stmt = $mysqli->prepare("SELECT p.Interne_Nr, 
+                                                    p.Projektname, 
+                                                    l.LosNr_Extern, 
+                                                    l.LosBezeichnung_Extern, 
+                                                    l.idtabelle_Lose_Extern,
+                                                    l.Vergabe_abgeschlossen
+                                                FROM tabelle_lose_extern l 
+                                                INNER JOIN tabelle_projekte p 
+                                                    ON l.tabelle_projekte_idTABELLE_Projekte = p.idTABELLE_Projekte
+                                                WHERE p.idTABELLE_Projekte = ? 
+                                                ORDER BY p.Interne_Nr DESC, l.LosNr_Extern");
+                                    $stmt->bind_param("i", $_SESSION["projectID"]);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
                                     while ($row = $result->fetch_assoc()) {
-                                        $statusIcon = '';
-                                        switch ($row["Vergabe_abgeschlossen"]) {
-                                            case 0:
-                                                $statusIcon = '🔴';
-                                                break;
-                                            case 1:
-                                                $statusIcon = '✅';
-                                                break;
-                                            case 2:
-                                                $statusIcon = '🔵';
-                                                break;
-                                        }
+                                        $statusIcon = match ((int)$row["Vergabe_abgeschlossen"]) {
+                                            1 => '✅',
+                                            2 => '🔵',
+                                            default => '🔴',
+                                        };
                                         echo "<option value='" . h($row["idtabelle_Lose_Extern"]) . "'>"
                                             . $statusIcon . " "
-                                            #. h($row["Interne_Nr"]) . " - "
                                             . h($row["Projektname"]) . " - "
                                             . h($row["LosNr_Extern"]) . " "
                                             . h($row["LosBezeichnung_Extern"]) . "</option>";
                                     }
                                     ?>
                                 </select>
-                                <label for="select_element" class="form-label"></label>
-                                <select class="form-select form-select-sm" id="select_element" name="select_element"
-                                        required>
-                                    <option value="">Element wählen...</option>
-                                    <?php
-                                    $sql = "SELECT idTABELLE_Elemente, ElementID, Bezeichnung
-                                            FROM tabelle_elemente
-                                            ORDER BY ElementID";
-                                    $result = $mysqli->query($sql);
-                                    while ($row = $result->fetch_assoc()) {
-                                        echo "<option value='" . h($row["idTABELLE_Elemente"]) . "'>"
-                                            . h($row["ElementID"]) . " - "
-                                            . h($row["Bezeichnung"]) . "</option>";
-                                    }
-                                    ?>
-                                </select>
 
-                                <div class="row mt-2 ms-1">
-                                    <div class="col-4">
+                                <div class="mt-2 d-flex">
+                                    <label for="select_element" class="form-label mt-1 col-3">Element</label>
+                                    <select class="form-select form-select-sm col-9" id="select_element"
+                                            name="select_element"
+                                            required>
+                                        <option value="">Zuerst Los wählen...</option>
+                                    </select>
+                                </div>
+
+                                <div class="mt-2 d-flex">
+                                    <label for="select_todo_typ" class="form-label mt-1  col-3">Typ</label>
+                                    <select class="form-select form-select-sm  col-9" id="select_todo_typ"
+                                            name="select_todo_typ">
+                                        <option value="0">📋 Allgemein</option>
+                                        <option value="1">🔍 Recherche</option>
+                                        <option value="2">❓ Bieterfrage</option>
+                                        <option value="3">📚 Lesson Learned</option>
+                                    </select>
+                                </div>
+
+                                <div class="d-flex mt-2">
+                                    <div class="col-3">
                                         <label for="datum" class="form-label">Datum</label>
                                     </div>
-                                    <div class="col-8">
+                                    <div class="col-9">
                                         <input type="text" class="form-control form-control-sm" id="datum"
                                                placeholder="TT.MM.JJJJ" required autocomplete="off">
                                     </div>
                                 </div>
                             </div>
+
                             <div class="col-md-9">
                                 <label for="input_todo" class="form-label"> </label>
                                 <textarea class="form-control form-control-sm"
-                                          rows="5"
+                                          rows="7"
                                           id="input_todo"
-                                          placeholder="Todo/Info/Frage  eingeben..."
-                                          required>
-                                </textarea>
+                                          placeholder="Todo/Info/Frage eingeben..."
+                                          required></textarea>
                             </div>
+
                         </div>
                     </form>
                 </div>
@@ -206,26 +142,23 @@ init_page_serversides();
         </div>
     </div>
 
-
-    <!-- Main Table -->
+    <!-- ── Haupttabelle ──────────────────────────────────────────────────── -->
     <div class="row mt-2">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <div class="row">
+                    <div class="row align-items-center">
                         <div class="col-10">
                             <i class="fas fa-list me-2"></i>Ausschreibungs-Einträge
                         </div>
                         <div class="col-1">
-                            <label for="filter_status" class="invisible"></label>
-                            <select class="form-select form-select-sm " id="filter_status">
+                            <select class="form-select form-select-sm" id="filter_status">
                                 <option value="">Los Filter</option>
                                 <option value="0">Offen</option>
                                 <option value="2">Wartend</option>
                                 <option value="1">Fertig</option>
                             </select>
                         </div>
-
                         <div class="col-1 d-flex justify-content-end" id="losEinträge"></div>
                     </div>
                 </div>
@@ -240,6 +173,7 @@ init_page_serversides();
                             <th>Los#</th>
                             <th>Los</th>
                             <th>Status</th>
+                            <th>Typ</th>
                             <th>ElementID</th>
                             <th>Element</th>
                             <th>Datum</th>
@@ -256,7 +190,7 @@ init_page_serversides();
     </div>
 </div>
 
-<!-- Edit Modal -->
+<!-- ── Edit Modal ────────────────────────────────────────────────────────── -->
 <div class="modal fade" id="editModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -295,12 +229,21 @@ init_page_serversides();
                             <label class="form-label fw-bold">Ersteller:</label>
                             <p id="edit_ersteller" class="mb-0"></p>
                         </div>
-                        <div class="col-md-6">
-                            <label for="edit_status" class="form-label">Status ändern</label>
+                        <div class="col-md-3">
+                            <label for="edit_todo_typ" class="form-label">Typ</label>
+                            <select class="form-select form-select-sm" id="edit_todo_typ">
+                                <option value="0">📋 Allgemein</option>
+                                <option value="1">🔍 Recherche</option>
+                                <option value="2">❓ Bieterfrage</option>
+                                <option value="3">📚 Lesson Learned</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="edit_status" class="form-label">Status</label>
                             <select class="form-select form-select-sm" id="edit_status">
-                                <option value="0">Offen</option>
-                                <option value="2">Wartend</option>
-                                <option value="1">Fertig</option>
+                                <option value="0">🔴 Offen</option>
+                                <option value="2">🔵 Wartend</option>
+                                <option value="1">✅ Fertig</option>
                             </select>
                         </div>
                     </div>
@@ -323,7 +266,7 @@ init_page_serversides();
     </div>
 </div>
 
-
+<!-- ── View Modal ────────────────────────────────────────────────────────── -->
 <div class="modal fade" id="viewModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -342,7 +285,6 @@ init_page_serversides();
                         <p id="view_los" class="mb-0"></p>
                     </div>
                 </div>
-
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Element:</label>
@@ -353,22 +295,24 @@ init_page_serversides();
                         <p id="view_datum" class="mb-0"></p>
                     </div>
                 </div>
-
                 <div class="row mb-3">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label class="form-label fw-bold">Ersteller:</label>
                         <p id="view_ersteller" class="mb-0"></p>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Typ:</label>
+                        <p id="view_typ" class="mb-0"></p>
+                    </div>
+                    <div class="col-md-4">
                         <label class="form-label fw-bold">Status:</label>
                         <p id="view_status" class="mb-0"></p>
                     </div>
                 </div>
-
                 <div class="mb-3">
                     <label class="form-label fw-bold">Todo/Info/Frage:</label>
                     <div class="border p-3 bg-light rounded">
-                        <p id="view_todo_text" class="mb-0"></p>
+                        <p id="view_todo_text" class="mb-0" style="white-space: pre-wrap;"></p>
                     </div>
                 </div>
             </div>
@@ -385,8 +329,85 @@ init_page_serversides();
     let tableTodos;
     let currentEditId = null;
 
+    // ── Hilfsfunktionen ───────────────────────────────────────────────────
+    const TODO_TYP_LABELS = {
+        0: '📋 Allgemein',
+        1: '🔍 Recherche',
+        2: '❓ Bieterfrage',
+        3: '📚 Lesson Learned'
+    };
+
+    function todoTypLabel(val) {
+        return TODO_TYP_LABELS[parseInt(val)] ?? '📋 Allgemein';
+    }
+
+    function todoTypBadge(val) {
+        const colors = {0: 'secondary', 1: 'info', 2: 'warning', 3: 'success'};
+        const color = colors[parseInt(val)] ?? 'secondary';
+        return `<span class="badge bg-${color}">${todoTypLabel(val)}</span>`;
+    }
+
+    function statusBadge(val) {
+        switch (parseInt(val)) {
+            case 0:
+                return '<span class="badge bg-danger">Offen</span>';
+            case 1:
+                return '<span class="badge bg-success">Fertig</span>';
+            case 2:
+                return '<span class="badge bg-primary">Wartend</span>';
+            default:
+                return '<span class="badge bg-secondary">Unbekannt</span>';
+        }
+    }
+
+    function statusText(val) {
+        switch (parseInt(val)) {
+            case 0:
+                return '🔴 Offen';
+            case 1:
+                return '✅ Fertig';
+            case 2:
+                return '🔵 Wartend';
+            default:
+                return '?';
+        }
+    }
+
+    // Elemente für gewähltes Los per AJAX laden und select_element befüllen
+    function loadElementsForLos(losId) {
+        const $sel = $('#select_element');
+        $sel.empty().append('<option value="">Wird geladen...</option>');
+        $sel.prop('disabled', true);
+
+        if (!losId) {
+            $sel.empty().append('<option value="">Zuerst Los wählen...</option>');
+            $sel.trigger('change');
+            return;
+        }
+
+        $.post('api_los_todos.php', {action: 'get_elements_for_los', los_id: losId}, function (response) {
+            $sel.empty().append('<option value="">Element wählen...</option>');
+            if (response.success && response.data.length > 0) {
+                $.each(response.data, function (_, el) {
+                    $sel.append($('<option>', {
+                        value: el.idTABELLE_Elemente,
+                        text: el.ElementID + ' - ' + el.Bezeichnung
+                    }));
+                });
+            } else {
+                $sel.append('<option value="" disabled>Keine Elemente gefunden</option>');
+            }
+            $sel.prop('disabled', false).trigger('change');
+        }).fail(function () {
+            $sel.empty().append('<option value="">Fehler beim Laden</option>');
+            $sel.prop('disabled', false);
+        });
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────
     $(document).ready(function () {
 
+        // Datepicker
         $('#datum, #edit_datum').datepicker({
             format: 'dd.mm.yyyy',
             language: 'de',
@@ -396,6 +417,7 @@ init_page_serversides();
         });
         $('#datum').datepicker('setDate', new Date());
 
+        // Select2
         $('#select_los').select2({
             theme: 'bootstrap-5',
             placeholder: 'Gewerk/Los wählen...',
@@ -405,8 +427,14 @@ init_page_serversides();
 
         $('#select_element').select2({
             theme: 'bootstrap-5',
-            placeholder: 'Element wählen...',
+            placeholder: 'Zuerst Los wählen...',
             allowClear: true,
+            width: '100%'
+        });
+
+        $('#select_todo_typ').select2({
+            theme: 'bootstrap-5',
+            minimumResultsForSearch: -1,
             width: '100%'
         });
 
@@ -417,90 +445,132 @@ init_page_serversides();
             minimumResultsForSearch: -1,
             width: '100%'
         });
+
+        // Los-Auswahl → Elemente nachladen
+        $('#select_los').on('change', function () {
+            loadElementsForLos($(this).val());
+        });
+
+        // Tabelle initialisieren
         initializeTable();
         loadStatistics();
-        $('#form-add-todo').on('submit', function (e) {
-            e.preventDefault();
-            addTodo();
+
+        // Formular: Hinzufügen-Button (außerhalb des form-Tags, daher manuell)
+        $('#btn-add-todo').on('click', function () {
+            if ($('#form-add-todo')[0].checkValidity()) {
+                addTodo();
+            } else {
+                $('#form-add-todo')[0].reportValidity();
+            }
         });
+
+        // Formular: Zurücksetzen
+        $('#btn-reset-form').on('click', function () {
+            $('#form-add-todo')[0].reset();
+            $('#select_los').val('').trigger('change');   // Select2 leeren → löst los-change aus → Element leeren
+            $('#datum').datepicker('setDate', new Date());
+            $('#select_todo_typ').val('0').trigger('change');
+        });
+
+        // Filter
         $('#filter_status').on('change', function () {
             applyFilters();
         });
+
+        // Edit speichern
         $('#btn-save-edit').on('click', function () {
             saveTodoEdit();
         });
-        //$('#btn-export-excel').on('click', function () {
-        //    tableTodos.button('.buttons-excel').trigger();
-        // });
     });
+
+    // ── DataTable ─────────────────────────────────────────────────────────
+    function getColumnDefs() {
+        return [
+            {data: 'id_tabelle_lose_ToDos'},
+            {data: 'Interne_Nr'},
+            {data: 'Projektname'},
+            {data: 'LosNr_Extern'},
+            {data: 'LosBezeichnung_Extern'},
+            {
+                data: 'Vergabe_abgeschlossen',
+                render: function (data) {
+                    return statusBadge(data);
+                }
+            },
+            {
+                data: 'ToDo_Typ',
+                render: function (data) {
+                    return todoTypBadge(data);
+                }
+            },
+            {data: 'ElementID'},
+            {data: 'Bezeichnung'},
+            {data: 'Datum'},
+            {data: 'Ersteller'},
+            {
+                data: 'ToDo',
+                render: function (data) {
+                    if (data && data.length > 50) {
+                        return '<span title="' + $('<div>').text(data).html() + '">'
+                            + $('<div>').text(data.substr(0, 50)).html() + '...</span>';
+                    }
+                    return $('<div>').text(data || '').html();
+                }
+            },
+            {
+                data: null,
+                orderable: false,
+                render: function (data, type, row) {
+                    return `<div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-dark btn-view" data-id="${row.id_tabelle_lose_ToDos}" title="Ansehen">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                        <button class="btn btn-success btn-edit" data-id="${row.id_tabelle_lose_ToDos}" title="Bearbeiten">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger btn-delete" data-id="${row.id_tabelle_lose_ToDos}" title="Löschen">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>`;
+                }
+            }
+        ];
+    }
+
+    function attachTableEvents() {
+        $('#tableAusschreibungsTodos tbody')
+            .off('click.todos')
+            .on('click.todos', '.btn-view', function () {
+                viewTodo($(this).data('id'));
+            })
+            .on('click.todos', '.btn-edit', function () {
+                editTodo($(this).data('id'));
+            })
+            .on('click.todos', '.btn-delete', function () {
+                deleteTodo($(this).data('id'));
+            });
+    }
+
+    let currentFilterStatus = '';  // aktueller Los-Status-Filter
 
     function initializeTable() {
         tableTodos = $('#tableAusschreibungsTodos').DataTable({
             ajax: {
                 url: 'api_los_todos.php',
                 type: 'POST',
-                data: {action: 'get_all_todos'},
+                data: function () {
+                    // Wird bei jedem Reload neu ausgewertet → Filter funktioniert ohne destroy/reinit
+                    if (currentFilterStatus !== '') {
+                        return {action: 'filter_todos', status: currentFilterStatus};
+                    }
+                    return {action: 'get_all_todos'};
+                },
                 dataSrc: function (json) {
                     return json.success ? json.data : [];
                 }
             },
-            columns: [
-                {data: 'id_tabelle_lose_ToDos'},
-                {data: 'Interne_Nr'},
-                {data: 'Projektname'},
-                {data: 'LosNr_Extern'},
-                {data: 'LosBezeichnung_Extern'},
-                {
-                    data: 'Vergabe_abgeschlossen',
-                    render: function (data) {
-                        switch (parseInt(data)) {
-                            case 0:
-                                return '<span class="badge bg-danger">Offen</span>';
-                            case 1:
-                                return '<span class="badge bg-success">Fertig</span>';
-                            case 2:
-                                return '<span class="badge bg-primary">Wartend</span>';
-                            default:
-                                return '<span class="badge bg-secondary">Unbekannt</span>';
-                        }
-                    }
-                },
-                {data: 'ElementID'},
-                {data: 'Bezeichnung'},
-                {data: 'Datum'},
-                {data: 'Ersteller'},
-                {
-                    data: 'ToDo',
-                    render: function (data) {
-                        if (data && data.length > 50) {
-                            return '<span title="' + data + '">' + data.substr(0, 50) + '...</span>';
-                        }
-                        return data;
-                    }
-                },
-                {
-                    data: null,
-                    orderable: false,
-                    render: function (data, type, row) {
-                        return `
-                        <div class="btn-group btn-group-sm">
-                            <button class="btn btn-outline-dark btn-view" data-id="${row.id_tabelle_lose_ToDos}" title="Ansehen">
-                                <i class="fas fa-info-circle"></i>
-                            </button>
-                            <button class="btn btn-success btn-edit" data-id="${row.id_tabelle_lose_ToDos}" title="Bearbeiten">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn btn-danger btn-delete" data-id="${row.id_tabelle_lose_ToDos}" title="Löschen">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    `;
-                    }
-                }
-            ],
-            columnDefs: [
-                {targets: [0], visible: false, searchable: false}
-            ],
+            columns: getColumnDefs(),
+            columnDefs: [{targets: [0], visible: false, searchable: false}],
             order: [[1, 'desc'], [3, 'asc']],
             pageLength: 25,
             responsive: true,
@@ -510,7 +580,7 @@ init_page_serversides();
                     extend: 'excel',
                     text: 'Excel',
                     className: 'btn btn-success btn-sm d-none',
-                    exportOptions: {columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+                    exportOptions: {columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]}
                 }
             ],
             language: {
@@ -520,24 +590,16 @@ init_page_serversides();
             },
             initComplete: function () {
                 $('.dt-search label').remove();
-                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#losEinträge');
+                $('.dt-search').children()
+                    .removeClass("form-control form-control-sm")
+                    .addClass("btn btn-sm btn-outline-dark")
+                    .appendTo('#losEinträge');
             }
         });
-
-        // Event delegation for action buttons
-        $('#tableAusschreibungsTodos tbody').on('click', '.btn-view', function () {
-            viewTodo($(this).data('id'));
-        });
-
-        $('#tableAusschreibungsTodos tbody').on('click', '.btn-edit', function () {
-            editTodo($(this).data('id'));
-        });
-
-        $('#tableAusschreibungsTodos tbody').on('click', '.btn-delete', function () {
-            deleteTodo($(this).data('id'));
-        });
+        attachTableEvents();
     }
 
+    // ── Statistics ────────────────────────────────────────────────────────
     function loadStatistics() {
         $.post('api_los_todos.php', {action: 'get_statistics'}, function (response) {
             if (response.success) {
@@ -549,6 +611,7 @@ init_page_serversides();
         });
     }
 
+    // ── CRUD ──────────────────────────────────────────────────────────────
     function addTodo() {
         const datumVal = $('#datum').val();
         const dateParts = datumVal.split('.');
@@ -559,14 +622,17 @@ init_page_serversides();
             los_id: $('#select_los').val(),
             element_id: $('#select_element').val(),
             datum: datumISO,
-            todo_text: $('#input_todo').val()
+            todo_text: $('#input_todo').val(),
+            todo_typ: $('#select_todo_typ').val()
         };
 
         $.post('api_los_todos.php', data, function (response) {
             if (response.success) {
                 makeToaster(response.message, true);
                 $('#form-add-todo')[0].reset();
+                $('#select_los').val('').trigger('change');
                 $('#datum').datepicker('setDate', new Date());
+                $('#select_todo_typ').val('0').trigger('change');
                 tableTodos.ajax.reload();
                 loadStatistics();
             } else {
@@ -577,54 +643,41 @@ init_page_serversides();
 
     function viewTodo(id) {
         const rowData = tableTodos.rows().data().toArray().find(row => row.id_tabelle_lose_ToDos == id);
+        if (!rowData) return;
 
-        if (rowData) {
-            $('#view_projekt').text(rowData.Interne_Nr + ' - ' + rowData.Projektname);
-            $('#view_los').text(rowData.LosNr_Extern + ' - ' + rowData.LosBezeichnung_Extern);
-            $('#view_element').text(rowData.ElementID + ' - ' + rowData.Bezeichnung);
-            $('#view_datum').text(rowData.Datum);
-            $('#view_ersteller').text(rowData.Ersteller);
+        $('#view_projekt').text(rowData.Interne_Nr + ' - ' + rowData.Projektname);
+        $('#view_los').text(rowData.LosNr_Extern + ' - ' + rowData.LosBezeichnung_Extern);
+        $('#view_element').text(rowData.ElementID + ' - ' + rowData.Bezeichnung);
+        $('#view_datum').text(rowData.Datum);
+        $('#view_ersteller').text(rowData.Ersteller);
+        $('#view_typ').html(todoTypBadge(rowData.ToDo_Typ));
+        $('#view_status').html('<span class="badge bg-secondary">' + statusText(rowData.Vergabe_abgeschlossen) + '</span>');
+        $('#view_todo_text').text(rowData.ToDo);
 
-            let statusText = '';
-            switch (parseInt(rowData.Vergabe_abgeschlossen)) {
-                case 0:
-                    statusText = '🔴 Offen';
-                    break;
-                case 1:
-                    statusText = '✅ Fertig';
-                    break;
-                case 2:
-                    statusText = '🔵 Wartend';
-                    break;
-            }
-            $('#view_status').html('<span class="badge bg-secondary">' + statusText + '</span>');
-            $('#view_todo_text').text(rowData.ToDo);
-
-            $('#viewModal').modal('show');
-        }
+        $('#viewModal').modal('show');
     }
 
     function editTodo(id) {
         const rowData = tableTodos.rows().data().toArray().find(row => row.id_tabelle_lose_ToDos == id);
+        if (!rowData) return;
 
-        if (rowData) {
-            currentEditId = id;
-            $('#edit_id').val(id);
-            $('#edit_projekt').text(rowData.Interne_Nr + ' - ' + rowData.Projektname);
-            $('#edit_los').text(rowData.LosNr_Extern + ' - ' + rowData.LosBezeichnung_Extern);
-            $('#edit_element').text(rowData.ElementID + ' - ' + rowData.Bezeichnung);
+        currentEditId = id;
+        $('#edit_id').val(id);
+        $('#edit_projekt').text(rowData.Interne_Nr + ' - ' + rowData.Projektname);
+        $('#edit_los').text(rowData.LosNr_Extern + ' - ' + rowData.LosBezeichnung_Extern);
+        $('#edit_element').text(rowData.ElementID + ' - ' + rowData.Bezeichnung);
 
-            // Convert YYYY-MM-DD to DD.MM.YYYY for datepicker
-            const dateParts = rowData.Datum.split('-');
-            const datumDE = dateParts.length === 3 ? `${dateParts[2]}.${dateParts[1]}.${dateParts[0]}` : rowData.Datum;
-            $('#edit_datum').val(datumDE);
+        // Datum: YYYY-MM-DD → DD.MM.YYYY
+        const dateParts = (rowData.Datum || '').split('-');
+        const datumDE = dateParts.length === 3 ? `${dateParts[2]}.${dateParts[1]}.${dateParts[0]}` : rowData.Datum;
+        $('#edit_datum').val(datumDE);
 
-            $('#edit_ersteller').text(rowData.Ersteller);
-            $('#edit_status').val(rowData.Vergabe_abgeschlossen);
-            $('#edit_todo_text').val(rowData.ToDo);
+        $('#edit_ersteller').text(rowData.Ersteller);
+        $('#edit_status').val(rowData.Vergabe_abgeschlossen);
+        $('#edit_todo_typ').val(rowData.ToDo_Typ ?? 0);
+        $('#edit_todo_text').val(rowData.ToDo);
 
-            $('#editModal').modal('show');
-        }
+        $('#editModal').modal('show');
     }
 
     function saveTodoEdit() {
@@ -636,7 +689,8 @@ init_page_serversides();
             action: 'update_todo',
             id: currentEditId,
             todo_text: $('#edit_todo_text').val(),
-            datum: datumISO
+            datum: datumISO,
+            todo_typ: $('#edit_todo_typ').val()
         };
 
         $.post('api_los_todos.php', data, function (response) {
@@ -645,16 +699,6 @@ init_page_serversides();
                 $('#editModal').modal('hide');
                 tableTodos.ajax.reload();
                 loadStatistics();
-
-                // const newStatus = $('#edit_status').val();
-                // const statusData = {
-                //     action: 'update_status',
-                //     id: currentEditId,
-                //     status: newStatus
-                // };
-                // $.post('api_los_todos.php', statusData, function () {
-                // });
-
             } else {
                 makeToaster(response.message, false);
             }
@@ -675,44 +719,11 @@ init_page_serversides();
         }
     }
 
+    // ── Filter ────────────────────────────────────────────────────────────
     function applyFilters() {
-        const status = $('#filter_status').val();
-        if (status === '') {
-            resetFilters();
-            return;
-        }
-        tableTodos.destroy();
-        tableTodos = $('#tableAusschreibungsTodos').DataTable({
-            ajax: {
-                url: 'api_los_todos.php',
-                type: 'POST',
-                data: status !== '' ? {action: 'filter_todos', status: status} : {action: 'get_all_todos'},
-                dataSrc: function (json) {
-                    return json.success ? json.data : [];
-                }
-            },
-            columns: tableTodos.settings()[0].aoColumns.map(col => ({
-                data: col.mData,
-                render: col.mRender,
-                orderable: col.bSortable
-            })),
-            columnDefs: [{targets: [0], visible: false, searchable: false}],
-            order: [[1, 'desc'], [3, 'asc']],
-            pageLength: 25,
-            language: {url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/German.json'}
-        });
-
-        // Re-attach event handlers
-        $('#tableAusschreibungsTodos tbody').off('click').on('click', '.btn-view', function () {
-            viewTodo($(this).data('id'));
-        }).on('click', '.btn-edit', function () {
-            editTodo($(this).data('id'));
-        }).on('click', '.btn-delete', function () {
-            deleteTodo($(this).data('id'));
-        });
+        currentFilterStatus = $('#filter_status').val();
+        tableTodos.ajax.reload();
     }
-
-
 </script>
 
 </body>

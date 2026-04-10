@@ -31,56 +31,56 @@ init_page_serversides();
         }
 
         /* ET: Elektro-Technik */
-        .kathegorie-ET,
-        .kathegorie-Raumparameter---IT-Anbindung,
-        .kathegorie-Raumparameter---Leistung,
-        .kathegorie-Raumparameter---Netzarten,
-        .kathegorie-Raumparameter---ElementPort,
-        .kathegorie-Leistung-Elemente-in-Raum--EXKL--GLZ-,
-        .kathegorie-Leistung-Elemente-in-Raum--INKL--GLZ-,
-        .kathegorie-Raumparameter---Leistung----INKL--GLZ-,
-        .kathegorie-Raumparameter---Leistung----EXKL--GLZ-,
-        .kathegorie-Raumparameter---Elemente,
-        .kathegorie-Raumparameter---RG,
-        .kathegorie-Raumparameter---SummevonAnschlussleistung,
-        .kathegorie-Netzarten,
-        [class^="kathegorie-Raumparameter---Leistung"],
-        [class^="kathegorie-Raumparameter---ET-Anschlussleistung"] {
+        .kategorie-ET,
+        .kategorie-Raumparameter---IT-Anbindung,
+        .kategorie-Raumparameter---Leistung,
+        .kategorie-Raumparameter---Netzarten,
+        .kategorie-Raumparameter---ElementPort,
+        .kategorie-Leistung-Elemente-in-Raum--EXKL--GLZ-,
+        .kategorie-Leistung-Elemente-in-Raum--INKL--GLZ-,
+        .kategorie-Raumparameter---Leistung----INKL--GLZ-,
+        .kategorie-Raumparameter---Leistung----EXKL--GLZ-,
+        .kategorie-Raumparameter---Elemente,
+        .kategorie-Raumparameter---RG,
+        .kategorie-Raumparameter---SummevonAnschlussleistung,
+        .kategorie-Netzarten,
+        [class^="kategorie-Raumparameter---Leistung"],
+        [class^="kategorie-Raumparameter---ET-Anschlussleistung"] {
             background-color: #deefff !important; /* Light blue */
         }
 
         /* HT: Heizung, Lüftung, Klima, Sanitär */
-        .kathegorie-HT,
-        .kathegorie-Raumparameter---Abw-rme--EXKL--GLZ-,
-        .kathegorie-Raumparameter---Abw-rme--INKL--GLZ-,
-        .kathegorie-Raumparameter---Digestorium,
-        .kathegorie-Raumparameter---Sicherheitsschrank {
+        .kategorie-HT,
+        .kategorie-Raumparameter---Abw-rme--EXKL--GLZ-,
+        .kategorie-Raumparameter---Abw-rme--INKL--GLZ-,
+        .kategorie-Raumparameter---Digestorium,
+        .kategorie-Raumparameter---Sicherheitsschrank {
             background-color: #f2e5ff !important; /* Light orange */
         }
 
         /* MED-GAS: Medizingase */
-        .kathegorie-MED-GAS,
-        .kathegorie-Raumparameter---MED-GAS,
-        .kathegorie-Raumparameter---Entnahmestelle,
-        .kathegorie-Raumparameter---Gasanschluss,
-        .kathegorie-Raumparameter---Stativ {
+        .kategorie-MED-GAS,
+        .kategorie-Raumparameter---MED-GAS,
+        .kategorie-Raumparameter---Entnahmestelle,
+        .kategorie-Raumparameter---Gasanschluss,
+        .kategorie-Raumparameter---Stativ {
             background-color: #c0fac0 !important; /* Light green */
         }
 
         /* Laser */
-        .kathegorie-Laser,
-        .kathegorie-Raumparameter---Laseranwendung,
-        .kathegorie-Röntgen,
-        .kathegorie-Raumparameter---Strahlenanwendung,
-        .kathegorie-Raumparameter---Röntgen,
-        .kathegorie-CEE,
-        .kathegorie-Raumparameter---CEE,
-        .kathegorie-Raumparameter---Elemente,
-        .kathegorie-Raumparameter {
+        .kategorie-Laser,
+        .kategorie-Raumparameter---Laseranwendung,
+        .kategorie-Röntgen,
+        .kategorie-Raumparameter---Strahlenanwendung,
+        .kategorie-Raumparameter---Röntgen,
+        .kategorie-CEE,
+        .kategorie-Raumparameter---CEE,
+        .kategorie-Raumparameter---Elemente,
+        .kategorie-Raumparameter {
             background-color: #f8dfb0 !important; /* Light yellow */
         }
 
-        [class^="kathegorie-"] {
+        [class^="kategorie-"] {
             background-color: #f9f9f9;
         }
 
@@ -126,182 +126,7 @@ init_page_serversides();
 
 </body>
 
-
-<div class="modal fade" id="InfoModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="helpModalLabel">Hilfe - Bauangaben Check</h5>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">x</button>
-            </div>
-            <div class="modal-body">
-                <p>Checks werden nur für die ausgewählten Räume durchgeführt. Überprüfung der Bauangaben auf folgende
-                    Kriterien:</p>
-                <table class="table compact table-hover table-striped table-bordered border border-5 border-light"
-                       id="table1ID">
-                    <thead>
-                    <tr>
-                        <th>Kategorie</th>
-                        <th>BAUANGABEN Parameter</th>
-                        <th>ÜBERPRÜFUNG von…</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <th>ET</th>
-                        <td>Raumgruppe = 1</td>
-                        <td>SV = 1</td>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <td>Raumgruppe = 2</td>
-                        <td> SV = 1 & ZSV = 1 & B5220 = Klasse 1</td>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <td>AV/SV/USV/ZSV #SSD > 0</td>
-                        <td>Korrespondierender Netzart Parameter AV/SV/USV/ZSV muss 1 sein.</td>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <td>AV/SV/USV/ZSV Anschlussleistung</td>
-                        <td>Korrespondierender Netzart Parameter AV/SV/USV/ZSV muss 1 sein.</td>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <td>ZSV Anschlussleistung > 8kW</td>
-                        <td>Trafodimensionierung bedenken!</td>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <td>RJ45 > 0</td>
-                        <td>Muss IT = 1</td>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <td>RJ45 = 0</td>
-                        <td>Muss IT = 0</td>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <td>∑P (Anschlussleistungen je NA)</td>
-                        <td>P(gesamt) muss =< ∑P(AV/SV/ZSV/USV)</td>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <td>Netz Art (AV/SV/ZSV/USV)</td>
-                        <td>Ist Element Parameter präsent, muss korrespondierendes AV/SV/USV/ZSV = 1 sein. <br>
-                            #SSD und Leistung analog.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <td>∑Anschlussleistungen (mit und ohne Gleichzeitigkeit) je Netz</td>
-                        <td>Darf Summe angegebener Gesamtleistung je Netzart nicht überschreiten</td>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <td>∑Anschlussleistungen (mit und ohne Gleichzeitigkeit) ZSV >= 8kW</td>
-                        <td>Trafodimensionierung bedenken</td>
-                    </tr>
-
-                    <tr>
-                        <th>HT</th>
-                        <td>∑Abwärme (mit und ohne Gleichzeitigkeit)</td>
-                        <td>Muss kleiner gesamt Raum Abwärme sein</td>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <td>Element Digestorium oder SSicherheitsschrank präsent</td>
-                        <td>Raum muss entsprechende Abluft =1 haben.</td>
-                    </tr>
-
-                    <tr>
-                        <th>MED.-GAS</th>
-                        <td>2 Kreis „GAS“</td>
-                        <td>Ist Parameter präsent, muss korrespondierendes 1 Kreis „GAS“ = 1 sein.</td>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <td>Entnahmestelle</td>
-                        <td>Gasanschluss muss=1 sein.</td>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <td>Elemente im Raum mit einem Gas Anschluss Parameter</td>
-                        <td>Gasanschluss muss im Raum sein</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>„Stativ“ mit Gasen</td>
-                        <td>Benötigt Vorabsperrkasten</td>
-                    </tr>
-                    <tr>
-                        <th>Laser</th>
-                        <td>Ist ein Laser Element im Raum präsent, muss der Raumparameter Laseranwendung =1 sein.</td>
-                        <td>2.56.16.x - Laser Elemente <br>
-                            2.34.19.x - OP-Laser
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Röntgen</th>
-                        <td>Ist eine der nebenan gelisteten IDs präsent, dann muss der Raumarameter Strahlenanwendung =
-                            1 sein.
-                        </td>
-                        <td>
-                            1.41.10.2 - Röntgenraster Wandhalterung<br>
-                            1.41.12.1 - Röntgenaufnahmesystem - Deckenstativ<br>
-                            1.41.12.2 - Röntgenaufnahmesystem - 3D Deckenstativ<br>
-                            1.41.12.3 - Panoramaröntgensystem - Boden/Decke<br>
-                            1.42.10.1 - Röntgendiagnostik - System - Durchleuchtung<br>
-                            1.42.10.5 - Uroskopie - System - Durchleuchtung<br>
-                            1.42.12.1 - Angiographieanlage - Radiologisch<br>
-                            1.42.13.1 - Angiographieanlage - Kardiologisch - 2 Ebenen<br>
-                            1.42.13.2 - Angiographieanlage - Kardiologisch - 1 Ebene<br>
-                            1.42.13.3 - Unterkonstruktion Angiographieanlage - Kardiologisch<br>
-                            1.46.10.1 - Mammographie - System<br>
-                            1.47.10.1 - SPECT<br>
-                            1.47.15.1 - SPECT/CT<br>
-                            1.49.10.1 - Kontrastmittelinjektor CT - deckenmontiert<br>
-                            1.71.10.1 - Linearbeschleuniger-System<br>
-                            2.41.13.1 - Röntgenaufnahmegerät digital - fahrbar<br>
-                            2.41.13.4 - Röntgendetektorhalterung - fahrbar<br>
-                            2.42.10.1 - C-Bogen - fahrbar<br>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <th>CEE Anschluss</th>
-                        <td>Ist eine der nebenan gelisteten IDs präsent, dann muss Raum einen CEE Anschlussparameter=1
-                            haben.
-                        </td>
-                        <td>
-                            2.41.13.1 - Röntgenaufnahmegerät digital – fahrbar<br>
-                            2.42.10.1 - C-Bogen - fahrbar
-                        </td>
-                    </tr>
-
-                    </tbody>
-                </table>
-                <p>Wenn die <strong>Gleichzeitigkeit</strong> undefiniert ist, beträgt der Standardwert 1! Sowohl
-                    ET-Leistungs- als auch
-                    HT-Wärmeangaben werden mit und ohne Gleichzeitigkeit überprüft und ggf. ausgegeben.</p>
-                <p>Wenn der <strong>Elementparameter Netzart</strong> mehrere Angaben enthält, wird die Leistung
-                    gleichmäßig auf die beiden Netzarten aufgeteilt
-                    (beispielsweise Elementparameter NA "SV/ZSV": Leistung wird 50/50 aufgeteilt). </p>
-                <p>Die <strong>Checkboxen</strong> in der ersten Spalte der Prüftabelle dienen nur zur Übersicht. Der
-                    Browser speichert (bis zum Schließen),
-                    welche Punkte auf der Liste abgehakt wurden. Diese Funktion ist kosmetisch und soll ermöglichen,
-                    den Überblick zu behalten und zu kennzeichnen, welche Prüfungen ignoriert werden.</p>
-                <p><strong>Feedback:</strong> &ensp;Bei Problemen, Unstimmigkeiten und Wünschen wenden Sie sich bitte an
-                    das Support-Team.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
-            </div>
-        </div>
-    </div>
-</div>
+<?php require_once "modal_bauangaben_check_help.php"; ?>
 
 
 <script src="utils/_utils.js"></script>
@@ -344,10 +169,10 @@ init_page_serversides();
                     const parts = line.split(':::');
                     const ROOM = parts[0].trim().split('---')[0].replace(/<br\s*\/?>/g, " ");
                     const R_ID = parts[0].trim().split('---')[1];
-                    const kathegorie = parts[1].split('->')[0].trim();
+                    const kategorie = parts[1].split('->')[0].trim();
                     const issue = parts[1].split('->')[1].trim();
                     roomIssues[R_ID] = roomIssues[R_ID] || [];
-                    roomIssues[R_ID].push({ ROOM, kathegorie, issue });
+                    roomIssues[R_ID].push({ ROOM, kategorie, issue });
                 });
 
                 const $tbody = $('#tableBody');
@@ -356,7 +181,7 @@ init_page_serversides();
                     const rows = roomIssues[id].map((item, index) => {
                         const isChecked = localStorage.getItem(`${id}-${index}`) === 'true';
                         const safeROOM = escHtml(item.ROOM);
-                        const safeKathegorie = escHtml(item.kathegorie);
+                        const safeKathegorie = escHtml(item.kategorie);
                         const safeIssue = escHtml(item.issue);
                         const safeId = escHtml(id);
 
@@ -395,22 +220,22 @@ init_page_serversides();
                                 .appendTo('#CH1');
 
                             const problemCounts = {};
-                            const kathegorieCounts = {};
+                            const kategorieCounts = {};
 
                             this.api().rows().every(function () {
                                 const data = this.data();
                                 const problemText = data[3];
-                                const kathegorieText = data[2];
+                                const kategorieText = data[2];
 
                                 problemCounts[problemText] = (problemCounts[problemText] || 0) + 1;
-                                kathegorieCounts[kathegorieText] = (kathegorieCounts[kathegorieText] || 0) + 1;
+                                kategorieCounts[kategorieText] = (kategorieCounts[kategorieText] || 0) + 1;
                             });
 
                             const repeatedProblems = Object.entries(problemCounts)
                                 .filter(([problem, count]) => count > 1)
                                 .map(([problem]) => problem);
 
-                            const repeatedKathegories = Object.entries(kathegorieCounts)
+                            const repeatedKathegories = Object.entries(kategorieCounts)
                                 .filter(([kathe, count]) => count > 1)
                                 .map(([kathe]) => kathe);
 
@@ -421,11 +246,11 @@ init_page_serversides();
                                 $problemDropdown.append(`<option value="${safe}">${safe}</option>`);
                             });
 
-                            const $kathegorieDropdown = $('<select class="form-select form-select-sm me-2" aria-label="Select kathegorie"></select>');
-                            $kathegorieDropdown.append('<option value="" disabled selected>Kathegorie wählen...</option>');
+                            const $kategorieDropdown = $('<select class="form-select form-select-sm me-2" aria-label="Select kategorie"></select>');
+                            $kategorieDropdown.append('<option value="" disabled selected>Kathegorie wählen...</option>');
                             repeatedKathegories.forEach(kathe => {
                                 const safe = escHtml(kathe);
-                                $kathegorieDropdown.append(`<option value="${safe}">${safe}</option>`);
+                                $kategorieDropdown.append(`<option value="${safe}">${safe}</option>`);
                             });
 
                             const $btnCrossAllProblems = $('<button class="btn btn-sm btn-outline-primary me-2 text-nowrap" type="button">Alle Probleme abhaken</button>');
@@ -433,7 +258,7 @@ init_page_serversides();
 
                             $('#CH1')
                                 .prepend($btnCrossAllKathegories)
-                                .prepend($kathegorieDropdown)
+                                .prepend($kategorieDropdown)
                                 .prepend($btnCrossAllProblems)
                                 .prepend($problemDropdown);
 
@@ -457,7 +282,7 @@ init_page_serversides();
                             });
 
                             $btnCrossAllKathegories.on('click', function () {
-                                const selectedKathe = $kathegorieDropdown.val();
+                                const selectedKathe = $kategorieDropdown.val();
                                 if (!selectedKathe) {
                                     alert("Bitte wählen Sie eine Kathegorie aus der Liste.");
                                     return;
@@ -482,10 +307,10 @@ init_page_serversides();
                             { width: '50%' }
                         ],
                         createdRow: function (row, data) {
-                            const kathegorie = data[2] || data.kathegorie;
-                            if (kathegorie) {
-                                const cleanKathegorie = kathegorie.replace(/[^a-zA-Z0-9-]/g, '-');
-                                $(row).addClass('kathegorie-' + cleanKathegorie);
+                            const kategorie = data[2] || data.kategorie;
+                            if (kategorie) {
+                                const cleanKathegorie = kategorie.replace(/[^a-zA-Z0-9-]/g, '-');
+                                $(row).addClass('kategorie-' + cleanKathegorie);
                             }
                         }
                     });

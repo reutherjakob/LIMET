@@ -188,7 +188,7 @@ check_login();
                         }
                         $('#elementParameters').empty();
                         $.ajax({
-                            url: "getRoomSpecifications2.php",
+                            url: "getRoomSpecificationsAnnotationTexts.php",
                             type: "POST",
                             success: function (data) {
                                 $("#bauangaben").html(data);

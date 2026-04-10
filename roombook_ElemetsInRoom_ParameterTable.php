@@ -89,7 +89,7 @@ init_page_serversides("", "x");
     var wb = XLSX.utils.book_new();
     var sheetIndex = 1;
     var selectedIDs = [];
-    var K2R = ["1", "2", "3", "12", "17"];
+    var K2R = ["1", "2", "3", "12", "14", "17"];
 
 
     const checkboxData = [
@@ -97,6 +97,7 @@ init_page_serversides("", "x");
         {label: ' GEOM', value: '1'},
         {label: ' HKLS', value: '3'},
         {label: ' MGAS', value: '12'},
+        {label: 'Statik', value: '14'},
         {label: ' MSR', value: '17'}
     ];
 
@@ -202,6 +203,7 @@ init_page_serversides("", "x");
 
         $('#download').click(function () {
             let wbout = XLSX.write(wb, {bookType: 'xlsx', type: 'binary'});
+
             function s2ab(s) {
                 let buf = new ArrayBuffer(s.length);
                 let view = new Uint8Array(buf);
@@ -209,6 +211,7 @@ init_page_serversides("", "x");
                     view[i] = s.charCodeAt(i) & 0xFF;
                 return buf;
             }
+
             saveAs(new Blob([s2ab(wbout)], {type: "application/octet-stream"}), 'Elemetparameter' + " <?php echo $_SESSION["projectName"]; ?> " + '.xlsx');
         });
 

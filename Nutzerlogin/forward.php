@@ -1,7 +1,8 @@
 <?php
 
 global $mysqli;
-session_start();
+require_once "../Nutzerlogin/_utils.php";
+start_session();
 require 'db.php';
 
 if (!isset($_SESSION['user_id'])) {
@@ -17,8 +18,8 @@ $stmt->bind_result($role);
 if ($stmt->fetch()) {
     $stmt->close();
     switch ($role) {
-        case 'spargefeld_admin':
-        case 'spargefeld_ext_users':
+        case 'spargelfeld_admin':
+        case 'spargelfeld_ext_user':
             header('Location: ../Nutzerumfrage/Nutzerabfrage.php');
             break;
         case 'internal_rb_user':
@@ -27,8 +28,9 @@ if ($stmt->fetch()) {
             break;
 
         default:
-            header('Location: default_dashboard.php');
-            break;
+            session_destroy();
+            header('Location: index.php');
+            exit;
     }
     exit;
 } else {

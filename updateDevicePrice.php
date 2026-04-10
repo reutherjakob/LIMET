@@ -17,19 +17,29 @@ $nk = getPostString('nk');
 $lieferant = getPostInt('lieferant');
 $deviceID = $_SESSION["deviceID"];
 $date = date("Y-m-d", strtotime($dateStr));
+$preiskommentar = getPostString('preiskommentar');
+
 
 // Update statement
 $stmt = $mysqli->prepare("UPDATE `LIMET_RB`.`tabelle_preise` 
-    SET `Preis`=?, `Menge`=?, `Quelle`=?, `Datum`=?, `Nebenkosten`=?, 
-        `TABELLE_Projekte_idTABELLE_Projekte`=?, `tabelle_lieferant_idTABELLE_Lieferant`=?
+    SET `Preis`=?, 
+        `Menge`=?,
+        `Quelle`=?, 
+        `Datum`=?, 
+        `Nebenkosten`=?, 
+        `TABELLE_Projekte_idTABELLE_Projekte`=?,
+        `tabelle_lieferant_idTABELLE_Lieferant`=?,
+         Kommentar =?
+    
     WHERE idTABELLE_Preise=? AND `TABELLE_Geraete_idTABELLE_Geraete`=?");
 
 $projectParam = $projektID === 0 ? null : $projektID;
 
 $stmt->bind_param(
-    'sssssiiii',
+    'sssssiisii',
     $preis, $menge, $quelle, $date, $nk,
-    $projectParam, $lieferant, $priceID, $deviceID
+    $projectParam, $lieferant, $preiskommentar,
+    $priceID, $deviceID
 );
 
 if ($stmt->execute()) {

@@ -9,6 +9,12 @@ $(document).ready(function () {
         let wert = (wertSelect.val() === "__freetext__") ? $("#Wert_" + id + "_freetext").val() : wertSelect.val();
         let einheit = (einheitSelect.val() === "__freetext__") ? $("#Einheit_" + id + "_freetext").val() : einheitSelect.val();
 
+       //  let wertNormalized = wert.replace(',', '.');
+       //  if (!isNaN(parseFloat(wertNormalized)) && isFinite(wertNormalized)) {
+       //      wert = wertNormalized;
+       //  }  // think long and hard about this - - -  look at tabelle_projekt_elementparameter where wert like '%.%'  or wert like '%,%'
+
+
         $.ajax({
             url: "updateParameter.php",
             type: "POST",
