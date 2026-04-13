@@ -34,7 +34,7 @@ init_page_serversides();
 <body>
 <div class="container-fluid">
     <div id="limet-navbar"></div>
-    v
+
     <div class="row mt-2">
         <div class="col-12">
             <div class="card">
@@ -152,6 +152,7 @@ init_page_serversides();
                             <i class="fas fa-list me-2"></i>Ausschreibungs-Einträge
                         </div>
                         <div class="col-1">
+                            <label for="filter_status" class="sr-only"> </label>
                             <select class="form-select form-select-sm" id="filter_status">
                                 <option value="">Los Filter</option>
                                 <option value="0">Offen</option>
@@ -642,7 +643,7 @@ init_page_serversides();
     }
 
     function viewTodo(id) {
-        const rowData = tableTodos.rows().data().toArray().find(row => row.id_tabelle_lose_ToDos == id);
+        const rowData = tableTodos.rows().data().toArray().find(row => row.id_tabelle_lose_ToDos === id);
         if (!rowData) return;
 
         $('#view_projekt').text(rowData.Interne_Nr + ' - ' + rowData.Projektname);
@@ -658,7 +659,7 @@ init_page_serversides();
     }
 
     function editTodo(id) {
-        const rowData = tableTodos.rows().data().toArray().find(row => row.id_tabelle_lose_ToDos == id);
+        const rowData = tableTodos.rows().data().toArray().find(row => row.id_tabelle_lose_ToDos === id);
         if (!rowData) return;
 
         currentEditId = id;

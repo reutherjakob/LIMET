@@ -43,6 +43,7 @@ init_page_serversides();
                         <?php
                         $mysqli_rb = utils_connect_sql();
                         $projectID_rb = (int)($_SESSION["projectID"] ?? 0);
+
                         $stmt_rb = $mysqli_rb->prepare("
                             SELECT DISTINCT `Raumbereich Nutzer`
                             FROM tabelle_räume
@@ -515,10 +516,13 @@ init_page_serversides();
                         AND peg.tabelle_projekte_idTABELLE_Projekte = ?
                     LEFT JOIN tabelle_auftraggeber_gewerke ag
                         ON  ag.idTABELLE_Auftraggeber_Gewerke = peg.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
+                     LEFT JOIN tabelle_projektbudgets tpb_filter
+                        ON  tpb_filter.idtabelle_projektbudgets = rhe.tabelle_projektbudgets_idtabelle_projektbudgets
                     WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
                     GROUP BY e.idTABELLE_Elemente, e.ElementID, e.Bezeichnung,
                              rhe.tabelle_Varianten_idtabelle_Varianten
                     HAVING MAX(rhe.Anzahl) > 0
+                      AND MAX(tpb_filter.status) = 1
                     ORDER BY e.ElementID, VarianteID";
                 $stmtE = $mysqli->prepare($sqlElements);
                 $stmtE->bind_param("ii", $projectID, $projectID);
@@ -548,12 +552,15 @@ init_page_serversides();
                         AND peg.tabelle_projekte_idTABELLE_Projekte = ?
                     LEFT JOIN tabelle_auftraggeber_gewerke ag
                         ON  ag.idTABELLE_Auftraggeber_Gewerke = peg.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
+                     LEFT JOIN tabelle_projektbudgets tpb_filter
+                        ON  tpb_filter.idtabelle_projektbudgets = rhe.tabelle_projektbudgets_idtabelle_projektbudgets
                     WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
                       AND r.`Raumbereich Nutzer` IN ($placeholders)
                       AND r.Entfallen = 0
                     GROUP BY e.idTABELLE_Elemente, e.ElementID, e.Bezeichnung,
                              rhe.tabelle_Varianten_idtabelle_Varianten
                     HAVING MAX(rhe.Anzahl) > 0
+                      AND MAX(tpb_filter.status) = 1
                     ORDER BY e.ElementID, VarianteID";
                 $stmtE = $mysqli->prepare($sqlElements);
                 $types = 'ii' . str_repeat('s', count($filterRaumbereiche));

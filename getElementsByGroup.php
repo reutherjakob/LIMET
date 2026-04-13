@@ -4,13 +4,18 @@ require_once 'utils/_utils.php';
 check_login();
 
 $mysqli = utils_connect_sql();
-$gruppeID = getPostInt("gruppeID",0);
+$gruppeID = getPostInt("gruppeID", 0);
 $stmt = $mysqli->prepare(
-    "SELECT tabelle_elemente.idTABELLE_Elemente, tabelle_elemente.ElementID, tabelle_elemente.Bezeichnung, tabelle_elemente.Kurzbeschreibung
-     FROM tabelle_elemente
-     WHERE tabelle_element_gruppe_idTABELLE_Element_Gruppe = ?
-     ORDER BY tabelle_elemente.ElementID;"
+    "SELECT 
+            tabelle_elemente.idTABELLE_Elemente, 
+            tabelle_elemente.ElementID, 
+            tabelle_elemente.Bezeichnung, 
+            tabelle_elemente.Kurzbeschreibung
+         FROM tabelle_elemente
+         WHERE tabelle_element_gruppe_idTABELLE_Element_Gruppe = ?
+         ORDER BY tabelle_elemente.ElementID;"
 );
+
 $stmt->bind_param("i", $gruppeID);
 $stmt->execute();
 $result_el = $stmt->get_result();
@@ -86,7 +91,8 @@ include "addRoomElementModal.html";
 <script charset="utf-8">
     $(document).ready(function () {
         $("#CardHeaderElementesInDb .xxx").remove();
-        new DataTable('#tableElementsInDB', {
+
+        let tableElementsInDB = new DataTable('#tableElementsInDB', {
             paging: true,
             select: true,
             columnDefs: [
@@ -97,30 +103,54 @@ include "addRoomElementModal.html";
                     orderable: false
                 }
             ],
-            info: false,
+            info: true,
+            lengthChange: true,
             pagingType: "full",
             pageLength: 10,
             order: [[2, "asc"]],
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                 search: "",
-                searchPlaceholder: "Suche..."
+                searchPlaceholder: "Suche...",
+                info: "_START_ bis _END_ von _TOTAL_",
+                infoEmpty: "Keine Einträge vorhanden",
+                infoFiltered: "", //"(gefiltert von _MAX_ Einträgen)",
+                infoPostFix: "",        // appended after info string
+                lengthMenu: "_MENU_",
+                select: {
+                    rows: {
+                        _: "",
+                        0: "",
+                        1: ""
+                    },
+                    columns: {
+                        _: "",
+                        0: "",
+                        1: ""
+                    },
+                    cells: {
+                        _: "",
+                        0: "",
+                        1: ""
+                    }
+                }
             },
             layout: {
-                topStart: "search",
+                topStart: null,
                 topEnd: null,
-                bottomStart: "pageLength",
-                bottomEnd: 'paging'
+                bottomStart: ['info', 'search'],
+                bottomEnd: ['pageLength','paging'],
             },
             initComplete: function () {
                 $("#CardHeaderElementesInDb .xxx").remove();
                 $('#elementsInDB .dt-search label').remove();
-                $('#elementsInDB .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
+                $('#elementsInDB .dt-search').children()
+                    .removeClass("form-control form-control-sm")
+                    .addClass("btn btn-sm btn-outline-dark xxx")
+                    .appendTo('#CardHeaderElementesInDb');
             }
         });
 
-
-        let tableElementsInDB = $('#tableElementsInDB').DataTable();
 
         $('#tableElementsInDB tbody').on('click', 'tr', function () {// TODO
             if ($(this).hasClass('info')) {
@@ -137,7 +167,7 @@ include "addRoomElementModal.html";
                     url: "setSessionVariables.php",
                     data: {"elementID": elementID},
                     type: "POST",
-                    success: function (data) {
+                    success: function () {
                         $.ajax({
                             url: "getStandardElementParameters.php",
                             data: {"elementID": elementID},

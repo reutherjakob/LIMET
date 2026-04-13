@@ -178,24 +178,42 @@ init_page_serversides("x"); ?>
             select: true,
             info: true,
             pagingType: 'simple',
-            lengthChange: false,
+            lengthChange: true,
             pageLength: 10,
             order: [[1, 'asc']],
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 search: "",
                 searchPlaceholder: "Suche...",
+                info: "_START_ bis _END_ von _TOTAL_",
+                infoEmpty: "Keine Einträge vorhanden",
+                infoFiltered: "", //"(gefiltert von _MAX_ Einträgen)",
+                infoPostFix: "",        // appended after info string
+                lengthMenu: "_MENU_",
+                // Select (requires select extension)
                 select: {
-                    rows: "",
-                    columns: "",
-                    cells: ""
+                    rows: {
+                        _: "",
+                        0: "",
+                        1: ""
+                    },
+                    columns: {
+                        _: "",
+                        0: "",
+                        1: ""
+                    },
+                    cells: {
+                        _: "",
+                        0: "",
+                        1: ""
+                    }
                 }
             },
             layout: {
                 topStart: null,
                 topEnd: null,
                 bottomStart: ['info', 'search'],
-                bottomEnd: ['paging'],
+                bottomEnd: ['pageLength','paging'],
             },
             initComplete: function () {
                 $('#tableElementsInDB_wrapper .dt-search label').remove();
