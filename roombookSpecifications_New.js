@@ -588,18 +588,22 @@ function table_click() {
                                     } else {
                                         $("#roomElements").html(data);
                                     }
-                                    let $cardHeader1 = $("#CardHEaderElemntsInRoom1");
-                                    let $cardHeader2 = $("#CardHEaderElemntsInRoom2");
-                                    $cardHeader2.find('#room-action-buttons, #TableCardHeader').remove();
-                                    $cardHeader1.find('[id^="dt-search-"]').remove();
+
 
                                     setTimeout(function () {
-                                        move_item("dt-search-" + dt_search_counter, "CardHEaderElemntsInRoom1");
-                                        // console.log(dt_search_counter, " -> ", dt_search_counter+1);
-                                        dt_search_counter++; // attachButtonListeners();
-                                        $cardHeader2.append($('#room-action-buttons'));
-                                    }, 100)
+                                        $('#tableRoomElements_wrapper .dt-search label').remove();
+
+                                        var $searchEl = $('#tableRoomElements_wrapper .dt-search')
+                                            .children()
+                                            .removeClass('form-control form-control-sm')
+                                            .addClass('btn btn-sm btn-outline-dark ms-1');
+
+                                        $('#CardHeaderElementsInRoom2').empty();
+                                        $('#CardHeaderElementsInRoom2').append($('#room-action-buttons'));
+                                        $searchEl.appendTo('#CardHeaderElementsInRoom2');
+                                    }, 150);
                                 },
+
                                 error: function (jqXHR, textStatus, errorThrown) {
                                     console.error("AJAX call failed: " + textStatus + ", " + errorThrown);
                                 }
@@ -702,14 +706,14 @@ function toggle_btn_classes(button_name, vis) {
 function init_showRoomElements_btn() {
     $("#showRoomElements").html("<i class='fa fa-caret-right'></i>");
     $("#showRoomElements").click(function () {
-        if ($("#roomElements").is(':hidden')) {
+        if ($("#additionalInfo").is(':hidden')) {
             $(this).html("<i class='fas fa-caret-right'></i>");
-            $('#CardHEaderElemntsInRoom_SUB').show()
+            $('#CardHeaderElementsInRoom2').removeClass('d-none');
             $("#additionalInfo").show();
         } else {
             $(this).html("<i class='fas fa-caret-left'></i>");
             $("#additionalInfo").hide();
-            $("#CardHEaderElemntsInRoom_SUB").hide();
+            $('#CardHeaderElementsInRoom2').addClass('d-none');
         }
     });
 }

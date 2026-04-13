@@ -308,8 +308,8 @@ include "modal_elementHistory.html";
             },
             initComplete() {
                 $('#room-action-buttons .xxx').remove();
-                $('#roomElements .dt-search label').remove();
-                $('#roomElements .dt-search')
+                $('#tableRoomElements .dt-search label').remove();
+                $('#tableRoomElements .dt-search')
                     .children()
                     .removeClass('form-control form-control-sm')
                     .addClass('btn btn-sm btn-outline-dark xxx ms-1 me-1')

@@ -216,7 +216,7 @@ foreach ($columns as $col) {
                     }
                 },
                 {extend: 'searchBuilder', text: '<i class="fas fa-filter"></i> Filter'},
-                {extend: 'excel', text: '<i class="fas fa-file-excel"></i> Download als Excel'},
+                {extend: 'excel', text: '<i class="fas fa-file-excel"></i> Download Excel'},
                 {extend: 'print', text: '<i class="fas fa-print"></i> Drucken'},
             ],
             stateSave: true,

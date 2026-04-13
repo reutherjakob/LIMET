@@ -1,13 +1,20 @@
 <?php
-// 25 FX
+
+ob_start();
+header('Content-Type: application/json; charset=utf-8');
 require_once 'utils/_utils.php';
 include "utils/_format.php";
-header('Content-Type: application/json; charset=utf-8');
+check_login();
+ob_clean();
 
 $mysqli = utils_connect_sql();
 $projectID = (int)$_SESSION["projectID"];
 
-$sqlBudgets = "SELECT idtabelle_projektbudgets, Budgetnummer, Budgetname
+$sqlBudgets = "SELECT 
+                    idtabelle_projektbudgets, 
+                    Budgetnummer, 
+                    Budgetname,
+                    status
                FROM tabelle_projektbudgets
                WHERE tabelle_projekte_idTABELLE_Projekte = ?
                ORDER BY Budgetnummer";
@@ -21,7 +28,7 @@ while ($row = $resultBudgets->fetch_assoc()) {
     $projectBudgets[$row['idtabelle_projektbudgets']] = $row;
 }
 
-// Main query to get elements and join required data
+
 $sql = "SELECT 
         tre_an.Anzahl, 
         te.ElementID, 
@@ -64,7 +71,6 @@ $stmt = $mysqli->prepare($sql);
 $stmt->bind_param('i', $projectID);
 $stmt->execute();
 $result = $stmt->get_result();
-
 $data = [];
 
 function renderBudgetSelect($rowID, $selectedBudgetID, $budgets)
@@ -87,24 +93,31 @@ while ($row = $result->fetch_assoc()) {
         $b = $projectBudgets[$selectedBudgetID];
         $selectedBudgetText = $b['idtabelle_projektbudgets'] . "-" . $b['Budgetnummer'] . "-" . $b['Budgetname'];
     }
-
     $rowData = [];
+    $rowData['BudgetStatus'] = isset($projectBudgets[$selectedBudgetID])
+        ? (int)$projectBudgets[$selectedBudgetID]['status']
+        : -1;
+
     $rowData['id'] = $row['id'];
     $rowData['idtabelle_projektbudgets'] = $row['idtabelle_projektbudgets'];
     $rowData['Anzahl'] = $row['Anzahl'];
     $rowData['ElementID'] = $row['ElementID'];
     $rowData['Bezeichnung'] = $row['Bezeichnung'];
-
     $rowData['Ausdr1'] = $row['Ausdr1'];
     $rowData['RaumFull'] = $row['Raumnr'] . "-" . $row['Raumbezeichnung'];
     $rowData['Ausdr2'] = ($row['Ausdr2'] == 1) ? 'Nein' : 'Ja';
     $rowData['Variante'] = $row['Variante'];
-    $rowData['Kosten'] = format_money($row['Kosten']);
-    $rowData['PP'] = format_money($row['PP']);
-    //  $rowData['BudgetSelect'] = renderBudgetSelect($row['id'], $row['idtabelle_projektbudgets'] ?? 0, $projectBudgets);
+
+    $kosten = (float)($row['Kosten'] ?? 0);
+    $anzahl = (float)($row['Anzahl'] ?? 0);
+    $rowData['Kosten'] = format_money($kosten);
+    $rowData['PP'] = format_money($row['PP'] ?? 0);
+    $rowData['KostenRaw'] = number_format($kosten, 2, '.', '');
+    $rowData['PPRaw'] = number_format($kosten * $anzahl, 2, '.', '');
+
     $rowData['BudgetSelect'] = renderBudgetSelect($row['id'], $selectedBudgetID, $projectBudgets);
     $rowData['BudgetID'] = $selectedBudgetID;
-    $rowData['BudgetText'] = $selectedBudgetText;
+    $rowData['BudgetBezeichnung'] = $selectedBudgetText;
     $data[] = $rowData;
 }
 
