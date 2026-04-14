@@ -518,11 +518,17 @@ init_page_serversides();
                         ON  ag.idTABELLE_Auftraggeber_Gewerke = peg.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
                      LEFT JOIN tabelle_projektbudgets tpb_filter
                         ON  tpb_filter.idtabelle_projektbudgets = rhe.tabelle_projektbudgets_idtabelle_projektbudgets
-                    WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
+                    WHERE r.tabelle_projekte_idTABELLE_Projekte = ? 
                     GROUP BY e.idTABELLE_Elemente, e.ElementID, e.Bezeichnung,
                              rhe.tabelle_Varianten_idtabelle_Varianten
                     HAVING MAX(rhe.Anzahl) > 0
-                      AND MAX(tpb_filter.status) = 1
+  AND MAX(
+    CASE
+      WHEN tpb_filter.idtabelle_projektbudgets IS NULL THEN 1  -- kein Budget → immer anzeigen
+      WHEN tpb_filter.status = 1 THEN 1                        -- Budget freigegeben → anzeigen
+      ELSE 0
+    END
+  ) = 1
                     ORDER BY e.ElementID, VarianteID";
                 $stmtE = $mysqli->prepare($sqlElements);
                 $stmtE->bind_param("ii", $projectID, $projectID);
@@ -560,7 +566,13 @@ init_page_serversides();
                     GROUP BY e.idTABELLE_Elemente, e.ElementID, e.Bezeichnung,
                              rhe.tabelle_Varianten_idtabelle_Varianten
                     HAVING MAX(rhe.Anzahl) > 0
-                      AND MAX(tpb_filter.status) = 1
+  AND MAX(
+    CASE
+      WHEN tpb_filter.idtabelle_projektbudgets IS NULL THEN 1  -- kein Budget → immer anzeigen
+      WHEN tpb_filter.status = 1 THEN 1                        -- Budget freigegeben → anzeigen
+      ELSE 0
+    END
+  ) = 1
                     ORDER BY e.ElementID, VarianteID";
                 $stmtE = $mysqli->prepare($sqlElements);
                 $types = 'ii' . str_repeat('s', count($filterRaumbereiche));

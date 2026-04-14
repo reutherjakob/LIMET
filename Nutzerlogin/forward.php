@@ -19,6 +19,7 @@ if ($stmt->fetch()) {
     $stmt->close();
     switch ($role) {
         case 'spargelfeld_admin':
+        case 'spargelfeld_view':
         case 'spargelfeld_ext_user':
             header('Location: ../Nutzerumfrage/Nutzerabfrage.php');
             break;

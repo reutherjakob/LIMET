@@ -2,7 +2,7 @@
 global $mysqli, $formFields, $labortypen;
 include "../Nutzerlogin/db.php";
 require_once "../Nutzerlogin/_utils.php";
-$role = init_page(["internal_rb_user", "spargelfeld_ext_user"]);
+$role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_view", "spargelfeld_admin"]);
 
 require_once "form_fields_forNutzergruppe1.php"; // Array $formFields
 require_once 'raumtyp_resolver.php';
@@ -23,19 +23,21 @@ $raumtyp = getRaumtypById($labortypen, $raumtyp_id);
 $formFields = applyRaumtypOverrides($formFields, $raumtyp, $bauabschnitt ?? '', $ebene ?? '');
 
 
-function renderForm(array $formFields, array $userData = []): void
+function renderForm(array $formFields, array $userData = [], string $role = ''): void
 {
     global $roomname;
     echo '<form id="roomParameterForm"><div class="card-header d-flex align-items-center justify-content-between" > 
             <strong> Labortechnische Raumanforderung </strong>';
 
-    echo '<div class="d-flex align-items-center justify-content-end"> 
-            <button type="submit" id="saveBtn" class="btn btn-success">
-                <i class="far fa-save"></i> Anforderungen speichern
-            </button>
-            </div> </div> 
-            <div class="card-body px-2 py-2">   
-            </div>';
+    echo '<div class="d-flex align-items-center justify-content-end">';
+    if ($role !== 'spargelfeld_view') {
+        echo '<button type="submit" id="saveBtn" class="btn btn-success">
+            <i class="far fa-save"></i> Anforderungen speichern
+          </button>';
+    }
+    echo '</div>
+          </div> 
+          <div class="card-body px-2 py-2">     </div>';
 
     foreach ($formFields as $field) {
         $name = $field['name'];
@@ -220,7 +222,7 @@ function renderForm(array $formFields, array $userData = []): void
                 echo "<div class='col-5'><input class='form-control flex-grow-1' type='text' inputmode='decimal' placeholder='Bitte Nummer angeben.'
                         name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'
                         oninput=\"this.value = this.value.replace(/[^0-9.,]/g, '')\"></div></div>";
-                                break;
+                break;
 
             default:
                 echo "<input class='form-control' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'>";
@@ -261,7 +263,7 @@ if ($roomId) {
 <body class="container mt-4">
 
 
-<?php renderForm($formFields, $userValues); ?>
+<?php renderForm($formFields, $userValues, $role); ?>
 </body>
 <script>
 

@@ -7,7 +7,7 @@ require_once "../Nutzerlogin/_utils.php";
 require_once "../Nutzerlogin/csrf.php";
 
 
-init_page(["internal_rb_user", "spargelfeld_ext_user", "spargefeld_admin"]);
+init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_admin"]);
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

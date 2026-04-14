@@ -192,6 +192,7 @@ echo "<button type='button' id='" . $deviceID . "_bearbeiten ' class='btn btn-wa
     deviceID = '<?php echo $deviceID; ?>';
     new DataTable('#tableStandardDeviceParameters', {
         paging: false,
+
         searching: false,
         info: false,
         language: {

@@ -93,19 +93,27 @@ init_page_serversides("x"); ?>
         <div class="card-header">Geräte</div>
         <div class="card-body">
             <div class="row mt-1">
-                <div class='col-xxl-4'>
+                <div class='col-xxl-5' id='col_devices'>
                     <div class='mt-1 card'>
-                        <div class='card-header'><label>Geräte zu Element</label></div>
+                        <div class='card-header'><label>Geräte zu Element</label>
+                            <div class="float-end">
+                                <button type="button" class="btn btn-outline-dark float-end" id="toggle_cards">
+                                    <i class="fas fa-caret-left" id="toggle_icon"> </i> <i class="fas fa-caret-right" id="toggle_icon2"></i>
+                                </button>
+                            </div>
+                        </div>
                         <div class='card-body' id='devicesInDB'></div>
                     </div>
                 </div>
-                <div class='col-xxl-4'>
+
+                <div class='col-xxl-3' id='col_parameters'>
                     <div class='mt-1 card'>
                         <div class='card-header'><label>Geräteparameter</label></div>
                         <div class='card-body' id='deviceParametersInDB'></div>
                     </div>
                 </div>
-                <div class='col-xxl-4'>
+
+                <div class='col-xxl-4' id='col_prices'>
                     <div class='mt-1 card'>
                         <div class='card-header'><label>Gerätepreise</label></div>
                         <div class='card-body' id='devicePrices'></div>
@@ -122,6 +130,7 @@ init_page_serversides("x"); ?>
             </div>
         </div>
     </div>
+
 </body>
 
 <div class='modal fade' id='changeElementModal' role='dialog' tabindex="-1">
@@ -156,6 +165,20 @@ init_page_serversides("x"); ?>
     var table1;
     $(document).ready(function () {
         init_table_elementsinDB();
+
+        $('#toggle_cards').click(function () {
+            const $col = $('#col_parameters');
+            const isVisible = $col.is(':visible');
+            if (isVisible) {
+                $col.hide();
+                $('#col_devices').removeClass('col-xxl-5').addClass('col-xxl-7');
+                $('#col_prices').removeClass('col-xxl-4').addClass('col-xxl-5');
+            } else {
+                $col.show();
+                $('#col_devices').removeClass('col-xxl-7').addClass('col-xxl-5');
+                $('#col_prices').removeClass('col-xxl-5').addClass('col-xxl-4');
+            }
+        });
     });
 
     function init_table_elementsinDB() {
@@ -213,7 +236,7 @@ init_page_serversides("x"); ?>
                 topStart: null,
                 topEnd: null,
                 bottomStart: ['info', 'search'],
-                bottomEnd: ['pageLength','paging'],
+                bottomEnd: ['pageLength', 'paging'],
             },
             initComplete: function () {
                 $('#tableElementsInDB_wrapper .dt-search label').remove();

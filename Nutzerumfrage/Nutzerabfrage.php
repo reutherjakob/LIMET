@@ -7,7 +7,7 @@ if (!function_exists('loadEnv')) {
 require_once "../Nutzerumfrage/raumtypen.php"; // lädt $labortypen
 
 require_once "../Nutzerlogin/csrf.php";
-$role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargefeld_admin"]);
+$role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_admin", "spargelfeld_view"]);
 $user_name = $_SESSION["user_name"];
 $projekt_id = 95;
 
@@ -15,7 +15,7 @@ header('X-Frame-Options: DENY');
 header('X-Content-Type-Options: nosniff');
 
 
-if ($role === "internal_rb_user" || $role === "spargefeld_admin") {
+if ($role === "internal_rb_user" || $role === "spargelfeld_admin" || $role === "spargelfeld_view") {
     $sql = "SELECT idTABELLE_Räume AS raum_id, 
             Raumbezeichnung AS raumname, 
             Raumnr AS raumnummer, 

@@ -7,7 +7,7 @@ if (!function_exists('loadEnv')) {
     include "../Nutzerlogin/db.php";
 }
 
-$role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargefeld_admin"]);
+$role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_admin","spargelfeld_view"]);
 
 require_once "../Nutzerumfrage/raumtypen.php"; // lädt $labortypen
 
