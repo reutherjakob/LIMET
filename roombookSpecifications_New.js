@@ -179,7 +179,7 @@ function init_btn_4_dt() {
         },
         {
             extend: 'excelHtml5',
-            className: 'btn btn-light border-secondary fa fa-download',
+            className: 'btn btn-light border-secondary   fas fa-file-excel',
             text: "",
             titleAttr: "Download as Excel",
             exportOptions: {

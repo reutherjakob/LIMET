@@ -137,8 +137,11 @@ $mysqli->close();
                 infoEmpty: "Keine Einträge",
                 infoFiltered: "(von _MAX_)",
             },
-            buttons: [
-                "excelHtml5"
+            buttons: [{
+                extend: "excelHtml5",
+                text: '',
+                className: 'fas fa-file-excel btn btn-sm btn-outline-dark bg-white',
+            }
             ],
             layout: {
                 topStart: null,

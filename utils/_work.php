@@ -30,97 +30,22 @@ init_page_serversides();
     <div class="row">
         <div class="col-6">
             <div class="card">
-                <div class="card-header d-flex align-items-center">
-                    <i class="fas fa-info-circle me-2 text-info"></i>
-                    <h6 class="mb-0">Icon-Legende (limet-navbar)</h6>
-                </div>
-                <div class="card-body p-3">
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover">
-                            <thead class="table-light">
-                            <tr>
-                                <th>Icon</th>
-                                <th>Code</th>
-                                <th>Bedeutung (DE/EN)</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td><i class="fas fa-tools text-warning"></i></td>
-                                <td><code>fas fa-tools</code></td>
-                                <td>Wartung / Maintenance</td>
-                            </tr>
-                            <tr>
-                                <td><i class="fas fa-hard-hat text-danger"></i></td>
-                                <td><code>fas fa-hard-hat</code></td>
-                                <td>Baustelle / Construction</td>
-                            </tr>
-                            <tr>
-                                <td><i class="fas fa-clock text-info"></i></td>
-                                <td><code>fas fa-clock</code></td>
-                                <td>In Arbeit / In Progress</td>
-                            </tr>
-                            <tr>
-                                <td><i class="fas fa-list text-primary"></i></td>
-                                <td><code>fas fa-list</code></td>
-                                <td>Aufgabenliste / Task List</td>
-                            </tr>
-                            <tr>
-                                <td><i class="far fa-sticky-note text-secondary"></i></td>
-                                <td><code>far fa-sticky-note</code></td>
-                                <td>Notiz / Note</td>
-                            </tr>
-                            <tr>
-                                <td><i class="fas fa-code-branch text-success"></i></td>
-                                <td><code>fas fa-code-branch</code></td>
-                                <td>Workflow / Workflow</td>
-                            </tr>
-                            <tr>
-                                <td><i class="fas fa-fingerprint text-info"></i></td>
-                                <td><code>fas fa-fingerprint</code></td>
-                                <td>ID / ID</td>
-                            </tr>
-                            <tr>
-                                <td><i class="fab fa-periscope text-warning"></i></td>
-                                <td><code>fab fa-periscope</code></td>
-                                <td>Standort / Location</td>
-                            </tr>
-                            <tr>
-                                <td><i class="fas fa-euro-sign text-primary"></i></td>
-                                <td><code>fas fa-euro-sign</code></td>
-                                <td>Kosten / Costs</td>
-                            </tr>
-                            <tr>
-                                <td><i class="far fa-comments text-muted"></i></td>
-                                <td><code>far fa-comments</code></td>
-                                <td>Kommentar / Comment</td>
-                            </tr>
-                            <tr>
-                                <td><i class="far fa-calendar-alt text-info"></i></td>
-                                <td><code>far fa-calendar-alt</code></td>
-                                <td>Termin / Schedule</td>
-                            </tr>
-                            <tr>
-                                <td><i class="fas fa-cog text-secondary"></i></td>
-                                <td><code>fas fa-cog</code></td>
-                                <td>Einstellungen / Settings</td>
-                            </tr>
-                            <tr>
-                                <td><i class="fas fa-check-circle text-success"></i></td>
-                                <td><code>fas fa-check-circle</code></td>
-                                <td>Fertig / Completed</td>
-                            </tr>
-                            <tr>
-                                <td><i class="fas fa-sync-alt text-muted"></i></td>
-                                <td><code>fas fa-sync-alt</code></td>
-                                <td>Aktualisieren / Refresh</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="mt-2 small text-muted">
-                        <i class="fas fa-font me-1"></i> FontAwesome 5.9.0
-                    </div>
+                <div class="card-header">
+
+                    <i class="me-2 ms-2 fas fa-book-dead"> </i>
+                    <i class="me-2 ms-2 fas fa-ring"> </i>
+                    <i class="me-2 ms-2 fab fa-jedi-order"></i>
+                    <i class="me-2 ms-2 fas fa-award"></i>
+                    <i class="me-2 ms-2 fas fa-bomb"></i>
+                    <i class="me-2 ms-2 fas fa-pastafarianism"></i>
+                    <i class="me-2 ms-2 fas fa-ankh"></i>
+                    <i class="me-2 ms-2 fas fa-toilet"></i>
+                    <i class="me-2 ms-2 fas fa-cannabis"></i>
+                    <i class="me-2 ms-2 fas fa-plug"> </i>
+                    <i class="me-2 ms-2 fas fa-luggage-cart"></i>
+                    <i class="me-2 ms-2 fas fa-heartbeat"></i>
+                    <i class="me-2 ms-2 fas fa-dice"> </i>
+                    <i class="fas fa-street-view"></i>
                 </div>
             </div>
         </div>
@@ -190,18 +115,3 @@ init_page_serversides();
 </div>
 
 
-<i class="me-2 ms-2 fas fa-dice"> </i>
-<i class="me-2 ms-2 fas fa-book-dead"> </i>
-<i class="me-2 ms-2 fas fa-ring"> </i>
-<i class="me-2 ms-2 fab fa-jedi-order"></i>
-<i class="me-2 ms-2 fas fa-award"></i>
-<i class="me-2 ms-2 fas fa-bomb"></i>
-<i class="me-2 ms-2 fas fa-pastafarianism"></i>
-<i class="me-2 ms-2 fas fa-ankh"></i>
-<i class="me-2 ms-2 fas fa-toilet"></i>
-<i class="me-2 ms-2 fas fa-cannabis"></i>
-
-<i class="me-2 ms-2 fas fa-plug"> </i>
-<i class="me-2 ms-2 fas fa-luggage-cart"></i>
-<i class="me-2 ms-2 fas fa-heartbeat"></i>
-<i class="fas fa-street-view"></i>

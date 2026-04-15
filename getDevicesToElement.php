@@ -220,6 +220,10 @@ echo "
         });
 
         $('#tableDevicesToElement tbody').on('click', 'tr', function () {
+            $('#GerätepreiseCardHeader').html('');
+            $('#WartungspreiseCardHeader').html('');
+            $('#LieferantenCardHeader').html('');
+
             $("#deviceParametersInDB").show();
             $("#devicePrices").show();
             $("#deviceLieferanten").show();

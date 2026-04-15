@@ -98,9 +98,10 @@ $gugOptions = $gewerkeData['ghg'] ? fetchGUGOptions($mysqli, $gewerkeData['ghg']
 ?>
 
 <div class='card'>
+
     <div class='card-header d-inline-flex customCardx'>
         <form class='d-flex align-items-center flex-wrap mr-2'>
-            <div class='form-group d-flex align-items-center mr-2'>
+            <div class='form-group d-flex align-items-center mr-2 col-4'>
                 <label for='gewerk' class="mb-0">Gewerk:</label>
                 <select class='form-control form-control-sm me-4 ms-1' id='gewerk'>
                     <option value='0'>Bitte auswählen</option>
@@ -113,7 +114,7 @@ $gugOptions = $gewerkeData['ghg'] ? fetchGUGOptions($mysqli, $gewerkeData['ghg']
                 </select>
             </div>
 
-            <div class='form-group d-flex align-items-center mr-2'>
+            <div class='form-group d-flex align-items-center mr-2 col-4'>
                 <label class="mb-0" for='ghg'>GHG:</label>
                 <select class='form-control form-control-sm me-4 ms-1' id='ghg'>
                     <?php if ($ghgOptions): ?>
@@ -130,7 +131,7 @@ $gugOptions = $gewerkeData['ghg'] ? fetchGUGOptions($mysqli, $gewerkeData['ghg']
                 </select>
             </div>
 
-            <div class='form-group d-flex align-items-center mr-2'>
+            <div class='form-group d-flex align-items-center mr-2 col-4'>
                 <label class="mb-0" for='gug'>GUG:</label>
                 <select class='form-control form-control-sm me-4 ms-1' id='gug'>
                     <?php if ($gugOptions): ?>

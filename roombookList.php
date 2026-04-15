@@ -218,7 +218,7 @@ init_page_serversides();
             buttons: [
                 {
                     extend: 'excelHtml5',
-                    text: 'Excel',
+                    text: '',
                     className: 'fas fa-file-excel btn btn-sm btn-outline-success bg-white',
                     exportOptions: {
                         columns: ':not(:eq(12))', // Exclude column 12 (index 11)

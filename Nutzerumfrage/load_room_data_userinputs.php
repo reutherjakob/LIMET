@@ -33,7 +33,9 @@ if (!$data) {
 
 // Normalize string booleans '0'/'1' to integers for JS checkbox compatibility
 foreach ($data as $key => $val) {
-    if ($val === '0' || $val === '1') {
+    if ($val === null) {
+        $data[$key] = 'unbekannt';
+    } elseif ($val === '0' || $val === '1') {
         $data[$key] = (int)$val;
     }
 }

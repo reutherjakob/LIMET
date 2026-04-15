@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
-    <title>Element Parameter Tabelle</title>
+    <title>Projekt Elemente Parameter Tabelle</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
@@ -32,10 +32,13 @@ init_page_serversides("", "x");
 <body>
 <div class="container-fluid">
     <div id="limet-navbar"></div>
-    <div class=' mt-1 card col-12'>
-        <div style="height: 50px" class="card-header d-inline-flex  align-content-start"
-             id="elemetsParamsTableCardHeader">
-            <label class="form-check-label"> <u> Element-Parameter im Projekt </u> </label>
+    <div class='card'>
+        <div style="height: 50px" class="card-header ">
+            <div class="row">
+                <div class="col-8 d-inline-flex align-content-start" id="elemetsParamsTableCardHeader">
+                    <label class="form-check-label me-3">Element-Parameter im Projekt </label></div>
+                <div class="col-4 d-inline-flex align-content-start  justify-content-end" id="EPinPrCardHeader"></div>
+            </div>
         </div>
         <div class="card-body " id="elemetsParamsTableCard">
             <p id="elemetsParamsTable">
@@ -90,6 +93,7 @@ init_page_serversides("", "x");
             $('#elementsTable').remove();
         }
         $('#elemetsParamsTable').empty();
+        $('#EPinPrCardHeader').empty();
 
         const url = 'getRoomElementsInProjectParameterData.php?K2Return=' + encodeURIComponent(JSON.stringify(K2R));
 
@@ -98,38 +102,6 @@ init_page_serversides("", "x");
                 $('#elemetsParamsTable').html('<p>Keine Daten gefunden.</p>');
                 return;
             }
-
-            // Build columns dynamically: fixed columns + dynamic parameter columns from first room's element keys
-            const fixedCols = [
-                {title: 'Raum ID', data: 'roomID', visible: false},
-                // {title: 'Raumbezeichnung', data: 'Raumbezeichnung'},
-                // {title: 'Raumnr', data: 'Raumnr'},
-                // {title: 'MTrelevant', data: 'MTrelevant'},
-                // {title: 'Bauabschnitt', data: 'Bauabschnitt'},
-                // {title: 'Geschoss', data: 'Geschoss'},
-                {title: "<th> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='ElementID'><i class='fas fa-fingerprint'></i></div> </th> " , data: 'ElementID'},
-                {title: 'Bezeichnung', data: 'Bezeichnung'},
-                {title: 'Var', data: 'Variante'},
-                {title: 'Neu/Bestand', data: 'Neu/Bestand'},
-                {title: "<th> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Standort'> <i class='fab fa-periscope '></i></div> </th>",data: 'Standort'},
-                {title: 'SummevonAnzahl', data: 'SummevonAnzahl'}
-            ];
-
-            // Extract all dynamic parameter keys from the first element of the first room
-            let paramCols = [];
-            const firstRoom = data[0];
-            if (firstRoom.elements && firstRoom.elements.length) {
-                const exampleElem = firstRoom.elements[0];
-                // Filter out known fixed keys to get only parameter keys
-                const paramKeys = Object.keys(exampleElem).filter(k => ![
-                    'ElementID', 'Bezeichnung', 'Variante', 'Neu/Bestand', 'Standort', 'SummevonAnzahl',
-                    'TABELLE_Elemente_idTABELLE_Elemente', 'tabelle_Varianten_idtabelle_Varianten'
-                ].includes(k));
-                paramCols = paramKeys.map(key => ({title: key, data: key}));
-            }
-
-            // Combine columns
-            const columns = fixedCols.concat(paramCols);
 
             // Flatten data: create one row per element with roomID
             const tableData = [];
@@ -141,22 +113,134 @@ init_page_serversides("", "x");
                 });
             });
 
+            // Build columns dynamically: fixed columns + dynamic parameter columns from first room's element keys
+            const fixedCols = [
+                {title: 'Raum ID', data: 'roomID', visible: false},
+                // {title: 'Raumbezeichnung', data: 'Raumbezeichnung'},
+                // {title: 'Raumnr', data: 'Raumnr'},
+                // {title: 'MTrelevant', data: 'MTrelevant'},
+                // {title: 'Bauabschnitt', data: 'Bauabschnitt'},
+                // {title: 'Geschoss', data: 'Geschoss'},
+                {
+                    title: "<th> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='ElementID'><i class='fas fa-fingerprint'></i></div> </th> ",
+                    data: 'ElementID'
+                },
+                {title: 'Bezeichnung', data: 'Bezeichnung'},
+                {title: 'Var', data: 'Variante'},
+                {title: 'Neu/Bestand', data: 'Neu/Bestand'},
+                {
+                    title: "<th> <div class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Standort'> <i class='fab fa-periscope '></i></div> </th>",
+                    data: 'Standort'
+                },
+                {title: '#', data: 'SummevonAnzahl'}
+            ];
+
+            // Extract all dynamic parameter keys from the first element of the first room
+            let paramCols = [];
+            const firstRoom = data[0];
+            if (firstRoom.elements && firstRoom.elements.length) {
+                const exampleElem = firstRoom.elements[0];
+                const paramKeys = Object.keys(exampleElem).filter(k => ![
+                    'ElementID', 'Bezeichnung', 'Variante', 'Neu/Bestand', 'Standort', 'SummevonAnzahl',
+                    'TABELLE_Elemente_idTABELLE_Elemente', 'tabelle_Varianten_idtabelle_Varianten',
+                    'roomID',
+                    'Raumbezeichnung', 'Raumnr', 'MTrelevant', 'Bauabschnitt', 'Geschoss'
+                ].includes(k));
+
+                // Only include columns that have at least one non-empty value across all rows
+                const nonEmptyParamKeys = paramKeys.filter(key =>
+                    tableData.some(row => row[key] !== '' && row[key] !== null && row[key] !== undefined)
+                );
+                paramCols = nonEmptyParamKeys.map(key => ({title: key, data: key}));
+            }
+
+            // Combine columns
+            const columns = fixedCols.concat(paramCols);
+
             // Create table element and append to container
-            const tableHtml = $('<table id="elementsTable" class="table table-striped table-bordered" style="width:100%"></table>');
+            const tableHtml = $('<table id="elementsTable" class="table table-sm compact table-striped table-bordered" style="width:100%"></table>');
             $('#elemetsParamsTable').append(tableHtml);
 
-            // Init DataTable
+
             dataTable = $('#elementsTable').DataTable({
                 data: tableData,
                 columns: columns,
                 scrollX: true,
+                scrollCollapse: true,
+                paging: true,
+                pagingType: 'simple_numbers',
                 pageLength: 10,
-                dom: 'Bfrtip',
+                lengthChange: true,
+                lengthMenu: [[10, 20, 50, 100, -1], ['10', '20', '50', '100', 'Alle']],
+                searching: true,
+                info: true,
+                order: [[1, 'asc']],
+                layout: {
+                    topStart: null,
+                    topEnd: null,
+                    bottomStart: ['pageLength', 'info'],
+                    bottomEnd: ['paging', 'buttons', 'search']
+                },
                 buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy"></i>',
+                        titleAttr: 'Kopieren',
+                        className: 'btn btn-sm btn-outline-dark bg-white'
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="fas fa-file-csv"></i>',
+                        titleAttr: 'CSV Export',
+                        className: 'btn btn-sm btn-outline-dark bg-white'
+                    },
+                    {
+                        extend: 'excel',
+                        text: '<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Excel Export',
+                        className: 'btn btn-sm btn-outline-dark bg-white'
+                    },
+                    {
+                        extend: 'pdf',
+                        text: '<i class="fas fa-file-pdf"></i>',
+                        titleAttr: 'PDF Export',
+                        className: 'btn btn-sm btn-outline-dark bg-white'
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Drucken',
+                        className: 'btn btn-sm btn-outline-dark bg-white'
+                    },
+                    {
+                        extend: 'colvis',
+                        text: '<i class="fas fa-columns"></i>',
+                        titleAttr: 'Spalten ein-/ausblenden',
+                        className: 'btn btn-sm btn-outline-dark bg-white'
+                    }
                 ],
                 language: {
-                    url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/de-DE.json"
+                    url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/de-DE.json",
+                    search: '',
+                    searchPlaceholder: 'Suche...',
+                    lengthMenu: '_MENU_',
+                },
+
+                initComplete: function () {
+                    // Label der Suchleiste entfernen
+                    $('#elementsTable_wrapper .dt-search label').remove();
+
+                    // Suchfeld stylen und in den Card-Header verschieben
+                    $('#elementsTable_wrapper .dt-search')
+                        .children()
+                        .removeClass('form-control form-control-sm')
+                        .addClass('btn btn-sm btn-outline-dark bg-white ms-1')
+                        .appendTo('#EPinPrCardHeader');
+
+                    // Buttons in den Card-Header verschieben
+                    $('#elementsTable_wrapper .dt-buttons')
+                        .children()
+                        .appendTo('#EPinPrCardHeader');
                 }
             });
         });

@@ -27,10 +27,23 @@ $table = "tabelle_räume";
 $field = filter_input(INPUT_POST, 'field', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 'Raumbezeichnung';
 $search = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 'None';
 
-$sql = "SELECT * FROM $table WHERE $field LIKE ?";
+$projectID = (int)($_SESSION['projectID'] ?? 0);
+
+$sql = "SELECT r.*,
+    COALESCE((
+        SELECT SUM(pk.Kosten * rhe.Anzahl)
+        FROM tabelle_räume_has_tabelle_elemente rhe
+        INNER JOIN tabelle_projekt_varianten_kosten pk
+            ON pk.tabelle_elemente_idTABELLE_Elemente = rhe.TABELLE_Elemente_idTABELLE_Elemente
+           AND pk.tabelle_Varianten_idtabelle_Varianten = rhe.tabelle_Varianten_idtabelle_Varianten
+           AND pk.tabelle_projekte_idTABELLE_Projekte = r.tabelle_projekte_idTABELLE_Projekte
+        WHERE rhe.TABELLE_Räume_idTABELLE_Räume = r.idTABELLE_Räume
+    ), 0) AS Gesamtkosten
+FROM $table r WHERE r.$field LIKE ?";
 $stmt = $mysqli->prepare($sql);
 $searchParam = "%$search%";
 $stmt->bind_param("s", $searchParam);
+
 $stmt->execute();
 $result = $stmt->get_result();
 

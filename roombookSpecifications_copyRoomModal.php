@@ -108,7 +108,7 @@
         const alwaysFields = [
             'tabelle_projekte_idTABELLE_Projekte',
             'Raumbezeichnung',
-            'MT-relevant',
+            'MT-relevant'
         ];
 
         alwaysFields.forEach(f => {

@@ -51,39 +51,45 @@ init_page_serversides();
             $dummyIdList = implode("', '", $dummyIds);
 
             $sql = "SELECT
-            tabelle_räume.Raumnr,
-            tabelle_räume.Raumnummer_Nutzer,
-            tabelle_räume.Raumbezeichnung,
-            tabelle_räume.`Raumbereich Nutzer`,
-            tabelle_räume.Geschoss,
-            tabelle_elemente.ElementID,
-            tabelle_elemente.Bezeichnung AS ElementBezeichnung,
-            tabelle_räume_has_tabelle_elemente.Anzahl,
-        CASE 
-            WHEN tabelle_elemente.ElementID IN ('{$dummyIdList}') 
-            THEN 1
-            WHEN TRIM(LOWER(tabelle_räume.Raumbezeichnung)) IN ( 
-                'gerätelager', 
-                'lager rollstühle',
-                'liegenlager rein',
-                'geräteraum',
-                'anästhesie-geräteraum',
-                'anästhesiegeräte rüstraum',
-                'gerätelager, lager gehbehelfe', 
-                'lager/geräte', 'lager geräte'
-            ) 
-            THEN 0 
-            ELSE 1 
-        END AS Gleichzeitigkeit,
-             tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
-        FROM tabelle_räume
-            INNER JOIN tabelle_räume_has_tabelle_elemente
-                ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
-            INNER JOIN tabelle_elemente
-                ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente
-        WHERE tabelle_räume.tabelle_projekte_idTABELLE_Projekte = ?
-            AND tabelle_räume_has_tabelle_elemente.Anzahl <> 0
-        ORDER BY tabelle_räume.Raumnr, tabelle_elemente.ElementID";
+                        tabelle_räume.Raumnr,
+                        tabelle_räume.Raumnummer_Nutzer,
+                        tabelle_räume.Raumbezeichnung,
+                        tabelle_räume.`Raumbereich Nutzer`,
+                        tabelle_räume.Geschoss,
+                        tabelle_elemente.ElementID,
+                        tabelle_elemente.Bezeichnung AS ElementBezeichnung,
+                        tabelle_räume_has_tabelle_elemente.Anzahl,
+                        CASE 
+                            WHEN tabelle_elemente.ElementID IN ('{$dummyIdList}') 
+                            THEN 1
+                            WHEN TRIM(LOWER(tabelle_räume.Raumbezeichnung)) IN ( 
+                                'gerätelager', 
+                                'lager rollstühle',
+                                'liegenlager rein',
+                                'geräteraum',
+                                'anästhesie-geräteraum',
+                                'anästhesiegeräte rüstraum',
+                                'gerätelager, lager gehbehelfe', 
+                                'lager/geräte', 'lager geräte'
+                            ) 
+                            THEN 0 
+                            ELSE 1 
+                        END AS Gleichzeitigkeit,
+                        tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
+                    FROM tabelle_räume
+                        INNER JOIN tabelle_räume_has_tabelle_elemente
+                            ON tabelle_räume.idTABELLE_Räume = tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume
+                        INNER JOIN tabelle_elemente
+                            ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente
+                        LEFT JOIN tabelle_projektbudgets tpb_filter
+                            ON tpb_filter.idtabelle_projektbudgets = tabelle_räume_has_tabelle_elemente.tabelle_projektbudgets_idtabelle_projektbudgets
+                    WHERE tabelle_räume.tabelle_projekte_idTABELLE_Projekte = ?
+                        AND tabelle_räume_has_tabelle_elemente.Anzahl <> 0
+                        AND (
+                            tpb_filter.idtabelle_projektbudgets IS NULL
+                            OR tpb_filter.status = 1
+                        )
+                    ORDER BY tabelle_räume.Raumnr, tabelle_elemente.ElementID";
 
             $stmt = $mysqli->prepare($sql);
             $stmt->bind_param('i', $_SESSION["projectID"]);

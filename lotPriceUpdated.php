@@ -9,42 +9,62 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$lot_id = (int)$_POST['lot_id'] ?? 0;
-$projekt_id = (int)$_POST['projekt_id'] ?? 0;
-$preis_status = (int)$_POST['preis_status'] ?? 0;
+$lot_id     = (int)($_POST['lot_id']     ?? 0);
+$preis_status = (int)($_POST['preis_status'] ?? 0);
+$username   = $_SESSION['username'] ?? '';
 
-$username = $_SESSION['username'];
-
-
-if (!$lot_id || !$projekt_id) {
-    echo json_encode(['error' => 'Missing lot_id or projekt_id']);
+if (!$lot_id) {
+    echo json_encode(['error' => 'Missing lot_id']);
     exit;
 }
 
 $mysqli = utils_connect_sql();
 
-$stmt = $mysqli->prepare("
-    UPDATE tabelle_lose_extern 
-    SET preise_in_db_user=?, preise_in_db = ?
-    WHERE idtabelle_Lose_Extern = ? AND tabelle_projekte_idTABELLE_Projekte = ?
-");
+switch ($preis_status) {
+    case 0:
+        $stmt = $mysqli->prepare("
+            UPDATE tabelle_lose_extern 
+            SET preise_in_db = 0,
+                preise_in_db_user = NULL,
+                kontrolle_preise_in_db_user = NULL
+            WHERE idtabelle_Lose_Extern = ?
+        ");
+        $stmt->bind_param("i", $lot_id);
+        break;
 
-$stmt->bind_param("siii", $username,$preis_status, $lot_id, $projekt_id);
+    case 1:
+        $stmt = $mysqli->prepare("
+            UPDATE tabelle_lose_extern 
+            SET preise_in_db = 1,
+                preise_in_db_user = NULL,
+                kontrolle_preise_in_db_user = NULL
+            WHERE idtabelle_Lose_Extern = ?
+        ");
+        $stmt->bind_param("i", $lot_id);
+        break;
 
-if ($stmt->execute()) {
-    if ($stmt->affected_rows > 0) {
-        echo json_encode([
-            'success' => true,
-            'preis_status' => $preis_status,
+    case 2:
+        if (empty($username)) {
+            echo json_encode(['error' => 'Kein Benutzer in Session']);
+            exit;
+        }
+        $stmt = $mysqli->prepare("
+            UPDATE tabelle_lose_extern 
+            SET preise_in_db = 2,
+                preise_in_db_user = ?,
+                kontrolle_preise_in_db_user = NULL
+            WHERE idtabelle_Lose_Extern = ?
+        ");
+        $stmt->bind_param("si", $username, $lot_id);
+        break;
 
-        ]);
-    } else {
-        echo json_encode(['error' => 'No rows updated']);
-    }
-} else {
-    echo json_encode(['error' => 'Database error: ' . $mysqli->error]);
+    default:
+        echo json_encode(['error' => 'Ungültiger Status']);
+        exit;
 }
 
+$stmt->execute();
+echo json_encode(['success' => $stmt->affected_rows >= 0]);
 $stmt->close();
 $mysqli->close();
 ?>

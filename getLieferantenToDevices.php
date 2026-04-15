@@ -49,18 +49,18 @@ while ($row = $result->fetch_assoc()) {
     echo "</tr>";
 }
 echo "</tbody></table>";
-echo "
-<div class='col-12 d-flex justify-content-end'>
-    <button type='button'
-            id='addLieferantModalButton'
-            class='btn btn-sm btn-success mt-2'
-            value='Lieferant hinzufügen'
-            data-bs-toggle='modal'
-            data-bs-target='#addLieferantModal'>
-            <i class='fas fa-plus'></i> 
-        Lieferant hinzufügen
-    </button>
-</div>";
+//     echo "
+//     <div class='col-12 d-flex justify-content-end'>
+//         <button type='button'
+//                 id='addLieferantModalButton'
+//                 class='btn btn-sm btn-success mt-2'
+//                 value='Lieferant hinzufügen'
+//                 data-bs-toggle='modal'
+//                 data-bs-target='#addLieferantModal'>
+//                 <i class='fas fa-plus'></i>
+//             Lieferant hinzufügen
+//         </button>
+//     </div>";
 
 include_once("modal_addLieferant.php");
 ?>
@@ -87,6 +87,17 @@ include_once("modal_addLieferant.php");
 <script>
 
     $(document).ready(function () {
+        $('#LieferantenCardHeader').html(`
+    <button type='button'
+            id='addLieferantModalButton'
+            class='btn btn-sm btn-success mt-0'
+            value='Lieferant hinzufügen'
+            data-bs-toggle='modal'
+            data-bs-target='#addLieferantModal'>
+        <i class='fas fa-plus'></i>
+        Lieferant hinzufügen
+    </button>
+`);
         new DataTable('#tableDeviceLieferanten', {
             columns: [
                 {searchable: false, orderable: false},

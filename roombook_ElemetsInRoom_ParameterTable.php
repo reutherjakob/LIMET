@@ -7,7 +7,7 @@ init_page_serversides("", "x");
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
-    <title>Element Parameter Tabellllllle</title>
+    <title>Element Parameter Tabelle</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>

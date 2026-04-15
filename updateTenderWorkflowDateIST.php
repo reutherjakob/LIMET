@@ -3,10 +3,10 @@ require_once 'utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
 
-$date = getPostDate('date');           // ✅ aus $_POST
-$lotID = getPostInt('lotID');          // ✅ aus $_POST
-$workflowID = getPostInt('workflowID'); // ✅ aus $_POST
-$workflowTeilID = getPostInt('workflowTeilID'); // ✅ aus $_POST
+$date = getPostDate('date');         
+$lotID = getPostInt('lotID');        
+$workflowID = getPostInt('workflowID'); 
+$workflowTeilID = getPostInt('workflowTeilID'); 
 
 if ($lotID > 0 && $date) {
     $sql = "UPDATE LIMET_RB.tabelle_lot_workflow SET Timestamp_Ist=? 

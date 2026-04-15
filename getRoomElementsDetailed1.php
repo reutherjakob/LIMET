@@ -26,6 +26,15 @@ $stmt_room_elements = $mysqli->prepare($sql_room_elements);
 $stmt_room_elements->bind_param("i", $_SESSION["roomID"]);
 $stmt_room_elements->execute();
 $result_room_elements = $stmt_room_elements->get_result();
+$stmt_var = $mysqli->prepare("
+    SELECT idtabelle_Varianten, Variante 
+    FROM tabelle_varianten 
+    ORDER BY Variante
+");
+$stmt_var->execute();
+$varianten_options = $stmt_var->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmt_var->close();
+
 $mysqli->close();
 ?>
 
@@ -41,7 +50,9 @@ $mysqli->close();
         <?php include "getRoomCostsbyGewerke.php" ?>
     </div>
 
-    <?php if ($result_room_elements->num_rows > 0): ?>
+    <?php
+    $hideActionButtons = isset($_GET['hideActionButtons']) && $_GET['hideActionButtons'] == '1';
+    if ($result_room_elements->num_rows > 0 && !$hideActionButtons): ?>
         <div id="room-action-buttons"
              class="d-inline-flex align-items-center text-nowrap btn-group-sm">
             <button type="button" class="btn btn-sm btn-outline-dark me-1" id="<?php echo $_SESSION["roomID"]; ?>"
@@ -95,11 +106,9 @@ $mysqli->close();
                 <label for="variante<?php echo $row["id"]; ?>" style="display: none;"></label><select
                         class="form-control form-control-sm"
                         id="variante<?php echo $row["id"]; ?>">
-                    <?php
-                    $options = ['A' => 1, 'B' => 2, 'C' => 3, 'D' => 4, 'E' => 5, 'F' => 6, 'G' => 7];
-                    foreach ($options as $label => $value) {
-                        $selected = ($row["tabelle_Varianten_idtabelle_Varianten"] == $value) ? "selected" : "";
-                        echo "<option value='$value' $selected>$label</option>";
+                    <?php foreach ($varianten_options as $v) {
+                        $selected = ($row["tabelle_Varianten_idtabelle_Varianten"] == $v['idtabelle_Varianten']) ? "selected" : "";
+                        echo "<option value='{$v['idtabelle_Varianten']}' $selected>{$v['Variante']}</option>";
                     }
                     ?>
                 </select>

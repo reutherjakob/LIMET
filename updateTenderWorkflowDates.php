@@ -5,7 +5,19 @@ check_login();
 $mysqli = utils_connect_sql();
 $lotID = getPostInt('lotID');
 
-$sql = "SELECT tabelle_workflow_has_tabelle_wofklowteil.Reihenfolgennummer, DATE_FORMAT(DATE(tabelle_lot_workflow.Timestamp_Soll), '%Y-%m-%d') as Timestamp_Soll, tabelle_workflow_has_tabelle_wofklowteil.TageMinDanach, tabelle_lot_workflow.tabelle_lose_extern_idtabelle_Lose_Extern, tabelle_lot_workflow.tabelle_workflow_idtabelle_workflow, tabelle_lot_workflow.tabelle_wofklowteil_idtabelle_wofklowteil FROM tabelle_lot_workflow INNER JOIN tabelle_workflow_has_tabelle_wofklowteil ON tabelle_lot_workflow.tabelle_workflow_idtabelle_workflow = tabelle_workflow_has_tabelle_wofklowteil.tabelle_workflow_idtabelle_workflow AND tabelle_lot_workflow.tabelle_wofklowteil_idtabelle_wofklowteil = tabelle_workflow_has_tabelle_wofklowteil.tabelle_wofklowteil_idtabelle_wofklowteil WHERE tabelle_lot_workflow.tabelle_lose_extern_idtabelle_Lose_Extern = ? ORDER BY tabelle_workflow_has_tabelle_wofklowteil.Reihenfolgennummer DESC";
+$sql = "SELECT tabelle_workflow_has_tabelle_wofklowteil.Reihenfolgennummer, 
+               DATE_FORMAT(DATE(tabelle_lot_workflow.Timestamp_Soll), '%Y-%m-%d') as Timestamp_Soll, 
+               tabelle_workflow_has_tabelle_wofklowteil.TageMinDanach,
+               tabelle_lot_workflow.tabelle_lose_extern_idtabelle_Lose_Extern, 
+               tabelle_lot_workflow.tabelle_workflow_idtabelle_workflow,
+               tabelle_lot_workflow.tabelle_wofklowteil_idtabelle_wofklowteil 
+        FROM tabelle_lot_workflow INNER JOIN tabelle_workflow_has_tabelle_wofklowteil
+            ON tabelle_lot_workflow.tabelle_workflow_idtabelle_workflow =
+               tabelle_workflow_has_tabelle_wofklowteil.tabelle_workflow_idtabelle_workflow 
+                   AND tabelle_lot_workflow.tabelle_wofklowteil_idtabelle_wofklowteil =
+                       tabelle_workflow_has_tabelle_wofklowteil.tabelle_wofklowteil_idtabelle_wofklowteil 
+        WHERE tabelle_lot_workflow.tabelle_lose_extern_idtabelle_Lose_Extern = ? 
+        ORDER BY tabelle_workflow_has_tabelle_wofklowteil.Reihenfolgennummer DESC";
 $stmt = $mysqli->prepare($sql);
 $stmt->bind_param('i', $lotID);
 $stmt->execute();
@@ -24,7 +36,11 @@ $counter = 0;
 $tageDanach = 0;
 $oldDate = 0;
 $ausgabe = "";
-$updateSql = "UPDATE `LIMET_RB`.`tabelle_lot_workflow` SET `Timestamp_Soll` = ? WHERE `tabelle_lose_extern_idtabelle_Lose_Extern` = ? AND `tabelle_workflow_idtabelle_workflow` = ? AND `tabelle_wofklowteil_idtabelle_wofklowteil` = ?";
+$updateSql = "UPDATE `LIMET_RB`.`tabelle_lot_workflow` 
+                SET `Timestamp_Soll` = ? 
+                WHERE `tabelle_lose_extern_idtabelle_Lose_Extern` = ? 
+                AND `tabelle_workflow_idtabelle_workflow` = ? 
+                AND `tabelle_wofklowteil_idtabelle_wofklowteil` = ?";
 $updateStmt = $mysqli->prepare($updateSql);
 foreach ($workflowTeile as $array) {
     if ($counter > 0) {

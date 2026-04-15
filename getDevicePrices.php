@@ -61,7 +61,7 @@ while ($row = $result->fetch_assoc()) {
               data-menge='" . h($row["Menge"]) . "'
               data-ep='" . h($row["Preis"]) . "'
               data-nk='" . h($row["Nebenkosten"]) . "'
-              data-Kommentar='" . h($row["Kommentar"]) . "'
+              data-preiskommentar='" . h($row["Kommentar"]) . "'
               data-project-id='" . h($row["projectID"] ?? '0') . "'
               data-lieferant-id='" . h($row["lieferantID"] ?? '0') . "'>";
 
@@ -85,7 +85,7 @@ while ($row = $result->fetch_assoc()) {
 }
 
 echo "</tbody></table>"; ?>
-<div class="col-12 d-flex justify-content-end">
+<!--div class="col-12 d-flex justify-content-end">
     <button type='button'
             id='addPriceModal_show'
             class='btn btn-sm btn-success'
@@ -95,7 +95,7 @@ echo "</tbody></table>"; ?>
         <i class='fas fa-plus'></i>
         Preis hinzufügen
     </button>
-</div>
+</div -->
 
 <div class='modal fade' id='addPriceToElementModal' role='dialog' tabindex="-1">
     <div class='modal-dialog modal-md'>
@@ -252,6 +252,17 @@ echo "</tbody></table>"; ?>
 <script src="utils/_utils.js"></script>
 <script>
     $(document).ready(function () {
+
+        $('#GerätepreiseCardHeader').html(`
+        <button type='button'
+                id='addPriceModal_show'
+                class='btn btn-sm btn-success'
+                value='Preis hinzufügen'
+                data-bs-toggle='modal'
+                data-bs-target='#addPriceToElementModal'>
+            <i class='fas fa-plus'></i>
+            Preis hinzufügen
+        </button>     `);
         $('#quelle').on('change', function () {
             if ($(this).val() === 'Andere') {
                 $('#quelleAndere').show().focus();
@@ -266,10 +277,10 @@ echo "</tbody></table>"; ?>
             $('#priceID').val(row.data('price-id'));
             $('#date').val(row.data('date'));
             const gespeichertesVerfahren = row.data('quelle');
-            const bekannteVerfahren = ['Direktvergabe','Direktvergabe mit vorheriger Bekanntmachung',
-                'Verhandlungsverfahren ohne Bekanntmachung','Nicht offenes Verfahren ohne Bekanntmachung',
-                'Nicht offenes Verfahren mit Bekanntmachung','Offenes Verfahren',
-                'Verhandlungsverfahren mit Bekanntmachung','MKF','RV','Andere'];
+            const bekannteVerfahren = ['Direktvergabe', 'Direktvergabe mit vorheriger Bekanntmachung',
+                'Verhandlungsverfahren ohne Bekanntmachung', 'Nicht offenes Verfahren ohne Bekanntmachung',
+                'Nicht offenes Verfahren mit Bekanntmachung', 'Offenes Verfahren',
+                'Verhandlungsverfahren mit Bekanntmachung', 'MKF', 'RV', 'Andere'];
 
             if (bekannteVerfahren.includes(gespeichertesVerfahren)) {
                 $('#quelle').val(gespeichertesVerfahren).trigger('change');

@@ -72,9 +72,15 @@ $dark = $_SESSION['darkmode'] ?? false;
     <span class="badge rounded-pill border border-warning text-warning bg-transparent font-monospace" id="statWarn">–</span>
     <span class="badge rounded-pill border border-success text-success bg-transparent font-monospace" id="statOk">–</span>
     <div class="ms-auto d-flex gap-1">
+
         <button class="btn btn-sm btn-outline-secondary" onclick="expandAll()">alle auf</button>
         <button class="btn btn-sm btn-outline-secondary" onclick="collapseAll()">alle zu</button>
     </div>
+
+    <button type="button" class="btn btn-sm btn-outline-success d-flex align-items-center" onclick="window.location.href='/roombook_leistungAbgleich_css.php'">
+        <i class="fas fa-check-double me-2"></i>
+        Experimentelle CSS Version (inkl. Dark Mode)
+    </button>
 </div>
 
 <!-- SPALTEN-HEADER -->

@@ -93,12 +93,13 @@ init_page_serversides("x"); ?>
         <div class="card-header">Geräte</div>
         <div class="card-body">
             <div class="row mt-1">
-                <div class='col-xxl-5' id='col_devices'>
+                <div class='col-xxl-7' id='col_devices'>
                     <div class='mt-1 card'>
                         <div class='card-header'><label>Geräte zu Element</label>
                             <div class="float-end">
                                 <button type="button" class="btn btn-outline-dark float-end" id="toggle_cards">
-                                    <i class="fas fa-caret-left" id="toggle_icon"> </i> <i class="fas fa-caret-right" id="toggle_icon2"></i>
+                                    <i class="fas fa-caret-left" id="toggle_icon"> </i> <i class="fas fa-caret-right"
+                                                                                           id="toggle_icon2"></i>
                                 </button>
                             </div>
                         </div>
@@ -113,17 +114,43 @@ init_page_serversides("x"); ?>
                     </div>
                 </div>
 
-                <div class='col-xxl-4' id='col_prices'>
+                <div class='col-xxl-5' id='col_prices'>
                     <div class='mt-1 card'>
-                        <div class='card-header'><label>Gerätepreise</label></div>
+                        <div class='card-header'>
+                            <div class='row'>
+                                <div class='col-6'>
+                                    <label>Gerätepreise</label>
+                                </div>
+                                <div class='col-6 d-flex justify-content-end' id='GerätepreiseCardHeader'>
+                                </div>
+                            </div>
+                        </div>
                         <div class='card-body' id='devicePrices'></div>
                     </div>
                     <div class='mt-1 card'>
-                        <div class='card-header'><label>Wartungspreise</label></div>
+                        <div class='card-header'>
+                            <div class='row'>
+                                <div class='col-6'>
+                                    <label>Wartungspreise</label>
+                                </div>
+                                <div class='col-6 d-flex justify-content-end' id='WartungspreiseCardHeader'>
+
+                                </div>
+                            </div>
+                        </div>
                         <div class='card-body' id='deviceServicePrices'></div>
                     </div>
                     <div class='mt-1 card'>
-                        <div class='card-header'><label>Lieferanten</label></div>
+                        <div class='card-header'>
+                            <div class='row'>
+                                <div class='col-6'>
+                                    <label>Lieferanten</label>
+                                </div>
+                                <div class='col-6 d-flex justify-content-end' id='LieferantenCardHeader'>
+
+                                </div>
+                            </div>
+                        </div>
                         <div class='card-body' id='deviceLieferanten'></div>
                     </div>
                 </div>
@@ -166,6 +193,7 @@ init_page_serversides("x"); ?>
     $(document).ready(function () {
         init_table_elementsinDB();
 
+        $('#col_parameters').hide();
         $('#toggle_cards').click(function () {
             const $col = $('#col_parameters');
             const isVisible = $col.is(':visible');
