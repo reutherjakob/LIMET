@@ -120,98 +120,101 @@ init_page_serversides("No Redirect");
                     </div>
 
                 </div>
+                <!-- ══ Card 4: Element-Abgleich ══════════════════════════════════════ -->
 
-
-                <!-- ══ Card 4: Element-Gegenüberstellung ══ -->
                 <div id="compare-section" style="display:none">
-                    <div class="card">
+
+                    <!-- Header card -->
+                    <div class="card mb-0">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-6">
-                                    Element Abgleich
-                                    <span class="" id="compare-room-label"></span>
+                                <div class="col-6 d-flex align-items-center">
+                                    <span class="fw-semibold">Element-Abgleich</span>
+                                    <span class="ms-2 text-muted" id="compare-room-label"></span>
                                 </div>
-                                <div class="col-6 d-flex justify-content-end">
-                                    <span class="stat-pill bg-success bg-opacity-10 text-success me-2"><i
+                                <div class="col-6 d-flex justify-content-end align-items-center gap-2">
+                                    <span class="stat-pill bg-success bg-opacity-10 text-success"><i
                                                 class="fas fa-check fa-xs"></i> match</span>
-                                    <span class="stat-pill bg-warning bg-opacity-10 text-warning-emphasis me-2"><i
+                                    <span class="stat-pill bg-warning bg-opacity-10 text-warning-emphasis"><i
                                                 class="fas fa-not-equal fa-xs"></i> Anzahl diff</span>
-                                    <span6 class="stat-pill bg-primary bg-opacity-10 text-primary me-2"><i
-                                                class="fas fa-plus fa-xs"></i> nur Excel
-                                    </span6>
+                                    <span class="stat-pill bg-primary bg-opacity-10 text-primary"><i
+                                                class="fas fa-plus fa-xs"></i> nur Excel</span>
                                     <span class="stat-pill bg-danger bg-opacity-10 text-danger"><i
-                                                class="fas fa-minus fa-xs"></i> nur DB</span></div>
-                            </div>
-                        </div>
-
-                        <div style="max-height:460px;overflow-y:auto">
-                            <table class="table table-sm vergleich-table mb-0">
-                                <thead>
-                                <tr>
-                                    <th style="width:28px"></th>
-                                    <th>ElementID</th>
-                                    <th>Bezeichnung</th>
-                                    <th class="text-center">DB</th>
-                                    <th class="text-center">Excel</th>
-                                    <th>Revit-Familie → Länge → Mapping</th>
-                                    <th>Aktion</th>
-                                </tr>
-                                </thead>
-                                <tbody id="compare-tbody"></tbody>
-                            </table>
-                        </div>
-                        <div id="compare-excel-rows" class="px-3 pt-2" style="display:none"></div>
-
-                        <!-- Nicht gemappte Familien -->
-                        <div id="unmapped-section" class="card-footer bg-light py-2 px-3"
-                             style="display:none">
-                            <div class="d-flex align-items-start justify-content-between  flex-wrap">
-                                <div>
-                                    <small class="text-warning-emphasis fw-semibold">
-                                        <i class="fas fa-exclamation-triangle me-1"></i>Nicht gemappte
-                                        Familien:
-                                    </small>
-                                    <div id="unmapped-list" class="text-muted small mt-1"></div>
+                                                class="fas fa-minus fa-xs"></i> nur DB</span>
                                 </div>
-                                <button class="btn btn-outline-secondary btn-sm"
-                                        onclick="copyUnmapped()" title="Nicht gemappte Familien kopieren">
-                                    <i class="fas fa-copy me-1"></i>Kopieren
-                                </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- ══ Card 5: Sync ══ -->
-                    <div class="card" id="sync-card" style="display:none">
-                        <div class="card-header">
+                    <!-- Unmapped families -->
+                    <div id="unmapped-section" class="card border-warning mb-2" style="display:none">
+                        <div class="card-body py-2 px-3 d-flex align-items-start justify-content-between flex-wrap">
+                            <div>
+                                <small class="text-warning-emphasis fw-semibold">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>Nicht gemappte Familien:
+                                </small>
+                                <div id="unmapped-list" class="text-muted small mt-1"></div>
+                            </div>
+                            <button class="btn btn-outline-secondary btn-sm" onclick="copyUnmapped()" title="Kopieren">
+                                <i class="fas fa-copy me-1"></i>Kopieren
+                            </button>
+                        </div>
+                    </div>
 
+                    <!-- Element blocks (one per element) rendered by JS -->
+                    <div id="compare-blocks-container"></div>
+
+                    <!-- ══ Sync card ════════════════════════════════════════════════ -->
+                    <div class="card mt-2" id="sync-card" style="display:none">
+                        <div class="card-header">
                             <span class="fw-semibold">Änderungen übernehmen</span>
                         </div>
-
                         <div class="card-body">
                             <div id="sync-summary" class="mb-3 small"></div>
-                            <label class="form-label small fw-semibold">Kommentar für entfernte
-                                Elemente:</label>
+                            <label class="form-label small fw-semibold">Kommentar für entfernte Elemente:</label>
                             <input type="text" id="sync-kommentar" class="form-control form-control-sm mb-3"
                                    value="Entfernt via Excel-Abgleich"/>
-                            <div class="d-flex  align-items-center">
+                            <div class="d-flex align-items-center gap-2">
                                 <button id="btn-sync" class="btn btn-success btn-sm">
                                     <i class="fas fa-database me-2"></i>Änderungen in DB übernehmen
                                 </button>
-                                <div id="sync-spinner" class="spinner-border spinner-border-sm text-success"
-                                     style="display:none"></div>
                             </div>
-                            <!-- Sticky Result — bleibt sichtbar auch nach Neu-Laden des Compare -->
-                            <div id="sync-result" class="mt-3 sync-result-sticky"
+                            <div id="sync-result" class="mt-3" style="display:none"></div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- ══ Card 5: Sync ══ -->
+                <div class="card" id="sync-card" style="display:none">
+                    <div class="card-header">
+
+                        <span class="fw-semibold">Änderungen übernehmen</span>
+                    </div>
+
+                    <div class="card-body">
+                        <div id="sync-summary" class="mb-3 small"></div>
+                        <label class="form-label small fw-semibold">Kommentar für entfernte
+                            Elemente:</label>
+                        <input type="text" id="sync-kommentar" class="form-control form-control-sm mb-3"
+                               value="Entfernt via Excel-Abgleich"/>
+                        <div class="d-flex  align-items-center">
+                            <button id="btn-sync" class="btn btn-success btn-sm">
+                                <i class="fas fa-database me-2"></i>Änderungen in DB übernehmen
+                            </button>
+                            <div id="sync-spinner" class="spinner-border spinner-border-sm text-success"
                                  style="display:none"></div>
                         </div>
-
+                        <!-- Sticky Result — bleibt sichtbar auch nach Neu-Laden des Compare -->
+                        <div id="sync-result" class="mt-3 sync-result-sticky"
+                             style="display:none"></div>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 </body>
 
 <script src="utils.js"></script>
