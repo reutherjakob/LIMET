@@ -79,6 +79,11 @@ init_page_serversides();
                        title="KOR Elementliste">
                         KOR‑Elementliste
                     </a>
+                    <a class="btn btn-sm btn-outline-secondary ms-1 text-success"
+                       href="/roombook_KOR_Bemerkungen.php"
+                       title="KOR EL. Bemerkungen">
+                        KOR EL. Bemerkungen
+                    </a>
 
 
                 </div>
@@ -108,7 +113,7 @@ init_page_serversides();
                 ['header' => 'Ortsveränderlich', 'source' => 'ortsv', 'key' => null],
                 ['header' => 'Versorgungseinheit', 'source' => 've', 'key' => null, 'center' => true],
 
-                ['header' => 'Bemerkung', 'source' => 'static', 'key' => ''],
+                ['header' => 'Bemerkung', 'source' => 'anm', 'key' => 'Bemerkung_Allgemein'],
 
                 ['header' => 'VEXAT Anforderung', 'source' => 'display', 'key' => "Explosionsschutzzone", 'center' => true, 'group' => 'Elektro',],
                 // --- Elektro: Leistung ---
@@ -148,7 +153,7 @@ init_page_serversides();
                 ['header' => '24V Anschluss', 'source' => 'calc_ac', 'key' => '24V', 'center' => true, 'group' => 'Elektro'],
                 ['header' => 'Potentialausgleich', 'source' => 'calc_ac', 'key' => 'pa', 'group' => 'Elektro'],
                 ['header' => 'IKT Anschluss', 'source' => 'display', 'key' => 'RJ45 Ports', 'group' => 'Elektro', 'suppress_unit' => true],
-                ['header' => 'Bemerkung ET', 'source' => 'static', 'key' => ''],
+                ['header' => 'Bemerkung ET', 'source' => 'anm', 'key' => 'Bemerkung_ET'],
 
                 // --- Medizingas ---
                 ['header' => 'O2', 'source' => 'display', 'key' => 'O2 Anschluss', 'group' => 'Medizingas', 'suppress_unit' => true],
@@ -170,7 +175,7 @@ init_page_serversides();
                 ['header' => 'Flussrate [l/min]Tech. DL 9 bar', 'source' => 'display', 'key' => 'DL-9_Flussrate', 'group' => 'Medizingas', 'suppress_unit' => true],
                 ['header' => 'Tech. DL 12 bar', 'source' => 'calc_ac', 'key' => 'dl_12bar', 'center' => true, 'group' => 'Druckluft'],
                 ['header' => 'Flussrate [l/min] Tech. DL 12 bar', 'source' => 'display', 'key' => 'DL-12_Flussrate', 'group' => 'Medizingas', 'suppress_unit' => true],
-                ['header' => 'Bemerkung MG', 'source' => 'static', 'key' => ''],
+                ['header' => 'Bemerkung MG', 'source' => 'anm', 'key' => 'Bemerkung_MG'],
                 // --- Kaltwasser ---
                 ['header' => 'KW Stadtwasser', 'source' => 'calc_wc', 'key' => 'kw_stadt_flag', 'center' => true, 'group' => 'Kaltwasser', 'suppress_unit' => true],
                 ['header' => 'KW Stadtwasser [l/min]', 'source' => 'calc_wc', 'key' => 'kw_stadt_strom', 'group' => 'Kaltwasser', 'suppress_unit' => true],
@@ -198,8 +203,7 @@ init_page_serversides();
 
 
                 ['header' => 'Rohrtrenner EN1717', 'source' => 'calc_wc', 'key' => 'rohrtrenner', 'group' => 'Wasser', 'suppress_unit' => true],
-                ['header' => 'Bemerkung Wasser', 'source' => 'static', 'key' => ''],
-
+                ['header' => 'Bemerkung Wasser', 'source' => 'anm', 'key' => 'Bemerkung_Wasser'],
                 // --- Abwasser ---
                 ['header' => 'Abwasser Anschluss ', 'source' => 'calc_sc', 'key' => 'abwasser_anschl', 'group' => 'Abwasser'],
                 ['header' => 'Abwasser Anschluss [l/min]', 'source' => 'calc_sc', 'key' => 'abwasser_strom', 'group' => 'Abwasser'],
@@ -211,8 +215,7 @@ init_page_serversides();
                 ['header' => 'Siphon (durch GPHT)', 'source' => 'calc_sc', 'key' => 'siphon', 'center' => true, 'group' => 'Abwasser'],
                 ['header' => 'Direktanschluss Abwasser', 'source' => 'static', 'key' => ''],
                 ['header' => 'Anschlussdimension AW', 'source' => 'calc_sc', 'key' => 'abwasser_dimension', 'group' => 'Abwasser'],
-                ['header' => 'Bemerkung Abwasser', 'source' => 'static', 'key' => ''],
-
+                ['header' => 'Bemerkung Abwasser', 'source' => 'anm', 'key' => 'Bemerkung_Abwasser'],
                 // --- Lüftung ---
                 ['header' => 'Raumwärme sensibel [W]', 'source' => 'calc_sc', 'key' => 'raumwaerme_sensibel', 'group' => 'Lüftung', 'suppress_unit' => true],
                 ['header' => 'Raumwärmebelastung latent [W]', 'source' => 'static', 'key' => ''],
@@ -228,11 +231,11 @@ init_page_serversides();
                 ['header' => 'Abluft Luftfeuchtigkeit - Gefahr Kondensat bei Austritt', 'source' => 'static', 'key' => ''],
                 ['header' => 'Abluft Sondermaterial Anforderung', 'source' => 'static', 'key' => ''],
                 ['header' => 'Abluft-Wrasen', 'source' => 'static', 'key' => ''],
-                ['header' => 'Bemerkung Lüftung', 'source' => 'static', 'key' => ''],
+                ['header' => 'Bemerkung Lüftung', 'source' => 'anm', 'key' => 'Bemerkung_Lüftung'],
                 // --- GLT ---
                 ['header' => 'GLT Datenpunkt', 'source' => 'calc_sc', 'key' => 'glt_datenpunkt', 'center' => true, 'group' => 'GLT'],
                 ['header' => 'Redundanzanforderung', 'source' => 'static', 'key' => ''],
-                ['header' => 'Bemerkung GLT', 'source' => 'static', 'key' => ''],
+                ['header' => 'Bemerkung GLT', 'source' => 'anm', 'key' => 'Bemerkung_GLT'],
                 // --- Kälte ---
                 ['header' => 'Kälteleistung [W]', 'source' => 'calc_sc', 'key' => 'kaelteleistung', 'group' => 'Kälte'],
                 ['header' => 'Vorlauf Temp [°C]', 'source' => 'calc_sc', 'key' => 'kw_vorlauf_temp', 'group' => 'Kälte'],
@@ -240,14 +243,15 @@ init_page_serversides();
                 ['header' => 'Rücklauf', 'source' => 'static', 'key' => ''],
                 ['header' => 'Rücklauf Anschluss', 'source' => 'calc_sc', 'key' => 'kw_ruecklauf_anschluss', 'group' => 'Kälte'],
                 ['header' => 'Druckverlust [Pa]', 'source' => 'calc_sc', 'key' => 'druckverlust', 'group' => 'Kälte'],
-                ['header' => 'Bemerkung Kälte', 'source' => 'static', 'key' => ''],
+                ['header' => 'Bemerkung Kälte', 'source' => 'anm', 'key' => 'Bemerkung_Kaelte'],
+
                 // --- Architektur ---
                 ['header' => 'Gewicht [kg]', 'source' => 'calc_sc', 'key' => 'gewicht', 'group' => 'Architektur'],
                 ['header' => 'Vibration', 'source' => 'static', 'key' => ''],
                 ['header' => 'Lärm [dB(A)]', 'source' => 'calc_sc', 'key' => 'laerm', 'group' => 'Architektur', 'suppress_unit' => true],
                 ['header' => 'Punktlast abgehängt [kN]', 'source' => 'calc_sc', 'key' => 'punktlast_decke', 'group' => 'Architektur', 'suppress_unit' => true],
                 ['header' => 'Punktlast Boden [kN]', 'source' => 'calc_sc', 'key' => 'punktlast_boden', 'group' => 'Architektur', 'suppress_unit' => true],
-                ['header' => 'Bemerkung Architektur', 'source' => 'static', 'key' => ''],
+                ['header' => 'Bemerkung Architektur', 'source' => 'anm', 'key' => 'Bemerkung_Arch'],
             ];
 
             $suppress_unit_for = array_column(
@@ -295,8 +299,8 @@ init_page_serversides();
 
                     $result['direkt_230_' . $netz] = ($hasNetz && $isDirekt && $spannung === '230') ? (is_numeric($direkt) ? $direkt : '1') : '';
                     $result['direkt_400_' . $netz] = ($hasNetz && $isDirekt && $spannung === '400') ? (is_numeric($direkt) ? $direkt : '1') : '';
-                    $result['steck_230_' . $netz]  = ($hasNetz && $spannung === '230' && $steckdosen > 0) ? $steckdosen : '';
-                    $result['steck_400_' . $netz]  = ($hasNetz && $spannung === '400' && $steckdosen > 0) ? $steckdosen : '';
+                    $result['steck_230_' . $netz] = ($hasNetz && $spannung === '230' && $steckdosen > 0) ? $steckdosen : '';
+                    $result['steck_400_' . $netz] = ($hasNetz && $spannung === '400' && $steckdosen > 0) ? $steckdosen : '';
                 }
                 $result['24V'] = ($params['Spannung'] ?? '') == "24" ? 1 : "";
 
@@ -407,11 +411,11 @@ init_page_serversides();
                 $kw_anschluss_display = trim($display['Kaltwasser_Anschluss'] ?? '');
 
 
-                $anschluss_val     = $kw_anschluss_val !== '' ? $kw_anschluss_val     : trim($params['Voll_entsalztes Wasser_Anschluss'] ?? '');
-                $anschluss_display = $kw_anschluss_val !== '' ? $kw_anschluss_display  : trim($display['Voll_entsalztes Wasser_Anschluss'] ?? '');
+                $anschluss_val = $kw_anschluss_val !== '' ? $kw_anschluss_val : trim($params['Voll_entsalztes Wasser_Anschluss'] ?? '');
+                $anschluss_display = $kw_anschluss_val !== '' ? $kw_anschluss_display : trim($display['Voll_entsalztes Wasser_Anschluss'] ?? '');
                 $einheit = strtolower(trim(str_replace($anschluss_val, '', $anschluss_display)));
                 $r['anschluss_dimension'] = (stripos($einheit, 'dn') !== false) ? $anschluss_val : '';
-                $r['anschluss_punkt']     = (str_contains($einheit, '"'))       ? $anschluss_val : '';
+                $r['anschluss_punkt'] = (str_contains($einheit, '"')) ? $anschluss_val : '';
                 $r['rohrtrenner'] = $trennung;
 
                 return $r;
@@ -638,6 +642,28 @@ init_page_serversides();
                     }
                 }
             }
+            // 3) Element-Anmerkungen laden
+            $anmerkungMap = [];
+            if (!empty($elementIDs)) {
+                $placeholders = implode(',', array_fill(0, count($elementIDs), '?'));
+                $types = str_repeat('i', count($elementIDs)) . 'i';
+                $bindParams = array_merge($elementIDs, [$projectID]);
+                $stmtA = $mysqli->prepare("
+        SELECT ElementID, VariantenID,
+               Bemerkung_Allgemein, Bemerkung_ET, Bemerkung_MG,
+               Bemerkung_Wasser, Bemerkung_Abwasser, Bemerkung_Lüftung,
+               Bemerkung_GLT, Bemerkung_Kaelte, Bemerkung_Arch
+        FROM tabelle_Element_has_Anmerkung
+        WHERE ElementID IN ($placeholders) AND ProjektID = ?
+    ");
+                $stmtA->bind_param($types, ...$bindParams);
+                $stmtA->execute();
+                $rowsA = $stmtA->get_result()->fetch_all(MYSQLI_ASSOC);
+                $stmtA->close();
+                foreach ($rowsA as $row) {
+                    $anmerkungMap[$row['ElementID'] . '_' . $row['VariantenID']] = $row;
+                }
+            }
 
             $mysqli->close();
             ?>
@@ -667,7 +693,7 @@ init_page_serversides();
                         $ac = calc_anschluss_cols($params);
                         $wc = calc_wasser_cols($params, $display);
                         $sc = calc_sonstige_cols($params, $display);
-
+                        $anm = $anmerkungMap[$eID . '_' . $varID] ?? [];
                         echo "<tr>";
                         foreach ($columnDefs as $col) {
                             $center = !empty($col['center']) ? ' class="text-center"' : '';
@@ -683,6 +709,7 @@ init_page_serversides();
                                 'calc_ac' => h($ac[$col['key']] ?? ''),
                                 'calc_wc' => h($wc[$col['key']] ?? ''),
                                 'calc_sc' => h($sc[$col['key']] ?? ''),
+                                'anm'     => h($anm[$col['key']] ?? ''),
                                 default => '',
                             };
                             echo "<td{$center}>{$val}</td>";
