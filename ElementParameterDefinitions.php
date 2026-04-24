@@ -176,8 +176,12 @@ $parameterFieldConfig = [
     'HKLS|Warmwasser_Temp_Min|Einheit' => $unitSets['temp'],
     'HKLS|Kaltwasser_Wasserhaerte|Einheit' => $unitSets['waterHardness'],
     'HKLS|Warmwasser_Wasserhaerte|Einheit' => $unitSets['waterHardness'],
-
     'HKLS|Kühlwasser_Druckverlust|Einheit' => $unitSets['pressure'],
+
+
+    'HKLS|Labor_Analysewasser_Anschluss|Einheit' => $unitSets['connection'],
+    'HKLS|Labor_Analysewasser_Strom|Einheit' => $unitSets['flow'],
+
 
     'Ergonomie|Lärm|Einheit' => $unitSets['noise'],
     'Allgemein|Volumen|Einheit' => $unitSets['volume'],

@@ -411,8 +411,23 @@ init_page_serversides();
                 $kw_anschluss_display = trim($display['Kaltwasser_Anschluss'] ?? '');
 
 
-                $anschluss_val = $kw_anschluss_val !== '' ? $kw_anschluss_val : trim($params['Voll_entsalztes Wasser_Anschluss'] ?? '');
-                $anschluss_display = $kw_anschluss_val !== '' ? $kw_anschluss_display : trim($display['Voll_entsalztes Wasser_Anschluss'] ?? '');
+                $ve_anschluss_val = trim($params['Voll_entsalztes Wasser_Anschluss'] ?? '');
+                $lw_anschluss_val = trim($params['Labor_Analysewasser_Anschluss'] ?? '');
+
+                if ($kw_anschluss_val !== '') {
+                    $anschluss_val = $kw_anschluss_val;
+                    $anschluss_display = $kw_anschluss_display;
+                } elseif ($ve_anschluss_val !== '') {
+                    $anschluss_val = $ve_anschluss_val;
+                    $anschluss_display = trim($display['Voll_entsalztes Wasser_Anschluss'] ?? '');
+                } elseif ($lw_anschluss_val !== '') {
+                    $anschluss_val = $lw_anschluss_val;
+                    $anschluss_display = trim($display['Labor_Analysewasser_Anschluss'] ?? '');
+                } else {
+                    $anschluss_val = '';
+                    $anschluss_display = '';
+                }
+
                 $einheit = strtolower(trim(str_replace($anschluss_val, '', $anschluss_display)));
                 $r['anschluss_dimension'] = (stripos($einheit, 'dn') !== false) ? $anschluss_val : '';
                 $r['anschluss_punkt'] = (str_contains($einheit, '"')) ? $anschluss_val : '';
@@ -709,7 +724,7 @@ init_page_serversides();
                                 'calc_ac' => h($ac[$col['key']] ?? ''),
                                 'calc_wc' => h($wc[$col['key']] ?? ''),
                                 'calc_sc' => h($sc[$col['key']] ?? ''),
-                                'anm'     => h($anm[$col['key']] ?? ''),
+                                'anm' => h($anm[$col['key']] ?? ''),
                                 default => '',
                             };
                             echo "<td{$center}>{$val}</td>";
