@@ -51,7 +51,59 @@ function json_error(string $msg, int $code = 400): never
  */
 function get_or_create_variante(mysqli $db, int $projekt_id, int $planungsphase, int $element_id, array $params): int
 {
-    // Bestehende Varianten für dieses Element+Projekt
+    // ── Case A: parameterless element (variante_params: []) ────────
+    // We need a variant that has ZERO parameters stored for this element
+    // in this project. That is the true "clean Var A".
+    // We must NOT just pick any variant that passes an empty-foreach loop,
+    // because that would wrongly reuse a variant that has other params.
+    if (empty($params)) {
+        // Find a variant that this element uses in this project, but has NO params
+        $stmt = $db->prepare("
+            SELECT DISTINCT rhe.tabelle_Varianten_idtabelle_Varianten AS vid
+            FROM tabelle_räume_has_tabelle_elemente rhe
+            JOIN tabelle_räume r ON r.idTABELLE_Räume = rhe.TABELLE_Räume_idTABELLE_Räume
+            WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
+              AND rhe.TABELLE_Elemente_idTABELLE_Elemente = ?
+              AND rhe.tabelle_Varianten_idtabelle_Varianten NOT IN (
+                  SELECT DISTINCT tabelle_Varianten_idtabelle_Varianten
+                  FROM tabelle_projekt_elementparameter
+                  WHERE tabelle_projekte_idTABELLE_Projekte = ?
+                    AND tabelle_elemente_idTABELLE_Elemente = ?
+              )
+            ORDER BY vid
+            LIMIT 1
+        ");
+        $stmt->bind_param('iiii', $projekt_id, $element_id, $projekt_id, $element_id);
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+        if ($row) return (int)$row['vid'];
+
+        // Also check: any variant in the project for this element that has no params
+        $stmt2 = $db->prepare("
+            SELECT DISTINCT tabelle_Varianten_idtabelle_Varianten AS vid
+            FROM tabelle_projekt_elementparameter
+            WHERE tabelle_projekte_idTABELLE_Projekte = ?
+              AND tabelle_elemente_idTABELLE_Elemente = ?
+            ORDER BY vid
+        ");
+        $stmt2->bind_param('ii', $projekt_id, $element_id);
+        $stmt2->execute();
+        $used_vids = array_column($stmt2->get_result()->fetch_all(MYSQLI_ASSOC), 'vid');
+        $stmt2->close();
+
+        // Pick lowest variant ID not used by this element at all
+        $all = $db->query("SELECT idtabelle_Varianten AS id FROM tabelle_varianten ORDER BY idtabelle_Varianten");
+        $used_flip = array_flip($used_vids);
+        foreach ($all->fetch_all(MYSQLI_ASSOC) as $r) {
+            if (!isset($used_flip[(int)$r['id']])) {
+                return (int)$r['id']; // clean slot — no params needed, nothing to write
+            }
+        }
+        throw new \RuntimeException("Keine freie Variante für Element $element_id in Projekt $projekt_id.");
+    }
+
+    // ── Case B: element with variante_params → fingerprint match ───
     $stmt = $db->prepare("
         SELECT DISTINCT tabelle_Varianten_idtabelle_Varianten AS vid
         FROM tabelle_projekt_elementparameter
@@ -64,7 +116,6 @@ function get_or_create_variante(mysqli $db, int $projekt_id, int $planungsphase,
     $existing_vids = array_column($stmt->get_result()->fetch_all(MYSQLI_ASSOC), 'vid');
     $stmt->close();
 
-    // Passende Variante suchen
     foreach ($existing_vids as $vid) {
         $s2 = $db->prepare("
             SELECT tabelle_parameter_idTABELLE_Parameter AS pid, Wert
@@ -80,25 +131,30 @@ function get_or_create_variante(mysqli $db, int $projekt_id, int $planungsphase,
 
         $match = true;
         foreach ($params as $pid => $info) {
-            if ((string)($db_params[$pid] ?? null) !== (string)$info['wert']) { $match = false; break; }
+            if ((string)($db_params[$pid] ?? null) !== (string)$info['wert']) {
+                $match = false;
+                break;
+            }
         }
         if ($match) return (int)$vid;
     }
 
-    // Nächste freie Variante aus tabelle_varianten (kein INSERT!)
+    // No matching variant found → use next free slot and write params
     $used = array_flip($existing_vids);
-    $all  = $db->query("SELECT idtabelle_Varianten AS id FROM tabelle_varianten ORDER BY idtabelle_Varianten");
+    $all = $db->query("SELECT idtabelle_Varianten AS id FROM tabelle_varianten ORDER BY idtabelle_Varianten");
     $new_vid = null;
     foreach ($all->fetch_all(MYSQLI_ASSOC) as $row) {
-        if (!isset($used[(int)$row['id']])) { $new_vid = (int)$row['id']; break; }
+        if (!isset($used[(int)$row['id']])) {
+            $new_vid = (int)$row['id'];
+            break;
+        }
     }
     if (!$new_vid) {
         throw new \RuntimeException("Keine freie Variante für Element $element_id in Projekt $projekt_id.");
     }
 
-    // Parameter schreiben
     foreach ($params as $pid => $info) {
-        $wert    = $db->real_escape_string((string)$info['wert']);
+        $wert = $db->real_escape_string((string)$info['wert']);
         $einheit = $db->real_escape_string((string)($info['einheit'] ?? ''));
         $db->query("
             INSERT INTO tabelle_projekt_elementparameter
@@ -113,10 +169,11 @@ function get_or_create_variante(mysqli $db, int $projekt_id, int $planungsphase,
 
 
 function audit_log(mysqli $db, int $projekt_id, int $user_id, string $action, array $details): void
-{/**
- * Schreibt einen Audit-Log-Eintrag. TODO Tabelle in DB anlegen
- * Scheitert die Tabelle, bricht das nicht den Sync ab.
- */
+{
+    /**
+     * Schreibt einen Audit-Log-Eintrag. TODO Tabelle in DB anlegen
+     * Scheitert die Tabelle, bricht das nicht den Sync ab.
+     */
     // $stmt = $db->prepare("
     //     INSERT IGNORE INTO tabelle_import_log
     //         (tabelle_projekte_id, user_id, action, details, created_at)
