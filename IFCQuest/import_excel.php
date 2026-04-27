@@ -184,32 +184,7 @@ init_page_serversides("No Redirect");
                     </div>
 
                 </div>
-                <!-- ══ Card 5: Sync ══ -->
-                <div class="card" id="sync-card" style="display:none">
-                    <div class="card-header">
 
-                        <span class="fw-semibold">Änderungen übernehmen</span>
-                    </div>
-
-                    <div class="card-body">
-                        <div id="sync-summary" class="mb-3 small"></div>
-                        <label class="form-label small fw-semibold">Kommentar für entfernte
-                            Elemente:</label>
-                        <input type="text" id="sync-kommentar" class="form-control form-control-sm mb-3"
-                               value="Entfernt via Excel-Abgleich"/>
-                        <div class="d-flex  align-items-center">
-                            <button id="btn-sync" class="btn btn-success btn-sm">
-                                <i class="fas fa-database me-2"></i>Änderungen in DB übernehmen
-                            </button>
-                            <div id="sync-spinner" class="spinner-border spinner-border-sm text-success"
-                                 style="display:none"></div>
-                        </div>
-                        <!-- Sticky Result — bleibt sichtbar auch nach Neu-Laden des Compare -->
-                        <div id="sync-result" class="mt-3 sync-result-sticky"
-                             style="display:none"></div>
-                    </div>
-
-                </div>
             </div>
         </div>
     </div>

@@ -80,18 +80,23 @@ include('roombookSpecifications_copyRoomModal.php');
 
 <main class="container-fluid">
 
-    <section class="mt-1 card">
-        <header class="card-header d-flex border-light" style="height: 1vh; font-size: 1vh;" id="btnLabelz">
-            <div class="col-xxl-4"><strong>Edit & Filter</strong></div>
-            <div class="col-xxl-1 d-flex justify-content-end "><strong>Auswahl</strong></div>
-            <div class="col-xxl-1"></div>
-            <div class="col-xxl-3"><strong>Sichtbarkeit</strong></div>
-            <div class="col-xxl-1 d-flex justify-content-end align-items-right "><strong>Neu & Output</strong></div>
-            <div class="col-xxl-2 d-flex justify-content-end align-items-right"><strong style="float: right;">Check&Settings</strong>
-            </div>
+    <div class="mt-1 card">
+
+        <!-- Label-Zeile: nur ab lg sichtbar, nimmt sonst zu viel Platz -->
+        <header class="card-header d-none d-lg-flex border-light py-0" style="font-size: 0.75rem;" id="btnLabelz">
+            <div style="flex: 4;"><strong>Edit & Filter</strong></div>
+            <div style="flex: 1; text-align: right;"><strong>Auswahl</strong></div>
+            <div style="flex: 1;"></div>
+            <div style="flex: 4;"><strong>Sichtbarkeit</strong></div>
+            <div style="flex: 1; text-align: right;"><strong>Neu & Output</strong></div>
+            <div style="flex: 1; text-align: right;"><strong>Check&Settings</strong></div>
         </header>
-        <div class="card-header container-fluid d-flex align-items-start border-dark">
-            <div class="col-xxl-4 d-flex justify-content-left align-items-left" id='TableCardHeader'>
+
+        <!-- Button-Zeile: flex-wrap damit sie auf schmalen Screens umbricht -->
+        <div class="card-header d-flex flex-wrap align-items-center gap-1 border-dark py-1" id="mainToolbar">
+
+            <!-- Edit & Filter -->
+            <div class="d-flex align-items-center gap-1 flex-shrink-0  flex-wrap " id="TableCardHeader">
                 <label for="checkbox_EditableTable"
                        id="edit_cbx"
                        class="form-check-label"
@@ -105,11 +110,21 @@ include('roombookSpecifications_copyRoomModal.php');
                        style="width: 20px; height: 30px;"
                        checked/>
             </div>
-            <div class="col-xxl-1 d-flex justify-content-end align-items-center" id="TableCardHeaderX"></div>
-            <div class="col-xxl-4 d-flex justify-content-center align-items-center" id="TableCardHeader2"></div>
-            <div class="col-xxl-1 d-flex justify-content-end align-items-right" id='TableCardHeader3'></div>
-            <div class="col-xxl-2 d-flex justify-content-end align-items-right" id='TableCardHeader4'></div>
+
+            <!-- Auswahl -->
+            <div class="d-flex align-items-center flex-shrink-0" id="TableCardHeaderX"></div>
+            <div class="d-flex align-items-center flex-shrink-0" id="TableCardHeader5"></div>
+            <!-- Sichtbarkeit -->
+            <div class="d-flex align-items-center flex-wrap flex-grow-1" id="TableCardHeader2"></div>
+
+            <!-- Neu & Output -->
+            <div class="d-flex align-items-center flex-shrink-0" id="TableCardHeader3"></div>
+
+            <!-- Check & Settings -->
+            <div class="d-flex align-items-center flex-shrink-0 ms-2" id="TableCardHeader4"></div>
+
         </div>
+
         <div class="card-body" id="table_container_div">
             <table class="table compact  table-responsive table-striped table-bordered border border-5 border-light table-sm sticky"
 
@@ -124,7 +139,7 @@ include('roombookSpecifications_copyRoomModal.php');
                 </tbody>
             </table>
         </div>
-    </section>
+    </div>
     <section class='d-flex bd-highlight'>
         <div class='mt-4 me-2 mr-2 card flex-grow-1'>
             <header class="card-header fix_size"><b>Bauangaben Texte</b></header>
@@ -135,7 +150,8 @@ include('roombookSpecifications_copyRoomModal.php');
             <div class="card-header" id="CardHeaderElementsInRoom">
                 <div class="row" id="">
                     <div class="col-2" id="">
-                        <button type="button" class="btn btn-outline-dark " id="showRoomElements" style="width: 30px;">
+                        <button type="button" class="btn btn-outline-dark " id="showRoomElements"
+                                style="width: 30px;">
                             <i class="fas fa-caret-left"></i>
                         </button>
                     </div>

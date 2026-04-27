@@ -2,16 +2,22 @@
 /**
  * api_compare_elements.php
  * ══════════════════════════════════════════════════════════════════
- * Compares the Excel entries of a room against the DB.
+ * Vergleicht Excel-Einträge eines Raums mit der DB.
  *
- * Variant matching rules:
- *   variante_params: []  → no configurable variants. Match a DB variant
- *                          that has ZERO params stored for this element
- *                          in this project (true "clean Var A").
- *   variante_params: [x] → fingerprint match on those param IDs only.
+ * "Ignore-Parameter" werden NICHT im Config definiert.
+ * Stattdessen gilt: jeder Parameter der in der DB gespeichert ist,
+ * aber weder in variante_params noch in element_params vorkommt,
+ * wird automatisch ignoriert (nicht gelöscht, nicht verglichen,
+ * kann aber "ambiguous" auslösen, wenn er Varianten unterscheidet).
  *
- * POST: { raum_id, familien: [{familie, laenge, tiefe, variante, params}] }
- * Response: { raum_id, element_blocks, unmapped_familien }
+ * Comparison-Status:
+ *   match        – identisch
+ *   diff_anzahl  – gleiche Variante, andere Anzahl
+ *   nur_excel    – neu hinzufügen
+ *   nur_db       – Element ist managed → auf 0 setzen
+ *   not_managed  – ElementID nicht im Config → nicht angepasst
+ *   ambiguous    – mehrere Varianten passen (nur ignore-params
+ *                  unterschiedlich) → User muss wählen
  * ══════════════════════════════════════════════════════════════════
  */
 
@@ -51,7 +57,7 @@ function nearest_std(int $cm): array
 
 function norm(string $raw): string
 {
-    if (in_array($raw, ['Ja', 'ja', 'Yes', '1', 'true'],  true)) return '1';
+    if (in_array($raw, ['Ja', 'ja', 'Yes', '1', 'true'],     true)) return '1';
     if (in_array($raw, ['Nein', 'nein', 'No', '0', 'false'], true)) return '0';
     return $raw;
 }
@@ -69,14 +75,20 @@ function extract_params(array $col_names, array $params_raw): array
     return $out;
 }
 
+/** Collect all known param IDs from PARAMETER_MAPPING (= "managed" param IDs). */
+function all_known_param_ids(): array
+{
+    return array_map(fn($cfg) => $cfg['id'], array_values(PARAMETER_MAPPING));
+}
+
 function resolve(string $familie, string $laenge, string $tiefe, array $params_raw): array
 {
-    $r = ['element_id' => null, 'variante_params' => [], 'info_params' => [], 'debug' => '', 'laenge_cm' => null, 'is_sondermass' => false];
+    $r = ['element_id' => null, 'variante_params' => [], 'element_params' => [], 'debug' => '', 'laenge_cm' => null, 'is_sondermass' => false];
 
     foreach (MZ_FAMILIE_MAPPING as $key => $mz) {
         if (!str_contains($familie, $key)) continue;
         $r['variante_params'] = $mz['variante_params'] ?? [];
-        $r['info_params']     = $mz['info_params'] ?? [];
+        $r['element_params']  = $mz['element_params']  ?? $mz['info_params'] ?? [];
 
         if ($mz['typ'] === 'tisch') {
             $raw_b = $laenge !== '' ? $laenge : ($params_raw['MT_LIMET_Breite'] ?? '');
@@ -104,9 +116,9 @@ function resolve(string $familie, string $laenge, string $tiefe, array $params_r
 
     if (isset(FAMILIE_MAPPING[$familie])) {
         $fm = FAMILIE_MAPPING[$familie];
-        $r['element_id'] = $fm['element_id'];
+        $r['element_id']     = $fm['element_id'];
         $r['variante_params'] = $fm['variante_params'] ?? [];
-        $r['info_params']     = $fm['info_params'] ?? [];
+        $r['element_params']  = $fm['element_params']  ?? $fm['info_params'] ?? [];
         $r['debug'] = 'direktes Mapping';
         return $r;
     }
@@ -135,10 +147,18 @@ if (!isset($body['raum_id']) || !is_numeric($body['raum_id'])) json_error('raum_
 if (!isset($body['familien']) || !is_array($body['familien']))  json_error('familien fehlt');
 if (!isset($_SESSION['projectID']))                              json_error('Kein Projekt in Session');
 
-$raum_id    = (int)$body['raum_id'];
-$familien   = $body['familien'];
-$projekt_id = (int)$_SESSION['projectID'];
-$mysqli     = utils_connect_sql();
+$raum_id      = (int)$body['raum_id'];
+$familien     = $body['familien'];
+$projekt_id   = (int)$_SESSION['projectID'];
+$user_choices = (array)($body['user_choices'] ?? []); // { "eid|fp" => variante_id }
+
+$mysqli = utils_connect_sql();
+
+$managed_element_ids = get_all_managed_element_ids();
+
+// IDs of all params we know about from PARAMETER_MAPPING
+// = params that can be variante_params or element_params
+$known_param_ids = all_known_param_ids();
 
 // ──────────────────────────────────────────────────────────────────
 // Step 1: Room DB state
@@ -163,11 +183,11 @@ $db_by_eid = [];
 foreach ($db_room_rows as $row) $db_by_eid[$row['ElementID']][] = $row;
 
 // ──────────────────────────────────────────────────────────────────
-// Step 2: Project variant params for room elements
+// Step 2: Project variant params for all elements in room
 // ──────────────────────────────────────────────────────────────────
 
 $all_internal_ids = array_unique(array_column($db_room_rows, 'db_elem_internal_id'));
-$all_proj_params  = []; // [elem_id][variante_id][param_id] = wert
+$all_proj_params  = [];
 
 if (!empty($all_internal_ids)) {
     $ph = implode(',', array_fill(0, count($all_internal_ids), '?'));
@@ -208,7 +228,7 @@ foreach ($familien as $e) {
     }
 
     $vparams = extract_params($res['variante_params'], $params_raw);
-    $iparams = extract_params($res['info_params'],     $params_raw);
+    $eparams = extract_params($res['element_params'],  $params_raw);
     $fp      = fingerprint(array_map(fn($p) => $p['wert'], $vparams));
     $eid     = $res['element_id'];
 
@@ -220,7 +240,7 @@ foreach ($familien as $e) {
             'fingerprint'         => $fp,
             'anzahl'              => 1,
             'variante_params'     => $vparams,
-            'all_params'          => $vparams + $iparams,
+            'element_params'      => $eparams,
             'familie'             => $familie,
             'laenge_raw'          => $laenge,
             'tiefe_raw'           => $tiefe,
@@ -233,12 +253,15 @@ foreach ($familien as $e) {
 }
 
 // ──────────────────────────────────────────────────────────────────
-// Step 4 & 5: Resolve element_id strings → internal IDs, load extra params
+// Step 4: Resolve element_id strings → internal IDs + names
 // ──────────────────────────────────────────────────────────────────
 
 $all_eids    = array_unique(array_merge(array_keys($db_by_eid), array_keys($excel_groups)));
 $eid_to_dbid = []; $eid_bezeich = [];
-foreach ($db_room_rows as $row) { $eid_to_dbid[$row['ElementID']] = (int)$row['db_elem_internal_id']; $eid_bezeich[$row['ElementID']] = $row['Bezeichnung']; }
+foreach ($db_room_rows as $row) {
+    $eid_to_dbid[$row['ElementID']] = (int)$row['db_elem_internal_id'];
+    $eid_bezeich[$row['ElementID']] = $row['Bezeichnung'];
+}
 
 $missing_eids = array_diff(array_keys($excel_groups), array_keys($eid_to_dbid));
 if (!empty($missing_eids)) {
@@ -248,7 +271,10 @@ if (!empty($missing_eids)) {
     $s3 = $mysqli->prepare("SELECT idTABELLE_Elemente AS id, ElementID, Bezeichnung FROM tabelle_elemente WHERE ElementID IN ($ph)");
     call_user_func_array([$s3, 'bind_param'], $refs);
     $s3->execute();
-    foreach ($s3->get_result()->fetch_all(MYSQLI_ASSOC) as $row) { $eid_to_dbid[$row['ElementID']] = (int)$row['id']; $eid_bezeich[$row['ElementID']] = $row['Bezeichnung']; }
+    foreach ($s3->get_result()->fetch_all(MYSQLI_ASSOC) as $row) {
+        $eid_to_dbid[$row['ElementID']] = (int)$row['id'];
+        $eid_bezeich[$row['ElementID']] = $row['Bezeichnung'];
+    }
     $s3->close();
 }
 
@@ -270,7 +296,7 @@ if (!empty($extra_ids)) {
     $s4->close();
 }
 
-// Load variant letters
+// Variant letters
 $vid_needed = [];
 foreach ($all_proj_params as $ep) foreach ($ep as $vid => $_) $vid_needed[] = (int)$vid;
 foreach ($db_room_rows as $row) $vid_needed[] = (int)$row['variante_id'];
@@ -288,7 +314,7 @@ if (!empty($vid_needed)) {
 }
 
 // ──────────────────────────────────────────────────────────────────
-// Step 6: Build element blocks
+// Step 5: Build element blocks
 // ──────────────────────────────────────────────────────────────────
 
 $element_blocks = [];
@@ -299,22 +325,33 @@ foreach ($all_eids as $eid) {
     $in_db_room       = isset($db_by_eid[$eid]);
     $in_excel         = isset($excel_groups[$eid]);
     $proj_elem_params = $internal_id ? ($all_proj_params[$internal_id] ?? []) : [];
+    $is_managed       = in_array($eid, $managed_element_ids, true);
 
-    // What variante_params does this element type use?
+    // Collect variante_param_ids and element_param_ids from Excel groups
     $has_variante_params  = false;
     $variante_param_ids   = [];
     $variante_param_names = [];
+    $element_param_ids    = [];
+
     if ($in_excel) {
         foreach ($excel_groups[$eid] as $ex) {
             if ($ex['has_variante_params']) {
                 $has_variante_params = true;
                 foreach ($ex['variante_params'] as $pid => $pinfo) {
-                    if (!in_array((int)$pid, $variante_param_ids)) $variante_param_ids[] = (int)$pid;
-                    if (!in_array($pinfo['bezeichnung'], $variante_param_names)) $variante_param_names[] = $pinfo['bezeichnung'];
+                    if (!in_array((int)$pid, $variante_param_ids)) {
+                        $variante_param_ids[]   = (int)$pid;
+                        $variante_param_names[] = $pinfo['bezeichnung'];
+                    }
                 }
+            }
+            foreach ($ex['element_params'] as $pid => $_) {
+                if (!in_array((int)$pid, $element_param_ids)) $element_param_ids[] = (int)$pid;
             }
         }
     }
+
+    // "Explicitly managed" param IDs = variante_params + element_params
+    $explicit_param_ids = array_unique(array_merge($variante_param_ids, $element_param_ids));
 
     // Build db_variants
     $db_variants = [];
@@ -323,6 +360,7 @@ foreach ($all_eids as $eid) {
 
     foreach ($db_variants as $vid => $_) {
         $param_map = $proj_elem_params[$vid] ?? [];
+
         $params_labeled = [];
         foreach ($param_map as $pid => $wert) {
             $cfg = null;
@@ -331,69 +369,67 @@ foreach ($all_eids as $eid) {
                 'wert'        => $wert,
                 'einheit'     => $cfg['einheit'] ?? '',
                 'bezeichnung' => $cfg ? $cfg['bezeichnung'] : "Param #{$pid}",
+                // Classify each param: variante | element | ignore
+                'role'        => in_array((int)$pid, $variante_param_ids, true) ? 'variante'
+                    : (in_array((int)$pid, $element_param_ids, true) ? 'element' : 'ignore'),
             ];
         }
+
         $rhe_row = null;
         if ($in_db_room) foreach ($db_by_eid[$eid] as $rhe) { if ((int)$rhe['variante_id'] === $vid) { $rhe_row = $rhe; break; } }
 
+        // Variant fingerprint = ONLY variante_param_ids (ignore everything else)
+        $fp_data = [];
+        foreach ($variante_param_ids as $pid) $fp_data[$pid] = $params_labeled[$pid]['wert'] ?? null;
+
+        // Ignore-param IDs = all stored params that are NOT explicitly managed
+        $ignore_param_ids_for_var = array_values(array_filter(
+            array_keys($params_labeled),
+            fn($pid) => !in_array((int)$pid, $explicit_param_ids, true)
+        ));
+
         $db_variants[$vid] = [
-            'variante_id'     => $vid,
-            'variante_letter' => $variante_letters[$vid] ?? '?',
-            'params'          => $params_labeled,
-            'has_any_params'  => !empty($param_map),
-            'label'           => variante_label($params_labeled),
-            'in_room'         => $rhe_row !== null,
-            'rhe_id'          => $rhe_row ? (int)$rhe_row['rhe_id'] : null,
-            'db_anzahl'       => $rhe_row ? (int)$rhe_row['Anzahl'] : 0,
+            'variante_id'      => $vid,
+            'variante_letter'  => $variante_letters[$vid] ?? '?',
+            'params'           => $params_labeled,
+            'variante_fp'      => fingerprint($fp_data),
+            'ignore_param_ids' => $ignore_param_ids_for_var,
+            'has_only_ignored' => !empty($param_map) && empty(array_filter($params_labeled, fn($p) => $p['role'] !== 'ignore')),
+            'in_room'          => $rhe_row !== null,
+            'rhe_id'           => $rhe_row ? (int)$rhe_row['rhe_id'] : null,
+            'db_anzahl'        => $rhe_row ? (int)$rhe_row['Anzahl'] : 0,
         ];
     }
     ksort($db_variants);
 
-    // Match Excel entries → DB variants
+    // ── Match Excel → DB variants ──────────────────────────────────
     $comparison = []; $matched_vids = [];
 
     if ($in_excel) {
         foreach ($excel_groups[$eid] as $fp => $ex) {
-            $matched_variant = null;
+            $choice_key = $eid . '|' . $fp;
 
-            if (!$ex['has_variante_params']) {
-                // Parameterless type → find a variant with ZERO params stored
-                // for THIS element in this project (true clean Var A)
-                foreach ($db_variants as $vid => $dbv) {
-                    if (!$dbv['has_any_params']) { $matched_variant = $dbv; $matched_vids[] = $vid; break; }
-                }
-            } else {
-                // Fingerprint match on relevant param IDs only
-                $ex_fp_map = array_map(fn($p) => $p['wert'], $ex['variante_params']);
-                $ex_fp     = fingerprint($ex_fp_map);
-                foreach ($db_variants as $vid => $dbv) {
-                    $sub = [];
-                    foreach ($ex_fp_map as $pid => $_) $sub[$pid] = $dbv['params'][$pid]['wert'] ?? null;
-                    if (fingerprint($sub) === $ex_fp) { $matched_variant = $dbv; $matched_vids[] = $vid; break; }
+            $ex_fp_map = array_map(fn($p) => $p['wert'], $ex['variante_params']);
+            $ex_fp     = fingerprint($ex_fp_map);
+
+            // Find candidates: variants that match on variante_params
+            // (ignore everything else — that's the whole point)
+            $candidates = [];
+            foreach ($db_variants as $vid => $dbv) {
+                if (!$ex['has_variante_params']) {
+                    // Parameterless type: candidate must have NO variante_params stored.
+                    // (ignore-params may exist — fine)
+                    $has_variante_stored = !empty(array_filter(
+                        $dbv['params'],
+                        fn($p) => $p['role'] === 'variante'
+                    ));
+                    if (!$has_variante_stored) $candidates[] = $dbv;
+                } else {
+                    if ($dbv['variante_fp'] === $ex_fp) $candidates[] = $dbv;
                 }
             }
 
-            if ($matched_variant) {
-                $comparison[] = [
-                    'status'              => $matched_variant['db_anzahl'] === $ex['anzahl'] ? 'match' : 'diff_anzahl',
-                    'variante_id'         => $matched_variant['variante_id'],
-                    'variante_letter'     => $matched_variant['variante_letter'],
-                    'variante_label'      => $matched_variant['label'],
-                    'db_anzahl'           => $matched_variant['db_anzahl'],
-                    'excel_anzahl'        => $ex['anzahl'],
-                    'rhe_id'              => $matched_variant['rhe_id'],
-                    'db_elem_id'          => $internal_id,
-                    'familie'             => $ex['familie'],
-                    'laenge_raw'          => $ex['laenge_raw'],
-                    'tiefe_raw'           => $ex['tiefe_raw'],
-                    'laenge_cm'           => $ex['laenge_cm'],
-                    'debug'               => $ex['debug'],
-                    'is_sondermass'       => $ex['is_sondermass'],
-                    'excel_params'        => $ex['all_params'],
-                    'needs_new_variante'  => false,
-                    'new_variante_params' => [],
-                ];
-            } else {
+            if (count($candidates) === 0) {
                 $comparison[] = [
                     'status'              => 'nur_excel',
                     'variante_id'         => null,
@@ -409,58 +445,157 @@ foreach ($all_eids as $eid) {
                     'laenge_cm'           => $ex['laenge_cm'],
                     'debug'               => $ex['debug'],
                     'is_sondermass'       => $ex['is_sondermass'],
-                    'excel_params'        => $ex['all_params'],
+                    'excel_params'        => $ex['variante_params'],
+                    'element_params'      => $ex['element_params'],
                     'needs_new_variante'  => true,
                     'new_variante_params' => $ex['variante_params'],
+                    'candidates'          => [],
+                    'chosen_variante_id'  => null,
+                    'choice_key'          => $choice_key,
                 ];
+
+            } elseif (count($candidates) === 1) {
+                $matched = $candidates[0];
+                $matched_vids[] = $matched['variante_id'];
+                $db_anzahl = $matched['db_anzahl'];
+                $comparison[] = [
+                    'status' => $db_anzahl == 0
+                        ? 'nur_excel'
+                        : ($db_anzahl === $ex['anzahl'] ? 'match' : 'diff_anzahl'),
+                    'variante_id'         => $matched['variante_id'],
+                    'variante_letter'     => $matched['variante_letter'],
+                    'variante_label'      => variante_label(array_filter($matched['params'], fn($p) => $p['role'] === 'variante')),
+                    'db_anzahl'           => $db_anzahl,
+                    'excel_anzahl'        => $ex['anzahl'],
+                    'rhe_id'              => $matched['rhe_id'],
+                    'db_elem_id'          => $internal_id,
+                    'familie'             => $ex['familie'],
+                    'laenge_raw'          => $ex['laenge_raw'],
+                    'tiefe_raw'           => $ex['tiefe_raw'],
+                    'laenge_cm'           => $ex['laenge_cm'],
+                    'debug'               => $ex['debug'],
+                    'is_sondermass'       => $ex['is_sondermass'],
+                    'excel_params'        => $ex['variante_params'],
+                    'element_params'      => $ex['element_params'],
+                    'needs_new_variante'  => false,
+                    'new_variante_params' => [],
+                    'candidates'          => [],
+                    'chosen_variante_id'  => null,
+                    'choice_key'          => $choice_key,
+                ];
+
+            } else {
+                // Ambiguous — check if user already chose
+                $chosen_vid = isset($user_choices[$choice_key]) ? (int)$user_choices[$choice_key] : null;
+                $chosen     = null;
+                if ($chosen_vid) foreach ($candidates as $c) { if ($c['variante_id'] === $chosen_vid) { $chosen = $c; break; } }
+
+                if ($chosen) {
+                    $matched_vids[] = $chosen['variante_id'];
+                    $db_anzahl = $chosen['db_anzahl'];
+                    $comparison[] = [
+                        'status'              => $db_anzahl === $ex['anzahl'] ? 'match' : 'diff_anzahl',
+                        'variante_id'         => $chosen['variante_id'],
+                        'variante_letter'     => $chosen['variante_letter'],
+                        'variante_label'      => variante_label(array_filter($chosen['params'], fn($p) => $p['role'] === 'variante')),
+                        'db_anzahl'           => $db_anzahl,
+                        'excel_anzahl'        => $ex['anzahl'],
+                        'rhe_id'              => $chosen['rhe_id'],
+                        'db_elem_id'          => $internal_id,
+                        'familie'             => $ex['familie'],
+                        'laenge_raw'          => $ex['laenge_raw'],
+                        'tiefe_raw'           => $ex['tiefe_raw'],
+                        'laenge_cm'           => $ex['laenge_cm'],
+                        'debug'               => $ex['debug'],
+                        'is_sondermass'       => $ex['is_sondermass'],
+                        'excel_params'        => $ex['variante_params'],
+                        'element_params'      => $ex['element_params'],
+                        'needs_new_variante'  => false,
+                        'new_variante_params' => [],
+                        'candidates'          => [],
+                        'chosen_variante_id'  => $chosen_vid,
+                        'choice_key'          => $choice_key,
+                    ];
+                } else {
+                    $comparison[] = [
+                        'status'              => 'ambiguous',
+                        'variante_id'         => null,
+                        'variante_letter'     => '?',
+                        'variante_label'      => '— Auswahl nötig —',
+                        'db_anzahl'           => 0,
+                        'excel_anzahl'        => $ex['anzahl'],
+                        'rhe_id'              => null,
+                        'db_elem_id'          => $internal_id,
+                        'familie'             => $ex['familie'],
+                        'laenge_raw'          => $ex['laenge_raw'],
+                        'tiefe_raw'           => $ex['tiefe_raw'],
+                        'laenge_cm'           => $ex['laenge_cm'],
+                        'debug'               => $ex['debug'],
+                        'is_sondermass'       => $ex['is_sondermass'],
+                        'excel_params'        => $ex['variante_params'],
+                        'element_params'      => $ex['element_params'],
+                        'needs_new_variante'  => false,
+                        'new_variante_params' => [],
+                        'candidates'          => array_values($candidates),
+                        'chosen_variante_id'  => null,
+                        'choice_key'          => $choice_key,
+                    ];
+                }
             }
         }
     }
 
+    // DB variants in room not matched by Excel
     if ($in_db_room) {
         foreach ($db_variants as $vid => $dbv) {
             if (!$dbv['in_room'] || in_array($vid, $matched_vids, true)) continue;
+            $status = $is_managed ? 'nur_db' : 'not_managed';
             $comparison[] = [
-                'status'              => 'nur_db',
+                'status'              => $status,
                 'variante_id'         => $vid,
                 'variante_letter'     => $dbv['variante_letter'],
-                'variante_label'      => $dbv['label'],
+                'variante_label'      => variante_label(array_filter($dbv['params'], fn($p) => $p['role'] === 'variante')),
                 'db_anzahl'           => $dbv['db_anzahl'],
                 'excel_anzahl'        => 0,
                 'rhe_id'              => $dbv['rhe_id'],
                 'db_elem_id'          => $internal_id,
-                'familie'             => null,
-                'laenge_raw'          => null,
-                'tiefe_raw'           => null,
-                'laenge_cm'           => null,
-                'debug'               => null,
-                'is_sondermass'       => false,
-                'excel_params'        => [],
-                'needs_new_variante'  => false,
-                'new_variante_params' => [],
+                'familie'             => null, 'laenge_raw' => null, 'tiefe_raw' => null,
+                'laenge_cm'           => null, 'debug' => null, 'is_sondermass' => false,
+                'excel_params'        => [], 'element_params' => [],
+                'needs_new_variante'  => false, 'new_variante_params' => [],
+                'candidates'          => [], 'chosen_variante_id' => null, 'choice_key' => null,
             ];
         }
     }
 
-    $sort_order = ['diff_anzahl' => 0, 'nur_excel' => 1, 'nur_db' => 2, 'match' => 3];
+    $sort_order = ['ambiguous' => 0, 'diff_anzahl' => 1, 'nur_excel' => 2, 'nur_db' => 3, 'match' => 4, 'not_managed' => 5];
     usort($comparison, fn($a, $b) => ($sort_order[$a['status']] ?? 9) - ($sort_order[$b['status']] ?? 9));
 
     $element_blocks[] = [
         'element_id'           => $eid,
         'bezeichnung'          => $bezeichnung,
         'db_internal_id'       => $internal_id,
+        'is_managed'           => $is_managed,
         'has_variante_params'  => $has_variante_params,
         'variante_param_ids'   => $variante_param_ids,
         'variante_param_names' => $variante_param_names,
+        'element_param_ids'    => $element_param_ids,
         'db_variants'          => array_values($db_variants),
         'comparison'           => $comparison,
     ];
 }
 
+// Blocks with most urgent status first
 usort($element_blocks, function ($a, $b) {
-    $ac = count(array_filter($a['comparison'], fn($c) => $c['status'] !== 'match'));
-    $bc = count(array_filter($b['comparison'], fn($c) => $c['status'] !== 'match'));
-    return $bc - $ac;
+    $priority = fn($block) => array_reduce($block['comparison'], function ($carry, $c) {
+        $p = ['ambiguous' => 0, 'diff_anzahl' => 1, 'nur_excel' => 1, 'nur_db' => 1, 'match' => 3, 'not_managed' => 2];
+        return min($carry, $p[$c['status']] ?? 9);
+    }, 9);
+    return $priority($a) - $priority($b);
 });
 
-echo json_encode(['raum_id' => $raum_id, 'element_blocks' => $element_blocks, 'unmapped_familien' => array_values($unmapped_familien)], JSON_UNESCAPED_UNICODE);
+echo json_encode([
+    'raum_id'           => $raum_id,
+    'element_blocks'    => $element_blocks,
+    'unmapped_familien' => array_values($unmapped_familien),
+], JSON_UNESCAPED_UNICODE);

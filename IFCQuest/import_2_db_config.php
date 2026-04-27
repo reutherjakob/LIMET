@@ -2,28 +2,48 @@
 /**
  * import_2_db_config.php
  * ══════════════════════════════════════════════════════════════════
- * Zentrale Konfiguration für den Import.
+ * Zentrale Konfiguration für den Excel-Import.
  *
- * Pro Typ zwei Parameter-Listen:
- *   variante_params  – bilden den Varianten-Fingerprint und werden in
- *                      tabelle_projekt_elementparameter geschrieben.
- *                      Zwei Zeilen mit identischen variante_params →
- *                      gleiche Variante, Anzahl wird erhöht.
- *   info_params      – werden ebenfalls importiert, aber NICHT für
- *                      das Varianten-Matching verwendet (z.B. Breite
- *                      bei MZ — ist bereits im Element kodiert).
+ * Zwei Parameter-Kategorien pro Element-Typ:
  *
- * tabelle_varianten wird NIEMALS beschrieben, nur gelesen.
+ *   element_params  – bestimmen WELCHES Element gewählt wird.
+ *                     Werden NICHT in die DB geschrieben.
+ *                     Beispiel: Breite×Tiefe beim Labortisch.
+ *
+ *   variante_params – bilden den Varianten-Fingerabdruck.
+ *                     Werden in tabelle_projekt_elementparameter
+ *                     geschrieben. Zwei Excel-Zeilen mit identischen
+ *                     variante_params → gleiche Variante, Anzahl++.
+ *
+ * ALLE anderen Parameter die in der DB gespeichert sind (also alles
+ * was weder in element_params noch in variante_params vorkommt)
+ * werden beim Import automatisch ignoriert:
+ *   – nicht gelöscht, nicht überschrieben, nicht für Matching
+ *   – führen zu "ambiguous" wenn sie DB-Varianten unterscheiden
+ *
+ * Regeln:
+ *   – tabelle_varianten wird NIEMALS beschrieben, nur gelesen.
+ *   – DB-Elemente deren ElementID in keinem Mapping als Ziel
+ *     auftaucht gelten als "not_managed" und werden nicht angepasst.
  * ══════════════════════════════════════════════════════════════════
  */
 
-// ──────────────────────────────────────────────────────────────────
-// 1. MZ-TYPEN: Revit-Familie-Substring → Element + Parameter
-//    Reihenfolge ist entscheidend — erster Treffer gewinnt.
-// ──────────────────────────────────────────────────────────────────
+function get_all_managed_element_ids(): array
+{
+    $ids = [];
+    foreach (MZ_FAMILIE_MAPPING as $mz) {
+        if (isset($mz['laengen']))      $ids = array_merge($ids, array_values($mz['laengen']));
+        if (isset($mz['breite_tiefe'])) $ids = array_merge($ids, array_values($mz['breite_tiefe']));
+        if (isset($mz['sondermass']))   $ids[] = $mz['sondermass'];
+    }
+    foreach (FAMILIE_MAPPING as $fm) {
+        if (isset($fm['element_id'])) $ids[] = $fm['element_id'];
+    }
+    return array_unique($ids);
+}
+
 const MZ_FAMILIE_MAPPING = [
 
-    // ── Medienzelle bodenstehend ───────────────────────────────────
     '4-35-25-1' => [
         'typ'     => 'laengen',
         'laengen' => [
@@ -34,8 +54,7 @@ const MZ_FAMILIE_MAPPING = [
             180 => '4.35.25.2',
             210 => '4.35.25.7',
         ],
-        'sondermass'     => '4.35.25.8',
-        // Anschlüsse bilden die Variante — gleiche Kombination = gleiche Variante
+        'sondermass'      => '4.35.25.8',
         'variante_params' => [
             'MT_LIMET_Anzahl Steckdosen-Auslässe',
             'MT_LIMET_Anzahl EDV-Auslässe',
@@ -49,11 +68,9 @@ const MZ_FAMILIE_MAPPING = [
             'MT_LIMET_Sichtbarkeit VE',
             'MT_LIMET_Sichtbarkeit WW',
         ],
-        // Breite steckt bereits im gematchten Element → kein Varianten-Param
-        'info_params' => ['MT_LIMET_Breite'],
+        'element_params' => ['MT_LIMET_Breite'],
     ],
 
-    // ── Medienampel deckenmontiert ─────────────────────────────────
     '4-35-25-XX' => [
         'typ'     => 'laengen',
         'laengen' => [
@@ -77,12 +94,10 @@ const MZ_FAMILIE_MAPPING = [
             'MT_LIMET_Sichtbarkeit VE',
             'MT_LIMET_Sichtbarkeit WW',
         ],
-        'info_params' => ['MT_LIMET_Breite'],
+        'element_params' => ['MT_LIMET_Breite'],
     ],
 
-    // ── Labortisch: Matching über Breite × Tiefe ──────────────────
-    // Breite+Tiefe bestimmen das Element (z.B. 4.35.10.11 = 120×90).
-    // Nur die Höhe ist variabel → einziger Varianten-Parameter.
+    // Breite×Tiefe → Element-Auswahl, Höhe → Variante
     '4-35-10-1' => [
         'typ'          => 'tisch',
         'breite_tiefe' => [
@@ -104,10 +119,10 @@ const MZ_FAMILIE_MAPPING = [
         ],
         'sondermass'      => '4.35.10.16',
         'variante_params' => ['MT_LIMET_Höhe'],
-        'info_params'     => ['MT_LIMET_Breite', 'MT_LIMET_Tiefe'],
+        'element_params'  => ['MT_LIMET_Breite', 'MT_LIMET_Tiefe'],
     ],
 
-    // ── Hochregal lfm: Tiefe bildet die Variante ──────────────────
+    // Tiefe → Variante
     '4-20-80-1' => [
         'typ'     => 'laengen',
         'laengen' => [
@@ -116,45 +131,38 @@ const MZ_FAMILIE_MAPPING = [
         ],
         'sondermass'      => '4.20.80.1',
         'variante_params' => ['MT_LIMET_Tiefe'],
-        'info_params'     => ['MT_LIMET_Breite'],
+        'element_params'  => ['MT_LIMET_Breite'],
     ],
 ];
 
 const MZ_STANDARD_LAENGEN    = [60, 90, 120, 150, 180, 210, 240, 270];
 const MZ_LAENGE_WARN_DIFF_CM = 5;
 
-// ──────────────────────────────────────────────────────────────────
-// 2. DIREKTE MAPPINGS: exakter Familienname → Element + Parameter
-// ──────────────────────────────────────────────────────────────────
 const FAMILIE_MAPPING = [
 
     'TMO_-_LIMET_4-20-60-2 Hängeschrank Flügel DIN CrNi zweitürig' => [
         'element_id'      => '4.20.60.2',
-        // Höhe+Tiefe sind variabel → bilden die Variante
         'variante_params' => ['MT_LIMET_Höhe', 'MT_LIMET_Tiefe'],
-        'info_params'     => ['MT_LIMET_Breite'],
+        'element_params'  => ['MT_LIMET_Breite'],
+        // Alle anderen DB-Parameter (z.B. Netzart) → automatisch ignoriert
     ],
 
     'TMO_-_LIMET_4-35-30-2 Gefahrenstoffsicherheitsschrank - SäureLaugen doppelflügelig' => [
         'element_id'      => '4.35.30.2',
-        // Keine variablen Parameter → immer Variante A
         'variante_params' => [],
-        'info_params'     => ['MT_LIMET_Breite'],
+        'element_params'  => ['MT_LIMET_Breite'],
+        // Netzart SV/AV ist in der DB, kommt im Modell nie vor
+        // → automatisch ignoriert, aber löst "ambiguous" aus wenn
+        //   mehrere Varianten sich nur dadurch unterscheiden
     ],
 
     '9.30.10.1 Punktabsaugung deckenmontiert' => [
         'element_id'      => '9.30.10.1',
         'variante_params' => [],
-        'info_params'     => [],
+        'element_params'  => [],
     ],
 ];
 
-// ──────────────────────────────────────────────────────────────────
-// 3. PARAMETER-MAPPING: Excel-Spaltenname → DB-Parameter
-//    Alle Parameter die überhaupt vorkommen können.
-//    Welche davon pro Typ relevant sind, steuern variante_params
-//    und info_params in den Mappings oben.
-// ──────────────────────────────────────────────────────────────────
 const PARAMETER_MAPPING = [
     'MT_LIMET_Höhe'                       => ['id' =>   1, 'einheit' => 'm',   'bezeichnung' => 'Höhe'],
     'MT_LIMET_Tiefe'                       => ['id' =>   3, 'einheit' => 'm',   'bezeichnung' => 'Tiefe'],
