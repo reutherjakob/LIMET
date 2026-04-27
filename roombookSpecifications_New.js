@@ -69,8 +69,8 @@ function add_entfallen_filter(location, table) {
 function add_element_einträge_not_0_filter(location, table) {
     let dropdownHtml2 = '<select class="fix_size" id="ElementEinträgeNot0Filter">' +
         '<option value="">Alle</option>' +
-        '<option value="0">ohne Element</option>' +
-        '<option value="1">mit Elementen </option>' +
+        '<option  value="0">ohne El.</option>' +
+        '<option value="1"> mit El. </option>' +
         '</select>';
     $(location).append(dropdownHtml2);
 
@@ -255,8 +255,8 @@ function init_btn_4_dt() {
             action: () => toggleReportColumnsVisible()
         }
     ];
-    new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#TableCardHeader'));
-    new $.fn.dataTable.Buttons(table, {buttons: buttons_group_selct}).container().appendTo($('<div class="btn-group"></div>').appendTo($('#TableCardHeaderX')));
+    new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#TableCardHeaderX'));
+    new $.fn.dataTable.Buttons(table, {buttons: buttons_group_selct}).container().appendTo($('<div class="btn-group flex-nowrap"></div>').appendTo($('#TableCardHeader5')));
     new $.fn.dataTable.Buttons(table, {buttons: buttonsGroupcolumnVisbilities}).container().appendTo($('<div class="btn-group" role="group"></div>').appendTo($('#TableCardHeader2')));
     new $.fn.dataTable.Buttons(table, {buttons: btn_grp_new_out}).container().appendTo($('<div class="btn-group"></div>').appendTo($('#TableCardHeader3')));
     new $.fn.dataTable.Buttons(table, {buttons: btn_grp_settings}).container().appendTo($('<div class="btn-group"></div>').appendTo($('#TableCardHeader4')));
@@ -296,7 +296,7 @@ function init_dt() {
         initComplete: function () {
             init_filter();
             $('.dt-search label').remove();
-            $(' .dt-search').children().appendTo('#TableCardHeader');//removeClass('form-control form-control-sm')
+            $(' .dt-search').children().appendTo('#TableCardHeaderX');//removeClass('form-control form-control-sm')
             init_btn_4_dt();
             buttonRanges.forEach(b => {
                 btnCache[b.name] = $(`.btn_vis:contains('${b.name}')`);
