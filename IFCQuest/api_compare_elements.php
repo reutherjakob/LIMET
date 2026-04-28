@@ -309,8 +309,8 @@ if (!empty($extra_ids)) {
     $s4->close();
 }
 
-// Variant letters
-$vid_needed = [];
+// Variant letters — Var A (id=1) immer laden
+$vid_needed = [1];
 foreach ($all_proj_params as $ep) foreach ($ep as $vid => $_) $vid_needed[] = (int)$vid;
 foreach ($db_room_rows as $row) $vid_needed[] = (int)$row['variante_id'];
 $vid_needed = array_unique($vid_needed);
@@ -366,8 +366,10 @@ foreach ($all_eids as $eid) {
     // "Explicitly managed" param IDs = variante_params + element_params
     $explicit_param_ids = array_unique(array_merge($variante_param_ids, $element_param_ids));
 
-    // Build db_variants
+    // Build db_variants — immer alle Varianten des Projekts für dieses Element anzeigen.
+    // Var A (id=1) wird IMMER aufgeführt, auch wenn sie noch keinen rhe-Eintrag hat.
     $db_variants = [];
+    $db_variants[1] ??= []; // Var A immer vorhanden
     if ($in_db_room) foreach ($db_by_eid[$eid] as $rhe) { $vid = (int)$rhe['variante_id']; $db_variants[$vid] ??= []; }
     foreach ($proj_elem_params as $vid => $_) $db_variants[(int)$vid] ??= [];
 
@@ -382,7 +384,6 @@ foreach ($all_eids as $eid) {
                 'wert'        => $wert,
                 'einheit'     => $cfg['einheit'] ?? '',
                 'bezeichnung' => $cfg ? $cfg['bezeichnung'] : "Param #{$pid}",
-                // Classify each param: variante | element | ignore
                 'role'        => in_array((int)$pid, $variante_param_ids, true) ? 'variante'
                     : (in_array((int)$pid, $element_param_ids, true) ? 'element' : 'ignore'),
             ];
@@ -401,16 +402,20 @@ foreach ($all_eids as $eid) {
             fn($pid) => !in_array((int)$pid, $explicit_param_ids, true)
         ));
 
+        // Var A Integritäts-Flag: Var A sollte KEINE variante_params haben
+        $var_a_has_wrong_params = ($vid === 1) && !empty(array_filter($params_labeled, fn($p) => $p['role'] === 'variante'));
+
         $db_variants[$vid] = [
-            'variante_id'      => $vid,
-            'variante_letter'  => $variante_letters[$vid] ?? '?',
-            'params'           => $params_labeled,
-            'variante_fp'      => fingerprint($fp_data),
-            'ignore_param_ids' => $ignore_param_ids_for_var,
-            'has_only_ignored' => !empty($param_map) && empty(array_filter($params_labeled, fn($p) => $p['role'] !== 'ignore')),
-            'in_room'          => $rhe_row !== null,
-            'rhe_id'           => $rhe_row ? (int)$rhe_row['rhe_id'] : null,
-            'db_anzahl'        => $rhe_row ? (int)$rhe_row['Anzahl'] : 0,
+            'variante_id'          => $vid,
+            'variante_letter'      => $variante_letters[$vid] ?? '?',
+            'params'               => $params_labeled,
+            'variante_fp'          => fingerprint($fp_data),
+            'ignore_param_ids'     => $ignore_param_ids_for_var,
+            'has_only_ignored'     => !empty($param_map) && empty(array_filter($params_labeled, fn($p) => $p['role'] !== 'ignore')),
+            'in_room'              => $rhe_row !== null,
+            'rhe_id'               => $rhe_row ? (int)$rhe_row['rhe_id'] : null,
+            'db_anzahl'            => $rhe_row ? (int)$rhe_row['Anzahl'] : 0,
+            'var_a_integrity_warn' => $var_a_has_wrong_params,
         ];
     }
     ksort($db_variants);
@@ -425,19 +430,17 @@ foreach ($all_eids as $eid) {
             $ex_fp_map = array_map(fn($p) => $p['wert'], $ex['variante_params']);
             $ex_fp     = fingerprint($ex_fp_map);
 
-            // Find candidates: variants that match on variante_params
-            // (ignore everything else — that's the whole point)
+            // ── Variante A (id=1) = immer parameterloser Slot ──────────────
+            // Parameterlose Excel-Zeile  → nur Var A als Kandidat.
+            // Excel-Zeile mit Params     → Var A niemals als Kandidat.
             $candidates = [];
             foreach ($db_variants as $vid => $dbv) {
                 if (!$ex['has_variante_params']) {
-                    // Parameterless type: candidate must have NO variante_params stored.
-                    // (ignore-params may exist — fine)
-                    $has_variante_stored = !empty(array_filter(
-                        $dbv['params'],
-                        fn($p) => $p['role'] === 'variante'
-                    ));
-                    if (!$has_variante_stored) $candidates[] = $dbv;
+                    // Parameterlos: nur Var A (id=1) ist der korrekte Slot.
+                    if ($vid === 1) $candidates[] = $dbv;
                 } else {
+                    // Mit Params: Var A niemals — auch wenn fingerprint zufällig passt.
+                    if ($vid === 1) continue;
                     if ($dbv['variante_fp'] === $ex_fp) $candidates[] = $dbv;
                 }
             }
@@ -590,6 +593,9 @@ foreach ($all_eids as $eid) {
     $sort_order = ['ambiguous' => 0, 'diff_anzahl' => 1, 'nur_excel' => 2, 'nur_db' => 3, 'match' => 4, 'not_managed' => 5];
     usort($comparison, fn($a, $b) => ($sort_order[$a['status']] ?? 9) - ($sort_order[$b['status']] ?? 9));
 
+    // Var A Integritäts-Warnung auf Block-Ebene hochziehen
+    $var_a_warn = isset($db_variants[1]) && ($db_variants[1]['var_a_integrity_warn'] ?? false);
+
     $element_blocks[] = [
         'element_id'           => $eid,
         'bezeichnung'          => $bezeichnung,
@@ -601,6 +607,7 @@ foreach ($all_eids as $eid) {
         'element_param_ids'    => $element_param_ids,
         'db_variants'          => array_values($db_variants),
         'comparison'           => $comparison,
+        'var_a_integrity_warn' => $var_a_warn,
     ];
 }
 

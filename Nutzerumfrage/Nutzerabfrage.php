@@ -289,7 +289,7 @@ foreach ($labortypen as $lt) {
                 btn.textContent = 'Nein';
                 btn.className = 'btn btn-outline-primary text-nowrap';
             } else {
-                btn.textContent = '?';
+                btn.textContent = 'unbekannt';
                 btn.className = 'btn btn-outline-secondary text-nowrap';
             }
             if (kommentarWrap) {

@@ -10295,7 +10295,7 @@ TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen</ColNames>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="2305" parent="475" name="id">
-      <AutoIncrement>67</AutoIncrement>
+      <AutoIncrement>68</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int(10) unsigned|0s</StoredType>

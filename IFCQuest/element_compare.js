@@ -131,6 +131,12 @@ function buildElementBlock(block) {
     if (changes)     statusBadge += `<span class="badge bg-warning text-dark ms-1">${changes} Änderung${changes !== 1 ? 'en' : ''}</span>`;
     if (!ambiguous && !changes) statusBadge = `<span class="badge bg-success ms-1"><i class="fas fa-check me-1"></i>ok</span>`;
 
+    const varAWarn = block.var_a_integrity_warn
+        ? `<span class="badge bg-danger ms-1" title="Var A hat fälschlicherweise Parameter — wird beim Import automatisch korrigiert">
+               <i class="fas fa-exclamation-circle me-1"></i>Var A Integritätsproblem
+           </span>`
+        : '';
+
     const varScheme = block.has_variante_params
         ? `<span class="badge bg-info bg-opacity-10 text-info border ms-2" style="font-size:.7rem">
                <i class="fas fa-sliders-h me-1"></i>Variante nach: ${esc(block.variante_param_names.join(', '))}
@@ -152,6 +158,7 @@ function buildElementBlock(block) {
             <code style="font-size:.82rem;background:#f1f3f5;padding:2px 6px;border-radius:4px">${esc(block.element_id)}</code>
             <span class="fw-semibold">${esc(block.bezeichnung)}</span>
             ${statusBadge}
+            ${varAWarn}
             ${varScheme}
             ${managedBadge}
         </div>
@@ -269,6 +276,7 @@ function buildVariantPanel(block) {
         else if (compRow?.status === 'nur_db')      statusHtml = `<span class="badge bg-danger bg-opacity-10 text-danger border">nur DB</span>`;
         else if (v.in_room)                         statusHtml = `<span class="badge bg-secondary bg-opacity-10 text-secondary border">im Raum</span>`;
         else                                        statusHtml = `<span class="badge bg-light text-muted border">—</span>`;
+        if (v.var_a_integrity_warn)                 statusHtml += `<span class="badge bg-danger ms-1" style="font-size:.65rem" title="Var A darf keine Parameter haben — wird beim Import korrigiert"><i class="fas fa-exclamation-circle"></i></span>`;
 
         tr.innerHTML = `
             <td><span class="badge bg-secondary">Var ${esc(v.variante_letter)}</span></td>
@@ -548,11 +556,16 @@ document.getElementById('btn-sync').addEventListener('click', function () {
             const el = document.getElementById('sync-result');
             el.style.display = 'block';
             el.className = res.ok ? 'alert alert-success small mt-2' : 'alert alert-warning small mt-2';
-            el.innerHTML = res.ok
+            let msg = res.ok
                 ? `<i class="fas fa-check-circle me-1"></i><strong>${res.success}</strong> Änderungen übernommen.`
                 : `<i class="fas fa-exclamation-triangle me-1"></i><strong>${res.success}</strong> OK, <strong>${res.errors}</strong> Fehler.`;
+            if (res.warnings?.length) {
+                msg += '<ul class="mb-0 mt-1">' + res.warnings.map(w =>
+                    `<li><i class="fas fa-exclamation-triangle text-warning me-1"></i>${esc(w)}</li>`).join('') + '</ul>';
+            }
+            el.innerHTML = msg;
             if (res.ok) {
-                userChoices = {}; // reset choices after successful sync
+                userChoices = {};
                 compareRoom(currentCompare.raum_id, currentCompare.raumnr, currentCompare.bezeichnung);
             }
         },
