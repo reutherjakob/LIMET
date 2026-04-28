@@ -272,6 +272,7 @@ function init_dt() {
             topStart: null, topEnd: null, bottomStart: ['pageLength', 'info', "search"], bottomEnd: ['paging']
         },
         scrollX: true,
+        scrollY: true,
         scrollCollapse: true,
         language: {
             url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
