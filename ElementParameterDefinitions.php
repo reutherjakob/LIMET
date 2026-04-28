@@ -121,6 +121,7 @@ $parameterFieldConfig = [
     'Elektro|Kreise AV|Wert' => rangeValues(0, 2),
     'Elektro|Kreise SV|Wert' => rangeValues(0, 2),
     'Elektro|Kreise ZSV|Wert' => rangeValues(0, 2),
+    'Elektro|Steckdosen_Anzahl ZSV|Wert' => rangeValues(0, 10),
 
     'HKLS|Kaltwasser_Fließdruck|Einheit' => $unitSets['pressureBarPa'],
 	'HKLS|Warmwasser_Fließdruck|Einheit' =>$unitSets['pressureBarPa'],
@@ -204,9 +205,11 @@ $parameterFieldConfig = [
     'Monitor|Blickwinkel|Einheit' => $unitSets['angle'],
     'Monitor|Kontrast|Einheit' => $unitSets['ratio'],
     'Monitor|Helligkeit|Einheit' => $unitSets['illumination'],
+
     'Laser|Wellenlänge|Einheit' => $unitSets['wavelength'],
     'Laser|Laserleistung|Einheit' => $unitSets['power'],
     'Laser|Laserklasse|Wert' => $valueSets['laserClass'],
+
     'MedGas|Stickstoff_Strom|Einheit' => $unitSets['flow'],
     'MedGas|Argon_Strom|Einheit' => $unitSets['flow'],
     'MedGas|O2 Anschluss|Wert' => $medgase_wert,
@@ -219,10 +222,10 @@ $parameterFieldConfig = [
     'MedGas|NGA Anschluss|Wert' => $medgase_wert,
     'MedGas|N2O Anschluss|Wert' => $medgase_wert,
     'MedGas|CO2 Anschluss|Wert' => $medgase_wert,
-       'MedGas|O2_Flussrate|Einheit' =>$unitSets['flow'],
-     'MedGas|DL-5_Flussrate|Einheit' =>$unitSets['flow'],
+    'MedGas|O2_Flussrate|Einheit' =>$unitSets['flow'],
+    'MedGas|DL-5_Flussrate|Einheit' =>$unitSets['flow'],
     'MedGas|DL-10_Flussrate|Einheit' =>$unitSets['flow'],
-      'MedGas|CO2_Flussrate|Einheit' =>$unitSets['flow'],
+    'MedGas|CO2_Flussrate|Einheit' =>$unitSets['flow'],
 
     'Beleuchtung|Beleuchtungsstärke|Einheit' => $unitSets['illumination'],
     'Statik|Punktlast|Einheit' => $unitSets['force'],

@@ -195,7 +195,7 @@ function buildElementBlock(block) {
 }
 
 // ──────────────────────────────────────────────────────────────────
-// DB variant panel
+// DB variant panel (+ Excel-Vorschau)
 // ──────────────────────────────────────────────────────────────────
 
 function buildVariantPanel(block) {
@@ -206,7 +206,10 @@ function buildVariantPanel(block) {
     title.innerHTML = `<i class="fas fa-database me-1"></i>Projektweite Varianten für <code>${esc(block.element_id)}</code>`;
     wrap.appendChild(title);
 
-    if (!block.db_variants?.length) {
+    // Excel-only rows that have no matching DB variant (needs_new_variante)
+    const excelNewRows = block.comparison.filter(c => c.status === 'nur_excel' && !c.variante_id);
+
+    if (!block.db_variants?.length && !excelNewRows.length) {
         wrap.innerHTML += `<div class="text-muted small">Keine Varianten im Projekt.</div>`;
         return wrap;
     }
@@ -215,18 +218,20 @@ function buildVariantPanel(block) {
     table.className = 'table table-sm table-borderless mb-0';
     table.style.fontSize = '.8rem';
     table.innerHTML = `<thead><tr class="text-muted">
-        <th style="width:55px">Var</th>
-        <th style="width:90px">Im Raum</th>
-        <th>Varianten-Parameter</th>
-        <th>Ignorierte Parameter (DB-only, automatisch)</th>
-        <th style="width:70px" class="text-center">Anz.</th>
+        <th style="width:60px">Var</th>
+        <th style="width:115px">Status</th>
+        <th>Varianten-Parameter (DB)</th>
+        <th>Excel → wird geschrieben</th>
+        <th>Nicht Importiert</th>
+        <th style="width:60px" class="text-center">Anz.</th>
     </tr></thead>`;
 
     const tbody = document.createElement('tbody');
+
+    // ── vorhandene DB-Varianten ────────────────────────────────────
     block.db_variants.forEach(v => {
         const tr = document.createElement('tr');
 
-        // Each param now has a 'role': 'variante' | 'element' | 'ignore'
         const vpEntries = Object.entries(v.params).filter(([, p]) => p.role === 'variante');
         const ipEntries = Object.entries(v.params).filter(([, p]) => p.role === 'ignore');
 
@@ -237,27 +242,66 @@ function buildVariantPanel(block) {
                 </span>`).join('')
             : block.has_variante_params
                 ? '<span class="text-muted small">keine</span>'
-                : '<span class="text-success small"><i class="fas fa-check me-1"></i>Var A (parameterlos)</span>';
+                : '<span class="text-success small"><i class="fas fa-check me-1"></i>parameterlos</span>';
 
         const ipHtml = ipEntries.length
             ? ipEntries.map(([, p]) =>
-                `<span class="badge bg-secondary bg-opacity-15 text-secondary border me-1" style="font-size:.7rem">
+                `<span class="badge bg-secondary bg-opacity-15 text-white border me-1" style="font-size:.7rem">
                     <i class="fas fa-eye-slash me-1"></i>${esc(p.bezeichnung)}: ${esc(String(p.wert))}
                 </span>`).join('')
             : '<span class="text-muted small">—</span>';
 
-        const inRoomBadge = v.in_room
-            ? `<span class="badge bg-success bg-opacity-10 text-success border">✓ im Raum</span>`
-            : `<span class="badge bg-light text-muted border">—</span>`;
+        // Passendes Comparison-Row finden → Excel-Params anzeigen
+        const compRow = block.comparison.find(c => c.variante_id === v.variante_id);
+        const excelParams = compRow?.excel_params ?? {};
+        const excelParamHtml = Object.values(excelParams).length
+            ? Object.values(excelParams).map(p =>
+                `<span class="badge me-1" style="font-size:.7rem;background:rgba(25,135,84,.08);color:#198754;border:1px solid #a3cfbb">
+                    <i class="fas fa-file-excel fa-xs me-1"></i>${esc(p.bezeichnung)}: <strong>${esc(String(p.wert))}${p.einheit ? ' ' + esc(p.einheit) : ''}</strong>
+                </span>`).join('')
+            : '<span class="text-muted small">—</span>';
+
+        // Status-Badge
+        let statusHtml = '';
+        if      (compRow?.status === 'match')       statusHtml = `<span class="badge bg-success bg-opacity-10 text-success border">✓ match</span>`;
+        else if (compRow?.status === 'diff_anzahl') statusHtml = `<span class="badge bg-warning text-dark border">Anz. diff</span>`;
+        else if (compRow?.status === 'nur_excel')   statusHtml = `<span class="badge bg-primary bg-opacity-10 text-primary border">hinzufügen</span>`;
+        else if (compRow?.status === 'nur_db')      statusHtml = `<span class="badge bg-danger bg-opacity-10 text-danger border">nur DB</span>`;
+        else if (v.in_room)                         statusHtml = `<span class="badge bg-secondary bg-opacity-10 text-secondary border">im Raum</span>`;
+        else                                        statusHtml = `<span class="badge bg-light text-muted border">—</span>`;
 
         tr.innerHTML = `
             <td><span class="badge bg-secondary">Var ${esc(v.variante_letter)}</span></td>
-            <td>${inRoomBadge}</td>
+            <td>${statusHtml}</td>
             <td>${vpHtml}</td>
+            <td>${excelParamHtml}</td>
             <td>${ipHtml}</td>
             <td class="text-center">${v.in_room ? v.db_anzahl : '—'}</td>`;
         tbody.appendChild(tr);
     });
+
+    // ── neue Excel-Varianten (noch nicht in DB) ────────────────────
+    excelNewRows.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.style.background = 'rgba(13,110,253,.03)';
+
+        const exHtml = Object.values(row.excel_params ?? {}).length
+            ? Object.values(row.excel_params).map(p =>
+                `<span class="badge me-1" style="font-size:.7rem;background:rgba(13,110,253,.08);color:#0d6efd;border:1px solid #9ec5fe">
+                    ${esc(p.bezeichnung)}: <strong>${esc(String(p.wert))}${p.einheit ? ' ' + esc(p.einheit) : ''}</strong>
+                </span>`).join('')
+            : '<span class="text-muted small">—</span>';
+
+        tr.innerHTML = `
+            <td><span class="badge bg-primary">neu</span></td>
+            <td><span class="badge" style="background:rgba(13,110,253,.1);color:#0d6efd;border:1px solid #9ec5fe"><i class="fas fa-plus fa-xs me-1"></i>wird angelegt</span></td>
+            <td><span class="text-muted small">—</span></td>
+            <td>${exHtml}</td>
+            <td><span class="text-muted small">—</span></td>
+            <td class="text-center"><strong>${row.excel_anzahl}</strong></td>`;
+        tbody.appendChild(tr);
+    });
+
     table.appendChild(tbody);
     wrap.appendChild(table);
     return wrap;

@@ -85,43 +85,50 @@ function resolve(string $familie, string $laenge, string $tiefe, array $params_r
 {
     $r = ['element_id' => null, 'variante_params' => [], 'element_params' => [], 'debug' => '', 'laenge_cm' => null, 'is_sondermass' => false];
 
-    foreach (MZ_FAMILIE_MAPPING as $key => $mz) {
-        if (!str_contains($familie, $key)) continue;
-        $r['variante_params'] = $mz['variante_params'] ?? [];
-        $r['element_params']  = $mz['element_params']  ?? $mz['info_params'] ?? [];
+    $cfg = find_mapping($familie);
+    if (!$cfg) return $r;
 
-        if ($mz['typ'] === 'tisch') {
-            $raw_b = $laenge !== '' ? $laenge : ($params_raw['MT_LIMET_Breite'] ?? '');
-            $raw_t = $tiefe  !== '' ? $tiefe  : ($params_raw['MT_LIMET_Tiefe']  ?? '');
-            if ($raw_b !== '' && $raw_t !== '') {
-                $b = parse_dim_cm($raw_b); $t = parse_dim_cm($raw_t);
-                $r['laenge_cm'] = $b; $r['debug'] = "Tisch {$b}cm × {$t}cm";
-                $k = "{$b}x{$t}";
-                if (isset($mz['breite_tiefe'][$k])) { $r['element_id'] = $mz['breite_tiefe'][$k]; }
-                else { $r['element_id'] = $mz['sondermass']; $r['is_sondermass'] = true; $r['debug'] .= ' → Sondermaß'; }
-            } else { $r['element_id'] = $mz['sondermass']; $r['is_sondermass'] = true; $r['debug'] = 'Breite/Tiefe fehlen → Sondermaß'; }
-            return $r;
-        }
+    $r['variante_params'] = $cfg['variante_params'] ?? [];
+    $r['element_params']  = $cfg['element_params']  ?? $cfg['info_params'] ?? [];
 
-        if ($laenge !== '') {
-            $cm = parse_dim_cm($laenge); $nearest = nearest_std($cm);
-            $r['laenge_cm'] = $nearest['nearest']; $r['debug'] = "{$cm}cm → {$nearest['nearest']}cm";
-            if (isset($mz['laengen'][$nearest['nearest']])) {
-                $r['element_id'] = $mz['laengen'][$nearest['nearest']];
-                if ($nearest['diff'] >= MZ_LAENGE_WARN_DIFF_CM) $r['debug'] .= " ⚠ Abw. {$nearest['diff']}cm";
-            } else { $r['element_id'] = $mz['sondermass']; $r['is_sondermass'] = true; $r['debug'] .= ' → Sondermaß'; }
-        } else { $r['element_id'] = $mz['sondermass']; $r['is_sondermass'] = true; $r['debug'] = 'kein Längenwert → Sondermaß'; }
+    // ── Feste Familie (exact match) ────────────────────────────────
+    if ($cfg['typ'] === 'fixed') {
+        $r['element_id'] = $cfg['element_id'];
+        $r['debug']      = 'direktes Mapping';
         return $r;
     }
 
-    if (isset(FAMILIE_MAPPING[$familie])) {
-        $fm = FAMILIE_MAPPING[$familie];
-        $r['element_id']     = $fm['element_id'];
-        $r['variante_params'] = $fm['variante_params'] ?? [];
-        $r['element_params']  = $fm['element_params']  ?? $fm['info_params'] ?? [];
-        $r['debug'] = 'direktes Mapping';
+    // ── Tisch (Breite×Tiefe) ───────────────────────────────────────
+    if ($cfg['typ'] === 'tisch') {
+        $raw_b = $laenge !== '' ? $laenge : ($params_raw['MT_LIMET_Breite'] ?? '');
+        $raw_t = $tiefe  !== '' ? $tiefe  : ($params_raw['MT_LIMET_Tiefe']  ?? '');
+        if ($raw_b !== '' && $raw_t !== '') {
+            $b = parse_dim_cm($raw_b); $t = parse_dim_cm($raw_t);
+            $r['laenge_cm'] = $b; $r['debug'] = "Tisch {$b}cm × {$t}cm";
+            $k = "{$b}x{$t}";
+            if (isset($cfg['breite_tiefe'][$k])) { $r['element_id'] = $cfg['breite_tiefe'][$k]; }
+            else { $r['element_id'] = $cfg['sondermass']; $r['is_sondermass'] = true; $r['debug'] .= ' → Sondermaß'; }
+        } else { $r['element_id'] = $cfg['sondermass']; $r['is_sondermass'] = true; $r['debug'] = 'Breite/Tiefe fehlen → Sondermaß'; }
         return $r;
     }
+
+    // ── Längen ─────────────────────────────────────────────────────
+    if ($laenge !== '') {
+        $raw_l = $laenge;
+    } elseif (isset($cfg['laenge_fallback']) && ($params_raw[$cfg['laenge_fallback']] ?? '') !== '') {
+        $raw_l = $params_raw[$cfg['laenge_fallback']];
+    } else {
+        $raw_l = '';
+    }
+
+    if ($raw_l !== '') {
+        $cm = parse_dim_cm($raw_l); $nearest = nearest_std($cm);
+        $r['laenge_cm'] = $nearest['nearest']; $r['debug'] = "{$cm}cm → {$nearest['nearest']}cm";
+        if (isset($cfg['laengen'][$nearest['nearest']])) {
+            $r['element_id'] = $cfg['laengen'][$nearest['nearest']];
+            if ($nearest['diff'] >= MZ_LAENGE_WARN_DIFF_CM) $r['debug'] .= " ⚠ Abw. {$nearest['diff']}cm";
+        } else { $r['element_id'] = $cfg['sondermass']; $r['is_sondermass'] = true; $r['debug'] .= ' → Sondermaß'; }
+    } else { $r['element_id'] = $cfg['sondermass']; $r['is_sondermass'] = true; $r['debug'] = 'kein Längenwert → Sondermaß'; }
     return $r;
 }
 
@@ -226,6 +233,12 @@ foreach ($familien as $e) {
         $unmapped_familien[$key]['anzahl']++;
         continue;
     }
+
+    // Dedizierte Spalten (laenge → Breite, tiefe → Tiefe) in params_raw zurückschreiben,
+    // falls dort noch kein Wert steht. So findet extract_params sie auch wenn der User
+    // Breite/Tiefe über die Spaltenauswahl statt als Param-Felder gemappt hat.
+    if ($laenge !== '' && ($params_raw['MT_LIMET_Breite'] ?? '') === '') $params_raw['MT_LIMET_Breite'] = $laenge;
+    if ($tiefe  !== '' && ($params_raw['MT_LIMET_Tiefe']  ?? '') === '') $params_raw['MT_LIMET_Tiefe']  = $tiefe;
 
     $vparams = extract_params($res['variante_params'], $params_raw);
     $eparams = extract_params($res['element_params'],  $params_raw);
