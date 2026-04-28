@@ -1,0 +1,19 @@
+Index: getDeviceLieferantenOptions.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php\r\nrequire_once 'utils/_utils.php';\r\ncheck_login();\r\n\r\n$deviceID = isset($_SESSION[\"deviceID\"]) ? intval($_SESSION[\"deviceID\"]) : 0;\r\n\r\nif ($deviceID > 0) {\r\n\r\n    if (!isset($mysqli) || !$mysqli instanceof mysqli) {\r\n        $mysqli = utils_connect_sql();\r\n    }\r\n\r\n    $sql = \"SELECT tabelle_lieferant.Lieferant, \r\n                tabelle_lieferant.idTABELLE_Lieferant\r\n            FROM tabelle_lieferant\r\n            INNER JOIN tabelle_geraete_has_tabelle_lieferant\r\n            ON tabelle_lieferant.idTABELLE_Lieferant = tabelle_geraete_has_tabelle_lieferant.tabelle_lieferant_idTABELLE_Lieferant\r\n            WHERE tabelle_geraete_has_tabelle_lieferant.tabelle_geraete_idTABELLE_Geraete = ?\r\n            ORDER BY tabelle_lieferant.Lieferant;\";\r\n\r\n    $stmt = $mysqli->prepare($sql);\r\n    $stmt->bind_param(\"i\", $deviceID);\r\n    $stmt->execute();\r\n    $result = $stmt->get_result();\r\n\r\n    while ($row = $result->fetch_assoc()) {\r\n        echo '<option value=\"' . htmlspecialchars($row[\"idTABELLE_Lieferant\"]) . '\">' .\r\n            htmlspecialchars($row[\"Lieferant\"]) . '</option>';\r\n    }\r\n\r\n    $stmt->close();\r\n\r\n\r\n}\r\n?>\r\n
+===================================================================
+diff --git a/getDeviceLieferantenOptions.php b/getDeviceLieferantenOptions.php
+--- a/getDeviceLieferantenOptions.php	(revision c43e717e15749dcbd453f813039274903cfc7ffb)
++++ b/getDeviceLieferantenOptions.php	(date 1762439599591)
+@@ -24,8 +24,8 @@
+     $result = $stmt->get_result();
+ 
+     while ($row = $result->fetch_assoc()) {
+-        echo '<option value="' . htmlspecialchars($row["idTABELLE_Lieferant"]) . '">' .
+-            htmlspecialchars($row["Lieferant"]) . '</option>';
++        echo '<option value="' . htmlspecialchars($row["idTABELLE_Lieferant"] ??"") . '">' .
++            htmlspecialchars($row["Lieferant"]??"") . '</option>';
+     }
+ 
+     $stmt->close();

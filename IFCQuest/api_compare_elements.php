@@ -530,12 +530,18 @@ foreach ($all_eids as $eid) {
                         'choice_key'          => $choice_key,
                     ];
                 } else {
+                    // Prevent ambiguous candidates from also appearing as nur_db rows
+                    foreach ($candidates as $c) $matched_vids[] = $c['variante_id'];
+
+                    // Show combined db_anzahl of all candidates (so DB column isn't misleadingly 0)
+                    $ambig_db_anzahl = array_sum(array_column($candidates, 'db_anzahl'));
+
                     $comparison[] = [
                         'status'              => 'ambiguous',
                         'variante_id'         => null,
                         'variante_letter'     => '?',
                         'variante_label'      => '— Auswahl nötig —',
-                        'db_anzahl'           => 0,
+                        'db_anzahl'           => $ambig_db_anzahl,
                         'excel_anzahl'        => $ex['anzahl'],
                         'rhe_id'              => null,
                         'db_elem_id'          => $internal_id,
