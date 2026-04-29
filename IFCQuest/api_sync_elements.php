@@ -85,8 +85,8 @@ function get_or_create_variante(mysqli $db, int $projekt_id, int $planungsphase,
         $s = $db->prepare("
             SELECT COUNT(*) AS cnt
             FROM tabelle_räume_has_tabelle_elemente rhe
-            JOIN tabelle_räume r ON r.idTABELLE_Räume = rhe.TABELLE_Räume_idTABELLE_Räume
-            WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
+            JOIN tabelle_räume r ON r.idTABELLE_Räume = rhe.TABELLE_Räume_idTABELLE_Räume 
+            WHERE r.tabelle_projekte_idTABELLE_Projekte = ?  
               AND rhe.TABELLE_Elemente_idTABELLE_Elemente = ?
               AND rhe.tabelle_Varianten_idtabelle_Varianten = ?
               AND rhe.Anzahl > 0
@@ -114,7 +114,7 @@ function get_or_create_variante(mysqli $db, int $projekt_id, int $planungsphase,
             $wert    = (string)$info['wert'];
             $einheit = (string)($info['einheit'] ?? '');
             $ipid    = (int)$pid;
-            $stmt->bind_param('iiiissl', $projekt_id, $element_id, $ipid, $vid, $wert, $einheit, $planungsphase);
+            $stmt->bind_param('iiiissi', $projekt_id, $element_id, $ipid, $vid, $wert, $einheit, $planungsphase);
             $stmt->execute();
             $stmt->close();
         }

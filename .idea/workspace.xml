@@ -5,17 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="verbesserung der sichtbarkeit bei bauangaben - &#10;tracking, welche reports in welchem Projeklt gentutz werden">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/IFCQuest/Variantmerge.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/IFCQuest/api_merge_variants.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IFCQuest/api_compare_elements.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/api_compare_elements.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/IFCQuest/api_sync_elements.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/api_sync_elements.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IFCQuest/element_compare.js" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/element_compare.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/Nutzerabfrage.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/Nutzerabfrage.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/Raumkategorien.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/Raumkategorien.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/form_fields_forNutzergruppe1.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/form_fields_forNutzergruppe1.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/raumtypen.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/raumtypen.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/spargelfeld_nutzerabfrage_1.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/spargelfeld_nutzerabfrage_1.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookSpecifications_New.js" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_New.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -575,6 +568,7 @@
       <workItem from="1777372888232" duration="2581000" />
       <workItem from="1777382860771" duration="1300000" />
       <workItem from="1777384434655" duration="203000" />
+      <workItem from="1777465421328" duration="64000" />
     </task>
     <task id="LOCAL-00182" summary="Bugfix#2 - Bericht Disclaimer angepasst - elementAdministration Gerätepreise anzeigen">
       <option name="closed" value="true" />
