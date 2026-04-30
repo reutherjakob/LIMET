@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="verbesserung der sichtbarkeit bei bauangaben - &#10;tracking, welche reports in welchem Projeklt gentutz werden">
-      <change afterPath="$PROJECT_DIR$/IFCQuest/Variantmerge.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/IFCQuest/api_merge_variants.php" afterDir="false" />
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IFCQuest/api_sync_elements.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/api_sync_elements.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IFCQuest/column_mapping.js" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/column_mapping.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IFCQuest/import_excel.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/import_excel.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
