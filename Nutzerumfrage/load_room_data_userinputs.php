@@ -13,8 +13,7 @@ if (!$roomId || !is_numeric($roomId)) {
     exit;
 }
 
-
-$stmt = $mysqli->prepare("SELECT *  FROM tabelle_room_requirements_from_user WHERE roomID = ?");
+$stmt = $mysqli->prepare("SELECT * FROM tabelle_room_requirements_from_user WHERE roomID = ?");
 if (!$stmt) {
     echo json_encode(['error' => '[translate:Datenbankfehler]']);
     exit;
@@ -23,7 +22,6 @@ if (!$stmt) {
 $stmt->bind_param('i', $roomId);
 $stmt->execute();
 $result = $stmt->get_result();
-
 $data = $result->fetch_assoc();
 
 if (!$data) {
@@ -31,7 +29,6 @@ if (!$data) {
     exit;
 }
 
-// Normalize string booleans '0'/'1' to integers for JS checkbox compatibility
 foreach ($data as $key => $val) {
     if ($val === null) {
         $data[$key] = 'unbekannt';

@@ -39,6 +39,8 @@ $role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_admi
         <div class="card-body">
             <p>
                 Für inhaltliche Fragen Kontaktieren Sie bitte Ihre geschätzte Nutzervertretung.
+                C. Czerwenka; <a href="mailto:christoph.czerwenka@ages.at">christoph.czerwenka@ages.at</a>; Tel:
+                ++435055532531
             </p>
             <p>
                 Im Falle von Website/Login/Usability Problemen kontaktieren Sie gerne:
