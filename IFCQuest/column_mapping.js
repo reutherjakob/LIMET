@@ -27,7 +27,7 @@ const MZ_PARAMS = [
 
 const KERN_COLS = [
     {key: 'raumnr',   col: 'Raumnummer',     label: 'Raumnummer',   placeholder: '— Spalte wählen —', required: true},
-    {key: 'familie',   col: 'Familie',         label: 'Familie',      placeholder: '— optional —'},
+    {key: 'familie',  col: 'Familie',         label: 'Familie',      placeholder: '— optional —'},
     {key: 'laenge',   col: 'MT_LIMET_Breite', label: 'Länge/Breite', placeholder: '— optional —'},
     {key: 'tiefe',    col: 'MT_LIMET_Tiefe',  label: 'Tiefe',        placeholder: '— optional —'},
     {key: 'hoehe',    col: 'MT_LIMET_Höhe',   label: 'Höhe',         placeholder: '— optional —'},
