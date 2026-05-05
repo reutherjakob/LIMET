@@ -181,7 +181,7 @@
 
         <div class='col-xxl-2'>
             <div class='card mt-2'>
-                <div class='card-header'>Quick-Check<
+                <div class='card-header'>Quick-Check
                 </div>
                 <div class='card-body' id='quickCheckDashboard'>
                 </div>
