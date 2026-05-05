@@ -7,7 +7,7 @@ init_page_serversides("x");
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
-    <title>Works In Progress</title>
+    <title>Icon Legende</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen"/>
@@ -103,6 +103,16 @@ init_page_serversides("x");
                                 <td><i class="fas fa-file-excel"></i></td>
                                 <td>Download als Excel</td>
                             </tr>
+
+
+
+                            <tr>
+                                <td>
+                                    <i class='far fa-file-pdf'></i>
+                                </td>
+                                <td>Download als PDF</td>
+                            </tr>
+
 
 
                             </tbody>
