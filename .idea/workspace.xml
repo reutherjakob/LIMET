@@ -4,20 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="IFC Quest - import seems to work">
-      <change afterPath="$PROJECT_DIR$/roombook_allDevicePrices.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roombook_wartungspreise.php" afterDir="false" />
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="IFC Quest - import seems to work.&#10;&#10;Neue Seite: Geräte- und Wartungspreise Liste (&amp;Navbar).&#10;Bugfix Tender Lots.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IFCQuest/element_compare.js" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/element_compare.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IFCQuest/import_excel.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/import_excel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IFCQuest/room_check.js" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/room_check.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/addWorkflowToLot.php" beforeDir="false" afterPath="$PROJECT_DIR$/addWorkflowToLot.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/elementGeräte.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_elementGeräte.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getDeviceServicePrices.php" beforeDir="false" afterPath="$PROJECT_DIR$/getDeviceServicePrices.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getLotWorkflow.php" beforeDir="false" afterPath="$PROJECT_DIR$/getLotWorkflow.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getProjectWorkflows.php" beforeDir="false" afterPath="$PROJECT_DIR$/getProjectWorkflows.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_tenderLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_tenderLots.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_allDevicePrices.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_devicePrice.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_devicePrice.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_wartungspreise.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/utils/navbar.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -579,15 +570,7 @@
       <workItem from="1777382860771" duration="1300000" />
       <workItem from="1777384434655" duration="203000" />
       <workItem from="1777465421328" duration="64000" />
-      <workItem from="1777964647831" duration="8942000" />
-    </task>
-    <task id="LOCAL-00184" summary="Bugfix#2 - Bericht Disclaimer angepasst - elementAdministration Gerätepreise anzeigen">
-      <option name="closed" value="true" />
-      <created>1769949796605</created>
-      <option name="number" value="00184" />
-      <option name="presentableId" value="LOCAL-00184" />
-      <option name="project" value="LOCAL" />
-      <updated>1769949796605</updated>
+      <workItem from="1777964647831" duration="9469000" />
     </task>
     <task id="LOCAL-00185" summary="Merge remote-tracking branch 'origin/Bugfixes-15-9-2025' into Bugfixes-01-2026&#10;&#10;# Conflicts:&#10;#&#9;PDFs/pdf_createBauangabenBericht_A3Qeer_1.php">
       <option name="closed" value="true" />
@@ -973,7 +956,15 @@
       <option name="project" value="LOCAL" />
       <updated>1777551735799</updated>
     </task>
-    <option name="localTasksCounter" value="233" />
+    <task id="LOCAL-00233" summary="IFC Quest - import seems to work.&#10;&#10;Neue Seite: Geräte- und Wartungspreise Liste (&amp;Navbar).&#10;Bugfix Tender Lots.">
+      <option name="closed" value="true" />
+      <created>1777973813157</created>
+      <option name="number" value="00233" />
+      <option name="presentableId" value="LOCAL-00233" />
+      <option name="project" value="LOCAL" />
+      <updated>1777973813157</updated>
+    </task>
+    <option name="localTasksCounter" value="234" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1003,7 +994,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Bugfix#1" />
     <MESSAGE value="Bugfix#2 - Bericht Disclaimer angepasst - elementAdministration Gerätepreise anzeigen" />
     <MESSAGE value="Merge remote-tracking branch 'origin/Bugfixes-15-9-2025' into Bugfixes-01-2026&#10;&#10;# Conflicts:&#10;#&#9;PDFs/pdf_createBauangabenBericht_A3Qeer_1.php" />
     <MESSAGE value="Merge remote-tracking branch 'origin/Bugfixes-15-9-2025' into Bugfixes-01-2026" />
@@ -1028,7 +1018,8 @@
     <MESSAGE value=" ifc_import" />
     <MESSAGE value="verbesserung der sichtbarkeit bei bauangaben - &#10;tracking, welche reports in welchem Projeklt gentutz werden" />
     <MESSAGE value="IFC Quest - import seems to work" />
-    <option name="LAST_COMMIT_MESSAGE" value="IFC Quest - import seems to work" />
+    <MESSAGE value="IFC Quest - import seems to work.&#10;&#10;Neue Seite: Geräte- und Wartungspreise Liste (&amp;Navbar).&#10;Bugfix Tender Lots." />
+    <option name="LAST_COMMIT_MESSAGE" value="IFC Quest - import seems to work.&#10;&#10;Neue Seite: Geräte- und Wartungspreise Liste (&amp;Navbar).&#10;Bugfix Tender Lots." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
