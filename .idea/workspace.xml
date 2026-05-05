@@ -4,10 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="">
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="IFC Quest - import seems to work">
+      <change afterPath="$PROJECT_DIR$/roombook_allDevicePrices.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/roombook_wartungspreise.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IFCQuest/column_mapping.js" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/column_mapping.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IFCQuest/element_compare.js" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/element_compare.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/IFCQuest/import_excel.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/import_excel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IFCQuest/room_check.js" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/room_check.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/addWorkflowToLot.php" beforeDir="false" afterPath="$PROJECT_DIR$/addWorkflowToLot.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/elementGeräte.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_elementGeräte.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getDeviceServicePrices.php" beforeDir="false" afterPath="$PROJECT_DIR$/getDeviceServicePrices.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getLotWorkflow.php" beforeDir="false" afterPath="$PROJECT_DIR$/getLotWorkflow.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getProjectWorkflows.php" beforeDir="false" afterPath="$PROJECT_DIR$/getProjectWorkflows.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_tenderLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_tenderLots.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/utils/navbar.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -568,22 +579,7 @@
       <workItem from="1777382860771" duration="1300000" />
       <workItem from="1777384434655" duration="203000" />
       <workItem from="1777465421328" duration="64000" />
-    </task>
-    <task id="LOCAL-00182" summary="Bugfix#2 - Bericht Disclaimer angepasst - elementAdministration Gerätepreise anzeigen">
-      <option name="closed" value="true" />
-      <created>1769949571680</created>
-      <option name="number" value="00182" />
-      <option name="presentableId" value="LOCAL-00182" />
-      <option name="project" value="LOCAL" />
-      <updated>1769949571680</updated>
-    </task>
-    <task id="LOCAL-00183" summary="Bugfix#2 - Bericht Disclaimer angepasst - elementAdministration Gerätepreise anzeigen">
-      <option name="closed" value="true" />
-      <created>1769949705610</created>
-      <option name="number" value="00183" />
-      <option name="presentableId" value="LOCAL-00183" />
-      <option name="project" value="LOCAL" />
-      <updated>1769949705610</updated>
+      <workItem from="1777964647831" duration="8942000" />
     </task>
     <task id="LOCAL-00184" summary="Bugfix#2 - Bericht Disclaimer angepasst - elementAdministration Gerätepreise anzeigen">
       <option name="closed" value="true" />
@@ -961,7 +957,23 @@
       <option name="project" value="LOCAL" />
       <updated>1777380587528</updated>
     </task>
-    <option name="localTasksCounter" value="231" />
+    <task id="LOCAL-00231" summary="verbesserung der sichtbarkeit bei bauangaben - &#10;tracking, welche reports in welchem Projeklt gentutz werden">
+      <option name="closed" value="true" />
+      <created>1777545423490</created>
+      <option name="number" value="00231" />
+      <option name="presentableId" value="LOCAL-00231" />
+      <option name="project" value="LOCAL" />
+      <updated>1777545423490</updated>
+    </task>
+    <task id="LOCAL-00232" summary="IFC Quest - import seems to work">
+      <option name="closed" value="true" />
+      <created>1777551735799</created>
+      <option name="number" value="00232" />
+      <option name="presentableId" value="LOCAL-00232" />
+      <option name="project" value="LOCAL" />
+      <updated>1777551735799</updated>
+    </task>
+    <option name="localTasksCounter" value="233" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -991,7 +1003,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Losliste und Element Änderugnen getuned und gebugfixed." />
     <MESSAGE value="Bugfix#1" />
     <MESSAGE value="Bugfix#2 - Bericht Disclaimer angepasst - elementAdministration Gerätepreise anzeigen" />
     <MESSAGE value="Merge remote-tracking branch 'origin/Bugfixes-15-9-2025' into Bugfixes-01-2026&#10;&#10;# Conflicts:&#10;#&#9;PDFs/pdf_createBauangabenBericht_A3Qeer_1.php" />
@@ -1016,7 +1027,8 @@
     <MESSAGE value="Element parameter Änderungen Website" />
     <MESSAGE value=" ifc_import" />
     <MESSAGE value="verbesserung der sichtbarkeit bei bauangaben - &#10;tracking, welche reports in welchem Projeklt gentutz werden" />
-    <option name="LAST_COMMIT_MESSAGE" value="verbesserung der sichtbarkeit bei bauangaben - &#10;tracking, welche reports in welchem Projeklt gentutz werden" />
+    <MESSAGE value="IFC Quest - import seems to work" />
+    <option name="LAST_COMMIT_MESSAGE" value="IFC Quest - import seems to work" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

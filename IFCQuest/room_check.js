@@ -26,6 +26,11 @@ document.getElementById('btn-check-rooms').addEventListener('click', function ()
             validationResults = res.results;
             renderValidation(res.results);
             showCard('validation-card');
+
+            // Reset batch card whenever we re-check rooms
+            document.getElementById('batch-compare-card').style.display = 'none';
+            document.getElementById('compare-section').style.display = 'none';
+            resetBatchState();
         },
         error: xhr => {
             document.getElementById('btn-check-rooms').disabled = false;
@@ -104,6 +109,10 @@ function renderValidation(results) {
         tbody.appendChild(tr);
     });
 
+    // Show/hide "Alle Räume abgleichen" button
+    const btnAll = document.getElementById('btn-compare-all');
+    btnAll.style.display = cFound > 0 ? '' : 'none';
+
     document.getElementById('validation-stats').innerHTML = `
     <span class="stat-pill bg-success bg-opacity-10 text-success">
         <i class="fas fa-check-circle fa-xs"></i>${cFound} gefunden
@@ -121,3 +130,17 @@ function renderElementList(elemente) {
     </li>`).join('')}
 </ul>`;
 }
+
+// ══════════════════════════════════════════════════════════════════
+// "Alle Räume abgleichen" Button
+// ══════════════════════════════════════════════════════════════════
+
+document.getElementById('btn-compare-all').addEventListener('click', function () {
+    const foundRooms = Object.values(validationResults).filter(r => r.status === 'found');
+    if (!foundRooms.length) return;
+
+    // Hide single-compare section
+    document.getElementById('compare-section').style.display = 'none';
+
+    startBatchCompare(foundRooms);
+});

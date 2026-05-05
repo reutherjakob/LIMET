@@ -37,9 +37,9 @@ echo "<table class='table table-striped table-sm' id='tableDeviceServicePrices' 
 	<thead><tr>";
 echo "<th>Datum</th>
 		<th>Info</th>
-		<th>Menge</th>
-		<th>Wartungsart</th>
-		<th>Preis/Jahr</th>
+		<th>Geräte Anzahl</th>
+		<th>Wartungsart </th>
+		<th>Preis/Jahr (für 1 Gerät)</th>
                 <th>Projekt</th>
                 <th>Lieferant</th>
 	</tr></thead><tbody>";
@@ -94,7 +94,7 @@ echo " </tbody></table>";
                                placeholder="Verfahrensart, Anmerkung,..."/>
                     </div>
                     <div class="form-group">
-                        <label for="mengeService">Menge:</label>
+                        <label for="mengeService">Anzahl der Geräte:</label>
                         <input type="text" class="form-control" id="mengeService"/>
                     </div>
                     <div class="form-group">

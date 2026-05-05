@@ -11,6 +11,7 @@ a:hover {
     color: var(--bs-link-hover-color) !important;
 }
 */
+
 .bg-primary {
     background-color: rgb(151, 197, 151) !important; /* Replace with your color */
 }
@@ -19,8 +20,6 @@ tr.selected {
     background-color: rgb(139, 177, 139) !important;
     color: #222; /* Optional: Change text color */
 }
-
-
 
 
 
@@ -60,10 +59,6 @@ tr.selected {
 .custom-popover {
     z-index: 99;
 }
-
-/*.table > thead > tr > th {
-    background-color: rgba(100, 140, 25, 0.15);
-}*/
 
 
 .scrollBtn {
