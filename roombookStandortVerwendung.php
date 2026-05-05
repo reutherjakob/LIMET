@@ -78,7 +78,7 @@ $mysqli->close();
         <div class="card-header">
             <div class="row flex-nowrap">
                 <div class="col-6">
-                    Elemente: Standort ungleich Verwendung
+                    Elemente <=> <strong> Standort <i class="fas fa-not-equal"></i> Verwendung</strong>
                 </div>
                 <div class="col-6 d-inline-flex justify-content-end" id="cardHeader"></div>
             </div>

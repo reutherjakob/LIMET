@@ -44,7 +44,7 @@ init_page_serversides();
                         <div class="col-xxl-6 d-flex justify-content-end" id="CardHeaderElementesInDb"></div>
                     </div>
                 </div>
-                <div class="card-body" id="elementsInDB">
+                <div class="card-body p-0" id="elementsInDB">
                     <?php include "getElementsInDbCardBodyContent.php"; ?>
                 </div>
             </div>

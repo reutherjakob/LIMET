@@ -1,4 +1,5 @@
 <?php
+// FX 2026
 require_once 'utils/_utils.php';
 include 'utils/_format.php';
 init_page_serversides("No Redirect");
@@ -24,10 +25,13 @@ $sql_gp = "
         tpr.Interne_Nr,
         tpr.Projektname,
         tl.idTABELLE_Lieferant  AS lieferantID,
-        tl.Lieferant
+        tl.Lieferant,
+        te.Bezeichnung AS Elementbezeichnung
     FROM tabelle_preise tp
         LEFT JOIN tabelle_geraete tg
             ON tp.TABELLE_Geraete_idTABELLE_Geraete = tg.idTABELLE_Geraete
+        LEFT JOIN tabelle_elemente te             
+            ON tg.TABELLE_Elemente_idTABELLE_Elemente = te.idTABELLE_Elemente
         LEFT JOIN tabelle_hersteller th
             ON tg.tabelle_hersteller_idtabelle_hersteller = th.idtabelle_hersteller
         LEFT JOIN tabelle_projekte tpr
@@ -57,7 +61,8 @@ $sql_wp = "
         th.Hersteller,
         tl.idTABELLE_Lieferant                      AS lieferantID,
         tl.Lieferant,
-        w.WartungspreisProJahr * w.Menge            AS Preis_Jahr_Menge
+        w.WartungspreisProJahr * w.Menge            AS Preis_Jahr_Menge,
+        te.Bezeichnung AS Elementbezeichnung
     FROM tabelle_wartungspreise w
         INNER JOIN tabelle_geraete tg
             ON w.tabelle_geraete_idTABELLE_Geraete = tg.idTABELLE_Geraete
@@ -70,7 +75,7 @@ $sql_wp = "
         LEFT JOIN tabelle_räume tr
             ON rhe.TABELLE_Räume_idTABELLE_Räume = tr.idTABELLE_Räume
         LEFT JOIN tabelle_elemente te
-            ON rhe.TABELLE_Elemente_idTABELLE_Elemente = te.idTABELLE_Elemente
+            ON tg.TABELLE_Elemente_idTABELLE_Elemente = te.idTABELLE_Elemente
     GROUP BY
         w.idtabelle_wartungspreise,
         te.idTABELLE_Elemente
@@ -121,8 +126,7 @@ $mysqli->close();
     <div class="card">
 
         <div class="card-header d-flex justify-content-between align-items-center">
-            <div id="CardHeader-geraete" class="d-flex align-items-center"></div>
-            <div id="CardHeader-wartung" class="d-flex align-items-center"></div>
+
 
             <ul class="nav nav-tabs card-header-tabs mb-0" id="preisTabs" role="tablist">
                 <li class="nav-item" role="presentation">
@@ -140,7 +144,8 @@ $mysqli->close();
                     </button>
                 </li>
             </ul>
-
+            <div id="CardHeader-geraete" class="d-flex align-items-center"></div>
+            <div id="CardHeader-wartung" class="d-flex align-items-center"></div>
 
         </div>
 
@@ -156,7 +161,8 @@ $mysqli->close();
                                class="table table-sm table-striped table-hover table-bordered p-0">
                             <thead class="table-dark">
                             <tr>
-                                <th>Geräte-ID</th>
+                                <th>Elementbezeichnung</th>
+                                <th>ID</th>
                                 <th>Typ</th>
                                 <th>Hersteller</th>
                                 <th>Gerät Beschreibung</th>
@@ -194,21 +200,22 @@ $mysqli->close();
                                     data-kommentar="<?= htmlspecialchars($row['Kommentar'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
                                     data-project-id="<?= (int)($row['projectID'] ?? 0) ?>"
                                     data-lieferant-id="<?= (int)($row['lieferantID'] ?? 0) ?>">
+                                    <td><?= htmlspecialchars($row['Elementbezeichnung'] ?? '–', ENT_QUOTES, 'UTF-8') ?></td>
                                     <td><?= htmlspecialchars($row['GeraeteID'] ?? '–', ENT_QUOTES, 'UTF-8') ?></td>
                                     <td><?= htmlspecialchars($row['Typ'] ?? '–', ENT_QUOTES, 'UTF-8') ?></td>
                                     <td><?= htmlspecialchars($row['Hersteller'] ?? '–', ENT_QUOTES, 'UTF-8') ?></td>
                                     <td class="text-muted small"><?= htmlspecialchars($row['Geraete_Kurzbeschreibung'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
-                                    <td data-order="<?= $datum_order ?>"><?= $datum ?></td>
-                                    <td><?= $quelle ?></td>
-                                    <td class="text-end"
-                                        data-order="<?= $menge ?>"><?= number_format($menge, 0, ',', '.') ?></td>
-                                    <td class="text-end"
-                                        data-order="<?= $ep ?>"><?= number_format($ep, 2, ',', '.') ?></td>
-                                    <td class="text-end"
-                                        data-order="<?= $nk ?>"><?= number_format($nk, 2, ',', '.') ?></td>
-                                    <td><?= htmlspecialchars($projekt ?: '–', ENT_QUOTES, 'UTF-8') ?></td>
-                                    <td><?= htmlspecialchars($row['Lieferant'] ?? '–', ENT_QUOTES, 'UTF-8') ?></td>
-                                    <td class="text-muted small"><?= htmlspecialchars($row['Kommentar'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
+
+
+                                    <td data-col="datum" data-order="<?= $datum_order ?>"><?= $datum ?></td>
+                                    <td data-col="quelle"><?= $quelle ?></td>
+                                    <td data-col="menge" class="text-end" data-order="<?= $menge ?>"><?= number_format($menge, 0, ',', '.') ?></td>
+                                    <td data-col="ep" class="text-end" data-order="<?= $ep ?>"><?= number_format($ep, 2, ',', '.') ?></td>
+                                    <td data-col="nk" class="text-end" data-order="<?= $nk ?>"><?= number_format($nk, 2, ',', '.') ?></td>
+                                    <td data-col="projekt"><?= htmlspecialchars($projekt ?: '–', ENT_QUOTES, 'UTF-8') ?></td>
+                                    <td data-col="lieferant"><?= htmlspecialchars($row['Lieferant'] ?? '–', ENT_QUOTES, 'UTF-8') ?></td>
+                                    <td data-col="kommentar" class="text-muted small"><?= htmlspecialchars($row['Kommentar'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
+
                                     <td class="text-center">
                                         <button class="btn btn-sm btn-outline-dark edit-geraetepreis-btn"
                                                 title="Preis ändern"
@@ -233,7 +240,8 @@ $mysqli->close();
                                class="table table-sm table-striped table-hover table-bordered p-0">
                             <thead class="table-dark">
                             <tr>
-                                <th>Geräte-ID</th>
+                                <th>Elementbezeichnung</th>
+                                <th>ID</th>
                                 <th>Typ</th>
                                 <th>Hersteller</th>
                                 <th>Gerät Beschreibung</th>
@@ -269,18 +277,19 @@ $mysqli->close();
                                     data-menge="<?= $menge ?>"
                                     data-preis-jahr="<?= $preis_jahr ?>"
                                     data-lieferant-id="<?= (int)($row['lieferantID'] ?? 0) ?>">
+                                    <td><?= htmlspecialchars($row['Elementbezeichnung'] ?? '–', ENT_QUOTES, 'UTF-8') ?></td>
                                     <td><?= htmlspecialchars($row['GeraeteID'] ?? '–', ENT_QUOTES, 'UTF-8') ?></td>
                                     <td><?= htmlspecialchars($row['Typ'] ?? '–', ENT_QUOTES, 'UTF-8') ?></td>
                                     <td><?= htmlspecialchars($row['Hersteller'] ?? '–', ENT_QUOTES, 'UTF-8') ?></td>
                                     <td class="text-muted small"><?= htmlspecialchars($row['Geraete_Kurzbeschreibung'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
-                                    <td><?= htmlspecialchars($row['Lieferant'] ?? '–', ENT_QUOTES, 'UTF-8') ?></td>
-                                    <td class="text-muted small"><?= htmlspecialchars($row['Info'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
-                                    <td data-order="<?= $datum_order ?>"><?= $datum ?></td>
-                                    <td><?= $art ?></td>
-                                    <td class="text-end"
-                                        data-order="<?= $menge ?>"><?= number_format($menge, 0, ',', '.') ?></td>
-                                    <td class="text-end"
-                                        data-order="<?= $preis_jahr ?>"><?= number_format($preis_jahr, 2, ',', '.') ?></td>
+
+                                    <td data-col="lieferant"><?= htmlspecialchars($row['Lieferant'] ?? '–', ENT_QUOTES, 'UTF-8') ?></td>
+                                    <td data-col="info" class="text-muted small"><?= htmlspecialchars($row['Info'] ?? '', ENT_QUOTES, 'UTF-8') ?></td>
+                                    <td data-col="datum" data-order="<?= $datum_order ?>"><?= $datum ?></td>
+                                    <td data-col="wartungsart"><?= $art ?></td>
+                                    <td data-col="menge" class="text-end" data-order="<?= $menge ?>"><?= number_format($menge, 0, ',', '.') ?></td>
+                                    <td data-col="preis" class="text-end" data-order="<?= $preis_jahr ?>"><?= number_format($preis_jahr, 2, ',', '.') ?></td>
+
                                     <td class="text-center">
                                         <button class="btn btn-sm btn-outline-dark edit-wartungspreis-btn"
                                                 title="Wartungspreis ändern"
@@ -486,12 +495,6 @@ $mysqli->close();
                     title: 'Gerätepreise',
                     exportOptions: {columns: ':not(:last-child)'}
                 },
-                {
-                    extend: 'print',
-                    className: 'btn btn-sm btn-outline-dark bg-white',
-                    title: 'Gerätepreise',
-                    exportOptions: {columns: ':not(:last-child)'}
-                },
                 {extend: 'colvis', className: 'btn btn-sm btn-outline-dark bg-white'}
             ],
             layout: {
@@ -505,8 +508,8 @@ $mysqli->close();
             lengthMenu: [25, 50, 100, 500, -1],
             order: [[4, 'desc']],
             columnDefs: [
-                {targets: [3], visible: false},
-                {targets: [6, 7, 8], className: 'text-end'},
+                {targets: [0, 4], visible: false},
+                {targets: [9, 7, 8], className: 'text-end'},
                 {targets: [-1], orderable: false, searchable: false}   // Edit-Spalte
             ],
             initComplete: function () {
@@ -530,12 +533,7 @@ $mysqli->close();
                     title: 'Wartungspreise',
                     exportOptions: {columns: ':not(:last-child)'}
                 },
-                {
-                    extend: 'print',
-                    className: 'btn btn-sm btn-outline-dark bg-white',
-                    title: 'Wartungspreise',
-                    exportOptions: {columns: ':not(:last-child)'}
-                },
+
                 {extend: 'colvis', className: 'btn btn-sm btn-outline-dark bg-white'}
             ],
             layout: {
@@ -549,8 +547,8 @@ $mysqli->close();
             lengthMenu: [25, 50, 100, 500, -1],
             order: [[0, 'asc']],
             columnDefs: [
-                {targets: [3], visible: false},
-                {targets: [8, 9], className: 'text-end'},
+                {targets: [0, 4], visible: false},
+                {targets: [10, 9], className: 'text-end'},
                 {targets: [-1], orderable: false, searchable: false}     // Edit-Spalte
             ],
             initComplete: function () {
@@ -620,6 +618,12 @@ $mysqli->close();
             $('#gp_lieferant').val(row.data('lieferant-id') || '0');
         });
 
+        function formatDateDE(isoDate) {
+            if (!isoDate) return '–';
+            const [y, m, d] = isoDate.split('-');
+            return d + '.' + m + '.' + y;
+        }
+
         $('#saveGeraetepreis').on('click', function () {
             const geraeteID = $('#gp_geraeteID').val();
             const priceID = $('#gp_priceID').val();
@@ -644,7 +648,36 @@ $mysqli->close();
                 success: function (data) {
                     bootstrap.Modal.getInstance(document.getElementById('editGeraetepreisModal')).hide();
                     makeToaster(data.trim(), true);
-                    // Reload table row or full table as needed
+
+                    const dt = $('#tblGeraetepreise').DataTable();
+                    const priceID = $('#gp_priceID').val();
+                    const tr = $('tr[data-price-id="' + priceID + '"]');
+
+                    // Update data attributes
+                    tr.data('date', $('#gp_date').val());
+                    tr.data('quelle', quelle);
+                    tr.data('menge', menge);
+                    tr.data('ep', ep);
+                    tr.data('nk', nk);
+                    tr.data('kommentar', kommentar);
+                    tr.data('project-id', project);
+                    tr.data('lieferant-id', lieferant);
+
+                    const projektText = $('#gp_project option:selected').text().replace(' – ', ' ');
+                    const lieferantText = lieferant > 0 ? $('#gp_lieferant option:selected').text() : '–';
+                    const [y, m, d] = date.split('-');
+                    const ts = Math.floor(new Date(y, m - 1, d).getTime() / 1000);
+
+                    tr.find('td[data-col="datum"]').text(formatDateDE(date)).attr('data-order', ts);
+                    tr.find('td[data-col="quelle"]').text(quelle);
+                    tr.find('td[data-col="menge"]').text(parseInt(menge).toLocaleString('de-AT')).attr('data-order', menge);
+                    tr.find('td[data-col="ep"]').text(parseFloat(ep).toLocaleString('de-AT', {minimumFractionDigits: 2})).attr('data-order', ep);
+                    tr.find('td[data-col="nk"]').text(parseFloat(nk).toLocaleString('de-AT', {minimumFractionDigits: 2})).attr('data-order', nk);
+                    tr.find('td[data-col="projekt"]').text(projektText || '–');
+                    tr.find('td[data-col="lieferant"]').text(lieferantText);
+                    tr.find('td[data-col="kommentar"]').text(kommentar);
+
+                    dt.row(tr).invalidate().draw(false);
                 },
                 error: function () {
                     makeToaster('Fehler beim Speichern!', false);
@@ -660,6 +693,7 @@ $mysqli->close();
             const row = $(this).closest('tr');
             $('#wp_wartungID').val(row.data('wartung-id'));
             $('#wp_geraeteID').val(row.data('geraete-id'));
+
             $('#wp_date').val(row.data('date'));
             $('#wp_wartungsart').val(row.data('wartungsart') || '0');
             $('#wp_menge').val(row.data('menge'));
@@ -690,7 +724,30 @@ $mysqli->close();
                 success: function (data) {
                     bootstrap.Modal.getInstance(document.getElementById('editWartungspreisModal')).hide();
                     makeToaster(data.trim(), true);
-                    // Reload table row or full table as needed
+
+                    const dt = $('#tblWartung').DataTable();
+                    const tr = $('tr[data-wartung-id="' + wartungID + '"]');
+
+                    tr.data('date', date);
+                    tr.data('wartungsart', art);
+                    tr.data('menge', menge);
+                    tr.data('preis-jahr', preis);
+                    tr.data('info', info);
+                    tr.data('lieferant-id', lieferant);
+
+                    const artText = art === '0' ? 'Betriebswartung' : 'Vollwartung';
+                    const lieferantText = lieferant > 0 ? $('#wp_lieferant option:selected').text() : '–';
+                    const [wy, wm, wd] = date.split('-');
+                    const wts = Math.floor(new Date(wy, wm - 1, wd).getTime() / 1000);
+
+                    tr.find('td[data-col="lieferant"]').text(lieferantText);
+                    tr.find('td[data-col="info"]').text(info);
+                    tr.find('td[data-col="datum"]').text(formatDateDE(date)).attr('data-order', wts);
+                    tr.find('td[data-col="wartungsart"]').text(artText);
+                    tr.find('td[data-col="menge"]').text(parseInt(menge).toLocaleString('de-AT')).attr('data-order', menge);
+                    tr.find('td[data-col="preis"]').text(parseFloat(preis).toLocaleString('de-AT', {minimumFractionDigits: 2})).attr('data-order', preis);
+
+                    dt.row(tr).invalidate().draw(false);
                 },
                 error: function () {
                     makeToaster('Fehler beim Speichern!', false);

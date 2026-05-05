@@ -218,7 +218,7 @@
                         <p>
                             <i class="fas fa-history col-1"></i>
                             <a class="col-11" href="roombook_elementParameterAenderungen.php">
-                                Element Parameter
+                                Element Parameter Änderungen
                             </a>
                         </p>
 
@@ -234,6 +234,24 @@
                                 Budget Statii
                             </a>
                         </p>
+
+
+                        <p>
+                            <i class="fas fa-list-ol col-1"></i>
+                            <a class="col-11" href="roombook_devicePrice.php">
+                               Geräte & Wartungspreise Liste
+                            </a>
+                        </p>
+
+                        <p>
+                            <i class="fas fa-map-marked-alt col-1"></i>
+                            <a class="col-11" href="roombookStandortVerwendung.php">
+                                Standort & Verwendung Liste
+                            </a>
+                        </p>
+
+
+
                     </div>
 
                 </div>
