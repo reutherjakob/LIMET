@@ -1,6 +1,6 @@
 <?php
 require_once 'utils/_utils.php';
-init_page_serversides();
+init_page_serversides("");
 $sessionProjektId = isset($_SESSION['projectID']) ? (int)$_SESSION['projectID'] : 0;
 $sessionProjektName = htmlspecialchars($_SESSION['projectName'] ?? '');
 ?>
@@ -11,6 +11,7 @@ $sessionProjektName = htmlspecialchars($_SESSION['projectName'] ?? '');
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Bauphasen</title>
 
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
     <link rel="icon" href="Logo/iphone_favicon.png"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
@@ -23,55 +24,34 @@ $sessionProjektName = htmlspecialchars($_SESSION['projectName'] ?? '');
 <body class="bg-light">
 
 <div class="container-fluid py-4">
+    <div id="limet-navbar"></div>
 
-    <!-- Header -->
-    <div class="row mb-3">
-        <div class="col">
-            <h4 class="mb-0"><i class="fas fa-hard-hat me-2 text-warning"></i>Bauphasen</h4>
-            <p class="text-muted small mb-0">Bauphasen erstellen, bearbeiten und löschen</p>
-        </div>
-    </div>
-
-    <!-- Toolbar -->
-    <div class="card mb-3 border-0 shadow-sm">
-        <div class="card-body py-2">
-            <div class="row g-2 align-items-center">
-                <div class="col-auto">
-                    <span class="badge bg-secondary fs-6">
-                        <i class="fas fa-project-diagram me-1"></i><?= $sessionProjektName ?>
-                    </span>
-                </div>
-                <div class="col-auto">
-                    <button class="btn btn-success btn-sm" id="btnAdd">
-                        <i class="fas fa-plus me-1"></i>Neue Bauphase
-                    </button>
-                </div>
-                <div class="col-auto ms-auto">
-                    <div id="spinnerArea" class="d-none">
-                        <div class="spinner-border spinner-border-sm text-secondary" role="status">
-                            <span class="visually-hidden">Laden…</span>
-                        </div>
+    <!-- Table card -->
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">Bauphasen</div>
+                <div class="col-6 d-flex justify-content-end">
+                    <div class="justify-content-end">
+                        <button class="btn btn-success" id="btnAdd">
+                            <i class="fas fa-plus me-1"></i>Neue Bauphase
+                        </button>
                     </div>
                 </div>
             </div>
+
         </div>
-    </div>
 
-    <!-- Alert area -->
-    <div id="alertArea"></div>
-
-    <!-- Table card -->
-    <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
             <table class="table table-hover table-bordered mb-0 align-middle" id="tableBauphasen">
                 <thead class="table-dark">
                 <tr>
-                    <th style="width:40px">#</th>
+                    <th>#</th>
                     <th>Bauphase</th>
-                    <th style="width:160px">Beginn</th>
-                    <th style="width:160px">Fertigstellung</th>
-                    <th style="width:160px">Dauer (Tage)</th>
-                    <th style="width:110px" class="text-center">Aktionen</th>
+                    <th>Beginn</th>
+                    <th>Fertigstellung</th>
+                    <th>Dauer (Tage)</th>
+                    <th class="text-center">Aktionen</th>
                 </tr>
                 </thead>
                 <tbody id="tbody">
@@ -83,7 +63,7 @@ $sessionProjektName = htmlspecialchars($_SESSION['projectName'] ?? '');
                 </tbody>
             </table>
         </div>
-        <div class="card-footer text-muted small" id="footerInfo"></div>
+
     </div>
 </div>
 
@@ -168,23 +148,16 @@ $sessionProjektName = htmlspecialchars($_SESSION['projectName'] ?? '');
     </div>
 </div>
 
+<script src="utils/_utils.js"></script>
 <script>
     const API = 'api_bauphasen.php';
     let currentProjektId = <?= $sessionProjektId ?>;
     let deleteId = null;
 
     const modalBauphase = new bootstrap.Modal('#modalBauphase');
-    const modalDelete   = new bootstrap.Modal('#modalDelete');
+    const modalDelete = new bootstrap.Modal('#modalDelete');
 
     /* ── helpers ─────────────────────────────────────────── */
-
-    function showAlert(msg, type = 'danger', target = '#alertArea') {
-        const html = `<div class="alert alert-${type} alert-dismissible fade show py-2 small" role="alert">
-            ${msg}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>`;
-        $(target).html(html);
-    }
 
     function clearModalValidation() {
         $('#inputBauphase, #inputBeginn, #inputFertig').removeClass('is-invalid');
@@ -202,19 +175,18 @@ $sessionProjektName = htmlspecialchars($_SESSION['projectName'] ?? '');
         return Math.round(ms / 86400000);
     }
 
-    function spinner(show) {
-        $('#spinnerArea').toggleClass('d-none', !show);
-    }
-
 
     /* ── load Bauphasen ──────────────────────────────────── */
 
     function loadBauphasen() {
         if (!currentProjektId) return;
-        spinner(true);
-        $.get(API, { action: 'getAll', projekt_id: currentProjektId }, function (res) {
-            spinner(false);
-            if (!res.success) { showAlert(res.message); return; }
+
+        $.get(API, {action: 'getAll', projekt_id: currentProjektId}, function (res) {
+
+            if (!res.success) {
+                makeToaster(res.message, false);
+                return;
+            }
 
             const tbody = $('#tbody');
             tbody.empty();
@@ -223,7 +195,7 @@ $sessionProjektName = htmlspecialchars($_SESSION['projectName'] ?? '');
                 tbody.html(`<tr><td colspan="6" class="text-center text-muted py-4">
                     <i class="fas fa-info-circle me-1"></i>Keine Bauphasen für dieses Projekt vorhanden.
                 </td></tr>`);
-                $('#footerInfo').text('');
+
                 return;
             }
 
@@ -257,16 +229,18 @@ $sessionProjektName = htmlspecialchars($_SESSION['projectName'] ?? '');
                     </tr>`);
             });
 
-            $('#footerInfo').text(`${res.data.length} Bauphase(n) gefunden`);
+
         }, 'json').fail(() => {
-            spinner(false);
-            showAlert('Serverfehler beim Laden der Bauphasen.');
+
+
+            makeToaster('Serverfehler beim Laden der Bauphasen.', false);
         });
     }
 
     function escHtml(str) {
         return $('<div>').text(str).html();
     }
+
     function escAttr(str) {
         return str.replace(/"/g, '&quot;');
     }
@@ -278,12 +252,21 @@ $sessionProjektName = htmlspecialchars($_SESSION['projectName'] ?? '');
         clearModalValidation();
 
         const bauphase = $('#inputBauphase').val().trim();
-        const beginn   = $('#inputBeginn').val();
-        const fertig   = $('#inputFertig').val();
+        const beginn = $('#inputBeginn').val();
+        const fertig = $('#inputFertig').val();
 
-        if (!bauphase) { $('#inputBauphase').addClass('is-invalid'); ok = false; }
-        if (!beginn)   { $('#inputBeginn').addClass('is-invalid');   ok = false; }
-        if (!fertig)   { $('#inputFertig').addClass('is-invalid');   ok = false; }
+        if (!bauphase) {
+            $('#inputBauphase').addClass('is-invalid');
+            ok = false;
+        }
+        if (!beginn) {
+            $('#inputBeginn').addClass('is-invalid');
+            ok = false;
+        }
+        if (!fertig) {
+            $('#inputFertig').addClass('is-invalid');
+            ok = false;
+        }
         if (beginn && fertig && fertig < beginn) {
             $('#inputFertig').addClass('is-invalid');
             ok = false;
@@ -296,19 +279,19 @@ $sessionProjektName = htmlspecialchars($_SESSION['projectName'] ?? '');
     function saveBauphase() {
         if (!validateForm()) return;
 
-        const id       = $('#editId').val();
+        const id = $('#editId').val();
         const bauphase = $('#inputBauphase').val().trim();
-        const beginn   = $('#inputBeginn').val();
-        const fertig   = $('#inputFertig').val();
+        const beginn = $('#inputBeginn').val();
+        const fertig = $('#inputFertig').val();
 
         const data = {
-            action:               id ? 'update' : 'add',
+            action: id ? 'update' : 'add',
             bauphase,
-            datum_beginn:         beginn,
+            datum_beginn: beginn,
             datum_fertigstellung: fertig,
         };
         if (id) data.id = id;
-        else    data.projekt_id = currentProjektId;
+        else data.projekt_id = currentProjektId;
 
         $('#btnSave').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Speichern…');
 
@@ -316,15 +299,15 @@ $sessionProjektName = htmlspecialchars($_SESSION['projectName'] ?? '');
             $('#btnSave').prop('disabled', false).html('<i class="fas fa-save me-1"></i>Speichern');
             if (res.success) {
                 modalBauphase.hide();
-                showAlert(res.message, 'success');
+                makeToaster(res.message, true);
                 loadBauphasen();
             } else {
-                showAlert(res.message, 'danger', '#modalAlert');
+                makeToaster(res.message, false);
                 $('#modalAlert').removeClass('d-none');
             }
         }, 'json').fail(() => {
             $('#btnSave').prop('disabled', false).html('<i class="fas fa-save me-1"></i>Speichern');
-            showAlert('Serverfehler.', 'danger', '#modalAlert');
+            makeToaster('Serverfehler.', false);
             $('#modalAlert').removeClass('d-none');
         });
     }
@@ -334,14 +317,14 @@ $sessionProjektName = htmlspecialchars($_SESSION['projectName'] ?? '');
     function deleteBauphase() {
         if (!deleteId) return;
         $('#btnConfirmDelete').prop('disabled', true);
-        $.post(API, { action: 'delete', id: deleteId }, function (res) {
+        $.post(API, {action: 'delete', id: deleteId}, function (res) {
             $('#btnConfirmDelete').prop('disabled', false);
             modalDelete.hide();
             if (res.success) {
-                showAlert(res.message, 'success');
+                makeToaster(res.message, true);
                 loadBauphasen();
             } else {
-                showAlert(res.message);
+                makeToaster(res.message, false);
             }
         }, 'json');
     }
