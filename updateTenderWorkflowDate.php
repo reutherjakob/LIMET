@@ -5,8 +5,8 @@ check_login();
 
 $mysqli = utils_connect_sql();
 
-$lotID = getPostInt($input['lotID'] ?? 0);
-$date = getPostDate($input['date'] ?? '');
+$lotID = getPostInt('lotID');
+$date = getPostDate('date');
 $workflowID = getPostInt('workflowID');
 $workflowTeilID = getPostInt('workflowTeilID');
 
@@ -20,7 +20,7 @@ $stmt = $mysqli->prepare($sql1);
 $stmt->bind_param("siii", $date, $lotID, $workflowID, $workflowTeilID);
 
 if ($stmt->execute()) {
-    $ausgabe = "Soll-Datum erfolgreich aktualisiert!";
+    $ausgabe = "Soll-Datum erfolgreich aktualisiert!"; //  \n LosId: " . $lotID . ", Datum: " . $date . ", Workflow ID" . $workflowID;
 } else {
     $ausgabe = "Error: " . $stmt->error;
 }
