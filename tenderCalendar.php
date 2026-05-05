@@ -38,8 +38,8 @@
             justify-content: center;
             align-items: center;
         }
-        .soll-col { background-color: #e8f5e8 !important; }
-        .ist-col { background-color: #ffbebe !important; }
+        .soll-col { background-color: #e6f0ff !important; }
+        .ist-col { background-color: rgb(168, 188, 240) !important; }
 
 
     </style>

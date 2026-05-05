@@ -14,20 +14,8 @@ let Cookie_aktiv_tage = 90;
 let previous_room_session = 0;
 var currentSort = {column: 0, dir: 'asc'};
 var tableRoomElements;  // tableRoomElements  && hideZeroFilter required for: getRoomELmeentsDetailed1.php
-
 let btnCache = {};
 
-
-$("#hideZeroRows").on("change", function () {  // 06052025
-    const icon = $("#hideZeroIcon");
-    if (this.checked) {
-        // 0 elements are hidden, show slashed eye
-        icon.removeClass("fa-eye").addClass("fa-eye-slash");
-    } else {
-        // 0 elements are visible, show open eye
-        icon.removeClass("fa-eye-slash").addClass("fa-eye");
-    }
-});
 $(document).ready(function () {
     fetch('get_project_id.php')
         .then(response => response.json())
@@ -575,7 +563,6 @@ function table_click() {
                     type: "POST",
                     success: function (data) {
                         $("#bauangaben").html(data);
-                        console.log("bauangaben. html entfernt");
                         if (previous_room_session !== RaumID) {
                             previous_room_session = RaumID;
                             $.ajax({
