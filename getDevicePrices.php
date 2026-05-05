@@ -5,9 +5,7 @@ include "utils/_format.php";
 check_login();
 $mysqli = utils_connect_sql();
 $deviceID = getPostInt('deviceID', 0);
-if ($deviceID <> 0) {
-    $_SESSION["deviceID"] = $deviceID;
-}
+
 
 $sql = "SELECT tabelle_preise.Datum,
        tabelle_preise.idTABELLE_Preise,
@@ -251,6 +249,9 @@ echo "</tbody></table>"; ?>
 
 <script src="utils/_utils.js"></script>
 <script>
+
+    var deviceID = <?= (int)$deviceID ?>;
+
     $(document).ready(function () {
 
         $('#GerätepreiseCardHeader').html(`
@@ -263,6 +264,7 @@ echo "</tbody></table>"; ?>
             <i class='fas fa-plus'></i>
             Preis hinzufügen
         </button>     `);
+
         $('#quelle').on('change', function () {
             if ($(this).val() === 'Andere') {
                 $('#quelleAndere').show().focus();
@@ -343,7 +345,8 @@ echo "</tbody></table>"; ?>
                     "nk": nk,
                     "project": project,
                     "lieferant": lieferant,
-                    "preiskommentar": preiskommentar
+                    "preiskommentar": preiskommentar,
+                     "geraeteID":deviceID
                 },
                 type: "POST",
                 success: function (data) {

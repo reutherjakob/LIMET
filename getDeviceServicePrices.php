@@ -37,9 +37,9 @@ echo "<table class='table table-striped table-sm' id='tableDeviceServicePrices' 
 	<thead><tr>";
 echo "<th>Datum</th>
 		<th>Info</th>
-		<th>Geräte Anzahl</th>
+		<th>Anzahl Geräte</th>
 		<th>Wartungsart </th>
-		<th>Preis/Jahr (für 1 Gerät)</th>
+		<th>Preis/Jahr (1 Gerät)</th>
                 <th>Projekt</th>
                 <th>Lieferant</th>
 	</tr></thead><tbody>";

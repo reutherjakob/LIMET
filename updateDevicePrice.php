@@ -15,7 +15,12 @@ $dateStr = getPostString('date');
 $projektID = getPostInt('project');
 $nk = getPostString('nk');
 $lieferant = getPostInt('lieferant');
-$deviceID = $_SESSION["deviceID"];
+$deviceID = getPostInt('geraeteID');   // statt $_SESSION["deviceID"]
+
+if ($priceID <= 0 || $deviceID <= 0) {
+    echo "Ungültige Parameter!";
+    exit;
+}
 $date = date("Y-m-d", strtotime($dateStr));
 $preiskommentar = getPostString('preiskommentar');
 

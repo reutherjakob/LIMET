@@ -449,6 +449,7 @@ function html_2_plug_into_edit_cell(dataIdentifier) {
             "H1a",
             "H1b",
             "H1c",
+            "H1d",
             "H2a",
             "H2b",
             "H2c",
