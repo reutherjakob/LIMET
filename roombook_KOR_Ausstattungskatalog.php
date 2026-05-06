@@ -10,7 +10,7 @@ init_page_serversides();
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png">
+    <link rel="icon" href="../Logo/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -43,6 +43,7 @@ init_page_serversides();
                         <?php
                         $mysqli_rb = utils_connect_sql();
                         $projectID_rb = (int)($_SESSION["projectID"] ?? 0);
+
                         $stmt_rb = $mysqli_rb->prepare("
                             SELECT DISTINCT `Raumbereich Nutzer`
                             FROM tabelle_räume
@@ -115,7 +116,7 @@ init_page_serversides();
                 ['header' => 'Netzart', 'source' => 'display', 'key' => 'Netzart', 'group' => 'Elektro', 'hidden' => true, 'suppress_unit' => true],
                 ['header' => 'Spannung [V]', 'source' => 'display', 'key' => 'Spannung', 'suppress_unit' => true, 'group' => 'Elektro', 'hidden' => true,],
                 ['header' => 'Steckdosen Anz.', 'source' => 'display', 'key' => 'Steckdosen_Anzahl', 'group' => 'Elektro', 'hidden' => true, 'suppress_unit' => true],
-                ['header' => 'Direktanschluss', 'source' => 'display', 'key' => 'Direktanschluss', 'group' => 'Elektro', 'hidden' => true, 'suppress_unit' => true],
+                ['header' => 'Direktanschluss', 'source' => 'calc_ac', 'key' => 'direktanschluss_display', 'group' => 'Elektro', 'hidden' => true, 'suppress_unit' => true],
                 ['header' => 'Tageslastanteil', 'source' => 'display', 'key' => "Gleichzeitigkeit", 'center' => true],
                 ['header' => 'Absicherung (im Gerät)', 'source' => 'static', 'key' => ''],
 
@@ -161,9 +162,14 @@ init_page_serversides();
                 ['header' => 'VA', 'source' => 'display', 'key' => 'VAC Anschluss', 'group' => 'Medizingas', 'suppress_unit' => true],
                 ['header' => 'NGA', 'source' => 'display', 'key' => 'NGA Anschluss', 'group' => 'Medizingas', 'suppress_unit' => true],
                 // --- Tech. Druckluft ---
+                ['header' => 'Tech. DL 3 bar', 'source' => 'calc_ac', 'key' => 'dl_3bar', 'center' => true, 'group' => 'Druckluft'],
+                ['header' => 'Flussrate [l/min] Tech. DL 3 bar', 'source' => 'display', 'key' => 'DL_3_Flussrate', 'group' => 'Medizingas', 'suppress_unit' => true],
                 ['header' => 'Tech. DL 6 bar', 'source' => 'calc_ac', 'key' => 'dl_6bar', 'center' => true, 'group' => 'Druckluft'],
+                ['header' => 'Flussrate [l/min] Tech. DL 6 bar', 'source' => 'display', 'key' => 'DL_6_Flussrate', 'group' => 'Medizingas', 'suppress_unit' => true],
                 ['header' => 'Tech. DL 9 bar', 'source' => 'calc_ac', 'key' => 'dl_9bar', 'center' => true, 'group' => 'Druckluft'],
+                ['header' => 'Flussrate [l/min]Tech. DL 9 bar', 'source' => 'display', 'key' => 'DL-9_Flussrate', 'group' => 'Medizingas', 'suppress_unit' => true],
                 ['header' => 'Tech. DL 12 bar', 'source' => 'calc_ac', 'key' => 'dl_12bar', 'center' => true, 'group' => 'Druckluft'],
+                ['header' => 'Flussrate [l/min] Tech. DL 12 bar', 'source' => 'display', 'key' => 'DL-12_Flussrate', 'group' => 'Medizingas', 'suppress_unit' => true],
                 ['header' => 'Bemerkung MG', 'source' => 'static', 'key' => ''],
                 // --- Kaltwasser ---
                 ['header' => 'KW Stadtwasser', 'source' => 'calc_wc', 'key' => 'kw_stadt_flag', 'center' => true, 'group' => 'Kaltwasser', 'suppress_unit' => true],
@@ -234,7 +240,7 @@ init_page_serversides();
                 ['header' => 'Rücklauf', 'source' => 'static', 'key' => ''],
                 ['header' => 'Rücklauf Anschluss', 'source' => 'calc_sc', 'key' => 'kw_ruecklauf_anschluss', 'group' => 'Kälte'],
                 ['header' => 'Druckverlust [Pa]', 'source' => 'calc_sc', 'key' => 'druckverlust', 'group' => 'Kälte'],
-                ['header' => 'Rücklauf', 'source' => 'static', 'key' => ''],
+                ['header' => 'Bemerkung Kälte', 'source' => 'static', 'key' => ''],
                 // --- Architektur ---
                 ['header' => 'Gewicht [kg]', 'source' => 'calc_sc', 'key' => 'gewicht', 'group' => 'Architektur'],
                 ['header' => 'Vibration', 'source' => 'static', 'key' => ''],
@@ -273,26 +279,31 @@ init_page_serversides();
             {
                 $netzart = $params['Netzart'] ?? '';
                 $spannung = $params['Spannung'] ?? '';
-                $direkt = strtolower($params['Direktanschluss'] ?? '');
+
                 $steckdosen = (int)($params['Steckdosen_Anzahl'] ?? 0);
 
                 $netze = ['AV', 'SV', 'ZSV', 'USV'];
                 $result = [];
-                $isDirekt = in_array($direkt, ['ja', 'yes', '1', 'true']);
+                $direkt = strtolower($params['Direktanschluss'] ?? '');
+                $isDirekt = in_array($direkt, ['ja', 'yes', '1', 'true', '2', '3', '4']);
+                $result['direktanschluss_display'] = $isDirekt ? '1' : '';
+
 
                 foreach ($netze as $netz) {
-                    $netzeInString = array_map('trim', explode('/', $netzart));
-                    $hasNetz = in_array($netz, array_map('strtoupper', $netzeInString));
-                    $result['direkt_230_' . $netz] = ($hasNetz && $isDirekt && $spannung === '230') ? 1 : '';
-                    $result['direkt_400_' . $netz] = ($hasNetz && $isDirekt && $spannung === '400') ? 1 : '';
-                    $result['steck_230_' . $netz] = ($hasNetz && $spannung === '230' && $steckdosen > 0) ? $steckdosen : '';
-                    $result['steck_400_' . $netz] = ($hasNetz && $spannung === '400' && $steckdosen > 0) ? $steckdosen : '';
+                    $netzeInString = array_map('strtoupper', array_map('trim', explode('/', $netzart)));
+                    $hasNetz = in_array($netz, $netzeInString);
+
+                    $result['direkt_230_' . $netz] = ($hasNetz && $isDirekt && $spannung === '230') ? (is_numeric($direkt) ? $direkt : '1') : '';
+                    $result['direkt_400_' . $netz] = ($hasNetz && $isDirekt && $spannung === '400') ? (is_numeric($direkt) ? $direkt : '1') : '';
+                    $result['steck_230_' . $netz]  = ($hasNetz && $spannung === '230' && $steckdosen > 0) ? $steckdosen : '';
+                    $result['steck_400_' . $netz]  = ($hasNetz && $spannung === '400' && $steckdosen > 0) ? $steckdosen : '';
                 }
                 $result['24V'] = ($params['Spannung'] ?? '') == "24" ? 1 : "";
 
                 $druckluft_anschluss = $params['Druckluftanschluss'] ?? '';
                 $druckluft_druck = trim($params['Druckluft_Druck'] ?? '');
-                $hasDruckluft = ($druckluft_anschluss !== '' && $druckluft_anschluss !== '0');
+                $hasDruckluft = ($druckluft_anschluss !== '' && $druckluft_anschluss !== '0');;
+                $result['dl_3bar'] = ($hasDruckluft && $druckluft_druck === '3') ? 1 : '';
                 $result['dl_6bar'] = ($hasDruckluft && $druckluft_druck === '6') ? 1 : '';
                 $result['dl_9bar'] = ($hasDruckluft && $druckluft_druck === '9') ? 1 : '';
                 $result['dl_12bar'] = ($hasDruckluft && $druckluft_druck === '12') ? 1 : '';
@@ -395,12 +406,12 @@ init_page_serversides();
                 $kw_anschluss_val = trim($params['Kaltwasser_Anschluss'] ?? '');
                 $kw_anschluss_display = trim($display['Kaltwasser_Anschluss'] ?? '');
 
-// Einheit = display minus reiner Zahlenwert
-                $kw_einheit = strtolower(trim(str_replace($kw_anschluss_val, '', $kw_anschluss_display)));
 
-                $r['anschluss_dimension'] = (stripos($kw_einheit, 'dn') !== false) ? $kw_anschluss_val : '';
-                $r['anschluss_punkt'] = (str_contains($kw_einheit, '"')) ? $kw_anschluss_val : '';
-
+                $anschluss_val     = $kw_anschluss_val !== '' ? $kw_anschluss_val     : trim($params['Voll_entsalztes Wasser_Anschluss'] ?? '');
+                $anschluss_display = $kw_anschluss_val !== '' ? $kw_anschluss_display  : trim($display['Voll_entsalztes Wasser_Anschluss'] ?? '');
+                $einheit = strtolower(trim(str_replace($anschluss_val, '', $anschluss_display)));
+                $r['anschluss_dimension'] = (stripos($einheit, 'dn') !== false) ? $anschluss_val : '';
+                $r['anschluss_punkt']     = (str_contains($einheit, '"'))       ? $anschluss_val : '';
                 $r['rohrtrenner'] = $trennung;
 
                 return $r;
@@ -459,7 +470,8 @@ init_page_serversides();
                 $r['direkt_abluft'] = in_array($direkt_abluft, ['ja', '1', 'yes', 'true']) ? 'Ja' : '';
 
                 $glt = strtolower(trim($params['GLT'] ?? ''));
-                $r['glt_datenpunkt'] = in_array($glt, ['ja', '1', 'yes', 'true']) ? 'Ja' : '';
+
+                $r['glt_datenpunkt'] = ($glt === 'ja') ? '1' : $glt;
 
                 $r['abwasser_fetthaltig'] = $r['direkt_abwasser'] = $r['bemerkung_abwasser'] = '';
                 $r['raumwaerme_latent'] = $r['restpressung'] = $r['abluft_kondensat'] = '';
@@ -515,10 +527,19 @@ init_page_serversides();
                         AND peg.tabelle_projekte_idTABELLE_Projekte = ?
                     LEFT JOIN tabelle_auftraggeber_gewerke ag
                         ON  ag.idTABELLE_Auftraggeber_Gewerke = peg.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
-                    WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
+                     LEFT JOIN tabelle_projektbudgets tpb_filter
+                        ON  tpb_filter.idtabelle_projektbudgets = rhe.tabelle_projektbudgets_idtabelle_projektbudgets
+                    WHERE r.tabelle_projekte_idTABELLE_Projekte = ? 
                     GROUP BY e.idTABELLE_Elemente, e.ElementID, e.Bezeichnung,
                              rhe.tabelle_Varianten_idtabelle_Varianten
                     HAVING MAX(rhe.Anzahl) > 0
+  AND MAX(
+    CASE
+      WHEN tpb_filter.idtabelle_projektbudgets IS NULL THEN 1  -- kein Budget → immer anzeigen
+      WHEN tpb_filter.status = 1 THEN 1                        -- Budget freigegeben → anzeigen
+      ELSE 0
+    END
+  ) = 1
                     ORDER BY e.ElementID, VarianteID";
                 $stmtE = $mysqli->prepare($sqlElements);
                 $stmtE->bind_param("ii", $projectID, $projectID);
@@ -548,12 +569,21 @@ init_page_serversides();
                         AND peg.tabelle_projekte_idTABELLE_Projekte = ?
                     LEFT JOIN tabelle_auftraggeber_gewerke ag
                         ON  ag.idTABELLE_Auftraggeber_Gewerke = peg.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
+                     LEFT JOIN tabelle_projektbudgets tpb_filter
+                        ON  tpb_filter.idtabelle_projektbudgets = rhe.tabelle_projektbudgets_idtabelle_projektbudgets
                     WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
                       AND r.`Raumbereich Nutzer` IN ($placeholders)
                       AND r.Entfallen = 0
                     GROUP BY e.idTABELLE_Elemente, e.ElementID, e.Bezeichnung,
                              rhe.tabelle_Varianten_idtabelle_Varianten
                     HAVING MAX(rhe.Anzahl) > 0
+  AND MAX(
+    CASE
+      WHEN tpb_filter.idtabelle_projektbudgets IS NULL THEN 1  -- kein Budget → immer anzeigen
+      WHEN tpb_filter.status = 1 THEN 1                        -- Budget freigegeben → anzeigen
+      ELSE 0
+    END
+  ) = 1
                     ORDER BY e.ElementID, VarianteID";
                 $stmtE = $mysqli->prepare($sqlElements);
                 $types = 'ii' . str_repeat('s', count($filterRaumbereiche));

@@ -1,0 +1,14 @@
+Index: LOGIN/csrf.php
+===================================================================
+diff --git a/LOGIN/csrf.php b/utils/csrf.php
+rename from LOGIN/csrf.php
+rename to utils/csrf.php
+--- a/LOGIN/csrf.php	(revision 3bbcbfe38aba8a485c6acc19d40320187f9cd324)
++++ b/utils/csrf.php	(date 1759481339162)
+@@ -1,5 +1,5 @@
+ <?php
+-// CSRF token generator and checker
++
+ function csrf_token() {
+     if (empty($_SESSION['csrf_token'])) {
+         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));

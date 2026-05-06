@@ -161,10 +161,6 @@ try {
 
         $check->bind_result($id, $passwordHash, $role);
 
-       // if ($role != "internal_rb_user") {
-       //     safeRedirect('index.php?error=login_failed');
-       // }
-
         $hashedPassword = md5($password);
 
         if (!empty($userInNewSystem['password']) && strlen($userInNewSystem['password']) > 32) {

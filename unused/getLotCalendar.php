@@ -271,6 +271,7 @@ $mysqli->close();
 
     //Soll-Datum einzeln updaten
     $("button[name='save_solldate']").click(function () {
+        console.log("updating soll date");
         var ID = this.id;
         var newString = ID.split(",");
         var date = $('input[id=SOLLDATE-' + newString[1] + '-' + newString[2] + '-' + newString[3] + ']').val();

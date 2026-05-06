@@ -148,7 +148,12 @@ init_page_serversides();
     <div class="row">
         <div class="col-xxl-8">
             <div class="mt-4 card">
-                <div class="card-header">Elemente im Raum</div>
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-6">Elemente im Raum</div>
+                        <div class="col-6 d-inline-flex justify-content-end" id="room_action_btns"></div>
+                    </div>
+                </div>
                 <div class="card-body" id="roomElements"></div>
             </div>
         </div>
@@ -442,6 +447,18 @@ init_page_serversides();
                                 type: "POST",
                                 success: function (data) {
                                     $("#roomElements").html(data);
+                                    setTimeout(function () {
+
+                                        $('#tableRoomElements_wrapper .dt-search label').remove();
+                                        var $searchEl = $('#tableRoomElements_wrapper .dt-search')
+                                            .children()
+                                            .removeClass('form-control form-control-sm')
+                                            .addClass('btn btn-sm btn-outline-dark ms-1');
+
+                                        $('#room_action_btns').empty();
+                                        $('#room-action-buttons').appendTo('#room_action_btns');
+                                        $searchEl.appendTo('#room_action_btns');
+                                    }, 150);
                                 }
                             });
 

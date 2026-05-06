@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DdlMappings">
+    <mapping uuid="67cb50c5-51a1-4fd5-913d-5bf1a6661913" name="LIMET_RB@localhost Mapping">
+      <data-sources db="a0035955-4929-452e-bc74-c974b5004fd4" ddl="20176307-4ddd-4b15-82d7-c917ee901e7d" />
+      <scope>
+        <node kind="schema" qname="LIMET_RB" />
+      </scope>
+    </mapping>
+  </component>
+</project>

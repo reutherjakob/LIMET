@@ -279,18 +279,27 @@ init_page_serversides("", "x");
     function generateReport(report, date) {
         const roomIDs = table.rows({selected: true}).data().toArray().map(row => row[0]);
         const formattedDate = date || getDate("#dateSelect");
+
+        let url;
         if (report.url.startsWith("pdf_createElementEinbringwegePDF")) {
-            // For einbringwege PDFs, no room selection required:
-            const url = `/PDFs/${report.url}.php?date=${formattedDate}`; // no roomID param
-            window.open(url);
-        } else {// Other reports require room selection:
+            url = `/PDFs/${report.url}.php?date=${formattedDate}`;
+        } else {
             if (!roomIDs.length) {
                 alert("Kein Raum ausgewählt!");
                 return;
             }
-            const url = `/PDFs/${report.url}.php?roomID=${roomIDs.join(',')}&date=${formattedDate}`;
-            window.open(url);
+            url = `/PDFs/${report.url}.php?roomID=${roomIDs.join(',')}&date=${formattedDate}`;
         }
+
+        // --- Logging ---
+        $.post('log_report_download.php', {
+            reportUrl:  report.url,
+            reportText: report.text,
+            roomIDs:    roomIDs.join(',')
+        });
+        // ----------------
+
+        window.open(url);
     }
 
 

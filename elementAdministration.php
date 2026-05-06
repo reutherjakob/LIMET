@@ -5,7 +5,7 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png">
+    <link rel="icon" href="../Logo/iphone_favicon.png">
     <!-- Rework 2025 CDNs -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -93,35 +93,71 @@ init_page_serversides("x"); ?>
         <div class="card-header">Geräte</div>
         <div class="card-body">
             <div class="row mt-1">
-                <div class='col-xxl-4'>
+                <div class='col-xxl-7' id='col_devices'>
                     <div class='mt-1 card'>
-                        <div class='card-header'><label>Geräte zu Element</label></div>
+                        <div class='card-header'><label>Geräte zu Element</label>
+                            <div class="float-end">
+                                <button type="button" class="btn btn-outline-dark float-end" id="toggle_cards">
+                                    <i class="fas fa-caret-left" id="toggle_icon"> </i> <i class="fas fa-caret-right"
+                                                                                           id="toggle_icon2"></i>
+                                </button>
+                            </div>
+                        </div>
                         <div class='card-body' id='devicesInDB'></div>
                     </div>
                 </div>
-                <div class='col-xxl-4'>
+
+                <div class='col-xxl-3' id='col_parameters'>
                     <div class='mt-1 card'>
                         <div class='card-header'><label>Geräteparameter</label></div>
                         <div class='card-body' id='deviceParametersInDB'></div>
                     </div>
                 </div>
-                <div class='col-xxl-4'>
+
+                <div class='col-xxl-5' id='col_prices'>
                     <div class='mt-1 card'>
-                        <div class='card-header'><label>Gerätepreise</label></div>
+                        <div class='card-header'>
+                            <div class='row'>
+                                <div class='col-6'>
+                                    <label>Gerätepreise</label>
+                                </div>
+                                <div class='col-6 d-flex justify-content-end' id='GerätepreiseCardHeader'>
+                                </div>
+                            </div>
+                        </div>
                         <div class='card-body' id='devicePrices'></div>
                     </div>
                     <div class='mt-1 card'>
-                        <div class='card-header'><label>Wartungspreise</label></div>
+                        <div class='card-header'>
+                            <div class='row'>
+                                <div class='col-6'>
+                                    <label>Wartungspreise</label>
+                                </div>
+                                <div class='col-6 d-flex justify-content-end' id='WartungspreiseCardHeader'>
+
+                                </div>
+                            </div>
+                        </div>
                         <div class='card-body' id='deviceServicePrices'></div>
                     </div>
                     <div class='mt-1 card'>
-                        <div class='card-header'><label>Lieferanten</label></div>
+                        <div class='card-header'>
+                            <div class='row'>
+                                <div class='col-6'>
+                                    <label>Lieferanten</label>
+                                </div>
+                                <div class='col-6 d-flex justify-content-end' id='LieferantenCardHeader'>
+
+                                </div>
+                            </div>
+                        </div>
                         <div class='card-body' id='deviceLieferanten'></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 </body>
 
 <div class='modal fade' id='changeElementModal' role='dialog' tabindex="-1">
@@ -156,6 +192,21 @@ init_page_serversides("x"); ?>
     var table1;
     $(document).ready(function () {
         init_table_elementsinDB();
+
+        $('#col_parameters').hide();
+        $('#toggle_cards').click(function () {
+            const $col = $('#col_parameters');
+            const isVisible = $col.is(':visible');
+            if (isVisible) {
+                $col.hide();
+                $('#col_devices').removeClass('col-xxl-5').addClass('col-xxl-7');
+                $('#col_prices').removeClass('col-xxl-4').addClass('col-xxl-5');
+            } else {
+                $col.show();
+                $('#col_devices').removeClass('col-xxl-7').addClass('col-xxl-5');
+                $('#col_prices').removeClass('col-xxl-5').addClass('col-xxl-4');
+            }
+        });
     });
 
     function init_table_elementsinDB() {
@@ -178,24 +229,42 @@ init_page_serversides("x"); ?>
             select: true,
             info: true,
             pagingType: 'simple',
-            lengthChange: false,
+            lengthChange: true,
             pageLength: 10,
             order: [[1, 'asc']],
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 search: "",
                 searchPlaceholder: "Suche...",
+                info: "_START_ bis _END_ von _TOTAL_",
+                infoEmpty: "Keine Einträge vorhanden",
+                infoFiltered: "", //"(gefiltert von _MAX_ Einträgen)",
+                infoPostFix: "",        // appended after info string
+                lengthMenu: "_MENU_",
+                // Select (requires select extension)
                 select: {
-                    rows: "",
-                    columns: "",
-                    cells: ""
+                    rows: {
+                        _: "",
+                        0: "",
+                        1: ""
+                    },
+                    columns: {
+                        _: "",
+                        0: "",
+                        1: ""
+                    },
+                    cells: {
+                        _: "",
+                        0: "",
+                        1: ""
+                    }
                 }
             },
             layout: {
                 topStart: null,
                 topEnd: null,
                 bottomStart: ['info', 'search'],
-                bottomEnd: ['paging'],
+                bottomEnd: ['pageLength', 'paging'],
             },
             initComplete: function () {
                 $('#tableElementsInDB_wrapper .dt-search label').remove();

@@ -37,9 +37,9 @@ echo "<table class='table table-striped table-sm' id='tableDeviceServicePrices' 
 	<thead><tr>";
 echo "<th>Datum</th>
 		<th>Info</th>
-		<th>Menge</th>
-		<th>Wartungsart</th>
-		<th>Preis/Jahr</th>
+		<th>Anzahl Geräte</th>
+		<th>Wartungsart </th>
+		<th>Preis/Jahr (1 Gerät)</th>
                 <th>Projekt</th>
                 <th>Lieferant</th>
 	</tr></thead><tbody>";
@@ -61,17 +61,17 @@ while ($row = $result->fetch_assoc()) {
     echo "</tr>";
 }
 echo " </tbody></table>";
-echo " <div class='col-12 d-inline-flex justify-content-end'>  
-          <button type='button' 
-            id='addServicePriceModalButton' 
-            class='btn btn-success btn-sm  mt-2' 
-            value='Wartungspreis hinzufügen' 
-            data-bs-toggle='modal' 
-            data-bs-target='#addServicePriceModal'>
-            <i class='fas fa-plus'></i> 
-            Wartungspreis hinzufügen
-        </button>
-        </div>";
+//echo " <div class='col-12 d-inline-flex justify-content-end'>
+//          <button type='button'
+//            id='addServicePriceModalButton'
+//           class='btn btn-success btn-sm  mt-2'
+//           value='Wartungspreis hinzufügen'
+//           data-bs-toggle='modal'
+//           data-bs-target='#addServicePriceModal'>
+//           <i class='fas fa-plus'></i>
+//           Wartungspreis hinzufügen
+//       </button>
+//       </div>";
 ?>
 
 <!-- Modal zum Anlegen eines Preises -->
@@ -94,7 +94,7 @@ echo " <div class='col-12 d-inline-flex justify-content-end'>
                                placeholder="Verfahrensart, Anmerkung,..."/>
                     </div>
                     <div class="form-group">
-                        <label for="mengeService">Menge:</label>
+                        <label for="mengeService">Anzahl der Geräte:</label>
                         <input type="text" class="form-control" id="mengeService"/>
                     </div>
                     <div class="form-group">
@@ -158,6 +158,18 @@ echo " <div class='col-12 d-inline-flex justify-content-end'>
 
 <script>
     $(document).ready(function () {
+
+        $('#WartungspreiseCardHeader').html(`
+    <button type='button'
+            id='addServicePriceModalButton'
+            class='btn btn-sm btn-success'
+            value='Wartungspreis hinzufügen'
+            data-bs-toggle='modal'
+            data-bs-target='#addServicePriceModal'>
+        <i class='fas fa-plus'></i>
+        Wartungspreis hinzufügen
+    </button>
+`);
         setTimeout(function () {
             $('#dateService').datepicker({
                 format: "yyyy-mm-dd",
@@ -166,7 +178,7 @@ echo " <div class='col-12 d-inline-flex justify-content-end'>
                 todayBtn: "linked",
                 language: "de"
             });
-        }, 500);
+        }, 200);
     });
 
     new DataTable('#tableDeviceServicePrices', {

@@ -5,7 +5,7 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png">
+    <link rel="icon" href="../Logo/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -111,6 +111,18 @@ init_page_serversides("x");
                                 </div>
                                 <span class="visually-hidden">Los Historie</span>
                             </th>
+
+
+                            <th>
+                                <div class='d-flex justify-content-center align-items-center'
+                                     data-bs-toggle="tooltip"
+                                     data-bs-placement="top"
+                                     title="Notiz">
+                                    <i class="fas fa-sticky-note"></i>
+                                </div>
+                                <span class="visually-hidden">Notiz</span>
+                            </th>
+
                             <th>
                                 <div class='d-flex justify-content-center align-items-center'
                                      data-bs-toggle="tooltip"
@@ -119,6 +131,15 @@ init_page_serversides("x");
                                     <i class="fas fa-tasks"></i>
                                 </div>
                                 <span class="visually-hidden">ToDos</span>
+                            </th>
+                            <th>
+                                <div class='d-flex justify-content-center align-items-center'
+                                     data-bs-toggle="tooltip"
+                                     data-bs-placement="top"
+                                     title="Angebote eingegangen?">
+                                    <i class="fas fa-envelope-open-text"></i>
+                                </div>
+                                <span class="visually-hidden">Angebote eingegangen</span>
                             </th>
 
                             <th>
@@ -148,6 +169,25 @@ init_page_serversides("x");
         </div>
     </div>
 
+    <div class="modal fade" id="notizModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Notiz</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="notizModalText"></label><textarea id="notizModalText" class="form-control"
+                                                                  rows="6"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                    <button type="button" class="btn btn-primary" id="notizSaveBtn">Speichern</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <?php require "modal_show_lose_todo.php"; ?>
     <?php require "modal_help_allTenderLots.php"; ?>
     <?php require "modal_showLotWorkflow.php"; ?>
@@ -157,21 +197,10 @@ init_page_serversides("x");
     <script src="utils/_utils.js"></script>
     <script charset="utf-8">
         var tableTenderLots;
-
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
+        let currentNotizLotId = null;
 
         $(document).ready(function () {
-            $('#dateSelect').val('2024-01-01');
+            $('#dateSelect').val('2025-01-01');
             tableTenderLots = new DataTable('#tableTenderLots', {
                 ajax: {
                     url: 'getFilteredLots.php',
@@ -265,12 +294,6 @@ init_page_serversides("x");
                         .addClass("btn btn-sm btn-outline-secondary")
                         .appendTo('#LoseCardHeaderSub0');
 
-                    $('#dateSelect').on('change', debounce(function () {
-                        if ($(this).val() !== $(this).data('oldValue')) { // Nur bei neuem Datum
-                            $(this).data('oldValue', $(this).val());
-                            tableTenderLots.ajax.reload(null, false);
-                        }
-                    }, 500));
 
                     if (!window.tooltipList) {
                         let tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -284,6 +307,95 @@ init_page_serversides("x");
 
                 }
             });
+
+
+            $(document).on('change', '.lot-angebote-checkbox', function () {
+                const lotId = $(this).data('lot-id');
+                const projektId = $(this).data('projekt-id');
+                if (!$(this).is(':checked')) return; // only handle checking
+
+                $.ajax({
+                    url: 'lotPriceUpdated.php',
+                    type: 'POST',
+                    data: {lot_id: lotId, projekt_id: projektId, preis_status: 1},
+                    success: function (response) {
+                        if (response.success) {
+                            tableTenderLots.ajax.reload(null, false);
+                        } else {
+                            alert('Fehler: ' + (response.error || 'Unbekannter Fehler'));
+                        }
+                    },
+                    error: function () {
+                        alert('Verbindungsfehler.');
+                    }
+                });
+            });
+
+            // Angebote badge clicked → reset to 0
+            $(document).on('click', '.lot-angebote-badge', function () {
+                if (!confirm('Angebote-Status zurücksetzen?')) return;
+                const lotId = $(this).data('lot-id');
+                const projektId = $(this).data('projekt-id');
+
+                $.ajax({
+                    url: 'lotPriceUpdated.php',
+                    type: 'POST',
+                    data: {lot_id: lotId, projekt_id: projektId, preis_status: 0},
+                    success: function (response) {
+                        if (response.success) tableTenderLots.ajax.reload(null, false);
+                        else alert('Fehler: ' + (response.error || 'Unbekannter Fehler'));
+                    },
+                    error: function () {
+                        alert('Verbindungsfehler.');
+                    }
+                });
+            });
+
+
+            $(document).on('click', '.lot-notiz-btn', function () {
+                currentNotizLotId = $(this).data('lot-id');
+                $('#notizModalText').val($(this).data('notiz'));
+                new bootstrap.Modal(document.getElementById('notizModal')).show();
+            });
+
+            $('#notizSaveBtn').on('click', function () {
+                $.ajax({
+                    url: 'save_los_notiz.php',
+                    type: 'POST',
+                    data: {
+                        lot_id: currentNotizLotId,
+                        notiz: $('#notizModalText').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            bootstrap.Modal.getInstance(document.getElementById('notizModal')).hide();
+                            tableTenderLots.ajax.reload(null, false);
+                        } else {
+                            alert('Fehler: ' + (response.error || 'Unbekannter Fehler'));
+                        }
+                    },
+                    error: function () {
+                        alert('Verbindungsfehler.');
+                    }
+                });
+            });
+
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+
+
+            $('#dateSelect').on('change', debounce(function () {
+                tableTenderLots.ajax.reload(null, false);
+            }, 100));
 
             $(document).on("click", "button[value='Los ToDos']", function () {
                 var lotID = this.id.replace('lottodo_', '');
@@ -350,54 +462,66 @@ init_page_serversides("x");
             });
 
             $(document).on('change', '.lot-preis-checkbox', function () {
-                var $checkbox = $(this);
-                var lotId = $checkbox.data('lot-id');
-                var projektId = $checkbox.data('projekt-id');
-                var newStatus = $checkbox.is(':checked') ? 1 : 0;
-                var $label = $checkbox.siblings('.form-check-label');
-                $label.html('<span class="spinner-border spinner-border-sm me-1"></span>Laden...');
+                if (!$(this).is(':checked')) return;
                 $.ajax({
-                    url: 'lotPriceUpdated.php',
-                    type: 'POST',
-                    data: {
-                        lot_id: lotId,
-                        projekt_id: projektId,
-                        preis_status: newStatus
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            tableTenderLots.ajax.reload(null, false);
-
-                        } else {
-                            alert('Fehler beim Speichern: ' + (response.error || 'Unbekannter Fehler'));
-                        }
+                    url: 'lotPriceUpdated.php', type: 'POST',
+                    data: {lot_id: $(this).data('lot-id'), preis_status: 2},
+                    success: function (r) {
+                        if (r.success) tableTenderLots.ajax.reload(null, false);
+                        else alert('Fehler: ' + (r.error || 'Unbekannter Fehler'));
                     },
                     error: function () {
-                        alert('Verbindungsfehler. Bitte versuchen Sie es erneut.');
+                        alert('Verbindungsfehler.');
                     }
                 });
             });
 
-            $(document).on('click', '.kontrolle-btn', function () {
-                if (this.disabled) return;
-                const $btn = $(this); // Button-Referenz speichern
-                const projektId = $btn.data('projekt-id');
-                const lotId = $btn.data('lot-id');
+
+            $(document).on('click', '.lot-preis-badge', function () {
+                if (!confirm('Preis-Eintrag zurücksetzen?')) return;
+                $.ajax({
+                    url: 'lotPriceUpdated.php', type: 'POST',
+                    data: {lot_id: $(this).data('lot-id'), preis_status: 1},
+                    success: function (r) {
+                        if (r.success) tableTenderLots.ajax.reload(null, false);
+                        else alert('Fehler: ' + (r.error || 'Unbekannter Fehler'));
+                    },
+                    error: function () {
+                        alert('Verbindungsfehler.');
+                    }
+                });
+            });
+
+            $(document).on('change', '.lot-kontrolle-checkbox', function () {
+                if (!$(this).is(':checked')) return;
+                const lotId = $(this).data('lot-id');
+                const projektId = $(this).data('projekt-id');
                 $.post('update_los_kontrolliert.php', {
-                    projekt_id: projektId,
-                    lot_id: lotId
+                    lot_id: lotId,
+                    projekt_id: projektId
                 }).done(function (data) {
                     if (data.success) {
-                        makeToaster("Kontrolliert", true);
-                        $btn.removeClass('btn-outline-success')
-                            .addClass('btn-success')
-                            .prop('disabled', true)
-                            .attr('title', 'Kontrolliert.')
-                            .text("Erledigt");
                         tableTenderLots.ajax.reload(null, false);
                     } else {
                         alert('Fehler: ' + (data.error || 'Unbekannter Fehler'));
                     }
+                }).fail(function () {
+                    alert('Verbindungsfehler');
+                });
+            });
+
+// Kontrolle green badge clicked → reset kontrolle_user to NULL
+            $(document).on('click', '.kontrolle-badge', function () {
+                if (!confirm('Kontrolle zurücksetzen?')) return;
+                const lotId = $(this).data('lot-id');
+                const projektId = $(this).data('projekt-id');
+                $.post('update_los_kontrolliert.php', {
+                    lot_id: lotId,
+                    projekt_id: projektId,
+                    reset: 1
+                }).done(function (data) {
+                    if (data.success) tableTenderLots.ajax.reload(null, false);
+                    else alert('Fehler: ' + (data.error || 'Unbekannter Fehler'));
                 }).fail(function () {
                     alert('Verbindungsfehler');
                 });

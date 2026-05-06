@@ -144,7 +144,7 @@ init_page_serversides();
 <div id="limet-navbar"></div>
 
 <div class="topbar">
-    <h1><i class="fas fa-bolt" style="color:var(--warn);margin-right:6px"></i>LEISTUNGSVERGLEICH</h1>
+    <h1><i class="fas fa-bolt" style="color:var(--warn);margin-right:6px"></i>LEISTUNGSVERGLEICH  (experimentelle Version)</h1>
     <div class="sep"></div>
     <div class="glz-toggle">
         <button class="glz-btn active" id="btnInkl" onclick="setGLZ('inkl')">inkl. GLZ</button>

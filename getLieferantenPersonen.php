@@ -27,7 +27,8 @@ $sql = "SELECT
             INNER JOIN tabelle_ansprechpersonen 
                 ON tabelle_lieferant.idTABELLE_Lieferant = tabelle_ansprechpersonen.tabelle_lieferant_idTABELLE_Lieferant
         ) 
-        ON tabelle_abteilung.idtabelle_abteilung = tabelle_ansprechpersonen.tabelle_abteilung_idtabelle_abteilung;";
+        ON tabelle_abteilung.idtabelle_abteilung = tabelle_ansprechpersonen.tabelle_abteilung_idtabelle_abteilung
+        where Lieferant <> 'Test123' ";
 
 $result = $mysqli->query($sql);
 

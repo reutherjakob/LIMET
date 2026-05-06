@@ -60,7 +60,10 @@
         "AGES SF Nutzerraumbuch" => "fas fa-mortar-pestle",
         "AGES Spargelfeld" => "fas fa-mortar-pestle",
         "Test KHI" => "fas fa-yin-yang",
-        "Labor Kategorien" => "fas fa-sith",
+        "Labor Kategorien" => "fab fa-d-and-d",
+        "WIGEV RV" => "fab fa-pushed",
+        "KDO-BET" => "fas fa-dice-d20"
+
     ];
     //<i class="fas fa-mountain"></i>
     ?>
@@ -83,10 +86,10 @@
                     </div>
                 </div>
 
-                <div class="card-body table-responsive px-1 py-1">
+                <div class="card-body table-responsive p-0">
 
                     <table id='tableProjects'
-                           class='table table-sm compact table-hover table-striped border border-5'>
+                           class='table table-sm compact table-hover table-striped border border-1'>
                         <thead>
                         <tr>
                             <th>ID</th><!-- invis -->
@@ -190,20 +193,65 @@
                     <div class="row">
                         <p>
                             <i class="fas fa-scroll col-1"></i>
-                            <a class="col-11" href="roombook_allTenderLots.php">
-                                Übergeordnete Losliste </a>
+                            <a class="col-10" href="roombook_allTenderLots.php">
+                                Alle Lose Liste </a>
                         </p>
 
                         <p>
-                            <i class="fas fa-list col-1"></i>
-                            <a class="col-11" href="roombookTenderLotsToDo.php">
+                            <i class="fas fa-clipboard-list col-1"></i>
+                            <a class="col-10" href="roombookTenderLotsToDo.php">
                                 Los ToDoz </a>
                         </p>
 
                         <p>
-                            <i class="far fa-bell col-1"></i>
-                            <span class="col-11" href="elementAdministration.php">Neu: Preise ändern Button </span>
+                            <i class="fas fa-check-double col-1"></i>
+                            <a class="col-10" href="roombook_leistungAbgleich.php">
+                                Leistungs-Check </a>
                         </p>
+
+
+                        <p>
+                            <i class="fas fa-coins col-1"></i>
+                            <a class="col-10" href="elementAdministration.php"> Button: Preise ändern</a>
+                        </p>
+
+                        <p>
+                            <i class="fas fa-history col-1"></i>
+                            <a class="col-11" href="roombook_elementParameterAenderungen.php">
+                                Element Parameter Änderungen
+                            </a>
+                        </p>
+
+                        <p><i class="fab fa-d-and-d col-1"></i>
+                            <a class="col-11" href="roombook_search_rooms_with_string.php">
+                                Raumsuche inkl. Preise
+                            </a>
+                        </p>
+
+                        <p>
+                            <i class="fas fa-dumpster-fire col-1"></i>
+                            <a class="col-11" href="roombook_elementBudgets.php">
+                                Budget Statii
+                            </a>
+                        </p>
+
+
+                        <p>
+                            <i class="fas fa-list-ol col-1"></i>
+                            <a class="col-11" href="roombook_devicePrice.php">
+                               Geräte & Wartungspreise Liste
+                            </a>
+                        </p>
+
+                        <p>
+                            <i class="fas fa-map-marked-alt col-1"></i>
+                            <a class="col-11" href="roombookStandortVerwendung.php">
+                                Standort & Verwendung Liste
+                            </a>
+                        </p>
+
+
+
                     </div>
 
                 </div>
@@ -212,16 +260,21 @@
             <div class='card mt-2'>
                 <div class='card-body'>
                     <div class="row">
-                        <p>
-                            <i class="fas fa-spider col-1"></i>
-                            <a class="col-11" href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free"
+
+                        <p class="">
+
+                            <i class="fas fa-dice-d20 col-1"></i>
+                            <a class="col-10" href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free"
                                target="_blank">Projekt Icons</a>
                         </p>
-                        <p>
-                            <i class="far fa-comment-dots col-1"></i>
-                            <a class="col-11" href="/FeedbackCenter/FeedbackIndex.php" target="_blank">Feedback &
+
+                        <p class="">
+
+                            <i class="fas fa-fist-raised col-1"></i>
+                            <a class="col-10" href="/FeedbackCenter/FeedbackIndex.php" target="_blank">Feedback &
                                 Bugreport</a>.
                         </p>
+
                     </div>
 
                 </div>

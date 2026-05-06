@@ -57,7 +57,7 @@ $mysqli->close();
     <title>Elemente: Standort/Verwendung unvollständig</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png">
+    <link rel="icon" href="../Logo/iphone_favicon.png">
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -78,7 +78,7 @@ $mysqli->close();
         <div class="card-header">
             <div class="row flex-nowrap">
                 <div class="col-6">
-                    Elemente: Standort ungleich Verwendung
+                    Elemente <=> <strong> Standort <i class="fas fa-not-equal"></i> Verwendung</strong>
                 </div>
                 <div class="col-6 d-inline-flex justify-content-end" id="cardHeader"></div>
             </div>
@@ -137,8 +137,11 @@ $mysqli->close();
                 infoEmpty: "Keine Einträge",
                 infoFiltered: "(von _MAX_)",
             },
-            buttons: [
-                "excelHtml5"
+            buttons: [{
+                extend: "excelHtml5",
+                text: '',
+                className: 'fas fa-file-excel btn btn-sm btn-outline-dark bg-white',
+            }
             ],
             layout: {
                 topStart: null,

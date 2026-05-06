@@ -7,7 +7,7 @@ require_once "../Nutzerlogin/_utils.php";
 require_once "../Nutzerlogin/csrf.php";
 
 
-init_page(["internal_rb_user", "spargelfeld_ext_user", "spargefeld_admin"]);
+init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_admin"]);
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -70,7 +70,11 @@ foreach ($stringFields as $f) {
     $data[$f] = isset($_POST[$f]) ? trim($_POST[$f]) : '';
 }
 foreach ($boolFields as $f) {
-    $data[$f] = isset($_POST[$f]) && $_POST[$f] === '1' ? 1 : 0;
+    if ($_POST[$f] === 'unbekannt' || $_POST[$f] === '?' || !isset($_POST[$f]) || $_POST[$f] === '') {
+        $data[$f] = null; // NULL = unbekannt
+    } else {
+        $data[$f] = $_POST[$f] === '1' ? 1 : 0;
+    }
 }
 foreach ($intFields as $f) {
     $data[$f] = isset($_POST[$f]) ? (int)$_POST[$f] : 0;

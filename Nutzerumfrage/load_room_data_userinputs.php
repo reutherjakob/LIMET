@@ -2,7 +2,7 @@
 global $mysqli;
 include "../Nutzerlogin/db.php";
 require_once "../Nutzerlogin/_utils.php";
-init_page(["internal_rb_user", "spargelfeld_ext_user"]);
+init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_view"]);
 
 header('Content-Type: application/json');
 
@@ -33,7 +33,9 @@ if (!$data) {
 
 // Normalize string booleans '0'/'1' to integers for JS checkbox compatibility
 foreach ($data as $key => $val) {
-    if ($val === '0' || $val === '1') {
+    if ($val === null) {
+        $data[$key] = 'unbekannt';
+    } elseif ($val === '0' || $val === '1') {
         $data[$key] = (int)$val;
     }
 }

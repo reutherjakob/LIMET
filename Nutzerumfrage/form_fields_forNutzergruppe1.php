@@ -28,10 +28,16 @@ $formFields = [
     ],
 
     ["type" => "yesno", "kategorie" => "Raum", "name" => "vibrationsempfindlich_bodenstehend",
-        "label" => "Geräte in Verwendung welche vibrationsempfindlich und bodenstehend sind?",
+        "label" => "Sind Geräte in Verwendung, welche vibrationsempfindlich und bodenstehend sind?",
         "default" => "Nein",
         # "info" => "",
         'optional_comment_label' => "Optional."],
+
+
+    ["type" => "yesno", "kategorie" => "Raum", "name" => "vibrationen_abgebend",
+        "label" => "Sind Geräte in Verwendung, die Vibrations-/Schallemissionen an das Gebäude abgeben??",
+        "info" => "z.B. Siebmaschinen"],
+
 
     ["type" => "yesno",
         "kategorie" => "Raum",
@@ -46,7 +52,7 @@ $formFields = [
 
 
     ["type" => "select", "kategorie" => "Ausstattung", "name" => "abluftwaescher",
-        "options" => [0 => "Nein", 1 => "1", 2 => "2"],
+        "options" => [0 => "0", 1 => "1", 2 => "2", 3 => "unbekannt"],
         "label" => "Sind Abzüge mit Abluftwäscher / Säurewäscher in Verwendung?",
         "default_value" => 0,
         "optional_comment_label" => "",
@@ -63,25 +69,26 @@ $formFields = [
             "Acetylen" => "Acetylen",
             "Ammoniak" => "Ammoniak",
             "Synth_Luft" => "Synthetische Luft",
+            "unbekannt" => "unbekannt",
         ],
         "info" => "Zentrale Stickstoff- und Druckluftversorgung je nach Raumtyp."
     ],
 
     ["type" => "select", "kategorie" => "ET", "name" => "starkstromanschluss_anzahl",
         "label" => "Sind Geräte in Verwendung welche einen Starkstromanschluss benötigen?",
-        "options" => [0 => "Nein", 1 => "1", 2 => "2", 3 => "3", 4 => "4", 5 => "5"],
+        "options" => [0 => "Nein", 1 => "1", 2 => "2", 3 => "3", 4 => "4", 5 => "5", "6" => "unbekannt"],
         "default_value" => 0,
         "optional_comment_label" => "Falls bekannt: Welche CEE, Stromstärke, Leistung?",
         //"info" => ""
     ],
     ["type" => "select", "kategorie" => "Abluft", "name" => "raumabluft_besonders",
         "label" => "Besondere Anforderungen an die Raumabluft?",
-        "options" => ["Nein" => "Nein", "HEPA" => "HEPA Filter",],
+        "options" => ["Nein" => "Nein", "HEPA" => "HEPA Filter", "unbekannt" => "unbekannt"],
         "default_value" => "Nein"
     ],
     ["type" => "select", "kategorie" => "Abluft", "name" => "raumzuluft_besonders",
         "label" => "Besondere Anforderungen an die Zuluft?",
-        "options" => ["Nein" => "Nein", "HEPA" => "HEPA Filter",],
+        "options" => ["Nein" => "Nein", "HEPA" => "HEPA Filter", "unbekannt" => "unbekannt"],
         "default_value" => "Nein"
     ],
 
@@ -92,6 +99,7 @@ $formFields = [
             "Veraschung" => "Veraschung",
             "Sonstige" => "Sonstige",
             "Sonstige_und_Veraschung" => "Veraschung & Sonstige",
+            "unbekannt" => "unbekannt"
         ],
         "default_value" => "Nein",
         //"optional_comment_label" => "Falls bekannt: Welche Luftmenge?:",
@@ -147,10 +155,6 @@ $formFields = [
     // ["type" => "yesno", "kategorie" => "Raum", "name" => "vibrationsempfindliche_geraete",
     //     "label" => "Sind Geräte in Verwendung welche vibrationsempfindlich sind und auf einem entkoppelten Tisch stehen?",
     //     "info" => "z.B. Präzisionswaagen, Rasterelektronenmikroskope"],
-
-    //  ["type" => "yesno", "kategorie" => "Raum", "name" => "vibrationen_abgebend",
-    //      "label" => "Geräte in Verwendung welche Vibrationen an das Gebäude abgeben?",
-    //      "info" => "z.B. Siebmaschinen"],
 
 
     //["type" => "select", "kategorie" => "Raum", "name" => "bsl_level",

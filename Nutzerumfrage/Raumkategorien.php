@@ -7,7 +7,7 @@ if (!function_exists('loadEnv')) {
     include "../Nutzerlogin/db.php";
 }
 
-$role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargefeld_admin"]);
+$role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_admin","spargelfeld_view"]);
 
 require_once "../Nutzerumfrage/raumtypen.php"; // lädt $labortypen
 
@@ -24,7 +24,7 @@ $column_config = [
     'flaeche_min' => ['label' => 'Mind. Flächenbedarf [m²]', 'suffix' => '', 'hidden' => false, 'initially_hidden' => true],
     'flaeche_max' => ['label' => 'Max. Flächenbedarf [m²]', 'suffix' => '', 'hidden' => false, 'initially_hidden' => true],
     'raumhoehe' => ['label' => 'Mind. Lichte Raumhöhe (Neubau/Bestand) [m]', 'suffix' => '', 'hidden' => false, 'initially_hidden' => true],
-    'raumhoehe_rohbau' => ['label' => 'Mind. Raumhöhe Bestand [m]', 'suffix' => '', 'hidden' => false],
+    'raumhoehe_bestand' => ['label' => 'Mind. Raumhöhe Bestand [m]', 'suffix' => '', 'hidden' => false],
     'raumhoehe_neubau' => ['label' => 'Mind. Raumhöhe Neubau [m]', 'suffix' => '', 'hidden' => false],
     'decke' => ['label' => 'Decke', 'suffix' => '', 'hidden' => false],
     'tuere_min' => ['label' => 'Türbreiten [m]', 'suffix' => '', 'hidden' => false],
@@ -45,7 +45,7 @@ $column_config = [
     'luftwechsel_rate_m3_je_m2h' => ['label' => 'Luftwechselrate', 'suffix' => '', 'hidden' => false],
     'luftwechsel_typ' => ['label' => 'Luftwechsel Typ', 'suffix' => '', 'hidden' => false],
     'luftwechsel_norm' => ['label' => 'Lüftungsnorm', 'suffix' => '', 'hidden' => false],
-    'luftwechsel_abluft_filter' => ['label' => 'Luft Filter', 'suffix' => '', 'hidden' => false],
+    'luftwechsel_filter' => ['label' => 'Luft Filter', 'suffix' => '', 'hidden' => false],
 
     'druckregelung' => ['label' => 'Über-/Unterdruckregelung', 'suffix' => '', 'hidden' => false, 'initially_hidden' => true],
     'druckregelung_typ' => ['label' => 'Druckregelung Typ', 'suffix' => '', 'hidden' => false],
@@ -60,7 +60,7 @@ $column_config = [
     'elektro_400v_cee' => ['label' => '400V CEE', 'suffix' => '', 'hidden' => false],
     'elektro_edv' => ['label' => 'EDV', 'suffix' => '', 'hidden' => false],
     'elektro_notstrom' => ['label' => 'Notstrom ohne USV', 'suffix' => '', 'hidden' => false],
-    'elektro_notstrom_usv' => ['label' => 'Notstrom mit USV', 'suffix' => '', 'hidden' => false],
+    'elektro_notstrom_usv' => ['label' => 'Notstrom inkl. USV', 'suffix' => '', 'hidden' => false],
 
     'anschlussleistung' => ['label' => 'Elektrische Anschlussleistung [ca. W/m2]', 'suffix' => '', 'hidden' => false],
     'waermeabgabe' => ['label' => 'Wärmeabgabe durch Geräte [ca. W/m2]', 'suffix' => '', 'hidden' => false],
@@ -216,7 +216,7 @@ foreach ($columns as $col) {
                     }
                 },
                 {extend: 'searchBuilder', text: '<i class="fas fa-filter"></i> Filter'},
-                {extend: 'excel', text: '<i class="fas fa-file-excel"></i> Download als Excel'},
+                {extend: 'excel', text: '<i class="fas fa-file-excel"></i> Download Excel'},
                 {extend: 'print', text: '<i class="fas fa-print"></i> Drucken'},
             ],
             stateSave: true,

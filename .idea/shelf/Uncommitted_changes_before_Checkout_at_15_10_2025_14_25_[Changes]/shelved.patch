@@ -1,0 +1,56 @@
+Index: elementBudgetsData.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php\r\nrequire_once 'utils/_utils.php';\r\ninclude \"utils/_format.php\";\r\nheader('Content-Type: application/json; charset=utf-8');\r\n\r\n$mysqli = utils_connect_sql();\r\n$projectID = (int)$_SESSION[\"projectID\"];\r\n\r\n// Fetch all budgets in one go for select options\r\n$sqlBudgets = \"SELECT idtabelle_projektbudgets, Budgetnummer, Budgetname\r\n               FROM tabelle_projektbudgets\r\n               WHERE tabelle_projekte_idTABELLE_Projekte = ?\r\n               ORDER BY Budgetnummer\";\r\n$stmtBudgets = $mysqli->prepare($sqlBudgets);\r\n$stmtBudgets->bind_param('i', $projectID);\r\n$stmtBudgets->execute();\r\n$resultBudgets = $stmtBudgets->get_result();\r\n\r\n$projectBudgets = [];\r\nwhile ($row = $resultBudgets->fetch_assoc()) {\r\n    $projectBudgets[$row['idtabelle_projektbudgets']] = $row;\r\n}\r\n\r\n// Main query to get elements and join required data\r\n$sql = \"SELECT \r\n        tre_an.Anzahl, \r\n        te.ElementID, \r\n        te.Bezeichnung, \r\n        tv.Variante,\r\n        tr.`Raumbereich Nutzer` AS Ausdr1, \r\n        tr.Raumnr, \r\n        tr.Raumbezeichnung, \r\n        tre_an.`Neu/Bestand` AS Ausdr2,\r\n        tpk.Kosten, \r\n        tpk.Kosten * tre_an.Anzahl AS PP, \r\n        tpb.Budgetnummer,\r\n        tre_an.id, \r\n        tpb.idtabelle_projektbudgets\r\n    FROM tabelle_projektbudgets tpb\r\n    RIGHT JOIN (\r\n        tabelle_projekt_varianten_kosten tpk\r\n        INNER JOIN (\r\n            tabelle_varianten tv\r\n            INNER JOIN (\r\n                (tabelle_räume tr\r\n                INNER JOIN tabelle_räume_has_tabelle_elemente tre_an\r\n                    ON tr.idTABELLE_Räume = tre_an.TABELLE_Räume_idTABELLE_Räume)\r\n            INNER JOIN tabelle_elemente te\r\n                ON tre_an.TABELLE_Elemente_idTABELLE_Elemente = te.idTABELLE_Elemente\r\n            )\r\n            ON tv.idtabelle_Varianten = tre_an.tabelle_Varianten_idtabelle_Varianten\r\n        )\r\n        ON tpk.tabelle_projekte_idTABELLE_Projekte = tr.tabelle_projekte_idTABELLE_Projekte\r\n           AND tpk.tabelle_elemente_idTABELLE_Elemente = tre_an.TABELLE_Elemente_idTABELLE_Elemente\r\n           AND tpk.tabelle_Varianten_idtabelle_Varianten = tre_an.tabelle_Varianten_idtabelle_Varianten\r\n    )\r\n    ON tpb.idtabelle_projektbudgets = tre_an.tabelle_projektbudgets_idtabelle_projektbudgets\r\n    WHERE tr.tabelle_projekte_idTABELLE_Projekte = ?\r\n      AND tre_an.Standort = 1\r\n      AND tre_an.Anzahl <> 0\r\n    ORDER BY te.ElementID, tv.Variante\";\r\n\r\n$stmt = $mysqli->prepare($sql);\r\n$stmt->bind_param('i', $projectID);\r\n$stmt->execute();\r\n$result = $stmt->get_result();\r\n\r\n$data = [];\r\n\r\nfunction renderBudgetSelect($rowID, $selectedBudgetID, $budgets)\r\n{\r\n    $html = '<select class=\"form-control form-control-sm\" id=\"' . htmlspecialchars($rowID) . '\">';\r\n    $html .= '<option value=\"0\"' . ($selectedBudgetID == 0 ? ' selected' : '') . '>0-Budget wählen</option>';\r\n    foreach ($budgets as $id => $budget) {\r\n        $selected = ($id == $selectedBudgetID) ? ' selected' : '';\r\n        $optionText = htmlspecialchars($budget['idtabelle_projektbudgets'] . \"-\" . $budget['Budgetnummer'] . \"-\" . $budget['Budgetname']);\r\n        $html .= '<option value=\"' . htmlspecialchars($id) . '\"' . $selected . '>' . $optionText . '</option>';\r\n    }\r\n    $html .= '</select>';\r\n    return $html;\r\n}\r\n\r\nwhile ($row = $result->fetch_assoc()) {\r\n    $rowData = [];\r\n    $rowData['id'] = $row['id'];\r\n    $rowData['idtabelle_projektbudgets'] = $row['idtabelle_projektbudgets'];\r\n    $rowData['Anzahl'] = $row['Anzahl'];\r\n    $rowData['ElementID'] = $row['ElementID'];\r\n    $rowData['Bezeichnung'] = $row['Bezeichnung'];\r\n\r\n    $rowData['Ausdr1'] = $row['Ausdr1'];\r\n    $rowData['RaumFull'] = $row['Raumnr'] . \"-\" . $row['Raumbezeichnung'];\r\n    $rowData['Ausdr2'] = ($row['Ausdr2'] == 1) ? 'Nein' : 'Ja';\r\n    $rowData['Variante'] = $row['Variante'];\r\n    $rowData['Kosten'] = format_money($row['Kosten']);\r\n    $rowData['PP'] = format_money($row['PP']);\r\n    $rowData['BudgetSelect'] = renderBudgetSelect($row['id'], $row['idtabelle_projektbudgets'] ?? 0, $projectBudgets);\r\n    $data[] = $rowData;\r\n}\r\n\r\n$mysqli->close();\r\n\r\necho json_encode($data, JSON_UNESCAPED_UNICODE);\r\n
+===================================================================
+diff --git a/elementBudgetsData.php b/elementBudgetsData.php
+--- a/elementBudgetsData.php	(revision 67742711004aa1547406adf1ae7c8b96324edfa9)
++++ b/elementBudgetsData.php	(date 1760454453021)
+@@ -22,20 +22,26 @@
+ }
+ 
+ // Main query to get elements and join required data
+-$sql = "SELECT 
+-        tre_an.Anzahl, 
++$sql = "SELECT  DISTINCT
++        tre_an.Anzahl,         
++        tre_an.`Neu/Bestand` AS Ausdr2,         
++        tre_an.id, 
++        
+         te.ElementID, 
+         te.Bezeichnung, 
++        
+         tv.Variante,
++        
+         tr.`Raumbereich Nutzer` AS Ausdr1, 
+         tr.Raumnr, 
+         tr.Raumbezeichnung, 
+-        tre_an.`Neu/Bestand` AS Ausdr2,
++
+         tpk.Kosten, 
+         tpk.Kosten * tre_an.Anzahl AS PP, 
++        
+         tpb.Budgetnummer,
+-        tre_an.id, 
+         tpb.idtabelle_projektbudgets
++
+     FROM tabelle_projektbudgets tpb
+     RIGHT JOIN (
+         tabelle_projekt_varianten_kosten tpk
+@@ -67,7 +73,7 @@
+ 
+ $data = [];
+ 
+-function renderBudgetSelect($rowID, $selectedBudgetID, $budgets)
++function renderBudgetSelect($rowID, $selectedBudgetID, $budgets): string
+ {
+     $html = '<select class="form-control form-control-sm" id="' . htmlspecialchars($rowID) . '">';
+     $html .= '<option value="0"' . ($selectedBudgetID == 0 ? ' selected' : '') . '>0-Budget wählen</option>';
+@@ -87,7 +93,6 @@
+     $rowData['Anzahl'] = $row['Anzahl'];
+     $rowData['ElementID'] = $row['ElementID'];
+     $rowData['Bezeichnung'] = $row['Bezeichnung'];
+-
+     $rowData['Ausdr1'] = $row['Ausdr1'];
+     $rowData['RaumFull'] = $row['Raumnr'] . "-" . $row['Raumbezeichnung'];
+     $rowData['Ausdr2'] = ($row['Ausdr2'] == 1) ? 'Nein' : 'Ja';

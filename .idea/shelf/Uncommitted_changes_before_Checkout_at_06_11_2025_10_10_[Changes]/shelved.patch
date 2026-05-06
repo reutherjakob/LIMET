@@ -1,0 +1,89 @@
+Index: Nutzerumfrage/navbar.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><nav class=\"navbar   navbar-light navbar-expand-sm\" id=\"LimetNavBar\">\r\n    <div class=\"container-fluid border border-light border-3 rounded rounded-3\">\r\n        <div class=\"navbar-nav col-2 d-flex align-items-center me-2 ms-2\">\r\n            <a class=\"py-0 nav-link\" href=\"Nutzerabfrage.php\">\r\n                <img src=\"../Logo/LIMET_logo.png\" alt=\"LIMETLOGO\">\r\n            </a>\r\n        </div>\r\n\r\n        <ul class=\"navbar-nav col-8 col-sm-6 d-flex align-items-center justify-content-center flex-wrap\">\r\n            <li class=\"nav-item\">\r\n                <a class=\"py-0 px-2 nav-link\" href=\"/Nutzerumfrage/Nutzerabfrage.php\" role=\"button\"><i\r\n                        class=\"fas fa-user-edit\"></i> Raumdaten Abfrage </a>\r\n            </li>\r\n            <li class=\"nav-item\">\r\n                <a class=\"py-0 px-2 nav-link\" href=\"/Nutzerumfrage/Raumkathegorien.php\" role=\"button\"><i\r\n                        class=\"fa fa-shapes\"></i> Raumkathegorien </a>\r\n            </li>\r\n        </ul>\r\n\r\n\r\n        <ul class=\"navbar-nav col-2 d-flex align-items-center justify-content-end me-2 ms-2\">\r\n            <li id=\"navbar-username\" class=\" me-5\"></li>\r\n            <li><a class=\"py-0 nav-link text-nowrap\" href=\"../Nutzerlogin/logout.php\"><i\r\n                    class=\"fa fa-book-reader\"></i>\r\n                Logout</a>\r\n            </li>\r\n        </ul>\r\n    </div>\r\n</nav>\r\n\r\n
+===================================================================
+diff --git a/Nutzerumfrage/navbar.html b/Nutzerumfrage/navbar.html
+--- a/Nutzerumfrage/navbar.html	(revision c01cb4fceca91bd1e5d3052eb448a5268e9ed3a8)
++++ b/Nutzerumfrage/navbar.html	(date 1762246751680)
+@@ -20,9 +20,10 @@
+ 
+         <ul class="navbar-nav col-2 d-flex align-items-center justify-content-end me-2 ms-2">
+             <li id="navbar-username" class=" me-5"></li>
+-            <li><a class="py-0 nav-link text-nowrap" href="../Nutzerlogin/logout.php"><i
+-                    class="fa fa-book-reader"></i>
+-                Logout</a>
++            <!--li class="nav-item"><a class="py-0 nav-link text-nowrap" href="DSGVO.php"><i
++                    class="fa fa-info-circle"></i> DSGVO</a></li-->
++            <li><a class="py-0 nav-link text-nowrap" href="../Nutzerlogin/logout.php">
++                <i class="fas fa-sign-out-alt"></i> Logout</a>
+             </li>
+         </ul>
+     </div>
+Index: Nutzerlogin/index.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><!DOCTYPE html>\r\n<html lang=\"de\">\r\n<head>\r\n    <title>Login</title>\r\n    <!--meta http-equiv=\"Content-Security-Policy\"\r\n          content=\"default-src 'self'; style-src 'self' https://cdn.jsdelivr.net; script-src 'self' https://code.jquery.com https://cdn.jsdelivr.net\"-->\r\n\r\n    <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js\"></script>\r\n    <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css\"/>\r\n    <script src=\"https://code.jquery.com/jquery-3.7.1.min.js\"></script>\r\n    <link rel=\"stylesheet\" href=\"../css/style.css\" type=\"text/css\" media=\"screen\"/>\r\n    <link rel=\"icon\" href=\"../Logo/iphone_favicon.png\"/>\r\n\r\n</head>\r\n<body>\r\n<div class=\"container-fluid bg-light\" style=\"height:100vh;\">\r\n    <div class='row d-flex align-items-center'>\r\n        <div class='col-xxl-5 col-xl-5 col-lg-4 col-md-2 col-sm-1'></div>\r\n        <div class='col-xxl-2 col-xl-2 col-lg-4 col-md-8 col-sm-10' id='login'>\r\n            <div class='card my-4'>\r\n\r\n                <div class='card-header d-flex align-items-center justify-content-center'>\r\n                    <img src=\"../Logo/LIMET_logo.png\" alt=\"LIMETLOGO\">\r\n                </div>\r\n\r\n                <form id=\"loginForm\" autocomplete=\"off\" method=\"POST\" class=\"form\">\r\n                    <div class=\"card-body\">\r\n                        <div class='row'>\r\n\r\n                            <div class=\"mb-3 col-xxl-12\">\r\n                                <label class=\"visually-hidden\" for=\"username\"> </label>\r\n                                <input class=\"form-control form-control-lg\" name=\"username\" placeholder=\"Username\"\r\n                                       required\r\n                                       autocomplete=\"off\"\r\n                                id=\"username\">\r\n\r\n                            </div>\r\n\r\n                            <div class=\"mb-3 col-12\">\r\n                                <label class=\"visually-hidden\" for=\"password\"></label>\r\n                                <input class=\"form-control form-control-lg\" name=\"password\" type=\"password\"\r\n                                       placeholder=\"Password\"\r\n                                       required\r\n                                       autocomplete=\"off\" id=\"password\">\r\n\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"loginMsg\" class=\"mt-3\"></div>\r\n                    </div>\r\n                    <div class='card-footer'>\r\n                        <div class='d-flex align-items-center justify-content-center'>\r\n                            <div class='col-3'></div>\r\n                            <button class=\" col-6 btn btn-success\">Login Nutzende</button>\r\n                            <div class='col-3'></div>\r\n                        </div>\r\n\r\n                    </div>\r\n                    <input type=\"hidden\" name=\"csrf\"\r\n                           value=\"<?php session_start();\r\n                           require 'csrf.php';\r\n                           echo csrf_token(); ?>\">\r\n                    <input type=\"hidden\" name=\"hashed_password\" id=\"hashed_password\"/>\r\n                </form>\r\n\r\n            </div>\r\n            <div class='col-xxl-5 col-xl-5 col-lg-4 col-md-2 col-sm-1'></div>\r\n        </div>\r\n    </div>\r\n</body>\r\n\r\n<script>\r\n\r\n\r\n    $('#loginForm').submit(async function (e) {\r\n        e.preventDefault();\r\n        const passwordInput = this.querySelector('input[name=\"password\"]');\r\n       // const hashedPasswordInput = this.querySelector('#hashed_password');\r\n       // hashedPasswordInput.value = await hashPassword(passwordInput.value);\r\n        // passwordInput.value = ''; // optional, clear plain password field\r\n\r\n        $.post('login.php', $(this).serialize(), function (data) {\r\n            if (data === \"success\") {\r\n                window.location = 'forward.php';\r\n            } else if (data === \"change_pw\") {\r\n                window.location = 'change_pw.php';\r\n            } else {\r\n                $('#loginMsg').html('<span class=\"text-danger\">'+ data + '</span>');\r\n            }\r\n        });\r\n    });\r\n\r\n</script>\r\n\r\n</html>
+===================================================================
+diff --git a/Nutzerlogin/index.php b/Nutzerlogin/index.php
+--- a/Nutzerlogin/index.php	(revision c01cb4fceca91bd1e5d3052eb448a5268e9ed3a8)
++++ b/Nutzerlogin/index.php	(date 1762245363135)
+@@ -11,6 +11,8 @@
+     <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen"/>
+     <link rel="icon" href="../Logo/iphone_favicon.png"/>
+ 
++    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
++
+ </head>
+ <body>
+ <div class="container-fluid bg-light" style="height:100vh;">
+@@ -32,8 +34,7 @@
+                                 <input class="form-control form-control-lg" name="username" placeholder="Username"
+                                        required
+                                        autocomplete="off"
+-                                id="username">
+-
++                                       id="username">
+                             </div>
+ 
+                             <div class="mb-3 col-12">
+@@ -42,7 +43,6 @@
+                                        placeholder="Password"
+                                        required
+                                        autocomplete="off" id="password">
+-
+                             </div>
+                         </div>
+                         <div id="loginMsg" class="mt-3"></div>
+@@ -50,8 +50,9 @@
+                     <div class='card-footer'>
+                         <div class='d-flex align-items-center justify-content-center'>
+                             <div class='col-3'></div>
+-                            <button class=" col-6 btn btn-success">Login Nutzende</button>
+-                            <div class='col-3'></div>
++                            <button class="col-6 btn btn-success">Login Nutzende</button>
++
++                            <div class='col-3'></i></div>
+                         </div>
+ 
+                     </div>
+@@ -74,8 +75,8 @@
+     $('#loginForm').submit(async function (e) {
+         e.preventDefault();
+         const passwordInput = this.querySelector('input[name="password"]');
+-       // const hashedPasswordInput = this.querySelector('#hashed_password');
+-       // hashedPasswordInput.value = await hashPassword(passwordInput.value);
++        // const hashedPasswordInput = this.querySelector('#hashed_password');
++        // hashedPasswordInput.value = await hashPassword(passwordInput.value);
+         // passwordInput.value = ''; // optional, clear plain password field
+ 
+         $.post('login.php', $(this).serialize(), function (data) {
+@@ -84,7 +85,7 @@
+             } else if (data === "change_pw") {
+                 window.location = 'change_pw.php';
+             } else {
+-                $('#loginMsg').html('<span class="text-danger">'+ data + '</span>');
++                $('#loginMsg').html('<span class="text-danger">' + data + '</span>');
+             }
+         });
+     });

@@ -3,11 +3,12 @@
 require_once "utils/_utils.php";
 check_login();
 $mysqli = utils_connect_sql();
+$lotId = getPostInt('lotID');
 
-
-$sql = "SELECT tabelle_workflow.idtabelle_workflow, tabelle_workflow.Name
-FROM tabelle_workflowtyp
-         INNER JOIN (tabelle_workflow_has_tabelle_projekte INNER JOIN tabelle_workflow
+$sql = "SELECT  tabelle_workflow.idtabelle_workflow,
+                tabelle_workflow.Name
+        FROM tabelle_workflowtyp
+        INNER JOIN (tabelle_workflow_has_tabelle_projekte INNER JOIN tabelle_workflow
                      ON tabelle_workflow_has_tabelle_projekte.tabelle_workflow_idtabelle_workflow =
                         tabelle_workflow.idtabelle_workflow) ON tabelle_workflowtyp.idtabelle_workflowtyp =
                                                                 tabelle_workflow.tabelle_workflowtyp_idtabelle_workflowtyp
@@ -62,25 +63,39 @@ $mysqli->close();
         }
     });
 
+    var localLotID = <?= $lotId ?>;
     $("button[value='addWorkflow']").click(function () {
         let workflowID = this.id;
         if (workflowID === "") {
             alert("Keinen Workflow gefunden!");
         } else {
+            // Button sofort deaktivieren um Doppelklick zu verhindern
+            const $btn = $(this);
+            $btn.prop('disabled', true);
+
             $.ajax({
                 url: "addWorkflowToLot.php",
-                data: {"workflowID": workflowID},
+                data: {
+                    "workflowID": workflowID,
+                    "lotID": localLotID          // <-- lotID mitsenden
+                },
                 type: "POST",
-                success: function (data) {
-                    $.ajax({
-                        url: "getLotWorkflow.php",
-                        type: "POST",
-                        success: function (data) {
-                            $("#workflowModalBody").html(data);
-                        }
-                    });
-                    makeToaster("Workflow erfolgreich zu Los hinzugefügt!", data = "Erfolg!");
-
+                success: function () {
+                    setTimeout(function () {
+                        $.ajax({
+                            url: "getLotWorkflow.php",
+                            type: "POST",
+                            data: {"lotID": localLotID},   // <-- lotID mitsenden
+                            success: function (data) {
+                                $("#workflowModalBody").html(data);
+                                makeToaster("Workflow erfolgreich zu Los hinzugefügt!", "Erfolg!");
+                            }
+                        });
+                    }, 500);
+                },
+                error: function () {
+                    $btn.prop('disabled', false);
+                    makeToaster("Fehler beim Hinzufügen!", false);
                 }
             });
         }

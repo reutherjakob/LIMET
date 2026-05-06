@@ -112,7 +112,7 @@
                             WHERE (((tabelle_räume_has_tabelle_elemente.Standort) = 1) AND
                                    ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = ?))
                             GROUP BY tabelle_elemente.ElementID,
-                                     tabelle_elemente.Bezeichnung, 
+                                     
                                      tabelle_varianten.Variante,
                                      tabelle_varianten.idtabelle_Varianten, 
                                      tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
@@ -180,7 +180,7 @@
                     echo "<td>Ja</td>";
                 }
                 echo "<td>" . (float)$row["Kosten"] . "</td>";
-                echo "<td data-order=".  (float)$row["Kosten"] .">" . format_money($row["Kosten"]) . "</td>";
+                echo "<td data-order=" . (float)$row["Kosten"] . ">" . format_money($row["Kosten"]) . "</td>";
                 echo "<td>" . $row["Gewerke_Nr"] . "</td>";
                 echo "<td>" . $row["GHG"] . "</td>";
                 echo "<td>" . $row["GUG"] . "</td>";
@@ -268,14 +268,7 @@
 <script charset="utf-8">
     var tableElementsInProject;
     var tableRoomsWithElement; // for getRoomsWithElement1
-    const searchbuilder = [
-        {
-            extend: 'searchBuilder',
-            text: "Filter",
-            className: "btn btn-light btn-outline-secondary fas fa-search ",
-            titleAttr: "Filter",
-        }
-    ];
+
     $(document).ready(function () {
         tableElementsInProject = new DataTable('#tableElementsInProject', {
             paging: true,
@@ -314,15 +307,25 @@
                     },
                     text: '<i class="fas fa-file-excel"></i> Excel',
                     className: 'btn-sm btn-light btn-outline-dark me-2'
+                },
+                {
+                    extend: 'searchBuilder',
+                    text: "Filter (%d)",
+                    className: "btn btn-light btn-outline-secondary fas fa-search",
+                    titleAttr: "Filter",
                 }
             ],
             compact: true,
             initComplete: function () {
                 $('.dt-search label').remove();
-                $('.dt-search').children().removeClass('form-control form-control-sm').addClass("btn btn-sm btn-outline-dark").appendTo('#target_div');
+                $('.dt-search').children()
+                    .removeClass('form-control form-control-sm')
+                    .addClass("btn btn-sm btn-outline-dark")
+                    .appendTo('#target_div');
+
                 setTimeout(function () {
                     tableElementsInProject.buttons().container().appendTo('#target_div .btn-group');
-                    new $.fn.dataTable.Buttons(tableElementsInProject, {buttons: searchbuilder}).container().appendTo('#sbdiv');
+                    // ← Remove the separate Buttons instantiation entirely
                 }, 100);
             }
         });

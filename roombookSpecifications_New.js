@@ -69,8 +69,8 @@ function add_entfallen_filter(location, table) {
 function add_element_einträge_not_0_filter(location, table) {
     let dropdownHtml2 = '<select class="fix_size" id="ElementEinträgeNot0Filter">' +
         '<option value="">Alle</option>' +
-        '<option value="0">ohne Element</option>' +
-        '<option value="1">mit Elementen </option>' +
+        '<option  value="0">ohne El.</option>' +
+        '<option value="1"> mit El. </option>' +
         '</select>';
     $(location).append(dropdownHtml2);
 
@@ -179,7 +179,7 @@ function init_btn_4_dt() {
         },
         {
             extend: 'excelHtml5',
-            className: 'btn btn-light border-secondary fa fa-download',
+            className: 'btn btn-light border-secondary   fas fa-file-excel',
             text: "",
             titleAttr: "Download as Excel",
             exportOptions: {
@@ -255,8 +255,8 @@ function init_btn_4_dt() {
             action: () => toggleReportColumnsVisible()
         }
     ];
-    new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#TableCardHeader'));
-    new $.fn.dataTable.Buttons(table, {buttons: buttons_group_selct}).container().appendTo($('<div class="btn-group"></div>').appendTo($('#TableCardHeaderX')));
+    new $.fn.dataTable.Buttons(table, {buttons: searchbuilder}).container().appendTo($('#TableCardHeaderX'));
+    new $.fn.dataTable.Buttons(table, {buttons: buttons_group_selct}).container().appendTo($('<div class="btn-group flex-nowrap"></div>').appendTo($('#TableCardHeader5')));
     new $.fn.dataTable.Buttons(table, {buttons: buttonsGroupcolumnVisbilities}).container().appendTo($('<div class="btn-group" role="group"></div>').appendTo($('#TableCardHeader2')));
     new $.fn.dataTable.Buttons(table, {buttons: btn_grp_new_out}).container().appendTo($('<div class="btn-group"></div>').appendTo($('#TableCardHeader3')));
     new $.fn.dataTable.Buttons(table, {buttons: btn_grp_settings}).container().appendTo($('<div class="btn-group"></div>').appendTo($('#TableCardHeader4')));
@@ -296,7 +296,7 @@ function init_dt() {
         initComplete: function () {
             init_filter();
             $('.dt-search label').remove();
-            $(' .dt-search').children().appendTo('#TableCardHeader');//removeClass('form-control form-control-sm')
+            $(' .dt-search').children().appendTo('#TableCardHeaderX');//removeClass('form-control form-control-sm')
             init_btn_4_dt();
             buttonRanges.forEach(b => {
                 btnCache[b.name] = $(`.btn_vis:contains('${b.name}')`);
@@ -449,6 +449,7 @@ function html_2_plug_into_edit_cell(dataIdentifier) {
             "H1a",
             "H1b",
             "H1c",
+            "H1d",
             "H2a",
             "H2b",
             "H2c",
@@ -588,18 +589,22 @@ function table_click() {
                                     } else {
                                         $("#roomElements").html(data);
                                     }
-                                    let $cardHeader1 = $("#CardHEaderElemntsInRoom1");
-                                    let $cardHeader2 = $("#CardHEaderElemntsInRoom2");
-                                    $cardHeader2.find('#room-action-buttons, #TableCardHeader').remove();
-                                    $cardHeader1.find('[id^="dt-search-"]').remove();
+
 
                                     setTimeout(function () {
-                                        move_item("dt-search-" + dt_search_counter, "CardHEaderElemntsInRoom1");
-                                        // console.log(dt_search_counter, " -> ", dt_search_counter+1);
-                                        dt_search_counter++; // attachButtonListeners();
-                                        $cardHeader2.append($('#room-action-buttons'));
-                                    }, 100)
+                                        $('#tableRoomElements_wrapper .dt-search label').remove();
+
+                                        var $searchEl = $('#tableRoomElements_wrapper .dt-search')
+                                            .children()
+                                            .removeClass('form-control form-control-sm')
+                                            .addClass('btn btn-sm btn-outline-dark ms-1');
+
+                                        $('#CardHeaderElementsInRoom2').empty();
+                                        $('#CardHeaderElementsInRoom2').append($('#room-action-buttons'));
+                                        $searchEl.appendTo('#CardHeaderElementsInRoom2');
+                                    }, 150);
                                 },
+
                                 error: function (jqXHR, textStatus, errorThrown) {
                                     console.error("AJAX call failed: " + textStatus + ", " + errorThrown);
                                 }
@@ -702,14 +707,14 @@ function toggle_btn_classes(button_name, vis) {
 function init_showRoomElements_btn() {
     $("#showRoomElements").html("<i class='fa fa-caret-right'></i>");
     $("#showRoomElements").click(function () {
-        if ($("#roomElements").is(':hidden')) {
+        if ($("#additionalInfo").is(':hidden')) {
             $(this).html("<i class='fas fa-caret-right'></i>");
-            $('#CardHEaderElemntsInRoom_SUB').show()
+            $('#CardHeaderElementsInRoom2').removeClass('d-none');
             $("#additionalInfo").show();
         } else {
             $(this).html("<i class='fas fa-caret-left'></i>");
             $("#additionalInfo").hide();
-            $("#CardHEaderElemntsInRoom_SUB").hide();
+            $('#CardHeaderElementsInRoom2').addClass('d-none');
         }
     });
 }

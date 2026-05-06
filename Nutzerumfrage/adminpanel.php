@@ -6,7 +6,7 @@ if (!function_exists('loadEnv')) {
     include "../Nutzerlogin/db.php";
 }
 
-$role = init_page(["internal_rb_user", "spargefeld_admin"]);
+$role = init_page(["internal_rb_user", "spargelfeld_admin","spargelfeld_view"]);
 header('X-Frame-Options: DENY');
 header('X-Content-Type-Options: nosniff');
 

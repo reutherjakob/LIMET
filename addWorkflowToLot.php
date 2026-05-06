@@ -9,6 +9,7 @@ $workflowID = getPostInt('workflowID', 0);
 $lotID = $_SESSION["lotID"] ?? 0; // Ensure session value is available and trusted
 
 
+
 $sql = "INSERT INTO tabelle_lot_workflow (
             tabelle_wofklowteil_idtabelle_wofklowteil,
             tabelle_lose_extern_idtabelle_Lose_Extern,

@@ -3,7 +3,6 @@
 require_once 'utils/_utils.php';
 init_page_serversides("x");
 check_login();
-//TODO Fußboden - ??
 ?>
 
 
@@ -28,37 +27,70 @@ check_login();
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
           rel="stylesheet">
 
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 
+    <style>
+        #elementParameters {
+            display: none !important;
+        }
+
+        #table_rooms tbody tr:nth-child(odd) {
+            background-color: rgba(255, 255, 255, .05);
+        }
+
+        #table_rooms tbody tr:nth-child(even) {
+            background-color: transparent;
+        }
+
+        #CardHeaderRaumsuche .dt-search input {
+            max-width: 180px;
+        }
+    </style>
 </head>
 <body style="height:100%">
 <div id="limet-navbar" class='bla'></div>
 <div id='ContainerRaumsuche' class='container-fluid'>
     <div class="card">
-        <div class="card-header d-flex align-items-center text-nowrap" id='searchDbCardHeader'>
-            <strong>Raumsuche</strong> &emsp;&emsp;&emsp;
-            <label for="fieldSelect"></label>
-            <select id="fieldSelect" class="form-select w-25">
-            </select>
-            <label for="searchInput"> </label>
-            <input type="text" id="searchInput" class=" btn bg-white border-secondary" placeholder="Suchbegriff">
-            <button id="searchButton" class="btn btn-sm btn-primary mt-1 ">Suchen</button>
+        <div class="card-header" id='searchDbCardHeader'>
+            <div class="row">
+                <div class="col-8 d-flex align-items-center text-nowrap">
+                    <strong>Raumsuche</strong>
+
+                    <span class="ms-1" data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="click"
+                          data-bs-html="true"
+                          data-bs-content="Neue Suchparameter erwünscht? <a href='/FeedbackCenter/FeedbackIndex.php'>Lemme know.</a>">
+                        <i class="fas fa-info-circle text-muted"></i>
+                    </span>
+
+                    &emsp;&emsp;
+                    <label for="fieldSelect"></label>
+                    <select id="fieldSelect" class="form-select w-25">
+                    </select>
+                    <label for="searchInput" class="sr-only"> </label>
+                    <input type="text" id="searchInput" class="btn bg-white border-secondary ms-1"
+                           placeholder="Suchbegriff">
+                    <button id="searchButton" class="btn btn-outline-success ms-1 ">Suchen</button>
+                </div>
+                <div class="col-4 d-inline-flex justify-content-end" id="CardHeaderRaumsuche"></div>
+            </div>
         </div>
 
-        <div class="card-body" id="cardx">
-            <table id="table_rooms" class="table table-striped table-hover border border-light border-5 display">
-
+        <div class="card-body p-1" id="cardx">
+            <table id="table_rooms" class="table table-sm table-striped table-hover border border-light border-1">
             </table>
         </div>
     </div>
+
     <div class="card">
         <div class="card d-inline-flex">
-            <header class="card-header">Elemente im Raum <br> <b>!ACHTUNG! Die Kostenberechnung basierend auf den
-                    Preisen
-                    des aktiven Projektes! Elemente, die im aktuell gewählten Projekt keinen Preis haben werden nicht
-                    abgebildet. Preisbasis ist die des aktive Projektes, etc....</b>
+            <header class="card-header">
+                <div class="row">
+                    <div class="col-8"><b> Elemente im Raum &nbsp;</b></div>
+                    <div class="col-4" id="CardHeaderDtSpace"></div>
+                </div>
+
+
             </header>
             <div class="card-body" id="additionalInfo">
                 <p id="roomElements"></p>
@@ -98,6 +130,11 @@ check_login();
         return !(hideZero && (amount === 0));
     }
 
+    window.addEventListener('load', function () {
+        document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el =>
+            new bootstrap.Popover(el, {trigger: 'click'})
+        );
+    });
 
     document.getElementById('searchButton').addEventListener('click', function () {
         const selectedField = fieldSelect.value;
@@ -141,26 +178,31 @@ check_login();
                     responsive: true,
                     buttons: ['colvis', 'searchBuilder'],
                     layout: {
-                        topStart: ['pageLength', 'buttons'],
-                        topEnd: ['paging' , 'search','info'],
-                        bottomStart: null,
-                        bottomEnd: null
+                        topStart: null,
+                        topEnd: null,
+                        bottomStart: ['info', "search"],
+                        bottomEnd: ['pageLength', 'paging'],
                     },
-                    initComplete: function () {
-                        table.buttons().container().appendTo('#table_rooms_wrapper .col-md-6:eq(0)');
+                    initComplete:
 
-                        $(document).on('click', '#table_rooms tbody tr', function () {
-                            if (!table) return;
-                            const rowData = table.row(this).data();
-                            if (!rowData) return;
-                            const temp = parseInt(rowData['idTABELLE_Räume'], 10);
-                            if (temp !== parseInt(RaumID, 10)) {
-                                RaumID = temp;
-                                call_elements_table(RaumID);
-                            }
-                        });
-                    }
-                });
+                        function () {
+                            $('#CardHeaderRaumsuche').empty()
+                                .append($(table.table().container()).find('.dt-search'))
+                                .append(table.buttons().container());
+
+                            $(document).on('click', '#table_rooms tbody tr', function () {
+                                if (!table) return;
+                                const rowData = table.row(this).data();
+                                if (!rowData) return;
+                                const temp = parseInt(rowData['idTABELLE_Räume'], 10);
+                                if (temp !== parseInt(RaumID, 10)) {
+                                    RaumID = temp;
+                                    call_elements_table(RaumID);
+                                }
+                            });
+                        }
+                })
+                ;
             },
             error: function (xhr, status, error) {
                 console.error('Error loading rooms: ' + error);
@@ -177,16 +219,26 @@ check_login();
             success: function (data) {
                 $("#RoomID").text(RaumID);
                 $.ajax({
-                    url: "getRoomElementsDetailed1.php",
+                    url: "getRoomElementsDetailed1.php?hideActionButtons=1",
                     type: "POST",
                     success: function (data) {
                         if (!data || data.trim() === "") {
                             $("#roomElements").empty();
+                            $("#CardHeaderDtSpace").empty();
                         } else {
                             $("#roomElements").html(data);
+                            $('#elementParameters').hide();  // Parameter-Panel auf Suchseite nicht zeigen
                             $('.btn-warning').prop('disabled', true);
+                            $("#CardHeaderDtSpace").html(
+                                '<input type="text" id="elemSearchInput" class="form-control form-control-sm" placeholder="Elemente suchen...">'
+                            );
+                            $("#elemSearchInput").on("keyup", function () {
+                                if (typeof tableRoomElements !== 'undefined' && tableRoomElements) {
+                                    tableRoomElements.search($(this).val()).draw();
+                                }
+                            });
                         }
-                        $('#elementParameters').empty();
+                        $('#elementParameters').empty().hide();
                         $.ajax({
                             url: "getRoomSpecificationsAnnotationTexts.php",
                             type: "POST",
@@ -204,7 +256,21 @@ check_login();
     }
 
     const columnsDefinition = [
-        {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projek ID',  searchable: false},
+        {data: 'tabelle_projekte_idTABELLE_Projekte', title: 'Projekt', searchable: false},
+        {
+            data: 'Gesamtkosten',
+            title: 'Raum-Kosten',
+            visible: true,
+            searchable: false,
+            render: function (data) {
+                if (data === null || data === undefined) return '-';
+                const val = parseFloat(data);
+                if (isNaN(val) || val === 0) return '<span class="text-muted">–</span>';
+                return '<span class="badge bg-secondary text-light">'
+                    + val.toLocaleString('de-AT', {minimumFractionDigits: 2, maximumFractionDigits: 2})
+                    + ' €</span>';
+            }
+        },
         {data: 'idTABELLE_Räume', title: 'Raum ID', visible: false, searchable: false},
         {
             data: 'TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen',
@@ -287,9 +353,9 @@ check_login();
         {data: '1 Kreis Va', title: '1_K Va', visible: false, case: "bit"},
         {data: '2 Kreis Va', title: '2_K Va', visible: false, case: "bit"},
         {data: '1 Kreis DL-5', title: '1_K DL5', visible: false, case: "bit"},
-        {data: '2 Kreis DL-5', title: '2_K DL5', visible: false, case: "bit"}
+        {data: '2 Kreis DL-5', title: '2_K DL5', visible: false, case: "bit"},
+
     ];
 
 </script>
 </body>
-

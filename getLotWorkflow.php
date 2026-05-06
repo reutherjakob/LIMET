@@ -4,6 +4,7 @@ check_login();
 $mysqli = utils_connect_sql();
 $lotId = getPostInt('lotID');
 
+
 $stmt = $mysqli->prepare("SELECT tabelle_lot_workflow.tabelle_lose_extern_idtabelle_Lose_Extern,
        tabelle_workflow_has_tabelle_wofklowteil.Reihenfolgennummer, 
        tabelle_workflowteil.aufgabe, 
@@ -82,6 +83,9 @@ $mysqli->close();
 ?>
 
 <script>
+
+    var localLotID = <?= $lotId ?>;
+
     new DataTable('#tableWorkflow', {
         paging: false,
         searching: false,
@@ -151,6 +155,7 @@ $mysqli->close();
         $.ajax({
             url: "getProjectWorkflows.php",
             type: "POST",
+            data: { "lotID": localLotID },
             success: function (data) {
                 $("#workflowModalBody").html(data);
             }

@@ -1,0 +1,22 @@
+-- ══════════════════════════════════════════════════════════════════
+-- Migration: Audit-Log-Tabelle für Excel-Import
+-- Einmalig ausführen auf dem Projektdatenbankserver.
+--
+-- Die Tabelle wird von api_sync_elements.php befüllt.
+-- Falls die Tabelle nicht existiert, schlägt der INSERT still fehl
+-- (INSERT IGNORE) — der Sync läuft trotzdem durch.
+-- ══════════════════════════════════════════════════════════════════
+
+CREATE TABLE IF NOT EXISTS `tabelle_import_log` (
+    `id`                      INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `tabelle_projekte_id`     INT          NOT NULL,
+    `user_id`                 INT          NOT NULL DEFAULT 0,
+    `action`                  VARCHAR(20)  NOT NULL COMMENT 'add | update | remove',
+    `details`                 JSON                  COMMENT 'Aktion-Details als JSON',
+    `created_at`              DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    INDEX `idx_projekt`  (`tabelle_projekte_id`),
+    INDEX `idx_user`     (`user_id`),
+    INDEX `idx_created`  (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  COMMENT='Audit-Trail für Excel-Imports (api_sync_elements.php)';

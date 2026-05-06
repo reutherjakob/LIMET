@@ -7,7 +7,7 @@ if (!function_exists('loadEnv')) {
 require_once "../Nutzerumfrage/raumtypen.php"; // lädt $labortypen
 
 require_once "../Nutzerlogin/csrf.php";
-$role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargefeld_admin"]);
+$role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_admin", "spargelfeld_view"]);
 $user_name = $_SESSION["user_name"];
 $projekt_id = 95;
 
@@ -15,7 +15,7 @@ header('X-Frame-Options: DENY');
 header('X-Content-Type-Options: nosniff');
 
 
-if ($role === "internal_rb_user" || $role === "spargefeld_admin") {
+if ($role === "internal_rb_user" || $role === "spargelfeld_admin" || $role === "spargelfeld_view") {
     $sql = "SELECT idTABELLE_Räume AS raum_id, 
             Raumbezeichnung AS raumname, 
             Raumnr AS raumnummer, 
@@ -71,6 +71,7 @@ foreach ($labortypen as $lt) {
     <title>Dashboard</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <link rel="icon" href="../Logo/iphone_favicon.png">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
 
@@ -122,12 +123,13 @@ foreach ($labortypen as $lt) {
                         <thead class="table-light">
                         <tr>
                             <th>Nummer</th>
-                            <th>Raumname</th>
+                            <!---th>Raumname</th--->
+                            <th>Raumkategorie</th>
                             <th>Bereich</th>
                             <th>Ebene</th>
                             <th>Bauteil</th>
                             <th>m²</th>
-                            <th>Raumkategorie</th>
+
                             <th>ID</th>
                         </tr>
                         </thead>
@@ -139,15 +141,16 @@ foreach ($labortypen as $lt) {
                                 data-raumkategoriename="<?= $labortyp_map[$raum['Raumtyp BH']] ?? $raum['Raumtyp BH'] ?>"
                                 data-bauabschnitt="<?= htmlspecialchars($raum['Bauabschnitt']) ?>"
                                 data-ebene="<?= htmlspecialchars($raum['Geschoss']) ?>"
-                                data-nf="<?= htmlspecialchars($raum['Nutzfläche'] ?? '') ?>"
-                            >
+                                data-nf="<?= htmlspecialchars($raum['Nutzfläche'] ?? '') ?>">
+
                                 <td><?= htmlspecialchars($raum['raumnummer']) ?></td>
-                                <td><?= htmlspecialchars($raum['raumname']) ?></td>
+                                <td><?= htmlspecialchars($labortyp_map[$raum['Raumtyp BH']] ?? $raum['Raumtyp BH']) ?></td>
+                                <!--td><?= htmlspecialchars($raum['raumname']) ?></td-->
                                 <td><?= htmlspecialchars($raum['bereich']) ?></td>
                                 <td><?= htmlspecialchars($raum['Geschoss']) ?></td>
                                 <td><?= htmlspecialchars($raum['Bauabschnitt']) ?></td>
                                 <td><?= htmlspecialchars($raum['Nutzfläche']) ?></td>
-                                <td><?= htmlspecialchars($labortyp_map[$raum['Raumtyp BH']] ?? $raum['Raumtyp BH']) ?></td>
+
                                 <td><?= htmlspecialchars($raum['raum_id']) ?></td>
                             </tr>
                         <?php endforeach; ?>
@@ -233,7 +236,7 @@ foreach ($labortypen as $lt) {
             },
             columnDefs: [
                 {
-                    targets: [7],
+                    targets: [6],
                     visible: false,
                     searchable: false,
                     sortable: false
@@ -268,35 +271,40 @@ foreach ($labortypen as $lt) {
 
 
         $(document).off('click', '[data-yesno-toggle]').on('click', '[data-yesno-toggle]', function () {
-            const name = this.id.replace('_toggle', '');
-            const hiddenInput = $('#' + name);
-            const isCurrentlyYes = hiddenInput.val() === '1';
-            const newIsYes = !isCurrentlyYes;
+            const btn = this;
+            const name = btn.id.replace('_toggle', '');
+            const hidden = document.getElementById(name);
+            const isDefaultYes = btn.dataset.defaultYes === '1';
+            const kommentarWrap = document.getElementById(name + '_kommentar_wrap');
 
-            hiddenInput.val(newIsYes ? '1' : '0');
-            $(this)
-                .text(newIsYes ? ' Ja ' : 'Nein')
-                .removeClass('btn-outline-success btn-outline-primary')
-                .addClass(newIsYes ? 'btn-outline-success' : 'btn-outline-primary');
+            const states = isDefaultYes ? ['1', '0', 'unbekannt'] : ['0', '1', 'unbekannt'];
+            const current = hidden.value;
+            const next = states[(states.indexOf(current) + 1) % states.length];
 
-            const wrap = $('#' + name + '_kommentar_wrap');
-            if (wrap.length) {
-                const showIf = wrap.data('show-if');
-                if (String(showIf) === (newIsYes ? '1' : '0')) {
-                    wrap.addClass('d-flex').slideDown(150);
-                } else {
-                    wrap.slideUp(150, function () {
-                        wrap.removeClass('d-flex');
-                    });
-                }
+            hidden.value = next;
+            if (next === '1') {
+                btn.textContent = 'Ja';
+                btn.className = 'btn btn-outline-success text-nowrap';
+            } else if (next === '0') {
+                btn.textContent = 'Nein';
+                btn.className = 'btn btn-outline-primary text-nowrap';
+            } else {
+                btn.textContent = 'unbekannt';
+                btn.className = 'btn btn-outline-secondary text-nowrap';
+            }
+            if (kommentarWrap) {
+                const shouldShow = next === kommentarWrap.dataset.showIf;
+                kommentarWrap.style.display = shouldShow ? '' : 'none';
+                kommentarWrap.className = shouldShow ? 'd-flex align-items-center mt-1' : 'align-items-center mt-1';
             }
         });
+
 
         $("#raeumeTable tbody").on("click", "tr", function () {
             $("#formContainer").html("");
             let roomID = $(this).data("id");
             let raumnr = $(this).find('td').eq(0).text().trim();
-            let roomname = $(this).find('td').eq(1).text().trim();
+            let roomname = $(this).data("name") || '';
             let raumbereich_nutzer = $(this).find('td').eq(2).text().trim();
             let raumkategorie = $(this).data("raumkategorie") || '';
             let raumkategoriename = $(this).data("raumkategoriename") || '';
@@ -374,21 +382,25 @@ foreach ($labortypen as $lt) {
 
                     const toggleBtn = $('#' + key + '_toggle');
                     if (toggleBtn.length) {
-                        if (value === 1 || value === '1') {
-                            toggleBtn.removeClass('btn-outline-primary').addClass('btn-outline-success').text(' Ja ');
+                        const btn = toggleBtn[0];
+                        if (value === 'unbekannt') {
+                            btn.textContent = 'unbekannt';
+                            btn.className = 'btn btn-outline-secondary text-nowrap';
+                            el.val('unbekannt');
+                        } else if (value === 1 || value === '1') {
+                            btn.textContent = 'Ja';
+                            btn.className = 'btn btn-outline-success text-nowrap';
                             el.val('1');
                         } else {
-                            toggleBtn.removeClass('btn-outline-success').addClass('btn-outline-primary').text('Nein');
+                            btn.textContent = 'Nein';
+                            btn.className = 'btn btn-outline-primary text-nowrap';
                             el.val('0');
                         }
                         const wrap = $('#' + key + '_kommentar_wrap');
                         if (wrap.length) {
                             const showIf = wrap.data('show-if');
-                            if (String(showIf) === String(value)) {
-                                wrap.addClass('d-flex').show();
-                            } else {
-                                wrap.hide().removeClass('d-flex');
-                            }
+                            const shouldShow = String(showIf) === String(value) && value !== 'unbekannt';
+                            wrap.toggleClass('d-flex', shouldShow).toggle(shouldShow);
                         }
                         continue;
                     }

@@ -4,6 +4,7 @@ include "utils/_format.php";
 check_login();
 header('Content-Type: application/json');
 
+
 $datum = $_POST['datum'] ?? '2024-01-01';
 
 function getVerfahrenBadgeClass($verfahren): string
@@ -28,8 +29,10 @@ function getVerfahrenBadgeClass($verfahren): string
     }
 }
 
+
 $mysqli = utils_connect_sql();
 
+// Definition preise_in_db states: 0=nothing, 1=received, 2=entered,3 = kontrolliert)
 $sql = "
 SELECT 
     tabelle_lose_extern.idtabelle_Lose_Extern,
@@ -45,6 +48,7 @@ SELECT
     tabelle_lose_extern.preise_in_db,
     tabelle_lose_extern.preise_in_db_user,
     tabelle_lose_extern.kontrolle_preise_in_db_user,
+    tabelle_lose_extern.Notiz,
     tabelle_lieferant.Lieferant, 
     tabelle_lieferant.idTABELLE_Lieferant,
     tabelle_projekte.Projektname,
@@ -125,12 +129,12 @@ while ($row = $result->fetch_assoc()) {
     $todo_count = $todo_counts[$row["idtabelle_Lose_Extern"]] ?? 0;
     if ($todo_count > 0) {
         $todo_button = "<button type='button' id='lottodo_{$row["idtabelle_Lose_Extern"]}' 
-                           class='btn btn-sm btn-warning position-relative' 
+                           class='btn btn-sm btn-outline-success position-relative' 
                            value='Los ToDos' 
                            data-bs-toggle='modal' 
                            data-bs-target='#todoModal'>
                         <i class='fas fa-tasks'></i>
-                        <span class='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger'>
+                        <span class='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark text-white'>
                             {$todo_count}
                         </span>
                     </button>";
@@ -140,56 +144,85 @@ while ($row = $result->fetch_assoc()) {
                     </button>";
     }
 
-    if ($row["Vergabe_abgeschlossen"] !== 1) {
-        $checkbox_html = '';
-        $kontrolliert_btn = '';
-        $preise_in_db = null;
-        $kontrolle_user = '';
-    } else {
-        $preise_in_db = $row["preise_in_db"];
-        $kontrolle_user = $row["kontrolle_preise_in_db_user"] ?? '';
-        // Preis NICHT eingetragen: nur Checkbox zeigen
-        if ($preise_in_db == 0) {
-            $checkbox_html = "<label class='form-check form-switch form-switch-sm'>
-        <input class='form-check-input lot-preis-checkbox' 
-               type='checkbox' 
+    $preise_in_db = (int)$row["preise_in_db"];
+    $kontrolle_user = $row["kontrolle_preise_in_db_user"] ?? '';
+    $str = $row['preise_in_db_user'] ?? '';
+    $txt = htmlspecialchars(strtoupper(substr($str, 0, 3)));
+
+// State: 0=nothing, 1=received, 2=entered, 3=kontrolliert
+
+// Column: Angebote eingegangen
+    if ($preise_in_db == 0) {
+        $angebote_html = "<label class='form-check form-switch form-switch-sm'>
+        <input class='form-check-input lot-angebote-checkbox' type='checkbox'
                data-lot-id='{$row["idtabelle_Lose_Extern"]}'
                data-projekt-id='{$row["idTABELLE_Projekte"]}'>
-        </label>";
-            $kontrolliert_btn = '';
-        }
-        // Preis IST eingetragen: nur Button zeigen
-        else {
-            $str="".$row['preise_in_db_user'];
-            $txt=  htmlspecialchars(strtoupper(substr($str, 0, 3)));
-            $checkbox_html =  "<span class='badge bg-success kontrolle-badge' 
-                            style='font-size: 0.6em;'>{$txt}</span>";
+    </label>";
+    } else {
+        // 1, 2, or 3 — show green check, click resets to 0
+        $angebote_html = "<span class='badge bg-success lot-angebote-badge'
+        role='button' style='cursor:pointer'
+        data-lot-id='{$row["idtabelle_Lose_Extern"]}'
+        data-projekt-id='{$row["idTABELLE_Projekte"]}'
+        title='Angebote eingegangen – Klicken zum Zurücksetzen'>
+        <i class='fas fa-check'></i>
+    </span>";
+    }
 
+    if ($preise_in_db == 0) {
+        // Hidden until angebote confirmed
+        $checkbox_html = '';
+        $kontrolliert_btn = '';
+    } elseif ($preise_in_db == 1) {
+        // Angebote da, price not yet entered — show toggle
+        $checkbox_html = "<label class='form-check form-switch form-switch-sm'> 
+        <input class='form-check-input lot-preis-checkbox' type='checkbox'
+               data-lot-id='{$row["idtabelle_Lose_Extern"]}'
+               data-projekt-id='{$row["idTABELLE_Projekte"]}'>
+    </label>";
+        $kontrolliert_btn = '';
+    } else {
+        // 2 or 3 — price entered, show user badge
+        $str = $row['preise_in_db_user'] ?? '';
+        $txt = htmlspecialchars(strtoupper(substr($str, 0, 3)));
+        $checkbox_html = "<span class='badge bg-success lot-preis-badge'
+        role='button' style='cursor:pointer' 
+        data-lot-id='{$row["idtabelle_Lose_Extern"]}'
+        data-projekt-id='{$row["idTABELLE_Projekte"]}'
+        title='Eingetragen von: {$str} – Klicken zum Zurücksetzen'>
+        {$txt}
+    </span>";
 
-            if (!empty($kontrolle_user) && strlen(trim($kontrolle_user)) > 0) {
-                $button_text = htmlspecialchars(strtoupper(substr($kontrolle_user, 0, 3)));
-                $button_title = 'Bereits kontrolliert: ' . htmlspecialchars($kontrolle_user);
-                $kontrolliert_btn = "<span 
-                        id='checked_by_{$row["idTABELLE_Projekte"]}_{$row["idtabelle_Lose_Extern"]}' 
-                        class='badge bg-success kontrolle-badge' 
-                         style='font-size: 0.6em;'
-                        data-projekt-id='{$row["idTABELLE_Projekte"]}'
-                        data-lot-id='{$row["idtabelle_Lose_Extern"]}'
-                        title='{$button_title}'>{$button_text}</span>";
-            }
-            // Noch nicht kontrolliert: aktiver Button
-            else {
-                $kontrolliert_btn = "<button type='button' 
-             id='checked_by_{$row["idTABELLE_Projekte"]}_{$row["idtabelle_Lose_Extern"]}' 
-             class='btn btn-sm btn-outline-dark kontrolle-btn fas fa-check' 
-             data-projekt-id='{$row["idTABELLE_Projekte"]}'
-             data-lot-id='{$row["idtabelle_Lose_Extern"]}'
-             data-bs-toggle='tooltip'
-             data-bs-title='Preis kontrolliert? '
-             title='Preis kontrollieren'></button>";
-            }
+        $kontrolle_user = $row["kontrolle_preise_in_db_user"] ?? '';
+        if (!empty(trim($kontrolle_user))) {
+            $kuser_txt = htmlspecialchars(strtoupper(substr($kontrolle_user, 0, 3)));
+            $kontrolliert_btn = "<span class='badge bg-success kontrolle-badge'
+        role='button' style='cursor:pointer'
+        data-lot-id='{$row["idtabelle_Lose_Extern"]}'
+        data-projekt-id='{$row["idTABELLE_Projekte"]}'
+        title='Kontrolliert von: {$kontrolle_user} – Klicken zum Zurücksetzen'>
+        {$kuser_txt}
+    </span>";
+        } else {
+            $kontrolliert_btn = "<label class='form-check form-switch form-switch-sm'>
+    <input class='form-check-input lot-kontrolle-checkbox' type='checkbox'
+           data-lot-id='{$row["idtabelle_Lose_Extern"]}'
+           data-projekt-id='{$row["idTABELLE_Projekte"]}'
+           title='Preis kontrollieren'>
+</label>";
         }
     }
+
+    $notiz = $row['Notiz'] ?? '';
+    $notiz_class = !empty(trim($notiz)) ? ' btn-outline-success' : 'btn-outline-secondary';
+    $notiz_button = "<button type='button'
+    class='btn btn-sm {$notiz_class} lot-notiz-btn'
+    data-lot-id='{$row["idtabelle_Lose_Extern"]}'
+    data-notiz='" . htmlspecialchars($notiz, ENT_QUOTES) . "'
+    title='Notiz'>
+    <i class='fas fa-sticky-note'></i>
+    </button>";
+
 
     $data[] = [
         $row["idtabelle_Lose_Extern"],
@@ -227,14 +260,15 @@ while ($row = $result->fetch_assoc()) {
             data-bs-target='#losHistorieModal'>
             <i class='fas fa-history'></i>
         </button>",
-
+        $notiz_button,
         $todo_button,
+        $angebote_html,
         $checkbox_html,
         $kontrolliert_btn,
-
     ];
 }
 
 echo json_encode(['data' => $data]);
 $mysqli->close();
+
 ?>

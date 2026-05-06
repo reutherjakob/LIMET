@@ -32,29 +32,28 @@
                 <a class="text-success" href="https://www.limet.at" target="_blank"> limet.at </a>
             </p>
         </div>
-
     </div>
 </div>
 
 
 <div class="card mx-5">
-
     <div class="card-header">
         <h4> Datenschutzerklärung</h4>
     </div>
-
     <div class="card-body">
-
-        <p>Um Ihnen ein bestmögliches Erlebnis auf unserer Website zu ermöglichen, erfassen wir (bewusst möglichst
-            wenige) personenbezogene Daten, die für den technischen Ablauf benötigt werden. Da Datenschutz ein uns
+        <p>
+            Um Ihnen ein bestmögliches Erlebnis auf unserer Website zu ermöglichen, erfassen wir bewusst
+            keine personenbezogenen Daten und allgemein nur jene Daten, die für den technischen Ablauf benötigt werden.
+            Da Datenschutz ein uns
             wichtiges Anliegen ist, speichern wir jenseits der technisch notwendigen Daten nichts und verarbeiten ihre
             Daten nur dann, wenn es zwingend notwendig ist und dann ausschließlich im Rahmen der gesetzlichen
             Bestimmungen (DSGVO, DSG, TKG 2003). </p>
 
-        <p>Personenbezogene Daten nach DSGVO Art. 4 sind solche, die sich auf eine natürliche Person beziehen (Name,
+        <p>
+            Personenbezogene Daten nach DSGVO Art. 4 sind solche, die sich auf eine natürliche Person beziehen (Name,
             Adresse) oder einen Rückschluss auf eine Person zulassen (z.B. die IP-Adresse). Nach der
             Datenschutz-Grundverordnung (EU) 2016/679 (folgend kurz als „DSGVO“) hat jede Person das Recht auf Schutz
-            bei der Verarbeitung personenbezogener Daten. Im weiteren Verlauf werden gemäß DSGVO folgende Fragen so
+            bei der Verarbeitung personenbezogener Daten. Im weiWteren Verlauf werden gemäß DSGVO folgende Fragen so
             verständlich und einfach wie möglich geklärt: </p>
         <ul>
             <li><strong>Welche Daten werden erhoben und zu welchem Zweck werden sie verarbeitet?</strong><br>
@@ -84,10 +83,10 @@
 
         <h3>Welche Daten werden erhoben und zu welchem Zweck?</h3>
         <h4>IP-Adressen bei Logins</h4>
-        <p>Zur Absicherung des Logins der Website werden bei Anmeldeversuchen temporär die verwendete IP-Adresse
-            sowie
-            der Zeitpunkt des Zugriffs gespeichert. Diese Verarbeitung erfolgt, um technische Sicherheitsfunktionen
-            wie
+        <p>
+            Zur Absicherung des Logins der Website werden bei Anmeldeversuchen temporär die verwendete IP-Adresse
+            sowie der Zeitpunkt des Zugriffs gespeichert.
+            Diese Verarbeitung erfolgt, um technische Sicherheitsfunktionen wie
             den Schutz unserer Systeme vor z.B. Brute-Force-Attacken zu ermöglichen.
             Da wir u.a. pseudonymisierte Zugangsdaten vergeben, welche von diversen Personen genutzt werden könnten,
             ist
@@ -97,10 +96,12 @@
             Die in diesem Zusammenhang gespeicherte personenbezogene IP-Adresse wird nur für diesen berechtigten
             Dokumentations- und Sicherheitszweck verwendet, nicht mit anderen Datenquellen zusammengeführt und nach
             Ablauf des entsprechenden Projektes gelöscht.
+
         </p>
 
         <h4>Webserver-Logfiles</h4>
-        <p>Unser Webhosting-Anbieter erhebt bei jedem Aufruf unserer Website sogenannte „Webserver-Logfiles“ (kurz
+        <p>
+            Unser Webhosting-Anbieter erhebt bei jedem Aufruf unserer Website sogenannte „Webserver-Logfiles“ (kurz
             Logfiles). Diese werden aus Gründen der Betriebssicherheit, zur Fehlerbehebung und zur Erstellung von
             Zugriffsstatistiken erhoben. Sie enthalten die aufgerufene Seite (limet-rb.at), den verwendeten Browser
             inkl. Version, das verwendete Betriebssystem, die zuvor besuchte Seite, den Hostnamen und die IP-Adresse
@@ -111,7 +112,8 @@
         </p>
 
         <h4>Cookies</h4>
-        <p>Wir möchten die Erfassung von persönlichen Daten auf ein Minimum reduzieren. Deshalb
+        <p>
+            Wir möchten die Erfassung von persönlichen Daten auf ein Minimum reduzieren. Deshalb
             werden von unserer Seite keine eigenen Cookies implementiert. Die Seite verwendet
             lediglich einen technisch notwendigen Session-Cookie (PHPSESSID), der automatisch
             durch die verwendete PHP-Servertechnologie gesetzt wird.
@@ -125,7 +127,8 @@
 
 
         <h4>Rechtsgrundlage</h4>
-        <p>In der DSGVO Art. 6 wird beschrieben, unter welchen Bedingungen die Verarbeitung personenbezogener Daten
+        <p>
+            In der DSGVO Art. 6 wird beschrieben, unter welchen Bedingungen die Verarbeitung personenbezogener Daten
             rechtmäßig ist. Diese beinhalten unter anderem folgende: </p>
         <ul>
             <li> Die betroffene Person hat ihre Einwilligung zu der Verarbeitung gegeben.
@@ -136,17 +139,19 @@
                 BesucherInnen dar und für die Erfüllung dieser ist die Verarbeitung einiger weniger Daten notwendig.
             </li>
         </ul>
-        <p> Bezüglich Ihrer personenbezogenen Daten haben Sie grundsätzlich die Rechte auf Auskunft, Berichtigung,
+        <p>
+            Bezüglich Ihrer personenbezogenen Daten haben Sie grundsätzlich die Rechte auf Auskunft, Berichtigung,
             Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit sowie Widerspruch (Art. 15 bis 21 DSGVO).
             Beruht die Rechtmäßigkeit einer Datenverarbeitung auf Ihrer Einwilligung, so haben Sie das Recht, die
             Einwilligung jederzeit zu widerrufen. Durch den Widerruf wird die Rechtmäßigkeit der Verarbeitung, die
             auf
             Basis der Einwilligung bis zum Zeitpunkt des Widerrufs erfolgt ist, nicht berührt (Art. 7 Abs. 3
-            DSGVO). </p>
-
+            DSGVO).
+        </p>
 
         <h4>Kontaktaufnahme</h4>
-        <p>Wenn Sie Kontakt mit uns aufnehmen, erfordert dies eine Datenübertragung Ihrerseits (Telefonnummer bei
+        <p>
+            Wenn Sie Kontakt mit uns aufnehmen, erfordert dies eine Datenübertragung Ihrerseits (Telefonnummer bei
             einem
             Anruf, E-Mail-Adresse etc.). Die Verarbeitung Ihrer Daten ist in diesem Fall notwendig, um Ihre Anfrage
             zu

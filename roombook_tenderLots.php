@@ -5,7 +5,7 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png">
+    <link rel="icon" href="../Logo/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -47,20 +47,20 @@ init_page_serversides();
                         <span> <strong>Lose im Projekt</strong>  &emsp;</span>
 
                         <button type='button' id='addTenderLotModalButton'
-                                class='btn btn-outline-success btn-sm me-2 ms-2 '
+                                class='btn btn-outline-success btn-sm ms-2'
                                 value='Los hinzufügen' data-bs-toggle='modal' data-bs-target='#addTenderLotModal'><i
                                     class="fa fa-plus" aria-hidden="true"></i> Los hinzufügen
                         </button>
                     </div>
                     <div class="d-inline-flex align-items-center" id="LoseCardHeaderSub">
-                        <button type='button' class='btn btn-outline-secondary btn-sm' id='createTenderListPDF'>
+                        <button type='button' class='btn btn-outline-secondary btn-sm ms-2' id='createTenderListPDF'>
                             <i class='far fa-file-pdf'></i> Losliste mit Elementen-PDF
                         </button>
-                        <button type='button' class='btn btn-outline-secondary btn-sm me-2 ms-2 '
+                        <button type='button' class='btn btn-outline-secondary btn-sm  ms-2'
                                 id='createTenderListWithoutElementsPDF'>
                             <i class='far fa-file-pdf'></i> Losliste-PDF
                         </button>
-                        <button type='button' class='btn btn-outline-secondary btn-sm me-2 ms-2 '
+                        <button type='button' class='btn btn-outline-secondary btn-sm  ms-2 '
                                 id='createTenderWorkflowPDF'>
                             <i class='far fa-file-pdf'></i> Workflow-PDF
                         </button>
@@ -481,7 +481,7 @@ include "modal_showLotWorkflow.php";
                     buttons: [
                         {
                             extend: 'excel',
-                            className: "btn btn-success fas fa-file-excel me-2 ms-2 ",
+                            className: "btn btn-outline-secondary bg-light fas fa-file-excel me-2 ms-2 ",
                             title: excelFilename,
                             exportOptions: {
                                 columns: function (idx) {
@@ -554,7 +554,7 @@ include "modal_showLotWorkflow.php";
                     document.getElementById("kostenanschlag").value = tableTenderLots.row($(this)).data()[11].replace(/\./g, '');
                     document.getElementById("budget").value = tableTenderLots.row($(this)).data()[12].replace(/\./g, '');
                     document.getElementById("lotSum").value = tableTenderLots.row($(this)).data()[13].replace(/\./g, '');
-
+//TODO Auftragnehmeer in modal
                     const htmlString = tableTenderLots.row($(this)).data()[8];
                     const textContent = htmlString.replace(/<[^>]*>/g, '');
 
@@ -581,7 +581,8 @@ include "modal_showLotWorkflow.php";
                             break;
                         }
                     }
-                    document.getElementById("lotAuftragnehmer").value = tableTenderLots.row($(this)).data()[18];
+                    // console.log(tableTenderLots.row($(this)).data());
+                    document.getElementById("lotAuftragnehmer").value = tableTenderLots.row($(this)).data()[22];
                     document.getElementById("lotMKFOf").value = tableTenderLots.row($(this)).data()[24];
 
 

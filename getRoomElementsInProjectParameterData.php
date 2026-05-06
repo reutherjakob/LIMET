@@ -56,7 +56,7 @@ $stmt = $mysqli->prepare("
     INNER JOIN tabelle_projekt_elementparameter pep 
         ON p.idTABELLE_Parameter = pep.tabelle_parameter_idTABELLE_Parameter
     WHERE pep.tabelle_projekte_idTABELLE_Projekte = ? 
-        AND p.`Bauangaben relevant` = 1
+  #       AND p.`Bauangaben relevant` = 1
     GROUP BY k.Kategorie, p.Bezeichnung
     ORDER BY k.Kategorie, p.Bezeichnung
 ");
@@ -91,7 +91,7 @@ $stmt = $mysqli->prepare("
     INNER JOIN tabelle_projekt_elementparameter pep 
         ON p.idTABELLE_Parameter = pep.tabelle_parameter_idTABELLE_Parameter
     WHERE pep.tabelle_projekte_idTABELLE_Projekte = ? 
-        AND p.`Bauangaben relevant` = 1
+ #        AND p.`Bauangaben relevant` = 1
     ORDER BY k.Kategorie, p.Bezeichnung
 ");
 $stmt->bind_param("i", $projectID);

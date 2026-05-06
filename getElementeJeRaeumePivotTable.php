@@ -87,14 +87,25 @@ if (empty($roomIDs)) {
     exit;
 }
 $roomPlaceholders = implode(',', array_fill(0, count($roomIDs), '?'));
+$budgetFilterSQL = ($projectID === 86)
+    ? " AND (tpb_filter.idtabelle_projektbudgets IS NULL OR tpb_filter.status = 1)"
+    : "";
+
+$budgetJoinSQL = ($projectID === 86)
+    ? " LEFT JOIN tabelle_projektbudgets tpb_filter
+            ON tpb_filter.idtabelle_projektbudgets = re.tabelle_projektbudgets_idtabelle_projektbudgets"
+    : "";
+
 $sqlElemIDs = "
     SELECT DISTINCT e.idTABELLE_Elemente, re.tabelle_Varianten_idtabelle_Varianten
       FROM tabelle_elemente e
       JOIN tabelle_räume_has_tabelle_elemente re ON e.idTABELLE_Elemente = re.TABELLE_Elemente_idTABELLE_Elemente
       JOIN tabelle_räume r ON re.TABELLE_Räume_idTABELLE_Räume = r.idTABELLE_Räume
+      $budgetJoinSQL
      WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
        AND re.Standort = 1
-       AND r.idTABELLE_Räume IN ($roomPlaceholders)";
+       AND r.idTABELLE_Räume IN ($roomPlaceholders)
+       $budgetFilterSQL";
 
 $elemParams = array_merge([$projectID], $roomIDs);
 
@@ -144,10 +155,9 @@ if ($filterElemente) {
     }
 }
 // error_log("Element Filter SQL: " . $elementFilterSQL);
-
 $sql = "
     SELECT
-        e.ElementID,#
+        e.ElementID,
         e.Bezeichnung,
         e.idTABELLE_Elemente,
         COALESCE(v.idtabelle_Varianten, 0) AS idtabelle_Varianten,
@@ -161,10 +171,12 @@ $sql = "
         ON re.TABELLE_Räume_idTABELLE_Räume = r.idTABELLE_Räume
     LEFT JOIN tabelle_varianten v
         ON re.tabelle_Varianten_idtabelle_Varianten = v.idtabelle_Varianten
+    $budgetJoinSQL
     WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
       AND re.Standort = 1
       AND r.idTABELLE_Räume IN ($roomPlaceholders)
       $elementFilterSQL
+      $budgetFilterSQL
     GROUP BY e.ElementID, e.Bezeichnung, e.idTABELLE_Elemente, v.idtabelle_Varianten, r.idTABELLE_Räume
     ORDER BY e.ElementID 
 ";

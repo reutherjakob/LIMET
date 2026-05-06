@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <title>Element Anzahl Änderungen</title>
+    <title>Element Änderungen</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png">
+    <link rel="icon" href="../Logo/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -86,8 +86,6 @@ init_page_serversides(""); ?>
 </div>
 
 
-
-
 <script>
 
     function debounce(func, wait) {
@@ -122,18 +120,52 @@ init_page_serversides(""); ?>
             scrollY: '75vh',
             paging: true,
             pageLength: 10,
-            lengthMenu: [[ 10, 25, -1], ['10 rows', '25 rows', 'All']],
+            lengthMenu: [[10, 25, -1], ['10 rows', '25 rows', 'All']],
             layout: {
                 topStart: null,
                 topEnd: null,
-                bottomStart: ['search','info'],
-                bottomEnd: ['pageLength', 'paging']
-            },
-            initComplete: function () {
+                bottomStart: ['search', 'info'],
+                bottomEnd: ['pageLength', 'paging', 'buttons']
+            }, buttons: [
+                {
+                    extend: 'copy',
+                    text: '<i class="fas fa-copy"></i>',
+                    titleAttr: 'Kopieren',
+                    className: 'btn btn-sm btn-outline-dark bg-white'
+                },
+                {
+                    extend: 'searchBuilder',
+                    text: '<i class="fas fa-search"></i>',
+                    titleAttr: 'Suche konfigurieren',
+                    className: 'btn btn-sm btn-outline-dark bg-white'
+                },
+                {
+                    extend: 'excel',
+                    text: '<i class="fas fa-file-excel"></i>',
+                    titleAttr: 'Excel Export',
+                    className: 'btn btn-sm btn-outline-dark bg-white'
+                },
+                {
+                    extend: 'pdf',
+                    text: '<i class="fas fa-file-pdf"></i>',
+                    titleAttr: 'PDF Export',
+                    className: 'btn btn-sm btn-outline-dark bg-white'
+                },
+                {
+                    extend: 'colvis',
+                    text: '<i class="fas fa-columns"></i>',
+                    titleAttr: 'Spalten ein-/ausblenden',
+                    className: 'btn btn-sm btn-outline-dark bg-white'
+                }
+            ], initComplete: function () {
                 $('.dt-search label').remove();
                 $('.dt-search').children()
                     .removeClass('form-control form-control-sm')
-                    .addClass("btn btn-sm btn-outline-secondary")
+                    .addClass("btn btn-sm btn-outline-dark bg-white")
+                    .appendTo('#CardHeaderSub');
+
+                // ✅ ganzen wrapper verschieben, nicht nur children (wichtig für colvis)
+                $('#rbChangeTable_wrapper .dt-buttons')
                     .appendTo('#CardHeaderSub');
 
                 $('#dateSelect').on('change', debounce(function () {
@@ -143,7 +175,6 @@ init_page_serversides(""); ?>
                         rbChangeTable.ajax.reload(null, false);
                     }
                 }, 1000));
-
             }
         });
     });

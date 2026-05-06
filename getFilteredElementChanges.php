@@ -5,7 +5,8 @@ header('Content-Type: application/json');
 
 $datum = $_POST['datum'] ?? '2024-01-01';
 
-function h($str) {
+function h($str)
+{
     return htmlspecialchars($str ?? '', ENT_QUOTES, 'UTF-8');
 }
 
@@ -15,6 +16,18 @@ $projectID = $_SESSION['projectID'] ?? 0;
 if ($projectID <= 0) {
     echo json_encode(['data' => [], 'error' => 'Kein gültiges Projekt ausgewählt.']);
     exit;
+}
+
+
+function formatFieldValue($field, $value)
+{
+    if ($value === null) return '–';
+    $boolFields = ['Neu/Bestand', 'Standort', 'Verwendung'];
+    if (in_array($field, $boolFields)) {
+        if ($field === 'Neu/Bestand') return $value ? 'Neu' : 'Bestand';
+        return $value ? 'Ja' : 'Nein';
+    }
+    return $value;
 }
 
 $stmt = $mysqli->prepare("
@@ -54,9 +67,18 @@ $stmt->bind_param("is", $projectID, $datum);
 $stmt->execute();
 $result = $stmt->get_result();
 
+// Badge-Farben pro Feld
+$badgeColors = [
+    'Neu/Bestand' => 'bg-primary',
+    'Anzahl' => 'bg-success',
+    'Standort' => 'bg-warning text-dark',
+    'Verwendung' => 'bg-info text-dark',
+    'Anschaffung' => 'bg-secondary',
+    'Kurzbeschreibung' => 'bg-secondary',
+];
+
 $data = [];
 while ($change = $result->fetch_assoc()) {
-    // Calculate changed fields
     $changedFields = [];
     $fieldsToCheck = [
         'Neu/Bestand', 'Anzahl', 'Standort', 'Verwendung', 'Anschaffung', 'Kurzbeschreibung'
@@ -73,24 +95,27 @@ while ($change = $result->fetch_assoc()) {
 
     $anzahlChanges = count($changedFields);
 
-    // Build changed fields display
-    $changedFieldsHtml = '';
-    if ($anzahlChanges > 0) {
-        $collapseId = 'changedFields' . $change['idtabelle_rb_aenderung'];
-        $changedFieldsHtml = $anzahlChanges . " <button class='btn btn-sm btn-link p-0' type='button' 
-            data-bs-toggle='collapse' data-bs-target='#$collapseId' aria-expanded='false'>
-            <i class='fas fa-info-circle'></i></button>
-            <div class='collapse' id='$collapseId'><ul class='small mt-1 mb-0'>";
+// ✅ ÄNDERUNG 1: Zeilen ohne Änderungen überspringen
+    if ($anzahlChanges === 0) {
+        continue;
+    }
 
-        foreach ($changedFields as $field) {
-            $oldVal = h($change[$field]);
-            $newVal = h($change[$field . '_copy1']);
-            $changedFieldsHtml .= "<li>" . h($field) . ": <strong>$oldVal</strong> &rarr; <em>$newVal</em></li>";
-        }
+    // ✅ Option B: Löschungen erkennen und speziell darstellen
+    $isDeleted = ($change['Anzahl'] === null && $change['Standort'] === null && $change['Verwendung'] === null);
 
-        $changedFieldsHtml .= "</ul></div>";
+    $badgesHtml = '';
+    if ($isDeleted) {
+        $badgesHtml = "<span class='badge bg-danger me-1'><i class='fas fa-trash-alt me-1'></i>Eintrag gelöscht</span>";
     } else {
-        $changedFieldsHtml = '0';
+        foreach ($changedFields as $field) {
+            $color = $badgeColors[$field] ?? 'bg-secondary';
+            $newVal = h(formatFieldValue($field, $change[$field]));
+            $oldVal = h(formatFieldValue($field, $change[$field . '_copy1']));
+            $badgesHtml .= "<span class='badge {$color} me-1'>"
+                . h($field)
+                . ": <s>{$oldVal}</s> → <strong>{$newVal}</strong>"
+                . "</span>";
+        }
     }
 
     $neuBestand = $change['Neu/Bestand'] === null ? '' : ($change['Neu/Bestand'] ? 'Neu' : 'Bestand');
@@ -100,7 +125,7 @@ while ($change = $result->fetch_assoc()) {
     $data[] = [
         $neuBestand,
         h($change['Anzahl']),
-        $changedFieldsHtml,
+        $badgesHtml,
         $standort,
         $verwendung,
         h($change['Anschaffung']),
