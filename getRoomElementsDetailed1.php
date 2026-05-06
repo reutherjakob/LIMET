@@ -256,7 +256,7 @@ include "modal_elementHistory.html";
         const hideZero = localStorage.getItem('hideZeroSetting') === 'true';
         $('#hideZeroRows').prop('checked', hideZero);
         toggleHideZeroIcon(hideZero);
-        $('#hideZeroRows').on('change', function () {
+        $('#hideZeroRows').off('change.hideZero').on('change.hideZero', function () {
             localStorage.setItem('hideZeroSetting', this.checked ? 'true' : 'false');
             toggleHideZeroIcon(this.checked);
             if (tableRoomElements) {
