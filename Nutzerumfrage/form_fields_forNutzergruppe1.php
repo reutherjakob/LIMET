@@ -28,14 +28,14 @@ $formFields = [
     ],
 
     ["type" => "yesno", "kategorie" => "Raum", "name" => "vibrationsempfindlich_bodenstehend",
-        "label" => "Sind Geräte in Verwendung, welche vibrationsempfindlich und bodenstehend sind?",
+        "label" => "Geräte in Verwendung welche vibrationsempfindlich und bodenstehend sind?",
         "default" => "Nein",
         # "info" => "",
         'optional_comment_label' => "Optional."],
 
 
     ["type" => "yesno", "kategorie" => "Raum", "name" => "vibrationen_abgebend",
-        "label" => "Sind Geräte in Verwendung, die Vibrations-/Schallemissionen an das Gebäude abgeben??",
+        "label" => " Geräte in Verwendung, die Vibrations- oder Schallemissionen an das Gebäude abgeben??",
         "info" => "z.B. Siebmaschinen"],
 
 
