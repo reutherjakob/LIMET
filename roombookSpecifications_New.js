@@ -756,14 +756,3 @@ function updateButtonClass(button, table, startColumn, endColumn) {
     }
 }
 
-
-var hideZeroFilter = function (settings, data, dataIndex) { // 06052025
-    if (settings.nTable.id !== 'tableRoomElements') {
-        return true; // Don't filter other tables
-    }
-    let hideZero = $("#hideZeroRows").is(":checked");
-    let row = tableRoomElements.row(dataIndex).node();
-    let amount = $(row).find('input[id^="amount"]').val();
-    amount = parseInt(amount) || 0;
-    return !(hideZero && (amount === 0));
-};

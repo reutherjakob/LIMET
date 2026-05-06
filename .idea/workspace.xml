@@ -5,10 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Neue Seite: Geräte- und Wartungspreise Liste">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getRoomElementsDetailed1.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomElementsDetailed1.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/projects.php" beforeDir="false" afterPath="$PROJECT_DIR$/projects.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookElements.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookElements.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookStandortVerwendung.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookStandortVerwendung.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookSpecifications_New.js" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_New.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookSpecifications_copyRoomModal.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_copyRoomModal.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/roombook_devicePrice.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_devicePrice.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -102,7 +104,7 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;database.data.extractors.current.export.id&quot;: &quot;Excel (xlsx)&quot;,
     &quot;database.data.extractors.current.id&quot;: &quot;Tab-separated (TSV)_id&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;#76 on IFC__element__import&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;werq__6__5__26&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/WolfgangFuchsLIMET/Documents/NetBeansProjects/LIMET-FX&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -571,6 +573,7 @@
       <workItem from="1777384434655" duration="203000" />
       <workItem from="1777465421328" duration="64000" />
       <workItem from="1777964647831" duration="13302000" />
+      <workItem from="1778080567096" duration="379000" />
     </task>
     <task id="LOCAL-00187" summary="BUGFIXES:&#10;- Kosten PDFs &#10;- Element Detail&#10;&#10;+ Losliste erweitert&#10;+ preise ändern btn">
       <option name="closed" value="true" />
@@ -1058,11 +1061,6 @@
           <url>file://$PROJECT_DIR$/getLotAenderungen.php</url>
           <line>81</line>
           <option name="timeStamp" value="16" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/Nutzerumfrage/save_room_data.php</url>
-          <line>81</line>
-          <option name="timeStamp" value="22" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/getFilteredLots.php</url>

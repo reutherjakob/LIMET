@@ -37,7 +37,7 @@
 
                 <div class="mb-2"><strong>Parameter kopieren:</strong></div>
                 <div class="d-flex flex-wrap gap-1" id="copyRoom_categoryToggles">
-                    <button class="btn btn-sm btn-success copy-cat-toggle" data-cat="R">R – Raumangaben</button>
+                    <button class="btn btn-sm btn-success copy-cat-toggle" data-cat="RA">R – Raumangaben</button>
                     <button class="btn btn-sm btn-success copy-cat-toggle" data-cat="HKLS">HKLS</button>
                     <button class="btn btn-sm btn-success copy-cat-toggle" data-cat="ET">ET</button>
                     <button class="btn btn-sm btn-success copy-cat-toggle" data-cat="AR">AR</button>
@@ -62,7 +62,7 @@
     function init_copyRoom_modal() {
         copyCategories = Object.fromEntries(
             buttonRanges
-                .filter(b => ['R', 'HKLS', 'ET', 'AR', 'MG', 'LAB', 'GCP'].includes(b.name))
+                .filter(b => ['RA', 'HKLS', 'ET', 'AR', 'MG', 'LAB', 'GCP'].includes(b.name))
                 .map(b => [b.name, {start: b.start, end: b.end}])
         );
 
