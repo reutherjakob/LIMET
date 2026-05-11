@@ -1,5 +1,5 @@
 <?php
-global $mysqli;
+global $mysqli, $labortypen;
 require_once "../Nutzerlogin/_utils.php";
 if (!function_exists('loadEnv')) {
     include "../Nutzerlogin/db.php";
@@ -26,7 +26,8 @@ if ($role === "internal_rb_user" || $role === "spargelfeld_admin" || $role === "
             FROM tabelle_räume
             WHERE tabelle_projekte_idTABELLE_Projekte = ?
             AND  `Raumtyp BH` <> 34 
-            AND  `Raumtyp BH` <> 35";
+            AND  `Raumtyp BH` <> 35
+            ";
     if ($stmt = $mysqli->prepare($sql)) {
         $stmt->bind_param("i", $projekt_id);
     } else {
@@ -110,7 +111,7 @@ foreach ($labortypen as $lt) {
                                     data-bs-toggle="popover"
                                     data-bs-content="Hier sind die als labortechnisch relevant eingestuften Räume ihres Bereiches des RUF gelistet.
                                                      Darin sind auch die Raumkategorien festgelegt.
-                                                     Die Abfragen ziehen die Kategorien als Standard Ausgangswerte heran.">
+                                                     Die Abfragen sind an die Raumkategorien angepasst.">
                                 <i class="fas fa-info-circle"></i>
                             </button>
 
@@ -213,9 +214,10 @@ foreach ($labortypen as $lt) {
             responsive: true,       // Enable responsive design for smaller screens
             autoWidth: false,       // Disable automatic column width calculation
             language: {             // Customize language strings (example: German)
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                 search: "Suchen:",
                 lengthMenu: "Zeige _MENU_",
-                info: "",
+
                 paginate: {
                     first: "Erster",
                     last: "Letzter",
@@ -224,7 +226,9 @@ foreach ($labortypen as $lt) {
                 },
                 searchPlaceholder: "Raumsuche...",
                 select: {
-                    rows: ""
+                    rows: "",
+                    columns: "",
+                    cells: ""
                 }
 
             },

@@ -179,16 +179,19 @@ r.`HT_Entlueftung`,
 r.`PHY_Akustik_Schallgrad`,
 r.`EL_Laser 32A Stk`,
 r.`Raumtyp BH`, 
-    (
-        SELECT COUNT(*)
-        FROM tabelle_räume_has_tabelle_elemente re
-        WHERE re.TABELLE_Räume_idTABELLE_Räume = r.idTABELLE_Räume
-    ) AS element_mask
+COALESCE(el.element_mask, 0) AS element_mask   -- ← FIX: aus dem JOIN, nicht Subquery
 FROM tabelle_räume r 
 INNER JOIN tabelle_funktionsteilstellen f 
     ON r.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = f.idTABELLE_Funktionsteilstellen
+-- ↓ FIX: einmaliger JOIN statt korreliertes Subquery pro Zeile
+LEFT JOIN (
+    SELECT TABELLE_Räume_idTABELLE_Räume, COUNT(*) AS element_mask
+    FROM tabelle_räume_has_tabelle_elemente
+    GROUP BY TABELLE_Räume_idTABELLE_Räume
+) el ON el.TABELLE_Räume_idTABELLE_Räume = r.idTABELLE_Räume
 WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
 ORDER BY r.Raumnr, r.`Raumbereich Nutzer`";
+
 
 $stmt = $mysqli->prepare($sql);
 $stmt->bind_param("i", $_SESSION['projectID']);

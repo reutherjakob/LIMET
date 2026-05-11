@@ -59,7 +59,7 @@ function renderForm(array $formFields, array $userData = [], string $role = ''):
         $info = $field['info'] ?? '';
         switch ($type) {
             case 'text':
-                echo "<div class='mb-2 {$kategorie} d-flex align-items-center'>";
+                echo "<div class='mb-1 {$kategorie} d-flex align-items-center'>";
                 echo "<label for='{$name}' class='form-label col-6 ms-2 me-2 rechtsbuendig'><strong>{$label}</strong>";
                 if ($info) {
                     echo " <button class='btn btn-sm bg-white rounded'
@@ -69,7 +69,7 @@ function renderForm(array $formFields, array $userData = [], string $role = ''):
                                 </button>";
                 }
                 echo "</label>";
-                echo "<div class='col-6'>  <input class='form-control flex-grow-1' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'> </div></div>";
+                echo "<div class='col-5'>  <input class='form-control flex-grow-1' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'> </div></div>";
                 break;
 
             case 'texthidden':
@@ -79,8 +79,8 @@ function renderForm(array $formFields, array $userData = [], string $role = ''):
                 break;
 
             case 'text_non_editable':
-                echo "<div class='mb-2 {$kategorie} d-flex align-items-center'>";
-                echo "<label for='{$name}' class='form-label col-6 ms-2 me-2 rechtsbuendig'><strong>{$label}</strong>";
+                echo "<div class='mb-1 {$kategorie} d-flex align-items-center'>";
+                echo "<label for='{$name}' class='form-label col-7 ms-2 me-2 rechtsbuendig'><strong>{$label}</strong>";
                 if ($info) {
                     echo " <button class='btn btn-sm bg-white rounded'
                                   data-bs-toggle='popover'
@@ -89,14 +89,14 @@ function renderForm(array $formFields, array $userData = [], string $role = ''):
                                 </button>";
                 }
                 echo "</label>";
-                echo "<div class='col-4'>  <input readonly class='form-control flex-grow-1 fw-bold border-white' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'> </div></div>";
+                echo "<div class='col-5'>  <input readonly class='form-control flex-grow-1 fw-bold border-white' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'> </div></div>";
                 break;
 
             case 'yesno':
                 $defaultVal = $field['default_value'] ?? 'Nein';
                 $isDefaultYes = ($defaultVal === 'Ja' || $defaultVal === '1' || $defaultVal == 1);
 
-                if ($value === 'unbekannt' ) {
+                if ($value === 'unbekannt') {
                     $btnClass = 'btn btn-outline-secondary';
                     $btnText = 'unbekannt';
                     $hiddenValue = 'unbekannt';
@@ -118,9 +118,9 @@ function renderForm(array $formFields, array $userData = [], string $role = ''):
                 $showComment = $hasComment && !$isDefaultValue && $hiddenValue !== 'unbekannt';
                 $showIfVal = $isDefaultYes ? '0' : '1';
 
-                echo "<div class='mb-2 {$kategorie}'>";
+                echo "<div class='mb-1 {$kategorie}'>";
                 echo "  <div class='d-flex align-items-center'>";
-                echo "    <label for='{$name}_toggle' class='form-label col-6 ms-2 me-2 rechtsbuendig'><strong>{$label}";
+                echo "    <label for='{$name}_toggle' class='form-label col-7 ms-2 me-2 rechtsbuendig'><strong>{$label}";
                 if ($info) {
                     echo " <button class='btn btn-sm bg-white rounded'
           data-bs-toggle='popover'
@@ -140,8 +140,8 @@ function renderForm(array $formFields, array $userData = [], string $role = ''):
                     $wrapClass = $showComment ? 'd-flex align-items-center mt-1' : 'align-items-center mt-1';
                     $displayStyle = $showComment ? '' : 'display:none;';
                     echo "  <div class='{$wrapClass}' id='{$name}_kommentar_wrap' data-show-if='{$showIfVal}' style='{$displayStyle}'>";
-                    echo "    <label class='form-label col-6 ms-2 me-2 rechtsbuendig text-muted'><small>Kommentar:</small></label>";
-                    echo "    <div class='col-5'><input class='form-control form-control-sm' type='text' name='{$commentName}' id='{$commentName}' value='{$commentValue}' placeholder='{$commentLabel}'></div>";
+                    echo "    <label class='form-label col-5 ms-2 me-2 rechtsbuendig text-muted'><small>Kommentar:</small></label>";
+                    echo "    <div class='col-6'><input class='form-control form-control-sm' type='text' name='{$commentName}' id='{$commentName}' value='{$commentValue}' placeholder='{$commentLabel}'></div>";
                     echo "  </div>";
                 }
                 echo "</div>";
@@ -149,8 +149,8 @@ function renderForm(array $formFields, array $userData = [], string $role = ''):
 
             case 'multiselect':
                 $selectedValues = !empty($value) ? array_map('trim', explode(',', $value)) : [];
-                echo "<div class='mb-2 {$kategorie} d-flex align-items-center'>";
-                echo "<label class='form-label ms-2 col-6 rechtsbuendig flex-shrink-0'><strong>{$label}</strong>";
+                echo "<div class='mb-1 {$kategorie} d-flex align-items-center'>";
+                echo "<label class='form-label ms-2 col-7 rechtsbuendig flex-shrink-0'><strong>{$label}</strong>";
                 if ($info) {
                     echo " <button class='btn btn-sm bg-white'
                               data-bs-toggle='popover'
@@ -184,9 +184,9 @@ function renderForm(array $formFields, array $userData = [], string $role = ''):
                 $isDefault = ((string)$value === (string)$defaultVal);
                 $showComment = $hasComment && !$isDefault;
 
-                echo "<div class='mb-2 {$kategorie}'>";
+                echo "<div class='mb-1 {$kategorie}'>";
                 echo "<div class='d-flex align-items-center'>";
-                echo "<label class='form-label me-2 col-6 rechtsbuendig flex-shrink-0'><strong>{$label}</strong>";
+                echo "<label class='form-label me-2 col-7 rechtsbuendig flex-shrink-0'><strong>{$label}</strong>";
                 if ($info) {
                     echo " <button class='btn btn-sm bg-white'
                       data-bs-toggle='popover' 
@@ -208,16 +208,16 @@ function renderForm(array $formFields, array $userData = [], string $role = ''):
                     $wrapClass = $showComment ? 'd-flex align-items-center mt-1' : 'align-items-center mt-1';
                     $displayStyle = $showComment ? '' : 'display:none;';
                     echo "<div class='{$wrapClass}' id='{$name}_kommentar_wrap' data-default-val='" . htmlspecialchars($defaultVal) . "' style='{$displayStyle}'>";
-                    echo "  <label class='form-label col-6 ms-2 me-2 rechtsbuendig text-muted'><small>Kommentar:</small></label>";
-                    echo "  <div class='col-5'><input class='form-control form-control-sm' type='text' name='{$commentName}' id='{$commentName}' value='{$commentValue}' placeholder='{$commentLabel}'></div>";
+                    echo "  <label class='form-label col-5 ms-2 me-2 rechtsbuendig text-muted'><small>Kommentar:</small></label>";
+                    echo "  <div class='col-6'><input class='form-control form-control-sm' type='text' name='{$commentName}' id='{$commentName}' value='{$commentValue}' placeholder='{$commentLabel}'></div>";
                     echo "</div>";
                 }
                 echo "</div>";
                 break;
 
             case 'number':
-                echo "<div class='mb-2 {$kategorie} d-flex align-items-center'>";
-                echo "<label for='{$name}' class='form-label col-6 ms-2 me-2 rechtsbuendig'><strong>{$label}</strong>";
+                echo "<div class='mb-1 {$kategorie} d-flex align-items-center'>";
+                echo "<label for='{$name}' class='form-label col-7 ms-2 me-2 rechtsbuendig'><strong>{$label}</strong>";
                 if ($info) {
                     echo " <button class='btn btn-sm bg-white rounded'
                       data-bs-toggle='popover'
@@ -291,7 +291,6 @@ if ($roomId) {
             const hidden = document.getElementById(fieldName);
             const isDefaultYes = btn.dataset.defaultYes === '1';
             const kommentarWrap = document.getElementById(fieldName + '_kommentar_wrap');
-
 
             const states = isDefaultYes
                 ? ['1', '0', 'unbekannt']
