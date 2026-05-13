@@ -2542,7 +2542,8 @@ $labortypen = [
     ],
     [
         'id' => '35',
-        'bezeichnung' => 'Büro Analytiker (Auswerteraum)', 'beschreibung' => 'Büroarbeitsplatz',
+        'bezeichnung' => 'Büro Analytiker (Auswerteraum)',
+        'beschreibung' => 'Büroarbeitsplatz',
         'raumhoehe_bestand' => '2.8',
         'raumhoehe_neubau' => '2.8',
         'temp_min' => '22',        // Winter: 22°C +-1,5K; Sommer: 26°C +-1,5K gleitend
