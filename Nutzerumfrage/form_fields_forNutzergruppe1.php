@@ -1,14 +1,13 @@
 <?php
 $formFields = [
-    // =========================================================
     // HIDDEN
-    // =========================================================
     ["type" => "texthidden", "name" => "roomname", "label" => "Raumname", "required" => true],
     ["type" => "texthidden", "name" => "username", "label" => "Username", "required" => true],
     ["type" => "texthidden", "kategorie" => "Raum", "name" => "roomID", "label" => "Room ID"],
     ["type" => "texthidden", "kategorie" => "Raum", "name" => "raumnr", "label" => "Raum Nr."],
     ["type" => "texthidden", "kategorie" => "Raum", "name" => "raumbereich_nutzer", "label" => "Raumbereich Nutzer"],
     ["type" => "texthidden", "kategorie" => "Raum", "name" => "nf", "label" => "Nutzfläche (NF)"],
+
     [
         "type" => "text_non_editable",
         "kategorie" => "Raum",
@@ -49,12 +48,12 @@ $formFields = [
         "options" => [
             "Nein" => "Nein",
             "Ja" => "Ja",
-        ],
+        ], "default_value" => "Nein",
         "kategorie" => "Raum",
         "name" => "explosionsschutz",
         "label" => "Ist Explosionsschutz im gesamten Raum erforderlich?",
         # "options" => ["Nein" => "Nein", "Zone 0" => "Zone 0", "Zone 1" => "Zone 1", "Zone 2" => "Zone 2",],
-        "default_value" => "Nein",
+
         "info" => "",
         //  "Zone 0 – Explosionsgefährliche Atmosphäre ständig/langzeitig vorhanden; Zone 1 – Gelegentliches Auftreten im Normalbetrieb; Zone 2 – Seltenes/kurzzeitiges Auftreten (nur bei Störungen)",
         //'optional_comment_label' => "Falls bekannt: Mit welcher Abluftmenge?"
@@ -119,7 +118,8 @@ $formFields = [
         "options" => [
             "Nein" => "Nein",
             "Ja" => "Ja",
-        ], "default_value" => "Nein",
+        ],
+        "default_value" => "Nein",
         "kategorie" => "HKLS",
         "name" => "Vakuum",
         "label" => "Vakuum Versorgung erforderlich?"
@@ -135,6 +135,7 @@ $formFields = [
         "options" => ["Nein" => "Nein", "Staubfilter" => "Staubfilter", "HEPA" => "HEPA Filter", "Veraschung" => "Veraschung",],
         "default_value" => "Nein"
     ],
+
     [
         "type" => "select",
         "kategorie" => "Abluft",
@@ -143,7 +144,6 @@ $formFields = [
         "options" => ["Nein" => "Nein", "HEPA" => "HEPA Filter"],
         "default_value" => "Nein"
     ],
-
 
     [
         "type" => "select",
@@ -200,7 +200,7 @@ $formFields = [
         "name" => "raumtemp",
         "default_value" => "Nein",
         "label" => "Besondere Anforderungen an die Raumtemperatur?",
-        "info" => "Solltemperatur Sommer ist 24°C +-1°C. Solltemperatur Winter ist im Raumtyp spezifiziert.", // Todo nur in bestimmte raumtypen.
+        "info" => "Solltemperatur Sommer ist 24°C +-1°C. Solltemperatur Winter ist im Raumtyp spezifiziert.",
         "optional_comment_label" => "Solltemperatur und Schwankung angeben (x°C +-y°C)"
     ],
 
@@ -216,6 +216,14 @@ $formFields = [
         "label" => "Besondere Anforderungen an die Luftfeuchtigkeit?",
         "info" => "",
         "optional_comment_label" => "Soll und Schwankung angeben (x% +-y%)"
+    ],
+
+    [
+        "type" => "textarea",
+        "kategorie" => "",
+        "name" => "allgemeiner_kommentar",
+        "label" => "Kommentar zum Raum",
+        "default_value" => "",
     ],
 
 ];

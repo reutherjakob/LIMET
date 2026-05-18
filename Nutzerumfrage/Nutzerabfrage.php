@@ -305,6 +305,11 @@ foreach ($labortypen as $lt) {
 
 
         $("#raeumeTable tbody").on("click", "tr", function () {
+            document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function (el) {
+                const popover = bootstrap.Popover.getInstance(el);
+                if (popover) popover.hide();
+            });
+
             $("#formContainer").html("");
             let roomID = $(this).data("id");
             let raumnr = $(this).find('td').eq(0).text().trim();
@@ -330,7 +335,6 @@ foreach ($labortypen as $lt) {
                     $("#formContainer").html(response);
 
                     reinitPopovers(document.getElementById('formContainer'));
-
                     loadFormData(roomID);
                     $('[name="roomID"]').val(roomID);
                     $('[name="raumnr"]').val(raumnr);
@@ -339,6 +343,7 @@ foreach ($labortypen as $lt) {
                     $('[name="ebene"]').val(ebene);
                     $('[name="raumkategorieAbfrage"]').val(raumkategoriename);
                     $('[name="nf"]').val(nf);
+
 
                 },
                 error: function () {
@@ -425,6 +430,16 @@ foreach ($labortypen as $lt) {
             }, 'json');
         }
 
+        document.addEventListener('click', function (event) {
+            document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function (el) {
+                const popover = bootstrap.Popover.getInstance(el);
+                if (!popover) return;
+                const popoverElement = document.querySelector('.popover');
+                if (popoverElement && !el.contains(event.target) && !popoverElement.contains(event.target)) {
+                    popover.hide();
+                }
+            });
+        });
     }); // Ende document.ready
 
 
