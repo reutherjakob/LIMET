@@ -16,6 +16,14 @@ if ($deviceID !== 0) {
     $deviceIDSql = "NULL";
 }
 
+$roombookID = getPostInt('roombookID', 0);
+
+if ($roombookID === 0) {
+    echo "Fehler: Kein Raum ausgewählt!";
+    exit;
+}
+
+
 $sql = "INSERT INTO `LIMET_RB`.`tabelle_bestandsdaten` 
     (`Inventarnummer`,
      `Seriennummer`,
@@ -26,7 +34,7 @@ $sql = "INSERT INTO `LIMET_RB`.`tabelle_bestandsdaten`
     VALUES (?, ?, ?, ?, $deviceIDSql, ?)";
 
 $stmt = $mysqli->prepare($sql);
-$stmt->bind_param("sssis", $inventarNr, $serienNr, $anschaffungsJahr, $_SESSION["roombookID"], $currentPlace);
+$stmt->bind_param("sssis", $inventarNr, $serienNr, $anschaffungsJahr,$roombookID, $currentPlace);
 
 if ($stmt->execute()) {
     echo "Bestand hinzugefügt!";

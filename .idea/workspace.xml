@@ -5,13 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Neue Seite: Geräte- und Wartungspreise Liste">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getRoomElementsDetailed1.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomElementsDetailed1.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects.php" beforeDir="false" afterPath="$PROJECT_DIR$/projects.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookSpecifications_New.js" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_New.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookSpecifications_copyRoomModal.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_copyRoomModal.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_devicePrice.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_devicePrice.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IFCQuest/Variantmerge.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/Variantmerge.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IFCQuest/api_compare_elements.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/api_compare_elements.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IFCQuest/api_merge_variants.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/api_merge_variants.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IFCQuest/element_compare.js" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/element_compare.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/Raumkategorien.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/Raumkategorien.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/form_fields_forNutzergruppe1.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/form_fields_forNutzergruppe1.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/raumtyp_resolver.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/raumtyp_resolver.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/raumtypen.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/raumtypen.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/spargelfeld_nutzerabfrage_1.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/spargelfeld_nutzerabfrage_1.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/addBestand.php" beforeDir="false" afterPath="$PROJECT_DIR$/addBestand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/get_rb_specs_data.php" beforeDir="false" afterPath="$PROJECT_DIR$/get_rb_specs_data.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookBestandEintragen.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookBestandEintragen.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookSpecifications_constDeclarations.js" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_constDeclarations.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +44,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="werq_14_04_26" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -1061,6 +1068,11 @@
           <url>file://$PROJECT_DIR$/getLotAenderungen.php</url>
           <line>81</line>
           <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/Nutzerumfrage/save_room_data.php</url>
+          <line>81</line>
+          <option name="timeStamp" value="22" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/getFilteredLots.php</url>

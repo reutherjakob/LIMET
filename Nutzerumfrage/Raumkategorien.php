@@ -19,7 +19,7 @@ require_once "../Nutzerumfrage/raumtypen.php"; // lädt $labortypen
 $column_config = [
     'id' => ['label' => 'ID', 'suffix' => '', 'hidden' => false, 'initially_hidden' => true],
     'bezeichnung' => ['label' => 'Raumbez.', 'suffix' => '', 'hidden' => false],
-    'beschreibung' => ['label' => 'Tätigkeiten', 'suffix' => '', 'hidden' => false],
+    'beschreibung' => ['label' => 'Tätigkeiten', 'suffix' => '', 'hidden' => true],
     'achsen' => ['label' => 'Layout [Achsen]', 'suffix' => '', 'hidden' => false],
     'flaeche_min' => ['label' => 'Mind. Flächenbedarf [m²]', 'suffix' => '', 'hidden' => false, 'initially_hidden' => true],
     'flaeche_max' => ['label' => 'Max. Flächenbedarf [m²]', 'suffix' => '', 'hidden' => false, 'initially_hidden' => true],
@@ -42,7 +42,7 @@ $column_config = [
     'verdunkelung' => ['label' => 'Verdunkelung erforderlich', 'suffix' => '', 'hidden' => false],
 
     'luftwechsel' => ['label' => 'Luftwechselrate', 'suffix' => '', 'hidden' => false, 'initially_hidden' => true],
-    'luftwechsel_rate_m3_je_m2h' => ['label' => 'Luftwechselrate', 'suffix' => '', 'hidden' => false],
+    'luftwechsel_rate_m3_je_m2h' => ['label' => 'Luftwechselrate [m3/m2h]', 'suffix' => '', 'hidden' => false],
     'luftwechsel_typ' => ['label' => 'Luftwechsel Typ', 'suffix' => '', 'hidden' => false],
     'luftwechsel_norm' => ['label' => 'Lüftungsnorm', 'suffix' => '', 'hidden' => false],
     'luftwechsel_filter' => ['label' => 'Luft Filter', 'suffix' => '', 'hidden' => false],
@@ -90,13 +90,13 @@ $column_config = [
     //  'punktabsaugungen_pro_einheit' => ['label' => 'Punktabsaugungen Bezugsgröße', 'suffix' => '', 'hidden' => false],
     //  'punktabsaugungen_nach_geraeten' => ['label' => 'Punktabsaugungen nach Geräteanzahl', 'suffix' => '', 'hidden' => false],
 
-    'labormoebel' => ['label' => 'Labormöbel', 'suffix' => '', 'hidden' => false],
-    'sicherheitsschraenke' => ['label' => 'Sicherheitsschränke', 'suffix' => '', 'hidden' => false],
+    'labormoebel' => ['label' => 'Labormöbel', 'suffix' => '', 'hidden' => true],
+    'sicherheitsschraenke' => ['label' => 'Sicherheitsschränke', 'suffix' => '', 'hidden' => true],
     'sicherheitsschrank_saeure_lauge' => ['label' => 'Säure/Laugen-Schrank (mit Abluft)', 'suffix' => '', 'hidden' => false],
     'sicherheitsschrank_brennbar' => ['label' => 'Sicherheitsschrank brennbare Fl.', 'suffix' => '', 'hidden' => false],
 
 
-    'sicherheitsausstattung' => ['label' => 'Sicherheitsausstattung', 'suffix' => '', 'hidden' => false],
+    'sicherheitsausstattung' => ['label' => 'Sicherheitsausstattung', 'suffix' => '', 'hidden' => true],
     'sicherheit_notdusche' => ['label' => 'Notdusche', 'suffix' => '', 'hidden' => false],
     'sicherheit_augendusche' => ['label' => 'Augendusche (leitungsgebunden)', 'suffix' => '', 'hidden' => false],
     'sicherheit_notruf' => ['label' => 'Notrufmöglichkeit', 'suffix' => '', 'hidden' => false],
@@ -104,7 +104,7 @@ $column_config = [
 
 
     'sonstige_anforderungen' => ['label' => 'Sonstige Anforderungen', 'suffix' => '', 'hidden' => false],
-    'anmerkungen' => ['label' => 'Anmerkungen', 'suffix' => '', 'hidden' => false],
+    'anmerkungen' => ['label' => 'Anmerkungen', 'suffix' => '', 'hidden' => true],
 ];
 // =========================================================
 
