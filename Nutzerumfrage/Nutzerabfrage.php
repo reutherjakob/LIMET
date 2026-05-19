@@ -56,6 +56,21 @@ while ($row = $result->fetch_assoc()) {
     $raeume[] = $row;
 }
 $stmt->close();
+
+
+$savedRoomIDs = [];
+$sqlSaved = "SELECT roomID FROM tabelle_room_requirements_from_user 
+             WHERE roomID IN (SELECT idTABELLE_Räume FROM tabelle_räume WHERE tabelle_projekte_idTABELLE_Projekte = ?)";
+if ($stmtSaved = $mysqli->prepare($sqlSaved)) {
+    $stmtSaved->bind_param("i", $projekt_id);
+    $stmtSaved->execute();
+    $resSaved = $stmtSaved->get_result();
+    while ($row = $resSaved->fetch_assoc()) {
+        $savedRoomIDs[] = (int)$row['roomID'];
+    }
+    $stmtSaved->close();
+}
+
 $mysqli->close();
 
 
@@ -178,20 +193,14 @@ foreach ($labortypen as $lt) {
     function reinitPopovers(container = document) {
         container.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
             bootstrap.Popover.getOrCreateInstance(el, {trigger: 'manual', container: 'body'});
-        });
-        document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
             el.addEventListener('click', function (e) {
                 e.preventDefault();
                 const popover = bootstrap.Popover.getOrCreateInstance(el);
-
-                if (popover._isShown()) {  // Bootstrap 5.3+ private method, alternatively check popover tip class
+                if (popover._isShown()) {
                     popover.hide();
                 } else {
-                    // Hide others (optional)
                     document.querySelectorAll('[data-bs-toggle="popover"]').forEach(otherEl => {
-                        if (otherEl !== el) {
-                            bootstrap.Popover.getOrCreateInstance(otherEl).hide();
-                        }
+                        if (otherEl !== el) bootstrap.Popover.getOrCreateInstance(otherEl).hide();
                     });
                     popover.show();
                 }
@@ -199,11 +208,21 @@ foreach ($labortypen as $lt) {
         });
     }
 
+    document.addEventListener('click', function (event) {
+        const popoverElement = document.querySelector('.popover');
+        if (!popoverElement) return;
+        document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
+            if (!el.contains(event.target) && !popoverElement.contains(event.target)) {
+                bootstrap.Popover.getInstance(el)?.hide();
+            }
+        });
+    });
+
     $(document).ready(function () {
         const csrfToken = "<?php echo csrf_token(); ?>";
         reinitPopovers();
-
-        $('#raeumeTable').DataTable({
+        const savedRoomIDs = <?= json_encode($savedRoomIDs) ?>;
+        const dt = $('#raeumeTable').DataTable({
             paging: true,           // Enable or disable pagination (true/false)
             pageLength: 25,         // Number of rows per page
             lengthChange: true,     // Allow the user to change the number of rows shown
@@ -253,7 +272,27 @@ foreach ($labortypen as $lt) {
                     $('.dt-search label').remove();
                     $('.dt-search').children().removeClass('form-control form-control-sm').addClass("d-flex align-items-center").appendTo('#RDPTCH');
                 }, 300);
+
+
+                $('#raeumeTable tbody tr').each(function () {
+                    const roomID = parseInt($(this).data('id'));
+                    if (savedRoomIDs.includes(roomID)) {
+                        $(this).css('background-color', '#d4edda');
+                    }
+                });
+
+
+
             }
+        });
+
+        dt.on('draw', function () {
+            $('#raeumeTable tbody tr').each(function () {
+                const roomID = parseInt($(this).data('id'));
+                if (savedRoomIDs.includes(roomID)) {
+                    $(this).css('background-color', '#d4edda');
+                }
+            });
         });
 
         $(document).off('change', '[data-select-comment-target]').on('change', '[data-select-comment-target]', function () {
@@ -270,36 +309,6 @@ foreach ($labortypen as $lt) {
                 wrap.slideUp(150, function () {
                     wrap.removeClass('d-flex');
                 });
-            }
-        });
-
-
-        $(document).off('click', '[data-yesno-toggle]').on('click', '[data-yesno-toggle]', function () {
-            const btn = this;
-            const name = btn.id.replace('_toggle', '');
-            const hidden = document.getElementById(name);
-            const isDefaultYes = btn.dataset.defaultYes === '1';
-            const kommentarWrap = document.getElementById(name + '_kommentar_wrap');
-
-            const states = isDefaultYes ? ['1', '0', 'unbekannt'] : ['0', '1', 'unbekannt'];
-            const current = hidden.value;
-            const next = states[(states.indexOf(current) + 1) % states.length];
-
-            hidden.value = next;
-            if (next === '1') {
-                btn.textContent = 'Ja';
-                btn.className = 'btn btn-outline-success text-nowrap';
-            } else if (next === '0') {
-                btn.textContent = 'Nein';
-                btn.className = 'btn btn-outline-primary text-nowrap';
-            } else {
-                btn.textContent = 'unbekannt';
-                btn.className = 'btn btn-outline-secondary text-nowrap';
-            }
-            if (kommentarWrap) {
-                const shouldShow = next === kommentarWrap.dataset.showIf;
-                kommentarWrap.style.display = shouldShow ? '' : 'none';
-                kommentarWrap.className = shouldShow ? 'd-flex align-items-center mt-1' : 'align-items-center mt-1';
             }
         });
 
@@ -343,8 +352,6 @@ foreach ($labortypen as $lt) {
                     $('[name="ebene"]').val(ebene);
                     $('[name="raumkategorieAbfrage"]').val(raumkategoriename);
                     $('[name="nf"]').val(nf);
-
-
                 },
                 error: function () {
                     $("#formContainer").html("<p class='text-danger'>Formular konnte nicht geladen werden.</p>");
@@ -355,6 +362,9 @@ foreach ($labortypen as $lt) {
 
         $(document).on('submit', '#roomParameterForm', function (e) {
             e.preventDefault();
+            const $form = $(this);   // <-- hierher
+            const roomID = $form.find('[name="roomID"]').val();
+
             $.ajax({
                 url: 'save_room_data.php', // war: spargelfeld_save.php
                 type: 'POST',
@@ -364,7 +374,10 @@ foreach ($labortypen as $lt) {
                     if (response.status === 'success') {
                         // z.B. kurzes visuelles Feedback statt alert:
                         $('#saveBtn').text('✓ Gespeichert').removeClass('btn-outline-success').addClass('btn-success');
-                        setTimeout(() => $('#saveBtn').text('Anforderungen speichern').removeClass('btn-success').addClass('btn-outline-success'), 2000);
+                        setTimeout(() => $('#saveBtn').text('Anforderungen speichern').addClass('far fa-save btn-success'), 2000);
+                        // Im success-Handler von save_room_data (wo du aktuell z.B. eine Erfolgsmeldung zeigst):
+
+                        $('#raeumeTable tbody tr[data-id="' + roomID + '"]').css('background-color', '#d4edda');
                     } else {
                         alert('Fehler: ' + response.message);
                     }
@@ -430,16 +443,7 @@ foreach ($labortypen as $lt) {
             }, 'json');
         }
 
-        document.addEventListener('click', function (event) {
-            document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function (el) {
-                const popover = bootstrap.Popover.getInstance(el);
-                if (!popover) return;
-                const popoverElement = document.querySelector('.popover');
-                if (popoverElement && !el.contains(event.target) && !popoverElement.contains(event.target)) {
-                    popover.hide();
-                }
-            });
-        });
+
     }); // Ende document.ready
 
 

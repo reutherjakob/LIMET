@@ -50,7 +50,7 @@ init_page_serversides("x");
 <div class="container-fluid">
     <div class="card">
         <div class="card-header d-flex justify-content-between">
-            Lieferanten-Kontakt e
+            Lieferanten Kontakte
             <div class="d-flex align-items-center" id="cardHeader1">
                 <input type='button' id='addContactModalButton' class='btn btn-success btn-sm me-1'
                        value='Lieferantenkontakt hinzufügen' data-bs-toggle='modal'

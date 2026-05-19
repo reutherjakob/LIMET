@@ -18,22 +18,24 @@ $formFields = [
     [
         "type" => "select",
         "options" => [
-            "Nein" => "Nein",
-            "Ja" => "Ja",
+            0 => "Nein",
+            1 => "Ja",
         ],
+        "default_value" => 0,
         "kategorie" => "Raum",
         "name" => "doppelfluegeltuer",
-        "label" => "Doppelflügeltür (1,8m) erforderlich?",
-        "info" => "Standard Breite ist mind. 1m.",
-        'default_value' => 'Nein',
+        "label" => "Ist eine Doppelflügeltür (1,8m) zwingend erforderlich?",
+        "info" => "Standard Breite lt. Raumtypen ist mind. 1m.",
     ],
+
 
     [
         "type" => "select",
         "options" => [
-            "Nein" => "Nein",
-            "Ja" => "Ja",
-        ], 'default_value' => 'Nein',
+            0 => "Nein",
+            1 => "Ja",
+        ],
+        "default_value" => 0,
         "kategorie" => "Raum",
         "name" => "vibrationsempfindlich_bodenstehend",
         "label" => "Sind Geräte in Verwendung, welche vibrationsempfindlich und bodenstehend sind?",
@@ -46,17 +48,15 @@ $formFields = [
     [
         "type" => "select",
         "options" => [
-            "Nein" => "Nein",
-            "Ja" => "Ja",
-        ], "default_value" => "Nein",
+            0 => "Nein",
+            1 => "Ja",
+        ],
+        "default_value" => 0,
         "kategorie" => "Raum",
         "name" => "explosionsschutz",
-        "label" => "Ist Explosionsschutz im gesamten Raum erforderlich?",
-        # "options" => ["Nein" => "Nein", "Zone 0" => "Zone 0", "Zone 1" => "Zone 1", "Zone 2" => "Zone 2",],
-
+        "label" => "Ist Explosionsschutz für den gesamten Raum erforderlich?",
         "info" => "",
         //  "Zone 0 – Explosionsgefährliche Atmosphäre ständig/langzeitig vorhanden; Zone 1 – Gelegentliches Auftreten im Normalbetrieb; Zone 2 – Seltenes/kurzzeitiges Auftreten (nur bei Störungen)",
-        //'optional_comment_label' => "Falls bekannt: Mit welcher Abluftmenge?"
     ],
 
 
@@ -64,7 +64,14 @@ $formFields = [
         "type" => "select",
         "kategorie" => "Ausstattung",
         "name" => "abluftwaescher",
-        "options" => [0 => "0", 1 => "1", 2 => "2", 3 => "3", 4 => "4"],
+        "options" =>
+            [0 => "0",
+                1 => "1",
+                2 => "2",
+                3 => "3",
+                4 => "4",
+                5 => "5",
+                6 => "6"],
         "label" => "Werden Abzüge mit Säurewäscher benötigt?",
         "default_value" => 0,
         "optional_comment_label" => "",
@@ -95,10 +102,10 @@ $formFields = [
     [
         "type" => "select",
         "options" => [
-            "Nein" => "Nein",
-            "Ja" => "Ja",
+            0 => "Nein",
+            1 => "Ja",
         ],
-        "default_value" => "Nein",
+        "default_value" => 0,
         "kategorie" => "HKLS",
         "name" => "DL",
         "label" => "Druckluft erforderlich? "
@@ -106,9 +113,9 @@ $formFields = [
     [
         "type" => "select",
         "options" => [
-            "Nein" => "Nein",
-            "Ja" => "Ja",
-        ], "default_value" => "Nein",
+            0 => "Nein",
+            1 => "Ja",
+        ], "default_value" => 0,
         "kategorie" => "HKLS",
         "name" => "N2",
         "label" => "Stickstoff erforderlich?"
@@ -116,10 +123,10 @@ $formFields = [
     [
         "type" => "select",
         "options" => [
-            "Nein" => "Nein",
-            "Ja" => "Ja",
+            0 => "Nein",
+            1 => "Ja",
         ],
-        "default_value" => "Nein",
+        "default_value" => 0,
         "kategorie" => "HKLS",
         "name" => "Vakuum",
         "label" => "Vakuum Versorgung erforderlich?"
@@ -132,7 +139,7 @@ $formFields = [
         "kategorie" => "Abluft",
         "name" => "raumabluft_besonders",
         "label" => "Besondere Anforderungen an die Raumabluft?",
-        "options" => ["Nein" => "Nein", "Staubfilter" => "Staubfilter", "HEPA" => "HEPA Filter", "Veraschung" => "Veraschung",],
+        "options" => ["Nein" => "Nein", "Staubfilter" => "Staubfilter", "HEPA" => "HEPA Filter", "Veraschung" => "Veraschung"],
         "default_value" => "Nein"
     ],
 
@@ -148,26 +155,27 @@ $formFields = [
     [
         "type" => "select",
         "options" => [
-            "Nein" => "Nein",
-            "Ja" => "Ja",
+            0 => "Nein",
+            1 => "Ja",
         ],
+        "default_value" => 0,
         "kategorie" => "HKLS",
         "name" => "nutzwasser",
         "label" => "Ist Nutzwasser erforderlich?",
         "info" => "(Brunnen-)Wasser, welches nicht die Qualität von Trinkwasser aufweist.",
-        "default_value" => "Nein",
+
         "optional_comment_label" => "Wofür wird dieses genutzt?",
     ],
 
     [
         "type" => "select",
         "options" => [
-            "Nein" => "Nein",
-            "Ja" => "Ja",
+            0 => "Nein",
+            1 => "Ja",
         ],
+        "default_value" => 0,
         "kategorie" => "HKLS",
         "name" => "kuehlwasser",
-        "default_value" => "Nein",
         "label" => "Ist Kühlwasser für Geräte erforderlich?",
         //"info" => "",
         "optional_comment_label" => "Falls bekannt: Menge Spitzenentnahme, Stundenverbrauch angeben."
@@ -187,18 +195,19 @@ $formFields = [
 
         ],
         "info" => "Wasser, welches in Sedimentationsanlage oder Neutralistionsanlage geleitet werden muss.",
-        "optional_comment_label" => "Wenn 'Anderes' ausgewählt wurde, bitte spezifizieren"
+        "optional_comment_label" => "Wenn `Anderes` ausgewählt wurde, bitte spezifizieren"
     ],
 
-    [   // was mit klimakammern ?
+    [
         "type" => "select",
         "options" => [
-            "Nein" => "Nein",
-            "Ja" => "Ja",
+            0 => "Nein",
+            1 => "Ja",
         ],
+        "default_value" => 0,
         "kategorie" => "HKLS",
         "name" => "raumtemp",
-        "default_value" => "Nein",
+
         "label" => "Besondere Anforderungen an die Raumtemperatur?",
         "info" => "Solltemperatur Sommer ist 24°C +-1°C. Solltemperatur Winter ist im Raumtyp spezifiziert.",
         "optional_comment_label" => "Solltemperatur und Schwankung angeben (x°C +-y°C)"
@@ -207,12 +216,12 @@ $formFields = [
     [
         "type" => "select",
         "options" => [
-            "Nein" => "Nein",
-            "Ja" => "Ja",
+            0 => "Nein",
+            1 => "Ja",
         ],
+        "default_value" => 0,
         "kategorie" => "HKLS",
         "name" => "luftf",
-        "default_value" => "Nein",
         "label" => "Besondere Anforderungen an die Luftfeuchtigkeit?",
         "info" => "",
         "optional_comment_label" => "Soll und Schwankung angeben (x% +-y%)"
