@@ -4,12 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Neue Seite: Geräte- und Wartungspreise Liste">
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Fragekatalog angepasst">
+      <change afterPath="$PROJECT_DIR$/Nutzerumfrage/raumtyp_resolver.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects.php" beforeDir="false" afterPath="$PROJECT_DIR$/projects.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookElements.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookElements.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookStandortVerwendung.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookStandortVerwendung.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_devicePrice.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_devicePrice.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/Nutzerabfrage.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/Nutzerabfrage.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/form_fields_forNutzergruppe1.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/form_fields_forNutzergruppe1.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/spargelfeld_nutzerabfrage_1.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/spargelfeld_nutzerabfrage_1.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +36,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="werq_14_04_26" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -102,7 +103,7 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;database.data.extractors.current.export.id&quot;: &quot;Excel (xlsx)&quot;,
     &quot;database.data.extractors.current.id&quot;: &quot;Tab-separated (TSV)_id&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;#76 on IFC__element__import&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;werq__6__5__26&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/WolfgangFuchsLIMET/Documents/NetBeansProjects/LIMET-FX&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -131,11 +132,11 @@
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\Besprechungsansicht\controllers" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\Nutzerumfrage" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\IFCQuest" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\utils" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\_offene_projekte" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\unused" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -571,14 +572,7 @@
       <workItem from="1777384434655" duration="203000" />
       <workItem from="1777465421328" duration="64000" />
       <workItem from="1777964647831" duration="13302000" />
-    </task>
-    <task id="LOCAL-00187" summary="BUGFIXES:&#10;- Kosten PDFs &#10;- Element Detail&#10;&#10;+ Losliste erweitert&#10;+ preise ändern btn">
-      <option name="closed" value="true" />
-      <created>1770281040879</created>
-      <option name="number" value="00187" />
-      <option name="presentableId" value="LOCAL-00187" />
-      <option name="project" value="LOCAL" />
-      <updated>1770281040879</updated>
+      <workItem from="1778080567096" duration="379000" />
     </task>
     <task id="LOCAL-00188" summary="BUGFIXES:&#10;- Kosten PDFs &#10;- Element Detail&#10;&#10;+ Losliste erweitert&#10;+ preise ändern btn">
       <option name="closed" value="true" />
@@ -964,7 +958,15 @@
       <option name="project" value="LOCAL" />
       <updated>1777978682295</updated>
     </task>
-    <option name="localTasksCounter" value="236" />
+    <task id="LOCAL-00236" summary="Fragekatalog angepasst">
+      <option name="closed" value="true" />
+      <created>1779115618043</created>
+      <option name="number" value="00236" />
+      <option name="presentableId" value="LOCAL-00236" />
+      <option name="project" value="LOCAL" />
+      <updated>1779115618043</updated>
+    </task>
+    <option name="localTasksCounter" value="237" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -994,7 +996,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Merge remote-tracking branch 'origin/Bugfixes-15-9-2025' into Bugfixes-01-2026&#10;&#10;# Conflicts:&#10;#&#9;PDFs/pdf_createBauangabenBericht_A3Qeer_1.php" />
     <MESSAGE value="Merge remote-tracking branch 'origin/Bugfixes-15-9-2025' into Bugfixes-01-2026" />
     <MESSAGE value="BUGFIXES:&#10;- Kosten PDFs &#10;- Element Detail&#10;&#10;+ Losliste erweitert&#10;+ preise ändern btn" />
     <MESSAGE value="Bugfixes.&#10;TenderLotsTodos." />
@@ -1019,7 +1020,8 @@
     <MESSAGE value="IFC Quest - import seems to work" />
     <MESSAGE value="IFC Quest - import seems to work.&#10;&#10;Neue Seite: Geräte- und Wartungspreise Liste (&amp;Navbar).&#10;Bugfix Tender Lots." />
     <MESSAGE value="Neue Seite: Geräte- und Wartungspreise Liste" />
-    <option name="LAST_COMMIT_MESSAGE" value="Neue Seite: Geräte- und Wartungspreise Liste" />
+    <MESSAGE value="Fragekatalog angepasst" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fragekatalog angepasst" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

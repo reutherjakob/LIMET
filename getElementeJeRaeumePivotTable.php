@@ -95,6 +95,10 @@ $budgetJoinSQL = ($projectID === 86)
     ? " LEFT JOIN tabelle_projektbudgets tpb_filter
             ON tpb_filter.idtabelle_projektbudgets = re.tabelle_projektbudgets_idtabelle_projektbudgets"
     : "";
+$dummyIDs = [2032,
+    2033,
+    2034,
+    2035];$dummyIDsSQL = implode(',', array_map('intval', $dummyIDs));
 
 $sqlElemIDs = "
     SELECT DISTINCT e.idTABELLE_Elemente, re.tabelle_Varianten_idtabelle_Varianten
@@ -104,7 +108,8 @@ $sqlElemIDs = "
       $budgetJoinSQL
      WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
        AND re.Standort = 1
-       AND r.idTABELLE_Räume IN ($roomPlaceholders)
+       AND r.idTABELLE_Räume IN ($roomPlaceholders) 
+       AND e.idTABELLE_Elemente IN ( $dummyIDsSQL)
        $budgetFilterSQL";
 
 $elemParams = array_merge([$projectID], $roomIDs);
@@ -203,7 +208,8 @@ while ($row = $res->fetch_assoc()) {
 }
 
 // --- Helper function to get label for element + variant ---
-function getElementLabel($conn, int $elementID, ?int $variantID): string {
+function getElementLabel($conn, int $elementID, ?int $variantID): string
+{
     $sqlElem = "SELECT ElementID, Bezeichnung FROM tabelle_elemente WHERE idTABELLE_Elemente = ?";
     $stmt = $conn->prepare($sqlElem);
     $stmt->bind_param("i", $elementID);

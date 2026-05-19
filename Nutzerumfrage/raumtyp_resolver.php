@@ -30,12 +30,6 @@ function resolveFieldOverrides(array $raumtyp, string $bauabschnitt = '', string
     $freetext = [];
 
 
-    $zeigeTueren = ($bauabschnitt === 'A') || ($ebene === 'UG');
-    if (!$zeigeTueren) {
-        $hidden[] = 'doppelfluegeltuer';
-    }
-
-
     if (($raumtyp['n2'] ?? '0') === '1') $hidden[] = 'N2';
     if (($raumtyp['dl'] ?? '0') === '1') $hidden[] = 'DL';
 
@@ -48,29 +42,32 @@ function resolveFieldOverrides(array $raumtyp, string $bauabschnitt = '', string
         $hidden[] = 'spezialgas';
     }
 
-    $lagerIds = ['26', '27', '28', '29', '30', '31'];
-    if (in_array((string)($raumtyp['id'] ?? ''), $lagerIds)) {
-        $hidden[] = 'abluftwaescher';
-        $hidden[] = 'N2';
-        $hidden[] = 'DL';
-        $hidden[] = 'Vakuum';
+    $hiddenByRaumtyp = [
+        '1'  => ['abluftwaescher', 'raumabluft_besonders'],
+        '12' => ['abluftwaescher', 'kuehlwasser'],
+        '13' => ['vibrationsempfindlich_bodenstehend', 'explosionsschutz', 'abluftwaescher', 'kuehlwasser', 'raumzuluft_besonders'],
+        '16' => ['abluftwaescher', 'N2', 'DL', 'Vakuum', 'vibrationsempfindlich_bodenstehend', 'raumzuluft_besonders', 'raumabluft_besonders', 'kuehlwasser', 'spezialabwasser', 'nutzwasser', 'explosionsschutz'],
+        '22' => ['vibrationsempfindlich_bodenstehend', 'explosionsschutz', 'abluftwaescher', 'raumzuluft_besonders', 'raumabluft_besonders', 'kuehlwasser'],
+        '23' => ['abluftwaescher', 'explosionsschutz', 'nutzwasser', 'kuehlwasser', 'spezialabwasser', 'vibrationsempfindlich_bodenstehend'],
+        '24' => ['abluftwaescher', 'explosionsschutz', 'nutzwasser', 'spezialabwasser', 'raumzuluft_besonders', 'raumabluft_besonders', 'vibrationsempfindlich_bodenstehend'],
+        '25' => ['vibrationsempfindlich_bodenstehend', 'explosionsschutz', 'abluftwaescher', 'raumzuluft_besonders', 'raumabluft_besonders', 'kuehlwasser', 'spezialabwasser', 'nutzwasser', 'luftf', 'raumtemp'],
+        '26' => ['abluftwaescher', 'vibrationsempfindlich_bodenstehend', 'raumzuluft_besonders', 'raumabluft_besonders', 'spezialabwasser', 'nutzwasser', 'explosionsschutz'],
+        '27' => ['abluftwaescher', 'explosionsschutz', 'vibrationsempfindlich_bodenstehend', 'raumzuluft_besonders', 'raumabluft_besonders', 'spezialabwasser', 'nutzwasser'],
+        '28' => ['abluftwaescher', 'explosionsschutz', 'vibrationsempfindlich_bodenstehend', 'raumzuluft_besonders', 'raumabluft_besonders', 'spezialabwasser', 'nutzwasser'],
+        '29' => ['abluftwaescher', 'N2', 'DL', 'Vakuum', 'vibrationsempfindlich_bodenstehend', 'raumzuluft_besonders', 'kuehlwasser', 'spezialabwasser', 'nutzwasser'],
+        '30' => ['abluftwaescher', 'N2', 'DL', 'Vakuum', 'vibrationsempfindlich_bodenstehend', 'raumzuluft_besonders', 'raumabluft_besonders', 'kuehlwasser', 'spezialabwasser', 'nutzwasser', 'luftf', 'raumtemp'],
+        '31' => ['abluftwaescher', 'N2', 'DL', 'Vakuum', 'vibrationsempfindlich_bodenstehend', 'kuehlwasser', 'spezialabwasser', 'nutzwasser', 'explosionsschutz'],
+        '32' => ['abluftwaescher', 'N2', 'DL', 'Vakuum', 'explosionsschutz', 'vibrationsempfindlich_bodenstehend', 'raumzuluft_besonders', 'raumabluft_besonders', 'kuehlwasser', 'spezialabwasser', 'nutzwasser'],
+        '33' => ['abluftwaescher', 'N2', 'DL', 'Vakuum', 'explosionsschutz', 'vibrationsempfindlich_bodenstehend', 'raumzuluft_besonders', 'raumabluft_besonders', 'kuehlwasser', 'spezialabwasser', 'nutzwasser'],
+        '34' => ['abluftwaescher', 'N2', 'DL', 'Vakuum'],
+        '35' => ['abluftwaescher', 'N2', 'DL', 'Vakuum'],
+    ];
+
+    $id = (string)($raumtyp['id'] ?? '');
+    if (isset($hiddenByRaumtyp[$id])) {
+        $hidden = array_merge($hidden, $hiddenByRaumtyp[$id]);
     }
 
-    $archivIds = ['32', '33'];
-    if (in_array((string)($raumtyp['id'] ?? ''), $archivIds)) {
-        $hidden[] = 'abluftwaescher';
-        $hidden[] = 'N2';
-        $hidden[] = 'DL';
-        $hidden[] = 'Vakuum';
-    }
-
-    $bueroIds = ['34', '35'];
-    if (in_array((string)($raumtyp['id'] ?? ''), $bueroIds)) {
-        $hidden[] = 'abluftwaescher';
-        $hidden[] = 'N2';
-        $hidden[] = 'DL';
-        $hidden[] = 'Vakuum';
-    }
 
     return [
         'hidden' => $hidden,
@@ -91,7 +88,6 @@ function resolveFieldOverrides(array $raumtyp, string $bauabschnitt = '', string
 function applyRaumtypOverrides(array $formFields, ?array $raumtyp, string $bauabschnitt = '', string $ebene = ''): array
 {
 
-    // Türen-Logik läuft IMMER, unabhängig vom Raumtyp
     $overrides = resolveFieldOverrides($raumtyp ?? [], $bauabschnitt, $ebene);
 
     $hidden = $overrides['hidden'];
@@ -100,7 +96,6 @@ function applyRaumtypOverrides(array $formFields, ?array $raumtyp, string $bauab
 
 
     if (!$raumtyp) {
-        // Nur hidden anwenden (Türen), den Rest überspringen
         foreach ($formFields as &$field) {
             $name = $field['name'] ?? null;
             if (!$name) continue;
@@ -137,6 +132,25 @@ function applyRaumtypOverrides(array $formFields, ?array $raumtyp, string $bauab
             }
         }
 
+        // Säurewäscher-Optionen dynamisch an Abzüge-Anzahl des Raumtyps anpassen
+        if (($field['name'] ?? '') === 'abluftwaescher') {
+            $abzMax = (int)($raumtyp['abzuege_anzahl_max'] ?? 6);
+            if ($abzMax === 0) {
+                // Keine Abzüge → Säurewäscher ausblenden
+                $field['_type_original'] = $field['type'];
+                $field['type'] = 'texthidden';
+                $field['default_value'] = 0;
+            } else {
+                // Options: immer 0 bis max
+                $newOptions = [];
+                for ($i = 0; $i <= $abzMax; $i++) {
+                    $newOptions[$i] = (string)$i;
+                }
+                $field['options'] = $newOptions;
+                // Default = min (User startet bei Minimum, kann aber auf 0 runter)
+                $field['default_value'] = 0;
+            }
+        }
 
         // 2. Ausblenden → texthidden, Wert bleibt erhalten für DB
         if (in_array($name, $hidden)) {

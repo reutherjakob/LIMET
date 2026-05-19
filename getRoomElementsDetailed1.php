@@ -246,23 +246,25 @@ include "modal_elementHistory.html";
     }
 
 
+    // Replace the $('#hideZeroRows').off(...).on(...) block inside initHideZero() with this:
+
     function initHideZero() {
+        // Remove any previously pushed filter to avoid duplicates
         $.fn.dataTable.ext.search = $.fn.dataTable.ext.search.filter(fn => fn !== hideZeroFilter);
-        if ($.fn.dataTable.isDataTable('#tableRoomElements')) {
-            $('#tableRoomElements').DataTable().destroy(true);
-            $('#tableRoomElements').empty();
-        }
         $.fn.dataTable.ext.search.push(hideZeroFilter);
         const hideZero = localStorage.getItem('hideZeroSetting') === 'true';
-        $('#hideZeroRows').prop('checked', hideZero);
-        toggleHideZeroIcon(hideZero);
-        $('#hideZeroRows').off('change.hideZero').on('change.hideZero', function () {
-            localStorage.setItem('hideZeroSetting', this.checked ? 'true' : 'false');
-            toggleHideZeroIcon(this.checked);
+        $(document).off('change.hideZero', '#hideZeroRows').on('change.hideZero', '#hideZeroRows', function () {
+            const checked = this.checked;
+            localStorage.setItem('hideZeroSetting', checked ? 'true' : 'false');
+            toggleHideZeroIcon(checked);
             if (tableRoomElements) {
                 tableRoomElements.draw();
             }
         });
+        setTimeout(() => {
+            $('#hideZeroRows').prop('checked', hideZero);
+            toggleHideZeroIcon(hideZero);
+        }, 200);
     }
 
     function toggleHideZeroIcon(hidden) {

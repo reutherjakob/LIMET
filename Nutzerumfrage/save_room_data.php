@@ -38,7 +38,8 @@ $stringFields = [
     'kuehlwasser_kommentar',
     'raumtemp_kommentar',
     'luftf_kommentar',
-    'spezialgas_kommentar'
+    'spezialgas_kommentar',
+    'allgemeiner_kommentar',
 ];
 
 $boolFields = [
@@ -81,11 +82,15 @@ foreach ($intFields as $f) {
     $data[$f] = isset($_POST[$f]) ? (int)$_POST[$f] : 0;
 }
 
+
 if (isset($_POST['raumabluft_besonders']) && is_array($_POST['raumabluft_besonders'])) {
     $data['raumabluft_besonders'] = implode(',', array_map('trim', $_POST['raumabluft_besonders']));
+} elseif (isset($_POST['raumabluft_besonders']) && $_POST['raumabluft_besonders'] !== '') {
+    $data['raumabluft_besonders'] = trim($_POST['raumabluft_besonders']);
 } else {
     $data['raumabluft_besonders'] = 'Nein';
 }
+
 
 if (isset($_POST['spezialgas']) && is_array($_POST['spezialgas'])) {
     $data['spezialgas'] = implode(',', array_map('trim', $_POST['spezialgas']));
@@ -109,8 +114,8 @@ $sql = "INSERT INTO tabelle_room_requirements_from_user
      kuehlwasser, kuehlwasser_kommentar,
      raumtemp, raumtemp_kommentar,
      luftf, luftf_kommentar,
-     username, created_at, spezialgas_kommentar)
-VALUES (?,?,?,?,?,?, ?, ?,?, ?, ?,?, ?, ?,?, ?,?, ?,?, ?,?,?, ?,?, ?,?, ?,?, ?,?,?)
+     username, created_at, spezialgas_kommentar, allgemeiner_kommentar)
+VALUES (?,?,?,?,?,?, ?, ?,?, ?, ?,?, ?, ?,?, ?,?, ?,?, ?,?,?, ?,?, ?,?, ?,?, ?,?,?, ? )
 ON DUPLICATE KEY UPDATE
     roomname                                     = VALUES(roomname),
     raumnr                                       = VALUES(raumnr),
@@ -141,7 +146,8 @@ ON DUPLICATE KEY UPDATE
     luftf_kommentar                              = VALUES(luftf_kommentar),
     username                                     = VALUES(username),
     created_at                                   = VALUES(created_at),
-        spezialgas_kommentar                                   = VALUES(spezialgas_kommentar)
+        spezialgas_kommentar                     = VALUES(spezialgas_kommentar),
+        allgemeiner_kommentar                    = VALUES(allgemeiner_kommentar)
     
     ";
 
@@ -159,7 +165,7 @@ foreach ($stringFields as $f) {
 if (!isset($data['spezialgas'])) $data['spezialgas'] = '';
 
 // i s s s d s  i  i  s  s  i    s   s  s s      i s  s s  i i i  i s  i s  i s  s s
-$stmt->bind_param('isssdsiississssisssiiiisisissss',
+$stmt->bind_param('isssdsiisiissssisssiiiisisisssss',
     $data['roomID'],                                        // i
     $data['roomname'],                                      // s
     $data['raumnr'],                                        // s
@@ -169,7 +175,7 @@ $stmt->bind_param('isssdsiississssisssiiiisisissss',
     $data['doppelfluegeltuer'],                             // i
     $data['vibrationsempfindlich_bodenstehend'],            // i
     $data['vibrationsempfindlich_bodenstehend_kommentar'],  // s
-    $data['explosionsschutz'],                              // s
+    $data['explosionsschutz'],                              //     i
     $data['abluftwaescher'],                                // i
     $data['abluftwaescher_kommentar'],                      // s
     $data['spezialgas'],                                    // s
@@ -190,7 +196,8 @@ $stmt->bind_param('isssdsiississssisssiiiisisissss',
     $data['luftf_kommentar'],                               // s
     $data['username'],                                      // s
     $data['created_at'],                                     // s
-    $data['spezialgas_kommentar']
+    $data['spezialgas_kommentar'],
+    $data['allgemeiner_kommentar']
 );
 
 if ($stmt->execute()) {

@@ -11,7 +11,7 @@ $sql_gp = "
         tp.idTABELLE_Preise,
         tp.Datum,
         tp.Quelle,
-        tp.Menge,
+        tp.Menge, 
         tp.Preis,
         tp.Nebenkosten,
         tp.Kommentar,

@@ -30,9 +30,7 @@ if (!$data) {
 }
 
 foreach ($data as $key => $val) {
-    if ($val === null) {
-        $data[$key] = 'unbekannt';
-    } elseif ($val === '0' || $val === '1') {
+   if ($val === '0' || $val === '1') {
         $data[$key] = (int)$val;
     }
 }

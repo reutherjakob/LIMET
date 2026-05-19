@@ -263,7 +263,7 @@
 
                         <p class="">
 
-                            <i class="fas fa-dice-d20 col-1"></i>
+                            <i class="fas fa-icons col-1"></i>
                             <a class="col-10" href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free"
                                target="_blank">Projekt Icons</a>
                         </p>

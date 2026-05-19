@@ -179,6 +179,7 @@ r.`HT_Entlueftung`,
 r.`PHY_Akustik_Schallgrad`,
 r.`EL_Laser 32A Stk`,
 r.`Raumtyp BH`, 
+r.Nutzfläche_Soll,
 COALESCE(el.element_mask, 0) AS element_mask   -- ← FIX: aus dem JOIN, nicht Subquery
 FROM tabelle_räume r 
 INNER JOIN tabelle_funktionsteilstellen f 

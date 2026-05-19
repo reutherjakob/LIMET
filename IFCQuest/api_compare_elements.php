@@ -327,6 +327,29 @@ if (!empty($vid_needed)) {
 }
 
 // ──────────────────────────────────────────────────────────────────
+// Step 2b: Load bezeichnungen for params NOT in PARAMETER_MAPPING
+// These are "ignore-params" stored in DB but unknown to the config.
+// Without this, they show as "Param #82" etc. in the ambiguous UI.
+// ──────────────────────────────────────────────────────────────────
+$all_stored_pids = [];
+foreach ($all_proj_params as $ep) foreach ($ep as $vid => $pmap) foreach ($pmap as $pid => $_) $all_stored_pids[] = (int)$pid;
+$all_stored_pids = array_unique($all_stored_pids);
+$unknown_pids = array_values(array_diff($all_stored_pids, $known_param_ids));
+
+$db_param_bezeichnungen = []; // pid => ['bezeichnung' => ..., 'einheit' => ...]
+if (!empty($unknown_pids)) {
+    $ph = implode(',', array_fill(0, count($unknown_pids), '?'));
+    $types = str_repeat('i', count($unknown_pids));
+    $refs = [&$types]; foreach ($unknown_pids as $k => $_) $refs[] = &$unknown_pids[$k];
+    $s6 = $mysqli->prepare("SELECT idTABELLE_Parameter AS id, Bezeichnung FROM tabelle_parameter WHERE idTABELLE_Parameter IN ($ph)");
+    call_user_func_array([$s6, 'bind_param'], $refs);
+    $s6->execute();
+    foreach ($s6->get_result()->fetch_all(MYSQLI_ASSOC) as $row)
+        $db_param_bezeichnungen[(int)$row['id']] = ['bezeichnung' => $row['Bezeichnung'], 'einheit' => ''];
+    $s6->close();
+}
+
+// ──────────────────────────────────────────────────────────────────
 // Step 5: Build element blocks
 // ──────────────────────────────────────────────────────────────────
 
@@ -382,8 +405,8 @@ foreach ($all_eids as $eid) {
             foreach (PARAMETER_MAPPING as $pcfg) { if ($pcfg['id'] === (int)$pid) { $cfg = $pcfg; break; } }
             $params_labeled[(int)$pid] = [
                 'wert'        => $wert,
-                'einheit'     => $cfg['einheit'] ?? '',
-                'bezeichnung' => $cfg ? $cfg['bezeichnung'] : "Param #{$pid}",
+                'einheit'     => $cfg['einheit'] ?? ($db_param_bezeichnungen[(int)$pid]['einheit'] ?? ''),
+                'bezeichnung' => $cfg ? $cfg['bezeichnung'] : ($db_param_bezeichnungen[(int)$pid]['bezeichnung'] ?? "Param #{$pid}"),
                 'role'        => in_array((int)$pid, $variante_param_ids, true) ? 'variante'
                     : (in_array((int)$pid, $element_param_ids, true) ? 'element' : 'ignore'),
             ];
@@ -510,7 +533,9 @@ foreach ($all_eids as $eid) {
                     $matched_vids[] = $chosen['variante_id'];
                     $db_anzahl = $chosen['db_anzahl'];
                     $comparison[] = [
-                        'status'              => $db_anzahl === $ex['anzahl'] ? 'match' : 'diff_anzahl',
+                        'status'              => $db_anzahl == 0
+                            ? 'nur_excel'
+                            : ($db_anzahl === $ex['anzahl'] ? 'match' : 'diff_anzahl'),
                         'variante_id'         => $chosen['variante_id'],
                         'variante_letter'     => $chosen['variante_letter'],
                         'variante_label'      => variante_label(array_filter($chosen['params'], fn($p) => $p['role'] === 'variante')),
@@ -528,7 +553,7 @@ foreach ($all_eids as $eid) {
                         'element_params'      => $ex['element_params'],
                         'needs_new_variante'  => false,
                         'new_variante_params' => [],
-                        'candidates'          => [],
+                        'candidates'          => array_values($candidates), // behalten → User kann Wahl noch ändern
                         'chosen_variante_id'  => $chosen_vid,
                         'choice_key'          => $choice_key,
                     ];

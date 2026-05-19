@@ -165,6 +165,7 @@ init_page_serversides();
                 ['header' => 'CO2', 'source' => 'display', 'key' => 'CO2 Anschluss', 'group' => 'Medizingas', 'suppress_unit' => true],
                 ['header' => 'Flussrate [l/min] CO2', 'source' => 'display', 'key' => 'CO2_Flussrate', 'group' => 'Medizingas', 'suppress_unit' => true],
                 ['header' => 'VA', 'source' => 'display', 'key' => 'VAC Anschluss', 'group' => 'Medizingas', 'suppress_unit' => true],
+                ['header' => 'Flussrate [l/min] VA', 'source' => 'static', 'key' => '', 'group' => 'Medizingas', 'suppress_unit' => true],
                 ['header' => 'NGA', 'source' => 'display', 'key' => 'NGA Anschluss', 'group' => 'Medizingas', 'suppress_unit' => true],
                 // --- Tech. Druckluft ---
                 ['header' => 'Tech. DL 3 bar', 'source' => 'calc_ac', 'key' => 'dl_3bar', 'center' => true, 'group' => 'Druckluft'],

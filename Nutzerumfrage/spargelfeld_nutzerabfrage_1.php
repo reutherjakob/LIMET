@@ -58,8 +58,16 @@ function renderForm(array $formFields, array $userData = [], string $role = ''):
         $value = $userData[$name] ?? $defaultValue;
         $info = $field['info'] ?? '';
         switch ($type) {
-            case 'text':
-                echo "<div class='mb-1 {$kategorie} d-flex align-items-center'>";
+
+
+            case 'texthidden':
+                echo "<div class='{$kategorie}'>";
+                echo "<label for='{$name}' class='sr-only ms-2 me-2 rechtsbuendig' >{$label}:</label>";
+                echo "<div class='col-9'><input class='form-control' type='hidden' name='{$name}' id='{$name}'  value='" . htmlspecialchars($value) . "'></div>";
+                break;
+
+            case 'text_non_editable':
+                echo "<div class='mb-3 {$kategorie} d-flex align-items-center'>";
                 echo "<label for='{$name}' class='form-label col-6 ms-2 me-2 rechtsbuendig'><strong>{$label}</strong>";
                 if ($info) {
                     echo " <button class='btn btn-sm bg-white rounded'
@@ -69,88 +77,13 @@ function renderForm(array $formFields, array $userData = [], string $role = ''):
                                 </button>";
                 }
                 echo "</label>";
-                echo "<div class='col-5'>  <input class='form-control flex-grow-1' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'> </div></div>";
-                break;
-
-            case 'texthidden':
-                echo "<div class='{$kategorie}'>";
-                echo "<label for='{$name}' class='sr-only ms-2 me-2 rechtsbuendig' >{$label}:</label>";
-                echo "<div class='col-9'><input class='form-control' type='hidden' name='{$name}' id='{$name}'  value='" . htmlspecialchars($value) . "'></div>";
-                break;
-
-            case 'text_non_editable':
-                echo "<div class='mb-1 {$kategorie} d-flex align-items-center'>";
-                echo "<label for='{$name}' class='form-label col-7 ms-2 me-2 rechtsbuendig'><strong>{$label}</strong>";
-                if ($info) {
-                    echo " <button class='btn btn-sm bg-white rounded'
-                                  data-bs-toggle='popover'
-                                  data-bs-content='{$info}'>
-                                    <i class='fas fa-info-circle'></i>
-                                </button>";
-                }
-                echo "</label>";
-                echo "<div class='col-5'>  <input readonly class='form-control flex-grow-1 fw-bold border-white' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'> </div></div>";
-                break;
-
-            case 'yesno':
-                $defaultVal = $field['default_value'] ?? 'Nein';
-                $isDefaultYes = ($defaultVal === 'Ja' || $defaultVal === '1' || $defaultVal == 1);
-
-                if ($value === 'unbekannt') {
-                    $btnClass = 'btn btn-outline-secondary';
-                    $btnText = 'unbekannt';
-                    $hiddenValue = 'unbekannt';
-                } elseif ($value == 1 || $value === '1' || $value === 'Ja') {
-                    $btnClass = 'btn btn-outline-success';
-                    $btnText = 'Ja';
-                    $hiddenValue = '1';
-                } else {
-                    $btnClass = 'btn btn-outline-primary';
-                    $btnText = 'Nein';
-                    $hiddenValue = '0';
-                }
-
-                $hasComment = !empty($field['optional_comment_label']);
-                $commentLabel = $field['optional_comment_label'] ?? 'Kommentar:';
-                $commentName = $name . '_kommentar';
-                $commentValue = htmlspecialchars($userData[$commentName] ?? '');
-                $isDefaultValue = ($hiddenValue === ($isDefaultYes ? '1' : '0'));
-                $showComment = $hasComment && !$isDefaultValue && $hiddenValue !== 'unbekannt';
-                $showIfVal = $isDefaultYes ? '0' : '1';
-
-                echo "<div class='mb-1 {$kategorie}'>";
-                echo "  <div class='d-flex align-items-center'>";
-                echo "    <label for='{$name}_toggle' class='form-label col-7 ms-2 me-2 rechtsbuendig'><strong>{$label}";
-                if ($info) {
-                    echo " <button class='btn btn-sm bg-white rounded'
-          data-bs-toggle='popover'
-          data-bs-content='{$info}'>
-            <i class='fas fa-info-circle'></i>
-        </button>";
-                }
-                echo "    </strong></label>";
-                echo "    <button type='button' class='{$btnClass} text-nowrap' id='{$name}_toggle'
-                data-yesno-toggle='1'
-                data-default-yes='" . ($isDefaultYes ? '1' : '0') . "'
-                style='min-width: 4vw;'>{$btnText}</button>";
-                echo "    <input type='hidden' name='{$name}' id='{$name}' value='{$hiddenValue}'>";
-                echo "  </div>";
-
-                if ($hasComment) {
-                    $wrapClass = $showComment ? 'd-flex align-items-center mt-1' : 'align-items-center mt-1';
-                    $displayStyle = $showComment ? '' : 'display:none;';
-                    echo "  <div class='{$wrapClass}' id='{$name}_kommentar_wrap' data-show-if='{$showIfVal}' style='{$displayStyle}'>";
-                    echo "    <label class='form-label col-5 ms-2 me-2 rechtsbuendig text-muted'><small>Kommentar:</small></label>";
-                    echo "    <div class='col-6'><input class='form-control form-control-sm' type='text' name='{$commentName}' id='{$commentName}' value='{$commentValue}' placeholder='{$commentLabel}'></div>";
-                    echo "  </div>";
-                }
-                echo "</div>";
+                echo "<div class='col-6'>  <input readonly class='form-control flex-grow-1 fw-bold border-white' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'> </div></div>";
                 break;
 
             case 'multiselect':
                 $selectedValues = !empty($value) ? array_map('trim', explode(',', $value)) : [];
-                echo "<div class='mb-1 {$kategorie} d-flex align-items-center'>";
-                echo "<label class='form-label ms-2 col-7 rechtsbuendig flex-shrink-0'><strong>{$label}</strong>";
+                echo "<div class='mb-3 {$kategorie} d-flex align-items-center'>";
+                echo "<label class='form-label ms-2 col-6 rechtsbuendig flex-shrink-0'><strong>{$label}</strong>";
                 if ($info) {
                     echo " <button class='btn btn-sm bg-white'
                               data-bs-toggle='popover'
@@ -184,9 +117,9 @@ function renderForm(array $formFields, array $userData = [], string $role = ''):
                 $isDefault = ((string)$value === (string)$defaultVal);
                 $showComment = $hasComment && !$isDefault;
 
-                echo "<div class='mb-1 {$kategorie}'>";
+                echo "<div class='mb-3 {$kategorie}'>";
                 echo "<div class='d-flex align-items-center'>";
-                echo "<label class='form-label me-2 col-7 rechtsbuendig flex-shrink-0'><strong>{$label}</strong>";
+                echo "<label class='form-label me-2 col-6 rechtsbuendig flex-shrink-0'><strong>{$label}</strong>";
                 if ($info) {
                     echo " <button class='btn btn-sm bg-white'
                       data-bs-toggle='popover' 
@@ -208,29 +141,26 @@ function renderForm(array $formFields, array $userData = [], string $role = ''):
                     $wrapClass = $showComment ? 'd-flex align-items-center mt-1' : 'align-items-center mt-1';
                     $displayStyle = $showComment ? '' : 'display:none;';
                     echo "<div class='{$wrapClass}' id='{$name}_kommentar_wrap' data-default-val='" . htmlspecialchars($defaultVal) . "' style='{$displayStyle}'>";
-                    echo "  <label class='form-label col-5 ms-2 me-2 rechtsbuendig text-muted'><small>Kommentar:</small></label>";
-                    echo "  <div class='col-6'><input class='form-control form-control-sm' type='text' name='{$commentName}' id='{$commentName}' value='{$commentValue}' placeholder='{$commentLabel}'></div>";
+                    echo "  <label class='form-label col-6 ms-2 me-2 rechtsbuendig text-muted'><small>Kommentar:</small></label>";
+                    echo "  <div class='col-5'><input class='form-control form-control-sm' type='text' name='{$commentName}' id='{$commentName}' value='{$commentValue}' placeholder='{$commentLabel}'></div>";
                     echo "</div>";
                 }
                 echo "</div>";
                 break;
-
-            case 'number':
-                echo "<div class='mb-1 {$kategorie} d-flex align-items-center'>";
-                echo "<label for='{$name}' class='form-label col-7 ms-2 me-2 rechtsbuendig'><strong>{$label}</strong>";
+            case 'textarea':
+                echo "<div class='mb-3 {$kategorie} d-flex align-items-start mt-3 border-top pt-3'>";
+                echo "<label for='{$name}' class='form-label col-6 ms-2 me-2 rechtsbuendig'><strong>{$label}</strong>";
                 if ($info) {
                     echo " <button class='btn btn-sm bg-white rounded'
-                      data-bs-toggle='popover'
-                      data-bs-content='{$info}'>
-                        <i class='fas fa-info-circle'></i>
-                    </button>";
+                                  data-bs-toggle='popover'
+                                  data-bs-content='{$info}'>
+                                    <i class='fas fa-info-circle'></i>
+                                </button>";
                 }
                 echo "</label>";
-                echo "<div class='col-5'><input class='form-control flex-grow-1' type='text' inputmode='decimal' placeholder='Bitte Nummer angeben.'
-                        name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'
-                        oninput=\"this.value = this.value.replace(/[^0-9.,]/g, '')\"></div></div>";
+                echo "<div class='col-5'><textarea class='form-control' name='{$name}' id='{$name}' rows='3' placeholder='Hier können Sie Anmerkungen zum Raum eintragen, die durch die obigen Felder nicht abgedeckt sind. Bitte möglichst sparsam hiermit umgehen.'>" . htmlspecialchars($value) . "</textarea></div>";
+                echo "</div>";
                 break;
-
             default:
                 echo "<input class='form-control' type='text' name='{$name}' id='{$name}' value='" . htmlspecialchars($value) . "'>";
         }
@@ -273,58 +203,6 @@ if ($roomId) {
 <?php renderForm($formFields, $userValues, $role); ?>
 </body>
 <script>
-    $(document).ready(function () {
-        document.addEventListener('click', function (event) {
-            document.querySelectorAll('[data-bs-toggle="popover"]').forEach(function (el) {
-                const popover = bootstrap.Popover.getInstance(el);
-                if (!popover) return;
-                const popoverElement = document.querySelector('.popover');
-                if (popoverElement && !el.contains(event.target) && !popoverElement.contains(event.target)) {
-                    popover.hide();
-                }
-            });
-        });
 
-        // Yesno: Nein → Ja → ? → Nein → ...
-        document.querySelectorAll('[data-yesno-toggle]').forEach(function (btn) {
-            const fieldName = btn.id.replace('_toggle', '');
-            const hidden = document.getElementById(fieldName);
-            const isDefaultYes = btn.dataset.defaultYes === '1';
-            const kommentarWrap = document.getElementById(fieldName + '_kommentar_wrap');
-
-            const states = isDefaultYes
-                ? ['1', '0', 'unbekannt']
-                : ['0', '1', 'unbekannt'];
-
-            btn.addEventListener('click', function () {
-                const current = hidden.value;
-                const currentIndex = states.indexOf(current);
-                const nextIndex = (currentIndex + 1) % states.length;
-                const next = states[nextIndex];
-
-                hidden.value = next;
-
-                if (next === '1') {
-                    btn.textContent = 'Ja';
-                    btn.className = 'btn btn-outline-success text-nowrap';
-                } else if (next === '0') {
-                    btn.textContent = 'Nein';
-                    btn.className = 'btn btn-outline-primary text-nowrap';
-                } else {
-                    btn.textContent = 'unbekannt';
-                    btn.className = 'btn btn-outline-secondary text-nowrap';
-                }
-
-                if (kommentarWrap) {
-                    const showIfVal = kommentarWrap.dataset.showIf;
-                    const shouldShow = next === showIfVal;
-                    kommentarWrap.style.display = shouldShow ? '' : 'none';
-                    kommentarWrap.className = shouldShow
-                        ? 'd-flex align-items-center mt-1'
-                        : 'align-items-center mt-1';
-                }
-            });
-        });
-    });
 </script>
 </html>

@@ -64,7 +64,35 @@ function compareRoom(raum_id, raumnr, bezeichnung) {
         data: JSON.stringify({ raum_id, familien, user_choices: userChoices }),
         success: res => {
             currentCompare = { raum_id, raumnr, bezeichnung, ...res };
-            renderCompare(res);
+
+            // Auto-select first candidate for any ambiguous row without a user choice yet.
+            // This avoids showing the picker for cases the user hasn't seen before.
+            let autoSelected = false;
+            (res.element_blocks ?? []).forEach(block => {
+                block.comparison.forEach(row => {
+                    if (row.status === 'ambiguous' && row.candidates?.length && !userChoices[row.choice_key]) {
+                        userChoices[row.choice_key] = row.candidates[0].variante_id;
+                        autoSelected = true;
+                    }
+                });
+            });
+
+            if (autoSelected) {
+                // Re-fetch with the pre-filled choices — no flicker, just one extra round-trip
+                $.ajax({
+                    url: API_COMPARE,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ raum_id, familien, user_choices: userChoices }),
+                    success: res2 => {
+                        currentCompare = { raum_id, raumnr, bezeichnung, ...res2 };
+                        renderCompare(res2);
+                    },
+                    error: xhr => alertApiError(xhr),
+                });
+            } else {
+                renderCompare(res);
+            }
         },
         error: xhr => alertApiError(xhr),
     });
@@ -199,6 +227,31 @@ async function fetchBatchRoom(room) {
 
         state.element_blocks = res.element_blocks ?? [];
         state.status = computeBatchRoomStatus(state.element_blocks);
+
+        // Auto-select first candidate for any ambiguous row without a prior choice.
+        let autoSelected = false;
+        state.element_blocks.forEach(block => {
+            block.comparison.forEach(row => {
+                if (row.status === 'ambiguous' && row.candidates?.length && !state.userChoices[row.choice_key]) {
+                    state.userChoices[row.choice_key] = row.candidates[0].variante_id;
+                    autoSelected = true;
+                }
+            });
+        });
+
+        if (autoSelected) {
+            // Re-fetch with pre-filled auto-choices
+            const res2 = await fetch(API_COMPARE, {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify({ raum_id: room.raum_id, familien, user_choices: state.userChoices }),
+            });
+            if (!res2.ok) throw new Error('HTTP ' + res2.status);
+            const data2 = await res2.json();
+            if (data2.error) throw new Error(data2.error);
+            state.element_blocks = data2.element_blocks ?? [];
+            state.status         = computeBatchRoomStatus(state.element_blocks);
+        }
     } catch (e) {
         state.status   = 'error';
         state.errorMsg = e.message;
@@ -432,12 +485,17 @@ function buildBatchDetailPanel(state) {
                 : (row.familie || '—');
 
             let btns = '';
-            row.candidates.forEach(c => {
+            row.candidates.forEach((c, idx) => {
                 const ignoreEntries = Object.entries(c.params).filter(([, p]) => p.role === 'ignore');
                 const label = ignoreEntries.length
                     ? ignoreEntries.map(([, p]) => `${p.bezeichnung}: ${p.wert}`).join(' / ')
                     : `Var ${c.variante_letter}`;
-                btns += `<button class="btn btn-outline-secondary cand-btn me-1 mb-1"
+                // Highlight chosen candidate (if a choice exists), otherwise first by default
+                const isActive = row.chosen_variante_id
+                    ? c.variante_id === row.chosen_variante_id
+                    : idx === 0;
+                const btnClass = isActive ? 'btn btn-secondary cand-btn me-1 mb-1' : 'btn btn-outline-secondary cand-btn me-1 mb-1';
+                btns += `<button class="${btnClass}"
                     onclick="chooseBatchVariante('${state.raum_id}', '${esc(row.choice_key)}', ${c.variante_id})">
                     <span class="badge bg-secondary me-1">Var ${esc(c.variante_letter)}</span>${esc(label)}
                 </button>`;
@@ -912,9 +970,11 @@ function buildComparisonRow(row, block) {
         btnWrap.innerHTML = `<div class="small text-warning-emphasis fw-semibold mb-1">
             <i class="fas fa-question-circle me-1"></i>Welche Variante?
         </div>`;
-        row.candidates.forEach(c => {
+        row.candidates.forEach((c, idx) => {
             const btn = document.createElement('button');
-            btn.className = 'btn btn-outline-secondary btn-sm py-0 px-2 me-1 mb-1';
+            btn.className = idx === 0
+                ? 'btn btn-secondary btn-sm py-0 px-2 me-1 mb-1'
+                : 'btn btn-outline-secondary btn-sm py-0 px-2 me-1 mb-1';
             btn.style.fontSize = '.72rem';
             const ignoreEntries = Object.entries(c.params).filter(([, p]) => p.role === 'ignore');
             const label = ignoreEntries.length
@@ -925,6 +985,37 @@ function buildComparisonRow(row, block) {
                 row.choice_key, c.variante_id,
                 currentCompare.raum_id, currentCompare.raumnr, currentCompare.bezeichnung
             );
+            btnWrap.appendChild(btn);
+        });
+        tdAct.appendChild(btnWrap);
+    } else if (row.candidates?.length > 1 && row.chosen_variante_id) {
+        // Bereits gewählt, aber User kann noch umschalten
+        const btnWrap = document.createElement('div');
+        let actionBadge = '';
+        if (row.status === 'nur_excel')   actionBadge = `<span class="badge bg-primary me-1" style="font-size:.72rem">Hinzufügen</span>`;
+        else if (row.status === 'diff_anzahl') actionBadge = `<span class="badge bg-warning text-dark me-1" style="font-size:.72rem">Anzahl → ${row.excel_anzahl}</span>`;
+        else if (row.status === 'match')  actionBadge = `<span class="text-success me-1 small">✓</span>`;
+        btnWrap.innerHTML = `<div class="small text-muted mb-1" style="font-size:.7rem">
+            ${actionBadge}<i class="fas fa-exchange-alt fa-xs me-1 text-muted"></i>Variante wechseln:
+        </div>`;
+        row.candidates.forEach(c => {
+            const isChosen = c.variante_id === row.chosen_variante_id;
+            const btn = document.createElement('button');
+            btn.className = isChosen
+                ? 'btn btn-secondary btn-sm py-0 px-2 me-1 mb-1'
+                : 'btn btn-outline-secondary btn-sm py-0 px-2 me-1 mb-1';
+            btn.style.fontSize = '.72rem';
+            const ignoreEntries = Object.entries(c.params).filter(([, p]) => p.role === 'ignore');
+            const label = ignoreEntries.length
+                ? ignoreEntries.map(([, p]) => `${p.bezeichnung}: ${p.wert}`).join(' / ')
+                : `Var ${c.variante_letter}`;
+            btn.innerHTML = `<span class="badge bg-secondary me-1">Var ${esc(c.variante_letter)}</span>${esc(label)}`;
+            if (!isChosen) {
+                btn.onclick = () => chooseVariante(
+                    row.choice_key, c.variante_id,
+                    currentCompare.raum_id, currentCompare.raumnr, currentCompare.bezeichnung
+                );
+            }
             btnWrap.appendChild(btn);
         });
         tdAct.appendChild(btnWrap);
@@ -1033,7 +1124,9 @@ document.getElementById('btn-sync').addEventListener('click', function () {
             }
             el.innerHTML = msg;
             if (res.ok) {
-                userChoices = {};
+                // Bewusst NICHT userChoices leeren — beim Re-Compare werden die
+                // gespeicherten Wahlen mitgeschickt, sodass keine ambiguous-Zeilen
+                // mehr erscheinen, für die der User bereits entschieden hat.
                 compareRoom(currentCompare.raum_id, currentCompare.raumnr, currentCompare.bezeichnung);
             }
         },

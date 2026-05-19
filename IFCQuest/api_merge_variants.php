@@ -25,7 +25,7 @@
  *      - drop_vid Einträge löschen (keep_vid hat bereits einen)
  * ══════════════════════════════════════════════════════════════════
  */
-
+// TODO validate
 ob_start();
 if (!function_exists('utils_connect_sql')) {
     include "../utils/_utils.php";
@@ -34,7 +34,8 @@ check_login();
 ob_clean();
 header('Content-Type: application/json; charset=utf-8');
 
-function json_error(string $msg, int $code = 400): never {
+function json_error(string $msg, int $code = 400): never
+{
     http_response_code($code);
     echo json_encode(['error' => $msg], JSON_UNESCAPED_UNICODE);
     exit;
@@ -79,7 +80,7 @@ if ($action === 'scan') {
 
     // 2. Nach Element gruppieren → Fingerprints bilden
     // Structure: $by_elem[$elem_id][$vid] = ['letter' => ..., 'params' => [...], 'fp' => ...]
-    $by_elem   = [];
+    $by_elem = [];
     $elem_meta = []; // elem_id → [code, name]
     foreach ($rows as $row) {
         $eid = (int)$row['elem_id'];
@@ -119,7 +120,7 @@ if ($action === 'scan') {
     foreach ($rhe_rows as $r) {
         $rhe_by_elem_vid[(int)$r['elem_id']][(int)$r['vid']] = [
             'total_anzahl' => (int)$r['total_anzahl'],
-            'room_count'   => (int)$r['room_count'],
+            'room_count' => (int)$r['room_count'],
         ];
     }
 
@@ -136,14 +137,14 @@ if ($action === 'scan') {
 
             // Sortieren: zuerst der vid mit den meisten aktiven Raum-Einträgen,
             // dann niedrigste vid → dieser wird "keep"
-            usort($vids, function($a, $b) use ($rhe_by_elem_vid, $eid) {
+            usort($vids, function ($a, $b) use ($rhe_by_elem_vid, $eid) {
                 $a_active = $rhe_by_elem_vid[$eid][$a]['total_anzahl'] ?? 0;
                 $b_active = $rhe_by_elem_vid[$eid][$b]['total_anzahl'] ?? 0;
                 if ($b_active !== $a_active) return $b_active - $a_active; // mehr aktive zuerst
                 return $a - $b; // sonst niedrigste vid
             });
 
-            $keep_vid  = $vids[0];
+            $keep_vid = $vids[0];
             $drop_vids = array_slice($vids, 1);
 
             $params_display = [];
@@ -154,31 +155,31 @@ if ($action === 'scan') {
             $variant_info = [];
             foreach ($vids as $vid) {
                 $variant_info[] = [
-                    'vid'          => $vid,
-                    'letter'       => $variants[$vid]['letter'],
+                    'vid' => $vid,
+                    'letter' => $variants[$vid]['letter'],
                     'total_anzahl' => $rhe_by_elem_vid[$eid][$vid]['total_anzahl'] ?? 0,
-                    'room_count'   => $rhe_by_elem_vid[$eid][$vid]['room_count']   ?? 0,
-                    'is_keep'      => $vid === $keep_vid,
+                    'room_count' => $rhe_by_elem_vid[$eid][$vid]['room_count'] ?? 0,
+                    'is_keep' => $vid === $keep_vid,
                 ];
             }
 
             $duplicate_groups[] = [
-                'elem_id'      => $eid,
-                'elem_code'    => $elem_meta[$eid]['code'],
-                'elem_name'    => $elem_meta[$eid]['name'],
-                'keep_vid'     => $keep_vid,
-                'keep_letter'  => $variants[$keep_vid]['letter'],
-                'drop_vids'    => $drop_vids,
+                'elem_id' => $eid,
+                'elem_code' => $elem_meta[$eid]['code'],
+                'elem_name' => $elem_meta[$eid]['name'],
+                'keep_vid' => $keep_vid,
+                'keep_letter' => $variants[$keep_vid]['letter'],
+                'drop_vids' => $drop_vids,
                 'drop_letters' => array_map(fn($v) => $variants[$v]['letter'], $drop_vids),
-                'params'       => $params_display,
-                'variants'     => $variant_info,
-                'fp'           => $fp,
+                'params' => $params_display,
+                'variants' => $variant_info,
+                'fp' => $fp,
             ];
         }
     }
 
     echo json_encode([
-        'projekt_id'       => $projekt_id,
+        'projekt_id' => $projekt_id,
         'duplicate_groups' => $duplicate_groups,
         'total_duplicates' => count($duplicate_groups),
     ], JSON_UNESCAPED_UNICODE);
@@ -189,17 +190,17 @@ if ($action === 'scan') {
 // MERGE — Duplikate zusammenführen
 // ══════════════════════════════════════════════════════════════════
 if ($action === 'merge' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    $body   = json_decode(file_get_contents('php://input'), true);
+    $body = json_decode(file_get_contents('php://input'), true);
     $groups = $body['groups'] ?? [];
     if (empty($groups)) json_error('groups fehlt oder leer');
 
     $mysqli->begin_transaction();
-    $merged  = 0;
-    $errors  = [];
+    $merged = 0;
+    $errors = [];
 
     try {
         foreach ($groups as $g) {
-            $elem_id  = (int)($g['elem_id']  ?? 0);
+            $elem_id = (int)($g['elem_id'] ?? 0);
             $keep_vid = (int)($g['keep_vid'] ?? 0);
             $drop_vids = array_map('intval', $g['drop_vids'] ?? []);
 
@@ -223,7 +224,7 @@ if ($action === 'merge' && $_SERVER['REQUEST_METHOD'] === 'POST') {
                 $find->close();
 
                 foreach ($drop_rows as $drop_row) {
-                    $raum_id    = (int)$drop_row['raum_id'];
+                    $raum_id = (int)$drop_row['raum_id'];
                     $drop_rhe_id = (int)$drop_row['id'];
                     $drop_anzahl = (int)$drop_row['Anzahl'];
 
@@ -242,7 +243,7 @@ if ($action === 'merge' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     if ($keep_row) {
                         // keep_vid existiert bereits → Anzahlen addieren
-                        $new_anzahl  = (int)$keep_row['Anzahl'] + $drop_anzahl;
+                        $new_anzahl = (int)$keep_row['Anzahl'] + $drop_anzahl;
                         $keep_rhe_id = (int)$keep_row['id'];
                         $ts = date('Y-m-d H:i:s');
                         $upd = $mysqli->prepare("
@@ -309,7 +310,7 @@ if ($action === 'merge' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     echo json_encode([
-        'ok'     => empty($errors),
+        'ok' => empty($errors),
         'merged' => $merged,
         'errors' => $errors,
     ], JSON_UNESCAPED_UNICODE);

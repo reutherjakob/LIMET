@@ -189,9 +189,8 @@ init_page_serversides();
                             <div class="col-xxl-6"><label>Bestandsdaten</label></div>
                             <div class="col-xxl-6 d-flex align-items-center justify-content-end">
                                 <button type='button' id='addBestandsElement'
-                                        class='btn btn-outline-success btn-sm' value='Hinzufügen'
-                                        data-bs-toggle='modal' data-bs-target='#addBestandModal'><i
-                                            class='fas fa-plus'></i>
+                                        class='btn btn-outline-success btn-sm' value='Hinzufügen'>
+                                    <i class='fas fa-plus'></i>
                                 </button>
                                 <button type='button' id='reloadBestand'
                                         class='btn  btn-sm btn-outline-secondary ' value='reloadBestand'>
@@ -253,6 +252,7 @@ init_page_serversides();
 <script src="utils/_utils.js"></script>
 <script>
     var tableElementsInProject, tableElementsInDB;
+    let selectedRoombookID = null;
     $(document).ready(function () {
         tableElementsInProject = new DataTable('#tableElementsInProject', {
             paging: true,
@@ -296,6 +296,7 @@ init_page_serversides();
         $("#hideZeroRows_ELiNpR").on("change", function () {
             tableElementsInProject.draw();
         });
+
         function hideZeroFilter_ELiNpR(settings, data,) {
             if (settings.nTable.id !== 'tableElementsInProject') {
                 return true;
@@ -323,7 +324,10 @@ init_page_serversides();
                     $("#roomsWithAndWithoutElements").html(data);
                     setTimeout(function () {
                         $('#tableRoomsWithElement tbody').on('click', 'tr', function () {
-                            let id = tableRoomsWithElement.row($(this)).data()[0].display;
+                            let rawId = tableRoomsWithElement.row($(this)).data()[0];
+                            let id = (rawId && rawId.display !== undefined) ? rawId.display : rawId;
+                            selectedRoombookID = id;
+                            console.log(selectedRoombookID);
                             let stk = $("#amount" + id).val();
                             $.ajax({
                                 url: "getElementBestand.php",
@@ -453,13 +457,20 @@ init_page_serversides();
     });
 
 
-    $("#addBestand").click(function () {
-        $("#addBestandModal").modal('hide');
+    $(document).off("click", "#addBestand").on("click", "#addBestand", function () {
+        console.log("addBestand clicked, selectedRoombookID:", selectedRoombookID);
+
         let inventarNr = $("#invNr").val();
         let anschaffungsJahr = $("#year").val();
         let serienNr = $("#serNr").val();
         let gereatID = $("#geraetNr").val();
         let currentPlace = $("#currentPlace").val();
+        if (!selectedRoombookID) {
+            makeToaster("Bitte zuerst einen Raum auswählen!", false);
+            return;
+        }
+        console.log(selectedRoombookID);
+        $("#addBestandModal").modal('hide');
         if (inventarNr !== "") {
             $.ajax({
                 url: "addBestand.php",
@@ -468,20 +479,24 @@ init_page_serversides();
                     "anschaffungsJahr": anschaffungsJahr,
                     "serienNr": serienNr,
                     "gereatID": gereatID,
-                    "currentPlace": currentPlace
+                    "currentPlace": currentPlace,
+                    "roombookID": selectedRoombookID
                 },
                 type: "POST",
                 success: function (data) {
                     // alert(data);
                     makeToaster(data, true);
+
                     $("#addBestandModal").modal('hide');
-                    $.ajax({
-                        url: "getElementBestand.php",
-                        type: "POST ",
-                        success: function (data) {
-                            $("#elementBestand").html(data);
-                        }
-                    });
+                    setTimeout(function () {
+                        $.ajax({
+                            url: "getElementBestand.php",
+                            type: "POST",
+                            success: function (data) {
+                                $("#elementBestand").html(data);
+                            }
+                        });
+                    }, 500);
                 }
             });
         } else {
@@ -489,6 +504,13 @@ init_page_serversides();
         }
     });
 
+    $(document).off("click", "#addBestandsElement").on("click", "#addBestandsElement", function () {
+        if (!selectedRoombookID) {
+            makeToaster("Bitte zuerst einen Raum auswählen!", false);
+            return;
+        }
+        $("#addBestandModal").modal('show');
+    });
 </script>
 </body>
 </html>
