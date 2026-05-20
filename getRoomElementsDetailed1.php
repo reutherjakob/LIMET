@@ -338,7 +338,6 @@ include "modal_elementHistory.html";
                     const verwendung = $(`#Verwendung${id}`).val();
                     const elementHTML = data[1].display;
                     const elementID = (elementHTML.match(/id="ElementName(\d+)"/) || [])[1];
-//                     console.log("tableRoomElements Klick");
                     $.ajax({
                         url: 'getElementParameters.php',
                         data: {id},

@@ -41,9 +41,9 @@ init_page_serversides();
             <div class="mt-2 card">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col-xxl-4">Räume im Projekt</div>
+                        <div class="col-xxl-3">Räume im Projekt</div>
 
-                        <div id="CardHeaderRaume" class="col-xxl-8 d-flex justify-content-end align-items-center">
+                        <div id="CardHeaderRaume" class="col-xxl-9 d-flex justify-content-end align-items-center">
 
                             <input type="checkbox" id="filter_EntfalleneRooms" class="btn-check" checked>
                             <label class="btn btn-outline-dark btn-sm float-right" for="filter_EntfalleneRooms">

@@ -4,13 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Fragekatalog angepasst.&#10;bestand Eintragen bugfix.">
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Bestand Eintragen bugfix.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/addBestand.php" beforeDir="false" afterPath="$PROJECT_DIR$/addBestand.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getElementBestand.php" beforeDir="false" afterPath="$PROJECT_DIR$/getElementBestand.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/getRoomElementsDetailed1.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomElementsDetailed1.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/getRoomsWithElement1.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomsWithElement1.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookBestandEintragen.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookBestandEintragen.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/roombookDetailed.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookDetailed.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -576,15 +573,7 @@
       <workItem from="1778080567096" duration="379000" />
       <workItem from="1779175391804" duration="7225000" />
       <workItem from="1779189208923" duration="6144000" />
-      <workItem from="1779263139354" duration="12352000" />
-    </task>
-    <task id="LOCAL-00191" summary="Neues Login System: Schritt 1 - Encrypted PWs speichern.">
-      <option name="closed" value="true" />
-      <created>1770985198608</created>
-      <option name="number" value="00191" />
-      <option name="presentableId" value="LOCAL-00191" />
-      <option name="project" value="LOCAL" />
-      <updated>1770985198608</updated>
+      <workItem from="1779263139354" duration="15249000" />
     </task>
     <task id="LOCAL-00192" summary="Neues Login System: Schritt 1 - Encrypted PWs speichern.">
       <option name="closed" value="true" />
@@ -970,7 +959,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779276732136</updated>
     </task>
-    <option name="localTasksCounter" value="240" />
+    <task id="LOCAL-00240" summary="Bestand Eintragen bugfix.">
+      <option name="closed" value="true" />
+      <created>1779284951676</created>
+      <option name="number" value="00240" />
+      <option name="presentableId" value="LOCAL-00240" />
+      <option name="project" value="LOCAL" />
+      <updated>1779284951676</updated>
+    </task>
+    <option name="localTasksCounter" value="241" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1000,7 +997,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="BUGFIXES:&#10;- Kosten PDFs &#10;- Element Detail&#10;&#10;+ Losliste erweitert&#10;+ preise ändern btn" />
     <MESSAGE value="Bugfixes.&#10;TenderLotsTodos." />
     <MESSAGE value="Neues Login System: Schritt 1 - Encrypted PWs speichern." />
     <MESSAGE value="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu&#10;&#10;# Conflicts:&#10;#&#9;_offene_projekte/analyseTabelleRaeume.php&#10;#&#9;offene_projekte/analyseTabelleRaeume.php&#10;#&#9;utils/analyseTabelleRaeume.php" />
@@ -1025,7 +1021,8 @@
     <MESSAGE value="Neue Seite: Geräte- und Wartungspreise Liste" />
     <MESSAGE value="Fragekatalog angepasst" />
     <MESSAGE value="Fragekatalog angepasst.&#10;bestand Eintragen bugfix." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fragekatalog angepasst.&#10;bestand Eintragen bugfix." />
+    <MESSAGE value="Bestand Eintragen bugfix." />
+    <option name="LAST_COMMIT_MESSAGE" value="Bestand Eintragen bugfix." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
