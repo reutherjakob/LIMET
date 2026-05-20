@@ -5,7 +5,8 @@ include "utils/_format.php";
 check_login();
 
 $mysqli = utils_connect_sql();
-$sql_room_elements = "SELECT tabelle_räume_has_tabelle_elemente.id, 
+$sql_room_elements = "SELECT 
+    tabelle_räume_has_tabelle_elemente.id, 
        tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete,
        tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
        tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, 
@@ -18,7 +19,8 @@ $sql_room_elements = "SELECT tabelle_räume_has_tabelle_elemente.id,
        tabelle_räume_has_tabelle_elemente.Verwendung, tabelle_räume_has_tabelle_elemente.Kurzbeschreibung, 
        tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
        tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete
-FROM tabelle_varianten INNER JOIN (tabelle_hersteller RIGHT JOIN ((tabelle_räume_has_tabelle_elemente LEFT JOIN tabelle_geraete ON tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete = tabelle_geraete.idTABELLE_Geraete) INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON tabelle_hersteller.idtabelle_hersteller = tabelle_geraete.tabelle_hersteller_idtabelle_hersteller) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
+FROM tabelle_varianten INNER JOIN (tabelle_hersteller RIGHT JOIN ((tabelle_räume_has_tabelle_elemente
+    LEFT JOIN tabelle_geraete ON tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete = tabelle_geraete.idTABELLE_Geraete) INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON tabelle_hersteller.idtabelle_hersteller = tabelle_geraete.tabelle_hersteller_idtabelle_hersteller) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
 WHERE (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=?))
 ORDER BY  tabelle_elemente.ElementID DESC;";
 

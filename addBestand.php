@@ -25,16 +25,23 @@ if ($roombookID === 0) {
 
 
 $sql = "INSERT INTO `LIMET_RB`.`tabelle_bestandsdaten` 
-    (`Inventarnummer`,
-     `Seriennummer`,
-     `Anschaffungsjahr`,
-     `tabelle_räume_has_tabelle_elemente_id`,
-     `tabelle_geraete_idTABELLE_Geraete`,
-     `Aktueller Ort`)
-    VALUES (?, ?, ?, ?, $deviceIDSql, ?)";
+    (`Inventarnummer`, `Seriennummer`, `Anschaffungsjahr`, 
+     `tabelle_räume_has_tabelle_elemente_id`, 
+     `tabelle_geraete_idTABELLE_Geraete`, `Aktueller Ort`)
+    VALUES (?, ?, ?, ?, ?, ?)";
 
 $stmt = $mysqli->prepare($sql);
-$stmt->bind_param("sssis", $inventarNr, $serienNr, $anschaffungsJahr,$roombookID, $currentPlace);
+
+$deviceIDParam = ($deviceID !== 0) ? $deviceID : null;
+
+$stmt->bind_param("sssiss",
+    $inventarNr,
+    $serienNr,
+    $anschaffungsJahr,
+    $roombookID,
+    $deviceIDParam,
+    $currentPlace
+);
 
 if ($stmt->execute()) {
     echo "Bestand hinzugefügt!";

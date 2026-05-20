@@ -168,6 +168,9 @@ $mysqli->close();
 <script src="utils/_utils.js"></script>
 <script>
     var table;
+    var roombookID = <?= $roombookID ?>;
+    var stk = <?= $Stk ?>;
+
     $(document).ready(function () {
         table = new DataTable("#tableElementBestandsdaten", {
             paging: false,
@@ -202,41 +205,43 @@ $mysqli->close();
         });
     });
 
-    // $("#addBestand").click(function () {    //Bestand hinzufügen
-    //     $("#addBestandModal").modal('hide');
-    //     let inventarNr = $("#invNr").val();
-    //     let anschaffungsJahr = $("#year").val();
-    //     let serienNr = $("#serNr").val();
-    //     let gereatID = $("#geraetNr").val();
-    //     let currentPlace = $("#currentPlace").val();
-    //     if (inventarNr !== "") {
-    //         $.ajax({
-    //             url: "addBestand.php",
-    //             data: {
-    //                 "inventarNr": inventarNr,
-    //                 "anschaffungsJahr": anschaffungsJahr,
-    //                 "serienNr": serienNr,
-    //                 "gereatID": gereatID,
-    //                 "currentPlace": currentPlace
-    //             },
-    //             type: "POST",
-    //             success: function (data) {
-    //                 // alert(data);
-    //                 makeToaster(data, true);
-    //                 $.ajax({
-    //                     url: "getElementBestand.php",
-    //                     type: "POST",
-    //                     success: function (data) {
-    //                         $("#elementBestand").html(data)
-    //                         //$("#elementelementBestandsInLot").html(data);
-    //                     }
-    //                 });
-    //             }
-    //         });
-    //     } else {
-    //         alert("Bitte Inventarnummer angeben!");
-    //     }
-    // });
+    $("#addBestand").off("click").on("click", function () {    //Bestand hinzufügen
+        $("#addBestandModal").modal('hide');
+        let inventarNr = $("#invNr").val();
+        let anschaffungsJahr = $("#year").val();
+        let serienNr = $("#serNr").val();
+        let gereatID = $("#geraetNr").val();
+        let currentPlace = $("#currentPlace").val();
+        if (inventarNr !== "") {
+            $.ajax({
+                url: "addBestand.php",
+                data: {
+                    "inventarNr": inventarNr,
+                    "anschaffungsJahr": anschaffungsJahr,
+                    "serienNr": serienNr,
+                    "gereatID": gereatID,
+                    "currentPlace": currentPlace,
+                    "roombookID": roombookID
+                },
+                type: "POST",
+                success: function (data) {
+                    // alert(data);
+                    makeToaster(data, true);
+                    $.ajax({
+                        url: "getElementBestand.php",
+                        data: {"id": roombookID, "stk": stk},
+                        type: "POST",
+                        success: function (data) {
+                            $("#elementBestand").html(data)
+                            //$("#elementelementBestandsInLot").html(data);
+                        }
+                    });
+                }
+            });
+        } else {
+            alert("Bitte Inventarnummer angeben!");
+        }
+    });
 
     $(document).off('click', "button[value='deleteBestand']").on('click', "button[value='deleteBestand']", function () {
         let id = this.id;
@@ -248,14 +253,13 @@ $mysqli->close();
                 success: function (data) {
                     let parsed = typeof data === 'string' ? JSON.parse(data) : data;
                     if (parsed.error) {
-                        makeToaster("Lol, hätteste gern. Geht aber nich... Frag den Jakob.", false);
+                        makeToaster(parsed.message, false);
                     } else {
                         makeToaster(parsed.message, true);
                     }
-                    let stk = $("#amount" + selectedRoombookID).val() || 1;
                     $.ajax({
                         url: "getElementBestand.php",
-                        data: {"id": selectedRoombookID, "stk": stk},
+                        data: {"id": roombookID, "stk": stk},
                         type: "POST",
                         success: function (data) {
                             $("#elementBestand").html(data);
@@ -263,14 +267,26 @@ $mysqli->close();
                     });
                 },
                 error: function () {
-                    alert("Lol, hätteste gern.\nGeht aber nich... \nFrag den Jakob.");
+                    alert("Error... Whooot..??");
                 }
             });
         }
     });
 
+    $(document).off('click', "button[value='reloadBestand']").on('click', "button[value='reloadBestand']", function () {
+        $("#elementBestand").html("");
+        $.ajax({
+            url: "getElementBestand.php",
+            type: "POST",
+            data: {"id": roombookID, "stk": stk},
+            success: function (data) {
+                makeToaster("Reloaded!", true);
+                $("#elementBestand").html(data);
+            }
+        });
+    });
+
     $("button[value='changeBestand']").click(function () { //Bestand ändern
-        let id = this.id;
         $("#saveBestand").show();
         $("#addBestand").hide();
         document.getElementById("invNr").value = invent_clicked;
@@ -279,7 +295,7 @@ $mysqli->close();
         $('#addBestandModal').modal("show");
     });
 
-    $("button[value='saveBestand']").click(function () {
+    $(document).off('click', "button[value='saveBestand']").on('click', "button[value='saveBestand']", function () {
         let ID = this.id;
         let geraeteIDNeu = $("#gereatIDSelect" + ID).val();
         let inventNr = $("#inventNr" + ID).val();

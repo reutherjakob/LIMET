@@ -262,7 +262,6 @@ $mysqli->close();
                 });
 
                 function hideZeroFilter_RwE(settings, data, dataIndex) {
-
                     if (settings.nTable.id !== 'tableRoomsWithElement') {
                         return true;
                     }        //console.log(data);

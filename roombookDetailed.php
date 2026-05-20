@@ -468,20 +468,9 @@ init_page_serversides();
             });
         });
         init_table_elementsinDB();
-    })
-    ;
+    })    ;
 
-    $("button[value='reloadBestand']").click(function () {
-        $("#elementBestand").html("");
-        $.ajax({
-            url: "getElementBestand.php",
-            type: "POST",
-            success: function (data) {
-                makeToaster("Reloaded!", true);
-                $("#elementBestand").html(data);
-            }
-        });
-    });
+
 
     $("#showDBElementData").click(function () {
         if ($("#DBElementData").is(':hidden')) {
