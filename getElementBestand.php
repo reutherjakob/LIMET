@@ -202,43 +202,43 @@ $mysqli->close();
         });
     });
 
-    $("#addBestand").click(function () {    //Bestand hinzufügen
-        $("#addBestandModal").modal('hide');
-        let inventarNr = $("#invNr").val();
-        let anschaffungsJahr = $("#year").val();
-        let serienNr = $("#serNr").val();
-        let gereatID = $("#geraetNr").val();
-        let currentPlace = $("#currentPlace").val();
-        if (inventarNr !== "") {
-            $.ajax({
-                url: "addBestand.php",
-                data: {
-                    "inventarNr": inventarNr,
-                    "anschaffungsJahr": anschaffungsJahr,
-                    "serienNr": serienNr,
-                    "gereatID": gereatID,
-                    "currentPlace": currentPlace
-                },
-                type: "POST",
-                success: function (data) {
-                    // alert(data);
-                    makeToaster(data, true);
-                    $.ajax({
-                        url: "getElementBestand.php",
-                        type: "POST",
-                        success: function (data) {
-                            $("#elementBestand").html(data)
-                            //$("#elementelementBestandsInLot").html(data);
-                        }
-                    });
-                }
-            });
-        } else {
-            alert("Bitte Inventarnummer angeben!");
-        }
-    });
+    // $("#addBestand").click(function () {    //Bestand hinzufügen
+    //     $("#addBestandModal").modal('hide');
+    //     let inventarNr = $("#invNr").val();
+    //     let anschaffungsJahr = $("#year").val();
+    //     let serienNr = $("#serNr").val();
+    //     let gereatID = $("#geraetNr").val();
+    //     let currentPlace = $("#currentPlace").val();
+    //     if (inventarNr !== "") {
+    //         $.ajax({
+    //             url: "addBestand.php",
+    //             data: {
+    //                 "inventarNr": inventarNr,
+    //                 "anschaffungsJahr": anschaffungsJahr,
+    //                 "serienNr": serienNr,
+    //                 "gereatID": gereatID,
+    //                 "currentPlace": currentPlace
+    //             },
+    //             type: "POST",
+    //             success: function (data) {
+    //                 // alert(data);
+    //                 makeToaster(data, true);
+    //                 $.ajax({
+    //                     url: "getElementBestand.php",
+    //                     type: "POST",
+    //                     success: function (data) {
+    //                         $("#elementBestand").html(data)
+    //                         //$("#elementelementBestandsInLot").html(data);
+    //                     }
+    //                 });
+    //             }
+    //         });
+    //     } else {
+    //         alert("Bitte Inventarnummer angeben!");
+    //     }
+    // });
 
-    $(document).on('click', "button[value='deleteBestand']", function () {
+    $(document).off('click', "button[value='deleteBestand']").on('click', "button[value='deleteBestand']", function () {
         let id = this.id;
         if (id !== "") {
             $.ajax({
@@ -246,13 +246,16 @@ $mysqli->close();
                 data: {"bestandID": id},
                 type: "POST",
                 success: function (data) {
-                    if (data.includes("error")) {
-                        alert("Lol, hätteste gern.\nGeht aber nich... \nFrag den Jakob.");
+                    let parsed = typeof data === 'string' ? JSON.parse(data) : data;
+                    if (parsed.error) {
+                        makeToaster("Lol, hätteste gern. Geht aber nich... Frag den Jakob.", false);
                     } else {
-                        alert(data);
+                        makeToaster(parsed.message, true);
                     }
+                    let stk = $("#amount" + selectedRoombookID).val() || 1;
                     $.ajax({
                         url: "getElementBestand.php",
+                        data: {"id": selectedRoombookID, "stk": stk},
                         type: "POST",
                         success: function (data) {
                             $("#elementBestand").html(data);

@@ -10295,7 +10295,7 @@ TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen</ColNames>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="2305" parent="475" name="id">
-      <AutoIncrement>106</AutoIncrement>
+      <AutoIncrement>108</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int(10) unsigned|0s</StoredType>
@@ -10340,9 +10340,9 @@ TABELLE_Ansprechpersonen_idTABELLE_Ansprechpersonen</ColNames>
       <StoredType>varchar(500)|0s</StoredType>
     </column>
     <column id="2315" parent="475" name="explosionsschutz">
-      <DefaultExpression>&apos;Nein&apos;</DefaultExpression>
+      <DefaultExpression>0</DefaultExpression>
       <Position>11</Position>
-      <StoredType>varchar(50)|0s</StoredType>
+      <StoredType>tinyint(1)|0s</StoredType>
     </column>
     <column id="2316" parent="475" name="abluftwaescher">
       <DefaultExpression>0</DefaultExpression>

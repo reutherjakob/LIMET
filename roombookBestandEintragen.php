@@ -489,8 +489,10 @@ init_page_serversides();
 
                     $("#addBestandModal").modal('hide');
                     setTimeout(function () {
+                        let stk = $("#amount" + selectedRoombookID).val() || 1;
                         $.ajax({
                             url: "getElementBestand.php",
+                            data: {"id": selectedRoombookID, "stk": stk},
                             type: "POST",
                             success: function (data) {
                                 $("#elementBestand").html(data);

@@ -177,7 +177,7 @@ $formFields = [
         "kategorie" => "HKLS",
         "name" => "kuehlwasser",
         "label" => "Ist Kühlwasser für Geräte erforderlich?",
-        //"info" => "",
+        "info" => "Werden hier Geräte genutzt, welche einen Anschluss für Kühlflüssigkeit haben? z.B. Polarimeter",
         "optional_comment_label" => "Falls bekannt: Menge Spitzenentnahme, Stundenverbrauch angeben."
     ],
 

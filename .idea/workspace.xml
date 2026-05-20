@@ -5,12 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Fragekatalog angepasst">
-      <change afterPath="$PROJECT_DIR$/Nutzerumfrage/raumtyp_resolver.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/get_parameter_kategorien.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/roombook_sf_flaechen_je_raumtyp.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/Nutzerabfrage.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/Nutzerabfrage.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Nutzerumfrage/form_fields_forNutzergruppe1.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/form_fields_forNutzergruppe1.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/spargelfeld_nutzerabfrage_1.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/spargelfeld_nutzerabfrage_1.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getElementBestand.php" beforeDir="false" afterPath="$PROJECT_DIR$/getElementBestand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getRoomElementsInProjectParameterData.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomElementsInProjectParameterData.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookBestandEintragen.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookBestandEintragen.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_ElemetsInProject_ParameterTable.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_ElemetsInProject_ParameterTable.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,7 +106,7 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;database.data.extractors.current.export.id&quot;: &quot;Excel (xlsx)&quot;,
     &quot;database.data.extractors.current.id&quot;: &quot;Tab-separated (TSV)_id&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;werq__6__5__26&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;#78 on werq__6__5__26&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/WolfgangFuchsLIMET/Documents/NetBeansProjects/LIMET-FX&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -573,22 +576,9 @@
       <workItem from="1777465421328" duration="64000" />
       <workItem from="1777964647831" duration="13302000" />
       <workItem from="1778080567096" duration="379000" />
-    </task>
-    <task id="LOCAL-00188" summary="BUGFIXES:&#10;- Kosten PDFs &#10;- Element Detail&#10;&#10;+ Losliste erweitert&#10;+ preise ändern btn">
-      <option name="closed" value="true" />
-      <created>1770386000727</created>
-      <option name="number" value="00188" />
-      <option name="presentableId" value="LOCAL-00188" />
-      <option name="project" value="LOCAL" />
-      <updated>1770386000727</updated>
-    </task>
-    <task id="LOCAL-00189" summary="Bugfixes.&#10;TenderLotsTodos.">
-      <option name="closed" value="true" />
-      <created>1770736771373</created>
-      <option name="number" value="00189" />
-      <option name="presentableId" value="LOCAL-00189" />
-      <option name="project" value="LOCAL" />
-      <updated>1770736771373</updated>
+      <workItem from="1779175391804" duration="7225000" />
+      <workItem from="1779189208923" duration="6144000" />
+      <workItem from="1779263139354" duration="6637000" />
     </task>
     <task id="LOCAL-00190" summary="Bugfixes.&#10;TenderLotsTodos.">
       <option name="closed" value="true" />
@@ -966,7 +956,23 @@
       <option name="project" value="LOCAL" />
       <updated>1779115618043</updated>
     </task>
-    <option name="localTasksCounter" value="237" />
+    <task id="LOCAL-00237" summary="Fragekatalog angepasst">
+      <option name="closed" value="true" />
+      <created>1779116816565</created>
+      <option name="number" value="00237" />
+      <option name="presentableId" value="LOCAL-00237" />
+      <option name="project" value="LOCAL" />
+      <updated>1779116816565</updated>
+    </task>
+    <task id="LOCAL-00238" summary="Fragekatalog angepasst">
+      <option name="closed" value="true" />
+      <created>1779182708989</created>
+      <option name="number" value="00238" />
+      <option name="presentableId" value="LOCAL-00238" />
+      <option name="project" value="LOCAL" />
+      <updated>1779182708990</updated>
+    </task>
+    <option name="localTasksCounter" value="239" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1063,7 +1069,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/Nutzerumfrage/save_room_data.php</url>
-          <line>81</line>
+          <line>82</line>
           <option name="timeStamp" value="22" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
