@@ -5,7 +5,7 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="../Logo/iphone_favicon.png">
+    <link rel="icon" href="Logo/iphone_favicon.png">
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -305,9 +305,6 @@
                     text: 'Excel',
                     className: 'fas fa-file-excel btn btn-outline-dark bg-white',
                     action: function (e, dt, button, config) {
-                        if (confirm('Möchten Sie die Tabelle wirklich als Excel exportieren? Führt ggf. zu Chaos. Und wer will das überhaupt? Warum müssen wir da eine Excel liefern? ... Ahja und... wenn du ja drückst, hassen dich die excel Feinde!')) {
-                            $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, button, config);
-                        }
                     }, exportOptions: {columns: [5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18, 19, 20, 21]}
                 },
                 {
@@ -342,7 +339,7 @@
             let bestand = tableElementsInProject.row($(this)).data()[4];
             let raumbereich = decodeHtmlEntities(tableElementsInProject.row($(this)).data()[9]);
             let bauabschnitt = tableElementsInProject.row($(this)).data()[10];
-          //  console.log(variantenID, losID, bestand, raumbereich);
+            //  console.log(variantenID, losID, bestand, raumbereich);
             $.ajax({
                 url: "getRoomsWithElementTenderLots.php",
                 data: {

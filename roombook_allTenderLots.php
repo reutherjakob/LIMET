@@ -5,7 +5,7 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="../Logo/iphone_favicon.png">
+    <link rel="icon" href="Logo/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -607,8 +607,8 @@ init_page_serversides("x");
                     const badge = changed ? `<span class="badge bg-warning text-dark ms-1" style="font-size:0.6em">geändert</span>` : '';
                     const nRender = changed ? `<span class="text-success fw-bold">${nH}</span>` : nH;
                     return `<tr class="${changed ? 'table-warning' : ''}">
-            <td class="fw-semibold small">${label}${badge}</td>
-            <td>${aH}</td><td>${nRender}</td></tr>`;
+                <td class="fw-semibold small">${label}${badge}</td>
+                <td>${aH}</td><td>${nRender}</td></tr>`;
                 };
 
                 // Format ISO timestamp for display
@@ -620,30 +620,30 @@ init_page_serversides("x");
                 })();
 
                 let html = `<div class="border rounded p-2 mb-3 bg-light">
-        <span class="me-3"><i class="fas fa-user me-1 text-muted"></i><strong>${d[2] ?? '–'}</strong></span>
-        <span class="me-3"><i class="fas fa-clock me-1 text-muted"></i>${tsDisplay}</span>
-        <span class="text-muted small">ID: <code>${d[0]}</code></span>
-        <div class="mt-1">${lh_badges(row)}</div>
-    </div>`;
+                        <span class="me-3"><i class="fas fa-user me-1 text-muted"></i><strong>${d[2] ?? '–'}</strong></span>
+                        <span class="me-3"><i class="fas fa-clock me-1 text-muted"></i>${tsDisplay}</span>
+                        <span class="text-muted small">ID: <code>${d[0]}</code></span>
+                        <div class="mt-1">${lh_badges(row)}</div>
+                       </div>`;
 
                 html += `<table class="table table-sm table-bordered mb-0">
-        <thead class="table-dark"><tr>
-            <th style="width:28%">Feld</th><th>Alt</th>
-            <th>Neu <span class="badge bg-warning text-dark" style="font-size:0.6em">geändert</span></th>
-        </tr></thead><tbody>`;
+                    <thead class="table-dark"><tr>
+                        <th style="width:28%">Feld</th><th>Alt</th>
+                        <th>Neu <span class="badge bg-warning text-dark" style="font-size:0.6em">geändert</span></th>
+                    </tr></thead><tbody>`;
 
                 // Zuordnung
                 html += `<tr class="table-secondary"><td colspan="3" class="fw-bold small py-1">
-        <i class="fas fa-map-marker-alt me-1"></i>Zuordnung</td></tr>`;
+                       <i class="fas fa-map-marker-alt me-1"></i>Zuordnung</td></tr>`;
                 html += buildRow('Aktuelles Los', d[3]);
                 html += buildRow('Element', d[9]);
                 html += buildRow('Raum', d[12]);
 
                 // Geändert
                 html += `<tr class="table-secondary"><td colspan="3" class="fw-bold small py-1">
-        <i class="fas fa-edit me-1"></i>Geändert
-        <span class="badge bg-danger ms-1" style="font-size:0.6em">${changed.length}</span>
-        </td></tr>`;
+                    <i class="fas fa-edit me-1"></i>Geändert
+                    <span class="badge bg-danger ms-1" style="font-size:0.6em">${changed.length}</span>
+                    </td></tr>`;
                 if (changed.length) {
                     changed.forEach(f => html += buildRow(f.label, lh_renderVal(f, d[f.altIdx]), lh_renderVal(f, d[f.neuIdx])));
                 } else {
@@ -653,7 +653,7 @@ init_page_serversides("x");
                 // Kontext
                 if (unchanged.length) {
                     html += `<tr class="table-secondary"><td colspan="3" class="fw-bold small py-1">
-            <i class="fas fa-info-circle me-1"></i>Kontext (unverändert)</td></tr>`;
+                  <i class="fas fa-info-circle me-1"></i>Kontext (unverändert)</td></tr>`;
                     unchanged.forEach(f => {
                         html += `<tr>
                 <td class="small fw-semibold" style="color:#999">${f.label}</td>

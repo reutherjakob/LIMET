@@ -4,11 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Bestand Eintragen bugfix.">
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Bugfixes.&#10;Los Historie ion tenderLots eingepflegt. &#10;korrekturen Nutzerkatalog SF.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/documentationV2.php" beforeDir="false" afterPath="$PROJECT_DIR$/documentationV2.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getFilteredElementChanges.php" beforeDir="false" afterPath="$PROJECT_DIR$/getFilteredElementChanges.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getProjectCheck.php" beforeDir="false" afterPath="$PROJECT_DIR$/getProjectCheck.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/getRoomElementsDetailed1.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomElementsDetailed1.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getRoomsWithElement1.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomsWithElement1.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookDetailed.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookDetailed.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/get_rb_specs_data.php" beforeDir="false" afterPath="$PROJECT_DIR$/get_rb_specs_data.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookElementeAenderungen.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookElementeAenderungen.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookElementsPerArea.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookElementsPerArea.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookList.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookList.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/saveRoombookEntry.php" beforeDir="false" afterPath="$PROJECT_DIR$/saveRoombookEntry.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/utils/navbar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/roombook_icons_legend.php" beforeDir="false" afterPath="$PROJECT_DIR$/utils/roombook_icons_legend.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,35 +100,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;JavaScript Debug._utils.php.executor&quot;: &quot;Run&quot;,
-    &quot;PHP Web Page.Unnamed.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;database.data.extractors.current.export.id&quot;: &quot;Excel (xlsx)&quot;,
-    &quot;database.data.extractors.current.id&quot;: &quot;Tab-separated (TSV)_id&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;#78 on werq__6__5__26&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/WolfgangFuchsLIMET/Documents/NetBeansProjects/LIMET-FX&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;database.query.execution&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "JavaScript Debug._utils.php.executor": "Run",
+    "PHP Web Page.Unnamed.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "database.data.extractors.current.export.id": "Excel (xlsx)",
+    "database.data.extractors.current.id": "Tab-separated (TSV)_id",
+    "git-widget-placeholder": "#78 on werq__6__5__26",
+    "last_opened_file_path": "C:/Users/WolfgangFuchsLIMET/Documents/NetBeansProjects/LIMET-FX",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "database.query.execution",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mariadb&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mariadb"
     ],
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
-      &quot;TEXT&quot;
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "TEXT"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX" />
@@ -573,23 +581,11 @@
       <workItem from="1778080567096" duration="379000" />
       <workItem from="1779175391804" duration="7225000" />
       <workItem from="1779189208923" duration="6144000" />
-      <workItem from="1779263139354" duration="15249000" />
-    </task>
-    <task id="LOCAL-00192" summary="Neues Login System: Schritt 1 - Encrypted PWs speichern.">
-      <option name="closed" value="true" />
-      <created>1771933186889</created>
-      <option name="number" value="00192" />
-      <option name="presentableId" value="LOCAL-00192" />
-      <option name="project" value="LOCAL" />
-      <updated>1771933186889</updated>
-    </task>
-    <task id="LOCAL-00193" summary="Neues Login System: Schritt 1 - Encrypted PWs speichern.">
-      <option name="closed" value="true" />
-      <created>1771933490961</created>
-      <option name="number" value="00193" />
-      <option name="presentableId" value="LOCAL-00193" />
-      <option name="project" value="LOCAL" />
-      <updated>1771933490961</updated>
+      <workItem from="1779263139354" duration="17782000" />
+      <workItem from="1779349882053" duration="7247000" />
+      <workItem from="1779433638584" duration="8702000" />
+      <workItem from="1779448026901" duration="1000" />
+      <workItem from="1780387871581" duration="14324000" />
     </task>
     <task id="LOCAL-00194" summary="Neues Login System: Schritt 1 - Encrypted PWs speichern.">
       <option name="closed" value="true" />
@@ -967,7 +963,23 @@
       <option name="project" value="LOCAL" />
       <updated>1779284951676</updated>
     </task>
-    <option name="localTasksCounter" value="241" />
+    <task id="LOCAL-00241" summary="Bestand Eintragen bugfix.">
+      <option name="closed" value="true" />
+      <created>1779288112296</created>
+      <option name="number" value="00241" />
+      <option name="presentableId" value="LOCAL-00241" />
+      <option name="project" value="LOCAL" />
+      <updated>1779288112296</updated>
+    </task>
+    <task id="LOCAL-00242" summary="Bugfixes.&#10;Los Historie ion tenderLots eingepflegt. &#10;korrekturen Nutzerkatalog SF.">
+      <option name="closed" value="true" />
+      <created>1779444455251</created>
+      <option name="number" value="00242" />
+      <option name="presentableId" value="LOCAL-00242" />
+      <option name="project" value="LOCAL" />
+      <updated>1779444455251</updated>
+    </task>
+    <option name="localTasksCounter" value="243" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -997,7 +1009,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Bugfixes.&#10;TenderLotsTodos." />
     <MESSAGE value="Neues Login System: Schritt 1 - Encrypted PWs speichern." />
     <MESSAGE value="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu&#10;&#10;# Conflicts:&#10;#&#9;_offene_projekte/analyseTabelleRaeume.php&#10;#&#9;offene_projekte/analyseTabelleRaeume.php&#10;#&#9;utils/analyseTabelleRaeume.php" />
     <MESSAGE value="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu" />
@@ -1022,7 +1033,8 @@
     <MESSAGE value="Fragekatalog angepasst" />
     <MESSAGE value="Fragekatalog angepasst.&#10;bestand Eintragen bugfix." />
     <MESSAGE value="Bestand Eintragen bugfix." />
-    <option name="LAST_COMMIT_MESSAGE" value="Bestand Eintragen bugfix." />
+    <MESSAGE value="Bugfixes.&#10;Los Historie ion tenderLots eingepflegt. &#10;korrekturen Nutzerkatalog SF." />
+    <option name="LAST_COMMIT_MESSAGE" value="Bugfixes.&#10;Los Historie ion tenderLots eingepflegt. &#10;korrekturen Nutzerkatalog SF." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

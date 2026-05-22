@@ -41,8 +41,8 @@ SELECT
     rb.Standort_copy1,
     rb.Verwendung,
     rb.Verwendung_copy1,
-    rb.Anschaffung,
-    rb.Anschaffung_copy1,
+    -- rb.Anschaffung,
+    -- rb.Anschaffung_copy1,
     rb.Kurzbeschreibung,
     rb.Kurzbeschreibung_copy1,
     rb.user,
@@ -109,8 +109,8 @@ while ($change = $result->fetch_assoc()) {
     } else {
         foreach ($changedFields as $field) {
             $color = $badgeColors[$field] ?? 'bg-secondary';
-            $newVal = h(formatFieldValue($field, $change[$field]));
-            $oldVal = h(formatFieldValue($field, $change[$field . '_copy1']));
+            $oldVal = h(formatFieldValue($field, $change[$field]));
+            $newVal = h(formatFieldValue($field, $change[$field . '_copy1']));
             $badgesHtml .= "<span class='badge {$color} me-1'>"
                 . h($field)
                 . ": <s>{$oldVal}</s> → <strong>{$newVal}</strong>"
@@ -118,23 +118,27 @@ while ($change = $result->fetch_assoc()) {
         }
     }
 
-    $neuBestand = $change['Neu/Bestand'] === null ? '' : ($change['Neu/Bestand'] ? 'Neu' : 'Bestand');
-    $standort = $change['Standort'] === null ? '' : ($change['Standort'] ? 'Ja' : 'Nein');
-    $verwendung = $change['Verwendung'] === null ? '' : ($change['Verwendung'] ? 'Ja' : 'Nein');
+    $neuBestand = $change['Neu/Bestand_copy1'] === null ? '' : ($change['Neu/Bestand_copy1'] ? 'Neu' : 'Bestand');
+    $standort   = $change['Standort_copy1']    === null ? '' : ($change['Standort_copy1']    ? 'Ja' : 'Nein');
+    $verwendung = $change['Verwendung_copy1']  === null ? '' : ($change['Verwendung_copy1']  ? 'Ja' : 'Nein');
 
     $data[] = [
-        $neuBestand,
-        h($change['Anzahl']),
-        $badgesHtml,
-        $standort,
-        $verwendung,
-        h($change['Anschaffung']),
-        h($change['Kurzbeschreibung']),
-        h($change['user']),
-        date('d.m.Y H:i', strtotime($change['Timestamp'])),
-        h($change['raumnr_neu']) . ' ' . h($change['raumname_neu']),
+        h($change['raumnr_neu']),
+        h($change['raumname_neu']),
         h($change['elementnr_neu']),
         h($change['elementname_neu']),
+        $neuBestand,
+        h($change['Anzahl_copy1']),
+
+        $standort,
+        $verwendung,
+        '<span data-order="' . strtotime($change['Timestamp']) . '">' . date('d.m.Y H:i', strtotime($change['Timestamp'])) . '</span>',
+
+        $badgesHtml,
+        //      h($change['Anschaffung']),
+
+        h($change['user']),
+        h($change['Kurzbeschreibung_copy1']),
         h($change['projektBudgetID_alt']),
         h($change['projektBudgetID_neu']),
         $change['lieferdatum_alt'] ? date('d.m.Y', strtotime($change['lieferdatum_alt'])) : '',

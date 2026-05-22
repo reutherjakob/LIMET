@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="../Logo/iphone_favicon.png">
+    <link rel="icon" href="Logo/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -38,7 +38,7 @@ init_page_serversides(""); ?>
                 <div class="card-header">
                     <div class="row">
                         <div class="col-4 d-flex ">
-                            <span><strong>ÜBERSICHT RB Änderungen</strong> &emsp;</span>
+                            <span><strong> Übersicht RB Änderungen</strong> &emsp;</span>
                             <div class="me-2">
                                 <label for="dateSelect" class="visually-hidden">Änderungsdatum</label>
                                 <input type="date" id="dateSelect" name="dateSelect"
@@ -56,18 +56,19 @@ init_page_serversides(""); ?>
                     <table id="rbChangeTable" class="table table-striped table-hover border border-5">
                         <thead>
                         <tr>
+                            <th>RaumNr</th>
+                            <th>Raumbez</th>
+
+                            <th><i class="fas fa-fingerprint "></i></th>
+                            <th>Elementbez</th>
                             <th>Neu/Bestand</th>
                             <th>Anzahl</th>
-                            <th>Anzahl Änderungen</th>
                             <th>Standort</th>
                             <th>Verwendung</th>
-                            <th>Anschaffung</th>
-                            <th>Kurzbeschreibung</th>
-                            <th>User</th>
                             <th>Timestamp</th>
-                            <th>Raum ID</th>
-                            <th>Element ID</th>
-                            <th>Bezeichnung</th>
+                            <th>Änderungen</th>
+                            <th>User</th>
+                            <th>Kurzbeschreibung</th>
                             <th>Budget (alt)</th>
                             <th>Budget (neu)</th>
                             <th>Lieferdatum (alt)</th>
@@ -111,7 +112,12 @@ init_page_serversides(""); ?>
                     return d;
                 }
             },
-
+            columnDefs: [
+                {
+                    targets: [8], // Timestamp-Spalte
+                    type: 'html',  // liest data-order automatisch aus
+                }
+            ],
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
             },

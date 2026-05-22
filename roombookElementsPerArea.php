@@ -53,17 +53,17 @@ $stmt->close();
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 
+
 <body>
 <div class="container-fluid">
     <div id="limet-navbar"></div>
-
     <div class="mt-4 card">
         <div class="card-header">
             <div class="row align-items-center g-2">
                 <div class="col-auto">
                     <span class="fw-semibold">Elemente je Raumbereich</span>
                 </div>
-                <div class="col-xxl-5 col-lg-6 col-12">
+                <div class="col-xxl-8 col-lg-8 col-8">
                     <select id="select_raumbereiche" class="form-select form-select-sm" multiple>
                         <?php foreach ($raumbereiche as $rb): ?>
                             <option value="<?= htmlspecialchars($rb['Raumbereich Nutzer'], ENT_QUOTES, 'UTF-8') ?>">
@@ -75,7 +75,7 @@ $stmt->close();
                 <div class="col-auto">
                     <div class="form-check form-switch mb-0 d-flex align-items-center">
                         <input class="form-check-input me-2" type="checkbox" id="chk_distinct" checked>
-                        <label class="form-check-label text-nowrap" for="chk_distinct">Distinct</label>
+                        <label class="form-check-label text-nowrap" for="chk_distinct">Elemente gruppieren </label>
                     </div>
                 </div>
                 <div class="col-auto">
@@ -89,10 +89,10 @@ $stmt->close();
 
                 </div>
                 <div class="col-auto ms-auto" id="cardHeaderButtons">
-
                 </div>
             </div>
         </div>
+
 
         <div class="card-body p-2">
             <div id="placeholder_text" class="text-center text-muted py-5">
@@ -121,6 +121,7 @@ $stmt->close();
         </div>
     </div>
 </div>
+
 
 <script src="utils/_utils.js"></script>
 <script>

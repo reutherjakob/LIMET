@@ -186,7 +186,7 @@ INNER JOIN tabelle_funktionsteilstellen f
     ON r.TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen = f.idTABELLE_Funktionsteilstellen
 -- ↓ FIX: einmaliger JOIN statt korreliertes Subquery pro Zeile
 LEFT JOIN (
-    SELECT TABELLE_Räume_idTABELLE_Räume, COUNT(*) AS element_mask
+    SELECT TABELLE_Räume_idTABELLE_Räume,  SUM(Anzahl) AS element_mask
     FROM tabelle_räume_has_tabelle_elemente
     GROUP BY TABELLE_Räume_idTABELLE_Räume
 ) el ON el.TABELLE_Räume_idTABELLE_Räume = r.idTABELLE_Räume

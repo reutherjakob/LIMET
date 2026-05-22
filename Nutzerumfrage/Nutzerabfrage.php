@@ -36,10 +36,12 @@ if ($role === "internal_rb_user" || $role === "spargelfeld_admin" || $role === "
 } else {
     $sql = "SELECT idTABELLE_Räume AS raum_id, Raumbezeichnung AS raumname, Raumnr AS raumnummer,
                    `Raumbereich Nutzer` AS bereich, Nutzfläche,
-                   Bauabschnitt, Geschoss
+                   Bauabschnitt, Geschoss,   `Raumtyp BH`
             FROM tabelle_räume
             WHERE tabelle_projekte_idTABELLE_Projekte = ?
-              AND `Raumbereich Nutzer` LIKE ?";
+                AND `Raumbereich Nutzer` LIKE ?
+                AND  `Raumtyp BH` <> 34 
+                AND  `Raumtyp BH` <> 35";
 
     if ($stmt = $mysqli->prepare($sql)) {
         $like_param = "%" . $user_name . "%";

@@ -44,7 +44,7 @@ $row = $result->fetch_assoc();
 $stmt->close();
 
 // Insert new variant cost if not present
-if (is_null($row["Kosten"])) {
+if (!$row || is_null($row["Kosten"])) {
     $insert = $mysqli->prepare("INSERT INTO tabelle_projekt_varianten_kosten (tabelle_projekte_idTABELLE_Projekte,tabelle_elemente_idTABELLE_Elemente,tabelle_Varianten_idtabelle_Varianten,Kosten) VALUES (?, ?, ?, 0)");
     $insert->bind_param("iii", $_SESSION["projectID"], $elementID, $variantenID);
     if ($insert->execute()) {
