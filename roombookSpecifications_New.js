@@ -167,29 +167,40 @@ function init_btn_4_dt() {
         },
         {
             extend: 'excelHtml5',
-            className: 'btn btn-light border-secondary   fas fa-file-excel',
+            className: 'btn btn-light border-secondary fas fa-file-excel',
             text: "",
             titleAttr: "Download as Excel",
             exportOptions: {
                 columns: function (idx) {
                     const idIndex = columnsDefinition.findIndex(col => col.data === 'idTABELLE_Räume');
-                    return table.column(idx).visible() || idx === idIndex;
-                },
-//
-                format: {
-                    header: (data, columnIdx) => {
-                        const idIndex = columnsDefinition.findIndex(col => col.data === 'idTABELLE_Räume');
-                        if (columnIdx === idIndex) {
-                            return "Raum ID";
-                        }
-                        return data;
-                    }
+                    return table.column(idx).visible() && idx !== idIndex;
                 }
             },
-            action: function (e, dt, node, config) {
+            customize: function (xlsx) {
+                // Kopfzeile entfernen
+                const sheet = xlsx.xl.worksheets['sheet1.xml'];
+                const rows = sheet.querySelectorAll('row');
+                if (rows.length > 0) {
+                    rows[0].parentNode.removeChild(rows[0]);
+                    rows.forEach(function (row, i) {
+                        row.setAttribute('r', i + 1);
+                        row.querySelectorAll('c').forEach(function (cell) {
+                            const ref = cell.getAttribute('r');
+                            cell.setAttribute('r', ref.replace(/\d+/, i + 1));
+                        });
+                    });
+                }
+            },
+            action: async function (e, dt, node, config) {
+                try {
+                    config.filename = await getExcelFilename('Raumbuch', { projectID });
+                } catch (err) {
+                    config.filename = 'Raumbuch_Export';
+                }
                 $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, node, config);
             }
-        }];
+        },
+        ];
 
     const btn_grp_settings = [
         {

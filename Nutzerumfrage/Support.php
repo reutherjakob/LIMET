@@ -44,23 +44,10 @@ $role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_admi
             </p>
             <p>
                 Im Falle von Website/Login/Usability Problemen kontaktieren Sie gerne:
-                W. Fuchs; <a href="mailto:fuchs@limet.at">fuchs@limet.at</a>; Tel: +431470483316
-            </p>
+                A. Nikodijevic <a href="mailto:ages-sf@limet.at">ages-sf@limet.at</a>; Tel: +431470483313
 
-
-            <!---div class="contact">
-                <p>Für labortechnische Fragen kontaktieren Sie bitte: LIMET Consulting und Planung ZT GmbH<br>
-                    Kaiserstraße 8/9, 1070 Wien<br>
-                    E-Mail: <a href="mailto:office@limet.at">office@limet.at</a><br>
-                    Tel: +43 1 470 48 33
-                    <a class="text-dark" href="https://www.limet.at" target="_blank" rel="noopener"> limet.at </a>
-                </p>
-            </div>
-
-            <div class="contact">
-                <p>Für Fragen zur Elektroversorgung oder HKLS kontaktieren Sie bitte:<br>
-                </p>
-            </div --->
+                <!--- W. Fuchs; <a href="mailto:fuchs@limet.at">fuchs@limet.at</a>; Tel: +431470483316 -->
+           </p>
 
         </div>
     </div>

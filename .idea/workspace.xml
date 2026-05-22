@@ -5,10 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Bestand Eintragen bugfix.">
+      <change afterPath="$PROJECT_DIR$/updateTenderWorkflowDates_holidays.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getRoomElementsDetailed1.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomElementsDetailed1.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getRoomsWithElement1.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomsWithElement1.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookDetailed.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookDetailed.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/Nutzerabfrage.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/Nutzerabfrage.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/Support.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/Support.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/adminpanel.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/adminpanel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getElementeJeRaumbereich.php" beforeDir="false" afterPath="$PROJECT_DIR$/getElementeJeRaumbereich.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookElementsPerArea.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookElementsPerArea.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookSpecifications_New.js" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_New.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_allTenderLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_allTenderLots.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_elementLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_elementLots.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_tenderLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_tenderLots.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tenderCalendar.php" beforeDir="false" afterPath="$PROJECT_DIR$/tenderCalendar.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tenderCharts.php" beforeDir="false" afterPath="$PROJECT_DIR$/tenderCharts.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/updateTenderWorkflowDates.php" beforeDir="false" afterPath="$PROJECT_DIR$/updateTenderWorkflowDates.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/roombook_icons_legend.php" beforeDir="false" afterPath="$PROJECT_DIR$/utils/roombook_icons_legend.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -573,15 +584,9 @@
       <workItem from="1778080567096" duration="379000" />
       <workItem from="1779175391804" duration="7225000" />
       <workItem from="1779189208923" duration="6144000" />
-      <workItem from="1779263139354" duration="15249000" />
-    </task>
-    <task id="LOCAL-00192" summary="Neues Login System: Schritt 1 - Encrypted PWs speichern.">
-      <option name="closed" value="true" />
-      <created>1771933186889</created>
-      <option name="number" value="00192" />
-      <option name="presentableId" value="LOCAL-00192" />
-      <option name="project" value="LOCAL" />
-      <updated>1771933186889</updated>
+      <workItem from="1779263139354" duration="17782000" />
+      <workItem from="1779349882053" duration="7247000" />
+      <workItem from="1779433638584" duration="7235000" />
     </task>
     <task id="LOCAL-00193" summary="Neues Login System: Schritt 1 - Encrypted PWs speichern.">
       <option name="closed" value="true" />
@@ -967,7 +972,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779284951676</updated>
     </task>
-    <option name="localTasksCounter" value="241" />
+    <task id="LOCAL-00241" summary="Bestand Eintragen bugfix.">
+      <option name="closed" value="true" />
+      <created>1779288112296</created>
+      <option name="number" value="00241" />
+      <option name="presentableId" value="LOCAL-00241" />
+      <option name="project" value="LOCAL" />
+      <updated>1779288112296</updated>
+    </task>
+    <option name="localTasksCounter" value="242" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

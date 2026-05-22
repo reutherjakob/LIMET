@@ -87,7 +87,7 @@ while ($row = $result->fetch_assoc()) {
         'Raumbezeichnung' => $row['Raumbezeichnung'] ?? '',
         'Geschoss'        => $row['Geschoss'] ?? '',
         'Anzahl'          => (int)$row['Anzahl'],
-        'NeuBestand'      => (int)($row['NeuBestand'] ?? 0),
+        'NeuBestand'      => (int)($row['NeuBestand'] ?? "x"),
         'LosBezeichnung'  => $row['LosBezeichnung'] ?? ''
     ];
 }
