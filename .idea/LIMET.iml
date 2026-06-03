@@ -27,5 +27,6 @@
     <orderEntry type="library" name="chartjs-adapter-date-fns" level="application" />
     <orderEntry type="library" name="chart.js" level="application" />
     <orderEntry type="library" name="select2-bootstrap-5-theme" level="application" />
+    <orderEntry type="library" name="viewerjs" level="application" />
   </component>
 </module>

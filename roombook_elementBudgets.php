@@ -13,7 +13,7 @@ $mysqli = utils_connect_sql();
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="../Logo/iphone_favicon.png">
+    <link rel="icon" href="Logo/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -76,8 +76,8 @@ $mysqli = utils_connect_sql();
                                     </span>
                             </th>
 
-                            <th>EPRaw</th>
-                            <th>PPRaw</th>
+                            <th>EP</th>
+                            <th>PP</th>
 
                         </tr>
                         </thead>
@@ -275,12 +275,25 @@ $mysqli = utils_connect_sql();
                         className: 'btn-sm btn-outline-dark btn-light',
                         exportOptions: {
                             modifier: {
-                                search: 'applied', // berücksichtigt Filter
-                                order: 'applied',  // respektiert Sortierung
-                                page: 'all'        // exportiert alle Seiten, nicht nur die sichtbare
+                                search: 'applied',
+                                order: 'applied',
+                                page: 'all'
                             },
-                            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 15, 16, 12, 13, 14],
+                            columns:  [2, 3, 4, 5, 6, 7, 8, 12, 13, 14, 15, 16],  // alle Spalten exportieren
                             format: {
+                                header: function (data, columnIdx) {
+                                    const iconHeaders = {
+                                        2:  'Anzahl',
+                                        3:  'Element ID',
+                                        6:  'Variante',
+                                        12: 'Budget Status'
+                                    };
+                                    if (iconHeaders[columnIdx] !== undefined) {
+                                        return iconHeaders[columnIdx];
+                                    }
+                                    // HTML aus Headern entfernen (z.B. Tooltip-Spans)
+                                    return data.replace(/<[^>]*>/g, '').trim();
+                                },
                                 body: function (data, row, column, node) {
                                     if (node && node.querySelector && node.querySelector('select')) {
                                         const selected = node.querySelector('select option:checked');
@@ -292,14 +305,12 @@ $mysqli = utils_connect_sql();
                                 }
                             }
                         }
-
                     }
                 ],
                 initComplete: function () {
                     $('.dt-search label').remove();
                     $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#cardHeader');
                     $('.dt-buttons').children().addClass("btn-sm ms-1 me-1").appendTo('#cardHeader');
-
 
                     $(document).on('mouseenter', '[data-bs-toggle="tooltip"]', function () {
                         const t = bootstrap.Tooltip.getInstance(this) || new bootstrap.Tooltip(this);
@@ -308,7 +319,6 @@ $mysqli = utils_connect_sql();
                     $(document).on('mouseleave', '[data-bs-toggle="tooltip"]', function () {
                         bootstrap.Tooltip.getInstance(this)?.hide();
                     });
-
                 }
             });
 
