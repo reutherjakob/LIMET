@@ -185,7 +185,7 @@ $stmt->close();
 $pdf->Ln(5);
 $pdf->Ln();
 
-$topics_table_header = array('Text', 'Typ', 'Wer/Bis wann', 'Status');
+$topics_table_header = array('Text', 'Typ', 'Wer/Bis', 'Status');
 
 // --- Vermerke laden ---
 $stmt = $mysqli->prepare("

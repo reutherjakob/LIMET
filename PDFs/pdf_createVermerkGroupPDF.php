@@ -221,7 +221,7 @@ class MYPDF extends TCPDF
                 $this->MultiCell($w[0], $rowHeight4, $betreffText, 'LTR', 'L', $fill, 0, '', '');
                 $this->SetFont('', '', '8');
 
-                $prettyText ="";
+                $prettyText = "";
                 $softHyphen = "\xC2\xAD";
                 if ($row['Vermerkart'] === "Bearbeitung") {
                     $prettyText = "B";
@@ -242,6 +242,63 @@ class MYPDF extends TCPDF
                 }
                 $this->Ln($rowHeight4);
                 $this->MultiCell($w[0], $rowHeight - $rowHeight4, $row['Vermerktext'], 'LRB', 'L', $fill, 1, '', '');
+
+                // ── NEU: Bilder zum Vermerk ──────────────────────────────────
+                if (!empty($row['Bilder'])) {
+                    $imgMaxW = 50;   // max. Breite pro Bild in mm
+                    $imgMaxH = 40;   // max. Höhe pro Bild in mm
+                    $imgPerRow = 3;    // Bilder pro Zeile
+                    $imgGap = 3;    // Abstand in mm
+                    $pageW = $this->getPageWidth()
+                        - $this->getMargins()['left']
+                        - $this->getMargins()['right'];
+
+                    $chunks = array_chunk($row['Bilder'], $imgPerRow);
+                    foreach ($chunks as $chunk) {
+                        // Seitenumbruch prüfen
+                        if (($this->GetY() + $imgMaxH + 4) >= 270) {
+                            $this->AddPage();
+                        }
+                        $this->Ln(2);
+                        $xStart = $this->getMargins()['left'];
+                        $yRow = $this->GetY();
+
+                        foreach ($chunk as $idx => $imgPath) {
+                            if (!file_exists($imgPath)) continue;
+
+                            $x = $xStart + $idx * ($imgMaxW + $imgGap);
+                            // Seitenverhältnis ermitteln
+                            $size = @getimagesize($imgPath);
+                            if ($size && $size[0] > 0 && $size[1] > 0) {
+                                $ratio = $size[1] / $size[0];
+                                $drawW = $imgMaxW;
+                                $drawH = min($imgMaxW * $ratio, $imgMaxH);
+                            } else {
+                                $drawW = $imgMaxW;
+                                $drawH = $imgMaxH;
+                            }
+
+                            $this->Image(
+                                $imgPath,
+                                $x,
+                                $yRow,
+                                $drawW,
+                                $drawH,
+                                '',   // auto-detect type
+                                '',   // no link
+                                '',   // default border
+                                true, // resize
+                                600,   // dpi
+                                '',   // palign
+                                false,
+                                false,
+                                0     // border=1 → dünner Rahmen
+                            );
+                        }
+                        $this->SetY($yRow + $drawH + 2);
+                    }
+                }
+                // ── Ende Bilder ──────────────────────────────────────────────
             }
         }
     }
@@ -353,8 +410,9 @@ if ($gruppenID != 970 && $gruppenID != 971) {
 }
 
 $pdf->Ln(2);
-$topics_table_header = array('Text', 'Typ', 'Wer/Bis wann');
+$topics_table_header = array('Text', 'Typ', 'Wer/Bis');
 
+// ── Vermerke + verknüpfte Bilder laden ──────────────────────────────────────
 $stmt = $mysqli->prepare(
     "SELECT
         v.idtabelle_Vermerke,
@@ -384,6 +442,19 @@ $stmt->bind_param("i", $gruppenID);
 $stmt->execute();
 $result = $stmt->get_result();
 
+// Bilder je Vermerk laden
+$stmtImg = $mysqli->prepare("
+    SELECT f.Name
+    FROM tabelle_Files_has_tabelle_Vermerke fhv
+    INNER JOIN tabelle_Files f ON fhv.tabelle_Files_idtabelle_Files = f.idtabelle_Files
+    WHERE fhv.tabelle_Vermerke_idtabelle_Vermerke = ?
+      AND f.tabelle_filetype_id = 1
+    ORDER BY f.Timestamp
+");
+
+$imgBasePath = realpath(__DIR__ . '/../../httpdocs/Dokumente_RB/Images/') . '/';
+error_log('IMGPATH: ' . $imgBasePath . ' exists: ' . (is_dir($imgBasePath) ? 'YES' : 'NO'));
+
 $dataVermerke = [];
 while ($row = $result->fetch_assoc()) {
     $vermerkID = $row['idtabelle_Vermerke'];
@@ -398,14 +469,28 @@ while ($row = $result->fetch_assoc()) {
     $dataVermerke[$vermerkID]['Räume'] = $row['Räume'];
     $dataVermerke[$vermerkID]['LosNr_Extern'] = $row['LosNr_Extern'];
     $dataVermerke[$vermerkID]['LosBezeichnung_Extern'] = $row['LosBezeichnung_Extern'];
+
+    // Bilder: absolute Pfade sammeln
+    $stmtImg->bind_param('i', $vermerkID);
+    $stmtImg->execute();
+    $imgResult = $stmtImg->get_result();
+    $bilder = [];
+    while ($imgRow = $imgResult->fetch_assoc()) {
+        $path = $imgBasePath . $imgRow['Name'];
+        if (file_exists($path)) {
+            $bilder[] = $path;
+        }
+    }
+    $dataVermerke[$vermerkID]['Bilder'] = $bilder;
 }
 $stmt->close();
+$stmtImg->close();
 
 $pdf->topicsTable($topics_table_header, $dataVermerke);
 
 $pdf->SetFont('helvetica', '', '6');
 $pdf->Ln(2);
-$outstr = "Hinweis: Sollten Einwände gegen Inhalte dieses Protokolls bestehen, so werden die Empfänger ersucht, diese Einwände im Rahmen der nächsten Besprechung mündlich oder bis spätestens 10 Tage nach Erhalt des Protokolls schriftlich vorzubringen, andernfalls wird allgemeines Einverständnis angenommen. \nDie Verteilung erfolgt ausschließlich über Email. \nVermerk Typ Legende: I - Info; B - Bearbeitung; N - Anforderung der Nutzenden \nVerfasst von:" . $verfasser;
+$outstr = "Hinweis: Sollten Einwände gegen Inhalte dieses Protokolls bestehen, so werden die Empfänger ersucht, diese Einwände im Rahmen der nächsten Besprechung mündlich oder bis spätestens 10 Tage nach Erhalt des Protokolls schriftlich vorzubringen, andernfalls wird allgemeines Einverständnis angenommen. Die Verteilung erfolgt ausschließlich über Email. \nVermerk Typ Legende: I - Info; B - Bearbeitung; N - Anforderung der Nutzenden. \nVerfasst von: " . $verfasser;
 $height = $pdf->getStringHeight(180, $outstr, false, true, '', 1);
 $y = $pdf->GetY();
 if (($y + $height) >= 275) {

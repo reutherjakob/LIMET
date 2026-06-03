@@ -1,7 +1,8 @@
-<!-- 13.2.25: Reworked -->
+<!-- 2026: Reworked -->
 <?php
 require_once 'utils/_utils.php';
 init_page_serversides();
+
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
@@ -31,11 +32,15 @@ init_page_serversides();
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker3.min.css">
     <script type='text/javascript'
             src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.11.6/viewer.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.11.6/viewer.min.js"></script>
+
 
     <style>
         .card-body {
             overflow: auto;
         }
+
         .card-body iframe {
             top: 0;
             left: 0;
@@ -52,10 +57,10 @@ init_page_serversides();
             <div class="mt-1 card">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col-7">
+                        <div class="col-5">
                             <b>Vermerkgruppen</b>
                         </div>
-                        <div class="col-5 d-inline-flex justify-content-end align-items-center"
+                        <div class="col-7 d-inline-flex justify-content-end align-items-center"
                              id="CardHeaderVermerkGruppen">
                             <button type="button" class="btn btn-sm btn-outline-dark me-2" value="searchDocumentation"
                                     data-bs-toggle="modal" data-bs-target="#showSearchModal"><i
@@ -75,17 +80,17 @@ init_page_serversides();
                     $projectID = (int)$_SESSION["projectID"];
 
                     $sql = "SELECT 
-            tabelle_Vermerkgruppe.Gruppenname, 
-            tabelle_Vermerkgruppe.Gruppenart, 
-            tabelle_Vermerkgruppe.Ort, 
-            DATE_FORMAT(tabelle_Vermerkgruppe.Startzeit, '%h:%i') AS Startzeit, 
-            DATE_FORMAT(tabelle_Vermerkgruppe.Endzeit, '%h:%i') AS Endzeit, 
-            tabelle_Vermerkgruppe.Datum, 
-            tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe, 
-            tabelle_Vermerkgruppe.Verfasser
-        FROM tabelle_Vermerkgruppe
-        WHERE tabelle_Vermerkgruppe.tabelle_projekte_idTABELLE_Projekte = ?
-        ORDER BY tabelle_Vermerkgruppe.Datum DESC";
+                                tabelle_Vermerkgruppe.Gruppenname, 
+                                tabelle_Vermerkgruppe.Gruppenart, 
+                                tabelle_Vermerkgruppe.Ort, 
+                                DATE_FORMAT(tabelle_Vermerkgruppe.Startzeit, '%h:%i') AS Startzeit, 
+                                DATE_FORMAT(tabelle_Vermerkgruppe.Endzeit, '%h:%i') AS Endzeit, 
+                                tabelle_Vermerkgruppe.Datum, 
+                                tabelle_Vermerkgruppe.idtabelle_Vermerkgruppe, 
+                                tabelle_Vermerkgruppe.Verfasser
+                            FROM tabelle_Vermerkgruppe
+                            WHERE tabelle_Vermerkgruppe.tabelle_projekte_idTABELLE_Projekte = ?
+                            ORDER BY tabelle_Vermerkgruppe.Datum DESC";
 
                     $stmt = $mysqli->prepare($sql);
                     $stmt->bind_param("i", $projectID);
@@ -146,7 +151,7 @@ init_page_serversides();
                         </div>
                         <div class="col-xxl-6 d-flex justify-content-end" id="CardHeaderVermerUntergruppen">
                             <button type='button' id='buttonNewVermerkuntergruppe'
-                                    class='btn  btn-sm btn-outline-success me-2'
+                                    class='btn  btn-sm btn-outline-success me-2' disabled
                                     value='Neue Vermerkuntergruppe' style='visibility:hidden'><i
                                         class='fas fa-plus'></i>Neu
                             </button>
@@ -172,20 +177,11 @@ init_page_serversides();
                 </div>
                 <div class="card-body" id="vermerke"></div>
             </div>
+
+
+            <?php include "modale_img/card_load_image_preview.php"; ?>
+
         </div>
-
-
-        <!-- div class="mt-1 card">    TODO - Bilder
-            <div class="card-header"><b>Bilder</b>
-                <label class="float-right" id="divImagesRightLabel">
-                    <button type='button' id='addImage' class='btn btn-outline-success btn-sm'
-                            value='Bild hinzufügen' style='visibility:hidden'><i class='fas fa-plus'></i> Bild
-                        hinzufügen
-                    </button>
-                </label>
-            </div>
-            <div class="card-body" id="images"><img id="images_cb"></div>
-        </div-->
 
         <!-- Darstellung PDF -->
         <div class="col-xxl-4">
@@ -361,7 +357,7 @@ init_page_serversides();
                         echo "</tr>";
                     }
                     echo "</tbody></table>";
-                    $mysqli->close();
+
                     ?>
                 </div>
             </div>
@@ -373,6 +369,16 @@ init_page_serversides();
         </div>
     </div>
 </div>
+
+<?php
+include_once "img_support/modal_upload_image.php";
+include_once "img_support/modal_delete_img.php";
+include_once "img_support/modal_metadaten.php";
+include_once "img_support/modal_img_room.php";
+include_once "img_support/modal_img_vermerke.php";
+
+$mysqli->close();
+?>
 
 
 <!--suppress ES6ConvertVarToLetConst -->
@@ -568,7 +574,7 @@ init_page_serversides();
                 },
                 type: "POST",
                 success: function (data) {
-                    makeToaster(data,true);
+                    makeToaster(data, true);
                     location.reload();
                 }
             });
@@ -604,13 +610,19 @@ init_page_serversides();
 
                     location.reload();
                     document.getElementById('pdfPreview').contentWindow.location.reload();
-                    makeToaster(data,true);
+                    makeToaster(data, true);
                 }
             });
         } else {
             alert("Bitte alle Felder ausfüllen!");
         }
     });
+
+
+
 </script>
+
+<script src="utils/_utils.js"></script>
+<script src="img_support/projectGallery.js"></script>
 </body>
 </html>
