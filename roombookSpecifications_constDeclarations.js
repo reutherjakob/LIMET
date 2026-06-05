@@ -9,18 +9,18 @@ function title2data(columnsDefinition, title) {
 }*/
 
 const buttonRanges = [
-    {name: 'All', start: 6, end: 170, longName: 'Alle Spalten'},
+    {name: 'All', start: 6, end: 171, longName: 'Alle Spalten'},
     {name: 'RA', start: 7, end: 26, longName: 'Raum'},
     {name: 'HKLS', start: 27, end: 36, longName: 'HKLS'},
     {name: 'ET', start: 37, end: 58, longName: 'Elektro'},
-    {name: 'AR', start: 59, end: 64, longName: 'Architektur'},
-    {name: 'MG', start: 65, end: 76, longName: 'Medgas'},
-    {name: 'LAB', start: 68, end: 150, longName: 'Labor'},
-    {name: '-GAS', start: 78, end: 119, longName: 'Labor-GAS'},
-    {name: '-ET', start: 120, end: 131, longName: 'Labor-ET'},
-    {name: '-HT', start: 132, end: 141, longName: 'Labor-HT'},
-    {name: '-H2O', start: 142, end: 150, longName: 'Labor-H2O'},
-    {name: 'GCP', start: 151, end: 170, longName: 'GCP'},
+    {name: 'AR', start: 59, end: 65, longName: 'Architektur'},
+    {name: 'MG', start: 66, end: 77, longName: 'Medgas'},
+    {name: 'LAB', start: 69, end: 151, longName: 'Labor'},
+    {name: '-GAS', start: 79, end: 120, longName: 'Labor-GAS'},
+    {name: '-ET', start: 121, end: 132, longName: 'Labor-ET'},
+    {name: '-HT', start: 133, end: 142, longName: 'Labor-HT'},
+    {name: '-H2O', start: 143, end: 151, longName: 'Labor-H2O'},
+    {name: 'GCP', start: 152, end: 171, longName: 'GCP'},
 ];
 
 
@@ -142,9 +142,12 @@ const columnsDefinition = [
     {data: 'AR_Empf_Breite_cm', defaultContent: '-', title: 'Empfohlene Breite [cm]', visible: false, case: "num"}, // 61 | AR
     {data: 'AR_Empf_Tiefe_cm', defaultContent: '-', title: 'Empfohlene Tiefe [cm]', visible: false, case: "num"}, // 62 | AR
     {data: 'AR_Empf_Hoehe_cm', defaultContent: '-', title: 'Empfohlene Höhe [cm]', visible: false, case: "num"}, // 63 | AR
-    {data: 'AR_Flaechenlast_kgcm2', defaultContent: '-', title: 'Flaechenlast [kg/cm2]', visible: false, case: "num"}, // 64 | AR-End
+    {data: 'AR_Flaechenlast_kgcm2', defaultContent: '-', title: 'Flaechenlast [kg/cm2]', visible: false, case: "num"}, // 64 | AR
+    {data: 'Nutzfläche_Soll', defaultContent: '-', title: 'Nutzfläche Soll[m2]', visible: false, case: "num"}, // 65| AR-End
 
-    {data: '1 Kreis O2', title: '1_K O2', visible: false, case: "bit"}, // 65 | MG-Start
+
+
+    {data: '1 Kreis O2', title: '1_K O2', visible: false, case: "bit"}, // 66 | MG-Start !!!
     {data: '2 Kreis O2', title: '2_K O2', visible: false, case: "bit"}, // 66 | MG
     {data: 'CO2', title: 'CO2', visible: false, case: "bit"}, // 67 | MG
     {data: '1 Kreis Va', title: '1_K Va', visible: false, case: "bit"}, // 68 | MG / LAB-Start

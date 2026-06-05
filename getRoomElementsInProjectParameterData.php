@@ -4,13 +4,21 @@ require_once 'utils/_utils.php';
 check_login();
 
 // 🔐 Input Validation
-$K2Return = $_POST['K2Return'] ?? '[]';
+// Accept K2Return from both GET and POST
+$K2Return = $_POST['K2Return'] ?? $_GET['K2Return'] ?? '[]';
 $K2Ret = json_decode($K2Return, true); // true = associative array
 $projectID = (int)$_SESSION["projectID"] ?? null;
 
 if (!$projectID || !is_array($K2Ret)) {
     http_response_code(400);
     die(json_encode(["error" => "Ungültige Eingabeparameter."]));
+}
+
+// If all categories deselected → return empty result immediately
+if (count($K2Ret) === 0) {
+    header('Content-Type: application/json');
+    echo json_encode(['paramMeta' => [], 'rooms' => []], JSON_PRETTY_PRINT);
+    exit;
 }
 
 $mysqli = utils_connect_sql();
@@ -34,21 +42,14 @@ $stmt->bind_param("i", $projectID);
 $stmt->execute();
 $rooms = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
-$result = [];
-foreach ($rooms as $room) {
-    $roomID = $room['idTABELLE_Räume'];
-    $roomData = $room;
-    $roomData['elements'] = [];
-    $result[] = $roomData;
-}
-
-
 // 2️⃣ Load project parameters and categories (once for all rooms)
+// Returns both Abkuerzung (used as data key) AND full Bezeichnung (used as column header)
 $stmt = $mysqli->prepare("
     SELECT 
         k.idTABELLE_Parameter_Kategorie AS KategorieID,
         k.Kategorie,
-        p.Abkuerzung AS Bezeichnung,
+        p.Abkuerzung,
+        p.Bezeichnung AS FullBezeichnung,
         p.idTABELLE_Parameter AS ParamID
     FROM tabelle_parameter_kategorie k
     INNER JOIN tabelle_parameter p 
@@ -57,7 +58,7 @@ $stmt = $mysqli->prepare("
         ON p.idTABELLE_Parameter = pep.tabelle_parameter_idTABELLE_Parameter
     WHERE pep.tabelle_projekte_idTABELLE_Projekte = ? 
   #       AND p.`Bauangaben relevant` = 1
-    GROUP BY k.Kategorie, p.Bezeichnung
+    GROUP BY p.idTABELLE_Parameter
     ORDER BY k.Kategorie, p.Bezeichnung
 ");
 $stmt->bind_param("i", $projectID);
@@ -67,11 +68,16 @@ $kategorieResult = $stmt->get_result();
 $paramInfos = [];
 while ($row = $kategorieResult->fetch_assoc()) {
     if (empty($K2Ret) || in_array($row['KategorieID'], $K2Ret)) {
+        // Use Abkuerzung as data key; fall back to FullBezeichnung if empty/null
+        $dataKey = (isset($row['Abkuerzung']) && trim($row['Abkuerzung']) !== '')
+            ? trim($row['Abkuerzung'])
+            : trim($row['FullBezeichnung']);
         $paramInfos[$row['ParamID']] = [
-            'KategorieID' => $row['KategorieID'],
-            'ParamID'     => $row['ParamID'],
-            'Bezeichnung' => $row['Bezeichnung'],
-            'Kategorie'   => $row['Kategorie'],
+            'KategorieID'     => $row['KategorieID'],
+            'ParamID'         => $row['ParamID'],
+            'DataKey'         => $dataKey,
+            'FullBezeichnung' => $row['FullBezeichnung'],
+            'Kategorie'       => $row['Kategorie'],
         ];
     }
 }
@@ -92,7 +98,7 @@ $stmt = $mysqli->prepare("
         ON p.idTABELLE_Parameter = pep.tabelle_parameter_idTABELLE_Parameter
     WHERE pep.tabelle_projekte_idTABELLE_Projekte = ? 
  #        AND p.`Bauangaben relevant` = 1
-    ORDER BY k.Kategorie, p.Bezeichnung
+    ORDER BY k.Kategorie, p.Abkuerzung
 ");
 $stmt->bind_param("i", $projectID);
 $stmt->execute();
@@ -112,6 +118,16 @@ while ($row = $tabelle_projekt_elementparameter->fetch_assoc()) {
 
 // 4️⃣ Collect data for each room
 $result = [];
+
+// Also send paramMeta so JS knows Abkuerzung → FullBezeichnung mapping
+$paramMeta = [];
+foreach ($paramInfos as $p) {
+    $paramMeta[] = [
+        'key'   => $p['DataKey'],         // unique data key (Abkuerzung or FullBezeichnung)
+        'label' => $p['FullBezeichnung'], // full name for column header / Excel
+    ];
+}
+
 foreach ($rooms as $room) {
     $roomID = $room['idTABELLE_Räume'];
     $roomData = ['roomID' => $roomID, 'elements' => []];
@@ -148,24 +164,42 @@ foreach ($rooms as $room) {
     while ($row = $tabelle_elemente->fetch_assoc()) {
         $elementData = $row;
         $elementData['Raumbezeichnung'] = $room['Raumbezeichnung'];
-        $elementData['Raumnr'] = $room['Raumnr'];
-        $elementData['MTrelevant'] = $room['MT-relevant'];
-        $elementData['Bauabschnitt'] = $room['Bauabschnitt'];
-        $elementData['Geschoss'] = $room['Geschoss'];
+        $elementData['Raumnr']          = $room['Raumnr'];
+        $elementData['MTrelevant']      = $room['MT-relevant'];
+        $elementData['Bauabschnitt']    = $room['Bauabschnitt'];
+        $elementData['Geschoss']        = $room['Geschoss'];
+        $elementData['FunktionsteilstellenID'] = $room['TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen'];
+        $elementData['Raumbereich']     = $room['Raumbereich Nutzer'];
+        $elementData['Bauetappe']       = $room['Bauetappe'];
+
         foreach ($paramInfos as $paramInfo) {
-            $values = [];
+            $values     = [];
+            $numValues  = [];
             foreach ($elementParamInfos as $elementParamInfo) {
                 if (
-                    $elementParamInfo['ParamID'] == $paramInfo['ParamID'] &&
+                    $elementParamInfo['ParamID']   == $paramInfo['ParamID'] &&
                     $elementParamInfo['elementID'] == $row['TABELLE_Elemente_idTABELLE_Elemente'] &&
                     $elementParamInfo['variantenID'] == $row['tabelle_Varianten_idtabelle_Varianten']
                 ) {
-                    $values[] = $elementParamInfo['Wert'] . $elementParamInfo['Einheit'];
+                    $wert   = $elementParamInfo['Wert'];
+                    $einheit = $elementParamInfo['Einheit'];
+                    $values[]    = $wert . $einheit;
+                    // Store numeric value separately (null if not numeric)
+                    $numValues[] = is_numeric($wert) ? (float)$wert : null;
                 }
             }
-            $elementData[$paramInfo['Bezeichnung']] = empty($values)
-                ? ''
-                : (count($values) === 1 ? $values[0] : end($values));
+
+            $key = $paramInfo['DataKey'];
+            if (empty($values)) {
+                $elementData[$key] = '';
+                $elementData[$key . '__num'] = null;
+            } elseif (count($values) === 1) {
+                $elementData[$key] = $values[0];
+                $elementData[$key . '__num'] = $numValues[0];
+            } else {
+                $elementData[$key] = end($values);
+                $elementData[$key . '__num'] = end($numValues);
+            }
         }
 
         $roomData['elements'][] = $elementData;
@@ -174,6 +208,9 @@ foreach ($rooms as $room) {
 }
 $mysqli->close();
 
-// 5️⃣ Output as JSON
+// 5️⃣ Output as JSON — wrap in envelope so JS gets both paramMeta and rooms
 header('Content-Type: application/json');
-echo json_encode($result, JSON_PRETTY_PRINT);
+echo json_encode([
+    'paramMeta' => $paramMeta,
+    'rooms'     => $result,
+], JSON_PRETTY_PRINT);

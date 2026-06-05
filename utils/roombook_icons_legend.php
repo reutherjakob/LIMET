@@ -11,6 +11,7 @@ init_page_serversides("x");
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen"/>
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -30,9 +31,9 @@ init_page_serversides("x");
         <div class="col-3"></div>
         <div class="col-6">
             <div class="card">
-                <div class="card-header d-flex align-items-center">
+                <div class="card-header d-flex align-items-center justify-content-center">
 
-                    <h6 class="mb-0"> Icon-Legende (work in Progress) </h6>
+                    <h6 class="mb-0"> Icon-Legende </h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -47,63 +48,92 @@ init_page_serversides("x");
 
 
                             <tr>
-                                <td><i class="fas fa-history"></i></td>
+                                <td>
+                                    <i class="fas fa-history"></i>
+                                </td>
                                 <td> Zeitlicher Verlauf/ Änderungen</td>
                             </tr>
 
                             <tr>
-                                <td><i class="far fa-sticky-note "></i></td>
-                                <td>Notiz</td>
+                                <td>
+                                    <i class="far fa-edit"></i>
+                                    <i class="fas fa-pencil-alt"></i>
+                                </td>
+                                <td> Bearbeiten</td>
                             </tr>
 
                             <tr>
-                                <td><i class="fas fa-code-branch "></i></td>
+                                <td>
+                                    <i class="far fa-sticky-note "></i>
+                                </td>
+                                <td>Notiz/ Kommentar</td>
+                            </tr>
+
+                            <tr>
+                              <td>
+                                    <i class="fas fa-code-branch "></i>
+                                </td>
                                 <td>Workflow</td>
                             </tr>
 
                             <tr>
-                                <td><i class="fas fa-fingerprint "></i></td>
+                                <td>
+                                    <i class="fas fa-fingerprint "></i>
+                                </td>
                                 <td>ID</td>
                             </tr>
 
                             <tr>
-                                <td><i class="fab fa-periscope "></i></td>
+                                <td>
+                                    <i class="fab fa-periscope "></i> <i class="fas fa-map-marked-alt"></i>
+                                </td>
                                 <td>Standort</td>
                             </tr>
 
                             <tr>
-                                <td><i class="fas fa-euro-sign"></i></td>
+                                <td>
+                                    <i class="fas fa-euro-sign"></i>
+                                </td>
                                 <td>Kosten</td>
                             </tr>
 
                             <tr>
-                                <td><i class="far fa-comments"></i>
-                                    <i class="far fa-comment"></i></td>
+                                <td>
+                                    <i class="far fa-comments"></i>
+                                    <i class="far fa-comment"></i>
+                                </td>
 
                                 <td>Kommentar</td>
                             </tr>
 
                             <tr>
-                                <td><i class="far fa-calendar-alt "></i></td>
+                              <td>
+                                    <i class="far fa-calendar-alt "></i>
+                                </td>
                                 <td>Termin/-kalender</td>
                             </tr>
 
                             <tr>
-                                <td><i class="fas fa-cog "></i></td>
+                              <td>
+                                    <i class="fas fa-cog "></i>
+                                </td>
                                 <td>Einstellungen</td>
                             </tr>
 
                             <tr>
-                                <td><i class="fas fa-sync-alt"></i></td>
-                                <td>Aktualisieren</td>
+                              <td>
+                                    <i class="fas fa-sync-alt"></i>
+                                </td>
+                                <td>Aktualisieren/ Neu Laden</td>
                             </tr>
 
 
                             <tr>
-                                <td><i class="fas fa-file-excel"></i></td>
+                              <td>
+                                    <i class="fas fa-file-excel"></i>
+                                </td>
                                 <td>Download als Excel</td>
                             </tr>
-
 
 
                             <tr>
@@ -114,11 +144,14 @@ init_page_serversides("x");
                             </tr>
 
 
-
                             </tbody>
                         </table>
                     </div>
 
+
+                </div>
+                <div class="card-footer">
+                <p class="text-muted  d-flex align-items-center justify-content-center"> <i class="fas fa-fire-alt"></i> Lebende Legende - Wünsche & Feedback gerne gesehen <i class="fas fa-paper-plane"></i> </p>
                 </div>
             </div>
         </div>

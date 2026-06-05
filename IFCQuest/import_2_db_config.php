@@ -190,6 +190,73 @@ const ELEMENT_MAPPING = [
         'element_params' => [],
         'variante_params' => [],
     ],
+    // Breite+Tiefe bestimmen die Variante (analog Hängeschrank 4-20-60-2)
+    'TMO_-_LIMET_4-20-30-1 Spülbecken DIN CrNi' => [
+        'match' => 'exact',
+        'typ' => 'fixed',
+        'element_id' => '4.20.30.1',
+        'element_params' => [],
+        'variante_params' => ['MT_LIMET_Breite', 'MT_LIMET_Tiefe'],
+    ],
+
+    // Augendusche — DB: 2.33.12.1 ("Augendusche")
+    // Fixes Element, keine Dimensionsvarianten
+    'TMM_-_LIMET_2-33-12-1 Augendusche' => [
+        'match' => 'exact',
+        'typ' => 'fixed',
+        'element_id' => '2.33.12.1',
+        'element_params' => [],
+        'variante_params' => [],
+    ],
+
+    // Gefahrenstoffsicherheitsschrank brennbare Flüssigkeiten — DB: 4.35.30.3
+    // Zwei verschiedene Revit-Familiennamen für dasselbe Element, Breite als Variante
+    'TMO_-_LIMET_4-35-30-3 Gefahrenstoffsicherheitsschrank - brennbare Flüssigkeiten doppelflügelig' => [
+        'match' => 'exact',
+        'typ' => 'fixed',
+        'element_id' => '4.35.30.3',
+        'element_params' => [],
+        'variante_params' => ['MT_LIMET_Breite'],
+    ],
+
+    'TMO_-_LIMET_4-35-30-3 Laborschrank brennbare Flüssigkeiten' => [
+        'match' => 'exact',
+        'typ' => 'fixed',
+        'element_id' => '4.35.30.3',
+        'element_params' => [],
+        'variante_params' => ['MT_LIMET_Breite'],
+    ],
+
+    // Labortiefkühlschrank — Auswahl per Breite×Höhe aus MT_LIMET_Breite / MT_LIMET_Höhe.
+    // Typ 'tisch' mit dim2_param=MT_LIMET_Höhe statt Tiefe.
+    // Breite kommt aus der Länge-Spalte (oder MT_LIMET_Breite),
+    // Höhe kommt aus der Höhe-Spalte (oder MT_LIMET_Höhe über dim2_param).
+    // sondermass → 9.30.30.7 (generischer -80°C wenn keine Abmessung passt)
+
+    '9-30-30-5' => [
+        'match'      => 'prefix',
+        'typ'        => 'tisch',
+        'dim2_param' => 'MT_LIMET_Höhe',
+        'dim2_label' => 'H',
+        'breite_tiefe' => [
+            // Schlüssel: "Breite_cm x Höhe_cm"
+            '60x86'  => '9.30.30.35', // Unterbau B60 H86
+            '60x90'  => '9.30.30.21', // freistehend B60 H90
+            '65x200' => '9.30.30.22', // freistehend B65 H200
+            '80x160' => '9.30.30.15', // freistehend B80 H160
+            '80x200' => '9.30.30.29', // freistehend B80 H200
+            '100x100' => '9.30.30.36', // -80°C B100 T70 H100
+            '100x200' => '9.30.30.32', // -80°C B100 T100 H200
+            '115x200' => '9.30.30.33', // -80°C B115 T100 H200
+            '125x200' => '9.30.30.34', // -80°C B125 T100 H200
+            '150x220' => '9.30.30.27', // freistehend B150 H220
+        ],
+        'sondermass'     => '9.30.30.7',
+        'element_params' => ['MT_LIMET_Breite', 'MT_LIMET_Höhe'],
+        'variante_params' => [],
+    ],
+
+
 ];
 
 const PARAMETER_MAPPING = [

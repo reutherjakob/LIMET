@@ -4,12 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Neue Seite: Geräte- und Wartungspreise Liste">
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Bestand Eintragen bugfix.">
+      <change afterPath="$PROJECT_DIR$/updateTenderWorkflowDates_holidays.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects.php" beforeDir="false" afterPath="$PROJECT_DIR$/projects.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookElements.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookElements.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookStandortVerwendung.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookStandortVerwendung.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_devicePrice.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_devicePrice.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/Nutzerabfrage.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/Nutzerabfrage.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/Support.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/Support.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/adminpanel.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/adminpanel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getElementeJeRaumbereich.php" beforeDir="false" afterPath="$PROJECT_DIR$/getElementeJeRaumbereich.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookElementsPerArea.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookElementsPerArea.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookSpecifications_New.js" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_New.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_allTenderLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_allTenderLots.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_elementLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_elementLots.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_tenderLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_tenderLots.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tenderCalendar.php" beforeDir="false" afterPath="$PROJECT_DIR$/tenderCalendar.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tenderCharts.php" beforeDir="false" afterPath="$PROJECT_DIR$/tenderCharts.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/updateTenderWorkflowDates.php" beforeDir="false" afterPath="$PROJECT_DIR$/updateTenderWorkflowDates.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/roombook_icons_legend.php" beforeDir="false" afterPath="$PROJECT_DIR$/utils/roombook_icons_legend.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +45,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="werq_14_04_26" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -102,7 +112,7 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;database.data.extractors.current.export.id&quot;: &quot;Excel (xlsx)&quot;,
     &quot;database.data.extractors.current.id&quot;: &quot;Tab-separated (TSV)_id&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;#76 on IFC__element__import&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;#78 on werq__6__5__26&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/WolfgangFuchsLIMET/Documents/NetBeansProjects/LIMET-FX&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -131,11 +141,11 @@
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\Besprechungsansicht\controllers" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\Nutzerumfrage" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\IFCQuest" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\utils" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\_offene_projekte" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\unused" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -571,54 +581,12 @@
       <workItem from="1777384434655" duration="203000" />
       <workItem from="1777465421328" duration="64000" />
       <workItem from="1777964647831" duration="13302000" />
-    </task>
-    <task id="LOCAL-00187" summary="BUGFIXES:&#10;- Kosten PDFs &#10;- Element Detail&#10;&#10;+ Losliste erweitert&#10;+ preise ändern btn">
-      <option name="closed" value="true" />
-      <created>1770281040879</created>
-      <option name="number" value="00187" />
-      <option name="presentableId" value="LOCAL-00187" />
-      <option name="project" value="LOCAL" />
-      <updated>1770281040879</updated>
-    </task>
-    <task id="LOCAL-00188" summary="BUGFIXES:&#10;- Kosten PDFs &#10;- Element Detail&#10;&#10;+ Losliste erweitert&#10;+ preise ändern btn">
-      <option name="closed" value="true" />
-      <created>1770386000727</created>
-      <option name="number" value="00188" />
-      <option name="presentableId" value="LOCAL-00188" />
-      <option name="project" value="LOCAL" />
-      <updated>1770386000727</updated>
-    </task>
-    <task id="LOCAL-00189" summary="Bugfixes.&#10;TenderLotsTodos.">
-      <option name="closed" value="true" />
-      <created>1770736771373</created>
-      <option name="number" value="00189" />
-      <option name="presentableId" value="LOCAL-00189" />
-      <option name="project" value="LOCAL" />
-      <updated>1770736771373</updated>
-    </task>
-    <task id="LOCAL-00190" summary="Bugfixes.&#10;TenderLotsTodos.">
-      <option name="closed" value="true" />
-      <created>1770978080581</created>
-      <option name="number" value="00190" />
-      <option name="presentableId" value="LOCAL-00190" />
-      <option name="project" value="LOCAL" />
-      <updated>1770978080581</updated>
-    </task>
-    <task id="LOCAL-00191" summary="Neues Login System: Schritt 1 - Encrypted PWs speichern.">
-      <option name="closed" value="true" />
-      <created>1770985198608</created>
-      <option name="number" value="00191" />
-      <option name="presentableId" value="LOCAL-00191" />
-      <option name="project" value="LOCAL" />
-      <updated>1770985198608</updated>
-    </task>
-    <task id="LOCAL-00192" summary="Neues Login System: Schritt 1 - Encrypted PWs speichern.">
-      <option name="closed" value="true" />
-      <created>1771933186889</created>
-      <option name="number" value="00192" />
-      <option name="presentableId" value="LOCAL-00192" />
-      <option name="project" value="LOCAL" />
-      <updated>1771933186889</updated>
+      <workItem from="1778080567096" duration="379000" />
+      <workItem from="1779175391804" duration="7225000" />
+      <workItem from="1779189208923" duration="6144000" />
+      <workItem from="1779263139354" duration="17782000" />
+      <workItem from="1779349882053" duration="7247000" />
+      <workItem from="1779433638584" duration="7235000" />
     </task>
     <task id="LOCAL-00193" summary="Neues Login System: Schritt 1 - Encrypted PWs speichern.">
       <option name="closed" value="true" />
@@ -964,7 +932,55 @@
       <option name="project" value="LOCAL" />
       <updated>1777978682295</updated>
     </task>
-    <option name="localTasksCounter" value="236" />
+    <task id="LOCAL-00236" summary="Fragekatalog angepasst">
+      <option name="closed" value="true" />
+      <created>1779115618043</created>
+      <option name="number" value="00236" />
+      <option name="presentableId" value="LOCAL-00236" />
+      <option name="project" value="LOCAL" />
+      <updated>1779115618043</updated>
+    </task>
+    <task id="LOCAL-00237" summary="Fragekatalog angepasst">
+      <option name="closed" value="true" />
+      <created>1779116816565</created>
+      <option name="number" value="00237" />
+      <option name="presentableId" value="LOCAL-00237" />
+      <option name="project" value="LOCAL" />
+      <updated>1779116816565</updated>
+    </task>
+    <task id="LOCAL-00238" summary="Fragekatalog angepasst">
+      <option name="closed" value="true" />
+      <created>1779182708989</created>
+      <option name="number" value="00238" />
+      <option name="presentableId" value="LOCAL-00238" />
+      <option name="project" value="LOCAL" />
+      <updated>1779182708990</updated>
+    </task>
+    <task id="LOCAL-00239" summary="Fragekatalog angepasst.&#10;bestand Eintragen bugfix.">
+      <option name="closed" value="true" />
+      <created>1779276732136</created>
+      <option name="number" value="00239" />
+      <option name="presentableId" value="LOCAL-00239" />
+      <option name="project" value="LOCAL" />
+      <updated>1779276732136</updated>
+    </task>
+    <task id="LOCAL-00240" summary="Bestand Eintragen bugfix.">
+      <option name="closed" value="true" />
+      <created>1779284951676</created>
+      <option name="number" value="00240" />
+      <option name="presentableId" value="LOCAL-00240" />
+      <option name="project" value="LOCAL" />
+      <updated>1779284951676</updated>
+    </task>
+    <task id="LOCAL-00241" summary="Bestand Eintragen bugfix.">
+      <option name="closed" value="true" />
+      <created>1779288112296</created>
+      <option name="number" value="00241" />
+      <option name="presentableId" value="LOCAL-00241" />
+      <option name="project" value="LOCAL" />
+      <updated>1779288112296</updated>
+    </task>
+    <option name="localTasksCounter" value="242" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -994,9 +1010,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Merge remote-tracking branch 'origin/Bugfixes-15-9-2025' into Bugfixes-01-2026&#10;&#10;# Conflicts:&#10;#&#9;PDFs/pdf_createBauangabenBericht_A3Qeer_1.php" />
-    <MESSAGE value="Merge remote-tracking branch 'origin/Bugfixes-15-9-2025' into Bugfixes-01-2026" />
-    <MESSAGE value="BUGFIXES:&#10;- Kosten PDFs &#10;- Element Detail&#10;&#10;+ Losliste erweitert&#10;+ preise ändern btn" />
     <MESSAGE value="Bugfixes.&#10;TenderLotsTodos." />
     <MESSAGE value="Neues Login System: Schritt 1 - Encrypted PWs speichern." />
     <MESSAGE value="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu&#10;&#10;# Conflicts:&#10;#&#9;_offene_projekte/analyseTabelleRaeume.php&#10;#&#9;offene_projekte/analyseTabelleRaeume.php&#10;#&#9;utils/analyseTabelleRaeume.php" />
@@ -1019,7 +1032,10 @@
     <MESSAGE value="IFC Quest - import seems to work" />
     <MESSAGE value="IFC Quest - import seems to work.&#10;&#10;Neue Seite: Geräte- und Wartungspreise Liste (&amp;Navbar).&#10;Bugfix Tender Lots." />
     <MESSAGE value="Neue Seite: Geräte- und Wartungspreise Liste" />
-    <option name="LAST_COMMIT_MESSAGE" value="Neue Seite: Geräte- und Wartungspreise Liste" />
+    <MESSAGE value="Fragekatalog angepasst" />
+    <MESSAGE value="Fragekatalog angepasst.&#10;bestand Eintragen bugfix." />
+    <MESSAGE value="Bestand Eintragen bugfix." />
+    <option name="LAST_COMMIT_MESSAGE" value="Bestand Eintragen bugfix." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1061,7 +1077,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/Nutzerumfrage/save_room_data.php</url>
-          <line>81</line>
+          <line>82</line>
           <option name="timeStamp" value="22" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">

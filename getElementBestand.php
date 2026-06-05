@@ -168,6 +168,9 @@ $mysqli->close();
 <script src="utils/_utils.js"></script>
 <script>
     var table;
+    var roombookID = <?= $roombookID ?>;
+    var stk = <?= $Stk ?>;
+
     $(document).ready(function () {
         table = new DataTable("#tableElementBestandsdaten", {
             paging: false,
@@ -202,7 +205,7 @@ $mysqli->close();
         });
     });
 
-    $("#addBestand").click(function () {    //Bestand hinzufügen
+    $("#addBestand").off("click").on("click", function () {    //Bestand hinzufügen
         $("#addBestandModal").modal('hide');
         let inventarNr = $("#invNr").val();
         let anschaffungsJahr = $("#year").val();
@@ -217,7 +220,8 @@ $mysqli->close();
                     "anschaffungsJahr": anschaffungsJahr,
                     "serienNr": serienNr,
                     "gereatID": gereatID,
-                    "currentPlace": currentPlace
+                    "currentPlace": currentPlace,
+                    "roombookID": roombookID
                 },
                 type: "POST",
                 success: function (data) {
@@ -225,6 +229,7 @@ $mysqli->close();
                     makeToaster(data, true);
                     $.ajax({
                         url: "getElementBestand.php",
+                        data: {"id": roombookID, "stk": stk},
                         type: "POST",
                         success: function (data) {
                             $("#elementBestand").html(data)
@@ -238,7 +243,7 @@ $mysqli->close();
         }
     });
 
-    $(document).on('click', "button[value='deleteBestand']", function () {
+    $(document).off('click', "button[value='deleteBestand']").on('click', "button[value='deleteBestand']", function () {
         let id = this.id;
         if (id !== "") {
             $.ajax({
@@ -246,13 +251,15 @@ $mysqli->close();
                 data: {"bestandID": id},
                 type: "POST",
                 success: function (data) {
-                    if (data.includes("error")) {
-                        alert("Lol, hätteste gern.\nGeht aber nich... \nFrag den Jakob.");
+                    let parsed = typeof data === 'string' ? JSON.parse(data) : data;
+                    if (parsed.error) {
+                        makeToaster(parsed.message, false);
                     } else {
-                        alert(data);
+                        makeToaster(parsed.message, true);
                     }
                     $.ajax({
                         url: "getElementBestand.php",
+                        data: {"id": roombookID, "stk": stk},
                         type: "POST",
                         success: function (data) {
                             $("#elementBestand").html(data);
@@ -260,14 +267,26 @@ $mysqli->close();
                     });
                 },
                 error: function () {
-                    alert("Lol, hätteste gern.\nGeht aber nich... \nFrag den Jakob.");
+                    alert("Error... Whooot..??");
                 }
             });
         }
     });
 
+    $(document).off('click', "button[value='reloadBestand']").on('click', "button[value='reloadBestand']", function () {
+        $("#elementBestand").html("");
+        $.ajax({
+            url: "getElementBestand.php",
+            type: "POST",
+            data: {"id": roombookID, "stk": stk},
+            success: function (data) {
+                makeToaster("Reloaded!", true);
+                $("#elementBestand").html(data);
+            }
+        });
+    });
+
     $("button[value='changeBestand']").click(function () { //Bestand ändern
-        let id = this.id;
         $("#saveBestand").show();
         $("#addBestand").hide();
         document.getElementById("invNr").value = invent_clicked;
@@ -276,7 +295,7 @@ $mysqli->close();
         $('#addBestandModal').modal("show");
     });
 
-    $("button[value='saveBestand']").click(function () {
+    $(document).off('click', "button[value='saveBestand']").on('click', "button[value='saveBestand']", function () {
         let ID = this.id;
         let geraeteIDNeu = $("#gereatIDSelect" + ID).val();
         let inventNr = $("#inventNr" + ID).val();

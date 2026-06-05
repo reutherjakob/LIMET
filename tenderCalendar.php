@@ -5,7 +5,7 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="../Logo/iphone_favicon.png">
+    <link rel="icon" href="Logo/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -38,8 +38,14 @@
             justify-content: center;
             align-items: center;
         }
-        .soll-col { background-color: #e6f0ff !important; }
-        .ist-col { background-color: rgb(168, 188, 240) !important; }
+
+        .soll-col {
+            background-color: #e6f0ff !important;
+        }
+
+        .ist-col {
+            background-color: rgb(168, 188, 240) !important;
+        }
 
 
     </style>
@@ -281,6 +287,7 @@ init_page_serversides();
 </div>
 </body>
 
+
 <div class="modal fade" id="claculateDatesModal" tabindex="-1" aria-labelledby="claculateDatesModalLabel"
      aria-hidden="true">
     <div class="modal-dialog">
@@ -292,12 +299,28 @@ init_page_serversides();
             <div class="modal-body" id="mbody">
                 <p>Wollen Sie die Soll-Daten automatisiert berechnen und <b>bestehende Werte überschreiben?</b></p>
                 <p id="claculateDatesModalInformation"></p>
+
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="calcMode" id="modeKalender" value="kalender"
+                               checked>
+                        <label class="form-check-label" for="modeKalender">
+                            Kalendertage <span class="badge bg-secondary">wie bisher</span>
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="calcMode" id="modeWerktage" value="werktage">
+                        <label class="form-check-label" for="modeWerktage">
+                            Nur Werktage <span class="badge bg-primary">österr. Feiertage + Wochenenden werden übersprungen</span>
+                        </label>
+                    </div>
+                </div>
+
                 <p><i class="fas fa-info"></i>&emsp;Für die automatische Berechnung ist es zwingend <b>notwendig, den
                         letzten Arbeitsschritt zu datieren!</b>
-                    Davon ausgehend werden die weiteren Stichtage auf basis der Angebenen Abstände eingetragen.</p>
+                    Davon ausgehend werden die weiteren Stichtage auf Basis der angegebenen Abstände eingetragen.</p>
             </div>
             <div class="modal-footer row d-flex align-items-center justify-content-center flex-nowrap">
-
                 <div class="col-5 ms-2">
                     <button type="button" id="updateTenderWorkflowDates"
                             class="btn btn-success btn-sm form-control"
@@ -310,7 +333,6 @@ init_page_serversides();
                     </button>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
@@ -417,8 +439,15 @@ init_page_serversides();
 
     function setupAutomatedDateUpdate() {
         $('#updateTenderWorkflowDates').on('click', function () {
-            let lotId = $(this).data('lot-id'); // data-lot-id="123"
-            $.post('updateTenderWorkflowDates.php', {lotID: lotId})
+            let lotId = $(this).data('lot-id');
+
+            // NEU: gewählten Modus lesen
+            const mode = document.querySelector('input[name="calcMode"]:checked').value;
+            const url = mode === 'werktage'
+                ? 'updateTenderWorkflowDates_holidays.php'
+                : 'updateTenderWorkflowDates.php';
+
+            $.post(url, {lotID: lotId})
                 .done(function (data) {
                     makeToaster(data, data.substring(0, 4) === "Work");
                     location.reload();

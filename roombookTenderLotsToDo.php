@@ -193,7 +193,7 @@ init_page_serversides();
 
 <!-- ── Edit Modal ────────────────────────────────────────────────────────── -->
 <div class="modal fade" id="editModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Todo bearbeiten</h5>
@@ -227,7 +227,7 @@ init_page_serversides();
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Ersteller:</label>
+                            <label class="form-label fw-bold">Erstellerin:</label>
                             <p id="edit_ersteller" class="mb-0"></p>
                         </div>
                         <div class="col-md-3">
@@ -269,7 +269,7 @@ init_page_serversides();
 
 <!-- ── View Modal ────────────────────────────────────────────────────────── -->
 <div class="modal fade" id="viewModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header bg-info text-white">
                 <h5 class="modal-title"><i class="fas fa-eye me-2"></i>Todo Details</h5>
@@ -277,38 +277,39 @@ init_page_serversides();
             </div>
             <div class="modal-body">
                 <div class="row mb-3">
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <label class="form-label fw-bold">Projekt:</label>
                         <p id="view_projekt" class="mb-0"></p>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <label class="form-label fw-bold">Los:</label>
                         <p id="view_los" class="mb-0"></p>
                     </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label class="form-label fw-bold">Element:</label>
                         <p id="view_element" class="mb-0"></p>
                     </div>
-                    <div class="col-md-6">
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3">
                         <label class="form-label fw-bold">Datum:</label>
                         <p id="view_datum" class="mb-0"></p>
                     </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold">Ersteller:</label>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Erstellerin:</label>
                         <p id="view_ersteller" class="mb-0"></p>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label class="form-label fw-bold">Typ:</label>
                         <p id="view_typ" class="mb-0"></p>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label class="form-label fw-bold">Status:</label>
                         <p id="view_status" class="mb-0"></p>
                     </div>
+                </div>
+                <div class="row mb-3">
+
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-bold">Todo/Info/Frage:</label>
@@ -540,15 +541,24 @@ init_page_serversides();
 
     function attachTableEvents() {
         $('#tableAusschreibungsTodos tbody')
-            .off('click.todos')
+            .off('click.todos')// ── Alle drei Button-Handler in attachTableEvents() ───────────────────
             .on('click.todos', '.btn-view', function () {
-                viewTodo($(this).data('id'));
+                viewTodo(parseInt($(this).data('id')));   // ← parseInt hinzufügen
             })
             .on('click.todos', '.btn-edit', function () {
-                editTodo($(this).data('id'));
+                editTodo(parseInt($(this).data('id')));   // ← parseInt hinzufügen
             })
             .on('click.todos', '.btn-delete', function () {
-                deleteTodo($(this).data('id'));
+                deleteTodo(parseInt($(this).data('id'))); // ← parseInt hinzufügen
+            })
+            .on('click.todos', 'tr', function (e) {
+
+                if ($(e.target).closest('button').length) return;
+
+                const rowData = tableTodos.row(this).data();
+                if (rowData) {
+                    viewTodo(parseInt(rowData.id_tabelle_lose_ToDos));
+                }
             });
     }
 
@@ -573,7 +583,7 @@ init_page_serversides();
             columns: getColumnDefs(),
             columnDefs: [{targets: [0], visible: false, searchable: false}],
             order: [[1, 'desc'], [3, 'asc']],
-            pageLength: 25,
+            pageLength: 50,
             responsive: true,
             dom: 'Bfrtip',
             buttons: [
@@ -595,6 +605,7 @@ init_page_serversides();
                     .removeClass("form-control form-control-sm")
                     .addClass("btn btn-sm btn-outline-dark")
                     .appendTo('#losEinträge');
+                $('#tableAusschreibungsTodos tbody').css('cursor', 'pointer');
             }
         });
         attachTableEvents();
@@ -643,10 +654,11 @@ init_page_serversides();
     }
 
     function viewTodo(id) {
-        const rowData = tableTodos.rows().data().toArray().find(row => row.id_tabelle_lose_ToDos === id);
+        const rowData = tableTodos.rows().data().toArray().find(row => parseInt(row.id_tabelle_lose_ToDos) === id);
+        ;
         if (!rowData) return;
 
-        $('#view_projekt').text(rowData.Interne_Nr + ' - ' + rowData.Projektname);
+        $('#view_projekt').text(rowData.Projektname);
         $('#view_los').text(rowData.LosNr_Extern + ' - ' + rowData.LosBezeichnung_Extern);
         $('#view_element').text(rowData.ElementID + ' - ' + rowData.Bezeichnung);
         $('#view_datum').text(rowData.Datum);
@@ -659,7 +671,7 @@ init_page_serversides();
     }
 
     function editTodo(id) {
-        const rowData = tableTodos.rows().data().toArray().find(row => row.id_tabelle_lose_ToDos === id);
+        const rowData = tableTodos.rows().data().toArray().find(row => parseInt(row.id_tabelle_lose_ToDos) === id);
         if (!rowData) return;
 
         currentEditId = id;

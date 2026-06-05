@@ -210,7 +210,7 @@ $mysqli->close();
     import CustomPopover from './utils/_popover.js';
 
     $(document).ready(function () {
-        tableRoomsWithElement = new DataTable('#tableRoomsWithElement', {
+        window.tableRoomsWithElement = new DataTable('#tableRoomsWithElement', {
             columnDefs: [
                 {
                     targets: [0, 14, 15, 16, 17, 18, 19, 20, 21],
@@ -247,7 +247,9 @@ $mysqli->close();
             initComplete: function () {
                 $("#CHRME").html("");
                 $('#CHRME').append($('#hide0Wrapper_RwE'));
-                tableRoomsWithElement.buttons().container().appendTo($('#CHRME'));
+                if (typeof tableRoomsWithElement.buttons === 'function') {
+                    tableRoomsWithElement.buttons().container().appendTo($('#CHRME'));
+                }
                 $('#tableRoomsWithElement_wrapper .dt-search label').remove();
                 $('#tableRoomsWithElement_wrapper .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CHRME');
 
@@ -262,7 +264,6 @@ $mysqli->close();
                 });
 
                 function hideZeroFilter_RwE(settings, data, dataIndex) {
-
                     if (settings.nTable.id !== 'tableRoomsWithElement') {
                         return true;
                     }        //console.log(data);

@@ -75,7 +75,7 @@ $stmt->close();
                 <div class="col-auto">
                     <div class="form-check form-switch mb-0 d-flex align-items-center">
                         <input class="form-check-input me-2" type="checkbox" id="chk_distinct" checked>
-                        <label class="form-check-label text-nowrap" for="chk_distinct">Distinct</label>
+                        <label class="form-check-label text-nowrap" for="chk_distinct">Elemente gruppieren </label>
                     </div>
                 </div>
                 <div class="col-auto">

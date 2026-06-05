@@ -16,13 +16,17 @@ $projektid = 95;
 $sqlSummary = "
     SELECT 
         r.`Raumbereich Nutzer` AS rb,
+        r.`Raumtyp BH`,
         SUM(CASE WHEN t.roomID IS NULL THEN 1 ELSE 0 END) AS open_rooms,
         SUM(CASE WHEN t.roomID IS NOT NULL THEN 1 ELSE 0 END) AS filled_rooms
     FROM tabelle_räume r
     LEFT JOIN tabelle_room_requirements_from_user t ON r.idTABELLE_Räume = t.roomID
     WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
+      AND  r.`Raumtyp BH` <> 34 
+            AND  r.`Raumtyp BH` <> 35 
     GROUP BY r.`Raumbereich Nutzer`
-    ORDER BY r.`Raumbereich Nutzer`;
+    ORDER BY r.`Raumbereich Nutzer`
+         
 ";
 
 $summaryData = [];
