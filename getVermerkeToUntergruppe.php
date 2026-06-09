@@ -629,7 +629,7 @@ echo "</tbody></table>";
             $('#galleryPickerGrid').html('<div class="text-muted fst-italic">Wird geladen...</div>');
             $('#linkImageToVermerkModal').modal('show');
             $.ajax({
-                url: 'getProjectImages.php', type: 'POST',
+                url: 'img_support/getProjectImages.php', type: 'POST',
                 success: function (raw) {
                     const images = parseResponse(raw);
                     if (!Array.isArray(images) || !images.length) {

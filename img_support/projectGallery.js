@@ -14,6 +14,9 @@
  */
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
+const _base = (document.querySelector('script[src*="projectGallery.js"]')?.src || '')
+    .includes('img_support') ? '' : 'img_support/';
+
 
 function parseResponse(raw) {
     try {
@@ -36,7 +39,7 @@ function initViewer(element, filterClass) {
 
 function reloadProjectGallery() {
     $.ajax({
-        url: 'getProjectImages.php', type: 'POST',
+        url: _base + 'getProjectImages.php', type: 'POST',
         success: function (data) {
             const images = parseResponse(data);
             if (!Array.isArray(images) && images.status !== undefined) return;
@@ -149,7 +152,7 @@ $(document).ready(function () {
             document.getElementById('projUploadConfirmBtn').disabled = true;
 
             $.ajax({
-                url: 'uploadFileImage.php', type: 'POST',
+                url: _base + 'uploadFileImage.php', type: 'POST',
                 data: { fileUpload: encoded },
                 success: function (raw) {
                     const res = parseResponse(raw);
@@ -181,7 +184,7 @@ $(document).ready(function () {
         pendingProjDeleteId = $(this).data('image-id');
 
         $.ajax({
-            url: 'deleteImage.php', type: 'POST',
+            url: _base + 'deleteImage.php', type: 'POST',
             data: { imageID: pendingProjDeleteId },
             success: function (raw) {
                 const res = parseResponse(raw);
@@ -208,7 +211,7 @@ $(document).ready(function () {
         const id = pendingProjDeleteId;
         $('#projDeleteConfirmModal').modal('hide');
         $.ajax({
-            url: 'deleteImage.php', type: 'POST',
+            url: _base + 'deleteImage.php', type: 'POST',
             data: { imageID: id },
             success: function (raw) {
                 const res = parseResponse(raw);
@@ -242,7 +245,7 @@ $(document).ready(function () {
         $('#projImageMetaModal').modal('show');
 
         $.ajax({
-            url: 'getImageMeta.php', type: 'POST',
+            url: _base + 'getImageMeta.php', type: 'POST',
             data: { imageID },
             success: function (raw) {
                 const res = parseResponse(raw);
@@ -292,7 +295,7 @@ $(document).ready(function () {
         document.getElementById('projRoomCurrentList').innerHTML =
             '<span class="text-muted fst-italic small">Lädt…</span>';
         $.ajax({
-            url: 'getImageMeta.php', type: 'POST',
+            url: _base + 'getImageMeta.php', type: 'POST',
             data: { imageID },
             success: function (raw) {
                 const res = parseResponse(raw);
@@ -322,7 +325,7 @@ $(document).ready(function () {
         if (!imageID || !raumID) return;
         $(this).prop('disabled', true);
         $.ajax({
-            url: 'linkImageToRoom.php', type: 'POST',
+            url: _base + 'linkImageToRoom.php', type: 'POST',
             data: { imageID, raumID },
             success: function (raw) {
                 const res = parseResponse(raw);
@@ -344,7 +347,7 @@ $(document).ready(function () {
         const imageID = $(this).data('image-id');
         const raumID  = $(this).data('raum-id');
         $.ajax({
-            url: 'unlinkImageFromRoom.php', type: 'POST',
+            url: _base + 'unlinkImageFromRoom.php', type: 'POST',
             data: { imageID, raumID },
             success: function (raw) {
                 const res = parseResponse(raw);
@@ -358,7 +361,6 @@ $(document).ready(function () {
         });
     });
 
-    // FIX B1: Removed dead '#projprojImageRoomModal' handler (was triple-"proj" typo, never fired)
     $('#projImageRoomModal').on('hidden.bs.modal', function () {
         document.getElementById('projRoomModalImageID').value = '';
         document.getElementById('projRoomPickerSelect').value = '';
@@ -388,7 +390,7 @@ $(document).ready(function () {
         document.getElementById('projVermerkCurrentList').innerHTML =
             '<span class="text-muted fst-italic small">Lädt…</span>';
         $.ajax({
-            url: 'getImageMeta.php', type: 'POST', data: { imageID },
+            url: _base + 'getImageMeta.php', type: 'POST', data: { imageID },
             success: function (raw) {
                 const res = parseResponse(raw);
                 if (res.status !== 'ok' || !res.vermerke.length) {
@@ -415,7 +417,7 @@ $(document).ready(function () {
         if (!_vermerkPickerData) {
             list.innerHTML = '<div class="text-muted fst-italic small p-2">Wird geladen…</div>';
             $.ajax({
-                url: 'getVermerkeForProject.php', type: 'POST',
+                url: '../getVermerkeForProject.php', type: 'POST',
                 success: function (raw) {
                     const res = parseResponse(raw);
                     if (res.status !== 'ok') {
@@ -520,13 +522,12 @@ $(document).ready(function () {
         _projLoadVermerkPicker($(this).val());
     });
 
-    // FIX B3: now expects JSON (linkImageToVermerk.php updated to return JSON)
     $('#projVermerkLinkConfirmBtn').on('click', function () {
         const imageID = document.getElementById('projVermerkModalImageID').value;
         if (!imageID || !_selectedVermerkID) return;
         $(this).prop('disabled', true);
         $.ajax({
-            url: 'linkImageToVermerk.php', type: 'POST',
+            url: _base + 'linkImageToVermerk.php', type: 'POST',
             data: { imageID, vermerkID: _selectedVermerkID },
             success: function (raw) {
                 const res = parseResponse(raw);
@@ -552,9 +553,8 @@ $(document).ready(function () {
         e.stopPropagation();
         const imageID  = $(this).data('image-id');
         const vermerkID = $(this).data('vermerk-id');
-        // FIX B3: unlinkImageFromVermerk.php now returns JSON
         $.ajax({
-            url: 'unlinkImageFromVermerk.php', type: 'POST',
+            url: _base + 'unlinkImageFromVermerk.php', type: 'POST',
             data: { imageID, vermerkID },
             success: function (raw) {
                 const res = parseResponse(raw);
@@ -582,5 +582,204 @@ $(document).ready(function () {
     if (initialGallery) {
         initViewer(initialGallery, 'project-gallery-img');
     }
+
+
+    // ── Filter & Sort ─────────────────────────────────────────────────────────
+
+    function applyGalleryFilter() {
+        const search     = (document.getElementById('gallerySearch')        || {value:''}).value.toLowerCase().trim();
+        const raumVal    = (document.getElementById('galleryRaumFilter')    || {value:''}).value;
+        const vermerkVal = (document.getElementById('galleryVermerkFilter') || {value:''}).value;
+        const sortVal    = (document.getElementById('gallerySortSelect')    || {value:'newest'}).value;
+        const resetBtn   = document.getElementById('galleryResetFilter');
+        const hasFilter  = search || raumVal || vermerkVal || sortVal !== 'newest';
+        if (resetBtn) resetBtn.classList.toggle('d-none', !hasFilter);
+
+        let items = [...document.querySelectorAll('#projectGallery .gallery-item')];
+
+        items.sort((a, b) => {
+            if (sortVal === 'newest') return (b.dataset.timestamp||'').localeCompare(a.dataset.timestamp||'');
+            if (sortVal === 'oldest') return (a.dataset.timestamp||'').localeCompare(b.dataset.timestamp||'');
+            if (sortVal === 'name')   return (a.dataset.name||'').localeCompare(b.dataset.name||'');
+            return 0;
+        });
+        const gallery = document.getElementById('projectGallery');
+        if (gallery) items.forEach(el => gallery.appendChild(el));
+
+        let visible = 0;
+        items.forEach(el => {
+            const name       = el.dataset.name || '';
+            const raumIDs    = el.dataset.raumids           ? el.dataset.raumids.split(',').map(Number)           : [];
+            const gruppenIDs = el.dataset.vermerkgruppenids ? el.dataset.vermerkgruppenids.split(',').map(Number) : [];
+            let show = true;
+            if (search && !name.includes(search)) show = false;
+            if (raumVal === '__none__')    { if (raumIDs.length > 0)    show = false; }
+            else if (raumVal)             { if (!raumIDs.includes(parseInt(raumVal))) show = false; }
+            if (vermerkVal === '__none__') { if (gruppenIDs.length > 0) show = false; }
+            else if (vermerkVal)          { if (!gruppenIDs.includes(parseInt(vermerkVal))) show = false; }
+            el.style.display = show ? '' : 'none';
+            if (show) visible++;
+        });
+
+        const countInfo  = document.getElementById('galleryCountInfo');
+        const cntBadge   = document.getElementById('galleryCntBadge');
+        const emptyHint  = document.getElementById('galleryEmptyHint');
+        const noResHint  = document.getElementById('galleryNoResultHint');
+        if (countInfo) countInfo.textContent = visible + ' von ' + items.length + ' Bild' + (items.length !== 1 ? 'ern' : '');
+        if (cntBadge)  cntBadge.textContent  = visible;
+        if (emptyHint) emptyHint.classList.toggle('d-none', items.length > 0);
+        if (noResHint) noResHint.classList.toggle('d-none', visible > 0 || items.length === 0);
+
+        if (gallery) initViewer(gallery, 'project-gallery-img');
+    }
+
+
+
+    const resetBtn = document.getElementById('galleryResetFilter');
+    if (resetBtn) resetBtn.addEventListener('click', function () {
+        ['galleryRaumFilter','galleryVermerkFilter'].forEach(id => {
+            const el = document.getElementById(id); if (el) el.value = '';
+        });
+        const sort = document.getElementById('gallerySortSelect'); if (sort) sort.value = 'newest';
+        applyGalleryFilter();
+    });
+
+    applyGalleryFilter();
+
+    // ── Bulk-Modus ────────────────────────────────────────────────────────────
+
+    let _bulkMode    = false;
+    let _selectedIDs = new Set();
+
+    function _setBulkMode(on) {
+        _bulkMode = on;
+        _selectedIDs.clear();
+        document.querySelectorAll('.bulk-checkbox-wrap').forEach(el => el.classList.toggle('d-none', !on));
+        document.querySelectorAll('.gallery-item').forEach(el => {
+            el.classList.toggle('bulk-mode', on);
+            el.classList.remove('bulk-selected');
+        });
+        document.querySelectorAll('.gallery-bulk-cb').forEach(cb => cb.checked = false);
+        const bulkActions  = document.getElementById('bulkActions');
+        const bulkToggle   = document.getElementById('bulkToggleBtn');
+        if (bulkActions) bulkActions.classList.toggle('d-none', !on);
+        if (bulkToggle)  bulkToggle.classList.toggle('d-none', on);
+        _updateBulkBtns();
+    }
+
+    function _updateBulkBtns() {
+        const n = _selectedIDs.size;
+        const lbl = document.getElementById('bulkCountLabel');
+        const rb  = document.getElementById('bulkRoomBtn');
+        const db  = document.getElementById('bulkDeleteBtn');
+        if (lbl) lbl.textContent = n + ' gewählt';
+        if (rb)  rb.disabled  = n === 0;
+        if (db)  db.disabled  = n === 0;
+    }
+
+    const bulkToggleBtn   = document.getElementById('bulkToggleBtn');
+    const bulkCancelBtn   = document.getElementById('bulkCancelBtn');
+    const bulkSelectAllBtn = document.getElementById('bulkSelectAllBtn');
+    if (bulkToggleBtn)   bulkToggleBtn.addEventListener('click',  () => _setBulkMode(true));
+    if (bulkCancelBtn)   bulkCancelBtn.addEventListener('click',  () => _setBulkMode(false));
+    if (bulkSelectAllBtn) bulkSelectAllBtn.addEventListener('click', function () {
+        const visible = [...document.querySelectorAll('#projectGallery .gallery-item')]
+            .filter(el => el.style.display !== 'none');
+        const allSel = visible.every(el => _selectedIDs.has(parseInt(el.dataset.imageId)));
+        visible.forEach(el => {
+            const id = parseInt(el.dataset.imageId);
+            const cb = el.querySelector('.gallery-bulk-cb');
+            if (allSel) { _selectedIDs.delete(id); el.classList.remove('bulk-selected'); if(cb) cb.checked=false; }
+            else        { _selectedIDs.add(id);    el.classList.add('bulk-selected');    if(cb) cb.checked=true;  }
+        });
+        _updateBulkBtns();
+    });
+
+    const galleryEl = document.getElementById('projectGallery');
+    if (galleryEl) {
+        galleryEl.addEventListener('click', function (e) {
+            if (!_bulkMode) return;
+            const item = e.target.closest('.gallery-item');
+            if (!item || e.target.closest('button')) return;
+            const id = parseInt(item.dataset.imageId);
+            const cb = item.querySelector('.gallery-bulk-cb');
+            if (_selectedIDs.has(id)) { _selectedIDs.delete(id); item.classList.remove('bulk-selected'); if(cb) cb.checked=false; }
+            else                      { _selectedIDs.add(id);    item.classList.add('bulk-selected');    if(cb) cb.checked=true;  }
+            _updateBulkBtns();
+        });
+    }
+
+    // Bulk → Raum zuordnen
+    const bulkRoomBtn = document.getElementById('bulkRoomBtn');
+    if (bulkRoomBtn) bulkRoomBtn.addEventListener('click', function () {
+        const cnt = document.getElementById('bulkRoomCount');
+        const sel = document.getElementById('bulkRoomSelect');
+        const cfm = document.getElementById('bulkRoomConfirmBtn');
+        if (cnt) cnt.textContent = _selectedIDs.size;
+        if (sel) sel.value = '';
+        if (cfm) cfm.disabled = true;
+        new bootstrap.Modal(document.getElementById('bulkRoomModal')).show();
+    });
+    const bulkRoomSelect = document.getElementById('bulkRoomSelect');
+    if (bulkRoomSelect) bulkRoomSelect.addEventListener('change', function () {
+        const cfm = document.getElementById('bulkRoomConfirmBtn');
+        if (cfm) cfm.disabled = !this.value;
+    });
+    const bulkRoomConfirmBtn = document.getElementById('bulkRoomConfirmBtn');
+    if (bulkRoomConfirmBtn) bulkRoomConfirmBtn.addEventListener('click', function () {
+        const raumID = (document.getElementById('bulkRoomSelect') || {}).value;
+        if (!raumID || _selectedIDs.size === 0) return;
+        const btn = this; btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+        Promise.all([..._selectedIDs].map(imgID =>
+            fetch(_base  + 'linkImageToRoom.php', {
+                method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'},
+                body: 'imageID='+imgID+'&raumID='+raumID
+            }).then(r => r.json())
+        )).then(results => {
+            bootstrap.Modal.getInstance(document.getElementById('bulkRoomModal')).hide();
+            const ok = results.filter(r => r.status==='ok').length;
+            makeToaster(ok + ' Bild' + (ok!==1?'er':'') + ' mit Raum verknüpft.', true);
+            _setBulkMode(false);
+            setTimeout(() => location.reload(), 600);
+        }).catch(() => {
+            makeToaster('Fehler beim Bulk-Zuordnen.', false);
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-plus me-1"></i> Zuordnen';
+        });
+    });
+
+    // Bulk → Löschen
+    const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+    if (bulkDeleteBtn) bulkDeleteBtn.addEventListener('click', function () {
+        const body = document.getElementById('bulkDeleteBody');
+        if (body) body.textContent = _selectedIDs.size + ' Bild' + (_selectedIDs.size!==1?'er':'') + ' werden unwiderruflich gelöscht.';
+        new bootstrap.Modal(document.getElementById('bulkDeleteModal')).show();
+    });
+    const bulkDeleteConfirmBtn = document.getElementById('bulkDeleteConfirmBtn');
+    if (bulkDeleteConfirmBtn) bulkDeleteConfirmBtn.addEventListener('click', function () {
+        if (_selectedIDs.size === 0) return;
+        const btn = this; btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+        Promise.all([..._selectedIDs].map(imgID =>
+            fetch(_base + 'deleteImage.php', {
+                method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'},
+                body: 'imageID='+imgID
+            }).then(r => r.json())
+        )).then(results => {
+            bootstrap.Modal.getInstance(document.getElementById('bulkDeleteModal')).hide();
+            const ok     = results.filter(r => r.status==='ok').length;
+            const linked = results.filter(r => r.status==='linked').length;
+            let msg = ok + ' Bild' + (ok!==1?'er':'') + ' gelöscht.';
+            if (linked > 0) msg += ' ' + linked + ' übersprungen (in Vermerken verknüpft).';
+            makeToaster(msg, ok > 0);
+            _setBulkMode(false);
+            setTimeout(() => location.reload(), 600);
+        }).catch(() => {
+            makeToaster('Fehler beim Bulk-Löschen.', false);
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-trash-alt me-1"></i> Löschen';
+        });
+    });
 
 }); // end document.ready
