@@ -34,7 +34,7 @@ $row = $result->fetch_assoc();
                         <label for='variante'>Variante </label>
                         <select class='form-control form-control-sm me-1 ms-1' id='variante'>
                             <?php
-                            $options = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+                            $options = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
                             $selectedID = $_SESSION["variantenID"];
                             foreach ($options as $key => $value) {
                                 $optionValue = $key + 1;

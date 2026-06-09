@@ -36,6 +36,8 @@ function get_all_managed_element_ids(): array
         if (isset($cfg['breite_tiefe'])) $ids = array_merge($ids, array_values($cfg['breite_tiefe']));
         if (isset($cfg['sondermass'])) $ids[] = $cfg['sondermass'];
         if (isset($cfg['element_id'])) $ids[] = $cfg['element_id'];
+        // gruppe-Typ: element_id steckt im gruppe-Eintrag selbst
+        if (($cfg['typ'] ?? '') === 'gruppe' && isset($cfg['element_id'])) $ids[] = $cfg['element_id'];
     }
     return array_unique($ids);
 }
@@ -44,12 +46,24 @@ function get_all_managed_element_ids(): array
  * Findet den passenden Mapping-Eintrag für einen Familiennamen.
  *   match='prefix' → Familienname enthält den Key (MZ-Typen)
  *   match='exact'  → Familienname stimmt exakt überein (feste Familien)
+ *   typ='gruppe'   → mehrere Familien bilden zusammen ein Element;
+ *                    alle Familien der Gruppe matchen auf denselben Eintrag.
+ *                    'param_quelle' bestimmt welche Familie die Maße liefert,
+ *                    alle anderen sind 'secondary' (zählen 0×).
  */
 function find_mapping(string $familie): ?array
 {
+    // Direkt-Match (exact oder gruppe)
     if (isset(ELEMENT_MAPPING[$familie]) && ELEMENT_MAPPING[$familie]['match'] === 'exact') {
         return ELEMENT_MAPPING[$familie];
     }
+    // Gruppe: alle Familien-Einträge durchsuchen
+    foreach (ELEMENT_MAPPING as $cfg) {
+        if (($cfg['typ'] ?? '') === 'gruppe' && in_array($familie, $cfg['familien'], true)) {
+            return $cfg;
+        }
+    }
+    // Prefix-Match
     foreach (ELEMENT_MAPPING as $key => $cfg) {
         if ($cfg['match'] === 'prefix' && str_contains($familie, $key)) {
             return $cfg;
@@ -172,6 +186,16 @@ const ELEMENT_MAPPING = [
         // Alle anderen DB-Parameter (z.B. Netzart) → automatisch ignoriert
     ],
 
+    'TMO_-_LIMET_4-35-30-3 Gefahrenstoffsicherheitsschrank - brennbare Flüssigkeiten doppelflügelig' => [
+        'match' => 'exact',
+        'typ' => 'fixed',
+        'element_id' => '4.35.30.2',
+        'element_params' => [],
+        'variante_params' => ['MT_LIMET_Breite'],
+        // Netzart SV/AV ist in der DB, kommt im Modell nie vor
+        // → automatisch ignoriert, aber löst "ambiguous" aus wenn
+        //   mehrere Varianten sich nur dadurch unterscheiden
+    ],
     'TMO_-_LIMET_4-35-30-2 Gefahrenstoffsicherheitsschrank - SäureLaugen doppelflügelig' => [
         'match' => 'exact',
         'typ' => 'fixed',
@@ -190,13 +214,51 @@ const ELEMENT_MAPPING = [
         'element_params' => [],
         'variante_params' => [],
     ],
-    // Breite+Tiefe bestimmen die Variante (analog Hängeschrank 4-20-60-2)
-    'TMO_-_LIMET_4-20-30-1 Spülbecken DIN CrNi' => [
+    'TMO_-_LIMET_9-30-10-1 Punktabsaugung deckenmontiert' => [
         'match' => 'exact',
         'typ' => 'fixed',
-        'element_id' => '4.20.30.1',
+        'element_id' => '9.30.10.1',
         'element_params' => [],
-        'variante_params' => ['MT_LIMET_Breite', 'MT_LIMET_Tiefe'],
+        'variante_params' => [],
+    ],
+    // Hinweis: TMO_-_LIMET_4-20-30-1 Spülbecken DIN CrNi ist Teil der
+    // GRUPPE_Spuelenverbau_Labor (siehe unten) und wird dort als secondary
+    // mit Spülbecken-Parametern (Breite/Tiefe/Höhe) verarbeitet.
+
+    // ── Gruppen-Typ: mehrere Familien = 1 DB-Element ─────────────────────────
+    // 'param_quellen' = Array von { familie → variante_params[] die diese Familie liefert }.
+    // Nur die erste Familie im Array zählt 1× (Leitfamilie).
+    // Alle anderen Familien sind secondary → zählen 0×, liefern aber ihre eigenen Params.
+    // Familien ohne Eintrag in param_quellen sind rein secondary (keine Params, zählen 0×).
+    //
+    // Spülenverbau Labormöbel (4.35.20.1):
+    //   Unterbau     → Leitfamilie, liefert Verbau-Breite + Verbau-Tiefe
+    //   Arbeitsplatte→ secondary, keine eigenen Params
+    //   Spülbecken   → secondary, liefert Spülbecken_Breite/Tiefe/Höhe
+    'GRUPPE_Spuelenverbau_Labor' => [
+        'match'   => 'gruppe',
+        'typ'     => 'gruppe',
+        'familien' => [
+            'TMO_-_LIMET_4-20-20-3 Unterbau - Flügel DIN CrNi zweitürig',  // Leitfamilie (Index 0)
+            'TMO_-_LIMET_4-20-40-1 Arbeitsplatte DIN CrNi',                 // secondary, keine Params
+            'TMO_-_LIMET_4-20-30-1 Spülbecken DIN CrNi',                   // secondary, Becken-Params
+        ],
+        // Welche Familie liefert welche variante_params?
+        // Nicht aufgeführte Familien liefern keine Params (nur zählen 0×).
+        'param_quellen' => [
+            'TMO_-_LIMET_4-20-20-3 Unterbau - Flügel DIN CrNi zweitürig' => ['MT_LIMET_Breite', 'MT_LIMET_Tiefe'],
+            'TMO_-_LIMET_4-20-30-1 Spülbecken DIN CrNi'                  => ['MT_LIMET_Spuelbecken_Breite', 'MT_LIMET_Spuelbecken_Tiefe', 'MT_LIMET_Spuelbecken_Hoehe'],
+        ],
+        'element_id'      => '4.35.20.1',
+        'element_params'  => [],
+        // variante_params = Union aller param_quellen-Werte (wird von resolve() zusammengesetzt)
+        'variante_params' => [
+            'MT_LIMET_Breite',
+            'MT_LIMET_Tiefe',
+            'MT_LIMET_Spuelbecken_Breite',
+            'MT_LIMET_Spuelbecken_Tiefe',
+            'MT_LIMET_Spuelbecken_Hoehe',
+        ],
     ],
 
     // Augendusche — DB: 2.33.12.1 ("Augendusche")
@@ -260,9 +322,15 @@ const ELEMENT_MAPPING = [
 ];
 
 const PARAMETER_MAPPING = [
-    'MT_LIMET_Höhe' => ['id' => 1, 'einheit' => 'm', 'bezeichnung' => 'Höhe'],
-    'MT_LIMET_Tiefe' => ['id' => 3, 'einheit' => 'm', 'bezeichnung' => 'Tiefe'],
-    'MT_LIMET_Breite' => ['id' => 2, 'einheit' => 'm', 'bezeichnung' => 'Breite'],
+    'MT_LIMET_Höhe'   => ['id' => 1,   'einheit' => 'm',   'bezeichnung' => 'Höhe'],
+    'MT_LIMET_Tiefe'  => ['id' => 3,   'einheit' => 'm',   'bezeichnung' => 'Tiefe'],
+    'MT_LIMET_Breite' => ['id' => 2,   'einheit' => 'm',   'bezeichnung' => 'Breite'],
+    // Spülbecken-Maße (Teil von Spülenverbau 4.35.20.1)
+    // source_col = Revit-Parametername der Familie im Excel
+    // id         = Ziel-Parameter-ID in der DB
+    'MT_LIMET_Spuelbecken_Breite' => ['id' => 171, 'einheit' => 'm', 'bezeichnung' => 'Spülbecken Breite', 'source_col' => 'MT_LIMET_Breite'],
+    'MT_LIMET_Spuelbecken_Tiefe'  => ['id' => 172, 'einheit' => 'm', 'bezeichnung' => 'Spülbecken Tiefe',  'source_col' => 'MT_LIMET_Tiefe'],
+    'MT_LIMET_Spuelbecken_Hoehe'  => ['id' => 173, 'einheit' => 'm', 'bezeichnung' => 'Spülbecken Höhe',   'source_col' => 'MT_LIMET_Höhe'],
     'MT_LIMET_Anzahl Steckdosen-Auslässe' => ['id' => 153, 'einheit' => 'Stk', 'bezeichnung' => 'Steckdosen'],
     'MT_LIMET_Anzahl EDV-Auslässe' => ['id' => 127, 'einheit' => 'Stk', 'bezeichnung' => 'EDV (RJ45)'],
     'MT_LIMET_Anzahl DL-Auslässe' => ['id' => 121, 'einheit' => 'Stk', 'bezeichnung' => 'DL-5'],

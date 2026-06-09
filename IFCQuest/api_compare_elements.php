@@ -62,15 +62,40 @@ function norm(string $raw): string
     return $raw;
 }
 
+/**
+ * Bereinigt einen Rohwert aus dem Excel für die DB-Speicherung.
+ * Dimensionswerte wie "0,900 m" oder "1.200 m" werden zu "0.9" bzw. "1.2"
+ * (Punkt als Dezimaltrennzeichen, keine Einheit, keine trailing zeros).
+ * Einheit muss separat aus PARAMETER_MAPPING kommen.
+ */
+function norm_wert(string $raw, string $einheit): string
+{
+    if (in_array($raw, ['Ja', 'ja', 'Yes', '1', 'true'],     true)) return '1';
+    if (in_array($raw, ['Nein', 'nein', 'No', '0', 'false'], true)) return '0';
+
+    // Wenn der Wert eine bekannte Einheit enthält → als Zahl parsen
+    if ($einheit !== '' && str_contains(mb_strtolower($raw), mb_strtolower($einheit))) {
+        $num = str_ireplace($einheit, '', $raw);
+        $num = str_replace(',', '.', trim($num));
+        $val = (float)$num;
+        // trailing zeros entfernen: 0,900 → "0,9", 1,000 → "1", 1,200 → "1,2"
+        return rtrim(rtrim(number_format($val, 6, ',', ''), '0'), ',');
+    }
+
+    return norm($raw);
+}
+
 function extract_params(array $col_names, array $params_raw): array
 {
     $out = [];
     foreach ($col_names as $col) {
         $cfg = PARAMETER_MAPPING[$col] ?? null;
         if (!$cfg) continue;
-        $raw = $params_raw[$col] ?? '';
+        // source_col erlaubt einen anderen Revit-Parameternamen als Lesequelle
+        $read_col = $cfg['source_col'] ?? $col;
+        $raw = $params_raw[$read_col] ?? '';
         if ($raw === '') continue;
-        $out[$cfg['id']] = ['wert' => norm((string)$raw), 'einheit' => $cfg['einheit'], 'bezeichnung' => $cfg['bezeichnung']];
+        $out[$cfg['id']] = ['wert' => norm_wert((string)$raw, $cfg['einheit']), 'einheit' => $cfg['einheit'], 'bezeichnung' => $cfg['bezeichnung']];
     }
     return $out;
 }
@@ -83,13 +108,33 @@ function all_known_param_ids(): array
 
 function resolve(string $familie, string $laenge, string $tiefe, array $params_raw): array
 {
-    $r = ['element_id' => null, 'variante_params' => [], 'element_params' => [], 'debug' => '', 'laenge_cm' => null, 'is_sondermass' => false];
+    $r = ['element_id' => null, 'variante_params' => [], 'element_params' => [], 'debug' => '', 'laenge_cm' => null, 'is_sondermass' => false, 'is_gruppe_secondary' => false];
 
     $cfg = find_mapping($familie);
     if (!$cfg) return $r;
 
     $r['variante_params'] = $cfg['variante_params'] ?? [];
     $r['element_params']  = $cfg['element_params']  ?? $cfg['info_params'] ?? [];
+
+    // ── Gruppe: mehrere Familien → 1 Element ──────────────────────
+    if ($cfg['typ'] === 'gruppe') {
+        $r['element_id'] = $cfg['element_id'];
+        $leitfamilie = $cfg['familien'][0];
+        $ist_leitfamilie = ($familie === $leitfamilie);
+
+        if ($ist_leitfamilie) {
+            // Leitfamilie: zählt 1×, eigene variante_params aus param_quellen
+            $r['variante_params'] = $cfg['param_quellen'][$familie] ?? [];
+            $r['debug'] = 'Gruppe (Leitfamilie)';
+        } else {
+            // Secondary: zählt 0×
+            $r['is_gruppe_secondary'] = true;
+            // Eigene Params aus param_quellen (falls definiert), sonst keine
+            $r['variante_params'] = $cfg['param_quellen'][$familie] ?? [];
+            $r['debug'] = 'Gruppe (secondary – zählt nicht)';
+        }
+        return $r;
+    }
 
     // ── Feste Familie (exact match) ────────────────────────────────
     if ($cfg['typ'] === 'fixed') {
@@ -218,6 +263,11 @@ if (!empty($all_internal_ids)) {
 // ──────────────────────────────────────────────────────────────────
 
 $excel_groups = []; $unmapped_familien = [];
+// Sammler für secondary-Params die noch auf ihre Leitfamilien-Gruppe warten.
+// Struktur: $pending_gruppe_params[$eid][$fp_der_leitfamilie][] = extracted_params
+// Da secondary-Zeilen VOR oder NACH der Leitfamilie kommen können, mergen wir
+// in einem zweiten Pass (nach der Hauptschleife).
+$pending_gruppe_params = [];
 
 foreach ($familien as $e) {
     $familie    = trim($e['familie'] ?? '');
@@ -234,11 +284,22 @@ foreach ($familien as $e) {
         continue;
     }
 
-    // Dedizierte Spalten (laenge → Breite, tiefe → Tiefe) in params_raw zurückschreiben,
-    // falls dort noch kein Wert steht. So findet extract_params sie auch wenn der User
-    // Breite/Tiefe über die Spaltenauswahl statt als Param-Felder gemappt hat.
+    // Dedizierte Spalten in params_raw zurückschreiben
     if ($laenge !== '' && ($params_raw['MT_LIMET_Breite'] ?? '') === '') $params_raw['MT_LIMET_Breite'] = $laenge;
     if ($tiefe  !== '' && ($params_raw['MT_LIMET_Tiefe']  ?? '') === '') $params_raw['MT_LIMET_Tiefe']  = $tiefe;
+
+    if ($res['is_gruppe_secondary']) {
+        // Secondary: nicht zählen, aber Params für späteren Merge merken.
+        // Wir kennen den Fingerprint der Leitfamilie noch nicht (sie könnte
+        // später kommen), daher speichern wir die Params roh nach element_id.
+        if (!empty($res['variante_params'])) {
+            $sparams = extract_params($res['variante_params'], $params_raw);
+            if (!empty($sparams)) {
+                $pending_gruppe_params[$res['element_id']][] = $sparams;
+            }
+        }
+        continue;
+    }
 
     $vparams = extract_params($res['variante_params'], $params_raw);
     $eparams = extract_params($res['element_params'],  $params_raw);
@@ -263,6 +324,29 @@ foreach ($familien as $e) {
             'has_variante_params' => !empty($res['variante_params']),
         ];
     }
+}
+
+// ── Gruppe-Secondary-Params in Leitfamilien-Gruppen einmergen ────
+// Pro element_id: alle pending params auf alle vorhandenen Gruppen-Fingerprints draufmergen.
+// (Bei 1 Verbau pro Raum gibt es genau 1 Fingerprint — bei mehreren werden alle gleich befüllt,
+//  was korrekt ist, weil die Becken-Params ohnehin identisch sein müssen.)
+foreach ($pending_gruppe_params as $eid => $param_sets) {
+    if (!isset($excel_groups[$eid])) continue; // Leitfamilie fehlt → verwerfen
+    foreach ($excel_groups[$eid] as $fp => &$group) {
+        foreach ($param_sets as $sparams) {
+            $group['variante_params'] += $sparams; // bestehende Keys bleiben, neue werden ergänzt
+            if (!empty($sparams)) $group['has_variante_params'] = true;
+        }
+        // Fingerprint neu berechnen damit er alle Params enthält
+        $group['fingerprint'] = fingerprint(array_map(fn($p) => $p['wert'], $group['variante_params']));
+    }
+    unset($group);
+    // excel_groups nach neu berechnetem Fingerprint re-indexieren
+    $reindexed = [];
+    foreach ($excel_groups[$eid] as $group) {
+        $reindexed[$group['fingerprint']] = $group;
+    }
+    $excel_groups[$eid] = $reindexed;
 }
 
 // ──────────────────────────────────────────────────────────────────
