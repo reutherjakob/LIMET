@@ -263,11 +263,11 @@ class MYPDF extends TCPDF
                         $xStart = $this->getMargins()['left'];
                         $yRow = $this->GetY();
 
+                        $maxDrawH = 0;
                         foreach ($chunk as $idx => $imgPath) {
                             if (!file_exists($imgPath)) continue;
 
                             $x = $xStart + $idx * ($imgMaxW + $imgGap);
-                            // Seitenverhältnis ermitteln
                             $size = @getimagesize($imgPath);
                             if ($size && $size[0] > 0 && $size[1] > 0) {
                                 $ratio = $size[1] / $size[0];
@@ -278,24 +278,11 @@ class MYPDF extends TCPDF
                                 $drawH = $imgMaxH;
                             }
 
-                            $this->Image(
-                                $imgPath,
-                                $x,
-                                $yRow,
-                                $drawW,
-                                $drawH,
-                                '',   // auto-detect type
-                                '',   // no link
-                                '',   // default border
-                                true, // resize
-                                600,   // dpi
-                                '',   // palign
-                                false,
-                                false,
-                                0     // border=1 → dünner Rahmen
-                            );
+                            if ($drawH > $maxDrawH) $maxDrawH = $drawH;
+                            $this->Image($imgPath, $x, $yRow, $drawW, $drawH, '', '', '', true, 600, '', false, false, 0);
                         }
-                        $this->SetY($yRow + $drawH + 2);
+                        $this->SetY($yRow + $maxDrawH + 2);
+                        $this->Ln();
                     }
                 }
                 // ── Ende Bilder ──────────────────────────────────────────────

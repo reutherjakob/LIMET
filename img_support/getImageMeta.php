@@ -1,6 +1,6 @@
 <?php
 // getImageMeta.php – Metadaten eines Bildes (Timestamp, Projekt, Räume, Vermerke)
-require_once 'utils/_utils.php';
+require_once '../utils/_utils.php';
 check_login();
 
 header('Content-Type: application/json');
