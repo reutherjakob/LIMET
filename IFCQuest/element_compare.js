@@ -483,6 +483,11 @@ function buildBatchDetailPanel(state) {
             const famShort = (row.familie || '').length > 50
                 ? row.familie.substring(0, 48) + '…'
                 : (row.familie || '—');
+            const bezShort = (block.bezeichnung || '').length > 50
+                ? block.bezeichnung.substring(0, 48) + '…'
+                : (block.bezeichnung || '');
+            const excelLabel = row.variante_label && row.variante_label !== '—'
+                ? `&nbsp;·&nbsp; <span title="Parameter aus Excel">${esc(row.variante_label)}</span>` : '';
 
             let btns = '';
             row.candidates.forEach((c, idx) => {
@@ -504,8 +509,11 @@ function buildBatchDetailPanel(state) {
             box.innerHTML = `
                 <div class="text-muted mb-1" style="font-size:.72rem">
                     <code style="font-size:.72rem">${esc(block.element_id)}</code>
+                    <span title="${esc(block.bezeichnung || '')}">${esc(bezShort)}</span>
                     &nbsp;·&nbsp; ${esc(famShort)}
                     ${row.laenge_raw ? `&nbsp;· B: ${esc(row.laenge_raw)}` : ''}
+                    ${row.is_sondermass ? '&nbsp;<span class="badge bg-warning text-dark" style="font-size:.62rem">Sondermaß</span>' : ''}
+                    ${excelLabel}
                     &nbsp;·&nbsp; Excel: <strong>${row.excel_anzahl}</strong>
                 </div>
                 <div>${btns}</div>`;
@@ -514,65 +522,124 @@ function buildBatchDetailPanel(state) {
         wrap.appendChild(ambigWrap);
     }
 
-    // ── Changes summary table ─────────────────────────────────────
+    // ── Abgleich-Tabelle: Änderungen mit voller Info ──────────────
+    // (welches Element → welche Variante, neue Variante, Sondermaß, Debug)
     const changeRows = [];
+    const quietRows  = [];
     state.element_blocks.forEach(block => {
-        block.comparison
-            .filter(c => ['diff_anzahl', 'nur_excel', 'nur_db'].includes(c.status))
-            .forEach(c => changeRows.push({ block, row: c }));
+        block.comparison.forEach(c => {
+            if (c.status === 'ambiguous') return; // oben separat behandelt
+            if (['diff_anzahl', 'nur_excel', 'nur_db'].includes(c.status)) changeRows.push({ block, row: c });
+            else quietRows.push({ block, row: c }); // match / not_managed
+        });
     });
 
     if (changeRows.length) {
-        const table = document.createElement('table');
-        table.className = 'table table-sm table-hover mini-compare-table mb-0';
-        table.innerHTML = `
-            <thead class="table-light">
-                <tr>
-                    <th style="width:22px"></th>
-                    <th>Element / Familie</th>
-                    <th class="text-center" style="width:50px">DB</th>
-                    <th class="text-center" style="width:50px">Excel</th>
-                    <th>Aktion</th>
-                </tr>
-            </thead>`;
-        const tbody = document.createElement('tbody');
-        changeRows.forEach(({ block, row }) => {
-            const tr = document.createElement('tr');
-            let icon = '', actionBadge = '';
-            if (row.status === 'nur_excel') {
-                icon = '<i class="fas fa-plus-circle text-primary"></i>';
-                actionBadge = `<span class="badge bg-primary" style="font-size:.65rem">Hinzufügen${row.needs_new_variante ? ' + neue Var' : ''}</span>`;
-            } else if (row.status === 'nur_db') {
-                icon = '<i class="fas fa-minus-circle text-danger"></i>';
-                actionBadge = `<span class="badge bg-danger" style="font-size:.65rem">Auf 0 setzen</span>`;
-            } else if (row.status === 'diff_anzahl') {
-                icon = '<i class="fas fa-not-equal text-warning"></i>';
-                actionBadge = `<span class="badge bg-warning text-dark" style="font-size:.65rem">→ ${row.excel_anzahl}</span>`;
-            }
-            const famShort = (row.familie || '').length > 40
-                ? row.familie.substring(0, 38) + '…' : (row.familie || '—');
-
-            tr.innerHTML = `
-                <td class="text-center">${icon}</td>
-                <td>
-                    <div style="font-size:.72rem"><code style="font-size:.7rem">${esc(block.element_id)}</code></div>
-                    <div class="text-muted" style="font-size:.7rem" title="${esc(row.familie || '')}">${esc(famShort)}</div>
-                    ${row.variante_letter && row.variante_letter !== '—' ? `<span class="badge bg-secondary" style="font-size:.62rem">Var ${esc(row.variante_letter)}</span>` : ''}
-                </td>
-                <td class="text-center">${row.db_anzahl > 0 ? `<strong>${row.db_anzahl}</strong>` : '<span class="text-muted">—</span>'}</td>
-                <td class="text-center">${row.excel_anzahl > 0 ? `<strong>${row.excel_anzahl}</strong>` : '<span class="text-muted">—</span>'}</td>
-                <td>${actionBadge}</td>`;
-            tbody.appendChild(tr);
-        });
-        table.appendChild(tbody);
-        wrap.appendChild(table);
+        wrap.appendChild(buildBatchMiniTable(changeRows));
     }
 
-    if (!ambiguousRows.length && !changeRows.length) {
+    if (quietRows.length) {
+        const nMatch = quietRows.filter(r => r.row.status === 'match').length;
+        const nSkip  = quietRows.filter(r => r.row.status === 'not_managed').length;
+        const det = document.createElement('details');
+        det.className = 'mt-2';
+        const summary = document.createElement('summary');
+        summary.className = 'small text-muted';
+        summary.style.cursor = 'pointer';
+        summary.innerHTML = [
+            nMatch ? `<i class="fas fa-check text-success fa-xs me-1"></i>${nMatch} unverändert` : '',
+            nSkip  ? `<i class="fas fa-ban fa-xs me-1"></i>${nSkip} nicht gemappt` : '',
+        ].filter(Boolean).join(' &nbsp;·&nbsp; ') + ' &nbsp;— anzeigen';
+        det.appendChild(summary);
+        det.appendChild(buildBatchMiniTable(quietRows));
+        wrap.appendChild(det);
+    }
+
+    if (!ambiguousRows.length && !changeRows.length && !quietRows.length) {
         wrap.innerHTML = '<div class="text-muted small py-2 px-1">Keine Änderungen.</div>';
     }
 
     return wrap;
+}
+
+// Baut die Mini-Tabelle für das Batch-Detail-Panel.
+// rows = [{ block, row }]
+function buildBatchMiniTable(rows) {
+    const table = document.createElement('table');
+    table.className = 'table table-sm table-hover mini-compare-table mb-0';
+    table.innerHTML = `
+        <thead class="table-light">
+            <tr>
+                <th style="width:22px"></th>
+                <th>Element / Familie</th>
+                <th>Variante</th>
+                <th class="text-center" style="width:50px">DB</th>
+                <th class="text-center" style="width:50px">Excel</th>
+                <th>Aktion</th>
+            </tr>
+        </thead>`;
+    const tbody = document.createElement('tbody');
+
+    rows.forEach(({ block, row }) => {
+        const tr = document.createElement('tr');
+        let icon = '', actionBadge = '';
+        if (row.status === 'nur_excel') {
+            icon = '<i class="fas fa-plus-circle text-primary"></i>';
+            actionBadge = `<span class="badge bg-primary" style="font-size:.65rem">Hinzufügen</span>`;
+        } else if (row.status === 'nur_db') {
+            icon = '<i class="fas fa-minus-circle text-danger"></i>';
+            actionBadge = `<span class="badge bg-danger" style="font-size:.65rem">Auf 0 setzen</span>`;
+        } else if (row.status === 'diff_anzahl') {
+            icon = '<i class="fas fa-not-equal text-warning"></i>';
+            actionBadge = `<span class="badge bg-warning text-dark" style="font-size:.65rem">Anzahl → ${row.excel_anzahl}</span>`;
+        } else if (row.status === 'match') {
+            icon = '<i class="fas fa-check text-success"></i>';
+            actionBadge = '<span class="text-success small">✓ unverändert</span>';
+            tr.style.opacity = '.65';
+        } else if (row.status === 'not_managed') {
+            icon = '<i class="fas fa-ban text-muted"></i>';
+            actionBadge = '<span class="text-muted small">nicht gemappt</span>';
+            tr.style.opacity = '.65';
+        }
+
+        const famShort = (row.familie || '').length > 40
+            ? row.familie.substring(0, 38) + '…' : (row.familie || '—');
+        const bezShort = (block.bezeichnung || '').length > 45
+            ? block.bezeichnung.substring(0, 43) + '…' : (block.bezeichnung || '');
+
+        // ── Ziel-Variante: wohin wird importiert? ──────────────────
+        let varHtml = '';
+        if (row.needs_new_variante) {
+            varHtml += `<span class="badge bg-primary" style="font-size:.62rem"><i class="fas fa-plus fa-xs me-1"></i>neue Variante</span>`;
+        } else if (row.variante_letter && row.variante_letter !== '?' && row.variante_letter !== '(neu)') {
+            varHtml += `<span class="badge bg-secondary" style="font-size:.62rem">Var ${esc(row.variante_letter)}</span>`;
+        }
+        if (row.is_sondermass) {
+            varHtml += ` <span class="badge bg-warning text-dark" style="font-size:.62rem">Sondermaß</span>`;
+        }
+        if (row.variante_label && row.variante_label !== '—') {
+            varHtml += `<div class="text-muted" style="font-size:.68rem" title="${esc(row.variante_label)}">${esc(row.variante_label)}</div>`;
+        }
+        if (!varHtml) varHtml = '<span class="text-muted small">—</span>';
+
+        tr.innerHTML = `
+            <td class="text-center">${icon}</td>
+            <td>
+                <div style="font-size:.72rem">
+                    <code style="font-size:.7rem">${esc(block.element_id)}</code>
+                    <span title="${esc(block.bezeichnung || '')}">${esc(bezShort)}</span>
+                </div>
+                <div class="text-muted" style="font-size:.7rem" title="${esc(row.familie || '')}">${esc(famShort)}</div>
+                ${row.debug ? `<div class="text-muted fst-italic" style="font-size:.65rem">${esc(row.debug)}</div>` : ''}
+            </td>
+            <td>${varHtml}</td>
+            <td class="text-center">${row.db_anzahl > 0 ? `<strong>${row.db_anzahl}</strong>` : '<span class="text-muted">—</span>'}</td>
+            <td class="text-center">${row.excel_anzahl > 0 ? `<strong>${row.excel_anzahl}</strong>` : '<span class="text-muted">—</span>'}</td>
+            <td>${actionBadge}</td>`;
+        tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    return table;
 }
 
 // ══════════════════════════════════════════════════════════════════
