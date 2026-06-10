@@ -109,7 +109,7 @@ $sqlElemIDs = "
      WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
        AND re.Standort = 1
        AND r.idTABELLE_Räume IN ($roomPlaceholders) 
-       AND e.idTABELLE_Elemente IN ( $dummyIDsSQL)
+       AND e.idTABELLE_Elemente NOT  IN ( $dummyIDsSQL)
        $budgetFilterSQL";
 
 $elemParams = array_merge([$projectID], $roomIDs);

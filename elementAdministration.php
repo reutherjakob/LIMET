@@ -64,8 +64,8 @@ init_page_serversides("x"); ?>
                         <ul class="nav nav-tabs mt-2 float-end">
                             <li class="nav-item">
                                 <button class="nav-link active" data-bs-toggle="tab"
-                                        data-bs-target="#elementPricesInOtherProjects"><label>Schätzkosten in
-                                        Projekten</label></button>
+                                        data-bs-target="#elementPricesInOtherProjects">
+                                    <label>Schätzkosten in Projekten</label></button>
                             </li>
                             <li class="nav-item">
                                 <button class="nav-link" data-bs-toggle="tab"

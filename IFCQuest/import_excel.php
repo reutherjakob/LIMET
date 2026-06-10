@@ -3,6 +3,102 @@ if (!function_exists('utils_connect_sql')) {
     include "../utils/_utils.php";
 }
 init_page_serversides("No Redirect");
+require_once __DIR__ . '/import_2_db_config.php';
+
+// ──────────────────────────────────────────────────────────────────
+// Mapping-Info-Karte: wird direkt aus ELEMENT_MAPPING generiert,
+// bleibt also automatisch aktuell wenn die Config geändert wird.
+// ──────────────────────────────────────────────────────────────────
+
+function mi_fam(string $name): string
+{
+    // Revit-Präfix für die Anzeige kürzen
+    return htmlspecialchars(preg_replace('/^TM[OM]_-_LIMET_/u', '', $name));
+}
+
+function mi_param_label(string $col): string
+{
+    return htmlspecialchars(PARAMETER_MAPPING[$col]['bezeichnung'] ?? $col);
+}
+
+function mi_param_list(array $cols): string
+{
+    return implode(', ', array_map('mi_param_label', $cols));
+}
+
+function render_mapping_info_rows(): string
+{
+    $html = '';
+    foreach (ELEMENT_MAPPING as $key => $cfg) {
+        $match = $cfg['match'] ?? '';
+        if ($match === 'fallback') continue; // wird bei der Gruppe miterklärt
+        $typ = $cfg['typ'] ?? '';
+
+        // ── Gruppe (z.B. Spülenverbau) ─────────────────────────────
+        if ($typ === 'gruppe') {
+            $leit = array_map('mi_fam', $cfg['leitfamilien'] ?? []);
+            $beg_html = '';
+            foreach (($cfg['begleitfamilien'] ?? []) as $fam => $bcfg) {
+                $fb = ELEMENT_MAPPING[$bcfg['fallback'] ?? ''] ?? null;
+                $fb_eid = $fb['element_id'] ?? '–';
+                $beg_html .= '<li>' . mi_fam($fam)
+                    . ' <span class="text-muted">(überzählig → <code>' . htmlspecialchars($fb_eid) . '</code>)</span></li>';
+            }
+            $params = mi_param_list($cfg['variante_params'] ?? []);
+            $html .= '<tr>'
+                . '<td><span class="badge bg-info text-dark">Gruppe</span><br>' . implode('<br>', $leit) . '</td>'
+                . '<td><code>' . htmlspecialchars($cfg['element_id']) . '</code></td>'
+                . '<td>Je <strong>1 Stück pro Leitfamilien-Zeile</strong> (z.B. je Spülbecken eine Spüle).'
+                . ' Pro Stück wird aus folgenden Begleitern je der mit der <em>ähnlichsten Breite</em> zugeordnet,'
+                . ' der Rest wird als eigenständiges Element importiert:'
+                . '<ul class="mb-1 ps-3">' . $beg_html . '</ul>'
+                . ($params !== '' ? '<span class="text-muted">Variante: ' . $params . '</span>' : '')
+                . '</td></tr>';
+            continue;
+        }
+
+        // ── Längen-Typ (prefix-Match auf Familiennamen) ────────────
+        if ($typ === 'laengen') {
+            $laengen = [];
+            foreach (($cfg['laengen'] ?? []) as $cm => $eid) $laengen[] = $cm . '&nbsp;cm&nbsp;→&nbsp;<code>' . htmlspecialchars($eid) . '</code>';
+            $params = mi_param_list($cfg['variante_params'] ?? []);
+            $html .= '<tr>'
+                . '<td><span class="badge bg-secondary">enthält</span> ' . htmlspecialchars($key) . '</td>'
+                . '<td>' . implode('<br>', $laengen)
+                . '<br>Sondermaß&nbsp;→&nbsp;<code>' . htmlspecialchars($cfg['sondermass'] ?? '–') . '</code></td>'
+                . '<td>Länge wird auf die nächste Standardlänge gerundet.'
+                . ($params !== '' ? '<br><span class="text-muted">Variante: ' . $params . '</span>' : '')
+                . '</td></tr>';
+            continue;
+        }
+
+        // ── Tisch-Typ (Breite×Tiefe-Auswahl) ───────────────────────
+        if ($typ === 'tisch') {
+            $dims = [];
+            foreach (($cfg['breite_tiefe'] ?? []) as $bt => $eid) $dims[] = htmlspecialchars($bt) . '&nbsp;→&nbsp;<code>' . htmlspecialchars($eid) . '</code>';
+            $extra = '';
+            if (isset($cfg['sondermass'])) $extra .= '<br>Sondermaß&nbsp;→&nbsp;<code>' . htmlspecialchars($cfg['sondermass']) . '</code>';
+            if (isset($cfg['no_dim_fallback'])) $extra .= '<br>ohne Maße&nbsp;→&nbsp;<code>' . htmlspecialchars($cfg['no_dim_fallback']) . '</code>';
+            $params = mi_param_list($cfg['variante_params'] ?? []);
+            $html .= '<tr>'
+                . '<td>' . ($match === 'prefix' ? '<span class="badge bg-secondary">enthält</span> ' : '') . mi_fam($key) . '</td>'
+                . '<td>' . implode('<br>', $dims) . $extra . '</td>'
+                . '<td>Auswahl nach Breite&nbsp;×&nbsp;Tiefe (cm).'
+                . ($params !== '' ? '<br><span class="text-muted">Variante: ' . $params . '</span>' : '')
+                . '</td></tr>';
+            continue;
+        }
+
+        // ── Festes Element ─────────────────────────────────────────
+        $params = mi_param_list($cfg['variante_params'] ?? []);
+        $html .= '<tr>'
+            . '<td>' . mi_fam($key) . '</td>'
+            . '<td><code>' . htmlspecialchars($cfg['element_id'] ?? '–') . '</code></td>'
+            . '<td>' . ($params !== '' ? '<span class="text-muted">Variante: ' . $params . '</span>' : '<span class="text-muted">fix, keine Varianten</span>')
+            . '</td></tr>';
+    }
+    return $html;
+}
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
@@ -133,8 +229,42 @@ init_page_serversides("No Redirect");
                     </div>
                     <div class="col-xl-3">
                         <div class="card mb-2 mt-2">
-                            <div class="card-body text-center">
-
+                            <!-- ══ Mapping-Info (aufklappbar, aus ELEMENT_MAPPING generiert) ══ -->
+                            <div class="card-header py-2"
+                                 style="cursor:pointer; user-select:none"
+                                 data-bs-toggle="collapse"
+                                 data-bs-target="#mapping-info-collapse">
+                                <span class="fw-semibold small">
+                                    <i class="fas fa-info-circle me-1"></i>Wie wird importiert? (Mapping-Info)
+                                </span>
+                                <i class="fas fa-chevron-down float-end mt-1 small"></i>
+                            </div>
+                            <div id="mapping-info-collapse" class="collapse">
+                                <div class="card-body p-2 text-start" style="max-height: 480px; overflow-y: auto; font-size: .78rem">
+                                    <p class="mb-1 fw-semibold">Grundregeln</p>
+                                    <ul class="ps-3 mb-2">
+                                        <li>Nur unten gelistete Revit-Familien werden gemappt. Unbekannte Familien
+                                            erscheinen als <em>nicht gemappt</em> und werden nicht verändert.</li>
+                                        <li>Gemappte Elemente, die im Raum vorhanden sind, aber <strong>nicht im
+                                                Excel</strong> vorkommen, werden beim Sync auf <strong>Anzahl&nbsp;0</strong> gesetzt.</li>
+                                        <li>Nicht gemappte Elemente im Raum bleiben unberührt.</li>
+                                        <li>Zeilen mit identischen Varianten-Parametern werden zur selben Variante
+                                            zusammengezählt (Anzahl++); abweichende Werte erzeugen eine neue Variante.</li>
+                                    </ul>
+                                    <p class="mb-1 fw-semibold">Gemappte Familien</p>
+                                    <table class="table table-sm table-bordered align-top mb-0" style="font-size: .73rem">
+                                        <thead class="table-light" style="position: sticky; top: -8px">
+                                        <tr>
+                                            <th style="width: 38%">Revit-Familie</th>
+                                            <th style="width: 24%">DB-Element</th>
+                                            <th>Logik</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <?php echo render_mapping_info_rows(); ?>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
