@@ -20,6 +20,11 @@ global $role;// = get_user_role();
                 '<a class="py-0 px-2 nav-link" href="../Nutzerumfrage/adminpanel.php" role="button"><i class="fa fa-cogs"></i> Admin Panel</a>' +
                 '</li>'
             );
+            $("#limet-navbar ul.navbar-nav.col-8").append(
+                '<li class="nav-item">' +
+                '<a class="py-0 px-2 nav-link" href="../Nutzerumfrage/ergebnisse.php" role="button"><i class="fas fa-fire-alt"></i></i> Ergebnisse</a>' +
+                '</li>'
+            );
         }
     });
 </script>

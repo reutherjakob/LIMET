@@ -451,9 +451,9 @@ const ELEMENT_MAPPING = [
 ];
 
 const PARAMETER_MAPPING = [
-    'MT_LIMET_Höhe' => ['id' => 1, 'einheit' => 'm', 'bezeichnung' => 'Höhe'],
-    'MT_LIMET_Tiefe' => ['id' => 2, 'einheit' => 'm', 'bezeichnung' => 'Tiefe'],
-    'MT_LIMET_Breite' => ['id' => 3, 'einheit' => 'm', 'bezeichnung' => 'Breite'],
+    'MT_LIMET_Höhe' => ['id' => 3, 'einheit' => 'm', 'bezeichnung' => 'Höhe'],
+    'MT_LIMET_Tiefe' => ['id' => 4, 'einheit' => 'm', 'bezeichnung' => 'Tiefe'],
+    'MT_LIMET_Breite' => ['id' => 2, 'einheit' => 'm', 'bezeichnung' => 'Breite'],
     // Spülbecken-Maße (Teil von Spülenverbau 4.35.20.1)
     // source_col = Revit-Parametername der Familie im Excel
     // id         = Ziel-Parameter-ID in der DB

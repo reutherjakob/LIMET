@@ -472,6 +472,7 @@ $row = $result->fetch_assoc();
         if ($('#kosten').val() !== '') {
             let KostenFormatiert = normalizeCosts($('#kosten').val());
             let variantenID = $('#variante').val();
+            console.log("Variante ID = "+ variantenID + " Kosten: " + KostenFormatiert);
             $.ajax({
                 url: "saveVariantePrice.php",
                 type: "POST",

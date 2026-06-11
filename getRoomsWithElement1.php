@@ -19,15 +19,15 @@
 require_once 'utils/_utils.php';
 check_login();
 
-$elementID   = getPostInt("elementID", 0);
-$projectID   = (int)$_SESSION["projectID"];
+$elementID = getPostInt("elementID", 0);
+$projectID = (int)$_SESSION["projectID"];
 
 // read raw POST strings in addition
-$rawBestand     = $_POST['bestand']     ?? null;
+$rawBestand = $_POST['bestand'] ?? null;
 $rawVariantenID = $_POST['variantenID'] ?? null;
 
 // convert to int if present
-$bestand     = ($rawBestand     === null || $rawBestand     === '') ? null : (int)$rawBestand;
+$bestand = ($rawBestand === null || $rawBestand === '') ? null : (int)$rawBestand;
 $variantenID = ($rawVariantenID === null || $rawVariantenID === '') ? null : (int)$rawVariantenID;
 
 $where = [];
@@ -121,7 +121,7 @@ foreach ($columns as [$key, $label]) {
 
 echo "</tr></thead><tbody>";
 
-$options = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+$options = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";

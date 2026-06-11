@@ -31,9 +31,9 @@ function renderForm(array $formFields, array $userData = [], string $role = ''):
 
     echo '<div class="d-flex align-items-center justify-content-end">';
     if ($role !== 'spargelfeld_view') {
-        echo '<button type="submit" id="saveBtn" class="btn btn-success">
-            <i class="far fa-save"></i> Anforderungen speichern
-          </button>';
+      // echo '<button type="submit" id="saveBtn" class="btn btn-success">
+      //     <i class="far fa-save"></i> Anforderungen speichern
+      //   </button>';
     }
     echo '</div>
           </div> 
