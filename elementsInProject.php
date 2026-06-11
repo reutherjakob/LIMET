@@ -112,7 +112,6 @@
                             WHERE (((tabelle_räume_has_tabelle_elemente.Standort) = 1) AND
                                    ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = ?))
                             GROUP BY tabelle_elemente.ElementID,
-                                     
                                      tabelle_varianten.Variante,
                                      tabelle_varianten.idtabelle_Varianten, 
                                      tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
