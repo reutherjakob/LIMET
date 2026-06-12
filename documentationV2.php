@@ -179,7 +179,7 @@ init_page_serversides();
             </div>
 
 
-            <?php include "modale_img/card_load_image_preview.php"; ?>
+            <?php include "img_support/card_load_image_preview.php"; ?>
 
         </div>
 
@@ -370,6 +370,7 @@ init_page_serversides();
     </div>
 </div>
 
+<!-- Upload Modal Projektgalerie -->
 <?php
 include_once "img_support/modal_upload_image.php";
 include_once "img_support/modal_delete_img.php";
@@ -382,6 +383,7 @@ $mysqli->close();
 
 
 <!--suppress ES6ConvertVarToLetConst -->
+<script src="img_support/projectGallery.js"></script>
 <script>
     //       for getVermerkToUntergruppe.php
     var tableVermerkGruppe, gruppenID, vermerkID, tableVermerke, untergruppenID, vermerkGruppenID; //  for getVermerkUntergruppeToGruppe.php
@@ -619,10 +621,9 @@ $mysqli->close();
     });
 
 
+    // ── Galerie-JS wird vollständig von card_load_image_preview.php bereitgestellt ──
+    // reloadProjectGallery() ist global verfügbar (window.reloadProjectGallery)
 
 </script>
-
-<script src="utils/_utils.js"></script>
-<script src="img_support/projectGallery.js"></script>
 </body>
 </html>

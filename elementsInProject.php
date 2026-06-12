@@ -112,7 +112,6 @@
                             WHERE (((tabelle_räume_has_tabelle_elemente.Standort) = 1) AND
                                    ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = ?))
                             GROUP BY tabelle_elemente.ElementID,
-                                     
                                      tabelle_varianten.Variante,
                                      tabelle_varianten.idtabelle_Varianten, 
                                      tabelle_räume_has_tabelle_elemente.`Neu/Bestand`,
@@ -213,7 +212,12 @@
             <div class="row">
                 <div class='col-xxl-6'>
                     <div class='mt-1 card'>
-                        <div class='card-header'><label>DB-Elementparameter</label></div>
+                        <div class='card-header d-flex justify-content-between align-items-center'>
+                            <label class="mb-0">DB-Elementparameter</label>
+                            <button type='button' id='saveDBParamsToProject' class='btn btn-outline-dark btn-sm'>
+                                <i class='fas fa-upload'></i> Ins Projekt übernehmen
+                            </button>
+                        </div>
                         <div class='card-body' id='elementDBParameter'></div>
                     </div>
                 </div>

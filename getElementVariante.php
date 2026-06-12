@@ -34,7 +34,7 @@ $row = $result->fetch_assoc();
                         <label for='variante'>Variante </label>
                         <select class='form-control form-control-sm me-1 ms-1' id='variante'>
                             <?php
-                            $options = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+                            $options = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
                             $selectedID = $_SESSION["variantenID"];
                             foreach ($options as $key => $value) {
                                 $optionValue = $key + 1;
@@ -420,7 +420,8 @@ $row = $result->fetch_assoc();
             url: "setSessionVariables.php",
             data: {"variantenID": variantenID},
             type: "POST",
-            success: function () {  //console.log("JS:", variantenID);
+            success: function () {
+                //   console.log("JS:", variantenID);
                 $.ajax({
                     url: "getSessionVariante.php",
                     type: "POST",
@@ -472,6 +473,7 @@ $row = $result->fetch_assoc();
         if ($('#kosten').val() !== '') {
             let KostenFormatiert = normalizeCosts($('#kosten').val());
             let variantenID = $('#variante').val();
+            console.log("Variante ID = " + variantenID + " Kosten: " + KostenFormatiert);
             $.ajax({
                 url: "saveVariantePrice.php",
                 type: "POST",
@@ -542,25 +544,25 @@ $row = $result->fetch_assoc();
     $("#addVariantenParameterToElement").click(function () {
         const username = "  <?php echo $_SESSION["username"] ?>";
         const elementID = <?php echo $_SESSION["elementID"] ?>;
-        const variantenID = <?php echo $_SESSION["variantenID"] ?>;
-        console.log(username.trim());
-        if (username.toLowerCase().trim() === "reuther") { // } || username.toLowerCase().trim() === "fuchs") {
-            $.ajax({
-                url: "addVariantenParameterToElement.php",
-                data: {"elementID": elementID, "variantenID": variantenID},
-                type: "POST",
-                success: function (data) {
-                    makeToaster(data.trim(), true);  //alert(data);
-                    $.ajax({
-                        url: "getStandardElementParameters.php",
-                        data: {"elementID": elementID},
-                        type: "POST",
-                        success: function (data) {
-                            $("#elementDBParameter").html(data);
-                        }
-                    });
-                }
-            });
-        }
+        let variantenID = $('#variante').val();
+        // console.log(elementID, variantenID);
+        // if (username.toLowerCase().trim() === "reuther") { // } || username.toLowerCase().trim() === "fuchs") {
+        $.ajax({
+            url: "addVariantenParameterToElement.php",
+            data: {"elementID": elementID, "variantenID": variantenID},
+            type: "POST",
+            success: function (data) {
+                makeToaster(data.trim(), true);  //alert(data);
+                $.ajax({
+                    url: "getStandardElementParameters.php",
+                    data: {"elementID": elementID},
+                    type: "POST",
+                    success: function (data) {
+                        $("#elementDBParameter").html(data);
+                    }
+                });
+            }
+        });
+        //}
     });
 </script>

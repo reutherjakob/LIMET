@@ -250,6 +250,13 @@
                             </a>
                         </p>
 
+                        <p>
+                            <i class="fas fa-camera-retro col-1"></i>
+                            <a class="col-11"                      href="/img_support/imageGallery.php">
+                                Bilder
+                            </a>
+                        </p>
+
 
 
                     </div>

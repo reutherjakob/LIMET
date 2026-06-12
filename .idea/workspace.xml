@@ -4,36 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Bugfixes.&#10;Los Historie ion tenderLots eingepflegt. &#10;korrekturen Nutzerkatalog SF.">
-      <change afterPath="$PROJECT_DIR$/getImageMeta.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/getImagesForVermerk.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/getProjectImages.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/getVermerkeForProject.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img_support/card_load_image_preview.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img_support/modal_delete_img.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img_support/modal_img_room.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img_support/modal_img_vermerke.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img_support/modal_metadaten.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img_support/modal_upload_image.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img_support/projectGallery.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/linkImageToRoom.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/linkImageToVermerk.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/unlinkImageFromRoom.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/unlinkImageFromVermerk.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/LIMET.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/LIMET.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="IMG upgrades">
+      <change afterPath="$PROJECT_DIR$/img_support/gallery_grid.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createLotVermerkePDF.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createLotVermerkePDF.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PDFs/pdf_createVermerkGroupPDF.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createVermerkGroupPDF.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/documentationV2.php" beforeDir="false" afterPath="$PROJECT_DIR$/documentationV2.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getVermerkeToUntergruppe.php" beforeDir="false" afterPath="$PROJECT_DIR$/getVermerkeToUntergruppe.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unused/deleteImage.php" beforeDir="false" afterPath="$PROJECT_DIR$/deleteImage.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unused/deleteImageFromRoom.php" beforeDir="false" afterPath="$PROJECT_DIR$/deleteImageFromRoom.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unused/imageGallery.php" beforeDir="false" afterPath="$PROJECT_DIR$/imageGallery.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unused/imageRoomgallery.php" beforeDir="false" afterPath="$PROJECT_DIR$/imageRoomgallery.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unused/uploadFileImage.php" beforeDir="false" afterPath="$PROJECT_DIR$/uploadFileImage.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/_Cdnz.html" beforeDir="false" afterPath="$PROJECT_DIR$/utils/_Cdnz.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/utils/navbar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_support/projectGallery.js" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/projectGallery.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,7 +34,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="werq_6_5_26" />
+        <entry key="$PROJECT_DIR$" value="bildsupport" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -83,6 +58,13 @@
         &quot;number&quot;: 74
       },
       &quot;lastSeen&quot;: 1776066601063
+    },
+    {
+      &quot;id&quot;: {
+        &quot;id&quot;: &quot;PR_kwDOKp49587kXwzX&quot;,
+        &quot;number&quot;: 80
+      },
+      &quot;lastSeen&quot;: 1781008265187
     }
   ]
 }</component>
@@ -124,9 +106,9 @@
     &quot;PHP Web Page.Unnamed.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;database.data.extractors.current.export.id&quot;: &quot;Semicolon-separated_id&quot;,
-    &quot;database.data.extractors.current.id&quot;: &quot;Semicolon-separated_id&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;bildsupport&quot;,
+    &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
+    &quot;database.data.extractors.current.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;#80 on ifc__excel__import&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/WolfgangFuchsLIMET/Documents/NetBeansProjects/LIMET-FX&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -155,11 +137,11 @@
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\Besprechungsansicht\controllers" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX" />
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\img_support" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\Nutzerumfrage" />
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\IFCQuest" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\utils" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\_offene_projekte" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -599,56 +581,12 @@
       <workItem from="1779175391804" duration="7225000" />
       <workItem from="1779189208923" duration="6144000" />
       <workItem from="1779263139354" duration="15249000" />
-      <workItem from="1780475136959" duration="21642000" />
-      <workItem from="1780499767846" duration="595000" />
-    </task>
-    <task id="LOCAL-00192" summary="Neues Login System: Schritt 1 - Encrypted PWs speichern.">
-      <option name="closed" value="true" />
-      <created>1771933186889</created>
-      <option name="number" value="00192" />
-      <option name="presentableId" value="LOCAL-00192" />
-      <option name="project" value="LOCAL" />
-      <updated>1771933186889</updated>
-    </task>
-    <task id="LOCAL-00193" summary="Neues Login System: Schritt 1 - Encrypted PWs speichern.">
-      <option name="closed" value="true" />
-      <created>1771933490961</created>
-      <option name="number" value="00193" />
-      <option name="presentableId" value="LOCAL-00193" />
-      <option name="project" value="LOCAL" />
-      <updated>1771933490961</updated>
-    </task>
-    <task id="LOCAL-00194" summary="Neues Login System: Schritt 1 - Encrypted PWs speichern.">
-      <option name="closed" value="true" />
-      <created>1771933916707</created>
-      <option name="number" value="00194" />
-      <option name="presentableId" value="LOCAL-00194" />
-      <option name="project" value="LOCAL" />
-      <updated>1771933916707</updated>
-    </task>
-    <task id="LOCAL-00195" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu&#10;&#10;# Conflicts:&#10;#&#9;_offene_projekte/analyseTabelleRaeume.php&#10;#&#9;offene_projekte/analyseTabelleRaeume.php&#10;#&#9;utils/analyseTabelleRaeume.php">
-      <option name="closed" value="true" />
-      <created>1771934939924</created>
-      <option name="number" value="00195" />
-      <option name="presentableId" value="LOCAL-00195" />
-      <option name="project" value="LOCAL" />
-      <updated>1771934939924</updated>
-    </task>
-    <task id="LOCAL-00196" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu&#10;&#10;# Conflicts:&#10;#&#9;_offene_projekte/analyseTabelleRaeume.php&#10;#&#9;offene_projekte/analyseTabelleRaeume.php&#10;#&#9;utils/analyseTabelleRaeume.php">
-      <option name="closed" value="true" />
-      <created>1771935004045</created>
-      <option name="number" value="00196" />
-      <option name="presentableId" value="LOCAL-00196" />
-      <option name="project" value="LOCAL" />
-      <updated>1771935004045</updated>
-    </task>
-    <task id="LOCAL-00197" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu">
-      <option name="closed" value="true" />
-      <created>1772021791351</created>
-      <option name="number" value="00197" />
-      <option name="presentableId" value="LOCAL-00197" />
-      <option name="project" value="LOCAL" />
-      <updated>1772021791351</updated>
+      <workItem from="1781005187020" duration="4378000" />
+      <workItem from="1781013013349" duration="6834000" />
+      <workItem from="1781025171826" duration="170000" />
+      <workItem from="1781076602010" duration="12315000" />
+      <workItem from="1781162264695" duration="13205000" />
+      <workItem from="1781247519992" duration="2806000" />
     </task>
     <task id="LOCAL-00198" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu">
       <option name="closed" value="true" />
@@ -994,7 +932,55 @@
       <option name="project" value="LOCAL" />
       <updated>1779284951676</updated>
     </task>
-    <option name="localTasksCounter" value="241" />
+    <task id="LOCAL-00241" summary="Import Elemente aus SF Model Excel">
+      <option name="closed" value="true" />
+      <created>1781005235149</created>
+      <option name="number" value="00241" />
+      <option name="presentableId" value="LOCAL-00241" />
+      <option name="project" value="LOCAL" />
+      <updated>1781005235149</updated>
+    </task>
+    <task id="LOCAL-00242" summary="Import Elemente aus SF Model Excel">
+      <option name="closed" value="true" />
+      <created>1781008066210</created>
+      <option name="number" value="00242" />
+      <option name="presentableId" value="LOCAL-00242" />
+      <option name="project" value="LOCAL" />
+      <updated>1781008066210</updated>
+    </task>
+    <task id="LOCAL-00243" summary="fixed pdf">
+      <option name="closed" value="true" />
+      <created>1781008547515</created>
+      <option name="number" value="00243" />
+      <option name="presentableId" value="LOCAL-00243" />
+      <option name="project" value="LOCAL" />
+      <updated>1781008547515</updated>
+    </task>
+    <task id="LOCAL-00244" summary="Import works">
+      <option name="closed" value="true" />
+      <created>1781101421908</created>
+      <option name="number" value="00244" />
+      <option name="presentableId" value="LOCAL-00244" />
+      <option name="project" value="LOCAL" />
+      <updated>1781101421908</updated>
+    </task>
+    <task id="LOCAL-00245" summary="Import works">
+      <option name="closed" value="true" />
+      <created>1781180134743</created>
+      <option name="number" value="00245" />
+      <option name="presentableId" value="LOCAL-00245" />
+      <option name="project" value="LOCAL" />
+      <updated>1781180134744</updated>
+    </task>
+    <task id="LOCAL-00246" summary="IMG upgrades">
+      <option name="closed" value="true" />
+      <created>1781253247486</created>
+      <option name="number" value="00246" />
+      <option name="presentableId" value="LOCAL-00246" />
+      <option name="project" value="LOCAL" />
+      <updated>1781253247486</updated>
+    </task>
+    <option name="localTasksCounter" value="247" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1024,11 +1010,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Bugfixes.&#10;TenderLotsTodos." />
-    <MESSAGE value="Neues Login System: Schritt 1 - Encrypted PWs speichern." />
-    <MESSAGE value="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu&#10;&#10;# Conflicts:&#10;#&#9;_offene_projekte/analyseTabelleRaeume.php&#10;#&#9;offene_projekte/analyseTabelleRaeume.php&#10;#&#9;utils/analyseTabelleRaeume.php" />
-    <MESSAGE value="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu" />
-    <MESSAGE value="Elelemtn History added.&#10;Wartet noch auf ddie erweiterung der Lose Tabelle, damit preiseintrager notiert werden kann" />
     <MESSAGE value="Koth Katalog fin.&#10;SF Umfrage Fin.&#10;Losliste Fin." />
     <MESSAGE value="Standort/Verwendung Verbessert.&#10;kor Katalog.&#10;BBE einreichbereicht" />
     <MESSAGE value="SF Umfrage DONE.&#10;&#10;LOGIN speichert nun VERSCHLÜSSELTE Userdaten in tabelle_user.&#10;&#10;Bugfixes.&#10;&#10;KOR Seiten -&gt; LeitungsAbgleich seite - Ansatz dark mode." />
@@ -1049,7 +1030,12 @@
     <MESSAGE value="Fragekatalog angepasst" />
     <MESSAGE value="Fragekatalog angepasst.&#10;bestand Eintragen bugfix." />
     <MESSAGE value="Bestand Eintragen bugfix." />
-    <option name="LAST_COMMIT_MESSAGE" value="Bestand Eintragen bugfix." />
+    <MESSAGE value="Merge remote-tracking branch 'origin/bildsupport' into bildsupport&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;documentationV2.php" />
+    <MESSAGE value="Import Elemente aus SF Model Excel" />
+    <MESSAGE value="fixed pdf" />
+    <MESSAGE value="Import works" />
+    <MESSAGE value="IMG upgrades" />
+    <option name="LAST_COMMIT_MESSAGE" value="IMG upgrades" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
