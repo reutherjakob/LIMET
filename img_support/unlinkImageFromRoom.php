@@ -1,6 +1,6 @@
 <?php
 // unlinkImageFromRoom.php – Entfernt die Verknüpfung zwischen Bild und Raum
-require_once 'utils/_utils.php';
+require_once '../utils/_utils.php';
 check_login();
 
 header('Content-Type: application/json');

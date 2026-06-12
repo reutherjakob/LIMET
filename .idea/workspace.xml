@@ -4,17 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="fixed pdf">
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Import works">
+      <change afterPath="$PROJECT_DIR$/get_khi_export.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/khi_export.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/saveElementParametersToProject.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IFCQuest/Variantmerge.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/IFCQuest/api_compare_elements.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/api_compare_elements.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IFCQuest/api_merge_variants.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/IFCQuest/element_compare.js" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/element_compare.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IFCQuest/import_2_db_config.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/import_2_db_config.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IFCQuest/import_excel.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/import_excel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/elementAdministration.php" beforeDir="false" afterPath="$PROJECT_DIR$/elementAdministration.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getElementPricesInDifferentProjects.php" beforeDir="false" afterPath="$PROJECT_DIR$/getElementPricesInDifferentProjects.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getElementeJeRaeumePivotTable.php" beforeDir="false" afterPath="$PROJECT_DIR$/getElementeJeRaeumePivotTable.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerlogin/forward.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerlogin/forward.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/ergebnisse.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/ergebnisse.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/addVariantenParameterToElement.php" beforeDir="false" afterPath="$PROJECT_DIR$/addVariantenParameterToElement.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/elementsInProject.php" beforeDir="false" afterPath="$PROJECT_DIR$/elementsInProject.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getElementVariante.php" beforeDir="false" afterPath="$PROJECT_DIR$/getElementVariante.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getStandardElementParameters.php" beforeDir="false" afterPath="$PROJECT_DIR$/getStandardElementParameters.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_support/card_load_image_preview.php" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/card_load_image_preview.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_support/deleteImageFromRoom.php" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/deleteImageFromRoom.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_support/getProjectImages.php" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/getProjectImages.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_support/linkImageToRoom.php" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/linkImageToRoom.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_support/linkImageToVermerk.php" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/linkImageToVermerk.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_support/projectGallery.js" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/projectGallery.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_support/uploadFileImage.php" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/uploadFileImage.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/unlinkImageFromRoom.php" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/unlinkImageFromRoom.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/unlinkImageFromVermerk.php" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/unlinkImageFromVermerk.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -590,23 +600,9 @@
       <workItem from="1781005187020" duration="4378000" />
       <workItem from="1781013013349" duration="6834000" />
       <workItem from="1781025171826" duration="170000" />
-      <workItem from="1781076602010" duration="8874000" />
-    </task>
-    <task id="LOCAL-00195" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu&#10;&#10;# Conflicts:&#10;#&#9;_offene_projekte/analyseTabelleRaeume.php&#10;#&#9;offene_projekte/analyseTabelleRaeume.php&#10;#&#9;utils/analyseTabelleRaeume.php">
-      <option name="closed" value="true" />
-      <created>1771934939924</created>
-      <option name="number" value="00195" />
-      <option name="presentableId" value="LOCAL-00195" />
-      <option name="project" value="LOCAL" />
-      <updated>1771934939924</updated>
-    </task>
-    <task id="LOCAL-00196" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu&#10;&#10;# Conflicts:&#10;#&#9;_offene_projekte/analyseTabelleRaeume.php&#10;#&#9;offene_projekte/analyseTabelleRaeume.php&#10;#&#9;utils/analyseTabelleRaeume.php">
-      <option name="closed" value="true" />
-      <created>1771935004045</created>
-      <option name="number" value="00196" />
-      <option name="presentableId" value="LOCAL-00196" />
-      <option name="project" value="LOCAL" />
-      <updated>1771935004045</updated>
+      <workItem from="1781076602010" duration="12315000" />
+      <workItem from="1781162264695" duration="13205000" />
+      <workItem from="1781247519992" duration="2806000" />
     </task>
     <task id="LOCAL-00197" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu">
       <option name="closed" value="true" />
@@ -984,7 +980,23 @@
       <option name="project" value="LOCAL" />
       <updated>1781008547515</updated>
     </task>
-    <option name="localTasksCounter" value="244" />
+    <task id="LOCAL-00244" summary="Import works">
+      <option name="closed" value="true" />
+      <created>1781101421908</created>
+      <option name="number" value="00244" />
+      <option name="presentableId" value="LOCAL-00244" />
+      <option name="project" value="LOCAL" />
+      <updated>1781101421908</updated>
+    </task>
+    <task id="LOCAL-00245" summary="Import works">
+      <option name="closed" value="true" />
+      <created>1781180134743</created>
+      <option name="number" value="00245" />
+      <option name="presentableId" value="LOCAL-00245" />
+      <option name="project" value="LOCAL" />
+      <updated>1781180134744</updated>
+    </task>
+    <option name="localTasksCounter" value="246" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1014,7 +1026,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu" />
     <MESSAGE value="Elelemtn History added.&#10;Wartet noch auf ddie erweiterung der Lose Tabelle, damit preiseintrager notiert werden kann" />
     <MESSAGE value="Koth Katalog fin.&#10;SF Umfrage Fin.&#10;Losliste Fin." />
     <MESSAGE value="Standort/Verwendung Verbessert.&#10;kor Katalog.&#10;BBE einreichbereicht" />
@@ -1039,7 +1050,8 @@
     <MESSAGE value="Merge remote-tracking branch 'origin/bildsupport' into bildsupport&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;documentationV2.php" />
     <MESSAGE value="Import Elemente aus SF Model Excel" />
     <MESSAGE value="fixed pdf" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed pdf" />
+    <MESSAGE value="Import works" />
+    <option name="LAST_COMMIT_MESSAGE" value="Import works" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

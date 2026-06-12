@@ -72,7 +72,7 @@ $columns = [
     ['vibrationsempfindlich_bodenstehend', 'Vibrationsempf.', 'bool'],
     ['vibrationsempfindlich_bodenstehend_kommentar', 'Vibration – Kommentar', 'text'],
     ['explosionsschutz', 'Ex-Schutz', 'bool'],
-    ['abluftwaescher', 'Abluftwäscher', 'bool'],
+    ['abluftwaescher', 'Abluftwäscher', 'num'],
     ['abluftwaescher_kommentar', 'Abluftwäscher – Komm.', 'text'],
     ['spezialgas', 'Spezialgas', 'text'],
     ['spezialgas_kommentar', 'Spezialgas – Komm.', 'text'],
@@ -174,7 +174,7 @@ function renderCell($val, $type)
             </div>
         </div>
         <div class="card-body">
-            <table class="table table-sm table-striped table-hover" id="ergebnisseTable" style="width:100%">
+            <table class="table table-sm table-striped table-hover p-0" id="ergebnisseTable" style="width:100%">
                 <thead class="table-light">
                 <tr>
                     <?php foreach ($columns as $col): ?>
@@ -221,7 +221,7 @@ function renderCell($val, $type)
             language: {url: '//cdn.datatables.net/plug-ins/2.2.1/i18n/de-DE.json'},
             order: [],            // behält die SQL-Reihenfolge (created_at DESC)
             scrollX: true,
-            pageLength: 17,
+            pageLength: 10,
             layout: {
                 topStart: 'buttons',
                 topEnd: 'search',

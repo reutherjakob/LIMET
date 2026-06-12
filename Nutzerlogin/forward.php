@@ -21,10 +21,10 @@ if ($stmt->fetch()) {
         case 'spargelfeld_admin':
         case 'spargelfeld_view':
         case 'spargelfeld_ext_user':
-            header('Location: ../Nutzerumfrage/Nutzerabfrage.php');
+            header('Location: ../Nutzerumfrage/ergebnisse.php');
             break;
         case 'internal_rb_user':
-            header('Location: ../Nutzerumfrage/Nutzerabfrage.php');
+            header('Location: ../Nutzerumfrage/ergebnisse.php');
 //            header('Location: ../Nutzerumfrage/adminpanel.php');
             break;
 

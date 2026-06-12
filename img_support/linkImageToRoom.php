@@ -1,6 +1,6 @@
 <?php
 // linkImageToRoom.php – Verknüpft ein Bild mit einem Raum
-require_once 'utils/_utils.php';
+require_once '../utils/_utils.php';
 check_login();
 
 header('Content-Type: application/json');

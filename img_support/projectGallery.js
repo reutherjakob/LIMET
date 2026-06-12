@@ -22,17 +22,21 @@ function parseResponse(raw) {
     try {
         return typeof raw === 'string' ? JSON.parse(raw) : raw;
     } catch (e) {
-        return { status: 'error', msg: String(raw) };
+        return {status: 'error', msg: String(raw)};
     }
 }
 
 function initViewer(element, filterClass) {
     if (!element) return;
-    return new Viewer(element, {
+    // alte Instanz zerstören, sonst stapeln sich Viewer bei jedem Filter-Update
+    if (element._viewer) { element._viewer.destroy(); element._viewer = null; }
+    const viewer = new Viewer(element, {
         toolbar: { zoomIn: 1, zoomOut: 1, oneToOne: 1, reset: 1, prev: 1, play: 0, next: 1, rotateLeft: 1, rotateRight: 1 },
         title: false, tooltip: false, navbar: true,
         filter(image) { return image.classList.contains(filterClass); }
     });
+    element._viewer = viewer;
+    return viewer;
 }
 
 // ── Gallery reload (AJAX, no full page reload) ────────────────────────────────
@@ -46,7 +50,7 @@ function reloadProjectGallery() {
             const imgs = Array.isArray(images) ? images : [];
 
             const gallery = document.getElementById('projectGallery');
-            const hint    = document.getElementById('galleryEmptyHint');
+            const hint = document.getElementById('galleryEmptyHint');
             if (!gallery) return;
 
             if (!imgs.length) {
@@ -105,7 +109,10 @@ $(document).ready(function () {
     const projDropZone = document.getElementById('projDropZone');
     if (projDropZone) {
         projDropZone.addEventListener('click', () => document.getElementById('projImageUpload').click());
-        projDropZone.addEventListener('dragover', e => { e.preventDefault(); projDropZone.classList.add('bg-light'); });
+        projDropZone.addEventListener('dragover', e => {
+            e.preventDefault();
+            projDropZone.classList.add('bg-light');
+        });
         projDropZone.addEventListener('dragleave', () => projDropZone.classList.remove('bg-light'));
         projDropZone.addEventListener('drop', e => {
             e.preventDefault();
@@ -142,8 +149,8 @@ $(document).ready(function () {
         img.src = previewSrc;
         img.onload = function () {
             const canvas = document.createElement('canvas');
-            const scale  = 800 / img.width;
-            canvas.width  = 800;
+            const scale = 800 / img.width;
+            canvas.width = 800;
             canvas.height = img.height * scale;
             canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
             const encoded = canvas.toDataURL('image/jpeg', 0.9);
@@ -153,7 +160,7 @@ $(document).ready(function () {
 
             $.ajax({
                 url: _base + 'uploadFileImage.php', type: 'POST',
-                data: { fileUpload: encoded },
+                data: {fileUpload: encoded},
                 success: function (raw) {
                     const res = parseResponse(raw);
                     $('#uploadProjectImageModal').modal('hide');
@@ -185,7 +192,7 @@ $(document).ready(function () {
 
         $.ajax({
             url: _base + 'deleteImage.php', type: 'POST',
-            data: { imageID: pendingProjDeleteId },
+            data: {imageID: pendingProjDeleteId},
             success: function (raw) {
                 const res = parseResponse(raw);
                 if (res.status === 'linked') {
@@ -212,7 +219,7 @@ $(document).ready(function () {
         $('#projDeleteConfirmModal').modal('hide');
         $.ajax({
             url: _base + 'deleteImage.php', type: 'POST',
-            data: { imageID: id },
+            data: {imageID: id},
             success: function (raw) {
                 const res = parseResponse(raw);
                 if (res.status === 'ok') {
@@ -232,7 +239,10 @@ $(document).ready(function () {
     });
     $('#projDeleteConfirmModal').on('shown.bs.modal', () => $('#projConfirmDeleteBtn').focus());
     $('#projDeleteConfirmModal').on('keydown', function (e) {
-        if (e.key === 'Enter') { e.preventDefault(); $('#projConfirmDeleteBtn').trigger('click'); }
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            $('#projConfirmDeleteBtn').trigger('click');
+        }
     });
 
     // ── Meta Modal ────────────────────────────────────────────────────────────
@@ -246,7 +256,7 @@ $(document).ready(function () {
 
         $.ajax({
             url: _base + 'getImageMeta.php', type: 'POST',
-            data: { imageID },
+            data: {imageID},
             success: function (raw) {
                 const res = parseResponse(raw);
                 if (res.status !== 'ok') {
@@ -296,7 +306,7 @@ $(document).ready(function () {
             '<span class="text-muted fst-italic small">Lädt…</span>';
         $.ajax({
             url: _base + 'getImageMeta.php', type: 'POST',
-            data: { imageID },
+            data: {imageID},
             success: function (raw) {
                 const res = parseResponse(raw);
                 if (res.status !== 'ok' || !res.raeume.length) {
@@ -321,12 +331,12 @@ $(document).ready(function () {
 
     $('#projRoomLinkConfirmBtn').on('click', function () {
         const imageID = document.getElementById('projRoomModalImageID').value;
-        const raumID  = document.getElementById('projRoomPickerSelect').value;
+        const raumID = document.getElementById('projRoomPickerSelect').value;
         if (!imageID || !raumID) return;
         $(this).prop('disabled', true);
         $.ajax({
             url: _base + 'linkImageToRoom.php', type: 'POST',
-            data: { imageID, raumID },
+            data: {imageID, raumID},
             success: function (raw) {
                 const res = parseResponse(raw);
                 if (res.status === 'ok') {
@@ -345,10 +355,10 @@ $(document).ready(function () {
     $(document).on('click', '.proj-room-unlink-btn', function (e) {
         e.stopPropagation();
         const imageID = $(this).data('image-id');
-        const raumID  = $(this).data('raum-id');
+        const raumID = $(this).data('raum-id');
         $.ajax({
             url: _base + 'unlinkImageFromRoom.php', type: 'POST',
-            data: { imageID, raumID },
+            data: {imageID, raumID},
             success: function (raw) {
                 const res = parseResponse(raw);
                 if (res.status === 'ok') {
@@ -390,7 +400,7 @@ $(document).ready(function () {
         document.getElementById('projVermerkCurrentList').innerHTML =
             '<span class="text-muted fst-italic small">Lädt…</span>';
         $.ajax({
-            url: _base + 'getImageMeta.php', type: 'POST', data: { imageID },
+            url: _base + 'getImageMeta.php', type: 'POST', data: {imageID},
             success: function (raw) {
                 const res = parseResponse(raw);
                 if (res.status !== 'ok' || !res.vermerke.length) {
@@ -434,15 +444,15 @@ $(document).ready(function () {
     }
 
     function _renderVermerkPicker(filterText) {
-        const list  = document.getElementById('projVermerkPickerList');
+        const list = document.getElementById('projVermerkPickerList');
         const lower = filterText.toLowerCase();
-        const data  = _vermerkPickerData || [];
+        const data = _vermerkPickerData || [];
 
         const filtered = lower
             ? data.filter(v =>
-                (v.Gruppenname      || '').toLowerCase().includes(lower) ||
+                (v.Gruppenname || '').toLowerCase().includes(lower) ||
                 (v.Untergruppenname || '').toLowerCase().includes(lower) ||
-                (v.Kurztext         || '').toLowerCase().includes(lower))
+                (v.Kurztext || '').toLowerCase().includes(lower))
             : data;
 
         if (!filtered.length) {
@@ -454,7 +464,7 @@ $(document).ready(function () {
         const byGroup = {};
         filtered.forEach(v => {
             const key = v.idtabelle_Vermerkgruppe;
-            if (!byGroup[key]) byGroup[key] = { name: v.Gruppenname, datum: v.Datum, items: [] };
+            if (!byGroup[key]) byGroup[key] = {name: v.Gruppenname, datum: v.Datum, items: []};
             byGroup[key].items.push(v);
         });
 
@@ -528,7 +538,7 @@ $(document).ready(function () {
         $(this).prop('disabled', true);
         $.ajax({
             url: _base + 'linkImageToVermerk.php', type: 'POST',
-            data: { imageID, vermerkID: _selectedVermerkID },
+            data: {imageID, vermerkID: _selectedVermerkID},
             success: function (raw) {
                 const res = parseResponse(raw);
                 if (res.status === 'ok') {
@@ -551,11 +561,11 @@ $(document).ready(function () {
 
     $(document).on('click', '.proj-vermerk-unlink-btn', function (e) {
         e.stopPropagation();
-        const imageID  = $(this).data('image-id');
+        const imageID = $(this).data('image-id');
         const vermerkID = $(this).data('vermerk-id');
         $.ajax({
             url: _base + 'unlinkImageFromVermerk.php', type: 'POST',
-            data: { imageID, vermerkID },
+            data: {imageID, vermerkID},
             success: function (raw) {
                 const res = parseResponse(raw);
                 if (res.status === 'ok') {
@@ -587,20 +597,20 @@ $(document).ready(function () {
     // ── Filter & Sort ─────────────────────────────────────────────────────────
 
     function applyGalleryFilter() {
-        const search     = (document.getElementById('gallerySearch')        || {value:''}).value.toLowerCase().trim();
-        const raumVal    = (document.getElementById('galleryRaumFilter')    || {value:''}).value;
-        const vermerkVal = (document.getElementById('galleryVermerkFilter') || {value:''}).value;
-        const sortVal    = (document.getElementById('gallerySortSelect')    || {value:'newest'}).value;
-        const resetBtn   = document.getElementById('galleryResetFilter');
-        const hasFilter  = search || raumVal || vermerkVal || sortVal !== 'newest';
+        const search = (document.getElementById('gallerySearch') || {value: ''}).value.toLowerCase().trim();
+        const raumVal = (document.getElementById('galleryRaumFilter') || {value: ''}).value;
+        const vermerkVal = (document.getElementById('galleryVermerkFilter') || {value: ''}).value;
+        const sortVal = (document.getElementById('gallerySortSelect') || {value: 'newest'}).value;
+        const resetBtn = document.getElementById('galleryResetFilter');
+        const hasFilter = search || raumVal || vermerkVal || sortVal !== 'newest';
         if (resetBtn) resetBtn.classList.toggle('d-none', !hasFilter);
 
         let items = [...document.querySelectorAll('#projectGallery .gallery-item')];
 
         items.sort((a, b) => {
-            if (sortVal === 'newest') return (b.dataset.timestamp||'').localeCompare(a.dataset.timestamp||'');
-            if (sortVal === 'oldest') return (a.dataset.timestamp||'').localeCompare(b.dataset.timestamp||'');
-            if (sortVal === 'name')   return (a.dataset.name||'').localeCompare(b.dataset.name||'');
+            if (sortVal === 'newest') return (b.dataset.timestamp || '').localeCompare(a.dataset.timestamp || '');
+            if (sortVal === 'oldest') return (a.dataset.timestamp || '').localeCompare(b.dataset.timestamp || '');
+            if (sortVal === 'name') return (a.dataset.name || '').localeCompare(b.dataset.name || '');
             return 0;
         });
         const gallery = document.getElementById('projectGallery');
@@ -608,25 +618,31 @@ $(document).ready(function () {
 
         let visible = 0;
         items.forEach(el => {
-            const name       = el.dataset.name || '';
-            const raumIDs    = el.dataset.raumids           ? el.dataset.raumids.split(',').map(Number)           : [];
+            const name = el.dataset.name || '';
+            const raumIDs = el.dataset.raumids ? el.dataset.raumids.split(',').map(Number) : [];
             const gruppenIDs = el.dataset.vermerkgruppenids ? el.dataset.vermerkgruppenids.split(',').map(Number) : [];
             let show = true;
             if (search && !name.includes(search)) show = false;
-            if (raumVal === '__none__')    { if (raumIDs.length > 0)    show = false; }
-            else if (raumVal)             { if (!raumIDs.includes(parseInt(raumVal))) show = false; }
-            if (vermerkVal === '__none__') { if (gruppenIDs.length > 0) show = false; }
-            else if (vermerkVal)          { if (!gruppenIDs.includes(parseInt(vermerkVal))) show = false; }
+            if (raumVal === '__none__') {
+                if (raumIDs.length > 0) show = false;
+            } else if (raumVal) {
+                if (!raumIDs.includes(parseInt(raumVal))) show = false;
+            }
+            if (vermerkVal === '__none__') {
+                if (gruppenIDs.length > 0) show = false;
+            } else if (vermerkVal) {
+                if (!gruppenIDs.includes(parseInt(vermerkVal))) show = false;
+            }
             el.style.display = show ? '' : 'none';
             if (show) visible++;
         });
 
-        const countInfo  = document.getElementById('galleryCountInfo');
-        const cntBadge   = document.getElementById('galleryCntBadge');
-        const emptyHint  = document.getElementById('galleryEmptyHint');
-        const noResHint  = document.getElementById('galleryNoResultHint');
+        const countInfo = document.getElementById('galleryCountInfo');
+        const cntBadge = document.getElementById('galleryCntBadge');
+        const emptyHint = document.getElementById('galleryEmptyHint');
+        const noResHint = document.getElementById('galleryNoResultHint');
         if (countInfo) countInfo.textContent = visible + ' von ' + items.length + ' Bild' + (items.length !== 1 ? 'ern' : '');
-        if (cntBadge)  cntBadge.textContent  = visible;
+        if (cntBadge) cntBadge.textContent = visible;
         if (emptyHint) emptyHint.classList.toggle('d-none', items.length > 0);
         if (noResHint) noResHint.classList.toggle('d-none', visible > 0 || items.length === 0);
 
@@ -634,21 +650,25 @@ $(document).ready(function () {
     }
 
 
-
     const resetBtn = document.getElementById('galleryResetFilter');
     if (resetBtn) resetBtn.addEventListener('click', function () {
-        ['galleryRaumFilter','galleryVermerkFilter'].forEach(id => {
-            const el = document.getElementById(id); if (el) el.value = '';
+        ['galleryRaumFilter', 'galleryVermerkFilter'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
         });
-        const sort = document.getElementById('gallerySortSelect'); if (sort) sort.value = 'newest';
+        const sort = document.getElementById('gallerySortSelect');
+        if (sort) sort.value = 'newest';
         applyGalleryFilter();
     });
-
+    ['galleryRaumFilter', 'galleryVermerkFilter', 'gallerySortSelect'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', applyGalleryFilter);
+    });
     applyGalleryFilter();
 
     // ── Bulk-Modus ────────────────────────────────────────────────────────────
 
-    let _bulkMode    = false;
+    let _bulkMode = false;
     let _selectedIDs = new Set();
 
     function _setBulkMode(on) {
@@ -660,28 +680,28 @@ $(document).ready(function () {
             el.classList.remove('bulk-selected');
         });
         document.querySelectorAll('.gallery-bulk-cb').forEach(cb => cb.checked = false);
-        const bulkActions  = document.getElementById('bulkActions');
-        const bulkToggle   = document.getElementById('bulkToggleBtn');
+        const bulkActions = document.getElementById('bulkActions');
+        const bulkToggle = document.getElementById('bulkToggleBtn');
         if (bulkActions) bulkActions.classList.toggle('d-none', !on);
-        if (bulkToggle)  bulkToggle.classList.toggle('d-none', on);
+        if (bulkToggle) bulkToggle.classList.toggle('d-none', on);
         _updateBulkBtns();
     }
 
     function _updateBulkBtns() {
         const n = _selectedIDs.size;
         const lbl = document.getElementById('bulkCountLabel');
-        const rb  = document.getElementById('bulkRoomBtn');
-        const db  = document.getElementById('bulkDeleteBtn');
+        const rb = document.getElementById('bulkRoomBtn');
+        const db = document.getElementById('bulkDeleteBtn');
         if (lbl) lbl.textContent = n + ' gewählt';
-        if (rb)  rb.disabled  = n === 0;
-        if (db)  db.disabled  = n === 0;
+        if (rb) rb.disabled = n === 0;
+        if (db) db.disabled = n === 0;
     }
 
-    const bulkToggleBtn   = document.getElementById('bulkToggleBtn');
-    const bulkCancelBtn   = document.getElementById('bulkCancelBtn');
+    const bulkToggleBtn = document.getElementById('bulkToggleBtn');
+    const bulkCancelBtn = document.getElementById('bulkCancelBtn');
     const bulkSelectAllBtn = document.getElementById('bulkSelectAllBtn');
-    if (bulkToggleBtn)   bulkToggleBtn.addEventListener('click',  () => _setBulkMode(true));
-    if (bulkCancelBtn)   bulkCancelBtn.addEventListener('click',  () => _setBulkMode(false));
+    if (bulkToggleBtn) bulkToggleBtn.addEventListener('click', () => _setBulkMode(true));
+    if (bulkCancelBtn) bulkCancelBtn.addEventListener('click', () => _setBulkMode(false));
     if (bulkSelectAllBtn) bulkSelectAllBtn.addEventListener('click', function () {
         const visible = [...document.querySelectorAll('#projectGallery .gallery-item')]
             .filter(el => el.style.display !== 'none');
@@ -689,8 +709,15 @@ $(document).ready(function () {
         visible.forEach(el => {
             const id = parseInt(el.dataset.imageId);
             const cb = el.querySelector('.gallery-bulk-cb');
-            if (allSel) { _selectedIDs.delete(id); el.classList.remove('bulk-selected'); if(cb) cb.checked=false; }
-            else        { _selectedIDs.add(id);    el.classList.add('bulk-selected');    if(cb) cb.checked=true;  }
+            if (allSel) {
+                _selectedIDs.delete(id);
+                el.classList.remove('bulk-selected');
+                if (cb) cb.checked = false;
+            } else {
+                _selectedIDs.add(id);
+                el.classList.add('bulk-selected');
+                if (cb) cb.checked = true;
+            }
         });
         _updateBulkBtns();
     });
@@ -703,8 +730,15 @@ $(document).ready(function () {
             if (!item || e.target.closest('button')) return;
             const id = parseInt(item.dataset.imageId);
             const cb = item.querySelector('.gallery-bulk-cb');
-            if (_selectedIDs.has(id)) { _selectedIDs.delete(id); item.classList.remove('bulk-selected'); if(cb) cb.checked=false; }
-            else                      { _selectedIDs.add(id);    item.classList.add('bulk-selected');    if(cb) cb.checked=true;  }
+            if (_selectedIDs.has(id)) {
+                _selectedIDs.delete(id);
+                item.classList.remove('bulk-selected');
+                if (cb) cb.checked = false;
+            } else {
+                _selectedIDs.add(id);
+                item.classList.add('bulk-selected');
+                if (cb) cb.checked = true;
+            }
             _updateBulkBtns();
         });
     }
@@ -729,17 +763,18 @@ $(document).ready(function () {
     if (bulkRoomConfirmBtn) bulkRoomConfirmBtn.addEventListener('click', function () {
         const raumID = (document.getElementById('bulkRoomSelect') || {}).value;
         if (!raumID || _selectedIDs.size === 0) return;
-        const btn = this; btn.disabled = true;
+        const btn = this;
+        btn.disabled = true;
         btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
         Promise.all([..._selectedIDs].map(imgID =>
-            fetch(_base  + 'linkImageToRoom.php', {
-                method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'},
-                body: 'imageID='+imgID+'&raumID='+raumID
+            fetch(_base + 'linkImageToRoom.php', {
+                method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: 'imageID=' + imgID + '&raumID=' + raumID
             }).then(r => r.json())
         )).then(results => {
             bootstrap.Modal.getInstance(document.getElementById('bulkRoomModal')).hide();
-            const ok = results.filter(r => r.status==='ok').length;
-            makeToaster(ok + ' Bild' + (ok!==1?'er':'') + ' mit Raum verknüpft.', true);
+            const ok = results.filter(r => r.status === 'ok').length;
+            makeToaster(ok + ' Bild' + (ok !== 1 ? 'er' : '') + ' mit Raum verknüpft.', true);
             _setBulkMode(false);
             setTimeout(() => location.reload(), 600);
         }).catch(() => {
@@ -753,24 +788,25 @@ $(document).ready(function () {
     const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
     if (bulkDeleteBtn) bulkDeleteBtn.addEventListener('click', function () {
         const body = document.getElementById('bulkDeleteBody');
-        if (body) body.textContent = _selectedIDs.size + ' Bild' + (_selectedIDs.size!==1?'er':'') + ' werden unwiderruflich gelöscht.';
+        if (body) body.textContent = _selectedIDs.size + ' Bild' + (_selectedIDs.size !== 1 ? 'er' : '') + ' werden unwiderruflich gelöscht.';
         new bootstrap.Modal(document.getElementById('bulkDeleteModal')).show();
     });
     const bulkDeleteConfirmBtn = document.getElementById('bulkDeleteConfirmBtn');
     if (bulkDeleteConfirmBtn) bulkDeleteConfirmBtn.addEventListener('click', function () {
         if (_selectedIDs.size === 0) return;
-        const btn = this; btn.disabled = true;
+        const btn = this;
+        btn.disabled = true;
         btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
         Promise.all([..._selectedIDs].map(imgID =>
             fetch(_base + 'deleteImage.php', {
-                method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'},
-                body: 'imageID='+imgID
+                method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: 'imageID=' + imgID
             }).then(r => r.json())
         )).then(results => {
             bootstrap.Modal.getInstance(document.getElementById('bulkDeleteModal')).hide();
-            const ok     = results.filter(r => r.status==='ok').length;
-            const linked = results.filter(r => r.status==='linked').length;
-            let msg = ok + ' Bild' + (ok!==1?'er':'') + ' gelöscht.';
+            const ok = results.filter(r => r.status === 'ok').length;
+            const linked = results.filter(r => r.status === 'linked').length;
+            let msg = ok + ' Bild' + (ok !== 1 ? 'er' : '') + ' gelöscht.';
             if (linked > 0) msg += ' ' + linked + ' übersprungen (in Vermerken verknüpft).';
             makeToaster(msg, ok > 0);
             _setBulkMode(false);

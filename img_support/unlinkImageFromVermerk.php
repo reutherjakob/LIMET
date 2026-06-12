@@ -1,6 +1,6 @@
 <?php
 // unlinkImageFromVermerk.php
-require_once 'utils/_utils.php';
+require_once '../utils/_utils.php';
 check_login();
 
 header('Content-Type: application/json');
