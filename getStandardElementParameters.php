@@ -29,6 +29,7 @@ while ($row = $result->fetch_assoc()) {
 }
 echo "</tbody></table>";
 echo "<button id='" . $elementID . "' class='btn btn-outline-success' value='Elementparameter-Vergleich' data-bs-toggle='modal' data-bs-target='#elementParameterComparisonModal'> Element Parameter Vergleich</button>";
+echo "<input type='hidden' id='currentDBElementID' value='" . $elementID . "'>";
 $mysqli->close();
 $stmt->close();
 ?>
@@ -61,7 +62,7 @@ $stmt->close();
     });
 
     //Gerätevergleich anzeigen
-    $("button[value='Elementparameter-Vergleich']").click(function () {
+    $("button[value='Elementparameter-Vergleich']").off('click').on('click', function () {
         let ID = this.id;
         $.ajax({
             url: "getElementParameterComparison.php",
@@ -73,4 +74,37 @@ $stmt->close();
         });
     });
 
+    $("#saveDBParamsToProject").off('click').on('click', function () {
+        const elementID = $('#currentDBElementID').val();
+        const variantenID = $('#variante').val();
+
+        if (!elementID) {
+            makeToaster("Bitte zuerst ein Element auswählen.", false);
+            return;
+        }
+        if (!variantenID) {
+            makeToaster("Bitte zuerst eine Variante wählen.", false);
+            return;
+        }
+
+        $.ajax({
+            url: "saveElementParametersToProject.php",
+            type: "POST",
+            data: {"elementID": elementID, "variantenID": variantenID},
+            success: function (data) {
+                makeToaster(data.trim(), true);
+                $.ajax({
+                    url: "getVarianteParameters.php",
+                    data: {"variantenID": variantenID},
+                    type: "POST",
+                    success: function (data) {
+                        $("#variantenParameter").html(data);
+                    }
+                });
+            },
+            error: function () {
+                makeToaster("Übernahme fehlgeschlagen.", false);
+            }
+        });
+    });
 </script>

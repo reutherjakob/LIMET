@@ -6,7 +6,7 @@ $mysqli = utils_connect_sql();
 
 $elementID = getPostInt('elementID');
  //   filter_input(INPUT_POST, 'elementID', FILTER_VALIDATE_INT);
-$variantenID =  getPostInt('variantID');
+$variantenID =  getPostInt('variantenID');
     //filter_input(INPUT_POST, 'variantenID', FILTER_VALIDATE_INT);
 $projectID = (int)$_SESSION["projectID"];
 

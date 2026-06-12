@@ -188,7 +188,8 @@ foreach ($allImages as $img) {
                                 d-flex flex-column justify-content-between p-1"
                              style="z-index:10; opacity:0; transition:opacity .18s;
                                 background:rgba(0,0,0,0.38); border-radius:.375rem;">
-                            <div class="d-flex justify-content-between">
+
+                            <div class="d-flex justify-content-between pe-auto">
                                 <button type="button" class="btn btn-secondary btn-sm proj-meta-btn p-1"
                                         data-image-id="<?= $id ?>" title="Info">
                                     <i class="fas fa-info-circle"></i>
@@ -198,7 +199,7 @@ foreach ($allImages as $img) {
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             </div>
-                            <div class="d-flex justify-content-end gap-1">
+                            <div class="d-flex justify-content-end gap-1 pe-auto">
                                 <button type="button" class="btn btn-outline-light btn-sm proj-vermerk-btn p-1"
                                         data-image-id="<?= $id ?>" title="Vermerk zuordnen">
                                     <i class="fas fa-comment-alt"></i>
@@ -208,6 +209,8 @@ foreach ($allImages as $img) {
                                     <i class="fas fa-door-open"></i>
                                 </button>
                             </div>
+
+
                         </div>
 
                         <!-- Bild -->

@@ -1,6 +1,6 @@
 <?php
 // Gibt alle Projektbilder als JSON zurück (für AJAX Galerie-Picker)
-require_once 'utils/_utils.php';
+require_once '../utils/_utils.php';
 check_login();
 
 $projectID = (int)($_SESSION["projectID"] ?? 0);
