@@ -4,27 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Import works">
-      <change afterPath="$PROJECT_DIR$/get_khi_export.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/khi_export.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/saveElementParametersToProject.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" afterDir="false" />
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="IMG upgrades">
+      <change afterPath="$PROJECT_DIR$/img_support/gallery_grid.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nutzerlogin/forward.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerlogin/forward.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/ergebnisse.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/ergebnisse.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/addVariantenParameterToElement.php" beforeDir="false" afterPath="$PROJECT_DIR$/addVariantenParameterToElement.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/elementsInProject.php" beforeDir="false" afterPath="$PROJECT_DIR$/elementsInProject.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getElementVariante.php" beforeDir="false" afterPath="$PROJECT_DIR$/getElementVariante.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getStandardElementParameters.php" beforeDir="false" afterPath="$PROJECT_DIR$/getStandardElementParameters.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_support/card_load_image_preview.php" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/card_load_image_preview.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_support/deleteImageFromRoom.php" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/deleteImageFromRoom.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_support/getProjectImages.php" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/getProjectImages.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_support/linkImageToRoom.php" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/linkImageToRoom.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_support/linkImageToVermerk.php" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/linkImageToVermerk.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createVermerkGroupPDF.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createVermerkGroupPDF.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/img_support/projectGallery.js" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/projectGallery.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_support/uploadFileImage.php" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/uploadFileImage.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unlinkImageFromRoom.php" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/unlinkImageFromRoom.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unlinkImageFromVermerk.php" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/unlinkImageFromVermerk.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -604,14 +588,6 @@
       <workItem from="1781162264695" duration="13205000" />
       <workItem from="1781247519992" duration="2806000" />
     </task>
-    <task id="LOCAL-00197" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu">
-      <option name="closed" value="true" />
-      <created>1772021791351</created>
-      <option name="number" value="00197" />
-      <option name="presentableId" value="LOCAL-00197" />
-      <option name="project" value="LOCAL" />
-      <updated>1772021791351</updated>
-    </task>
     <task id="LOCAL-00198" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu">
       <option name="closed" value="true" />
       <created>1772100238754</created>
@@ -996,7 +972,15 @@
       <option name="project" value="LOCAL" />
       <updated>1781180134744</updated>
     </task>
-    <option name="localTasksCounter" value="246" />
+    <task id="LOCAL-00246" summary="IMG upgrades">
+      <option name="closed" value="true" />
+      <created>1781253247486</created>
+      <option name="number" value="00246" />
+      <option name="presentableId" value="LOCAL-00246" />
+      <option name="project" value="LOCAL" />
+      <updated>1781253247486</updated>
+    </task>
+    <option name="localTasksCounter" value="247" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1026,7 +1010,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Elelemtn History added.&#10;Wartet noch auf ddie erweiterung der Lose Tabelle, damit preiseintrager notiert werden kann" />
     <MESSAGE value="Koth Katalog fin.&#10;SF Umfrage Fin.&#10;Losliste Fin." />
     <MESSAGE value="Standort/Verwendung Verbessert.&#10;kor Katalog.&#10;BBE einreichbereicht" />
     <MESSAGE value="SF Umfrage DONE.&#10;&#10;LOGIN speichert nun VERSCHLÜSSELTE Userdaten in tabelle_user.&#10;&#10;Bugfixes.&#10;&#10;KOR Seiten -&gt; LeitungsAbgleich seite - Ansatz dark mode." />
@@ -1051,7 +1034,8 @@
     <MESSAGE value="Import Elemente aus SF Model Excel" />
     <MESSAGE value="fixed pdf" />
     <MESSAGE value="Import works" />
-    <option name="LAST_COMMIT_MESSAGE" value="Import works" />
+    <MESSAGE value="IMG upgrades" />
+    <option name="LAST_COMMIT_MESSAGE" value="IMG upgrades" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
