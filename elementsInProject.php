@@ -214,7 +214,7 @@
                     <div class='mt-1 card'>
                         <div class='card-header d-flex justify-content-between align-items-center'>
                             <label class="mb-0">DB-Elementparameter</label>
-                            <button type='button' id='saveDBParamsToProject' class='btn btn-warning btn-sm'>
+                            <button type='button' id='saveDBParamsToProject' class='btn btn-outline-dark btn-sm'>
                                 <i class='fas fa-upload'></i> Ins Projekt übernehmen
                             </button>
                         </div>

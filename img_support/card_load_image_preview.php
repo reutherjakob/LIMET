@@ -185,20 +185,27 @@ foreach ($allImages as $img) {
 
                         <!-- Hover-Overlay -->
                         <div class="gallery-overlay position-absolute top-0 start-0 w-100 h-100
-                                d-flex flex-column justify-content-between p-1"
+                                    d-flex flex-column justify-content-between p-1 pe-none"
                              style="z-index:10; opacity:0; transition:opacity .18s;
-                                background:rgba(0,0,0,0.38); border-radius:.375rem;">
+                                     background:rgba(0,0,0,0.38); border-radius:.375rem;">
 
                             <div class="d-flex justify-content-between pe-auto">
-                                <button type="button" class="btn btn-secondary btn-sm proj-meta-btn p-1"
-                                        data-image-id="<?= $id ?>" title="Info">
-                                    <i class="fas fa-info-circle"></i>
-                                </button>
+                                <div class="d-flex gap-1">
+                                    <button type="button" class="btn btn-secondary btn-sm proj-meta-btn p-1"
+                                            data-image-id="<?= $id ?>" title="Info">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-light btn-sm proj-zoom-btn p-1"
+                                            data-image-id="<?= $id ?>" title="Vergrößern">
+                                        <i class="fas fa-search-plus"></i>
+                                    </button>
+                                </div>
                                 <button type="button" class="btn btn-danger btn-sm project-gallery-delete-btn p-1"
                                         data-image-id="<?= $id ?>" title="Löschen">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             </div>
+
                             <div class="d-flex justify-content-end gap-1 pe-auto">
                                 <button type="button" class="btn btn-outline-light btn-sm proj-vermerk-btn p-1"
                                         data-image-id="<?= $id ?>" title="Vermerk zuordnen">

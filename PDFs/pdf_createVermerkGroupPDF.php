@@ -267,16 +267,19 @@ class MYPDF extends TCPDF
                         foreach ($chunk as $idx => $imgPath) {
                             if (!file_exists($imgPath)) continue;
 
-                            $x = $xStart + $idx * ($imgMaxW + $imgGap);
                             $size = @getimagesize($imgPath);
                             if ($size && $size[0] > 0 && $size[1] > 0) {
-                                $ratio = $size[1] / $size[0];
-                                $drawW = $imgMaxW;
-                                $drawH = min($imgMaxW * $ratio, $imgMaxH);
+                                // gemeinsamer Skalierungsfaktor → Seitenverhältnis bleibt erhalten
+                                $scale = min($imgMaxW / $size[0], $imgMaxH / $size[1]);
+                                $drawW = $size[0] * $scale;
+                                $drawH = $size[1] * $scale;
                             } else {
                                 $drawW = $imgMaxW;
                                 $drawH = $imgMaxH;
                             }
+
+                            // im 50mm-Slot horizontal zentrieren
+                            $x = $xStart + $idx * ($imgMaxW + $imgGap) + ($imgMaxW - $drawW) / 2;
 
                             if ($drawH > $maxDrawH) $maxDrawH = $drawH;
                             $this->Image($imgPath, $x, $yRow, $drawW, $drawH, '', '', '', true, 600, '', false, false, 0);
@@ -285,7 +288,8 @@ class MYPDF extends TCPDF
                         $this->Ln();
                     }
                 }
-                // ── Ende Bilder ──────────────────────────────────────────────
+// ── Ende Bilder ──────────────────────────────────────────────
+
             }
         }
     }
