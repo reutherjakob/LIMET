@@ -179,7 +179,6 @@ class MYPDF extends TCPDF
                     $label = $anzahl > 1 ? 'Räume' : 'Raum';
                     $betreffText .= "Betrifft $label: " . $row['Räume'] . "\n";
                 }
-
                 if (!empty($row['LosNr_Extern'])) {
                     $betreffText .= 'Betrifft Los: ' . $row['LosNr_Extern'] . " " . $row['LosBezeichnung_Extern'] . "\n";
                 }
@@ -194,9 +193,45 @@ class MYPDF extends TCPDF
                 $rowHeight2 = $this->getStringHeight($w[2], $textNameFälligkeit, false, true, '', 1);
                 $rowHeight3 = $this->getStringHeight($w[0], $row['Untergruppennummer'] . " " . $row['Untergruppenname'], false, true, '', 1);
                 $rowHeight = max($rowHeight1 + $rowHeight4, $rowHeight2);
+
+                // ── Bildzeilen vorab planen + Gesamthöhe ermitteln ──────────
+                $pad = 2;
+                $imgGap = 3;
+                $imgPerRow = 3;
+                $imgMaxH = 40;
+                $availW = $w[0] - 2 * $pad;
+                $imgMaxW = ($availW - ($imgPerRow - 1) * $imgGap) / $imgPerRow; // = 45 bei w[0]=145
+                $imgPlan = [];
+                $imgTotalH = 0;
+                if (!empty($row['Bilder'])) {
+                    foreach (array_chunk($row['Bilder'], $imgPerRow) as $chunk) {
+                        $drawn = [];
+                        $rowDrawH = 0;
+                        foreach ($chunk as $idx => $imgPath) {
+                            if (!file_exists($imgPath)) {
+                                $drawn[$idx] = null;
+                                continue;
+                            }
+                            $size = @getimagesize($imgPath);
+                            if ($size && $size[0] > 0 && $size[1] > 0) {
+                                $scale = min($imgMaxW / $size[0], $imgMaxH / $size[1]);
+                                $drawn[$idx] = ['w' => $size[0] * $scale, 'h' => $size[1] * $scale, 'path' => $imgPath];
+                            } else {
+                                $drawn[$idx] = ['w' => $imgMaxW, 'h' => $imgMaxH, 'path' => $imgPath];
+                            }
+                            if ($drawn[$idx]['h'] > $rowDrawH) $rowDrawH = $drawn[$idx]['h'];
+                        }
+                        $cellH = $rowDrawH + 2 * $pad;
+                        $imgPlan[] = ['cellH' => $cellH, 'drawn' => $drawn];
+                        $imgTotalH += $cellH;
+                    }
+                }
+                $rightH = $rowHeight + $imgTotalH;   // volle Block-Höhe inkl. Bilder
+
+                // ── Untergruppen-Header ─────────────────────────────────────
                 if ($untergruppenID != $row['idtabelle_Vermerkuntergruppe']) {
                     $y = $this->GetY();
-                    if (($y + 2 * $rowHeight3 + $rowHeight) >= 270) {
+                    if (($y + 2 * $rowHeight3 + $rowHeight + $imgTotalH) >= 270) {
                         $this->AddPage();
                     } else {
                         $this->Ln($rowHeight3);
@@ -213,83 +248,57 @@ class MYPDF extends TCPDF
                     $untergruppenID = $row['idtabelle_Vermerkuntergruppe'];
                     $fill = 0;
                 }
+
+                // Seitenumbruch für gesamten Block (Text + Bilder zusammen)
                 $y = $this->GetY();
-                if (($y + $rowHeight1) >= 260) {
+                if (($y + $rightH) >= 270) {
                     $this->AddPage();
                 }
+
+                // ── Betreff (oben links) + rechte Spalten in VOLLER Höhe ────
                 $this->SetFont('', 'I', '7');
                 $this->MultiCell($w[0], $rowHeight4, $betreffText, 'LTR', 'L', $fill, 0, '', '');
                 $this->SetFont('', '', '8');
 
                 $prettyText = "";
-                $softHyphen = "\xC2\xAD";
-                if ($row['Vermerkart'] === "Bearbeitung") {
-                    $prettyText = "B";
-                } else if ($row['Vermerkart'] === "Info") {
-                    $prettyText = "I";
-                } else if ($row['Vermerkart'] === "Freigegeben") {
-                    $prettyText = "F";
-                } else if ($row['Vermerkart'] === "Nutzerwunsch") {
-                    $prettyText = "N";
-                }
-                $this->MultiCell($w[1], $rowHeight, $prettyText, 1, 'C', $fill, 0, '', '');
+                if ($row['Vermerkart'] === "Bearbeitung") $prettyText = "B";
+                else if ($row['Vermerkart'] === "Info") $prettyText = "I";
+                else if ($row['Vermerkart'] === "Freigegeben") $prettyText = "F";
+                else if ($row['Vermerkart'] === "Nutzerwunsch") $prettyText = "N";
 
+                // Typ-Spalte – volle Block-Höhe, Text oben
+                $this->MultiCell($w[1], $rightH, $prettyText, 1, 'C', $fill, 0, '', '', true, 0, false, true, $rightH, 'T');
+                // Wer/Bis-Spalte – volle Block-Höhe, Text oben
+                $werBis = ($row['Vermerkart'] == 'Bearbeitung') ? $textNameFälligkeit : '';
+                $this->MultiCell($w[2], $rightH, $werBis, 1, 'L', $fill, 0, '', '', true, 0, false, true, $rightH, 'T');
 
-                if ($row['Vermerkart'] == 'Bearbeitung') {
-                    $this->MultiCell($w[2], $rowHeight, $textNameFälligkeit, 1, 'L', $fill, 0, '', '');
-                } else {
-                    $this->MultiCell($w[2], $rowHeight, '', 1, 'L', $fill, 0, '', '');
-                }
+                // ── Vermerktext (linke Spalte) ──────────────────────────────
                 $this->Ln($rowHeight4);
-                $this->MultiCell($w[0], $rowHeight - $rowHeight4, $row['Vermerktext'], 'LRB', 'L', $fill, 1, '', '');
+                $vtBorder = !empty($imgPlan) ? 'LR' : 'LRB';
+                $this->MultiCell($w[0], $rowHeight - $rowHeight4, $row['Vermerktext'], $vtBorder, 'L', $fill, 1, '', '');
 
-                // ── NEU: Bilder zum Vermerk ──────────────────────────────────
-                if (!empty($row['Bilder'])) {
-                    $imgMaxW = 50;   // max. Breite pro Bild in mm
-                    $imgMaxH = 40;   // max. Höhe pro Bild in mm
-                    $imgPerRow = 3;    // Bilder pro Zeile
-                    $imgGap = 3;    // Abstand in mm
-                    $pageW = $this->getPageWidth()
-                        - $this->getMargins()['left']
-                        - $this->getMargins()['right'];
-
-                    $chunks = array_chunk($row['Bilder'], $imgPerRow);
-                    foreach ($chunks as $chunk) {
-                        // Seitenumbruch prüfen
-                        if (($this->GetY() + $imgMaxH + 4) >= 270) {
-                            $this->AddPage();
-                        }
-                        $this->Ln(2);
-                        $xStart = $this->getMargins()['left'];
+                // ── Bilder in die linke Spalte (innerhalb der Outline) ──────
+                if (!empty($imgPlan)) {
+                    $lastChunk = count($imgPlan) - 1;
+                    foreach ($imgPlan as $ci => $plan) {
+                        $cellH = $plan['cellH'];
+                        $border = ($ci === $lastChunk) ? 'LRB' : 'LR';
+                        $xStart = $this->GetX();
                         $yRow = $this->GetY();
 
-                        $maxDrawH = 0;
-                        foreach ($chunk as $idx => $imgPath) {
-                            if (!file_exists($imgPath)) continue;
+                        $this->MultiCell($w[0], $cellH, '', $border, 'L', $fill, 1, $xStart, $yRow,
+                            true, 0, false, true, $cellH, 'T');
 
-                            $size = @getimagesize($imgPath);
-                            if ($size && $size[0] > 0 && $size[1] > 0) {
-                                // gemeinsamer Skalierungsfaktor → Seitenverhältnis bleibt erhalten
-                                $scale = min($imgMaxW / $size[0], $imgMaxH / $size[1]);
-                                $drawW = $size[0] * $scale;
-                                $drawH = $size[1] * $scale;
-                            } else {
-                                $drawW = $imgMaxW;
-                                $drawH = $imgMaxH;
-                            }
-
-                            // im 50mm-Slot horizontal zentrieren
-                            $x = $xStart + $idx * ($imgMaxW + $imgGap) + ($imgMaxW - $drawW) / 2;
-
-                            if ($drawH > $maxDrawH) $maxDrawH = $drawH;
-                            $this->Image($imgPath, $x, $yRow, $drawW, $drawH, '', '', '', true, 600, '', false, false, 0);
+                        $innerX = $xStart + $pad;
+                        foreach ($plan['drawn'] as $idx => $im) {
+                            if (empty($im)) continue;
+                            $slotX = $innerX + $idx * ($imgMaxW + $imgGap) + ($imgMaxW - $im['w']) / 2;
+                            $this->Image($im['path'], $slotX, $yRow + $pad, $im['w'], $im['h'], '', '', '',
+                                true, 600, '', false, false, 0);
                         }
-                        $this->SetY($yRow + $maxDrawH + 2);
-                        $this->Ln();
                     }
                 }
-// ── Ende Bilder ──────────────────────────────────────────────
-
+                // ── Ende Bilder ─────────────────────────────────────────────
             }
         }
     }
