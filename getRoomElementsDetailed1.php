@@ -266,6 +266,9 @@ include "modal_elementHistory.html";
         setTimeout(() => {
             $('#hideZeroRows').prop('checked', hideZero);
             toggleHideZeroIcon(hideZero);
+            if (tableRoomElements) {
+                tableRoomElements.draw();   // ← neu: Filter nach Checkbox-Init anwenden
+            }
         }, 200);
     }
 

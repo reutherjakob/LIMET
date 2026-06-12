@@ -4,22 +4,36 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Bestand Eintragen bugfix.">
-      <change afterPath="$PROJECT_DIR$/updateTenderWorkflowDates_holidays.php" afterDir="false" />
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Bugfixes.&#10;Los Historie ion tenderLots eingepflegt. &#10;korrekturen Nutzerkatalog SF.">
+      <change afterPath="$PROJECT_DIR$/getImageMeta.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/getImagesForVermerk.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/getProjectImages.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/getVermerkeForProject.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/img_support/card_load_image_preview.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/img_support/modal_delete_img.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/img_support/modal_img_room.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/img_support/modal_img_vermerke.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/img_support/modal_metadaten.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/img_support/modal_upload_image.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/img_support/projectGallery.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/linkImageToRoom.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/linkImageToVermerk.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/unlinkImageFromRoom.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/unlinkImageFromVermerk.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/LIMET.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/LIMET.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/Nutzerabfrage.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/Nutzerabfrage.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/Support.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/Support.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/adminpanel.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/adminpanel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getElementeJeRaumbereich.php" beforeDir="false" afterPath="$PROJECT_DIR$/getElementeJeRaumbereich.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookElementsPerArea.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookElementsPerArea.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookSpecifications_New.js" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_New.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_allTenderLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_allTenderLots.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_elementLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_elementLots.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_tenderLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_tenderLots.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tenderCalendar.php" beforeDir="false" afterPath="$PROJECT_DIR$/tenderCalendar.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tenderCharts.php" beforeDir="false" afterPath="$PROJECT_DIR$/tenderCharts.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/updateTenderWorkflowDates.php" beforeDir="false" afterPath="$PROJECT_DIR$/updateTenderWorkflowDates.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/roombook_icons_legend.php" beforeDir="false" afterPath="$PROJECT_DIR$/utils/roombook_icons_legend.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createLotVermerkePDF.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createLotVermerkePDF.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createVermerkGroupPDF.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createVermerkGroupPDF.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/documentationV2.php" beforeDir="false" afterPath="$PROJECT_DIR$/documentationV2.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getVermerkeToUntergruppe.php" beforeDir="false" afterPath="$PROJECT_DIR$/getVermerkeToUntergruppe.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/unused/deleteImage.php" beforeDir="false" afterPath="$PROJECT_DIR$/deleteImage.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/unused/deleteImageFromRoom.php" beforeDir="false" afterPath="$PROJECT_DIR$/deleteImageFromRoom.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/unused/imageGallery.php" beforeDir="false" afterPath="$PROJECT_DIR$/imageGallery.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/unused/imageRoomgallery.php" beforeDir="false" afterPath="$PROJECT_DIR$/imageRoomgallery.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/unused/uploadFileImage.php" beforeDir="false" afterPath="$PROJECT_DIR$/uploadFileImage.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/_Cdnz.html" beforeDir="false" afterPath="$PROJECT_DIR$/utils/_Cdnz.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/utils/navbar.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,7 +59,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="werq_6_5_26" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -110,9 +124,9 @@
     &quot;PHP Web Page.Unnamed.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;database.data.extractors.current.export.id&quot;: &quot;Excel (xlsx)&quot;,
-    &quot;database.data.extractors.current.id&quot;: &quot;Tab-separated (TSV)_id&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;#78 on werq__6__5__26&quot;,
+    &quot;database.data.extractors.current.export.id&quot;: &quot;Semicolon-separated_id&quot;,
+    &quot;database.data.extractors.current.id&quot;: &quot;Semicolon-separated_id&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;bildsupport&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/WolfgangFuchsLIMET/Documents/NetBeansProjects/LIMET-FX&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -141,8 +155,8 @@
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\Besprechungsansicht\controllers" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\Nutzerumfrage" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX" />
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\Nutzerumfrage" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\IFCQuest" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\utils" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\_offene_projekte" />
@@ -584,9 +598,17 @@
       <workItem from="1778080567096" duration="379000" />
       <workItem from="1779175391804" duration="7225000" />
       <workItem from="1779189208923" duration="6144000" />
-      <workItem from="1779263139354" duration="17782000" />
-      <workItem from="1779349882053" duration="7247000" />
-      <workItem from="1779433638584" duration="7235000" />
+      <workItem from="1779263139354" duration="15249000" />
+      <workItem from="1780475136959" duration="21642000" />
+      <workItem from="1780499767846" duration="595000" />
+    </task>
+    <task id="LOCAL-00192" summary="Neues Login System: Schritt 1 - Encrypted PWs speichern.">
+      <option name="closed" value="true" />
+      <created>1771933186889</created>
+      <option name="number" value="00192" />
+      <option name="presentableId" value="LOCAL-00192" />
+      <option name="project" value="LOCAL" />
+      <updated>1771933186889</updated>
     </task>
     <task id="LOCAL-00193" summary="Neues Login System: Schritt 1 - Encrypted PWs speichern.">
       <option name="closed" value="true" />
@@ -972,15 +994,7 @@
       <option name="project" value="LOCAL" />
       <updated>1779284951676</updated>
     </task>
-    <task id="LOCAL-00241" summary="Bestand Eintragen bugfix.">
-      <option name="closed" value="true" />
-      <created>1779288112296</created>
-      <option name="number" value="00241" />
-      <option name="presentableId" value="LOCAL-00241" />
-      <option name="project" value="LOCAL" />
-      <updated>1779288112296</updated>
-    </task>
-    <option name="localTasksCounter" value="242" />
+    <option name="localTasksCounter" value="241" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

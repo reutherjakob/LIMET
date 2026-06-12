@@ -87,7 +87,9 @@ if ($result->num_rows > 0) {
 } else {
     echo "<span class='badge bg-success'>Offene Protokollpunkte</span>";
 }
-echo "<span class='badge bg-success mt-1 '>Liest das überhaupt wer? </span>";
+
+// echo "<span class='badge bg-danger mt-1 '>Liest das überhaupt wer? </span>";
+
 echo "</div>";
 $stmt->close();
 
