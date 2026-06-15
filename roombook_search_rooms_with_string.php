@@ -354,7 +354,8 @@ check_login();
         {data: '2 Kreis Va', title: '2_K Va', visible: false, case: "bit"},
         {data: '1 Kreis DL-5', title: '1_K DL5', visible: false, case: "bit"},
         {data: '2 Kreis DL-5', title: '2_K DL5', visible: false, case: "bit"},
-
+        {data: 'HT_Raumtemp Sommer °C', title: 'Raumtemp Sommer °C', visible: false, case: "num"},
+        {data: 'HT_Raumtemp Winter °C', title: 'Raumtemp Winter °C', visible: false, case: "num"},
     ];
 
 </script>

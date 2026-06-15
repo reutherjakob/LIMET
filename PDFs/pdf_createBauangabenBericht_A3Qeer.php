@@ -82,13 +82,16 @@ $haustechnikParams = [
     ['key' => 'HT_Abluft_Digestorium_Stk', 'label' => 'Abluft Digestor/Werkbank:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
     ['key' => 'HT_Abluft_Sicherheitsschrank_Stk', 'label' => 'Abluft Sicherheitsschrank:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => false],
     ['key' => 'HT_Abluft_Sicherheitsschrank_Unterbau_Stk', 'label' => 'Abluft Sicherheitsschrank Unterbau:', 'unit' => 'Stk', 'cell' => $e_C + $e_C_3rd, 'str_cell' => $e_C_3rd, 'ln_after' => false],
-    ['key' => 'HT_Punktabsaugung_Stk', 'label' => 'Punktabsaugung:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => true], // Line break after this
-    ['key' => 'HT_Waermeabgabe_W', 'label' => 'Abwärme MT: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false], // Line break after
+    ['key' => 'HT_Punktabsaugung_Stk', 'label' => 'Punktabsaugung:', 'unit' => 'Stk', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'ln_after' => true],
+    ['key' => 'HT_Waermeabgabe_W', 'label' => 'Abwärme MT: ', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
     ['key' => 'VE_Wasser', 'label' => 'VE Wasser:', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
     ['key' => 'HT_Notdusche', 'label' => 'Notdusche:', 'unit' => '', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
-    ['key' => 'HT_Raumtemp Sommer °C', 'label' => 'Max. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C, 'ln_after' => false],
-    ['key' => 'HT_Raumtemp Winter °C', 'label' => 'Min. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false],
 ];
+
+if ((int)$_SESSION['projectID'] !== 75) {
+    $haustechnikParams[] = ['key' => 'HT_Raumtemp Sommer °C', 'label' => 'Max. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C, 'ln_after' => false];
+    $haustechnikParams[] = ['key' => 'HT_Raumtemp Winter °C', 'label' => 'Min. Raumtemp.', 'unit' => '°C', 'cell' => $e_C_2_3rd, 'str_cell' => $e_C_2_3rd, 'ln_after' => false];
+}
 
 
 foreach ($roomIDsArray as $valueOfRoomID) {
