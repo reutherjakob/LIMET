@@ -53,6 +53,12 @@ function parse_dim_cm(string $raw): int
     return $v <= 10 ? (int)round($v * 100) : (int)round($v);
 }
 
+function skaliere_breite(string $raw, float $faktor): string
+{
+    $m = (parse_dim_cm($raw) * $faktor) / 100;
+    return rtrim(rtrim(number_format($m, 3, ',', ''), '0'), '.') . ' m';
+}
+
 function nearest_std(int $cm): array
 {
     $best = MZ_STANDARD_LAENGEN[0];
@@ -112,6 +118,7 @@ function norm_wert(string $raw, string $einheit): string
 
     return norm($raw);
 }
+
 function extract_params(array $col_names, array $params_raw): array
 {
     $out = [];
@@ -181,7 +188,7 @@ function resolve(string $familie, string $laenge, string $tiefe, array $params_r
 
     $r['variante_params'] = $cfg['variante_params'] ?? [];
     $r['element_params'] = $cfg['element_params'] ?? $cfg['info_params'] ?? [];
-
+    $r['breite_faktor'] = $cfg['breite_faktor'] ?? 1;
     // ── Gruppe: mehrere Familien → 1 Element ──────────────────────
     if ($cfg['typ'] === 'gruppe') {
         $r['element_id'] = $cfg['element_id'];
@@ -405,6 +412,16 @@ foreach ($familien as $e) {
     // Dedizierte Spalten in params_raw zurückschreiben
     if ($laenge !== '' && ($params_raw['MT_LIMET_Breite'] ?? '') === '') $params_raw['MT_LIMET_Breite'] = $laenge;
     if ($tiefe !== '' && ($params_raw['MT_LIMET_Tiefe'] ?? '') === '') $params_raw['MT_LIMET_Tiefe'] = $tiefe;
+
+
+    // Breiten-Faktor (z.B. 2-türige Hängeschränke: Modellbreite = 1 Tür)
+    if (($res['breite_faktor'] ?? 1) != 1 && ($params_raw['MT_LIMET_Breite'] ?? '') !== '') {
+        $params_raw['MT_LIMET_Breite'] = skaliere_breite(
+            (string)$params_raw['MT_LIMET_Breite'],
+            (float)$res['breite_faktor']
+        );
+    }
+
 
     // ── Gruppe mit Begleitfamilien: Zeile nur sammeln ───────────────
     if ($res['is_gruppe_member']) {

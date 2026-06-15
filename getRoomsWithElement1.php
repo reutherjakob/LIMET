@@ -7,6 +7,45 @@
 <body>
 
 <div class="btn-group" id="hide0Wrapper_RwE">
+    <div class="btn-group" id="variantenMassenWrapper">
+        <label class="btn btn-sm btn-outline-primary" for="massenVariante">
+            Var:
+        </label>
+        <select class="form-control form-control-sm" id="massenVariante">
+            <option value="1">A</option>
+            <option value="2">B</option>
+            <option value="3">C</option>
+            <option value="4">D</option>
+            <option value="5">E</option>
+            <option value="6">F</option>
+            <option value="7">G</option>
+            <option value="8">H</option>
+            <option value="9">I</option>
+            <option value="10">J</option>
+            <option value="11">K</option>
+            <option value="12">L</option>
+            <option value="13">M</option>
+            <option value="14">N</option>
+            <option value="15">O</option>
+            <option value="16">P</option>
+            <option value="17">Q</option>
+            <option value="18">R</option>
+            <option value="19">S</option>
+            <option value="20">T</option>
+            <option value="21">U</option>
+            <option value="22">V</option>
+            <option value="23">W</option>
+            <option value="24">X</option>
+            <option value="25">Y</option>
+            <option value="26">Z</option>
+        </select>
+        <button type="button" id="massenVarianteSetzen" class="btn btn-sm btn-outline-primary">
+            <i class="far fa-edit"></i> Alle ändern
+        </button>
+        <button type="button" id="massenVarianteSpeichern" class="btn btn-sm btn-outline-success">
+            <i class="far fa-save"></i> Alle speichern
+        </button>
+    </div>
     <input class="btn-check btn-sm" type="checkbox" id="hideZeroRows_RwE">
     <label class="btn btn-sm btn-outline-dark" for="hideZeroRows_RwE">
         Hide 0
@@ -77,7 +116,7 @@ $columns = [
     ["Raumnr", "Raum Nr."],
     ["Raumbezeichnung", "Raumbez."],
     ["Raumbereich Nutzer", "Raumbereich"],
-    ["Geschoss", "<i class='fas fa-layer-group'><label style='display: none;'>Geschoss</label></i>"], // would like to have
+    ["Geschoss", "<i class='fas fa-layer-group'><label style='display: none;'>Geschoss</label></i>"],
     ["Bauetappe", "Bauetappe"],
     ["Bauabschnitt", "Bauabschnitt"],
     ["Anzahl", "Anzahl"],
@@ -307,6 +346,81 @@ $mysqli->close();
                     }
                 });
             }
+        });
+
+        // === MASSENBEARBEITUNG VARIANTEN ===
+
+        // Alle Varianten auf neue Wert setzen
+        $("#massenVarianteSetzen").click(function () {
+            console.log("massenVarianteSezen");
+            let neueVariante = $("#massenVariante").val();
+            if (!neueVariante) {
+                alert("Bitte eine neue Variante auswählen!");
+                return;
+            }
+
+            // Alle Variant-Selects in der Tabelle aktualisieren
+            $("#tableRoomsWithElement select[id^='variante']").each(function () {
+                $(this).val(neueVariante);
+            });
+
+            let variantName = $("#massenVariante").find("option:selected").text();
+            makeToaster("Alle Varianten auf '" + variantName + "' gesetzt!", true);
+        });
+
+        // Alle Varianten massenhaft speichern
+        $("#massenVarianteSpeichern").click(function () {
+            let rows = [];
+
+            // Alle Reihen durchgehen und aktuelle Werte sammeln
+            $("#tableRoomsWithElement select[id^='variante']").each(function () {
+                let id = $(this).attr('id').replace('variante', '');
+                let amount = $("#amount" + id).val();
+                let variantenID = $(this).val();
+                let bestand = $("#bestand" + id).val();
+                let standort = $("#Standort" + id).val();
+                let verwendung = $("#Verwendung" + id).val();
+                let comment = $(".comment-btn[id='" + id + "']").attr('data-description') || "";
+
+                if (standort === '0' && verwendung === '0') {
+                    alert("Standort und Verwendung kann nicht Nein sein!");
+                    return false;
+                }
+
+                rows.push({
+                    id: id,
+                    comment: comment,
+                    amount: amount,
+                    variantenID: variantenID,
+                    bestand: bestand,
+                    standort: standort,
+                    verwendung: verwendung
+                });
+            });
+
+            if (rows.length === 0) {
+                makeToaster("Keine Einträge zu speichern!", true);
+                return;
+            }
+
+            // AJAX-Anfragen für alle Reihen (seriell)
+            let promiseChain = Promise.resolve();
+
+            rows.forEach(function (row, index) {
+                promiseChain = promiseChain.then(function () {
+                    return $.ajax({
+                        url: "saveRoombookEntry.php",
+                        data: row,
+                        type: "POST"
+                    });
+                });
+            });
+
+            promiseChain.then(function () {
+                makeToaster("Alle " + rows.length + " Einträge erfolgreich gespeichert!", true);
+            }).catch(function (error) {
+                makeToaster("Fehler beim Speichern!", false);
+            });
         });
     });
 

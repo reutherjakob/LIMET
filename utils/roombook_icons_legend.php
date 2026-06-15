@@ -98,12 +98,19 @@ init_page_serversides("x");
                                 <td>Aktualisieren</td>
                             </tr>
 
-
                             <tr>
-                                <td><i class="fas fa-file-excel"></i></td>
-                                <td>Download als Excel</td>
+                                <td>
+                                    <i class="fas fa-plus-square"></i>
+                                    <i class="fas fa-plus"></i>
+                                </td>
+                                <td>Hinzufügen/Neu anlegen</td>
                             </tr>
 
+                            <tr>
+                                <td>
+                                    <i class="fas fa-file-excel"></i></td>
+                                <td>Download als Excel</td>
+                            </tr>
 
 
                             <tr>
@@ -112,7 +119,6 @@ init_page_serversides("x");
                                 </td>
                                 <td>Download als PDF</td>
                             </tr>
-
 
 
                             </tbody>
