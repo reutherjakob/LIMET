@@ -68,9 +68,6 @@ try {
             a.Verwendung,                        -- 27
             a.Verwendung_copy1,                  -- 28
 
-            -- Anschaffung
-            a.Anschaffung,                       -- 29
-            a.Anschaffung_copy1,                 -- 30
 
             -- Internes Los
             a.tabelle_Lose_Intern_idtabelle_Lose_Intern,        -- 31

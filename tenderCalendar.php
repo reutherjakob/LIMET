@@ -26,8 +26,7 @@
         }
 
         .form-control-sm {
-            width: 95px;
-        !important;
+            width: 95px !important;
         }
 
         .btn-save {
@@ -58,12 +57,12 @@ init_page_serversides();
 ?>
 
 <body id="bodyTenderLots">
-<div class="container-fluid bg-light">
+<div class="container-fluid">
     <div id="limet-navbar"></div>
     <div class="row">
         <div class="col-12">
-            <div class="mt-4 card">
-                <div class="card-body">
+            <div class="mt-1 card">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <?php
                         $mysqli = utils_connect_sql();
@@ -94,6 +93,9 @@ init_page_serversides();
                         }
                         ?>
                     </ul>
+                    <div class="d-inline justify-content-end" id="excelundsuchleiste"></div>
+                </div>
+                <div class="card-body">
                     <div class="tab-content" id="myTabContent">
                         <?php
                         $counter = 1;
@@ -343,6 +345,7 @@ init_page_serversides();
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         initializeDataTable();
+
         setupRowClickHandler();
         initializeDatePickers();
         setupAutomatedDateUpdate();
@@ -384,18 +387,56 @@ init_page_serversides();
                 buttons: [
                     {
                         extend: 'excel',
-                        text: '<i class="fas fa-file-excel"></i> Excel', // Add Font Awesome icon
-                        className: 'btn btn-sm btn-light btn-outline-success', // Bootstrap small
+                        text: '<i class="fas fa-file-excel"></i> Excel',
+                        className: 'btn btn-sm btn-light btn-outline-success',
                     }
                 ],
-                stateSave: true
+                stateSave: true,
+
+                initComplete: function () {
+                    const api = this.api();
+                    const tableId = api.table().node().id;
+                    const $wrapper = $(api.table().container());
+
+                    // KEIN d-inline-flex mehr — sonst gewinnt dessen !important gegen display:none
+                    const $group = $('<div class="table-controls"></div>')
+                        .css({alignItems: 'center', gap: '.5rem'})
+                        .attr('data-table', tableId);
+
+                    $wrapper.find('.dt-buttons').appendTo($group);
+
+                    const $search = $wrapper.find('.dt-search');
+                    $search.find('label').remove();
+                    $search.find('input')
+                        .removeClass('form-control form-control-sm')
+                        .addClass('btn btn-sm btn-outline-dark xxx');
+                    $search.appendTo($group);
+
+                    $group.appendTo('#excelundsuchleiste');
+
+                    // NEU: jedes Mal neu auswerten, welcher Tab aktiv ist
+                    updateVisibleControls();
+                }
+
             });
+        });
+    }
+
+    function updateVisibleControls() {
+        const activePane = document.querySelector('.tab-pane.active');
+        const table = activePane ? activePane.querySelector('table.table') : null;
+        const tableId = table ? table.id : null;
+
+        document.querySelectorAll('#excelundsuchleiste .table-controls').forEach(function (group) {
+            group.style.display =
+                (group.getAttribute('data-table') === tableId) ? 'inline-flex' : 'none';
         });
     }
 
     document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(function (tabEl) {
         tabEl.addEventListener('shown.bs.tab', function () {
             DataTable.tables({visible: true, api: true}).columns.adjust();
+            updateVisibleControls();
         });
     });
 
