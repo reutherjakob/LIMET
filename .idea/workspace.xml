@@ -4,16 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="IMG upgrades">
-      <change afterPath="$PROJECT_DIR$/addBudget.php" afterDir="false" />
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Workflow Editing">
+      <change afterPath="$PROJECT_DIR$/deleteLotWorkflow.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IFCQuest/api_compare_elements.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/api_compare_elements.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IFCQuest/import_2_db_config.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/import_2_db_config.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/elementsInProject.php" beforeDir="false" afterPath="$PROJECT_DIR$/elementsInProject.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getRoomsWithElement1.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomsWithElement1.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/get_khi_export.php" beforeDir="false" afterPath="$PROJECT_DIR$/get_khi_export.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookChangeRoom_modal.html" beforeDir="false" afterPath="$PROJECT_DIR$/roombookChangeRoom_modal.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/_pdf_createBericht_utils.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/_pdf_createBericht_utils.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getDevicesAndTheirPricesForElements.php" beforeDir="false" afterPath="$PROJECT_DIR$/getDevicesAndTheirPricesForElements.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getLotWorkflow.php" beforeDir="false" afterPath="$PROJECT_DIR$/getLotWorkflow.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getPersonsOfProject.php" beforeDir="false" afterPath="$PROJECT_DIR$/getPersonsOfProject.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/get_elementBudgetsData.php" beforeDir="false" afterPath="$PROJECT_DIR$/get_elementBudgetsData.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logout.php" beforeDir="false" afterPath="$PROJECT_DIR$/logout.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectParticipants.php" beforeDir="false" afterPath="$PROJECT_DIR$/projectParticipants.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects.php" beforeDir="false" afterPath="$PROJECT_DIR$/projects.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookReports_New.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookReports_New.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_KOR_Ausstattungskatalog.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_KOR_Ausstattungskatalog.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/roombook_elementBudgets.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_elementBudgets.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_tenderLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_tenderLots.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/roombook_icons_legend.php" beforeDir="false" afterPath="$PROJECT_DIR$/utils/roombook_icons_legend.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -105,49 +111,49 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "JavaScript Debug._utils.php.executor": "Run",
-    "PHP Web Page.Unnamed.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "database.data.extractors.current.export.id": "Comma-separated (CSV)_id",
-    "database.data.extractors.current.id": "Comma-separated (CSV)_id",
-    "git-widget-placeholder": "ifc__excel__import",
-    "last_opened_file_path": "C:/Users/WolfgangFuchsLIMET/Documents/NetBeansProjects/LIMET-FX/IFCQuest",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "database.query.execution",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;JavaScript Debug._utils.php.executor&quot;: &quot;Run&quot;,
+    &quot;PHP Web Page.Unnamed.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
+    &quot;database.data.extractors.current.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;ifc__excel__import&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/WolfgangFuchsLIMET/Documents/NetBeansProjects/LIMET-FX/PDFs&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;database.query.execution&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mariadb"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mariadb&quot;
     ],
-    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
-      "TEXT"
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;TEXT&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\PDFs" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\IFCQuest" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\PDFs" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\utils" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\LOGIN" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\img_support" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\Nutzerumfrage" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\IFCQuest" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\utils" />
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\PDFs" />
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\PDFs\custom_report" />
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\PDFs\" />
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\img_support" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -155,8 +161,11 @@
       <command value=" cla+" />
     </option>
   </component>
-  <component name="RunManager" selected="JavaScript Debug._utils.php">
+  <component name="RunManager" selected="PHP Script._pdf_createBericht_Custom_utils.php">
     <configuration name="_utils.php" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="https://work.limet-rb.com/index.php/https://work.limet-rb.com/utils/_utils.php">
+      <method v="2" />
+    </configuration>
+    <configuration name="_pdf_createBericht_Custom_utils.php" type="PhpLocalRunConfigurationType" factoryName="PHP Console" temporary="true" path="$PROJECT_DIR$/PDFs/custom_report/_pdf_createBericht_Custom_utils.php">
       <method v="2" />
     </configuration>
     <configuration name="Unnamed" type="PhpWebAppRunConfigurationType" factoryName="PHP Web Application" nameIsGenerated="true">
@@ -164,7 +173,7 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JavaScript Debug._utils.php" />
+        <item itemvalue="PHP Script._pdf_createBericht_Custom_utils.php" />
         <item itemvalue="JavaScript Debug._utils.php" />
         <item itemvalue="JavaScript Debug._utils.php" />
         <item itemvalue="JavaScript Debug._utils.php" />
@@ -593,23 +602,17 @@
       <workItem from="1781076602010" duration="12315000" />
       <workItem from="1781162264695" duration="13205000" />
       <workItem from="1781247519992" duration="2806000" />
-      <workItem from="1781509433221" duration="4193000" />
-    </task>
-    <task id="LOCAL-00199" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu">
-      <option name="closed" value="true" />
-      <created>1772100243056</created>
-      <option name="number" value="00199" />
-      <option name="presentableId" value="LOCAL-00199" />
-      <option name="project" value="LOCAL" />
-      <updated>1772100243056</updated>
-    </task>
-    <task id="LOCAL-00200" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu">
-      <option name="closed" value="true" />
-      <created>1772101152276</created>
-      <option name="number" value="00200" />
-      <option name="presentableId" value="LOCAL-00200" />
-      <option name="project" value="LOCAL" />
-      <updated>1772101152276</updated>
+      <workItem from="1781509433221" duration="5275000" />
+      <workItem from="1781514795470" duration="13477000" />
+      <workItem from="1781596420166" duration="16271000" />
+      <workItem from="1781621870722" duration="772000" />
+      <workItem from="1781680839050" duration="9866000" />
+      <workItem from="1781785538010" duration="6280000" />
+      <workItem from="1781869614497" duration="1952000" />
+      <workItem from="1782118277358" duration="628000" />
+      <workItem from="1782134675860" duration="1579000" />
+      <workItem from="1782137702643" duration="627000" />
+      <workItem from="1782138449846" duration="525000" />
     </task>
     <task id="LOCAL-00201" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu">
       <option name="closed" value="true" />
@@ -987,7 +990,23 @@
       <option name="project" value="LOCAL" />
       <updated>1781254554991</updated>
     </task>
-    <option name="localTasksCounter" value="248" />
+    <task id="LOCAL-00248" summary=" KHI und KOR upgrade - zudem SF import Fixes">
+      <option name="closed" value="true" />
+      <created>1781513723430</created>
+      <option name="number" value="00248" />
+      <option name="presentableId" value="LOCAL-00248" />
+      <option name="project" value="LOCAL" />
+      <updated>1781513723431</updated>
+    </task>
+    <task id="LOCAL-00249" summary="Workflow Editing">
+      <option name="closed" value="true" />
+      <created>1781531255317</created>
+      <option name="number" value="00249" />
+      <option name="presentableId" value="LOCAL-00249" />
+      <option name="project" value="LOCAL" />
+      <updated>1781531255318</updated>
+    </task>
+    <option name="localTasksCounter" value="250" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1017,8 +1036,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Koth Katalog fin.&#10;SF Umfrage Fin.&#10;Losliste Fin." />
-    <MESSAGE value="Standort/Verwendung Verbessert.&#10;kor Katalog.&#10;BBE einreichbereicht" />
     <MESSAGE value="SF Umfrage DONE.&#10;&#10;LOGIN speichert nun VERSCHLÜSSELTE Userdaten in tabelle_user.&#10;&#10;Bugfixes.&#10;&#10;KOR Seiten -&gt; LeitungsAbgleich seite - Ansatz dark mode." />
     <MESSAGE value="..." />
     <MESSAGE value="Feedback Center getuned.&#10;lose TOdo finalisiert.&#10;Kommentar bei preise ergänzt.&#10;Alle lose workflocw gefixed.&#10;RB specs verbessert. und sortiert.&#10;raum kopie erweitert. &#10;&#10;RB texte verbessert." />
@@ -1042,7 +1059,9 @@
     <MESSAGE value="fixed pdf" />
     <MESSAGE value="Import works" />
     <MESSAGE value="IMG upgrades" />
-    <option name="LAST_COMMIT_MESSAGE" value="IMG upgrades" />
+    <MESSAGE value=" KHI und KOR upgrade - zudem SF import Fixes" />
+    <MESSAGE value="Workflow Editing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Workflow Editing" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1096,6 +1115,16 @@
           <url>file://$PROJECT_DIR$/getDevicePrices.php</url>
           <line>285</line>
           <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/get_rb_specs_data.php</url>
+          <line>182</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/PDFs/custom_report/pdf_createBericht_MYPDFclass_Custom.php</url>
+          <line>63</line>
+          <option name="timeStamp" value="27" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

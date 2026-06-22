@@ -421,7 +421,7 @@ function strahlenanw($pdf, $param, $cellsize, $gr)
 {
     $originalFontSize = $pdf->getFontSizePt();
     $pdf->SetFont('zapfdingbats', '', 10);
-    if ($param === '0') {
+    if ($param === '0' || empty($param)) {
         // $pdf->SetTextColor(255, 0, 0);
         $pdf->MultiCell($cellsize, $gr, TCPDF_FONTS::unichr(54), 0, 'L', 1, 0);
     } else {
@@ -506,24 +506,31 @@ function make_MT_list_San($pdf, $SB, $block_header_w, $rowcounter, $resultX, $st
 
 function make_MT_list($pdf, $SB, $block_header_w, $rowcounter, $resultX, $style_normal, $style_dashed)
 {
-    $more_than_one_row = ($rowcounter > 1);
+    // $block_header_w = 0;
+    // $pdf->Ln();
+    // Zwei-spaltiges Layout NUR bei A3-Breite; sonst alles einspaltig untereinander.
+    $a3Width = 420 - 2 * PDF_MARGIN_LEFT;
+    $twoUp = ($rowcounter > 1) && ($SB >= $a3Width - 1);
+
     $pdf->SetLineStyle($style_dashed);
-    $proportions = array(0.1, 0.1, 0.1, 0.1, 0.60);
+    $proportions = array(0.16, 0.07, 0.07, 0.1, 0.60);
     $spaces = array();
+    // Einspaltig: volle Breite nutzen; zwei-spaltig: halbe Breite je Tabelle.
+    $widthFactor = $twoUp ? 0.5 : 1.0;
     foreach ($proportions as $prop) {
-        $spaces[] = ($SB - $block_header_w) * 0.5 * $prop;
+        $spaces[] = ($SB - $block_header_w) * $widthFactor * $prop;
     }
     $fill = 0;
     $pdf->SetFillColor(244, 244, 244);
 
-
+    // ---- Kopfzeile ----
     $rowHeightFirstLine = $pdf->getStringHeight(50, "ID", false, true, '', 1);
     $pdf->MultiCell($spaces[0], $rowHeightFirstLine, "ID", 'LB', 'C', 0, 0);
     $pdf->MultiCell($spaces[1], $rowHeightFirstLine, "Var", 'B', 'C', 0, 0);
     $pdf->MultiCell($spaces[2], $rowHeightFirstLine, "Stk", 'B', 'C', 0, 0);
     $pdf->MultiCell($spaces[3], $rowHeightFirstLine, "Bestand", 'B', 'C', 0, 0);
-    $pdf->MultiCell($spaces[4], $rowHeightFirstLine, "Element", 'B', 'L', 0, 0);
-    if ($more_than_one_row) {
+    $pdf->MultiCell($spaces[4], $rowHeightFirstLine, "Element", $twoUp ? 'B' : 'BR', 'L', 0, 0);
+    if ($twoUp) {
         $pdf->MultiCell($spaces[0], $rowHeightFirstLine, "ID", 'LB', 'C', 0, 0);
         $pdf->MultiCell($spaces[1], $rowHeightFirstLine, "Var", 'B', 'C', 0, 0);
         $pdf->MultiCell($spaces[2], $rowHeightFirstLine, "Stk", 'B', 'C', 0, 0);
@@ -534,37 +541,37 @@ function make_MT_list($pdf, $SB, $block_header_w, $rowcounter, $resultX, $style_
     $pdf->Ln();
     $c_even = 0;
     while ($row = $resultX->fetch_assoc()) {
-        $borders = 'T';
         $pdf->SetFont('helvetica', '', 10);
         $rowHeightMainLine = $pdf->getStringHeight($spaces[4], $row['Bezeichnung'], false, true, '', 1) + 1;
         check_4_new_page($pdf, $rowHeightMainLine, "A3");
-        if (!$more_than_one_row || ($more_than_one_row && $c_even % 2 == 0)) {
+
+        // Einrückung: einspaltig vor jeder Zeile, zwei-spaltig nur am Paaranfang
+        if (!$twoUp || ($c_even % 2 == 0)) {
             $pdf->MultiCell($block_header_w, $rowHeightMainLine, "", "", 'R', "", 0);
         }
         $c_even++;
 
-        $borders = 'LT';
-        $pdf->MultiCell($spaces[0], $rowHeightMainLine, $row['ElementID'], $borders, 'C', $fill, 0);
-        $borders = 'T';
-        $pdf->MultiCell($spaces[1], $rowHeightMainLine, $row['Variante'], $borders, 'C', $fill, 0);
-        $pdf->MultiCell($spaces[2], $rowHeightMainLine, $row['SummevonAnzahl'], $borders, 'C', $fill, 0);
-        $pdf->MultiCell($spaces[3], $rowHeightMainLine, translateBestand($row['Neu/Bestand']), $borders, 'C', $fill, 0);
-        $borders = 'RT';
-        $pdf->MultiCell($spaces[4], $rowHeightMainLine, $row['Bezeichnung'], $borders, 'L', $fill, 0);
+        $pdf->MultiCell($spaces[0], $rowHeightMainLine, $row['ElementID'], 'LT', 'C', $fill, 0);
+        $pdf->MultiCell($spaces[1], $rowHeightMainLine, $row['Variante'], 'T', 'C', $fill, 0);
+        $pdf->MultiCell($spaces[2], $rowHeightMainLine, $row['SummevonAnzahl'], 'T', 'C', $fill, 0);
+        $pdf->MultiCell($spaces[3], $rowHeightMainLine, translateBestand($row['Neu/Bestand']), 'T', 'C', $fill, 0);
+        $pdf->MultiCell($spaces[4], $rowHeightMainLine, $row['Bezeichnung'], 'RT', 'L', $fill, 0);
 
-        if (($more_than_one_row && ($c_even % 2 == 0)) || (!$more_than_one_row && ($c_even % 2 == 1))) {
+        // Zeilenumbruch: einspaltig nach jeder Zeile, zwei-spaltig nach jedem Paar
+        if (!$twoUp || ($c_even % 2 == 0)) {
             $pdf->Ln();
             $fill = !$fill;
         }
     }
-    if ($c_even % 2 === 1 && $more_than_one_row) {
+    // offenes Paar im Zwei-Spalten-Layout schließen
+    if ($twoUp && $c_even % 2 === 1) {
         $pdf->Ln();
     }
+
     $pdf->Line(15 + $block_header_w, $pdf->GetY(), $SB + 15, $pdf->GetY(), $style_dashed);
     $pdf->SetLineStyle($style_normal);
     $pdf->Ln(2);
     $pdf->Line(15, $pdf->GetY() + 1, $SB + 15, $pdf->GetY() + 1, $style_normal);
-
 }
 
 

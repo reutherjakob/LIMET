@@ -280,43 +280,57 @@ init_page_serversides();
                 return false;
             }
 
-            function calc_anschluss_cols(array $params): array
+            function calc_anschluss_cols(array $params, bool $isVE = false): array
             {
-                $netzart = $params['Netzart'] ?? '';
-                $spannung = $params['Spannung'] ?? '';
-
+                $netzart    = $params['Netzart'] ?? '';
+                $spannung   = $params['Spannung'] ?? '';
                 $steckdosen = (int)($params['Steckdosen_Anzahl'] ?? 0);
 
-                $netze = ['AV', 'SV', 'ZSV', 'USV'];
+                // Parameter-Bezeichnungen für die Kreise je Netzart (mit Leerzeichen!)
+                $kreisParam = [
+                    'AV'  => 'Kreise AV',
+                    'SV'  => 'Kreise SV',
+                    'ZSV' => 'Kreise ZSV',
+                    'USV' => 'Kreise USV',  // existiert (noch) nicht → bleibt leer, bis angelegt
+                ];
+
+                $netze  = ['AV', 'SV', 'ZSV', 'USV'];
                 $result = [];
                 $direkt = strtolower($params['Direktanschluss'] ?? '');
                 $isDirekt = in_array($direkt, ['ja', 'yes', '1', 'true', '2', '3', '4']);
                 $result['direktanschluss_display'] = $isDirekt ? '1' : '';
 
-
                 foreach ($netze as $netz) {
                     $netzeInString = array_map('strtoupper', array_map('trim', explode('/', $netzart)));
                     $hasNetz = in_array($netz, $netzeInString);
 
-                    $result['direkt_230_' . $netz] = ($hasNetz && $isDirekt && $spannung === '230') ? (is_numeric($direkt) ? $direkt : '1') : '';
-                    $result['direkt_400_' . $netz] = ($hasNetz && $isDirekt && $spannung === '400') ? (is_numeric($direkt) ? $direkt : '1') : '';
+                    if ($isVE) {
+                        // Versorgungseinheit: Anzahl Kreise je Netzart in der DA-Spalte
+                        $kreise = (int)($params[$kreisParam[$netz]] ?? 0);
+                        $result['direkt_230_' . $netz] = ($hasNetz && $spannung === '230' && $kreise > 0) ? $kreise : '';
+                        $result['direkt_400_' . $netz] = ($hasNetz && $spannung === '400' && $kreise > 0) ? $kreise : '';
+                    } else {
+                        // bisherige Direktanschluss-Logik unverändert
+                        $result['direkt_230_' . $netz] = ($hasNetz && $isDirekt && $spannung === '230') ? (is_numeric($direkt) ? $direkt : '1') : '';
+                        $result['direkt_400_' . $netz] = ($hasNetz && $isDirekt && $spannung === '400') ? (is_numeric($direkt) ? $direkt : '1') : '';
+                    }
+
                     $result['steck_230_' . $netz] = ($hasNetz && $spannung === '230' && $steckdosen > 0) ? $steckdosen : '';
                     $result['steck_400_' . $netz] = ($hasNetz && $spannung === '400' && $steckdosen > 0) ? $steckdosen : '';
                 }
+
                 $result['24V'] = ($params['Spannung'] ?? '') == "24" ? 1 : "";
 
                 $druckluft_anschluss = $params['Druckluftanschluss'] ?? '';
                 $druckluft_druck = trim($params['Druckluft_Druck'] ?? '');
-                $hasDruckluft = ($druckluft_anschluss !== '' && $druckluft_anschluss !== '0');;
-                $result['dl_3bar'] = ($hasDruckluft && $druckluft_druck === '3') ? 1 : '';
-                $result['dl_6bar'] = ($hasDruckluft && $druckluft_druck === '6') ? 1 : '';
-                $result['dl_9bar'] = ($hasDruckluft && $druckluft_druck === '9') ? 1 : '';
+                $hasDruckluft = ($druckluft_anschluss !== '' && $druckluft_anschluss !== '0');
+                $result['dl_3bar']  = ($hasDruckluft && $druckluft_druck === '3')  ? 1 : '';
+                $result['dl_6bar']  = ($hasDruckluft && $druckluft_druck === '6')  ? 1 : '';
+                $result['dl_9bar']  = ($hasDruckluft && $druckluft_druck === '9')  ? 1 : '';
                 $result['dl_12bar'] = ($hasDruckluft && $druckluft_druck === '12') ? 1 : '';
-
 
                 $pa = strtolower(trim($params['PA'] ?? ''));
                 $result['pa'] = (stripos($pa, 'ja') !== false) ? '1' : ($pa !== '' && $pa !== '0' ? $pa : '');
-
 
                 return $result;
             }
@@ -706,7 +720,7 @@ init_page_serversides();
                         $elemCode = h($elem['ElementID']) . h(varianteLetter($varID));
                         $out_ortsv = ($elem['GewerkBezeichnung'] === 'BEW') ? 'Ja' : 'Nein';
                         $ve = isVersorgungseinheit($elem['ElementID']) ? 'Ja' : 'Nein';
-                        $ac = calc_anschluss_cols($params);
+                        $ac = calc_anschluss_cols($params, $ve === 'Ja');
                         $wc = calc_wasser_cols($params, $display);
                         $sc = calc_sonstige_cols($params, $display);
                         $anm = $anmerkungMap[$eID . '_' . $varID] ?? [];

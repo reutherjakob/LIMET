@@ -18,7 +18,8 @@ if ($elementID > 0) {
                 p.Preis AS EP,
                 p.Nebenkosten AS 'NK/Stk', 
                 pr.Projektname,
-                l.Lieferant
+                l.Lieferant,
+                p.Kommentar
             FROM tabelle_geraete g
             INNER JOIN tabelle_hersteller h ON g.tabelle_hersteller_idtabelle_hersteller = h.idtabelle_hersteller
             INNER JOIN tabelle_preise p ON g.idTABELLE_Geraete = p.TABELLE_Geraete_idTABELLE_Geraete
@@ -41,11 +42,13 @@ if ($elementID > 0) {
                <i class='fas fa-calendar-alt' ></i></th>
             <th>Info</th>
             <th>Gerät</th>      
+            <th> <i class='fas fa-euro-sign'></i> </i> <i class='far fa-comment'></i></th>      
+            
           
-            <th>Projekt</th>
             <th>Herst./Lief.</th>
-            <th>Beschr.</th>
+            <th>El.-Beschr.</th>
 
+            <th>Projekt</th>
           </tr></thead><tbody>";
 
     if ($result->num_rows > 0) {
@@ -58,7 +61,7 @@ if ($elementID > 0) {
             echo "<td>" . date_format($date, 'Y-m-d') . "</td>";
             echo "<td>" . htmlspecialchars($row["Quelle"] ?? '') . "</td>";
             echo "<td>" . htmlspecialchars($row['Gerät']) . "</td>";
-            echo "<td>" . htmlspecialchars($row["Projektname"] ?? '') ?? '-' . "</td>";
+            echo "<td>" . htmlspecialchars($row['Kommentar']??'') . "</td>";
             echo "<td>" . htmlspecialchars($row["Lieferant"] ?? ' ') . ' - ' .
                 htmlspecialchars($row['Hersteller'] ?? '') . "</td>";
             echo "<td>";
@@ -73,6 +76,7 @@ if ($elementID > 0) {
                 echo "-";
             }
             echo "</td>";
+            echo "<td>" . htmlspecialchars($row["Projektname"] ?? '') ?? '-' . "</td>";
             echo "</tr>";
         }
     } else {

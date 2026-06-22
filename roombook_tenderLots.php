@@ -457,6 +457,8 @@ require "modal_los_aenderungen.php";
     var tableTenderLots;
 
     $(document).ready(function () {
+
+
         getExcelFilename("Lose-im_Projekt")
             .then(filename => {
                 // console.log('Generated filename:', filename);
@@ -566,7 +568,7 @@ require "modal_los_aenderungen.php";
                     document.getElementById("kostenanschlag").value = tableTenderLots.row($(this)).data()[11].replace(/\./g, '');
                     document.getElementById("budget").value = tableTenderLots.row($(this)).data()[12].replace(/\./g, '');
                     document.getElementById("lotSum").value = tableTenderLots.row($(this)).data()[13].replace(/\./g, '');
-//TODO Auftragnehmeer in modal
+                    //TODO Auftragnehmeer in modal
                     const htmlString = tableTenderLots.row($(this)).data()[8];
                     const textContent = htmlString.replace(/<[^>]*>/g, '');
 
@@ -625,6 +627,7 @@ require "modal_los_aenderungen.php";
                     });
                 });
             });
+
 
         $('#lotLVSend').datepicker({
             format: "yyyy-mm-dd",

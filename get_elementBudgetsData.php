@@ -73,26 +73,15 @@ $stmt->execute();
 $result = $stmt->get_result();
 $data = [];
 
-function renderBudgetSelect($rowID, $selectedBudgetID, $budgets)
-{
-    $html = '<select class="form-control form-control-sm" id="' . htmlspecialchars($rowID) . '">';
-    $html .= '<option value="0"' . ($selectedBudgetID == 0 ? ' selected' : '') . '>0-Budget wählen</option>';
-    foreach ($budgets as $id => $budget) {
-        $selected = ($id == $selectedBudgetID) ? ' selected' : '';
-        $optionText = htmlspecialchars($budget['idtabelle_projektbudgets'] . "-" . $budget['Budgetnummer'] . "-" . $budget['Budgetname']);
-        $html .= '<option value="' . htmlspecialchars($id) . '"' . $selected . '>' . $optionText . '</option>';
-    }
-    $html .= '</select>';
-    return $html;
-}
-
 while ($row = $result->fetch_assoc()) {
-    $selectedBudgetID = $row['idtabelle_projektbudgets'] ?? 0;
+    $selectedBudgetID = (int)($row['idtabelle_projektbudgets'] ?? 0);
+
     $selectedBudgetText = '';
     if ($selectedBudgetID && isset($projectBudgets[$selectedBudgetID])) {
         $b = $projectBudgets[$selectedBudgetID];
         $selectedBudgetText = $b['idtabelle_projektbudgets'] . "-" . $b['Budgetnummer'] . "-" . $b['Budgetname'];
     }
+
     $rowData = [];
     $rowData['BudgetStatus'] = isset($projectBudgets[$selectedBudgetID])
         ? (int)$projectBudgets[$selectedBudgetID]['status']
@@ -115,9 +104,11 @@ while ($row = $result->fetch_assoc()) {
     $rowData['KostenRaw'] = number_format($kosten, 2, '.', '');
     $rowData['PPRaw'] = number_format($kosten * $anzahl, 2, '.', '');
 
-    $rowData['BudgetSelect'] = renderBudgetSelect($row['id'], $selectedBudgetID, $projectBudgets);
+    // nur noch die Budget-Id als Zahl - das <select> baut das Frontend
+    $rowData['BudgetSelect'] = $selectedBudgetID;
     $rowData['BudgetID'] = $selectedBudgetID;
     $rowData['BudgetBezeichnung'] = $selectedBudgetText;
+
     $data[] = $rowData;
 }
 

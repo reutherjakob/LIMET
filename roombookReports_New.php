@@ -124,76 +124,10 @@ init_page_serversides("", "x");
 </div>
 
 
-<!-- ===================================================================== -->
-<!--  MODAL: Parameter-Picker (Sets befüllen vor, User justiert frei)      -->
-<!-- ===================================================================== -->
-<div class="modal fade" id="paramPickerModal" tabindex="-1" aria-labelledby="paramPickerModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header py-2">
-                <h5 class="modal-title" id="paramPickerModalLabel">Bericht konfigurieren</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Vorlage + Optionen -->
-                <div class="row g-2 align-items-end mb-3">
-                    <div class="col-12 col-md-4">
-                        <label class="form-label mb-1 small fw-semibold" for="pickerSetSelect">Vorlage laden</label>
-                        <select id="pickerSetSelect" class="form-select form-select-sm"></select>
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <label class="form-label mb-1 small fw-semibold" for="pickerFormat">Format</label>
-                        <select id="pickerFormat" class="form-select form-select-sm">
-                            <option value="A3">A3 quer</option>
-                            <option value="A4">A4 hoch</option>
-                        </select>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <label class="form-label mb-1 small fw-semibold" for="pickerMtMode">Med.-tech.</label>
-                        <select id="pickerMtMode" class="form-select form-select-sm">
-                            <option value="none">keine</option>
-                            <option value="list">Liste</option>
-                            <option value="details">Details</option>
-                        </select>
-                    </div>
-                    <div class="col-12 col-md-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="pickerMarkChanges">
-                            <label class="form-check-label small" for="pickerMarkChanges">Änderungen markieren</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    <button type="button" class="btn btn-sm btn-outline-secondary" id="pickerSelectAll">Alle</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" id="pickerSelectNone">Keine</button>
-                    <span class="text-muted small ms-2">Vorlage füllt vor – Auswahl frei änderbar.</span>
-                </div>
-
-                <div id="pickerGroups" class="row g-3"></div>
-            </div>
-            <div class="modal-footer py-2">
-                <span id="pickerCount" class="me-auto small text-muted"></span>
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Abbrechen</button>
-                <button type="button" class="btn btn-primary btn-sm" id="pickerGenerate">PDF erzeugen</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 <script>
-    // Ordner, in dem pdf_createBauangabenBericht_Custom.php UND
-    // getReportParamDefinitions.php liegen. <-- an echten Pfad anpassen!
-    const CUSTOM_PDF_DIR = '/PDFs/custom_report';
-
     let table;
-    let customDefsCache = null;          // { groups, preselected, defaults, sets }
-    let paramPickerModalInstance = null; // Bootstrap-Modal (lazy)
-
     const reportCategoryOptions = [
         {value: "", text: "-- Berichtkategorie auswählen --", disabled: true, selected: true},
-        {value: "custom_sets", text: "Vorlagen (Custom)"},
         {value: "bauangaben_neu", text: "Bauangaben Neu"},
         {value: "bauangaben", text: "Bauangaben"},
         {value: "einreichung", text: "Einreichung"},
@@ -211,7 +145,7 @@ init_page_serversides("", "x");
             {text: "Lab-PDF", url: "pdf_createBauangabenLabPDF"},
             {text: "Lab-Kurz-PDF'", url: "pdf_createBauangabenLabKompaktPDF"},
             {text: "Lab-ENT-PDF", url: "pdf_createBauangabenLabEntPDF"},
-        ],
+         ],
         bauangaben_neu:[
             {text: "BAU A3", url: "pdf_createBauangabenBericht_A3Qeer"},
             {text: "ohne Änderungsmarkierungen", url: "pdf_createBauangabenBericht_A3Qeer_1"},
@@ -282,26 +216,6 @@ init_page_serversides("", "x");
         categorySelect.on('change', function () {
             displayReportsForCategory(this.value);
         });
-
-        // ---- Picker-Modal: statische Steuerelemente einmal verdrahten ----
-        $('#pickerSetSelect').on('change', function () {
-            const id = this.value;
-            if (!id) {
-                applyPickerSelection(customDefsCache.preselected || [], customDefsCache.defaults || {});
-                return;
-            }
-            const set = (customDefsCache.sets || []).find(s => s.id === id);
-            applyPickerSelection(set ? (set.params || []) : [], set ? (set.options || {}) : {});
-        });
-        $('#pickerSelectAll').on('click', function () {
-            $('#pickerGroups input.picker-param').prop('checked', true);
-            updatePickerCount();
-        });
-        $('#pickerSelectNone').on('click', function () {
-            $('#pickerGroups input.picker-param').prop('checked', false);
-            updatePickerCount();
-        });
-        $('#pickerGenerate').on('click', generateFromPicker);
     });
 
     function initDataTable() {
@@ -345,19 +259,11 @@ init_page_serversides("", "x");
         const container = $('#reportButtonsContainer');
         container.empty();
         const dateSelectContainer = $('#dateSelectContainer');
-        // Änderungsdatum auch für Vorlagen (Custom) einblenden
-        if (category === 'bauangaben_neu' || category === 'custom_sets') {
+        if (category === 'bauangaben_neu') {
             dateSelectContainer.removeClass('d-none');
         } else {
             dateSelectContainer.addClass('d-none');
         }
-
-        // Sonderfall: Custom -> eigene Auswahl + Vorlagen, beide öffnen den Picker
-        if (category === 'custom_sets') {
-            displayCustomControls(container);
-            return;
-        }
-
         if (!category || !reportCategories[category]) return;
         const btnGroup = $('<div class="btn-group" role="group" aria-label="Berichtsbuttons"></div>');
         reportCategories[category].forEach(report => {
@@ -367,238 +273,6 @@ init_page_serversides("", "x");
         });
 
         container.append(btnGroup);
-    }
-
-    // =====================================================================
-    //  CUSTOM: Definitionen laden + Steuerung (Eigene Auswahl / Vorlagen)
-    // =====================================================================
-
-    /**
-     * Lädt (einmalig, gecached) Gruppen/Vorauswahl/Defaults/Sets vom Endpoint.
-     * Bei Fehlern steht die echte Ursache in der Browser-Konsole (F12).
-     */
-    function ensureCustomDefs(cb, container) {
-        if (customDefsCache) { cb(customDefsCache); return; }
-
-        const url = `${CUSTOM_PDF_DIR}/getReportParamDefinitions.php`;
-        if (container) container.append('<span class="text-muted small">Lade Konfiguration…</span>');
-
-        $.ajax({url: url, dataType: 'text'})
-            .done(raw => {
-                let data;
-                try {
-                    data = JSON.parse(raw);
-                } catch (e) {
-                    console.error('Custom-Defs: Antwort ist kein JSON.\nURL:', url, '\nAntwort:', raw);
-                    if (container) {
-                        container.empty();
-                        container.append('<span class="text-danger small">Konfiguration ungültig (Details in Konsole).</span>');
-                    }
-                    return;
-                }
-                customDefsCache = data;
-                cb(customDefsCache);
-            })
-            .fail(xhr => {
-                console.error('Custom-Defs laden fehlgeschlagen.\nURL:', url,
-                    '\nStatus:', xhr.status, xhr.statusText, '\nAntwort:', xhr.responseText);
-                if (container) {
-                    container.empty();
-                    container.append('<span class="text-danger small">Konnte nicht geladen werden (Status '
-                        + xhr.status + ', Details in Konsole).</span>');
-                }
-            });
-    }
-
-    /**
-     * Buttons in der Berichtszeile: "Parameter wählen…" (leer/Vorauswahl) und
-     * je Vorlage ein Button. Alle öffnen den Picker (Vorlage füllt nur vor).
-     */
-    function displayCustomControls(container) {
-        ensureCustomDefs(function (defs) {
-            container.empty();
-
-            const own = $('<button type="button" class="btn btn-primary btn-sm me-2 mb-1">Parameter wählen…</button>');
-            own.on('click', () => openParamPicker(null));
-            container.append(own);
-
-            const sets = defs.sets || [];
-            const scopeLabel = {project: 'Projekt', general: 'Allgemein'};
-            ['project', 'general'].forEach(scope => {
-                const list = sets.filter(s => (s.scope || 'general') === scope);
-                if (!list.length) return;
-                const bg = $('<div class="btn-group me-2 mb-1" role="group"></div>')
-                    .attr('aria-label', 'Vorlagen ' + scopeLabel[scope]);
-                list.forEach(set => {
-                    const fmt = (set.options && set.options.format) ? ' (' + set.options.format + ')' : '';
-                    const b = $('<button type="button" class="btn btn-light border-dark btn-sm"></button>')
-                        .text(set.label)
-                        .attr('title', scopeLabel[scope] + fmt + ' – öffnet die Auswahl');
-                    b.on('click', () => openParamPicker(set.id));
-                    bg.append(b);
-                });
-                container.append(bg);
-            });
-        }, container);
-    }
-
-    // =====================================================================
-    //  PICKER-MODAL
-    // =====================================================================
-
-    function getParamPickerModal() {
-        if (!paramPickerModalInstance) {
-            paramPickerModalInstance = new bootstrap.Modal(document.getElementById('paramPickerModal'));
-        }
-        return paramPickerModalInstance;
-    }
-
-    /**
-     * Öffnet den Picker. setId != null -> mit Vorlage vorbefüllt,
-     * sonst mit Projekt-Vorauswahl.
-     */
-    function openParamPicker(setId) {
-        ensureCustomDefs(function (defs) {
-            buildPickerGroups(defs.groups || []);
-            fillPickerSetSelect(defs.sets || [], setId || '');
-
-            if (setId) {
-                const set = (defs.sets || []).find(s => s.id === setId);
-                applyPickerSelection(set ? (set.params || []) : [], set ? (set.options || {}) : {});
-            } else {
-                applyPickerSelection(defs.preselected || [], defs.defaults || {});
-            }
-            getParamPickerModal().show();
-        });
-    }
-
-    /**
-     * Baut die Checkbox-Gruppen (Sondergruppen wie Med.-tech. werden über
-     * die mt_mode-Auswahl gesteuert und hier ausgelassen).
-     */
-    function buildPickerGroups(groups) {
-        const wrap = $('#pickerGroups').empty();
-
-        groups.forEach((g, gi) => {
-            if (g.special) return;
-            const params = g.params || [];
-            if (!params.length) return;
-
-            const col = $('<div class="col-12 col-md-6 col-lg-4"></div>');
-            const card = $('<div class="card h-100"></div>');
-
-            const head = $('<div class="card-header py-1 px-2 d-flex align-items-center justify-content-between"></div>');
-            head.append($('<span class="fw-semibold small"></span>').text(g.label));
-            const grp = $('<div class="btn-group btn-group-sm"></div>');
-            const bAll = $('<button type="button" class="btn btn-outline-secondary py-0">alle</button>');
-            const bNone = $('<button type="button" class="btn btn-outline-secondary py-0">keine</button>');
-            bAll.on('click', () => { card.find('input.picker-param').prop('checked', true); updatePickerCount(); });
-            bNone.on('click', () => { card.find('input.picker-param').prop('checked', false); updatePickerCount(); });
-            grp.append(bAll, bNone);
-            head.append(grp);
-            card.append(head);
-
-            const body = $('<div class="card-body py-2 px-2"></div>');
-            params.forEach((p, pi) => {
-                const id = 'pk_' + gi + '_' + pi;
-                const text = (p.label || p.key).replace(/[:\s]+$/, '');   // trailing ": " weg
-                const fc = $('<div class="form-check"></div>');
-                const inp = $('<input class="form-check-input picker-param" type="checkbox">')
-                    .attr('id', id).val(p.key);
-                inp.on('change', updatePickerCount);
-                const lbl = $('<label class="form-check-label small"></label>').attr('for', id).text(text);
-                fc.append(inp, lbl);
-                body.append(fc);
-            });
-            card.append(body);
-            col.append(card);
-            wrap.append(col);
-        });
-    }
-
-    /**
-     * Füllt die Vorlagen-Auswahl im Modal (Projekt zuerst, dann allgemein).
-     */
-    function fillPickerSetSelect(sets, selectedId) {
-        const sel = $('#pickerSetSelect').empty();
-        sel.append($('<option value="">— keine Vorlage (freie Auswahl) —</option>'));
-        const scopeLabel = {project: 'Projekt', general: 'Allgemein'};
-        ['project', 'general'].forEach(scope => {
-            const list = sets.filter(s => (s.scope || 'general') === scope);
-            if (!list.length) return;
-            const og = $('<optgroup>').attr('label', scopeLabel[scope]);
-            list.forEach(set => og.append($('<option>').val(set.id).text(set.label)));
-            sel.append(og);
-        });
-        sel.val(selectedId || '');
-    }
-
-    /**
-     * Setzt Häkchen + Optionen anhand einer Key-Liste und Options (Set/Default).
-     */
-    function applyPickerSelection(keys, options) {
-        const set = new Set(keys || []);
-        $('#pickerGroups input.picker-param').each(function () {
-            this.checked = set.has(this.value);
-        });
-
-        const d = (customDefsCache && customDefsCache.defaults) || {};
-        const o = options || {};
-        $('#pickerFormat').val(o.format || d.format || 'A3');
-        $('#pickerMtMode').val(o.mt_mode || d.mt_mode || 'list');
-        const mc = (o.mark_changes !== undefined) ? o.mark_changes : d.mark_changes;
-        $('#pickerMarkChanges').prop('checked', !!mc);
-
-        updatePickerCount();
-    }
-
-    function updatePickerCount() {
-        const n = $('#pickerGroups input.picker-param:checked').length;
-        $('#pickerCount').text(n + ' Parameter ausgewählt');
-    }
-
-    /**
-     * Erzeugt das PDF aus der aktuellen Picker-Auswahl (params schlägt set).
-     */
-    function generateFromPicker() {
-        const roomIDs = table.rows({selected: true}).data().toArray().map(row => row[0]);
-        if (!roomIDs.length) {
-            alert("Kein Raum ausgewählt!");
-            return;
-        }
-
-        const keys = $('#pickerGroups input.picker-param:checked').map(function () {
-            return this.value;
-        }).get();
-
-        const mtMode = $('#pickerMtMode').val();
-        if (!keys.length && mtMode === 'none') {
-            alert("Keine Parameter ausgewählt.");
-            return;
-        }
-
-        const date = $('#dateSelect').val() || getDate("#dateSelect");
-        // Leere Auswahl bewusst erzwingen (sonst würde der Generator auf die
-        // Projekt-Vorauswahl zurückfallen): Sentinel, der auf keinen Key matcht.
-        const csv = keys.length ? keys.join(',') : '__none__';
-        const params = encodeURIComponent(csv);
-        const format = $('#pickerFormat').val();
-        const markChanges = $('#pickerMarkChanges').is(':checked') ? 1 : 0;
-
-        const url = `${CUSTOM_PDF_DIR}/pdf_createBauangabenBericht_Custom.php`
-            + `?roomID=${roomIDs.join(',')}&date=${date}`
-            + `&params=${params}&format=${format}&mt_mode=${mtMode}&mark_changes=${markChanges}`;
-
-        // --- Logging ---
-        $.post('log_report_download.php', {
-            reportUrl:  'pdf_createBauangabenBericht_Custom.php',
-            reportText: 'Custom-Auswahl (' + keys.length + ' Params)',
-            roomIDs:    roomIDs.join(',')
-        });
-        // ----------------
-
-        window.open(url);
-        getParamPickerModal().hide();
     }
 
 

@@ -23,6 +23,7 @@ echo "<table class='table table-striped table-bordered table-sm table-hover bord
     <thead>
         <tr>
             <th>ID</th>
+            <th></th>
             <th>Zuständigkeit</th>
             <th>Name</th>
             <th>Vorname</th>
@@ -40,18 +41,32 @@ echo "<table class='table table-striped table-bordered table-sm table-hover bord
 
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
-    echo "<td>" . htmlspecialchars($row["idTABELLE_Ansprechpersonen"]?? '') . "</td>";
-    echo "<td>" . htmlspecialchars($row["Zuständigkeit"]?? '') . "</td>";
-    echo "<td>" . htmlspecialchars($row["Name"]?? '') . "</td>";
-    echo "<td>" . htmlspecialchars($row["Vorname"]?? '') . "</td>";
-    echo "<td>" . htmlspecialchars($row["Tel"]?? '') . "</td>";
-    echo "<td>" . htmlspecialchars($row["Adresse"]?? '') . "</td>";
-    echo "<td>" . htmlspecialchars($row["PLZ"]?? '') . "</td>";
-    echo "<td>" . htmlspecialchars($row["Ort"]?? '') . "</td>";
-    echo "<td>" . htmlspecialchars($row["Land"]?? '') . "</td>";
-    echo "<td>" . htmlspecialchars($row["Mail"]?? '') . "</td>";
-    echo "<td>" . htmlspecialchars($row["Organisation"]?? '') . "</td>";
-    echo "<td>" . htmlspecialchars($row["Raumnr"]?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["idTABELLE_Ansprechpersonen"] ?? '') . "</td>";
+    echo "<td><button type='button'
+        class='btn btn-outline-dark btn-sm'
+        value='addressCard'
+        data-bs-toggle='modal'
+        data-bs-target='#showAddressCard'
+        data-name='" . htmlspecialchars(($row["Name"] ?? '') . " " . ($row["Vorname"] ?? '')) . "'
+        data-lieferant='" . htmlspecialchars($row["Organisation"] ?? '') . "'
+        data-adresse='" . htmlspecialchars($row["Adresse"] ?? '') . "'
+        data-plz='" . htmlspecialchars($row["PLZ"] ?? '') . "'
+        data-ort='" . htmlspecialchars($row["Ort"] ?? '') . "'
+        data-tel='" . htmlspecialchars($row["Tel"] ?? '') . "'
+        data-mail='" . htmlspecialchars($row["Mail"] ?? '') . "'>
+        <i class='far fa-address-card'></i>
+        </button></td>";
+    echo "<td>" . htmlspecialchars($row["Zuständigkeit"] ?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["Name"] ?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["Vorname"] ?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["Tel"] ?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["Adresse"] ?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["PLZ"] ?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["Ort"] ?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["Land"] ?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["Mail"] ?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["Organisation"] ?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["Raumnr"] ?? '') . "</td>";
     echo "</tr>";
 }
 echo "</tbody></table>";
@@ -75,7 +90,7 @@ $mysqli->close();
             ],
             select: true,
             paging: true,
-            order: [[2, "asc"]],
+            order: [[3, "asc"]],
             pagingType: "simple",
             lengthChange: false,
             pageLength: 10,

@@ -11,7 +11,7 @@ init_page_serversides();
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="../Logo/iphone_favicon.png">
+    <link rel="icon" href="Logo/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -68,6 +68,9 @@ init_page_serversides();
     </div>
 </div>
 </body>
+
+
+<?php require_once "modal_firmenkontakte_visitenkarte.php"; ?>
 <script charset="utf-8">
     function move_item(item2move_id, where2move_id) {
         let item = document.getElementById(item2move_id);
@@ -93,22 +96,32 @@ init_page_serversides();
                             type: "POST",
                             success: function (data) {
                                 $("#addPersonToProject").html(data);
-                               // $.ajax({
-                               //     url: "getProjectNotices.php",
-                               //     type: "POST",
-                               //     success: function (data) {
-                               //         $("#projectNotices").html(data);
-                               //         setTimeout(function () {
-                               //             move_item("dt-search-0", "BeteiligtePersonenCardHeader");
-                               //             move_item("dt-search-1", "NichtBeteiligtePersonenCardHeader");
-                               //         }, 500);
-                               //     }
-                               // });
+                                // $.ajax({
+                                //     url: "getProjectNotices.php",
+                                //     type: "POST",
+                                //     success: function (data) {
+                                //         $("#projectNotices").html(data);
+                                //         setTimeout(function () {
+                                //             move_item("dt-search-0", "BeteiligtePersonenCardHeader");
+                                //             move_item("dt-search-1", "NichtBeteiligtePersonenCardHeader");
+                                //         }, 500);
+                                //     }
+                                // });
                             }
                         });
                     }
                 });
             }
+        });
+
+        $(document).on('click', "button[value='addressCard']", function () {
+            const b = $(this);
+            $("#cardName").html(b.data('name'));
+            $("#cardLieferant").html(b.data('lieferant'));
+            $("#cardTel").html(b.data('tel'));
+            $("#cardMail").html(b.data('mail'));
+            $("#cardAddress").html(b.data('adresse'));
+            $("#cardPlace").html(b.data('plz') + ", " + b.data('ort'));
         });
 
         $("#resetAddPerson").click(function () {

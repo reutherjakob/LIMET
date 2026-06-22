@@ -4,7 +4,7 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
     <title>LIMET - Raumbuch - Logout</title>
-    <link rel="icon" href="../Logo/iphone_favicon.png"></link>
+    <link rel="icon" href="Logo/iphone_favicon.png"></link>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
@@ -26,7 +26,7 @@ session_destroy();
                     <img src="Logo/LIMET_logo.png" alt="LIMETLOGO">
                 </div>
                 <div class='card-body d-flex align-items-center justify-content-center'>
-                    <p class="text-md-center fs-4" >   <br>  Chiao! <br>                 <i class="fas fa-dove"></i> </p>
+                    <p class="text-md-center fs-4"><br> Tschiao! <br> <i class="fas fa-dove"></i></p>
                 </div>
                 <div class='card-footer'>
                     <div class='d-flex align-items-center justify-content-center'>
