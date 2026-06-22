@@ -1,7 +1,34 @@
 <?php
 require_once "_utils.php";
 init_page_serversides("x");
+function renderIconTable(array $icons): string
+{
+    foreach ($icons as $row) {
+        $html .= '<tr>';
+        $html .= '<td>' . $row['icon'] . '</td>';
+        $html .= '<td>' . htmlspecialchars($row['bedeutung'], ENT_QUOTES, 'UTF-8') . '</td>';
+        $html .= '</tr>';
+    }
 
+    return $html;
+}
+
+$icons = [
+    ['icon' => '<i class="fas fa-sync-alt"></i>', 'bedeutung' => 'Aktualisieren'],
+    ['icon' => '<i class="fas fa-file-excel"></i>', 'bedeutung' => 'Download als Excel'],
+    ['icon' => "<i class='far fa-file-pdf'></i>", 'bedeutung' => 'Download als PDF'],
+    ['icon' => '<i class="fas fa-cog "></i>', 'bedeutung' => 'Einstellungen'],
+    ['icon' => '<i class="fas fa-plus-square"></i> <i class="fas fa-plus"></i>', 'bedeutung' => 'Hinzufügen/Neu anlegen'],
+    ['icon' => '<i class="fas fa-fingerprint"></i>', 'bedeutung' => 'ID'],
+    ['icon' => '<i class="far fa-comments"></i> <i class="far fa-comment"></i>', 'bedeutung' => 'Kommentar'],
+    ['icon' => '<i class="fas fa-euro-sign"></i>', 'bedeutung' => 'Kosten/Preis'],
+    ['icon' => '<i class="far fa-sticky-note "></i>', 'bedeutung' => 'Notiz'],
+    ['icon' => '<i class="far fa-save"></i> <i class="fas fa-save"></i>', 'bedeutung' => 'Speichern'],
+    ['icon' => '<i class="fab fa-periscope "></i>', 'bedeutung' => 'Standort'],
+    ['icon' => '<i class="far fa-calendar-alt "></i>', 'bedeutung' => 'Termin/-kalender'],
+    ['icon' => '<i class="fas fa-code-branch "></i>', 'bedeutung' => 'Workflow'],
+    ['icon' => '<i class="fas fa-history"></i>', 'bedeutung' => 'Zeitlicher Verlauf/ Änderungen'],
+];
 ?>
 
 <!DOCTYPE html>
@@ -30,9 +57,18 @@ init_page_serversides("x");
         <div class="col-3"></div>
         <div class="col-6">
             <div class="card">
-                <div class="card-header d-flex align-items-center">
-
-                    <h6 class="mb-0"> Icon-Legende (work in Progress) </h6>
+                <div class="card-header">
+                    <div class="d-flex justify-content-center fs-1">
+                        <strong>
+                            <i class="fas fa-info"></i>
+                            <i class="far fa-copyright"></i>
+                            <i class="fas fa-ring"></i>
+                            <i class="fas fa-shekel-sign"></i>
+                            <i class="fab fa-stripe-s"></i></strong>
+                    </div>
+                    <div class="text-muted fs-6 d-flex justify-content-center">
+                        <i class="fas fa-lira-sign"></i>egende <i class="fas fa-equals"></i> Work in Progress
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -45,85 +81,47 @@ init_page_serversides("x");
                             </thead>
                             <tbody>
 
-
-                            <tr>
-                                <td><i class="fas fa-history"></i></td>
-                                <td> Zeitlicher Verlauf/ Änderungen</td>
-                            </tr>
-
-                            <tr>
-                                <td><i class="far fa-sticky-note "></i></td>
-                                <td>Notiz</td>
-                            </tr>
-
-                            <tr>
-                                <td><i class="fas fa-code-branch "></i></td>
-                                <td>Workflow</td>
-                            </tr>
-
-                            <tr>
-                                <td><i class="fas fa-fingerprint "></i></td>
-                                <td>ID</td>
-                            </tr>
-
-                            <tr>
-                                <td><i class="fab fa-periscope "></i></td>
-                                <td>Standort</td>
-                            </tr>
-
-                            <tr>
-                                <td><i class="fas fa-euro-sign"></i></td>
-                                <td>Kosten</td>
-                            </tr>
-
-                            <tr>
-                                <td><i class="far fa-comments"></i>
-                                    <i class="far fa-comment"></i></td>
-
-                                <td>Kommentar</td>
-                            </tr>
-
-                            <tr>
-                                <td><i class="far fa-calendar-alt "></i></td>
-                                <td>Termin/-kalender</td>
-                            </tr>
-
-                            <tr>
-                                <td><i class="fas fa-cog "></i></td>
-                                <td>Einstellungen</td>
-                            </tr>
-
-                            <tr>
-                                <td><i class="fas fa-sync-alt"></i></td>
-                                <td>Aktualisieren</td>
-                            </tr>
-
-                            <tr>
-                                <td>
-                                    <i class="fas fa-plus-square"></i>
-                                    <i class="fas fa-plus"></i>
-                                </td>
-                                <td>Hinzufügen/Neu anlegen</td>
-                            </tr>
-
-                            <tr>
-                                <td>
-                                    <i class="fas fa-file-excel"></i></td>
-                                <td>Download als Excel</td>
-                            </tr>
-
-
-                            <tr>
-                                <td>
-                                    <i class='far fa-file-pdf'></i>
-                                </td>
-                                <td>Download als PDF</td>
-                            </tr>
-
+                            <?php echo renderIconTable($icons);
+                            ?>
 
                             </tbody>
                         </table>
                     </div>
+
+
+                </div>
+                <div class="card-footer ">
+                    <p class="d-flex justify-content-between text-muted">
+                        <i class="fab fa-sass"></i>
+                        <i class="fas fa-paint-roller"> </i>
+                        <i class="fas fa-skull-crossbones"></i>
+                        <i class="fab fa-gripfire"></i>
+                        <i class="fas fa-pencil-ruler"></i>
+                        <i class="fas fa-drafting-compass"></i>
+                        <i class="fas fa-beer"></i>
+                        <i class="fas fa-chess"></i>
+                        <i class="fas fa-dice-d20"></i>
+                        <i class="fas fa-hand-peace"></i>
+                        <i class="fas fa-fist-raised"></i>
+                        <i class="fas fa-fire-extinguisher"></i>
+                        <i class="fas fa-spray-can"></i>
+                        <i class="fas fa-magic"></i>
+                        <i class="fas fa-quidditch"></i>
+                        <i class="fas fa-rainbow"></i>
+                        <i class="fas fa-ring"></i>
+                        <i class="fas fa-film"></i>
+                        <i class="fas fa-award"></i>
+                        <i class="fas fa-heart-broken"></i>
+                        <i class="fas fa-icicles"></i>
+                        <i class="fab fa-octopus-deploy"></i>
+                        <i class="fas fa-hand-middle-finger"></i>
+                        <i class="fas fa-grin-tongue-wink"></i>
+                        <i class="fab fa-sith"></i>
+                        <i class="fas fa-tools"></i>
+                        <i class="fas fa-filter"></i>
+                        <i class="fas fa-cogs"></i>
+                        <i class="fab fa-sass"></i>
+                    </p>
 
                 </div>
             </div>
