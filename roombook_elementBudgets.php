@@ -214,7 +214,7 @@ $mysqli = utils_connect_sql();
             budgetList.forEach(b => {
                 const id = b.idtabelle_projektbudgets;
                 const selected = (id == selectedBudgetID) ? ' selected' : '';
-                html += `<option value="${id}"${selected}>${id}-${b.Budgetnummer}-${b.Budgetname}</option>`;
+                html += `<option value="${id}"${selected}>${b.Budgetnummer}-${b.Budgetname}</option>`;
             });
             return html + '</select>';
         }

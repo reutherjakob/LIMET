@@ -5,22 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Workflow Editing">
-      <change afterPath="$PROJECT_DIR$/deleteLotWorkflow.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PDFs/_pdf_createBericht_utils.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/_pdf_createBericht_utils.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getDevicesAndTheirPricesForElements.php" beforeDir="false" afterPath="$PROJECT_DIR$/getDevicesAndTheirPricesForElements.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getLotWorkflow.php" beforeDir="false" afterPath="$PROJECT_DIR$/getLotWorkflow.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getPersonsOfProject.php" beforeDir="false" afterPath="$PROJECT_DIR$/getPersonsOfProject.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/get_elementBudgetsData.php" beforeDir="false" afterPath="$PROJECT_DIR$/get_elementBudgetsData.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logout.php" beforeDir="false" afterPath="$PROJECT_DIR$/logout.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projectParticipants.php" beforeDir="false" afterPath="$PROJECT_DIR$/projectParticipants.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects.php" beforeDir="false" afterPath="$PROJECT_DIR$/projects.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookReports_New.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookReports_New.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_KOR_Ausstattungskatalog.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_KOR_Ausstattungskatalog.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getVermerkeToUntergruppe.php" beforeDir="false" afterPath="$PROJECT_DIR$/getVermerkeToUntergruppe.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/roombook_elementBudgets.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_elementBudgets.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_tenderLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_tenderLots.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/roombook_icons_legend.php" beforeDir="false" afterPath="$PROJECT_DIR$/utils/roombook_icons_legend.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,13 +57,6 @@
         &quot;number&quot;: 74
       },
       &quot;lastSeen&quot;: 1776066601063
-    },
-    {
-      &quot;id&quot;: {
-        &quot;id&quot;: &quot;PR_kwDOKp49587kXwzX&quot;,
-        &quot;number&quot;: 80
-      },
-      &quot;lastSeen&quot;: 1781008265187
     }
   ]
 }</component>
@@ -613,6 +593,8 @@
       <workItem from="1782134675860" duration="1579000" />
       <workItem from="1782137702643" duration="627000" />
       <workItem from="1782138449846" duration="525000" />
+      <workItem from="1782292332549" duration="2270000" />
+      <workItem from="1782311030280" duration="332000" />
     </task>
     <task id="LOCAL-00201" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu">
       <option name="closed" value="true" />
