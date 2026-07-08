@@ -197,7 +197,7 @@ include "modal_elementHistory.html";
             const id = trigger.id;
             $.ajax({
                 url: 'saveRoomElementComment.php',
-                data: {comment: newText, id},
+                data: {comment: newText, id:id},
                 type: 'POST',
                 success(data) {
                     makeToaster(data.trim(), true);

@@ -62,7 +62,8 @@
         "Test KHI" => "fas fa-yin-yang",
         "Labor Kategorien" => "fab fa-d-and-d",
         "WIGEV RV" => "fab fa-pushed",
-        "KDO-BET" => "fas fa-dice-d20"
+        "KDO-BET" => "fas fa-dice-d20",
+        "BBE Musterzimmer" => "fas fa-vihara"
 
     ];
     //<i class="fas fa-mountain"></i>
@@ -281,7 +282,7 @@
 
                         <p>
                             <i class="fas fa-ring col-1"> </i>
-                            <a class="col-11" href="/roombookReports_New.php">
+                            <a class="col-11" href="/elementsInProject.php">
                                 Alle Var ändern
                             </a>
                         </p>
