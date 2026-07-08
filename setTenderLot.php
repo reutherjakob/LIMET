@@ -35,7 +35,7 @@ if ($includeSupplier) {
 
     $stmt = $mysqli->prepare($sql);
     $stmt->bind_param(
-        'sssississsiii',
+        'sssississsddi',
         $losNr, $losName, $losDatum, $lotSum, $lotVergabe, $lotNotice, $lotAuftragnehmer, $lotLVSend, $lotVerfahren, $lotLVBearbeiter,
         $kostenanschlag, $budget, $lotID
     );
@@ -49,7 +49,7 @@ if ($includeSupplier) {
 
     $stmt = $mysqli->prepare($sql);
     $stmt->bind_param(
-        'sssisssssiii',   #Summe als float?
+        'sssisssssddi',   #Summe als float?
         $losNr, $losName, $losDatum, $lotSum, $lotVergabe, $lotNotice,
         $lotLVSend, $lotVerfahren, $lotLVBearbeiter, $kostenanschlag, $budget, $lotID
     );

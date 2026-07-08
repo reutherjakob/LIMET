@@ -304,8 +304,7 @@
                     extend: 'excelHtml5',
                     text: 'Excel',
                     className: 'fas fa-file-excel btn btn-outline-dark bg-white',
-                    action: function (e, dt, button, config) {
-                    }, exportOptions: {columns: [5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18, 19, 20, 21]}
+                    exportOptions: {columns: [5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18, 19, 20, 21]}
                 },
                 {
                     extend: 'pdfHtml5',
@@ -326,9 +325,35 @@
                 {
                     extend: 'searchBuilder',
                     text: " ",
-                    className: "fa fa-search btn  btn-outline-dark bg-white",
+                    className: "fa fa-search btn btn-outline-dark bg-white",
                     titleAttr: "searchBuilder"
-                }]
+                },
+                {
+                    text: '<i class="fas fa-check-square"></i> Alle',
+                    className: 'btn btn-sm btn-outline-primary bg-white',
+                    titleAttr: 'Alle Zeilen markieren',
+                    action: function (e, dt, node, config) {
+                        dt.rows().select();
+                    }
+                },
+                {
+                    text: '<i class="fas fa-eye"></i> Sichtbare',
+                    className: 'btn btn-sm btn-outline-primary bg-white',
+                    titleAttr: 'Nur aktuell gefilterte Zeilen markieren',
+                    action: function (e, dt, node, config) {
+                        dt.rows().deselect();
+                        dt.rows({search: 'applied'}).select();
+                    }
+                },
+                {
+                    text: '<i class="fas fa-square"></i> Keine',
+                    className: 'btn btn-sm btn-outline-danger bg-white',
+                    titleAttr: 'Auswahl aufheben',
+                    action: function (e, dt, node, config) {
+                        dt.rows().deselect();
+                    }
+                }
+            ]
         }).container().appendTo($('#ElInPrCardHeader'));
 
         $('#tableElementsInProject tbody').on('click', 'tr', function () {

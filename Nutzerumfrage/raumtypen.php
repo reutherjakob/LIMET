@@ -305,7 +305,7 @@ $labortypen = [
     ],
     [
         'id' => '5',
-        'bezeichnung' => 'Labor molekularbiologische Aufarbeitung (Unterdruck ohne Schleuse)',
+        'bezeichnung' => 'Labor molekularbiologische Aufarbeitung (Überdruck ohne Schleuse)',
         'beschreibung' => 'Molekularbiologische Untersuchungen mit erhöhten Sicherheitsanforderungen',
         'achsen' => '3',
         'flaeche_min' => '18.66',
@@ -380,7 +380,7 @@ $labortypen = [
     ],
     [
         'id' => '6',
-        'bezeichnung' => 'Labor molekularbiologische Aufarbeitung (Unterdruck mit Schleuse)',
+        'bezeichnung' => 'Raumtyp entfallen',
         'beschreibung' => 'Molekularbiologische Untersuchungen mit erhöhten Sicherheitsanforderungen',
         'achsen' => '3',
         'flaeche_min' => '18.66',
@@ -538,7 +538,7 @@ $labortypen = [
         'raumhoehe' => '3/2.85',
         'raumhoehe_neubau' => '3.0',
         'raumhoehe_bestand' => '2.85',
-        'decke' => 'Offen',
+        'decke' => 'Geschlossen',
         'tuere_min' => '1',
         'temp_nach_erfordernis' => '0',
         'temp_min' => '20',
@@ -1202,8 +1202,8 @@ $labortypen = [
     ],
     [
         'id' => '17',
-        'bezeichnung' => 'Messraum molekularbiologisch (Überdruck, ohne Schleuse)',
-        'beschreibung' => 'Molekularbiologischer Messraum mit Überdruck sodass die Proben mit keinen anderen Stoffen in Kontakt kommen können',
+        'bezeichnung' => 'Messraum molekularbiologisch (Unterdruck, ohne Schleuse)',
+        'beschreibung' => 'Molekularbiologischer Messraum mit Unterdruck',
         'achsen' => '3',
         'flaeche_min' => '18.66',
         'flaeche_max' => '18.66',

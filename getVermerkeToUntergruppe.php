@@ -408,13 +408,40 @@ echo "</tbody></table>";
     vermerkUntergruppenID = <?php echo json_encode(filter_input(INPUT_POST, 'vermerkUntergruppenID')); ?>;
 
     $(document).ready(function () {
+
+        // ── Custom Matcher für Select2: Wortweise Volltextsuche ─────────────────
+        function customMatcher(params, data) {
+            if (!data.text) {
+                return null;
+            }
+
+            var term = $.trim(params.term || '');
+            if (term === '') {
+                return data; // kein Suchbegriff -> alles anzeigen
+            }
+
+            var words = term.toLowerCase().split(/\s+/).filter(Boolean);
+            var text = data.text.toLowerCase();
+
+            var allWordsMatch = words.every(function (word) {
+                return text.indexOf(word) > -1;
+            });
+
+            return allWordsMatch ? data : null;
+        }
+
         $('#changeVermerkModal select').select2({
             width: '100%', placeholder: 'Bitte auswählen...', allowClear: true,
-            dropdownParent: $('#changeVermerkModal')
+            dropdownParent: $('#changeVermerkModal'),
+            matcher: customMatcher
         });
         $('#room').select2({
-            multiple: true, width: '100%', placeholder: 'Raum auswählen...', allowClear: true,
-            dropdownParent: $('#changeVermerkModal')
+            multiple: true,
+            width: '100%',
+            placeholder: 'Raum auswählen...',
+            allowClear: true,
+            dropdownParent: $('#changeVermerkModal'),
+            matcher: customMatcher
         });
 
         document.getElementById("buttonNewVermerk").style.visibility = "visible";

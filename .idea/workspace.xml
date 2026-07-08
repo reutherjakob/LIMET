@@ -4,10 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Workflow Editing">
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Nutzerwünsche">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/raumtypen.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/raumtypen.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/elementsInProject.php" beforeDir="false" afterPath="$PROJECT_DIR$/elementsInProject.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getRoomElementsDetailed1.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomElementsDetailed1.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getRoomsWithElement1.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomsWithElement1.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/getVermerkeToUntergruppe.php" beforeDir="false" afterPath="$PROJECT_DIR$/getVermerkeToUntergruppe.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_elementBudgets.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_elementBudgets.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects.php" beforeDir="false" afterPath="$PROJECT_DIR$/projects.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_elementLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_elementLots.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_tenderLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_tenderLots.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/saveRoomElementComment.php" beforeDir="false" afterPath="$PROJECT_DIR$/saveRoomElementComment.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setTenderLot.php" beforeDir="false" afterPath="$PROJECT_DIR$/setTenderLot.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -594,15 +603,16 @@
       <workItem from="1782137702643" duration="627000" />
       <workItem from="1782138449846" duration="525000" />
       <workItem from="1782292332549" duration="2270000" />
-      <workItem from="1782311030280" duration="332000" />
-    </task>
-    <task id="LOCAL-00201" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu">
-      <option name="closed" value="true" />
-      <created>1772118670514</created>
-      <option name="number" value="00201" />
-      <option name="presentableId" value="LOCAL-00201" />
-      <option name="project" value="LOCAL" />
-      <updated>1772118670514</updated>
+      <workItem from="1782311030280" duration="474000" />
+      <workItem from="1782372109603" duration="4294000" />
+      <workItem from="1782819318533" duration="1001000" />
+      <workItem from="1782820333235" duration="54000" />
+      <workItem from="1782906387302" duration="335000" />
+      <workItem from="1782981169599" duration="20000" />
+      <workItem from="1783324854432" duration="11786000" />
+      <workItem from="1783411173170" duration="946000" />
+      <workItem from="1783496725280" duration="1440000" />
+      <workItem from="1783509757466" duration="535000" />
     </task>
     <task id="LOCAL-00202" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu">
       <option name="closed" value="true" />
@@ -988,7 +998,15 @@
       <option name="project" value="LOCAL" />
       <updated>1781531255318</updated>
     </task>
-    <option name="localTasksCounter" value="250" />
+    <task id="LOCAL-00250" summary="Nutzerwünsche">
+      <option name="closed" value="true" />
+      <created>1782311504561</created>
+      <option name="number" value="00250" />
+      <option name="presentableId" value="LOCAL-00250" />
+      <option name="project" value="LOCAL" />
+      <updated>1782311504561</updated>
+    </task>
+    <option name="localTasksCounter" value="251" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1018,7 +1036,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="SF Umfrage DONE.&#10;&#10;LOGIN speichert nun VERSCHLÜSSELTE Userdaten in tabelle_user.&#10;&#10;Bugfixes.&#10;&#10;KOR Seiten -&gt; LeitungsAbgleich seite - Ansatz dark mode." />
     <MESSAGE value="..." />
     <MESSAGE value="Feedback Center getuned.&#10;lose TOdo finalisiert.&#10;Kommentar bei preise ergänzt.&#10;Alle lose workflocw gefixed.&#10;RB specs verbessert. und sortiert.&#10;raum kopie erweitert. &#10;&#10;RB texte verbessert." />
     <MESSAGE value="Merge remote-tracking branch 'origin/roombookElementsPerArea' into roombookElementsPerArea&#10;&#10;# Conflicts:&#10;#&#9;Nutzerumfrage/form_fields_forNutzergruppe1.php" />
@@ -1043,7 +1060,8 @@
     <MESSAGE value="IMG upgrades" />
     <MESSAGE value=" KHI und KOR upgrade - zudem SF import Fixes" />
     <MESSAGE value="Workflow Editing" />
-    <option name="LAST_COMMIT_MESSAGE" value="Workflow Editing" />
+    <MESSAGE value="Nutzerwünsche" />
+    <option name="LAST_COMMIT_MESSAGE" value="Nutzerwünsche" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1089,11 +1107,6 @@
           <option name="timeStamp" value="22" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/getFilteredLots.php</url>
-          <line>129</line>
-          <option name="timeStamp" value="24" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/getDevicePrices.php</url>
           <line>285</line>
           <option name="timeStamp" value="25" />
@@ -1107,6 +1120,11 @@
           <url>file://$PROJECT_DIR$/PDFs/custom_report/pdf_createBericht_MYPDFclass_Custom.php</url>
           <line>63</line>
           <option name="timeStamp" value="27" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/saveRoomElementComment.php</url>
+          <line>19</line>
+          <option name="timeStamp" value="28" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
