@@ -280,7 +280,7 @@ function getAnmHeight($pdf, $inp_text, $SB)
     }
 }
 
-function anm_txt($pdf, $inp_text, $SB, $block_header_w)
+function anm_txt($pdf, $inp_text, $SB, $block_header_w): void
 {
     $outstr = (clean_string(br2nl($inp_text)));
     if (null != ($outstr) && is_not_no_comment($outstr)) {
@@ -291,7 +291,7 @@ function anm_txt($pdf, $inp_text, $SB, $block_header_w)
     }
 }
 
-function anmA3($pdf, $inp_text, $SB, $block_header_w)
+function anmA3($pdf, $inp_text, $SB, $block_header_w): bool
 {
     if ($inp_text != null) {
         if (is_not_no_comment($inp_text) && trim($inp_text) != "") {
@@ -336,16 +336,19 @@ function init_pdf_attributes($pdf, $einzugLR, $marginTop, $marginBTM, $format = 
     return $pdf;
 }
 
-function multicell_text_hightlight($pdf, $breite, $font_size, $parameter_sql_name, $pdf_text, $parameter_changes_t_räume, $side = "L"): void
+function multicell_text_hightlight($pdf, $breite, $font_size, $parameter_sql_name, $pdf_text, $parameter_changes_t_räume = [], $side = "L"): void
 {
-    if (trim($pdf_text ?? "") === "") {
-        $pdf->SetFillColor(255, 255, 255);
-    } else {
-        if (sizeof($parameter_changes_t_räume) > 0) {
-            if (in_array($parameter_sql_name, $parameter_changes_t_räume)) {
-                $pdf->SetFillColor(220, 235, 190);
-            } else {
-                $pdf->SetFillColor(255, 255, 255);
+    if (!empty($parameter_changes_t_räume)) {
+
+        if (trim($pdf_text ?? "") === "") {
+            $pdf->SetFillColor(255, 255, 255);
+        } else {
+            if (sizeof($parameter_changes_t_räume) > 0) {
+                if (in_array($parameter_sql_name, $parameter_changes_t_räume)) {
+                    $pdf->SetFillColor(220, 235, 190);
+                } else {
+                    $pdf->SetFillColor(255, 255, 255);
+                }
             }
         }
     }

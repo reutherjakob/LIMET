@@ -193,14 +193,14 @@ function init_btn_4_dt() {
             },
             action: async function (e, dt, node, config) {
                 try {
-                    config.filename = await getExcelFilename('Raumbuch', { projectID });
+                    config.filename = await getExcelFilename('Raumbuch', {projectID});
                 } catch (err) {
                     config.filename = 'Raumbuch_Export';
                 }
                 $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, node, config);
             }
         },
-        ];
+    ];
 
     const btn_grp_settings = [
         {
@@ -719,11 +719,15 @@ function init_showRoomElements_btn() {
 }
 
 function save_changes(RaumID, ColumnName, newData, raumname) {
-    const dataKeys = columnsDefinition.map(col => col.data);
-
+    //const dataKeys = columnsDefinition.map(col => col.data);
+    console.log(ColumnName);
+    if (ColumnName === 'Entfallen') {
+        makeToaster("Vorsicht!\n - Elemente manuell auf null zu setzen! " +
+            "\n Sind sonst in Kosten, etc. weiterhin enthalten", true);
+    }
     $.ajax({
         url: "saveRoomProperties.php",
-        data: {"roomID": RaumID, "column": ColumnName, "value": newData, "columnsData": JSON.stringify(dataKeys)},
+        data: {"roomID": RaumID, "column": ColumnName, "value": newData},// "columnsData": JSON.stringify(dataKeys)},
         type: "POST",
         success: function (data) {
             if (data === "Erfolgreich aktualisiert!") {

@@ -11,7 +11,7 @@ init_page_serversides();
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="../Logo/iphone_favicon.png">
+    <link rel="icon" href="Logo/iphone_favicon.png">
 
     <!-- Rework 2025 CDNs -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -36,8 +36,8 @@ init_page_serversides();
 <div class="container-fluid">
 
     <div class="mt-4 card">
-        <div class="card-header">
-            <form class="form-inline d-flex text-nowrap col-xxl-6 align-items-center">
+        <div class="card-header d-inline-flex flex-nowrap">
+            <form class="form-inline d-flex text-nowrap col-xxl-8 align-items-center">
                 <label class="mr-sm-2 me-2" for="selectRoomArea">Raumbereich</label>
                 <select class="form-control form-control-sm mr-sm-2 w-25 " id="selectRoomArea" name="selectRoomArea">
                     <option></option>
@@ -86,7 +86,15 @@ init_page_serversides();
                 <button type="button" id="calculateCostsRoomArea" class="btn btn-outline-dark btn-sm">
                     <i class="far fa-play-circle"></i> Berechnen
                 </button>
+
             </form>
+            <div class="d-inline-flex align-items-center justify-content-end col-4 ">
+                     <span class="badge rounded-pill bg-light text-dark p-2 "
+                           data-bs-toggle="popover"
+                           data-bs-content="Kosten f. Elemente aus entfallenen Räumen sind enthalten! (Anzahl auf Null setzten)">
+                                <i class="fas fa-info-circle"></i>
+                            </span>
+            </div>
         </div>
         <div class="card-body" id="costsRoomArea">
         </div>
@@ -94,6 +102,14 @@ init_page_serversides();
 </div>
 <script>
     $(function () {
+
+
+        let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+        popoverTriggerList.forEach(function (popoverTriggerEl) {
+            new bootstrap.Popover(popoverTriggerEl);
+        });
+
+
         $('#selectRoomArea').select2({
             width: 'resolve',
             dropdownAutoWidth: true,
