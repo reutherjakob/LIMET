@@ -110,7 +110,8 @@ $stmt->close();
                         <th>Raumnr</th>
                         <th>Raumbezeichnung</th>
                         <th>Geschoss</th>
-                        <th>Anzahl</th>
+                        <th>Anzahl</th><th>Räume</th>
+
                         <th>Neu/Bestand</th>
                         <th>Los</th>
                     </tr>
@@ -227,12 +228,13 @@ $stmt->close();
                 {data: 'Raumbezeichnung', visible: !isDistinct},
                 {data: 'Geschoss', visible: !isDistinct},
                 {data: 'Anzahl', className: 'text-end'},
+                {data: 'AnzahlRaeume', visible: isDistinct, className: 'text-end', defaultContent: ''},
                 {
-                    data: 'NeuBestand', visible: !isDistinct,
+                    data: 'NeuBestand',
                     render: function (data) {
-                        return data === 1
-                            ? '<span class="badge bg-primary">Neu</span>'
-                            : '<span class="badge bg-secondary">Bestand</span>';
+                        if (data === 1) return '<span class="badge bg-primary">Neu</span>';
+                        if (data === 0) return '<span class="badge bg-secondary">Bestand</span>';
+                        return '<span class="badge bg-primary">Neu</span> <span class="badge bg-secondary">Bestand</span>';
                     }
                 },
                 {data: 'LosBezeichnung', visible: !isDistinct, defaultContent: '<span class="text-muted">–</span>'}

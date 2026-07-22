@@ -5,18 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Nutzerwünsche">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/raumtypen.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/raumtypen.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/elementsInProject.php" beforeDir="false" afterPath="$PROJECT_DIR$/elementsInProject.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getRoomElementsDetailed1.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomElementsDetailed1.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getRoomsWithElement1.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomsWithElement1.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getVermerkeToUntergruppe.php" beforeDir="false" afterPath="$PROJECT_DIR$/getVermerkeToUntergruppe.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects.php" beforeDir="false" afterPath="$PROJECT_DIR$/projects.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_elementLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_elementLots.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_tenderLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_tenderLots.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/saveRoomElementComment.php" beforeDir="false" afterPath="$PROJECT_DIR$/saveRoomElementComment.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/setTenderLot.php" beforeDir="false" afterPath="$PROJECT_DIR$/setTenderLot.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/_pdf_createBericht_utils.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/_pdf_createBericht_utils.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createBauangabenBericht_A3Qeer_1.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createBauangabenBericht_A3Qeer_1.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createVermerkGroupPDF.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createVermerkGroupPDF.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/costsOverall.php" beforeDir="false" afterPath="$PROJECT_DIR$/costsOverall.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/costsRoomArea.php" beforeDir="false" afterPath="$PROJECT_DIR$/costsRoomArea.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getElementeJeRaumbereich.php" beforeDir="false" afterPath="$PROJECT_DIR$/getElementeJeRaumbereich.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookElementsPerArea.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookElementsPerArea.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookSpecifications_New.js" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_New.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/saveRoomProperties.php" beforeDir="false" afterPath="$PROJECT_DIR$/saveRoomProperties.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,7 +107,7 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
     &quot;database.data.extractors.current.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;ifc__excel__import&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;#81 on ifc__excel__import&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/WolfgangFuchsLIMET/Documents/NetBeansProjects/LIMET-FX/PDFs&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -613,6 +611,13 @@
       <workItem from="1783411173170" duration="946000" />
       <workItem from="1783496725280" duration="1440000" />
       <workItem from="1783509757466" duration="535000" />
+      <workItem from="1783514813034" duration="2124000" />
+      <workItem from="1784017888810" duration="13074000" />
+      <workItem from="1784194078989" duration="2352000" />
+      <workItem from="1784279386509" duration="642000" />
+      <workItem from="1784627844961" duration="1656000" />
+      <workItem from="1784720095449" duration="642000" />
+      <workItem from="1784724338029" duration="1166000" />
     </task>
     <task id="LOCAL-00202" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu">
       <option name="closed" value="true" />
@@ -1073,7 +1078,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/PDFs/pdf_createMTTabelle.php</url>
-          <line>151</line>
+          <line>137</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">

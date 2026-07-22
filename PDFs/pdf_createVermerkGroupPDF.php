@@ -163,128 +163,180 @@ class MYPDF extends TCPDF
         $this->SetDrawColor(0, 0, 0);
         $this->SetLineWidth(0.1);
         $this->SetFont('', '', '9');
-        $w = array(145, 10, 25);
-        $num_headers = count($header);
+
+        $w             = array(145, 10, 25);
+        $num_headers   = count($header);
+        $maxY          = 270;   // unterer Satzspiegel
+        $untergruppenID = 0;
+        $fill          = 0;
+
         $this->SetFillColor(244, 244, 244);
         $this->SetTextColor(0);
-        $fill = 0;
-        $untergruppenID = 0;
+
         foreach ($data as $row) {
-            if (trim($row['Vermerktext']) !== "") {
-                $this->SetFont('helvetica', '', '8');
-                $betreffText = "";
-                if (!empty($row['Räume'])) {
-                    $raeumeArray = array_filter(array_map('trim', explode(',', $row['Räume'])));
-                    $anzahl = count($raeumeArray);
-                    $label = $anzahl > 1 ? 'Räume' : 'Raum';
-                    $betreffText .= "Betrifft $label: " . $row['Räume'] . "\n";
-                }
-                if (!empty($row['LosNr_Extern'])) {
-                    $betreffText .= 'Betrifft Los: ' . $row['LosNr_Extern'] . " " . $row['LosBezeichnung_Extern'] . "\n";
-                }
-                if ($row['Vermerkart'] === 'Bearbeitung') {
-                    $textNameFälligkeit = $row['Name'] . "\n" . $row['Faelligkeit'];
-                    $textNameFälligkeit .= ($row['Bearbeitungsstatus'] === 0) ? "\nOffen" : "\nErledigt";
-                } else {
-                    $textNameFälligkeit = "";
-                }
-                $rowHeight1 = $this->getStringHeight($w[0], $row['Vermerktext'], false, true, '', 1);
-                $rowHeight4 = $this->getStringHeight($w[0], $betreffText, false, true, '', 1);
-                $rowHeight2 = $this->getStringHeight($w[2], $textNameFälligkeit, false, true, '', 1);
-                $rowHeight3 = $this->getStringHeight($w[0], $row['Untergruppennummer'] . " " . $row['Untergruppenname'], false, true, '', 1);
-                $rowHeight = max($rowHeight1 + $rowHeight4, $rowHeight2);
+            if (trim($row['Vermerktext']) === '') {
+                continue;
+            }
 
-                // ── Bildzeilen vorab planen + Gesamthöhe ermitteln ──────────
-                $pad = 2;
-                $imgGap = 3;
-                $imgPerRow = 3;
-                $imgMaxH = 40;
-                $availW = $w[0] - 2 * $pad;
-                $imgMaxW = ($availW - ($imgPerRow - 1) * $imgGap) / $imgPerRow; // = 45 bei w[0]=145
-                $imgPlan = [];
-                $imgTotalH = 0;
-                if (!empty($row['Bilder'])) {
-                    foreach (array_chunk($row['Bilder'], $imgPerRow) as $chunk) {
-                        $drawn = [];
-                        $rowDrawH = 0;
-                        foreach ($chunk as $idx => $imgPath) {
-                            if (!file_exists($imgPath)) {
-                                $drawn[$idx] = null;
-                                continue;
-                            }
-                            $size = @getimagesize($imgPath);
-                            if ($size && $size[0] > 0 && $size[1] > 0) {
-                                $scale = min($imgMaxW / $size[0], $imgMaxH / $size[1]);
-                                $drawn[$idx] = ['w' => $size[0] * $scale, 'h' => $size[1] * $scale, 'path' => $imgPath];
-                            } else {
-                                $drawn[$idx] = ['w' => $imgMaxW, 'h' => $imgMaxH, 'path' => $imgPath];
-                            }
-                            if ($drawn[$idx]['h'] > $rowDrawH) $rowDrawH = $drawn[$idx]['h'];
+            // ── Betreff (Raum / Los) ────────────────────────────────────
+            $betreffText = '';
+            if (!empty($row['Räume'])) {
+                $raeumeArray = array_filter(array_map('trim', explode(',', $row['Räume'])));
+                $label = count($raeumeArray) > 1 ? 'Räume' : 'Raum';
+                $betreffText .= "Betrifft $label: " . $row['Räume'] . "\n";
+            }
+            if (!empty($row['LosNr_Extern'])) {
+                $betreffText .= 'Betrifft Los: ' . $row['LosNr_Extern'] . ' ' . $row['LosBezeichnung_Extern'] . "\n";
+            }
+
+            // ── Wer/Bis + Typ ───────────────────────────────────────────
+            if ($row['Vermerkart'] === 'Bearbeitung') {
+                $textNameFälligkeit  = $row['Name'] . "\n" . $row['Faelligkeit'];
+                $textNameFälligkeit .= ($row['Bearbeitungsstatus'] === 0) ? "\nOffen" : "\nErledigt";
+            } else {
+                $textNameFälligkeit = '';
+            }
+
+            $prettyText = '';
+            if ($row['Vermerkart'] === 'Bearbeitung')       $prettyText = 'B';
+            else if ($row['Vermerkart'] === 'Info')         $prettyText = 'I';
+            else if ($row['Vermerkart'] === 'Freigegeben')  $prettyText = 'F';
+            else if ($row['Vermerkart'] === 'Nutzerwunsch') $prettyText = 'N';
+
+            $ugTitel = $row['Untergruppennummer'] . ') ' . $row['Untergruppenname'];
+
+            // ── Bildzeilen vorab planen ────────────────────────────────
+            $pad       = 2;
+            $imgGap    = 3;
+            $imgPerRow = 3;
+            $imgMaxH   = 40;
+            $availW    = $w[0] - 2 * $pad;
+            $imgMaxW   = ($availW - ($imgPerRow - 1) * $imgGap) / $imgPerRow;
+            $imgPlan   = [];
+
+            if (!empty($row['Bilder'])) {
+                foreach (array_chunk($row['Bilder'], $imgPerRow) as $chunk) {
+                    $drawn    = [];
+                    $rowDrawH = 0;
+                    foreach ($chunk as $idx => $imgPath) {
+                        if (!file_exists($imgPath)) {
+                            $drawn[$idx] = null;
+                            continue;
                         }
-                        $cellH = $rowDrawH + 2 * $pad;
-                        $imgPlan[] = ['cellH' => $cellH, 'drawn' => $drawn];
-                        $imgTotalH += $cellH;
+                        $size = @getimagesize($imgPath);
+                        if ($size && $size[0] > 0 && $size[1] > 0) {
+                            $scale = min($imgMaxW / $size[0], $imgMaxH / $size[1]);
+                            $drawn[$idx] = ['w' => $size[0] * $scale, 'h' => $size[1] * $scale, 'path' => $imgPath];
+                        } else {
+                            $drawn[$idx] = ['w' => $imgMaxW, 'h' => $imgMaxH, 'path' => $imgPath];
+                        }
+                        if ($drawn[$idx]['h'] > $rowDrawH) $rowDrawH = $drawn[$idx]['h'];
                     }
+                    $imgPlan[] = ['cellH' => $rowDrawH + 2 * $pad, 'drawn' => $drawn];
                 }
-                $rightH = $rowHeight + $imgTotalH;   // volle Block-Höhe inkl. Bilder
+            }
 
-                // ── Untergruppen-Header ─────────────────────────────────────
-                if ($untergruppenID != $row['idtabelle_Vermerkuntergruppe']) {
-                    $y = $this->GetY();
-                    if (($y + 2 * $rowHeight3 + $rowHeight + $imgTotalH) >= 270) {
-                        $this->AddPage();
-                    } else {
-                        $this->Ln($rowHeight3);
-                    }
-                    $fill = 1;
-                    $this->SetFont('', 'B', '9');
-                    $this->MultiCell($w[0] + $w[1] + $w[2], $rowHeight3, $row['Untergruppennummer'] . ") " . $row['Untergruppenname'], 1, 'L', $fill, 0, '', '');
-                    $this->Ln();
-                    $this->SetFont('', 'B', '8');
-                    for ($i = 0; $i < $num_headers; ++$i) {
-                        $this->MultiCell($w[$i], $rowHeight3, $header[$i], 1, 'L', 0, 0, '', '');
-                    }
-                    $this->Ln();
-                    $untergruppenID = $row['idtabelle_Vermerkuntergruppe'];
-                    $fill = 0;
+            // ── Untergruppen-Kopf ───────────────────────────────────────
+            if ($untergruppenID != $row['idtabelle_Vermerkuntergruppe']) {
+                $this->SetFont('', 'B', '9');
+                $hUG = $this->getStringHeight($w[0], $ugTitel, false, true, '', 1);
+                if (($this->GetY() + 2 * $hUG + 20) >= $maxY) {
+                    $this->AddPage();
+                } else {
+                    $this->Ln($hUG);
                 }
+                $fill = 1;
+                $this->MultiCell($w[0] + $w[1] + $w[2], $hUG, $ugTitel, 1, 'L', $fill, 0, '', '');
+                $this->Ln();
+                $this->SetFont('', 'B', '8');
+                for ($i = 0; $i < $num_headers; ++$i) {
+                    $this->MultiCell($w[$i], $hUG, $header[$i], 1, 'L', 0, 0, '', '');
+                }
+                $this->Ln();
+                $untergruppenID = $row['idtabelle_Vermerkuntergruppe'];
+                $fill = 0;
+            }
 
-                // Seitenumbruch für gesamten Block (Text + Bilder zusammen)
-                $y = $this->GetY();
-                if (($y + $rightH) >= 270) {
+            // ── Block seitenweise ausgeben ──────────────────────────────
+            $restText  = (string)$row['Vermerktext'];
+            $imgQueue  = $imgPlan;
+            $continued = false;
+            $isLast    = false;
+            $guard     = 0;
+
+            do {
+                if (++$guard > 300) { break; }
+                $isLast = false;
+
+                // Kopf dieser Seite: auf Folgeseiten mit Fortsetzungshinweis
+                $betreffOut = $continued
+                    ? '(Fortsetzung) ' . $ugTitel . "\n" . $betreffText
+                    : $betreffText;
+
+                $this->SetFont('', 'I', '7');
+                $hB = $this->getStringHeight($w[0], $betreffOut, false, true, '', 1);
+                $this->SetFont('', '', '8');
+                $hLine = $this->getStringHeight($w[0], 'Ag', false, true, '', 1);
+
+                // Mindestplatz: Kopf + 2 Textzeilen
+                if (($maxY - $this->GetY()) < ($hB + 2 * $hLine)) {
                     $this->AddPage();
                 }
+                $avail = $maxY - $this->GetY();
 
-                // ── Betreff (oben links) + rechte Spalten in VOLLER Höhe ────
+                // Textsegment für diese Seite
+                $seg  = '';
+                $hSeg = 0;
+                if ($restText !== '') {
+                    list($seg, $restText) = $this->splitTextToHeight($restText, $w[0], $avail - $hB);
+                    if ($seg !== '') {
+                        $hSeg = $this->getStringHeight($w[0], $seg, false, true, '', 1);
+                    }
+                }
+
+                // Bilder erst nach vollständigem Text
+                $imgsNow = [];
+                $hImgs   = 0;
+                if ($restText === '') {
+                    while (!empty($imgQueue) && ($hB + $hSeg + $hImgs + $imgQueue[0]['cellH']) <= $avail) {
+                        $chunk    = array_shift($imgQueue);
+                        $imgsNow[] = $chunk;
+                        $hImgs   += $chunk['cellH'];
+                    }
+                }
+
+                // Nichts platzierbar -> Seite wechseln
+                if ($seg === '' && empty($imgsNow)) {
+                    $this->AddPage();
+                    continue;
+                }
+
+                $blockH = $hB + $hSeg + $hImgs;
+                $isLast = ($restText === '' && empty($imgQueue));
+
+                // Betreff + rechte Spalten (Höhe des Seitenteils)
                 $this->SetFont('', 'I', '7');
-                $this->MultiCell($w[0], $rowHeight4, $betreffText, 'LTR', 'L', $fill, 0, '', '');
+                $this->MultiCell($w[0], $hB, $betreffOut, 'LTR', 'L', $fill, 0, '', '');
                 $this->SetFont('', '', '8');
+                $this->MultiCell($w[1], $blockH, $prettyText, 1, 'C', $fill, 0, '', '', true, 0, false, true, $blockH, 'T');
+                $werBis = ($row['Vermerkart'] === 'Bearbeitung') ? $textNameFälligkeit : '';
+                $this->MultiCell($w[2], $blockH, $werBis, 1, 'L', $fill, 0, '', '', true, 0, false, true, $blockH, 'T');
 
-                $prettyText = "";
-                if ($row['Vermerkart'] === "Bearbeitung") $prettyText = "B";
-                else if ($row['Vermerkart'] === "Info") $prettyText = "I";
-                else if ($row['Vermerkart'] === "Freigegeben") $prettyText = "F";
-                else if ($row['Vermerkart'] === "Nutzerwunsch") $prettyText = "N";
+                // Vermerktext
+                $this->Ln($hB);
+                if ($hSeg > 0) {
+                    $vtBorder = empty($imgsNow) ? 'LRB' : 'LR';
+                    $this->MultiCell($w[0], $hSeg, $seg, $vtBorder, 'L', $fill, 1, '', '');
+                }
 
-                // Typ-Spalte – volle Block-Höhe, Text oben
-                $this->MultiCell($w[1], $rightH, $prettyText, 1, 'C', $fill, 0, '', '', true, 0, false, true, $rightH, 'T');
-                // Wer/Bis-Spalte – volle Block-Höhe, Text oben
-                $werBis = ($row['Vermerkart'] == 'Bearbeitung') ? $textNameFälligkeit : '';
-                $this->MultiCell($w[2], $rightH, $werBis, 1, 'L', $fill, 0, '', '', true, 0, false, true, $rightH, 'T');
-
-                // ── Vermerktext (linke Spalte) ──────────────────────────────
-                $this->Ln($rowHeight4);
-                $vtBorder = !empty($imgPlan) ? 'LR' : 'LRB';
-                $this->MultiCell($w[0], $rowHeight - $rowHeight4, $row['Vermerktext'], $vtBorder, 'L', $fill, 1, '', '');
-
-                // ── Bilder in die linke Spalte (innerhalb der Outline) ──────
-                if (!empty($imgPlan)) {
-                    $lastChunk = count($imgPlan) - 1;
-                    foreach ($imgPlan as $ci => $plan) {
-                        $cellH = $plan['cellH'];
-                        $border = ($ci === $lastChunk) ? 'LRB' : 'LR';
+                // Bilder
+                if (!empty($imgsNow)) {
+                    $lastIdx = count($imgsNow) - 1;
+                    foreach ($imgsNow as $ci => $plan) {
+                        $cellH  = $plan['cellH'];
+                        $border = ($ci === $lastIdx) ? 'LRB' : 'LR';
                         $xStart = $this->GetX();
-                        $yRow = $this->GetY();
+                        $yRow   = $this->GetY();
 
                         $this->MultiCell($w[0], $cellH, '', $border, 'L', $fill, 1, $xStart, $yRow,
                             true, 0, false, true, $cellH, 'T');
@@ -298,9 +350,49 @@ class MYPDF extends TCPDF
                         }
                     }
                 }
-                // ── Ende Bilder ─────────────────────────────────────────────
+
+                if (!$isLast) {
+                    $this->AddPage();
+                    $continued = true;
+                }
+            } while (!$isLast);
+        }
+    }
+    /**
+     * Zerlegt $text so, dass der erste Teil in $maxHeight passt.
+     * @return array [passenderTeil, Rest]
+     */
+    private function splitTextToHeight(string $text, float $width, float $maxHeight): array
+    {
+        if ($text === '' || $maxHeight <= 0) {
+            return ['', $text];
+        }
+        if ($this->getStringHeight($width, $text, false, true, '', 1) <= $maxHeight) {
+            return [$text, ''];
+        }
+
+        $tokens      = preg_split('/(\s+)/u', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $cur         = '';
+        $lastGood    = '';
+        $lastGoodIdx = 0;
+
+        foreach ($tokens as $i => $token) {
+            $cur .= $token;
+            if (trim($token) === '') {
+                continue; // nur nach echten Wörtern messen
+            }
+            if ($this->getStringHeight($width, $cur, false, true, '', 1) <= $maxHeight) {
+                $lastGood    = $cur;
+                $lastGoodIdx = $i + 1;
+            } else {
+                break;
             }
         }
+
+        if ($lastGood === '') {
+            return ['', $text]; // nicht einmal ein Wort passt
+        }
+        return [rtrim($lastGood), ltrim(implode('', array_slice($tokens, $lastGoodIdx)))];
     }
 }
 

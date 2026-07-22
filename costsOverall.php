@@ -33,25 +33,35 @@ init_page_serversides();
 <div id="limet-navbar"></div> <!-- Container für Navbar -->
 <div class="container-fluid">
     <div class="mt-4 card">
-        <div class="card-header d-inline-flex justify-content-start align-items-center">
-            Gesamtprojekt
-            <button type='button' class='btn btn-outline-dark btn-sm ms-2 me-2' value='createKostenOverallPDF'><i
-                        class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk
-            </button>
-            <button type='button' class='btn btn-outline-dark btn-sm me-2' value='createKostenOverallBauabschnittPDF'><i
-                        class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk und Bauabschnitt
-                <!--- TODO: Fix Wrong calculations -->
-            </button>
-            <button type='button' class='btn btn-outline-dark btn-sm me-2'
-                    value='createKostenOverallBauabschnittBudgetPDF'>
-                <i class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk, Bauabschnitt und Budget
-            </button>
-            <button type='button' class='btn btn-outline-dark btn-sm me-2' value='createKostenInclGHGOverallPDF'><i
-                        class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk/GHG
-            </button>
-            <button type='button' class='btn btn-outline-dark btn-sm me-2' value='createKostenRaumbereichPDF'><i
-                        class='far fa-file-pdf'></i> Raumbereich Gewerk/GHG
-            </button>
+        <div class="card-header  d-inline-flex align-items-center flex-nowrap">
+            <div class="col-10  d-inline-flex align-items-center justify-content-start ">
+                Gesamtprojekt
+                <button type='button' class='btn btn-outline-dark btn-sm ms-2 me-2' value='createKostenOverallPDF'><i
+                            class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk
+                </button>
+                <button type='button' class='btn btn-outline-dark btn-sm me-2'
+                        value='createKostenOverallBauabschnittPDF'><i
+                            class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk und Bauabschnitt
+                    <!--- TODO: Fix Wrong calculations -->
+                </button>
+                <button type='button' class='btn btn-outline-dark btn-sm me-2'
+                        value='createKostenOverallBauabschnittBudgetPDF'>
+                    <i class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk, Bauabschnitt und Budget
+                </button>
+                <button type='button' class='btn btn-outline-dark btn-sm me-2' value='createKostenInclGHGOverallPDF'><i
+                            class='far fa-file-pdf'></i> Gesamtkosten nach Gewerk/GHG
+                </button>
+                <button type='button' class='btn btn-outline-dark btn-sm me-2' value='createKostenRaumbereichPDF'><i
+                            class='far fa-file-pdf'></i> Raumbereich Gewerk/GHG
+                </button>
+            </div>
+            <div class="col-2  d-inline-flex align-items-center justify-content-end ">
+                     <span class="badge rounded-pill bg-light text-dark p-2 "
+                           data-bs-toggle="popover"
+                           data-bs-content="Kosten f. Elemente aus entfallenen Räumen sind enthalten! (Anzahl auf Null setzten)">
+                                <i class="fas fa-info-circle"></i>
+                            </span>
+            </div>
         </div>
     </div>
     <div class="mt-4 card">
@@ -147,6 +157,12 @@ init_page_serversides();
     });
 
     $(document).ready(function () {
+        let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+        popoverTriggerList.forEach(function (popoverTriggerEl) {
+            new bootstrap.Popover(popoverTriggerEl);
+        });
+
+
         table = $('#tableRaumbereiche').DataTable({
             paging: true,
             searching: true,

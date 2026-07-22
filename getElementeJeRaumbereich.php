@@ -32,7 +32,10 @@ if ($distinct) {
         SELECT
             e.ElementID,
             e.Bezeichnung,
-            SUM(rhe.Anzahl) AS Anzahl
+            SUM(rhe.Anzahl) AS Anzahl,
+            COUNT(DISTINCT r.idTABELLE_Räume) AS AnzahlRaeume,
+            MIN(rhe.`Neu/Bestand`) AS minNB,
+            MAX(rhe.`Neu/Bestand`) AS maxNB
         FROM tabelle_räume r
         INNER JOIN tabelle_räume_has_tabelle_elemente rhe
             ON rhe.TABELLE_Räume_idTABELLE_Räume = r.idTABELLE_Räume
@@ -41,8 +44,8 @@ if ($distinct) {
         WHERE r.tabelle_projekte_idTABELLE_Projekte = ?
           AND r.`Raumbereich Nutzer` IN ($placeholders)
           AND r.Entfallen = 0
+          AND rhe.Anzahl > 0
         GROUP BY e.idTABELLE_Elemente, e.ElementID, e.Bezeichnung
-        HAVING SUM(rhe.Anzahl) > 0
         ORDER BY e.ElementID
     ";
 } else {
@@ -79,6 +82,15 @@ $result = $stmt->get_result();
 
 $data = [];
 while ($row = $result->fetch_assoc()) {
+    // Neu/Bestand-Code ermitteln: 1 = nur Neu, 0 = nur Bestand, 2 = gemischt
+    if (isset($row['minNB'])) {
+        $nb = ((int)$row['minNB'] === (int)$row['maxNB'])
+            ? (int)$row['minNB']
+            : 2;
+    } else {
+        $nb = (int)($row['NeuBestand'] ?? 0);
+    }
+
     $data[] = [
         'ElementID'       => $row['ElementID'] ?? '',
         'Bezeichnung'     => $row['Bezeichnung'] ?? '',
@@ -87,7 +99,8 @@ while ($row = $result->fetch_assoc()) {
         'Raumbezeichnung' => $row['Raumbezeichnung'] ?? '',
         'Geschoss'        => $row['Geschoss'] ?? '',
         'Anzahl'          => (int)$row['Anzahl'],
-        'NeuBestand'      => (int)($row['NeuBestand'] ?? "x"),
+        'AnzahlRaeume'    => isset($row['AnzahlRaeume']) ? (int)$row['AnzahlRaeume'] : null,
+        'NeuBestand'      => $nb,
         'LosBezeichnung'  => $row['LosBezeichnung'] ?? ''
     ];
 }
