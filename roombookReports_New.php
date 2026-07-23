@@ -128,6 +128,7 @@ init_page_serversides("", "x");
     let table;
     const reportCategoryOptions = [
         {value: "", text: "-- Berichtkategorie auswählen --", disabled: true, selected: true},
+        {value: "Custom", text: "Custom (Parameter wählen)"},
         {value: "bauangaben_neu", text: "Bauangaben Neu"},
         {value: "bauangaben", text: "Bauangaben"},
         {value: "einreichung", text: "Einreichung"},
@@ -137,6 +138,10 @@ init_page_serversides("", "x");
 
     ];
     const reportCategories = {
+        Custom: [
+            {text: "Select Inputs", url: "pdf_createBauangabenBericht_Custom"},
+
+        ],
         bauangaben: [
             {text: "PDF V1", url: "pdf_createBauangabenPDF"},
             {text: "PDF V2", url: "pdf_createBauangabenV2PDF"},
@@ -145,8 +150,8 @@ init_page_serversides("", "x");
             {text: "Lab-PDF", url: "pdf_createBauangabenLabPDF"},
             {text: "Lab-Kurz-PDF'", url: "pdf_createBauangabenLabKompaktPDF"},
             {text: "Lab-ENT-PDF", url: "pdf_createBauangabenLabEntPDF"},
-         ],
-        bauangaben_neu:[
+        ],
+        bauangaben_neu: [
             {text: "BAU A3", url: "pdf_createBauangabenBericht_A3Qeer"},
             {text: "ohne Änderungsmarkierungen", url: "pdf_createBauangabenBericht_A3Qeer_1"},
             {text: "ohne Lab", url: "pdf_createBauangabenBericht_A3Qeer_ohne_Lab_params"},
@@ -259,11 +264,18 @@ init_page_serversides("", "x");
         const container = $('#reportButtonsContainer');
         container.empty();
         const dateSelectContainer = $('#dateSelectContainer');
-        if (category === 'bauangaben_neu') {
+        // Datumsauswahl auch für Custom anzeigen (Änderungsmarkierung)
+        if (category === 'bauangaben_neu' || category === 'Custom') {
             dateSelectContainer.removeClass('d-none');
         } else {
             dateSelectContainer.addClass('d-none');
         }
+
+        if (category === 'Custom') {
+            buildCustomParamInterface(container);
+            return;
+        }
+
         if (!category || !reportCategories[category]) return;
         const btnGroup = $('<div class="btn-group" role="group" aria-label="Berichtsbuttons"></div>');
         reportCategories[category].forEach(report => {
@@ -293,15 +305,341 @@ init_page_serversides("", "x");
 
         // --- Logging ---
         $.post('log_report_download.php', {
-            reportUrl:  report.url,
+            reportUrl: report.url,
             reportText: report.text,
-            roomIDs:    roomIDs.join(',')
+            roomIDs: roomIDs.join(',')
         });
         // ----------------
 
         window.open(url);
     }
 
+
+    // ---------------------------------------------------------------------
+    //  CUSTOM-BERICHT: Parameter-Auswahl-Interface (nur Bootstrap, kein CSS)
+    // ---------------------------------------------------------------------
+    let customParamDefs = null; // Cache der vom Server geladenen Definitionen
+
+    function buildCustomParamInterface(container) {
+        container.html('<div class="text-muted small py-1">Parameter werden geladen …</div>');
+
+        const render = () => renderCustomParamInterface(container, customParamDefs);
+
+        if (customParamDefs) {
+            render();
+        } else {
+            $.getJSON('PDFs/getReportParamDefinitions.php')
+                .done(data => {
+                    customParamDefs = data;
+                    render();
+                })
+                .fail(() => {
+                    container.html('<div class="alert alert-danger py-1 mb-0">Parameter-Definitionen konnten nicht geladen werden.</div>');
+                });
+        }
+    }
+
+    function renderCustomParamInterface(container, defs) {
+        const preselected = new Set(defs.preselected || []);
+        const opts = defs.defaults || {mt_mode: 'list', mark_changes: true, format: 'A3'};
+
+        const wrapper = $('<div class="w-100"></div>');
+
+
+        // Optionsleiste (Format / Med.-tech.-Modus / Änderungsmarkierung)
+        const sel = (v, cur) => (v === cur ? 'selected' : '');
+        const optionsBar = $(
+            '<div class="row">' +
+            '   <div class="col-3 d-inline-flex flex-nowrap align-items-center gap-2 mb-2"> ' +
+            '      <button type="button" class="btn btn-primary btn-sm" id="customGenerateBtn">Bericht erstellen</button>' +
+            '      <button type="button" class="btn btn-outline-secondary btn-sm" id="customSelectAll">Alle</button>' +
+            '      <button type="button" class="btn btn-outline-secondary btn-sm" id="customSelectNone">Keine</button>' +
+            '      <span class="text-muted small ms-1" id="customSelectionCount"></span>' +
+            '   </div>' +
+            '  <div class="col-3 d-inline-flex flex-nowrap align-items-center gap-2 mb-2">' +
+            '    <label class="form-label small mb-0" for="customFormat">Format</label>' +
+            '    <select id="customFormat" class="form-select form-select-sm">' +
+            '      <option value="A3" ' + sel('A3', opts.format) + '>A3 quer</option>' +
+            '      <option value="A4" ' + sel('A4', opts.format) + '>A4 hoch</option>' +
+            '    </select>' +
+            '  </div>' +
+            '  <div class="col-3 d-inline-flex flex-nowrap align-items-center gap-2 mb-2">' +
+            '    <label class="form-label small mb-0" for="customMtMode">Med.-Technik</label>' +
+            '    <select id="customMtMode" class="form-select form-select-sm">' +
+            '      <option value="none" ' + sel('none', opts.mt_mode) + '>keine</option>' +
+            '      <option value="list" ' + sel('list', opts.mt_mode) + '>nur Auflistung</option>' +
+            '      <option value="details" ' + sel('details', opts.mt_mode) + '>mit Parametern</option>' +
+            '    </select>' +
+            '  </div>' +
+            '  <div class="col-3 d-inline-flex flex-nowrap align-items-center gap-2 mb-2">' +
+            '    <div class="form-check mb-1">' +
+            '      <input class="form-check-input" type="checkbox" id="customMarkChanges" ' + (opts.mark_changes ? 'checked' : '') + '>' +
+            '      <label class="form-check-label small" for="customMarkChanges">Änderungen markieren</label>' +
+            '    </div>' +
+            '  </div>' +
+            '</div> </div>  '
+        );
+        wrapper.append(optionsBar);
+
+        // Vorlagen / Sets (vordefinierte Zusammenstellungen) – reines Bootstrap
+        const sets = defs.sets || [];
+        if (sets.length) {
+            const optHtml = s =>
+                '<option value="' + escapeAttr(s.id) + '">' + escapeHtml(s.label) + '</option>';
+            const projectOpts = sets.filter(s => s.scope === 'project').map(optHtml).join('');
+            const generalOpts = sets.filter(s => s.scope !== 'project').map(optHtml).join('');
+            const groupedOpts =
+                (projectOpts ? '<optgroup label="Projekt-Vorlagen">' + projectOpts + '</optgroup>' : '') +
+                (generalOpts ? '<optgroup label="Allgemeine Vorlagen">' + generalOpts + '</optgroup>' : '');
+            const setsRow = $(
+                '<div class="row">' +
+                '  <div class="col-12 col-md-7 d-inline-flex flex-nowrap align-items-center gap-2 mb-2">' +
+                '    <label class="form-label small mb-0 text-nowrap" for="customSetSelect">Vorlage</label>' +
+                '    <select id="customSetSelect" class="form-select form-select-sm">' +
+                '      <option value="">\u2014 Vorlage w\u00e4hlen \u2014</option>' + groupedOpts +
+                '    </select>' +
+                '    <button type="button" class="btn btn-outline-secondary btn-sm text-nowrap" id="customSetApply">Anwenden</button>' +
+                '  </div>' +
+                '</div>'
+            );
+            wrapper.append(setsRow);
+        }
+
+        // Schnellsuche ueber alle Parameter (reines Bootstrap, kein eigenes CSS)
+        const searchBar = $(
+            '<div class="row">' +
+            '  <div class="col-12 col-md-6 mb-2">' +
+            '    <div class="input-group input-group-sm">' +
+            '      <span class="input-group-text">Suche</span>' +
+            '      <input type="text" class="form-control" id="customParamSearch" ' +
+            'placeholder="Parameter filtern \u2026" autocomplete="off">' +
+            '      <button class="btn btn-outline-secondary" type="button" id="customParamSearchClear">&times;</button>' +
+            '      <span class="input-group-text text-muted" id="customParamSearchCount"></span>' +
+            '    </div>' +
+            '  </div>' +
+            '</div>'
+        );
+        wrapper.append(searchBar);
+
+        // Accordion mit je einem Block (Sondergruppen ausgenommen)
+        const accId = 'customParamAccordion';
+        const accordion = $('<div class="accordion accordion-flush border rounded" id="' + accId + '"></div>');
+
+        defs.groups.filter(g => !g.special).forEach((group, gi) => {
+            const collapseId = 'cpaCollapse_' + group.id;
+            const headingId = 'cpaHeading_' + group.id;
+
+            const checks = group.params.map(p => {
+                const id = 'cp_' + group.id + '_' + cssSafe(p.key);
+                const checked = preselected.has(p.key) ? 'checked' : '';
+                return (
+                    '<div class="col-12 col-md-6 col-xxl-4 custom-param-col">' +
+                    '  <div class="form-check">' +
+                    '    <input class="form-check-input custom-param-check" type="checkbox" value="' +
+                    escapeAttr(p.key) + '" id="' + id + '" data-group="' + group.id + '" ' + checked + '>' +
+                    '    <label class="form-check-label small" for="' + id + '">' + escapeHtml(p.label) + '</label>' +
+                    '  </div>' +
+                    '</div>'
+                );
+            }).join('');
+
+            const item = $(
+                '<div class="accordion-item">' +
+                '  <h2 class="accordion-header" id="' + headingId + '">' +
+                '    <button class="accordion-button collapsed py-2" type="button" data-bs-toggle="collapse" ' +
+                'data-bs-target="#' + collapseId + '" aria-expanded="false" aria-controls="' + collapseId + '">' +
+                '      <span class="fw-semibold me-2">' + escapeHtml(group.label) + '</span>' +
+                '      <span class="badge bg-secondary group-count" data-group="' + group.id + '"></span>' +
+                '    </button>' +
+                '  </h2>' +
+                '  <div id="' + collapseId + '" class="accordion-collapse collapse" aria-labelledby="' + headingId +
+                '" data-bs-parent="#' + accId + '">' +
+                '    <div class="accordion-body py-2">' +
+                '      <div class="mb-2">' +
+                '        <button type="button" class="btn btn-link btn-sm p-0 me-3 group-select-all" data-group="' + group.id + '">Alle</button>' +
+                '        <button type="button" class="btn btn-link btn-sm p-0 group-select-none" data-group="' + group.id + '">Keine</button>' +
+                '      </div>' +
+                '      <div class="row g-1">' + checks + '</div>' +
+                '    </div>' +
+                '  </div>' +
+                '</div>'
+            );
+            accordion.append(item);
+        });
+
+        wrapper.append(accordion);
+        container.empty().append(wrapper);
+
+        // --- Events ---
+        container.find('#customGenerateBtn').on('click', generateCustomReport);
+
+        // Vorlage anwenden: passende Checkboxen setzen + Optionen übernehmen
+        const applyCustomSet = (setId) => {
+            const set = (defs.sets || []).find(s => s.id === setId);
+            if (!set) {
+                return;
+            }
+            const wanted = new Set(set.params || []);
+            container.find('.custom-param-check').each(function () {
+                $(this).prop('checked', wanted.has($(this).val()));
+            });
+            const o = set.options || {};
+            if (o.format) {
+                container.find('#customFormat').val(o.format);
+            }
+            if (o.mt_mode) {
+                container.find('#customMtMode').val(o.mt_mode);
+            }
+            if (typeof o.mark_changes === 'boolean') {
+                container.find('#customMarkChanges').prop('checked', o.mark_changes);
+            }
+            updateCustomCounts(container);
+        };
+        container.find('#customSetSelect').on('change', function () {
+            applyCustomSet($(this).val());
+        });
+        container.find('#customSetApply').on('click', function () {
+            applyCustomSet(container.find('#customSetSelect').val());
+        });
+
+        container.find('#customSelectAll').on('click', () => {
+            container.find('.custom-param-check').prop('checked', true);
+            updateCustomCounts(container);
+        });
+        container.find('#customSelectNone').on('click', () => {
+            container.find('.custom-param-check').prop('checked', false);
+            updateCustomCounts(container);
+        });
+
+        container.find('.group-select-all').on('click', function () {
+            const g = $(this).data('group');
+            container.find('.custom-param-check[data-group="' + g + '"]').prop('checked', true);
+            updateCustomCounts(container);
+        });
+        container.find('.group-select-none').on('click', function () {
+            const g = $(this).data('group');
+            container.find('.custom-param-check[data-group="' + g + '"]').prop('checked', false);
+            updateCustomCounts(container);
+        });
+
+        container.find('.custom-param-check').on('change', () => updateCustomCounts(container));
+
+        container.find('#customParamSearch').on('input', function () {
+            filterCustomParams(container, $(this).val());
+        });
+        container.find('#customParamSearchClear').on('click', function () {
+            container.find('#customParamSearch').val('');
+            filterCustomParams(container, '');
+        });
+
+        updateCustomCounts(container);
+    }
+
+    function updateCustomCounts(container) {
+        let total = 0;
+        container.find('.group-count').each(function () {
+            const g = $(this).data('group');
+            const checks = container.find('.custom-param-check[data-group="' + g + '"]');
+            const checked = checks.filter(':checked').length;
+            total += checked;
+            $(this).text(checked + ' / ' + checks.length);
+            $(this).toggleClass('bg-secondary', checked === 0).toggleClass('bg-success', checked > 0);
+        });
+        container.find('#customSelectionCount').text(total + ' Parameter ausgewählt');
+    }
+
+    // Live-Filter: blendet nicht passende Parameter/Gruppen aus (nur Bootstrap-Klassen)
+    function filterCustomParams(container, term) {
+        term = (term || '').trim().toLowerCase();
+        const filtering = term.length > 0;
+        let totalMatches = 0;
+
+        container.find('.accordion-item').each(function () {
+            const item = $(this);
+            let groupMatches = 0;
+            item.find('.custom-param-col').each(function () {
+                const col = $(this);
+                const label = col.find('.form-check-label').text().toLowerCase();
+                const hit = !filtering || label.indexOf(term) !== -1;
+                col.toggleClass('d-none', !hit);
+                if (hit && filtering) groupMatches++;
+            });
+            totalMatches += groupMatches;
+
+            const collapse = item.find('.accordion-collapse');
+            const button = item.find('.accordion-button');
+            if (filtering) {
+                item.toggleClass('d-none', groupMatches === 0);
+                if (groupMatches > 0) {
+                    collapse.addClass('show');
+                    button.removeClass('collapsed').attr('aria-expanded', 'true');
+                }
+            } else {
+                item.removeClass('d-none');
+                collapse.removeClass('show');
+                button.addClass('collapsed').attr('aria-expanded', 'false');
+            }
+        });
+
+        const countEl = container.find('#customParamSearchCount');
+        countEl.text(filtering ? (totalMatches + ' Treffer') : '');
+    }
+
+    function generateCustomReport() {
+        const container = $('#reportButtonsContainer');
+        const selectedKeys = container.find('.custom-param-check:checked')
+            .map(function () {
+                return $(this).val();
+            }).get();
+
+        const format = $('#customFormat').val() || 'A3';
+        const mtMode = $('#customMtMode').val() || 'list';
+        const markChanges = $('#customMarkChanges').is(':checked') ? '1' : '0';
+
+        // Mindestens ein Parameter ODER eine Med.-tech.-Ausgabe muss gewählt sein
+        if (!selectedKeys.length && mtMode === 'none') {
+            alert('Bitte mindestens einen Parameter oder eine Med.-tech.-Ausgabe wählen!');
+            return;
+        }
+
+        const roomIDs = table.rows({selected: true}).data().toArray().map(row => row[0]);
+        if (!roomIDs.length) {
+            alert('Kein Raum ausgewählt!');
+            return;
+        }
+
+        const formattedDate = $('#dateSelect').val() || getDate('#dateSelect');
+        const paramsParam = encodeURIComponent(selectedKeys.join(','));
+        const url = `/PDFs/custom_report/pdf_createBauangabenBericht_Custom.php` +
+            `?roomID=${roomIDs.join(',')}` +
+            `&date=${formattedDate}` +
+            `&params=${paramsParam}` +
+            `&format=${format}` +
+            `&mt_mode=${mtMode}` +
+            `&mark_changes=${markChanges}`;
+
+        $.post('log_report_download.php', {
+            reportUrl: 'custom_report/pdf_createBauangabenBericht_Custom',
+            reportText: `Custom ${format} (${selectedKeys.length} Param, MT:${mtMode}, Chg:${markChanges})`,
+            roomIDs: roomIDs.join(',')
+        });
+
+        window.open(url);
+    }
+
+    // Hilfsfunktionen zum sicheren Einbetten
+    function cssSafe(s) {
+        return String(s).replace(/[^a-zA-Z0-9_-]/g, '_');
+    }
+
+    function escapeAttr(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+    }
+
+    function escapeHtml(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
 
     function addMTFilter(location) {
         const select = $('<select class="form-select form-select-sm ms-1 me-1" aria-label="MT Filter">' +

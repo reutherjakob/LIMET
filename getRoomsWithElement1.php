@@ -6,7 +6,46 @@
 </head>
 <body>
 
-<div class="btn-group" id="hide0Wrapper_RwE">
+<div class="btn-group text-nowrap" id="hide0Wrapper_RwE">
+    <div class="btn-group" id="variantenMassenWrapper">
+        <label class=" btn btn-sm btn-outline-secondary " for="massenVariante">
+            Alle Var
+        </label>
+        <select class="form-control form-control-sm" id="massenVariante">
+            <option value="1">A</option>
+            <option value="2">B</option>
+            <option value="3">C</option>
+            <option value="4">D</option>
+            <option value="5">E</option>
+            <option value="6">F</option>
+            <option value="7">G</option>
+            <option value="8">H</option>
+            <option value="9">I</option>
+            <option value="10">J</option>
+            <option value="11">K</option>
+            <option value="12">L</option>
+            <option value="13">M</option>
+            <option value="14">N</option>
+            <option value="15">O</option>
+            <option value="16">P</option>
+            <option value="17">Q</option>
+            <option value="18">R</option>
+            <option value="19">S</option>
+            <option value="20">T</option>
+            <option value="21">U</option>
+            <option value="22">V</option>
+            <option value="23">W</option>
+            <option value="24">X</option>
+            <option value="25">Y</option>
+            <option value="26">Z</option>
+        </select>
+        <!--button type="button" id="massenVarianteSetzen" class="btn btn-sm btn-outline-primary">
+            <i class="far fa-edit"></i> Alle Var
+        </button-->
+        <button type="button" id="massenSpeichern" class="btn btn-sm btn-outline-warning">
+            <i class="far fa-save"></i> Alle
+        </button>
+    </div>
     <input class="btn-check btn-sm" type="checkbox" id="hideZeroRows_RwE">
     <label class="btn btn-sm btn-outline-dark" for="hideZeroRows_RwE">
         Hide 0
@@ -77,7 +116,7 @@ $columns = [
     ["Raumnr", "Raum Nr."],
     ["Raumbezeichnung", "Raumbez."],
     ["Raumbereich Nutzer", "Raumbereich"],
-    ["Geschoss", "<i class='fas fa-layer-group'><label style='display: none;'>Geschoss</label></i>"], // would like to have
+    ["Geschoss", "<i class='fas fa-layer-group'><label style='display: none;'>Geschoss</label></i>"],
     ["Bauetappe", "Bauetappe"],
     ["Bauabschnitt", "Bauabschnitt"],
     ["Anzahl", "Anzahl"],
@@ -241,7 +280,7 @@ $mysqli->close();
                         columns: [1, 2, 3, 4, 5, 6, 14, 15, 16, 17, 18, 19, 20, 21]// 12,
                     },
                     text: '<i class="fas fa-file-excel me-2"></i> Excel', // Add Font Awesome icon
-                    className: 'btn btn-sm btn-outline-success bg-white', // Bootstrap small
+                    className: 'btn btn-sm btn-outline-success bg-white text-nowrap', // Bootstrap small
                 }
             ],
             initComplete: function () {
@@ -308,37 +347,105 @@ $mysqli->close();
                 });
             }
         });
-    });
 
-    $("button[value='saveElement']").click(function () {
-        let id = this.id;
-        let comment = $(".comment-btn[id='" + id + "']").attr('data-description');
-        let amount = $("#amount" + id).val();
-        let variantenID = $("#variante" + id).val();
-        let bestand = $("#bestand" + id).val();
-        let standort = $("#Standort" + id).val();
-        let verwendung = $("#Verwendung" + id).val();
-        if (standort === '0' && verwendung === '0') {
-            alert("Standort und Verwendung kann nicht Nein sein!");
-        } else {
-            console.log(id, typeof (id));
-            $.ajax({
-                url: "saveRoombookEntry.php",
-                data: {
-                    "comment": comment,
-                    "id": id,
-                    "amount": amount,
-                    "variantenID": variantenID,
-                    "bestand": bestand,
-                    "standort": standort,
-                    "verwendung": verwendung
-                },
-                type: "POST",
-                success: function (data) {
-                    makeToaster(data.trim(), true);
-                }
+
+// Logik zentral, wird von change UND button genutzt
+        function setAlleVarianten() {
+            let neueVariante = $("#massenVariante").val();
+            if (!neueVariante) {
+                alert("Bitte eine neue Variante auswählen!");
+                return;
+            }
+            $("#tableRoomsWithElement select[id^='variante']").each(function () {
+                $(this).val(neueVariante);
             });
+            let variantName = $("#massenVariante").find("option:selected").text();
+            makeToaster("Alle Varianten auf '" + variantName + "' gesetzt!", true);
         }
+
+// Sofort bei Auswahl im Dropdown
+        $(document).off('change.mvSelect').on('change.mvSelect', '#massenVariante', function () {
+            setAlleVarianten();
+        });
+
+
+// Alle Varianten massenhaft speichern
+        let massenSpeichernRunning = false;
+
+        $(document).off('click.mvSpeichern').on('click.mvSpeichern', '#massenSpeichern', function () {
+            // Re-Entry verhindern
+            if (massenSpeichernRunning) {
+                return;
+            }
+
+            let rows = [];
+            $("#tableRoomsWithElement select[id^='variante']").each(function () {
+                let id = $(this).attr('id').replace('variante', '');
+                let amount = $("#amount" + id).val();
+                let variantenID = $(this).val();
+                let bestand = $("#bestand" + id).val();
+                let standort = $("#Standort" + id).val();
+                let verwendung = $("#Verwendung" + id).val();
+                let comment = $(".comment-btn[id='" + id + "']").attr('data-description') || "";
+
+                if (standort === '0' && verwendung === '0') {
+                    alert("Standort und Verwendung kann nicht Nein sein!");
+                    return false;
+                }
+                rows.push({id, comment, amount, variantenID, bestand, standort, verwendung});
+            });
+
+            if (rows.length === 0) {
+                makeToaster("Keine Einträge zu speichern!", true);
+                return;
+            }
+
+            // Sperre setzen + Button-Feedback
+            massenSpeichernRunning = true;
+            let $btn = $(this);
+            let originalHtml = $btn.html();
+            $btn.prop('disabled', true).html("<i class='fas fa-spinner fa-spin'></i> Speichert...");
+
+            let promiseChain = Promise.resolve();
+            rows.forEach(function (row) {
+                promiseChain = promiseChain.then(function () {
+                    return $.ajax({url: "saveRoombookEntry.php", data: row, type: "POST"});
+                });
+            });
+
+            promiseChain.then(function () {
+                makeToaster("Alle " + rows.length + " Einträge erfolgreich gespeichert!", true);
+            }).catch(function () {
+                makeToaster("Fehler beim Speichern!", false);
+            }).finally(function () {
+                // Sperre immer lösen, egal ob Erfolg oder Fehler
+                massenSpeichernRunning = false;
+                $btn.prop('disabled', false).html(originalHtml);
+            });
+        });
+
+        $(document).off('click.saveEl').on('click.saveEl', "button[value='saveElement']", function () {
+            let id = this.id;
+            let comment = $(".comment-btn[id='" + id + "']").attr('data-description');
+            let amount = $("#amount" + id).val();
+            let variantenID = $("#variante" + id).val();
+            let bestand = $("#bestand" + id).val();
+            let standort = $("#Standort" + id).val();
+            let verwendung = $("#Verwendung" + id).val();
+            if (standort === '0' && verwendung === '0') {
+                alert("Standort und Verwendung kann nicht Nein sein!");
+            } else {
+                $.ajax({
+                    url: "saveRoombookEntry.php",
+                    data: {comment, id, amount, variantenID, bestand, standort, verwendung},
+                    type: "POST",
+                    success: function (data) {
+                        makeToaster(data.trim(), true);
+                    }
+                });
+            }
+        });
+
     });
 </script>
 </body>

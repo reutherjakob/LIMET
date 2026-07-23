@@ -87,24 +87,57 @@ $mysqli = utils_connect_sql();
         </div>
 
         <div class="col-4 pe-3 ps-0" id="budgets_card_col">
-            <div class="card ">
-                <div class="card-header">
-                    <button type="button" class="btn btn-outline-dark float-end" id="toggle_budget_card">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2" id="budget_card_title">
+                        <span>Projektbudgets</span>
+                        <button type="button" class="btn btn-sm btn-outline-success" id="addBudget">
+                            <i class="fas fa-plus-square"></i>
+                        </button>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-dark" id="toggle_budget_card">
                         <i class="fas fa-caret-right"></i>
                     </button>
-                    <div class="card-title" id="budget_card_title">Projektbudgets</div>
                 </div>
                 <div class="card-body p-2" id="">
                 </div>
             </div>
         </div>
-
-
     </div>
+
+
+    <!-- Modal: Budget hinzufügen -->
+    <div class="modal fade" id="addBudgetModal" tabindex="-1" aria-labelledby="addBudgetModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addBudgetModalLabel">Neues Budget</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="inputBudgetnummer" class="form-label">Budgetnummer</label>
+                        <input type="text" class="form-control" id="inputBudgetnummer" maxlength="45">
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputBudgetname" class="form-label">Budgetname</label>
+                        <input type="text" class="form-control" id="inputBudgetname" maxlength="45">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                    <button type="button" class="btn btn-success" id="saveBudgetBtn">Speichern</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script src="utils/_utils.js"></script>
     <!--suppress EqualityComparisonWithCoercionJS -->
     <script>
+
+        const addBudgetModal = new bootstrap.Modal('#addBudgetModal');
 
         const STATUS = {
             0: {label: 'Offen', cls: 'warning', icon: 'fa-minus'},
@@ -123,8 +156,13 @@ $mysqli = utils_connect_sql();
             </span>`;
         }
 
+        // Budgetliste für das clientseitig gebaute <select> in der Elemente-Tabelle
+        let budgetList = [];
+
         function loadBudgetList() {
-            $.get('getBudgets.php', function (data) {
+            return $.get('getBudgets.php', function (data) {
+                budgetList = data;
+
                 const $body = $('#budgets_card_col .card-body').empty();
                 if (!data.length) {
                     $body.html('<p class="text-muted p-2">Keine Budgets</p>');
@@ -169,41 +207,63 @@ $mysqli = utils_connect_sql();
             }, 'json');
         }
 
+        // baut das <select> für eine Element-Zeile aus der globalen budgetList
+        function renderBudgetSelect(rowID, selectedBudgetID) {
+            let html = `<select class="form-control form-control-sm" id="${rowID}">`;
+            html += `<option value="0"${selectedBudgetID == 0 ? ' selected' : ''}>0-Budget wählen</option>`;
+            budgetList.forEach(b => {
+                const id = b.idtabelle_projektbudgets;
+                const selected = (id == selectedBudgetID) ? ' selected' : '';
+                html += `<option value="${id}"${selected}>${b.Budgetnummer}-${b.Budgetname}</option>`;
+            });
+            return html + '</select>';
+        }
+
+        $('#addBudget').click(function () {
+            $('#inputBudgetnummer').val('');
+            $('#inputBudgetname').val('');
+            addBudgetModal.show();
+        });
+
+        $('#saveBudgetBtn').click(function () {
+            const Budgetnummer = $('#inputBudgetnummer').val().trim();
+            const Budgetname = $('#inputBudgetname').val().trim();
+
+            if (!Budgetnummer || !Budgetname) {
+                makeToaster('Bitte Budgetnummer und Budgetname ausfüllen');
+                return;
+            }
+
+            $.post('addBudget.php', {Budgetnummer, Budgetname}, function (res) {
+                if (res.status === 'ok') {
+                    makeToaster(res.msg, true);
+                    addBudgetModal.hide();
+                    // erst Budgetliste aktualisieren (für das <select>), dann Tabelle neu laden
+                    loadBudgetList().done(function () {
+                        $('#tableElementsInProjectForBudget').DataTable().ajax.reload(null, false);
+                    });
+                } else {
+                    makeToaster(res.msg || 'Fehler beim Anlegen');
+                }
+            }, 'json');
+        });
+
+
         $(document).on('change', '.budget-status-select', function () {
             const budgetID = $(this).data('id');
             const status = $(this).val();
             $.post('getBudgets.php', {budgetID, status}, function () {
                 makeToaster('Status gespeichert', true);
-                loadBudgetList();
-                // Tabelle neu laden damit Status-Spalte aktualisiert wird
-                $('#tableElementsInProjectForBudget').DataTable().ajax.reload(null, false);
+                loadBudgetList().done(function () {
+                    $('#tableElementsInProjectForBudget').DataTable().ajax.reload(null, false);
+                });
             }, 'json');
         });
 
 
-        $(document).ready(function () {
-            loadBudgetList();
-
-            $('#toggle_budget_card').click(function () {
-
-                if ($('#budgets_card_col').hasClass('collapsed')) {
-                    $(this).html("<i class='fas fa-caret-right'></i>");
-                    $('#budgets_card_col').find('.card-body').removeClass('d-none');
-                    $('#budgets_card_col').removeClass('col-auto collapsed').addClass('col-4');
-                    $('#elements_budgets_card_col').removeClass('col').addClass('col-8');
-                    $('#budget_card_title').removeClass('d-none');
-
-                } else {
-                    $(this).html("<i class='fas fa-caret-left'></i>");
-                    $('#budgets_card_col').find('.card-body').addClass('d-none');
-                    $('#budgets_card_col').removeClass('col-4').addClass('col-auto collapsed');
-                    $('#elements_budgets_card_col').removeClass('col-8').addClass('col');
-                    $('#budget_card_title').addClass('d-none');
-                }
-            });
-
-
+        function initElementsTable() {
             $('#tableElementsInProjectForBudget').DataTable({
+                deferRender: true,
                 ajax: {
                     url: 'get_elementBudgetsData.php',
                     dataSrc: '',
@@ -226,9 +286,13 @@ $mysqli = utils_connect_sql();
                     {data: 'PP'},
                     {
                         data: 'BudgetSelect',
-                        orderable: true,   // aktivieren
+                        orderable: true,
                         searchable: false,
-                        orderData: 12      // Gleiches Ergebnis wie Spalte 'BudgetID'
+                        orderData: 12,                      // sortiert über die Spalte 'BudgetID'
+                        render: function (data, type, row) {
+                            if (type !== 'display') return data;   // sortieren/filtern auf der Zahl
+                            return renderBudgetSelect(row.id, data);
+                        }
                     },
                     {data: 'BudgetID', visible: false, searchable: false},
                     {data: 'BudgetBezeichnung', visible: false, searchable: false},
@@ -279,19 +343,18 @@ $mysqli = utils_connect_sql();
                                 order: 'applied',
                                 page: 'all'
                             },
-                            columns:  [2, 3, 4, 5, 6, 7, 8, 12, 13, 14, 15, 16],  // alle Spalten exportieren
+                            columns: [2, 3, 4, 5, 6, 7, 8, 12, 13, 14, 15, 16],
                             format: {
                                 header: function (data, columnIdx) {
                                     const iconHeaders = {
-                                        2:  'Anzahl',
-                                        3:  'Element ID',
-                                        6:  'Variante',
+                                        2: 'Anzahl',
+                                        3: 'Element ID',
+                                        6: 'Variante',
                                         12: 'Budget Status'
                                     };
                                     if (iconHeaders[columnIdx] !== undefined) {
                                         return iconHeaders[columnIdx];
                                     }
-                                    // HTML aus Headern entfernen (z.B. Tooltip-Spans)
                                     return data.replace(/<[^>]*>/g, '').trim();
                                 },
                                 body: function (data, row, column, node) {
@@ -343,6 +406,31 @@ $mysqli = utils_connect_sql();
                     let rowData = row.data();
                     rowData.BudgetID = budgetID;
                     rowData.BudgetBezeichnung = BudgetBezeichnung;
+                }
+            });
+        }
+
+
+        $(document).ready(function () {
+            // Tabelle erst initialisieren, wenn die Budgetliste geladen ist,
+            // damit die <select> beim ersten Rendern korrekt befüllt sind
+            loadBudgetList().done(initElementsTable);
+
+            $('#toggle_budget_card').click(function () {
+
+                if ($('#budgets_card_col').hasClass('collapsed')) {
+                    $(this).html("<i class='fas fa-caret-right'></i>");
+                    $('#budgets_card_col').find('.card-body').removeClass('d-none');
+                    $('#budgets_card_col').removeClass('col-auto collapsed').addClass('col-4');
+                    $('#elements_budgets_card_col').removeClass('col').addClass('col-8');
+                    $('#budget_card_title').removeClass('d-none');
+
+                } else {
+                    $(this).html("<i class='fas fa-caret-left'></i>");
+                    $('#budgets_card_col').find('.card-body').addClass('d-none');
+                    $('#budgets_card_col').removeClass('col-4').addClass('col-auto collapsed');
+                    $('#elements_budgets_card_col').removeClass('col-8').addClass('col');
+                    $('#budget_card_title').addClass('d-none');
                 }
             });
         });

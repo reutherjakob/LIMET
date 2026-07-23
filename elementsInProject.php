@@ -255,13 +255,13 @@
         <div class="card-header"
         ">
         <div class="row  d-flex flex-nowrap text-nowrap">
-            <div class="col-xxl-8 col-8 d-flex justify-content-start align-items-center">
+            <div class="col-xxl-6 col-6 d-flex justify-content-start align-items-center">
                 <button type="button" class="btn btn-outline-dark btn-sm me-2" id="showRoomsWithAndWithoutElement">
                     <i class="fas fa-caret-right"></i>
                 </button>
                 <label>Räume mit Element</label>
             </div>
-            <div class="col-4 d-flex justify-content-end" id="CHRME">
+            <div class="col-6 d-inline-flex align-items-center justify-content-end" id="CHRME">
             </div>
         </div>
     </div>
@@ -307,7 +307,7 @@
                 {
                     extend: 'excel',
                     exportOptions: {
-                        columns: ':not(:nth-child(0)):not(:nth-child(6)):not(:nth-child(9))'
+                        columns: ':not(:nth-child(6))'
                     },
                     text: '<i class="fas fa-file-excel"></i> Excel',
                     className: 'btn-sm btn-light btn-outline-dark me-2'

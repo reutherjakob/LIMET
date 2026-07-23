@@ -28,6 +28,13 @@ $result = $stmt->get_result();
 if ($result->num_rows == 0) {
     echo "<button type='button' class='btn btn-outline-dark btn-sm btn-default' value='addWorkflowToLot'>Workflow hinzufügen</button>";
 } else {
+
+    echo "<div class='d-flex justify-content-end mb-2'>
+            <button type='button' class='btn btn-sm btn-outline-danger' value='removeLotWorkflow'>
+                <i class='fas fa-trash-alt'></i> Workflow entfernen
+            </button>
+          </div>";
+    #
     echo "<table class='table table-sm' id='tableWorkflow'  >
                 <thead><tr>
                 <th>Nr</th>
@@ -110,6 +117,27 @@ $mysqli->close();
         }
     });
 
+    $("button[value='removeLotWorkflow']").click(function () {
+        if (!confirm("Workflow für dieses Los wirklich entfernen?")) {
+            return;
+        }
+        $.ajax({
+            url: "deleteLotWorkflow.php",
+            type: "POST",
+            data: {"lotID": localLotID},
+            success: function (data) {
+                // Modal-Inhalt neu laden -> zeigt dann "Workflow hinzufügen"
+                $.ajax({
+                    url: "getLotWorkflow.php",
+                    type: "POST",
+                    data: {"lotID": localLotID},
+                    success: function (html) {
+                        $("#workflowModalBody").html(html);
+                    }
+                });
+            }
+        });
+    });
 
     $("input[value='workflowStatus']").change(function () {
         let workflowID = this.id.substr(14, 10);
@@ -155,7 +183,7 @@ $mysqli->close();
         $.ajax({
             url: "getProjectWorkflows.php",
             type: "POST",
-            data: { "lotID": localLotID },
+            data: {"lotID": localLotID},
             success: function (data) {
                 $("#workflowModalBody").html(data);
             }

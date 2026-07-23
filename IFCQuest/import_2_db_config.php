@@ -184,6 +184,7 @@ const ELEMENT_MAPPING = [
         'element_id' => '4.20.60.2',
         'element_params' => [],
         'variante_params' => ['MT_LIMET_Breite', 'MT_LIMET_Höhe', 'MT_LIMET_Tiefe'],
+        'breite_faktor' => 2,
         // Alle anderen DB-Parameter (z.B. Netzart) → automatisch ignoriert
     ],
 
@@ -262,8 +263,9 @@ const ELEMENT_MAPPING = [
             ],
         ],
         'param_quellen' => [
-            'TMO_-_LIMET_4-20-20-3 Unterbau - Flügel DIN CrNi zweitürig' => ['MT_LIMET_Breite', 'MT_LIMET_Tiefe'],
-            'TMO_-_LIMET_4-20-20-3 Unterbau - Flügel DIN CrNi eintürig'  => ['MT_LIMET_Breite', 'MT_LIMET_Tiefe'],
+            'TMO_-_LIMET_4-20-20-3 Unterbau - Flügel DIN CrNi zweitürig' => ['MT_LIMET_Tiefe'],
+            'TMO_-_LIMET_4-20-20-3 Unterbau - Flügel DIN CrNi eintürig'  => ['MT_LIMET_Tiefe'],
+            'TMO_-_LIMET_4-20-40-1 Arbeitsplatte DIN CrNi'               => ['MT_LIMET_Breite'],
             'TMO_-_LIMET_4-20-30-1 Spülbecken DIN CrNi'                  => ['MT_LIMET_Spuelbecken_Breite', 'MT_LIMET_Spuelbecken_Tiefe', 'MT_LIMET_Spuelbecken_Hoehe'],
         ],
         'element_id' => '4.35.20.1',

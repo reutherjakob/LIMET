@@ -5,7 +5,7 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="../Logo/iphone_favicon.png">
+    <link rel="icon" href="Logo/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -109,12 +109,22 @@ init_page_serversides();
                             $possibleAuftragnehmer[$row['idTABELLE_Lieferant']]['Lieferant'] = $row['Lieferant'];
                         }
 
-                        $sql = "SELECT tabelle_lose_extern.idtabelle_Lose_Extern, tabelle_lose_extern.LosNr_Extern, 
-                                        tabelle_lose_extern.LosBezeichnung_Extern, tabelle_lose_extern.Versand_LV, 
-                                        tabelle_lose_extern.Ausführungsbeginn, tabelle_lose_extern.Verfahren, tabelle_lose_extern.mkf_von_los,
-                                        tabelle_lose_extern.Bearbeiter, tabelle_lose_extern.Vergabesumme, 
-                                        tabelle_lose_extern.Vergabe_abgeschlossen, tabelle_lose_extern.Versand_LV, tabelle_lose_extern.Notiz, tabelle_lose_extern.Kostenanschlag, tabelle_lose_extern.Budget,
-                                        tabelle_lieferant.Lieferant, tabelle_lieferant.idTABELLE_Lieferant,
+                        $sql = "SELECT tabelle_lose_extern.idtabelle_Lose_Extern, 
+                                 tabelle_lose_extern.LosNr_Extern, 
+                                        tabelle_lose_extern.LosBezeichnung_Extern,
+                                        tabelle_lose_extern.Versand_LV, 
+                                        tabelle_lose_extern.Ausführungsbeginn, 
+                                        tabelle_lose_extern.Verfahren,
+                                        tabelle_lose_extern.mkf_von_los,
+                                        tabelle_lose_extern.Bearbeiter, 
+                                        tabelle_lose_extern.Vergabesumme, 
+                                        tabelle_lose_extern.Vergabe_abgeschlossen,
+                                        tabelle_lose_extern.Versand_LV, 
+                                        tabelle_lose_extern.Notiz,
+                                        tabelle_lose_extern.Kostenanschlag,
+                                        tabelle_lose_extern.Budget,
+                                        tabelle_lieferant.Lieferant,
+                                        tabelle_lieferant.idTABELLE_Lieferant,
                                         losschaetzsumme.Summe,
                                         losbestandschaetzsumme.SummeBestand,
                                         losschaetzsumme.id,
@@ -457,6 +467,8 @@ require "modal_los_aenderungen.php";
     var tableTenderLots;
 
     $(document).ready(function () {
+
+
         getExcelFilename("Lose-im_Projekt")
             .then(filename => {
                 // console.log('Generated filename:', filename);
@@ -566,7 +578,7 @@ require "modal_los_aenderungen.php";
                     document.getElementById("kostenanschlag").value = tableTenderLots.row($(this)).data()[11].replace(/\./g, '');
                     document.getElementById("budget").value = tableTenderLots.row($(this)).data()[12].replace(/\./g, '');
                     document.getElementById("lotSum").value = tableTenderLots.row($(this)).data()[13].replace(/\./g, '');
-//TODO Auftragnehmeer in modal
+                    //TODO Auftragnehmeer in modal
                     const htmlString = tableTenderLots.row($(this)).data()[8];
                     const textContent = htmlString.replace(/<[^>]*>/g, '');
 
@@ -625,6 +637,7 @@ require "modal_los_aenderungen.php";
                     });
                 });
             });
+
 
         $('#lotLVSend').datepicker({
             format: "yyyy-mm-dd",

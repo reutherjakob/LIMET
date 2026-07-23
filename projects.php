@@ -62,7 +62,8 @@
         "Test KHI" => "fas fa-yin-yang",
         "Labor Kategorien" => "fab fa-d-and-d",
         "WIGEV RV" => "fab fa-pushed",
-        "KDO-BET" => "fas fa-dice-d20"
+        "KDO-BET" => "fas fa-dice-d20",
+        "BBE Musterzimmer" => "fas fa-vihara"
 
     ];
     //<i class="fas fa-mountain"></i>
@@ -187,10 +188,18 @@
                 </div>
             </div>
             <div class='card mt-2'>
-                <div class='card-header'><strong> Raumbuch Updates</strong>
+                <div class='card-header'><i class="far fa-heart"></i><strong> Raumbuch Updates </strong><i
+                            class="far fa-heart"></i>
                 </div>
                 <div class='card-body'>
                     <div class="row">
+
+
+                        <p>
+                            <i class="fas fa-chess-rook col-1"></i>
+                            <a class="col-10" href=" /utils/roombook_icons_legend.php">
+                                ICON Legende </a>
+                        </p>
                         <p>
                             <i class="fas fa-scroll col-1"></i>
                             <a class="col-10" href="roombook_allTenderLots.php">
@@ -239,7 +248,7 @@
                         <p>
                             <i class="fas fa-list-ol col-1"></i>
                             <a class="col-11" href="roombook_devicePrice.php">
-                               Geräte & Wartungspreise Liste
+                                Geräte & Wartungspreise Liste
                             </a>
                         </p>
 
@@ -252,10 +261,32 @@
 
                         <p>
                             <i class="fas fa-camera-retro col-1"></i>
-                            <a class="col-11"                      href="/img_support/imageGallery.php">
-                                Bilder
+                            <a class="col-11" href="/img_support/imageGallery.php">
+                                Bilder Support
                             </a>
                         </p>
+
+                        <p>
+                            <i class="fas fa-code-branch  col-1"></i>
+                            <a class="col-11" href="/workflow_verwaltung/roombook_workflows.php">
+                                Workflow Verwaltung
+                            </a>
+                        </p>
+
+                        <p>
+                            <i class="fas fa-palette col-1"> </i>
+                            <a class="col-11" href="/roombookReports_New.php">
+                                Custom(-izable) Report
+                            </a>
+                        </p>
+
+                        <p>
+                            <i class="fas fa-ring col-1"> </i>
+                            <a class="col-11" href="/elementsInProject.php">
+                                Alle Var ändern
+                            </a>
+                        </p>
+
 
 
 

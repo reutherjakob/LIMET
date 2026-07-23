@@ -14,14 +14,16 @@ $sql = "SELECT
     v.Vermerkart,
     v.Faelligkeit,
     GROUP_CONCAT(r.idTABELLE_Räume ORDER BY r.Raumnr SEPARATOR ', ') as RaumIDs,
-    GROUP_CONCAT(r.Raumnr ORDER BY r.Raumnr SEPARATOR ', ') as Raumnummern,
-    le.LosNr_Extern
+GROUP_CONCAT(     CONCAT_WS(' - ', r.Raumnr, r.Raumbezeichnung)
+    ORDER BY r.Raumnr SEPARATOR ', '
+) as Raumnummern,
+le.LosNr_Extern 
 FROM tabelle_Vermerke v
 LEFT JOIN tabelle_vermerke_has_tabelle_räume v2r ON v.idtabelle_Vermerke = v2r.tabelle_vermerke_idTabelle_vermerke
 LEFT JOIN tabelle_räume r ON v2r.tabelle_räume_idTabelle_räume = r.idTABELLE_Räume
 LEFT JOIN tabelle_lose_extern le ON v.tabelle_lose_extern_idtabelle_Lose_Extern = le.idtabelle_Lose_Extern
 WHERE v.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe = ?
-GROUP BY v.idtabelle_Vermerke
+GROUP BY v.idtabelle_Vermerke 
 ORDER BY v.Erstellungszeit";
 
 $stmt = $mysqli->prepare($sql);
@@ -90,7 +92,7 @@ echo "<table class='table table-striped table-bordered table-responsive border b
         <th>LosID</th>
         <th>RaumID</th>
         <th>Los</th>
-        <th>RaumNr</th>
+        <th>Raum Nr</th>
         </tr></thead><tbody>";
 
 foreach ($allVermerke as $row) {
@@ -148,7 +150,7 @@ foreach ($allVermerke as $row) {
             <button type='button' id='{$vid}'
                     class='btn btn-outline-dark btn-sm'
                     value='changeVermerk'
-                    data-plain-text='{$plainTextAttr}'>
+                    data-plain-text='{$plainTextAttr}'> 
                 <i class='fas fa-pencil-alt'></i>
             </button>
             {$uploadLinkBtns}
@@ -406,13 +408,40 @@ echo "</tbody></table>";
     vermerkUntergruppenID = <?php echo json_encode(filter_input(INPUT_POST, 'vermerkUntergruppenID')); ?>;
 
     $(document).ready(function () {
+
+        // ── Custom Matcher für Select2: Wortweise Volltextsuche ─────────────────
+        function customMatcher(params, data) {
+            if (!data.text) {
+                return null;
+            }
+
+            var term = $.trim(params.term || '');
+            if (term === '') {
+                return data; // kein Suchbegriff -> alles anzeigen
+            }
+
+            var words = term.toLowerCase().split(/\s+/).filter(Boolean);
+            var text = data.text.toLowerCase();
+
+            var allWordsMatch = words.every(function (word) {
+                return text.indexOf(word) > -1;
+            });
+
+            return allWordsMatch ? data : null;
+        }
+
         $('#changeVermerkModal select').select2({
             width: '100%', placeholder: 'Bitte auswählen...', allowClear: true,
-            dropdownParent: $('#changeVermerkModal')
+            dropdownParent: $('#changeVermerkModal'),
+            matcher: customMatcher
         });
         $('#room').select2({
-            multiple: true, width: '100%', placeholder: 'Raum auswählen...', allowClear: true,
-            dropdownParent: $('#changeVermerkModal')
+            multiple: true,
+            width: '100%',
+            placeholder: 'Raum auswählen...',
+            allowClear: true,
+            dropdownParent: $('#changeVermerkModal'),
+            matcher: customMatcher
         });
 
         document.getElementById("buttonNewVermerk").style.visibility = "visible";

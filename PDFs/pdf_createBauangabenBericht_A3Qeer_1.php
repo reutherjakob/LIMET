@@ -5,12 +5,14 @@ check_login();
 
 include 'pdf_createBericht_MYPDFclass_A3Queer.php'; //require_once('../TCPDF-main/TCPDF-main/tcpdf.php'); is in class file
 include '_pdf_createBericht_utils.php';
-include 'pdf_createMTTabelle.php';
+include 'pdf_createMTTabelle_neu.php';
 include 'pdf_createBauangabenBericht_constDefinitions.php';
 
 $roomIDs = filter_input(INPUT_GET, 'roomID');
 $roomIDsArray = explode(",", $roomIDs);
 $Änderungsdatum = getValidatedDateFromURL();
+
+set_time_limit(600); // Sicherheitsnetz, falls doch mal knapp
 
 
 //     -----   FORMATTING VARIABLES    -----
@@ -280,10 +282,10 @@ foreach ($roomIDsArray as $valueOfRoomID) {
 ////     ------- BauStatik ---------
         $anm = trim($row['Anmerkung BauStatik'] ?? '');
         if ($anm !== '' && $anm !== 'Keine Anmerkung' && $anm !== 'keine Angaben MT') {
-            $pdf->Ln($horizontalSpacerLN);
+            $pdf->Ln($horizontalSpacerLN2);
             $Block_height = getAnmHeight($pdf, $row['Anmerkung BauStatik'], $SB);
             block_label_queer($block_header_w, $pdf, "Baustatik", $Block_height, $block_header_height, $SB);
-            $pdf->Ln(1);
+             $pdf->Ln($horizontalSpacerLN2);
             anmA3($pdf, $row['Anmerkung BauStatik'], $SB, $block_header_w);
             $pdf->Ln($horizontalSpacerLN);
         }
