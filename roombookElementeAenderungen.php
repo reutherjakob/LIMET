@@ -89,12 +89,16 @@ init_page_serversides(""); ?>
 
 <script>
 
+    // FIX: `this` (and the original arguments) must be forwarded to the debounced
+    // function. Calling `func(...args)` bare made `this` === window inside the
+    // handler, so `$(this).val()` blew up with "t.nodeName is undefined".
     function debounce(func, wait) {
         let timeout;
         return function executedFunction(...args) {
+            const context = this;
             const later = () => {
                 clearTimeout(timeout);
-                func(...args);
+                func.apply(context, args);
             };
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
@@ -102,13 +106,17 @@ init_page_serversides(""); ?>
     }
 
     $(document).ready(function () {
-        $('#dateSelect').val('2024-01-01');
+        const DEFAULT_DATE = '2024-01-01';
+
+        // FIX: seed oldValue so the first change is compared against something real
+        $('#dateSelect').val(DEFAULT_DATE).data('oldValue', DEFAULT_DATE);
+
         const rbChangeTable = $('#rbChangeTable').DataTable({
             ajax: {
                 url: 'getFilteredElementChanges.php',
                 type: 'POST',
                 data: function (d) {
-                    d.datum = $('#dateSelect').val();
+                    d.datum = $('#dateSelect').val() || DEFAULT_DATE;
                     return d;
                 }
             },
@@ -143,7 +151,7 @@ init_page_serversides(""); ?>
                     extend: 'searchBuilder',
                     text: '<i class="fas fa-search"></i>',
                     titleAttr: 'Suche konfigurieren',
-                    className: 'btn btn-sm btn-outline-dark bg-white'
+                    className: 'btn btn-sm btn-outline-dark bg-white text-dark'
                 },
                 {
                     extend: 'excel',
@@ -170,16 +178,25 @@ init_page_serversides(""); ?>
                     .addClass("btn btn-sm btn-outline-dark bg-white")
                     .appendTo('#CardHeaderSub');
 
-                // ✅ ganzen wrapper verschieben, nicht nur children (wichtig für colvis)
+                // ganzen wrapper verschieben, nicht nur children (wichtig für colvis)
                 $('#rbChangeTable_wrapper .dt-buttons')
                     .appendTo('#CardHeaderSub');
 
                 $('#dateSelect').on('change', debounce(function () {
-                    console.log("Reloading table with date:", $(this).val());
-                    if ($(this).val() !== $(this).data('oldValue')) {
-                        $(this).data('oldValue', $(this).val());
-                        rbChangeTable.ajax.reload(null, false);
+                    // FIX: reference the element explicitly instead of relying on `this`,
+                    // and ignore the empty intermediate values Firefox fires while typing.
+                    const $el = $('#dateSelect');
+                    const val = $el.val();
+
+                    if (!val) {
+                        return;
                     }
+                    if (val === $el.data('oldValue')) {
+                        return;
+                    }
+
+                    $el.data('oldValue', val);
+                    rbChangeTable.ajax.reload(null, false);
                 }, 1000));
             }
         });

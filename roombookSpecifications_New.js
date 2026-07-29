@@ -442,7 +442,8 @@ function html_2_plug_into_edit_cell(dataIdentifier) {
             "Gentechnikgesetz - S1",
             "Gentechnikgesetz - S2",
             "Gentechnikgesetz - S3",
-            "Gentechnikgesetz - S4"
+            "Gentechnikgesetz - S4",
+            "BSL1","BSL2","BSL3"
         ],
         "H6020": [
             " - ",

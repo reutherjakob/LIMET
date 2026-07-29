@@ -3,7 +3,12 @@ require_once 'utils/_utils.php';
 check_login();
 header('Content-Type: application/json');
 
-$datum = $_POST['datum'] ?? '2024-01-01';
+// FIX: `??` only catches a missing key — an empty string still passes through.
+// Firefox fires `change` mid-typing on <input type="date">, so validate the format.
+$datum = $_POST['datum'] ?? '';
+if ($datum === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $datum)) {
+    $datum = '2024-01-01';
+}
 
 function h($str)
 {
@@ -95,12 +100,12 @@ while ($change = $result->fetch_assoc()) {
 
     $anzahlChanges = count($changedFields);
 
-// ✅ ÄNDERUNG 1: Zeilen ohne Änderungen überspringen
+    // Zeilen ohne Änderungen überspringen
     if ($anzahlChanges === 0) {
         continue;
     }
 
-    // ✅ Option B: Löschungen erkennen und speziell darstellen
+    // Löschungen erkennen und speziell darstellen
     $isDeleted = ($change['Anzahl'] === null && $change['Standort'] === null && $change['Verwendung'] === null);
 
     $badgesHtml = '';

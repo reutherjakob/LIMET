@@ -89,6 +89,9 @@ function reloadProjectGallery() {
 
 $(document).ready(function () {
 
+
+
+
     $('#addProjectImage').on('click', () => $('#uploadProjectImageModal').modal('show'));
 
     $('#uploadProjectImageModal').on('hidden.bs.modal', function () {

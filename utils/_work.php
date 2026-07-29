@@ -1,7 +1,7 @@
 <?php
 
 require_once "_utils.php";
-init_page_serversides();
+init_page_serversides("x");
 
 ?>
 

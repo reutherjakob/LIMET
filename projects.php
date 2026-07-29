@@ -38,7 +38,7 @@
     unset($_SESSION["last_attempt_ip"]);
     $projectIcons = [
         "BBE" => "fas fa-church",
-        "GCP" => "fas fa-toilet-paper",
+        "GCP" => "fas fa-university",
         "VS Bertha von Suttner Zahnambulatorium" => "fas fa-tooth",
         "Cino 2.1" => "fas fa-smoking",
         "KFN-ZNA" => "fas fa-book-dead",
@@ -47,7 +47,6 @@
         "KFN-ARIO" => "fas fa-bomb",
         "KFN-ZNA Neubau Pavillon G1" => "fas fa-book-dead",
         "Chirurgie Graz BE5" => "fas fa-bone",
-        "Chirurgie Graz BE3" => "fas fa-bone",
         "ZVZ Nord" => "fas fa-teeth-open",
         "KLU-ANGIO-RV-KABEG" => "fas fa-x-ray",
         "Test_Projekt" => "fas fa-bong",
@@ -130,7 +129,9 @@
                           INNER JOIN tabelle_users_have_projects ON tabelle_projekte.idTABELLE_Projekte = tabelle_users_have_projects.tabelle_projekte_idTABELLE_Projekte 
                           WHERE tabelle_users_have_projects.User = ? 
                           ORDER BY tabelle_projekte.Interne_Nr");
-
+                        if ($username == "fux") {
+                            $username = "fuchs";
+                        }
                         $stmt->bind_param("s", $username);
                         $stmt->execute();
                         $result = $stmt->get_result();
