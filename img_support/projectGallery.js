@@ -55,58 +55,24 @@
     }
     
     // ── Gallery reload (AJAX, no full page reload) ────────────────────────────────
-    
+
     function reloadProjectGallery() {
         $.ajax({
-            url: _base + 'getProjectImages.php', type: 'POST',
-            success: function (data) {
-                const images = parseResponse(data);
-                if (!Array.isArray(images) && images.status !== undefined) return;
-                const imgs = Array.isArray(images) ? images : [];
-    
+            url: _base + 'gallery_grid.php', type: 'POST',
+            success: function (html) {
                 const gallery = document.getElementById('projectGallery');
-                const hint = document.getElementById('galleryEmptyHint');
                 if (!gallery) return;
-    
-                if (!imgs.length) {
-                    gallery.innerHTML = '';
-                    if (hint) hint.classList.remove('d-none');
-                    return;
-                }
-                if (hint) hint.classList.add('d-none');
-    
-                gallery.innerHTML = imgs.map(img => `
-                    <div class="position-relative" style="display:inline-block;">
-                        <div class="position-absolute top-0 end-0 m-1 d-flex gap-1" style="z-index:10;">
-                            <button type="button" class="btn btn-secondary btn-sm proj-meta-btn"
-                                    data-image-id="${img.idtabelle_Files}" title="Metadaten anzeigen" style="opacity:0.85;">
-                                <i class="fas fa-info-circle"></i>
-                            </button>
-                            <button type="button" class="btn btn-outline-success btn-sm proj-vermerk-btn"
-                                    data-image-id="${img.idtabelle_Files}" title="Vermerk zuordnen"
-                                    style="opacity:0.85; background:rgba(255,255,255,0.85);">
-                                <i class="fas fa-comment-alt"></i>
-                            </button>
-                            <button type="button" class="btn btn-outline-primary btn-sm proj-room-btn"
-                                    data-image-id="${img.idtabelle_Files}" title="Raum zuordnen"
-                                    style="opacity:0.85; background:rgba(255,255,255,0.85);">
-                                <i class="fas fa-door-open"></i>
-                            </button>
-                            <button type="button" class="btn btn-danger btn-sm project-gallery-delete-btn"
-                                    data-image-id="${img.idtabelle_Files}" title="Bild löschen" style="opacity:0.85;">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </div>
-                        <img src="https://limet-rb.com/Dokumente_RB/Images/${img.Name}"
-                             class="project-gallery-img rounded"
-                             style="height:160px; width:160px; object-fit:cover; cursor:zoom-in;" alt="Projektfoto">
-                    </div>`).join('');
-    
+                gallery.innerHTML = html;
+                const emptyHint = document.getElementById('galleryEmptyHint');
+                if (emptyHint) emptyHint.classList.toggle('d-none', gallery.children.length > 0);
                 initViewer(gallery, 'project-gallery-img');
-            }
+                if (window.applyGalleryFilter) window.applyGalleryFilter();
+            },
+            error: () => makeToaster('Galerie konnte nicht neu geladen werden.', false)
         });
     }
-    
+
+
     // ── Upload Modal ──────────────────────────────────────────────────────────────
     
     $(document).ready(function () {
@@ -211,9 +177,10 @@
         let pendingProjDeleteId = null;
     
         $(document).on('click', '.project-gallery-delete-btn', function (e) {
+
             e.stopPropagation();
             pendingProjDeleteId = $(this).data('image-id');
-    
+            confirm("Datei löschen?? ");
             $.ajax({
                 url: _base + 'deleteImage.php', type: 'POST',
                 data: {imageID: pendingProjDeleteId},
@@ -672,7 +639,7 @@
     
             if (gallery) initViewer(gallery, 'project-gallery-img');
         }
-    
+        window.applyGalleryFilter = applyGalleryFilter;
     
         const resetBtn = document.getElementById('galleryResetFilter');
         if (resetBtn) resetBtn.addEventListener('click', function () {
