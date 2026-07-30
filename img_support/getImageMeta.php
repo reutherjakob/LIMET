@@ -1,30 +1,33 @@
 <?php
-// getImageMeta.php – Metadaten eines Bildes (Timestamp, Projekt, Räume, Vermerke)
+// getImageMeta.php – Metadaten eines Bildes (Timestamp, Projekte, Räume, Vermerke, Geräte)
 require_once '../utils/_utils.php';
 check_login();
 
 header('Content-Type: application/json');
 
-$imageID = filter_input(INPUT_POST, 'imageID', FILTER_VALIDATE_INT);
+$imageID   = filter_input(INPUT_POST, 'imageID', FILTER_VALIDATE_INT);
 $projectID = (int)($_SESSION['projectID'] ?? 0);
 
-if (!$imageID || !$projectID) {
+if (!$imageID) {
     echo json_encode(['status' => 'error', 'msg' => 'Ungültige Parameter']);
     exit;
 }
 
 $mysqli = utils_connect_sql();
 
-// ── Basisdaten: Timestamp + Projektname ──────────────────────────────────────
+// ── Basisdaten: Timestamp + Ursprungsprojekt ─────────────────────────────────
+// Hinweis: Projekt-Restriktion entfällt bewusst, damit die Info auch für
+// Bilder aus anderen Projekten (Karte "Fotos anderer Projekte") funktioniert.
 $stmt = $mysqli->prepare("
-    SELECT f.Timestamp, f.Name, p.Projektname
+    SELECT f.Timestamp, f.Name,
+           f.tabelle_projekte_idTABELLE_Projekte AS originID,
+           p.Projektname AS originProjekt
     FROM tabelle_Files f
-    INNER JOIN tabelle_projekte p
+    LEFT JOIN tabelle_projekte p
         ON f.tabelle_projekte_idTABELLE_Projekte = p.idTABELLE_Projekte
     WHERE f.idtabelle_Files = ?
-      AND f.tabelle_projekte_idTABELLE_Projekte = ?
 ");
-$stmt->bind_param('ii', $imageID, $projectID);
+$stmt->bind_param('i', $imageID);
 $stmt->execute();
 $base = $stmt->get_result()->fetch_assoc();
 $stmt->close();
@@ -35,9 +38,38 @@ if (!$base) {
     exit;
 }
 
+// ── Alle Projekte (Ursprung + zusätzliche Zuordnungen) ───────────────────────
+$projekte = [];
+$originID = (int)$base['originID'];
+$projekte[] = [
+    'projektID' => $originID,
+    'name'      => $base['originProjekt'] ?? ('Projekt #' . $originID),
+    'origin'    => true,
+    'current'   => ($originID === $projectID),
+];
+$stmt = $mysqli->prepare("
+    SELECT p.idTABELLE_Projekte AS projektID, p.Projektname
+    FROM tabelle_Files_has_tabelle_Projekte fp
+    INNER JOIN tabelle_projekte p ON p.idTABELLE_Projekte = fp.tabelle_projekte_idTABELLE_Projekte
+    WHERE fp.tabelle_Files_idtabelle_Files = ?
+    ORDER BY p.Projektname
+");
+$stmt->bind_param('i', $imageID);
+$stmt->execute();
+foreach ($stmt->get_result()->fetch_all(MYSQLI_ASSOC) as $p) {
+    $pid = (int)$p['projektID'];
+    $projekte[] = [
+        'projektID' => $pid,
+        'name'      => $p['Projektname'] ?? ('Projekt #' . $pid),
+        'origin'    => false,
+        'current'   => ($pid === $projectID),
+    ];
+}
+$stmt->close();
+
 // ── Räume ────────────────────────────────────────────────────────────────────
 $stmt = $mysqli->prepare("
-SELECT r.idTABELLE_Räume AS raumID, r.Raumnr, r.Raumbezeichnung, r.`Raumbereich Nutzer`
+    SELECT r.idTABELLE_Räume AS raumID, r.Raumnr, r.Raumbezeichnung, r.`Raumbereich Nutzer`
     FROM tabelle_Files_has_tabelle_Raeume fhr
     INNER JOIN tabelle_räume r ON fhr.tabelle_idRaeume = r.idTABELLE_Räume
     WHERE fhr.tabelle_idfFile = ?
@@ -65,15 +97,31 @@ $stmt->execute();
 $vermerke = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 
+// ── Geräte ───────────────────────────────────────────────────────────────────
+$stmt = $mysqli->prepare("
+    SELECT g.idTABELLE_Geraete AS geraetID, g.Typ, h.Hersteller
+    FROM tabelle_Files_has_tabelle_Geraete fhg
+    INNER JOIN tabelle_geraete g ON fhg.tabelle_idGeraet = g.idTABELLE_Geraete
+    LEFT JOIN tabelle_hersteller h
+        ON h.idtabelle_hersteller = g.tabelle_hersteller_idtabelle_hersteller
+    WHERE fhg.tabelle_idFile = ?
+    ORDER BY h.Hersteller, g.Typ
+");
+$stmt->bind_param('i', $imageID);
+$stmt->execute();
+$geraete = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
+
 $mysqli->close();
 
 echo json_encode([
-    'status' => 'ok',
-    'id' => $imageID,
-    //  'name' => $base['Name'],
+    'status'    => 'ok',
+    'id'        => $imageID,
     'timestamp' => $base['Timestamp'],
-    'projekt' => $base['Projektname'],
-    'raeume' => $raeume,
-    'vermerke' => $vermerke,
+    'projekt'   => $base['originProjekt'],   // Rückwärtskompatibel: Ursprungsprojekt-Name
+    'projekte'  => $projekte,                // NEU: alle zugeordneten Projekte
+    'raeume'    => $raeume,
+    'vermerke'  => $vermerke,
+    'geraete'   => $geraete,                 // NEU
 ]);
 ?>

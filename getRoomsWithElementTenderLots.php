@@ -405,32 +405,8 @@ $mysqli->close();
         });
 
 
-        $("button[value='openComment']").click(function () {        //Kommentar anzeigen
-            let ID = this.id;
-            $.ajax({
-                url: "getComment.php",
-                type: "POST",
-                data: {"commentID": ID},
-                success: function (data) {
-                    $("#modalKurzbeschreibung").html(data);
-                    $('#commentModal').modal('show');
-                }
-            });
-        });
 
-        $("button[value='saveComment']").click(function () {
-            let comment = $("#modalKurzbeschreibung").val();
-            alert(comment);
-            $.ajax({
-                url: "saveRoombookComment.php",
-                type: "POST",
-                data: {"comment": comment},
-                success: function (data) {
-                    alert(data);
-                    $('#commentModal').modal('hide');
-                }
-            });
-        });
+
     });
 
 

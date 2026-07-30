@@ -3,108 +3,88 @@
  * card_load_image_preview.php – Projektgalerie (Single Source of Truth)
  *
  * Features:
- *  - Filter: Raum, Vermerk-Gruppe, "ohne Zuordnung", Freitext
+ *  - Karte 1: Fotos DIESES Projekts (Ursprungsprojekt ODER zugeordnet)
+ *  - Karte 2: Fotos ANDERER Projekte (mit "zu Projekt übernehmen")
+ *  - Filter: Raum, Vermerk-Gruppe, Gerät, "ohne Zuordnung", Freitext
  *  - Sortierung: Neueste / Älteste / Name A→Z
- *  - Hover-Overlay mit Aktions-Buttons
- *  - Badges: Raum-Anzahl, Vermerk-Anzahl
- *  - Bulk-Modus: Raum zuordnen, Löschen
- *  - Upload, Delete, Room-Modal, Vermerk-Modal Handler
- *  - reloadProjectGallery() als globale Funktion
+ *  - Hover-Overlay mit Aktions-Buttons (Info, Zoom, Löschen/Entfernen,
+ *    Raum, Vermerk, Gerät, Projekt-Zuordnung)
+ *  - Badges: Raum-, Vermerk-, Geräte-Anzahl
+ *  - Bulk-Modus (nur eigenes Projekt): Raum zuordnen, Löschen
+ *  - reloadProjectGallery() als globale Funktion (JS)
  */
 global $mysqli;
 $projectID = (int)($projectID ?? $_SESSION['projectID'] ?? 0);
 
-// ── Alle Bilder mit Räumen & Vermerken laden ─────────────────────────────────
+require_once __DIR__ . '/_gallery_helpers.php';
+
+// ── Bilder DIESES Projekts (Ursprung ODER zugeordnet) ────────────────────────
 $stmt = $mysqli->prepare("
-    SELECT f.`idtabelle_Files`, f.`Name`, f.`Timestamp`
+    SELECT f.`idtabelle_Files`, f.`Name`, f.`Timestamp`,
+           f.`tabelle_projekte_idTABELLE_Projekte` AS originID
     FROM `LIMET_RB`.`tabelle_Files` f
-    WHERE f.`tabelle_projekte_idTABELLE_Projekte` = ?
-      AND f.`tabelle_filetype_id` = 1
+    WHERE f.`tabelle_filetype_id` = 1
+      AND (
+            f.`tabelle_projekte_idTABELLE_Projekte` = ?
+         OR EXISTS (
+                SELECT 1 FROM `LIMET_RB`.`tabelle_Files_has_tabelle_Projekte` fp
+                WHERE fp.`tabelle_Files_idtabelle_Files` = f.`idtabelle_Files`
+                  AND fp.`tabelle_projekte_idTABELLE_Projekte` = ?
+            )
+      )
     ORDER BY f.`Timestamp` DESC
 ");
-$stmt->bind_param('i', $projectID);
+$stmt->bind_param('ii', $projectID, $projectID);
 $stmt->execute();
-$allImages = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$ownImages = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 
-$raumByImage = [];
-$vermerkByImage = [];
-$allRaeume = [];
-$allGruppen = [];
+// ── Bilder ANDERER Projekte (nicht im aktuellen Projekt) ─────────────────────
+$stmt = $mysqli->prepare("
+    SELECT f.`idtabelle_Files`, f.`Name`, f.`Timestamp`,
+           f.`tabelle_projekte_idTABELLE_Projekte` AS originID,
+           p.`Projektname`
+    FROM `LIMET_RB`.`tabelle_Files` f
+    LEFT JOIN `LIMET_RB`.`tabelle_projekte` p
+        ON p.`idTABELLE_Projekte` = f.`tabelle_projekte_idTABELLE_Projekte`
+    WHERE f.`tabelle_filetype_id` = 1
+      AND f.`tabelle_projekte_idTABELLE_Projekte` <> ?
+      AND NOT EXISTS (
+            SELECT 1 FROM `LIMET_RB`.`tabelle_Files_has_tabelle_Projekte` fp
+            WHERE fp.`tabelle_Files_idtabelle_Files` = f.`idtabelle_Files`
+              AND fp.`tabelle_projekte_idTABELLE_Projekte` = ?
+        )
+    ORDER BY p.`Projektname`, f.`Timestamp` DESC
+");
+$stmt->bind_param('ii', $projectID, $projectID);
+$stmt->execute();
+$otherImages = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
 
-if (!empty($allImages)) {
-    $imageIDs = array_column($allImages, 'idtabelle_Files');
-    $placeholders = implode(',', array_fill(0, count($imageIDs), '?'));
-    $types = str_repeat('i', count($imageIDs));
+// ── Relationen laden (Räume/Vermerke/Geräte) ─────────────────────────────────
+$ownRel   = gallery_load_relations($mysqli, array_column($ownImages,   'idtabelle_Files'));
+$otherRel = gallery_load_relations($mysqli, array_column($otherImages, 'idtabelle_Files'));
 
-    $stmtR = $mysqli->prepare("
-        SELECT fhr.tabelle_idfFile AS fileID,
-               r.idTABELLE_Räume   AS raumID,
-               r.Raumnr, r.Raumbezeichnung,
-               r.`Raumbereich Nutzer` AS RaumbereichNutzer
-        FROM tabelle_Files_has_tabelle_Raeume fhr
-        INNER JOIN tabelle_räume r ON fhr.tabelle_idRaeume = r.idTABELLE_Räume
-        WHERE fhr.tabelle_idfFile IN ($placeholders)
-        ORDER BY r.Raumnr
-    ");
-    $stmtR->bind_param($types, ...$imageIDs);
-    $stmtR->execute();
-    foreach ($stmtR->get_result()->fetch_all(MYSQLI_ASSOC) as $row) {
-        $raumByImage[$row['fileID']][] = $row;
-        $allRaeume[$row['raumID']] = $row['Raumnr'] . ' – ' . $row['Raumbezeichnung'];
-    }
-    $stmtR->close();
-    asort($allRaeume);
-
-    $stmtV = $mysqli->prepare("
-        SELECT fhv.tabelle_Files_idtabelle_Files AS fileID,
-               v.idtabelle_Vermerke,
-               LEFT(v.Vermerktext, 60) AS Kurztext,
-               vg.idtabelle_Vermerkgruppe,
-               vg.Gruppenname, vg.Datum
-        FROM tabelle_Files_has_tabelle_Vermerke fhv
-        INNER JOIN tabelle_Vermerke v
-            ON fhv.tabelle_Vermerke_idtabelle_Vermerke = v.idtabelle_Vermerke
-        INNER JOIN tabelle_Vermerkuntergruppe vu
-            ON v.tabelle_Vermerkuntergruppe_idtabelle_Vermerkuntergruppe = vu.idtabelle_Vermerkuntergruppe
-        INNER JOIN tabelle_Vermerkgruppe vg
-            ON vu.tabelle_Vermerkgruppe_idtabelle_Vermerkgruppe = vg.idtabelle_Vermerkgruppe
-        WHERE fhv.tabelle_Files_idtabelle_Files IN ($placeholders)
-        ORDER BY vg.Datum DESC
-    ");
-    $stmtV->bind_param($types, ...$imageIDs);
-    $stmtV->execute();
-    foreach ($stmtV->get_result()->fetch_all(MYSQLI_ASSOC) as $row) {
-        $vermerkByImage[$row['fileID']][] = $row;
-        $allGruppen[$row['idtabelle_Vermerkgruppe']] =
-            $row['Gruppenname'] . ($row['Datum'] ? ' (' . $row['Datum'] . ')' : '');
-    }
-    $stmtV->close();
-}
-
-$imagesJson = [];
-foreach ($allImages as $img) {
-    $id = $img['idtabelle_Files'];
-    $img['raeume'] = $raumByImage[$id] ?? [];
-    $img['vermerke'] = $vermerkByImage[$id] ?? [];
-    $imagesJson[] = $img;
-}
+// Filter-Dropdowns basieren auf den Bildern DIESES Projekts
+$allRaeume  = $ownRel['allRaeume'];
+$allGruppen = $ownRel['allGruppen'];
+$allGeraete = $ownRel['allGeraete'];
 ?>
 
+<!-- ══════════════════════════════════════════════════════════════════════════
+     KARTE 1 – Fotos dieses Projekts
+     ══════════════════════════════════════════════════════════════════════════ -->
 <div class="mt-1 card" id="projGalleryCard">
 
-    <!-- ── Card Header ─────────────────────────────────────────────────────── -->
     <div class="card-header">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <b><i class="fas fa-images me-1"></i> Projektfotos
-                <span class="badge bg-secondary ms-1" id="galleryCntBadge"><?= count($allImages) ?></span>
+                <span class="badge bg-secondary ms-1" id="galleryCntBadge"><?= count($ownImages) ?></span>
             </b>
             <div class="d-flex gap-2 align-items-center flex-wrap">
-                <!-- Bulk-Toggle -->
                 <button type="button" id="bulkToggleBtn" class="btn btn-outline-secondary btn-sm">
                     <i class="fas fa-check-square me-1"></i> Auswählen
                 </button>
-                <!-- Bulk-Aktionen -->
                 <div id="bulkActions" class="d-none d-flex gap-1 align-items-center">
                     <span class="text-muted small me-1" id="bulkCountLabel">0 gewählt</span>
                     <button type="button" id="bulkRoomBtn" class="btn btn-outline-primary btn-sm" disabled>
@@ -118,14 +98,13 @@ foreach ($allImages as $img) {
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <!-- Bild hinzufügen -->
                 <button type="button" id="addProjectImage" class="btn btn-outline-dark btn-sm">
                     <i class="fas fa-plus"></i> Bild hinzufügen
                 </button>
             </div>
         </div>
 
-        <!-- ── Filter-Toolbar ─────────────────────────────────────────────── -->
+        <!-- Filter-Toolbar -->
         <div class="mt-2 d-flex flex-wrap gap-2 align-items-center" id="galleryFilterBar">
             <select id="galleryRaumFilter" class="form-select form-select-sm" style="max-width:200px;">
                 <option value="">Alle Räume</option>
@@ -141,6 +120,13 @@ foreach ($allImages as $img) {
                     <option value="<?= (int)$gId ?>"><?= htmlspecialchars($gLabel) ?></option>
                 <?php endforeach; ?>
             </select>
+            <select id="galleryGeraetFilter" class="form-select form-select-sm" style="max-width:220px;">
+                <option value="">Alle Geräte</option>
+                <option value="__none__">— Kein Gerät zugeordnet</option>
+                <?php foreach ($allGeraete as $gId => $gLabel): ?>
+                    <option value="<?= (int)$gId ?>"><?= htmlspecialchars($gLabel) ?></option>
+                <?php endforeach; ?>
+            </select>
             <select id="gallerySortSelect" class="form-select form-select-sm" style="max-width:160px;">
                 <option value="newest">Neueste zuerst</option>
                 <option value="oldest">Älteste zuerst</option>
@@ -152,107 +138,81 @@ foreach ($allImages as $img) {
         </div>
     </div>
 
-    <!-- ── Card Body ───────────────────────────────────────────────────────── -->
     <div class="card-body">
-        <p class="text-muted fst-italic <?= empty($allImages) ? '' : 'd-none' ?>" id="galleryEmptyHint">
+        <p class="text-muted fst-italic <?= empty($ownImages) ? '' : 'd-none' ?>" id="galleryEmptyHint">
             Noch keine Fotos vorhanden.
         </p>
         <p class="text-muted fst-italic d-none small" id="galleryNoResultHint">
             <i class="fas fa-filter me-1"></i> Keine Bilder entsprechen den Filterkriterien.
         </p>
 
-        <div id="projectGallery" class="row g-2">
-            <?php foreach ($allImages as $img):
-                $id = (int)$img['idtabelle_Files'];
-                $raeume = $raumByImage[$id] ?? [];
-                $vermerke = $vermerkByImage[$id] ?? [];
-                $hasRoom = !empty($raeume);
-                $hasVermerk = !empty($vermerke);
-                ?>
-                <div class="col-6 col-sm-4 col-md-3 col-lg-2 gallery-item"
-                     data-image-id="<?= $id ?>"
-                     data-name="<?= htmlspecialchars(strtolower($img['Name'])) ?>"
-                     data-timestamp="<?= htmlspecialchars($img['Timestamp']) ?>"
-                     data-raumids="<?= implode(',', array_column($raeume, 'raumID')) ?>"
-                     data-vermerkgruppenids="<?= implode(',', array_unique(array_column($vermerke, 'idtabelle_Vermerkgruppe'))) ?>">
-
-                    <div class="position-relative gallery-thumb-wrap">
-                        <!-- Bulk Checkbox -->
-                        <div class="position-absolute top-0 start-0 m-1 d-none bulk-checkbox-wrap" style="z-index:20;">
-                            <input type="checkbox" class="form-check-input gallery-bulk-cb"
-                                   data-image-id="<?= $id ?>" style="width:1.2em;height:1.2em;">
-                        </div>
-
-                        <!-- Hover-Overlay -->
-                        <div class="gallery-overlay position-absolute top-0 start-0 w-100 h-100
-                                    d-flex flex-column justify-content-between p-1 pe-none"
-                             style="z-index:10; opacity:0; transition:opacity .18s;
-                                     background:rgba(0,0,0,0.38); border-radius:.375rem;">
-
-                            <div class="d-flex justify-content-between pe-auto">
-                                <div class="d-flex gap-1">
-                                    <button type="button" class="btn btn-secondary btn-sm proj-meta-btn p-1"
-                                            data-image-id="<?= $id ?>" title="Info">
-                                        <i class="fas fa-info-circle"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-light btn-sm proj-zoom-btn p-1"
-                                            data-image-id="<?= $id ?>" title="Vergrößern">
-                                        <i class="fas fa-search-plus"></i>
-                                    </button>
-                                </div>
-                                <button type="button" class="btn btn-danger btn-sm project-gallery-delete-btn p-1"
-                                        data-image-id="<?= $id ?>" title="Löschen">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </div>
-
-                            <div class="d-flex justify-content-end gap-1 pe-auto">
-                                <button type="button" class="btn btn-outline-light btn-sm proj-vermerk-btn p-1"
-                                        data-image-id="<?= $id ?>" title="Vermerk zuordnen">
-                                    <i class="fas fa-comment-alt"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-light btn-sm proj-room-btn p-1"
-                                        data-image-id="<?= $id ?>" title="Raum zuordnen">
-                                    <i class="fas fa-door-open"></i>
-                                </button>
-                            </div>
-
-
-                        </div>
-
-                        <!-- Bild -->
-                        <img src="https://limet-rb.com/Dokumente_RB/Images/<?= htmlspecialchars($img['Name']) ?>"
-                             class="project-gallery-img img-fluid rounded w-100"
-                             style="height:130px; object-fit:cover; cursor:zoom-in; display:block;"
-                             alt="Projektfoto">
-
-                        <!-- Badges -->
-                        <div class="d-flex gap-1 flex-wrap mt-1" style="min-height:1.4rem;">
-                            <?php if ($hasRoom): ?>
-                                <span class="badge bg-primary" style="font-size:.6rem;"
-                                      title="<?= htmlspecialchars(implode(', ', array_column($raeume, 'Raumnr'))) ?>">
-                            <i class="fas fa-door-open"></i> <?= count($raeume) ?>
-                        </span>
-                            <?php endif; ?>
-                            <?php if ($hasVermerk): ?>
-                                <span class="badge bg-success" style="font-size:.6rem;"
-                                      title="<?= htmlspecialchars(implode(', ', array_unique(array_column($vermerke, 'Gruppenname')))) ?>">
-                            <i class="fas fa-comment-alt"></i> <?= count($vermerke) ?>
-                        </span>
-                            <?php endif; ?>
-                            <?php if (!$hasRoom && !$hasVermerk): ?>
-                                <span class="badge bg-light text-muted border" style="font-size:.6rem;">
-                            <i class="fas fa-unlink"></i> ohne
-                        </span>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach; ?>
+        <div id="projectGallery" class="row g-2 gallery-grid">
+            <?php foreach ($ownImages as $img):
+                $id      = (int)$img['idtabelle_Files'];
+                $isOwned = ((int)$img['originID'] === $projectID);
+                gallery_render_item(
+                    $img,
+                    $ownRel['raum'][$id]    ?? [],
+                    $ownRel['vermerk'][$id] ?? [],
+                    $ownRel['geraet'][$id]  ?? [],
+                    'own',
+                    $isOwned
+                );
+            endforeach; ?>
         </div>
 
         <div class="mt-2 text-muted small" id="galleryCountInfo">
-            <?= count($allImages) ?> Bild<?= count($allImages) !== 1 ? 'er' : '' ?>
+            <?= count($ownImages) ?> Bild<?= count($ownImages) !== 1 ? 'er' : '' ?>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     KARTE 2 – Fotos anderer Projekte
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="mt-3 card" id="projGalleryOtherCard">
+    <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <b><i class="fas fa-photo-video me-1"></i> Fotos anderer Projekte
+                <span class="badge bg-secondary ms-1" id="galleryOtherCntBadge"><?= count($otherImages) ?></span>
+            </b>
+            <div class="input-group input-group-sm" style="max-width:280px;">
+                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                <input type="text" id="galleryOtherSearch" class="form-control form-control-sm"
+                       placeholder="Suche (Dateiname / Projekt)…">
+            </div>
+        </div>
+        <p class="text-muted small mb-0 mt-1">
+            <i class="fas fa-info-circle me-1"></i>
+            Bilder aus anderen Projekten – mit <i class="fas fa-plus"></i> „Übernehmen"
+            zusätzlich diesem Projekt zuordnen.
+        </p>
+    </div>
+    <div class="card-body">
+        <p class="text-muted fst-italic <?= empty($otherImages) ? '' : 'd-none' ?>" id="galleryOtherEmptyHint">
+            Keine Fotos in anderen Projekten vorhanden.
+        </p>
+        <p class="text-muted fst-italic d-none small" id="galleryOtherNoResultHint">
+            <i class="fas fa-filter me-1"></i> Keine Bilder entsprechen der Suche.
+        </p>
+
+        <div id="projectGalleryOther" class="row g-2 gallery-grid">
+            <?php foreach ($otherImages as $img):
+                $id = (int)$img['idtabelle_Files'];
+                gallery_render_item(
+                    $img,
+                    $otherRel['raum'][$id]    ?? [],
+                    $otherRel['vermerk'][$id] ?? [],
+                    $otherRel['geraet'][$id]  ?? [],
+                    'other',
+                    false,
+                    (string)($img['Projektname'] ?? '')
+                );
+            endforeach; ?>
+        </div>
+
+        <div class="mt-2 text-muted small" id="galleryOtherCountInfo">
+            <?= count($otherImages) ?> Bild<?= count($otherImages) !== 1 ? 'er' : '' ?>
         </div>
     </div>
 </div>
@@ -272,7 +232,7 @@ foreach ($allImages as $img) {
                 <select id="bulkRoomSelect" class="form-select form-select-sm">
                     <option value="">— Raum wählen —</option>
                     <?php
-                    $stmtRAll = $mysqli->prepare(" 
+                    $stmtRAll = $mysqli->prepare("
                         SELECT idTABELLE_Räume, Raumnr, Raumbezeichnung, `Raumbereich Nutzer`
                         FROM tabelle_räume
                         WHERE tabelle_projekte_idTABELLE_Projekte = ?

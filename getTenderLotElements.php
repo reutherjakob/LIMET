@@ -119,7 +119,7 @@ $mysqli->close();
                 const id = trigger.id;
 
                 $.ajax({
-                    url: 'saveRoomElementComment.php',
+                    url: 'saveTenderComment.php',
                     data: { comment: newText, id: id },
                     type: 'POST',
                     success: function(data) {

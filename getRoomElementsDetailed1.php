@@ -196,8 +196,8 @@ include "modal_elementHistory.html";
             trigger.dataset.description = newText;
             const id = trigger.id;
             $.ajax({
-                url: 'saveRoomElementComment.php',
-                data: {comment: newText, id:id},
+                url: 'saveRoombookComment.php',
+                data: {comment: newText, id: id},
                 type: 'POST',
                 success(data) {
                     makeToaster(data.trim(), true);
@@ -246,9 +246,6 @@ include "modal_elementHistory.html";
         }
         return true;
     }
-
-
-    // Replace the $('#hideZeroRows').off(...).on(...) block inside initHideZero() with this:
 
     function initHideZero() {
         // Remove any previously pushed filter to avoid duplicates
@@ -449,9 +446,41 @@ include "modal_elementHistory.html";
             });
         });
 
+        function getOpenPopoverComment() {
+            const ta = document.querySelector('.custom-popover textarea.popover-textarea');
+            return (ta && ta.offsetParent !== null) ? ta.value : null; // nur wenn sichtbar
+        }
+
+        let pendingPopoverComment = null;
+        document.addEventListener('mousedown', (e) => {
+            if (e.target.closest("button[value='saveElement']")) {
+                pendingPopoverComment = getOpenPopoverComment();
+            }
+        }, true);
+
         $("button[value='saveElement']").click(function () {
             const id = this.id;
-            const comment = $(`.comment-btn[id='${id}']`).attr('data-description');
+            const $commentBtn = $(`.comment-btn[id='${id}']`);
+
+            // beim mousedown gesicherten Popover-Text nehmen (falls Popover offen war)
+            const openComment = pendingPopoverComment;
+            pendingPopoverComment = null;
+
+            let comment;
+            if (openComment !== null) {
+                comment = openComment;
+                $commentBtn.attr('data-description', comment).data('description', comment);
+                const empty = comment.trim() === '';
+                $commentBtn
+                    .toggleClass('btn-outline-secondary', empty)
+                    .toggleClass('btn-outline-dark', !empty)
+                    .find('i')
+                    .toggleClass('fa-comment-slash', empty)
+                    .toggleClass('fa-comment', !empty);
+            } else {
+                comment = $commentBtn.attr('data-description');
+            }
+
             const amount = $(`#amount${id}`).val();
             const variantenID = $(`#variante${id}`).val();
             const bestand = $(`#bestand${id}`).val();
@@ -471,6 +500,7 @@ include "modal_elementHistory.html";
                 },
             });
         });
+
     }
 
     function addRememberSortingControl() {

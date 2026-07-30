@@ -64,6 +64,23 @@ if (file_exists($targetFile) && !unlink($targetFile)) {
     exit;
 }
 
+// Verbleibende Verknüpfungen aufräumen (Räume / Geräte / Zusatz-Projekte),
+// damit keine verwaisten Einträge zurückbleiben.
+$stmtR = $mysqli->prepare("DELETE FROM `LIMET_RB`.`tabelle_Files_has_tabelle_Raeume` WHERE `tabelle_idfFile` = ?");
+$stmtR->bind_param('i', $imageID);
+$stmtR->execute();
+$stmtR->close();
+
+$stmtG = $mysqli->prepare("DELETE FROM `LIMET_RB`.`tabelle_Files_has_tabelle_Geraete` WHERE `tabelle_idFile` = ?");
+$stmtG->bind_param('i', $imageID);
+$stmtG->execute();
+$stmtG->close();
+
+$stmtP = $mysqli->prepare("DELETE FROM `LIMET_RB`.`tabelle_Files_has_tabelle_Projekte` WHERE `tabelle_Files_idtabelle_Files` = ?");
+$stmtP->bind_param('i', $imageID);
+$stmtP->execute();
+$stmtP->close();
+
 // DB-Eintrag löschen
 $stmtDel = $mysqli->prepare("DELETE FROM `LIMET_RB`.`tabelle_Files` WHERE `idtabelle_Files` = ?");
 $stmtDel->bind_param('i', $imageID);

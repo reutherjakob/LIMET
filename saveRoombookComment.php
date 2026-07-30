@@ -3,8 +3,9 @@
 require_once 'utils/_utils.php';
 check_login();
 
-$comment = getPostString("comment");
-$roombookID = $_SESSION("roombookID");
+
+$roombookID = getPostInt('id');
+$comment = getPostString('comment');
 
 if ($comment !== "" && $roombookID !== 0) {
     $mysqli = utils_connect_sql();

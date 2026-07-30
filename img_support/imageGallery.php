@@ -40,6 +40,8 @@ include_once "modal_delete_img.php";
 include_once "modal_metadaten.php";
 include_once "modal_img_room.php";
 include_once "modal_img_vermerke.php";
+include_once "modal_img_geraete.php";
+include_once "modal_img_project.php";
 $mysqli-> close();
 ?>
 

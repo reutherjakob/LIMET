@@ -319,11 +319,10 @@ $mysqli->close();
 
         CustomPopover.init('.comment-btn', {
             onSave: function (trigger, newText) {
-                // console.log("Custompopover: ", newText);
                 trigger.dataset.description = newText;
                 let id = trigger.id;
                 $.ajax({
-                    url: "saveRoomElementComment.php",
+                    url: "saveRoombookComment.php",
                     data: {
                         "comment": newText,
                         "id": id
@@ -349,7 +348,6 @@ $mysqli->close();
         });
 
 
-// Logik zentral, wird von change UND button genutzt
         function setAlleVarianten() {
             let neueVariante = $("#massenVariante").val();
             if (!neueVariante) {
@@ -363,15 +361,11 @@ $mysqli->close();
             makeToaster("Alle Varianten auf '" + variantName + "' gesetzt!", true);
         }
 
-// Sofort bei Auswahl im Dropdown
         $(document).off('change.mvSelect').on('change.mvSelect', '#massenVariante', function () {
             setAlleVarianten();
         });
 
-
-// Alle Varianten massenhaft speichern
         let massenSpeichernRunning = false;
-
         $(document).off('click.mvSpeichern').on('click.mvSpeichern', '#massenSpeichern', function () {
             // Re-Entry verhindern
             if (massenSpeichernRunning) {
@@ -424,9 +418,43 @@ $mysqli->close();
             });
         });
 
+// Liest den Text aus dem aktuell offenen Kommentar-Popover
+        function getOpenPopoverComment() {
+            const ta = document.querySelector('.custom-popover textarea.popover-textarea');
+            return (ta && ta.offsetParent !== null) ? ta.value : null; // nur wenn sichtbar
+        }
+
+// Popover schließt evtl. beim Klick auf den Save-Button, BEVOR der click-Handler
+// feuert. Deshalb den Text schon beim mousedown (capture-Phase) sichern.
+        let pendingPopoverComment = null;
+        document.addEventListener('mousedown', (e) => {
+            if (e.target.closest("button[value='saveElement']")) {
+                pendingPopoverComment = getOpenPopoverComment();
+            }
+        }, true);
         $(document).off('click.saveEl').on('click.saveEl', "button[value='saveElement']", function () {
             let id = this.id;
-            let comment = $(".comment-btn[id='" + id + "']").attr('data-description');
+            let $commentBtn = $(".comment-btn[id='" + id + "']");
+
+            // beim mousedown gesicherten Popover-Text nehmen (falls Popover offen war)
+            let openComment = pendingPopoverComment;
+            pendingPopoverComment = null;
+
+            let comment;
+            if (openComment !== null) {
+                comment = openComment;
+                $commentBtn.attr('data-description', comment).data('description', comment);
+                let empty = comment.trim() === '';
+                $commentBtn
+                    .toggleClass('btn-outline-secondary', empty)
+                    .toggleClass('btn-outline-dark', !empty)
+                    .find('i')
+                    .toggleClass('fa-comment-slash', empty)
+                    .toggleClass('fa-comment', !empty);
+            } else {
+                comment = $commentBtn.attr('data-description');
+            }
+
             let amount = $("#amount" + id).val();
             let variantenID = $("#variante" + id).val();
             let bestand = $("#bestand" + id).val();
@@ -445,7 +473,6 @@ $mysqli->close();
                 });
             }
         });
-
     });
 </script>
 </body>

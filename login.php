@@ -153,9 +153,9 @@ try {
         safeRedirect('projects.php');
 
     } else {
-        if ($username == "fuchs") {
-            $username = "fux";
-        }
+        //if ($username == "fuchs") {
+        //    $username = "fux";
+        //}
         if (!$mysqli) return false;
         $check = $mysqli->prepare("SELECT id, password, role FROM tabelle_users WHERE username = ?");
         $check->bind_param("s", $username);
@@ -164,14 +164,14 @@ try {
 
         $check->bind_result($id, $passwordHash, $role);
 
-        #$hashedPassword =  md5($password);
+        $hashedPassword =  md5($password);
 
         if (!empty($userInNewSystem['password']) && strlen($userInNewSystem['password']) > 32) {
             if (password_verify($password, $userInNewSystem['password'])) {
                 session_regenerate_id(true);
 
                 $_SESSION["username"] = $username;
-                $_SESSION["password"] = $userInNewSystem['password'];; // $hashedPassword -  für alte  SQL-Connection nötig
+                $_SESSION["password"] = $hashedPassword  ;//-  für alte  SQL-Connection nötig
                 unset($_SESSION['login_attempts'][$username]);
                 unset($_SESSION['last_attempt'][$username]);
 
