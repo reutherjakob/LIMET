@@ -135,8 +135,8 @@ checkRateLimit($_SERVER['REMOTE_ADDR']);
 $hashedPassword = md5($password);
 
 try {
-    $mysqli = new mysqli('localhost', $username, $hashedPassword, 'LIMET_RB');
-    // $mysqli = getPrivilegedDbConnection();   //use if hashed pw are removed
+    #$mysqli = new mysqli('localhost', $username, $hashedPassword, 'LIMET_RB');
+    $mysqli = getPrivilegedDbConnection();   //use if hashed pw are removed
     if ($mysqli->connect_error) {
         throw new Exception("Connection failed");
     }
@@ -146,13 +146,16 @@ try {
         migrateUserToNewSystem($username, $password, $mysqli);
         unset($_SESSION['login_attempts'][$username]);
         unset($_SESSION['last_attempt'][$username]);
+
         $_SESSION["username"] = $username;
         $_SESSION["password"] = $hashedPassword;
         //fetch_permissions($mysqli, $username);
         safeRedirect('projects.php');
 
     } else {
-
+        if ($username == "fuchs") {
+            $username = "fux";
+        }
         if (!$mysqli) return false;
         $check = $mysqli->prepare("SELECT id, password, role FROM tabelle_users WHERE username = ?");
         $check->bind_param("s", $username);
@@ -161,17 +164,19 @@ try {
 
         $check->bind_result($id, $passwordHash, $role);
 
-        $hashedPassword = md5($password);
+        #$hashedPassword =  md5($password);
 
         if (!empty($userInNewSystem['password']) && strlen($userInNewSystem['password']) > 32) {
             if (password_verify($password, $userInNewSystem['password'])) {
                 session_regenerate_id(true);
+
                 $_SESSION["username"] = $username;
-                $_SESSION["password"] = $hashedPassword; // Noch für SQL-Connection nötig
+                $_SESSION["password"] = $userInNewSystem['password'];; // $hashedPassword -  für alte  SQL-Connection nötig
                 unset($_SESSION['login_attempts'][$username]);
                 unset($_SESSION['last_attempt'][$username]);
+
                 //   error_log("LOGIN SUCCESS: Internal user '$username' via new system (Argon2id)");
-                safeRedirect('projects.php');
+                safeRedirect('projects.php' . $passwordHash);
             } else {
                 // error_log("LOGIN FAILED: Invalid password for internal user '$username' (new system)");
                 safeRedirect('index.php?error=login_failed');
