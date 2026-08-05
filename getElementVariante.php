@@ -4,6 +4,14 @@ require_once 'utils/_utils.php';
 $_SESSION["elementID"] = getPostInt("elementID");
 $_SESSION["variantenID"] = getPostInt("variantenID");
 
+// Single source of truth: DB-ID => Label
+$variantenMap = [
+    1  => 'A', 2  => 'B', 3  => 'C', 4  => 'D', 5  => 'E', 6  => 'F', 7  => 'G', 8  => 'H',
+    14 => 'I', 15 => 'J', 16 => 'K', 17 => 'L', 18 => 'M', 19 => 'N', 20 => 'O', 21 => 'P',
+    22 => 'Q', 23 => 'R', 24 => 'S', 25 => 'T', 26 => 'U', 27 => 'V', 28 => 'W', 29 => 'X',
+    30 => 'Y', 31 => 'Z',
+];
+
 $mysqli = utils_connect_sql();
 $stmt = $mysqli->prepare(
     "SELECT tabelle_projekt_varianten_kosten.Kosten 
@@ -34,10 +42,8 @@ $row = $result->fetch_assoc();
                         <label for='variante'>Variante </label>
                         <select class='form-control form-control-sm me-1 ms-1' id='variante'>
                             <?php
-                            $options = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
                             $selectedID = $_SESSION["variantenID"];
-                            foreach ($options as $key => $value) {
-                                $optionValue = $key + 1;
+                            foreach ($variantenMap as $optionValue => $value) {
                                 $selected = ($optionValue == $selectedID) ? 'selected' : '';
                                 echo "<option value='$optionValue' $selected>$value</option>";
                             }

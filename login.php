@@ -143,19 +143,9 @@ try {
 
     $userInNewSystem = checkUserInNewSystem($username, $mysqli);
     if ($userInNewSystem === null) {
-        migrateUserToNewSystem($username, $password, $mysqli);
-        unset($_SESSION['login_attempts'][$username]);
-        unset($_SESSION['last_attempt'][$username]);
-
-        $_SESSION["username"] = $username;
-        $_SESSION["password"] = $hashedPassword;
-        //fetch_permissions($mysqli, $username);
-        safeRedirect('projects.php');
-
+        safeRedirect('index.php');
     } else {
-        //if ($username == "fuchs") {
-        //    $username = "fux";
-        //}
+
         if (!$mysqli) return false;
         $check = $mysqli->prepare("SELECT id, password, role FROM tabelle_users WHERE username = ?");
         $check->bind_param("s", $username);
@@ -171,7 +161,7 @@ try {
                 session_regenerate_id(true);
 
                 $_SESSION["username"] = $username;
-                $_SESSION["password"] = $hashedPassword  ;//-  für alte  SQL-Connection nötig
+                $_SESSION["password"] = $userInNewSystem['password']  ;//-  für alte  SQL-Connection nötig
                 unset($_SESSION['login_attempts'][$username]);
                 unset($_SESSION['last_attempt'][$username]);
 

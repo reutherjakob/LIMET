@@ -95,7 +95,7 @@ init_page_serversides("x");
                         <div class="col-6 col-md-3">
                             <div class="card border-light">
                                 <div class="card-body py-2">
-                                    <div class="small text-muted">Schätzkosten</div>
+                                    <div class="small text-muted">PP</div>
                                     <div class="fs-5 fw-bold" id="statSumme">–</div>
                                 </div>
                             </div>
@@ -121,8 +121,8 @@ init_page_serversides("x");
                             <th class="text-end">Stk</th>
                             <th class="text-end">Räume</th>
                             <th>Raumliste</th>
-                            <th class="text-end">Einzelkosten</th>
-                            <th class="text-end">Schätzkosten</th>
+                            <th class="text-end">EP</th>
+                            <th class="text-end">PP</th>
                             <th class="text-end">Vergabesumme</th>
                         </tr>
                         </thead>

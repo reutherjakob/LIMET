@@ -148,7 +148,7 @@ function getPostDate(string $key): string
     return $dateFormatted;
 }
 
-function getPostFloat(string $key, float $default = 0.0): float
+function getPostFloat(string $key, float $default = 0.0): float   //nimmt nur Punkt-Dezimale
 {
     return isset($_POST[$key]) ? filter_var($_POST[$key], FILTER_VALIDATE_FLOAT) ?? $default : $default;
 }

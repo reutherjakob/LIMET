@@ -6,38 +6,29 @@
 </head>
 <body>
 
+<?php
+// 25 FX
+require_once 'utils/_utils.php';
+check_login();
+
+// Single source of truth: DB-ID => Label
+$variantenMap = [
+    1  => 'A', 2  => 'B', 3  => 'C', 4  => 'D', 5  => 'E', 6  => 'F', 7  => 'G', 8  => 'H',
+    14 => 'I', 15 => 'J', 16 => 'K', 17 => 'L', 18 => 'M', 19 => 'N', 20 => 'O', 21 => 'P',
+    22 => 'Q', 23 => 'R', 24 => 'S', 25 => 'T', 26 => 'U', 27 => 'V', 28 => 'W', 29 => 'X',
+    30 => 'Y', 31 => 'Z',
+];
+?>
+
 <div class="btn-group text-nowrap" id="hide0Wrapper_RwE">
     <div class="btn-group" id="variantenMassenWrapper">
         <label class=" btn btn-sm btn-outline-secondary " for="massenVariante">
             Alle Var
         </label>
         <select class="form-control form-control-sm" id="massenVariante">
-            <option value="1">A</option>
-            <option value="2">B</option>
-            <option value="3">C</option>
-            <option value="4">D</option>
-            <option value="5">E</option>
-            <option value="6">F</option>
-            <option value="7">G</option>
-            <option value="8">H</option>
-            <option value="9">I</option>
-            <option value="10">J</option>
-            <option value="11">K</option>
-            <option value="12">L</option>
-            <option value="13">M</option>
-            <option value="14">N</option>
-            <option value="15">O</option>
-            <option value="16">P</option>
-            <option value="17">Q</option>
-            <option value="18">R</option>
-            <option value="19">S</option>
-            <option value="20">T</option>
-            <option value="21">U</option>
-            <option value="22">V</option>
-            <option value="23">W</option>
-            <option value="24">X</option>
-            <option value="25">Y</option>
-            <option value="26">Z</option>
+            <?php foreach ($variantenMap as $vId => $vLabel): ?>
+                <option value="<?php echo $vId; ?>"><?php echo $vLabel; ?></option>
+            <?php endforeach; ?>
         </select>
         <!--button type="button" id="massenVarianteSetzen" class="btn btn-sm btn-outline-primary">
             <i class="far fa-edit"></i> Alle Var
@@ -54,10 +45,6 @@
 
 
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
-check_login();
-
 $elementID = getPostInt("elementID", 0);
 $projectID = (int)$_SESSION["projectID"];
 
@@ -160,8 +147,6 @@ foreach ($columns as [$key, $label]) {
 
 echo "</tr></thead><tbody>";
 
-$options = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
     // ID
@@ -185,11 +170,11 @@ while ($row = $result->fetch_assoc()) {
     // Anzahl (editable)
     echo "<td data-order='" . intval($row["Anzahl"]) . "'><input class='form-control form-control-sm' type='text' id='amount" . safe($row["id"]) . "' value='" . intval($row["Anzahl"]) . "' size='2'></td>";
 
-    // Variante (editable)
+    // Variante (editable) — values now come from $variantenMap (real DB IDs)
     echo "<td data-order='" . safe($row["tabelle_Varianten_idtabelle_Varianten"]) . "'><select class='form-control form-control-sm' id='variante" . safe($row["id"]) . "'>";
     $selected = $row["tabelle_Varianten_idtabelle_Varianten"];
-    foreach ($options as $index => $option) {
-        echo selectOption($index + 1, $selected, $option);
+    foreach ($variantenMap as $vId => $vLabel) {
+        echo selectOption($vId, $selected, $vLabel);
     }
     echo "</select></td>";
 

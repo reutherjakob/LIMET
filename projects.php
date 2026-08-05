@@ -61,8 +61,15 @@
         "Test KHI" => "fas fa-yin-yang",
         "Labor Kategorien" => "fab fa-d-and-d",
         "WIGEV RV" => "fab fa-pushed",
-        "KDO-BET" => "fas fa-dice-d20",
-        "BBE Musterzimmer" => "fas fa-vihara"
+
+
+        "KDO-BET" => "fas fa-dot-circle",
+        "KDO-OPS" => "fas fa-dot-circle",
+        "KDO-ZNA-alt" => "fas fa-dot-circle",
+        "KDO-ZNA-interim" => "fas fa-dot-circle",
+        "KDO-ZNA-neu" => "fas fa-dot-circle",
+        "KDO-Narkose" => "fas fa-dot-circle",
+        "KDO-ZNA-OTR Interim" => "fas fa-dot-circle"
 
     ];
     //<i class="fas fa-mountain"></i>
@@ -287,8 +294,6 @@
                                 Alle Var ändern
                             </a>
                         </p>
-
-
 
 
                     </div>
