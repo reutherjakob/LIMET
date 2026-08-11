@@ -249,17 +249,22 @@ $mysqli->close();
                             </tr>
                             </thead>
                             <tbody>
-                            <?php foreach ($rows_wp as $row):
+                            <?php
+                            $wartungsartLabels = [
+                                '0' => 'Betriebswartung',
+                                '1' => 'Vollwartung',
+                                '2' => 'Medizintechnikgarantie 12 Monate',
+                                '3' => 'Medizintechnikgarantie 24 Monate',
+                            ];
+                            foreach ($rows_wp as $row):
                                 $menge = (int)($row['Menge'] ?? 0);
                                 $preis_jahr = (float)($row['WartungspreisProJahr'] ?? 0);
                                 $datum = $row['Datum'] ? date('d.m.Y', strtotime($row['Datum'])) : '–';
                                 $datum_iso = $row['Datum'] ? date('Y-m-d', strtotime($row['Datum'])) : '';
                                 $datum_order = $row['Datum'] ? strtotime($row['Datum']) : 0;
                                 $artRaw = $row['Wartungsart'] ?? '';
-                                $art = htmlspecialchars(
-                                    $artRaw === '0' ? 'Betriebswartung' : 'Vollwartung',
-                                    ENT_QUOTES, 'UTF-8'
-                                );
+                                $artRaw = (string)($row['Wartungsart'] ?? '');
+                                $art = htmlspecialchars($wartungsartLabels[$artRaw] ?? '', ENT_QUOTES, 'UTF-8');
                                 ?>
                                 <tr data-wartung-id="<?= (int)$row['idtabelle_wartungspreise'] ?>"
                                     data-geraete-id="<?= (int)($row['idTABELLE_Geraete'] ?? 0) ?>"
@@ -429,6 +434,8 @@ $mysqli->close();
                     <select class="form-select" id="wp_wartungsart">
                         <option value="0">Betriebswartung</option>
                         <option value="1">Vollwartung</option>
+                        <option value="2">Medizintechnikgarantie 12 Monate</option>
+                        <option value="3">Medizintechnikgarantie 24 Monate</option>
                     </select>
                 </div>
 
@@ -669,28 +676,26 @@ $mysqli->close();
         });
 
         $('#saveWartungspreis').on('click', function () {
-            const wartungID = $('#wp_wartungID').val();
-            const geraeteID = $('#wp_geraeteID').val();
-            const date = $('#wp_date').val();
-            const art = $('#wp_wartungsart').val();
-            const menge = $('#wp_menge').val();
-            const preis = $('#wp_preis').val().replace(',', '.');
-            const info = $('#wp_info').val();
-            const lieferant = $('#wp_lieferant').val();
+            const servicePriceID = $('#wp_wartungID').val();
+            const date          = $('#wp_date').val();
+            const wartungsart   = $('#wp_wartungsart').val();
+            const menge         = $('#wp_menge').val();
+            const wartungspreis = $('#wp_preis').val().replace(',', '.');
+            const info          = $('#wp_info').val();
+            const lieferant     = $('#wp_lieferant').val();
 
-            if (!date || !menge || !preis) {
+            if (!date || !menge || !wartungspreis) {
                 alert('Bitte Datum, Menge und Preis ausfüllen!');
                 return;
             }
 
             $.ajax({
-                url: 'updateWartungspreis.php',
+                url: 'updateDeviceServicePrice.php',
                 type: 'POST',
-                data: {wartungID, geraeteID, date, wartungsart: art, menge, preis, info, lieferant},
+                data: {servicePriceID, date, info, menge, wartungsart, wartungspreis, lieferant},
                 success: function (data) {
                     bootstrap.Modal.getInstance(document.getElementById('editWartungspreisModal')).hide();
                     makeToaster(data.trim(), true);
-                    // Reload table row or full table as needed
                 },
                 error: function () {
                     makeToaster('Fehler beim Speichern!', false);

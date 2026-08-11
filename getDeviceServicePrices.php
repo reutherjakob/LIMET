@@ -74,7 +74,13 @@ while ($row = $result->fetch_assoc()) {
     echo "<td>" . $formattedDate . "</td>";
     echo "<td>" . h($row["Info"] ?? '') . "</td>";
     echo "<td>" . h($row["Menge"] ?? '') . "</td>";
-    echo "<td>" . ($row["Wartungsart"] === "0" ? "Betriebswartung" : "Vollwartung") . "</td>";
+    $wartungsartLabels = [
+        '0' => 'Betriebswartung',
+        '1' => 'Vollwartung',
+        '2' => 'Medizintechnikgarantie 12 Monate',
+        '3' => 'Medizintechnikgarantie 24 Monate',
+    ];
+    echo "<td>" . h($wartungsartLabels[(string)$row["Wartungsart"]] ?? '') . "</td>";
     echo "<td>" . sprintf('%01.2f', $row["WartungspreisProJahr"]) . "</td>";
     echo "<td>" . h($row["Projektname"] ?? '') . "</td>";
     echo "<td>" . h($row["Lieferant"] ?? '') . "</td>";
@@ -122,6 +128,8 @@ echo " </tbody></table>";
                         <select class="form-control input-sm" id="wartungsart" name="wartungsart">
                             <option value="0" selected>Betriebswartung</option>
                             <option value="1">Vollwartung</option>
+                            <option value="2">Medizintechnikgarantie 12 Monate</option>
+                            <option value="3">Medizintechnikgarantie 24 Monate</option>
                         </select>
                     </div>
                     <div class="form-group">

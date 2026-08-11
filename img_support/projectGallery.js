@@ -1,14 +1,10 @@
 /**
  * projectGallery.js
  * Shared JS for project image gallery used in imageGallery.php and documentationV2.php.
- *
  * Requires: jQuery, Bootstrap 5, Viewer.js, makeToaster()
- *
- * Bestehende Features (unverändert erhalten):
+
  *   - Upload, Delete (mit Vermerk-Sperre), Meta-Modal, Raum-Modal, Vermerk-Modal
  *   - Filter/Sort, Bulk-Modus (Raum zuordnen / Löschen), Viewer.js
- *
- * NEU:
  *   - Geräte-Modal (Zuordnen/Entfernen)  -> tabelle_Files_has_tabelle_Geraete
  *   - Projekt-Modal (Mehrfachzuordnung)  -> tabelle_Files_has_tabelle_Projekte
  *   - Zweite Karte "Fotos anderer Projekte" (#projectGalleryOther) inkl.
@@ -17,9 +13,9 @@
  */
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
-const _base = (document.querySelector('script[src*="projectGallery.js"]')?.src || '')
-    .includes('img_support') ? '' : 'img_support/';
-
+const _inImg = location.pathname.includes('/img_support/');
+const _base = _inImg ? '' : 'img_support/';   // Dateien IN img_support/
+const _root = _inImg ? '../' : '';            // Dateien im Web-Root
 
 function parseResponse(raw) {
     try {
@@ -764,7 +760,8 @@ $(document).ready(function () {
         if (!_vermerkPickerData) {
             list.innerHTML = '<div class="text-muted fst-italic small p-2">Wird geladen…</div>';
             $.ajax({
-                url: '../getVermerkeForProject.php', type: 'POST',
+                url: _root + 'getVermerkeForProject.php',
+                type: 'POST',
                 success: function (raw) {
                     const res = parseResponse(raw);
                     if (res.status !== 'ok') {
@@ -983,6 +980,7 @@ $(document).ready(function () {
 
         if (gallery) initViewer(gallery, 'project-gallery-img');
     }
+
     window.applyGalleryFilter = applyGalleryFilter;
 
     const resetBtn = document.getElementById('galleryResetFilter');
@@ -1024,6 +1022,7 @@ $(document).ready(function () {
         const grid = document.getElementById('projectGalleryOther');
         if (grid) initViewer(grid, 'project-gallery-img');
     }
+
     window.applyOtherGalleryFilter = applyOtherGalleryFilter;
 
     const otherSearchEl = document.getElementById('galleryOtherSearch');

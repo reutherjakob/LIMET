@@ -685,7 +685,7 @@ echo "</tbody></table>";
             const vid      = $('#linkTargetVermerkID').val();
             const $item    = $(this);
             $.ajax({
-                url: 'linkImageToVermerk.php', type: 'POST',
+                url: 'img_support/linkImageToVermerk.php', type: 'POST',
                 data: {imageID: imageID, vermerkID: vid},
                 success: function (raw) {
                     const res = parseResponse(raw);
