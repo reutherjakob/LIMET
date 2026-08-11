@@ -128,7 +128,7 @@
                     <label class="wallchk" data-wall="left"><input type="checkbox">Links</label>
                     <label class="wallchk" data-wall="right"><input type="checkbox">Rechts</label>
                 </div>
-                <div style="font-size:11px;color:var(--muted);margin-top:8px">Erzwingt eine Regalreihe an der Wand (außer bei Türen/Säulen). Erscheint als zusätzliche Variante — nur wenn sie gut ist, unter den Top 3.</div>
+                <div style="font-size:11px;color:var(--muted);margin-top:8px">Perimeter-Varianten (alle Wände / Längs / Quer) werden ohnehin automatisch geprüft und erscheinen oben, wenn sie flächeneffizienter sind. Ankreuzen erzwingt zusätzlich genau diese Wandkombination.</div>
             </section>
 
             <section class="panel soft">
@@ -197,9 +197,9 @@
 
     const state = {
         roomW: 12000, roomH: 8000, aisle: 1200,
-        type1W: 1000, type1D: 500,
-        type2W: 500,  type2D: 500, useType2: false,
-        wallGap: 100, colClear: 0,
+        type1W: 1200, type1D: 600,
+        type2W: 800,  type2D: 600, useType2: false,
+        wallGap: 0, colClear: 0,
         walls: { top:false, bottom:false, left:false, right:false },
         columns: [],
         doors: [{ id: 1, wall: "left", pos: 4000, width: 1200 }],
@@ -541,14 +541,30 @@
             avgWalk:ev.avgWalk, doorsWithoutAccess:ev.doorsWithoutAccess, area, lin};
     }
 
+    // Welche Wandkombinationen automatisch als Perimeter-Varianten geprüft werden
+    function wallSetsFor(p){
+        const longIsX = p.roomW >= p.roomH;
+        const longPair  = longIsX ? ['top','bottom'] : ['left','right'];
+        const shortPair = longIsX ? ['left','right'] : ['top','bottom'];
+        const sets = [ ['top','bottom','left','right'], longPair, shortPair ];
+        // vom Nutzer erzwungene Wandwahl zusätzlich aufnehmen (falls nicht schon dabei)
+        const manual = Object.keys(p.walls).filter(w=>p.walls[w]);
+        if(manual.length){
+            const key=manual.slice().sort().join('');
+            if(!sets.some(s=>s.slice().sort().join('')===key)) sets.push(manual);
+        }
+        return sets;
+    }
+
     function optimize(p){
         const pool=[];
         const depths=[...new Set(enabledTypes(p).map(t=>t.d))];
-        const wallsSel=Object.keys(p.walls).filter(w=>p.walls[w]);
 
         for(const bd of depths){
             const period=p.aisle+2*bd;
             const leads=[0, Math.round(period/2)];
+
+            // (1) Freie Anordnungen ohne Wandreihen — inkl. Quergang-Varianten
             for(const orient of ["h","v"]){
                 const A = orient==="h" ? p.roomW : p.roomH;
                 const doorCoords=[...new Set(p.doors.map(d=>Math.round(clamp(doorSpineCoord(d,orient,p),0,A))))];
@@ -562,10 +578,11 @@
                     pool.push(scoreCandidate(gen, p));
                 }
             }
-            // Wandreihen-Kandidaten (konkurrieren gleichberechtigt im Pool)
-            if(wallsSel.length){
-                for(const orient of ["h","v"]) for(const lead of leads){
-                    const gen=generateLayout({orient,lead,spines:[],bd,walls:wallsSel}, p);
+
+            // (2) Perimeter-Anordnungen — IMMER automatisch geprüft (alle 4 / Längs / Quer)
+            for(const walls of wallSetsFor(p)){
+                for(const orient of ["h","v"]){
+                    const gen=generateLayout({orient,lead:0,spines:[],bd,walls}, p);
                     if(!gen.shelves.length) continue;
                     pool.push(scoreCandidate(gen, p));
                 }
@@ -573,20 +590,31 @@
         }
 
         if(!pool.length) return [{shelves:[],cross:[],bandsCount:0,walls:null,served:[],count:0,total:0,avgWalk:0,doorsWithoutAccess:0,area:0,lin:0}];
-        pool.sort((a,b)=> b.count-a.count || a.avgWalk-b.avgWalk || a.total-b.total);
+
+        // ZIEL: maximale nutzbare Regalfläche; bei ~gleicher Fläche kürzester Weg.
+        const BUCKET=0.25e6; // 0,25 m² Toleranz → "flächengleich"
+        pool.sort((a,b)=>{
+            const ba=Math.round(b.area/BUCKET), aa=Math.round(a.area/BUCKET);
+            return ba-aa || a.avgWalk-b.avgWalk || b.area-a.area;
+        });
+
         const chosen=[]; const seen=new Set();
-        for(const c of pool){ const sig=(c.walls?c.walls.join(""):"-")+"|"+c.bandsCount+"|"+c.total; if(seen.has(sig))continue; seen.add(sig); chosen.push(c); if(chosen.length===3)break; }
+        for(const c of pool){
+            const sig=(c.walls?c.walls.slice().sort().join(""):"-")+"|"+c.bandsCount+"|"+c.total;
+            if(seen.has(sig)) continue; seen.add(sig); chosen.push(c);
+            if(chosen.length===3) break;
+        }
         for(const c of pool){ if(chosen.length>=3)break; if(!chosen.includes(c)) chosen.push(c); }
         return chosen;
     }
 
     const WMAP={top:"O",bottom:"U",left:"L",right:"R"};
     function variantLabel(c){
-        if(c.walls && c.walls.length)
-            return "Wandreihe " + c.walls.map(w=>WMAP[w]).join("");
-        const base = "Bänder";
-        const aisles=Math.max(0, c.bandsCount-1);
-        return base + " · " + aisles + " Gänge";
+        if(c.walls && c.walls.length){
+            if(c.walls.length===4) return "Perimeter (alle Wände)";
+            return "Wandreihe " + c.walls.slice().sort().map(w=>WMAP[w]).join("");
+        }
+        return "Frei · " + Math.max(0, c.bandsCount-1) + " Gänge";
     }
 
     /* ---------------------------------------------------------------------
@@ -694,9 +722,12 @@
     /* ---------------------------------------------------------------------
        UI-WIRING
     --------------------------------------------------------------------- */
+    let _renderTimer=null;
+    function renderSoon(){ clearTimeout(_renderTimer); _renderTimer=setTimeout(render, 90); }
+
     ["roomW","roomH","aisle","type1W","type1D","type2W","type2D","wallGap","colClear"].forEach(key=>{
         const el=$(key); el.value=state[key];
-        el.addEventListener("input",()=>{ state[key]=Math.max(Number(el.min)||0, Number(el.value)||0); render(); });
+        el.addEventListener("input",()=>{ state[key]=Math.max(Number(el.min)||0, Number(el.value)||0); renderSoon(); });
     });
 
     const useT2=$("useType2");

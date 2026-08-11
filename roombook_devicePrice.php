@@ -253,8 +253,8 @@ $mysqli->close();
                             $wartungsartLabels = [
                                 '0' => 'Betriebswartung',
                                 '1' => 'Vollwartung',
-                                '2' => 'Medizintechnikgarantie 12 Monate',
-                                '3' => 'Medizintechnikgarantie 24 Monate',
+                                '2' => 'Medizintechnikgarantie',
+                                '3' => 'Ersatzteilgarantie'
                             ];
                             foreach ($rows_wp as $row):
                                 $menge = (int)($row['Menge'] ?? 0);
@@ -434,8 +434,8 @@ $mysqli->close();
                     <select class="form-select" id="wp_wartungsart">
                         <option value="0">Betriebswartung</option>
                         <option value="1">Vollwartung</option>
-                        <option value="2">Medizintechnikgarantie 12 Monate</option>
-                        <option value="3">Medizintechnikgarantie 24 Monate</option>
+                        <option value="2">Medizintechnikgarantie</option>
+                        <option value="3">Ersatzteilgarantie</option>
                     </select>
                 </div>
 

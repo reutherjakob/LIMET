@@ -72,10 +72,17 @@ init_page_serversides("x"); ?>
                                         data-bs-target="#elementPricesInOtherProjects-2">Gerätepreise
                                 </button>
                             </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab"
+                                        data-bs-target="#elementPricesInOtherProjects-3">Wartungspreise/Garantien
+                                </button>
+                            </li>
                         </ul>
                         <div class="card-body tab-content">
                             <div class="tab-pane fade show active" id="elementPricesInOtherProjects"></div>
                             <div class="tab-pane fade" id="elementPricesInOtherProjects-2"></div>
+                            <div class="tab-pane fade" id="elementPricesInOtherProjects-3"></div>
+
                         </div>
                     </div>
                 </div>
@@ -131,7 +138,7 @@ init_page_serversides("x"); ?>
                         <div class='card-header'>
                             <div class='row'>
                                 <div class='col-6'>
-                                    <label>Wartungspreise</label>
+                                    <label>Wartungspreise & Garantien </label>
                                 </div>
                                 <div class='col-6 d-flex justify-content-end' id='WartungspreiseCardHeader'>
 
@@ -311,6 +318,17 @@ init_page_serversides("x"); ?>
                                                 type: "POST",
                                                 success: function (data) {
                                                     $("#elementPricesInOtherProjects-2").html(data)
+
+
+                                                    $.ajax({
+                                                        url: "getDevicesAndTheirServicePricesForElements.php",
+                                                        data: {"elementID": elementID},
+                                                        type: "POST",
+                                                        success: function (data) {
+                                                            $("#elementPricesInOtherProjects-3").html(data)
+                                                        }
+                                                    });
+
                                                 }
                                             });
                                         }

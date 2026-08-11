@@ -4,11 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="LosElemente Übersicht nachbearbeitet. &#10;KDo Icons.&#10;Wartungpreise editierbar. &#10;Ages 0er Vars löschen.">
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Bilder zu Projekten Zuordnen.">
+      <change afterPath="$PROJECT_DIR$/getDevicesAndTheirServicePricesForElements.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_support/card_load_image_preview.php" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/card_load_image_preview.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_support/deleteImage.php" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/deleteImage.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_support/projectGallery.js" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/projectGallery.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/raumtypen.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/raumtypen.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/elementAdministration.php" beforeDir="false" afterPath="$PROJECT_DIR$/elementAdministration.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getDeviceServicePrices.php" beforeDir="false" afterPath="$PROJECT_DIR$/getDeviceServicePrices.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lager_calculator.php" beforeDir="false" afterPath="$PROJECT_DIR$/lager_calculator.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_devicePrice.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_devicePrice.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/updateWartungspreis.php" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -621,14 +625,6 @@
       <workItem from="1786375969429" duration="438000" />
       <workItem from="1786433092076" duration="5555000" />
     </task>
-    <task id="LOCAL-00203" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu">
-      <option name="closed" value="true" />
-      <created>1772198533985</created>
-      <option name="number" value="00203" />
-      <option name="presentableId" value="LOCAL-00203" />
-      <option name="project" value="LOCAL" />
-      <updated>1772198533985</updated>
-    </task>
     <task id="LOCAL-00204" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu">
       <option name="closed" value="true" />
       <created>1772198883112</created>
@@ -1013,7 +1009,15 @@
       <option name="project" value="LOCAL" />
       <updated>1785938472353</updated>
     </task>
-    <option name="localTasksCounter" value="252" />
+    <task id="LOCAL-00252" summary="Bilder zu Projekten Zuordnen.">
+      <option name="closed" value="true" />
+      <created>1786442262561</created>
+      <option name="number" value="00252" />
+      <option name="presentableId" value="LOCAL-00252" />
+      <option name="project" value="LOCAL" />
+      <updated>1786442262561</updated>
+    </task>
+    <option name="localTasksCounter" value="253" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1043,7 +1047,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Feedback Center getuned.&#10;lose TOdo finalisiert.&#10;Kommentar bei preise ergänzt.&#10;Alle lose workflocw gefixed.&#10;RB specs verbessert. und sortiert.&#10;raum kopie erweitert. &#10;&#10;RB texte verbessert." />
     <MESSAGE value="Merge remote-tracking branch 'origin/roombookElementsPerArea' into roombookElementsPerArea&#10;&#10;# Conflicts:&#10;#&#9;Nutzerumfrage/form_fields_forNutzergruppe1.php" />
     <MESSAGE value="Bugfixes;&#10;Sf Umfrage;&#10;Kor Liste" />
     <MESSAGE value="Budgets-Freigaben ergänzt. &#10;Detailed: Raum Btns und Suchleiste in den Card Header." />
@@ -1068,7 +1071,8 @@
     <MESSAGE value="Workflow Editing" />
     <MESSAGE value="Nutzerwünsche" />
     <MESSAGE value="LosElemente Übersicht nachbearbeitet. &#10;KDo Icons.&#10;Wartungpreise editierbar. &#10;Ages 0er Vars löschen." />
-    <option name="LAST_COMMIT_MESSAGE" value="LosElemente Übersicht nachbearbeitet. &#10;KDo Icons.&#10;Wartungpreise editierbar. &#10;Ages 0er Vars löschen." />
+    <MESSAGE value="Bilder zu Projekten Zuordnen." />
+    <option name="LAST_COMMIT_MESSAGE" value="Bilder zu Projekten Zuordnen." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

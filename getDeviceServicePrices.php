@@ -77,8 +77,8 @@ while ($row = $result->fetch_assoc()) {
     $wartungsartLabels = [
         '0' => 'Betriebswartung',
         '1' => 'Vollwartung',
-        '2' => 'Medizintechnikgarantie 12 Monate',
-        '3' => 'Medizintechnikgarantie 24 Monate',
+        '2' => 'Medizintechnikgarantie',
+        '3' => 'Ersatzteilgarantie',
     ];
     echo "<td>" . h($wartungsartLabels[(string)$row["Wartungsart"]] ?? '') . "</td>";
     echo "<td>" . sprintf('%01.2f', $row["WartungspreisProJahr"]) . "</td>";
@@ -102,7 +102,7 @@ echo " </tbody></table>";
     <div class='modal-dialog modal-md'>
         <div class='modal-content'>
             <div class='modal-header'>
-                <h4 class='modal-title' id='modalTitleService'>Wartungspreis hinzufügen</h4>
+                <h4 class='modal-title' id='modalTitleService'> hinzufügen</h4>
                 <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
             </div>
             <div class='modal-body' id='mbody'>
@@ -128,8 +128,8 @@ echo " </tbody></table>";
                         <select class="form-control input-sm" id="wartungsart" name="wartungsart">
                             <option value="0" selected>Betriebswartung</option>
                             <option value="1">Vollwartung</option>
-                            <option value="2">Medizintechnikgarantie 12 Monate</option>
-                            <option value="3">Medizintechnikgarantie 24 Monate</option>
+                            <option value="2">Medizintechnikgarantie</option>
+                            <option value="3">Ersatzteilgarantie</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -205,7 +205,7 @@ echo " </tbody></table>";
             data-bs-toggle='modal'
             data-bs-target='#addServicePriceModal'>
         <i class='fas fa-plus'></i>
-        Wartungspreis hinzufügen
+        hinzufügen
     </button>
 `);
 
