@@ -168,7 +168,7 @@ $allGeraete = $ownRel['allGeraete'];
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════════
-     KARTE 2 – Fotos anderer Projekte
+     KARTE 2 – Fotos anderer Projekte (eingeklappt per Default)
      ══════════════════════════════════════════════════════════════════════════ -->
 <div class="mt-3 card" id="projGalleryOtherCard">
     <div class="card-header">
@@ -176,10 +176,19 @@ $allGeraete = $ownRel['allGeraete'];
             <b><i class="fas fa-photo-video me-1"></i> Fotos anderer Projekte
                 <span class="badge bg-secondary ms-1" id="galleryOtherCntBadge"><?= count($otherImages) ?></span>
             </b>
-            <div class="input-group input-group-sm" style="max-width:280px;">
-                <span class="input-group-text"><i class="fas fa-search"></i></span>
-                <input type="text" id="galleryOtherSearch" class="form-control form-control-sm"
-                       placeholder="Suche (Dateiname / Projekt)…">
+            <button type="button" class="btn btn-outline-secondary btn-sm"
+                    data-bs-toggle="collapse" data-bs-target="#otherGalleryCollapse"
+                    aria-expanded="false" aria-controls="otherGalleryCollapse">
+                <i class="fas fa-chevron-down" id="otherGalleryToggleIcon"></i>
+                <span class="ms-1">Anzeigen</span>
+            </button>
+            <div class="d-flex gap-2 align-items-center flex-wrap">
+                <div class="input-group input-group-sm" style="max-width:280px;">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" id="galleryOtherSearch" class="form-control form-control-sm"
+                           placeholder="Suche (Dateiname / Projekt)…">
+                </div>
+
             </div>
         </div>
         <p class="text-muted small mb-0 mt-1">
@@ -188,31 +197,35 @@ $allGeraete = $ownRel['allGeraete'];
             zusätzlich diesem Projekt zuordnen.
         </p>
     </div>
-    <div class="card-body">
-        <p class="text-muted fst-italic <?= empty($otherImages) ? '' : 'd-none' ?>" id="galleryOtherEmptyHint">
-            Keine Fotos in anderen Projekten vorhanden.
-        </p>
-        <p class="text-muted fst-italic d-none small" id="galleryOtherNoResultHint">
-            <i class="fas fa-filter me-1"></i> Keine Bilder entsprechen der Suche.
-        </p>
 
-        <div id="projectGalleryOther" class="row g-2 gallery-grid">
-            <?php foreach ($otherImages as $img):
-                $id = (int)$img['idtabelle_Files'];
-                gallery_render_item(
-                    $img,
-                    $otherRel['raum'][$id]    ?? [],
-                    $otherRel['vermerk'][$id] ?? [],
-                    $otherRel['geraet'][$id]  ?? [],
-                    'other',
-                    false,
-                    (string)($img['Projektname'] ?? '')
-                );
-            endforeach; ?>
-        </div>
+    <!-- collapse = eingeklappt per Default (kein "show") -->
+    <div id="otherGalleryCollapse" class="collapse">
+        <div class="card-body">
+            <p class="text-muted fst-italic <?= empty($otherImages) ? '' : 'd-none' ?>" id="galleryOtherEmptyHint">
+                Keine Fotos in anderen Projekten vorhanden.
+            </p>
+            <p class="text-muted fst-italic d-none small" id="galleryOtherNoResultHint">
+                <i class="fas fa-filter me-1"></i> Keine Bilder entsprechen der Suche.
+            </p>
 
-        <div class="mt-2 text-muted small" id="galleryOtherCountInfo">
-            <?= count($otherImages) ?> Bild<?= count($otherImages) !== 1 ? 'er' : '' ?>
+            <div id="projectGalleryOther" class="row g-2 gallery-grid">
+                <?php foreach ($otherImages as $img):
+                    $id = (int)$img['idtabelle_Files'];
+                    gallery_render_item(
+                        $img,
+                        $otherRel['raum'][$id]    ?? [],
+                        $otherRel['vermerk'][$id] ?? [],
+                        $otherRel['geraet'][$id]  ?? [],
+                        'other',
+                        false,
+                        (string)($img['Projektname'] ?? '')
+                    );
+                endforeach; ?>
+            </div>
+
+            <div class="mt-2 text-muted small" id="galleryOtherCountInfo">
+                <?= count($otherImages) ?> Bild<?= count($otherImages) !== 1 ? 'er' : '' ?>
+            </div>
         </div>
     </div>
 </div>

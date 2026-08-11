@@ -200,41 +200,44 @@ $(document).ready(function () {
 
     let pendingProjDeleteId = null;
 
+// Schritt 1: Papierkorb-Klick → nur PRÜFEN (Dry-Run, ohne confirm)
     $(document).on('click', '.project-gallery-delete-btn', function (e) {
-
         e.stopPropagation();
         pendingProjDeleteId = $(this).data('image-id');
-        confirm("Datei löschen?? ");
         $.ajax({
             url: _base + 'deleteImage.php', type: 'POST',
-            data: {imageID: pendingProjDeleteId},
+            data: {imageID: pendingProjDeleteId},   // kein confirm → nur Prüfung
             success: function (raw) {
                 const res = parseResponse(raw);
                 if (res.status === 'linked') {
+                    // Gesperrt: in anderen Projekten und/oder Vermerken verknüpft
                     document.getElementById('projDeleteConfirmBody').innerHTML =
-                        '<i class="fas fa-exclamation-circle text-warning me-1"></i><strong>' + res.msg + '</strong>';
+                        '<i class="fas fa-exclamation-circle text-warning me-1"></i><strong>' +
+                        _escHtml(res.msg) + '</strong>';
                     document.getElementById('projConfirmDeleteBtn').disabled = true;
                     $('#projDeleteConfirmModal').modal('show');
-                } else if (res.status === 'ok') {
-                    // Kein Modal nötig — direkt löschen (war nicht verknüpft)
-                    makeToaster('Bild gelöscht.', true);
-                    reloadProjectGallery();
-                } else {
-                    document.getElementById('projDeleteConfirmBody').textContent = 'Das Bild wird unwiderruflich gelöscht.';
+                } else if (res.status === 'confirm') {
+                    // Löschbar → Bestätigung einholen
+                    document.getElementById('projDeleteConfirmBody').textContent =
+                        'Das Bild wird unwiderruflich gelöscht.';
                     document.getElementById('projConfirmDeleteBtn').disabled = false;
                     $('#projDeleteConfirmModal').modal('show');
+                } else {
+                    makeToaster(res.msg || 'Fehler beim Prüfen.', false);
                 }
-            }
+            },
+            error: () => makeToaster('Verbindungsfehler.', false)
         });
     });
 
+// Schritt 2: Bestätigen → wirklich löschen (confirm=1)
     $('#projConfirmDeleteBtn').on('click', function () {
         if (!pendingProjDeleteId || $(this).prop('disabled')) return;
         const id = pendingProjDeleteId;
         $('#projDeleteConfirmModal').modal('hide');
         $.ajax({
             url: _base + 'deleteImage.php', type: 'POST',
-            data: {imageID: id},
+            data: {imageID: id, confirm: 1},
             success: function (raw) {
                 const res = parseResponse(raw);
                 if (res.status === 'ok') {
@@ -247,7 +250,6 @@ $(document).ready(function () {
             error: () => makeToaster('Löschen fehlgeschlagen!', false)
         });
     });
-
     $('#projDeleteConfirmModal').on('hidden.bs.modal', function () {
         document.getElementById('projConfirmDeleteBtn').disabled = false;
         pendingProjDeleteId = null;
@@ -1163,7 +1165,8 @@ $(document).ready(function () {
         Promise.all([..._selectedIDs].map(imgID =>
             fetch(_base + 'deleteImage.php', {
                 method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body: 'imageID=' + imgID
+
+                body: 'imageID=' + imgID + '&confirm=1'
             }).then(r => r.json())
         )).then(results => {
             bootstrap.Modal.getInstance(document.getElementById('bulkDeleteModal')).hide();
@@ -1192,4 +1195,28 @@ $(document).ready(function () {
         const idx = imgs.indexOf(img);
         if (idx >= 0) grid._viewer.view(idx);
     });
+
+    // ── Toggle-Icon/Text der Karte "andere Projekte" ──────────────────────────
+    const otherCollapseEl = document.getElementById('otherGalleryCollapse');
+    if (otherCollapseEl) {
+        const icon  = document.getElementById('otherGalleryToggleIcon');
+        const label = otherCollapseEl.closest('.card')
+            .querySelector('[data-bs-target="#otherGalleryCollapse"] span');
+        otherCollapseEl.addEventListener('show.bs.collapse', () => {
+            if (icon)  icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+            if (label) label.textContent = 'Ausblenden';
+        });
+        otherCollapseEl.addEventListener('hide.bs.collapse', () => {
+            if (icon)  icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+            if (label) label.textContent = 'Anzeigen';
+        });
+    }
+
+    otherCollapseEl.addEventListener('shown.bs.collapse', () => {
+        const grid = document.getElementById('projectGalleryOther');
+        if (grid) initViewer(grid, 'project-gallery-img');
+    });
+
+
+
 }); // end document.ready

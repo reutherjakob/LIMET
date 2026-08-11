@@ -5,17 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="LosElemente Übersicht nachbearbeitet. &#10;KDo Icons.&#10;Wartungpreise editierbar. &#10;Ages 0er Vars löschen.">
-      <change afterPath="$PROJECT_DIR$/PDFs/pdf_createMTTabelle_fast.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bericht_params_uebersicht.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getDeviceServicePrices.php" beforeDir="false" afterPath="$PROJECT_DIR$/getDeviceServicePrices.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getVermerkeToUntergruppe.php" beforeDir="false" afterPath="$PROJECT_DIR$/getVermerkeToUntergruppe.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_support/card_load_image_preview.php" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/card_load_image_preview.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_support/deleteImage.php" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/deleteImage.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/img_support/projectGallery.js" beforeDir="false" afterPath="$PROJECT_DIR$/img_support/projectGallery.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookReports_New.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookReports_New.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_devicePrice.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_devicePrice.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/updateDeviceServicePrice.php" beforeDir="false" afterPath="$PROJECT_DIR$/updateDeviceServicePrice.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/updateWartungspreis.php" beforeDir="false" afterPath="$PROJECT_DIR$/updateWartungspreis.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1144,6 +1137,12 @@
           <url>file://$PROJECT_DIR$/login.php</url>
           <line>130</line>
           <option name="timeStamp" value="29" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/img_support/projectGallery.js</url>
+          <line>252</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="31" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -9,6 +9,7 @@ header('Content-Type: application/json');
 
 $mysqli  = utils_connect_sql();
 $imageID = getPostInt('imageID', 0);
+$confirm = getPostInt('confirm', 0);   // 0 = nur prüfen (Dry-Run), 1 = wirklich löschen
 
 if ($imageID === 0) {
     ob_end_clean();
@@ -30,30 +31,54 @@ if (!$stmt->fetch()) {
 }
 $stmt->close();
 
-// Wie viele Vermerke sind noch verknüpft?
-$stmtCheck = $mysqli->prepare(
+// ── Sperre 1: Vermerk-Verknüpfungen ──────────────────────────────────────────
+$stmtV = $mysqli->prepare(
     "SELECT COUNT(*) FROM `LIMET_RB`.`tabelle_Files_has_tabelle_Vermerke` WHERE `tabelle_Files_idtabelle_Files` = ?"
 );
-$stmtCheck->bind_param('i', $imageID);
-$stmtCheck->execute();
-$stmtCheck->bind_result($vermerkCount);
-$stmtCheck->fetch();
-$stmtCheck->close();
+$stmtV->bind_param('i', $imageID);
+$stmtV->execute();
+$stmtV->bind_result($vermerkCount);
+$stmtV->fetch();
+$stmtV->close();
 
-if ($vermerkCount > 0) {
+// ── Sperre 2: Zuordnung zu ANDEREN Projekten ─────────────────────────────────
+// (tabelle_Files_has_tabelle_Projekte enthält nur Zusatz-Projekte, nie das Ursprungsprojekt)
+$stmtP = $mysqli->prepare(
+    "SELECT COUNT(*) FROM `LIMET_RB`.`tabelle_Files_has_tabelle_Projekte` WHERE `tabelle_Files_idtabelle_Files` = ?"
+);
+$stmtP->bind_param('i', $imageID);
+$stmtP->execute();
+$stmtP->bind_result($projektCount);
+$stmtP->fetch();
+$stmtP->close();
+
+if ($vermerkCount > 0 || $projektCount > 0) {
     $mysqli->close();
     ob_end_clean();
+
+    $teile = [];
+    if ($projektCount > 0) $teile[] = (int)$projektCount . " weiteren Projekt" . ($projektCount > 1 ? 'en' : '');
+    if ($vermerkCount > 0) $teile[] = (int)$vermerkCount . " Vermerk" . ($vermerkCount > 1 ? 'en' : '');
+
     echo json_encode([
         'status'       => 'linked',
+        'projektCount' => (int)$projektCount,
         'vermerkCount' => (int)$vermerkCount,
-        'msg'          => "Bild ist noch in " . (int)$vermerkCount
-            . " Vermerk" . ($vermerkCount > 1 ? 'en' : '')
-            . " verknüpft. Bitte zuerst alle Verknüpfungen entfernen."
+        'msg'          => 'Bild ist noch in ' . implode(' und ', $teile)
+            . ' verknüpft und kann nicht gelöscht werden. Bitte zuerst die Zuordnungen entfernen.'
     ]);
     exit;
 }
 
-// Datei löschen
+// ── Nur prüfen? Dann hier stoppen (noch NICHT löschen) ───────────────────────
+if ($confirm !== 1) {
+    $mysqli->close();
+    ob_end_clean();
+    echo json_encode(['status' => 'confirm', 'msg' => 'Bild kann gelöscht werden.']);
+    exit;
+}
+
+// ── Ab hier: wirklich löschen ────────────────────────────────────────────────
 $baseDir    = "/var/www/vhosts/limet-rb.com/httpdocs/Dokumente_RB/Images/";
 $targetFile = $baseDir . basename($imageName);
 
@@ -64,8 +89,7 @@ if (file_exists($targetFile) && !unlink($targetFile)) {
     exit;
 }
 
-// Verbleibende Verknüpfungen aufräumen (Räume / Geräte / Zusatz-Projekte),
-// damit keine verwaisten Einträge zurückbleiben.
+// Verbleibende Verknüpfungen (Räume / Geräte) aufräumen
 $stmtR = $mysqli->prepare("DELETE FROM `LIMET_RB`.`tabelle_Files_has_tabelle_Raeume` WHERE `tabelle_idfFile` = ?");
 $stmtR->bind_param('i', $imageID);
 $stmtR->execute();
@@ -76,23 +100,16 @@ $stmtG->bind_param('i', $imageID);
 $stmtG->execute();
 $stmtG->close();
 
-$stmtP = $mysqli->prepare("DELETE FROM `LIMET_RB`.`tabelle_Files_has_tabelle_Projekte` WHERE `tabelle_Files_idtabelle_Files` = ?");
-$stmtP->bind_param('i', $imageID);
-$stmtP->execute();
-$stmtP->close();
-
 // DB-Eintrag löschen
 $stmtDel = $mysqli->prepare("DELETE FROM `LIMET_RB`.`tabelle_Files` WHERE `idtabelle_Files` = ?");
 $stmtDel->bind_param('i', $imageID);
-$ok = $stmtDel->execute();
+$ok  = $stmtDel->execute();
 $err = $stmtDel->error;
 $stmtDel->close();
 $mysqli->close();
 
 ob_end_clean();
-if ($ok) {
-    echo json_encode(['status' => 'ok', 'msg' => 'Bild gelöscht.']);
-} else {
-    echo json_encode(['status' => 'error', 'msg' => 'DB-Fehler: ' . $err]);
-}
+echo json_encode($ok
+    ? ['status' => 'ok',    'msg' => 'Bild gelöscht.']
+    : ['status' => 'error', 'msg' => 'DB-Fehler: ' . $err]);
 ?>
