@@ -176,7 +176,6 @@ const ELEMENT_MAPPING = [
     ],
 
 
-
     // ── Feste Familien: match='exact', exakter Namens-Match ──────────────────
     'TMO_-_LIMET_4-20-60-2 Hängeschrank Flügel DIN CrNi zweitürig' => [
         'match' => 'exact',
@@ -184,7 +183,7 @@ const ELEMENT_MAPPING = [
         'element_id' => '4.20.60.2',
         'element_params' => [],
         'variante_params' => ['MT_LIMET_Breite', 'MT_LIMET_Höhe', 'MT_LIMET_Tiefe'],
-        'breite_faktor' => 2,
+        'breite_faktor' => 1,
         // Alle anderen DB-Parameter (z.B. Netzart) → automatisch ignoriert
     ],
 
@@ -237,8 +236,8 @@ const ELEMENT_MAPPING = [
     //   Pool 'unterbau' → zusammen max. 1 pro Becken.
 
     'GRUPPE_Spuelenverbau_Labor' => [
-        'match'   => 'gruppe',
-        'typ'     => 'gruppe',
+        'match' => 'gruppe',
+        'typ' => 'gruppe',
         'familien' => [
             'TMO_-_LIMET_4-20-20-3 Unterbau - Flügel DIN CrNi zweitürig',
             'TMO_-_LIMET_4-20-20-3 Unterbau - Flügel DIN CrNi eintürig',
@@ -264,9 +263,9 @@ const ELEMENT_MAPPING = [
         ],
         'param_quellen' => [
             'TMO_-_LIMET_4-20-20-3 Unterbau - Flügel DIN CrNi zweitürig' => ['MT_LIMET_Tiefe'],
-            'TMO_-_LIMET_4-20-20-3 Unterbau - Flügel DIN CrNi eintürig'  => ['MT_LIMET_Tiefe'],
-            'TMO_-_LIMET_4-20-40-1 Arbeitsplatte DIN CrNi'               => ['MT_LIMET_Breite'],
-            'TMO_-_LIMET_4-20-30-1 Spülbecken DIN CrNi'                  => ['MT_LIMET_Spuelbecken_Breite', 'MT_LIMET_Spuelbecken_Tiefe', 'MT_LIMET_Spuelbecken_Hoehe'],
+            'TMO_-_LIMET_4-20-20-3 Unterbau - Flügel DIN CrNi eintürig' => ['MT_LIMET_Tiefe'],
+            'TMO_-_LIMET_4-20-40-1 Arbeitsplatte DIN CrNi' => ['MT_LIMET_Breite'],
+            'TMO_-_LIMET_4-20-30-1 Spülbecken DIN CrNi' => ['MT_LIMET_Spuelbecken_Breite', 'MT_LIMET_Spuelbecken_Tiefe', 'MT_LIMET_Spuelbecken_Hoehe'],
         ],
         'element_id' => '4.35.20.1',
         'element_params' => [],
@@ -330,36 +329,42 @@ const ELEMENT_MAPPING = [
         'variante_params' => ['MT_LIMET_Breite'],
     ],
 
+    'TMO_-_LIMET_9-30-45-35 Mikrobiol. Sicherheitswerkbank Klasse 2 DIN 12469 Abluft' => [
+        'match' => 'exact',
+        'typ' => 'fixed',
+        'element_id' => '9.30.45.35',
+        'element_params' => [],
+        'variante_params' => ['MT_LIMET_Breite'],
+    ],
 
     // Labortiefkühlschrank — Auswahl per Breite×Höhe aus MT_LIMET_Breite / MT_LIMET_Höhe.
     // Typ 'tisch' mit dim2_param=MT_LIMET_Höhe statt Tiefe.
     // Breite kommt aus der Länge-Spalte (oder MT_LIMET_Breite),
     // Höhe kommt aus der Höhe-Spalte (oder MT_LIMET_Höhe über dim2_param).
     // sondermass → 9.30.30.1 (generische, wenn keine Abmessung passt)
-    '9-30-30-5' => [
-        'match' => 'prefix',
-        'typ' => 'tisch',
-        'dim2_param' => 'MT_LIMET_Höhe',
-        'dim2_label' => 'H',
-        'breite_tiefe' => [
-            // Schlüssel: "Breite_cm x Höhe_cm"
-            '60x86' => '9.30.30.35', // Unterbau B60 H86
-            '60x90' => '9.30.30.21', // freistehend B60 H90
-            '65x200' => '9.30.30.22', // freistehend B65 H200
-            '80x160' => '9.30.30.15', // freistehend B80 H160
-            '80x200' => '9.30.30.29', // freistehend B80 H200
-            '100x100' => '9.30.30.36', // -80°C B100 T70 H100
-            '100x200' => '9.30.30.32', // -80°C B100 T100 H200
-            '115x200' => '9.30.30.33', // -80°C B115 T100 H200
-            '125x200' => '9.30.30.34', // -80°C B125 T100 H200
-            '150x220' => '9.30.30.27', // freistehend B150 H220
-        ],
-        'sondermass' => '9.30.30.1',
-        'element_params' => ['MT_LIMET_Breite', 'MT_LIMET_Höhe'],
-        'variante_params' => [],
-    ],
+    // '9-30-30-5' => [
+    //     'match' => 'prefix',
+    //     'typ' => 'tisch',
+    //     'dim2_param' => 'MT_LIMET_Höhe',
+    //     'dim2_label' => 'H',
+    //     'breite_tiefe' => [
+    //         // Schlüssel: "Breite_cm x Höhe_cm"
+    //         '60x86' => '9.30.30.35', // Unterbau B60 H86
+    //         '60x90' => '9.30.30.21', // freistehend B60 H90
+    //         '65x200' => '9.30.30.22', // freistehend B65 H200
+    //         '80x160' => '9.30.30.15', // freistehend B80 H160
+    //         '80x200' => '9.30.30.29', // freistehend B80 H200
+    //         '100x100' => '9.30.30.36', // -80°C B100 T70 H100
+    //         '100x200' => '9.30.30.32', // -80°C B100 T100 H200
+    //         '115x200' => '9.30.30.33', // -80°C B115 T100 H200
+    //         '125x200' => '9.30.30.34', // -80°C B125 T100 H200
+    //         '150x220' => '9.30.30.27', // freistehend B150 H220
+    //     ],
+    //     'sondermass' => '9.30.30.1',
+    //     'element_params' => ['MT_LIMET_Breite', 'MT_LIMET_Höhe'],
+    //     'variante_params' => [],
+    // ],
 
-    // Abzug-Esse — fix, keine Dimensionen
     'TMO_-_LIMET_9-30-10-3 Abzug-Esse' => [
         'match' => 'exact',
         'typ' => 'fixed',
@@ -368,7 +373,14 @@ const ELEMENT_MAPPING = [
         'variante_params' => [],
     ],
 
-// Wägetisch — fix, keine Dimensionen
+    'TMO_-_LIMET_9.30.20.1 RDG Labor' => [
+        'match' => 'exact',
+        'typ' => 'fixed',
+        'element_id' => '1.82.11.1',
+        'element_params' => [],
+        'variante_params' => [],
+    ],
+
     'TMO_-_LIMET_9-30-35-2 Wägetisch' => [
         'match' => 'exact',
         'typ' => 'fixed',
@@ -377,7 +389,6 @@ const ELEMENT_MAPPING = [
         'variante_params' => [],
     ],
 
-// Mikroskopietisch hydraulisch gedämpft — fix, keine Dimensionen
     'TMO_-_LIMET_9-30-40-9 Mikroskopiertisch - hydraulisch gedämpft' => [
         'match' => 'exact',
         'typ' => 'fixed',
@@ -386,7 +397,6 @@ const ELEMENT_MAPPING = [
         'variante_params' => [],
     ],
 
-// Reinraumwerkbank — fix, keine Dimensionen
     'TMO_-_LIMET_9-30-45-2 Reinraumwerkbank' => [
         'match' => 'exact',
         'typ' => 'fixed',
@@ -411,28 +421,43 @@ const ELEMENT_MAPPING = [
         'variante_params' => [],
     ],
 
-    'TMO_LIMET_9-30-30-5 Labortiefkühlschrank' => [
+    'TMO_-_LIMET_9-30-30-20 Laborkühlschrank freistehend B70 H200' => [
         'match' => 'exact',
-        'typ' => 'tisch',
-        'dim2_param' => 'MT_LIMET_Höhe',
-        'dim2_label' => 'H',
-        'breite_tiefe' => [
-            '60x86'   => '9.30.30.35',
-            '60x90'   => '9.30.30.21',
-            '65x200'  => '9.30.30.22',
-            '80x160'  => '9.30.30.15',
-            '80x200'  => '9.30.30.29',
-            '100x100' => '9.30.30.36',
-            '100x200' => '9.30.30.32',
-            '115x200' => '9.30.30.33',
-            '125x200' => '9.30.30.34',
-            '150x220' => '9.30.30.27',
-        ],
-        'sondermass'        => '9.30.30.7',
-        'no_dim_fallback'   => '9.30.30.7',   // ← neu: kein Breite/Höhe → Basis-Labortiefkühlschrank
-        'element_params'    => ['MT_LIMET_Breite', 'MT_LIMET_Höhe'],
-        'variante_params'   => [],
+
+        'typ' => 'fixed',
+        'element_id' => '9.30.30.20',
+        'element_params' => [],
+        'variante_params' => [],
+        //  'typ' => 'tisch',
+        //  'dim2_param' => 'MT_LIMET_Höhe',
+        //  'dim2_label' => 'H',
+        //  'breite_tiefe' => [
+        //      '60x86'   => '9.30.30.35',
+        //      '60x90'   => '9.30.30.21',
+        //      '65x200'  => '9.30.30.22',
+        //      '80x160'  => '9.30.30.15',
+        //      '80x200'  => '9.30.30.29',
+        //      '100x100' => '9.30.30.36',
+        //      '100x200' => '9.30.30.32',
+        //      '115x200' => '9.30.30.33',
+        //      '125x200' => '9.30.30.34',
+        //      '150x220' => '9.30.30.27',
+        //  ],
+        //  'sondermass'        => '9.30.30.7',
+        //  'no_dim_fallback'   => '9.30.30.7',   // ← neu: kein Breite/Höhe → Basis-Labortiefkühlschrank
+        //  'element_params'    => ['MT_LIMET_Breite', 'MT_LIMET_Höhe'],
+        //  'variante_params'   => [],
     ],
+
+    'TMO_LIMET_9-30-30-5 Labortief' => [
+        'match' => 'prefix',
+        'typ' => 'fixed',
+        'element_id' => '9.30.30.5',
+        'element_params' => [],
+        'variante_params' => [],
+    ],
+
+
     'TMO_-_LIMET_4-20-10-10 Hochschrank - Flügel DIN CrNi eintürig' => [
         'match' => 'exact',
         'typ' => 'fixed',
@@ -440,6 +465,15 @@ const ELEMENT_MAPPING = [
         'element_params' => [],
         'variante_params' => ['MT_LIMET_Breite'],
     ],
+
+    'TMO_-_LIMET_00-0-0-00 Brüstungskanal AGES' => [
+        'match' => 'exact',
+        'typ' => 'fixed',
+        'element_id' => '4.35.15.2',
+        'element_params' => [],
+        'variante_params' => ['MT_LIMET_Breite'],
+    ],
+
     'TMO_-_LIMET_4-35-30-2 Gefahrenstoffsicherheitsschrank - SäureLaugen doppelflügelig' => [
         'match' => 'exact',
         'typ' => 'fixed',

@@ -9,7 +9,7 @@ function title2data(columnsDefinition, title) {
 }*/
 
 const buttonRanges = [
-    {name: 'All', start: 6, end: 171, longName: 'Alle Spalten'},
+    {name: 'All', start: 6, end: 174, longName: 'Alle Spalten'},
     {name: 'RA', start: 7, end: 26, longName: 'Raum'},
     {name: 'HKLS', start: 27, end: 36, longName: 'HKLS'},
     {name: 'ET', start: 37, end: 58, longName: 'Elektro'},
@@ -20,7 +20,7 @@ const buttonRanges = [
     {name: '-ET', start: 121, end: 132, longName: 'Labor-ET'},
     {name: '-HT', start: 133, end: 142, longName: 'Labor-HT'},
     {name: '-H2O', start: 143, end: 151, longName: 'Labor-H2O'},
-    {name: 'GCP', start: 152, end: 171, longName: 'GCP'},
+    {name: 'GCP', start: 152, end: 174, longName: 'GCP'},
 ];
 
 
@@ -260,4 +260,9 @@ const columnsDefinition = [
     {data: 'HT_Belueftung', title: 'HT_Belueftung', visible: false, case: ""}, // 168 | GCP
     {data: 'HT_Entlueftung', title: 'HT_Entlueftung', visible: false, case: ""}, // 169 | GCP
     {data: 'PHY_Akustik_Schallgrad', title: 'PHY_Akustik_Schallgrad', visible: false, case: ""}, // 170 | GCP-End
-]
+
+    {data: 'HT_Kühlwasser', title: 'HT_Kühlwasser', visible: false, case: "bit"}, // 170 | GCP-End
+    {data: 'HT_Spezialabwasser', title: 'HT_Spezialabwasser', visible: false, case: ""}, // 170 | GCP-End
+    {data: 'Nutzwasser', title: 'Nutzwasser', visible: false, case: "bit"}, // 170 | GCP-End
+
+    ];

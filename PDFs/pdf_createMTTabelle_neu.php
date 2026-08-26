@@ -46,7 +46,7 @@ function abk_vz(array $paramInfos, $pdf, float $f_size): void
     $pdf->MultiCell(20, $f_size, 'Abkürzungen: ', 0, 'L', 0, 0, '', '', true, 0, false, false, 0);
 
     foreach ($paramInfos as $entry) {
-        $label = $entry['Bezeichnung'];
+        $label = $entry['Abkuerzung'];
 
         // "Label-" part (bold)
         $w = $pdf->GetStringWidth($label . '-', 'courier', 'B', $f_size);
@@ -56,7 +56,7 @@ function abk_vz(array $paramInfos, $pdf, float $f_size): void
         $pdf->SetFont('courier', 'B', $f_size);
         $pdf->MultiCell($w + 3, $f_size, $label . '-', 0, 'R', 0, 0, '', '', true, 0, false, false, 0);
 
-        // "Label;" part (normal)
+        $label= $entry['Bezeichnung'];
         $w = $pdf->GetStringWidth($label . ';', 'courier', '', $f_size);
         if (($pdf->GetX() + $w) >= 400) {
             $pdf->Ln($f_size / 2);
@@ -164,7 +164,8 @@ function make_MT_details_table($pdf, $result, $result1, $result3, int $SB, int $
         $allParamInfos[$id] = [
             'ParamID'     => $id,
             'KategorieID' => $row['idTABELLE_Parameter_Kategorie'],
-            'Bezeichnung' => $row['Abkuerzung'],
+            'Bezeichnung' => $row['Bezeichnung'],
+            'Abkuerzung' => $row['Abkuerzung'],
             'Kategorie'   => $row['Kategorie'],
         ];
     }

@@ -716,9 +716,17 @@ document.getElementById('btn-batch-sync').addEventListener('click', async functi
         });
         const res = await response.json();
 
+
         const resultEl = document.getElementById('batch-sync-result');
         resultEl.style.display = 'block';
 
+        if (res.error) {
+            resultEl.className = 'alert alert-danger small mx-3 mt-2';
+            resultEl.innerHTML = `<i class="fas fa-exclamation-circle me-1"></i>${esc(res.error)}`;
+            this.disabled  = false;
+            this.innerHTML = `<i class="fas fa-database me-1"></i>Alle Änderungen übernehmen`;
+            return;
+        }
         if (res.ok) {
             resultEl.className = 'alert alert-success small mx-3 mt-2';
             resultEl.innerHTML = `<i class="fas fa-check-circle me-1"></i>

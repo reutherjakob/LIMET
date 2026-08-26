@@ -45,7 +45,10 @@ init_page_serversides("x"); ?>
                     <div class="mt-1 card">
                         <div class="card-header">
                             <div class="row d-flex align-items-center">
-                                <div class="col-xxl-6 col-6">Elemente in DB</div>
+                                <div class="col-xxl-6 col-6">
+                                    <div class="badge-secondary" id="ElementsInDbLabel">Elemente in DB
+                                    </div>
+                                </div>
                                 <div class="col-xxl-6 col-6 d-flex justify-content-end"
                                      id="CardHeaderElementesInDb"></div>
                             </div>
@@ -267,13 +270,23 @@ init_page_serversides("x"); ?>
                     }
                 }
             },
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fas fa-file-excel"></i> Elemente in DB',
+                    className: 'btn btn-secondary  bg-light text-dark',
+                    title: "Elements in DB"
+                }
+            ],
             layout: {
                 topStart: null,
                 topEnd: null,
-                bottomStart: ['info', 'search'],
+                bottomStart: ['info', 'search', 'buttons'],
                 bottomEnd: ['pageLength', 'paging'],
             },
             initComplete: function () {
+                $('#ElementsInDbLabel').empty();
+                $('#tableElementsInDB_wrapper .dt-buttons').appendTo('#ElementsInDbLabel');
                 $('#tableElementsInDB_wrapper .dt-search label').remove();
                 $('#tableElementsInDB_wrapper .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
             }

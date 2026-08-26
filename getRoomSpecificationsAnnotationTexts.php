@@ -35,7 +35,7 @@ check_login();
 
 <?php
 $mysqli = utils_connect_sql();
-$sql = "SELECT `Anmerkung FunktionBO`, `Anmerkung Geräte`, `Anmerkung BauStatik`, `Anmerkung Elektro`, `Anmerkung MedGas`, `Anmerkung HKLS` 
+$sql = "SELECT `Anmerkung FunktionBO`, `Anmerkung Geräte`, `Anmerkung BauStatik`, `Anmerkung Elektro`, `Anmerkung MedGas`, `Anmerkung HKLS`, `Anmerkung allgemein`
                 FROM tabelle_räume 
                 WHERE idTABELLE_Räume =? ";
 $stmt = $mysqli->prepare($sql);
@@ -52,7 +52,8 @@ $anmerkungen = [
     "BauStatik" => "Bau/ Statik/ Schwingungsklasse",
     "Elektro" => "Elektro",
     "HKLS" => "HKLS",
-    "MedGas" => "MedGas"
+    "MedGas" => "MedGas",
+    "allgemein" => "Allgemein"
 ];
 
 echo "<form class='form-horizontal'>";
@@ -61,7 +62,7 @@ foreach ($anmerkungen as $key => $label) {
                     <label class='control-label col-xxl-12' for='$key'></label>
                     <div class='col-xxl-12 hr-sect'><b> $label </b></div>
                     <div class='col-xxl-12'>
-                        <textarea class='form-control form-control-sm' rows='5' id='$key'>" . br2nl($row["Anmerkung " . ucfirst($key)]) . "</textarea>
+                            <textarea class='form-control form-control-sm' rows='5' id='$key'>" . br2nl($row["Anmerkung " . $key]) . "</textarea>
                     </div>
                 </div>";
 }
@@ -142,6 +143,7 @@ echo " <!-- Modal zum Kopieren der Bauangaben -->
         let medgas = $("#MedGas").val();
         let baustatik = $("#BauStatik").val();
         let hkls = $("#HKLS").val();
+        let allg = $("#Allgemein").val();
         $.ajax({
             url: "updateRoomSpecificationAnnotationTexts.php",
             data: {
@@ -150,7 +152,8 @@ echo " <!-- Modal zum Kopieren der Bauangaben -->
                 "geraete": geraete,
                 "medgas": medgas,
                 "baustatik": baustatik,
-                "hkls": hkls
+                "hkls": hkls,
+                "allg":allg
             },
             type: "POST",
             success: function (data) {

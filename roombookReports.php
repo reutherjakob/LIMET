@@ -158,7 +158,8 @@ init_page_serversides("", "x");
             {text: "ohne Änderungsmarkierungen", url: "pdf_createBauangabenBericht_A3Qeer_1"},
             {text: "ohne Lab", url: "pdf_createBauangabenBericht_A3Qeer_ohne_Lab_params"},
             {text: "VE", url: "pdf_createBauangabenBericht_A3Qeer_VE"},
-            {text: "CINO", url: "pdf_createBauangabenBericht_A3Qeer_CINO"}
+            {text: "CINO", url: "pdf_createBauangabenBericht_A3Qeer_CINO"},
+            {text: "SF", url: "pdf_createBauangabenBericht_SF"}
         ],
         elementReports: [
             {text: "Elem./Raum (w/Bestand)", url: "pdf_createRoombookElWithoutBestand"},

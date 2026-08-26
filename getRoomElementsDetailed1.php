@@ -6,23 +6,30 @@ check_login();
 
 $mysqli = utils_connect_sql();
 $sql_room_elements = "SELECT 
-    tabelle_räume_has_tabelle_elemente.id, 
-       tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete,
-       tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
-       tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, 
-       tabelle_räume_has_tabelle_elemente.Anzahl, 
-       tabelle_elemente.ElementID, 
-       tabelle_elemente.Kurzbeschreibung As `Elementbeschreibung`, 
-       tabelle_varianten.Variante, 
-       tabelle_elemente.Bezeichnung, tabelle_geraete.GeraeteID, tabelle_hersteller.Hersteller, tabelle_geraete.Typ, 
-       tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, tabelle_räume_has_tabelle_elemente.Standort,  
-       tabelle_räume_has_tabelle_elemente.Verwendung, tabelle_räume_has_tabelle_elemente.Kurzbeschreibung, 
-       tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
-       tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete
-FROM tabelle_varianten INNER JOIN (tabelle_hersteller RIGHT JOIN ((tabelle_räume_has_tabelle_elemente
-    LEFT JOIN tabelle_geraete ON tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete = tabelle_geraete.idTABELLE_Geraete) INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON tabelle_hersteller.idtabelle_hersteller = tabelle_geraete.tabelle_hersteller_idtabelle_hersteller) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
-WHERE (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=?))
-ORDER BY  tabelle_elemente.ElementID DESC;";
+                           tabelle_räume_has_tabelle_elemente.id, 
+                           tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete,
+                           tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente,
+                           tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten, 
+                           tabelle_räume_has_tabelle_elemente.Anzahl, 
+                           tabelle_elemente.ElementID, 
+                           tabelle_elemente.Kurzbeschreibung As `Elementbeschreibung`, 
+                           tabelle_varianten.Variante, 
+                           tabelle_elemente.Bezeichnung,
+                           tabelle_geraete.GeraeteID, 
+                           tabelle_hersteller.Hersteller,
+                           tabelle_geraete.Typ, 
+                           tabelle_räume_has_tabelle_elemente.`Neu/Bestand`, 
+                           tabelle_räume_has_tabelle_elemente.Standort,  
+                           tabelle_räume_has_tabelle_elemente.Verwendung,
+                           tabelle_räume_has_tabelle_elemente.Kurzbeschreibung, 
+                           tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente, 
+                           tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete,
+                           tabelle_räume_has_tabelle_elemente.Anzahl, 
+                           tabelle_räume_has_tabelle_elemente.tabelle_projektbudgets_idtabelle_projektbudgets AS BudgetID
+                    FROM tabelle_varianten INNER JOIN (tabelle_hersteller RIGHT JOIN ((tabelle_räume_has_tabelle_elemente
+                        LEFT JOIN tabelle_geraete ON tabelle_räume_has_tabelle_elemente.TABELLE_Geraete_idTABELLE_Geraete = tabelle_geraete.idTABELLE_Geraete) INNER JOIN tabelle_elemente ON tabelle_räume_has_tabelle_elemente.TABELLE_Elemente_idTABELLE_Elemente = tabelle_elemente.idTABELLE_Elemente) ON tabelle_hersteller.idtabelle_hersteller = tabelle_geraete.tabelle_hersteller_idtabelle_hersteller) ON tabelle_varianten.idtabelle_Varianten = tabelle_räume_has_tabelle_elemente.tabelle_Varianten_idtabelle_Varianten
+                    WHERE (((tabelle_räume_has_tabelle_elemente.TABELLE_Räume_idTABELLE_Räume)=?))
+                    ORDER BY  tabelle_elemente.ElementID DESC;";
 
 $stmt_room_elements = $mysqli->prepare($sql_room_elements);
 $stmt_room_elements->bind_param("i", $_SESSION["roomID"]);
@@ -36,6 +43,25 @@ $stmt_var = $mysqli->prepare("
 $stmt_var->execute();
 $varianten_options = $stmt_var->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt_var->close();
+
+// Budget-Spalte nur für bestimmte Projekte
+$projectID            = (int)($_SESSION["projectID"] ?? 0);
+$budgetColumnProjects = [75, 86];
+$showBudgetColumn     = in_array($projectID, $budgetColumnProjects, true);
+
+$budget_options = [];
+if ($showBudgetColumn) {
+    $stmt_budgets = $mysqli->prepare("
+        SELECT idtabelle_projektbudgets, Budgetnummer, Budgetname
+        FROM tabelle_projektbudgets
+        WHERE tabelle_projekte_idTABELLE_Projekte = ?
+        ORDER BY Budgetnummer
+    ");
+    $stmt_budgets->bind_param("i", $projectID);
+    $stmt_budgets->execute();
+    $budget_options = $stmt_budgets->get_result()->fetch_all(MYSQLI_ASSOC);
+    $stmt_budgets->close();
+}
 
 $mysqli->close();
 ?>
@@ -93,6 +119,9 @@ $mysqli->close();
         <th>Verw</th>
         <th class='d-flex justify-content-center align-items-center' data-bs-toggle='tooltip' title='Kommentar'><i
                     class='far fa-comment'></i></th>
+        <?php if ($showBudgetColumn): ?>
+            <th>Budget</th>
+        <?php endif; ?>
         <th>Verlauf</th>
         <th></th>
     </tr>
@@ -154,6 +183,22 @@ $mysqli->close();
                         id="<?php echo $row["id"]; ?>" title="Kommentar"><i class="<?php echo $iconClass; ?>"></i>
                 </button>
             </td>
+            <?php if ($showBudgetColumn): ?>
+                <td data-order="<?php echo (int)$row['BudgetID']; ?>">
+                    <label for="budget<?php echo $row['id']; ?>" style="display:none;"></label>
+                    <select class="form-control form-control-sm budget-select"
+                            id="budget<?php echo $row['id']; ?>"
+                            data-roombook-id="<?php echo $row['id']; ?>">
+                        <option value="0"<?php echo empty($row['BudgetID']) ? ' selected' : ''; ?>>0-Budget wählen</option>
+                        <?php foreach ($budget_options as $b) {
+                            $sel = ((int)$row['BudgetID'] === (int)$b['idtabelle_projektbudgets']) ? ' selected' : '';
+                            echo "<option value='{$b['idtabelle_projektbudgets']}'$sel>"
+                                . htmlspecialchars($b['Budgetnummer'] . '-' . $b['Budgetname'], ENT_QUOTES, 'UTF-8')
+                                . "</option>";
+                        } ?>
+                    </select>
+                </td>
+            <?php endif; ?>
             <td data-order="history">
                 <button type="button" id="<?php echo $row["id"]; ?>" class="btn btn-sm btn-outline-dark"
                         value="history"><i class="fas fa-history"></i></button>
@@ -216,6 +261,7 @@ include "modal_elementHistory.html";
         attachButtonListeners();
         addRememberSortingControl();
         initPopoverTips();
+        attachBudgetListener();
     });
 
     function initPopoverTips() {
@@ -399,6 +445,16 @@ include "modal_elementHistory.html";
                     localStorage.setItem('roomElementsSort', JSON.stringify(currentSort));
                 }
             }
+        });
+    }
+
+    function attachBudgetListener() {
+        $('#tableRoomElements').on('change', 'tbody select.budget-select', function () {
+            const roombookID = $(this).data('roombook-id');
+            const budgetID   = this.value;
+            $.post('saveRoombookBudget.php', {roombookID, budgetID})
+                .done(data => makeToaster((data || '').toString().trim(), true))
+                .fail(() => makeToaster('Fehler beim Speichern des Budgets'));
         });
     }
 

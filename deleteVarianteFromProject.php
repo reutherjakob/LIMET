@@ -23,22 +23,26 @@ $mysqli = utils_connect_sql();
  * Verhindert versehentliches Löschen echter, benutzter Varianten.
  * -------------------------------------------------------------------------- */
 $check = $mysqli->prepare(
-    "SELECT COALESCE(SUM(rhe.Anzahl), 0) AS summe
+    "SELECT COUNT(*) AS treffer
      FROM tabelle_räume_has_tabelle_elemente rhe
      INNER JOIN tabelle_räume r
-             ON r.idTABELLE_Räume = rhe.TABELLE_Räume_idTABELLE_Räume
+             ON r.idTABELLE_Räume =
+                rhe.TABELLE_Räume_idTABELLE_Räume
      WHERE rhe.TABELLE_Elemente_idTABELLE_Elemente = ?
        AND rhe.tabelle_Varianten_idtabelle_Varianten = ?
-       AND r.tabelle_projekte_idTABELLE_Projekte = ?"
+       AND r.tabelle_projekte_idTABELLE_Projekte = ?
+       AND COALESCE(rhe.Anzahl, 0) <> 0"
 );
+
 $check->bind_param("iii", $elementID, $variantenID, $projectID);
 $check->execute();
-$summe = (int)($check->get_result()->fetch_assoc()['summe'] ?? 0);
+
+$treffer = (int)($check->get_result()->fetch_assoc()['treffer'] ?? 0);
 $check->close();
 
-if ($summe !== 0) {
+if ($treffer > 0) {
     http_response_code(409);
-    echo "Abbruch: Anzahl ist $summe (≠ 0). Es wurde nichts gelöscht.";
+    echo "Abbruch: Es existieren noch belegte Raumzuordnungen.";
     $mysqli->close();
     exit;
 }
@@ -87,20 +91,6 @@ try {
     $s3->execute();
     $n3 = $s3->affected_rows;
     $s3->close();
-
-    /* ----------------------------------------------------------------------
-     * 4) OPTIONAL: Kosten-Änderungshistorie.
-     *    Diese Tabelle hat KEINEN Foreign Key auf tabelle_varianten und tauchte
-     *    daher nicht in der FK-Abfrage auf. Es ist Audit-/Verlaufsdaten.
-     *    Nur aktivieren, wenn die Historie ebenfalls mit gelöscht werden soll.
-     * ---------------------------------------------------------------------- */
-    // $s4 = $mysqli->prepare(
-    //     "DELETE FROM tabelle_projekt_varianten_kosten_aenderung
-    //      WHERE element = ? AND variante = ? AND projekt = ?"
-    // );
-    // $s4->bind_param("iii", $elementID, $variantenID, $projectID);
-    // $s4->execute();
-    // $s4->close();
 
     $mysqli->commit();
     echo "Variante gelöscht (Zuordnungen: $n1, Kosten: $n2, Parameter: $n3).";

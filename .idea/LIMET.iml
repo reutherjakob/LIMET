@@ -28,5 +28,7 @@
     <orderEntry type="library" name="chart.js" level="application" />
     <orderEntry type="library" name="select2-bootstrap-5-theme" level="application" />
     <orderEntry type="library" name="viewerjs" level="application" />
+    <orderEntry type="library" name="dataTables.bootstrap5" level="application" />
+    <orderEntry type="library" name="buttons.bootstrap5" level="application" />
   </component>
 </module>

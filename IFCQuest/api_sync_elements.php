@@ -40,6 +40,22 @@ function json_error(string $msg, int $code = 400): never
     exit;
 }
 
+
+function build_kommentar(mysqli $db, int $rhe_id, string $neu): string
+{// Liest den bestehenden Kommentar und stellt den neuen Eintrag oben voran (Historie bleibt erhalten, neueste Zeile zuerst).
+
+    $alt = '';
+    if ($rhe_id > 0) {
+        $s = $db->prepare("SELECT Kurzbeschreibung FROM tabelle_räume_has_tabelle_elemente WHERE id = ?");
+        $s->bind_param('i', $rhe_id);
+        $s->execute();
+        $alt = (string)($s->get_result()->fetch_row()[0] ?? '');
+        $s->close();
+    }
+    $alt = trim($alt);
+    return $alt === '' ? $neu : $neu . "\n" . $alt;
+}
+
 /**
  * Variante A (idtabelle_Varianten = 1) ist IMMER der parameterlose Slot.
  *
@@ -62,7 +78,7 @@ function get_or_create_variante(mysqli $db, int $projekt_id, int $planungsphase,
     // ──────────────────────────────────────────────────────────────
     // Hilfsfunktion: alle Projekt-Parameter für ein Element laden
     // ──────────────────────────────────────────────────────────────
-    $load_params_for_vid = function(int $vid) use ($db, $projekt_id, $element_id): array {
+    $load_params_for_vid = function (int $vid) use ($db, $projekt_id, $element_id): array {
         $s = $db->prepare("
             SELECT tabelle_parameter_idTABELLE_Parameter AS pid, Wert
             FROM tabelle_projekt_elementparameter
@@ -81,7 +97,7 @@ function get_or_create_variante(mysqli $db, int $projekt_id, int $planungsphase,
     // Hilfsfunktion: prüft ob eine Variante im Projekt für dieses
     // Element wirklich "frei" ist (alle Anzahl = 0 oder gar keine rhe)
     // ──────────────────────────────────────────────────────────────
-    $is_free_variant = function(int $vid) use ($db, $projekt_id, $element_id): bool {
+    $is_free_variant = function (int $vid) use ($db, $projekt_id, $element_id): bool {
         $s = $db->prepare("
             SELECT COUNT(*) AS cnt
             FROM tabelle_räume_has_tabelle_elemente rhe
@@ -101,7 +117,7 @@ function get_or_create_variante(mysqli $db, int $projekt_id, int $planungsphase,
     // ──────────────────────────────────────────────────────────────
     // Hilfsfunktion: Parameter für ein Element+Variante schreiben
     // ──────────────────────────────────────────────────────────────
-    $write_params = function(int $vid) use ($db, $projekt_id, $planungsphase, $element_id, $params): void {
+    $write_params = function (int $vid) use ($db, $projekt_id, $planungsphase, $element_id, $params): void {
         foreach ($params as $pid => $info) {
             $stmt = $db->prepare("
                 INSERT INTO tabelle_projekt_elementparameter
@@ -111,9 +127,9 @@ function get_or_create_variante(mysqli $db, int $projekt_id, int $planungsphase,
                 VALUES (?, ?, ?, ?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE Wert = VALUES(Wert), Einheit = VALUES(Einheit)
             ");
-            $wert    = (string)$info['wert'];
+            $wert = (string)$info['wert'];
             $einheit = (string)($info['einheit'] ?? '');
-            $ipid    = (int)$pid;
+            $ipid = (int)$pid;
             $stmt->bind_param('iiiissi', $projekt_id, $element_id, $ipid, $vid, $wert, $einheit, $planungsphase);
             $stmt->execute();
             $stmt->close();
@@ -184,14 +200,14 @@ function get_or_create_variante(mysqli $db, int $projekt_id, int $planungsphase,
         ORDER BY idtabelle_Varianten
     ");
 
-    $new_vid    = null;
+    $new_vid = null;
     $new_letter = null;
     foreach ($all_variants->fetch_all(MYSQLI_ASSOC) as $row) {
         $rid = (int)$row['id'];
         // Nicht bereits für dieses Element mit diesen Params genutzt
         // UND im Projekt wirklich frei (Anzahl überall 0)
         if (!isset($used_flip[$rid]) && $is_free_variant($rid)) {
-            $new_vid    = $rid;
+            $new_vid = $rid;
             $new_letter = $row['letter'];
             break;
         }
@@ -323,8 +339,11 @@ try {
         // ── REMOVE ────────────────────────────────────────────────
         if ($type === 'remove') {
             $rhe_id = (int)$action['rhe_id'];
-            $kommentar = trim($action['kommentar'] ?? 'Entfernt via Excel-Abgleich');
+            $user_kommentar = trim($action['kommentar'] ?? 'Entfernt via Excel-Abgleich');
             $ts = date('Y-m-d H:i:s');
+
+            $neu = date('d.m.Y') . ': ' . $user_kommentar;
+            $kommentar = build_kommentar($mysqli, $rhe_id, $neu);
 
             $stmt = $mysqli->prepare("
                 UPDATE tabelle_räume_has_tabelle_elemente
@@ -336,7 +355,7 @@ try {
             $ok = $stmt->affected_rows >= 0;
             $stmt->close();
 
-            audit_log($mysqli, $projekt_id, $user_id, 'remove', ['rhe_id' => $rhe_id, 'kommentar' => $kommentar]);
+            //audit_log($mysqli, $projekt_id, $user_id, 'remove', ['rhe_id' => $rhe_id, 'kommentar' => $kommentar]);
             $results[] = ['type' => 'remove', 'rhe_id' => $rhe_id, 'ok' => $ok];
 
             // ── UPDATE ANZAHL ──────────────────────────────────────────
@@ -345,19 +364,28 @@ try {
             $anzahl = max(0, (int)$action['anzahl']);
             $ts = date('Y-m-d H:i:s');
 
+            // Bisherige Anzahl lesen für "von X auf Y"
+            $chk = $mysqli->prepare("SELECT Anzahl FROM tabelle_räume_has_tabelle_elemente WHERE id = ?");
+            $chk->bind_param('i', $rhe_id);
+            $chk->execute();
+            $alt_anzahl = (int)($chk->get_result()->fetch_row()[0] ?? 0);
+            $chk->close();
+
+            $neu = sprintf('%s: Anzahl von %d auf %d geändert via Excel-Import', date('d.m.Y'), $alt_anzahl, $anzahl);
+            $kommentar = build_kommentar($mysqli, $rhe_id, $neu);
+
             $stmt = $mysqli->prepare("
                 UPDATE tabelle_räume_has_tabelle_elemente
-                SET Anzahl = ?, Timestamp = ?
+                SET Anzahl = ?, Kurzbeschreibung = ?, Timestamp = ?
                 WHERE id = ?
             ");
-            $stmt->bind_param('isi', $anzahl, $ts, $rhe_id);
+            $stmt->bind_param('issi', $anzahl, $kommentar, $ts, $rhe_id);
             $stmt->execute();
             $ok = $stmt->affected_rows >= 0;
             $stmt->close();
 
-            audit_log($mysqli, $projekt_id, $user_id, 'update', ['rhe_id' => $rhe_id, 'anzahl' => $anzahl]);
+         //   audit_log($mysqli, $projekt_id, $user_id, 'update', ['rhe_id' => $rhe_id, 'anzahl' => $anzahl, 'alt_anzahl' => $alt_anzahl, 'kommentar' => $kommentar]);
             $results[] = ['type' => 'update', 'rhe_id' => $rhe_id, 'anzahl' => $anzahl, 'ok' => $ok];
-
             // ── ADD (mit Variante + Parameter) ─────────────────────────
         } elseif ($type === 'add') {
             $raum_id = (int)$action['raum_id'];
@@ -385,13 +413,13 @@ try {
                         ? $info
                         : ['wert' => (string)$info, 'einheit' => ''];
                 }
-                $var_result  = get_or_create_variante($mysqli, $projekt_id, $planungsphase, $element_id, $params_typed);
+                $var_result = get_or_create_variante($mysqli, $projekt_id, $planungsphase, $element_id, $params_typed);
                 $variante_id = $var_result['vid'];
                 $var_warning = $var_result['warning'];
             }
 
-            $ts        = date('Y-m-d H:i:s');
-            $kommentar = 'Hinzugefügt via Excel-Import ' . date('d.m.Y');
+            $ts            = date('Y-m-d H:i:s');
+            $neu_kommentar = date('d.m.Y') . ': Hinzugefügt via Excel-Import';
 
             // Prüfen ob bereits ein rhe-Eintrag für Raum+Element+Variante existiert
             // (auch mit Anzahl=0 — dann nur hochzählen, kein doppelter INSERT)
@@ -410,6 +438,7 @@ try {
             if ($existing_rhe) {
                 // Eintrag existiert bereits → Anzahl aktualisieren
                 $rhe_upd_id = (int)$existing_rhe['id'];
+                $kommentar  = build_kommentar($mysqli, $rhe_upd_id, $neu_kommentar);
                 $stmt = $mysqli->prepare("
                     UPDATE tabelle_räume_has_tabelle_elemente
                     SET Anzahl = ?, Kurzbeschreibung = ?, Timestamp = ?
@@ -417,7 +446,7 @@ try {
                 ");
                 $stmt->bind_param('issi', $anzahl, $kommentar, $ts, $rhe_upd_id);
                 $stmt->execute();
-                $ok     = $stmt->affected_rows >= 0;
+                $ok = $stmt->affected_rows >= 0;
                 $new_id = $rhe_upd_id;
                 $stmt->close();
             } else {
@@ -429,10 +458,10 @@ try {
                          Kurzbeschreibung, Timestamp, Standort, Verwendung)
                     VALUES (?, ?, 1, ?, ?, ?, ?, 1, 1)
                 ");
-                $stmt->bind_param('iiiiss', $raum_id, $element_id, $anzahl, $variante_id, $kommentar, $ts);
+                $stmt->bind_param('iiiiss', $raum_id, $element_id, $anzahl, $variante_id, $neu_kommentar, $ts);
                 $stmt->execute();
                 $new_id = (int)$stmt->insert_id;
-                $ok     = $new_id > 0;
+                $ok = $new_id > 0;
                 $stmt->close();
             }
 
@@ -462,12 +491,12 @@ try {
                 $stmt_cost_ins->close();
             }
 
-            audit_log($mysqli, $projekt_id, $user_id, 'add', [
-                'raum_id'    => $raum_id,
-                'element_id' => $element_id,
-                'variante_id' => $variante_id,
-                'anzahl'     => $anzahl,
-            ]);
+            //  audit_log($mysqli, $projekt_id, $user_id, 'add', [
+            //      'raum_id'    => $raum_id,
+            //      'element_id' => $element_id,
+            //      'variante_id' => $variante_id,
+            //      'anzahl'     => $anzahl,
+            //  ]);
             $result_entry = ['type' => 'add', 'raum_id' => $raum_id, 'element_id' => $element_id,
                 'variante_id' => $variante_id, 'new_id' => $new_id, 'ok' => $ok];
             if ($var_warning) $result_entry['warning'] = $var_warning;
@@ -487,15 +516,15 @@ try {
     json_error('Datenbankfehler: ' . $e->getMessage(), 500);
 }
 
-$ok_count  = count(array_filter($results, fn($r) => $r['ok']));
+$ok_count = count(array_filter($results, fn($r) => $r['ok']));
 $err_count = count($results) - $ok_count;
-$warnings  = array_values(array_filter(array_column($results, 'warning')));
+$warnings = array_values(array_filter(array_column($results, 'warning')));
 
 echo json_encode([
-    'ok'       => $err_count === 0,
-    'total'    => count($results),
-    'success'  => $ok_count,
-    'errors'   => $err_count,
+    'ok' => $err_count === 0,
+    'total' => count($results),
+    'success' => $ok_count,
+    'errors' => $err_count,
     'warnings' => $warnings,
-    'results'  => $results,
+    'results' => $results,
 ], JSON_UNESCAPED_UNICODE);

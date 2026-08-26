@@ -145,8 +145,9 @@ include('roombookSpecifications_copyRoomModal.php');
             <header class="card-header fix_size"><b>Bauangaben Texte</b></header>
             <div class="card-body" id="bauangaben"></div>
         </div>
-        <div class="mt-4 card">
 
+
+        <div class="mt-4 card">
             <div class="card-header" id="CardHeaderElementsInRoom">
                 <div class="row" id="">
                     <div class="col-2" id="">
@@ -158,7 +159,6 @@ include('roombookSpecifications_copyRoomModal.php');
                     <div class="col-10 d-inline-flex justify-content-end " id="CardHeaderElementsInRoom2"></div>
                 </div>
             </div>
-
             <div class="card-body" id="additionalInfo">
                 <p id="roomElements"></p>
                 <p id="elementParameters"></p>

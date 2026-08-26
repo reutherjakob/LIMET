@@ -61,18 +61,13 @@
         "Test KHI" => "fas fa-yin-yang",
         "Labor Kategorien" => "fab fa-d-and-d",
         "WIGEV RV" => "fab fa-pushed",
-
-
         "KDO-BET" => "fas fa-dot-circle",
         "KDO-OPS" => "fas fa-dot-circle",
         "KDO-ZNA-alt" => "fas fa-dot-circle",
         "KDO-ZNA-interim" => "fas fa-dot-circle",
         "KDO-ZNA-neu" => "fas fa-dot-circle",
         "KDO-Narkose" => "fas fa-dot-circle",
-        "KDO-ZNA-OTR Interim" => "fas fa-dot-circle"
-
-    ];
-    //<i class="fas fa-mountain"></i>
+        "KDO-ZNA-OTR Interim" => "fas fa-dot-circle"];
     ?>
 
     <div class='row'>
@@ -94,7 +89,6 @@
                 </div>
 
                 <div class="card-body table-responsive p-0">
-
                     <table id='tableProjects'
                            class='table table-sm compact table-hover table-striped border border-1'>
                         <thead>
@@ -183,7 +177,6 @@
                         } ?>
                         </tbody>
                     </table>
-
                 </div>
             </div>
         </div>
@@ -196,13 +189,11 @@
                 </div>
             </div>
             <div class='card mt-2'>
-                <div class='card-header'><i class="far fa-heart"></i><strong> Raumbuch Updates </strong><i
-                            class="far fa-heart"></i>
+                <div class='card-header'>
+                    <i class="far fa-heart"></i><strong> Raumbuch Updates </strong><i class="far fa-heart"></i>
                 </div>
                 <div class='card-body'>
                     <div class="row">
-
-
                         <p>
                             <i class="fas fa-chess-rook col-1"></i>
                             <a class="col-10" href=" /utils/roombook_icons_legend.php">
@@ -252,7 +243,6 @@
                             </a>
                         </p>
 
-
                         <p>
                             <i class="fas fa-list-ol col-1"></i>
                             <a class="col-11" href="roombook_devicePrice.php">
@@ -283,49 +273,80 @@
 
                         <p>
                             <i class="fas fa-palette col-1"> </i>
-                            <a class="col-11" href="/roombookReports_New.php">
+                            <a class="col-11" href="/roombookReports.php">
                                 Custom(-izable) Report
                             </a>
                         </p>
 
-                        <p>
-                            <i class="fas fa-ring col-1"> </i>
-                            <a class="col-11" href="/elementsInProject.php">
-                                Alle Var ändern
-                            </a>
-                        </p>
 
 
                     </div>
-
                 </div>
             </div>
 
             <div class='card mt-2'>
                 <div class='card-body'>
                     <div class="row">
-
                         <p class="">
-
                             <i class="fas fa-icons col-1"></i>
                             <a class="col-10" href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free"
                                target="_blank">Projekt Icons</a>
                         </p>
-
                         <p class="">
-
                             <i class="fas fa-fist-raised col-1"></i>
                             <a class="col-10" href="/FeedbackCenter/FeedbackIndex.php" target="_blank">Feedback &
                                 Bugreport</a>.
                         </p>
-
                     </div>
-
                 </div>
             </div>
 
-        </div>
+            <div class='card mt-2'>
+                <div class='card-header'> Spargelfeld</div>
+                <div class='card-body'>
+                    <div class="row">
+                        <p>
+                            <i class="col-1  fab fa-galactic-republic"> </i>
+                            <a class="col-11" href="/roombook_elementsInProject_delete0.php">
+                                Nuller Vars entfernen
+                            </a>
+                        </p>
+                        <p>
+                            <i class="col-1 fas fa-jedi"> </i>
+                            <a class="col-11" href="/RaumtypenZuRaumbuch.php">
+                                RaumtypenZuRaumbuch
+                            </a>
+                        </p>
+                        <p>
+                            <i class="col-1 fab fa-galactic-senate"> </i>
+                            <a class="col-11" href="/roombook_sf_av_sv.php">
+                                AV SV Aufteilung
+                            </a>
+                        </p>
+                        <p>
+                            <i class="col-1 fab fa-old-republic"> </i>
+                            <a class="col-11" href="/Nutzerumfrage/Raumkategorien.php">
+                                Raumkategorien
+                            </a>
+                        </p>
+                        <p>
+                            <i class="col-1 fab fa-jedi-order"> </i>
+                            <a class="col-11" href="/IFCQuest/import_excel.php">
+                                Import Model Excel
+                            </a>
+                        </p>
+                        <p>
+                            <i class="col-1 fab fa-watchman-monitoring"> </i>
+                            <a class="col-11" href="/PDFs/pdf_raumtypen_sf.php">
+                               Raumtypenblätter
+                            </a>
+                        </p>
 
+
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div class='mt-2 row'>
         <div class='col-xxl-10'>

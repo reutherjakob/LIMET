@@ -37,12 +37,12 @@ function abk_vz($paramInfos, $pdf, $f_size): void
         $pdf->SetFont('courier', 'B', $f_size);
         $pdf->MultiCell($text_width + 3, $f_size, $array['Bezeichnung'] . "-", 0, 'R', 0, 0, '', '', true, 0, false, false, 0);
 
-        $text_width = $pdf->GetStringWidth($array['Bezeichnung'] . ";", 'courier', '', $f_size);
+        $text_width = $pdf->GetStringWidth($array['Bezeichnung_voll'] . ";", 'courier', '', $f_size);
         if (($pdf->GetX() + $text_width) >= 400) {
             $pdf->Ln($f_size / 2);
         }
         $pdf->SetFont('courier', '', $f_size);
-        $pdf->MultiCell($text_width + 3, $f_size, $array['Bezeichnung'] . ";", 0, 'L', 0, 0, '', '', true, 0, false, false, 0);
+        $pdf->MultiCell($text_width + 3, $f_size, $array['Bezeichnung_voll'] . ";", 0, 'L', 0, 0, '', '', true, 0, false, false, 0);
     }
     $pdf->SetFont('courier', 'B', $f_size);
 }
@@ -70,6 +70,8 @@ function make_MT_details_table($pdf, $result, $result1, $result3, $SB, $SH, $dat
     while ($row = $result1->fetch_assoc()) {
         $paramInfos[$row['idTABELLE_Parameter']]['ParamID'] = $row['idTABELLE_Parameter'];
         $paramInfos[$row['idTABELLE_Parameter']]['KategorieID'] = $row['idTABELLE_Parameter_Kategorie'];
+
+        $paramInfos[$row['idTABELLE_Parameter']]['Bezeichnung_voll'] = $row['Bezeichnung'];
         $paramInfos[$row['idTABELLE_Parameter']]['Bezeichnung'] = $row['Abkuerzung'];
         $paramInfos[$row['idTABELLE_Parameter']]['Kategorie'] = $row['Kategorie'];
         $paramInfosCounter = $paramInfosCounter + 1;

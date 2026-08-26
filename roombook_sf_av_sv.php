@@ -131,8 +131,8 @@ $stmt_sum = $mysqli->prepare(
     "SELECT 
         SUM(ET_Anschlussleistung_W)        AS total_W,
         SUM(ET_Anschlussleistung_W * ?)    AS total_W_glz,
-        SUM(ET_Anschlussleistung_AV_W )     AS total_AV,
-        SUM(ET_Anschlussleistung_SV_W  )     AS total_SV
+        SUM(ET_Anschlussleistung_AV_W )*0.7    AS total_AV,
+        SUM(ET_Anschlussleistung_SV_W  )*0.7     AS total_SV
      FROM tabelle_räume
      WHERE tabelle_projekte_idTABELLE_Projekte = ?
        AND `Raumtyp BH` IS NOT NULL"

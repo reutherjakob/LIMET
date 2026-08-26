@@ -4,15 +4,40 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Bilder zu Projekten Zuordnen.">
-      <change afterPath="$PROJECT_DIR$/getDevicesAndTheirServicePricesForElements.php" afterDir="false" />
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Wartungpreise update">
+      <change afterPath="$PROJECT_DIR$/IFCQuest/ages_console_queries.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PDFs/pdf_createBauangabenBericht_SF.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PDFs/pdf_raumtypen_sf.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/RaumtypenZuRaumbuch.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/roombook_nicht_verwenden_elemente.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/roombook_raumabgleich_raumtypen.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/LIMET.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/LIMET.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IFCQuest/api_sync_elements.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/api_sync_elements.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IFCQuest/element_compare.js" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/element_compare.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IFCQuest/import_2_db_config.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/import_2_db_config.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Nutzerumfrage/raumtypen.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/raumtypen.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/_pdf_createBericht_utils.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/_pdf_createBericht_utils.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createBericht_MYPDFclass_A3Queer.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createBericht_MYPDFclass_A3Queer.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createMTTabelle.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createMTTabelle.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createMTTabelle_neu.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createMTTabelle_neu.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deleteVarianteFromProject.php" beforeDir="false" afterPath="$PROJECT_DIR$/deleteVarianteFromProject.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/elementAdministration.php" beforeDir="false" afterPath="$PROJECT_DIR$/elementAdministration.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getDeviceServicePrices.php" beforeDir="false" afterPath="$PROJECT_DIR$/getDeviceServicePrices.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lager_calculator.php" beforeDir="false" afterPath="$PROJECT_DIR$/lager_calculator.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_devicePrice.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_devicePrice.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/updateWartungspreis.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/elementsInProject_delete0.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_elementsInProject_delete0.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getElementsInDbCardBodyContent.php" beforeDir="false" afterPath="$PROJECT_DIR$/getElementsInDbCardBodyContent.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getRoomElementsDetailed1.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomElementsDetailed1.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getRoomSpecificationsAnnotationTexts.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomSpecificationsAnnotationTexts.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/get_rb_specs_data.php" beforeDir="false" afterPath="$PROJECT_DIR$/get_rb_specs_data.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects.php" beforeDir="false" afterPath="$PROJECT_DIR$/projects.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookReports_New.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookReports.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookSpecifications_New.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_New.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookSpecifications_constDeclarations.js" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_constDeclarations.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_sf_av_sv.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_sf_av_sv.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/updateRoomSpecificationAnnotationTexts.php" beforeDir="false" afterPath="$PROJECT_DIR$/updateRoomSpecificationAnnotationTexts.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/_Cdnz.html" beforeDir="false" afterPath="$PROJECT_DIR$/utils/_Cdnz.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/utils/navbar.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -624,14 +649,14 @@
       <workItem from="1786373189393" duration="150000" />
       <workItem from="1786375969429" duration="438000" />
       <workItem from="1786433092076" duration="5555000" />
-    </task>
-    <task id="LOCAL-00204" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu">
-      <option name="closed" value="true" />
-      <created>1772198883112</created>
-      <option name="number" value="00204" />
-      <option name="presentableId" value="LOCAL-00204" />
-      <option name="project" value="LOCAL" />
-      <updated>1772198883112</updated>
+      <workItem from="1786519579121" duration="5015000" />
+      <workItem from="1786524882042" duration="6959000" />
+      <workItem from="1786536432311" duration="13002000" />
+      <workItem from="1786612030979" duration="18927000" />
+      <workItem from="1786696531605" duration="5220000" />
+      <workItem from="1787570405144" duration="7300000" />
+      <workItem from="1787641625514" duration="17556000" />
+      <workItem from="1787729007792" duration="9380000" />
     </task>
     <task id="LOCAL-00205" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu">
       <option name="closed" value="true" />
@@ -1017,7 +1042,15 @@
       <option name="project" value="LOCAL" />
       <updated>1786442262561</updated>
     </task>
-    <option name="localTasksCounter" value="253" />
+    <task id="LOCAL-00253" summary="Wartungpreise update">
+      <option name="closed" value="true" />
+      <created>1786460901543</created>
+      <option name="number" value="00253" />
+      <option name="presentableId" value="LOCAL-00253" />
+      <option name="project" value="LOCAL" />
+      <updated>1786460901543</updated>
+    </task>
+    <option name="localTasksCounter" value="254" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1047,7 +1080,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Merge remote-tracking branch 'origin/roombookElementsPerArea' into roombookElementsPerArea&#10;&#10;# Conflicts:&#10;#&#9;Nutzerumfrage/form_fields_forNutzergruppe1.php" />
     <MESSAGE value="Bugfixes;&#10;Sf Umfrage;&#10;Kor Liste" />
     <MESSAGE value="Budgets-Freigaben ergänzt. &#10;Detailed: Raum Btns und Suchleiste in den Card Header." />
     <MESSAGE value="Budgets-Freigaben ergänzt. &#10;Detailed: Raum Btns und Suchleiste in den Card Header.&#10;element Admin - pagelength option ergänzt." />
@@ -1072,7 +1104,8 @@
     <MESSAGE value="Nutzerwünsche" />
     <MESSAGE value="LosElemente Übersicht nachbearbeitet. &#10;KDo Icons.&#10;Wartungpreise editierbar. &#10;Ages 0er Vars löschen." />
     <MESSAGE value="Bilder zu Projekten Zuordnen." />
-    <option name="LAST_COMMIT_MESSAGE" value="Bilder zu Projekten Zuordnen." />
+    <MESSAGE value="Wartungpreise update" />
+    <option name="LAST_COMMIT_MESSAGE" value="Wartungpreise update" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1084,7 +1117,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/PDFs/pdf_createMTTabelle.php</url>
-          <line>137</line>
+          <line>139</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
@@ -1124,7 +1157,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/get_rb_specs_data.php</url>
-          <line>182</line>
+          <line>184</line>
           <option name="timeStamp" value="26" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
@@ -1145,7 +1178,6 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/img_support/projectGallery.js</url>
           <line>252</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="31" />
         </line-breakpoint>
       </breakpoints>
