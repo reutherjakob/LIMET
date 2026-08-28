@@ -99,8 +99,9 @@ $RK_BLOCKS_LEFT = [
     ['Allgemeines / Architektur', [
         ['achsen', 'Achsen', RK_T],
         [fn($rec) => rk_range($rec, 'flaeche_min', 'flaeche_max'), 'Fläche (min–max) [m2]', RK_C],
-        ['raumhoehe_neubau', 'Raumhöhe Neubau [m]', RK_N],
-        ['raumhoehe_bestand', 'Raumhöhe Bestand [m]', RK_N],
+        [fn($rec) => rk_range($rec, 'raumhoehe_bestand', 'raumhoehe_neubau'), 'Raumhöhe (Bestand - Neubau) [m]', RK_C],
+        // ['raumhoehe_neubau', 'Raumhöhe Neubau [m]', RK_N],
+        // ['raumhoehe_bestand', 'Raumhöhe Bestand [m]', RK_N],
         ['decke', 'Decke', RK_T],
         ['tuere_min', 'Türenbreite [m]', RK_N],
         ['akustik', 'erhöhte Akustik Anforderung', RK_B],
@@ -110,13 +111,13 @@ $RK_BLOCKS_LEFT = [
         ['verdunkelung', 'Verdunkelung', RK_B],
     ]],
     ['Klima, Lüftung & HLK', [
-        ['waermeabgabe', 'Wärmeabgabe (W/m2)', RK_N],
+        ['waermeabgabe', 'Wärmeabgabe [W/m2]', RK_N],
         ['heizung', 'Heizung & Kühlung', RK_B],
         //  ['kuehlung',              'Kühlung',                       RK_B],
         [fn($rec) => rk_temp($rec), 'Temperatur (min–max) [°C]', RK_C],
-        ['temp_schwankung', 'Temp.-Schwankung (K)', RK_T],
-        ['luftfeuchtigkeit', 'Luftfeuchtigkeit (%)', RK_T],
-        ['luftfeuchtigkeit_schwankungstoleranz', 'LF-Toleranz', RK_T],
+        ['temp_schwankung', 'Temp.-Schwankungstoleranz [°C]', RK_T],
+        ['luftfeuchtigkeit', 'Luftfeuchtigkeit [%]', RK_T],
+        ['luftfeuchtigkeit_schwankungstoleranz', 'LF-Toleranz [%]', RK_T],
         ['luftwechsel', 'Luftwechsel', RK_T],
         //  ['luftwechsel_rate_m3_je_m2h','LW-Rate (m3/m2h)',          RK_N],
         //  ['luftwechsel_norm',      'Luftwechsel-Norm',              RK_T],
@@ -125,27 +126,30 @@ $RK_BLOCKS_LEFT = [
         //['druckregelung_typ',     'Druck-Typ',                     RK_T],
         // ['druckregelung_schleuse','Schleuse',                      RK_B],
         ['sonderabluft', 'Sonderabluft', RK_T],
-
     ]],
-    ['Elektrotechnik', [
-        ['elektro_230v', '230 V', RK_B],
-        ['elektro_400v_cee', '400 V CEE', RK_B],
-        ['elektro_edv', 'EDV', RK_B],
-        [fn($rec) => rk_notstrom($rec), 'Notstrom', RK_C],
-        ['anschlussleistung', 'Anschlussleistung (W/m2)', RK_N],
-        ['AV_quotient', 'AV/SV-Quotient', RK_N],
-    ]],
-];
 
-$RK_BLOCKS_RIGHT = [
     ['Medien', [
-        ['kaltwasser', 'Kaltwasser', RK_B],
-        ['warmwasser', 'Warmwasser', RK_B],
+        ['kaltwasser', 'Kalt- & Warmwasser', RK_B],
+        //   ['warmwasser', 'Warmwasser', RK_B],
         ['ve_wasser', 'VE-Wasser', RK_B],
         ['n2', 'Stickstoff (N2)', RK_B],
         ['dl', 'Druckluft (DL)', RK_B],
         ['sondergase', 'Sondergase', RK_T],
     ]],
+
+    ['Elektrotechnik', [
+        ['elektro_230v', '230 V', RK_B],
+        ['elektro_400v_cee', '400 V CEE', RK_B],
+        ['elektro_edv', 'EDV', RK_B],
+        [fn($rec) => rk_notstrom($rec), 'Notstrom', RK_C],
+        ['anschlussleistung', 'Anschlussleistung [W/m2]', RK_N],
+        ['AV_quotient', 'AV/SV-Quotient', RK_N],
+    ]],
+
+];
+
+$RK_BLOCKS_RIGHT = [
+
     ['Abzüge & Absaugung', [
         ['abzuege', 'Abzüge', RK_T],
         ['abzuege_anzahl_min', 'Abzüge Anzahl min.', RK_N],
@@ -168,8 +172,7 @@ $RK_BLOCKS_RIGHT = [
         ['sicherheit_augendusche', 'Augendusche', RK_B],
         ['sicherheit_notruf', 'Notruf', RK_B],
         ['sicherheit_erstehilfe', 'Erste Hilfe', RK_B],
-        ['bsl2', 'BSL 2', RK_B],
-        ['bsl3', 'BSL 3', RK_B],
+        [fn($rec) => rk_bsl($rec), 'Bio Safety Level', RK_C],
         ['sonstige_anforderungen', 'Sonstige Anforderungen', RK_T],
         ['anmerkungen', 'Anmerkungen', RK_T],
 
@@ -223,13 +226,26 @@ function rk_temp($rec): string
     if (in_array($ne, ['1', 'ja', 'true', 'nach_erfordernis'], true)) return 'nach Erfordernis';
     return '–';
 }/* Notstrom: Nein | Ja, ohne USV | Ja, mit USV  (USV hat Vorrang) */
-function rk_notstrom($rec): string {
-    $usv  = strtolower(trim((string)($rec['elektro_notstrom_usv'] ?? '')));
+function rk_notstrom($rec): string
+{
+    $usv = strtolower(trim((string)($rec['elektro_notstrom_usv'] ?? '')));
     $ohne = strtolower(trim((string)($rec['elektro_notstrom'] ?? '')));
-    $yes  = ['1','ja','true'];
-    if (in_array($usv,  $yes, true)) return 'Ja, mit USV';
+    $yes = ['1', 'ja', 'true'];
+    if (in_array($usv, $yes, true)) return 'Ja, mit USV';
     if (in_array($ohne, $yes, true)) return 'Ja, ohne USV';
     return 'Nein';
+}
+
+function rk_bsl($rec): string
+{
+    $levels = [];
+    foreach (['1', '2', '3'] as $lvl) {
+        $v = strtolower(trim((string)($rec['bsl' . $lvl] ?? '')));
+        if (in_array($v, ['1', 'ja', 'true'], true)) {
+            $levels[] = $lvl;
+        }
+    }
+    return $levels ? implode('/', $levels) : '–';
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -453,7 +469,7 @@ $pdf->Cell(0, 9, 'Raumtypen-Katalog Labor', 0, 2, 'L');
 $pdf->SetXY($mL + 7, 140);
 $pdf->SetFont('helvetica', 'B', 14);
 $pdf->SetTextColorArray($RK['valtext']);
-$pdf->Cell(0, 8, $RK_PROJEKT, 0, 2, 'L');
+$pdf->Cell(0, 8, trim($RK_PROJEKT), 0, 2, 'L');
 $pdf->SetFont('helvetica', '', 12);
 $pdf->SetTextColorArray($RK['muted']);
 $pdf->Cell(0, 7, 'Stand: ' . $RK_DATUM, 0, 2, 'L');

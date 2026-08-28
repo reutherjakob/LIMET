@@ -5,39 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Wartungpreise update">
-      <change afterPath="$PROJECT_DIR$/IFCQuest/ages_console_queries.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PDFs/pdf_createBauangabenBericht_SF.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PDFs/pdf_raumtypen_sf.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/RaumtypenZuRaumbuch.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roombook_nicht_verwenden_elemente.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/roombook_raumabgleich_raumtypen.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/LIMET.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/LIMET.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/a0035955-4929-452e-bc74-c974b5004fd4.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IFCQuest/api_compare_elements.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/api_compare_elements.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/IFCQuest/api_sync_elements.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/api_sync_elements.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IFCQuest/element_compare.js" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/element_compare.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/IFCQuest/import_2_db_config.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/import_2_db_config.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Nutzerumfrage/raumtypen.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/raumtypen.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PDFs/_pdf_createBericht_utils.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/_pdf_createBericht_utils.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createBericht_MYPDFclass_A3Queer.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createBericht_MYPDFclass_A3Queer.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createMTTabelle.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createMTTabelle.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createBauangabenBericht_A3Qeer_1.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createBauangabenBericht_A3Qeer_1.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PDFs/pdf_createMTTabelle_neu.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createMTTabelle_neu.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deleteVarianteFromProject.php" beforeDir="false" afterPath="$PROJECT_DIR$/deleteVarianteFromProject.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/elementAdministration.php" beforeDir="false" afterPath="$PROJECT_DIR$/elementAdministration.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/elementsInProject_delete0.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_elementsInProject_delete0.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getElementsInDbCardBodyContent.php" beforeDir="false" afterPath="$PROJECT_DIR$/getElementsInDbCardBodyContent.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getRoomElementsDetailed1.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomElementsDetailed1.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getRoomSpecificationsAnnotationTexts.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomSpecificationsAnnotationTexts.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/get_rb_specs_data.php" beforeDir="false" afterPath="$PROJECT_DIR$/get_rb_specs_data.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/pdf_raumtypen_sf.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_raumtypen_sf.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RaumtypenZuRaumbuch.php" beforeDir="false" afterPath="$PROJECT_DIR$/RaumtypenZuRaumbuch.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/projects.php" beforeDir="false" afterPath="$PROJECT_DIR$/projects.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookReports_New.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookReports.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookSpecifications_New.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_New.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookSpecifications_constDeclarations.js" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_constDeclarations.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_sf_av_sv.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_sf_av_sv.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/updateRoomSpecificationAnnotationTexts.php" beforeDir="false" afterPath="$PROJECT_DIR$/updateRoomSpecificationAnnotationTexts.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/_Cdnz.html" beforeDir="false" afterPath="$PROJECT_DIR$/utils/_Cdnz.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/utils/navbar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookSpecifications_New.js" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_New.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_raumabgleich_raumtypen.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_raumabgleich_raumtypen.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -656,15 +635,11 @@
       <workItem from="1786696531605" duration="5220000" />
       <workItem from="1787570405144" duration="7300000" />
       <workItem from="1787641625514" duration="17556000" />
-      <workItem from="1787729007792" duration="9380000" />
-    </task>
-    <task id="LOCAL-00205" summary="Merge remote-tracking branch 'origin/Login-Neu' into Login-Neu">
-      <option name="closed" value="true" />
-      <created>1772198890887</created>
-      <option name="number" value="00205" />
-      <option name="presentableId" value="LOCAL-00205" />
-      <option name="project" value="LOCAL" />
-      <updated>1772198890887</updated>
+      <workItem from="1787729007792" duration="10099000" />
+      <workItem from="1787757988427" duration="421000" />
+      <workItem from="1787815558826" duration="13296000" />
+      <workItem from="1787833008617" duration="6349000" />
+      <workItem from="1787901949353" duration="346000" />
     </task>
     <task id="LOCAL-00206" summary="Elelemtn History added.&#10;Wartet noch auf ddie erweiterung der Lose Tabelle, damit preiseintrager notiert werden kann">
       <option name="closed" value="true" />
@@ -1050,7 +1025,15 @@
       <option name="project" value="LOCAL" />
       <updated>1786460901543</updated>
     </task>
-    <option name="localTasksCounter" value="254" />
+    <task id="LOCAL-00254" summary="Wartungpreise update">
+      <option name="closed" value="true" />
+      <created>1787757587794</created>
+      <option name="number" value="00254" />
+      <option name="presentableId" value="LOCAL-00254" />
+      <option name="project" value="LOCAL" />
+      <updated>1787757587794</updated>
+    </task>
+    <option name="localTasksCounter" value="255" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

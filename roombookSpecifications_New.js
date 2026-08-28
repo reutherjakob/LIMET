@@ -723,7 +723,7 @@ function save_changes(RaumID, ColumnName, newData, raumname) {
     //const dataKeys = columnsDefinition.map(col => col.data);
     console.log(ColumnName);
     if (ColumnName === 'Entfallen') {
-        makeToaster("Vorsicht!\n - Elemente manuell auf null zu setzen! " +
+        makeToaster("Raum Entfallen?!\n - Elemente manuell auf null zu setzen! " +
             "\n Sind sonst in Kosten, etc. weiterhin enthalten", true);
     }
     $.ajax({

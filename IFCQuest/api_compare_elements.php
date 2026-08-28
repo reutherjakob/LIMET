@@ -181,7 +181,7 @@ function excel_group_push(array &$excel_groups, string $eid, array $vparams, arr
 
 function resolve(string $familie, string $laenge, string $tiefe, array $params_raw): array
 {
-    $r = ['element_id' => null, 'variante_params' => [], 'element_params' => [], 'debug' => '', 'laenge_cm' => null, 'laenge_raw_used' => '', 'is_sondermass' => false, 'is_gruppe_secondary' => false, 'is_gruppe_member' => false, 'gruppe_cfg' => null];
+    $r = ['element_id' => null, 'variante_params' => [], 'element_params' => [], 'debug' => '', 'laenge_cm' => null, 'laenge_raw_used' => '', 'is_sondermass' => false, 'is_gruppe_secondary' => false, 'is_gruppe_member' => false, 'gruppe_cfg' => null, 'begleit_elemente' => []];
 
     $cfg = find_mapping($familie);
     if (!$cfg) return $r;
@@ -189,6 +189,7 @@ function resolve(string $familie, string $laenge, string $tiefe, array $params_r
     $r['variante_params'] = $cfg['variante_params'] ?? [];
     $r['element_params'] = $cfg['element_params'] ?? $cfg['info_params'] ?? [];
     $r['breite_faktor'] = $cfg['breite_faktor'] ?? 1;
+    $r['begleit_elemente'] = $cfg['begleit_elemente'] ?? [];
     // ── Gruppe: mehrere Familien → 1 Element ──────────────────────
     if ($cfg['typ'] === 'gruppe') {
         $r['element_id'] = $cfg['element_id'];
@@ -500,6 +501,18 @@ foreach ($familien as $e) {
             'is_sondermass' => $res['is_sondermass'],
             'has_variante_params' => !empty($res['variante_params']),
         ];
+    }
+
+    // ── Begleit-Elemente (z.B. Sicherheitsunterbauschrank zum Digestor) ──
+    // Pro Leit-Element-Instanz wird 1× ein fest zugeordnetes Element ergänzt.
+    // Parameterlos → landet auf Variante A. Erscheint als eigener Element-
+    // Block im Abgleich und wird über den normalen Add-Flow importiert.
+    foreach ($res['begleit_elemente'] as $begleit_eid) {
+        excel_group_push(
+            $excel_groups, $begleit_eid, [], [],
+            $familie, '', '',
+            'Begleit-Element (Teil von ' . $familie . ')'
+        );
     }
 }
 

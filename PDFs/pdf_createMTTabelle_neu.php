@@ -56,7 +56,7 @@ function abk_vz(array $paramInfos, $pdf, float $f_size): void
         $pdf->SetFont('courier', 'B', $f_size);
         $pdf->MultiCell($w + 3, $f_size, $label . '-', 0, 'R', 0, 0, '', '', true, 0, false, false, 0);
 
-        $label= $entry['Bezeichnung'];
+        $label = $entry['Bezeichnung'];
         $w = $pdf->GetStringWidth($label . ';', 'courier', '', $f_size);
         if (($pdf->GetX() + $w) >= 400) {
             $pdf->Ln($f_size / 2);
@@ -76,10 +76,10 @@ function abk_vz(array $paramInfos, $pdf, float $f_size): void
 /**
  * Render the two-row column header (category grouping + abbreviation row).
  *
- * @param array  $fixedSizes      Widths for the fixed left columns.
- * @param float  $paramColWidth   Width of each parameter column.
- * @param float  $rowHeight       Row height.
- * @param array  $paramInfos      Ordered list of parameter info arrays.
+ * @param array $fixedSizes Widths for the fixed left columns.
+ * @param float $paramColWidth Width of each parameter column.
+ * @param float $rowHeight Row height.
+ * @param array $paramInfos Ordered list of parameter info arrays.
  */
 function render_mt_table_header($pdf, array $fixedSizes, float $paramColWidth, float $rowHeight, array $paramInfos): void
 {
@@ -102,14 +102,14 @@ function render_mt_table_header($pdf, array $fixedSizes, float $paramColWidth, f
             // Close previous category group cell
             $curX = $pdf->GetX();
             $curY = $pdf->GetY();
-            $pdf->SetXY($catHeaderX, $catHeaderY);
-            $pdf->MultiCell($curX - $catHeaderX, $rowHeight, 'MT ' . $lastCategory, 1, 'C', 0, 0);
+            $pdf->SetXY($catHeaderX, $catHeaderY- + $rowHeight);
+            $pdf->MultiCell($curX - $catHeaderX, $rowHeight, 'Medizintechnik' . $lastCategory, 1, 'C', 0, 0);
             $catHeaderX = $pdf->GetX();
             $catHeaderY = $pdf->GetY();
             $lastCategory = $param['Kategorie'];
-            $pdf->SetXY($curX, $curY);
+            $pdf->SetXY($curX, $curY );
         }
-        $pdf->MultiCell($paramColWidth, $rowHeight, $param['Bezeichnung'], 1, 'C', 0, 0);
+        $pdf->MultiCell($paramColWidth, $rowHeight, $param['Abkuerzung'], 1, 'C', 0, 0);
     }
 
     // Close last category group cell
@@ -117,9 +117,10 @@ function render_mt_table_header($pdf, array $fixedSizes, float $paramColWidth, f
     $curY = $pdf->GetY();
     $pdf->SetXY($catHeaderX, $catHeaderY);
     $pdf->MultiCell($curX - $catHeaderX, $rowHeight, $lastCategory, 1, 'C', 0, 0);
-    $pdf->SetXY($curX, $curY);
+    $pdf -> Ln();
+    $curX = $pdf->GetX();
+    $pdf->SetXY($curX, $curY + $rowHeight);
 
-    $pdf->Ln($rowHeight);
 }
 
 
@@ -134,9 +135,9 @@ function render_mt_table_header($pdf, array $fixedSizes, float $paramColWidth, f
  * @param $result        Room elements result set  (from tabelle_räume_has_tabelle_elemente)
  * @param $result1       Parameter definitions     (abbreviations / categories)
  * @param $result3       Element parameter values
- * @param int    $SB     Usable page width
- * @param int    $SH     Usable page height
- * @param array  $dataChanges  Change log entries
+ * @param int $SB Usable page width
+ * @param int $SH Usable page height
+ * @param array $dataChanges Change log entries
  */
 function make_MT_details_table($pdf, $result, $result1, $result3, int $SB, int $SH, array $dataChanges): void
 {
@@ -147,11 +148,11 @@ function make_MT_details_table($pdf, $result, $result1, $result3, int $SB, int $
     while ($row = $result3->fetch_assoc()) {
         $elementParamValues[] = [
             'KategorieID' => $row['idTABELLE_Parameter_Kategorie'],
-            'ParamID'     => $row['idTABELLE_Parameter'],
-            'elementID'   => $row['tabelle_elemente_idTABELLE_Elemente'],
+            'ParamID' => $row['idTABELLE_Parameter'],
+            'elementID' => $row['tabelle_elemente_idTABELLE_Elemente'],
             'variantenID' => $row['tabelle_Varianten_idtabelle_Varianten'],
-            'Wert'        => $row['Wert'],
-            'Einheit'     => $row['Einheit'],
+            'Wert' => $row['Wert'],
+            'Einheit' => $row['Einheit'],
         ];
     }
 
@@ -162,11 +163,11 @@ function make_MT_details_table($pdf, $result, $result1, $result3, int $SB, int $
     while ($row = $result1->fetch_assoc()) {
         $id = $row['idTABELLE_Parameter'];
         $allParamInfos[$id] = [
-            'ParamID'     => $id,
+            'ParamID' => $id,
             'KategorieID' => $row['idTABELLE_Parameter_Kategorie'],
             'Bezeichnung' => $row['Bezeichnung'],
             'Abkuerzung' => $row['Abkuerzung'],
-            'Kategorie'   => $row['Kategorie'],
+            'Kategorie' => $row['Kategorie'],
         ];
     }
 
@@ -200,9 +201,9 @@ function make_MT_details_table($pdf, $result, $result1, $result3, int $SB, int $
         ? ($SB - array_sum($fixedSizes)) / $paramCount
         : 0;
 
-    $rowHeight         = 5;
-    $rowHeightData     = 7;
-    $f_size            = 6;
+    $rowHeight = 5;
+    $rowHeightData = 7;
+    $f_size = 6;
 
     // ------------------------------------------------------------------
     // 5.  First header
@@ -235,29 +236,29 @@ function make_MT_details_table($pdf, $result, $result1, $result3, int $SB, int $
 
         // Fixed columns
         $pdf->SetFont('courier', '', $f_size);
-        $pdf->MultiCell($fixedSizes[0], $rowHeightData, $row['ElementID'],         1, 'C', true, 0);
-        $pdf->MultiCell($fixedSizes[1], $rowHeightData, $row['Bezeichnung'],        1, 'C', true, 0);
-        $pdf->MultiCell($fixedSizes[2], $rowHeightData, $row['Variante'],           1, 'C', true, 0);
-        $pdf->MultiCell($fixedSizes[3], $rowHeightData, $row['SummevonAnzahl'],     1, 'C', true, 0);
+        $pdf->MultiCell($fixedSizes[0], $rowHeightData, $row['ElementID'], 1, 'C', true, 0);
+        $pdf->MultiCell($fixedSizes[1], $rowHeightData, $row['Bezeichnung'], 1, 'C', true, 0);
+        $pdf->MultiCell($fixedSizes[2], $rowHeightData, $row['Variante'], 1, 'C', true, 0);
+        $pdf->MultiCell($fixedSizes[3], $rowHeightData, $row['SummevonAnzahl'], 1, 'C', true, 0);
         $pdf->MultiCell($fixedSizes[4], $rowHeightData, $row['Neu/Bestand'] == 1 ? 'Nein' : 'Ja', 1, 'C', true, 0);
-        $pdf->MultiCell($fixedSizes[5], $rowHeightData, $row['Standort'],           1, 'C', true, 0);
-        $pdf->MultiCell($fixedSizes[6], $rowHeightData, $row['Verwendung'],         1, 'C', true, 0);
+        $pdf->MultiCell($fixedSizes[5], $rowHeightData, $row['Standort'], 1, 'C', true, 0);
+        $pdf->MultiCell($fixedSizes[6], $rowHeightData, $row['Verwendung'], 1, 'C', true, 0);
 
         // Parameter columns
         $widthOverflow = 0; // tracks extra width needed for long cell content
         foreach ($paramInfos as $param) {
-            $paramId  = $param['ParamID'];
+            $paramId = $param['ParamID'];
             $outputValue = '';
-            $isChanged   = false;
+            $isChanged = false;
 
             foreach ($elementParamValues as $ep) {
                 if (
-                    $ep['ParamID']     == $paramId &&
-                    $ep['elementID']   == $row['TABELLE_Elemente_idTABELLE_Elemente'] &&
+                    $ep['ParamID'] == $paramId &&
+                    $ep['elementID'] == $row['TABELLE_Elemente_idTABELLE_Elemente'] &&
                     $ep['variantenID'] == $row['tabelle_Varianten_idtabelle_Varianten']
                 ) {
                     $outputValue = $ep['Wert'] . checkAndManipulateString($ep['Einheit']);
-                    $isChanged   = checkEntry($dataChanges, (int)$ep['elementID'], (int)$ep['ParamID']);
+                    $isChanged = checkEntry($dataChanges, (int)$ep['elementID'], (int)$ep['ParamID']);
                     break;
                 }
             }

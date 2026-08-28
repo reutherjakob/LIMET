@@ -279,7 +279,6 @@
                         </p>
 
 
-
                     </div>
                 </div>
             </div>
@@ -306,39 +305,51 @@
                 <div class='card-body'>
                     <div class="row">
                         <p>
-                            <i class="col-1  fab fa-galactic-republic"> </i>
-                            <a class="col-11" href="/roombook_elementsInProject_delete0.php">
-                                Nuller Vars entfernen
+                            <i class="col-1 fas fa-dragon"> </i>
+                            <a class="col-11" href="/projects.php">
+                               RULES
                             </a>
                         </p>
+
                         <p>
-                            <i class="col-1 fas fa-jedi"> </i>
-                            <a class="col-11" href="/RaumtypenZuRaumbuch.php">
-                                RaumtypenZuRaumbuch
-                            </a>
-                        </p>
-                        <p>
-                            <i class="col-1 fab fa-galactic-senate"> </i>
-                            <a class="col-11" href="/roombook_sf_av_sv.php">
-                                AV SV Aufteilung
-                            </a>
-                        </p>
-                        <p>
-                            <i class="col-1 fab fa-old-republic"> </i>
-                            <a class="col-11" href="/Nutzerumfrage/Raumkategorien.php">
-                                Raumkategorien
-                            </a>
-                        </p>
-                        <p>
-                            <i class="col-1 fab fa-jedi-order"> </i>
+                            <i class="col-1 fas fa-cat"> </i>
                             <a class="col-11" href="/IFCQuest/import_excel.php">
                                 Import Model Excel
                             </a>
                         </p>
+
                         <p>
-                            <i class="col-1 fab fa-watchman-monitoring"> </i>
+                            <i class="col-1 fas fa-spider"> </i>
+                            <a class="col-11" href="/RaumtypenZuRaumbuch.php">
+                                RT übernehmen
+                            </a>
+                        </p>
+
+                        <p>
+                            <i class="col-1 fas fa-dog"> </i>
+                            <a class="col-11" href="/roombook_raumabgleich_raumtypen.php">
+                                Abgleich RT - RB
+                            </a>
+                        </p>
+
+                        <p>
+                            <i class="col-1 fas fa-frog"> </i>
                             <a class="col-11" href="/PDFs/pdf_raumtypen_sf.php">
-                               Raumtypenblätter
+                                RT PDF
+                            </a>
+                        </p>
+
+                        <p>
+                            <i class="col-1 fas fa-kiwi-bird"> </i>
+                            <a class="col-11" href="/roombook_sf_av_sv.php">
+                                AV/SV Aufteilung
+                            </a>
+                        </p>
+
+                        <p>
+                            <i class="col-1  fas fa-dove"> </i>
+                            <a class="col-11" href="/roombook_elementsInProject_delete0.php">
+                                Nuller Vars entfernen
                             </a>
                         </p>
 

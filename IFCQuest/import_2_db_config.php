@@ -75,6 +75,11 @@ function find_mapping(string $familie): ?array
 const MZ_STANDARD_LAENGEN = [60, 90, 120, 150, 180, 210, 240, 270];
 const MZ_LAENGE_WARN_DIFF_CM = 5;
 
+// Element-Codes, die beim Import IMMER als Bestand (Neu/Bestand = 0) geführt
+// werden. RDGs (Reinigungs-/Desinfektionsgeräte) sind Bestandsgeräte, keine
+// Neuanschaffung. Wird von api_sync_elements.php ausgewertet.
+const BESTAND_ELEMENT_CODES = ['1.82.11.1'];
+
 const ELEMENT_MAPPING = [
     // ── MZ-Typen: match='prefix', Familienname enthält den Key ───────────────
     '4-35-25-1' => [
@@ -311,8 +316,7 @@ const ELEMENT_MAPPING = [
         'variante_params' => [],
     ],
 
-    // Gefahrenstoffsicherheitsschrank brennbare Flüssigkeiten — DB: 4.35.30.3
-    // Zwei verschiedene Revit-Familiennamen für dasselbe Element, Breite als Variante
+
     'TMO_-_LIMET_4-35-30-3 Gefahrenstoffsicherheitsschrank - brennbare Flüssigkeiten doppelflügelig' => [
         'match' => 'exact',
         'typ' => 'fixed',
@@ -321,8 +325,9 @@ const ELEMENT_MAPPING = [
         'variante_params' => ['MT_LIMET_Breite'],
     ],
 
-    'TMO_-_LIMET_4-35-30-3 Laborschrank brennbare Flüssigkeiten' => [
-        'match' => 'exact',
+
+    'TMO_-_LIMET_4-35-30-3 Laborschrank' => [
+        'match' => 'prefix',
         'typ' => 'fixed',
         'element_id' => '4.35.30.3',
         'element_params' => [],
@@ -419,6 +424,10 @@ const ELEMENT_MAPPING = [
         'sondermass' => '9.30.45.3',
         'element_params' => ['MT_LIMET_Breite'],
         'variante_params' => [],
+        // Je importiertem Digestor gehört ein Sicherheitsunterbauschrank
+        // (4.35.55.5, id 1013) in den Raum — ist Teil des Digestors.
+        // Wird pro Digestor-Instanz 1× parameterlos ergänzt (→ Variante A).
+        'begleit_elemente' => ['4.35.55.5'],
     ],
 
     'TMO_-_LIMET_9-30-30-20 Laborkühlschrank freistehend B70 H200' => [
@@ -484,6 +493,10 @@ const ELEMENT_MAPPING = [
         // → automatisch ignoriert, aber löst "ambiguous" aus wenn
         //   mehrere Varianten sich nur dadurch unterscheiden
     ],
+
+
+
+
 ];
 
 const PARAMETER_MAPPING = [

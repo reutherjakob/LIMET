@@ -1,6 +1,6 @@
 <?php
 /**
- * RaumAbgleich.php  (ALLES IN EINEM FILE)
+ * RaumAbgleich.php
  *
  * Prüft Raumangaben gegen Soll (Raumtyp / Elemente / Freitext) und ALARMIERT nur.
  * Die Seite setzt NICHTS automatisch. Einzelne Werte können über kleine
@@ -11,12 +11,25 @@
  *   2) Schrank Säure/Lauge (Element 1092)      vs. Soll lt. Raumtyp.
  *   3) Schrank brennbare Flüssigkeiten (1093/1688) vs. Soll lt. Raumtyp.
  *        -> Regel Schränke: Ist < Soll = FEHLER(rot); Ist > Soll = gelb; Ist == Soll = grün.
+ *        -> Sonderfall Lager Chemikalien (RT 29): Soll nach Nutzfläche
+ *           (< 19 m² -> 1 ; < 34 m² -> 2 ; >= 34 m² -> 3), identisch für beide Schranktypen.
  *   4) Augenduschen == Spülen (beides aus Elementen), sonst Fehler.
- *   5) Waschküche: mind. 2 RDG.
+ *   5) Waschküche (RT 22): RDG-Anzahl je Achsen (3/6 Achsen -> 2 RDG, größer -> 4 RDG);
+ *        Spülen je Achsen (3 Achsen -> 1 Spüle, ab 6 Achsen -> 2 Spülen).
  *   6) Wasser: ist eine Spüle im Raum, müssen Warm-, Kalt- UND VE-Wasser gesetzt sein,
  *        sonst FEHLER (nur Anzeige).
+ *        SONDERREGELN je Raumtyp:
+ *          - Typ 25: nur Warm- + Kaltwasser erforderlich, KEIN VE-Wasser.
+ *          - Typ 23: weder KW/WW noch VE-Wasser erforderlich (Prüfung entfällt).
+ *   7) Elemente unerwünscht: Raumtypen 13/27/28 dürfen KEINE Elemente enthalten.
+ *   8) Spülen je Achsen (Nicht-Waschküchen): 3/6 Achsen -> max 1 Spüle, 9 -> max 2;
+ *        Ausnahme Raum 231 -> 3 Spülen als einziger.
  *
- * WICHTIG Spülen: werden aus ELEMENTEN gezählt (HT_Spuele_Stk im RB ist unzuverlässig/0).
+ * Zusätzlich: Spalte „Änderungsanweisungen“ leitet aus den Prüfungen konkrete
+ * Handlungstexte ab (z. B. „2× Digestor hinzufügen“). Wasser wird dort NICHT
+ * berücksichtigt.
+ *
+ *      AR_APs beinhaltet die Anzahl der Achsen für diesen Raum.
  */
 
 require_once __DIR__ . '/utils/_utils.php';
@@ -40,7 +53,7 @@ function abgleich_element_ids(): array
 
         // Gefahrenstoffsicherheitsschrank – brennbare Flüssigkeiten
         //   1093 = 4.35.30.3 (Standmodell),  1688 = 4.35.30.5 (Unterbau)
-        'schrank_brennbar' => [1093, 1688],
+        'schrank_brennbar' => [1093],//, 1688],
 
         // Augenduschen: 406 = Augendusche, 1737 = Augendusche in Laborspüle
         'augendusche' => [406, 1737],
@@ -71,7 +84,25 @@ const RT_KEYS_SCHRANK_BRENNBAR = [
 const SETTABLE_COLS = ['HT_Warmwasser', 'HT_Kaltwasser', 'VE_Wasser'];
 
 const WASCHKUECHE_TERMS = ['waschküche', 'waschkueche'];
-const WASCHKUECHE_MIN_RDG = 2;
+
+/** Raumtyp „Waschküche“. */
+const WASCHKUECHE_TYPE = '22';
+
+/** Raumtyp „Lager Chemikalien“ mit flächenabhängiger Schrank-Soll-Berechnung. */
+const CHEMIE_LAGER_TYPE = '29';
+
+/** Ausnahme-Raum (Raumnr), der als einziger 3 Spülen haben darf. */
+const SPUELE_AUSNAHME_RAUMNR = '231';
+
+/** Max. zulässige Spülen je Achsenanzahl (AR_APs) – NICHT-Waschküchen. */
+const SPUELEN_JE_ACHSEN = [
+    3 => 1,
+    6 => 1,
+    9 => 2,
+];
+
+/** Raumtypen, die KEINE Elemente enthalten dürfen. */
+const NO_ELEMENT_TYPES = ['13', '27', '28'];
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -124,12 +155,18 @@ function rt_soll(?array $typ, array $keys, array $dynMust, array $dynAny): array
         $kl = mb_strtolower((string)$k);
         $mustOk = true;
         foreach ($dynMust as $needle) {
-            if (strpos($kl, $needle) === false) { $mustOk = false; break; }
+            if (strpos($kl, $needle) === false) {
+                $mustOk = false;
+                break;
+            }
         }
         if (!$mustOk) continue;
         $anyOk = false;
         foreach ($dynAny as $needle) {
-            if (strpos($kl, $needle) !== false) { $anyOk = true; break; }
+            if (strpos($kl, $needle) !== false) {
+                $anyOk = true;
+                break;
+            }
         }
         if ($anyOk) return [(int)$v, (string)$k];
     }
@@ -141,6 +178,63 @@ function is_waschkueche(string $bezeichnung): bool
     $b = mb_strtolower($bezeichnung);
     foreach (WASCHKUECHE_TERMS as $t) if (strpos($b, $t) !== false) return true;
     return false;
+}
+
+/**
+ * Flächenabhängige Schrank-Soll-Anzahl für „Lager Chemikalien“ (RT 29).
+ * Gilt identisch für brennbare Flüssigkeiten UND Säure/Laugen.
+ *   < 19 m² -> 1 ; < 34 m² -> 2 ; >= 34 m² -> 3.
+ */
+function chemie_lager_soll(?float $area): ?int
+{
+    if ($area === null) return null;
+    if ($area < 19) return 1;
+    if ($area < 34) return 2;
+    return 3;
+}
+
+/**
+ * Max. zulässige Spülen für einen NICHT-Waschküchen-Raum.
+ * Ausnahme-Raum (231) darf 3; sonst je Achsenanzahl (3/6 -> 1, 9 -> 2).
+ * Kein passender Wert -> null (Prüfung entfällt).
+ */
+function spuelen_max(int $achsen, string $raumnr): ?int
+{
+    if ($raumnr === SPUELE_AUSNAHME_RAUMNR) return 3;
+    return SPUELEN_JE_ACHSEN[$achsen] ?? null;
+}
+
+/**
+ * Max. zulässige Spülen für Waschküchen (RT 22).
+ *   3 Achsen -> 1 ; ab 6 Achsen -> 2.
+ */
+function waschkueche_spuelen_max(int $achsen): int
+{
+    return ($achsen >= 6) ? 2 : 1;
+}
+
+/**
+ * Erforderliche RDG-Anzahl (Minimum) für Waschküchen (RT 22).
+ *   3/6 Achsen -> 3 ; größer -> 4.
+ */
+function waschkueche_rdg_min(int $achsen): int
+{
+    return ($achsen > 6) ? 4 : 2;
+}
+
+/**
+ * Wasser-Anforderung je Raumtyp.
+ * Rückgabe [reqWarm(bool), reqKalt(bool), reqVE(bool)].
+ *   - Typ 23: keine Anforderung (kein KW/WW, kein VE).
+ *   - Typ 25: Warm + Kalt, aber KEIN VE.
+ *   - sonst : Warm + Kalt + VE.
+ */
+function wasser_requirements(?string $raumtyp): array
+{
+    $rt = (string)$raumtyp;
+    if ($rt === '23') return [false, false, false];
+    if ($rt === '25') return [true, true, false];
+    return [true, true, true];
 }
 
 /** Schrank-Regel: zu wenig = error, mehr = warn, gleich = ok, kein Soll = na. */
@@ -160,13 +254,102 @@ function status_weight(string $s): int
 function status_badge(string $status, string $label): string
 {
     switch ($status) {
-        case 'ok':      $cls = 'bg-success'; break;
-        case 'error':   $cls = 'bg-danger'; break;
-        case 'warn':    $cls = 'bg-warning text-dark'; break;
-        case 'neutral': $cls = 'bg-secondary'; break;
-        default:        $cls = 'bg-light text-muted border'; break; // na
+        case 'ok':
+            $cls = 'bg-success';
+            break;
+        case 'error':
+            $cls = 'bg-danger';
+            break;
+        case 'warn':
+            $cls = 'bg-warning text-dark';
+            break;
+        case 'neutral':
+            $cls = 'bg-secondary';
+            break;
+        default:
+            $cls = 'bg-light text-muted border';
+            break; // na
     }
     return '<span class="badge ' . $cls . '">' . htmlspecialchars($label) . '</span>';
+}
+
+/**
+ * Erzeugt Änderungsanweisungen für einen Raum aus den Prüf-Ergebnissen ($v).
+ * Rückgabe: Liste von ['type' => 'add'|'remove'|'info', 'text' => string].
+ * HINWEIS: Wasser wird hier bewusst NICHT berücksichtigt.
+ */
+function change_instructions(array $v): array
+{
+    $out = [];
+
+    // 1) Digestoren
+    if ($v['digStatus'] === 'error' && $v['digSoll'] !== null) {
+        $d = (int)$v['digSoll'] - (int)$v['digIst'];
+        if ($d > 0) {
+            $out[] = ['type' => 'add', 'text' => "$d Digestor hinzufügen"];
+        } elseif ($d < 0) {
+            $out[] = ['type' => 'remove', 'text' => abs($d) . "× Digestor entfernen"];
+        }
+    }
+
+    // 2) Schrank Säure/Lauge
+    if ($v['slStatus'] === 'error') {
+        $out[] = ['type' => 'add',
+            'text' => ((int)$v['slSoll'] - (int)$v['slIst']) . "× Schrank Säure/Lauge hinzufügen"];
+    } elseif ($v['slStatus'] === 'warn') {
+        $out[] = ['type' => 'remove',
+            'text' => ((int)$v['slIst'] - (int)$v['slSoll']) . "× Schrank Säure/Lauge entfernen (Ist > Soll)"];
+    }
+
+    // 3) Schrank brennbar
+    if ($v['brStatus'] === 'error') {
+        $out[] = ['type' => 'add',
+            'text' => ((int)$v['brSoll'] - (int)$v['brIst']) . "× Schrank brennbar hinzufügen"];
+    } elseif ($v['brStatus'] === 'warn') {
+        $out[] = ['type' => 'remove',
+            'text' => ((int)$v['brIst'] - (int)$v['brSoll']) . "× Schrank brennbar entfernen (Ist > Soll)"];
+    }
+
+    // 4) Augenduschen == Soll-Spülen
+    if ($v['augenStatus'] === 'error') {
+        $soll = (int)$v['spuelenSoll'];
+        $d = $soll - (int)$v['augenIst'];
+        if ($d > 0) {
+            $out[] = ['type' => 'add',
+                'text' => "$d × Augendusche hinzufügen (auf #Spülen = $soll)"];
+        } elseif ($d < 0) {
+            $out[] = ['type' => 'remove',
+                'text' => abs($d) . "× Augendusche entfernen (auf #Spülen = $soll)"];
+        }
+    }
+
+    // 4b) Spülen je Achsen (zu viele)
+    if (($v['spuelenAchsenStatus'] ?? 'na') === 'error') {
+        $d = (int)$v['spuele'] - (int)$v['spuelenMax'];
+        if ($d > 0) {
+            $note = $v['wako']
+                ? "max. {$v['spuelenMax']} bei {$v['achsen']} Achsen (Waschküche)"
+                : "max. {$v['spuelenMax']} bei {$v['achsen']} Achsen";
+            $out[] = ['type' => 'remove', 'text' => "$d × Spüle entfernen ($note)"];
+        }
+    }
+
+    // 5) Waschküche RDG
+    if ($v['wakoStatus'] === 'error') {
+        $need = (int)$v['rdgMin'] - (int)$v['rdgIst'];
+        if ($need > 0) {
+            $out[] = ['type' => 'add',
+                'text' => "$need RDG hinzufügen (min. {$v['rdgMin']} bei {$v['achsen']} Achsen)"];
+        }
+    }
+
+    // 7) Elemente unerwünscht (Typ 13/27/28)
+    if ($v['noElemStatus'] === 'error') {
+        $out[] = ['type' => 'remove',
+            'text' => "Alle Elemente entfernen ({$v['totalElem']}) – Raumtyp darf keine haben"];
+    }
+
+    return $out;
 }
 
 /** Summiert je Raum die Anzahl der Elemente pro Gruppe (über ALLE Varianten). */
@@ -218,19 +401,49 @@ function element_group_counts($mysqli, array $roomIDs, array $groups): array
 }
 
 /**
+ * Zählt ALLE Elemente je Raum (Summe Anzahl über alle Element-Typen).
+ * Wird für die Prüfung „Raumtyp 13/27/28 darf keine Elemente haben“ benötigt.
+ */
+function total_element_counts($mysqli, array $roomIDs): array
+{
+    $out = [];
+    $roomIDs = array_values(array_unique(array_filter(array_map('intval', $roomIDs))));
+    if (!$roomIDs) return $out;
+    foreach ($roomIDs as $rid) $out[$rid] = 0;
+
+    $phR = implode(',', array_fill(0, count($roomIDs), '?'));
+    $types = str_repeat('i', count($roomIDs));
+
+    $stmt = $mysqli->prepare(
+        "SELECT TABELLE_Räume_idTABELLE_Räume AS rid, SUM(Anzahl) AS n
+         FROM tabelle_räume_has_tabelle_elemente
+         WHERE TABELLE_Räume_idTABELLE_Räume IN ($phR)
+         GROUP BY TABELLE_Räume_idTABELLE_Räume"
+    );
+    $stmt->bind_param($types, ...$roomIDs);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    while ($r = $res->fetch_assoc()) {
+        $out[(int)$r['rid']] = (int)$r['n'];
+    }
+    $stmt->close();
+    return $out;
+}
+
+/**
  * Lädt Räume eines Projekts und berechnet alle Prüfungen.
  * Rückgabe: [rowsView[], errPerCheck[]].
  */
 function load_and_check(int $projectID): array
 {
-    $checkKeys = ['dig', 'sl', 'brennbar', 'augen', 'wako', 'wasser'];
+    $checkKeys = ['dig', 'sl', 'brennbar', 'augen', 'spuele_achsen', 'wako', 'wasser', 'noelem'];
     $errPerCheck = array_fill_keys($checkKeys, 0);
     $rowsView = [];
     if (!$projectID) return [$rowsView, $errPerCheck];
 
     $mysqli = utils_connect_sql();
     $sql = "SELECT idTABELLE_Räume, Raumnr, Raumbezeichnung, `Raumbereich Nutzer`,
-                   `Raumtyp BH`, `Anmerkung Geräte`,
+                   `Raumtyp BH`, `Anmerkung Geräte`, AR_APs, `Nutzfläche`,
                    HT_Warmwasser, HT_Kaltwasser, VE_Wasser
             FROM tabelle_räume
             WHERE tabelle_projekte_idTABELLE_Projekte = ?
@@ -244,9 +457,11 @@ function load_and_check(int $projectID): array
 
     $groups = abgleich_element_ids();
     $counts = [];
+    $totalCounts = [];
     if ($rooms) {
         $ids = array_map(fn($r) => (int)$r['idTABELLE_Räume'], $rooms);
         $counts = element_group_counts($mysqli, $ids, $groups);
+        $totalCounts = total_element_counts($mysqli, $ids);
     }
     $mysqli->close();
 
@@ -262,6 +477,14 @@ function load_and_check(int $projectID): array
         $veWasser = (int)($room['VE_Wasser'] ?? 0);
         $spuele = (int)($c['spuele'] ?? 0);         // aus ELEMENTEN
 
+        // Fläche, Achsen & Raumart für Sonderregeln
+        $flaeche = ($room['Nutzfläche'] !== null && $room['Nutzfläche'] !== '')
+            ? (float)$room['Nutzfläche'] : null;
+        $achsen = (int)($room['AR_APs'] ?? 0);
+        $isChemieLager = ((string)$room['Raumtyp BH'] === CHEMIE_LAGER_TYPE);
+        $wako = ((string)$room['Raumtyp BH'] === WASCHKUECHE_TYPE)
+            || is_waschkueche((string)$room['Raumbezeichnung']);
+
         // 1) Digestoren
         $digIst = (int)($c['dig'] ?? 0);
         $digSoll = parse_digestorenanzahl($room['Anmerkung Geräte'] ?? null);
@@ -275,7 +498,6 @@ function load_and_check(int $projectID): array
             [$slSoll, $slKey] = rt_soll($typ, RT_KEYS_SCHRANK_SL,
                 ['gefahrstoff'], ['saeure', 'säure', 'lauge']);
         }
-        $slStatus = cabinet_status($slSoll, $slIst);
 
         // 3) Schrank brennbar
         $brIst = (int)($c['schrank_brennbar'] ?? 0);
@@ -285,26 +507,83 @@ function load_and_check(int $projectID): array
             [$brSoll, $brKey] = rt_soll($typ, RT_KEYS_SCHRANK_BRENNBAR,
                 ['gefahrstoff'], ['brennbar', 'fluessig', 'flüssig']);
         }
+
+        // Sonderregel „Lager Chemikalien“ (RT 29): Soll nach Nutzfläche,
+        //   identisch für Säure/Lauge und brennbare Flüssigkeiten.
+        if ($isChemieLager) {
+            $chemSoll = chemie_lager_soll($flaeche);
+            if ($chemSoll !== null) {
+                $flStr = $flaeche === null ? '?'
+                    : rtrim(rtrim(number_format($flaeche, 1, ',', ''), '0'), ',');
+                $slSoll = $chemSoll;
+                $brSoll = $chemSoll;
+                $slKey = 'RT29 · ' . $flStr . ' m²';
+                $brKey = 'RT29 · ' . $flStr . ' m²';
+            }
+        }
+
+        $slStatus = cabinet_status($slSoll, $slIst);
         $brStatus = cabinet_status($brSoll, $brIst);
 
-        // 4) Augenduschen == Spülen
+        // 4b) Spülen je Achsen (AR_APs)
+        //   Waschküche (RT 22): 3 -> 1, ab 6 -> 2.
+        //   Sonst: 3/6 -> 1, 9 -> 2 (Ausnahme Raum 231 -> 3); andere Achsen -> keine Prüfung.
+        if ($wako) {
+            $spuelenMax = waschkueche_spuelen_max($achsen);
+        } else {
+            $spuelenMax = spuelen_max($achsen, (string)$room['Raumnr']);
+        }
+        $spuelenAchsenStatus = ($spuelenMax === null)
+            ? 'na'
+            : (($spuele <= $spuelenMax) ? 'ok' : 'error');
+
+        // Soll-Spülenanzahl = nach Achsen-Korrektur verbleibende Spülen
+        //   (bei Überzahl der Max-Wert, sonst der Ist-Wert).
+        $spuelenSoll = ($spuelenAchsenStatus === 'error' && $spuelenMax !== null)
+            ? $spuelenMax : $spuele;
+
+        // 4) Augenduschen == Soll-Spülen (nicht Ist-Spülen)
         $augenIst = (int)($c['augendusche'] ?? 0);
-        $augenStatus = ($augenIst === $spuele) ? 'ok' : 'error';
+        $augenStatus = ($augenIst === $spuelenSoll) ? 'ok' : 'error';
 
-        // 5) Waschküche mind. 2 RDG
-        $wako = is_waschkueche((string)$room['Raumbezeichnung']);
+        // 5) Waschküche RDG – Anzahl je Achsen (3/6 -> 3, größer -> 4)
         $rdgIst = (int)($c['rdg'] ?? 0);
-        $wakoStatus = !$wako ? 'na' : (($rdgIst >= WASCHKUECHE_MIN_RDG) ? 'ok' : 'error');
+        $rdgMin = $wako ? waschkueche_rdg_min($achsen) : 0;
+        $wakoStatus = !$wako ? 'na' : (($rdgIst >= $rdgMin) ? 'ok' : 'error');
 
-        // 6) Wasser bei Spüle
-        $warmOk = $warm >= 1; $kaltOk = $kalt >= 1; $veOk = $veWasser >= 1;
-        $wasserStatus = ($spuele <= 0) ? 'na' : (($warmOk && $kaltOk && $veOk) ? 'ok' : 'error');
+        // 6) Wasser bei Spüle – raumtyp-abhängig
+        [$reqWarm, $reqKalt, $reqVE] = wasser_requirements($room['Raumtyp BH']);
+        $warmOk = $warm >= 1;
+        $kaltOk = $kalt >= 1;
+        $veOk = $veWasser >= 1;
+
+        if ($spuele <= 0) {
+            $wasserStatus = 'na';
+        } elseif (!$reqWarm && !$reqKalt && !$reqVE) {
+            // z.B. Typ 23 – kein Wasser erforderlich
+            $wasserStatus = 'na';
+        } else {
+            $okWarm = !$reqWarm || $warmOk;
+            $okKalt = !$reqKalt || $kaltOk;
+            $okVE = !$reqVE || $veOk;
+            $wasserStatus = ($okWarm && $okKalt && $okVE) ? 'ok' : 'error';
+        }
+
+        // 7) Raumtypen 13/27/28 dürfen KEINE Elemente haben
+        $totalElem = (int)($totalCounts[$rid] ?? 0);
+        $noElemType = in_array((string)$room['Raumtyp BH'], NO_ELEMENT_TYPES, true);
+        $noElemStatus = !$noElemType ? 'na' : (($totalElem === 0) ? 'ok' : 'error');
 
         $statuses = ['dig' => $digStatus, 'sl' => $slStatus, 'brennbar' => $brStatus,
-            'augen' => $augenStatus, 'wako' => $wakoStatus, 'wasser' => $wasserStatus];
+            'augen' => $augenStatus, 'spuele_achsen' => $spuelenAchsenStatus,
+            'wako' => $wakoStatus, 'wasser' => $wasserStatus,
+            'noelem' => $noElemStatus];
         $errCount = 0;
         foreach ($statuses as $k => $st) {
-            if ($st === 'error') { $errPerCheck[$k]++; $errCount++; }
+            if ($st === 'error') {
+                $errPerCheck[$k]++;
+                $errCount++;
+            }
         }
 
         $rowsView[] = [
@@ -315,10 +594,15 @@ function load_and_check(int $projectID): array
             'slIst' => $slIst, 'slSoll' => $slSoll, 'slKey' => $slKey, 'slStatus' => $slStatus,
             'brIst' => $brIst, 'brSoll' => $brSoll, 'brKey' => $brKey, 'brStatus' => $brStatus,
             'augenIst' => $augenIst, 'spuele' => $spuele, 'augenStatus' => $augenStatus,
-            'wako' => $wako, 'rdgIst' => $rdgIst, 'wakoStatus' => $wakoStatus,
+            'achsen' => $achsen, 'spuelenMax' => $spuelenMax,
+            'spuelenSoll' => $spuelenSoll, 'spuelenAchsenStatus' => $spuelenAchsenStatus,
+            'flaeche' => $flaeche, 'isChemieLager' => $isChemieLager,
+            'wako' => $wako, 'rdgIst' => $rdgIst, 'rdgMin' => $rdgMin, 'wakoStatus' => $wakoStatus,
             'warm' => $warm, 'kalt' => $kalt, 'veWasser' => $veWasser,
             'warmOk' => $warmOk, 'kaltOk' => $kaltOk, 'veOk' => $veOk,
+            'reqWarm' => $reqWarm, 'reqKalt' => $reqKalt, 'reqVE' => $reqVE,
             'wasserStatus' => $wasserStatus,
+            'totalElem' => $totalElem, 'noElemType' => $noElemType, 'noElemStatus' => $noElemStatus,
         ];
     }
     return [$rowsView, $errPerCheck];
@@ -375,25 +659,32 @@ if (($_GET['action'] ?? '') === 'export') {
     echo "\xEF\xBB\xBF"; // UTF-8 BOM (Excel)
     $out = fopen('php://output', 'w');
     fputcsv($out, [
-        'Raumnr', 'Bezeichnung', 'Bereich', 'RaumtypID', 'Fehleranzahl',
+        'Raumnr', 'Bezeichnung', 'Bereich', 'RaumtypID', 'Nutzflaeche', 'Achsen', 'Fehleranzahl',
         'Dig_Ist', 'Dig_Soll', 'Dig_Status',
         'SL_Ist', 'SL_Soll', 'SL_Status',
         'Brennbar_Ist', 'Brennbar_Soll', 'Brennbar_Status',
         'Augenduschen', 'Spuelen', 'Augen=Spuele_Status',
-        'Waschkueche', 'RDG_Ist', 'Waschkueche_Status',
+        'Spuelen_max', 'Spuelen_Achsen_Status',
+        'Waschkueche', 'RDG_Ist', 'RDG_min', 'Waschkueche_Status',
         'Warmwasser', 'Kaltwasser', 'VE_Wasser', 'Wasser_Status',
+        'Elemente_gesamt', 'NoElem_Typ', 'NoElem_Status',
+        'Aenderungsanweisungen',
     ], ';');
     foreach ($rowsView as $v) {
         $r = $v['room'];
+        $instrTexts = array_map(fn($i) => $i['text'], change_instructions($v));
         fputcsv($out, [
             $r['Raumnr'], $r['Raumbezeichnung'], $r['Raumbereich Nutzer'],
-            $r['Raumtyp BH'], $v['errCount'],
+            $r['Raumtyp BH'], $v['flaeche'] ?? '', $v['achsen'], $v['errCount'],
             $v['digIst'], $v['digSoll'] ?? '', $v['digStatus'],
             $v['slIst'], $v['slSoll'] ?? '', $v['slStatus'],
             $v['brIst'], $v['brSoll'] ?? '', $v['brStatus'],
             $v['augenIst'], $v['spuele'], $v['augenStatus'],
-            $v['wako'] ? 'ja' : 'nein', $v['rdgIst'], $v['wakoStatus'],
+            $v['spuelenMax'] ?? '', $v['spuelenAchsenStatus'],
+            $v['wako'] ? 'ja' : 'nein', $v['rdgIst'], $v['rdgMin'], $v['wakoStatus'],
             $v['warm'], $v['kalt'], $v['veWasser'], $v['wasserStatus'],
+            $v['totalElem'], $v['noElemType'] ? 'ja' : 'nein', $v['noElemStatus'],
+            implode(' | ', $instrTexts),
         ], ';');
     }
     fclose($out);
@@ -430,99 +721,173 @@ $rtKeys = raumtyp_all_keys();
 <body>
 <div class="container-fluid bg-light py-3">
     <div id="limet-navbar"></div>
-
     <div class="card mt-1">
-        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <b><i class="fas fa-clipboard-check me-1"></i> Raum-Abgleich &ndash; Prüfungen</b>
-            <form class="row g-2 align-items-center" method="get">
-                <div class="col-auto"><label class="col-form-label col-form-label-sm text-muted">Projekt-ID</label></div>
-                <div class="col-auto">
-                    <input type="number" name="projectID" value="<?= $projectID ?>" class="form-control form-control-sm">
-                </div>
-                <div class="col-auto">
-                    <button class="btn btn-sm btn-outline-dark" type="submit"><i class="fas fa-sync-alt me-1"></i> Laden</button>
-                </div>
-                <?php if ($projectID): ?>
-                    <div class="col-auto">
-                        <a class="btn btn-sm btn-outline-success"
-                           href="?action=export&projectID=<?= $projectID ?>">
-                            <i class="fas fa-file-csv me-1"></i> CSV
-                        </a>
+        <div class="card-header">
+
+            <div class="d-flex flex-nowrap align-items-center gap-3 overflow-auto col-12">
+
+                <a class="btn btn-sm btn-outline-success flex-shrink-0"
+                   href="?action=export&projectID=<?= (int)$projectID ?>">
+                    <i class="fas fa-file-csv me-1"></i>
+                    <b>
+                        <i class="fas fa-clipboard-check me-1"></i>
+                        Raum-Abgleich – Prüfungen
+                    </b>
+                </a>
+
+
+                <!-- Dokumentation / Konfiguration -->
+                <div class="accordion flex-shrink-0" id="docAcc">
+                    <div class="accordion-item">
+
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed py-2"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#docBody">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Festlegungen &amp; Prüfungen &amp; Konfiguration
+                            </button>
+                        </h2>
+
+                        <div id="docBody"
+                             class="accordion-collapse collapse"
+                             data-bs-parent="#docAcc">
+
+                            <div class="accordion-body">
+
+                                <ol>
+                                    <li>
+                                        <b>Digestoren:</b>
+                                        Elemente == „Digestorenanzahl X“ aus RUF (=<code>Anmerkung Geräte</code>).
+                                    </li>
+                                    <li>
+                                        <b>Sicherheitsschrank Säure/Lauge</b> (1092) und
+                                        <b>Sicherheitsschrank brennbare</b>
+                                        (1093) gegen Soll laut Raumtyp.
+                                        Regel:
+                                        <span class="badge bg-danger">Ist &lt; Soll</span>
+                                        <span class="badge bg-warning text-dark">Ist &gt; Soll</span>
+                                        <span class="badge bg-success">Ist = Soll</span>.
+                                    </li>
+                                    <li>
+                                        <b>Lager Chemikalien (Raumtyp 29):</b>
+                                        Schrank-Soll nach <code>Nutzfläche</code> –
+                                        &lt; 19 m² &rarr; 1×, &lt; 34 m² &rarr; 2×, &ge; 34 m² &rarr; 3×
+                                        (jeweils brennbar <u>und</u> Säure/Lauge).
+                                    </li>
+                                    <li>
+                                        <b>#Augenduschen = #Spülen:</b>
+                                        Beide Werte müssen aus den Elementen übereinstimmen.
+                                    </li>
+                                    <li>
+                                        <b>Spülen je Achsen (<code>AR_APs</code>):</b>
+                                        3/6 Achsen &rarr; max. 1 Spüle, 9 Achsen &rarr; max. 2.
+                                        Ausnahme: Raum <code><?= htmlspecialchars(SPUELE_AUSNAHME_RAUMNR) ?></code>
+                                        darf 3 Spülen haben. Gilt <u>nicht</u> für Waschküchen.
+                                    </li>
+                                    <li>
+                                        <b>Waschküche (Raumtyp 22):</b>
+                                        Spülen &ndash; 3 Achsen &rarr; 1, ab 6 Achsen &rarr; 2.
+                                        RDG &ndash; 3/6 Achsen &rarr; 2, größer &rarr; 4.
+                                    </li>
+                                    <li>
+                                        <b>Wasser:</b>
+                                        Bei Spülen müssen Warm-, Kalt- und VE-Wasser gesetzt sein.
+                                    </li>
+                                    <li>
+                                        <b>Wasser – Sonderregeln je Raumtyp:</b>
+                                        Typ <code>25</code> benötigt Warm- und Kaltwasser, aber
+                                        <u>kein</u> VE-Wasser. Typ <code>23</code> benötigt
+                                        <u>weder</u> KW/WW <u>noch</u> VE-Wasser (Prüfung entfällt).
+                                    </li>
+                                    <li>
+                                        <b>Elemente unerwünscht:</b>
+                                        Raumtypen <code>13</code>, <code>27</code> und <code>28</code>
+                                        dürfen <u>keine</u> Elemente enthalten.
+                                    </li>
+                                    <li>
+                                        <b>Änderungsanweisungen:</b>
+                                        Letzte Spalte leitet konkrete Handlungstexte ab
+                                        (<i class="fas fa-plus-circle text-success"></i> hinzufügen /
+                                        <i class="fas fa-minus-circle text-danger"></i> entfernen).
+                                        Wasser wird dort NICHT berücksichtigt.
+                                    </li>
+                                </ol>
+                                <hr>
+
+                            </div>
+                        </div>
+
                     </div>
-                <?php endif; ?>
-            </form>
+                </div>
+
+
+                <!-- Zusammenfassung -->
+                <div class="d-flex flex-nowrap align-items-center gap-2 flex-shrink-0 text-nowrap justify-content-end">
+                    <span class="badge bg-secondary">
+                        Räume: <?= count($rowsView) ?>
+                    </span>
+                    <span class="badge <?= $totalErrors ? 'bg-danger' : 'bg-success' ?>">
+                        Fehler gesamt: <?= $totalErrors ?>
+                    </span>
+                    <span class="badge <?= $errPerCheck['dig'] ? 'bg-danger' : 'bg-light text-muted border' ?>">
+                        Digestoren: <?= $errPerCheck['dig'] ?>
+                    </span>
+                    <span class="badge <?= $errPerCheck['sl'] ? 'bg-danger' : 'bg-light text-muted border' ?>">
+                        Schrank S/L: <?= $errPerCheck['sl'] ?>
+                    </span>
+                    <span class="badge <?= $errPerCheck['brennbar'] ? 'bg-danger' : 'bg-light text-muted border' ?>">
+                        Schrank brennbar: <?= $errPerCheck['brennbar'] ?>
+                    </span>
+                    <span class="badge <?= $errPerCheck['augen'] ? 'bg-danger' : 'bg-light text-muted border' ?>">
+                        Augend. = Spüle: <?= $errPerCheck['augen'] ?>
+                    </span>
+                    <span class="badge <?= $errPerCheck['spuele_achsen'] ? 'bg-danger' : 'bg-light text-muted border' ?>">
+                        Spülen/Achsen: <?= $errPerCheck['spuele_achsen'] ?>
+                    </span>
+                    <span class="badge <?= $errPerCheck['wako'] ? 'bg-danger' : 'bg-light text-muted border' ?>">
+                        Waschküche RDG: <?= $errPerCheck['wako'] ?>
+                    </span>
+                    <span class="badge <?= $errPerCheck['wasser'] ? 'bg-danger' : 'bg-light text-muted border' ?>">
+                        Wasser W/K/VE: <?= $errPerCheck['wasser'] ?>
+                    </span>
+                    <span class="badge <?= $errPerCheck['noelem'] ? 'bg-danger' : 'bg-light text-muted border' ?>">
+                        Elemente 13/27/28: <?= $errPerCheck['noelem'] ?>
+                    </span>
+                </div>
+
+
+                <!-- Filter -->
+                <div class="d-flex flex-nowrap align-items-center gap-2 flex-shrink-0">
+                    <input type="text"
+                           id="roomFilter"
+                           class="form-control form-control-sm w-auto"
+                           placeholder="Raum filtern (Nr / Bezeichnung)…">
+                    <div class="form-check form-check-inline mb-0 text-nowrap">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               id="onlyErrors">
+
+                        <label class="form-check-label small"
+                               for="onlyErrors">
+                            nur Fehler zeigen
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
 
+
         <div class="card-body">
-
-            <div class="alert alert-info py-2 mb-3">
-                <i class="fas fa-info-circle me-1"></i>
-                Diese Seite <b>setzt nichts automatisch</b> &ndash; sie meldet nur Fehler.
-                Einzelne Werte lassen sich über die kleinen Buttons pro Zeile manuell setzen.
-                Spülen werden aus den <b>Elementen</b> gezählt (nicht aus dem RB-Feld).
-            </div>
-
-            <!-- Zusammenfassung -->
-            <div class="d-flex flex-wrap gap-2 mb-3">
-                <span class="badge bg-secondary">Räume: <?= count($rowsView) ?></span>
-                <span class="badge <?= $totalErrors ? 'bg-danger' : 'bg-success' ?>">Fehler gesamt: <?= $totalErrors ?></span>
-                <span class="badge <?= $errPerCheck['dig'] ? 'bg-danger' : 'bg-light text-muted border' ?>">Digestoren: <?= $errPerCheck['dig'] ?></span>
-                <span class="badge <?= $errPerCheck['sl'] ? 'bg-danger' : 'bg-light text-muted border' ?>">Schrank S/L: <?= $errPerCheck['sl'] ?></span>
-                <span class="badge <?= $errPerCheck['brennbar'] ? 'bg-danger' : 'bg-light text-muted border' ?>">Schrank brennbar: <?= $errPerCheck['brennbar'] ?></span>
-                <span class="badge <?= $errPerCheck['augen'] ? 'bg-danger' : 'bg-light text-muted border' ?>">Augend.=Spüle: <?= $errPerCheck['augen'] ?></span>
-                <span class="badge <?= $errPerCheck['wako'] ? 'bg-danger' : 'bg-light text-muted border' ?>">Waschküche RDG: <?= $errPerCheck['wako'] ?></span>
-                <span class="badge <?= $errPerCheck['wasser'] ? 'bg-danger' : 'bg-light text-muted border' ?>">Wasser W/K/VE: <?= $errPerCheck['wasser'] ?></span>
-            </div>
-
-            <!-- Doku / Konfig-Hilfe -->
-            <div class="accordion mb-3" id="docAcc">
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#docBody">
-                            <i class="fas fa-info-circle me-2"></i> Prüfungen &amp; Konfiguration
-                        </button>
-                    </h2>
-                    <div id="docBody" class="accordion-collapse collapse" data-bs-parent="#docAcc">
-                        <div class="accordion-body">
-                            <ol>
-                                <li><b>Digestoren:</b> Elemente == „Digestorenanzahl X" aus <code>Anmerkung Geräte</code>.</li>
-                                <li><b>Schrank Säure/Lauge</b> (Element 1092) &amp; <b>Schrank brennbar</b> (1093/1688)
-                                    gegen Soll lt. Raumtyp. Regel: <span class="badge bg-danger">Ist &lt; Soll</span>
-                                    <span class="badge bg-warning text-dark">Ist &gt; Soll</span>
-                                    <span class="badge bg-success">Ist = Soll</span>. „n.k." = kein Raumtyp-Feld gefunden.</li>
-                                <li><b>Augenduschen = Spülen</b> (beide aus Elementen), sonst Fehler.</li>
-                                <li><b>Waschküche:</b> mind. <?= WASCHKUECHE_MIN_RDG ?> RDG.</li>
-                                <li><b>Wasser:</b> bei Spüle müssen Warm-, Kalt- &amp; VE-Wasser gesetzt sein (nur Anzeige,
-                                    Einzel-Set per Button).</li>
-                            </ol>
-                            <hr>
-                            <p class="mb-1"><b>Verfügbare Raumtyp-Felder</b> (zur Konfiguration der Schrank-Soll-Felder in
-                                <code>RT_KEYS_SCHRANK_SL</code> / <code>RT_KEYS_SCHRANK_BRENNBAR</code>):</p>
-                            <p class="small text-muted"><?= $rtKeys ? htmlspecialchars(implode(', ', $rtKeys)) : '— keine Raumtypen geladen —' ?></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <?php if (!$projectID): ?>
                 <p class="text-muted fst-italic">Bitte eine Projekt-ID angeben.</p>
             <?php elseif (empty($rowsView)): ?>
                 <p class="text-muted fst-italic">Keine (aktiven) Räume in Projekt <?= $projectID ?> gefunden.</p>
             <?php else: ?>
 
-                <div class="row g-2 align-items-center mb-2">
-                    <div class="col-12 col-md-3">
-                        <input type="text" id="roomFilter" class="form-control form-control-sm"
-                               placeholder="Raum filtern (Nr / Bezeichnung)…">
-                    </div>
-                    <div class="col-auto form-check mb-0">
-                        <input type="checkbox" class="form-check-input" id="onlyErrors">
-                        <label class="form-check-label small" for="onlyErrors">nur Fehler zeigen</label>
-                    </div>
-                    <div class="col-auto">
-                        <span class="text-muted small">Spalten-Kopf klicken = sortieren.</span>
-                    </div>
-                </div>
 
                 <div class="table-responsive">
                     <table class="table table-sm table-bordered align-middle" id="tbl">
@@ -531,7 +896,8 @@ $rtKeys = raumtyp_all_keys();
                             <?php
                             $cols = ['Fehler', 'Raumnr', 'Bezeichnung', 'Raumtyp',
                                 'Digestoren', 'Schrank S/L', 'Schrank brennbar',
-                                'Augend. = Spüle', 'Waschküche RDG', 'Wasser W/K/VE'];
+                                'Augend. = Spüle', 'Spülen/Achsen', 'Waschküche RDG', 'Wasser W/K/VE',
+                                'Elemente 13/27/28', 'Änderungsanweisungen'];
                             foreach ($cols as $i => $label): ?>
                                 <th class="text-nowrap">
                                     <button type="button"
@@ -547,6 +913,7 @@ $rtKeys = raumtyp_all_keys();
                         <?php foreach ($rowsView as $v):
                             $room = $v['room'];
                             $hasError = $v['errCount'] > 0;
+                            $instr = change_instructions($v);
                             ?>
                             <tr class="room-row" data-search="<?= htmlspecialchars($v['search']) ?>"
                                 data-error="<?= $hasError ? '1' : '0' ?>">
@@ -574,10 +941,14 @@ $rtKeys = raumtyp_all_keys();
                                     <?php if ($v['wako']): ?>
                                         <span class="badge bg-info text-dark mt-1">Waschküche</span>
                                     <?php endif; ?>
+                                    <?php if ($v['isChemieLager']): ?>
+                                        <span class="badge bg-info text-dark mt-1">Lager Chemikalien</span>
+                                    <?php endif; ?>
                                 </td>
 
                                 <!-- 3: Raumtyp -->
-                                <td class="text-nowrap" data-sort="<?= htmlspecialchars((string)$room['Raumtyp BH']) ?>">
+                                <td class="text-nowrap"
+                                    data-sort="<?= htmlspecialchars((string)$room['Raumtyp BH']) ?>">
                                     <?php if ($v['typ']): ?>
                                         <span class="badge bg-secondary">#<?= htmlspecialchars((string)$room['Raumtyp BH']) ?></span>
                                     <?php elseif ($room['Raumtyp BH'] !== null && $room['Raumtyp BH'] !== ''): ?>
@@ -585,13 +956,17 @@ $rtKeys = raumtyp_all_keys();
                                     <?php else: ?>
                                         <span class="text-muted">—</span>
                                     <?php endif; ?>
+                                    <?php if ($v['achsen']): ?>
+                                        <span class="text-muted small d-block"><?= (int)$v['achsen'] ?> Achsen</span>
+                                    <?php endif; ?>
                                 </td>
 
                                 <!-- 4: Digestoren -->
                                 <td data-sort="<?= status_weight($v['digStatus']) ?>">
                                     <?= status_badge($v['digStatus'],
                                         $v['digStatus'] === 'neutral' ? 'k.A.' : ($v['digStatus'] === 'na' ? 'n.k.' : strtoupper($v['digStatus']))) ?>
-                                    <div class="small text-muted">Ist <b><?= $v['digIst'] ?></b> / Soll <?= $v['digSoll'] === null ? '—' : '<b>' . $v['digSoll'] . '</b>' ?></div>
+                                    <div class="small text-muted">Ist <b><?= $v['digIst'] ?></b> /
+                                        Soll <?= $v['digSoll'] === null ? '—' : '<b>' . $v['digSoll'] . '</b>' ?></div>
                                 </td>
 
                                 <!-- 5: Schrank S/L -->
@@ -600,8 +975,11 @@ $rtKeys = raumtyp_all_keys();
                                     $slLbl = ['ok' => 'OK', 'error' => 'zu wenig', 'warn' => 'mehr', 'na' => 'n.k.'][$v['slStatus']] ?? '';
                                     echo status_badge($v['slStatus'], $slLbl);
                                     ?>
-                                    <div class="small text-muted">Ist <b><?= $v['slIst'] ?></b> / Soll <?= $v['slSoll'] === null ? '—' : '<b>' . $v['slSoll'] . '</b>' ?>
-                                        <?php if ($v['slKey']): ?><span class="d-block"><i class="fas fa-tag"></i> <?= htmlspecialchars($v['slKey']) ?></span><?php endif; ?>
+                                    <div class="small text-muted">Ist <b><?= $v['slIst'] ?></b> /
+                                        Soll <?= $v['slSoll'] === null ? '—' : '<b>' . $v['slSoll'] . '</b>' ?>
+                                        <?php if ($v['slKey']): ?><span class="d-block"><i
+                                                class="fas fa-tag"></i> <?= htmlspecialchars($v['slKey']) ?>
+                                            </span><?php endif; ?>
                                     </div>
                                 </td>
 
@@ -611,51 +989,140 @@ $rtKeys = raumtyp_all_keys();
                                     $brLbl = ['ok' => 'OK', 'error' => 'zu wenig', 'warn' => 'mehr', 'na' => 'n.k.'][$v['brStatus']] ?? '';
                                     echo status_badge($v['brStatus'], $brLbl);
                                     ?>
-                                    <div class="small text-muted">Ist <b><?= $v['brIst'] ?></b> / Soll <?= $v['brSoll'] === null ? '—' : '<b>' . $v['brSoll'] . '</b>' ?>
-                                        <?php if ($v['brKey']): ?><span class="d-block"><i class="fas fa-tag"></i> <?= htmlspecialchars($v['brKey']) ?></span><?php endif; ?>
+                                    <div class="small text-muted">Ist <b><?= $v['brIst'] ?></b> /
+                                        Soll <?= $v['brSoll'] === null ? '—' : '<b>' . $v['brSoll'] . '</b>' ?>
+                                        <?php if ($v['brKey']): ?><span class="d-block"><i
+                                                class="fas fa-tag"></i> <?= htmlspecialchars($v['brKey']) ?>
+                                            </span><?php endif; ?>
                                     </div>
                                 </td>
 
                                 <!-- 7: Augend. = Spüle -->
                                 <td data-sort="<?= status_weight($v['augenStatus']) ?>">
                                     <?= status_badge($v['augenStatus'], strtoupper($v['augenStatus'])) ?>
-                                    <div class="small text-muted">Augend. <b><?= $v['augenIst'] ?></b> / Spülen <b><?= $v['spuele'] ?></b></div>
+                                    <div class="small text-muted">Augend. <b><?= $v['augenIst'] ?></b> / Spülen-Soll
+                                        <b><?= $v['spuelenSoll'] ?></b>
+                                        <?php if ($v['spuelenSoll'] !== $v['spuele']): ?>
+                                            <span class="d-block">Ist-Spülen <?= $v['spuele'] ?></span>
+                                        <?php endif; ?>
+                                    </div>
                                 </td>
 
-                                <!-- 8: Waschküche RDG -->
+                                <!-- 8: Spülen/Achsen -->
+                                <td data-sort="<?= status_weight($v['spuelenAchsenStatus']) ?>">
+                                    <?php if ($v['spuelenMax'] !== null): ?>
+                                        <?php
+                                        $saLbl = ['ok' => 'OK', 'error' => 'zu viele', 'na' => 'n.k.'][$v['spuelenAchsenStatus']] ?? strtoupper($v['spuelenAchsenStatus']);
+                                        echo status_badge($v['spuelenAchsenStatus'], $saLbl);
+                                        ?>
+                                        <div class="small text-muted">
+                                            Spülen <b><?= $v['spuele'] ?></b> / max <b><?= $v['spuelenMax'] ?></b>
+                                            <span class="d-block"><?= (int)$v['achsen'] ?> Achsen<?= $v['wako'] ? ' · Waschküche' : '' ?></span>
+                                        </div>
+                                        <?php if ((string)$room['Raumnr'] === SPUELE_AUSNAHME_RAUMNR): ?>
+                                            <div class="small text-info">Ausnahme: bis 3 Spülen</div>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <span class="text-muted small">—
+                                            <?php if ($v['achsen']): ?><span class="d-block"><?= (int)$v['achsen'] ?> Achsen</span><?php endif; ?>
+                                        </span>
+                                    <?php endif; ?>
+                                </td>
+
+                                <!-- 9: Waschküche RDG -->
                                 <td data-sort="<?= status_weight($v['wakoStatus']) ?>">
                                     <?php if ($v['wako']): ?>
                                         <?= status_badge($v['wakoStatus'], strtoupper($v['wakoStatus'])) ?>
-                                        <div class="small text-muted">RDG <b><?= $v['rdgIst'] ?></b> / min. <?= WASCHKUECHE_MIN_RDG ?></div>
+                                        <div class="small text-muted">RDG <b><?= $v['rdgIst'] ?></b> /
+                                            min. <b><?= $v['rdgMin'] ?></b>
+                                            <span class="d-block"><?= (int)$v['achsen'] ?> Achsen</span>
+                                        </div>
                                     <?php else: ?>
                                         <span class="text-muted small">—</span>
                                     <?php endif; ?>
                                 </td>
 
-                                <!-- 9: Wasser W/K/VE -->
+                                <!-- 10: Wasser W/K/VE -->
                                 <td data-sort="<?= status_weight($v['wasserStatus']) ?>">
                                     <?php if ($v['spuele'] > 0): ?>
-                                        <?= status_badge($v['wasserStatus'], strtoupper($v['wasserStatus'])) ?>
+                                        <?php
+                                        $wasserLbl = ['ok' => 'OK', 'error' => 'FEHLT', 'na' => 'n.k.'][$v['wasserStatus']] ?? strtoupper($v['wasserStatus']);
+                                        echo status_badge($v['wasserStatus'], $wasserLbl);
+                                        ?>
                                         <div class="small mt-1">
-                                            <span class="<?= $v['warmOk'] ? 'text-muted' : 'text-danger fw-bold' ?>">W&nbsp;<?= $v['warm'] ?></span>
-                                            <?php if (!$v['warmOk']): ?>
-                                                <button class="btn btn-outline-danger btn-sm py-0 px-1 set-val"
-                                                        data-room="<?= $v['rid'] ?>" data-col="HT_Warmwasser">W→1</button>
+                                            <?php /* Warmwasser */ ?>
+                                            <?php if ($v['reqWarm']): ?>
+                                                <span class="<?= $v['warmOk'] ? 'text-muted' : 'text-danger fw-bold' ?>">W&nbsp;<?= $v['warm'] ?></span>
+                                                <?php if (!$v['warmOk']): ?>
+                                                    <button class="btn btn-outline-danger btn-sm py-0 px-1 set-val"
+                                                            data-room="<?= $v['rid'] ?>" data-col="HT_Warmwasser">W→1
+                                                    </button>
+                                                <?php endif; ?>
+                                            <?php else: ?>
+                                                <span class="text-muted">W&nbsp;n.k.</span>
                                             <?php endif; ?>
                                             &nbsp;
-                                            <span class="<?= $v['kaltOk'] ? 'text-muted' : 'text-danger fw-bold' ?>">K&nbsp;<?= $v['kalt'] ?></span>
-                                            <?php if (!$v['kaltOk']): ?>
-                                                <button class="btn btn-outline-danger btn-sm py-0 px-1 set-val"
-                                                        data-room="<?= $v['rid'] ?>" data-col="HT_Kaltwasser">K→1</button>
+                                            <?php /* Kaltwasser */ ?>
+                                            <?php if ($v['reqKalt']): ?>
+                                                <span class="<?= $v['kaltOk'] ? 'text-muted' : 'text-danger fw-bold' ?>">K&nbsp;<?= $v['kalt'] ?></span>
+                                                <?php if (!$v['kaltOk']): ?>
+                                                    <button class="btn btn-outline-danger btn-sm py-0 px-1 set-val"
+                                                            data-room="<?= $v['rid'] ?>" data-col="HT_Kaltwasser">K→1
+                                                    </button>
+                                                <?php endif; ?>
+                                            <?php else: ?>
+                                                <span class="text-muted">K&nbsp;n.k.</span>
                                             <?php endif; ?>
                                             &nbsp;
-                                            <span class="<?= $v['veOk'] ? 'text-muted' : 'text-danger fw-bold' ?>">VE&nbsp;<?= $v['veOk'] ? 'ja' : 'nein' ?></span>
-                                            <?php if (!$v['veOk']): ?>
-                                                <button class="btn btn-outline-danger btn-sm py-0 px-1 set-val"
-                                                        data-room="<?= $v['rid'] ?>" data-col="VE_Wasser">VE→ja</button>
+                                            <?php /* VE-Wasser */ ?>
+                                            <?php if ($v['reqVE']): ?>
+                                                <span class="<?= $v['veOk'] ? 'text-muted' : 'text-danger fw-bold' ?>">VE&nbsp;<?= $v['veOk'] ? 'ja' : 'nein' ?></span>
+                                                <?php if (!$v['veOk']): ?>
+                                                    <button class="btn btn-outline-danger btn-sm py-0 px-1 set-val"
+                                                            data-room="<?= $v['rid'] ?>" data-col="VE_Wasser">VE→ja
+                                                    </button>
+                                                <?php endif; ?>
+                                            <?php else: ?>
+                                                <span class="text-muted">VE&nbsp;n.k.</span>
                                             <?php endif; ?>
                                         </div>
+                                        <?php
+                                        $rtStr = (string)$room['Raumtyp BH'];
+                                        if ($rtStr === '25'): ?>
+                                            <div class="small text-info">Typ 25: ohne VE</div>
+                                        <?php elseif ($rtStr === '23'): ?>
+                                            <div class="small text-info">Typ 23: kein Wasser</div>
+                                        <?php endif; ?>
                                         <div class="small text-muted">Spülen <?= $v['spuele'] ?></div>
+                                    <?php else: ?>
+                                        <span class="text-muted small">—</span>
+                                    <?php endif; ?>
+                                </td>
+
+                                <!-- 11: Elemente 13/27/28 (dürfen keine haben) -->
+                                <td data-sort="<?= status_weight($v['noElemStatus']) ?>">
+                                    <?php if ($v['noElemType']): ?>
+                                        <?= status_badge($v['noElemStatus'],
+                                            $v['noElemStatus'] === 'ok' ? 'OK' : 'hat Elemente') ?>
+                                        <div class="small text-muted">Elemente <b><?= $v['totalElem'] ?></b> /
+                                            erwartet <b>0</b></div>
+                                    <?php else: ?>
+                                        <span class="text-muted small">—</span>
+                                    <?php endif; ?>
+                                </td>
+
+                                <!-- 12: Änderungsanweisungen -->
+                                <td data-sort="<?= count($instr) ?>" class="text-nowrap">
+                                    <?php if ($instr): ?>
+                                        <?php foreach ($instr as $ins):
+                                            $ic = ['add' => 'fa-plus-circle text-success',
+                                                'remove' => 'fa-minus-circle text-danger',
+                                                'info' => 'fa-info-circle text-primary'][$ins['type']] ?? 'fa-circle text-muted';
+                                            ?>
+                                            <div class="small">
+                                                <i class="fas <?= $ic ?> me-1"></i><?= htmlspecialchars($ins['text']) ?>
+                                            </div>
+                                        <?php endforeach; ?>
                                     <?php else: ?>
                                         <span class="text-muted small">—</span>
                                     <?php endif; ?>
@@ -688,6 +1155,7 @@ $rtKeys = raumtyp_all_keys();
                 $(this).toggle(okText && okErr);
             });
         }
+
         $('#roomFilter').on('input', applyFilter);
         $('#onlyErrors').on('change', applyFilter);
 
@@ -715,9 +1183,13 @@ $rtKeys = raumtyp_all_keys();
             $('.sort-btn[data-col="' + col + '"] i')
                 .attr('class', 'fas ' + (sortDir === 1 ? 'fa-sort-up' : 'fa-sort-down'));
         }
+
         $('.sort-btn').on('click', function () {
             const col = parseInt($(this).data('col'), 10);
-            if (col === sortCol) sortDir *= -1; else { sortCol = col; sortDir = 1; }
+            if (col === sortCol) sortDir *= -1; else {
+                sortCol = col;
+                sortDir = 1;
+            }
             doSort(col);
         });
         doSort(0); // initial: Fehler zuerst
@@ -734,8 +1206,11 @@ $rtKeys = raumtyp_all_keys();
                 data: {action: 'set_value', projectID: PROJECT_ID, roomID: roomID, col: col, value: 1},
                 success: function (raw) {
                     let res;
-                    try { res = typeof raw === 'string' ? JSON.parse(raw) : raw; }
-                    catch (e) { res = {status: 'error', msg: String(raw)}; }
+                    try {
+                        res = typeof raw === 'string' ? JSON.parse(raw) : raw;
+                    } catch (e) {
+                        res = {status: 'error', msg: String(raw)};
+                    }
                     if (res.status === 'ok') {
                         makeToaster(res.msg || 'Gesetzt.', true);
                         setTimeout(() => location.reload(), 600);
@@ -744,7 +1219,10 @@ $rtKeys = raumtyp_all_keys();
                         btn.disabled = false;
                     }
                 },
-                error: function () { makeToaster('Verbindungsfehler.', false); btn.disabled = false; }
+                error: function () {
+                    makeToaster('Verbindungsfehler.', false);
+                    btn.disabled = false;
+                }
             });
         });
     });

@@ -56,8 +56,27 @@ function build_kommentar(mysqli $db, int $rhe_id, string $neu): string
     return $alt === '' ? $neu : $neu . "\n" . $alt;
 }
 
+
+function neu_bestand_fuer_element(mysqli $db, int $element_id): int
+{// Liefert 0 (Bestand) für Element-Codes aus BESTAND_ELEMENT_CODES (z.B. RDGs),
+ // sonst 1 (Neu). ElementID-Code wird per interner Element-ID nachgeschlagen (Cache).
+
+    if ($element_id <= 0 || !defined('BESTAND_ELEMENT_CODES') || !BESTAND_ELEMENT_CODES) {
+        return 1;
+    }
+    static $cache = [];
+    if (!array_key_exists($element_id, $cache)) {
+        $s = $db->prepare("SELECT ElementID FROM tabelle_elemente WHERE idTABELLE_Elemente = ?");
+        $s->bind_param('i', $element_id);
+        $s->execute();
+        $cache[$element_id] = (string)($s->get_result()->fetch_row()[0] ?? '');
+        $s->close();
+    }
+    return in_array($cache[$element_id], BESTAND_ELEMENT_CODES, true) ? 0 : 1;
+}
+
 /**
- * Variante A (idtabelle_Varianten = 1) ist IMMER der parameterlose Slot.
+ * Variante A (idtabelle_Varianten = 1)  ist IMMER der parameterlose Slot.
  *
  * Regeln:
  *  • parameterlos  → immer Var A (id=1) verwenden.
@@ -364,21 +383,33 @@ try {
             $anzahl = max(0, (int)$action['anzahl']);
             $ts = date('Y-m-d H:i:s');
 
-            // Bisherige Anzahl lesen für "von X auf Y"
-            $chk = $mysqli->prepare("SELECT Anzahl FROM tabelle_räume_has_tabelle_elemente WHERE id = ?");
+            // Bisherige Anzahl + Element lesen (Anzahl für "von X auf Y",
+            // Element-ID für die Bestand-Entscheidung)
+            $chk = $mysqli->prepare("SELECT Anzahl, TABELLE_Elemente_idTABELLE_Elemente FROM tabelle_räume_has_tabelle_elemente WHERE id = ?");
             $chk->bind_param('i', $rhe_id);
             $chk->execute();
-            $alt_anzahl = (int)($chk->get_result()->fetch_row()[0] ?? 0);
+            $chk_row = $chk->get_result()->fetch_assoc();
             $chk->close();
+            $alt_anzahl = (int)($chk_row['Anzahl'] ?? 0);
+            $neu_bestand = neu_bestand_fuer_element($mysqli, (int)($chk_row['TABELLE_Elemente_idTABELLE_Elemente'] ?? 0));
 
             $neu = sprintf('%s: Anzahl von %d auf %d geändert via Excel-Import', date('d.m.Y'), $alt_anzahl, $anzahl);
             $kommentar = build_kommentar($mysqli, $rhe_id, $neu);
 
-            $stmt = $mysqli->prepare("
-                UPDATE tabelle_räume_has_tabelle_elemente
-                SET Anzahl = ?, Kurzbeschreibung = ?, Timestamp = ?
-                WHERE id = ?
-            ");
+            if ($neu_bestand === 0) {
+                // Bestands-Element (z.B. RDG) → Neu/Bestand = 0 sicherstellen
+                $stmt = $mysqli->prepare("
+                    UPDATE tabelle_räume_has_tabelle_elemente
+                    SET Anzahl = ?, `Neu/Bestand` = 0, Kurzbeschreibung = ?, Timestamp = ?
+                    WHERE id = ?
+                ");
+            } else {
+                $stmt = $mysqli->prepare("
+                    UPDATE tabelle_räume_has_tabelle_elemente
+                    SET Anzahl = ?, Kurzbeschreibung = ?, Timestamp = ?
+                    WHERE id = ?
+                ");
+            }
             $stmt->bind_param('issi', $anzahl, $kommentar, $ts, $rhe_id);
             $stmt->execute();
             $ok = $stmt->affected_rows >= 0;
@@ -402,6 +433,9 @@ try {
             if (!$element_id) {
                 throw new RuntimeException('Element nicht gefunden: ' . ($action['element_code'] ?? '?'));
             }
+
+            // Bestands-Element? (RDG etc. → Neu/Bestand = 0, sonst 1 = Neu)
+            $neu_bestand = neu_bestand_fuer_element($mysqli, $element_id);
 
             // Variante bestimmen oder neu anlegen
             $variante_id = (int)($action['variante_id'] ?? 0);
@@ -439,11 +473,20 @@ try {
                 // Eintrag existiert bereits → Anzahl aktualisieren
                 $rhe_upd_id = (int)$existing_rhe['id'];
                 $kommentar  = build_kommentar($mysqli, $rhe_upd_id, $neu_kommentar);
-                $stmt = $mysqli->prepare("
-                    UPDATE tabelle_räume_has_tabelle_elemente
-                    SET Anzahl = ?, Kurzbeschreibung = ?, Timestamp = ?
-                    WHERE id = ?
-                ");
+                if ($neu_bestand === 0) {
+                    // Bestands-Element (z.B. RDG) → Neu/Bestand = 0 erzwingen
+                    $stmt = $mysqli->prepare("
+                        UPDATE tabelle_räume_has_tabelle_elemente
+                        SET Anzahl = ?, `Neu/Bestand` = 0, Kurzbeschreibung = ?, Timestamp = ?
+                        WHERE id = ?
+                    ");
+                } else {
+                    $stmt = $mysqli->prepare("
+                        UPDATE tabelle_räume_has_tabelle_elemente
+                        SET Anzahl = ?, Kurzbeschreibung = ?, Timestamp = ?
+                        WHERE id = ?
+                    ");
+                }
                 $stmt->bind_param('issi', $anzahl, $kommentar, $ts, $rhe_upd_id);
                 $stmt->execute();
                 $ok = $stmt->affected_rows >= 0;
@@ -456,9 +499,9 @@ try {
                         (`TABELLE_Räume_idTABELLE_Räume`, `TABELLE_Elemente_idTABELLE_Elemente`,
                          `Neu/Bestand`, Anzahl, tabelle_Varianten_idtabelle_Varianten,
                          Kurzbeschreibung, Timestamp, Standort, Verwendung)
-                    VALUES (?, ?, 1, ?, ?, ?, ?, 1, 1)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, 1, 1)
                 ");
-                $stmt->bind_param('iiiiss', $raum_id, $element_id, $anzahl, $variante_id, $neu_kommentar, $ts);
+                $stmt->bind_param('iiiiiss', $raum_id, $element_id, $neu_bestand, $anzahl, $variante_id, $neu_kommentar, $ts);
                 $stmt->execute();
                 $new_id = (int)$stmt->insert_id;
                 $ok = $new_id > 0;

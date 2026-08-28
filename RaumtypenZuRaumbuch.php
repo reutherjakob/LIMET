@@ -1,6 +1,6 @@
 <?php
 /**
- * raumtypen_uebernahme.php  (ALLES IN EINEM FILE)
+ * RaumtypenZuRaumbuch.php
  *
  * Überträgt Angaben aus den Raumtypen (raumtypen.php / $labortypen) in
  * tabelle_räume – projektweise, anhand des Feldes `Raumtyp BH` (enthält die
@@ -10,6 +10,14 @@
  * - EIGENER Button pro Zuordnung; wirkt auf die ausgewählten (angehakten) Räume
  * - POST action=apply  ->  JSON-Antwort (im selben File)
  *
+ * Wasser-Sonderregeln je Raumtyp (analog RaumAbgleich.php):
+ *   - Typ 23: kein KW/WW und kein VE-Wasser  -> Warm/Kalt/VE = 0
+ *   - Typ 25: kein VE-Wasser                 -> VE = 0 (Warm/Kalt regulär)
+ *
+ * Element-Zuordnungen löschen:
+ *   - Raumtypen 13/27/28 dürfen KEINE Elemente haben. Ein eigener Button
+ *     entfernt für diese Räume ALLE Zeilen aus tabelle_räume_has_tabelle_elemente.
+ *
  * SICHERHEIT: Zielspalten stammen ausschließlich aus $GROUPS (Whitelist),
  * niemals vom Client. Werte werden per Prepared Statement gebunden.
  * Leere Raumtyp-Angaben werden übersprungen (bestehende Werte bleiben erhalten).
@@ -17,6 +25,14 @@
 
 require_once __DIR__ . '/utils/_utils.php';
 require_once __DIR__ . '/Nutzerumfrage/raumtypen.php';   // definiert $labortypen
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   KONFIGURATION
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/** Raumtypen, die KEINE Elemente enthalten dürfen (Element-Zuordnungen löschbar). */
+const NO_ELEMENT_TYPES = ['13', '27', '28'];
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -58,6 +74,37 @@ function tt_temp(array $t, string $key): ?string
 {
     if (($t['temp_nach_erfordernis'] ?? '0') === '1') return 'n.E.';
     return _s($t[$key] ?? null);
+}
+
+/**
+ * Wasser-Wert je Raumtyp inkl. Sonderregeln.
+ *   $which: 'warm' | 'kalt' | 've'
+ *   - Typ 23: alles 0 (kein KW/WW, kein VE).
+ *   - Typ 25: VE = 0 (kein VE); Warm/Kalt regulär aus Raumtyp.
+ *   - sonst : Wert aus Raumtyp (warmwasser / kaltwasser / ve_wasser).
+ * Für 'warm' wird als Fallback das gemeinsame kaltwasser-Flag genutzt, falls
+ * der Raumtyp kein eigenes warmwasser-Feld führt.
+ */
+function tt_wasser(array $t, array $room, string $which): ?string
+{
+    $rt = (string)($room['Raumtyp BH'] ?? '');
+
+    // Typ 23: kein Wasser -> explizit auf 0 setzen
+    if ($rt === '23') return '0';
+
+    // Typ 25: kein VE-Wasser -> explizit auf 0 setzen
+    if ($rt === '25' && $which === 've') return '0';
+
+    // Standard: passenden Wert aus dem Raumtyp lesen
+    $field = ['warm' => 'warmwasser', 'kalt' => 'kaltwasser', 've' => 've_wasser'][$which] ?? null;
+    $val = $field !== null ? _s($t[$field] ?? null) : null;
+
+    // Fallback für Warmwasser: gemeinsames (Kalt-)Wasserflag verwenden,
+    // wenn der Raumtyp kein eigenes warmwasser-Feld hat.
+    if ($which === 'warm' && $val === null) {
+        $val = _s($t['kaltwasser'] ?? null);
+    }
+    return $val;
 }
 
 /** Druckregelung -> H6020 (varchar 20), abgekürzt. */
@@ -200,6 +247,34 @@ function element_counts_for_rooms($mysqli, array $roomIDs): array
     return $out;
 }
 
+/**
+ * Zählt je Raum die ANZAHL DER ZEILEN in tabelle_räume_has_tabelle_elemente.
+ * Wird für Vorschau/Statistik der Element-Löschung benötigt.
+ * Rückgabe: [roomId => int].
+ */
+function element_row_counts($mysqli, array $roomIDs): array
+{
+    $out = [];
+    $roomIDs = array_values(array_unique(array_filter(array_map('intval', $roomIDs))));
+    if (!$roomIDs) return $out;
+
+    $phR = implode(',', array_fill(0, count($roomIDs), '?'));
+    $types = str_repeat('i', count($roomIDs));
+
+    $stmt = $mysqli->prepare(
+        "SELECT TABELLE_Räume_idTABELLE_Räume AS rid, COUNT(*) AS n
+         FROM tabelle_räume_has_tabelle_elemente
+         WHERE TABELLE_Räume_idTABELLE_Räume IN ($phR)
+         GROUP BY TABELLE_Räume_idTABELLE_Räume"
+    );
+    $stmt->bind_param($types, ...$roomIDs);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    while ($r = $res->fetch_assoc()) $out[(int)$r['rid']] = (int)$r['n'];
+    $stmt->close();
+    return $out;
+}
+
 /** Element-Zählwert eines Raums (dig/punkt/schrank) als String – 0 wenn nichts verbaut. */
 function ttx_cnt(array $room, string $key): string
 {
@@ -218,6 +293,18 @@ function inject_element_counts($mysqli, array &$rooms): void
     unset($room);
 }
 
+/** Fügt die Zeilenanzahl der Element-Zuordnungen je Raum unter '_elemrows' ein. */
+function inject_element_row_counts($mysqli, array &$rooms): void
+{
+    $ids = array_map(fn($r) => (int)$r['idTABELLE_Räume'], $rooms);
+    $counts = element_row_counts($mysqli, $ids);
+    foreach ($rooms as &$room) {
+        $rid = (int)$room['idTABELLE_Räume'];
+        $room['_elemrows'] = $counts[$rid] ?? 0;
+    }
+    unset($room);
+}
+
 
 /* ═══════════════════════════════════════════════════════════════════════════
    DIE ZUORDNUNGEN  – je Eintrag = 1 Button
@@ -225,6 +312,8 @@ function inject_element_counts($mysqli, array &$rooms): void
    'reads'   : Klartext Quelle (nur Anzeige)
    'writes'  : Klartext Ziel   (nur Anzeige)
    'note'    : Überschreib-/Sonderhinweis (nur Anzeige)
+   Optional  : 'btn_class', 'btn_icon', 'btn_label' (Button-Styling)
+               'delete_elements' + 'restrict_types' (Sonderaktion Löschen)
    ═══════════════════════════════════════════════════════════════════════════ */
 $GROUPS = [
 
@@ -242,33 +331,36 @@ $GROUPS = [
     ],
 
     'warmwasser' => [
-        'title' => 'warmwasser',
-        'reads' => 'Warmwasser (1/0)',
+        'title' => 'Warmwasser',
+        'reads' => 'warmwasser (Fallback kaltwasser) + Sonderregeln Typ 23',
         'writes' => 'HT_Warmwasser',
-        'note' => 'warmwasser=1 → HT_Warmwasser=1, '
+        'note' => 'Warmwasser-Flag aus dem Raumtyp → HT_Warmwasser. '
+            . 'SONDERREGEL: Typ 23 → 0 (kein Wasser). '
             . 'Vorhandener Wert wird überschrieben.',
         'targets' => [
-            'HT_Warmwasser' => fn($t, $r) => _s($t['kaltwasser'] ?? null),
+            'HT_Warmwasser' => fn($t, $r) => tt_wasser($t, $r, 'warm'),
         ],
     ],
     'kaltwasser' => [
         'title' => 'Kaltwasser',
-        'reads' => 'Kaltwasser (1/0)',
+        'reads' => 'kaltwasser (1/0) + Sonderregeln Typ 23',
         'writes' => 'HT_Kaltwasser',
-        'note' => 'kaltwasser=1 → HT_Kaltwasser=1, '
+        'note' => 'Kaltwasser-Flag aus dem Raumtyp → HT_Kaltwasser. '
+            . 'SONDERREGEL: Typ 23 → 0 (kein Wasser). '
             . 'Vorhandener Wert wird überschrieben.',
         'targets' => [
-            'HT_Kaltwasser' => fn($t, $r) => _s($t['kaltwasser'] ?? null),
+            'HT_Kaltwasser' => fn($t, $r) => tt_wasser($t, $r, 'kalt'),
         ],
     ],
     'VE_Wasser' => [
         'title' => 'VE_Wasser',
-        'reads' => 'VE_Wasser (1/0)',
+        'reads' => 've_wasser (1/0) + Sonderregeln Typ 23/25',
         'writes' => 'VE_Wasser',
-        'note' => 'VE_Wasser=1 → VE_Wasser=1, '
+        'note' => 'VE-Wasser-Flag aus dem Raumtyp → VE_Wasser. '
+            . 'SONDERREGELN: Typ 25 → 0 (kein VE), Typ 23 → 0 (kein Wasser). '
             . 'Vorhandener Wert wird überschrieben.',
         'targets' => [
-            'VE_Wasser' => fn($t, $r) => _s($t['ve_wasser'] ?? null),
+            'VE_Wasser' => fn($t, $r) => tt_wasser($t, $r, 've'),
         ],
     ],
     'tempgradient' => [
@@ -402,7 +494,7 @@ $GROUPS = [
         'needs_counts' => true,
         'targets' => [
             'HT_Abluft_Digestorium_Stk' => fn($t, $r) => ttx_cnt($r, 'dig'),
-            'HT_Abluft_Sicherheitsschrank_Unterbau_Stk' => fn($t, $r) => (string)(2 * (int)ttx_cnt($r, 'dig')),
+            'HT_Abluft_Sicherheitsschrank_Unterbau_Stk' => fn($t, $r) => (string)(1 * (int)ttx_cnt($r, 'dig')),
             'HT_Punktabsaugung_Stk' => fn($t, $r) => ttx_cnt($r, 'punkt'),
             'HT_Abluft_Sicherheitsschrank_Stk' => fn($t, $r) => ttx_cnt($r, 'schrank'),
         ],
@@ -422,7 +514,7 @@ $GROUPS = [
         'writes' => 'IT Anbindung',
         'note' => '1:1-Übernahme des EDV-Textes. Vorhandener Wert wird überschrieben.',
         'targets' => [
-             'IT Anbindung' => fn($t, $r) => _s($t['elektro_edv'] ?? null),
+            'IT Anbindung' => fn($t, $r) => _s($t['elektro_edv'] ?? null),
         ],
     ],
     'av_quotient_volumen' => [
@@ -456,6 +548,23 @@ $GROUPS = [
         'targets' => [
             'NGA' => fn($t, $r) => _s($t['sicherheit_erstehilfe'] ?? null),
         ],
+    ],
+
+    // ── SONDERAKTION: Element-Zuordnungen löschen ─────────────────────────────
+    'clear_elements' => [
+        'title' => 'Elemente entfernen (Typ ' . implode('/', NO_ELEMENT_TYPES) . ')',
+        'reads' => 'tabelle_räume_has_tabelle_elemente (Anzahl Zeilen)',
+        'writes' => 'LÖSCHT alle Element-Zuordnungen des Raums',
+        'note' => 'ACHTUNG – LÖSCHVORGANG: Entfernt ALLE Einträge aus '
+            . 'tabelle_räume_has_tabelle_elemente für Räume der Raumtypen '
+            . implode(', ', NO_ELEMENT_TYPES) . ' (diese Räume dürfen keine Elemente haben). '
+            . 'Räume anderer Raumtypen werden übersprungen. Dieser Schritt ist NICHT umkehrbar.',
+        'delete_elements' => true,
+        'restrict_types' => NO_ELEMENT_TYPES,
+        'btn_class' => 'btn-danger',
+        'btn_icon' => 'fa-trash',
+        'btn_label' => 'Löschen',
+        'targets' => [],   // kein Spalten-Update
     ],
 ];
 
@@ -502,6 +611,48 @@ if (($_POST['action'] ?? '') === 'apply') {
     $stmt->execute();
     $rows = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $stmt->close();
+
+    /* ── Sonderfall: Element-Zuordnungen löschen (kein Spalten-Update) ──────── */
+    if (!empty($group['delete_elements'])) {
+        $restrict = $group['restrict_types'] ?? [];
+        $deletedRows = 0;
+        $clearedRooms = 0;
+        $skipped = 0;
+
+        // rid stammt aus projektgefiltertem SELECT -> Löschung ist projektsicher.
+        $del = $mysqli->prepare(
+            "DELETE FROM tabelle_räume_has_tabelle_elemente
+             WHERE TABELLE_Räume_idTABELLE_Räume = ?"
+        );
+        foreach ($rows as $room) {
+            $rid = (int)$room['idTABELLE_Räume'];
+            $rt = (string)$room['Raumtyp BH'];
+            if ($restrict && !in_array($rt, $restrict, true)) {
+                $skipped++;
+                continue;
+            }
+            $del->bind_param('i', $rid);
+            $del->execute();
+            $aff = $del->affected_rows;
+            if ($aff > 0) {
+                $deletedRows += $aff;
+                $clearedRooms++;
+            }
+        }
+        $del->close();
+        $mysqli->close();
+        ob_end_clean();
+        echo json_encode([
+            'status' => 'ok',
+            'group' => $groupKey,
+            'updated' => $clearedRooms,
+            'deletedRows' => $deletedRows,
+            'skipped' => $skipped,
+            'msg' => "„{$group['title']}“: $deletedRows Element-Zuordnung(en) in $clearedRooms Raum/Räumen gelöscht"
+                . ($skipped ? ", $skipped übersprungen (anderer Raumtyp)" : '') . '.',
+        ]);
+        exit;
+    }
 
     // Element-Zählwerte (Digestor/Punktabs./Gefahrenschrank) nur laden, wenn benötigt.
     if (!empty($group['needs_counts'])) inject_element_counts($mysqli, $rows);
@@ -574,8 +725,10 @@ $projectID = (int)($_GET['projectID'] ?? $_SESSION['projectID'] ?? 0);
 $colSql = implode(', ', array_map(fn($c) => '`' . $c . '`', $ALL_TARGET_COLS));
 $rooms = [];
 if ($projectID) {
+    // $colSql kann leer sein, wenn alle Gruppen nur Sonderaktionen wären -> absichern.
+    $extraCols = $colSql !== '' ? ', ' . $colSql : '';
     $sql = "SELECT idTABELLE_Räume, Raumnr, Raumbezeichnung, `Raumbereich Nutzer`,
-                   `Raumtyp BH`, `Nutzfläche`, `Nutzfläche_Soll`, $colSql
+                   `Raumtyp BH`, `Nutzfläche`, `Nutzfläche_Soll`$extraCols
             FROM tabelle_räume
             WHERE tabelle_projekte_idTABELLE_Projekte = ?
               AND `Raumtyp BH` IS NOT NULL AND `Raumtyp BH` <> ''
@@ -588,12 +741,16 @@ if ($projectID) {
 
     // Element-Zählwerte je Raum für die Vorschau der element-basierten Zuordnung.
     inject_element_counts($mysqli, $rooms);
+    // Zeilenanzahl der Element-Zuordnungen für die Vorschau der Löschaktion.
+    inject_element_row_counts($mysqli, $rooms);
 }
 $mysqli->close();
 
 $idx = raumtyp_index();
 
-// Vorschauwerte vorberechnen: $preview[roomId][groupKey] = [ ['col','cur','new','chg'], ... ]
+// Vorschauwerte vorberechnen: $preview[roomId][groupKey]
+//   - normal : Liste [ ['col','cur','new','chg'], ... ]
+//   - delete : ['delete'=>true,'applies'=>bool,'rows'=>int,'chg'=>bool]
 $preview = [];
 $changesPerGrp = array_fill_keys(array_keys($GROUPS), 0);
 $countUnknown = 0;
@@ -602,6 +759,18 @@ foreach ($rooms as $room) {
     $typ = $idx[(string)$room['Raumtyp BH']] ?? null;
     if (!$typ) $countUnknown++;
     foreach ($GROUPS as $gk => $g) {
+
+        // Sonderaktion: Element-Löschung
+        if (!empty($g['delete_elements'])) {
+            $restrict = $g['restrict_types'] ?? [];
+            $applies = !$restrict || in_array((string)$room['Raumtyp BH'], $restrict, true);
+            $rowsN = (int)($room['_elemrows'] ?? 0);
+            $chg = $applies && $rowsN > 0;
+            if ($chg) $changesPerGrp[$gk]++;
+            $preview[$rid][$gk] = ['delete' => true, 'applies' => $applies, 'rows' => $rowsN, 'chg' => $chg];
+            continue;
+        }
+
         $cells = [];
         foreach ($g['targets'] as $col => $cb) {
             $cur = (string)($room[$col] ?? '');
@@ -622,6 +791,7 @@ foreach ($GROUPS as $gk => $g) {
         'reads' => $g['reads'],
         'writes' => $g['writes'],
         'note' => $g['note'],
+        'danger' => !empty($g['delete_elements']),
     ];
 }
 ?>
@@ -646,29 +816,11 @@ foreach ($GROUPS as $gk => $g) {
     <div id="limet-navbar"></div>
 
     <div class="card mt-1">
+
         <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
             <b><i class="fas fa-exchange-alt me-1"></i> Raumtypen-Angaben in Tabelle Räume übernehmen</b>
-            <form class="d-flex align-items-center gap-2" method="get">
-                <label class="text-muted small mb-0">Projekt-ID</label>
-                <input type="number" name="projectID" value="<?= $projectID ?>"
-                       class="form-control form-control-sm" style="max-width:110px;">
-                <button class="btn btn-sm btn-outline-dark" type="submit">
-                    <i class="fas fa-sync-alt me-1"></i> Laden
-                </button>
-            </form>
-        </div>
 
-        <div class="card-body">
-
-            <div class="d-flex flex-wrap gap-2 mb-3">
-                <span class="badge bg-secondary">Räume mit Raumtyp: <?= count($rooms) ?></span>
-                <?php if ($countUnknown): ?>
-                    <span class="badge bg-danger">Unbekannter Raumtyp: <?= $countUnknown ?></span>
-                <?php endif; ?>
-            </div>
-
-            <!-- Was-passiert-Erörterung -->
-            <div class="accordion mb-3" id="mapDocAcc">
+            <div class="accordion" id="mapDocAcc">
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button"
@@ -691,12 +843,12 @@ foreach ($GROUPS as $gk => $g) {
                                     </thead>
                                     <tbody>
                                     <?php foreach ($GROUPS as $gk => $g): ?>
-                                        <tr>
+                                        <tr <?= !empty($g['delete_elements']) ? 'class=""' : '' ?>>
                                             <td class="fw-semibold text-nowrap"><?= htmlspecialchars($g['title']) ?></td>
                                             <td><code class="small"><?= htmlspecialchars($g['reads']) ?></code></td>
                                             <td><code class="small"><?= htmlspecialchars($g['writes']) ?></code></td>
                                             <td>
-                                                <span class="badge <?= $changesPerGrp[$gk] ? 'bg-warning text-dark' : 'bg-light text-muted border' ?>">
+                                                <span class="badge <?= $changesPerGrp[$gk] ? ' text-dark' : 'bg-light text-muted border' ?>">
                                                     <?= $changesPerGrp[$gk] ?>
                                                 </span>
                                             </td>
@@ -705,11 +857,23 @@ foreach ($GROUPS as $gk => $g) {
                                     <?php endforeach; ?>
                                     </tbody>
                                 </table>
+                                <i class="fas fa-hand-pointer me-1"></i>
+                                Jeder Spalten-Button überträgt nur diese eine Zuordnung – für die
+                                <b>angehakten</b> Räume.
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
+                <input type="text" id="roomFilter" class="form-control form-control-sm"
+                       style="max-width:240px;" placeholder="Raum filtern (Nr / Bezeichnung)…">
+                <span class="ms-auto text-muted small"> </span>
+            </div>
+        </div>
+
+
+        <div class="card-body">
 
             <?php if (!$projectID): ?>
                 <p class="text-muted fst-italic">Bitte eine Projekt-ID angeben.</p>
@@ -719,36 +883,29 @@ foreach ($GROUPS as $gk => $g) {
                 </p>
             <?php else: ?>
 
-                <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
-                    <input type="text" id="roomFilter" class="form-control form-control-sm"
-                           style="max-width:240px;" placeholder="Raum filtern (Nr / Bezeichnung)…">
-                    <span class="text-muted small" id="selCount"></span>
-                    <span class="ms-auto text-muted small">
-                        <i class="fas fa-hand-pointer me-1"></i>
-                        Jeder Spalten-Button überträgt nur diese eine Zuordnung – für die
-                        <b>angehakten</b> Räume.
-                    </span>
-                </div>
 
                 <div class="table-responsive">
                     <table class="table table-sm table-bordered align-middle" id="tbl" style="min-width:1100px;">
                         <thead class="table-light">
                         <tr>
-                            <th style="width:34px;"><input type="checkbox" class="form-check-input" id="selAll" checked>
+                            <th style="width:34px;">
+                                <input type="checkbox" class="form-check-input" id="selAll" checked>
                             </th>
                             <th class="text-nowrap">Raumnr</th>
                             <th>Bezeichnung</th>
                             <th class="text-nowrap">Raumtyp BH</th>
                             <th class="text-nowrap">Fläche m²</th>
                             <?php foreach ($GROUPS as $gk => $g): ?>
-                                <th class="text-nowrap" style="min-width:150px;">
+                                <th class="text-nowrap <?= !empty($g['delete_elements']) ? 'table-danger' : '' ?>"
+                                    style="min-width:150px;">
                                     <div class="d-flex flex-column gap-1">
                                         <span><?= htmlspecialchars($g['title']) ?></span>
                                         <button type="button"
-                                                class="btn btn-primary btn-sm apply-group-btn"
+                                                class="btn <?= htmlspecialchars($g['btn_class'] ?? 'btn-primary') ?> btn-sm apply-group-btn"
                                                 data-group="<?= htmlspecialchars($gk) ?>"
                                                 title="<?= htmlspecialchars($g['note']) ?>">
-                                            <i class="fas fa-save me-1"></i> Übernehmen
+                                            <i class="fas <?= htmlspecialchars($g['btn_icon'] ?? 'fa-save') ?> me-1"></i>
+                                            <?= htmlspecialchars($g['btn_label'] ?? 'Übernehmen') ?>
                                         </button>
                                     </div>
                                 </th>
@@ -792,26 +949,43 @@ foreach ($GROUPS as $gk => $g) {
                                 </td>
 
                                 <?php foreach ($GROUPS as $gk => $g): ?>
-                                    <td>
-                                        <?php foreach ($preview[$rid][$gk] as $c): ?>
-                                            <div class="small <?= $c['chg'] ? '' : 'text-muted' ?>">
-                                                <?php if (count($g['targets']) > 1): ?>
-                                                    <span class="text-muted"
-                                                          style="font-size:.7rem;"><?= htmlspecialchars($c['col']) ?>:</span>
-                                                <?php endif; ?>
-                                                <?php if ($c['new'] === null): ?>
-                                                    <span class="fst-italic text-muted">—</span>
-                                                <?php elseif ($c['chg']): ?>
-                                                    <span class="text-decoration-line-through text-muted"><?= $c['cur'] === '' ? '∅' : htmlspecialchars($c['cur']) ?></span>
-                                                    <i class="fas fa-arrow-right mx-1" style="font-size:.65rem;"></i>
-                                                    <strong><?= htmlspecialchars($c['new']) ?></strong>
-                                                <?php else: ?>
-                                                    <?= $c['cur'] === '' ? '<span class="fst-italic">∅</span>' : htmlspecialchars($c['cur']) ?>
-                                                    <i class="fas fa-check text-success ms-1" style="font-size:.65rem;"
-                                                       title="bereits gleich"></i>
-                                                <?php endif; ?>
+                                    <td<?= !empty($g['delete_elements']) ? ' class="table-danger"' : '' ?>>
+                                        <?php if (!empty($g['delete_elements'])):
+                                            $p = $preview[$rid][$gk]; ?>
+                                            <?php if (!$p['applies']): ?>
+                                            <span class="fst-italic text-muted small">—</span>
+                                        <?php elseif ($p['rows'] > 0): ?>
+                                            <div class="small">
+                                                <span class="badge bg-danger"><?= $p['rows'] ?> Zeile(n)</span>
+                                                <i class="fas fa-arrow-right mx-1" style="font-size:.65rem;"></i>
+                                                <strong>löschen</strong>
                                             </div>
-                                        <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <span class="small text-muted">keine Elemente
+                                                    <i class="fas fa-check text-success" style="font-size:.65rem;"></i>
+                                                </span>
+                                        <?php endif; ?>
+                                        <?php else: ?>
+                                            <?php foreach ($preview[$rid][$gk] as $c): ?>
+                                                <div class="small <?= $c['chg'] ? '' : 'text-muted' ?>">
+                                                    <?php if (count($g['targets']) > 1): ?>
+                                                        <span class="text-muted"
+                                                              style="font-size:.7rem;"><?= htmlspecialchars($c['col']) ?>:</span>
+                                                    <?php endif; ?>
+                                                    <?php if ($c['new'] === null): ?>
+                                                        <span class="fst-italic text-muted">—</span>
+                                                    <?php elseif ($c['chg']): ?>
+                                                        <span class="text-decoration-line-through text-muted"><?= $c['cur'] === '' ? '∅' : htmlspecialchars($c['cur']) ?></span>
+                                                        <i class="fas fa-arrow-right mx-1" style="font-size:.65rem;"></i>
+                                                        <strong><?= htmlspecialchars($c['new']) ?></strong>
+                                                    <?php else: ?>
+                                                        <?= $c['cur'] === '' ? '<span class="fst-italic">∅</span>' : htmlspecialchars($c['cur']) ?>
+                                                        <i class="fas fa-check text-success ms-1" style="font-size:.65rem;"
+                                                           title="bereits gleich"></i>
+                                                    <?php endif; ?>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
                                     </td>
                                 <?php endforeach; ?>
                             </tr>
@@ -843,15 +1017,9 @@ foreach ($GROUPS as $gk => $g) {
         $('#selAll').on('change', function () {
             const on = this.checked;
             $('#tbl tbody tr.room-row:visible .row-cb:not(:disabled)').prop('checked', on);
-            updateSel();
+
         });
-        $(document).on('change', '.row-cb', updateSel);
 
-        function updateSel() {
-            $('#selCount').text($('.row-cb:checked').length + ' Raum/Räume ausgewählt');
-        }
-
-        updateSel();
 
         $('.apply-group-btn').on('click', function () {
             const gk = $(this).data('group');
@@ -864,11 +1032,14 @@ foreach ($GROUPS as $gk => $g) {
                 return;
             }
 
-            const msg = 'Zuordnung: ' + meta.title + '\n\n'
+            let msg = 'Zuordnung: ' + meta.title + '\n\n'
                 + 'LIEST (Raumtyp):  ' + meta.reads + '\n'
                 + 'SCHREIBT (Räume): ' + meta.writes + '\n\n'
-                + meta.note + '\n\n'
-                + 'Für ' + roomIDs.length + ' ausgewählte(n) Raum/Räume übernehmen?';
+                + meta.note + '\n\n';
+            msg += meta.danger
+                ? 'ACHTUNG: Es werden Element-Zuordnungen UNWIDERRUFLICH gelöscht (nur für passende Raumtypen).\n'
+                + 'Für ' + roomIDs.length + ' ausgewählte(n) Raum/Räume ausführen?'
+                : 'Für ' + roomIDs.length + ' ausgewählte(n) Raum/Räume übernehmen?';
             if (!confirm(msg)) return;
 
             const btn = this;
