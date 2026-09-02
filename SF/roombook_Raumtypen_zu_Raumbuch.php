@@ -23,8 +23,8 @@
  * Leere Raumtyp-Angaben werden übersprungen (bestehende Werte bleiben erhalten).
  */
 
-require_once __DIR__ . '/utils/_utils.php';
-require_once __DIR__ . '/Nutzerumfrage/raumtypen.php';   // definiert $labortypen
+require_once '../utils/_utils.php';
+require_once '../Nutzerumfrage/raumtypen.php';   // definiert $labortypen
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -753,9 +753,11 @@ $idx = raumtyp_index();
 //   - delete : ['delete'=>true,'applies'=>bool,'rows'=>int,'chg'=>bool]
 $preview = [];
 $changesPerGrp = array_fill_keys(array_keys($GROUPS), 0);
+$roomChanges = [];   // rid => Anzahl offener Änderungen (über alle Zuordnungen)
 $countUnknown = 0;
 foreach ($rooms as $room) {
     $rid = (int)$room['idTABELLE_Räume'];
+    $roomChanges[$rid] = 0;
     $typ = $idx[(string)$room['Raumtyp BH']] ?? null;
     if (!$typ) $countUnknown++;
     foreach ($GROUPS as $gk => $g) {
@@ -766,7 +768,7 @@ foreach ($rooms as $room) {
             $applies = !$restrict || in_array((string)$room['Raumtyp BH'], $restrict, true);
             $rowsN = (int)($room['_elemrows'] ?? 0);
             $chg = $applies && $rowsN > 0;
-            if ($chg) $changesPerGrp[$gk]++;
+            if ($chg) { $changesPerGrp[$gk]++; $roomChanges[$rid]++; }
             $preview[$rid][$gk] = ['delete' => true, 'applies' => $applies, 'rows' => $rowsN, 'chg' => $chg];
             continue;
         }
@@ -776,12 +778,26 @@ foreach ($rooms as $room) {
             $cur = (string)($room[$col] ?? '');
             $new = $typ ? $cb($typ, $room) : null;
             $chg = ($new !== null && (string)$new !== $cur);
-            if ($chg) $changesPerGrp[$gk]++;
+            if ($chg) { $changesPerGrp[$gk]++; $roomChanges[$rid]++; }
             $cells[] = ['col' => $col, 'cur' => $cur, 'new' => $new, 'chg' => $chg];
         }
         $preview[$rid][$gk] = $cells;
     }
 }
+
+// Räume mit offenen Änderungen nach oben sortieren (stabil):
+//   1. Block „noch nicht wie gewünscht" (>=1 Änderung) zuerst,
+//   2. innerhalb jedes Blocks bleibt die ursprüngliche Raumnr-Reihenfolge erhalten.
+$origPos = [];
+foreach ($rooms as $i => $room) {
+    $origPos[(int)$room['idTABELLE_Räume']] = $i;
+}
+usort($rooms, function ($a, $b) use ($roomChanges, $origPos) {
+    $ha = ($roomChanges[(int)$a['idTABELLE_Räume']] ?? 0) > 0 ? 1 : 0;
+    $hb = ($roomChanges[(int)$b['idTABELLE_Räume']] ?? 0) > 0 ? 1 : 0;
+    if ($ha !== $hb) return $hb <=> $ha;   // geänderte Räume zuerst
+    return $origPos[(int)$a['idTABELLE_Räume']] <=> $origPos[(int)$b['idTABELLE_Räume']];
+});
 
 // Kompakte Gruppen-Meta für JS-Confirm
 $groupMetaJs = [];
@@ -801,8 +817,8 @@ foreach ($GROUPS as $gk => $g) {
     <title>Raumtypen → Räume übernehmen</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png"/>
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="../Logo/iphone_favicon.png"/>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -925,7 +941,13 @@ foreach ($GROUPS as $gk => $g) {
                                     <input type="checkbox" class="form-check-input row-cb" value="<?= $rid ?>"
                                         <?= $typ ? 'checked' : 'disabled' ?>>
                                 </td>
-                                <td class="text-nowrap"><?= htmlspecialchars($room['Raumnr']) ?></td>
+                                <td class="text-nowrap">
+                                    <?= htmlspecialchars($room['Raumnr']) ?>
+                                    <?php if (($roomChanges[$rid] ?? 0) > 0): ?>
+                                        <span class="badge bg-warning text-dark ms-1"
+                                              title="Offene Änderungen"><?= (int)$roomChanges[$rid] ?></span>
+                                    <?php endif; ?>
+                                </td>
                                 <td>
                                     <?= htmlspecialchars($room['Raumbezeichnung']) ?>
                                     <?php if (!empty($room['Raumbereich Nutzer'])): ?>
@@ -976,11 +998,13 @@ foreach ($GROUPS as $gk => $g) {
                                                         <span class="fst-italic text-muted">—</span>
                                                     <?php elseif ($c['chg']): ?>
                                                         <span class="text-decoration-line-through text-muted"><?= $c['cur'] === '' ? '∅' : htmlspecialchars($c['cur']) ?></span>
-                                                        <i class="fas fa-arrow-right mx-1" style="font-size:.65rem;"></i>
+                                                        <i class="fas fa-arrow-right mx-1"
+                                                           style="font-size:.65rem;"></i>
                                                         <strong><?= htmlspecialchars($c['new']) ?></strong>
                                                     <?php else: ?>
                                                         <?= $c['cur'] === '' ? '<span class="fst-italic">∅</span>' : htmlspecialchars($c['cur']) ?>
-                                                        <i class="fas fa-check text-success ms-1" style="font-size:.65rem;"
+                                                        <i class="fas fa-check text-success ms-1"
+                                                           style="font-size:.65rem;"
                                                            title="bereits gleich"></i>
                                                     <?php endif; ?>
                                                 </div>
@@ -999,7 +1023,7 @@ foreach ($GROUPS as $gk => $g) {
     </div>
 </div>
 
-<script src="utils/_utils.js"></script>
+<script src="../utils/_utils.js"></script>
 <script>
     const GROUP_META = <?= json_encode($groupMetaJs, JSON_UNESCAPED_UNICODE) ?>;
     const PROJECT_ID = <?= (int)$projectID ?>;
@@ -1048,7 +1072,7 @@ foreach ($GROUPS as $gk => $g) {
             btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
 
             $.ajax({
-                url: 'RaumtypenZuRaumbuch.php', type: 'POST',
+                url: 'roombook_Raumtypen_zu_Raumbuch.php', type: 'POST',
                 data: {action: 'apply', group: gk, projectID: PROJECT_ID, roomIDs: roomIDs},
                 success: function (raw) {
                     let res;

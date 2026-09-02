@@ -32,8 +32,8 @@
  *      AR_APs beinhaltet die Anzahl der Achsen für diesen Raum.
  */
 
-require_once __DIR__ . '/utils/_utils.php';
-require_once __DIR__ . '/Nutzerumfrage/raumtypen.php';   // definiert $labortypen
+require_once '../utils/_utils.php';
+require_once '../Nutzerumfrage/raumtypen.php';   // definiert $labortypen
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -92,7 +92,7 @@ const WASCHKUECHE_TYPE = '22';
 const CHEMIE_LAGER_TYPE = '29';
 
 /** Ausnahme-Raum (Raumnr), der als einziger 3 Spülen haben darf. */
-const SPUELE_AUSNAHME_RAUMNR = '231';
+const SPUELE_AUSNAHME_RAUMNR = '232';
 
 /** Max. zulässige Spülen je Achsenanzahl (AR_APs) – NICHT-Waschküchen. */
 const SPUELEN_JE_ACHSEN = [
@@ -708,8 +708,8 @@ $rtKeys = raumtyp_all_keys();
     <title>Raum-Abgleich (Prüfungen)</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png"/>
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="../Logo/iphone_favicon.png"/>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -1024,7 +1024,8 @@ $rtKeys = raumtyp_all_keys();
                                         <?php endif; ?>
                                     <?php else: ?>
                                         <span class="text-muted small">—
-                                            <?php if ($v['achsen']): ?><span class="d-block"><?= (int)$v['achsen'] ?> Achsen</span><?php endif; ?>
+                                            <?php if ($v['achsen']): ?><span class="d-block"><?= (int)$v['achsen'] ?>
+                                                Achsen</span><?php endif; ?>
                                         </span>
                                     <?php endif; ?>
                                 </td>

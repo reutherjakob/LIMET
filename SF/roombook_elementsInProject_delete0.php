@@ -4,8 +4,8 @@
     <title>RB-Elemente im Projekt</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png"/>
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="../Logo/iphone_favicon.png"/>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -64,10 +64,10 @@
         <div class="card-body">
             <?php
             if (!function_exists('utils_connect_sql')) {
-                include "utils/_utils.php";
+                include "../utils/_utils.php";
             }
             init_page_serversides();
-            include "utils/_format.php";
+            include "../utils/_format.php";
             $mysqli = utils_connect_sql();
             $sql = "SELECT Sum(tabelle_räume_has_tabelle_elemente.Anzahl) AS SummevonAnzahl,
                            tabelle_elemente.ElementID,
@@ -109,8 +109,8 @@
                                         tabelle_projekt_element_gewerk.tabelle_auftraggeberg_gug_idtabelle_auftraggeberg_GUG)
                                     ON tabelle_auftraggeber_gewerke.idTABELLE_Auftraggeber_Gewerke =
                                         tabelle_projekt_element_gewerk.tabelle_auftraggeber_gewerke_idTABELLE_Auftraggeber_Gewerke
-                            WHERE (((tabelle_räume_has_tabelle_elemente.Standort) = 1) AND
-                                   ((tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = ?))
+                            WHERE (tabelle_räume_has_tabelle_elemente.Anzahl)  <>0  AND
+                                   (tabelle_räume.tabelle_projekte_idTABELLE_Projekte) = ?
                             GROUP BY tabelle_elemente.ElementID,
                                      tabelle_varianten.Variante,
                                      tabelle_varianten.idtabelle_Varianten, 
@@ -266,22 +266,7 @@
             </div>
         </div>
     </div>
-    <!-- Räume mit Element -->
-    <div class="mt-1 card">
-        <div class="card-header">
-            <div class="row  d-flex flex-nowrap text-nowrap">
-                <div class="col-xxl-6 col-6 d-flex justify-content-start align-items-center">
-                    <button type="button" class="btn btn-outline-dark btn-sm me-2" id="showRoomsWithAndWithoutElement">
-                        <i class="fas fa-caret-right"></i>
-                    </button>
-                    <label>Räume mit Element</label>
-                </div>
-                <div class="col-6 d-inline-flex align-items-center justify-content-end" id="CHRME">
-                </div>
-            </div>
-        </div>
-        <div class="card-body" id="roomsWithAndWithoutElements" style="display:none"></div>
-    </div>
+
 </div>
 
 <!-- Variante-löschen Bestätigungs-Modal -->
@@ -303,7 +288,7 @@
     </div>
 </div>
 
-<script src="utils/_utils.js"></script>
+<script src="../utils/_utils.js"></script>
 <script charset="utf-8">
     var tableElementsInProject;
     var tableRoomsWithElement; // for getRoomsWithElement1
@@ -387,7 +372,7 @@
                 bestand = 0;
             }
             $.ajax({
-                url: "getRoomsWithElement1.php",
+                url: "../getRoomsWithElement1.php",
                 data: {"elementID": elementID, "variantenID": variantenID, "bestand": bestand},
                 type: "POST",
                 success: function (data) {
@@ -399,26 +384,26 @@
                     }
                     $("#roomsWithAndWithoutElements").html(data);
                     $.ajax({
-                        url: "getElementVariante.php",
+                        url: "../getElementVariante.php",
                         data: {"elementID": elementID, "variantenID": variantenID},
                         type: "POST",
                         success: function (data) {
                             $("#elementVarianten").html(data);
                             $.ajax({
-                                url: "getStandardElementParameters.php",
+                                url: "../getStandardElementParameters.php",
                                 data: {"elementID": elementID},
                                 type: "POST",
                                 success: function (data) {
                                     $("#elementDBParameter").html(data);
                                     $.ajax({
-                                        url: "getElementPricesInDifferentProjects.php",
+                                        url: "../getElementPricesInDifferentProjects.php",
                                         data: {"elementID": elementID},
                                         type: "POST",
                                         success: function (data) {
                                             // console.log(data);
                                             $("#elementPricesInOtherProjects").html(data);
                                             $.ajax({
-                                                url: "getDevicesToElement.php",
+                                                url: "../getDevicesToElement.php",
                                                 data: {"elementID": elementID},
                                                 type: "POST",
                                                 success: function (data) {
@@ -426,7 +411,7 @@
                                                     console.log(elementID);
 
                                                     $.ajax({
-                                                        url: "getElementGewerke.php",
+                                                        url: "../getElementGewerke.php",
                                                         data: {"elementID": elementID},
                                                         type: "POST",
                                                         success: function (data) {
@@ -534,16 +519,6 @@
         }
     });
 
-    // DB Element/Gerätedaten einblenden
-    $("#showDBData").click(function () {
-        if ($("#dbData").is(':hidden')) {
-            $(this).html("<i class='fas fa-caret-down'></i>");
-            $("#dbData").show();
-        } else {
-            $(this).html("<i class='fas fa-caret-right'></i>");
-            $("#dbData").hide();
-        }
-    });
 
     // Räume mit und ohne Element einblenden
     $("#showRoomsWithAndWithoutElement").click(function () {
@@ -554,22 +529,6 @@
             $(this).html("<i class='fas fa-caret-right'></i>");
             $("#roomsWithAndWithoutElements").hide();
         }
-    });
-
-    // PDF erzeugen
-    $('#createElementListPDF').click(function () {
-        window.open('PDFs/pdf_createElementListPDF.php');
-    });
-
-    $('#createElementListWithPricePDF').click(function () {
-        window.open('PDFs/pdf_createElementListWithPricePDF.php');
-    });
-
-    $('#createElementEinbringwegePDF').click(function () {
-        window.open('PDFs/pdf_createElementEinbringwegePDF.php');
-    });
-    $('#createElementEinbringwegePDF2').click(function () {
-        window.open('PDFs/pdf_createElementEinbringwegePDF2.php');
     });
 
 

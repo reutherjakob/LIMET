@@ -4,19 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Wartungpreise update">
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="REports/Spargefeld">
+      <change afterPath="$PROJECT_DIR$/SF/deleteVarianteFromProject.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SF/roombook_RB_RT_Abgleich.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SF/roombook_Raumtypen_zu_Raumbuch.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SF/roombook_SF_rules.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SF/roombook_sf_av_sv.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IFCQuest/api_compare_elements.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/api_compare_elements.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IFCQuest/api_sync_elements.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/api_sync_elements.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IFCQuest/import_2_db_config.php" beforeDir="false" afterPath="$PROJECT_DIR$/IFCQuest/import_2_db_config.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/raumtypen.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/raumtypen.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createBauangabenBericht_A3Qeer_1.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createBauangabenBericht_A3Qeer_1.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createMTTabelle_neu.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createMTTabelle_neu.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PDFs/pdf_raumtypen_sf.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_raumtypen_sf.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RaumtypenZuRaumbuch.php" beforeDir="false" afterPath="$PROJECT_DIR$/RaumtypenZuRaumbuch.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/navbar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/pdf_raumtypen_sf.php" beforeDir="false" afterPath="$PROJECT_DIR$/SF/pdf_raumtypen_sf.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RaumtypenZuRaumbuch.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deleteVarianteFromProject.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/projects.php" beforeDir="false" afterPath="$PROJECT_DIR$/projects.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookSpecifications_New.js" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_New.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_raumabgleich_raumtypen.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_raumabgleich_raumtypen.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_elementsInProject_delete0.php" beforeDir="false" afterPath="$PROJECT_DIR$/SF/roombook_elementsInProject_delete0.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_raumabgleich_raumtypen.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_sf_av_sv.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_sf_flaechen_je_raumtyp.php" beforeDir="false" afterPath="$PROJECT_DIR$/SF/roombook_sf_flaechen_je_raumtyp.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,11 +141,11 @@
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\LOGIN" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\SF" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\PDFs\custom_report" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\PDFs" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\PDFs\" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\img_support" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -639,15 +642,10 @@
       <workItem from="1787757988427" duration="421000" />
       <workItem from="1787815558826" duration="13296000" />
       <workItem from="1787833008617" duration="6349000" />
-      <workItem from="1787901949353" duration="346000" />
-    </task>
-    <task id="LOCAL-00206" summary="Elelemtn History added.&#10;Wartet noch auf ddie erweiterung der Lose Tabelle, damit preiseintrager notiert werden kann">
-      <option name="closed" value="true" />
-      <created>1773063177644</created>
-      <option name="number" value="00206" />
-      <option name="presentableId" value="LOCAL-00206" />
-      <option name="project" value="LOCAL" />
-      <updated>1773063177644</updated>
+      <workItem from="1787901949353" duration="10729000" />
+      <workItem from="1788167938574" duration="167000" />
+      <workItem from="1788178794707" duration="714000" />
+      <workItem from="1788247447192" duration="14220000" />
     </task>
     <task id="LOCAL-00207" summary="Elelemtn History added.&#10;Wartet noch auf ddie erweiterung der Lose Tabelle, damit preiseintrager notiert werden kann">
       <option name="closed" value="true" />
@@ -1033,7 +1031,15 @@
       <option name="project" value="LOCAL" />
       <updated>1787757587794</updated>
     </task>
-    <option name="localTasksCounter" value="255" />
+    <task id="LOCAL-00255" summary="REports/Spargefeld">
+      <option name="closed" value="true" />
+      <created>1787902365431</created>
+      <option name="number" value="00255" />
+      <option name="presentableId" value="LOCAL-00255" />
+      <option name="project" value="LOCAL" />
+      <updated>1787902365433</updated>
+    </task>
+    <option name="localTasksCounter" value="256" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1063,7 +1069,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Bugfixes;&#10;Sf Umfrage;&#10;Kor Liste" />
     <MESSAGE value="Budgets-Freigaben ergänzt. &#10;Detailed: Raum Btns und Suchleiste in den Card Header." />
     <MESSAGE value="Budgets-Freigaben ergänzt. &#10;Detailed: Raum Btns und Suchleiste in den Card Header.&#10;element Admin - pagelength option ergänzt." />
     <MESSAGE value="Ui upgrade while workin" />
@@ -1088,7 +1093,8 @@
     <MESSAGE value="LosElemente Übersicht nachbearbeitet. &#10;KDo Icons.&#10;Wartungpreise editierbar. &#10;Ages 0er Vars löschen." />
     <MESSAGE value="Bilder zu Projekten Zuordnen." />
     <MESSAGE value="Wartungpreise update" />
-    <option name="LAST_COMMIT_MESSAGE" value="Wartungpreise update" />
+    <MESSAGE value="REports/Spargefeld" />
+    <option name="LAST_COMMIT_MESSAGE" value="REports/Spargefeld" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1157,6 +1163,16 @@
           <url>file://$PROJECT_DIR$/login.php</url>
           <line>130</line>
           <option name="timeStamp" value="29" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/Nutzerumfrage/bericht.php</url>
+          <line>343</line>
+          <option name="timeStamp" value="32" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/Nutzerumfrage/bericht.php</url>
+          <line>449</line>
+          <option name="timeStamp" value="33" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/img_support/projectGallery.js</url>

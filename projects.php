@@ -306,7 +306,7 @@
                     <div class="row">
                         <p>
                             <i class="col-1 fas fa-dragon"> </i>
-                            <a class="col-11" href="/projects.php">
+                            <a class="col-11" href="/SF/roombook_SF_rules.php">
                                RULES
                             </a>
                         </p>
@@ -320,35 +320,41 @@
 
                         <p>
                             <i class="col-1 fas fa-spider"> </i>
-                            <a class="col-11" href="/RaumtypenZuRaumbuch.php">
+                            <a class="col-11" href="/SF/roombook_Raumtypen_zu_Raumbuch.php">
                                 RT übernehmen
                             </a>
                         </p>
 
                         <p>
                             <i class="col-1 fas fa-dog"> </i>
-                            <a class="col-11" href="/roombook_raumabgleich_raumtypen.php">
+                            <a class="col-11" href="/SF/roombook_RB_RT_Abgleich.php">
                                 Abgleich RT - RB
                             </a>
                         </p>
 
                         <p>
                             <i class="col-1 fas fa-frog"> </i>
-                            <a class="col-11" href="/PDFs/pdf_raumtypen_sf.php">
+                            <a class="col-11" href="/SF/pdf_raumtypen_sf.php">
                                 RT PDF
                             </a>
                         </p>
 
                         <p>
                             <i class="col-1 fas fa-kiwi-bird"> </i>
-                            <a class="col-11" href="/roombook_sf_av_sv.php">
+                            <a class="col-11" href="/SF/roombook_sf_av_sv.php">
                                 AV/SV Aufteilung
+                            </a>
+                        </p>
+                        <p>
+                            <i class="col-1 fas fa-kiwi-bird"> </i>
+                            <a class="col-11" href="/SF/roombook_sf_flaechen_je_raumtyp.php">
+                                Flächen je Raumtyp
                             </a>
                         </p>
 
                         <p>
                             <i class="col-1  fas fa-dove"> </i>
-                            <a class="col-11" href="/roombook_elementsInProject_delete0.php">
+                            <a class="col-11" href="/SF/roombook_elementsInProject_delete0.php">
                                 Nuller Vars entfernen
                             </a>
                         </p>

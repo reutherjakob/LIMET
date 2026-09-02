@@ -22,7 +22,7 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 $RK_TCPDF_PATH = __DIR__ . '/../TCPDF-main/TCPDF-main/tcpdf.php';
 $RK_UTILS_PATH = __DIR__ . '/../utils/_utils.php';
-$RK_LOGO_PATH = __DIR__ . '/pdf_createBericht_LOGO.php';   // definiert get_header_logo()/get_titelblatt_logo()
+$RK_LOGO_PATH = __DIR__ . '/../PDFs/pdf_createBericht_LOGO.php';   // definiert get_header_logo()/get_titelblatt_logo()
 $RK_LOGO_IMG = '';   // optional: Pfad zu einer Logo-Grafik (png/jpg/svg); hat Vorrang
 $RK_DATA_CANDIDATES = [
     __DIR__ . '/../Nutzerumfrage/raumtypen.php',
@@ -67,7 +67,7 @@ if (!isset($labortypen) || !is_array($labortypen) || count($labortypen) === 0) {
 /* ── Projekt / Datum ──────────────────────────────────────────────────────── */
 $RK_PROJEKT = (isset($_SESSION['projectName']) && $_SESSION['projectName'] !== '')
     ? $_SESSION['projectName'] : 'Projekt';
-$RK_DATUM = date('d.m.Y');
+$RK_DATUM =    $_SESSION["PDFdatum"]??date('d.m.Y');
 
 /* ═══════════════════════════════════════════════════════════════════════════
    FARB-PALETTE (Lime / Grün – aus den bestehenden Berichten)
