@@ -4,22 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="REports/Spargefeld">
-      <change afterPath="$PROJECT_DIR$/SF/deleteVarianteFromProject.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SF/roombook_RB_RT_Abgleich.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SF/roombook_Raumtypen_zu_Raumbuch.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SF/roombook_SF_rules.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SF/roombook_sf_av_sv.php" afterDir="false" />
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Reports/Spargefeld">
+      <change afterPath="$PROJECT_DIR$/BEFU/roombook_befu.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Budgets/getBudgetTimeline.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Budgets/roombook_budgetTimeline.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/LIMET.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/LIMET.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/navbar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PDFs/pdf_raumtypen_sf.php" beforeDir="false" afterPath="$PROJECT_DIR$/SF/pdf_raumtypen_sf.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RaumtypenZuRaumbuch.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/deleteVarianteFromProject.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects.php" beforeDir="false" afterPath="$PROJECT_DIR$/projects.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_elementsInProject_delete0.php" beforeDir="false" afterPath="$PROJECT_DIR$/SF/roombook_elementsInProject_delete0.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_raumabgleich_raumtypen.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_sf_av_sv.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_sf_flaechen_je_raumtyp.php" beforeDir="false" afterPath="$PROJECT_DIR$/SF/roombook_sf_flaechen_je_raumtyp.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/utils/navbar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/website_rohling.php" beforeDir="false" afterPath="$PROJECT_DIR$/utils/website_rohling.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -646,14 +639,9 @@
       <workItem from="1788167938574" duration="167000" />
       <workItem from="1788178794707" duration="714000" />
       <workItem from="1788247447192" duration="14220000" />
-    </task>
-    <task id="LOCAL-00207" summary="Elelemtn History added.&#10;Wartet noch auf ddie erweiterung der Lose Tabelle, damit preiseintrager notiert werden kann">
-      <option name="closed" value="true" />
-      <created>1773313076179</created>
-      <option name="number" value="00207" />
-      <option name="presentableId" value="LOCAL-00207" />
-      <option name="project" value="LOCAL" />
-      <updated>1773313076180</updated>
+      <workItem from="1788340590277" duration="4462000" />
+      <workItem from="1788346213673" duration="6854000" />
+      <workItem from="1788420373296" duration="7656000" />
     </task>
     <task id="LOCAL-00208" summary="Elelemtn History added.&#10;Wartet noch auf ddie erweiterung der Lose Tabelle, damit preiseintrager notiert werden kann">
       <option name="closed" value="true" />
@@ -1039,7 +1027,15 @@
       <option name="project" value="LOCAL" />
       <updated>1787902365433</updated>
     </task>
-    <option name="localTasksCounter" value="256" />
+    <task id="LOCAL-00256" summary="Reports/Spargefeld">
+      <option name="closed" value="true" />
+      <created>1788340850786</created>
+      <option name="number" value="00256" />
+      <option name="presentableId" value="LOCAL-00256" />
+      <option name="project" value="LOCAL" />
+      <updated>1788340850786</updated>
+    </task>
+    <option name="localTasksCounter" value="257" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1069,7 +1065,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Budgets-Freigaben ergänzt. &#10;Detailed: Raum Btns und Suchleiste in den Card Header." />
     <MESSAGE value="Budgets-Freigaben ergänzt. &#10;Detailed: Raum Btns und Suchleiste in den Card Header.&#10;element Admin - pagelength option ergänzt." />
     <MESSAGE value="Ui upgrade while workin" />
     <MESSAGE value="Fixes, VErbesserungen,&#10;upgrades Nutezrkatalog" />
@@ -1094,7 +1089,8 @@
     <MESSAGE value="Bilder zu Projekten Zuordnen." />
     <MESSAGE value="Wartungpreise update" />
     <MESSAGE value="REports/Spargefeld" />
-    <option name="LAST_COMMIT_MESSAGE" value="REports/Spargefeld" />
+    <MESSAGE value="Reports/Spargefeld" />
+    <option name="LAST_COMMIT_MESSAGE" value="Reports/Spargefeld" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

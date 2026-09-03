@@ -31,7 +31,41 @@ init_page_serversides("No Redirect");
 ?>
 <body>
 <div id="limet-navbar"></div>
-<div class="container-fluid"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-6">
+            <div id="card">
+                <div class="card-header">
+                </div>
+                <div class="card-body">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-3">
+            <div id="card">
+                <div class="card-header">
+                </div>
+                <div class="card-body">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-3">
+            <div id="card">
+                <div class="card-header">
+                </div>
+                <div class="card-body">
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 <script charset="utf-8">
