@@ -157,7 +157,7 @@ $RK_BLOCKS_RIGHT = [
         ['abzuege_notstrom', 'Abzüge notstromversorgt', RK_B],
         ['abzuege_unterflurabfall', 'Unterflurabfallsystem', RK_B],
         ['abzuege_abluftwaescher', 'Abluftwäscher', RK_B],
-        ['abzuege_sicherheitswerkbank_klasse', 'Sicherheitswerkbank', RK_T],
+        ['abzuege_sicherheitswerkbank_anzahl', 'Sicherheitswerkbank', RK_T],
         ['punktabsaugungen', 'Punktabsaugungen', RK_T],
         // ['punktabsaugungen_min',  'Punktabsaug. min.',             RK_N],
         //['punktabsaugungen_max',  'Punktabsaug. max.',             RK_N],

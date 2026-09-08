@@ -4,9 +4,10 @@
 $PFAD_DB_CONFIG = '../IFCQuest/import_2_db_config.php';   // ELEMENT_MAPPING, PARAMETER_MAPPING, Konstanten
 $PFAD_RAUMTYPEN = '../Nutzerumfrage/raumtypen.php';            // $labortypen
 
-  if (!function_exists('check_login')) { include "../utils/_utils.php"; }
- check_login();
-
+if (!function_exists('check_login')) {
+    include "../utils/_utils.php";
+}
+init_page_serversides("");
 // ─── Quellen einlesen (defensiv – keine Fatals bei falschem Pfad) ──────────
 $quellen_fehler = [];
 
@@ -31,14 +32,17 @@ $mz_warn_diff = defined('MZ_LAENGE_WARN_DIFF_CM') ? MZ_LAENGE_WARN_DIFF_CM : nul
 // Werkzeug-Links (rechte Spalte)
 // ══════════════════════════════════════════════════════════════════════════
 $werkzeug_links = [
-    ['icon' => 'fa-dragon',    'href' => '/SF/roombook_SF_rules.php',                 'label' => 'RULES'],
-    ['icon' => 'fa-cat',       'href' => '/IFCQuest/import_excel.php',                'label' => 'Import Model Excel'],
-    ['icon' => 'fa-spider',    'href' => '/SF/roombook_Raumtypen_zu_Raumbuch.php',    'label' => 'RT übernehmen'],
-    ['icon' => 'fa-dog',       'href' => '/SF/roombook_RB_RT_Abgleich.php',           'label' => 'Abgleich RT - RB'],
-    ['icon' => 'fa-frog',      'href' => '/SF/pdf_raumtypen_sf.php',                  'label' => 'RT PDF'],
-    ['icon' => 'fa-kiwi-bird', 'href' => '/SF/roombook_sf_av_sv.php',                 'label' => 'AV/SV Aufteilung'],
-    ['icon' => 'fa-kiwi-bird', 'href' => '/SF/roombook_sf_flaechen_je_raumtyp.php',   'label' => 'Flächen je Raumtyp'],
-    ['icon' => 'fa-dove',      'href' => '/SF/roombook_elementsInProject_delete0.php','label' => 'Nuller Vars entfernen'],
+    ['icon' => 'fa-dragon', 'href' => '/SF/roombook_SF_rules.php', 'label' => 'RULES'],
+    ['icon' => 'fa-cat', 'href' => '/IFCQuest/import_excel.php', 'label' => 'Import Model Excel'],
+    ['icon' => 'fa-spider', 'href' => '/SF/roombook_Raumtypen_zu_Raumbuch.php', 'label' => 'RT übernehmen'],
+    ['icon' => 'fa-dog', 'href' => '/SF/roombook_RB_RT_Abgleich.php', 'label' => 'Abgleich RT - RB'],
+    ['icon' => 'fa-frog', 'href' => '/SF/pdf_raumtypen_sf.php', 'label' => 'RT PDF'],
+    ['icon' => 'fa-kiwi-bird', 'href' => '/SF/roombook_sf_av_sv.php', 'label' => 'AV/SV Aufteilung'],
+    ['icon' => 'fa-kiwi-bird', 'href' => '/SF/roombook_sf_flaechen_je_raumtyp.php', 'label' => 'Flächen je Raumtyp'],
+    ['icon' => 'fa-dove', 'href' => '/SF/roombook_elementsInProject_delete0.php', 'label' => 'Nuller Vars entfernen'],
+
+    ['icon' => 'fa-user', 'href' => '/Nutzerlogin/index.php', 'label' => 'Nutzerumfrage/Sonderfragekathalog'],
+
 ];
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -69,7 +73,6 @@ $import_logik = [
         'referenz' => 'import_2_db_config.php',
         'status' => 'regel',
     ],
-
 
 
     [
@@ -288,30 +291,35 @@ function params_badges(array $params): string
 <!doctype html>
 <html lang="de">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Definitionen &amp; Regelwerk — Modell-Import / Raumbuch</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="../Logo/iphone_favicon.png"/>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+          integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
+          rel="stylesheet">
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
 </head>
+</head>
+
 <body class="bg-body-tertiary">
+<div id="limet-navbar"></div>
 
-<nav class="navbar navbar-expand bg-body border-bottom sticky-top">
-    <div class="container-xxl">
-        <span class="navbar-brand mb-0 h1">
-            <i class="bi bi-journal-code me-2 text-primary"></i>Definitionen &amp; Regelwerk
-        </span>
-        <span class="navbar-text small d-none d-md-inline">
-            Import-Logik &nbsp;·&nbsp; Raumtypen &nbsp;·&nbsp; Mapping &nbsp;·&nbsp; Zeichnung
-        </span>
-        <button class="btn btn-sm btn-outline-secondary ms-auto" onclick="window.print()">
-            <i class="bi bi-printer me-1"></i>Drucken
-        </button>
-    </div>
-</nav>
 
-<div class="container-xxl my-4">
+<div class="container-fluid ">
 
     <?php if ($quellen_fehler): ?>
         <div class="alert alert-warning">
@@ -325,42 +333,55 @@ function params_badges(array $params): string
         </div>
     <?php endif; ?>
 
-    <p class="text-body-secondary">
-        Fachliche Definitionen, die dem Modell-Import und der Raumbuch-Ableitung zugrunde liegen.
-        Kuratierte Regeln (Import-Logik, Raumtyp-Regeln, Zeichenanweisungen) werden von Hand gepflegt;
-        Raumtypen-Matrix und Mapping werden direkt aus den Quelldateien gelesen und bleiben so aktuell.
-    </p>
 
     <div class="row g-4">
-        <!-- ── Inhaltsverzeichnis + Werkzeuge ────────────────────────────── -->
         <aside class="col-lg-3 order-lg-2">
-            <div class="position-sticky" style="top: 5rem">
-                <div class="list-group shadow-sm">
-                    <a href="#import" class="list-group-item list-group-item-action"><i
-                                class="bi bi-arrow-repeat me-2"></i>Import-Logik <span
-                                class="badge text-bg-secondary rounded-pill float-end"><?= count($import_logik) ?></span></a>
-                    <a href="#raumtypen" class="list-group-item list-group-item-action"><i
-                                class="bi bi-door-open me-2"></i>Raumtypen-Definitionen <span
-                                class="badge text-bg-secondary rounded-pill float-end"><?= count($labortypen) ?></span></a>
-                    <a href="#mapping" class="list-group-item list-group-item-action"><i
-                                class="bi bi-diagram-3 me-2"></i>Revit- &amp; Parameter-Mapping</a>
-                    <a href="#zeichnung" class="list-group-item list-group-item-action"><i
-                                class="bi bi-pencil-square me-2"></i>Zeichenanweisungen <span
-                                class="badge text-bg-secondary rounded-pill float-end"><?= count($zeichenanweisungen) ?></span></a>
+            <!-- ── Werkzeug-Links ───────────────────────────────────── -->
+            <div class="card shadow-sm mt-3">
+                <div class="card-header py-2 small fw-semibold text-body-secondary">
+                    <i class="fas fa-toolbox me-1"></i> <strong> Weitere Websites </strong>
                 </div>
+                <div class="list-group list-group-flush small">
+                    <?php foreach ($werkzeug_links as $l): ?>
+                        <a class="list-group-item list-group-item-action" href="<?= e($l['href']) ?>">
+                            <i class="fas <?= e($l['icon']) ?> fa-fw me-2 text-secondary"></i><?= e($l['label']) ?>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
 
-                <!-- ── Werkzeug-Links ───────────────────────────────────── -->
-                <div class="card shadow-sm mt-3">
-                    <div class="card-header py-2 small fw-semibold text-body-secondary">
-                        <i class="fas fa-toolbox me-1"></i> Weitere Websites
+
+            <!-- ── Inhaltsverzeichnis + Werkzeuge ────────────────────────────── -->
+            <div class="card shadow-sm mt-3">
+                <div class="position-sticky" style="top: 5rem">
+                    <div class="list-group shadow-sm">
+                        <a href="#import" class="list-group-item list-group-item-action">
+                            <i class="fas fa-file-upload"></i>
+                            Import-Logik <span
+                                    class="badge text-bg-secondary rounded-pill float-end"><?= count($import_logik) ?></span></a>
+                        <a href="#raumtypen" class="list-group-item list-group-item-action">
+                            <i class="fas fa-door-open"></i>
+                            Raumtypen-Definitionen <span
+                                    class="badge text-bg-secondary rounded-pill float-end"><?= count($labortypen) ?></span></a>
+                        <a href="#mapping" class="list-group-item list-group-item-action">
+                            <i class="far fa-map"></i>
+                            Revit- &amp; Parameter-Mapping</a>
+                        <a href="#zeichnung" class="list-group-item list-group-item-action">
+                            <i class="fas fa-pencil-alt"></i>
+                            Zeichenanweisungen <span
+                                    class="badge text-bg-secondary rounded-pill float-end"><?= count($zeichenanweisungen) ?></span></a>
                     </div>
-                    <div class="list-group list-group-flush small">
-                        <?php foreach ($werkzeug_links as $l): ?>
-                            <a class="list-group-item list-group-item-action" href="<?= e($l['href']) ?>">
-                                <i class="fas <?= e($l['icon']) ?> fa-fw me-2 text-secondary"></i><?= e($l['label']) ?>
-                            </a>
-                        <?php endforeach; ?>
-                    </div>
+                </div>
+            </div>
+            <div class="card shadow-sm mt-3">
+                <div class="card-header">
+                </div>
+                <div class="card-body">
+                    <p class="text-body-secondary">
+                        Fachliche Definitionen, die dem Modell-Import und der Raumbuch-Ableitung zugrunde liegen.
+                        Kuratierte Regeln (Import-Logik, Raumtyp-Regeln, Zeichenanweisungen) werden von Hand gepflegt;
+                        Raumtypen-Matrix und Mapping werden direkt aus den Quelldateien gelesen und bleiben so aktuell.
+                    </p>
                 </div>
             </div>
         </aside>
@@ -381,14 +402,17 @@ function params_badges(array $params): string
                         <div class="card-body py-2">
                             <div class="row g-3 align-items-center small">
                                 <div class="col-md-8">
-                                    <span class="text-uppercase text-body-tertiary fw-semibold" style="font-size:.68rem">Bestandsgeräte-Codes (RDG → Neu/Bestand = 0)</span><br>
-                                    <?php foreach ($bestand_codes as $c): ?><span class="badge text-bg-light border me-1">
+                                    <span class="text-uppercase text-body-tertiary fw-semibold"
+                                          style="font-size:.68rem">Bestandsgeräte-Codes (RDG → Neu/Bestand = 0)</span><br>
+                                    <?php foreach ($bestand_codes as $c): ?><span
+                                            class="badge text-bg-light border me-1">
                                         <code><?= e($c) ?></code></span><?php endforeach; ?>
                                     <?php if (empty($bestand_codes)): ?><span
                                             class="text-body-tertiary">—</span><?php endif; ?>
                                 </div>
                                 <div class="col-md-4">
-                                    <span class="text-uppercase text-body-tertiary fw-semibold" style="font-size:.68rem">Längen-Warntoleranz</span><br>
+                                    <span class="text-uppercase text-body-tertiary fw-semibold"
+                                          style="font-size:.68rem">Längen-Warntoleranz</span><br>
                                     <?= $mz_warn_diff !== null ? '<span class="badge text-bg-light border">&gt; ' . e($mz_warn_diff) . '&nbsp;cm → Warnung</span>' : '<span class="text-body-tertiary">—</span>' ?>
                                 </div>
                             </div>
@@ -405,7 +429,8 @@ function params_badges(array $params): string
                         <?php foreach ($raumtyp_regeln as $k) render_karte($k); ?>
                     </div>
 
-                    <h3 class="h6 text-body-secondary mb-2"><i class="bi bi-table me-1"></i>Typ-Matrix — Element-Anzahlen
+                    <h3 class="h6 text-body-secondary mb-2"><i class="bi bi-table me-1"></i>Typ-Matrix —
+                        Element-Anzahlen
                         &amp; Raumparameter</h3>
                     <p class="small text-body-secondary">Aus <code>raumtypen.php</code>. Zeile aufklappen für Möbel- und
                         Sicherheitsdetails.</p>
@@ -531,7 +556,8 @@ function params_badges(array $params): string
                                 ?>
                                 <tr>
                                     <td class="fw-semibold text-break" style="max-width:22rem"><?= e($key) ?></td>
-                                    <td><span class="badge text-bg-<?= $mc ?>"><?= e($cfg['match'] ?? '?') ?></span></td>
+                                    <td><span class="badge text-bg-<?= $mc ?>"><?= e($cfg['match'] ?? '?') ?></span>
+                                    </td>
                                     <td><span class="text-body-secondary"><?= e($cfg['typ'] ?? '—') ?></span></td>
                                     <td>
                                         <?= $sum ?>
@@ -561,7 +587,8 @@ function params_badges(array $params): string
                                             <?php endif; ?>
                                             <?php if (!empty($cfg['begleit_elemente'])): ?>
                                                 <div class="w-100 small text-warning-emphasis mt-1"><i
-                                                            class="bi bi-plus-circle me-1"></i>Begleit-Element je Instanz:
+                                                            class="bi bi-plus-circle me-1"></i>Begleit-Element je
+                                                    Instanz:
                                                     <code><?= e(implode('</code>, <code>', $cfg['begleit_elemente'])) ?></code>
                                                 </div>
                                             <?php endif; ?>
@@ -656,6 +683,5 @@ function params_badges(array $params): string
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

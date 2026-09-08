@@ -10,7 +10,6 @@
  *
  * Datenquelle: getBudgetTimeline.php (rekonstruiert aus tabelle_rb_aenderung).
  * Grundbedingung: nur Standort = 1. Preisbasis: aktuelle Kosten.
- * Nur Bootstrap 5 - kein eigenes CSS.
  * ---------------------------------------------------------------------------
  */
 require_once '../utils/_utils.php';
@@ -72,7 +71,7 @@ $mysqli->close();
 
             <div class="row d-flex justify-content-between flex-nowrap">
                 <div class="col-2 d-flex flex-nowrap justify-content-start text-nowrap align-items-center white">
-                    <strong id="budgetTimelineTitle" style="cursor:pointer"  >
+                    <strong id="budgetTimelineTitle" style="cursor:pointer">
                         <i class="fas fa-chart-line me-1"></i>Budget-Timeline</strong>
                 </div>
 
@@ -260,7 +259,7 @@ $mysqli->close();
     // Überschrift klickbar machen und Summen-Header ein-/ausklappen
     (function () {
         const header = document.getElementById('SummendarstellungeCardHEader');
-        const trigger = document.querySelector('#budgetTimelineTitle'); // s. Hinweis unten
+        const trigger = document.querySelector('#budgetTimelineTitle');
         if (!header || !trigger) return;
 
         // Collapse-Instanz ohne sofortiges Umschalten erzeugen
@@ -271,9 +270,10 @@ $mysqli->close();
 
         // Chart neu zeichnen, wenn wieder aufgeklappt (Canvas misst sonst 0)
         header.addEventListener('shown.bs.collapse', () => {
-            if (DATA) renderChart();
+            if (window.__budgetRenderChart) window.__budgetRenderChart();
         });
     })();
+
     $(function () {
         const eur = new Intl.NumberFormat('de-AT', {style: 'currency', currency: 'EUR'});
         const PALETTE = ['#0d6efd', '#dc3545', '#198754', '#fd7e14', '#6f42c1', '#20c997',
@@ -283,6 +283,10 @@ $mysqli->close();
         let chart = null;
         let flowTable = null;
         let detailTable = null;
+
+        // Lade-Steuerung: "letzter Klick gewinnt"
+        let loadSeq = 0;        // fortlaufende Nummer je Ladeversuch
+        let currentXhr = null;  // aktuell laufende Anfrage
 
         /* ---------- Hilfsfunktionen -------------------------------------- */
         const moneyCell = (v, withSign) => {
@@ -334,14 +338,18 @@ $mysqli->close();
         // Default: Alles
         setRange('all');
 
+        // Manuelle Datumsänderung hebt die Schnellauswahl-Markierung auf (KEIN Reload)
+        $('#dateFrom, #dateTo').on('change', () => $('.rangeBadge').removeClass('active'));
+
+        // Schnellauswahl lädt sofort neu (letzter Klick gewinnt)
+        let rangeTimer = null;
         $('.rangeBadge').on('click', function () {
             $('.rangeBadge').removeClass('active');
             $(this).addClass('active');
             setRange($(this).data('range'));
-            // bewusst KEIN Reload - erst beim Klick auf "Aktualisieren"
+            clearTimeout(rangeTimer);
+            rangeTimer = setTimeout(fetchData, 250); // kurze Entprellung bei schnellem Klicken
         });
-        // Manuelle Datumsänderung hebt die Schnellauswahl-Markierung auf
-        $('#dateFrom, #dateTo').on('change', () => $('.rangeBadge').removeClass('active'));
 
         /* ---------- DataTables ------------------------------------------- */
         function relocateControls(api, targetSel) {
@@ -450,26 +458,44 @@ $mysqli->close();
             }
         });
 
-        /* ---------- Laden (nur per Button) ------------------------------- */
+        /* ---------- Laden (letzter Klick gewinnt) ------------------------ */
+        // Jeder Aufruf erhöht loadSeq und bricht eine laufende Anfrage ab.
+        // Nur die Antwort mit der aktuellsten Sequenznummer wird verarbeitet
+        // und gibt die UI wieder frei -> keine veralteten Daten, keine
+        // durcheinanderlaufenden Mehrfach-Ladevorgänge.
+        function setControlsBusy(busy) {
+            $('#reloadBtn').prop('disabled', busy);
+            $('.rangeBadge, #dateFrom, #dateTo, #selAll, #selNone').prop('disabled', busy);
+            $('#reloadBtn').html(busy
+                ? '<span class="spinner-border spinner-border-sm me-1"></span> Laden…'
+                : '<i class="fas fa-sync-alt me-1"></i> Aktualisieren');
+        }
+
         function fetchData() {
-            $('#reloadBtn').prop('disabled', true)
-                .html('<span class="spinner-border spinner-border-sm me-1"></span> Laden…');
-            $.ajax({
+            const mySeq = ++loadSeq;
+            if (currentXhr) currentXhr.abort();  // vorherigen Ladevorgang verwerfen
+            setControlsBusy(true);
+
+            currentXhr = $.ajax({
                 url: 'getBudgetTimeline.php',
                 type: 'POST',
                 dataType: 'json',
                 data: {dateFrom: $('#dateFrom').val(), dateTo: $('#dateTo').val()}
             }).done(function (resp) {
+                if (mySeq !== loadSeq) return;                 // veraltete Antwort -> ignorieren
                 if (resp.error) {
                     alert('Fehler: ' + resp.error);
                     return;
                 }
                 DATA = resp;
-                renderAll();
-            }).fail(function (xhr) {
+                renderAll();                                   // erst nach vollständiger Verarbeitung frei
+            }).fail(function (xhr, status) {
+                if (status === 'abort' || mySeq !== loadSeq) return; // bewusst abgebrochen / veraltet
                 alert('Serverfehler beim Laden.\n' + (xhr.responseText || '').slice(0, 300));
             }).always(function () {
-                $('#reloadBtn').prop('disabled', false).html('<i class="fas fa-sync-alt me-1"></i> Aktualisieren');
+                if (mySeq !== loadSeq) return;                 // nur die neueste Anfrage gibt die UI frei
+                currentXhr = null;
+                setControlsBusy(false);
             });
         }
 
@@ -482,6 +508,7 @@ $mysqli->close();
         }
 
         function renderChart() {
+            if (!DATA) return;
             const sel = selectedBudgetIds();
             const tl = DATA.timeline || [];
             const labels = tl.map(p => p.t);
@@ -535,6 +562,8 @@ $mysqli->close();
                 }
             });
         }
+        // Für den Collapse-Handler außerhalb dieser Closure erreichbar machen
+        window.__budgetRenderChart = renderChart;
 
         function renderFlow() {
             const sel = selectedBudgetIds();
@@ -564,7 +593,7 @@ $mysqli->close();
         $('#reloadBtn').on('click', fetchData);
         $('#budgetSelect, #showTotalLine').on('change', renderAll);
 
-        // Erstes Laden (danach nur noch per Button)
+        // Erstes Laden
         fetchData();
     });
 </script>

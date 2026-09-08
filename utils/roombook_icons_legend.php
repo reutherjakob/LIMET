@@ -17,6 +17,7 @@ $icons = [
     ['icon' => '<i class="fas fa-sync-alt"></i>', 'bedeutung' => 'Aktualisieren'],
     ['icon' => '<i class="fas fa-file-excel"></i>', 'bedeutung' => 'Download als Excel'],
     ['icon' => "<i class='far fa-file-pdf'></i>", 'bedeutung' => 'Download als PDF'],
+    ['icon' => "<i class='far fa-file-word'></i>", 'bedeutung' => 'Download als .doc'],
     ['icon' => '<i class="fas fa-cog "></i>', 'bedeutung' => 'Einstellungen'],
     ['icon' => '<i class="fas fa-plus-square"></i> <i class="fas fa-plus"></i>', 'bedeutung' => 'Hinzufügen/Neu anlegen'],
     ['icon' => '<i class="fas fa-fingerprint"></i>', 'bedeutung' => 'ID'],
@@ -60,15 +61,17 @@ $icons = [
                 <div class="card-header">
                     <div class="d-flex justify-content-center fs-1">
                         <strong>
-                            <i class="fas fa-info"></i>
-                            <i class="far fa-copyright"></i>
-                            <i class="fas fa-ring"></i>
-                            <i class="fas fa-shekel-sign"></i>
-                            <i class="fab fa-stripe-s"></i></strong>
+                            <a class="col-10" href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free"
+                               target="_blank">
+                                <i class="fas fa-info"></i>
+                                <i class="far fa-copyright"></i>
+                                <i class="fas fa-ring"></i>
+                                <i class="fas fa-shekel-sign"></i>
+                                <i class="fab fa-stripe-s"></i>
+                            </a>
+                        </strong>
                     </div>
-                    <div class="text-muted fs-6 d-flex justify-content-center">
-                        <i class="fas fa-lira-sign"></i>egende <i class="fas fa-equals"></i> Work in Progress
-                    </div>
+
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

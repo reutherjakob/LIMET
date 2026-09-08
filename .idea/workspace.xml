@@ -4,15 +4,30 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Reports/Spargefeld">
-      <change afterPath="$PROJECT_DIR$/BEFU/roombook_befu.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Budgets/getBudgetTimeline.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Budgets/roombook_budgetTimeline.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/LIMET.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/LIMET.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Budget Timeline finished">
+      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/_pdf_custom_utils.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/pdf_createBauangabenBericht_Custom.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/pdf_createBericht_MYPDFclass_Custom.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/pdf_createMTTabelle_custom.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/pdf_getReportParamDefinitions.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/pdf_paramDefinitions.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/pdf_report_data.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/pdf_report_layout.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/pdf_report_render.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/pdf_report_sets.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/roombook_Custom_Report.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BEFU/roombook_befu.php" beforeDir="false" afterPath="$PROJECT_DIR$/BEFU/roombook_befu.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Budgets/roombook_budgetTimeline.php" beforeDir="false" afterPath="$PROJECT_DIR$/Budgets/roombook_budgetTimeline.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/raumtypen.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/raumtypen.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SF/pdf_raumtypen_sf.php" beforeDir="false" afterPath="$PROJECT_DIR$/SF/pdf_raumtypen_sf.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SF/roombook_SF_rules.php" beforeDir="false" afterPath="$PROJECT_DIR$/SF/roombook_SF_rules.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getRoomsWithElementTenderLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomsWithElementTenderLots.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects.php" beforeDir="false" afterPath="$PROJECT_DIR$/projects.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookReports.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookReports.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_elementLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_elementLots.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/utils/navbar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/website_rohling.php" beforeDir="false" afterPath="$PROJECT_DIR$/utils/website_rohling.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/roombook_icons_legend.php" beforeDir="false" afterPath="$PROJECT_DIR$/utils/roombook_icons_legend.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -641,15 +656,13 @@
       <workItem from="1788247447192" duration="14220000" />
       <workItem from="1788340590277" duration="4462000" />
       <workItem from="1788346213673" duration="6854000" />
-      <workItem from="1788420373296" duration="7656000" />
-    </task>
-    <task id="LOCAL-00208" summary="Elelemtn History added.&#10;Wartet noch auf ddie erweiterung der Lose Tabelle, damit preiseintrager notiert werden kann">
-      <option name="closed" value="true" />
-      <created>1773762182244</created>
-      <option name="number" value="00208" />
-      <option name="presentableId" value="LOCAL-00208" />
-      <option name="project" value="LOCAL" />
-      <updated>1773762182244</updated>
+      <workItem from="1788420373296" duration="10305000" />
+      <workItem from="1788440956514" duration="11000" />
+      <workItem from="1788441297397" duration="5179000" />
+      <workItem from="1788506064499" duration="7628000" />
+      <workItem from="1788765220663" duration="5822000" />
+      <workItem from="1788782431845" duration="3376000" />
+      <workItem from="1788859142853" duration="1405000" />
     </task>
     <task id="LOCAL-00209" summary="Elelemtn History added.&#10;Wartet noch auf ddie erweiterung der Lose Tabelle, damit preiseintrager notiert werden kann">
       <option name="closed" value="true" />
@@ -1035,7 +1048,15 @@
       <option name="project" value="LOCAL" />
       <updated>1788340850786</updated>
     </task>
-    <option name="localTasksCounter" value="257" />
+    <task id="LOCAL-00257" summary="Budget Timeline finished">
+      <option name="closed" value="true" />
+      <created>1788429721116</created>
+      <option name="number" value="00257" />
+      <option name="presentableId" value="LOCAL-00257" />
+      <option name="project" value="LOCAL" />
+      <updated>1788429721116</updated>
+    </task>
+    <option name="localTasksCounter" value="258" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1065,7 +1086,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Budgets-Freigaben ergänzt. &#10;Detailed: Raum Btns und Suchleiste in den Card Header.&#10;element Admin - pagelength option ergänzt." />
     <MESSAGE value="Ui upgrade while workin" />
     <MESSAGE value="Fixes, VErbesserungen,&#10;upgrades Nutezrkatalog" />
     <MESSAGE value="Element parameter Änderungen Website" />
@@ -1090,7 +1110,8 @@
     <MESSAGE value="Wartungpreise update" />
     <MESSAGE value="REports/Spargefeld" />
     <MESSAGE value="Reports/Spargefeld" />
-    <option name="LAST_COMMIT_MESSAGE" value="Reports/Spargefeld" />
+    <MESSAGE value="Budget Timeline finished" />
+    <option name="LAST_COMMIT_MESSAGE" value="Budget Timeline finished" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

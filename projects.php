@@ -189,71 +189,22 @@
                 </div>
             </div>
             <div class='card mt-2'>
-                <div class='card-header'>
-                    <i class="far fa-heart"></i><strong> Raumbuch Updates </strong><i class="far fa-heart"></i>
+                <div class='card-header text-center'>
+                    <i class="far fa-comment-dots">
+                    <a class="" href="/FeedbackCenter/FeedbackIndex.php" target="_blank">RB Feedback </i></a>
+                </div>
+            </div>
+            <div class='card mt-2'>
+                <div class='card-header text-center'>
+                    <strong> Raumbuch Updates </strong>
                 </div>
                 <div class='card-body'>
                     <div class="row">
-                        <p>
-                            <i class="fas fa-chess-rook col-1"></i>
-                            <a class="col-10" href=" /utils/roombook_icons_legend.php">
-                                ICON Legende </a>
-                        </p>
-                        <p>
-                            <i class="fas fa-scroll col-1"></i>
-                            <a class="col-10" href="roombook_allTenderLots.php">
-                                Alle Lose Liste </a>
-                        </p>
 
                         <p>
-                            <i class="fas fa-clipboard-list col-1"></i>
-                            <a class="col-10" href="roombookTenderLotsToDo.php">
-                                Los ToDoz </a>
-                        </p>
-
-                        <p>
-                            <i class="fas fa-check-double col-1"></i>
-                            <a class="col-10" href="roombook_leistungAbgleich.php">
-                                Leistungs-Check </a>
-                        </p>
-
-
-                        <p>
-                            <i class="fas fa-coins col-1"></i>
-                            <a class="col-10" href="elementAdministration.php"> Button: Preise ändern</a>
-                        </p>
-
-                        <p>
-                            <i class="fas fa-history col-1"></i>
-                            <a class="col-11" href="roombook_elementParameterAenderungen.php">
-                                Element Parameter Änderungen
-                            </a>
-                        </p>
-
-                        <p><i class="fab fa-d-and-d col-1"></i>
-                            <a class="col-11" href="roombook_search_rooms_with_string.php">
-                                Raumsuche inkl. Preise
-                            </a>
-                        </p>
-
-                        <p>
-                            <i class="fas fa-dumpster-fire col-1"></i>
-                            <a class="col-11" href="roombook_elementBudgets.php">
-                                Budget Statii
-                            </a>
-                        </p>
-
-                        <p>
-                            <i class="fas fa-list-ol col-1"></i>
-                            <a class="col-11" href="roombook_devicePrice.php">
-                                Geräte & Wartungspreise Liste
-                            </a>
-                        </p>
-
-                        <p>
-                            <i class="fas fa-map-marked-alt col-1"></i>
-                            <a class="col-11" href="roombookStandortVerwendung.php">
-                                Standort & Verwendung Liste
+                            <i class="fas fa-piggy-bank col-1"></i>
+                            <a class="col-11" href="Budgets/roombook_budgetTimeline.php">
+                                Budget Timeline
                             </a>
                         </p>
 
@@ -266,8 +217,15 @@
 
                         <p>
                             <i class="fas fa-code-branch  col-1"></i>
-                            <a class="col-11" href="/workflow_verwaltung/roombook_workflows.php">
-                                Workflow Verwaltung
+                            <a class="col-11" href="/roombook_elementLieferanten.php">
+                                Element Lieferanten
+                            </a>
+                        </p>
+
+                        <p>
+                            <i class="fas fa-code-branch  col-1"></i>
+                            <a class="col-11" href="/roombook_losElementeUebersicht.php">
+                                Los Elemente Übersicht
                             </a>
                         </p>
 
@@ -278,91 +236,24 @@
                             </a>
                         </p>
 
-
-                    </div>
-                </div>
-            </div>
-
-            <div class='card mt-2'>
-                <div class='card-body'>
-                    <div class="row">
-                        <p class="">
-                            <i class="fas fa-icons col-1"></i>
-                            <a class="col-10" href="https://fontawesome.com/v5/search?q=%20&o=r&ic=free"
-                               target="_blank">Projekt Icons</a>
-                        </p>
-                        <p class="">
-                            <i class="fas fa-fist-raised col-1"></i>
-                            <a class="col-10" href="/FeedbackCenter/FeedbackIndex.php" target="_blank">Feedback &
-                                Bugreport</a>.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class='card mt-2'>
-                <div class='card-header'> Spargelfeld</div>
-                <div class='card-body'>
-                    <div class="row">
-                        <p>
-                            <i class="col-1 fas fa-dragon"> </i>
+                        <p class=" mt-2">
+                            <i class="col-1 fas fa-seedling"> </i>
                             <a class="col-11" href="/SF/roombook_SF_rules.php">
-                               RULES
+                                Spargelfeld Websites
                             </a>
                         </p>
-
-                        <p>
-                            <i class="col-1 fas fa-cat"> </i>
-                            <a class="col-11" href="/IFCQuest/import_excel.php">
-                                Import Model Excel
+                        <p class=" mt-2">
+                            <i class="col-1 far fa-file-word"></i>
+                            <a class="col-11" href="/BEFU/roombook_befu.php">
+                                BEFU Rohling
                             </a>
                         </p>
-
-                        <p>
-                            <i class="col-1 fas fa-spider"> </i>
-                            <a class="col-11" href="/SF/roombook_Raumtypen_zu_Raumbuch.php">
-                                RT übernehmen
-                            </a>
-                        </p>
-
-                        <p>
-                            <i class="col-1 fas fa-dog"> </i>
-                            <a class="col-11" href="/SF/roombook_RB_RT_Abgleich.php">
-                                Abgleich RT - RB
-                            </a>
-                        </p>
-
-                        <p>
-                            <i class="col-1 fas fa-frog"> </i>
-                            <a class="col-11" href="/SF/pdf_raumtypen_sf.php">
-                                RT PDF
-                            </a>
-                        </p>
-
-                        <p>
-                            <i class="col-1 fas fa-kiwi-bird"> </i>
-                            <a class="col-11" href="/SF/roombook_sf_av_sv.php">
-                                AV/SV Aufteilung
-                            </a>
-                        </p>
-                        <p>
-                            <i class="col-1 fas fa-kiwi-bird"> </i>
-                            <a class="col-11" href="/SF/roombook_sf_flaechen_je_raumtyp.php">
-                                Flächen je Raumtyp
-                            </a>
-                        </p>
-
-                        <p>
-                            <i class="col-1  fas fa-dove"> </i>
-                            <a class="col-11" href="/SF/roombook_elementsInProject_delete0.php">
-                                Nuller Vars entfernen
-                            </a>
-                        </p>
-
 
                     </div>
                 </div>
             </div>
+
+
         </div>
     </div>
     <div class='mt-2 row'>
