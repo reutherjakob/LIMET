@@ -1,5 +1,7 @@
 <?php
 // 25 FX
+ini_set('max_execution_time', '120');
+ini_set('memory_limit', '512M'); // Sicherheitsnetz; kann durch Host/PHP-FPM gedeckelt sein
 require_once 'utils/_utils.php';
 check_login();
 
@@ -17,7 +19,7 @@ if (!$projectID || !is_array($K2Ret)) {
 // If all categories deselected → return empty result immediately
 if (count($K2Ret) === 0) {
     header('Content-Type: application/json');
-    echo json_encode(['paramMeta' => [], 'rooms' => []], JSON_PRETTY_PRINT);
+    echo json_encode(['paramMeta' => [], 'rooms' => []]);
     exit;
 }
 
@@ -41,6 +43,20 @@ $stmt = $mysqli->prepare("
 $stmt->bind_param("i", $projectID);
 $stmt->execute();
 $rooms = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+// Build a room lookup map (roomID → room row) for fast metadata access
+$roomsByID = [];
+foreach ($rooms as $room) {
+    $roomsByID[(int)$room['idTABELLE_Räume']] = $room;
+}
+$roomIDs = array_keys($roomsByID);
+
+// No rooms → nothing to do
+if (count($roomIDs) === 0) {
+    header('Content-Type: application/json');
+    echo json_encode(['paramMeta' => [], 'rooms' => []]);
+    exit;
+}
 
 // 2️⃣ Load project parameters and categories (once for all rooms)
 // Returns both Abkuerzung (used as data key) AND full Bezeichnung (used as column header)
@@ -83,14 +99,16 @@ while ($row = $kategorieResult->fetch_assoc()) {
 }
 
 // 3️⃣ Load all element and variant parameters (once for all rooms)
+//    → indexed into a hash map for O(1) lookup instead of a full scan per element.
+//    Nur der ZULETZT gelesene Wert je Kombination wird behalten (spart Speicher,
+//    entspricht dem bisherigen end()-Verhalten).
 $stmt = $mysqli->prepare("
     SELECT 
         pep.tabelle_elemente_idTABELLE_Elemente, 
         pep.Wert, 
         pep.Einheit, 
         pep.tabelle_Varianten_idtabelle_Varianten,
-        p.idTABELLE_Parameter AS ParamID,
-        k.idTABELLE_Parameter_Kategorie AS KategorieID
+        p.idTABELLE_Parameter AS ParamID
     FROM tabelle_parameter_kategorie k
     INNER JOIN tabelle_parameter p 
         ON k.idTABELLE_Parameter_Kategorie = p.TABELLE_Parameter_Kategorie_idTABELLE_Parameter_Kategorie
@@ -104,22 +122,19 @@ $stmt->bind_param("i", $projectID);
 $stmt->execute();
 $tabelle_projekt_elementparameter = $stmt->get_result();
 
-$elementParamInfos = [];
+// Key: "elementID|variantenID|ParamID" → {Wert, Einheit}   (nur letzter Wert)
+$elementParamMap = [];
 while ($row = $tabelle_projekt_elementparameter->fetch_assoc()) {
-    $elementParamInfos[] = [
-        'KategorieID' => $row['KategorieID'],
-        'ParamID'     => $row['ParamID'],
-        'elementID'   => $row['tabelle_elemente_idTABELLE_Elemente'],
-        'variantenID' => $row['tabelle_Varianten_idtabelle_Varianten'],
-        'Wert'        => $row['Wert'],
-        'Einheit'     => $row['Einheit'],
+    $mapKey = $row['tabelle_elemente_idTABELLE_Elemente'] . '|'
+        . $row['tabelle_Varianten_idtabelle_Varianten'] . '|'
+        . $row['ParamID'];
+    $elementParamMap[$mapKey] = [
+        'Wert'    => $row['Wert'],
+        'Einheit' => $row['Einheit'],
     ];
 }
 
-// 4️⃣ Collect data for each room
-$result = [];
-
-// Also send paramMeta so JS knows Abkuerzung → FullBezeichnung mapping
+// 4️⃣ Prepare paramMeta so JS knows DataKey → FullBezeichnung mapping
 $paramMeta = [];
 foreach ($paramInfos as $p) {
     $paramMeta[] = [
@@ -128,89 +143,121 @@ foreach ($paramInfos as $p) {
     ];
 }
 
-foreach ($rooms as $room) {
-    $roomID = $room['idTABELLE_Räume'];
-    $roomData = ['roomID' => $roomID, 'elements' => []];
+// 5️⃣ Get elements for ALL rooms in a single query (ordered by room)
+$placeholders = implode(',', array_fill(0, count($roomIDs), '?'));
+$types        = str_repeat('i', count($roomIDs));
 
-    // Get elements for this room
-    $stmt = $mysqli->prepare("
-        SELECT 
-            e.ElementID, e.Bezeichnung, v.Variante,
-            SUM(rhe.Anzahl) AS SummevonAnzahl,
-            rhe.`Neu/Bestand`, 
-            rhe.Standort,
-            rhe.TABELLE_Elemente_idTABELLE_Elemente, 
-            rhe.tabelle_Varianten_idtabelle_Varianten
-        FROM tabelle_varianten v
-        INNER JOIN (
-            tabelle_räume_has_tabelle_elemente rhe
-            INNER JOIN tabelle_elemente e 
-            ON rhe.TABELLE_Elemente_idTABELLE_Elemente = e.idTABELLE_Elemente
-        ) ON v.idtabelle_Varianten = rhe.tabelle_Varianten_idtabelle_Varianten
-        WHERE rhe.Verwendung = 1 AND rhe.TABELLE_Räume_idTABELLE_Räume = ?
+$stmt = $mysqli->prepare("
+    SELECT 
+        rhe.TABELLE_Räume_idTABELLE_Räume AS roomID,
+        e.ElementID, e.Bezeichnung, v.Variante,
+        SUM(rhe.Anzahl) AS SummevonAnzahl,
+        rhe.`Neu/Bestand`, 
+        rhe.Standort,
+        rhe.TABELLE_Elemente_idTABELLE_Elemente, 
+        rhe.tabelle_Varianten_idtabelle_Varianten
+    FROM tabelle_varianten v
+    INNER JOIN tabelle_räume_has_tabelle_elemente rhe 
+        ON v.idtabelle_Varianten = rhe.tabelle_Varianten_idtabelle_Varianten
+    INNER JOIN tabelle_elemente e 
+        ON rhe.TABELLE_Elemente_idTABELLE_Elemente = e.idTABELLE_Elemente
+    WHERE rhe.Verwendung = 1 
         AND rhe.Standort = 1 
-        GROUP BY 
-            e.ElementID, e.Bezeichnung, v.Variante, 
-            rhe.`Neu/Bestand`, 
-            rhe.TABELLE_Elemente_idTABELLE_Elemente, 
-            rhe.tabelle_Varianten_idtabelle_Varianten
-        Having SummevonAnzahl > 0
-        ORDER BY e.ElementID, v.Variante
-    ");
-    $stmt->bind_param("i", $roomID);
-    $stmt->execute();
-    $tabelle_elemente = $stmt->get_result();
+        AND rhe.TABELLE_Räume_idTABELLE_Räume IN ($placeholders)
+    GROUP BY 
+        rhe.TABELLE_Räume_idTABELLE_Räume,
+        e.ElementID, e.Bezeichnung, v.Variante, 
+        rhe.`Neu/Bestand`, 
+        rhe.TABELLE_Elemente_idTABELLE_Elemente, 
+        rhe.tabelle_Varianten_idtabelle_Varianten
+    HAVING SummevonAnzahl > 0
+    ORDER BY rhe.TABELLE_Räume_idTABELLE_Räume, e.ElementID, v.Variante
+");
+$stmt->bind_param($types, ...$roomIDs);
+$stmt->execute();
+$allElements = $stmt->get_result();
 
-    while ($row = $tabelle_elemente->fetch_assoc()) {
-        $elementData = $row;
-        $elementData['Raumbezeichnung'] = $room['Raumbezeichnung'];
-        $elementData['Raumnr']          = $room['Raumnr'];
-        $elementData['MTrelevant']      = $room['MT-relevant'];
-        $elementData['Bauabschnitt']    = $room['Bauabschnitt'];
-        $elementData['Geschoss']        = $room['Geschoss'];
-        $elementData['FunktionsteilstellenID'] = $room['TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen'];
-        $elementData['Raumbereich']     = $room['Raumbereich Nutzer'];
-        $elementData['Bauetappe']       = $room['Bauetappe'];
+// 6️⃣ Stream output: JSON Raum für Raum ausgeben, statt alles im RAM zu sammeln.
+//    So liegt immer nur ein Element gleichzeitig im Speicher.
+header('Content-Type: application/json');
 
-        foreach ($paramInfos as $paramInfo) {
-            $values     = [];
-            $numValues  = [];
-            foreach ($elementParamInfos as $elementParamInfo) {
-                if (
-                    $elementParamInfo['ParamID']   == $paramInfo['ParamID'] &&
-                    $elementParamInfo['elementID'] == $row['TABELLE_Elemente_idTABELLE_Elemente'] &&
-                    $elementParamInfo['variantenID'] == $row['tabelle_Varianten_idtabelle_Varianten']
-                ) {
-                    $wert   = $elementParamInfo['Wert'];
-                    $einheit = $elementParamInfo['Einheit'];
-                    $values[]    = $wert . $einheit;
-                    // Store numeric value separately (null if not numeric)
-                    $numValues[] = is_numeric($wert) ? (float)$wert : null;
-                }
-            }
+echo '{"paramMeta":' . json_encode($paramMeta) . ',"rooms":[';
 
-            $key = $paramInfo['DataKey'];
-            if (empty($values)) {
-                $elementData[$key] = '';
-                $elementData[$key . '__num'] = null;
-            } elseif (count($values) === 1) {
-                $elementData[$key] = $values[0];
-                $elementData[$key . '__num'] = $numValues[0];
-            } else {
-                $elementData[$key] = end($values);
-                $elementData[$key . '__num'] = end($numValues);
-            }
+$firstRoom     = true;
+$firstElement  = true;
+$currentRoomID = null;
+$seenRoomIDs   = [];
+
+while ($row = $allElements->fetch_assoc()) {
+    $roomID = (int)$row['roomID'];
+
+    // Neuer Raum? → vorherigen abschließen, neuen öffnen
+    if ($roomID !== $currentRoomID) {
+        if ($currentRoomID !== null) {
+            echo ']}'; // close previous room's "elements" + object
+        }
+        echo $firstRoom ? '' : ',';
+        $firstRoom = false;
+        echo '{"roomID":' . $roomID . ',"elements":[';
+        $currentRoomID        = $roomID;
+        $seenRoomIDs[$roomID] = true;
+        $firstElement         = true;
+    }
+
+    $room = $roomsByID[$roomID];
+
+    $elementData = $row;
+    $elementData['Raumbezeichnung']        = $room['Raumbezeichnung'];
+    $elementData['Raumnr']                 = $room['Raumnr'];
+    $elementData['MTrelevant']             = $room['MT-relevant'];
+    $elementData['Bauabschnitt']           = $room['Bauabschnitt'];
+    $elementData['Geschoss']               = $room['Geschoss'];
+    $elementData['FunktionsteilstellenID'] = $room['TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen'];
+    $elementData['Raumbereich']            = $room['Raumbereich Nutzer'];
+    $elementData['Bauetappe']              = $room['Bauetappe'];
+
+    $elemID    = $row['TABELLE_Elemente_idTABELLE_Elemente'];
+    $variantID = $row['tabelle_Varianten_idtabelle_Varianten'];
+
+    foreach ($paramInfos as $paramInfo) {
+        $key       = $paramInfo['DataKey'];
+        $lookupKey = $elemID . '|' . $variantID . '|' . $paramInfo['ParamID'];
+
+        if (!isset($elementParamMap[$lookupKey])) {
+            $elementData[$key]           = '';
+            $elementData[$key . '__num'] = null;
+            continue;
         }
 
-        $roomData['elements'][] = $elementData;
-    }
-    $result[] = $roomData;
-}
-$mysqli->close();
+        $wert    = $elementParamMap[$lookupKey]['Wert'];
+        $einheit = $elementParamMap[$lookupKey]['Einheit'];
 
-// 5️⃣ Output as JSON — wrap in envelope so JS gets both paramMeta and rooms
-header('Content-Type: application/json');
-echo json_encode([
-    'paramMeta' => $paramMeta,
-    'rooms'     => $result,
-], JSON_PRETTY_PRINT);
+        $elementData[$key]           = $wert . $einheit;
+        $elementData[$key . '__num'] = is_numeric($wert) ? (float)$wert : null;
+    }
+
+    echo $firstElement ? '' : ',';
+    $firstElement = false;
+    echo json_encode($elementData);
+
+    unset($elementData); // Speicher sofort wieder freigeben
+}
+
+// Letzten offenen Raum abschließen
+if ($currentRoomID !== null) {
+    echo ']}';
+}
+
+// Räume ohne Elemente anhängen (damit sie wie bisher im Ergebnis auftauchen)
+foreach ($roomIDs as $rid) {
+    if (isset($seenRoomIDs[$rid])) {
+        continue;
+    }
+    echo $firstRoom ? '' : ',';
+    $firstRoom = false;
+    echo '{"roomID":' . (int)$rid . ',"elements":[]}';
+}
+
+echo ']}';
+
+$mysqli->close();

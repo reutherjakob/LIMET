@@ -22,6 +22,8 @@
 <?php
 require_once 'utils/_utils.php';
 init_page_serversides("x");
+$excelfilename = buildExcelFilename('Losliste_Elemente');
+
 ?>
 
 <div id="limet-navbar"></div>
@@ -136,6 +138,7 @@ init_page_serversides("x");
     <script src="utils/_utils.js"></script>
     <script charset="utf-8">
         var tableLosElemente;
+        const $excelfilename = <?= json_encode($excelfilename) ?>;
 
         const eur = new Intl.NumberFormat('de-DE', {style: 'currency', currency: 'EUR'});
         const num = new Intl.NumberFormat('de-DE');
@@ -224,7 +227,9 @@ init_page_serversides("x");
                         attr: {'data-bs-toggle': 'tooltip', 'data-bs-title': 'Spalten ein/ausblenden'}
                     },
                     {
-                        extend: 'excel', className: "btn btn-light btn-outline-dark fas fa-file-excel", text: '',
+                        extend: 'excel',
+                        className: "btn btn-light btn-outline-dark fas fa-file-excel", text: '',
+                        filename: $excelfilename,
                         title: 'Losliste_Elemente',
                         exportOptions: {columns: ':visible, :hidden'},
                         attr: {'data-bs-toggle': 'tooltip', 'data-bs-title': 'Download als Excel'}

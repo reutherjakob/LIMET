@@ -50,6 +50,8 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 $conn->close();
+$excelfilename = buildExcelFilename('Besprechungsansicht__El_je_Raum');
+
 ?>
 
 <!DOCTYPE html>
@@ -244,7 +246,7 @@ $conn->close();
                                 <div class="col-6 d-flex justify-content-end"
                                      id="CardHeaderHoldingDatatableManipulators2"></div>
                             </div>
-                            <button type="reset" class="btn btn-sm btn-success text-nowrap" title="resetElementStati" id="resetElementStati">
+                            <button type="reset" class="btn btn-sm btn-success text-nowrap me-1" title="resetElementStati" id="resetElementStati">
                                 Reset Statii
                             </button>
                             <button type="reset" class="btn btn-sm btn-outline-dark" title="ResetPivot" id="ResetPivot">
@@ -331,12 +333,10 @@ include "GroupMembersModal.html";
 <script src="../js/editablePivot.js"></script>
 <script src="../js/Besprechung.js"></script>
 <script src="../js/Vermerke.js"></script>
-
 <script>
-
-
-    // let excelfilename;
+    const $excelfilename = <?= json_encode($excelfilename) ?>;
     let besprechung;
+
     $(document).ready(function () {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {

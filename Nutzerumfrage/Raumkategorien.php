@@ -7,7 +7,7 @@ if (!function_exists('loadEnv')) {
     include "../Nutzerlogin/db.php";
 }
 
-$role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_admin","spargelfeld_view"]);
+$role = init_page(["internal_rb_user", "spargelfeld_ext_user", "spargelfeld_admin", "spargelfeld_view"]);
 
 require_once "../Nutzerumfrage/raumtypen.php"; // lädt $labortypen
 
@@ -120,6 +120,8 @@ foreach ($columns as $col) {
     }
     $visible_index++;
 }
+$excelfilename = buildExcelFilename('Raumkategorien');
+
 ?>
 <!DOCTYPE html>
 <html lang="de">
@@ -192,6 +194,7 @@ foreach ($columns as $col) {
 </div>
 
 <script>
+    const $excelfilename = <?= json_encode($excelfilename) ?>;
     $(document).ready(function () {
         const table = $('#raeumTypenTable').DataTable({
             pageLength: 33,
@@ -206,7 +209,10 @@ foreach ($columns as $col) {
                 url: 'https://cdn.datatables.net/plug-ins/2.2.1/i18n/de-DE.json'
             },
             buttons: [
-                {extend: 'colvis', text: '<i class="fas fa-columns"></i> Spaltensichtbarkeit'},
+                {
+                    extend: 'colvis',
+                    text: '<i class="fas fa-columns"></i> Spaltensichtbarkeit'
+                },
                 {
                     extend: 'colvisRestore',
                     text: '<i class="fas fa-undo"></i> Spalten zurücksetzen',
@@ -215,9 +221,19 @@ foreach ($columns as $col) {
                         window.location.reload();
                     }
                 },
-                {extend: 'searchBuilder', text: '<i class="fas fa-filter"></i> Filter'},
-                {extend: 'excel', text: '<i class="fas fa-file-excel"></i> Download Excel'},
-                {extend: 'print', text: '<i class="fas fa-print"></i> Drucken'},
+                {
+                    extend: 'searchBuilder',
+                    text: '<i class="fas fa-filter"></i> Filter'
+                },
+                {
+                    extend: 'excel',
+                    text: '<i class="fas fa-file-excel"></i> Download Excel',
+                    filename: $excelfilename
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fas fa-print"></i> Drucken'
+                },
             ],
             stateSave: true,
             orderCellsTop: true,

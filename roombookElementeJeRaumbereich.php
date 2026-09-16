@@ -51,6 +51,9 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 $conn->close();
+
+
+$excelfilename = buildExcelFilename('Elemente_je_Raumbereich');
 ?>
 
 <!DOCTYPE html>
@@ -207,8 +210,9 @@ $conn->close();
 
 <script src="utils/_utils.js"></script>
 <script>
+    const $excelfilename = <?= json_encode($excelfilename) ?>;
     $(document).ready(function () {
-        let excelfilename;
+
         let filterVisible = true;
         $('#raumbereich').select2({placeholder: "Raumbereich wählen"});
         $('#zusatzRaeume').select2({placeholder: "Zusätzliche Räume wählen"});
@@ -245,15 +249,13 @@ $conn->close();
             const cellIdx = table.cell(this).index();
             const rowIdx = cellIdx.row;
             const colIdx = cellIdx.column;
-            const cellData = table.cell(cell).data();
-            const rowData = table.row(rowIdx).data();
-            const headerText = $(table.column(colIdx).header()).text().trim();
-
+            //x  const cellData = table.cell(cell).data();
+            //x  const rowData = table.row(rowIdx).data();
+            //x  const headerText = $(table.column(colIdx).header()).text().trim();
             // Log all relevant info
             // console.log('Cell Value:', cellData);
             // console.log('Column:', colIdx, '(', headerText, ')');
             // console.log('Row:', rowIdx, rowData);
-
             const dataRoomId = cell.data('roomid');
             const dataElementId = cell.data('elementid');
             const idTABELLE_Räume_has_tabelle_Elemente = cell.data('roomhaselementid')
@@ -302,83 +304,80 @@ $conn->close();
                 let raumbereichJoined = raumbereich
                     .map(r => r.replace(/ /g, '_'))
                     .join('_');
-                getExcelFilename('Elemente-je-Raumbereich_' + raumbereichJoined)
-                    .then(filename => {
-                        $('#pivotTableContainer').html(data);
-                        let colCount = $('#pivotTable thead th').length;
-                        let columns = [];
-                        for (let i = 0; i < colCount; i++) {
-                            if (i === 0) {
-                                // First column: Element or Raum, don't change rendering
-                                columns.push(null);
-                            } else if (hideZeros) {
-                                // For all other columns, hide zeros
-                                columns.push({
-                                    render: function (data) {
-                                        return (data === "0" || data === 0) ? "" : data;
-                                    }
-                                });
-                            } else {
-                                columns.push(null);
-                            }
-                        }
-                        $('#pivotTable').DataTable({
-                            language: {
-                                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
-                                search: "",
-                                searchPlaceholder: "Suche...",
-                                lengthMenu: '_MENU_ ',
-                                info: "_START_-_END_ von _TOTAL_ ",
-                                infoEmpty: "Keine Einträge",
-                                infoFiltered: "(von _MAX_) ",
-                            },
-                            scrollX: true,
-                            scrollCollapse: true,
-                            fixedColumns: {start: 1},
-                            fixedHeader: true,
-                            select: true,
-                            paging: true,
-                            pagingType: "full",
-                            searching: true,
-                            ordering: true,
-                            info: true,
-                            lengthChange: true,
-                            pageLength: 10,
-                            lengthMenu: [[10, 20, 50, -1], ['10 rows', '20 rows', '50 rows', 'All']],
-                            responsive: false,
-                            autoWidth: true,
-                            columns: columns,
-                            layout: {
-                                topStart: 'buttons',
-                                topEnd: 'search',
-                                bottomStart: 'info',
-                                bottomEnd: ['pageLength', 'paging']
-                            },
-                            buttons: [
-                                {
-                                    extend: 'excelHtml5',
-                                    text: '<i class="fas fa-file-excel"></i> Excel',
-                                    className: 'btn btn-success btn-sm',
-                                    title: filename
-                                }
-                            ],
-                            initComplete: function () {
-                                $('#CardHeaderHoldingDatatableManipulators').empty();
-                                $('#CardHeaderHoldingDatatableManipulators2').empty();
-                                $('#pivotTable_wrapper .dt-buttons').appendTo('#CardHeaderHoldingDatatableManipulators');
-                                $('#pivotTable_wrapper .dt-search').appendTo('#CardHeaderHoldingDatatableManipulators');
-                                $('#pivotTable_wrapper .dt-length').appendTo('#CardHeaderHoldingDatatableManipulators2');
-                                $('#pivotTable_wrapper .dt-info').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
-                                $('#pivotTable_wrapper .dt-paging').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
-                                $('.dt-search label').remove();
-                                $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark");
-                                table_click();
+
+                $('#pivotTableContainer').html(data);
+                let colCount = $('#pivotTable thead th').length;
+                let columns = [];
+                for (let i = 0; i < colCount; i++) {
+                    if (i === 0) {
+                        // First column: Element or Raum, don't change rendering
+                        columns.push(null);
+                    } else if (hideZeros) {
+                        // For all other columns, hide zeros
+                        columns.push({
+                            render: function (data) {
+                                return (data === "0" || data === 0) ? "" : data;
                             }
                         });
-                    })
-                    .catch(error => {
-                        console.error('Failed to generate filename:', error);
-                    });
+                    } else {
+                        columns.push(null);
+                    }
+                }
+                $('#pivotTable').DataTable({
+                    language: {
+                        url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
+                        search: "",
+                        searchPlaceholder: "Suche...",
+                        lengthMenu: '_MENU_ ',
+                        info: "_START_-_END_ von _TOTAL_ ",
+                        infoEmpty: "Keine Einträge",
+                        infoFiltered: "(von _MAX_) ",
+                    },
+                    scrollX: true,
+                    scrollCollapse: true,
+                    fixedColumns: {start: 1},
+                    fixedHeader: true,
+                    select: true,
+                    paging: true,
+                    pagingType: "full",
+                    searching: true,
+                    ordering: true,
+                    info: true,
+                    lengthChange: true,
+                    pageLength: 10,
+                    lengthMenu: [[10, 20, 50, -1], ['10 rows', '20 rows', '50 rows', 'All']],
+                    responsive: false,
+                    autoWidth: true,
+                    columns: columns,
+                    layout: {
+                        topStart: 'buttons',
+                        topEnd: 'search',
+                        bottomStart: 'info',
+                        bottomEnd: ['pageLength', 'paging']
+                    },
+                    buttons: [
+                        {
+                            extend: 'excelHtml5',
+                            text: '<i class="fas fa-file-excel"></i> Excel',
+                            className: 'btn btn-success btn-sm',
+                            title: $excelfilename,
+                            filename: $excelfilename,
+                        }
+                    ],
+                    initComplete: function () {
+                        $('#CardHeaderHoldingDatatableManipulators').empty();
+                        $('#CardHeaderHoldingDatatableManipulators2').empty();
+                        $('#pivotTable_wrapper .dt-buttons').appendTo('#CardHeaderHoldingDatatableManipulators');
+                        $('#pivotTable_wrapper .dt-search').appendTo('#CardHeaderHoldingDatatableManipulators');
+                        $('#pivotTable_wrapper .dt-length').appendTo('#CardHeaderHoldingDatatableManipulators2');
+                        $('#pivotTable_wrapper .dt-info').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
+                        $('#pivotTable_wrapper .dt-paging').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
+                        $('.dt-search label').remove();
+                        $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark");
+                        table_click();
+                    }
+                });
+
             }
         });
     }

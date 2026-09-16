@@ -459,19 +459,26 @@ include "modal_elementHistory.html";
     }
 
     function attachButtonListeners() {
-        $('#kostenInfoBtn').click(function () {
+        // Nur die gerade per AJAX eingefügten Buttons ansprechen. Der alte
+        // Button-Block des vorherigen Raums hängt zu diesem Zeitpunkt noch mit
+        // gleicher ID im Card-Header (#room_action_btns) und wird erst ~150 ms
+        // später geleert. Ein globaler ID-Selektor ($('#kostenInfoBtn')) würde
+        // sonst diesen alten, gleich gelöschten Button treffen.
+        const $scope = $('#roomElements');
+
+        $scope.find('#kostenInfoBtn').on('click', function () {
             $('#kostenInfoPanel').collapse('toggle');
         });
 
-        $("button[value='createRoombookPDF']").click(function () {
+        $scope.find("button[value='createRoombookPDF']").on('click', function () {
             window.open('PDFs/pdf_createRoombookPDF.php?roomID=' + this.id);
         });
 
-        $("button[value='createRoombookPDFCosts']").click(function () {
+        $scope.find("button[value='createRoombookPDFCosts']").on('click', function () {
             window.open('PDFs/pdf_createRoombookPDFwithCosts.php?roomID=' + this.id);
         });
 
-        $("button[value='Rauminhalt kopieren']").click(function () {
+        $scope.find("button[value='Rauminhalt kopieren']").on('click', function () {
             $('#copyRoomElementsModal').modal('show');
             if (typeof dt_search_counter !== 'undefined' && dt_search_counter !== null) {
                 dt_search_counter++;
@@ -487,7 +494,7 @@ include "modal_elementHistory.html";
             });
         });
 
-        $("button[value='history']").click(function () {
+        $scope.find("button[value='history']").on('click', function () {
             const roombookID = this.id;
             const elementName = $(`#ElementName${roombookID}`).text();
             $.ajax({
@@ -507,20 +514,24 @@ include "modal_elementHistory.html";
             return (ta && ta.offsetParent !== null) ? ta.value : null; // nur wenn sichtbar
         }
 
-        let pendingPopoverComment = null;
-        document.addEventListener('mousedown', (e) => {
-            if (e.target.closest("button[value='saveElement']")) {
-                pendingPopoverComment = getOpenPopoverComment();
-            }
-        }, true);
+        // Nur einmal am document registrieren – attachButtonListeners() laeuft
+        // bei jedem Raumklick erneut, sonst wuerde sich der Listener stapeln.
+        if (!window.__roomElementsMousedownBound) {
+            window.__roomElementsMousedownBound = true;
+            document.addEventListener('mousedown', (e) => {
+                if (e.target.closest("button[value='saveElement']")) {
+                    window.__pendingPopoverComment = getOpenPopoverComment();
+                }
+            }, true);
+        }
 
-        $("button[value='saveElement']").click(function () {
+        $scope.find("button[value='saveElement']").on('click', function () {
             const id = this.id;
             const $commentBtn = $(`.comment-btn[id='${id}']`);
 
             // beim mousedown gesicherten Popover-Text nehmen (falls Popover offen war)
-            const openComment = pendingPopoverComment;
-            pendingPopoverComment = null;
+            const openComment = window.__pendingPopoverComment ?? null;
+            window.__pendingPopoverComment = null;
 
             let comment;
             if (openComment !== null) {

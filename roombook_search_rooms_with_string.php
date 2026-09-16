@@ -347,13 +347,13 @@ check_login();
                 return data === '1' ? 'relevant' : 'nicht rel.';
             }
         },
-        {data: '1 Kreis O2', title: '1_K O2', visible: false, case: "bit"},
-        {data: '2 Kreis O2', title: '2_K O2', visible: false, case: "bit"},
+        {data: '1 Kreis O2', title: '1K O2', visible: false, case: "bit"},
+        {data: '2 Kreis O2', title: '2K O2', visible: false, case: "bit"},
         {data: 'CO2', title: 'CO2', visible: false, case: "bit"},
-        {data: '1 Kreis Va', title: '1_K Va', visible: false, case: "bit"},
-        {data: '2 Kreis Va', title: '2_K Va', visible: false, case: "bit"},
-        {data: '1 Kreis DL-5', title: '1_K DL5', visible: false, case: "bit"},
-        {data: '2 Kreis DL-5', title: '2_K DL5', visible: false, case: "bit"},
+        {data: '1 Kreis Va', title: '1K Va', visible: false, case: "bit"},
+        {data: '2 Kreis Va', title: '2K Va', visible: false, case: "bit"},
+        {data: '1 Kreis DL-5', title: '1K DL5', visible: false, case: "bit"},
+        {data: '2 Kreis DL-5', title: '2K DL5', visible: false, case: "bit"},
         {data: 'HT_Raumtemp Sommer °C', title: 'Raumtemp Sommer °C', visible: false, case: "num"},
         {data: 'HT_Raumtemp Winter °C', title: 'Raumtemp Winter °C', visible: false, case: "num"},
     ];

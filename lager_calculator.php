@@ -1,3 +1,7 @@
+<?php
+require_once 'utils/_utils.php';
+check_login();
+?>
 <!doctype html>
 <html lang="de">
 <head>
@@ -32,10 +36,14 @@
         .inp input{width:100%;border:0;background:transparent;padding:7px 8px;font:13px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink);outline:none}
         .inp .suf{padding-right:8px;font-size:11px;color:#94a3b8}
         select{width:100%;border:1px solid var(--border);border-radius:6px;background:#fff;padding:7px 8px;font-size:12px;color:#334155;margin-top:8px}
-        .btnrow{display:flex;gap:6px;flex-wrap:wrap}
+        .btnrow{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
         .btn{border:1px solid var(--border);border-radius:6px;background:#fff;color:#475569;padding:7px 10px;font-size:12px;cursor:pointer;transition:.15s}
         .btn:hover{border-color:#94a3b8}
         .btn.active{border-color:#334155;background:#1E2A33;color:#fff}
+        .btn.sm{padding:5px 8px;font-size:11px}
+        .btn.disabled{opacity:.4;pointer-events:none}
+        .seg{display:inline-flex;gap:4px;align-items:center;padding:0 2px}
+        .seg .lab{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-right:2px}
         .typehead{display:flex;align-items:center;justify-content:space-between;margin:2px 0 6px}
         .typehead .cap{margin:0}
         .switch{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);cursor:pointer;user-select:none}
@@ -60,17 +68,27 @@
         .hint{font-size:11px;color:#94a3b8}
         .note{font-size:12px;color:#8a5a1a;background:#fdf3e6;border:1px solid #f0dcc0;border-radius:6px;padding:7px 9px;margin-bottom:8px}
         .note.ok{color:#3f6212;background:#f2f8ea;border-color:#dcebc7}
-        .stage{display:flex;justify-content:center;overflow:auto;border-radius:6px;background:var(--paper)}
+        .stage{display:flex;justify-content:center;overflow:auto;border-radius:6px;background:var(--paper);user-select:none}
         svg{display:block}
+        #plan{touch-action:none}
         .legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:8px;font-size:11px;color:var(--muted)}
         .legend .sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:5px}
+        .cmp{width:100%;border-collapse:collapse;font-size:12px}
+        .cmp th,.cmp td{padding:5px 8px;text-align:right;border-bottom:1px solid #eef2f6}
+        .cmp th{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+        .cmp td:first-child,.cmp th:first-child{text-align:left;color:#475569}
+        .cmp .num{font-family:ui-monospace,monospace;color:#334155}
+        .delta{font-family:ui-monospace,monospace;font-weight:600}
+        .delta.up{color:#3f6212}
+        .delta.down{color:#b91c1c}
+        .delta.zero{color:#94a3b8}
         .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
         @media(max-width:560px){.stats{grid-template-columns:1fr 1fr}}
         .stat{border:1px solid #e2e8f0;background:#fff;border-radius:6px;padding:8px 12px}
         .stat .k{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
         .stat .v{font:18px/1.2 ui-monospace,monospace;color:#334155}
         .stat .v .u{font-size:12px;color:#94a3b8;margin-left:4px;font-family:inherit}
-        .tools{display:flex;gap:6px}
+        .tools{display:flex;gap:6px;flex-wrap:wrap}
         @media print{
             body{background:#fff;padding:0}
             .col-controls,.planhead .tools,.planhead .btnrow,.hint,.legend{display:none}
@@ -81,7 +99,7 @@
 <body>
 <div class="wrap">
     <h1>Regalplaner</h1>
-    <p class="sub">Raum maximal mit Regalen füllen — erreichbar, Gangbreite eingehalten, um Säulen herum geplant. Zwei Regaltypen mischbar. Unter flächengleichen Lösungen wird der Weg von der Tür minimiert.</p>
+    <p class="sub">Raum maximal mit Regalen füllen — erreichbar, Gangbreite eingehalten, um Säulen herum geplant. Zwei Regaltypen mischbar. Automatik <b>oder</b> von Hand planen und beides direkt vergleichen.</p>
 
     <div class="layout">
         <div class="col-controls" style="display:flex;flex-direction:column;gap:16px">
@@ -128,13 +146,33 @@
                     <label class="wallchk" data-wall="left"><input type="checkbox">Links</label>
                     <label class="wallchk" data-wall="right"><input type="checkbox">Rechts</label>
                 </div>
-                <div style="font-size:11px;color:var(--muted);margin-top:8px">Perimeter-Varianten (alle Wände / Längs / Quer) werden ohnehin automatisch geprüft und erscheinen oben, wenn sie flächeneffizienter sind. Ankreuzen erzwingt zusätzlich genau diese Wandkombination.</div>
+                <div style="font-size:11px;color:var(--muted);margin-top:8px"><b>Nichts angekreuzt</b> = Automatik prüft frei auch die Perimeter-Varianten (alle / Längs / Quer) und zeigt die beste. <b>Angekreuzt</b> = harte Vorgabe: es werden nur Layouts gezeigt, die genau diese Wände durchmöblieren. Restecken an den Wandenden füllt die Automatik mit Eckregalen (Kennzeichen „+N Eck").</div>
             </section>
 
             <section class="panel soft">
-                <p class="cap">Varianten · Top 3</p>
+                <p class="cap">Varianten · Top 3 (Auto)</p>
                 <div id="variants"></div>
                 <div style="font-size:11px;color:var(--muted);margin-top:2px">Erst maximale Regalfläche, dann kürzester Weg. Antippen zum Anzeigen.</div>
+            </section>
+
+            <section class="panel soft">
+                <p class="cap">Manueller Grundriss</p>
+                <div style="font-size:12px;color:#475569;line-height:1.55">
+                    <b>＋ Regal</b>: Klick setzt ein Regal.&nbsp; <b>＋ Reihe</b>: ziehen füllt eine Reihe.&nbsp; <b>✥ Verschieben</b>: Regal ziehen.&nbsp; <b>✕ Löschen</b>: entfernt Regal/Säule/Tür. Typ &amp; Achse oben wählen.
+                </div>
+                <div style="font-size:11px;color:var(--muted);margin-top:8px">Tipp: <b>„Auto → Manuell"</b> übernimmt die aktuell gewählte Auto-Variante als Startpunkt — dann von Hand feilen und im Vergleich unten sehen, ob du sie schlägst.</div>
+            </section>
+
+            <section class="panel soft">
+                <p class="cap">Daten · Export / Import</p>
+                <div class="btnrow" style="margin-bottom:8px">
+                    <button class="btn sm" id="btnExport">Export</button>
+                    <button class="btn sm" id="btnCopy">Kopieren</button>
+                    <button class="btn sm" id="btnImport">Import</button>
+                </div>
+                <textarea id="dataBox" spellcheck="false" placeholder="Hier erscheint der Grundriss als JSON (Export) — oder JSON einfügen und Import drücken."
+                          style="width:100%;height:120px;border:1px solid var(--border);border-radius:6px;padding:8px;font:11px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:#334155;resize:vertical;background:#fff"></textarea>
+                <div id="dataMsg" style="font-size:11px;color:var(--muted);margin-top:6px">Export erzeugt den kompletten Grundriss inkl. aktuell angezeigter Regale. Diesen Text kannst du mir zum Fehler-Aufzeigen geben.</div>
             </section>
         </div>
 
@@ -144,11 +182,31 @@
                     <div class="btnrow" id="modeSeg">
                         <button class="btn" data-mode="column">＋ Säule</button>
                         <button class="btn" data-mode="door">＋ Tür</button>
+                        <button class="btn" data-mode="shelf">＋ Regal</button>
+                        <button class="btn" data-mode="row">＋ Reihe</button>
+                        <button class="btn" data-mode="move">✥ Verschieben</button>
                         <button class="btn" data-mode="delete">✕ Löschen</button>
                     </div>
                     <div class="tools">
-                        <button class="btn" id="btnPng">PNG speichern</button>
+                        <button class="btn" id="btnPng">PNG</button>
                         <button class="btn" id="btnPrint">Drucken</button>
+                    </div>
+                </div>
+                <div class="planhead" style="margin-top:-2px">
+                    <div class="btnrow">
+                        <span class="seg"><span class="lab">Typ</span>
+                            <button class="btn sm active" data-ptype="0">A</button>
+                            <button class="btn sm" data-ptype="1" id="ptypeB">B</button></span>
+                        <span class="seg"><span class="lab">Achse</span>
+                            <button class="btn sm active" data-orient="h">↔</button>
+                            <button class="btn sm" data-orient="v">↕</button></span>
+                        <span class="seg"><span class="lab">Ansicht</span>
+                            <button class="btn sm active" data-shown="auto">Auto</button>
+                            <button class="btn sm" data-shown="manual">Manuell</button></span>
+                    </div>
+                    <div class="tools">
+                        <button class="btn sm" id="btnAdopt">Auto → Manuell</button>
+                        <button class="btn sm" id="btnClearManual">Manuell leeren</button>
                     </div>
                 </div>
                 <div id="note" class="note ok" style="display:none"></div>
@@ -162,6 +220,12 @@
                     <span><span class="sw" style="background:var(--door)"></span>Tür + Schwenk</span>
                     <span><span class="sw" style="background:var(--aisle)"></span>Quergang</span>
                 </div>
+            </div>
+
+            <div class="panel">
+                <p class="cap" style="margin-bottom:8px">Vergleich · Auto ↔ Manuell</p>
+                <table class="cmp" id="compare"></table>
+                <div style="font-size:11px;color:var(--muted);margin-top:8px">Δ grün = Manuell besser. Auto = aktuell gewählte Variante links.</div>
             </div>
 
             <div class="stats">
@@ -195,6 +259,9 @@
         { label: "Stapler breit (2800)", v: 2800 },
     ];
 
+    const SNAP = 50; // mm-Raster fürs manuelle Setzen
+    const DEFAULT_HINT = "In den Plan klicken/ziehen zum Bearbeiten. Variante links oder Ansicht oben wählen.";
+
     const state = {
         roomW: 12000, roomH: 8000, aisle: 1200,
         type1W: 1200, type1D: 600,
@@ -204,6 +271,8 @@
         columns: [],
         doors: [{ id: 1, wall: "left", pos: 4000, width: 1200 }],
         mode: "column", selected: 0,
+        // manuell:
+        manual: [], shown: "auto", placeType: 0, placeOrient: "h",
     };
     let nextId = 2;
 
@@ -212,6 +281,7 @@
     --------------------------------------------------------------------- */
     const $ = (id) => document.getElementById(id);
     const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+    const snap = (v) => Math.round(v/SNAP)*SNAP;
     const rectsOverlap = (a,b) => a.x < b.x+b.w && a.x+a.w > b.x && a.y < b.y+b.h && a.y+a.h > b.y;
     const pointInRect = (px,py,r) => px>=r.x && px<=r.x+r.w && py>=r.y && py<=r.y+r.h;
 
@@ -222,6 +292,9 @@
     }
     function typesForDepth(p, bd){
         return enabledTypes(p).filter(t=>Math.abs(t.d-bd)<0.5).map(t=>({w:t.w,type:t.type}));
+    }
+    function typeDims(p, t){
+        return t===1 ? {w:p.type2W, d:p.type2D} : {w:p.type1W, d:p.type1D};
     }
 
     function doorZone(d, W, H, depth){
@@ -331,7 +404,6 @@
 
     /* ---------------------------------------------------------------------
        KERN-GENERATOR: Bänder + Quergänge, säulen-/türbewusst je Lane
-       region (optional): {aStart,aEnd,cStart,cEnd}
     --------------------------------------------------------------------- */
     function generateBands(opts, p){
         const {orient, lead=0, spines=[], bd, region} = opts;
@@ -350,7 +422,6 @@
 
         const bands=buildBands(usableC, aisle, bd, lead);
 
-        // Quergänge (spines) → A-Positionen; verbrauchen je eine Gangbreite
         const spineA=spines.map(rc=>clamp(rc-aisle/2, aStart, aEnd-aisle)).sort((a,b)=>a-b);
         const forb=forbiddenAC(p, orient);
 
@@ -399,13 +470,11 @@
         walls.forEach(w=>sel[w]=true);
         const shelves=[];
 
-        // Innenbereich-Grenzen (perimeter + Gang abrücken, wenn Wand belegt)
         const xLo = sel.left  ? wallGap+bd+aisle : wallGap;
         const xHi = sel.right ? roomW-wallGap-bd-aisle : roomW-wallGap;
         const yLo = sel.top   ? wallGap+bd+aisle : wallGap;
         const yHi = sel.bottom? roomH-wallGap-bd-aisle : roomH-wallGap;
 
-        // Wandreihen: Ecken den vertikalen Wänden zuschlagen, damit sie sich nicht überlappen
         const rowXlo = sel.left ? wallGap+bd : wallGap;
         const rowXhi = sel.right? roomW-wallGap-bd : roomW-wallGap;
 
@@ -427,7 +496,6 @@
             placeRow(false, wallGap, roomH-wallGap, roomW-wallGap-bd, roomW-wallGap, roomW-wallGap-bd,
                 (pc,x)=>({x,y:pc.a0,w:bd,h:pc.w,len:pc.w,type:pc.type}));
 
-        // Innenfüllung mit Kern-Generator im gewählten orient
         const region = orient==="h"
             ? {aStart:xLo, aEnd:xHi, cStart:yLo, cEnd:yHi}
             : {aStart:yLo, aEnd:yHi, cStart:xLo, cEnd:xHi};
@@ -510,18 +578,23 @@
             if(c<cols-1 && acc[nb[3]] && gdist[nb[3]]===BIG){gdist[nb[3]]=gdist[i]+1;wq.push(nb[3]);} }
 
         const served=new Array(shelves.length).fill(false);
+        const walk=new Float32Array(shelves.length).fill(BIG);
         let sum=0,cnt=0,mx=0;
         shelves.forEach((s,k)=>{
             const c0=clamp(Math.floor(s.x/res),0,cols-1),c1=clamp(Math.ceil((s.x+s.w)/res)-1,0,cols-1);
             const r0=clamp(Math.floor(s.y/res),0,rows-1),r1=clamp(Math.ceil((s.y+s.h)/res)-1,0,rows-1);
             let best=BIG;
-            for(let c=c0;c<=c1;c++){ if(r0-1>=0&&acc[(r0-1)*cols+c])best=Math.min(best,gdist[(r0-1)*cols+c]);
-                if(r1+1<rows&&acc[(r1+1)*cols+c])best=Math.min(best,gdist[(r1+1)*cols+c]); }
-            for(let r=r0;r<=r1;r++){ if(c0-1>=0&&acc[r*cols+(c0-1)])best=Math.min(best,gdist[r*cols+(c0-1)]);
-                if(c1+1<cols&&acc[r*cols+(c1+1)])best=Math.min(best,gdist[r*cols+(c1+1)]); }
-            if(best<BIG){ served[k]=true; const mm=best*res; sum+=mm; cnt++; if(mm>mx)mx=mm; }
+            const wide = s.w >= s.h;   // Zugang nur über die LÄNGSSEITE (Vorderseite), nicht die Stirnseite
+            if(wide){
+                for(let c=c0;c<=c1;c++){ if(r0-1>=0&&acc[(r0-1)*cols+c])best=Math.min(best,gdist[(r0-1)*cols+c]);
+                    if(r1+1<rows&&acc[(r1+1)*cols+c])best=Math.min(best,gdist[(r1+1)*cols+c]); }
+            } else {
+                for(let r=r0;r<=r1;r++){ if(c0-1>=0&&acc[r*cols+(c0-1)])best=Math.min(best,gdist[r*cols+(c0-1)]);
+                    if(c1+1<cols&&acc[r*cols+(c1+1)])best=Math.min(best,gdist[r*cols+(c1+1)]); }
+            }
+            if(best<BIG){ served[k]=true; const mm=best*res; walk[k]=mm; sum+=mm; cnt++; if(mm>mx)mx=mm; }
         });
-        return {served, count:cnt, doorsWithoutAccess, avgWalk:cnt?sum/cnt:1e9, maxWalk:mx};
+        return {served, walk, count:cnt, doorsWithoutAccess, avgWalk:cnt?sum/cnt:1e9, maxWalk:mx};
     }
 
     function doorSpineCoord(d, orient, p){
@@ -530,7 +603,7 @@
     }
 
     /* ---------------------------------------------------------------------
-       OPTIMIZER: 1) max erreichbare Regale  2) min Weg
+       OPTIMIZER: 1) max erreichbare Regalfläche  2) min Weg
     --------------------------------------------------------------------- */
     function scoreCandidate(gen, p){
         const ev=evaluate(gen.shelves, p);
@@ -538,16 +611,94 @@
         gen.shelves.forEach((s,i)=>{ if(ev.served[i]){ area+=s.w*s.h; lin+=s.len; } });
         return {shelves:gen.shelves, cross:gen.cross, bandsCount:gen.bandsCount, walls:gen.walls,
             served:ev.served, count:ev.count, total:gen.shelves.length,
-            avgWalk:ev.avgWalk, doorsWithoutAccess:ev.doorsWithoutAccess, area, lin};
+            avgWalk:ev.avgWalk, maxWalk:ev.maxWalk, doorsWithoutAccess:ev.doorsWithoutAccess, area, lin};
     }
 
-    // Welche Wandkombinationen automatisch als Perimeter-Varianten geprüft werden
+    /* --- NACHVERDICHTUNG: Restpockets an Wänden / Gangenden füllen ---
+       Fügt Standardregale in freie Wand-/Ecktaschen ein und behält sie nur,
+       wenn sie über die gleiche Erreichbarkeitsprüfung als nutzbar gelten und
+       kein vorher nutzbares Regal dadurch unzugänglich wird. */
+    function freeSpot(r, shelves, p){
+        if(r.x < p.wallGap-0.5 || r.y < p.wallGap-0.5 ||
+            r.x+r.w > p.roomW-p.wallGap+0.5 || r.y+r.h > p.roomH-p.wallGap+0.5) return false;
+        for(const c of p.columns){
+            const cc={x:c.x-p.colClear, y:c.y-p.colClear, w:c.w+2*p.colClear, h:c.h+2*p.colClear};
+            if(rectsOverlap(r, cc)) return false;
+        }
+        for(const d of p.doors) if(rectsOverlap(r, doorZone(d,p.roomW,p.roomH,p.aisle))) return false;
+        for(const sw of p.doors.map(d=>doorSwing(d,p))) if(rectHitsSwing(r, sw)) return false;
+        for(const s of shelves) if(rectsOverlap(r, s)) return false;
+        return true;
+    }
+
+    function proposeWallPockets(p){
+        const types=enabledTypes(p); const out=[]; const seen=new Set();
+        const minW=Math.min(...types.map(t=>t.w));
+        const step=Math.max(SNAP*2, Math.round(minW/SNAP)*SNAP);
+        const pushU=(x,y,w,h,len,type)=>{ x=snap(x); y=snap(y);
+            const k=x+","+y+","+w+","+h; if(seen.has(k))return; seen.add(k);
+            out.push({x,y,w,h,len,type}); };
+        for(const t of types){
+            const tw=t.w, td=t.d;
+            // an oberer/unterer Wand: längs (tw×td) und quer/tief (td×tw)
+            for(let x=p.wallGap; x+tw<=p.roomW-p.wallGap+1; x+=step){
+                pushU(x, p.wallGap,            tw, td, tw, t.type);
+                pushU(x, p.roomH-p.wallGap-td, tw, td, tw, t.type);
+            }
+            for(let x=p.wallGap; x+td<=p.roomW-p.wallGap+1; x+=step){
+                pushU(x, p.wallGap,            td, tw, tw, t.type);
+                pushU(x, p.roomH-p.wallGap-tw, td, tw, tw, t.type);
+            }
+            // an linker/rechter Wand
+            for(let y=p.wallGap; y+tw<=p.roomH-p.wallGap+1; y+=step){
+                pushU(p.wallGap,            y, td, tw, tw, t.type);
+                pushU(p.roomW-p.wallGap-td, y, td, tw, tw, t.type);
+            }
+            for(let y=p.wallGap; y+td<=p.roomH-p.wallGap+1; y+=step){
+                pushU(p.wallGap,            y, tw, td, tw, t.type);
+                pushU(p.roomW-p.wallGap-tw, y, tw, td, tw, t.type);
+            }
+        }
+        return out;
+    }
+
+    function densify(cand, p){
+        let shelves=cand.shelves.slice();
+        let ev=evaluate(shelves, p);
+        let served=ev.count;
+        const proposals=proposeWallPockets(p);
+        const DETOUR_ABS=1500, DETOUR_REL=1.4;   // Eckregal darf Wege zu vorhandenen Regalen nicht stark verlängern
+        let added=0, guard=0, changed=true;
+        while(changed && guard++<2){
+            changed=false; let trials=0;
+            for(const r of proposals){
+                if(trials>=24) break;
+                if(!freeSpot(r, shelves, p)) continue;      // billiger Vorfilter: passt überhaupt?
+                trials++;
+                const trial=shelves.concat([r]);
+                const tev=evaluate(trial, p);
+                if(tev.count>served && tev.served[shelves.length]){
+                    let ok=true;
+                    for(let i=0;i<shelves.length;i++){
+                        if(!ev.served[i]) continue;
+                        if(!tev.served[i]){ ok=false; break; }                          // vorher nutzbar → jetzt unzugänglich
+                        if(tev.walk[i] > ev.walk[i]*DETOUR_REL + DETOUR_ABS){ ok=false; break; } // starker Umweg
+                    }
+                    if(ok){ shelves=trial; ev=tev; served=tev.count; added++; changed=true; }
+                }
+            }
+        }
+        if(!added) return cand;
+        const re=scoreCandidate({shelves, cross:cand.cross, bandsCount:cand.bandsCount, walls:cand.walls}, p);
+        re.endcaps=added;
+        return re;
+    }
+
     function wallSetsFor(p){
         const longIsX = p.roomW >= p.roomH;
         const longPair  = longIsX ? ['top','bottom'] : ['left','right'];
         const shortPair = longIsX ? ['left','right'] : ['top','bottom'];
         const sets = [ ['top','bottom','left','right'], longPair, shortPair ];
-        // vom Nutzer erzwungene Wandwahl zusätzlich aufnehmen (falls nicht schon dabei)
         const manual = Object.keys(p.walls).filter(w=>p.walls[w]);
         if(manual.length){
             const key=manual.slice().sort().join('');
@@ -559,12 +710,22 @@
     function optimize(p){
         const pool=[];
         const depths=[...new Set(enabledTypes(p).map(t=>t.d))];
+        const forced=Object.keys(p.walls).filter(w=>p.walls[w]);   // angekreuzte Wände = harte Vorgabe
 
         for(const bd of depths){
             const period=p.aisle+2*bd;
             const leads=[0, Math.round(period/2)];
 
-            // (1) Freie Anordnungen ohne Wandreihen — inkl. Quergang-Varianten
+            if(forced.length){
+                // NUR Layouts, die genau diese Wände möblieren (beide Ausrichtungen, beide Phasen)
+                for(const orient of ["h","v"]) for(const lead of leads){
+                    const gen=generateLayout({orient,lead,spines:[],bd,walls:forced}, p);
+                    if(!gen.shelves.length) continue;
+                    pool.push(scoreCandidate(gen, p));
+                }
+                continue;   // freie/andere Wandvarianten überspringen
+            }
+
             for(const orient of ["h","v"]){
                 const A = orient==="h" ? p.roomW : p.roomH;
                 const doorCoords=[...new Set(p.doors.map(d=>Math.round(clamp(doorSpineCoord(d,orient,p),0,A))))];
@@ -579,7 +740,6 @@
                 }
             }
 
-            // (2) Perimeter-Anordnungen — IMMER automatisch geprüft (alle 4 / Längs / Quer)
             for(const walls of wallSetsFor(p)){
                 for(const orient of ["h","v"]){
                     const gen=generateLayout({orient,lead:0,spines:[],bd,walls}, p);
@@ -591,13 +751,20 @@
 
         if(!pool.length) return [{shelves:[],cross:[],bandsCount:0,walls:null,served:[],count:0,total:0,avgWalk:0,doorsWithoutAccess:0,area:0,lin:0}];
 
-        // ZIEL: maximale nutzbare Regalfläche; bei ~gleicher Fläche kürzester Weg.
         const BUCKET=0.25e6; // 0,25 m² Toleranz → "flächengleich"
-        pool.sort((a,b)=>{
+        const cmp=(a,b)=>{
             const ba=Math.round(b.area/BUCKET), aa=Math.round(a.area/BUCKET);
             return ba-aa || a.avgWalk-b.avgWalk || b.area-a.area;
-        });
+        };
+        pool.sort(cmp);
 
+        // Die besten Kandidaten mit Eckregalen nachverdichten (K=4: guter Kompromiss
+        // Ausbeute/Tempo), dann neu sortieren …
+        const K=Math.min(pool.length, 4);
+        for(let i=0;i<K;i++) pool[i]=densify(pool[i], p);
+        pool.sort(cmp);
+
+        // … und 3 verschiedene Grundstrukturen als Top-3 zeigen
         const chosen=[]; const seen=new Set();
         for(const c of pool){
             const sig=(c.walls?c.walls.slice().sort().join(""):"-")+"|"+c.bandsCount+"|"+c.total;
@@ -606,6 +773,26 @@
         }
         for(const c of pool){ if(chosen.length>=3)break; if(!chosen.includes(c)) chosen.push(c); }
         return chosen;
+    }
+
+    // Auto-Ergebnis cachen: nur neu rechnen, wenn sich relevante Eingaben ändern
+    let _autoCache={sig:"", top:null};
+    function autoSig(p){
+        return JSON.stringify([p.roomW,p.roomH,p.aisle,p.type1W,p.type1D,p.type2W,p.type2D,p.useType2,p.wallGap,p.colClear,p.walls,p.columns,p.doors]);
+    }
+    function computeAuto(p){
+        const sig=autoSig(p);
+        if(sig!==_autoCache.sig) _autoCache={sig, top:optimize(p)};
+        return _autoCache.top;
+    }
+
+    // Kennzahlen für eine beliebige Regalliste (fürs manuelle Layout)
+    function statsFor(shelves, p){
+        const ev=evaluate(shelves, p);
+        let area=0, lin=0;
+        shelves.forEach((s,i)=>{ if(ev.served[i]){ area+=s.w*s.h; lin+=(s.len||Math.max(s.w,s.h)); } });
+        return {shelves, served:ev.served, count:ev.count, total:shelves.length,
+            avgWalk:ev.avgWalk, maxWalk:ev.maxWalk, area, lin, doorsWithoutAccess:ev.doorsWithoutAccess};
     }
 
     const WMAP={top:"O",bottom:"U",left:"L",right:"R"};
@@ -618,9 +805,88 @@
     }
 
     /* ---------------------------------------------------------------------
+       MANUELLE BEARBEITUNG
+    --------------------------------------------------------------------- */
+    function clampAxis(pos, size, max){
+        let lo=state.wallGap, hi=max-state.wallGap-size;
+        if(hi<lo){ lo=0; hi=Math.max(0, max-size); }
+        return clamp(pos, lo, hi);
+    }
+    function fits(rect, ignoreIdx){
+        const p=state;
+        if(rect.x<-0.5 || rect.y<-0.5 || rect.x+rect.w>p.roomW+0.5 || rect.y+rect.h>p.roomH+0.5) return false;
+        for(const c of p.columns){
+            const cc={x:c.x-p.colClear, y:c.y-p.colClear, w:c.w+2*p.colClear, h:c.h+2*p.colClear};
+            if(rectsOverlap(rect, cc)) return false;               // Säule gewinnt
+        }
+        for(const d of p.doors) if(rectsOverlap(rect, doorZone(d,p.roomW,p.roomH,p.aisle))) return false;
+        for(let i=0;i<p.manual.length;i++){ if(i===ignoreIdx) continue; if(rectsOverlap(rect, p.manual[i])) return false; }
+        return true;
+    }
+    function findManualShelfAt(pt){
+        for(let i=state.manual.length-1;i>=0;i--) if(pointInRect(pt.x, pt.y, state.manual[i])) return i;
+        return -1;
+    }
+    function placeShelf(pt){
+        const p=state; const dims=typeDims(p, p.placeType);
+        const w = p.placeOrient==="h" ? dims.w : dims.d;
+        const h = p.placeOrient==="h" ? dims.d : dims.w;
+        let x=clampAxis(snap(pt.x - w/2), w, p.roomW);
+        let y=clampAxis(snap(pt.y - h/2), h, p.roomH);
+        const r={x, y, w, h, len:dims.w, type:p.placeType};
+        if(fits(r,-1)){ p.manual.push(r); render(); }
+        else flashHint("Platz belegt oder blockiert (Säule / Tür / anderes Regal).");
+    }
+    function computeRowRects(a, b){
+        const p=state; const dims=typeDims(p, p.placeType);
+        const tw=dims.w, td=dims.d;
+        const horiz=Math.abs(b.x-a.x) >= Math.abs(b.y-a.y);
+        const out=[];
+        if(horiz){
+            const yy=clampAxis(snap(a.y - td/2), td, p.roomH);
+            let x0=Math.min(a.x,b.x), x1=Math.max(a.x,b.x), x=snap(x0);
+            while(x+tw <= x1+1){ out.push({x, y:yy, w:tw, h:td, len:tw, type:p.placeType}); x+=tw; }
+        } else {
+            const xx=clampAxis(snap(a.x - td/2), td, p.roomW);
+            let y0=Math.min(a.y,b.y), y1=Math.max(a.y,b.y), y=snap(y0);
+            while(y+tw <= y1+1){ out.push({x:xx, y, w:td, h:tw, len:tw, type:p.placeType}); y+=tw; }
+        }
+        return out;
+    }
+    function placeRow(a, b){
+        const rects=computeRowRects(a,b); let added=0;
+        for(const r of rects){ if(fits(r,-1)){ state.manual.push(r); added++; } }
+        if(!added) flashHint("Reihe passt nicht (zu kurz oder blockiert).");
+        render();
+    }
+    function commitMove(d){
+        const o=d.orig; const dx=d.cur.x-d.start.x, dy=d.cur.y-d.start.y;
+        let nx=clampAxis(snap(o.x+dx), o.w, state.roomW);
+        let ny=clampAxis(snap(o.y+dy), o.h, state.roomH);
+        const cand={...o, x:nx, y:ny};
+        if(fits(cand, d.idx)) state.manual[d.idx]=cand;
+        else flashHint("Zielposition belegt — Regal bleibt.");
+        render();
+    }
+    function deleteAt(pt){
+        const mi=findManualShelfAt(pt);
+        if(mi>=0){ state.manual.splice(mi,1); render(); return; }
+        const hc=state.columns.find(c=>pointInRect(pt.x,pt.y,c));
+        if(hc){ state.columns=state.columns.filter(c=>c.id!==hc.id); render(); return; }
+        const hd=state.doors.find(d=>pointInRect(pt.x,pt.y,doorZone(d,state.roomW,state.roomH,state.aisle)));
+        if(hd){ state.doors=state.doors.filter(d=>d.id!==hd.id); render(); }
+    }
+
+    /* ---------------------------------------------------------------------
        RENDER
     --------------------------------------------------------------------- */
     let currentScale=1;
+    let _hintT=null;
+    function flashHint(msg){
+        $("hint").textContent=msg;
+        clearTimeout(_hintT);
+        _hintT=setTimeout(()=>{ $("hint").textContent=DEFAULT_HINT; }, 2000);
+    }
 
     function renderVariants(top){
         const p=state; const box=$("variants"); const roomArea=(p.roomW*p.roomH)/1e6;
@@ -629,8 +895,9 @@
             const util=roomArea>0?(area/roomArea*100):0;
             const walk=c.count?(c.avgWalk/1000).toFixed(1):"–";
             const tag=(c.walls&&c.walls.length)?'<span class="vtag">Wand</span>':'';
+            const capTag=c.endcaps?`<span class="vtag" style="background:#e6efe0;color:#3f6212">+${c.endcaps} Eck</span>`:'';
             return `<button class="vcard${idx===p.selected?' active':''}" data-idx="${idx}">
-      <div class="vrow"><span class="vrank">${idx+1}</span><span class="vlabel">${variantLabel(c)}</span>${tag}</div>
+      <div class="vrow"><span class="vrank">${idx+1}</span><span class="vlabel">${variantLabel(c)}</span>${tag}${capTag}</div>
       <div class="vstats"><b>${c.count}</b> Regale · <b>${util.toFixed(0)}</b> % · Ø Weg <b>${walk}</b> m</div>
     </button>`;
         }).join("");
@@ -645,12 +912,76 @@
         return `M ${c.x} ${c.y} L ${p1.x} ${p1.y} A ${rr} ${rr} 0 0 ${sweep} ${p2.x} ${p2.y} Z`;
     }
 
+    // Ghost-Overlay (für Reihe-ziehen / Verschieben) — ohne Neuberechnung
+    function clearGhost(){ const g=$("ghostLayer"); if(g) g.remove(); }
+    function setGhost(rectsScreen){
+        const svg=$("plan"); clearGhost();
+        const ns="http://www.w3.org/2000/svg";
+        const g=document.createElementNS(ns,"g"); g.setAttribute("id","ghostLayer");
+        for(const r of rectsScreen){
+            const el=document.createElementNS(ns,"rect");
+            el.setAttribute("x",r.x); el.setAttribute("y",r.y);
+            el.setAttribute("width",Math.max(0,r.w)); el.setAttribute("height",Math.max(0,r.h));
+            el.setAttribute("fill","var(--shelf2)"); el.setAttribute("opacity","0.35");
+            el.setAttribute("stroke","var(--shelf2-edge)"); el.setAttribute("stroke-dasharray","4 3");
+            g.appendChild(el);
+        }
+        svg.appendChild(g);
+    }
+    const w2s=(r)=>({x:r.x*currentScale, y:r.y*currentScale, w:r.w*currentScale, h:r.h*currentScale});
+    function showRowGhost(a,b){ setGhost(computeRowRects(a,b).map(w2s)); }
+    function showMoveGhost(d){
+        const o=d.orig; const dx=d.cur.x-d.start.x, dy=d.cur.y-d.start.y;
+        const nx=clampAxis(snap(o.x+dx), o.w, state.roomW);
+        const ny=clampAxis(snap(o.y+dy), o.h, state.roomH);
+        setGhost([w2s({x:nx,y:ny,w:o.w,h:o.h})]);
+    }
+
+    function fmtDelta(v, digits, goodDown){
+        const good = goodDown ? v<0 : v>0;
+        const cls = Math.abs(v)<1e-9 ? "zero" : (good ? "up" : "down");
+        const sign = v>0 ? "+" : "";
+        return `<span class="delta ${cls}">${sign}${v.toFixed(digits)}</span>`;
+    }
+    function renderCompare(a, m, p){
+        const roomArea=(p.roomW*p.roomH)/1e6;
+        const uA=roomArea>0?(a.area/1e6/roomArea*100):0;
+        const uM=roomArea>0?(m.area/1e6/roomArea*100):0;
+        const wA=a.count?a.avgWalk/1000:null, wM=m.count?m.avgWalk/1000:null;
+        let html=`<tr><th>Kennzahl</th><th>Auto</th><th>Manuell</th><th>Δ</th></tr>`;
+        const rows=[
+            ["Regale", a.count, m.count, m.count-a.count, 0, false],
+            ["Fläche %", uA, uM, uM-uA, 0, false],
+            ["Regalmeter", a.lin/1000, m.lin/1000, (m.lin-a.lin)/1000, 1, false],
+        ];
+        for(const [label,av,mv,dv,dig,gd] of rows)
+            html+=`<tr><td>${label}</td><td class="num">${av.toFixed(dig)}</td><td class="num">${mv.toFixed(dig)}</td><td>${fmtDelta(dv,dig,gd)}</td></tr>`;
+        const avw=wA==null?"–":wA.toFixed(1), mvw=wM==null?"–":wM.toFixed(1);
+        const dw=(wA!=null&&wM!=null)?fmtDelta(wM-wA,1,true):'<span class="delta zero">–</span>';
+        html+=`<tr><td>Ø Weg m</td><td class="num">${avw}</td><td class="num">${mvw}</td><td>${dw}</td></tr>`;
+        const xA=a.count?a.maxWalk/1000:null, xM=m.count?m.maxWalk/1000:null;
+        const axw=xA==null?"–":xA.toFixed(1), mxw=xM==null?"–":xM.toFixed(1);
+        const dxw=(xA!=null&&xM!=null)?fmtDelta(xM-xA,1,true):'<span class="delta zero">–</span>';
+        html+=`<tr><td>Max Weg m</td><td class="num">${axw}</td><td class="num">${mxw}</td><td>${dxw}</td></tr>`;
+        $("compare").innerHTML=html;
+    }
+
     function render(){
         const p=state;
-        const top=optimize(p);
+        const top=computeAuto(p);
         if(p.selected>=top.length) p.selected=0;
-        const best=top[p.selected]||top[0];
+        const auto=top[p.selected]||top[0]||{shelves:[],cross:[],served:[],count:0,area:0,lin:0,avgWalk:0,total:0};
         renderVariants(top);
+
+        const manualStats=statsFor(p.manual, p);
+        const autoStats={shelves:auto.shelves, served:auto.served, count:auto.count,
+            area:auto.area, lin:auto.lin, avgWalk:auto.avgWalk, total:auto.total};
+
+        const showManual = p.shown==="manual";
+        const shShelves = showManual ? p.manual : (auto.shelves||[]);
+        const shServed  = showManual ? manualStats.served : (auto.served||[]);
+        const shCross   = showManual ? [] : (auto.cross||[]);
+        const shStats   = showManual ? manualStats : autoStats;
 
         const MAXW=660, MAXH=460;
         const scale=Math.min(MAXW/p.roomW, MAXH/p.roomH);
@@ -660,20 +991,17 @@
         const parts=[];
 
         parts.push(`<rect x="0" y="0" width="${svgW}" height="${svgH}" fill="var(--paper)" stroke="var(--ink)" stroke-width="2"/>`);
-        for(const cr of best.cross)
+        for(const cr of shCross)
             parts.push(`<rect x="${S(cr.x)}" y="${S(cr.y)}" width="${S(cr.w)}" height="${S(cr.h)}" fill="var(--aisle)" opacity="0.6"/>`);
         for(let i=1;i*1000<p.roomW;i++) parts.push(`<line x1="${S(i*1000)}" y1="0" x2="${S(i*1000)}" y2="${svgH}" stroke="var(--grid)" stroke-width="1"/>`);
         for(let i=1;i*1000<p.roomH;i++) parts.push(`<line x1="0" y1="${S(i*1000)}" x2="${svgW}" y2="${S(i*1000)}" stroke="var(--grid)" stroke-width="1"/>`);
 
-        // Türschwenk-Flächen (unter den Regalen, halbtransparent)
         for(const d of p.doors)
             parts.push(`<path d="${swingPath(doorSwing(d,p), S)}" fill="var(--swing)" opacity="0.08" stroke="var(--swing)" stroke-opacity="0.35" stroke-width="1" stroke-dasharray="4 3"/>`);
 
-        // nicht erreichbare Stellplätze
-        best.shelves.forEach((s,i)=>{ if(!best.served[i])
+        shShelves.forEach((s,i)=>{ if(!shServed[i])
             parts.push(`<rect x="${S(s.x)}" y="${S(s.y)}" width="${S(s.w)}" height="${S(s.h)}" fill="none" stroke="#bb1188" stroke-dasharray="3 3" stroke-width="0.8" opacity="0.55"/>`); });
-        // erreichbare Regale (Typ A / B eingefärbt)
-        best.shelves.forEach((s,i)=>{ if(best.served[i]){
+        shShelves.forEach((s,i)=>{ if(shServed[i]){
             const fill=s.type===1?"var(--shelf2)":"var(--shelf)";
             const edge=s.type===1?"var(--shelf2-edge)":"var(--shelf-edge)";
             parts.push(`<rect x="${S(s.x)}" y="${S(s.y)}" width="${S(s.w)}" height="${S(s.h)}" fill="${fill}" stroke="${edge}" stroke-width="0.75" opacity="0.92"/>`);
@@ -685,7 +1013,6 @@
             parts.push(`<rect x="${S(c.x)}" y="${S(c.y)}" width="${S(c.w)}" height="${S(c.h)}" fill="var(--column)"/>`);
         }
 
-        // Türen — feste Bildschirmdicke (Bugfix A1)
         const T=7;
         for(const d of p.doors){
             let x,y,w,h;
@@ -698,23 +1025,25 @@
 
         const svg=$("plan");
         svg.setAttribute("width",svgW); svg.setAttribute("height",svgH);
-        svg.style.cursor = p.mode==="delete" ? "not-allowed" : "crosshair";
+        svg.style.cursor = p.mode==="delete" ? "not-allowed" : (p.mode==="move" ? "move" : "crosshair");
         svg.innerHTML=parts.join("");
 
         const roomArea=(p.roomW*p.roomH)/1e6;
-        const shelfArea=best.area/1e6;
-        $("stCount").textContent=best.count;
+        const shelfArea=shStats.area/1e6;
+        $("stCount").textContent=shStats.count;
         $("stUtil").textContent=roomArea>0?(shelfArea/roomArea*100).toFixed(0):"0";
-        $("stLin").textContent=(best.lin/1000).toFixed(1);
-        $("stWalk").textContent=best.count?(best.avgWalk/1000).toFixed(1):"0";
-        $("hint").textContent="In den Plan klicken zum Platzieren. Variante links wählen.";
+        $("stLin").textContent=(shStats.lin/1000).toFixed(1);
+        $("stWalk").textContent=shStats.count?(shStats.avgWalk/1000).toFixed(1):"0";
+        if($("hint").textContent==="" ) $("hint").textContent=DEFAULT_HINT;
 
-        const removed=best.total-best.count;
+        renderCompare(autoStats, manualStats, p);
+
+        const removed=shStats.total-shStats.count;
         const narrowDoor=p.doors.filter(d=>d.width<p.aisle).length;
-        const noteEl=$("note"); const msgs=[];
+        const noteEl=$("note"); const msgs=[]; const which= showManual? "Manuell":"Auto";
         if(!p.doors.length) msgs.push("Keine Tür gesetzt — ohne Zugang gilt kein Regal als erreichbar.");
         if(narrowDoor>0) msgs.push(narrowDoor+" Tür(en) schmaler als die Gangbreite ("+p.aisle+" mm) — mögliche Engstelle.");
-        if(removed>0) msgs.push(removed+" Stellplätze dieser Variante ohne durchgehend breiten Zugang (ausgegraut).");
+        if(removed>0) msgs.push(removed+" Regal(e) ohne durchgehend breiten Zugang in Ansicht "+which+" (ausgegraut).");
         if(msgs.length){ noteEl.className="note"; noteEl.style.display="block"; noteEl.textContent=msgs.join("  "); }
         else { noteEl.className="note ok"; noteEl.style.display="block"; noteEl.textContent="Alle Regale erreichbar; Weg von der Tür minimiert."; }
     }
@@ -730,10 +1059,19 @@
         el.addEventListener("input",()=>{ state[key]=Math.max(Number(el.min)||0, Number(el.value)||0); renderSoon(); });
     });
 
+    function syncTypeB(){
+        const b=$("ptypeB");
+        if(!state.useType2){
+            b.classList.add("disabled");
+            if(state.placeType===1){ state.placeType=0;
+                document.querySelectorAll("[data-ptype]").forEach(x=>x.classList.toggle("active", x.dataset.ptype==="0")); }
+        } else b.classList.remove("disabled");
+    }
+
     const useT2=$("useType2");
     useT2.checked=state.useType2;
     $("typeBBox").classList.toggle("on", state.useType2);
-    useT2.addEventListener("change",()=>{ state.useType2=useT2.checked; $("typeBBox").classList.toggle("on",state.useType2); render(); });
+    useT2.addEventListener("change",()=>{ state.useType2=useT2.checked; $("typeBBox").classList.toggle("on",state.useType2); syncTypeB(); render(); });
 
     const sp=$("shelfPreset");
     SHELF_PRESETS.forEach((preset,i)=>{const o=document.createElement("option");o.value=i;o.textContent=preset.label;sp.appendChild(o);});
@@ -756,36 +1094,156 @@
     wireSeg("modeSeg","mode","mode");
     $("modeSeg").querySelector('[data-mode="column"]').classList.add("active");
 
-    $("variants").addEventListener("click",e=>{ const b=e.target.closest("[data-idx]"); if(!b)return;
-        state.selected=Number(b.dataset.idx); render(); });
+    // Typ / Achse / Ansicht
+    document.querySelectorAll("[data-ptype]").forEach(b=>b.addEventListener("click",()=>{
+        const v=Number(b.dataset.ptype);
+        if(v===1 && !state.useType2) return;
+        state.placeType=v;
+        document.querySelectorAll("[data-ptype]").forEach(x=>x.classList.toggle("active", x===b));
+    }));
+    document.querySelectorAll("[data-orient]").forEach(b=>b.addEventListener("click",()=>{
+        state.placeOrient=b.dataset.orient;
+        document.querySelectorAll("[data-orient]").forEach(x=>x.classList.toggle("active", x===b));
+    }));
+    function setShownButtons(v){ document.querySelectorAll("[data-shown]").forEach(x=>x.classList.toggle("active", x.dataset.shown===v)); }
+    document.querySelectorAll("[data-shown]").forEach(b=>b.addEventListener("click",()=>{
+        state.shown=b.dataset.shown; setShownButtons(state.shown); render();
+    }));
 
-    $("plan").addEventListener("click",e=>{
-        const rect=e.currentTarget.getBoundingClientRect();
-        const px=(e.clientX-rect.left)/currentScale, py=(e.clientY-rect.top)/currentScale;
-        if(px<0||py<0||px>state.roomW||py>state.roomH) return;
-        if(state.mode==="delete"){
-            const hc=state.columns.find(c=>pointInRect(px,py,c));
-            if(hc){state.columns=state.columns.filter(c=>c.id!==hc.id);render();return;}
-            const hd=state.doors.find(d=>pointInRect(px,py,doorZone(d,state.roomW,state.roomH,state.aisle)));
-            if(hd){state.doors=state.doors.filter(d=>d.id!==hd.id);render();}
-            return;
+    $("btnAdopt").addEventListener("click",()=>{
+        const top=computeAuto(state); const a=top[state.selected]||top[0];
+        state.manual=((a&&a.shelves)||[]).map(s=>({x:s.x,y:s.y,w:s.w,h:s.h,len:s.len,type:s.type}));
+        state.shown="manual"; setShownButtons("manual"); render();
+        flashHint("Auto-Variante übernommen — jetzt von Hand feilen.");
+    });
+    $("btnClearManual").addEventListener("click",()=>{ state.manual=[]; render(); });
+
+    /* --- Export / Import: kompletter Grundriss als JSON --- */
+    function shownSnapshot(){
+        const p=state; const top=computeAuto(p); const a=top[p.selected]||top[0]||{shelves:[],served:[]};
+        const showManual=p.shown==="manual";
+        const shelves=showManual? p.manual : (a.shelves||[]);
+        const served =showManual? statsFor(p.manual,p).served : (a.served||[]);
+        return shelves.map((s,i)=>({x:Math.round(s.x),y:Math.round(s.y),w:Math.round(s.w),h:Math.round(s.h),type:s.type||0,served:!!served[i]}));
+    }
+    function serializeState(){
+        const p=state;
+        return {
+            v:2,
+            room:{w:p.roomW,h:p.roomH}, aisle:p.aisle, wallGap:p.wallGap, colClear:p.colClear,
+            typeA:{w:p.type1W,d:p.type1D}, typeB:{w:p.type2W,d:p.type2D,on:p.useType2},
+            walls:{top:!!p.walls.top,bottom:!!p.walls.bottom,left:!!p.walls.left,right:!!p.walls.right},
+            columns:p.columns.map(c=>({x:Math.round(c.x),y:Math.round(c.y),w:c.w,h:c.h})),
+            doors:p.doors.map(d=>({wall:d.wall,pos:Math.round(d.pos),width:d.width})),
+            view:p.shown, selected:p.selected,
+            manual:p.manual.map(s=>({x:Math.round(s.x),y:Math.round(s.y),w:Math.round(s.w),h:Math.round(s.h),type:s.type||0})),
+            shown:shownSnapshot()
+        };
+    }
+    function syncInputsFromState(){
+        const p=state;
+        ["roomW","roomH","aisle","type1W","type1D","type2W","type2D","wallGap","colClear"].forEach(k=>{ if($(k)) $(k).value=p[k]; });
+        useT2.checked=p.useType2; $("typeBBox").classList.toggle("on",p.useType2); syncTypeB();
+        document.querySelectorAll("#wallBox .wallchk").forEach(lab=>{ const w=lab.dataset.wall;
+            const cb=lab.querySelector("input"); cb.checked=!!p.walls[w]; lab.classList.toggle("on",!!p.walls[w]); });
+        document.querySelectorAll("[data-ptype]").forEach(x=>x.classList.toggle("active", Number(x.dataset.ptype)===p.placeType));
+        document.querySelectorAll("[data-orient]").forEach(x=>x.classList.toggle("active", x.dataset.orient===p.placeOrient));
+        setShownButtons(p.shown);
+    }
+    function applyState(obj){
+        if(!obj || typeof obj!=="object") throw new Error("kein Objekt");
+        const num=(v,def)=>Number.isFinite(+v)?+v:def; const p=state;
+        if(obj.room){ p.roomW=num(obj.room.w,p.roomW); p.roomH=num(obj.room.h,p.roomH); }
+        p.aisle=num(obj.aisle,p.aisle); p.wallGap=num(obj.wallGap,p.wallGap); p.colClear=num(obj.colClear,p.colClear);
+        if(obj.typeA){ p.type1W=num(obj.typeA.w,p.type1W); p.type1D=num(obj.typeA.d,p.type1D); }
+        if(obj.typeB){ p.type2W=num(obj.typeB.w,p.type2W); p.type2D=num(obj.typeB.d,p.type2D); p.useType2=!!obj.typeB.on; }
+        if(obj.walls){ p.walls={top:!!obj.walls.top,bottom:!!obj.walls.bottom,left:!!obj.walls.left,right:!!obj.walls.right}; }
+        if(Array.isArray(obj.columns)) p.columns=obj.columns.map(c=>({id:nextId++,x:num(c.x,0),y:num(c.y,0),w:num(c.w,400),h:num(c.h,400)}));
+        if(Array.isArray(obj.doors)) p.doors=obj.doors.map(d=>({id:nextId++,wall:["top","bottom","left","right"].includes(d.wall)?d.wall:"left",pos:num(d.pos,1000),width:num(d.width,1000)}));
+        if(Array.isArray(obj.manual)) p.manual=obj.manual.map(s=>({x:num(s.x,0),y:num(s.y,0),w:num(s.w,0),h:num(s.h,0),len:num(s.len,Math.max(num(s.w,0),num(s.h,0))),type:s.type===1?1:0}));
+        if(obj.view==="auto"||obj.view==="manual") p.shown=obj.view;
+        if(Number.isInteger(obj.selected)) p.selected=Math.max(0,obj.selected);
+        _autoCache.sig="";       // Cache invalidieren, damit Auto neu gerechnet wird
+        syncInputsFromState(); render();
+    }
+    $("btnExport").addEventListener("click",()=>{
+        $("dataBox").value=JSON.stringify(serializeState(),null,1);
+        $("dataMsg").textContent="Exportiert. Mit Kopieren-Knopf in die Zwischenablage.";
+    });
+    $("btnCopy").addEventListener("click",async()=>{
+        const t=$("dataBox").value||JSON.stringify(serializeState(),null,1);
+        $("dataBox").value=t;
+        try{ await navigator.clipboard.writeText(t); $("dataMsg").textContent="In Zwischenablage kopiert."; }
+        catch(_){ $("dataBox").select(); $("dataMsg").textContent="Bitte manuell kopieren (Strg+C)."; }
+    });
+    $("btnImport").addEventListener("click",()=>{
+        try{ const obj=JSON.parse($("dataBox").value); applyState(obj); $("dataMsg").textContent="Import übernommen."; }
+        catch(e){ $("dataMsg").textContent="Import fehlgeschlagen: "+e.message; }
+    });
+
+    $("variants").addEventListener("click",e=>{ const b=e.target.closest("[data-idx]"); if(!b)return;
+        state.selected=Number(b.dataset.idx); state.shown="auto"; setShownButtons("auto"); render(); });
+
+    /* --- Zeiger-Interaktion: Klick setzt, Ziehen macht Reihe / verschiebt --- */
+    function planPt(e){
+        const rect=$("plan").getBoundingClientRect();
+        return { x:(e.clientX-rect.left)/currentScale, y:(e.clientY-rect.top)/currentScale };
+    }
+    function handleClick(pt){
+        const p=state, px=pt.x, py=pt.y;
+        if(p.mode==="delete"){ deleteAt(pt); return; }
+        if(p.mode==="column"){
+            if(px<0||py<0||px>p.roomW||py>p.roomH) return;
+            const size=400;
+            p.columns.push({id:nextId++, x:clamp(px-size/2,0,p.roomW-size), y:clamp(py-size/2,0,p.roomH-size), w:size, h:size});
+            render(); return;
         }
-        if(state.mode==="column"){ const size=400;
-            state.columns.push({id:nextId++, x:clamp(px-size/2,0,state.roomW-size), y:clamp(py-size/2,0,state.roomH-size), w:size,h:size});
-            render();return; }
-        if(state.mode==="door"){
-            const dTop=py,dBottom=state.roomH-py,dLeft=px,dRight=state.roomW-px;
-            const m=Math.min(dTop,dBottom,dLeft,dRight), width=Math.max(1000,state.aisle); let wall,pos;
+        if(p.mode==="door"){
+            if(px<0||py<0||px>p.roomW||py>p.roomH) return;
+            const dTop=py,dBottom=p.roomH-py,dLeft=px,dRight=p.roomW-px;
+            const m=Math.min(dTop,dBottom,dLeft,dRight), width=Math.max(1000,p.aisle); let wall,pos;
             if(m===dTop){wall="top";pos=px;} else if(m===dBottom){wall="bottom";pos=px;}
             else if(m===dLeft){wall="left";pos=py;} else {wall="right";pos=py;}
-            const span=(wall==="top"||wall==="bottom")?state.roomW:state.roomH;
-            state.doors.push({id:nextId++,wall,pos:clamp(pos,width/2,span-width/2),width});
-            render();
+            const span=(wall==="top"||wall==="bottom")?p.roomW:p.roomH;
+            p.doors.push({id:nextId++,wall,pos:clamp(pos,width/2,span-width/2),width});
+            render(); return;
         }
+        if(p.mode==="shelf"||p.mode==="row"){ placeShelf(pt); return; }
+        // move: einfacher Klick tut nichts
+    }
+
+    const svgEl=$("plan");
+    let drag=null;
+    svgEl.addEventListener("pointerdown",e=>{
+        const pt=planPt(e);
+        drag={ start:pt, cur:pt, moved:false, mode:state.mode, idx:-1, orig:null };
+        if(state.mode==="move"){
+            const i=findManualShelfAt(pt);
+            if(i<0){ drag=null; return; }
+            drag.idx=i; drag.orig={...state.manual[i]};
+        }
+        try{ svgEl.setPointerCapture(e.pointerId); }catch(_){}
     });
+    svgEl.addEventListener("pointermove",e=>{
+        if(!drag) return;
+        drag.cur=planPt(e);
+        if(Math.hypot(drag.cur.x-drag.start.x, drag.cur.y-drag.start.y) > SNAP) drag.moved=true;
+        if(drag.mode==="row" && drag.moved) showRowGhost(drag.start, drag.cur);
+        else if(drag.mode==="move") showMoveGhost(drag);
+    });
+    svgEl.addEventListener("pointerup",e=>{
+        if(!drag) return;
+        const d=drag; drag=null; clearGhost();
+        if(!d.moved){ handleClick(d.start); return; }
+        if(d.mode==="row") placeRow(d.start, d.cur);
+        else if(d.mode==="shelf") placeShelf(d.start);
+        else if(d.mode==="move") commitMove(d);
+    });
+    svgEl.addEventListener("pointercancel",()=>{ drag=null; clearGhost(); });
 
     $("btnPrint").addEventListener("click",()=>window.print());
     $("btnPng").addEventListener("click",()=>{
+        clearGhost();
         const svg=$("plan"); const cs=getComputedStyle(document.documentElement);
         let str=new XMLSerializer().serializeToString(svg);
         str=str.replace(/var\(([^)]+)\)/g,(_,n)=>cs.getPropertyValue(n.trim()).trim()||"#000");
@@ -798,6 +1256,7 @@
         img.src="data:image/svg+xml;base64,"+btoa(unescape(encodeURIComponent(str)));
     });
 
+    syncTypeB();
     render();
 </script>
 </body>

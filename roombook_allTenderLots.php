@@ -32,6 +32,8 @@
 <?php
 require_once 'utils/_utils.php';
 init_page_serversides("x");
+$excelfilename = buildExcelFilename('Lose Im Projekt');
+
 ?>
 
 <div id="limet-navbar"></div>
@@ -198,6 +200,8 @@ init_page_serversides("x");
     <script charset="utf-8">
         var tableTenderLots;
         let currentNotizLotId = null;
+        const $excelfilename = <?= json_encode($excelfilename) ?>;
+
 
         $(document).ready(function () {
             $('#dateSelect').val('2025-01-01');
@@ -255,7 +259,9 @@ init_page_serversides("x");
                         }
                     },
                     {
-                        extend: 'excel', className: "btn btn-light btn-outline-dark fas fa-file-excel",
+                        extend: 'excel',
+                        className: "btn btn-light btn-outline-dark fas fa-file-excel",
+                        filename: $excelfilename,
                         exportOptions: {
                             columns: function (idx) {
                                 return idx !== 0 && idx !== 1 && idx !== 9 && idx !== 13 && idx !== 14;

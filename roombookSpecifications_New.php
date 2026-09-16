@@ -5,6 +5,7 @@ init_page_serversides();
 include 'roombookSpecifications_addRoomModal.php';
 include 'roombookSpecifications_HelpModal.php';
 include('roombookSpecifications_copyRoomModal.php');
+$excelfilename = buildExcelFilename('Raumbuch_Bauangaben');
 ?>
 
 <!DOCTYPE html>
@@ -212,6 +213,11 @@ include('roombookSpecifications_copyRoomModal.php');
     </div>
 </div>
 </body>
+<script>
+    const $excelfilename = <?= json_encode($excelfilename) ?>;
+    const $projectID     = <?= json_encode((int)($_SESSION['projectID'] ?? 0)) ?>;
+    const $projectName   = <?= json_encode($_SESSION['projectName'] ?? '') ?>;
+</script>
 <script src="roombookSpecifications_constDeclarations.js"></script>
 <script src="utils/_utils.js"></script>
 <script src="roombookSpecifications_New.js" charset=utf-8></script>

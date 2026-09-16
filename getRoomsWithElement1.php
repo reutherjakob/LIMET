@@ -226,12 +226,15 @@ while ($row = $result->fetch_assoc()) {
 }
 echo "</tbody></table>";
 $mysqli->close();
+$excelfilename2 = buildExcelFilename('Räume_mit_Element');
+
 ?>
 
 
 <script src="utils/_utils.js"></script>
 <script charset="utf-8" type="module">
     import CustomPopover from './utils/_popover.js';
+    const $excelfilename2 = <?= json_encode($excelfilename2) ?>;
 
     $(document).ready(function () {
         window.tableRoomsWithElement = new DataTable('#tableRoomsWithElement', {
@@ -266,6 +269,7 @@ $mysqli->close();
                     },
                     text: '<i class="fas fa-file-excel me-2"></i> Excel', // Add Font Awesome icon
                     className: 'btn btn-sm btn-outline-success bg-white text-nowrap', // Bootstrap small
+                    filename: $excelfilename2
                 }
             ],
             initComplete: function () {

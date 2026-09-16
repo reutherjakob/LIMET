@@ -4,30 +4,67 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Budget Timeline finished">
-      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/_pdf_custom_utils.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/pdf_createBauangabenBericht_Custom.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/pdf_createBericht_MYPDFclass_Custom.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/pdf_createMTTabelle_custom.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/pdf_getReportParamDefinitions.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/pdf_paramDefinitions.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/pdf_report_data.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/pdf_report_layout.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/pdf_report_render.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/pdf_report_sets.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PDFs/custom_report/roombook_Custom_Report.php" afterDir="false" />
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Budget Timeline,&#10;Custom Report">
+      <change afterPath="$PROJECT_DIR$/get_bestand_elemente.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/updateBudget.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BEFU/roombook_befu.php" beforeDir="false" afterPath="$PROJECT_DIR$/BEFU/roombook_befu.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Besprechungsansicht/js/pivotTableLoader.js" beforeDir="false" afterPath="$PROJECT_DIR$/Besprechungsansicht/js/pivotTableLoader.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Besprechungsansicht/views/roombookBesprechungsansicht.php" beforeDir="false" afterPath="$PROJECT_DIR$/Besprechungsansicht/views/roombookBesprechungsansicht.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Budgets/roombook_budgetTimeline.php" beforeDir="false" afterPath="$PROJECT_DIR$/Budgets/roombook_budgetTimeline.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/raumtypen.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/raumtypen.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SF/pdf_raumtypen_sf.php" beforeDir="false" afterPath="$PROJECT_DIR$/SF/pdf_raumtypen_sf.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SF/roombook_SF_rules.php" beforeDir="false" afterPath="$PROJECT_DIR$/SF/roombook_SF_rules.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getRoomsWithElementTenderLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomsWithElementTenderLots.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects.php" beforeDir="false" afterPath="$PROJECT_DIR$/projects.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IFCQuest/ages_console_queries.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/Raumkategorien.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/Raumkategorien.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/bericht.php" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/bericht.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Nutzerumfrage/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/Nutzerumfrage/navbar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/_pdf_createBericht_utils.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/_pdf_createBericht_utils.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createBauangabenBericht_SF.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createBauangabenBericht_SF.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createBerichtKHIMA40.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createBerichtKHIMA40.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createBericht_LOGO.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createBericht_LOGO.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createBericht_MYPDFclass_A4_Raumbuch.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createBericht_MYPDFclass_A4_Raumbuch.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PDFs/pdf_createRoombookWithout0PDF.php" beforeDir="false" afterPath="$PROJECT_DIR$/PDFs/pdf_createRoombookWithout0PDF.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SF/roombook_elementsInProject_delete0.php" beforeDir="false" afterPath="$PROJECT_DIR$/SF/roombook_elementsInProject_delete0.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/addBudget.php" beforeDir="false" afterPath="$PROJECT_DIR$/addBudget.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api_bestand_elemente.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/costChanges.php" beforeDir="false" afterPath="$PROJECT_DIR$/costChanges.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/elementsInProject.php" beforeDir="false" afterPath="$PROJECT_DIR$/elementsInProject.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getPersonsNotInProject.php" beforeDir="false" afterPath="$PROJECT_DIR$/getPersonsNotInProject.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getPersonsOfProject.php" beforeDir="false" afterPath="$PROJECT_DIR$/getPersonsOfProject.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getProjectCheck.php" beforeDir="false" afterPath="$PROJECT_DIR$/getProjectCheck.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getRoomElementsDetailed1.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomElementsDetailed1.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getRoomElementsInProjectParameterData.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomElementsInProjectParameterData.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getRoomsWithElement1.php" beforeDir="false" afterPath="$PROJECT_DIR$/getRoomsWithElement1.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getTenderLotElements.php" beforeDir="false" afterPath="$PROJECT_DIR$/getTenderLotElements.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/get_project_id.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lager_calculator.php" beforeDir="false" afterPath="$PROJECT_DIR$/lager_calculator.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out_bestands_csv.php" beforeDir="false" afterPath="$PROJECT_DIR$/unused/out_bestands_csv.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out_bestands_excel.php" beforeDir="false" afterPath="$PROJECT_DIR$/unused/out_bestands_excel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectParticipants.php" beforeDir="false" afterPath="$PROJECT_DIR$/projectParticipants.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookBestandElements.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookBestandElements.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookElementeAenderungen.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookElementeAenderungen.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookElementeJeRaumbereich.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookElementeJeRaumbereich.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookElementsPerArea.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookElementsPerArea.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookList.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookList.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookMeeting.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookMeeting.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/roombookReports.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookReports.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_elementLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_elementLots.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookSpecifications_New.js" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_New.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookSpecifications_New.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_New.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookSpecifications_constDeclarations.js" beforeDir="false" afterPath="$PROJECT_DIR$/roombookSpecifications_constDeclarations.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombookTenderLotsToDo.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookTenderLotsToDo.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_ElemetsInProject_ParameterTable.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_ElemetsInProject_ParameterTable.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_allTenderLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_allTenderLots.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_devicePrice.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_devicePrice.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_elementBudgets.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_Budgets.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_elementLieferanten.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_elementLieferanten.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_leistungAbgleich_css.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_leistungAbgleich_css.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_losElementeUebersicht.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_losElementeUebersicht.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_los_aenderungen.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_los_aenderungen.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_search_rooms_with_string.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_search_rooms_with_string.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_tenderLots.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_tenderLots.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_vglAnsicht.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_vglAnsicht.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tenderCalendar.php" beforeDir="false" afterPath="$PROJECT_DIR$/tenderCalendar.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/unused/getLotCalendar.php" beforeDir="false" afterPath="$PROJECT_DIR$/unused/getLotCalendar.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/_utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/utils/_utils.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/_utils.php" beforeDir="false" afterPath="$PROJECT_DIR$/utils/_utils.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/utils/navbar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/roombook_icons_legend.php" beforeDir="false" afterPath="$PROJECT_DIR$/utils/roombook_icons_legend.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,6 +133,7 @@
     &quot;repository&quot;: &quot;LIMET&quot;
   }
 }</component>
+  <component name="PhpDebugGeneral" listening_started="true" />
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="QODANA_PROBLEMS_VIEW_TAB" />
   </component>
@@ -149,11 +187,11 @@
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\LOGIN" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\unused" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\SF" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\PDFs\custom_report" />
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\PDFs" />
-      <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\PDFs\" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -662,15 +700,15 @@
       <workItem from="1788506064499" duration="7628000" />
       <workItem from="1788765220663" duration="5822000" />
       <workItem from="1788782431845" duration="3376000" />
-      <workItem from="1788859142853" duration="1405000" />
-    </task>
-    <task id="LOCAL-00209" summary="Elelemtn History added.&#10;Wartet noch auf ddie erweiterung der Lose Tabelle, damit preiseintrager notiert werden kann">
-      <option name="closed" value="true" />
-      <created>1773765613024</created>
-      <option name="number" value="00209" />
-      <option name="presentableId" value="LOCAL-00209" />
-      <option name="project" value="LOCAL" />
-      <updated>1773765613024</updated>
+      <workItem from="1788859142853" duration="4545000" />
+      <workItem from="1788873301521" duration="1839000" />
+      <workItem from="1788960415466" duration="3457000" />
+      <workItem from="1789032108468" duration="5193000" />
+      <workItem from="1789044686790" duration="5013000" />
+      <workItem from="1789112415499" duration="2564000" />
+      <workItem from="1789372122413" duration="16588000" />
+      <workItem from="1789464631890" duration="2578000" />
+      <workItem from="1789546036128" duration="10017000" />
     </task>
     <task id="LOCAL-00210" summary="Standort/Verwendung Verbessert.&#10;kor Katalog.&#10;BBE einreichbereicht">
       <option name="closed" value="true" />
@@ -1056,7 +1094,15 @@
       <option name="project" value="LOCAL" />
       <updated>1788429721116</updated>
     </task>
-    <option name="localTasksCounter" value="258" />
+    <task id="LOCAL-00258" summary="Budget Timeline,&#10;Custom Report">
+      <option name="closed" value="true" />
+      <created>1788863564539</created>
+      <option name="number" value="00258" />
+      <option name="presentableId" value="LOCAL-00258" />
+      <option name="project" value="LOCAL" />
+      <updated>1788863564539</updated>
+    </task>
+    <option name="localTasksCounter" value="259" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1086,7 +1132,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Ui upgrade while workin" />
     <MESSAGE value="Fixes, VErbesserungen,&#10;upgrades Nutezrkatalog" />
     <MESSAGE value="Element parameter Änderungen Website" />
     <MESSAGE value=" ifc_import" />
@@ -1111,7 +1156,8 @@
     <MESSAGE value="REports/Spargefeld" />
     <MESSAGE value="Reports/Spargefeld" />
     <MESSAGE value="Budget Timeline finished" />
-    <option name="LAST_COMMIT_MESSAGE" value="Budget Timeline finished" />
+    <MESSAGE value="Budget Timeline,&#10;Custom Report" />
+    <option name="LAST_COMMIT_MESSAGE" value="Budget Timeline,&#10;Custom Report" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1183,12 +1229,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/Nutzerumfrage/bericht.php</url>
-          <line>343</line>
+          <line>347</line>
           <option name="timeStamp" value="32" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/Nutzerumfrage/bericht.php</url>
-          <line>449</line>
+          <line>453</line>
           <option name="timeStamp" value="33" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">

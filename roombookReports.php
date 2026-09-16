@@ -124,6 +124,7 @@ init_page_serversides("", "x");
         {value: "einreichung", text: "Einreichung"},
         {value: "elementReports", text: "Element-/Raum Berichte"},
         {value: "einbringwege", text: "Einbringwege"},
+        {value: "einbringwege2", text: "Einbringwege2"},
         {value: "oldReports", text: "Historische Berichte"},
 
     ];

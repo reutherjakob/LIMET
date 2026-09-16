@@ -5,7 +5,7 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="../Logo/iphone_favicon.png">
+    <link rel="icon" href="Logo/iphone_favicon.png">
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -46,7 +46,6 @@ $sql = "SELECT
         INNER JOIN tabelle_projekte 
             ON tabelle_räume.tabelle_projekte_idTABELLE_Projekte = tabelle_projekte.idTABELLE_Projekte
         WHERE tabelle_projekte.idTABELLE_Projekte = ?
-          AND tabelle_räume.Entfallen <> 1
         ORDER BY tabelle_räume.`MT-relevant` DESC";
 
 $stmt = $mysqli->prepare($sql);
@@ -85,6 +84,7 @@ $result = $stmt->get_result();
                         <th>Bauetappe</th>
                         <th>Geschoss</th>
                         <th>MT-rel.</th>
+                        <th>Entfallen</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -99,6 +99,7 @@ $result = $stmt->get_result();
                             <td><?= h($row["Bauetappe"]) ?></td>
                             <td><?= h($row["Geschoss"]) ?></td>
                             <td><?= h($row["MT-relevant"]) ?></td>
+                            <td><?= h($row["Entfallen"]) ?></td>
                         </tr>
                     <?php endwhile; ?>
                     </tbody>
@@ -163,7 +164,7 @@ $result = $stmt->get_result();
             },
             columnDefs: [
                 {
-                    targets: [0],
+                    targets: [0,9],
                     visible: false,
                     searchable: false
                 }

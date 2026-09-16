@@ -27,6 +27,8 @@
 // 25 FX
 require_once 'utils/_utils.php';
 init_page_serversides("", "x");
+$excelfilename = buildExcelFilename('Elemente_Parameter');
+
 ?>
 
 <body>
@@ -48,9 +50,11 @@ init_page_serversides("", "x");
     </div>
 </div>
 
+<script src="utils/_utils.js"></script>
 <script>
     // K2R is populated dynamically after categories are loaded
     var K2R = [];
+    const $excelfilename = <?= json_encode($excelfilename) ?>;
 
     let dataTable;
 
@@ -303,9 +307,9 @@ init_page_serversides("", "x");
                         }
                     },
                     {
-                        // ── Excel: numeric cells, full column names ──────────
                         extend: 'excel',
                         text: '<i class="fas fa-file-excel"></i>',
+                        filename: $excelfilename,
                         titleAttr: 'Excel Export',
                         className: 'btn btn-sm btn-outline-dark bg-white',
                         exportOptions: {
@@ -421,18 +425,19 @@ init_page_serversides("", "x");
                 },
 
                 initComplete: function () {
-                    // Remove search label, style and move search input to card header
-                    $('#elementsTable_wrapper .dt-search label').remove();
-                    $('#elementsTable_wrapper .dt-search')
-                        .children()
-                        .removeClass('form-control form-control-sm')
-                        .addClass('btn btn-sm btn-outline-dark bg-white ms-1')
-                        .appendTo('#EPinPrCardHeader');
+                    relocateControls(this.api(), '#EPinPrCardHeader');
 
-                    // Move buttons to card header
-                    $('#elementsTable_wrapper .dt-buttons')
-                        .children()
-                        .appendTo('#EPinPrCardHeader');
+                    //  $('#elementsTable_wrapper .dt-search label').remove();
+                    //  $('#elementsTable_wrapper .dt-search')
+                    //      .children()
+                    //      .removeClass('form-control form-control-sm')
+                    //      .addClass('btn btn-sm btn-outline-dark bg-white ms-1')
+                    //      .appendTo('#EPinPrCardHeader');
+
+                    //  // Move buttons to card header
+                    //  $('#elementsTable_wrapper .dt-buttons')
+                    //      .children()
+                    //      .appendTo('#EPinPrCardHeader');
 
                     // Init Bootstrap tooltips on icon headers
                     $('[data-bs-toggle="tooltip"]').each(function () {

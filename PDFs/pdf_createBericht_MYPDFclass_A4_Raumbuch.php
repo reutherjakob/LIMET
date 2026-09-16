@@ -34,7 +34,7 @@ class MYPDF extends TCPDF
             }
 
             $this->cell(0, 0, '', 'B', 0, 'L');
-            $this->Ln(1);
+            $this->Ln(0.5);
             $this->cell(0, 0, '', 'B', 0, 'L');
             $this->Ln(1);
 

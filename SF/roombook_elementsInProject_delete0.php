@@ -324,26 +324,10 @@
             stateSave: false,
             layout: {
                 topStart: null,
-                topEnd: ['buttons', 'search'],
+                topEnd: ['search'],
                 bottomStart: ['info', 'pageLength'],
                 bottomEnd: 'paging'
             },
-            buttons: [
-                {
-                    extend: 'excel',
-                    exportOptions: {
-                        columns: ':not(:nth-child(6)):not(:nth-child(13))'
-                    },
-                    text: '<i class="fas fa-file-excel"></i> Excel',
-                    className: 'btn-sm btn-light btn-outline-dark me-2'
-                },
-                {
-                    extend: 'searchBuilder',
-                    text: "Filter (%d)",
-                    className: "btn btn-light btn-outline-secondary fas fa-search",
-                    titleAttr: "Filter",
-                }
-            ],
             compact: true,
             initComplete: function () {
                 $('.dt-search label').remove();

@@ -147,13 +147,13 @@ const columnsDefinition = [
 
 
 
-    {data: '1 Kreis O2', title: '1_K O2', visible: false, case: "bit"}, // 66 | MG-Start !!!
-    {data: '2 Kreis O2', title: '2_K O2', visible: false, case: "bit"}, // 66 | MG
+    {data: '1 Kreis O2', title: '1K O2', visible: false, case: "bit"}, // 66 | MG-Start !!!
+    {data: '2 Kreis O2', title: '2K O2', visible: false, case: "bit"}, // 66 | MG
     {data: 'CO2', title: 'CO2', visible: false, case: "bit"}, // 67 | MG
-    {data: '1 Kreis Va', title: '1_K Va', visible: false, case: "bit"}, // 68 | MG / LAB-Start
-    {data: '2 Kreis Va', title: '2_K Va', visible: false, case: "bit"}, // 69 | MG / LAB
-    {data: '1 Kreis DL-5', title: '1_K DL5', visible: false, case: "bit"}, // 70 | MG / LAB
-    {data: '2 Kreis DL-5', title: '2_K DL5', visible: false, case: "bit"}, // 71 | MG / LAB
+    {data: '1 Kreis Va', title: '1K Va', visible: false, case: "bit"}, // 68 | MG / LAB-Start
+    {data: '2 Kreis Va', title: '2K Va', visible: false, case: "bit"}, // 69 | MG / LAB
+    {data: '1 Kreis DL-5', title: '1K DL5', visible: false, case: "bit"}, // 70 | MG / LAB
+    {data: '2 Kreis DL-5', title: '2K DL5', visible: false, case: "bit"}, // 71 | MG / LAB
     {data: 'DL-10', title: 'DL-10', visible: false, case: "bit"}, // 72 | MG / LAB
     {data: 'DL-tech', title: 'DL-tech', visible: false, case: "bit"}, // 73 | MG / LAB
     {data: 'NGA', title: 'NGA', visible: false, case: "bit"}, // 74 | MG / LAB

@@ -22,6 +22,8 @@
 <?php
 require_once 'utils/_utils.php';
 init_page_serversides("x");
+$excelfilename = buildExcelFilename('Lieferanten_je_Element');
+
 ?>
 
 <div id="limet-navbar"></div>
@@ -31,22 +33,22 @@ init_page_serversides("x");
             <div class="mt-4 card">
                 <div class="card-header">
                     <div class="row g-2">
-                        <div class="col-12 col-lg-5 d-flex align-items-center" id="cardHeaderLeft">
+                        <div class="col-lg-2 d-flex align-items-center">
                             <span class="text-nowrap"><strong>LIEFERANTEN JE ELEMENT</strong>&emsp;</span>
                         </div>
-                        <div class="col-12 col-lg-7 d-flex flex-wrap align-items-center justify-content-lg-end gap-2">
 
+                        <div class="col-lg-7 d-flex flex-wrap align-items-center justify-content-lg-end gap-2">
                             <div class="btn-group btn-group-sm" role="group" aria-label="Quelle">
                                 <input type="radio" class="btn-check" name="quelle" id="qAlle" value="alle" checked>
                                 <label class="btn btn-outline-secondary" for="qAlle">Alle</label>
 
                                 <input type="radio" class="btn-check" name="quelle" id="qKatalog" value="katalog">
-                                <label class="btn btn-outline-primary" for="qKatalog"
+                                <label class="btn btn-primary" for="qKatalog"
                                        data-bs-toggle="tooltip"
                                        data-bs-title="Nur gepflegte Gerät-Lieferant-Zuordnung">Katalog</label>
 
                                 <input type="radio" class="btn-check" name="quelle" id="qHistorie" value="historie">
-                                <label class="btn btn-outline-warning" for="qHistorie"
+                                <label class="btn btn-warning" for="qHistorie"
                                        data-bs-toggle="tooltip"
                                        data-bs-title="Nur aus früheren Vergaben abgeleitet">Historie</label>
                             </div>
@@ -70,6 +72,8 @@ init_page_serversides("x");
                                     title="Hilfe / Erläuterungen zu dieser Auswertung">
                                 <i class="fas fa-info-circle"></i> Info
                             </button>
+                        </div>
+                        <div class="col-lg-3 d-flex align-items-center justify-content-end" id="cardHeaderLeft">
                         </div>
                     </div>
                 </div>
@@ -317,10 +321,11 @@ init_page_serversides("x");
     <script src="utils/_utils.js"></script>
     <script charset="utf-8">
         var tableEL;
+        const $excelfilename = <?= json_encode($excelfilename) ?>;
 
         const quelleBadge = {
-            'beides':   '<span class="badge bg-success">beides</span>',
-            'Katalog':  '<span class="badge bg-primary">Katalog</span>',
+            'beides': '<span class="badge bg-success">beides</span>',
+            'Katalog': '<span class="badge bg-primary">Katalog</span>',
             'Historie': '<span class="badge bg-warning text-dark">Historie</span>'
         };
 
@@ -362,8 +367,8 @@ init_page_serversides("x");
                 ],
                 order: [[0, 'asc'], [1, 'asc'], [4, 'asc']],
                 paging: true,
-                pageLength: 50,
-                lengthMenu: [[25, 50, 100, 250, -1], [25, 50, 100, 250, 'Alle']],
+                pageLength: 15,
+                lengthMenu: [[15, 25, 50, 100, 250, -1], [15, 25, 50, 100, 250, 'Alle']],
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
                     searchPlaceholder: 'Element, Lieferant, Gerät..',
@@ -374,18 +379,25 @@ init_page_serversides("x");
                 },
                 buttons: [
                     {
-                        extend: 'colvis', className: "btn btn-light btn-outline-dark fas fa-eye", text: '',
+                        extend: 'colvis',
+                        className: "btn btn-light btn-outline-dark fas fa-eye",
+                        text: '',
                         columns: ':gt(1)',
                         attr: {'data-bs-toggle': 'tooltip', 'data-bs-title': 'Spalten ein/ausblenden'}
                     },
                     {
-                        extend: 'excel', className: "btn btn-light btn-outline-dark fas fa-file-excel", text: '',
+                        extend: 'excel',
+                        className: "btn btn-light btn-outline-dark fas fa-file-excel",
+                        text: '',
                         title: 'Lieferanten_je_Element',
+                        filename: $excelfilename,
                         exportOptions: {columns: ':gt(1)'},
                         attr: {'data-bs-toggle': 'tooltip', 'data-bs-title': 'Download als Excel'}
                     },
                     {
-                        extend: 'searchBuilder', className: "btn btn-light btn-outline-dark fas fa-filter", text: '',
+                        extend: 'searchBuilder',
+                        className: "btn btn-light btn-outline-dark fas fa-filter",
+                        text: '',
                         attr: {'data-bs-toggle': 'tooltip', 'data-bs-title': 'Filter erstellen'}
                     }
                 ],
@@ -395,17 +407,9 @@ init_page_serversides("x");
                     bottomEnd: ['paging', 'search', 'buttons']
                 },
                 initComplete: function () {
-                    const target = document.getElementById('cardHeaderLeft');
-                    Array.from(document.getElementsByClassName('dt-buttons'))
-                        .forEach(el => target.appendChild(el));
 
-                    $('.dt-search label').remove();
-                    $('.dt-search').children()
-                        .removeClass('form-control form-control-sm')
-                        .addClass('btn btn-sm btn-outline-secondary')
-                        .appendTo('#cardHeaderLeft');
+                    relocateControls(this.api(), '#cardHeaderLeft')
 
-                    /* leer gebliebene Layout-Zeile(n) über/unter der Tabelle entfernen */
                     $('#tableElementLieferanten_wrapper > .dt-layout-row').filter(function () {
                         return $.trim($(this).text()) === ''
                             && $(this).find('button, input, select, a, label').length === 0;

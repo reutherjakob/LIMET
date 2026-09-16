@@ -2,6 +2,7 @@
 // 25 FX
 require_once 'utils/_utils.php';
 init_page_serversides();
+$excelfilename = buildExcelFilename('Kosten_Änderungen');
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
@@ -10,7 +11,8 @@ init_page_serversides();
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="../Logo/iphone_favicon.png">
+    <link rel="icon" href="Logo/iphone_favicon.png">
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -32,7 +34,7 @@ init_page_serversides();
                 <div class="col-xxl-6">
                     <b>Raumbuchänderungen</b>
                 </div>
-                <div class="col-xxl-6 d-inline-flex justify-content-end align-items-center" id="CardHeader"> &emsp;
+                <div class="col-xxl-6 d-inline-flex justify-content-end align-items-center g-1" id="CardHeader"> &emsp;
                     <i class='fas fa-hourglass-start'>=Vorher</i> &emsp;
                     <i class='fas fa-hourglass-end'>=Nachher</i> &emsp;
                 </div>
@@ -170,11 +172,13 @@ init_page_serversides();
             </div>
         </div>
     </div>
+    <script src='utils/_utils.js'></script>
     <script>
-        // Tabellen formatieren
+        const $excelfilename = <?= json_encode($excelfilename) ?>;
         $(document).ready(function () {
             new DataTable('#tableCostChanges', {
                 paging: true,
+                pagelength: 15,
                 pagingType: "full_numbers",
                 info: true,
                 order: [[4, "desc"]],
@@ -191,12 +195,15 @@ init_page_serversides();
                     bottomStart: ['info', 'buttons', 'pageLength', 'search']
                 },
                 buttons: [
-                    'excel', 'copy', 'csv'
+                    {
+                        extend: 'excel',
+                        text: '<i class="fas fa-file-excel"></i> Excel',
+                        className: 'btn btn-success btn-sm',
+                        title: "Kosten Änderungen",
+                        filename: $excelfilename,
+                    }, 'copy', 'csv'
                 ], initComplete: function () {
-                    $('.dt-buttons button').addClass("me-1 ms-1 btn-sm btn-dark text-light");
-                    $('.dt-buttons').appendTo('#CardHeader');
-                    $('.dt-search input').addClass("btn btn-sm btn-outline-dark");
-                    $('.dt-search').children().removeClass('form-control form-control-sm').addClass("d-flex align-items-center").appendTo('#CardHeader');
+                    relocateControls(this.api(), '#CardHeader');
                 }
             });
         });

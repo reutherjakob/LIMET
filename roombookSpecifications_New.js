@@ -17,19 +17,13 @@ var tableRoomElements;  // tableRoomElements  && hideZeroFilter required for: ge
 let btnCache = {};
 
 $(document).ready(function () {
-    fetch('get_project_id.php')
-        .then(response => response.json())
-        .then(data => {
-            projectID = data.projectID;
-            sessionProjectName = data.projectName;
+    projectID = $projectID;
+    sessionProjectName = $projectName;
 
-            // ✅ Erst hier, INNERHALB des .then(), aufrufen:
-            loadSettings();
-            init_dt();
-        })
-        .catch(error => console.error('Error:', error));
+    loadSettings();
+    init_dt();
 
-    // Diese brauchen projectID nicht → bleiben draußen:
+
     init_showRoomElements_btn();
     table_click();
     handleCheckboxChange();
@@ -170,6 +164,7 @@ function init_btn_4_dt() {
             className: 'btn btn-light border-secondary fas fa-file-excel',
             text: "",
             titleAttr: "Download as Excel",
+            filename: $excelfilename,
             exportOptions: {
                 columns: function (idx) {
                     const idIndex = columnsDefinition.findIndex(col => col.data === 'idTABELLE_Räume');
@@ -177,7 +172,6 @@ function init_btn_4_dt() {
                 }
             },
             customize: function (xlsx) {
-                // Kopfzeile entfernen
                 const sheet = xlsx.xl.worksheets['sheet1.xml'];
                 const rows = sheet.querySelectorAll('row');
                 if (rows.length > 0) {
@@ -191,14 +185,6 @@ function init_btn_4_dt() {
                     });
                 }
             },
-            action: async function (e, dt, node, config) {
-                try {
-                    config.filename = await getExcelFilename('Raumbuch', {projectID});
-                } catch (err) {
-                    config.filename = 'Raumbuch_Export';
-                }
-                $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, node, config);
-            }
         },
     ];
 
@@ -373,6 +359,7 @@ function loadSettings() {
     change_top_label_visibility(getCookieValue('settings_show_btn_grp_labels'));
     document.getElementById('settings_save_state_4all_projects').checked = getCookieValue('settings_save_state_4all_projects');
     document.getElementById('settings_save_state').checked = getCookieValue('settings_save_state' + projectID);
+
     document.getElementById('settings_save_edit_cbx').checked = getCookieValue('settings_save_edit_cbx');
     document.getElementById('checkbox_EditableTable').checked = getCookieValue('settings_save_edit_cbx');
     $('#settings_show_btn_grp_labels').change(function () {
@@ -443,7 +430,7 @@ function html_2_plug_into_edit_cell(dataIdentifier) {
             "Gentechnikgesetz - S2",
             "Gentechnikgesetz - S3",
             "Gentechnikgesetz - S4",
-            "BSL1","BSL2","BSL3"
+            "BSL1", "BSL2", "BSL3"
         ],
         "H6020": [
             " - ",
@@ -760,15 +747,33 @@ function copySelectedRow() {
 }
 
 
-function updateButtonClass(button, table, startColumn, endColumn) {
-    const columns = table.columns().indexes();
-    let vis = table.column(columns[endColumn]).visible();
-    if (vis) {
-        $(button).removeClass('btn_invis');
-        $(button).addClass('btn_vis');
-    } else {
-        $(button).removeClass('btn_vis');
-        $(button).addClass('btn_invis');
-    }
+// function updateButtonClass(button, table, startColumn, endColumn) {
+//     const columns = table.columns().indexes();
+//     let vis = table.column(columns[endColumn]).visible();
+//     if (vis) {
+//         $(button).removeClass('btn_invis');
+//         $(button).addClass('btn_vis');
+//     } else {
+//         $(button).removeClass('btn_vis');
+//         $(button).addClass('btn_invis');
+//     }
+// }
+
+
+// SearchBuilder: "Data"-Dropdown alphabetisch sortieren
+function sortSbDataSelect(sel) {
+    const opts = Array.from(sel.options);
+    if (opts.length < 3) return;              // Titel + <2 Einträge -> nichts zu tun
+    const rest = opts.slice(1);               // erste Option ist der Platzhalter -> bleibt oben
+    const sorted = rest.slice().sort((a, b) =>
+        a.text.localeCompare(b.text, 'de', {sensitivity: 'base'})
+    );
+    // schon sortiert? -> nichts tun (verhindert Endlosschleife im Observer)
+    if (rest.every((o, i) => o === sorted[i])) return;
+    sorted.forEach(o => sel.appendChild(o));  // appendChild verschiebt die Knoten (behält origData!)
 }
+
+new MutationObserver(() => {
+    document.querySelectorAll('select.dtsb-data').forEach(sortSbDataSelect);
+}).observe(document.body, {childList: true, subtree: true});
 

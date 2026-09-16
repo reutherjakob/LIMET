@@ -1,5 +1,5 @@
 <?php
-// addBudget.php — neues Projektbudget anlegen
+// addBudget.php
 require_once 'utils/_utils.php';
 check_login();
 

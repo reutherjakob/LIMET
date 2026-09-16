@@ -35,15 +35,15 @@ echo "<table class='table table-striped table-bordered table-sm table-hover bord
 
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
-    echo "<td>" . htmlspecialchars($row["idTABELLE_Ansprechpersonen"]?? '' ) . "</td>";
-    echo "<td>" . htmlspecialchars($row["Name"]?? '') . "</td>";
-    echo "<td>" . htmlspecialchars($row["Vorname"]?? '') . "</td>";
-    echo "<td>" . htmlspecialchars($row["Tel"]?? '') . "</td>";
-    echo "<td>" . htmlspecialchars($row["Adresse"]?? '') . "</td>";
-    echo "<td>" . htmlspecialchars($row["PLZ"]?? '') . "</td>";
-    echo "<td>" . htmlspecialchars($row["Ort"]?? '') . "</td>";
-    echo "<td>" . htmlspecialchars($row["Land"]?? '') . "</td>";
-    echo "<td>" . htmlspecialchars($row["Mail"]?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["idTABELLE_Ansprechpersonen"] ?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["Name"] ?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["Vorname"] ?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["Tel"] ?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["Adresse"] ?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["PLZ"] ?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["Ort"] ?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["Land"] ?? '') . "</td>";
+    echo "<td>" . htmlspecialchars($row["Mail"] ?? '') . "</td>";
     echo "</tr>";
 }
 echo "</tbody></table>";
@@ -53,8 +53,8 @@ $mysqli->close();
 ?>
 
 <script>
-    $(document).ready(function() {
-        const table = $('#tablePersonsNotInProject').DataTable({
+    $(document).ready(function () {
+        const tablePNIP = $('#tablePersonsNotInProject').DataTable({
             columnDefs: [
                 {
                     targets: [0],
@@ -71,21 +71,24 @@ $mysqli->close();
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
                 search: ""
+            },
+            initComplete: function () {
+                relocateControls(this.api(), '#NichtBeteiligtePersonenCardHeader');
             }
         });
 
-        $('#tablePersonsNotInProject tbody').on('click', 'tr', function() {
+        $('#tablePersonsNotInProject tbody').on('click', 'tr', function () {
             if ($(this).hasClass('selected')) {
-                table.row(this).deselect();
+                tablePNIP.row(this).deselect();
             } else {
-                table.rows('.selected').deselect();
-                table.row(this).select();
-                const personID = table.row(this).data()[0];
+                tablePNIP.rows('.selected').deselect();
+                tablePNIP.row(this).select();
+                const personID = tablePNIP.row(this).data()[0];
                 $.ajax({
                     url: `getAddPersonToProjectField.php`,
-                    data: { personID: personID },
+                    data: {personID: personID},
                     type: 'POST',
-                    success: function(data) {
+                    success: function (data) {
                         $("#addPersonToProject").html(data);
                     }
                 });

@@ -109,7 +109,11 @@ $NB_RESULT_FIELDS = [
     ['luftf', 'Besondere Luftfeuchtigkeit', 'B', 'luftf_kommentar'],
     ['allgemeiner_kommentar', 'Kommentar zum Raum', 'T', null],
 ];
-
+/* ── Räume, deren Raumtyp nach der Abfrage geändert wurde ─────────────────── */
+$NB_RAUMTYP_GEAENDERT = array_flip([
+    '247', '264', '265', '266', '267', '268', '269', '274',
+    '281', '282', '283', '286', '329', '330', '350', '382', '606',
+]);
 /* ── "nicht abgefragt"-Logik (identisch zu ergebnisse.php) ────────────────── */
 $baseFormFields = $formFields;
 $baseHidden = [];
@@ -474,12 +478,20 @@ if (empty($rows)) {
             . ' &nbsp;·&nbsp; Trakt: ' . ($trakt !== '' ? $trakt : '–')
             . ' &nbsp;·&nbsp; Ebene: ' . ($ebene !== '' ? $ebene : '–')
             . ' &nbsp;·&nbsp; NF: ' . ($nf !== '' ? $nf . ' m²' : '–');
+// Hinweis, falls Raumtyp nach der Abfrage geändert wurde
+        $raumnrKey = trim((string)($row['raumnr'] ?? ''));
+        $hinweisGeaendert = isset($NB_RAUMTYP_GEAENDERT[$raumnrKey])
+            ? '<br><span style="font-size:7pt; font-style:italic;">'
+            . 'Hinweis: Der Raumtyp dieses Raums wurde nach der Abfrage mit der Rückmeldung zu VE01 lt. Nutzerwunsch geändert.'
+            . '</span>'
+            : '';
+
         $html .= '<tr><td colspan="2" bgcolor="' . $HEX['primary'] . '" style="color:#FFFFFF;">'
             . '<b>Raum ' . ($raumnr !== '' ? $raumnr : '—') . '</b>'
             . ($kat !== '' ? ' &nbsp;&nbsp; ' . $kat : '')
             . '<br><span style="font-size:7.5pt;">' . $meta . '</span>'
+            . $hinweisGeaendert
             . '</td></tr>';
-
         // Wert-Zeilen (nur abgefragte Felder)
         $i = 0;
         foreach ($NB_RESULT_FIELDS as [$field, $label, $type, $commentField]) {

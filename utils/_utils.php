@@ -26,8 +26,6 @@ function init_page_serversides($ommit_redirect = "", $noscroll = ""): void
     if ($ommit_redirect == "") {
         check_if_project_selected_else_redirect();
     }
-
-
     load_nav_bar();
     if ($noscroll == "") {
         include '_scrollUpBtn.php';
@@ -105,13 +103,13 @@ function utils_connect_sql()
 function load_nav_bar(): void
 {
     echo '<script>';
-    echo 'var isDarkMode = ' . (($_SESSION['darkmode'] ?? false) ? 'true' : 'false') . ';';
     echo 'window.onload = function () {';
     echo '    jQuery.get("/utils/navbar.html", function (data) {';
     echo '        jQuery("#limet-navbar").html(data);';
     echo '        jQuery(".navbar-nav").find("li:nth-child(3)").addClass("active");';
     echo '        jQuery("#projectSelected").text(currentP);';
-//     echo '       document.getElementById("darkModeToggle").checked = isDarkMode;';
+    //     echo 'var isDarkMode = ' . (($_SESSION['darkmode'] ?? false) ? 'true' : 'false') . ';';
+    //     echo '       document.getElementById("darkModeToggle").checked = isDarkMode;';
     echo '    });';
     echo '};';
     echo '</script>';
@@ -169,12 +167,17 @@ function getPostArrayInt(string $key, array $default = []): array
     return $output;
 }
 
-
-function include_theme_css(): void
+function buildExcelFilename(string $documentName, array $options = []): string     // bewusst OHNE .xlsx
 {
-    if ($_SESSION['darkmode'] ?? false) {
-        echo '<link rel="stylesheet" href="/css/dark_theme.css"/>';
-    } else {
-        echo '<link rel="stylesheet" href="/css/light_theme.css"/>';
-    }
+    $parts = array_filter([
+        trim($_SESSION['projectName'] ?? 'PROJECT'),
+        trim($_SESSION['projectPlanungsphase'] ?? ''),
+        trim($options['placeholder'] ?? ''),
+        trim($options['department'] ?? 'GPMT'),
+        $documentName,
+        trim($options['date'] ?? date('Y-m-d')),
+    ], fn($p) => $p !== '');           // filtert leere Teile raus -> keine "__"
+
+    return preg_replace('/[\/:*?"<>|]+/', '', implode('_', $parts));
+
 }

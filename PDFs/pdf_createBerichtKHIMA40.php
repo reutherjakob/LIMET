@@ -117,7 +117,7 @@ $outputparameter = [
         "fields" => [
             ["name" => "Klasse H6020/ ISO 14644", "fetch_data" => "sql", "dataname" => "H6020"],
             ["name" => "Luftwechselrate [1/h]", "fetch_data" => "sql", "dataname" => "HT_Luftwechsel 1/h"],
-         #   ["name" => "Reinraumklasse ISO 14644", "fetch_data" => "sql", "dataname" => "GMP"],
+            #   ["name" => "Reinraumklasse ISO 14644", "fetch_data" => "sql", "dataname" => "GMP"],
             ["name" => "Luftmenge Zuluft [m3/h]", "fetch_data" => "sql", "dataname" => "HT_Luftmenge m3/h"],
             ["name" => "Luftmenge Abluft [m3/h]", "fetch_data" => "sql", "dataname" => "HT_Luftmenge Abluft m3/h"],
             ["name" => "Raumtemperatur Sommer [°C]", "fetch_data" => "sql", "dataname" => "HT_Raumtemp Sommer °C"],
@@ -139,7 +139,7 @@ $outputparameter = [
         "title" => "Medizintechnik",
         "layout" => "elements_list",  // Neuer Layout-Typ
         "sql_query" => $sql_elemente,  // Separate SQL Query
-        "fields" => [ ]
+        "fields" => []
     ],
 
 
@@ -303,7 +303,7 @@ foreach ($teile as $valueOfRoomID) {
                         $pdf->MultiCell(5, 5, "", 0, 0, 'L', 0);
 
 
-                        if ($index % 2 > 0 &&isset($section['fields'][$index + 1])) {
+                        if ($index % 2 > 0 && isset($section['fields'][$index + 1])) {
                             $pdf->Ln();
                             if ($text2big) {
                                 $pdf->Ln(5);
@@ -372,8 +372,8 @@ foreach ($teile as $valueOfRoomID) {
                                 $pdf->MultiCell(75, 5, 'Element', "B", 'L', 0, 0);
                                 $pdf->Ln();
                             }
-                            $pdf->MultiCell(5, 5, $elem['Anzahl'], 0, 'C', 0, 0);
-                            $pdf->MultiCell(85, 5, $elem['Bezeichnung'], 0, 'L', 0, 0);
+                            $pdf->MultiCell(15, 5, $elem['Anzahl'], 0, 'C', 0, 0);
+                            $pdf->MultiCell(75, 5, $elem['Bezeichnung'], 0, 'L', 0, 0);
                             if ($counter % 2 > 0) {
                                 $pdf->Ln();
                             }
@@ -382,14 +382,15 @@ foreach ($teile as $valueOfRoomID) {
                     }
                 } else {
                     $pdf->SetFont('helvetica', '', 8);
-                    $pdf->MultiCell(0, 5, 'Keine Elemente für diesen Raum erfasst.', 0, 'L', 0,0);
+                    $pdf->MultiCell(0, 5, 'Keine Elemente für diesen Raum erfasst.', 0, 'L', 0, 0);
                 }
                 $pdf->Ln();
                 $pdf->SetLineWidth(0.1);
                 $pdf->Line(15, $pdf->GetY(), 195, $pdf->GetY());
                 $pdf->SetLineWidth(0.4);
             }
-        }      $pdf->AddPage('P', 'A4');
+        }
+        $pdf->AddPage('P', 'A4');
     }
 }
 

@@ -26,7 +26,7 @@ $horizontalSpacerLN = 4;
 $horizontalSpacerLN2 = 6;
 $horizontalSpacerLN3 = 8;
 
-$e_C = $SB / 8;
+$e_C = ($SB / 8)+6  ;
 $e_C_3rd = $e_C / 3;
 $e_C_2_3rd = $e_C - $e_C_3rd;
 
@@ -132,7 +132,7 @@ $allgemeinParams = [
 
 $elektroParams = [
     // ['key' => 'USV',           'label' => 'USV: ',        'unit' => '', 'cell' => $e_C, 'str_cell' => $e_C_3rd  , 'type' => 'hackerl', 'check' => 'JA'],
-    ['key' => 'ET_Anschlussleistung_W', 'label' => 'Leistung:', 'unit' => 'W', 'cell' => $e_C, 'str_cell' => $e_C_2_3rd, 'isnotVorentwurf' => false],
+    ['key' => 'ET_Anschlussleistung_W', 'label' => 'Leistung (ohne GLZ):', 'unit' => 'W', 'cell' => $e_C, 'str_cell' => $e_C_2_3rd, 'isnotVorentwurf' => false],
     ['key' => 'ET_Anschlussleistung_AV_W', 'label' => 'AV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C, 'str_cell' => $e_C_2_3rd, 'isnotVorentwurf' => false],
     ['key' => 'ET_Anschlussleistung_SV_W', 'label' => 'SV(Rauml.): ', 'unit' => 'W', 'cell' => $e_C, 'str_cell' => $e_C_2_3rd, 'isnotVorentwurf' => false],
     ['key' => 'IT Anbindung', 'label' => 'IT Anschl.: ', 'unit' => '', 'cell' => $e_C, 'str_cell' => $e_C_3rd, 'type' => 'hackerl', 'check' => 'JA', 'ln_after' => true],

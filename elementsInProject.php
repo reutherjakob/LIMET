@@ -33,7 +33,7 @@
             <div class="row d-flex align-items-center justify-content-between">
                 <div class="col-2"><strong> Elemente im Projekt</strong>
                 </div>
-                <div class="col-10 d-flex align-items-center justify-content-end" id="target_div">
+                <div class="col-8 d-flex align-items-center justify-content-end">
                     <div class="me-4 d-flex " id="hide0Wrapper_ELiNpR">
                         <input class="btn-check btn-sm" type="checkbox" id="hideZeroRows_ELiNpR">
                         <label class="btn btn-sm btn-outline-dark" for="hideZeroRows_ELiNpR">
@@ -48,16 +48,9 @@
                         <button type='button' class='btn btn-outline-dark  me-1' id='createElementListWithPricePDF'>
                             <i class='far fa-file-pdf'></i> El.liste & Preis
                         </button>
-                        <!--button type='button' class='btn btn-outline-dark  me-1' id='createElementEinbringwegePDF'>
-                            <i class='far fa-file-pdf'></i> Einbringwege
-                        </button>
-                        <button type='button' class='btn btn-outline-dark  me-1' id='createElementEinbringwegePDF2'>
-                            <i class='far fa-file-pdf'></i> Einbringwege2
-                        </button-->
-
                     </div>
-                    <div class="me-4 d-flex " id="sbdiv"></div>
                 </div>
+                <div class="col-2 d-flex align-items-center justify-content-end" id="target_div"></div>
             </div>
         </div>
 
@@ -187,7 +180,10 @@
             }
             echo "</tbody></table>";
             $mysqli->close();
+
+            $excelfilename = buildExcelFilename('Elemente_im_Projekt');
             ?>
+
         </div>
     </div>
 
@@ -273,6 +269,8 @@
     var tableElementsInProject;
     var tableRoomsWithElement; // for getRoomsWithElement1
 
+    const $excelfilename = <?= json_encode($excelfilename) ?>;
+
     $(document).ready(function () {
         tableElementsInProject = new DataTable('#tableElementsInProject', {
             paging: true,
@@ -310,7 +308,8 @@
                         columns: ':not(:nth-child(6))'
                     },
                     text: '<i class="fas fa-file-excel"></i> Excel',
-                    className: 'btn-sm btn-light btn-outline-dark me-2'
+                    className: 'btn-sm btn-light btn-outline-dark me-2',
+                    filename: $excelfilename
                 },
                 {
                     extend: 'searchBuilder',
@@ -321,16 +320,7 @@
             ],
             compact: true,
             initComplete: function () {
-                $('.dt-search label').remove();
-                $('.dt-search').children()
-                    .removeClass('form-control form-control-sm')
-                    .addClass("btn btn-sm btn-outline-dark")
-                    .appendTo('#target_div');
-
-                setTimeout(function () {
-                    tableElementsInProject.buttons().container().appendTo('#target_div .btn-group');
-                    // ← Remove the separate Buttons instantiation entirely
-                }, 100);
+                relocateControls(this.api(), '#target_div');
             }
         });
 

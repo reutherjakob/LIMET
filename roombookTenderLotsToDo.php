@@ -1,6 +1,8 @@
 <?php
 require_once "utils/_utils.php";
 init_page_serversides();
+
+$excelfilename = buildExcelFilename('Lose_To_do');
 ?>
 
 <!DOCTYPE html>
@@ -330,6 +332,7 @@ init_page_serversides();
 <script>
     let tableTodos;
     let currentEditId = null;
+    const $excelfilename = <?= json_encode($excelfilename) ?>;
 
     // ── Hilfsfunktionen ───────────────────────────────────────────────────
     const TODO_TYP_LABELS = {
@@ -589,6 +592,7 @@ init_page_serversides();
             buttons: [
                 {
                     extend: 'excel',
+                    filename: $excelfilename,
                     text: 'Excel',
                     className: 'btn btn-success btn-sm d-none',
                     exportOptions: {columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]}

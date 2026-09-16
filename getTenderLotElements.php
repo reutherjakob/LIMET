@@ -2,6 +2,7 @@
 // 26 FX
 require_once 'utils/_utils.php';
 check_login();
+
 $mysqli = utils_connect_sql();
 $losID = getPostInt('lotID');
 $projectID = (int)$_SESSION["projectID"];
@@ -97,19 +98,40 @@ while ($row = $result->fetch_assoc()) {
 }
 echo "</tbody></table>";
 $mysqli->close();
+$excelfilename2 = buildExcelFilename('Elemente-im-Los');
+//$excelfilename3 = buildExcelFilename('Verortungsliste');
+
 ?>
 <script src="utils/_utils.js"></script>
 
 <script charset="utf-8" type="module">
-    const { default: CustomPopover } = await import('./utils/_popover.js');
+    const {default: CustomPopover} = await import('./utils/_popover.js');
 
     var tableLotElements1;
-    if (typeof excelfilename2 === "undefined") {
-        var excelfilename2;
+    const excelfilename2 = <?= json_encode($excelfilename2) ?>;
+
+    // --- "Nuller ausblenden" -------------------------------------------------
+    // Status wird pro Nutzer gemerkt. Standard: Nuller ausgeblendet.
+    // (In localStorage den Wert 'false' setzen, um sie standardmaessig zu zeigen.)
+    window.lotHideZero = localStorage.getItem('lotHideZeroSetting') !== 'false';
+
+    // Globalen DataTables-Filter genau EINMAL registrieren. getTenderLotElements.php
+    // wird bei jedem Losklick neu ausgefuehrt – ohne diesen Guard wuerde sich der
+    // Filter bei jedem Reload erneut stapeln.
+    if (!window.__lotHideZeroFilterBound) {
+        window.__lotHideZeroFilterBound = true;
+        $.fn.dataTable.ext.search.push(function (settings, data) {
+            if (settings.nTable.id !== 'tableLotElements1') return true; // nur diese Tabelle
+            if (!window.lotHideZero) return true;                        // Filter aus -> alles zeigen
+            return parseInt(data[3], 10) !== 0;                          // Spalte 3 = Stk
+        });
     }
 
-    if (typeof excelfilename3 === "undefined") {
-        var excelfilename3;
+    // Beschriftung des Toggle-Buttons je nach aktuellem Status.
+    function lotHideZeroText() {
+        return window.lotHideZero
+            ? "<i class='fas fa-eye-slash'></i> Nuller ausgeblendet"
+            : "<i class='fas fa-eye'></i> Nuller eingeblendet";
     }
 
     $(document).ready(function () {
@@ -120,9 +142,9 @@ $mysqli->close();
 
                 $.ajax({
                     url: 'saveTenderComment.php',
-                    data: { comment: newText, id: id },
+                    data: {comment: newText, id: id},
                     type: 'POST',
-                    success: function(data) {
+                    success: function (data) {
                         const btn = $(`.comment-btn[id='${id}']`);
                         if (newText.trim() === '') {
                             btn.removeClass('btn-outline-dark').addClass('btn-outline-secondary');
@@ -137,112 +159,135 @@ $mysqli->close();
                             makeToaster(data.trim(), true);
                         }
                     },
-                    error: function() {
+                    error: function () {
                         alert("Fehler beim Speichern des Kommentars.");
                     }
                 });
             }
         });
 
-        getExcelFilename('Elemente-im-Los')
-            .then(filename => {
-                excelfilename2 = filename;
-                getExcelFilename('Verortungsliste')
-                    .then(filename => {
-                        excelfilename3 = filename;
-                        tableLotElements1 = new DataTable('#tableLotElements1', {
-                            dom: '<"#topDiv.top-container d-flex"<"col-md-6 justify-content-start"B><"#topDivSearch2.col-md-6"f>>t<"bottom d-flex" <"col-md-6 justify-content-start"i><"col-md-6 d-flex align-items-center justify-content-end"lp>>',
-                            columnDefs: [
-                                {
-                                    targets: [0, 1, 2],
-                                    visible: false,
-                                    searchable: false
-                                }
-                            ],
-                            searching: true,
-                            info: true,
-                            paging: true,
-                            select: true,
-                            order: [[3, 'asc']],
-                            pagingType: 'simple',
-                            lengthChange: false,
-                            pageLength: 10,
-                            language: {
-                                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
-                                search: "",
-                                searchPlaceholder: "Suche..."
-                            },
-                            buttons: [
-                                {
-                                    extend: 'excel',
-                                    text: ' Excel',
-                                    className: "btn btn-success fas fa-file-excel me-1 ms-1",
-                                    title: excelfilename2,
-                                    exportOptions: {
-                                        columns: ':gt(2)',
-                                        modifier: {
-                                            page: 'all'
-                                        }
-                                    }
-                                },
-                                {
-                                    text: 'Elementliste PDF',
-                                    className: "btn btn-md bg-white btn-outline-secondary fas fa-file-pdf me-1 ms-1",
-                                    action: function () {
-                                        var lotID = <?php echo json_encode($losID); ?>;
-                                        var projectID = <?php echo json_encode($projectID); ?>;
 
-                                        var form = $('<form>', {
-                                            'method': 'POST',
-                                            'action': 'PDFs/pdf_createLotElementListPDF.php',
-                                            'target': '_blank',
-                                            'style': 'display: none;'
-                                        }).appendTo('body');
+        tableLotElements1 = new DataTable('#tableLotElements1', {
+            layout: {
+                topStart: 'buttons',   // Buttons regulaer erzeugen ...
+                topEnd: 'search',      // ... Suche regulaer erzeugen ...
+                bottomStart: 'info',
+                bottomEnd: 'paging'
+            },
+            columnDefs: [
+                {
+                    targets: [0, 1, 2],
+                    visible: false,
+                    searchable: false
+                }
+            ],
+            searching: true,
+            info: true,
+            paging: true,
+            select: true,
+            order: [[3, 'asc']],
+            pagingType: 'simple',
+            lengthChange: false,
+            pageLength: 10,
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                search: "",
+                searchPlaceholder: "Suche..."
+            },
+            buttons: [
+                {
+                    // Nuller (Stk = 0) ein-/ausblenden
+                    text: lotHideZeroText(),
+                    className: "btn btn-sm btn-outline-dark bg-light me-1 ms-1 rounded-2",
+                    action: function (e, dt, node) {
+                        window.lotHideZero = !window.lotHideZero;
+                        localStorage.setItem('lotHideZeroSetting', window.lotHideZero ? 'true' : 'false');
+                        dt.button(node).text(lotHideZeroText());
+                        dt.draw();
+                    }
+                }, {
+                    text: 'Elementliste PDF',
+                    className: "btn btn-md bg-white btn-outline-secondary fas fa-file-pdf me-1 ms-1 rounded-2",
+                    action: function () {
+                        var lotID = <?php echo json_encode($losID); ?>;
+                        var projectID = <?php echo json_encode($projectID); ?>;
 
-                                        form.append($('<input>', {
-                                            'type': 'hidden',
-                                            'name': 'lotID',
-                                            'value': lotID
-                                        }));
+                        var form = $('<form>', {
+                            'method': 'POST',
+                            'action': 'PDFs/pdf_createLotElementListPDF.php',
+                            'target': '_blank',
+                            'style': 'display: none;'
+                        }).appendTo('body');
 
-                                        form.append($('<input>', {
-                                            'type': 'hidden',
-                                            'name': 'projectID',
-                                            'value': projectID
-                                        }));
+                        form.append($('<input>', {
+                            'type': 'hidden',
+                            'name': 'lotID',
+                            'value': lotID
+                        }));
 
-                                        form.submit();
-                                        form.remove();
-                                    }
-                                }
-                            ]
-                        });
+                        form.append($('<input>', {
+                            'type': 'hidden',
+                            'name': 'projectID',
+                            'value': projectID
+                        }));
 
-                        $('#tableLotElements1 tbody').on('click', 'tr', function () {
-                            let elementID = tableLotElements1.row($(this)).data()[2];
-                            let variantenID = tableLotElements1.row($(this)).data()[1];
-                            let id = tableLotElements1.row($(this)).data()[0];
-                            let stk = tableLotElements1.row($(this)).data()[3];
-                            $.ajax({
-                                url: "getVariantenParameters.php",
-                                data: {"variantenID": variantenID, "elementID": elementID},
-                                type: "POST",
-                                success: function (data) {
-                                    $("#elementsvariantenParameterInLot").html(data);
-                                    $("#elementsvariantenParameterInLot").show();
-                                    $.ajax({
-                                        url: "getElementBestand.php",
-                                        data: {"id": id, "stk": stk},
-                                        type: "POST",
-                                        success: function (data) {
-                                            $("#elementBestand").html(data);
-                                            $("#elementBestand").show();
-                                        }
-                                    });
-                                }
-                            });
-                        });
+                        form.submit();
+                        form.remove();
+                    }
+                },
+                {
+                    extend: 'excel',
+                    className: "btn btn-success rounded-2 fas fa-file-excel me-1 ms-1",
+                    filename: excelfilename2,   // Downloadname (ohne Endung, DataTables hängt .xlsx an)
+                    exportOptions: {
+                        columns: ':gt(2)',
+                        modifier: {
+                            page: 'all'
+                        }
+                    }
+                }
+
+            ],
+            initComplete: function () {
+
+                relocateControls(this.api(), '#elementsInLotCardHeader');
+                //    const $header = $('#elementsInLotCardHeader')
+                //        .empty();
+                //    const $wrapper = $('#elementsInLot');
+
+                //    $wrapper.find('div.dt-search label').remove();
+                //    $wrapper.find('div.dt-search input').addClass('form-control-sm');
+                //    $wrapper.find('div.dt-buttons').appendTo($header);   // Buttons
+                //    $wrapper.find('div.dt-search').appendTo($header);    // Suchleiste
+            }
+        });
+
+
+
+        $('#tableLotElements1 tbody').on('click', 'tr', function () {
+            let elementID = tableLotElements1.row($(this)).data()[2];
+            let variantenID = tableLotElements1.row($(this)).data()[1];
+            let id = tableLotElements1.row($(this)).data()[0];
+            let stk = tableLotElements1.row($(this)).data()[3];
+            $.ajax({
+                url: "getVariantenParameters.php",
+                data: {"variantenID": variantenID, "elementID": elementID},
+                type: "POST",
+                success: function (data) {
+                    $("#elementsvariantenParameterInLot").html(data);
+                    $("#elementsvariantenParameterInLot").show();
+                    $.ajax({
+                        url: "getElementBestand.php",
+                        data: {"id": id, "stk": stk},
+                        type: "POST",
+                        success: function (data) {
+                            $("#elementBestand").html(data);
+                            $("#elementBestand").show();
+                        }
                     });
+                }
             });
+        });
     });
+
 </script>

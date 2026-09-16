@@ -78,38 +78,17 @@ function loadPivotTable(params = {}) {
                         extend: 'excelHtml5',
                         text: '<i class="fas fa-file-excel"></i> Excel',
                         className: 'btn btn-success btn-sm',
-                        title: "PivotTableExport"
+                        title: "PivotTableExport",
+                        filename: $excelfilename,
                     }
                 ],
                 initComplete: function () {
-                    $('#CardHeaderHoldingDatatableManipulators').empty();
+                    relocateControls(this.api(), '#CardHeaderHoldingDatatableManipulators');
                     $('#CardHeaderHoldingDatatableManipulators2').empty();
-                    $('#pivotTable_wrapper .dt-buttons').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators');
                     $('#pivotTable_wrapper .dt-length').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
                     $('#pivotTable_wrapper .dt-info').addClass("btn btn-sm").addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
                     $('#pivotTable_wrapper .dt-paging').addClass("btn btn-sm").appendTo('#CardHeaderHoldingDatatableManipulators2');
                     $('#pivotTable_wrapper .dt-search label').remove();
-                    $('#pivotTable_wrapper  .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#CardHeaderHoldingDatatableManipulators');
-
-
-                    //For debugging
-                    // $('#pivotTable').off('click', 'td').on('click', 'td', function () {
-                    //     const cell = $(this);
-                    //     const table = $('#pivotTable').DataTable();            // DataTable cell/row/col index
-                    //     const cellIdx = table.cell(this).index();            // Row and column indices (zero-based)
-                    //     const rowIdx = cellIdx.row;
-                    //     const colIdx = cellIdx.column;                          // Get raw data for this row and column
-                    //     const cellData = table.cell(cell).data();
-                    //     const rowData = table.row(rowIdx).data();            // Get the header text for this column
-                    //     const headerText = $(table.column(colIdx).header()).text().trim();
-                    //     const dataRoomId = cell.data('room-id');
-                    //     const dataElementId = cell.data('element-id');
-                    //     const idTABELLE_Räume_has_tabelle_Elemente = cell.data('relation-id')
-                    //     console.log(' --- PIVOT CLICK --- \n Cell Value:', cellData, 'Column:', colIdx, '(', headerText, ')', 'Row:', rowIdx, rowData);
-                    //     if (dataRoomId && dataElementId && idTABELLE_Räume_has_tabelle_Elemente) {
-                    //         console.log('Room ID:', dataRoomId, 'Element ID:', dataElementId, 'relation ID:', idTABELLE_Räume_has_tabelle_Elemente);
-                    //     }
-                    // });
                 }
             });
         },

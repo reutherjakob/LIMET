@@ -30,15 +30,19 @@
 
 <div id="limet-navbar"></div>
 <?php require_once 'utils/_utils.php';
-init_page_serversides(""); ?>
+init_page_serversides("");
+$excelfilename = buildExcelFilename('Element_Aenderungen');
+?>
 <div class="container-fluid">
     <div class="row row-cols-2">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col-4 d-flex ">
+                        <div class="col-4 d-flex align-items-center">
                             <span><strong> Übersicht RB Änderungen</strong> &emsp;</span>
+                        </div>
+                        <div class="col-6 d-flex align-items-center justify-content-end">
                             <div class="me-2">
                                 <label for="dateSelect" class="visually-hidden">Änderungsdatum</label>
                                 <input type="date" id="dateSelect" name="dateSelect"
@@ -48,7 +52,7 @@ init_page_serversides(""); ?>
                                        data-bs-custom-class="custom-tooltip"/>
                             </div>
                         </div>
-                        <div class="col-8 d-flex align-items-top justify-content-end" id="CardHeaderSub">
+                        <div class="col-2 d-flex align-items-center justify-content-end" id="CardHeaderSub">
                         </div>
                     </div>
                 </div>
@@ -86,12 +90,10 @@ init_page_serversides(""); ?>
     </div>
 </div>
 
-
+<script src="utils/_utils.js"></script>
 <script>
+    const $excelfilename = <?= json_encode($excelfilename) ?>;
 
-    // FIX: `this` (and the original arguments) must be forwarded to the debounced
-    // function. Calling `func(...args)` bare made `this` === window inside the
-    // handler, so `$(this).val()` blew up with "t.nodeName is undefined".
     function debounce(func, wait) {
         let timeout;
         return function executedFunction(...args) {
@@ -108,7 +110,6 @@ init_page_serversides(""); ?>
     $(document).ready(function () {
         const DEFAULT_DATE = '2024-01-01';
 
-        // FIX: seed oldValue so the first change is compared against something real
         $('#dateSelect').val(DEFAULT_DATE).data('oldValue', DEFAULT_DATE);
 
         const rbChangeTable = $('#rbChangeTable').DataTable({
@@ -155,9 +156,11 @@ init_page_serversides(""); ?>
                 },
                 {
                     extend: 'excel',
+                    filename: $excelfilename,
                     text: '<i class="fas fa-file-excel"></i>',
                     titleAttr: 'Excel Export',
                     className: 'btn btn-sm btn-outline-dark bg-white'
+
                 },
                 {
                     extend: 'pdf',
@@ -172,15 +175,8 @@ init_page_serversides(""); ?>
                     className: 'btn btn-sm btn-outline-dark bg-white'
                 }
             ], initComplete: function () {
-                $('.dt-search label').remove();
-                $('.dt-search').children()
-                    .removeClass('form-control form-control-sm')
-                    .addClass("btn btn-sm btn-outline-dark bg-white")
-                    .appendTo('#CardHeaderSub');
+                relocateControls(this.api(), '#CardHeaderSub');
 
-                // ganzen wrapper verschieben, nicht nur children (wichtig für colvis)
-                $('#rbChangeTable_wrapper .dt-buttons')
-                    .appendTo('#CardHeaderSub');
 
                 $('#dateSelect').on('change', debounce(function () {
                     // FIX: reference the element explicitly instead of relying on `this`,

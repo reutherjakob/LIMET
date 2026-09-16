@@ -7,7 +7,7 @@
 
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
 
-    <link rel="icon" href="../Logo/iphone_favicon.png">
+    <link rel="icon" href="Logo/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -24,6 +24,8 @@
 <?php
 require_once 'utils/_utils.php';
 init_page_serversides("x");
+$excelfilename = buildExcelFilename('Los_Aenderungen');
+
 ?>
 
 <div id="limet-navbar"></div>
@@ -124,6 +126,7 @@ init_page_serversides("x");
 <script src="utils/_utils.js"></script>
 <script charset="utf-8">
     var tableAenderungen;
+    const $excelfilename = <?= json_encode($excelfilename) ?>;
 
     function debounce(func, wait) {
         let timeout;
@@ -318,8 +321,10 @@ init_page_serversides("x");
                     extend: 'excel',
                     className: "btn btn-light btn-outline-dark fas fa-file-excel",
                     text: '',
+                    filename: $excelfilename,
                     exportOptions: { columns: ':visible' },
                     attr: { 'data-bs-toggle': 'tooltip', 'data-bs-title': 'Download als Excel' }
+
                 },
                 {
                     extend: 'searchBuilder',

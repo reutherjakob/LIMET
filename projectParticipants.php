@@ -32,8 +32,8 @@ init_page_serversides();
     <div class="mt-2 card">
         <div class="card-header">
             <div class="row">
-                <div class="col-10">Beteiligte Personen</div>
-                <div class="col-2" id="BeteiligtePersonenCardHeader"></div>
+                <div class="col-8">Beteiligte Personen</div>
+                <div class="col-4" id="BeteiligtePersonenCardHeader"></div>
             </div>
         </div>
         <div class="card-body" id='personsInProject'></div>
@@ -43,8 +43,8 @@ init_page_serversides();
             <div class="mt-2 card">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col-10">Nicht beteiligte Personen</div>
-                        <div class="col-2" id="NichtBeteiligtePersonenCardHeader"></div>
+                        <div class="col-8">Nicht beteiligte Personen</div>
+                        <div class="col-4" id="NichtBeteiligtePersonenCardHeader"></div>
                     </div>
                 </div>
 
@@ -55,8 +55,8 @@ init_page_serversides();
             <div class="mt-2 card">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col-6">Person zu Projekt hinzufügen</div>
-                        <div class="col-6 d-flex justify-content-end">
+                        <div class="col-8">Person zu Projekt hinzufügen</div>
+                        <div class="col-4 d-flex justify-content-end">
                             <button class="btn" title="Reset" id="resetAddPerson"><i class="fas fa-sync-alt"></i>
                             </button>
                         </div>
@@ -71,14 +71,10 @@ init_page_serversides();
 
 
 <?php require_once "modal_firmenkontakte_visitenkarte.php"; ?>
+
+<script src="utils/_utils.js"></script>
 <script charset="utf-8">
-    function move_item(item2move_id, where2move_id) {
-        let item = document.getElementById(item2move_id);
-        if (item) {
-            item.parentNode.removeChild(item);
-            document.getElementById(where2move_id).appendChild(item);
-        }
-    }
+
 
     $(document).ready(function () {
         $.ajax({
@@ -96,17 +92,6 @@ init_page_serversides();
                             type: "POST",
                             success: function (data) {
                                 $("#addPersonToProject").html(data);
-                                // $.ajax({
-                                //     url: "getProjectNotices.php",
-                                //     type: "POST",
-                                //     success: function (data) {
-                                //         $("#projectNotices").html(data);
-                                //         setTimeout(function () {
-                                //             move_item("dt-search-0", "BeteiligtePersonenCardHeader");
-                                //             move_item("dt-search-1", "NichtBeteiligtePersonenCardHeader");
-                                //         }, 500);
-                                //     }
-                                // });
                             }
                         });
                     }

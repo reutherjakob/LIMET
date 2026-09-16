@@ -195,6 +195,13 @@ init_page_serversides(); // checks Nutzerlogin
 <script src="roombookSpecifications_constDeclarations.js"></script>
 <script src="utils/_utils.js"></script>
 <script>
+    function move_item(item2move_id, where2move_id) {
+        let item = document.getElementById(item2move_id);
+        if (item) {
+            item.parentNode.removeChild(item);
+            document.getElementById(where2move_id).appendChild(item);
+        }
+    }
 
     function show_modal(modal_id) {
         $('#' + modal_id).modal('show');
@@ -237,11 +244,11 @@ init_page_serversides(); // checks Nutzerlogin
         {data: 'Raumbereich Nutzer', title: 'Raumbereich', visible: false}
     ];
     const columnsRooms = columnsBase;
-    const   columnsVgl = [
-            ...columnsBase.slice(0, 3),
-            {data: 'Projektname', title: 'Projekt', visible: true, searchable: true},
-            ...columnsBase.slice(3)
-        ];
+    const columnsVgl = [
+        ...columnsBase.slice(0, 3),
+        {data: 'Projektname', title: 'Projekt', visible: true, searchable: true},
+        ...columnsBase.slice(3)
+    ];
 
     // FIX Bug 3: Event-Delegation nur einmal pro Tabelle registrieren
     function register_room_click() {

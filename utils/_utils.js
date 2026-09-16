@@ -34,24 +34,21 @@ window.updateToastPositions = window.updateToastPositions || function () {
     });
 };
 
-window.move_item = window.move_item || function (item2move_id, where2move_id) {
-    let item = document.getElementById(item2move_id);
-    if (item) {
-        item.parentNode.removeChild(item);
-        document.getElementById(where2move_id).appendChild(item);
-    }
-};
 
-window.getExcelFilename = window.getExcelFilename || async function (documentName, options = {}) {
-    const formData = new URLSearchParams({documentName, ...options});
-    const response = await fetch('/utils/get_excel_filename.php', {
-        method: 'POST',
-        body: formData
-    });
-    if (!response.ok) throw new Error('Network response was not ok');
-    const data = await response.json();
-    return data.filename;
-};
+
+window.relocateControls = window.relocateControls || function (api, targetSel) {
+    $(targetSel).empty();
+    api.buttons().container().appendTo(targetSel);
+    const $c = $(api.table().container());
+    $c.find('.dt-search label').remove();
+    $c.find('.dt-search input')
+        .removeClass('form-control-sm').addClass('form-control me-1 ms-1')
+        .attr('placeholder', 'Suche…');
+    $c.find('.dt-search').appendTo(targetSel);
+
+}
+
+
 
 if (!window.tooltipList) {
     let tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'))

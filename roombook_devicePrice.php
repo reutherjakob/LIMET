@@ -88,6 +88,10 @@ $rows_proj = $mysqli->query("SELECT idTABELLE_Projekte, Interne_Nr, Projektname 
 $rows_lief = $mysqli->query("SELECT idTABELLE_Lieferant, Lieferant FROM tabelle_lieferant ORDER BY Lieferant")->fetch_all(MYSQLI_ASSOC);
 
 $mysqli->close();
+
+$excelfilenameGerätepreise = buildExcelFilename('Gerätepreise');
+$excelfilenameWartungspreise = buildExcelFilename('Wartungspreise');
+
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
@@ -476,8 +480,13 @@ $mysqli->close();
     </div>
 </div>
 
-
+<script src="utils/_utils.js"></script>
 <script>
+
+    const $excelfilenameGerätepreise = <?= json_encode($excelfilenameGerätepreise) ?>;
+    const $excelfilenameWartungspreise = <?= json_encode($excelfilenameWartungspreise) ?>;
+
+
     $(document).ready(function () {
 
         // ── Tooltip init ──────────────────────────────────────────────────────
@@ -491,6 +500,8 @@ $mysqli->close();
                     extend: 'excel',
                     className: 'btn btn-sm btn-outline-dark bg-white',
                     title: 'Gerätepreise',
+                    filename: $excelfilenameGerätepreise,
+
                     exportOptions: {columns: ':not(:last-child)'}
                 },
                 {
@@ -535,6 +546,7 @@ $mysqli->close();
                     extend: 'excel',
                     className: 'btn btn-sm btn-outline-dark bg-white',
                     title: 'Wartungspreise',
+                    filename: $excelfilenameWartungspreise,
                     exportOptions: {columns: ':not(:last-child)'}
                 },
                 {
@@ -543,7 +555,10 @@ $mysqli->close();
                     title: 'Wartungspreise',
                     exportOptions: {columns: ':not(:last-child)'}
                 },
-                {extend: 'colvis', className: 'btn btn-sm btn-outline-dark bg-white'}
+                {
+                    extend: 'colvis',
+                    className: 'btn btn-sm btn-outline-dark bg-white'
+                }
             ],
             layout: {
                 topStart: 'buttons',
@@ -677,12 +692,12 @@ $mysqli->close();
 
         $('#saveWartungspreis').on('click', function () {
             const servicePriceID = $('#wp_wartungID').val();
-            const date          = $('#wp_date').val();
-            const wartungsart   = $('#wp_wartungsart').val();
-            const menge         = $('#wp_menge').val();
+            const date = $('#wp_date').val();
+            const wartungsart = $('#wp_wartungsart').val();
+            const menge = $('#wp_menge').val();
             const wartungspreis = $('#wp_preis').val().replace(',', '.');
-            const info          = $('#wp_info').val();
-            const lieferant     = $('#wp_lieferant').val();
+            const info = $('#wp_info').val();
+            const lieferant = $('#wp_lieferant').val();
 
             if (!date || !menge || !wartungspreis) {
                 alert('Bitte Datum, Menge und Preis ausfüllen!');

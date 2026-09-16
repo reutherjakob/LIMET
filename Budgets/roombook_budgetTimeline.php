@@ -15,6 +15,9 @@
 require_once '../utils/_utils.php';
 init_page_serversides("");
 
+$excelfilenameFlow = buildExcelFilename('Budget_Aenderungsvolumen');
+$excelfilenameDetail = buildExcelFilename('Budget_Einzelaenderungen');
+
 $mysqli = utils_connect_sql();
 $projectID = isset($_SESSION["projectID"]) ? (int)$_SESSION["projectID"] : 0;
 
@@ -254,9 +257,11 @@ $mysqli->close();
     </div>
 
 </div>
-
+<script src="../utils/_utils.js"></script>
 <script>
-    // Überschrift klickbar machen und Summen-Header ein-/ausklappen
+    const $excelfilenameFlow = <?= json_encode($excelfilenameFlow) ?>;
+    const $excelfilenameDetail = <?= json_encode($excelfilenameDetail) ?>;
+
     (function () {
         const header = document.getElementById('SummendarstellungeCardHEader');
         const trigger = document.querySelector('#budgetTimelineTitle');
@@ -351,31 +356,25 @@ $mysqli->close();
             rangeTimer = setTimeout(fetchData, 250); // kurze Entprellung bei schnellem Klicken
         });
 
-        /* ---------- DataTables ------------------------------------------- */
-        function relocateControls(api, targetSel) {
-            const $c = $(api.table().container());
-            $c.find('.dt-search label').remove();
-            $c.find('.dt-search input')
-                .removeClass('form-control-sm').addClass('form-control form-control-sm')
-                .attr('placeholder', 'Suche…');
-            $c.find('.dt-search').appendTo(targetSel);
-            api.buttons().container().appendTo(targetSel);
+        function buildButtons(filename, sheetTitle) {
+            return [
+                {
+                    extend: 'excel',
+                    text: '<i class="fas fa-file-excel"></i> Excel',
+                    className: 'btn btn-sm btn-light btn-outline-dark',
+                    titleAttr: 'Excel-Export',
+                    filename: filename,   // eigener Dateiname je Tabelle
+                    title: sheetTitle     // optional: Überschrift/Blattname in der Datei
+                },
+                {
+                    extend: 'searchBuilder',
+                    text: '<i class="fas fa-filter"></i> Filter',
+                    className: 'btn btn-sm btn-light btn-outline-dark',
+                    titleAttr: 'Erweiterte Suche'
+                }
+            ];
         }
 
-        const commonButtons = [
-            {
-                extend: 'excel',
-                text: '<i class="fas fa-file-excel"></i> Excel',
-                className: 'btn btn-sm btn-light btn-outline-dark',
-                titleAttr: 'Excel-Export'
-            },
-            {
-                extend: 'searchBuilder',
-                text: '<i class="fas fa-filter"></i> Filter',
-                className: 'btn btn-sm btn-light btn-outline-dark',
-                titleAttr: 'Erweiterte Suche'
-            }
-        ];
 
         flowTable = $('#flowTable').DataTable({
             data: [],
@@ -401,7 +400,7 @@ $mysqli->close();
             info: false,
             language: {url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'},
             layout: {topStart: null, topEnd: ['search', 'buttons'], bottomStart: null, bottomEnd: null},
-            buttons: commonButtons,
+            buttons: buildButtons($excelfilenameFlow, 'Änderungsvolumen je Budget'),
             footerCallback: function () {
                 const api = this.api();
                 const sum = i => api.column(i, {search: 'applied'}).data().reduce((a, b) => a + (parseFloat(b) || 0), 0);
@@ -452,11 +451,13 @@ $mysqli->close();
                 bottomStart: ['pageLength', 'info'],
                 bottomEnd: 'paging'
             },
-            buttons: commonButtons,
-            initComplete: function () {
-                relocateControls(this.api(), '#detailHeaderTools');
-            }
-        });
+            buttons: buildButtons($excelfilenameDetail, 'Einzelne Änderungen'),
+            initComplete:
+                function () {
+                    relocateControls(this.api(), '#detailHeaderTools');
+                }
+        })
+        ;
 
         /* ---------- Laden (letzter Klick gewinnt) ------------------------ */
         // Jeder Aufruf erhöht loadSeq und bricht eine laufende Anfrage ab.
@@ -562,6 +563,7 @@ $mysqli->close();
                 }
             });
         }
+
         // Für den Collapse-Handler außerhalb dieser Closure erreichbar machen
         window.__budgetRenderChart = renderChart;
 

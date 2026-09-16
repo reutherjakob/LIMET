@@ -3,15 +3,12 @@
 require_once 'utils/_utils.php';
 init_page_serversides();
 include "utils/_format.php";
-
 $mysqli = utils_connect_sql();
 $projectID = (int)($_SESSION["projectID"] ?? 0);
 
 if (!$projectID) {
     die("Ungültige Projekt-ID");
 }
-
-// Raumbereiche für das aktuelle Projekt laden
 $stmt = $mysqli->prepare("
     SELECT DISTINCT `Raumbereich Nutzer`
     FROM tabelle_räume
@@ -24,6 +21,8 @@ $stmt->bind_param("i", $projectID);
 $stmt->execute();
 $raumbereiche = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
+
+$excelfilename = buildExcelFilename('Elemente_im_Raumbereich');
 ?>
 
 <!DOCTYPE html>
@@ -53,7 +52,6 @@ $stmt->close();
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 
-
 <body>
 <div class="container-fluid">
     <div id="limet-navbar"></div>
@@ -79,20 +77,17 @@ $stmt->close();
                     </div>
                 </div>
                 <div class="col-auto">
-
                     <button class="btn btn-sm btn-outline-dark" id="btn_alle_auswaehlen" type="button">
                         <i class="fas fa-check-double me-1"></i>Alle
                     </button>
                     <button class="btn btn-sm btn-outline-secondary ms-1" id="btn_auswahl_leeren" type="button">
                         <i class="fas fa-times me-1"></i>Leeren
                     </button>
-
                 </div>
                 <div class="col-auto ms-auto" id="cardHeaderButtons">
                 </div>
             </div>
         </div>
-
 
         <div class="card-body p-2">
             <div id="placeholder_text" class="text-center text-muted py-5">
@@ -110,7 +105,8 @@ $stmt->close();
                         <th>Raumnr</th>
                         <th>Raumbezeichnung</th>
                         <th>Geschoss</th>
-                        <th>Anzahl</th><th>Räume</th>
+                        <th>Anzahl</th>
+                        <th>Räume</th>
 
                         <th>Neu/Bestand</th>
                         <th>Los</th>
@@ -127,7 +123,8 @@ $stmt->close();
 <script src="utils/_utils.js"></script>
 <script>
     var table = null;
-    var projectID = <?= $projectID ?>;
+    var projectID = <?= json_encode($projectID) ?>;
+    const $excelfilename = <?= json_encode($excelfilename) ?>;
 
     function destroyTable() {
         if (table) {
@@ -253,19 +250,21 @@ $stmt->close();
             },
             layout: {
                 topStart: {
-                    buttons: [
-                        {
-                            extend: 'colvis',
-                            text: 'Spalten',
-                            className: 'btn btn-outline-dark bg-white btn-sm'
-                        },
-                        {
-                            extend: 'excel',
-                            text: '<i class="fas fa-file-excel"></i>',
-                            className: 'btn btn-outline-success bg-white btn-sm ms-1',
-                            title: 'Elemente je Raumbereich'
-                        }
-                    ]
+                    buttons:
+                        [
+                            {
+                                extend: 'colvis',
+                                text: 'Spalten',
+                                className: 'btn btn-outline-dark bg-white btn-sm'
+                            },
+                            {
+                                extend: 'excel',
+                                text: '<i class="fas fa-file-excel"></i>',
+                                className: 'btn btn-outline-success bg-white btn-sm ms-1',
+                                title: 'Elemente je Raumbereich',
+                                filename: $excelfilename,
+                            }
+                        ]
                 },
                 topEnd: null,
                 bottomStart: ['info', 'pageLength'],
@@ -282,7 +281,6 @@ $stmt->close();
             }
         });
     }
-
 </script>
 </body>
 </html>

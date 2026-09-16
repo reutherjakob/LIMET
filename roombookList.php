@@ -26,7 +26,7 @@ init_page_serversides();
           rel="stylesheet">
 
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <?php //include_theme_css(); ?>
+
 
 </head>
 

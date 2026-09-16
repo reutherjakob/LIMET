@@ -4,6 +4,9 @@ require_once 'utils/_utils.php';
 include "utils/_format.php";
 init_page_serversides();
 $mysqli = utils_connect_sql();
+
+$excelfilename = buildExcelFilename('Budgets');
+
 ?>
 
 <!DOCTYPE html>
@@ -133,11 +136,44 @@ $mysqli = utils_connect_sql();
     </div>
 
 
+    <!-- Modal: Budget bearbeiten -->
+    <div class="modal fade" id="editBudgetModal" tabindex="-1" aria-labelledby="editBudgetModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editBudgetModalLabel">Budget bearbeiten</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Schließen"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editBudgetID">
+
+                    <div class="mb-3">
+                        <label for="editBudgetnummer" class="form-label">Budgetnummer</label>
+                        <input type="text" class="form-control" id="editBudgetnummer" maxlength="45">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editBudgetname" class="form-label">Budgetname</label>
+                        <input type="text" class="form-control" id="editBudgetname" maxlength="45">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                    <button type="button" class="btn btn-primary" id="updateBudgetBtn">Speichern</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script src="utils/_utils.js"></script>
     <!--suppress EqualityComparisonWithCoercionJS -->
     <script>
 
         const addBudgetModal = new bootstrap.Modal('#addBudgetModal');
+        const editBudgetModal = new bootstrap.Modal('#editBudgetModal');
+        const $excelfilename = <?= json_encode($excelfilename) ?>;
 
         const STATUS = {
             0: {label: 'Offen', cls: 'warning', icon: 'fa-minus'},
@@ -187,24 +223,50 @@ $mysqli = utils_connect_sql();
                     </table>
                 `).appendTo($body);
                 const $tbody = $table.find('tbody');
+
                 data.forEach(b => {
                     const $row = $(`
-                <tr>
-                    <td>${b.Budgetnummer}</td>
-                    <td>${b.Budgetname}</td>
-                    <td>${statusBadge(b.status)}</td>
-                    <td>
-                        <select class="form-select form-select-sm budget-status-select" data-id="${b.idtabelle_projektbudgets}">
-                            <option value="0" ${b.status == 0 ? 'selected' : ''}>Offen</option>
-                            <option value="1" ${b.status == 1 ? 'selected' : ''}>Freigegeben</option>
-                            <option value="2" ${b.status == 2 ? 'selected' : ''}>Abgelehnt</option>
-                        </select>
-                    </td>
-                </tr>
-            `);
+        <tr data-budget-id="${b.idtabelle_projektbudgets}">
+            <td class="budget-number"></td>
+            <td class="budget-name"></td>
+            <td class="budget-status"></td>
+       <td class="text-center">
+                <div class="d-flex align-items-center gap-1">
+                    <select
+                        class="form-select form-select-sm budget-status-select"
+                        data-id="${b.idtabelle_projektbudgets}"
+                        title="Status ändern"
+                        style="min-width: 125px;">
+                        <option value="0" ${b.status == 0 ? 'selected' : ''}>Offen</option>
+                        <option value="1" ${b.status == 1 ? 'selected' : ''}>Freigegeben</option>
+                        <option value="2" ${b.status == 2 ? 'selected' : ''}>Abgelehnt</option>
+                    </select>
+
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-outline-primary edit-budget-btn"
+                        title="Budget bearbeiten"
+                        data-id="${b.idtabelle_projektbudgets}"
+                        data-budget-nr="${escapeHtml(b.Budgetnummer)}"
+                        data-budget-name="${escapeHtml(b.Budgetname)}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `);
+
+                    $row.find('.budget-number').text(b.Budgetnummer);
+                    $row.find('.budget-name').text(b.Budgetname);
+                    $row.find('.budget-status').html(statusBadge(b.status));
+
                     $tbody.append($row);
                 });
             }, 'json');
+        }
+
+        function escapeHtml(value) {
+            return $('<div>').text(value ?? '').html();
         }
 
         // baut das <select> für eine Element-Zeile aus der globalen budgetList
@@ -258,6 +320,74 @@ $mysqli = utils_connect_sql();
                     $('#tableElementsInProjectForBudget').DataTable().ajax.reload(null, false);
                 });
             }, 'json');
+        });
+
+
+        // Edit-Button: Modal öffnen
+        $(document).on('click', '.edit-budget-btn', function () {
+            const budgetID = $(this).data('id');
+            const budgetNr = $(this).attr('data-budget-nr');
+            const budgetName = $(this).attr('data-budget-name');
+
+            $('#editBudgetID').val(budgetID);
+            $('#editBudgetnummer').val(budgetNr);
+            $('#editBudgetname').val(budgetName);
+
+            editBudgetModal.show();
+        });
+
+        // Speichern im Edit-Modal
+        $('#updateBudgetBtn').on('click', function () {
+            const budgetID = $('#editBudgetID').val();
+            const budgetNr = $('#editBudgetnummer').val().trim();
+            const budgetName = $('#editBudgetname').val().trim();
+
+            if (!budgetID) {
+                makeToaster('Keine Budget-ID vorhanden.', false);
+                return;
+            }
+
+            if (!budgetNr || !budgetName) {
+                makeToaster('Budgetnummer und Budgetname ausfüllen.', false);
+                return;
+            }
+
+            $.ajax({
+                url: 'updateBudget.php',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    budgetID: budgetID,
+                    Budgetnummer: budgetNr,
+                    Budgetname: budgetName
+                },
+                success: function (response) {
+                    if (response.status === 'ok') {
+                        makeToaster(response.msg, true);
+
+                        editBudgetModal.hide();
+
+                        loadBudgetList().done(function () {
+                            $('#tableElementsInProjectForBudget')
+                                .DataTable()
+                                .ajax.reload(null, false);
+                        });
+                    } else {
+                        makeToaster(
+                            response.msg || 'Fehler beim Aktualisieren.',
+                            false
+                        );
+                    }
+                },
+                error: function (xhr) {
+                    console.error(xhr.responseText);
+
+                    makeToaster(
+                        'Fehler beim Aktualisieren des Budgets.',
+                        false
+                    );
+                }
+            });
         });
 
 
@@ -337,6 +467,7 @@ $mysqli = utils_connect_sql();
                         extend: 'excel',
                         text: '<i class="fas fa-file-excel"></i> Excel',
                         className: 'btn-sm btn-outline-dark btn-light',
+                        filename: $excelfilename,
                         exportOptions: {
                             modifier: {
                                 search: 'applied',
@@ -371,14 +502,17 @@ $mysqli = utils_connect_sql();
                     }
                 ],
                 initComplete: function () {
-                    $('.dt-search label').remove();
-                    $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#cardHeader');
-                    $('.dt-buttons').children().addClass("btn-sm ms-1 me-1").appendTo('#cardHeader');
+                    relocateControls(this.api(), '#cardHeader');
+                    //   $('.dt-search label').remove();
+                    //   $('.dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark").appendTo('#cardHeader');
+                    //   $('.dt-buttons').children().addClass("btn-sm ms-1 me-1").appendTo('#cardHeader');
+
 
                     $(document).on('mouseenter', '[data-bs-toggle="tooltip"]', function () {
                         const t = bootstrap.Tooltip.getInstance(this) || new bootstrap.Tooltip(this);
                         t.show();
                     });
+
                     $(document).on('mouseleave', '[data-bs-toggle="tooltip"]', function () {
                         bootstrap.Tooltip.getInstance(this)?.hide();
                     });

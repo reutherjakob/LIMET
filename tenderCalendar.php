@@ -54,6 +54,8 @@
 // 25 FX
 require_once 'utils/_utils.php';
 init_page_serversides();
+$excelfilename = buildExcelFilename('Kalender_Lose');
+
 ?>
 
 <body id="bodyTenderLots">
@@ -343,9 +345,10 @@ init_page_serversides();
 <!--suppress JSCheckFunctionSignatures -->
 <script src="utils/_utils.js"></script>
 <script>
+    const $excelfilename = <?= json_encode($excelfilename) ?>;
+
     document.addEventListener('DOMContentLoaded', function () {
         initializeDataTable();
-
         setupRowClickHandler();
         initializeDatePickers();
         setupAutomatedDateUpdate();
@@ -387,8 +390,9 @@ init_page_serversides();
                 buttons: [
                     {
                         extend: 'excel',
-                        text: '<i class="fas fa-file-excel"></i> Excel',
+                        text: '<i class="fas fa-file-excel"></i>',
                         className: 'btn btn-sm btn-light btn-outline-success',
+                        filename: $excelfilename,
                     }
                 ],
                 stateSave: true,
