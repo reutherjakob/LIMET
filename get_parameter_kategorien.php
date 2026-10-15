@@ -1,6 +1,6 @@
 <?php
 // Returns all parameter categories actually used in the current project
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 
 $projectID = (int)($_SESSION["projectID"] ?? 0);

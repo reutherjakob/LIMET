@@ -696,18 +696,18 @@ function raum_header_a3SF($pdf, $ln_spacer, $SB, $Raumbezeichnung, $Raumnr, $Rau
     $pdf->MultiCell($e_C + ($e_C_2_3rd / 2), $ln_spacer, $Raumbezeichnung, 0, "L", 1, 0);
 
     // Bereich
-    if ($pdf->getStringHeight($e_C + ($e_C_2_3rd / 2), $RaumbereichNutzer, false, true, '', 1) > $ln_spacer) {
+    if ($pdf->getStringHeight($e_C + ($e_C_2_3rd / 2) -5, $RaumbereichNutzer, false, true, '', 1) > $ln_spacer) {
         $extraZeile = true;
     }
     $pdf->MultiCell($e_C_2_3rd, $ln_spacer, "Bereich: ", 0, "R", 1, 0);
-    $pdf->MultiCell($e_C + ($e_C_2_3rd / 2), $ln_spacer, $RaumbereichNutzer, 0, "L", 1, 0);
+    $pdf->MultiCell($e_C + ($e_C_2_3rd / 2) -5, $ln_spacer, $RaumbereichNutzer, 0, "L", 1, 0);
 
     // Nummer
-    if ($pdf->getStringHeight($e_C_2_3rd / 2, $Raumnr, false, true, '', 1) > $ln_spacer) {
+    if ($pdf->getStringHeight($e_C_2_3rd / 2+5, $Raumnr, false, true, '', 1) > $ln_spacer) {
         $extraZeile = true;
     }
-    $pdf->MultiCell($e_C_2_3rd / 2, $ln_spacer, "Nr.: ", 0, "R", 1, 0);
-    $pdf->MultiCell($e_C_2_3rd / 2, $ln_spacer, $Raumnr, 0, "L", 1, 0);
+    $pdf->MultiCell($e_C_2_3rd / 2  , $ln_spacer, "Nr.: ", 0, "R", 1, 0);
+    $pdf->MultiCell($e_C_2_3rd / 2+5, $ln_spacer, $Raumnr, 0, "L", 1, 0);
 
 
     // Geschoss

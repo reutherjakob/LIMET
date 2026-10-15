@@ -1,8 +1,8 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 init_page_serversides();
-include "utils/_format.php";
+include "_utils/_format_money.php";
 $mysqli = utils_connect_sql();
 $projectID = (int)($_SESSION["projectID"] ?? 0);
 
@@ -23,6 +23,8 @@ $raumbereiche = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 
 $excelfilename = buildExcelFilename('Elemente_im_Raumbereich');
+require_once '_utils/_csrf.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -31,8 +33,9 @@ $excelfilename = buildExcelFilename('Elemente_im_Raumbereich');
     <title>Elemente je Raumbereich</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png"/>
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png"/>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -120,7 +123,7 @@ $excelfilename = buildExcelFilename('Elemente_im_Raumbereich');
 </div>
 
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script>
     var table = null;
     var projectID = <?= json_encode($projectID) ?>;
@@ -243,7 +246,7 @@ $excelfilename = buildExcelFilename('Elemente_im_Raumbereich');
             searching: true,
             info: true,
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 search: '',
                 searchPlaceholder: 'Suche...',
                 info: "_TOTAL_ Einträge"

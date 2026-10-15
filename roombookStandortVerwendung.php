@@ -1,7 +1,10 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
+// 26 FX
+require_once '_utils/_utils.php';
 init_page_serversides();
+require_once '_utils/_csrf.php';
+
+
 $mysqli = utils_connect_sql();
 
 $projectID = (int)($_SESSION['projectID'] ?? 0);
@@ -56,8 +59,10 @@ $mysqli->close();
     <meta charset="utf-8"/>
     <title>Elemente: Standort/Verwendung unvollständig</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="../Logo/iphone_favicon.png">
+
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png">
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -129,7 +134,7 @@ $mysqli->close();
         $('#elements-table').DataTable({
             select: true,
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 search: "",
                 searchPlaceholder: "Suche...",
                 lengthMenu: '_MENU_',

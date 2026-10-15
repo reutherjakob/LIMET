@@ -1,11 +1,21 @@
+<?php
+require_once '_utils/_utils.php';
+init_page_serversides("x");
+$excelfilename = buildExcelFilename('Losliste_Elemente');
+require_once '_utils/_csrf.php';
+
+?>
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <title>Lose &amp; Elemente – Übersicht</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png">
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -19,12 +29,7 @@
 </head>
 
 <body id="bodyLosElemente">
-<?php
-require_once 'utils/_utils.php';
-init_page_serversides("x");
-$excelfilename = buildExcelFilename('Losliste_Elemente');
 
-?>
 
 <div id="limet-navbar"></div>
 <div class="container-fluid">
@@ -135,7 +140,7 @@ $excelfilename = buildExcelFilename('Losliste_Elemente');
         </div>
     </div>
 
-    <script src="utils/_utils.js"></script>
+    <script src="_utils/_utils.js"></script>
     <script charset="utf-8">
         var tableLosElemente;
         const $excelfilename = <?= json_encode($excelfilename) ?>;
@@ -212,7 +217,7 @@ $excelfilename = buildExcelFilename('Losliste_Elemente');
                 pageLength: 50,
                 lengthMenu: [[25, 50, 100, 250, -1], [25, 50, 100, 250, 'Alle']],
                 language: {
-                    url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                      url: "/_utils/de-DE.json",
                     decimal: ',',
                     thousands: '.',
                     searchPlaceholder: 'Suche..',

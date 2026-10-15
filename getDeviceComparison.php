@@ -1,6 +1,6 @@
 <?php
 // 25 FX - CORRECTED VERSION
-require_once "utils/_utils.php";
+require_once "_utils/_utils.php";
 check_login();
 $mysqli = utils_connect_sql();
 
@@ -93,7 +93,7 @@ $mysqli->close();
         searching: false,
         info: false,
         order: [[0, "desc"]],
-        language: {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
+        language: {url: '/_utils/de-DE.json'},
         scrollX: true
     });
 </script>

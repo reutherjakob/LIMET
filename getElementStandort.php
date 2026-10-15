@@ -23,7 +23,7 @@
 
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 init_page_serversides();
 $mysqli = utils_connect_sql();
 
@@ -181,7 +181,7 @@ echo "<button type='button' id='addStandortElementModalButton' class='btn ml-4 m
                 }
             ],
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+                 url: "/_utils/de-DE.json",
             },
             scrollY: "20vh",
             scrollCollapse: true
@@ -207,7 +207,7 @@ echo "<button type='button' id='addStandortElementModalButton' class='btn ml-4 m
                     type: "POST",
                     success: function (data) {
                         $('#addStandortElementModal').modal('hide');
-                        alert(data);
+                         makeToaster(data, true);
 
                         $.ajax({
                             url: "getElementStandort.php",

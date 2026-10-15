@@ -1,7 +1,9 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
-include "utils/_format.php";
+require_once '_utils/_utils.php';
+require_once "_utils/_format_money.php";
+require_once '_utils/_csrf.php';
+
 init_page_serversides();
 $mysqli = utils_connect_sql();
 
@@ -15,8 +17,10 @@ $excelfilename = buildExcelFilename('Budgets');
     <title>RB-Budgets</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png">
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -32,7 +36,6 @@ $excelfilename = buildExcelFilename('Budgets');
 <div class="container-fluid">
     <div id="limet-navbar"></div>
     <div class="row">
-
         <div class="col-8 ps-3" id="elements_budgets_card_col">
             <div class="card">
                 <div class="card-header">
@@ -42,6 +45,7 @@ $excelfilename = buildExcelFilename('Budgets');
                              id="cardHeader"></div>
                     </div>
                 </div>
+
                 <div class="card-body p-2" id="elementBudgets">
                     <table class="table table-striped table-bordered table-hover table-sm"
                            id="tableElementsInProjectForBudget">
@@ -167,7 +171,7 @@ $excelfilename = buildExcelFilename('Budgets');
     </div>
 
 
-    <script src="utils/_utils.js"></script>
+    <script src="_utils/_utils.js"></script>
     <!--suppress EqualityComparisonWithCoercionJS -->
     <script>
 
@@ -445,7 +449,7 @@ $excelfilename = buildExcelFilename('Budgets');
                 lengthChange: true,
                 pageLength: 25,
                 language: {
-                    url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
+                    url: "/_utils/de-DE.json",
                     decimal: ",",
                     thousands: ".",
                     search: "",

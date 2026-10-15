@@ -1,7 +1,9 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
+// 26 FX
+require_once '_utils/_utils.php';
+require_once '_utils/_csrf.php';
 check_login();
+require_csrf();
 $mysqli = utils_connect_sql();
 
 $deviceID = getPostInt('gereatID', 0);
@@ -9,13 +11,6 @@ $inventarNr = getPostString('inventarNr');
 $serienNr = getPostString('serienNr');
 $anschaffungsJahr = getPostString('anschaffungsJahr');
 $currentPlace = getPostString('currentPlace');
-
-if ($deviceID !== 0) {
-    $deviceIDSql = $deviceID; // valid integer from getPostInt
-} else {
-    $deviceIDSql = "NULL";
-}
-
 $roombookID = getPostInt('roombookID', 0);
 
 if ($roombookID === 0) {
@@ -46,7 +41,8 @@ $stmt->bind_param("sssiss",
 if ($stmt->execute()) {
     echo "Bestand hinzugefügt!";
 } else {
-    echo "Error: " . $stmt->error;
+
+    echo "Fehler beim Hinzufügen.";
 }
 
 $stmt->close();

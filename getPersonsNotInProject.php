@@ -1,6 +1,6 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
+// 26FX
+require_once '_utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
 
@@ -69,8 +69,7 @@ $mysqli->close();
             lengthChange: false,
             pageLength: 10,
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
-                search: ""
+                url: "/_utils/de-DE.json",
             },
             initComplete: function () {
                 relocateControls(this.api(), '#NichtBeteiligtePersonenCardHeader');

@@ -2,7 +2,7 @@
 // 25 FX
 ini_set('max_execution_time', '120');
 ini_set('memory_limit', '512M'); // Sicherheitsnetz; kann durch Host/PHP-FPM gedeckelt sein
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 
 // 🔐 Input Validation

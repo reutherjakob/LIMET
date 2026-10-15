@@ -1,6 +1,6 @@
 <?php
 // 26 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 
 $mysqli = utils_connect_sql();
@@ -102,10 +102,10 @@ $excelfilename2 = buildExcelFilename('Elemente-im-Los');
 //$excelfilename3 = buildExcelFilename('Verortungsliste');
 
 ?>
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 
 <script charset="utf-8" type="module">
-    const {default: CustomPopover} = await import('./utils/_popover.js');
+    const {default: CustomPopover} = await import('./_utils/_popover.js');
 
     var tableLotElements1;
     const excelfilename2 = <?= json_encode($excelfilename2) ?>;
@@ -169,8 +169,8 @@ $excelfilename2 = buildExcelFilename('Elemente-im-Los');
 
         tableLotElements1 = new DataTable('#tableLotElements1', {
             layout: {
-                topStart: 'buttons',   // Buttons regulaer erzeugen ...
-                topEnd: 'search',      // ... Suche regulaer erzeugen ...
+                topStart: 'buttons',
+                topEnd: 'search',
                 bottomStart: 'info',
                 bottomEnd: 'paging'
             },
@@ -190,7 +190,7 @@ $excelfilename2 = buildExcelFilename('Elemente-im-Los');
             lengthChange: false,
             pageLength: 10,
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 search: "",
                 searchPlaceholder: "Suche..."
             },
@@ -218,19 +218,16 @@ $excelfilename2 = buildExcelFilename('Elemente-im-Los');
                             'target': '_blank',
                             'style': 'display: none;'
                         }).appendTo('body');
-
                         form.append($('<input>', {
                             'type': 'hidden',
                             'name': 'lotID',
                             'value': lotID
                         }));
-
                         form.append($('<input>', {
                             'type': 'hidden',
                             'name': 'projectID',
                             'value': projectID
                         }));
-
                         form.submit();
                         form.remove();
                     }
@@ -246,19 +243,9 @@ $excelfilename2 = buildExcelFilename('Elemente-im-Los');
                         }
                     }
                 }
-
             ],
             initComplete: function () {
-
                 relocateControls(this.api(), '#elementsInLotCardHeader');
-                //    const $header = $('#elementsInLotCardHeader')
-                //        .empty();
-                //    const $wrapper = $('#elementsInLot');
-
-                //    $wrapper.find('div.dt-search label').remove();
-                //    $wrapper.find('div.dt-search input').addClass('form-control-sm');
-                //    $wrapper.find('div.dt-buttons').appendTo($header);   // Buttons
-                //    $wrapper.find('div.dt-search').appendTo($header);    // Suchleiste
             }
         });
 

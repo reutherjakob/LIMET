@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 ?>
 
@@ -119,7 +119,7 @@ echo " <!-- Modal zum Kopieren der Bauangaben -->
                 alert("Kein Raum ausgewählt!");
             } else {
                 $.ajax({
-                    url: "copyRoomSpecifications_all.php",
+                    url: "save_copyRoomSpecifications_all.php",
                     type: "POST",
                     data: {
                         rooms: JSON.stringify(roomIDs),
@@ -127,7 +127,7 @@ echo " <!-- Modal zum Kopieren der Bauangaben -->
                     },
                     success: function (data) {
                         // console.log(data);
-                        alert(data);
+                         makeToaster(data, true);
                         location.reload(true); // if(confirm("Raum erfolgreich Aktualisiert! :) \nUm Änderungen anzuzeigen, muss Seite Neu laden. Jetzt neu laden? \n",data)) { location.reload(true);}
                     }
                 });
@@ -160,7 +160,7 @@ echo " <!-- Modal zum Kopieren der Bauangaben -->
                 try {
                     makeToaster(data, data.substring(0, 4) === "Raum")
                 } catch (err) {
-                    alert(data);
+                     makeToaster(data, true);
                 }
 
             }
@@ -200,11 +200,11 @@ echo " <!-- Modal zum Kopieren der Bauangaben -->
             alert("Kein Raum ausgewählt!");
         } else {
             $.ajax({
-                url: "copyAnnotationTexts.php",
+                url: "save_copyAnnotationTexts.php",
                 type: "POST",
                 data: { rooms: JSON.stringify(roomIDs) },
                 success: function (data) {
-                    alert(data);
+                     makeToaster(data, true);
                     $('#AnmerkungModal').modal('hide');
                 }
             });

@@ -1,11 +1,19 @@
+<?php require_once '_utils/_utils.php';
+init_page_serversides("");
+$excelfilename = buildExcelFilename('Element_Aenderungen');
+require_once '_utils/_csrf.php';
+?>
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <title>Element Änderungen</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png">
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -29,10 +37,6 @@
 <body>
 
 <div id="limet-navbar"></div>
-<?php require_once 'utils/_utils.php';
-init_page_serversides("");
-$excelfilename = buildExcelFilename('Element_Aenderungen');
-?>
 <div class="container-fluid">
     <div class="row row-cols-2">
         <div class="col-lg-12">
@@ -90,7 +94,7 @@ $excelfilename = buildExcelFilename('Element_Aenderungen');
     </div>
 </div>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script>
     const $excelfilename = <?= json_encode($excelfilename) ?>;
 
@@ -128,7 +132,8 @@ $excelfilename = buildExcelFilename('Element_Aenderungen');
                 }
             ],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
+                url: '/_utils/de-DE.json'
+
             },
             order: [[8, 'desc']], // sort descending by Timestamp column (index 8)
             select: "single",

@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 ?>
 <!DOCTYPE html>
@@ -84,7 +84,7 @@ $mysqli->close();
     </div>
 </div>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script>
     window.tableVermerkUnterGruppe = window.tableVermerkUnterGruppe || null;
     window.untergruppenID = window.untergruppenID || null;
@@ -112,7 +112,8 @@ $mysqli->close();
             select: true,
             responsive: true,
             language: {
-                'url': 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                url: '/_utils/de-DE.json' 
+,
                 search: "", searchPlaceholder: "Suche..."
             }, initComplete: function () {
                 $('#topDivSearch label').remove();

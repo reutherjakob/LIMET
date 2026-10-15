@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 $vermerkUntergruppenID = getPostInt('vermerkUntergruppenID');
 $mysqli = utils_connect_sql();
@@ -476,7 +476,7 @@ echo "</tbody></table>";
             order: [[7, 'asc']],
             compact: true,
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 search: "",
                 searchPlaceholder: "Suche..."
             },
@@ -826,7 +826,7 @@ echo "</tbody></table>";
         $.ajax({
             url: "deleteVermerk.php", data: {"vermerkID": vermerkID}, type: "POST",
             success: function (data) {
-                alert(data);
+                 makeToaster(data, true);
                 $.ajax({
                     url: "getVermerkeToUntergruppe.php",
                     data: {"vermerkUntergruppenID": vermerkUntergruppenID, "vermerkGruppenID": vermerkGruppenID},

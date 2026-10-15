@@ -1,5 +1,5 @@
 <?php
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
 $lotId = getPostInt('lotID');
@@ -107,7 +107,7 @@ $mysqli->close();
             }
         ],
         language: {
-            url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+             url: "/_utils/de-DE.json",
         },
         layout: {
             topStart: null,

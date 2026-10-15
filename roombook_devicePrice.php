@@ -1,7 +1,8 @@
 <?php
-require_once 'utils/_utils.php';
-include 'utils/_format.php';
+require_once '_utils/_utils.php';
+include '_utils/_format_money.php';
 init_page_serversides("No Redirect");
+require_once '_utils/_csrf.php';
 
 $mysqli = utils_connect_sql();
 
@@ -99,7 +100,8 @@ $excelfilenameWartungspreise = buildExcelFilename('Wartungspreise');
     <title>Preise</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="icon" href="Logo/iphone_favicon.png"/>
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+    <link rel="icon" href="Logos/iphone_favicon.png"/>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -115,7 +117,7 @@ $excelfilenameWartungspreise = buildExcelFilename('Wartungspreise');
           rel="stylesheet">
     <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
 
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
 </head>
 <body>
 
@@ -480,7 +482,7 @@ $excelfilenameWartungspreise = buildExcelFilename('Wartungspreise');
     </div>
 </div>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script>
 
     const $excelfilenameGerätepreise = <?= json_encode($excelfilenameGerätepreise) ?>;
@@ -498,7 +500,7 @@ $excelfilenameWartungspreise = buildExcelFilename('Wartungspreise');
             buttons: [
                 {
                     extend: 'excel',
-                    className: 'btn btn-sm btn-outline-dark bg-white',
+                    className: 'btn btn-sm btn-outline-dark bg-white fas fa-file-excel',
                     title: 'Gerätepreise',
                     filename: $excelfilenameGerätepreise,
 
@@ -518,7 +520,9 @@ $excelfilenameWartungspreise = buildExcelFilename('Wartungspreise');
                 bottomStart: 'info',
                 bottomEnd: ['pageLength', 'paging']
             },
-            language: {url: 'https://cdn.datatables.net/plug-ins/2.2.1/i18n/de-DE.json'},
+            language: {
+                url: "/_utils/de-DE.json"
+            },
             pageLength: 25,
             lengthMenu: [25, 50, 100, 500, -1],
             order: [[4, 'desc']],
@@ -544,7 +548,7 @@ $excelfilenameWartungspreise = buildExcelFilename('Wartungspreise');
             buttons: [
                 {
                     extend: 'excel',
-                    className: 'btn btn-sm btn-outline-dark bg-white',
+                    className: 'btn btn-sm btn-outline-dark bg-white ',
                     title: 'Wartungspreise',
                     filename: $excelfilenameWartungspreise,
                     exportOptions: {columns: ':not(:last-child)'}
@@ -566,7 +570,9 @@ $excelfilenameWartungspreise = buildExcelFilename('Wartungspreise');
                 bottomStart: 'info',
                 bottomEnd: ['pageLength', 'paging']
             },
-            language: {url: 'https://cdn.datatables.net/plug-ins/2.2.1/i18n/de-DE.json'},
+            language: {
+                url: "/_utils/de-DE.json"
+            },
             pageLength: 25,
             lengthMenu: [25, 50, 100, 500, -1],
             order: [[0, 'asc']],
@@ -720,6 +726,5 @@ $excelfilenameWartungspreise = buildExcelFilename('Wartungspreise');
 
     });
 </script>
-<script src="utils/_utils.js"></script>
 </body>
 </html>

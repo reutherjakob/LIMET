@@ -1,6 +1,6 @@
  <?php
  // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
 
@@ -86,7 +86,7 @@ $mysqli->close();
 include "modal_addOrganisationAndZustaendigkeit.php";
 ?>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script src="addNewOrganisationAndZusändigkeit.js"></script>
 
 <script>
@@ -99,7 +99,7 @@ include "modal_addOrganisationAndZustaendigkeit.php";
                 data: formData,
                 type: "POST",
                 success: function (data) {
-                    alert(data);
+                     makeToaster(data, true);
                     $("#personsInProject").load("getPersonsOfProject.php");
                 },
                 error: function () {

@@ -58,7 +58,7 @@ $(document).ready(function () {
                 type: "POST",
                 success: function (data) {
                     $('#changeElementModal').modal('hide');
-                    alert(data);
+                     makeToaster(data, true);
                     $.ajax({
                         url: "getElementsInDB.php",
                         type: "POST",
@@ -69,7 +69,7 @@ $(document).ready(function () {
                 }
             });
         } else {
-            alert("Bitte alle Felder ausfüllen!");
+            makeToaster("Bitte alle Felder ausfüllen!", false);
         }
     });
 });

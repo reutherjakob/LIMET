@@ -8,16 +8,25 @@
 
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 
-// Single source of truth: DB-ID => Label
-$variantenMap = [
-    1  => 'A', 2  => 'B', 3  => 'C', 4  => 'D', 5  => 'E', 6  => 'F', 7  => 'G', 8  => 'H',
-    14 => 'I', 15 => 'J', 16 => 'K', 17 => 'L', 18 => 'M', 19 => 'N', 20 => 'O', 21 => 'P',
-    22 => 'Q', 23 => 'R', 24 => 'S', 25 => 'T', 26 => 'U', 27 => 'V', 28 => 'W', 29 => 'X',
-    30 => 'Y', 31 => 'Z',
-];
+$mysqli = utils_connect_sql();
+
+$variantenMap = [];
+$res = $mysqli->query("SELECT idtabelle_Varianten, Variante FROM tabelle_varianten ORDER BY idtabelle_Varianten");
+while ($v = $res->fetch_assoc()) {
+    $variantenMap[(int)$v['idtabelle_Varianten']] = $v['Variante'];
+}
+
+function selectOption($value, $selectedValue, $label): string
+{
+    $selected = ($value == $selectedValue) ? ' selected' : '';
+    $v = htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+    $l = htmlspecialchars((string)$label, ENT_QUOTES, 'UTF-8');
+    return "<option value='$v'$selected>$l</option>";
+}
+
 ?>
 
 <div class="btn-group text-nowrap" id="hide0Wrapper_RwE">
@@ -26,9 +35,9 @@ $variantenMap = [
             Alle Var
         </label>
         <select class="form-control form-control-sm" id="massenVariante">
-            <?php foreach ($variantenMap as $vId => $vLabel): ?>
-                <option value="<?php echo $vId; ?>"><?php echo $vLabel; ?></option>
-            <?php endforeach; ?>
+            <?php foreach ($variantenMap as $vId => $vLabel) {
+                echo selectOption($vId, null, $vLabel);
+            } ?>
         </select>
         <!--button type="button" id="massenVarianteSetzen" class="btn btn-sm btn-outline-primary">
             <i class="far fa-edit"></i> Alle Var
@@ -70,8 +79,6 @@ if ($variantenID !== null) {
 
 $whereClause = implode(' AND ', $where);
 
-
-$mysqli = utils_connect_sql();
 $sql = "SELECT
     tabelle_räume_has_tabelle_elemente.id,
     tabelle_räume.idTABELLE_Räume,
@@ -123,12 +130,7 @@ $columns = [
     ["ElementName", "Element-Bezeichnung"]
 ];
 
-// Helper for select options
-function selectOption($value, $selectedValue, $label): string
-{
-    $selected = ($value == $selectedValue) ? ' selected' : '';
-    return "<option value='$value'$selected>$label</option>";
-}
+
 
 // Helper for safe output
 function safe($str): string
@@ -214,7 +216,8 @@ while ($row = $result->fetch_assoc()) {
     echo "<td data-order=''><button type='button' id='" . safe($row["id"]) . "' class='btn btn-warning btn-sm' value='saveElement'><i class='far fa-save'></i></button></td>";
 
     // Additional MT columns and element info
-    echo "<td data-order='" . safe($row["tabelle_Varianten_idtabelle_Varianten"]) . "'>" . safe($row["tabelle_Varianten_idtabelle_Varianten"]) . "</td>";
+    $vId = (int)$row["tabelle_Varianten_idtabelle_Varianten"];
+    echo "<td data-order='" . $vId . "'>" . safe($variantenMap[$vId] ?? '') . "</td>";
     echo "<td data-order='" . safe($row["Standort"]) . "'>" . safe($row["Standort"]) . "</td>";
     echo "<td data-order='" . safe($row["Verwendung"]) . "'>" . safe($row["Verwendung"]) . "</td>";
     echo "<td data-order='" . safe($row["Neu/Bestand"]) . "'>" . safe($row["Neu/Bestand"]) . "</td>";
@@ -231,9 +234,9 @@ $excelfilename2 = buildExcelFilename('Räume_mit_Element');
 ?>
 
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script charset="utf-8" type="module">
-    import CustomPopover from './utils/_popover.js';
+    import CustomPopover from './_utils/_popover.js';
     const $excelfilename2 = <?= json_encode($excelfilename2) ?>;
 
     $(document).ready(function () {
@@ -252,7 +255,7 @@ $excelfilename2 = buildExcelFilename('Räume_mit_Element');
             order: [[1, 'asc']],
             lengthMenu: [[10, 25, 50, -1], [10, 25, 50, 'All']],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 search: ""
             },
             layout: {
@@ -362,21 +365,30 @@ $excelfilename2 = buildExcelFilename('Räume_mit_Element');
             }
 
             let rows = [];
+            let invalid = false;
             $("#tableRoomsWithElement select[id^='variante']").each(function () {
                 let id = $(this).attr('id').replace('variante', '');
-                let amount = $("#amount" + id).val();
-                let variantenID = $(this).val();
-                let bestand = $("#bestand" + id).val();
                 let standort = $("#Standort" + id).val();
                 let verwendung = $("#Verwendung" + id).val();
-                let comment = $(".comment-btn[id='" + id + "']").attr('data-description') || "";
-
                 if (standort === '0' && verwendung === '0') {
-                    alert("Standort und Verwendung kann nicht Nein sein!");
+                    invalid = true;
                     return false;
                 }
-                rows.push({id, comment, amount, variantenID, bestand, standort, verwendung});
+                rows.push({
+                    id,
+                    comment: $(".comment-btn[id='" + id + "']").attr('data-description') || "",
+                    amount: $("#amount" + id).val(),
+                    variantenID: $(this).val(),
+                    bestand: $("#bestand" + id).val(),
+                    standort,
+                    verwendung
+                });
             });
+
+            if (invalid) {
+                alert("Standort und Verwendung kann nicht Nein sein!");
+                return;
+            }
 
             if (rows.length === 0) {
                 makeToaster("Keine Einträge zu speichern!", true);
@@ -421,6 +433,8 @@ $excelfilename2 = buildExcelFilename('Räume_mit_Element');
                 pendingPopoverComment = getOpenPopoverComment();
             }
         }, true);
+
+
         $(document).off('click.saveEl').on('click.saveEl', "button[value='saveElement']", function () {
             let id = this.id;
             let $commentBtn = $(".comment-btn[id='" + id + "']");

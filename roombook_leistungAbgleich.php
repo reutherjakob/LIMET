@@ -1,16 +1,21 @@
 <?php
 // leistungVergleich.php
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 init_page_serversides("","x");
 $dark = $_SESSION['darkmode'] ?? false;
+
+require_once '_utils/_csrf.php';
 ?>
+
 <!DOCTYPE html>
 <html lang="de" data-bs-theme="<?= $dark ? 'dark' : 'light' ?>">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+
     <title>Leistungsvergleich</title>
-    <link rel="icon" href="Logo/iphone_favicon.png"/>
+    <link rel="icon" href="Logos/iphone_favicon.png"/>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -77,10 +82,7 @@ $dark = $_SESSION['darkmode'] ?? false;
         <button class="btn btn-sm btn-outline-secondary" onclick="collapseAll()">alle zu</button>
     </div>
 
-    <button type="button" class="btn btn-sm btn-outline-success d-flex align-items-center" onclick="window.location.href='/roombook_leistungAbgleich_css.php'">
-        <i class="fas fa-check-double me-2"></i>
-        Experimentelle CSS Version (inkl. Dark Mode)
-    </button>
+
 </div>
 
 <!-- SPALTEN-HEADER -->
@@ -117,7 +119,7 @@ $dark = $_SESSION['darkmode'] ?? false;
     </div>
 </div>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script>
     let allData=[], glzMode='inkl', activeFilter='all';
     const NA_COLOR={AV:'var(--c-av)',SV:'var(--c-sv)',ZSV:'var(--c-zsv)',USV:'var(--c-usv)'};

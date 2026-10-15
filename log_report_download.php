@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 
 $reportUrl  = filter_input(INPUT_POST, 'reportUrl',  FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 'unknown';

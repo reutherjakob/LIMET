@@ -10,7 +10,7 @@
 
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 
 $originRoomID = getPostInt('originRoomID', 0);
@@ -153,7 +153,7 @@ $mysqli->close();
                 makeToaster("Kein Raum ausgewählt!",false);
             } else {
                 $.ajax({
-                    url: "copyRoomElements.php",
+                    url: "save_copyRoomElements.php",
                     type: "POST",
                     data: {"rooms": roomIDs},
                     success: function (data) {

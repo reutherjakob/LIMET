@@ -1,20 +1,23 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
+// 26 FX
+require_once '_utils/_utils.php';
 check_login();
+require_once '_utils/_csrf.php';
+require_csrf();
+
 
 $mysqli = utils_connect_sql();
 
-// Validate and get POST inputs
+
 $type = getPostString('type');
 $kurzbeschreibung = getPostString('kurzbeschreibung');
 $hersteller = getPostInt('hersteller', 0);
 $elementIDSession = $_SESSION["elementID"] ?? 0;
-
 if (empty($type) || empty($kurzbeschreibung) || $hersteller === 0 || $elementIDSession === 0) {
     echo "Ungültige Eingaben!";
     exit;
 }
+
 
 // Get ElementID
 $stmt = $mysqli->prepare("SELECT ElementID FROM tabelle_elemente WHERE idTABELLE_Elemente = ?");

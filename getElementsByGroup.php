@@ -1,6 +1,6 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
+// 26FX
+require_once '_utils/_utils.php';
 check_login();
 
 $mysqli = utils_connect_sql();
@@ -51,16 +51,18 @@ echo "<table class='table table-striped table-sm table-bordered border border-li
 
 while ($row = $result_el->fetch_assoc()) {
     echo "<tr>";
-    echo "<td>" . $row["idTABELLE_Elemente"] . "</td>";
+    echo "<td>" . h($row["idTABELLE_Elemente"] ). "</td>";
     if ($showAddButton) {
-        echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-success btn-sm' value='addElement' data-bs-toggle='modal' data-bs-target='#addRoomElementModal'><i class='fa fa-plus'></i></button></td>";
+        echo "<td><button type='button' id='" . h($row["idTABELLE_Elemente"] ).
+            "' class='btn btn-outline-success btn-sm' value='addElement' data-bs-toggle='modal' data-bs-target='#addRoomElementModal'><i class='fa fa-plus'></i></button></td>";
     } else {
         echo "<td> </td>";
     }
-    echo "<td>" . $row["ElementID"] . "</td>";
-    echo "<td>" . $row["Bezeichnung"] . "</td>";
-    echo "<td>" . $row["Kurzbeschreibung"] . "</td>";
-    echo "<td><button type='button' id='" . $row["idTABELLE_Elemente"] . "' class='btn btn-outline-dark btn-sm' value='changeElement' data-bs-toggle='modal' data-bs-target='#changeElementModal'><i class='fas fa-pencil-alt'></i></button></td>";
+    echo "<td>" . h($row["ElementID"] ). "</td>";
+    echo "<td>" . h($row["Bezeichnung"]) . "</td>";
+    echo "<td>" . h($row["Kurzbeschreibung"]) . "</td>";
+    echo "<td><button type='button' id='" . h($row["idTABELLE_Elemente"]) .
+        "' class='btn btn-outline-dark btn-sm' value='changeElement' data-bs-toggle='modal' data-bs-target='#changeElementModal'><i class='fas fa-pencil-alt'></i></button></td>";
     echo "</tr>";
 }
 echo "</tbody></table>";
@@ -109,7 +111,7 @@ include "addRoomElementModal.html";
             pageLength: 10,
             order: [[2, "asc"]],
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
+                url: "/_utils/de-DE.json",
                 search: "",
                 searchPlaceholder: "Suche...",
                 info: "_START_ bis _END_ von _TOTAL_",

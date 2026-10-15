@@ -27,8 +27,8 @@
 // Das fangen wir ab und verwerfen es, sonst ist die JSON-Antwort zerschossen.
 ob_start();
 
-require_once 'utils/_utils.php';
-require_once 'utils/_format.php';
+require_once '_utils/_utils.php';
+require_once '_utils/_format_money.php';
 init_page_serversides();
 
 ob_end_clean();

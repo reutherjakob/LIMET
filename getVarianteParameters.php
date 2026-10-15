@@ -1,12 +1,12 @@
 <?php
 // 25 FX
-include "utils/_utils.php";
+include "_utils/_utils.php";
 include "getElementParameterTable.php";
 check_login();
 generate_variante_parameter_inputtable();
 ?>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script src="saveElementParameters.js"></script>
 <script>
     $(document).ready(function () {
@@ -36,7 +36,7 @@ generate_variante_parameter_inputtable();
                 }
             ],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 search: "",
                 searchPlaceholder: "Suche..."
             },

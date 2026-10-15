@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 
 if (!function_exists('h')) {
@@ -256,7 +256,7 @@ echo " </tbody></table>";
             {targets: [8], orderable: false, searchable: false}
         ],
         language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+              url: "/_utils/de-DE.json",
             decimal: ',',
             thousands: '.'
         },
@@ -270,7 +270,7 @@ echo " </tbody></table>";
 
     document.getElementById('lieferantService').addEventListener('change', function () {
         if (this.value === 'new') {
-            window.location.href = 'firmenkontakte.php';
+            window.location.href = 'roombook_firmenkontakte.php';
         }
         if (this.value === 'add') {
             $('#addServicePriceModal').modal("hide");

@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once "utils/_utils.php";
+require_once "_utils/_utils.php";
 check_login();
 $mysqli = utils_connect_sql();
 
@@ -85,14 +85,15 @@ echo "</tbody></table>";
 $mysqli->close();
 ?>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script>
     $(document).ready(function () {
         $('#tableRoomElements').DataTable({
              paging: true,
              pagingType: "simple_numbers",
              lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
-             language: {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
+             language: {url: '/_utils/de-DE.json' 
+}
         });
     });
 </script>

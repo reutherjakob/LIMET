@@ -1,6 +1,6 @@
 <?php
-// 25 FX
-include "utils/_utils.php";
+// 26 FX
+include "_utils/_utils.php";
 check_login();
 init_page_serversides("", "x");
 $projectID = (int)$_SESSION["projectID"];
@@ -52,14 +52,17 @@ while ($row = $result->fetch_assoc()) {
 $stmt->close();
 $conn->close();
 
-
 $excelfilename = buildExcelFilename('Elemente_je_Raumbereich');
+require_once '_utils/_csrf.php';
 ?>
 
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+
     <title>Besprechungsansicht</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -83,6 +86,8 @@ $excelfilename = buildExcelFilename('Elemente_je_Raumbereich');
         }
 
     </style>
+
+
 </head>
 <body>
 <div id="limet-navbar"></div>
@@ -208,7 +213,7 @@ $excelfilename = buildExcelFilename('Elemente_je_Raumbereich');
 </div>
 
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script>
     const $excelfilename = <?= json_encode($excelfilename) ?>;
     $(document).ready(function () {
@@ -325,7 +330,7 @@ $excelfilename = buildExcelFilename('Elemente_je_Raumbereich');
                 }
                 $('#pivotTable').DataTable({
                     language: {
-                        url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
+                        url: "/_utils/de-DE.json",
                         search: "",
                         searchPlaceholder: "Suche...",
                         lengthMenu: '_MENU_ ',

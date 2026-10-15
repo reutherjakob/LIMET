@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
 
@@ -156,7 +156,7 @@ $mysqli->close();
 </form>
 
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script src="addNewOrganisationAndZusändigkeit.js"></script>
 <script>
 

@@ -22,8 +22,6 @@ $(document).ready(function () {
 
     loadSettings();
     init_dt();
-
-
     init_showRoomElements_btn();
     table_click();
     handleCheckboxChange();
@@ -260,12 +258,8 @@ function init_dt() {
         scrollY: true,
         scrollCollapse: true,
         language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
-            search: "",
-            searchPlaceholder: "Suche...",
-            searchBuilder: {
-                button: '(%d)'
-            }
+              url: "/_utils/de-DE.json"
+
         },
         select: "os",
         fixedColumns: {start: 2},
@@ -443,6 +437,8 @@ function html_2_plug_into_edit_cell(dataIdentifier) {
             "H2c",
             "H3",
             "H4",
+            "H4 VSD",
+            "H4+VSÜ",
             "H1a/H1b",
             "H1b/H1c",
             "H2a/H2b",

@@ -1,6 +1,6 @@
 <?php
-
-if (!function_exists('utils_connect_sql')) include "utils/_utils.php";
+// 26 FX
+require_once "_utils/_utils.php";
 check_login();
 
 $mysqli = utils_connect_sql();

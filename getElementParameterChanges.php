@@ -1,6 +1,6 @@
 <?php
 // getElementParameterChanges.php
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 ini_set('display_errors', 0);
 error_reporting(0);

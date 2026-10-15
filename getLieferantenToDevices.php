@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once "utils/_utils.php";
+require_once "_utils/_utils.php";
 check_login();
 $mysqli = utils_connect_sql();
 
@@ -111,7 +111,7 @@ include_once("modal_addLieferant.php");
             info: false,
             order: [[1, 'asc']],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 search: "",
                 searchPlaceholder: "Suche..."
             },
@@ -126,7 +126,7 @@ include_once("modal_addLieferant.php");
 
         document.getElementById('idlieferant').addEventListener('change', function () {
             if (this.value === 'new') {
-                window.location.href = 'firmenkontakte.php';
+                window.location.href = 'roombook_firmenkontakte.php';
             }
         });
 
@@ -141,7 +141,7 @@ include_once("modal_addLieferant.php");
                 data: {"lieferantenID": lieferantenID},
                 type: "POST",
                 success: function (data) {
-                    alert(data);
+                     makeToaster(data, true);
                     $.ajax({
                         url: "getLieferantenToDevices.php",
                         type: "POST",
@@ -165,7 +165,7 @@ include_once("modal_addLieferant.php");
                 data: {"lieferantID": id},
                 type: "POST",
                 success: function (data) {
-                    alert(data);
+                     makeToaster(data, true);
                     $.ajax({
                         url: "getLieferantenToDevices.php",
                         type: "POST",

@@ -1,8 +1,8 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
-$mysqli = utils_connect_sql();
+require_once '_utils/_csrf.php';
 ?>
 
 <!DOCTYPE html>
@@ -10,9 +10,10 @@ $mysqli = utils_connect_sql();
 <head>
     <title>RB - Ausführung</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="../Logo/iphone_favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="csrf" content="<?= h(csrf_token()) ?>">
+
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
@@ -56,6 +57,8 @@ $mysqli = utils_connect_sql();
                 <div class="card-body">
 
                     <?php
+                    $mysqli = utils_connect_sql();
+
                     $projectId = isset($_SESSION['projectID']) ? (int)$_SESSION['projectID'] : 0;
                     
                     $sql = "SELECT 
@@ -141,7 +144,8 @@ $mysqli = utils_connect_sql();
             ],
             order: [[1, "asc"]],
             orderMulti: true,
-            language: {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
+            language: {url: '/_utils/de-DE.json' 
+},
             mark: true
         });
 

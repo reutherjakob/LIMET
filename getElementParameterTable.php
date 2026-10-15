@@ -1,6 +1,6 @@
 <?php
-// 25 FX
-include "ElementParameterDefinitions.php";
+// 26 FX
+include "getElementParameterDefinitions.php";
 
 
 function generateSelectField($type, $options, $id, $currentValue): string

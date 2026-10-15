@@ -3,12 +3,8 @@
 use JetBrains\PhpStorm\NoReturn;
 
 session_start();
-require 'utils/csrf.php';
+require '_utils/_csrf.php';
 
-error_log("test");
-
-//  login_helpers.php
-//  Helper-Funktionen für die Migration von MD5 zu Argon2id
 
 function getPrivilegedDbConnection(): ?mysqli
 {
@@ -51,30 +47,8 @@ function getPrivilegedDbConnection(): ?mysqli
     exit();
 }
 
-function migrateUserToNewSystem(string $username, string $plainPassword, $mysqli): bool
-{
 
-    if (!$mysqli) return false;
-    $check = $mysqli->prepare("SELECT id, password FROM tabelle_users WHERE username = ?");
-    $check->bind_param("s", $username);
-    $check->execute();
-    $check->store_result();
-
-    if ($check->num_rows == 0) {
-        $check->close();
-        $argon2Hash = password_hash($plainPassword, PASSWORD_ARGON2ID);
-        $insert = $mysqli->prepare("INSERT INTO tabelle_users (username, password, role, must_change_pw, attempts) VALUES (?, ?, 'internal_rb_user', 0, 0)");
-        $insert->bind_param("ss", $username, $argon2Hash);
-        $success = $insert->execute();
-        $insert->close();
-        return $success;
-    }
-
-    return false;
-}
-
-
-function checkUserInNewSystem(string $username, $mysqli): ?array
+function checkUserInSystem(string $username, $mysqli): ?array
 {
     if (!$mysqli) return null;
 
@@ -90,29 +64,54 @@ function checkUserInNewSystem(string $username, $mysqli): ?array
     return $data;
 }
 
-function checkRateLimit($ip): void
-{
-    if (!isset($_SESSION['login_attempts_ip'])) {
-        $_SESSION['login_attempts_ip'] = array();
-    }
-    if (!isset($_SESSION['last_attempt_ip'])) {
-        $_SESSION['last_attempt_ip'] = array();
-    }
 
-    $attempts = $_SESSION['login_attempts_ip'][$ip] ?? 0;
-    $lastAttempt = $_SESSION['last_attempt_ip'][$ip] ?? 0;
-    $currentTime = time();
-    if ($currentTime - $lastAttempt > 900) {
-        $attempts = 0;
-    }
-    if ($attempts >= 3) {        // Too many attempts, implement delay
-        $waitTime = min(pow(2, $attempts - 5), 3600); // Exponential backoff, max 1 hour
-        if ($currentTime - $lastAttempt < $waitTime) {
-            safeRedirect('index.php?error=too_many_attempts' . $_SERVER['REMOTE_ADDR'] . '&wait=' . ($waitTime - ($currentTime - $lastAttempt)));
+function assertNotLocked(string $username, mysqli $mysqli): void
+{
+    $stmt = $mysqli->prepare(
+        "SELECT attempts, UNIX_TIMESTAMP(last_attempt) AS last
+         FROM tabelle_users WHERE username = ?"
+    );
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $row = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+
+    if (!$row) return; // unknown user — falls through to the generic error later
+
+    $attempts = (int)$row['attempts'];
+    $last = (int)($row['last'] ?? 0);
+    $freeTries = 5;
+
+    if ($attempts >= $freeTries && $last > 0) {
+        $wait = (int)min(pow(2, $attempts - $freeTries), 3600);
+        if (time() - $last < $wait) {
+            safeRedirect('index.php?error=login_failed');
         }
     }
-    $_SESSION['login_attempts_ip'][$ip] = $attempts + 1;
-    $_SESSION['last_attempt_ip'][$ip] = $currentTime;
+}
+
+function recordFailure(string $username, mysqli $mysqli): void
+{
+    // reset the counter if the last try was >15 min ago, otherwise increment
+    $stmt = $mysqli->prepare(
+        "UPDATE tabelle_users
+         SET attempts = IF(last_attempt < (NOW() - INTERVAL 15 MINUTE) OR last_attempt IS NULL, 1, attempts + 1),
+             last_attempt = NOW()
+         WHERE username = ?"
+    );
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $stmt->close();
+}
+
+function recordSuccess(string $username, mysqli $mysqli): void
+{
+    $stmt = $mysqli->prepare(
+        "UPDATE tabelle_users SET attempts = 0, last_attempt = NULL WHERE username = ?"
+    );
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $stmt->close();
 }
 
 
@@ -128,58 +127,34 @@ if (!csrf_check($csrf)) {
 
 
 if (empty($username) || empty($password)) {
-    safeRedirect('index.php?error=empty_fields');
+    safeRedirect('index.php?error=login_failed');
 }
 
-checkRateLimit($_SERVER['REMOTE_ADDR']);
-$hashedPassword = md5($password);
-
 try {
-    #$mysqli = new mysqli('localhost', $username, $hashedPassword, 'LIMET_RB');
-    $mysqli = getPrivilegedDbConnection();   //use if hashed pw are removed
-    if ($mysqli->connect_error) {
-        throw new Exception("Connection failed");
+    $mysqli = getPrivilegedDbConnection();
+    if (!$mysqli) {
+        safeRedirect('index.php?error=login_failed');
     }
+    assertNotLocked($username, $mysqli);
+    $userInNewSystem = checkUserInSystem($username, $mysqli);
 
-    $userInNewSystem = checkUserInNewSystem($username, $mysqli);
-    if ($userInNewSystem === null) {
-        safeRedirect('index.php');
-    } else {
 
-        if (!$mysqli) return false;
-        $check = $mysqli->prepare("SELECT id, password, role FROM tabelle_users WHERE username = ?");
-        $check->bind_param("s", $username);
-        $check->execute();
-        $check->store_result();
-
-        $check->bind_result($id, $passwordHash, $role);
-
-        $hashedPassword =  md5($password);
-
-        if (!empty($userInNewSystem['password']) && strlen($userInNewSystem['password']) > 32) {
-            if (password_verify($password, $userInNewSystem['password'])) {
-                session_regenerate_id(true);
-
-                $_SESSION["username"] = $username;
-                $_SESSION["password"] = $userInNewSystem['password']  ;//-  für alte  SQL-Connection nötig
-                unset($_SESSION['login_attempts'][$username]);
-                unset($_SESSION['last_attempt'][$username]);
-
-                //   error_log("LOGIN SUCCESS: Internal user '$username' via new system (Argon2id)");
-                safeRedirect('projects.php' . $passwordHash);
-            } else {
-                // error_log("LOGIN FAILED: Invalid password for internal user '$username' (new system)");
-                safeRedirect('index.php?error=login_failed');
-            }
-        }
-    }
-} catch (Exception $e) {
-    // error_log($e->getMessage());
-    safeRedirect('index.php?error=login_failed');
-} finally {
-    if (isset($mysqli)) {
+    if ($userInNewSystem !== null && password_verify($password, $userInNewSystem['password'])) {
+        session_regenerate_id(true);
+        $_SESSION["username"] = $username;
+        $_SESSION["password"] = $userInNewSystem['password'];
+        recordSuccess($username, $mysqli);
         $mysqli->close();
+        safeRedirect('roombook_projects.php');
     }
+
+    recordFailure($username, $mysqli);
+
+    $mysqli->close();
+    safeRedirect('index.php?error=login_failed');
+
+} catch (Exception $e) {
+    safeRedirect('index.php?error=login_failed');
 }
 
 

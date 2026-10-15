@@ -1,8 +1,11 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 init_page_serversides("x");
 check_login();
+require_once '_utils/_csrf.php';
+
+
 ?>
 
 
@@ -11,8 +14,10 @@ check_login();
     <title>RB.RaumSuche</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png"/>
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png"/>
 
     <!-- Rework 2025 CDNs -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -167,7 +172,8 @@ check_login();
                     language: {
                         search: "",
                         searchPlaceholder: "Suche...",
-                        url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
+                        url: '/_utils/de-DE.json' 
+
                     },
                     keys: true,
                     order: [[3, 'asc']],

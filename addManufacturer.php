@@ -1,7 +1,10 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
+// 26 FX
+require_once '_utils/_utils.php';
 check_login();
+require_once '_utils/_csrf.php';
+require_csrf();
+
 if (isset($_POST['manufacturer']) && trim($_POST['manufacturer']) !== '') {
     $manufacturer = getPostString('manufacturer');
 

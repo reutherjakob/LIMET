@@ -1,14 +1,14 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
-require_once "utils/_format.php";
+require_once '_utils/_utils.php';
+require_once "_utils/_format_money.php";
 check_login();
 ?>
 
 <!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/> 
     <style>
         .input-xs {
             height: 22px;
@@ -74,16 +74,16 @@ echo "<div class='table-responsive'><table class='table table-striped table-bord
 
 while ($row = $result->fetch_assoc()) {
     echo "<tr>";
-    echo "<td>" . $row["idtabelle_bestandsdaten"] . "</td>";
-    echo "<td><button type='button' id='" . $row["idtabelle_bestandsdaten"] . "' class='btn btn-danger btn-sm' value='deleteBestand'><i class='fas fa-minus-circle'></i></button></td>";
-    echo "<td><input class='form-control form-control-sm' type='text' id='inventNr" . $row["idtabelle_bestandsdaten"] . "' value='" . $row["Inventarnummer"] . "' ></input></td>";
-    echo "<td><input class='form-control form-control-sm' type='text' id='serienNr" . $row["idtabelle_bestandsdaten"] . "' value='" . $row["Seriennummer"] . "' ></input></td>";
-    echo "<td><input class='form-control form-control-sm' type='text' id='yearNr" . $row["idtabelle_bestandsdaten"] . "' value='" . $row["Anschaffungsjahr"] . "' ></input></td>";
-    echo "<td><select class='form-control form-control-sm' id='gereatIDSelect" . $row["idtabelle_bestandsdaten"] . "'>";
-    if ($row["tabelle_geraete_idTABELLE_Geraete"] != "") {
+    echo "<td>" . h($row["idtabelle_bestandsdaten"]) . "</td>";
+    echo "<td><button type='button' id='" . h($row["idtabelle_bestandsdaten"]) . "' class='btn btn-danger btn-sm' value='deleteBestand'><i class='fas fa-minus-circle'></i></button></td>";
+    echo "<td><input class='form-control form-control-sm' type='text' id='inventNr" . h($row["idtabelle_bestandsdaten"]) . "' value='" . h($row["Inventarnummer"]) . "' ></input></td>";
+    echo "<td><input class='form-control form-control-sm' type='text' id='serienNr" . h($row["idtabelle_bestandsdaten"]) . "' value='" . h($row["Seriennummer"]) . "' ></input></td>";
+    echo "<td><input class='form-control form-control-sm' type='text' id='yearNr" . h($row["idtabelle_bestandsdaten"]) . "' value='" . h($row["Anschaffungsjahr"]) . "' ></input></td>";
+    echo "<td><select class='form-control form-control-sm' id='gereatIDSelect" . h($row["idtabelle_bestandsdaten"]) . "'>";
+    if (h($row["tabelle_geraete_idTABELLE_Geraete"]) != "") {
         echo "<option value=0>Gerät wählen</option>";
         foreach ($possibleDevices as $array) {
-            if ($array['idTABELLE_Geraete'] == $row["tabelle_geraete_idTABELLE_Geraete"]) {
+            if ($array['idTABELLE_Geraete'] == h($row["tabelle_geraete_idTABELLE_Geraete"])) {
                 echo "<option selected value=" . $array['idTABELLE_Geraete'] . ">" . $array['Hersteller'] . "-" . $array['Typ'] . "</option>";
             } else {
                 echo "<option value=" . $array['idTABELLE_Geraete'] . ">" . $array['Hersteller'] . "-" . $array['Typ'] . "</option>";
@@ -96,8 +96,8 @@ while ($row = $result->fetch_assoc()) {
         }
     }
     echo "</select></td>";
-    echo "<td><input class='form-control form-control-sm' type='text' id='currentPlace" . $row["idtabelle_bestandsdaten"] . "' value='" . $row["Aktueller Ort"] . "' ></input></td>";
-    echo "<td><button type='button' id='" . $row["idtabelle_bestandsdaten"] . "' class='btn btn-warning btn-sm' value='saveBestand'><i class='far fa-save'></i></button></td>";
+    echo "<td><input class='form-control form-control-sm' type='text' id='currentPlace" . h($row["idtabelle_bestandsdaten"]) . "' value='" . h($row["Aktueller Ort"]) . "' ></input></td>";
+    echo "<td><button type='button' id='" . h($row["idtabelle_bestandsdaten"]) . "' class='btn btn-warning btn-sm' value='saveBestand'><i class='far fa-save'></i></button></td>";
     echo "<td>";
     if ($row_cnt == $Stk) {
         echo "1";
@@ -156,16 +156,16 @@ $mysqli->close();
             </div>
             <div class='modal-footer'>
                 <input type='button' id='addBestand' class='btn btn-success btn-sm' value='Hinzufügen'
-                       data-bs-dismiss='modal'></input>
+                       data-bs-dismiss='modal'>
                 <input type='button' id='saveBestand' class='btn btn-warning btn-sm' value='Speichern'
-                       data-bs-dismiss='modal'></input>
+                       data-bs-dismiss='modal'>
                 <button type='button' class='btn btn-danger btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
             </div>
         </div>
     </div>
 </div>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script>
     var table;
     var roombookID = <?= $roombookID ?>;
@@ -191,7 +191,7 @@ $mysqli->close();
                 }
             ],
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+                 url: "/_utils/de-DE.json",
             },
             scrollY: '20vh',
             scrollCollapse: true,
@@ -225,7 +225,7 @@ $mysqli->close();
                 },
                 type: "POST",
                 success: function (data) {
-                    // alert(data);
+                    //  makeToaster(data, true);
                     makeToaster(data, true);
                     $.ajax({
                         url: "getElementBestand.php",
@@ -319,7 +319,7 @@ $mysqli->close();
                     $.ajax({
                         url: "getElementBestand.php",
                         type: "POST",
-                        success: function (data) {
+                        success: function () {
                             makeToaster("Saved!", true);                            //$("#elementBestand").html(data);
                         }
                     });

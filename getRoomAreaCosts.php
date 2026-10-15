@@ -1,7 +1,7 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
-include "utils/_format.php";
+require_once '_utils/_utils.php';
+include "_utils/_format_money.php";
 check_login();
 
 $bestandInkl = isset($_POST["bestandInkl"]) && $_POST["bestandInkl"] == 1;
@@ -119,7 +119,7 @@ $mysqli->close();
             info: true,
             order: [[0, 'asc']],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 decimal: ',',
                 thousands: '.'
             },

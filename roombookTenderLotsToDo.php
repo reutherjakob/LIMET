@@ -1,8 +1,8 @@
 <?php
-require_once "utils/_utils.php";
+require_once "_utils/_utils.php";
 init_page_serversides();
-
 $excelfilename = buildExcelFilename('Lose_To_do');
+require_once '_utils/_csrf.php';
 ?>
 
 <!DOCTYPE html>
@@ -10,8 +10,9 @@ $excelfilename = buildExcelFilename('Lose_To_do');
 <head>
     <title>Ausschreibungsverwaltung - Los ToDos</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="Logo/iphone_favicon.png"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="csrf" content="<?= h(csrf_token()) ?>">
+
+    <link rel="icon" href="Logos/iphone_favicon.png"/>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -25,8 +26,8 @@ $excelfilename = buildExcelFilename('Lose_To_do');
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/js/bootstrap-datepicker.min.js"></script>
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/css/bootstrap-datepicker.min.css">
-    <script src="utils/_utils.js"></script>
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <script src="_utils/_utils.js"></script>
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
           rel="stylesheet"/>

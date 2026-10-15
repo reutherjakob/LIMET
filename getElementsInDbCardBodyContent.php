@@ -1,5 +1,5 @@
 <?php
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 
 $mysqli = utils_connect_sql();
 $sql = "SELECT tabelle_elemente.idTABELLE_Elemente, tabelle_elemente.ElementID, 

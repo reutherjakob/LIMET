@@ -1,7 +1,6 @@
-
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 
 $mysqli = utils_connect_sql();
@@ -54,7 +53,9 @@ echo "</tbody></table>";
         paging: false,
         searching: true,
         info: false,
-        language: {url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
+        language: {
+            url: '/_utils/de-DE.json'
+        },
         scrollY: '20vh',
         scrollCollapse: true
     });

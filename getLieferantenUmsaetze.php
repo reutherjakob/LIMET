@@ -13,8 +13,8 @@
 
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
-include "utils/_format.php";
+require_once '_utils/_utils.php';
+include "_utils/_format_money.php";
 check_login();
 $mysqli = utils_connect_sql();
 $lieferantenID = getPostInt('lieferantenID',0 );
@@ -103,7 +103,8 @@ echo "<input type='button' id='addUmsatzModal' class='btn btn-success btn-sm' va
         info: false,
         order: [[3, 'desc']],
         language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json'
+            url: '/_utils/de-DE.json' 
+
         },
         scrollY: '20vh',
         scrollCollapse: true,

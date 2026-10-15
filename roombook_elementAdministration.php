@@ -1,0 +1,408 @@
+<?php
+// 26 FX
+require_once '_utils/_utils.php';
+init_page_serversides("x");
+require_once '_utils/_csrf.php';
+
+?>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
+<head>
+    <title>Element Admin</title>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png">
+    <!-- Rework 2025 CDNs -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+          integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.2.1/af-2.7.0/b-3.2.1/b-colvis-3.2.1/b-html5-3.2.1/b-print-3.2.1/cr-2.0.4/date-1.5.5/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sb-1.8.1/sp-2.3.3/sl-3.0.0/sr-1.4.1/datatables.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker3.min.css">
+    <script type='text/javascript'
+            src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <!--- Boostrap Selct2 css -->
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+          rel="stylesheet">
+
+
+</head>
+
+
+<body style="height:100%">
+<div id="limet-navbar"></div> <!-- Container für Navbar -->
+<div class="container-fluid">
+    <div class="mt-2 card">
+        <div class="card-header">Elemente</div>
+        <div class="card-body">
+            <div class="row mt-1">
+                <div class='col-xxl-5'>
+                    <div class='card'>
+                        <div class='card-header' id="CardHeaderElementGruppen"><label>Elementgruppen</label>
+                            <button type="reset" class="btn btn-sm float-end" title="Reset" id="ResetElementGroups">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        <div class='card-body' id='elementGroups'>
+                            <?php include "getElementgruppenCardContent.php"; ?>
+                        </div>
+                    </div>
+                    <div class="mt-1 card">
+                        <div class="card-header">
+                            <div class="row d-flex align-items-center">
+                                <div class="col-xxl-6 col-6">
+                                    <div class="badge-secondary" id="ElementsInDbLabel">Elemente in DB
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-6 d-flex justify-content-end"
+                                     id="CardHeaderElementesInDb"></div>
+                            </div>
+                        </div>
+                        <div class="card-body" id="elementsInDB">
+                            <?php include "getElementsInDbCardBodyContent.php"; ?>
+                        </div>
+                    </div>
+                </div>
+                <div class='col-xxl-7'>
+                    <!---div class='card'>
+                        <div class='card-header'>Schätzkosten</div>
+                        <div class="card-body" id="elementPricesInOtherProjects"></div>
+                    </div--->
+                    <div class="mt-1 card">
+                        <ul class="nav nav-tabs mt-2 float-end">
+                            <li class="nav-item">
+                                <button class="nav-link active" data-bs-toggle="tab"
+                                        data-bs-target="#elementPricesInOtherProjects">
+                                    <label>Schätzkosten in Projekten</label></button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab"
+                                        data-bs-target="#elementPricesInOtherProjects-2">Gerätepreise
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab"
+                                        data-bs-target="#elementPricesInOtherProjects-3">Wartungspreise/Garantien
+                                </button>
+                            </li>
+                        </ul>
+                        <div class="card-body tab-content">
+                            <div class="tab-pane fade show active" id="elementPricesInOtherProjects"></div>
+                            <div class="tab-pane fade" id="elementPricesInOtherProjects-2"></div>
+                            <div class="tab-pane fade" id="elementPricesInOtherProjects-3"></div>
+
+                        </div>
+                    </div>
+                </div>
+                <!---div class='col-xxl-4'>
+                    <div class='card'>
+                        <div class='card-header'>Gerätepreise</div>
+                        <div class="card-body" id="elementPricesInOtherProjects-2"></div>
+                    </div--->
+            </div>
+        </div>
+    </div>
+
+
+    <div class="mt-1 card">
+        <div class="card-header">Geräte</div>
+        <div class="card-body">
+            <div class="row mt-1">
+                <div class='col-xxl-7' id='col_devices'>
+                    <div class='mt-1 card'>
+                        <div class='card-header'><label>Geräte zu Element</label>
+                            <div class="float-end">
+                                <button type="button" class="btn btn-outline-dark float-end" id="toggle_cards">
+                                    <i class="fas fa-caret-left" id="toggle_icon"> </i> <i class="fas fa-caret-right"
+                                                                                           id="toggle_icon2"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class='card-body' id='devicesInDB'></div>
+                    </div>
+                </div>
+
+                <div class='col-xxl-3' id='col_parameters'>
+                    <div class='mt-1 card'>
+                        <div class='card-header'><label>Geräteparameter</label></div>
+                        <div class='card-body' id='deviceParametersInDB'></div>
+                    </div>
+                </div>
+
+                <div class='col-xxl-5' id='col_prices'>
+                    <div class='mt-1 card'>
+                        <div class='card-header'>
+                            <div class='row'>
+                                <div class='col-6'>
+                                    <label>Gerätepreise</label>
+                                </div>
+                                <div class='col-6 d-flex justify-content-end' id='GerätepreiseCardHeader'>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='card-body' id='devicePrices'></div>
+                    </div>
+                    <div class='mt-1 card'>
+                        <div class='card-header'>
+                            <div class='row'>
+                                <div class='col-6'>
+                                    <label>Wartungspreise & Garantien </label>
+                                </div>
+                                <div class='col-6 d-flex justify-content-end' id='WartungspreiseCardHeader'>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class='card-body' id='deviceServicePrices'></div>
+                    </div>
+                    <div class='mt-1 card'>
+                        <div class='card-header'>
+                            <div class='row'>
+                                <div class='col-6'>
+                                    <label>Lieferanten</label>
+                                </div>
+                                <div class='col-6 d-flex justify-content-end' id='LieferantenCardHeader'>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class='card-body' id='deviceLieferanten'></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class='modal fade' id='changeElementModal' role='dialog' tabindex="-1">
+    <div class='modal-dialog modal-md'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h4 class='modal-title'>Element ändern</h4>
+                <button type='button' class='close' data-bs-dismiss='modal'>&times;</button>
+            </div>
+            <div class='modal-body' id='mbody'>
+                <form role="form">
+                    <div class="form-group">
+                        <label for="bezeichnung">Bezeichnung:</label>
+                        <input type="text" class="form-control" id="bezeichnung" placeholder="Type"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="kurzbeschreibungModal">Kurzbeschreibung:</label>
+                        <textarea class="form-control" rows="5" id="kurzbeschreibungModal"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class='modal-footer'>
+                <input type='button' id='saveElement' class='btn btn-warning btn-sm' value='Speichern'>
+                <button type='button' class='btn btn-default btn-sm' data-bs-dismiss='modal'>Abbrechen</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="_utils/_utils.js"></script>
+<script charset="utf-8" type="text/javascript">
+    var table1;
+    $(document).ready(function () {
+        init_table_elementsinDB();
+
+        $('#col_parameters').hide();
+        $('#toggle_cards').click(function () {
+            const $col = $('#col_parameters');
+            const isVisible = $col.is(':visible');
+            if (isVisible) {
+                $col.hide();
+                $('#col_devices').removeClass('col-xxl-5').addClass('col-xxl-7');
+                $('#col_prices').removeClass('col-xxl-4').addClass('col-xxl-5');
+            } else {
+                $col.show();
+                $('#col_devices').removeClass('col-xxl-7').addClass('col-xxl-5');
+                $('#col_prices').removeClass('col-xxl-5').addClass('col-xxl-4');
+            }
+        });
+    });
+
+    function init_table_elementsinDB() {
+        $('#CardHeaderElementesInDb .xxx').remove();
+        table1 = new DataTable('#tableElementsInDB', {
+            paging: true,
+            columnDefs: [
+                {
+                    targets: [0],
+                    visible: false,
+                    searchable: false
+                },
+                {
+                    targets: [4],
+                    visible: true,
+                    searchable: false,
+                    orderable: false
+                }
+            ],
+            select: true,
+            info: true,
+            pagingType: 'simple',
+            lengthChange: true,
+            pageLength: 10,
+            order: [[1, 'asc']],
+            language: {
+                url: "/_utils/de-DE.json",
+                search: "",
+                searchPlaceholder: "Suche...",
+                info: "_START_ bis _END_ von _TOTAL_",
+                infoEmpty: "Keine Einträge vorhanden",
+                infoFiltered: "", //"(gefiltert von _MAX_ Einträgen)",
+                infoPostFix: "",        // appended after info string
+                lengthMenu: "_MENU_",
+                // Select (requires select extension)
+                select: {
+                    rows: {
+                        _: "",
+                        0: "",
+                        1: ""
+                    },
+                    columns: {
+                        _: "",
+                        0: "",
+                        1: ""
+                    },
+                    cells: {
+                        _: "",
+                        0: "",
+                        1: ""
+                    }
+                }
+            },
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fas fa-file-excel"></i> Elemente in DB',
+                    className: 'btn btn-secondary  bg-light text-dark',
+                    title: "Elements in DB"
+                }
+            ],
+            layout: {
+                topStart: null,
+                topEnd: null,
+                bottomStart: ['info', 'search', 'buttons'],
+                bottomEnd: ['pageLength', 'paging'],
+            },
+            initComplete: function () {
+                $('#ElementsInDbLabel').empty();
+                $('#tableElementsInDB_wrapper .dt-buttons').appendTo('#ElementsInDbLabel');
+                $('#tableElementsInDB_wrapper .dt-search label').remove();
+                $('#tableElementsInDB_wrapper .dt-search').children().removeClass("form-control form-control-sm").addClass("btn btn-sm btn-outline-dark xxx").appendTo('#CardHeaderElementesInDb');
+            }
+        });
+
+        $('#tableElementsInDB tbody').on('click', 'tr', function () {
+            $("#deviceParametersInDB").hide();
+            $("#devicePrices").hide();
+            $("#deviceLieferanten").hide();
+            table1.$('tr.info').removeClass('info');
+            $(this).addClass('info');
+            let elementID = table1.row($(this)).data()[0];
+            document.getElementById("bezeichnung").value = table1.row($(this)).data()[2];
+            document.getElementById("kurzbeschreibungModal").value = table1.row($(this)).data()[3];
+            $.ajax({
+                url: "setSessionVariables.php",
+                data: {"elementID": elementID},
+                type: "POST",
+                success: function () {
+                    $.ajax({
+                        url: "getStandardElementParameters.php",
+                        data: {"elementID": elementID},
+                        type: "POST",
+                        success: function (data) {
+                            $("#elementParametersInDB").html(data);
+                            $.ajax({
+                                url: "getElementPricesInDifferentProjects.php",
+                                data: {"elementID": elementID},
+                                type: "POST",
+                                success: function (data) {
+                                    $("#elementPricesInOtherProjects").html(data);
+                                    $.ajax({
+                                        url: "getDevicesToElement.php",
+                                        data: {"elementID": elementID},
+                                        type: "POST",
+                                        success: function (data) {
+                                            $("#devicesInDB").html(data);
+
+                                            $.ajax({
+                                                url: "getDevicesAndTheirPricesForElements.php",
+                                                data: {"elementID": elementID},
+                                                type: "POST",
+                                                success: function (data) {
+                                                    $("#elementPricesInOtherProjects-2").html(data)
+
+
+                                                    $.ajax({
+                                                        url: "getDevicesAndTheirServicePricesForElements.php",
+                                                        data: {"elementID": elementID},
+                                                        type: "POST",
+                                                        success: function (data) {
+                                                            $("#elementPricesInOtherProjects-3").html(data)
+                                                        }
+                                                    });
+
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    }
+
+
+    $("#saveElement").click(function () {
+        let bezeichnung = $("#bezeichnung").val();
+        let kurzbeschreibung = $("#kurzbeschreibungModal").val();
+        if (bezeichnung !== "") {
+            if (kurzbeschreibung !== "") {
+                $.ajax({
+                    url: "saveElement.php",
+                    data: {"bezeichnung": bezeichnung, "kurzbeschreibung": kurzbeschreibung},
+                    type: "POST",
+                    success: function (data) {
+                        makeToaster(data, true);
+                        $('#changeElementModal').modal('hide');
+                        $.ajax({
+                            url: "getElementsInDB.php",
+                            type: "POST",
+                            success: function (data) {
+                                $("#elementsInDB").html(data);
+                            }
+                        });
+                    }
+                });
+            } else {
+                alert("Bitte alle Felder ausfüllen!");
+            }
+        } else {
+            alert("Bitte alle Felder ausfüllen!");
+        }
+    });
+</script>
+</body>
+</html>

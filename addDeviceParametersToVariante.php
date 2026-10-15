@@ -1,7 +1,10 @@
 <?php
-// 25 FX
-include "utils/_utils.php";
+// 26 FX
+require_once '_utils/_utils.php';
 check_login();
+require_once '_utils/_csrf.php';
+require_csrf();
+
 $mysqli = utils_connect_sql();
 
 // Prepare and execute deletion of existing variant parameters safely
@@ -36,10 +39,12 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmtSelect->close();
 
-// Prepare insert statement for variant parameters
+
 $stmtInsert = $mysqli->prepare("
     INSERT INTO tabelle_projekt_elementparameter 
-        (tabelle_projekte_idTABELLE_Projekte, tabelle_elemente_idTABELLE_Elemente, tabelle_parameter_idTABELLE_Parameter, Wert, Einheit, tabelle_Varianten_idtabelle_Varianten, tabelle_planungsphasen_idTABELLE_Planungsphasen)
+        (tabelle_projekte_idTABELLE_Projekte, tabelle_elemente_idTABELLE_Elemente, 
+         tabelle_parameter_idTABELLE_Parameter, Wert, Einheit, 
+         tabelle_Varianten_idtabelle_Varianten, tabelle_planungsphasen_idTABELLE_Planungsphasen)
     VALUES (?, ?, ?, ?, ?, ?, 1)
 ");
 
@@ -54,7 +59,8 @@ foreach ($deviceParameters as $data) {
         $_SESSION["variantenID"]
     );
     if ($stmtInsert->execute()) {
-        echo "\nParameter " . htmlspecialchars($data['Wert'], ENT_QUOTES, 'UTF-8') . " " . htmlspecialchars($data['Einheit'], ENT_QUOTES, 'UTF-8') . " zu Variante hinzugefügt!";
+        echo "\nParameter " . htmlspecialchars($data['Wert'], ENT_QUOTES, 'UTF-8') . " " .
+            htmlspecialchars($data['Einheit'], ENT_QUOTES, 'UTF-8') . " zu Variante hinzugefügt!";
     } else {
         echo "Error beim Einfügen: " . $stmtInsert->error;
     }

@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
 
@@ -88,7 +88,7 @@ while ($row = $result->fetch_assoc()) {
 echo "</tbody></table>";
 $mysqli->close();
 ?>
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script>
     $(document).ready(function () {
         new DataTable('#tableLotVermerke', {
@@ -112,7 +112,7 @@ $mysqli->close();
             info: true,
             order: [[4, 'desc']],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 search: "",
 
             },
@@ -156,7 +156,7 @@ $mysqli->close();
                     data: {"vermerkID": vermerkID, "vermerkStatus": vermerkStatus},
                     type: "POST",
                     success: function (data) {
-                        alert(data);
+                         makeToaster(data, true);
                         $.ajax({
                             url: "getLotVermerke.php",
                             data: {"lotID": lotID},

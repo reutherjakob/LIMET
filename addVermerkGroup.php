@@ -1,7 +1,11 @@
 <?php
-
-include_once "utils/_utils.php";
+// 26 FX - unchecked
+require_once '_utils/_utils.php';
 check_login();
+require_once '_utils/_csrf.php';
+require_csrf();
+
+
 
 $gruppenName      = getPostString('gruppenName');
 $gruppenart      = getPostString('gruppenart');

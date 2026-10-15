@@ -1,11 +1,20 @@
+<?php
+// 26 FX
+require_once "_utils/_utils.php";
+init_page_serversides();
+include "_utils/_format_money.php";
+require_once '_utils/_csrf.php';
+?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <title>RB-Lose-Elemente</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png">
+
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png">
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -34,11 +43,6 @@
     <div class="mt-1 card">
 
         <?php
-        // 25 FX
-        require_once "utils/_utils.php";
-        init_page_serversides();
-        include "utils/_format.php";
-
         function makeTable($result): void
         {
             $headers = [
@@ -209,7 +213,7 @@
 
 
 <!--suppress JSUnusedLocalSymbols, ES6ConvertVarToLetConst -->
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script>
     var tableElementsInProject;
 
@@ -279,7 +283,7 @@
             lengthChange: true,
             pageLength: 10,
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                url: "/_utils/de-DE.json",
                 decimal: ',',
                 thousands: '.',
                 search: "",

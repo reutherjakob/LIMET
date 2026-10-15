@@ -1,5 +1,5 @@
 <?php
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 init_page_serversides();
 $mysqli = utils_connect_sql();
 $roomId = isset($_SESSION['roomID']) ? (int)$_SESSION['roomID'] : 0;

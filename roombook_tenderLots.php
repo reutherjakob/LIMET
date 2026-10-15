@@ -1,11 +1,23 @@
+<?php
+// 25 FX
+require_once '_utils/_utils.php';
+include "_utils/_format_money.php";
+init_page_serversides();
+require_once '_utils/_csrf.php';
+$excelfilename = buildExcelFilename('Lose_im_Projekt"');
+?>
+
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <title>RB-Losverwaltung</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png">
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -30,14 +42,6 @@
 
 </head>
 <body id="bodyTenderLots">
-<?php
-// 25 FX
-require_once 'utils/_utils.php';
-include "utils/_format.php";
-init_page_serversides();
-
-$excelfilename = buildExcelFilename('Lose_im_Projekt"');
-?>
 <div id="limet-navbar"></div>
 <div class="container-fluid">
     <div class='row'>
@@ -465,7 +469,7 @@ include "modal_showLotWorkflow.php";
 require "modal_los_aenderungen.php";
 ?>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <!--suppress ES6ConvertVarToLetConst -->
 <script charset="utf-8">
     const excelFilename = <?= json_encode($excelfilename) ?>;
@@ -498,7 +502,7 @@ require "modal_los_aenderungen.php";
             lengthChange: true,
             pageLength: 10,
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                url: "/_utils/de-DE.json",
                 decimal: ',',
                 thousands: '.',
                 searchPlaceholder: 'Suche..',
@@ -791,7 +795,7 @@ require "modal_los_aenderungen.php";
         if ($("#lotMKF").prop('checked') === false) {
             $('#addTenderLotModal').modal('hide');
             $.ajax({
-                url: "setTenderLot.php",
+                url: "updateTenderLot.php",
                 data: {
                     "lotID": lotID,
                     "losNr": losNr,
@@ -810,14 +814,14 @@ require "modal_los_aenderungen.php";
                 },
                 type: "POST",
                 success: function (data) {
-                    alert(data);
+                    makeToaster(data, true);
                     window.location.replace("roombook_tenderLots.php");
                 }
             });
         } else {
             $('#addTenderLotModal').modal('hide');
             $.ajax({
-                url: "setTenderLot.php",
+                url: "updateTenderLot.php",
                 data: {
                     "lotID": lotID,
                     "losNr": losNr,
@@ -836,7 +840,7 @@ require "modal_los_aenderungen.php";
                 },
                 type: "POST",
                 success: function (data) {
-                    alert(data);
+                    makeToaster(data, true);
                     window.location.replace("roombook_tenderLots.php");
                 }
             });

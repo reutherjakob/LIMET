@@ -1,6 +1,7 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
+// 26FX
+require_once '_utils/_utils.php';
+
 $mysqli = utils_connect_sql();
 $sql = "SELECT tabelle_element_gewerke.idtabelle_element_gewerke, 
        tabelle_element_gewerke.Nummer, tabelle_element_gewerke.Gewerk
@@ -8,14 +9,15 @@ $sql = "SELECT tabelle_element_gewerke.idtabelle_element_gewerke,
         ORDER BY tabelle_element_gewerke.Nummer;";
 
 $result = $mysqli->query($sql);
+
 echo "<div class='form-group row mt-1'>
-<label class='control-label col-xxl-3' for='elementGewerk'>Gewerk</label>
-<div class='col-xxl-9'>
-<select class='form-control form-control-sm' id='elementGewerk' name='elementGewerk'>";
-$first = true;
+    <label class='control-label col-xxl-3' for='elementGewerk'>Gewerk</label>
+    <div class='col-xxl-9'>
+    <select class='form-control form-control-sm' id='elementGewerk' name='elementGewerk'>";
+
 while ($row = $result->fetch_assoc()) {
-    echo "<option value='" . $row["idtabelle_element_gewerke"] . "'"
-        . ">" . $row["Nummer"] . " - " . $row["Gewerk"] . "</option>";
+    echo "<option value='" . h($row["idtabelle_element_gewerke"]) . "'"
+        . ">" . h($row["Nummer"]) . " - " . h($row["Gewerk"]) . "</option>";
 }
 echo "</select></div></div>
 <div class='form-group row mt-1'>

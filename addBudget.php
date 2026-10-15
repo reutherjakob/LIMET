@@ -1,7 +1,9 @@
 <?php
-// addBudget.php
-require_once 'utils/_utils.php';
+// 26 FX
+require_once '_utils/_utils.php';
 check_login();
+require_once '_utils/_csrf.php';
+require_csrf();
 
 header('Content-Type: application/json');
 

@@ -1,7 +1,7 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
-include "utils/_format.php";
+require_once '_utils/_utils.php';
+include "_utils/_format_money.php";
 check_login();
 
 $mysqli = utils_connect_sql();
@@ -217,9 +217,9 @@ include "modal_copyRoomElements.php";
 include "modal_elementHistory.html";
 ?>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script charset="utf-8" type="module">
-    import CustomPopover from './utils/_popover.js';
+    import CustomPopover from './_utils/_popover.js';
 
     let rememberSorting = localStorage.getItem('rememberSorting') === 'true';
     let savedSort = null;
@@ -355,7 +355,7 @@ include "modal_elementHistory.html";
                 },
             ],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 search: '',
                 searchPlaceholder: 'Suche...',
             },

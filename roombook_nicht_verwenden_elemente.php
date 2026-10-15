@@ -4,8 +4,8 @@
     <title>Nicht verwendete Elemente</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png">
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png">
     <!-- Rework 2025 CDNs -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -20,7 +20,7 @@
           rel="stylesheet">
 </head>
 <?php
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 init_page_serversides("x"); ?>
 
 <body style="height:100%">
@@ -29,7 +29,7 @@ init_page_serversides("x"); ?>
     <div class="mt-2 card">
         <div class="card-header">
             <div class="row">
-                <div class="col-6"> Elemente mit NICHT VERWENDEN) in der Kurzbeschreibung</div>
+                <div class="col-6"> Elemente mit (NICHT VERWENDEN) in der Kurzbeschreibung</div>
                 <div class="col-6 d-flex align-items-center justify-content-end" id="CHNVE"></div>
             </div>
         </div>
@@ -85,7 +85,7 @@ init_page_serversides("x"); ?>
             pageLength: 10,
             order: [[1, 'asc']],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 search: "",
                 searchPlaceholder: "Suche...",
                 info: "_START_ bis _END_ von _TOTAL_",

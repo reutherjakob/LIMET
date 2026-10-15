@@ -36,7 +36,7 @@
 
 global $mapping, $mp2, $REPORT_PARAM_GROUPS;
 ob_start();
-require_once '../../utils/_utils.php';
+require_once '../../_utils/_utils.php';
 check_login();
 
 require_once('../../TCPDF-main/TCPDF-main/tcpdf.php');

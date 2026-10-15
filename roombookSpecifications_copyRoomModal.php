@@ -18,7 +18,7 @@
                     <select id="copyRoom_funktionsstelle" class="form-control form-control-sm">
                         <option value="">Funktionsstelle wählen</option>
                         <?php
-                        require_once "utils/_utils.php";
+                        require_once "_utils/_utils.php";
                         check_login();
 
                         $mysqli = utils_connect_sql();

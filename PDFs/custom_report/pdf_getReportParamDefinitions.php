@@ -17,7 +17,7 @@
  * ============================================================================
  */
 
-require_once '../../utils/_utils.php';   // ggf. Pfad an deine Struktur anpassen
+require_once '../../_utils/_utils.php';   // ggf. Pfad an deine Struktur anpassen
 check_login();
 
 require_once __DIR__ . '/pdf_paramDefinitions.php';

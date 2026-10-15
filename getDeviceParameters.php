@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
 $sql = "SELECT tabelle_parameter_kategorie.Kategorie,
@@ -56,7 +56,7 @@ $mysqli->close();
             }
         ],
         language: {
-            url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"
+             url: "/_utils/de-DE.json",
         },
         scrollY: '20vh',
         scrollCollapse: true,
@@ -83,7 +83,7 @@ $mysqli->close();
                     data: {"parameterID": id},
                     type: "POST",
                     success: function (data) {
-                        alert(data);
+                         makeToaster(data, true);
                         $.ajax({
                             url: "getDeviceParameters.php",
                             type: "POST",

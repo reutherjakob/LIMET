@@ -1,7 +1,8 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
+// 26FX
+require_once '_utils/_utils.php';
 check_login();
+
 $gewerkeID = getPostInt('gewerkID', 0);
 $hptgrID = getPostInt("hauptgruppeID", 0);
 
@@ -22,9 +23,9 @@ echo "<div class='form-group row  mt-1'>
         <select class='form-control form-control-sm' id='elementGewerk' name='elementGewerk'>";
 while ($row = $result->fetch_assoc()) {
     if ($row["idtabelle_element_gewerke"] == $gewerkeID) {
-        echo "<option value=" . $row["idtabelle_element_gewerke"] . " selected>" . $row["Nummer"] . " - " . $row["Gewerk"] . "</option>";
+        echo "<option value=" . h($row["idtabelle_element_gewerke"]) . " selected>" . h($row["Nummer"]) . " - " . h($row["Gewerk"]) . "</option>";
     } else {
-        echo "<option value=" . $row["idtabelle_element_gewerke"] . ">" . $row["Nummer"] . " - " . $row["Gewerk"] . "</option>";
+        echo "<option value=" . h($row["idtabelle_element_gewerke"]) . ">" . h($row["Nummer"]) . " - " . h($row["Gewerk"]) . "</option>";
     }
 }
 echo "</select>	</div>	</div>";
@@ -46,9 +47,9 @@ echo "<div class='form-group row mt-1'>
         <select class='form-control form-control-sm' id='elementHauptgruppe' name='elementHauptgruppe'>";
 while ($row = $result->fetch_assoc()) {
     if ($row["idTABELLE_Element_Hauptgruppe"] == $hptgrID) {
-        echo "<option value=" . $row["idTABELLE_Element_Hauptgruppe"] . " selected>" . $row["Nummer"] . " - " . $row["Hauptgruppe"] . "</option>";
+        echo "<option value=" . h($row["idTABELLE_Element_Hauptgruppe"]) . " selected>" . h($row["Nummer"]) . " - " . h($row["Hauptgruppe"]) . "</option>";
     } else {
-        echo "<option value=" . $row["idTABELLE_Element_Hauptgruppe"] . ">" . $row["Nummer"] . " - " . $row["Hauptgruppe"] . "</option>";
+        echo "<option value=" . h($row["idTABELLE_Element_Hauptgruppe"]) . ">" . h($row["Nummer"]) . " - " . h($row["Hauptgruppe"]) . "</option>";
     }
 }
 echo "</select></div></div>";
@@ -70,7 +71,7 @@ echo "<div class='form-group row mt-1'>
         <select class='form-control form-control-sm' id='elementGruppe' name='elementGruppe'>";
 echo "    <option value=0 selected>Gruppe auswählen</option>";
 while ($row = $result->fetch_assoc()) {
-    echo "<option value=" . $row["idTABELLE_Element_Gruppe"] . ">" . $row["Nummer"] . " - " . $row["Gruppe"] . "</option>";
+    echo "<option value=" . h($row["idTABELLE_Element_Gruppe"]) . ">" . h($row["Nummer"]) . " - " . h($row["Gruppe"]) . "</option>";
 }
 echo "</select> </div> </div>";
 $stmt->close();

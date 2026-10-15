@@ -1,11 +1,19 @@
+<?php
+require_once '_utils/_utils.php';
+init_page_serversides("x");
+$excelfilename = buildExcelFilename('Lieferanten_je_Element');
+require_once '_utils/_csrf.php';
+?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de">
 <head>
     <title>Potenzielle Auftragnehmer je Element</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png">
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -19,12 +27,6 @@
 </head>
 
 <body id="bodyElementLieferanten">
-<?php
-require_once 'utils/_utils.php';
-init_page_serversides("x");
-$excelfilename = buildExcelFilename('Lieferanten_je_Element');
-
-?>
 
 <div id="limet-navbar"></div>
 <div class="container-fluid">
@@ -318,7 +320,7 @@ $excelfilename = buildExcelFilename('Lieferanten_je_Element');
         </div>
     </div>
 
-    <script src="utils/_utils.js"></script>
+    <script src="_utils/_utils.js"></script>
     <script charset="utf-8">
         var tableEL;
         const $excelfilename = <?= json_encode($excelfilename) ?>;
@@ -370,7 +372,7 @@ $excelfilename = buildExcelFilename('Lieferanten_je_Element');
                 pageLength: 15,
                 lengthMenu: [[15, 25, 50, 100, 250, -1], [15, 25, 50, 100, 250, 'Alle']],
                 language: {
-                    url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                      url: "/_utils/de-DE.json",
                     searchPlaceholder: 'Element, Lieferant, Gerät..',
                     search: "",
                     lengthMenu: "_MENU_",

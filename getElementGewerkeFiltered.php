@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
 
@@ -132,7 +132,7 @@ $filterValueGUG = getPostInt("filterValueGUG", 0);
 
 <?php $mysqli->close(); ?>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script>
     $('#ghg').change(function () {
         let ghgid = $('#ghg').val();

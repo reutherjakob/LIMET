@@ -1,7 +1,7 @@
 <?php
 // 25 Fx
-require_once 'utils/_utils.php';
-include "utils/_format.php";
+require_once '_utils/_utils.php';
+include "_utils/_format_money.php";
 check_login();
 
 $elementID = getPostInt("elementID", 0);
@@ -62,7 +62,7 @@ echo "</tbody></table></div>";
                 order: [[1, "asc"]],
                 scrollCollapse: true,
                 language: {
-                    url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
+                    url: "/_utils/de-DE.json",
                     decimal: ",",
                     thousands: ".",
                 },

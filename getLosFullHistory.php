@@ -1,5 +1,5 @@
 <?php
-require_once '../utils/_utils.php';
+require_once '../_utils/_utils.php';
 
 $lot_id = getPostInt('lotID', 0);
 if (!$lot_id) exit('Kein Los-ID');

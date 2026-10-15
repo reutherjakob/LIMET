@@ -1,7 +1,7 @@
 
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 $mysqli = utils_connect_sql();
 
@@ -90,7 +90,8 @@ $mysqli->close();
             "pageLength": 10,
             "order": [[1, "asc"]],
             "orderMulti": true,
-            "language": {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"},
+            "language": {url: '/_utils/de-DE.json' 
+},
             "columnDefs": [
                 {
                     "targets": [0, 5, 9],
@@ -139,7 +140,7 @@ $mysqli->close();
             type: "POST",
             data: {"idRechnung": idRechnung},
             success: function (data) {
-                alert(data);
+                 makeToaster(data, true);
             }
         });
     });

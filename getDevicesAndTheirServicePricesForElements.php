@@ -1,6 +1,6 @@
 <?php
-require_once "utils/_utils.php";
-include "utils/_format.php";
+require_once "_utils/_utils.php";
+include "_utils/_format_money.php";
 
 $elementID = getPostInt('elementID', 0);
 
@@ -91,7 +91,7 @@ if ($elementID > 0) {
                 info: false,
                 order: [[3, "desc"]], // Datum absteigend
                 language: {
-                    url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
+                    url: "/_utils/de-DE.json",
                     decimal: ",",
                     thousands: ".",
                 },

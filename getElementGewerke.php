@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 
 $_SESSION["elementID"] =getPostInt('elementID',0);
@@ -177,7 +177,7 @@ $mysqli->close();
 </div>
 
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script charset="utf-8">
     //GHG geändert
     $('#ghg').change(function () {

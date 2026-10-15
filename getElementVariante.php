@@ -1,18 +1,18 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 $_SESSION["elementID"] = getPostInt("elementID");
 $_SESSION["variantenID"] = getPostInt("variantenID");
 
-// Single source of truth: DB-ID => Label
-$variantenMap = [
-    1  => 'A', 2  => 'B', 3  => 'C', 4  => 'D', 5  => 'E', 6  => 'F', 7  => 'G', 8  => 'H',
-    14 => 'I', 15 => 'J', 16 => 'K', 17 => 'L', 18 => 'M', 19 => 'N', 20 => 'O', 21 => 'P',
-    22 => 'Q', 23 => 'R', 24 => 'S', 25 => 'T', 26 => 'U', 27 => 'V', 28 => 'W', 29 => 'X',
-    30 => 'Y', 31 => 'Z',
-];
 
 $mysqli = utils_connect_sql();
+
+$variantenMap = [];
+$res = $mysqli->query("SELECT idtabelle_Varianten, Variante FROM tabelle_varianten ORDER BY idtabelle_Varianten");
+while ($v = $res->fetch_assoc()) {
+    $variantenMap[(int)$v['idtabelle_Varianten']] = $v['Variante'];
+}
+
 $stmt = $mysqli->prepare(
     "SELECT tabelle_projekt_varianten_kosten.Kosten 
      FROM tabelle_projekt_varianten_kosten 
@@ -33,7 +33,7 @@ $row = $result->fetch_assoc();
 
 <div class='row'>
     <div class='col-xxl-6' id="elementGewerk"></div>
-    <!--- for the import of getElementGewerke.php on elementsInProject.php --->
+    <!--- for the import of getElementGewerke.php on roombook_elementsInProject.php --->
     <div class='col-xxl-6'>
         <div class="card">
             <div class='card-header d-inline-flex customCardx  flex-nowrap'>
@@ -45,7 +45,7 @@ $row = $result->fetch_assoc();
                             $selectedID = $_SESSION["variantenID"];
                             foreach ($variantenMap as $optionValue => $value) {
                                 $selected = ($optionValue == $selectedID) ? 'selected' : '';
-                                echo "<option value='$optionValue' $selected>$value</option>";
+                                echo "<option value='" . (int)$optionValue . "' $selected>" . htmlspecialchars($value) . "</option>";
                             }
                             ?>
                         </select>
@@ -195,7 +195,7 @@ $row = $result->fetch_assoc();
                         ON tabelle_varianten.idtabelle_Varianten = tabelle_projekt_varianten_kosten_aenderung.variante
                         WHERE tabelle_projekt_varianten_kosten_aenderung.projekt = ?
                         AND tabelle_projekt_varianten_kosten_aenderung.element = ?
-                        ORDER BY tabelle_varianten.Variante, tabelle_projekt_varianten_kosten_aenderung.timestamp DESC";
+                        ORDER BY tabelle_varianten.idtabelle_Varianten, tabelle_projekt_varianten_kosten_aenderung.timestamp DESC";
 
                 $stmt = $mysqli->prepare($sql);
                 $stmt->bind_param("ii", $_SESSION["projectID"], $_SESSION["elementID"]);
@@ -291,7 +291,7 @@ $row = $result->fetch_assoc();
     </div>
 </div>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script src="saveElementParameters.js"></script>
 <script>
     var tablePossibleElementParameters;
@@ -336,7 +336,7 @@ $row = $result->fetch_assoc();
                 }
             ],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 search: "",
                 searchPlaceholder: "Suche..."
             },
@@ -367,7 +367,7 @@ $row = $result->fetch_assoc();
                 }
             ],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 search: "",
                 searchPlaceholder: "Suche..."
             },
@@ -405,7 +405,7 @@ $row = $result->fetch_assoc();
                 }
             ],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 decimal: ',',
                 thousands: '.'
             },
@@ -558,7 +558,7 @@ $row = $result->fetch_assoc();
             data: {"elementID": elementID, "variantenID": variantenID},
             type: "POST",
             success: function (data) {
-                makeToaster(data.trim(), true);  //alert(data);
+                makeToaster(data.trim(), true);  // makeToaster(data, true);
                 $.ajax({
                     url: "getStandardElementParameters.php",
                     data: {"elementID": elementID},

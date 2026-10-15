@@ -1,9 +1,10 @@
 <?php
 // 26 FX
-require_once 'utils/_utils.php';
-include "utils/_format.php";
+require_once '_utils/_utils.php';
+include "_utils/_format_money.php";
 init_page_serversides();
 $excelfilename = buildExcelFilename('Elemente_Bestand');
+require_once '_utils/_csrf.php';
 
 ?>
 
@@ -13,8 +14,10 @@ $excelfilename = buildExcelFilename('Elemente_Bestand');
     <title>RB-Bestand</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png">
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -103,7 +106,7 @@ $excelfilename = buildExcelFilename('Elemente_Bestand');
     </div>
 </div>
 </body>
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script>
     const $excelfilename = <?= json_encode($excelfilename) ?>;
 
@@ -172,7 +175,7 @@ $excelfilename = buildExcelFilename('Elemente_Bestand');
             info: true,
             order: [[1, 'asc']],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                url: "/_utils/de-DE.json",
                 decimal: ',',
                 thousands: '.',
                 search: "",
@@ -181,8 +184,10 @@ $excelfilename = buildExcelFilename('Elemente_Bestand');
             buttons: [
                 {
                     extend: 'excel',
-                    text: '<i class="far fa-file-excel"></i> Excel',
+                    text: '<i class="far fa-file-excel"></i> ',
                     filename: $excelfilename,
+                    title: '',
+                    className: " btn-sm btn-success",
                     exportOptions: {
                         // ID (0) und formatierte Kosten (11) raus, Rohwert (12) bleibt drin
                         columns: function (idx) {

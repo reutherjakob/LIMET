@@ -1,7 +1,9 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
+// 26 FX
+require_once '_utils/_utils.php';
 init_page_serversides();
+require_once '_utils/_csrf.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -10,8 +12,10 @@ init_page_serversides();
     <title>RB-Elemente</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png"/>
+
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png"/>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -93,7 +97,7 @@ init_page_serversides();
                     <div class="row">
 
                         <div class="col-2 d-flex flex-nowrap text-nowrap align-items-center"
-                            >
+                        >
                             <i class="fas fa-door-open  fa-lg me-2"></i> ohne Element
                         </div>
 
@@ -106,7 +110,8 @@ init_page_serversides();
                             </button>
                         </div>
 
-                        <div class="col-8 d-flex flex-nowrap text-nowrap justify-content-end align-items-center"  id="CardHeaderRäumeOhneElement">
+                        <div class="col-8 d-flex flex-nowrap text-nowrap justify-content-end align-items-center"
+                             id="CardHeaderRäumeOhneElement">
                             <button type='button' id="selectAllRows"
                                     class="btn btn-outline-primary btn-sm me-2 ms-4 "
                                     data-bs-toggle="tooltip"
@@ -128,6 +133,7 @@ init_page_serversides();
     </div>
 </div>
 
+<script src="_utils/_utils.js"></script>
 
 <script>
     var elementBezeichnung; //var, because used to set Modal Title in getRoomsWithoutElement
@@ -149,12 +155,11 @@ init_page_serversides();
                     targets: [0],
                     visible: false,
                     searchable: false
-                }
+                } 
             ],
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
-                search: "",
-                searchPlaceholder: "Element Suche..."
+                url: "/_utils/de-DE.json",
+                searchPlaceholder: "Suche..."
             },
             layout: {
                 bottomStart: 'pageLength',
@@ -192,7 +197,6 @@ init_page_serversides();
                                 type: "POST",
                                 success: function (data) {
                                     $("#roomsWithoutElement").html(data);
-
                                     $.ajax({
                                         url: "getDevicesToElement.php",
                                         data: {"elementID": elementID},
@@ -214,6 +218,7 @@ init_page_serversides();
 
     $(document).ready(function () {
         init_table_elementsinDB();
+
         $('#selectAllRows').click(function () {
             $('#roomsWithoutElement table tbody tr:visible').each(function () {
                 let row = tableRoomsWithoutElement.row(this);
@@ -224,7 +229,6 @@ init_page_serversides();
             });
             updateSelectedRoomsDisplay();
         });
-
 
         $('#deselectAllRows').click(function () {
             $('#roomsWithoutElement table tbody tr:visible').each(function () {
@@ -237,10 +241,8 @@ init_page_serversides();
             updateSelectedRoomsDisplay();
         });
 
-
     });
+
 </script>
 </body>
-
-
 </html>

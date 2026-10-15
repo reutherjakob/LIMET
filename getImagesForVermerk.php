@@ -1,7 +1,7 @@
 <?php
 // getImagesForVermerk.php
 // Returns image thumbnails for a given vermerkID as HTML
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 check_login();
 
 $vermerkID = getPostInt('vermerkID', 0);

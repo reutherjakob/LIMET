@@ -1,6 +1,6 @@
 <?php
 // 25 FX 
-include "utils/_utils.php";
+include "_utils/_utils.php";
 check_login();
 $mysqli = utils_connect_sql();
 

@@ -31,5 +31,6 @@
     <orderEntry type="library" name="dataTables.bootstrap5" level="application" />
     <orderEntry type="library" name="buttons.bootstrap5" level="application" />
     <orderEntry type="library" name="jszip" level="application" />
+    <orderEntry type="library" name="bootstrap4-toggle" level="application" />
   </component>
 </module>

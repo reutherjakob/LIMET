@@ -1,12 +1,13 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
+// 26 FX - unchecked
+require_once '_utils/_utils.php';
 check_login();
+require_once '_utils/_csrf.php';
+require_csrf();
+
 
 if (getPostString("Name") !== "" && getPostString("Vorname") !== "" && getPostString("Tel") !== "") {
-
     $mysqli = utils_connect_sql();
-
     $stmt1 = $mysqli->prepare("INSERT INTO `tabelle_ansprechpersonen`
 (`Name`, `Vorname`, `Tel`, `Adresse`, `PLZ`, `Ort`, `Land`, `Mail`, `Raumnr`)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");

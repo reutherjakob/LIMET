@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-require_once 'utils/_utils.php';
+require_once '_utils/_utils.php';
 init_page_serversides();
 ?>
 
@@ -312,7 +312,8 @@ $mysqli->close();
             searching: false,
             info: false,
             order: [[0, "asc"]],
-            language: {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
+            language: {url: '/_utils/de-DE.json' 
+}
         });
         $("#ovMT").DataTable({
             select: false,
@@ -320,7 +321,8 @@ $mysqli->close();
             searching: false,
             info: false,
             order: [[0, "asc"]],
-            language: {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
+            language: {url: '/_utils/de-DE.json' 
+}
         });
         $("#moebel").DataTable({
             select: false,
@@ -328,7 +330,8 @@ $mysqli->close();
             searching: false,
             info: false,
             order: [[0, "asc"]],
-            language: {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
+            language: {url: '/_utils/de-DE.json' 
+}
         });
         $("#gase").DataTable({
             select: false,
@@ -336,7 +339,8 @@ $mysqli->close();
             searching: false,
             info: false,
             order: [[0, "asc"]],
-            language: {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
+            language: {url: '/_utils/de-DE.json' 
+}
         });
         $("#labor").DataTable({
             select: false,
@@ -344,7 +348,8 @@ $mysqli->close();
             searching: false,
             info: false,
             order: [[0, "asc"]],
-            language: {"url": "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json"}
+            language: {url: '/_utils/de-DE.json' 
+}
         });
     });
 </script>

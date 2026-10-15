@@ -12,7 +12,7 @@
  */
 
 session_start();
-require_once '../../utils/_utils.php';
+require_once '../../_utils/_utils.php';
 check_login();
 include "../pdf_createBericht_LOGO.php";
 

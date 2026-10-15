@@ -146,7 +146,6 @@ const columnsDefinition = [
     {data: 'Nutzfläche_Soll', defaultContent: '-', title: 'Nutzfläche Soll[m2]', visible: false, case: "num"}, // 65| AR-End
 
 
-
     {data: '1 Kreis O2', title: '1K O2', visible: false, case: "bit"}, // 66 | MG-Start !!!
     {data: '2 Kreis O2', title: '2K O2', visible: false, case: "bit"}, // 66 | MG
     {data: 'CO2', title: 'CO2', visible: false, case: "bit"}, // 67 | MG
@@ -191,7 +190,7 @@ const columnsDefinition = [
     {data: 'C2H2', title: 'C2H2', visible: false, case: 'bit'}, // 106 | LAB / -GAS
     {data: 'Propan_Butan', title: 'Propan_Butan', visible: false, case: 'num'}, // 107 | LAB / -GAS
     {data: 'N2H2', title: 'N2H2', visible: false, case: 'num'}, // 108 | LAB / -GAS
-    {data: 'Inertgas', title: 'Inertgas', visible: false, case: 'num'}, // 109 | LAB / -GAS
+    {data: 'Inertgas', title: ($projectID === 75 ? 'Großgeräte' : 'Inertgas'), visible: false, case: 'num'}, // 109 | LAB / -GAS
     {data: 'Ar_CO2_Mix', title: 'AR CO2 Mix', visible: false, case: 'num'}, // 110 | LAB / -GAS
     {data: 'ArCal15', title: 'ArCal15', visible: false, case: 'num'}, // 111 | LAB / -GAS
     {data: 'O2_Mangel', title: 'O2_Mangel', visible: false, case: 'num'}, // 112 | LAB / -GAS
@@ -265,4 +264,4 @@ const columnsDefinition = [
     {data: 'HT_Spezialabwasser', title: 'HT_Spezialabwasser', visible: false, case: ""}, // 170 | GCP-End
     {data: 'Nutzwasser', title: 'Nutzwasser', visible: false, case: "bit"}, // 170 | GCP-End
 
-    ];
+];

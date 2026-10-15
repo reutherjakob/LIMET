@@ -1,8 +1,10 @@
 <?php
-// 25 FX
-require_once 'utils/_utils.php';
-include "utils/_format.php";
+// 26FX
+require_once '_utils/_utils.php';
+include "_utils/_format_money.php";
 init_page_serversides();
+require_once '_utils/_csrf.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -11,10 +13,11 @@ init_page_serversides();
     <title>RB-Bestand Eintragen</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logo/iphone_favicon.png"/>
+    <meta name="csrf" content="<?= h(csrf_token()) ?>">
 
-    <!-- Rework 2025 CDNs -->
+    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logos/iphone_favicon.png"/>
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -249,7 +252,7 @@ init_page_serversides();
     </div>
 </div>
 
-<script src="utils/_utils.js"></script>
+<script src="_utils/_utils.js"></script>
 <script>
     var tableElementsInProject, tableElementsInDB;
     let selectedRoombookID = null;
@@ -269,7 +272,7 @@ init_page_serversides();
             ],
             keys: true,
             language: {
-                url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json",
+                url: "/_utils/de-DE.json",
                 search: "",
                 decimal: ",",
                 thousands: ".",
@@ -329,7 +332,7 @@ init_page_serversides();
                             let rawId = tableRoomsWithElement.row(row).data()[0];
                             let id = (rawId && rawId.display !== undefined) ? rawId.display : rawId;
                             selectedRoombookID = id;
-                            console.log(selectedRoombookID);
+                          //  console.log(selectedRoombookID);
                             let stk = $("#amount" + id).val();
                             $.ajax({
                                 url: "getElementBestand.php",
@@ -367,7 +370,7 @@ init_page_serversides();
             pageLength: 10,
             order: [[1, 'asc']],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/de-DE.json',
+                  url: "/_utils/de-DE.json",
                 search: "",
                 searchPlaceholder: "Suche..."
             },
@@ -436,55 +439,6 @@ init_page_serversides();
             $("#DBElementData").hide();
         }
     });
-
-
-    // $(document).off("click", "#addBestand").on("click", "#addBestand", function () {
-    //     console.log("addBestand clicked, selectedRoombookID:", selectedRoombookID);
-
-    //     let inventarNr = $("#invNr").val();
-    //     let anschaffungsJahr = $("#year").val();
-    //     let serienNr = $("#serNr").val();
-    //     let gereatID = $("#geraetNr").val();
-    //     let currentPlace = $("#currentPlace").val();
-    //     if (!selectedRoombookID) {
-    //         makeToaster("Bitte zuerst einen Raum auswählen!", false);
-    //         return;
-    //     }
-    //     $("#addBestandModal").modal('hide');
-    //     if (inventarNr !== "") {
-    //         $.ajax({
-    //             url: "addBestand.php",
-    //             data: {
-    //                 "inventarNr": inventarNr,
-    //                 "anschaffungsJahr": anschaffungsJahr,
-    //                 "serienNr": serienNr,
-    //                 "gereatID": gereatID,
-    //                 "currentPlace": currentPlace,
-    //                 "roombookID": selectedRoombookID
-    //             },
-    //             type: "POST",
-    //             success: function (data) {
-    //                 // alert(data);
-    //                 makeToaster(data, true);
-
-    //                 $("#addBestandModal").modal('hide');
-    //                 setTimeout(function () {
-    //                     let stk = $("#amount" + selectedRoombookID).val() || 1;
-    //                     $.ajax({
-    //                         url: "getElementBestand.php",
-    //                         data: {"id": selectedRoombookID, "stk": stk},
-    //                         type: "POST",
-    //                         success: function (data) {
-    //                             $("#elementBestand").html(data);
-    //                         }
-    //                     });
-    //                 }, 500);
-    //             }
-    //         });
-    //     } else {
-    //         alert("Bitte Inventarnummer angeben!");
-    //     }
-    // });
 
     $(document).off("click", "#addBestandsElement").on("click", "#addBestandsElement", function () {
         if (!selectedRoombookID) {

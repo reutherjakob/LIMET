@@ -1,6 +1,6 @@
 <?php
 // 25 FX
-include_once "utils/_utils.php";
+include_once "_utils/_utils.php";
 
 // --- AUTH and INIT ---
 check_login();
@@ -98,7 +98,9 @@ $budgetJoinSQL = ($projectID === 86)
 $dummyIDs = [2032,
     2033,
     2034,
-    2035];$dummyIDsSQL = implode(',', array_map('intval', $dummyIDs));
+    2035];
+
+$dummyIDsSQL = implode(',', array_map('intval', $dummyIDs));
 
 $sqlElemIDs = "
     SELECT DISTINCT e.idTABELLE_Elemente, re.tabelle_Varianten_idtabelle_Varianten

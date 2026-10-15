@@ -4,7 +4,7 @@
 header("Content-Type: application/pdf");
 header('Content-Disposition: inline; filename="document.pdf"');
 
-require_once '../utils/_utils.php';
+require_once '../_utils/_utils.php';
 require_once 'pdf_createBericht_LOGO.php';
 require_once '../TCPDF-main/TCPDF-main/tcpdf.php';
 require_once '_pdf_createBericht_utils.php';

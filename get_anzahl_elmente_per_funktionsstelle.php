@@ -1,6 +1,6 @@
 <?php
-//
-require_once 'utils/_utils.php';
+// 26 FX
+require_once '_utils/_utils.php';
 
 $TABELLE_Funktionsteilstellen_idTABELLE_Funktionsteilstellen =  getPostInt('value',0);
 
