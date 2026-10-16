@@ -479,8 +479,11 @@ $excelfilename = buildExcelFilename('Änderungsliste');
     function buildArtFilter() {
         const $wrap = $('#artFilter').empty();
         Object.entries(ARTEN).forEach(([art, cfg], i) => {
+
             const id = 'artChk' + i;
+
             $wrap.append(
+
                 $('<input type="checkbox" class="btn-check" autocomplete="off">')
                     .attr('id', id).val(art).prop('checked', cfg.on),
                 $('<label class="btn btn-sm">').addClass(cfg.btn).attr('for', id)

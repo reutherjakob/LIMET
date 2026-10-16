@@ -311,7 +311,10 @@ $mysqli->close();
             language: {
                 url: "/_utils/de-DE.json",
                 search: ""
-            },
+            }, columnDefs: [
+                // Raumnummer, Raumbezeichnung, Raumbereich, Geschoss, Element-ID, Bezeichnung, Budget
+                {targets: [0, 1, 2, 3, 4, 5, 8], type: 'string', searchBuilderType: 'string'}
+            ],
             buttons: [
                 {
                     extend: 'excelHtml5',

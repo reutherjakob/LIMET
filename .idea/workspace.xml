@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Umstrukturierung der Files;&#10;Ungenutzen Code entfernt; &#10;CRSF überall;&#10;KOR Änderungsverfolgung Seite;">
+    <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Bugfixes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/getVermerkZustaendigkeiten.php" beforeDir="false" afterPath="$PROJECT_DIR$/getVermerkZustaendigkeiten.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombookList.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombookList.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_KOR_ElementeListe.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_KOR_ElementeListe.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roombook_rhe_aenderungsliste.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_rhe_aenderungsliste.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,7 +33,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="bildsupport" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -156,7 +156,7 @@
       <list>
         <item itemvalue="PHP Script._pdf_createBericht_Custom_utils.php" />
         <item itemvalue="JavaScript Debug._utils.php" />
-        <item itemvalue="JavaScript Debug._utils.php" />
+        <item itemvalue="PHP Script._pdf_createBericht_Custom_utils.php" />
         <item itemvalue="JavaScript Debug._utils.php" />
         <item itemvalue="JavaScript Debug._utils.php" />
       </list>
@@ -669,14 +669,7 @@
       <workItem from="1791986880045" duration="221000" />
       <workItem from="1792049341201" duration="12663000" />
       <workItem from="1792134727463" duration="624000" />
-    </task>
-    <task id="LOCAL-00212" summary="Standort/Verwendung Verbessert.&#10;kor Katalog.&#10;BBE einreichbereicht">
-      <option name="closed" value="true" />
-      <created>1775120575783</created>
-      <option name="number" value="00212" />
-      <option name="presentableId" value="LOCAL-00212" />
-      <option name="project" value="LOCAL" />
-      <updated>1775120575783</updated>
+      <workItem from="1792153845032" duration="2149000" />
     </task>
     <task id="LOCAL-00213" summary="Standort/Verwendung Verbessert.&#10;kor Katalog.&#10;BBE einreichbereicht">
       <option name="closed" value="true" />
@@ -1062,7 +1055,15 @@
       <option name="project" value="LOCAL" />
       <updated>1792057106754</updated>
     </task>
-    <option name="localTasksCounter" value="261" />
+    <task id="LOCAL-00261" summary="Bugfixes">
+      <option name="closed" value="true" />
+      <created>1792136619213</created>
+      <option name="number" value="00261" />
+      <option name="presentableId" value="LOCAL-00261" />
+      <option name="project" value="LOCAL" />
+      <updated>1792136619213</updated>
+    </task>
+    <option name="localTasksCounter" value="262" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1092,7 +1093,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value=" ifc_import" />
     <MESSAGE value="verbesserung der sichtbarkeit bei bauangaben - &#10;tracking, welche reports in welchem Projeklt gentutz werden" />
     <MESSAGE value="IFC Quest - import seems to work" />
     <MESSAGE value="IFC Quest - import seems to work.&#10;&#10;Neue Seite: Geräte- und Wartungspreise Liste (&amp;Navbar).&#10;Bugfix Tender Lots." />
@@ -1117,7 +1117,8 @@
     <MESSAGE value="Budget Timeline,&#10;Custom Report" />
     <MESSAGE value="Excel Filenames überall;&#10;Bugfixes," />
     <MESSAGE value="Umstrukturierung der Files;&#10;Ungenutzen Code entfernt; &#10;CRSF überall;&#10;KOR Änderungsverfolgung Seite;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Umstrukturierung der Files;&#10;Ungenutzen Code entfernt; &#10;CRSF überall;&#10;KOR Änderungsverfolgung Seite;" />
+    <MESSAGE value="Bugfixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Bugfixes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

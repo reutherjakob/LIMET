@@ -34,7 +34,17 @@ window.updateToastPositions = window.updateToastPositions || function () {
     });
 };
 
-
+//remove with the next push
+window.getExcelFilename = window.getExcelFilename || async function (documentName, options = {}) {
+    const formData = new URLSearchParams({documentName, ...options});
+    const response = await fetch('/utils/get_excel_filename.php', {
+        method: 'POST',
+        body: formData
+    });
+    if (!response.ok) throw new Error('Network response was not ok');
+    const data = await response.json();
+    return data.filename;
+};
 
 window.relocateControls = window.relocateControls || function (api, targetSel) {
     $(targetSel).empty();
@@ -47,7 +57,6 @@ window.relocateControls = window.relocateControls || function (api, targetSel) {
     $c.find('.dt-search').appendTo(targetSel);
 
 }
-
 
 
 if (!window.tooltipList) {
@@ -71,5 +80,5 @@ window.normalizeCosts = window.normalizeCosts || function (input) {
 };
 
 $.ajaxSetup({
-    headers: { 'X-CSRF-Token': $('meta[name="csrf"]').attr('content') }
+    headers: {'X-CSRF-Token': $('meta[name="csrf"]').attr('content')}
 });
