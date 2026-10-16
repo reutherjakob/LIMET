@@ -1,8 +1,9 @@
 <?php
-// 25 FX
 require_once '_utils/_utils.php';
 include "_utils/_format_money.php";
 init_page_serversides();
+require_once '_utils/_csrf.php';
+
 
 // ---------------------------------------------------------------
 // Kumulation: an / aus (URL) + Merkmale, nach denen getrennt wird (Session)
@@ -36,8 +37,7 @@ if (isset($_GET['gruppe'])) {
     $gewaehlt = $GRUPPEN_STANDARD;
 }
 
-$excelfilename = buildExcelFilename($kumuliert ? 'Raumbuch_Bauangaben_kumuliert' : 'Raumbuch_Bauangaben');
-require_once '_utils/_csrf.php';
+$excelfilename = buildExcelFilename($kumuliert ? 'Elementliste_kumuliert' : 'Elementliste');
 
 ?>
 

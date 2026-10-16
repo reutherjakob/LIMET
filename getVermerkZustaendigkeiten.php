@@ -99,7 +99,7 @@ $mysqli->close();
                 }
             ],
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/2.0.0/i18n/de-DE.json'
+                url: "/_utils/de-DE.json",
             },
             scrollY: '20vh',
             scrollCollapse: true,
