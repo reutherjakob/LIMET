@@ -6,8 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="42033f7f-7ca7-4210-9fe0-a0029a722d12" name="Changes" comment="Bugfixes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_KOR_ElementeListe.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_KOR_ElementeListe.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roombook_rhe_aenderungsliste.php" beforeDir="false" afterPath="$PROJECT_DIR$/roombook_rhe_aenderungsliste.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/login.php" beforeDir="false" afterPath="$PROJECT_DIR$/login.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,24 +41,31 @@
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {}
 }</component>
-  <component name="GitHubPullRequestState">{
-  &quot;prStates&quot;: [
+  <component name="GitHubPullRequestState"><![CDATA[{
+  "prStates": [
     {
-      &quot;id&quot;: {
-        &quot;id&quot;: &quot;PR_kwDOKp49586-evgR&quot;,
-        &quot;number&quot;: 70
+      "id": {
+        "id": "PR_kwDOKp49586-evgR",
+        "number": 70
       },
-      &quot;lastSeen&quot;: 1769170786755
+      "lastSeen": 1769170786755
     },
     {
-      &quot;id&quot;: {
-        &quot;id&quot;: &quot;PR_kwDOKp49587G04hY&quot;,
-        &quot;number&quot;: 74
+      "id": {
+        "id": "PR_kwDOKp49587G04hY",
+        "number": 74
       },
-      &quot;lastSeen&quot;: 1776066601063
+      "lastSeen": 1776066601063
+    },
+    {
+      "id": {
+        "id": "PR_kwDOKp49588AAAABJRmN9A",
+        "number": 83
+      },
+      "lastSeen": 1792394801827
     }
   ]
-}</component>
+}]]></component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://FuxWolfgang@github.com/reutherjakob/LIMET.git&quot;,
@@ -92,35 +98,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;JavaScript Debug._utils.php.executor&quot;: &quot;Run&quot;,
-    &quot;PHP Web Page.Unnamed.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;database.data.extractors.current.export.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
-    &quot;database.data.extractors.current.id&quot;: &quot;Comma-separated (CSV)_id&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Werq__08__26&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/WolfgangFuchsLIMET/Documents/NetBeansProjects/LIMET-FX/PDFs&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;database.query.execution&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "JavaScript Debug._utils.php.executor": "Run",
+    "PHP Web Page.Unnamed.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "database.data.extractors.current.export.id": "Comma-separated (CSV)_id",
+    "database.data.extractors.current.id": "Comma-separated (CSV)_id",
+    "git-widget-placeholder": "#83 on Werq__08__26",
+    "last_opened_file_path": "C:/Users/WolfgangFuchsLIMET/Documents/NetBeansProjects/LIMET-FX/PDFs",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "database.query.execution",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mariadb&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mariadb"
     ],
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
-      &quot;TEXT&quot;
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "TEXT"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\WolfgangFuchsLIMET\Documents\NetBeansProjects\LIMET-FX\PDFs" />
@@ -670,22 +676,7 @@
       <workItem from="1792049341201" duration="12663000" />
       <workItem from="1792134727463" duration="624000" />
       <workItem from="1792153845032" duration="2149000" />
-    </task>
-    <task id="LOCAL-00213" summary="Standort/Verwendung Verbessert.&#10;kor Katalog.&#10;BBE einreichbereicht">
-      <option name="closed" value="true" />
-      <created>1775121462967</created>
-      <option name="number" value="00213" />
-      <option name="presentableId" value="LOCAL-00213" />
-      <option name="project" value="LOCAL" />
-      <updated>1775121462967</updated>
-    </task>
-    <task id="LOCAL-00214" summary="Standort/Verwendung Verbessert.&#10;kor Katalog.&#10;BBE einreichbereicht">
-      <option name="closed" value="true" />
-      <created>1775140582465</created>
-      <option name="number" value="00214" />
-      <option name="presentableId" value="LOCAL-00214" />
-      <option name="project" value="LOCAL" />
-      <updated>1775140582465</updated>
+      <workItem from="1792394617346" duration="9803000" />
     </task>
     <task id="LOCAL-00215" summary="SF Umfrage DONE.&#10;&#10;LOGIN speichert nun VERSCHLÜSSELTE Userdaten in tabelle_user.&#10;&#10;Bugfixes.&#10;&#10;KOR Seiten -&gt; LeitungsAbgleich seite - Ansatz dark mode.">
       <option name="closed" value="true" />
@@ -1063,7 +1054,23 @@
       <option name="project" value="LOCAL" />
       <updated>1792136619213</updated>
     </task>
-    <option name="localTasksCounter" value="262" />
+    <task id="LOCAL-00262" summary="Bugfixes">
+      <option name="closed" value="true" />
+      <created>1792394634708</created>
+      <option name="number" value="00262" />
+      <option name="presentableId" value="LOCAL-00262" />
+      <option name="project" value="LOCAL" />
+      <updated>1792394634708</updated>
+    </task>
+    <task id="LOCAL-00263" summary="Bugfixes">
+      <option name="closed" value="true" />
+      <created>1792403155415</created>
+      <option name="number" value="00263" />
+      <option name="presentableId" value="LOCAL-00263" />
+      <option name="project" value="LOCAL" />
+      <updated>1792403155415</updated>
+    </task>
+    <option name="localTasksCounter" value="264" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1182,11 +1189,6 @@
           <url>file://$PROJECT_DIR$/saveRoomElementComment.php</url>
           <line>19</line>
           <option name="timeStamp" value="28" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/login.php</url>
-          <line>129</line>
-          <option name="timeStamp" value="29" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/roombook_nutzerumfrage_V1_2026/bericht.php</url>

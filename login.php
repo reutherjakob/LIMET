@@ -48,6 +48,32 @@ function getPrivilegedDbConnection(): ?mysqli
 }
 
 
+/**
+ * Schreibt einen Login-Versuch in tabelle_login_attempts.
+ * Fehler beim Logging dürfen den Login-Ablauf nicht abbrechen.
+ */
+function logLoginAttempt(?string $username, bool $success, ?mysqli $mysqli): void
+{
+    if (!$mysqli) return;
+
+    try {
+        $ip = substr($_SERVER['REMOTE_ADDR'] ?? 'unknown', 0, 45);
+        $user = ($username === null || $username === '') ? null : mb_substr($username, 0, 255);
+        $successInt = $success ? 1 : 0;
+
+        $stmt = $mysqli->prepare(
+            "INSERT INTO tabelle_login_attempts (username, ip, attempt_time, success)
+             VALUES (?, ?, NOW(), ?)"
+        );
+        $stmt->bind_param("ssi", $user, $ip, $successInt);
+        $stmt->execute();
+        $stmt->close();
+    } catch (Throwable $e) {
+        error_log("Login attempt logging failed: " . $e->getMessage());
+    }
+}
+
+
 function checkUserInSystem(string $username, $mysqli): ?array
 {
     if (!$mysqli) return null;
@@ -61,6 +87,7 @@ function checkUserInSystem(string $username, $mysqli): ?array
     if ($result->num_rows > 0) {
         $data = $result->fetch_assoc();
     }
+    $stmt->close();
     return $data;
 }
 
@@ -85,6 +112,8 @@ function assertNotLocked(string $username, mysqli $mysqli): void
     if ($attempts >= $freeTries && $last > 0) {
         $wait = (int)min(pow(2, $attempts - $freeTries), 3600);
         if (time() - $last < $wait) {
+            logLoginAttempt($username, false, $mysqli); // gesperrter Versuch
+            $mysqli->close();
             safeRedirect('index.php?error=login_failed');
         }
     }
@@ -102,16 +131,20 @@ function recordFailure(string $username, mysqli $mysqli): void
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $stmt->close();
+
+    logLoginAttempt($username, false, $mysqli);
 }
 
 function recordSuccess(string $username, mysqli $mysqli): void
 {
     $stmt = $mysqli->prepare(
-        "UPDATE tabelle_users SET attempts = 0, last_attempt = NULL WHERE username = ?"
+        "UPDATE tabelle_users SET attempts = 0, last_attempt = NOW() WHERE username = ?"
     );
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $stmt->close();
+
+    logLoginAttempt($username, true, $mysqli);
 }
 
 
@@ -129,6 +162,8 @@ if (!csrf_check($csrf)) {
 if (empty($username) || empty($password)) {
     safeRedirect('index.php?error=login_failed');
 }
+
+$mysqli = null;
 
 try {
     $mysqli = getPrivilegedDbConnection();
@@ -154,7 +189,6 @@ try {
     safeRedirect('index.php?error=login_failed');
 
 } catch (Exception $e) {
+    logLoginAttempt($username, false, $mysqli);
     safeRedirect('index.php?error=login_failed');
 }
-
-
