@@ -1,5 +1,5 @@
 <?php
-require_once '_utils/_utils.php';
+require_once 'utils/_utils.php';
 init_page_serversides("", "x");
 ?>
 
@@ -9,8 +9,8 @@ init_page_serversides("", "x");
     <title>RB-Berichte</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="_utils/style.css" type="text/css" media="screen"/>
-    <link rel="icon" href="Logos/iphone_favicon.png"/>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="icon" href="Logo/iphone_favicon.png"/>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -26,34 +26,23 @@ init_page_serversides("", "x");
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <style>
+        .custom-tooltip {
+            --bs-tooltip-max-width: 400px;
+            font-size: 1rem;
+            padding: 1rem;
+        }
+
+        #reportButtonsContainer > .btn-group {
+            margin-top: 0.5rem;
+        }
+    </style>
 </head>
 <body>
 <div class="container-fluid bg-light">
     <div id="limet-navbar"></div>
 
     <div class="card">
-
-
-        <div class="card-header px-1 py-1" id="HeaderTabelleCard2">
-            <div class="row align-items-center">
-                <div class="col-xxl-2 d-flex justify-content-start align-items-center" id="reportCategoryContainer">
-                    <label for="reportCategorySelect" class="fw-semibold"></label>
-                    <select id="reportCategorySelect" class="form-select form-select-sm"
-                            aria-label="Berichtskategorie auswählen"></select>
-                    <!--a href="roombook_Custom_Report.php"
-                       class="btn btn-outline-primary btn-sm ms-2 text-nowrap">Custom&nbsp;Report</a-->
-                </div>
-                <div class="col-xxl-9" id="reportButtonsContainer" aria-live="polite"></div>
-
-                <div class="col-xxl-1 d-none" id="dateSelectContainer">
-                    <label for="dateSelect" class="visually-hidden">Änderungsdatum</label>
-                    <input type="date" id="dateSelect" name="dateSelect" class="form-control form-control-sm"
-                           data-bs-toggle="tooltip"
-                           data-bs-title="Bis zu welchem Datum Änderungen markiert werden sollen"/>
-                </div>
-            </div>
-        </div>
-
         <div class="card-header px-1 py-1" id="HeaderTabelleCard">
             <div class="row align-items-center justify-content-end">
                 <div class="col-xxl-11 flex-nowrap text-nowrap">
@@ -66,7 +55,27 @@ init_page_serversides("", "x");
                     <input type="date" id="dateSelect4Report" name="dateSelect"
                            class="form-control form-control-sm me-2"
                            data-bs-toggle="tooltip"
-                           data-bs-title="Dieses Datum wird im Bericht als aktueller Stand angeführt. Wird dieser Wert geändert und dann ein Bericht (in anderem Tab) neu geladen, wird das Datum darauf ebenso aktualisiert."/>
+                           data-bs-title="Dieses Datum wird im Bericht als aktueller Stand angeführt. Wird dieser Wert geändert und dann ein Bericht (in anderem Tab) neu geladen, wird das Datum darauf ebenso aktualisiert."
+                           data-bs-custom-class="custom-tooltip"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-header px-1 py-1" id="HeaderTabelleCard2">
+            <div class="row align-items-center">
+                <div class="col-xxl-2 d-flex justify-content-start align-items-center" id="reportCategoryContainer">
+                    <label for="reportCategorySelect" class="fw-semibold"></label>
+                    <select id="reportCategorySelect" class="form-select form-select-sm"
+                            aria-label="Berichtskategorie auswählen"></select>
+                </div>
+                <div class="col-xxl-9" id="reportButtonsContainer" aria-live="polite"></div>
+
+                <div class="col-xxl-1 d-none" id="dateSelectContainer">
+                    <label for="dateSelect" class="visually-hidden">Änderungsdatum</label>
+                    <input type="date" id="dateSelect" name="dateSelect" class="form-control form-control-sm"
+                           data-bs-toggle="tooltip"
+                           data-bs-title="Bis zu welchem Datum Änderungen markiert werden sollen"
+                           data-bs-custom-class="custom-tooltip"/>
                 </div>
             </div>
         </div>
@@ -124,7 +133,6 @@ init_page_serversides("", "x");
         {value: "einreichung", text: "Einreichung"},
         {value: "elementReports", text: "Element-/Raum Berichte"},
         {value: "einbringwege", text: "Einbringwege"},
-        {value: "einbringwege2", text: "Einbringwege2"},
         {value: "oldReports", text: "Historische Berichte"},
 
     ];
@@ -137,14 +145,13 @@ init_page_serversides("", "x");
             {text: "Lab-PDF", url: "pdf_createBauangabenLabPDF"},
             {text: "Lab-Kurz-PDF'", url: "pdf_createBauangabenLabKompaktPDF"},
             {text: "Lab-ENT-PDF", url: "pdf_createBauangabenLabEntPDF"},
-        ],
-        bauangaben_neu: [
+         ],
+        bauangaben_neu:[
             {text: "BAU A3", url: "pdf_createBauangabenBericht_A3Qeer"},
             {text: "ohne Änderungsmarkierungen", url: "pdf_createBauangabenBericht_A3Qeer_1"},
             {text: "ohne Lab", url: "pdf_createBauangabenBericht_A3Qeer_ohne_Lab_params"},
             {text: "VE", url: "pdf_createBauangabenBericht_A3Qeer_VE"},
-            {text: "CINO", url: "pdf_createBauangabenBericht_A3Qeer_CINO"},
-            {text: "SF", url: "pdf_createBauangabenBericht_SF"}
+            {text: "CINO", url: "pdf_createBauangabenBericht_A3Qeer_CINO"}
         ],
         elementReports: [
             {text: "Elem./Raum (w/Bestand)", url: "pdf_createRoombookElWithoutBestand"},
@@ -257,9 +264,8 @@ init_page_serversides("", "x");
         } else {
             dateSelectContainer.addClass('d-none');
         }
-
         if (!category || !reportCategories[category]) return;
-        const btnGroup = $('<div class="btn-group mt-2" role="group" aria-label="Berichtsbuttons"></div>');
+        const btnGroup = $('<div class="btn-group" role="group" aria-label="Berichtsbuttons"></div>');
         reportCategories[category].forEach(report => {
             const button = $('<button type="button" class="btn btn-light border-dark btn-sm"></button>').text(report.text);
             button.on('click', () => generateReport(report, $('#dateSelect').val()));
@@ -287,15 +293,14 @@ init_page_serversides("", "x");
 
         // --- Logging ---
         $.post('log_report_download.php', {
-            reportUrl: report.url,
+            reportUrl:  report.url,
             reportText: report.text,
-            roomIDs: roomIDs.join(',')
+            roomIDs:    roomIDs.join(',')
         });
         // ----------------
 
         window.open(url);
     }
-
 
 
     function addMTFilter(location) {
